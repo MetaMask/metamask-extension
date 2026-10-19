@@ -141,37 +141,22 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
     expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
-    // Default Settings - General category
-    const itemCategoryGeneral = queryByTestId('category-item-General');
-    expect(itemCategoryGeneral).toBeInTheDocument();
-    fireEvent.click(itemCategoryGeneral as HTMLElement);
+    // Default Settings - Privacy category
+    const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+    expect(itemCategoryPrivacy).toBeInTheDocument();
+    fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
-    let toggles = container.querySelectorAll('input[type=checkbox]');
+    const toggles = container.querySelectorAll('input[type=checkbox]');
     const backButton = queryByTestId('privacy-settings-back-button');
 
     fireEvent.click(toggles[0]); // toggleExternalServicesStub
-
-    // Default Settings - Assets category
-    const itemCategoryAssets = queryByTestId('category-item-Assets');
-    fireEvent.click(itemCategoryAssets as HTMLElement);
-
-    toggles = container.querySelectorAll('input[type=checkbox]');
-
-    fireEvent.click(toggles[0]); // setUseTokenDetectionStub
-    fireEvent.click(toggles[1]); // setUseTransactionSimulationsStub
-
-    fireEvent.click(toggles[2]); // setUseCurrencyRateCheckStub
-    fireEvent.click(toggles[3]); // setUseAddressBarEnsResolutionStub
-    fireEvent.click(toggles[4]); // setUseMultiAccountBalanceCheckerStub
-
-    // Default Settings - Security category
-    const itemCategorySecurity = queryByTestId('category-item-Security');
-    fireEvent.click(itemCategorySecurity as HTMLElement);
-
-    toggles = container.querySelectorAll('input[type=checkbox]');
-
-    fireEvent.click(toggles[0]); // setUse4ByteResolutionStub
-    fireEvent.click(toggles[1]); // setPreferenceStub
+    fireEvent.click(toggles[1]); // setUseTokenDetectionStub
+    fireEvent.click(toggles[2]); // setUseTransactionSimulationsStub
+    fireEvent.click(toggles[3]); // setUseCurrencyRateCheckStub
+    fireEvent.click(toggles[4]); // setUseAddressBarEnsResolutionStub
+    fireEvent.click(toggles[5]); // setUseMultiAccountBalanceCheckerStub
+    fireEvent.click(toggles[6]); // setUse4ByteResolutionStub
+    fireEvent.click(toggles[7]); // setPreferenceStub
 
     fireEvent.click(backButton as HTMLElement);
 
@@ -210,9 +195,16 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
+      expect(queryByTestId('category-item-Privacy')).toBeInTheDocument();
+      expect(
+        queryByTestId('category-item-Backup and sync'),
+      ).toBeInTheDocument();
+      expect(queryByTestId('category-item-Networks')).toBeInTheDocument();
+      expect(queryByTestId('category-item-General')).not.toBeInTheDocument();
+      expect(queryByTestId('category-item-Assets')).not.toBeInTheDocument();
       expect(queryByTestId('category-item-Security')).not.toBeInTheDocument();
 
-      fireEvent.click(queryByTestId('category-item-Assets') as HTMLElement);
+      fireEvent.click(queryByTestId('category-item-Privacy') as HTMLElement);
 
       expect(queryByText(messages.turnOnTokenDetection.message)).toBeNull();
       expect(
@@ -225,7 +217,7 @@ describe('Privacy Settings Onboarding View', () => {
       ).toBeNull();
       expect(queryByTestId('ipfs-input')).toBeInTheDocument();
       expect(container.querySelectorAll('input[type=checkbox]')).toHaveLength(
-        0,
+        1,
       );
 
       fireEvent.click(
@@ -240,7 +232,7 @@ describe('Privacy Settings Onboarding View', () => {
       expect(setUse4ByteResolutionStub).not.toHaveBeenCalled();
     });
 
-    it('keeps the security category for social-login MetaMetrics settings', () => {
+    it('shows social-login MetaMetrics settings in the Privacy category', () => {
       const updatedMockStore = configureMockStore([thunk])({
         ...mockStore,
         metamask: {
@@ -248,14 +240,17 @@ describe('Privacy Settings Onboarding View', () => {
           firstTimeFlowType: FirstTimeFlowType.socialCreate,
         },
       });
-      const { queryByText } = renderWithProvider(
+      const { queryByTestId, queryByText } = renderWithProvider(
         <PrivacySettings />,
         updatedMockStore,
       );
 
+      fireEvent.click(queryByTestId('category-item-Privacy') as HTMLElement);
+
       expect(
-        queryByText(messages.securityDefaultSettingsSocialLogin.message),
+        queryByText(messages.participateInMetaMetrics.message),
       ).toBeInTheDocument();
+      expect(queryByTestId('category-item-Security')).not.toBeInTheDocument();
     });
   });
 
@@ -263,14 +258,42 @@ describe('Privacy Settings Onboarding View', () => {
     const { getByRole } = renderWithProvider(<PrivacySettings />, store);
 
     expect(
-      getByRole('button', { name: messages.general.message }),
+      getByRole('button', { name: messages.privacy.message }),
     ).toBeInTheDocument();
     expect(
-      getByRole('button', { name: messages.assets.message }),
+      getByRole('button', { name: messages.backupAndSync.message }),
     ).toBeInTheDocument();
     expect(
-      getByRole('button', { name: messages.security.message }),
+      getByRole('button', { name: messages.networks.message }),
     ).toBeInTheDocument();
+  });
+
+  it('groups settings into Privacy, Backup and sync, and Networks', () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
+    const { getAllByText, getByTestId, getByText } = renderWithProvider(
+      <PrivacySettings />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('category-item-Privacy'));
+    expect(
+      getByText(messages.basicConfigurationLabel.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.onboardingAdvancedPrivacyIPFSTitle.message),
+    ).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('category-back-button'));
+    fireEvent.click(getByTestId('category-item-Backup and sync'));
+    expect(getByText(messages.backupAndSyncEnable.message)).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('category-back-button'));
+    fireEvent.click(getByTestId('category-item-Networks'));
+    expect(
+      getAllByText(messages.onboardingAdvancedPrivacyNetworkTitle.message),
+    ).toHaveLength(2);
   });
 
   describe('Social Login Flow', () => {
@@ -287,11 +310,7 @@ describe('Privacy Settings Onboarding View', () => {
         updatedMockStore,
       );
 
-      // Default Settings - Security & privacy category (social login copy)
-      const itemCategorySecurityPrivacy = getByText(
-        messages.securityDefaultSettingsSocialLogin.message,
-      );
-      expect(itemCategorySecurityPrivacy).toBeInTheDocument();
+      expect(getByText(messages.privacy.message)).toBeInTheDocument();
     });
   });
 
@@ -302,8 +321,8 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+      fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -331,8 +350,8 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+      fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -356,8 +375,8 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+      fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -381,8 +400,8 @@ describe('Privacy Settings Onboarding View', () => {
         store,
       );
 
-      const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets as HTMLElement);
+      const itemCategoryPrivacy = queryByTestId('category-item-Privacy');
+      fireEvent.click(itemCategoryPrivacy as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {

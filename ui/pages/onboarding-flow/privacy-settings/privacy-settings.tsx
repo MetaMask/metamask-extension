@@ -81,17 +81,21 @@ import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
 
+type SettingsCategory = {
+  id: 'privacy' | 'backup-and-sync' | 'networks';
+  title: string;
+  subtitle: string;
+};
+
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [showDetail, setShowDetail] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<{
-    id: number;
-    title: string;
-    subtitle: string;
-  } | null>(null);
+  const [selectedItem, setSelectedItem] = useState<SettingsCategory | null>(
+    null,
+  );
   const [hiddenClass, setHiddenClass] = useState(true);
 
   const defaultState = useSelector(
@@ -206,11 +210,7 @@ export default function PrivacySettings() {
     }
   };
 
-  const handleItemSelected = (item: {
-    id: number;
-    title: string;
-    subtitle: string;
-  }) => {
+  const handleItemSelected = (item: SettingsCategory) => {
     setSelectedItem(item);
     setShowDetail(true);
 
@@ -226,23 +226,22 @@ export default function PrivacySettings() {
     }, ANIMATION_TIME);
   };
 
-  const items = [
-    { id: 1, title: t('general'), subtitle: t('generalDescription') },
-    { id: 2, title: t('assets'), subtitle: t('assetsDescription') },
-    // When consolidated, Security only has MetaMetrics (social). Hide it for SRP.
-    ...(!isBasicFunctionalityConsolidationEnabled || isSocialLoginFlow
-      ? [
-          {
-            id: 3,
-            title: isSocialLoginFlow
-              ? t('securityDefaultSettingsSocialLogin')
-              : t('security'),
-            subtitle: isSocialLoginFlow
-              ? t('securitySocialLoginDefaultSettingsDescription')
-              : t('securityDescription'),
-          },
-        ]
-      : []),
+  const items: SettingsCategory[] = [
+    {
+      id: 'privacy',
+      title: t('privacy'),
+      subtitle: t('onboardingPrivacyCategoryDescription'),
+    },
+    {
+      id: 'backup-and-sync',
+      title: t('backupAndSync'),
+      subtitle: t('onboardingBackupAndSyncCategoryDescription'),
+    },
+    {
+      id: 'networks',
+      title: t('networks'),
+      subtitle: t('onboardingNetworksCategoryDescription'),
+    },
   ];
 
   const handleDataCollectionForMarketing = async (value: boolean) => {
@@ -411,7 +410,7 @@ export default function PrivacySettings() {
               className="privacy-settings__settings"
               data-testid="privacy-settings-settings"
             >
-              {selectedItem?.id === 1 ? (
+              {selectedItem?.id === 'privacy' ? (
                 <>
                   <Setting
                     dataTestId="basic-functionality-toggle"
@@ -460,152 +459,6 @@ export default function PrivacySettings() {
                     ])}
                   />
 
-                  <BackupAndSyncToggle isOnboarding />
-
-                  <Setting
-                    title={t('onboardingAdvancedPrivacyNetworkTitle')}
-                    showToggle={false}
-                    enableMarginBottom={false}
-                    description={
-                      <>
-                        {t('onboardingAdvancedPrivacyNetworkDescription', [
-                          <a
-                            href="https://consensys.io/privacy-policy/"
-                            key="privacy-policy-link"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {t('privacyMsg')}
-                          </a>,
-                          <a
-                            href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}
-                            key="add-solana-accounts-link"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {t(
-                              'onboardingAdvancedPrivacyNetworkDescriptionCallToAction',
-                            )}
-                          </a>,
-                        ])}
-
-                        <Box paddingTop={4}>
-                          <Box flexDirection={BoxFlexDirection.Column} gap={5}>
-                            {Object.values(networkConfigurations)
-                              .filter(
-                                ({ chainId }) => !TEST_CHAINS.includes(chainId),
-                              )
-                              .map((network) => (
-                                <Box
-                                  key={network.chainId}
-                                  className="privacy-settings__customizable-network"
-                                  onClick={() => {
-                                    dispatch(
-                                      setEditedNetwork({
-                                        chainId: network.chainId,
-                                      }),
-                                    );
-                                    dispatch(toggleNetworkMenu());
-                                  }}
-                                  flexDirection={BoxFlexDirection.Row}
-                                  alignItems={BoxAlignItems.Center}
-                                  justifyContent={BoxJustifyContent.Between}
-                                >
-                                  <Box
-                                    flexDirection={BoxFlexDirection.Row}
-                                    alignItems={BoxAlignItems.Center}
-                                  >
-                                    <AvatarNetwork
-                                      src={
-                                        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                          network.chainId
-                                        ]
-                                      }
-                                      name={network.name}
-                                    />
-                                    <Box className="text-left" marginLeft={3}>
-                                      <Text
-                                        variant={TextVariant.BodySm}
-                                        fontWeight={FontWeight.Medium}
-                                      >
-                                        {network.name}
-                                      </Text>
-                                      <Text
-                                        variant={TextVariant.BodyXs}
-                                        color={TextColor.TextAlternative}
-                                      >
-                                        {
-                                          // Get just the protocol + domain, not the infura key in path
-                                          new URL(
-                                            network?.rpcEndpoints[
-                                              network?.defaultRpcEndpointIndex
-                                            ]?.url,
-                                          )?.origin
-                                        }
-                                      </Text>
-                                    </Box>
-                                  </Box>
-                                  <ButtonIcon
-                                    iconName={IconName.ArrowRight}
-                                    size={ButtonIconSize.Md}
-                                    ariaLabel="Next"
-                                  />
-                                </Box>
-                              ))}
-                            <TextButton
-                              onClick={() => {
-                                dispatch(
-                                  toggleNetworkMenu({
-                                    isAddingNewNetwork: true,
-                                  }),
-                                );
-                              }}
-                              className="justify-start flex"
-                            >
-                              <Box
-                                flexDirection={BoxFlexDirection.Row}
-                                alignItems={BoxAlignItems.Center}
-                              >
-                                <Icon name={IconName.Add} className="mr-3" />
-                                <Text color={TextColor.PrimaryDefault}>
-                                  {t('addANetwork')}
-                                </Text>
-                              </Box>
-                            </TextButton>
-                          </Box>
-                        </Box>
-                      </>
-                    }
-                  />
-                </>
-              ) : null}
-              {selectedItem?.id === 2 ? (
-                <>
-                  {!isBasicFunctionalityConsolidationEnabled && (
-                    <>
-                      <Setting
-                        value={turnOnTokenDetection}
-                        setValue={setTurnOnTokenDetection}
-                        title={t('turnOnTokenDetection')}
-                        description={t('useTokenDetectionPrivacyDesc')}
-                      />
-                      <Setting
-                        value={isTransactionSimulationsEnabled}
-                        setValue={setTransactionSimulationsEnabled}
-                        title={t('simulationsSettingSubHeader')}
-                        description={t('simulationsSettingDescription', [
-                          <a
-                            key="learn_more_link"
-                            href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            {t('learnMoreUpperCase')}
-                          </a>,
-                        ])}
-                      />
-                    </>
-                  )}
                   <Setting
                     title={t('onboardingAdvancedPrivacyIPFSTitle')}
                     showToggle={false}
@@ -639,7 +492,31 @@ export default function PrivacySettings() {
                     }
                   />
                   {!isBasicFunctionalityConsolidationEnabled && (
-                    <>
+                    <Box
+                      data-testid="legacy-basic-functionality-settings"
+                      flexDirection={BoxFlexDirection.Column}
+                    >
+                      <Setting
+                        value={turnOnTokenDetection}
+                        setValue={setTurnOnTokenDetection}
+                        title={t('turnOnTokenDetection')}
+                        description={t('useTokenDetectionPrivacyDesc')}
+                      />
+                      <Setting
+                        value={isTransactionSimulationsEnabled}
+                        setValue={setTransactionSimulationsEnabled}
+                        title={t('simulationsSettingSubHeader')}
+                        description={t('simulationsSettingDescription', [
+                          <a
+                            key="learn_more_link"
+                            href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('learnMoreUpperCase')}
+                          </a>,
+                        ])}
+                      />
                       <Setting
                         value={turnOnCurrencyRateCheck}
                         setValue={setTurnOnCurrencyRateCheck}
@@ -729,14 +606,6 @@ export default function PrivacySettings() {
                           'useMultiAccountBalanceCheckerSettingDescription',
                         )}
                       />
-                    </>
-                  )}
-                </>
-              ) : null}
-              {selectedItem?.id === 3 ? (
-                <>
-                  {!isBasicFunctionalityConsolidationEnabled && (
-                    <>
                       <Setting
                         value={turnOn4ByteResolution}
                         setValue={setTurnOn4ByteResolution}
@@ -749,7 +618,7 @@ export default function PrivacySettings() {
                         title={t('externalNameSourcesSetting')}
                         description={t('externalNameSourcesSettingDescription')}
                       />
-                    </>
+                    </Box>
                   )}
                   {isSocialLoginFlow && (
                     <>
@@ -766,6 +635,126 @@ export default function PrivacySettings() {
                     </>
                   )}
                 </>
+              ) : null}
+              {selectedItem?.id === 'backup-and-sync' ? (
+                <BackupAndSyncToggle isOnboarding />
+              ) : null}
+              {selectedItem?.id === 'networks' ? (
+                <Setting
+                  title={t('onboardingAdvancedPrivacyNetworkTitle')}
+                  showToggle={false}
+                  enableMarginBottom={false}
+                  description={
+                    <>
+                      {t('onboardingAdvancedPrivacyNetworkDescription', [
+                        <a
+                          href="https://consensys.io/privacy-policy/"
+                          key="privacy-policy-link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t('privacyMsg')}
+                        </a>,
+                        <a
+                          href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}
+                          key="add-solana-accounts-link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t(
+                            'onboardingAdvancedPrivacyNetworkDescriptionCallToAction',
+                          )}
+                        </a>,
+                      ])}
+
+                      <Box paddingTop={4}>
+                        <Box flexDirection={BoxFlexDirection.Column} gap={5}>
+                          {Object.values(networkConfigurations)
+                            .filter(
+                              ({ chainId }) => !TEST_CHAINS.includes(chainId),
+                            )
+                            .map((network) => (
+                              <Box
+                                key={network.chainId}
+                                className="privacy-settings__customizable-network"
+                                onClick={() => {
+                                  dispatch(
+                                    setEditedNetwork({
+                                      chainId: network.chainId,
+                                    }),
+                                  );
+                                  dispatch(toggleNetworkMenu());
+                                }}
+                                flexDirection={BoxFlexDirection.Row}
+                                alignItems={BoxAlignItems.Center}
+                                justifyContent={BoxJustifyContent.Between}
+                              >
+                                <Box
+                                  flexDirection={BoxFlexDirection.Row}
+                                  alignItems={BoxAlignItems.Center}
+                                >
+                                  <AvatarNetwork
+                                    src={
+                                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                        network.chainId
+                                      ]
+                                    }
+                                    name={network.name}
+                                  />
+                                  <Box className="text-left" marginLeft={3}>
+                                    <Text
+                                      variant={TextVariant.BodySm}
+                                      fontWeight={FontWeight.Medium}
+                                    >
+                                      {network.name}
+                                    </Text>
+                                    <Text
+                                      variant={TextVariant.BodyXs}
+                                      color={TextColor.TextAlternative}
+                                    >
+                                      {
+                                        // Get just the protocol + domain, not the infura key in path
+                                        new URL(
+                                          network?.rpcEndpoints[
+                                            network?.defaultRpcEndpointIndex
+                                          ]?.url,
+                                        )?.origin
+                                      }
+                                    </Text>
+                                  </Box>
+                                </Box>
+                                <ButtonIcon
+                                  iconName={IconName.ArrowRight}
+                                  size={ButtonIconSize.Md}
+                                  ariaLabel="Next"
+                                />
+                              </Box>
+                            ))}
+                          <TextButton
+                            onClick={() => {
+                              dispatch(
+                                toggleNetworkMenu({
+                                  isAddingNewNetwork: true,
+                                }),
+                              );
+                            }}
+                            className="justify-start flex"
+                          >
+                            <Box
+                              flexDirection={BoxFlexDirection.Row}
+                              alignItems={BoxAlignItems.Center}
+                            >
+                              <Icon name={IconName.Add} className="mr-3" />
+                              <Text color={TextColor.PrimaryDefault}>
+                                {t('addANetwork')}
+                              </Text>
+                            </Box>
+                          </TextButton>
+                        </Box>
+                      </Box>
+                    </>
+                  }
+                />
               ) : null}
             </Box>
           </Box>

@@ -7057,6 +7057,9 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
+  "onboardingBackupAndSyncCategoryDescription": {
+    "message": "Back up and sync your settings across devices"
+  },
   "onboardingContinueWith": {
     "message": "Continue with $1",
     "description": "$1 is the type of login used Google, Apple, etc."
@@ -7096,6 +7099,12 @@
   },
   "onboardingMetametricsTitle": {
     "message": "Help improve MetaMask"
+  },
+  "onboardingNetworksCategoryDescription": {
+    "message": "Choose your network"
+  },
+  "onboardingPrivacyCategoryDescription": {
+    "message": "Manage basic functionality and your IPFS gateway"
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
