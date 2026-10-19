@@ -42,7 +42,6 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectTransactionMetadata } from '../../../../selectors';
-import { getUniqueKeys } from '../../../../helpers/utils/unique-keys';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
@@ -576,8 +575,6 @@ export const SimulationDetails = ({
       completed: 'simulationDetailsIncomingHeadingReceived',
     });
 
-  const staticRowKeys = getUniqueKeys(staticRows, (row) => row.label);
-
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
@@ -585,8 +582,8 @@ export const SimulationDetails = ({
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
-        {staticRows.map((staticRow, index) => (
-          <Fragment key={staticRowKeys[index]}>
+        {staticRows.map((staticRow) => (
+          <Fragment key={staticRow.label}>
             <BalanceChangeList
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}

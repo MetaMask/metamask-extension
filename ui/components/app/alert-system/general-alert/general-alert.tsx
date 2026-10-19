@@ -17,7 +17,6 @@ import {
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { getBannerAlertSeverity } from '../utils';
-import { getUniqueKeys } from '../../../../helpers/utils/unique-keys';
 import { AlertProvider } from '../alert-provider';
 import { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
@@ -80,10 +79,6 @@ function AlertDetails({
     return null;
   }
 
-  const detailKeys = Array.isArray(details)
-    ? getUniqueKeys(details, (detail) => detail)
-    : [];
-
   return (
     <Box marginTop={1}>
       <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
@@ -91,7 +86,7 @@ function AlertDetails({
           <Box asChild paddingLeft={6}>
             <ul className="alert-modal__alert-details">
               {details.map((detail, index) => (
-                <Box asChild key={`disclosure-detail-${detailKeys[index]}`}>
+                <Box asChild key={`disclosure-detail-${detail}-${index}`}>
                   <li>
                     <Text
                       variant={TextVariant.bodyMdMedium}

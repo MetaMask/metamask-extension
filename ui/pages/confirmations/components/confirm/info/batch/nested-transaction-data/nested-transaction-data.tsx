@@ -17,12 +17,25 @@ import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/conf
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
-import { getUniqueKeys } from '../../../../../../../helpers/utils/unique-keys';
 import { getFourBytePrefix } from '../../../../../../../helpers/utils/transactions.util';
 
 // Selector only, so editing call data (e.g. spending cap) keeps the row mounted.
-function getNestedTransactionKey({ to, data }: BatchTransactionParams) {
+function getCallKey({ to, data }: BatchTransactionParams) {
   return `${to}-${getFourBytePrefix(data)}`;
+}
+
+// A batch can repeat the same call, e.g. two transfers of one token.
+function getNestedTransactionKey(
+  nestedTransactions: BatchTransactionParams[],
+  index: number,
+) {
+  const callKey = getCallKey(nestedTransactions[index]);
+  const repeats = nestedTransactions
+    .slice(0, index)
+    .filter(
+      (nestedTransaction) => getCallKey(nestedTransaction) === callKey,
+    ).length;
+  return `${callKey}-${repeats}`;
 }
 
 export function NestedTransactionData() {
@@ -34,16 +47,11 @@ export function NestedTransactionData() {
     return null;
   }
 
-  const nestedTransactionKeys = getUniqueKeys(
-    nestedTransactions,
-    getNestedTransactionKey,
-  );
-
   return (
     <Box data-testid="batch-txs">
       {nestedTransactions.map((nestedTransaction, index) => (
         <NestedTransaction
-          key={nestedTransactionKeys[index]}
+          key={getNestedTransactionKey(nestedTransactions, index)}
           index={index}
           nestedTransaction={nestedTransaction}
           chainId={chainId}

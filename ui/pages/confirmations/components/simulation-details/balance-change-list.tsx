@@ -5,17 +5,25 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { getUniqueKeys } from '../../../../helpers/utils/unique-keys';
 import { useConfirmContext } from '../../context/confirm';
 import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
 import { sortBalanceChanges } from './sortBalanceChanges';
 
-function getBalanceChangeKey({ asset }: BalanceChange) {
+function getAssetKey({ asset }: BalanceChange) {
   return [asset.chainId, asset.standard, asset.address, asset.tokenId].join(
     '-',
   );
+}
+
+// A batch can approve the same token more than once.
+function getBalanceChangeKey(balanceChanges: BalanceChange[], index: number) {
+  const assetKey = getAssetKey(balanceChanges[index]);
+  const repeats = balanceChanges
+    .slice(0, index)
+    .filter((balanceChange) => getAssetKey(balanceChange) === assetKey).length;
+  return `${assetKey}-${repeats}`;
 }
 
 /**
@@ -48,11 +56,6 @@ export const BalanceChangeList = ({
     return sortBalanceChanges(balanceChanges);
   }, [balanceChanges]);
 
-  const balanceChangeKeys = useMemo(
-    () => getUniqueKeys(sortedBalanceChanges, getBalanceChangeKey),
-    [sortedBalanceChanges],
-  );
-
   const fiatAmounts = useMemo(() => {
     return sortedBalanceChanges.map((bc) => bc.fiatAmount);
   }, [sortedBalanceChanges]);
@@ -82,7 +85,7 @@ export const BalanceChangeList = ({
       >
         {sortedBalanceChanges.map((balanceChange, index) => (
           <BalanceChangeRow
-            key={balanceChangeKeys[index]}
+            key={getBalanceChangeKey(sortedBalanceChanges, index)}
             label={index === 0 ? heading : undefined}
             isFirstRow={index === 0}
             hasIncomingTokens={hasIncomingTokens}
