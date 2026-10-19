@@ -405,13 +405,14 @@ describe('EthOverview', () => {
     });
 
     it('should show a balance skeleton instead of the empty state while assets are first loading', async () => {
+      // Unify-on Jest derives balances from assetsBalance (not accountsByChainId).
       const mockedStoreWithAssetsLoading = {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x1': { address: mockEvmAccount1.address, balance: '0x0' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:1/slip44:60': { amount: '0' },
             },
           },
           tokenBalances: {},
