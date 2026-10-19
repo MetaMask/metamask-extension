@@ -16,7 +16,6 @@ import { createMockNotificationPreferences } from '../../hooks/metamask-notifica
 import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
-import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 
 // eslint-disable-next-line import-x/no-restricted-paths -- Test the section redirect and main page together.
 import { NotificationSectionSubPage } from '../settings/notifications-tab/notification-section-sub-page';
@@ -415,7 +414,7 @@ describe('NotificationsSettingsContent', () => {
     const otherSections: NotificationsSettingsSectionType[] = [
       'marketing',
       'agenticCli',
-      ...(getIsPerpsIncludedInBuild() ? ['perps' as const] : []),
+      'perps',
     ];
     for (const sectionType of otherSections) {
       it(`resumes the ${sectionType} section after enabling`, async () => {

@@ -5,9 +5,6 @@
  * verifying it appears in the Perps home watchlist section. Unfavorite and
  * multi-market cases are omitted: 16.2 persist-and-revert against the AUS
  * schema (still requires `myx`) fails the second toggle.
- *
- * PREREQUISITE: All tests require PERPS_ENABLED=true in the extension build.
- * Set PERPS_ENABLED=true in .metamaskrc (see .metamaskrc.dist) before running locally.
  */
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';

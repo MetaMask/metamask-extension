@@ -1,6 +1,5 @@
 import semver from 'semver';
 import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
-import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
   getIsPerpsCloseLimitOrderEnabled,
@@ -16,12 +15,6 @@ jest.mock('semver');
 jest.mock('../../../package.json', () => ({
   version: '12.5.0',
 }));
-jest.mock('../../../shared/lib/environment', () => ({
-  ...jest.requireActual<typeof import('../../../shared/lib/environment')>(
-    '../../../shared/lib/environment',
-  ),
-  getIsPerpsIncludedInBuild: jest.fn(),
-}));
 jest.mock('../../../shared/lib/manifestFlags', () => ({
   ...jest.requireActual<typeof import('../../../shared/lib/manifestFlags')>(
     '../../../shared/lib/manifestFlags',
@@ -29,7 +22,6 @@ jest.mock('../../../shared/lib/manifestFlags', () => ({
   getManifestFlags: jest.fn(() => ({})),
 }));
 
-const getIsPerpsIncludedInBuildMock = jest.mocked(getIsPerpsIncludedInBuild);
 const getManifestFlagsMock = jest.mocked(getManifestFlags);
 
 type MockState = {
@@ -53,39 +45,10 @@ describe('Perps Feature Flags', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    getIsPerpsIncludedInBuildMock.mockReturnValue(true);
     getManifestFlagsMock.mockReturnValue({});
   });
 
   describe('getIsPerpsExperienceAvailable', () => {
-    describe('compile-time inclusion (PERPS_ENABLED)', () => {
-      it('returns false when getIsPerpsIncludedInBuild is false even if remote flag would pass', () => {
-        getIsPerpsIncludedInBuildMock.mockReturnValue(false);
-        semverGteMock.mockReturnValue(true);
-
-        const state = getMockState({
-          enabled: true,
-          minimumVersion: '12.0.0',
-        });
-
-        expect(getIsPerpsExperienceAvailable(state)).toBe(false);
-        expect(semverGteMock).not.toHaveBeenCalled();
-      });
-
-      it('returns true when getIsPerpsIncludedInBuild is true and remote flag passes', () => {
-        getIsPerpsIncludedInBuildMock.mockReturnValue(true);
-        semverGteMock.mockReturnValue(true);
-
-        const state = getMockState({
-          enabled: true,
-          minimumVersion: '12.0.0',
-        });
-
-        expect(getIsPerpsExperienceAvailable(state)).toBe(true);
-        expect(semverGteMock).toHaveBeenCalledTimes(1);
-      });
-    });
-
     describe('undefined or missing remote flag', () => {
       it('returns false when perpsEnabledVersion flag is undefined', () => {
         const state = getMockState(undefined);

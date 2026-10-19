@@ -5,8 +5,6 @@ import {
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
-import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
-
 export type SearchItemMeta = {
   readonly id: string;
   readonly titleKey: string;
@@ -169,16 +167,12 @@ export const SETTINGS_SEARCH_CONFIG: TabSearchConfig[] = [
           'wallet-activity': NOTIFICATIONS_SECTION_ITEMS['wallet-activity'],
         }),
       },
-      ...(getIsPerpsIncludedInBuild()
-        ? [
-            {
-              path: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
-              items: createSearchItemMeta({
-                perps: NOTIFICATIONS_SECTION_ITEMS.perps,
-              }),
-            },
-          ]
-        : []),
+      {
+        path: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+        items: createSearchItemMeta({
+          perps: NOTIFICATIONS_SECTION_ITEMS.perps,
+        }),
+      },
       {
         path: NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
         items: createSearchItemMeta({

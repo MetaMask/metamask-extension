@@ -224,32 +224,6 @@ describe('hyperliquid-deposit eligibility', () => {
       },
     };
 
-    let originalPerpsEnabled: string | undefined;
-
-    beforeEach(() => {
-      originalPerpsEnabled = process.env.PERPS_ENABLED;
-      process.env.PERPS_ENABLED = 'true';
-    });
-
-    afterEach(() => {
-      process.env.PERPS_ENABLED = originalPerpsEnabled;
-    });
-
-    it('returns false when perps is not included in the build', async () => {
-      process.env.PERPS_ENABLED = 'false';
-      const getAccountState = jest.fn();
-
-      await expect(
-        isHyperliquidDepositPromptEligible({
-          perpsController: { getAccountState },
-          remoteFeatureFlagController: enabledRemoteFeatureFlagController,
-          signerAddress: SIGNER_ADDRESS,
-        }),
-      ).resolves.toBe(false);
-
-      expect(getAccountState).not.toHaveBeenCalled();
-    });
-
     it('returns false when the perps remote rollout flag is not satisfied', async () => {
       const getAccountState = jest.fn();
 

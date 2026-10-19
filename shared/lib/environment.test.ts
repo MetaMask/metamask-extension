@@ -1,6 +1,5 @@
 import { ENVIRONMENT } from '../constants/build';
 import {
-  getIsPerpsIncludedInBuild,
   getIsPasskeyFeatureEnabled,
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
@@ -155,33 +154,6 @@ describe('getIsBasicFunctionalityConsolidationEnabledInBuild', () => {
   it('returns false when BFT_CONSOLIDATION_ENABLED is undefined', () => {
     delete process.env.BFT_CONSOLIDATION_ENABLED;
     expect(getIsBasicFunctionalityConsolidationEnabledInBuild()).toBe(false);
-  });
-});
-
-describe('getIsPerpsIncludedInBuild', () => {
-  let originalPerpsEnabled: string | undefined;
-
-  beforeAll(() => {
-    originalPerpsEnabled = process.env.PERPS_ENABLED;
-  });
-
-  afterAll(() => {
-    process.env.PERPS_ENABLED = originalPerpsEnabled;
-  });
-
-  it('returns true when PERPS_ENABLED is "true"', () => {
-    process.env.PERPS_ENABLED = 'true';
-    expect(getIsPerpsIncludedInBuild()).toBe(true);
-  });
-
-  it('returns false when PERPS_ENABLED is "false"', () => {
-    process.env.PERPS_ENABLED = 'false';
-    expect(getIsPerpsIncludedInBuild()).toBe(false);
-  });
-
-  it('returns false when PERPS_ENABLED is undefined', () => {
-    delete process.env.PERPS_ENABLED;
-    expect(getIsPerpsIncludedInBuild()).toBe(false);
   });
 });
 

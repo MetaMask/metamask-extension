@@ -59,7 +59,6 @@ import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions/feature-flags';
-import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
 import * as utils from './lib/util';
@@ -605,9 +604,6 @@ describe('MetaMaskController', () => {
 
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
-      jest
-        .spyOn(environment, 'getIsPerpsIncludedInBuild')
-        .mockReturnValue(true);
 
       jest.spyOn(Messenger.prototype, 'subscribe');
       jest.spyOn(TokenListController.prototype, 'start');
@@ -993,9 +989,6 @@ describe('MetaMaskController', () => {
 
     it('disconnects active Perps when Basic Functionality is disabled', async () => {
       jest
-        .spyOn(environment, 'getIsPerpsIncludedInBuild')
-        .mockReturnValue(true);
-      jest
         .spyOn(metamaskController.messengerClientApi, 'perpsGetConnectionState')
         .mockReturnValue('connected');
       const disconnect = jest.spyOn(
@@ -1022,9 +1015,6 @@ describe('MetaMaskController', () => {
 
     describe('_onLock', () => {
       it('disconnects an active perps websocket', async () => {
-        jest
-          .spyOn(environment, 'getIsPerpsIncludedInBuild')
-          .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
         metamaskController.messengerClientsByName.PerpsController = {
@@ -1047,9 +1037,6 @@ describe('MetaMaskController', () => {
       });
 
       it('does not disconnect perps when no perps controller is available', async () => {
-        jest
-          .spyOn(environment, 'getIsPerpsIncludedInBuild')
-          .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
         delete metamaskController.messengerClientsByName.PerpsController;
@@ -1070,9 +1057,6 @@ describe('MetaMaskController', () => {
       });
 
       it('does not disconnect perps when connection is already disconnected', async () => {
-        jest
-          .spyOn(environment, 'getIsPerpsIncludedInBuild')
-          .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
         metamaskController.messengerClientsByName.PerpsController = {
@@ -2980,16 +2964,6 @@ describe('MetaMaskController', () => {
           streamTest.end();
         });
 
-        it('withholds preload permission when Perps is not in the build', () => {
-          const { bridgeOptions, streamTest } = connectPerpsBridge();
-          jest
-            .spyOn(environment, 'getIsPerpsIncludedInBuild')
-            .mockReturnValue(false);
-
-          expect(bridgeOptions.isPreloadAllowed()).toBe(false);
-          streamTest.end();
-        });
-
         it('asks the bridge whether it owns each stream channel', () => {
           const { bridgeOptions, streamTest } = connectPerpsBridge();
 
@@ -3174,9 +3148,6 @@ describe('MetaMaskController', () => {
         jest.useFakeTimers({
           doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'],
         });
-        jest
-          .spyOn(environment, 'getIsPerpsIncludedInBuild')
-          .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
         metamaskController.messengerClientsByName.PerpsController = {
@@ -3233,9 +3204,6 @@ describe('MetaMaskController', () => {
         jest.useFakeTimers({
           doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'],
         });
-        jest
-          .spyOn(environment, 'getIsPerpsIncludedInBuild')
-          .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
         metamaskController.messengerClientsByName.PerpsController = {
@@ -3292,9 +3260,6 @@ describe('MetaMaskController', () => {
         jest.useFakeTimers({
           doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'],
         });
-        jest
-          .spyOn(environment, 'getIsPerpsIncludedInBuild')
-          .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
         metamaskController.messengerClientsByName.PerpsController = {

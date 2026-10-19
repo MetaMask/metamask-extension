@@ -5,7 +5,6 @@ import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
 import {
   NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
@@ -964,16 +963,11 @@ describe('NotificationSectionSubPage', () => {
         description:
           messages.notificationsSettingsAgenticCliDescription.message,
       },
-      ...(getIsPerpsIncludedInBuild()
-        ? [
-            {
-              section: 'perps' as const,
-              preferences: createMockNotificationPreferences(),
-              description:
-                messages.notificationsSettingsPerpsDescription.message,
-            },
-          ]
-        : []),
+      {
+        section: 'perps' as const,
+        preferences: createMockNotificationPreferences(),
+        description: messages.notificationsSettingsPerpsDescription.message,
+      },
     ];
 
     it('omits the channel toggles for the wallet activity section', () => {

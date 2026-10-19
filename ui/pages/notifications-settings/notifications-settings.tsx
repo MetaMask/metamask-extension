@@ -13,7 +13,6 @@ import {
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useSafeState } from '../../hooks/metamask-notifications/useNotifications';
 import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
-import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import {
   getNotificationsSettingsSectionTypeFromSlug,
   NotificationsSettingsQueryParams,
@@ -47,7 +46,6 @@ export function NotificationsSettingsContent() {
   useEffect(() => {
     if (
       pendingSectionType &&
-      (pendingSectionType !== 'perps' || getIsPerpsIncludedInBuild()) &&
       isMetamaskNotificationsEnabled &&
       !isUpdatingMetamaskNotifications &&
       !loadingAllowNotifications &&

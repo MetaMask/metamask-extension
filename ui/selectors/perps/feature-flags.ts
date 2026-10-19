@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { isPerpsRemoteConfigSatisfied } from '../../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
@@ -10,9 +9,8 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 const DEFAULT_HIP3_SOURCES: string[] = [];
 
 /**
- * Perps is available in the UI only when **both** are true:
- * - Compile-time: `getIsPerpsIncludedInBuild()` (`PERPS_ENABLED` at build)
- * - Remote rollout: `perpsEnabledVersion` satisfies `isPerpsRemoteConfigSatisfied`
+ * Perps is available in the UI when the remote rollout
+ * `perpsEnabledVersion` satisfies `isPerpsRemoteConfigSatisfied`.
  *
  * @param _state - The MetaMask state object
  * @returns Whether the user should see and use the perps experience.
@@ -20,7 +18,6 @@ const DEFAULT_HIP3_SOURCES: string[] = [];
 export const getIsPerpsExperienceAvailable = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) =>
-    getIsPerpsIncludedInBuild() &&
     isPerpsRemoteConfigSatisfied(remoteFeatureFlags.perpsEnabledVersion),
 );
 
