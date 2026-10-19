@@ -3,6 +3,7 @@ import { useI18nContext } from '../useI18nContext';
 import { useMessenger } from '../useMessenger';
 import { MONEY_REFERRAL_CODE_UNKNOWN_ERROR } from './useValidateMoneyReferralCode';
 import type { RewardsMoneyInviteMessenger } from './rewards-money-messenger';
+import { readRewardsMoneyHttpFailure } from './read-rewards-money-http-failure';
 import {
   refreshReferralMeWithRetries,
   type FetchReferralMeResult,
@@ -10,58 +11,63 @@ import {
 
 type Translate = (key: string) => string;
 
-type RewardsMoneyHttpFailure = {
-  status?: number;
-  bodyText?: string;
-  retryAfterSeconds?: number;
-};
+/**
+ * Stable reason a refused Accept was turned away. Sent as Segment
+ * `refusal_reason`. Not the localized sheet copy.
+ */
+export type ReferralRefusalReason =
+  | 'invalid_code'
+  | 'already_referred'
+  | 'own_code'
+  | 'kol_cannot_register'
+  | 'active_trader'
+  | 'restricted_country'
+  | 'rate_limited'
+  | 'registration_failed';
+
+export type AcceptMoneyReferralCodeResult =
+  | { accepted: true }
+  | { accepted: false; refusalReason?: ReferralRefusalReason };
 
 /**
- * `RewardsMoneyHttpError` copies status, body, and `Retry-After` onto
- * `error.data`. After the background RPC boundary that bag is on
- * `error.data.cause` and `error.data.cause.data`.
+ * Maps a refused registration onto the analytics reason for that failure.
  *
- * @param value - One of those bags.
- * @returns The bag when it carries an HTTP status.
+ * @param error - The thrown register or validate error, including RPC `data`.
+ * @returns The stable reason. A `503` is `registration_failed`.
  */
-function httpFailureBag(value: unknown): RewardsMoneyHttpFailure | undefined {
-  if (!value || typeof value !== 'object') {
-    return undefined;
-  }
-  const bag = value as RewardsMoneyHttpFailure;
-  if (typeof bag.status !== 'number') {
-    return undefined;
-  }
-  return bag;
-}
+export function getRegisterRefereeRefusalReason(
+  error: unknown,
+): ReferralRefusalReason {
+  const { status, bodyText } = readRewardsMoneyHttpFailure(error);
+  const body = (bodyText ?? '').toLowerCase();
 
-/**
- * Reads a register-referee refusal from whichever bag survived the RPC.
- *
- * @param error - The thrown register error.
- * @returns The HTTP status, body text, and wait, when present.
- */
-function readRewardsMoneyHttpFailure(error: unknown): RewardsMoneyHttpFailure {
-  if (!error || typeof error !== 'object' || !('data' in error)) {
-    return {};
+  if (status === 422) {
+    return 'invalid_code';
   }
-  const { data } = error as {
-    data?: RewardsMoneyHttpFailure & {
-      cause?: RewardsMoneyHttpFailure & { data?: RewardsMoneyHttpFailure };
-    };
-  };
-  const bag =
-    httpFailureBag(data) ??
-    httpFailureBag(data?.cause) ??
-    httpFailureBag(data?.cause?.data);
-  if (!bag) {
-    return {};
+  if (status === 409) {
+    return 'already_referred';
   }
-  const retryAfterSeconds =
-    typeof bag.retryAfterSeconds === 'number' && bag.retryAfterSeconds > 0
-      ? bag.retryAfterSeconds
-      : undefined;
-  return { status: bag.status, bodyText: bag.bodyText, retryAfterSeconds };
+  if (status === 403) {
+    if (body.includes('own referral code')) {
+      return 'own_code';
+    }
+    if (body.includes('kol cannot register as a referee')) {
+      return 'kol_cannot_register';
+    }
+    if (body.includes('recent trading activity')) {
+      return 'active_trader';
+    }
+    if (
+      body.includes('restrictedcountrycode') ||
+      body.includes('not available in your country')
+    ) {
+      return 'restricted_country';
+    }
+  }
+  if (status === 429) {
+    return 'rate_limited';
+  }
+  return 'registration_failed';
 }
 
 /**
@@ -72,36 +78,26 @@ function readRewardsMoneyHttpFailure(error: unknown): RewardsMoneyHttpFailure {
  * @returns A user-facing refusal, or the generic failure string.
  */
 function getRegisterRefereeErrorMessage(error: unknown, t: Translate): string {
-  const { status, bodyText } = readRewardsMoneyHttpFailure(error);
-  const body = (bodyText ?? '').toLowerCase();
-
-  if (status === 422) {
-    return t('rewardsMoneyReferralCodeError');
-  }
-  if (status === 409) {
-    return t('rewardsMoneyReferralAlreadyReferred');
-  }
-  if (status === 429) {
-    return t('rewardsMoneyReferralTooManyTries');
-  }
-  if (status === 403) {
-    if (body.includes('own referral code')) {
+  switch (getRegisterRefereeRefusalReason(error)) {
+    case 'invalid_code':
+      return t('rewardsMoneyReferralCodeError');
+    case 'already_referred':
+      return t('rewardsMoneyReferralAlreadyReferred');
+    case 'own_code':
       return t('rewardsMoneyReferralOwnCode');
-    }
-    if (body.includes('kol cannot register as a referee')) {
+    case 'kol_cannot_register':
       return t('rewardsMoneyReferralReferrerCannotBeReferred');
-    }
-    if (body.includes('recent trading activity')) {
+    case 'active_trader':
       return t('rewardsMoneyReferralActiveTrader');
-    }
-    if (
-      body.includes('restrictedcountrycode') ||
-      body.includes('not available in your country')
-    ) {
+    case 'restricted_country':
       return t('rewardsOnboardingIntroUnsupportedRegionDescription');
-    }
+    case 'rate_limited':
+      return t('rewardsMoneyReferralTooManyTries');
+    case 'registration_failed':
+      return t('rewardsMoneyReferralSomethingWentWrong');
+    default:
+      return t('rewardsMoneyReferralSomethingWentWrong');
   }
-  return t('rewardsMoneyReferralSomethingWentWrong');
 }
 
 type UseAcceptMoneyReferralCodeOptions = {
@@ -117,7 +113,7 @@ type UseAcceptMoneyReferralCodeResult = {
   /** True while a 429 `Retry-After` is still running. Accept stays disabled. */
   isAcceptCoolingDown: boolean;
   errorMessage: string;
-  accept: (code: string) => Promise<boolean>;
+  accept: (code: string) => Promise<AcceptMoneyReferralCodeResult>;
 };
 
 /**
@@ -165,19 +161,36 @@ export function useAcceptMoneyReferralCode({
     }, seconds * 1000);
   }, []);
 
+  const noteRefusal = useCallback(
+    (error: unknown): ReferralRefusalReason => {
+      const failure = readRewardsMoneyHttpFailure(error);
+      setErrorMessage(getRegisterRefereeErrorMessage(error, t as Translate));
+      if (failure.status === 429 && failure.retryAfterSeconds !== undefined) {
+        startAcceptCooldown(failure.retryAfterSeconds);
+      }
+      return getRegisterRefereeRefusalReason(error);
+    },
+    [startAcceptCooldown, t],
+  );
+
   const accept = useCallback(
-    async (code: string): Promise<boolean> => {
+    async (code: string): Promise<AcceptMoneyReferralCodeResult> => {
       if (isAcceptCoolingDownRef.current) {
-        return false;
+        return { accepted: false };
       }
       setErrorMessage('');
-      const validationError = await validateCode(code);
+      let validationError: string;
+      try {
+        validationError = await validateCode(code);
+      } catch (error) {
+        return { accepted: false, refusalReason: noteRefusal(error) };
+      }
       if (
         validationError &&
         validationError !== MONEY_REFERRAL_CODE_UNKNOWN_ERROR
       ) {
         setErrorMessage(validationError);
-        return false;
+        return { accepted: false, refusalReason: 'invalid_code' };
       }
 
       setIsAccepting(true);
@@ -187,26 +200,14 @@ export function useAcceptMoneyReferralCode({
         });
         await refreshReferralMeWithRetries(fetchReferralMe);
         onAccepted();
-        return true;
+        return { accepted: true };
       } catch (error) {
-        const failure = readRewardsMoneyHttpFailure(error);
-        setErrorMessage(getRegisterRefereeErrorMessage(error, t as Translate));
-        if (failure.status === 429 && failure.retryAfterSeconds !== undefined) {
-          startAcceptCooldown(failure.retryAfterSeconds);
-        }
-        return false;
+        return { accepted: false, refusalReason: noteRefusal(error) };
       } finally {
         setIsAccepting(false);
       }
     },
-    [
-      fetchReferralMe,
-      messenger,
-      onAccepted,
-      startAcceptCooldown,
-      t,
-      validateCode,
-    ],
+    [fetchReferralMe, messenger, noteRefusal, onAccepted, validateCode],
   );
 
   return { isAccepting, isAcceptCoolingDown, errorMessage, accept };

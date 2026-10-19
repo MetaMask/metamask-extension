@@ -1,5 +1,8 @@
 import type { MetaMaskReduxState } from '../../store/store';
-import { selectMoneyReferralAllowedForGeo } from './selectors';
+import {
+  canAcceptMoneyReferralInvite,
+  selectMoneyReferralAllowedForGeo,
+} from './selectors';
 
 function state({
   geoLocation,
@@ -13,6 +16,32 @@ function state({
     metamask: { excludedRegions },
   } as unknown as MetaMaskReduxState;
 }
+
+describe('canAcceptMoneyReferralInvite', () => {
+  it('allows a plain user, a cashback experiment, and copy trading', () => {
+    expect(canAcceptMoneyReferralInvite({ roles: [] })).toBe(true);
+    expect(
+      canAcceptMoneyReferralInvite({ roles: ['CASHBACK_EXPERIMENT'] }),
+    ).toBe(true);
+    expect(canAcceptMoneyReferralInvite({ roles: ['COPY_TRADING'] })).toBe(
+      true,
+    );
+    expect(canAcceptMoneyReferralInvite(null)).toBe(true);
+  });
+
+  it('refuses a referrer or an existing referee', () => {
+    expect(canAcceptMoneyReferralInvite({ roles: ['REFERRER'] })).toBe(false);
+    expect(canAcceptMoneyReferralInvite({ roles: ['REFEREE'] })).toBe(false);
+    expect(
+      canAcceptMoneyReferralInvite({ roles: ['REFERRER', 'REFEREE'] }),
+    ).toBe(false);
+    expect(
+      canAcceptMoneyReferralInvite({
+        roles: ['CASHBACK_EXPERIMENT', 'REFEREE'],
+      }),
+    ).toBe(false);
+  });
+});
 
 describe('selectMoneyReferralAllowedForGeo', () => {
   it('fails open when geo is unknown', () => {

@@ -33,10 +33,16 @@ import {
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
 } from '../../../../ducks/rewards/selectors';
-import { selectMoneyReferralAllowedForGeo } from '../../../../ducks/rewards-money/selectors';
+import {
+  canAcceptMoneyReferralInvite,
+  selectMoneyReferralAllowedForGeo,
+} from '../../../../ducks/rewards-money/selectors';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import { useValidateMoneyReferralCode } from '../../../../hooks/rewards/useValidateMoneyReferralCode';
-import { useAcceptMoneyReferralCode } from '../../../../hooks/rewards/useAcceptMoneyReferralCode';
+import {
+  useAcceptMoneyReferralCode,
+  type ReferralRefusalReason,
+} from '../../../../hooks/rewards/useAcceptMoneyReferralCode';
 import { useReferralMe } from '../../../../hooks/rewards/useReferralMe';
 import { REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES } from '../../../../hooks/rewards/rewards-money-messenger';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
@@ -109,23 +115,21 @@ const AcceptInviteSheetContent = ({
       onAccepted: handleAccepted,
     });
 
-  const variant = referralMe?.variant;
+  const eligibleInvite =
+    referralMe !== null && canAcceptMoneyReferralInvite(referralMe);
   const shouldDismissForRole =
     isSettled &&
-    variant !== undefined &&
-    variant !== 'NONE' &&
+    referralMe !== null &&
+    !eligibleInvite &&
     !hasSeenEligibleInvite;
   const geoSettled = !geoLoading && (geoLocation !== null || geoError);
   const shouldDismissForGeo =
     geoSettled && !acceptAllowedForGeo && !acceptStarted && !isAccepting;
-  const shouldDismissForMissingPayload = isSettled && referralMe === null;
+  const failedRead = isSettled && referralMe === null;
   const isOfferOnScreen =
-    referralMe !== null &&
-    isSettled &&
-    geoSettled &&
-    !shouldDismissForRole &&
-    !shouldDismissForGeo &&
-    !shouldDismissForMissingPayload;
+    eligibleInvite && isSettled && geoSettled && !shouldDismissForGeo;
+  const showSheet =
+    isOfferOnScreen || (failedRead && geoSettled && !shouldDismissForGeo);
 
   const trackInteraction = useCallback(
     (interactionType: ReferralInteraction) => {
@@ -162,6 +166,32 @@ const AcceptInviteSheetContent = ({
     [trackInteraction],
   );
 
+  const trackRefused = useCallback(
+    (refusalReason: ReferralRefusalReason) => {
+      if (!hasTrackedViewRef.current) {
+        return;
+      }
+      const properties: Record<string, string> = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+        interaction_type: 'refused',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+        refusal_reason: refusalReason,
+      };
+      if (code) {
+        properties.referral_code = code;
+      }
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.RewardsMoneyReferralOfferInteracted,
+        )
+          .addCategory(MetaMetricsEventCategory.Rewards)
+          .addProperties(properties)
+          .build(),
+      ).catch(() => undefined);
+    },
+    [code, createEventBuilder, trackEvent],
+  );
+
   useEffect(() => {
     if (!isOfferOnScreen || hasTrackedViewRef.current) {
       return;
@@ -172,10 +202,10 @@ const AcceptInviteSheetContent = ({
   }, [isOfferOnScreen, trackInteraction]);
 
   useEffect(() => {
-    if (shouldDismissForRole || shouldDismissForMissingPayload) {
+    if (shouldDismissForRole) {
       onClose();
     }
-  }, [onClose, shouldDismissForMissingPayload, shouldDismissForRole]);
+  }, [onClose, shouldDismissForRole]);
 
   useEffect(() => {
     if (!shouldDismissForGeo) {
@@ -197,20 +227,25 @@ const AcceptInviteSheetContent = ({
 
   const handleAccept = useCallback(() => {
     setAcceptStarted(true);
+    setHasSeenEligibleInvite(true);
     accept(code)
-      .then((didAccept) => {
-        if (didAccept) {
+      .then((result) => {
+        if (result.accepted) {
           trackResponded('accepted');
+          return;
+        }
+        if (result.refusalReason) {
+          trackRefused(result.refusalReason);
         }
       })
       .catch(() => undefined);
-  }, [accept, code, trackResponded]);
+  }, [accept, code, trackRefused, trackResponded]);
 
   if (showActivated) {
     return <ReferralActivatedModal referralMe={referralMe} onClose={onClose} />;
   }
 
-  if (!isOfferOnScreen) {
+  if (!showSheet) {
     return null;
   }
 
@@ -301,8 +336,10 @@ const AcceptInviteSheetContent = ({
 
 /**
  * Invite modal opened from `/home?ref=`. Copy comes from referral me.
- * Closes itself when the account is already in the program or the country
- * is excluded, and reports one MetaMetrics response.
+ * Closes itself when the account is already a referrer or referee, or the
+ * country is excluded. A cashback-experiment member can still accept.
+ * A failed referral-me read leaves the sheet up. Reports one MetaMetrics
+ * response, plus a `refused` event that does not lock that response.
  *
  * @param props - The code from the home query and the close handler.
  * @param props.initialCode - Prefill from `ref`.

@@ -1,5 +1,14 @@
-export type ReferralRole = 'REFERRER' | 'REFEREE' | 'BOTH' | 'NONE';
+/** A relationship the caller holds. An empty `roles` list means none of these. */
+export type ReferralRole =
+  | 'REFERRER'
+  | 'REFEREE'
+  | 'CASHBACK_EXPERIMENT'
+  | 'COPY_TRADING';
 
+/**
+ * The screen `roles` maps to. A referrer wins over a referee. An empty role
+ * list is `NONE` unless the server flag forces `REFEREE`.
+ */
 export type ReferralVariant = 'REFERRER' | 'REFEREE' | 'NONE';
 
 export type ReferralLocalizedText = {
@@ -21,23 +30,38 @@ export type ThemeImage = {
   darkModeUrl: string;
 };
 
+/* eslint-disable @typescript-eslint/naming-convention -- money API fields */
 export type ReferredByView = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+  referral_code: string | null;
+};
+
+/**
+ * Rates paying the caller right now. Each window is null when nothing pays.
+ * The server fills `{cashbackPercent}` in `localized_text` from
+ * `cashback_rate_bps` before this payload arrives.
+ */
+export type EarnRatesView = {
+  cashback_rate_bps: number | null;
+  /** Window of the cashback row that pays the caller now. Null when none does. */
+  cashback_earning_start: string | null;
   cashback_earning_end: string | null;
+  revshare_rate_bps: number | null;
+  /** Window of the revenue-share row that pays the caller now. */
+  revshare_earning_start: string | null;
+  revshare_earning_end: string | null;
 };
 
 export type ReferralMeDto = {
-  role: ReferralRole;
-  variant: ReferralVariant;
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+  /** Every relationship the caller holds, in server order. Empty for none. */
+  roles: ReferralRole[];
+  ui_variant: ReferralVariant;
   localized_text: ReferralLocalizedText;
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
   invite_hero: ThemeImage | null;
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
   referred_by: ReferredByView | null;
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+  earn_rates: EarnRatesView;
   excluded_regions: string[];
 };
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type RegisterRefereeDto = {
   code: string;

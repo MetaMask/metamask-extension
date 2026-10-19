@@ -13,13 +13,18 @@ import {
 import { useDispatch } from '../../store/hooks';
 import { useMessenger } from '../useMessenger';
 import type { RewardsMoneyInviteMessenger } from './rewards-money-messenger';
+import {
+  isShortBusyRewardsMoneyRead,
+  reportRewardsMoneyReadFailure,
+} from './report-rewards-money-read-failure';
+import { useOneShotBusyRefetch } from './useOneShotBusyRefetch';
 
 export const MAX_REFERRAL_ME_REFRESH_ATTEMPTS = 3;
 
 export type FetchReferralMeResult = {
   status: 'settled' | 'discarded';
   /** Why a read was ignored. Only set when `status` is `discarded`. */
-  reason?: 'unmounted' | 'superseded' | 'session-changed';
+  reason?: 'unmounted' | 'superseded' | 'session-changed' | 'busy';
 };
 
 type UseReferralMeOptions = {
@@ -31,6 +36,7 @@ type UseReferralMeResult = {
   isSettled: boolean;
   fetchReferralMe: (options?: {
     forceFresh?: boolean;
+    followUp?: boolean;
   }) => Promise<FetchReferralMeResult>;
 };
 
@@ -84,13 +90,23 @@ export function useReferralMe({
   const isSettled = useSelector(selectReferralMeSettled);
   const generationRef = useRef(0);
   const mountedRef = useRef(true);
+  const { cancel: cancelBusyRefetch, arm: armBusyRefetch } =
+    useOneShotBusyRefetch();
+  const fetchRef = useRef<
+    (options?: {
+      forceFresh?: boolean;
+      followUp?: boolean;
+    }) => Promise<FetchReferralMeResult>
+  >(async () => ({ status: 'settled' }));
 
   const fetchReferralMe = useCallback(
     async (
-      options: { forceFresh?: boolean } = {},
+      options: { forceFresh?: boolean; followUp?: boolean } = {},
     ): Promise<FetchReferralMeResult> => {
+      cancelBusyRefetch();
       const generation = generationRef.current + 1;
       generationRef.current = generation;
+      const followUp = options.followUp === true;
 
       try {
         const data = await messenger.call(
@@ -115,12 +131,30 @@ export function useReferralMe({
         if (isRewardsMoneySessionChangedError(error)) {
           return { status: 'discarded', reason: 'session-changed' };
         }
+        reportRewardsMoneyReadFailure(
+          error,
+          'referralMe.fetch_failed',
+          followUp,
+          'rewards-money',
+        );
+        if (!followUp && isShortBusyRewardsMoneyRead(error)) {
+          armBusyRefetch(error, () => {
+            fetchRef
+              .current({ forceFresh: true, followUp: true })
+              .catch(() => undefined);
+          });
+          return { status: 'discarded', reason: 'busy' };
+        }
         dispatch(setRewardsMoneyReferralMeSettled(true));
         return { status: 'settled' };
       }
     },
-    [dispatch, messenger],
+    [armBusyRefetch, cancelBusyRefetch, dispatch, messenger],
   );
+
+  useEffect(() => {
+    fetchRef.current = fetchReferralMe;
+  }, [fetchReferralMe]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -183,7 +217,7 @@ export async function refreshReferralMeWithRetries(
     attempt += 1
   ) {
     const result = await fetchReferralMe({ forceFresh: true });
-    if (result.status === 'settled') {
+    if (result.status === 'settled' || result.reason !== 'session-changed') {
       return;
     }
   }
