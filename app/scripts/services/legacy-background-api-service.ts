@@ -2467,43 +2467,39 @@ export class LegacyBackgroundApiService {
           await this.#unlockSeedlessWallet(password);
           break;
         case PasswordSyncInstruction.ReconcileKeyring: {
-          if (isKeyringPasswordValid) {
-            await this.#syncAndCompleteKeyringEncryptionKey();
-          } else {
-            // `reconcilePassword` has already rewritten the Seedless vault and
-            // re-wrapped this stored key under the latest global password.
-            const keyringEncryptionKey = await this.#messenger.call(
-              'SeedlessOnboardingController:loadKeyringEncryptionKey',
-            );
-            await this.submitPasswordOrEncryptionKey({
-              encryptionKey: keyringEncryptionKey,
+          // `reconcilePassword` has already rewritten the Seedless vault and
+          // re-wrapped this stored key under the latest global password.
+          const keyringEncryptionKey = await this.#messenger.call(
+            'SeedlessOnboardingController:loadKeyringEncryptionKey',
+          );
+          await this.submitPasswordOrEncryptionKey({
+            encryptionKey: keyringEncryptionKey,
+          });
+          await this.#messenger.call(
+            'KeyringController:changePassword',
+            password,
+          );
+          await this.#syncAndCompleteKeyringEncryptionKey();
+          // The old-Keyring branch does not go through
+          // `#unlockSeedlessWallet`, so revoke refresh tokens here after
+          // recovery has completed successfully.
+          this.#messenger
+            .call('SeedlessOnboardingController:revokePendingRefreshTokens')
+            .catch((error: Error) => {
+              log.error('error while revoking pending refresh tokens', error);
             });
-            await this.#messenger.call(
-              'KeyringController:changePassword',
+          // Asynchronously track incomplete metadata backup events
+          this.#messenger
+            .call(
+              'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
               password,
-            );
-            await this.#syncAndCompleteKeyringEncryptionKey();
-            // The old-Keyring branch does not go through
-            // `#unlockSeedlessWallet`, so revoke refresh tokens here after
-            // recovery has completed successfully.
-            this.#messenger
-              .call('SeedlessOnboardingController:revokePendingRefreshTokens')
-              .catch((error: Error) => {
-                log.error('error while revoking pending refresh tokens', error);
-              });
-            // Asynchronously track incomplete metadata backup events
-            this.#messenger
-              .call(
-                'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
-                password,
-              )
-              .catch((err) => {
-                log.error(
-                  'error while tracking incomplete metadata backup',
-                  err,
-                );
-              });
-          }
+            )
+            .catch((err) => {
+              log.error(
+                'error while tracking incomplete metadata backup',
+                err,
+              );
+            });
           break;
         }
         case PasswordSyncInstruction.SyncKey:
@@ -2560,10 +2556,10 @@ export class LegacyBackgroundApiService {
    * clearing the password-change lifecycle.
    */
   async #syncAndCompleteKeyringEncryptionKey(): Promise<void> {
-    await this.syncKeyringEncryptionKey();
     await this.#messenger.call(
       'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
     );
+    await this.syncKeyringEncryptionKey();
 
     // Verify that the stored key can be decrypted with the current Seedless
     // password before clearing the recovery lifecycle.
