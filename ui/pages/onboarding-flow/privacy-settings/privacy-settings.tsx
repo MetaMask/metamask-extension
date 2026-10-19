@@ -401,52 +401,54 @@ export default function PrivacySettings() {
             >
               {selectedItem?.id === 'privacy' ? (
                 <>
-                  <Setting
-                    dataTestId="basic-functionality-toggle"
-                    value={externalServicesOnboardingToggleState}
-                    disabled={isSocialLoginBasicFunctionalityLocked}
-                    setValue={(toggledValue) => {
-                      if (isSocialLoginBasicFunctionalityLocked) {
-                        return;
-                      }
-                      if (toggledValue) {
-                        dispatch(onboardingToggleBasicFunctionalityOn());
-                        trackEvent(
-                          createEventBuilder(
-                            MetaMetricsEventName.SettingsUpdated,
-                          )
-                            .addCategory(MetaMetricsEventCategory.Onboarding)
-                            .addProperties({
-                              // eslint-disable-next-line @typescript-eslint/naming-convention
-                              settings_group:
-                                'onboarding_advanced_configuration',
-                              // eslint-disable-next-line @typescript-eslint/naming-convention
-                              settings_type: 'basic_functionality',
-                              // eslint-disable-next-line @typescript-eslint/naming-convention
-                              old_value: false,
-                              // eslint-disable-next-line @typescript-eslint/naming-convention
-                              new_value: true,
-                              // eslint-disable-next-line @typescript-eslint/naming-convention
-                              was_profile_syncing_on: false,
-                            })
-                            .build(),
-                        );
-                      } else {
-                        dispatch(openBasicFunctionalityModal());
-                      }
-                    }}
-                    title={t('basicConfigurationLabel')}
-                    description={t('basicConfigurationDescription', [
-                      <a
-                        href="https://consensys.io/privacy-policy"
-                        key="link"
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        {t('privacyMsg')}
-                      </a>,
-                    ])}
-                  />
+                  <Box className="w-full" marginBottom={3}>
+                    <Setting
+                      dataTestId="basic-functionality-toggle"
+                      value={externalServicesOnboardingToggleState}
+                      disabled={isSocialLoginBasicFunctionalityLocked}
+                      setValue={(toggledValue) => {
+                        if (isSocialLoginBasicFunctionalityLocked) {
+                          return;
+                        }
+                        if (toggledValue) {
+                          dispatch(onboardingToggleBasicFunctionalityOn());
+                          trackEvent(
+                            createEventBuilder(
+                              MetaMetricsEventName.SettingsUpdated,
+                            )
+                              .addCategory(MetaMetricsEventCategory.Onboarding)
+                              .addProperties({
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                settings_group:
+                                  'onboarding_advanced_configuration',
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                settings_type: 'basic_functionality',
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                old_value: false,
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                new_value: true,
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                was_profile_syncing_on: false,
+                              })
+                              .build(),
+                          );
+                        } else {
+                          dispatch(openBasicFunctionalityModal());
+                        }
+                      }}
+                      title={t('basicConfigurationLabel')}
+                      description={t('basicConfigurationDescription', [
+                        <a
+                          href="https://consensys.io/privacy-policy"
+                          key="link"
+                          target="_blank"
+                          rel="noreferrer noopener"
+                        >
+                          {t('privacyMsg')}
+                        </a>,
+                      ])}
+                    />
+                  </Box>
 
                   <Setting
                     title={t('onboardingAdvancedPrivacyIPFSTitle')}
