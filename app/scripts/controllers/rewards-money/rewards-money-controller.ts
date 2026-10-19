@@ -191,6 +191,10 @@ export class RewardsMoneyController extends BaseController<
 
   /**
    * Registers the session profile as a referee for `code`.
+   * Clears that profile's cached referral-me payload after the write, so a
+   * later ordinary read cannot observe its pre-registration roles. Advancing
+   * the generation also prevents a pre-registration read already in flight
+   * from putting its stale payload back.
    *
    * @param params - The referral code.
    */
@@ -198,10 +202,12 @@ export class RewardsMoneyController extends BaseController<
     if (this.#isDisabled()) {
       throw new Error('Rewards Money is disabled');
     }
+    const profileId = await this.#getProfileId();
     await this.messenger.call(
       'RewardsMoneyDataService:registerReferee',
       params,
     );
+    this.#invalidateReferralMe(profileId);
   }
 
   /**
@@ -318,6 +324,11 @@ export class RewardsMoneyController extends BaseController<
     const generation = (this.#referralMeGeneration.get(profileId) ?? 0) + 1;
     this.#referralMeGeneration.set(profileId, generation);
     return generation;
+  }
+
+  #invalidateReferralMe(profileId: string): void {
+    this.#referralMeCache.delete(profileId);
+    this.#startReferralMeRequest(profileId);
   }
 
   #writeReferralMeIfLatest(

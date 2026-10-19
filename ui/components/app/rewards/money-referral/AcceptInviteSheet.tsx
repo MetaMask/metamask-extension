@@ -26,6 +26,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import type { ReferralLocalizedText } from '../../../../../shared/types/rewards-money';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
@@ -49,6 +50,37 @@ import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { ReferralActivatedModal } from './ReferralActivatedModal';
 
 const MONEY_REFERRAL_CODE_MAX_LENGTH = 24;
+
+const MONEY_REFERRAL_CODE_ERROR_ID = 'money-referral-code-error';
+
+type Translate = (key: string) => string;
+
+/**
+ * Invite copy, resolved per key.
+ *
+ * The server owns this screen's words. A missing key means referral me never
+ * arrived. Title and body stay empty, and the body is omitted. The buttons
+ * reuse strings the app already has. The code label uses
+ * `rewardsMoneyReferralCodeLabel`, the same words as mobile's referral-code
+ * string, which extension did not already have.
+ *
+ * @param localizedText - Server copy, absent when referral me never arrived.
+ * @param t - Locale lookup.
+ * @returns The words the sheet renders.
+ */
+function inviteCopy(
+  localizedText: ReferralLocalizedText | undefined,
+  t: Translate,
+) {
+  return {
+    title: localizedText?.inviteTitle ?? '',
+    body: localizedText?.inviteMessageBody ?? '',
+    codeLabel:
+      localizedText?.inviteReferralCode ?? t('rewardsMoneyReferralCodeLabel'),
+    decline: localizedText?.inviteDecline ?? t('musdEducationNotNow'),
+    accept: localizedText?.inviteAccept ?? t('continue'),
+  };
+}
 
 const referralCodeInputProps = {
   className: 'px-4 font-medium',
@@ -249,7 +281,7 @@ const AcceptInviteSheetContent = ({
     return null;
   }
 
-  const copy = referralMe?.localized_text;
+  const copy = inviteCopy(referralMe?.localized_text, t);
   const fieldError =
     errorMessage ||
     (isRejectedCode ? t('rewardsMoneyReferralCodeError') : '') ||
@@ -265,22 +297,24 @@ const AcceptInviteSheetContent = ({
           onClose={handleDismiss}
           closeButtonProps={{ ariaLabel: t('close') }}
         >
-          {copy?.inviteTitle ?? ''}
+          {copy.title}
         </ModalHeader>
         <ModalBody>
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-            >
-              {copy?.inviteMessageBody ?? ''}
-            </Text>
+            {copy.body ? (
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {copy.body}
+              </Text>
+            ) : null}
             <Box flexDirection={BoxFlexDirection.Column} gap={2}>
               <Label
                 htmlFor="money-referral-code"
                 color={TextColor.TextAlternative}
               >
-                {copy?.inviteReferralCode ?? ''}
+                {copy.codeLabel}
               </Label>
               <TextField
                 id="money-referral-code"
@@ -291,11 +325,16 @@ const AcceptInviteSheetContent = ({
                 onChange={(event) => {
                   setCode(normalizeMoneyReferralCode(event.target.value));
                 }}
-                inputProps={referralCodeInputProps}
+                inputProps={{
+                  ...referralCodeInputProps,
+                  'aria-describedby': fieldError
+                    ? MONEY_REFERRAL_CODE_ERROR_ID
+                    : undefined,
+                }}
               />
               {fieldError ? (
-                <HelpText severity={HelpTextSeverity.Danger}>
-                  {fieldError}
+                <HelpText severity={HelpTextSeverity.Danger} asChild>
+                  <span id={MONEY_REFERRAL_CODE_ERROR_ID}>{fieldError}</span>
                 </HelpText>
               ) : null}
             </Box>
@@ -315,7 +354,7 @@ const AcceptInviteSheetContent = ({
               onClick={handleAccept}
               data-testid="money-referral-accept"
             >
-              {copy?.inviteAccept ?? ''}
+              {copy.accept}
             </Button>
             <Button
               variant={ButtonVariant.Tertiary}
@@ -325,7 +364,7 @@ const AcceptInviteSheetContent = ({
               className="text-default"
               data-testid="money-referral-decline"
             >
-              {copy?.inviteDecline ?? ''}
+              {copy.decline}
             </Button>
           </Box>
         </ModalFooter>
