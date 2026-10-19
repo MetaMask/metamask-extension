@@ -9,6 +9,7 @@ const METHOD_KEYS: Record<MfaMethod, string> = {
 
 const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   invalid_code: 'mfaErrorInvalidCode',
+  flow_expired: 'mfaErrorCodeExpired',
   too_many_attempts: 'mfaErrorTooManyAttempts',
   invalid_assertion: 'mfaErrorInvalidPasskey',
   invalid_attestation: 'mfaErrorInvalidPasskey',
@@ -28,5 +29,15 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
 export const getMethodLabelKey = (method: MfaMethod): string =>
   METHOD_KEYS[method];
 
+/**
+ * The message key for errors that have their own, rather than the generic one.
+ *
+ * @param code - The error's code.
+ * @returns The key, or `undefined` for the generic case.
+ */
+export const getSpecificErrorMessageKey = (
+  code: MfaFlowErrorCode,
+): string | undefined => ERROR_KEYS[code];
+
 export const getErrorMessageKey = (code: MfaFlowErrorCode): string =>
-  ERROR_KEYS[code] ?? 'mfaErrorGeneric';
+  getSpecificErrorMessageKey(code) ?? 'mfaErrorGeneric';

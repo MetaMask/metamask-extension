@@ -49,6 +49,7 @@ export const MoneyAccountDepositInfo = () => {
       currency={MONEY_ACCOUNT_DEPOSIT_CURRENCY}
       displayAccountRow
       displayPercentageButtons
+      hasMax
       hidePayTokenAmount
       preferredToken={preferredPaymentToken}
     />

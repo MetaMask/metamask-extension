@@ -6245,9 +6245,6 @@
   "networkNameBitcoin": {
     "message": "비트코인"
   },
-  "networkNameBitcoinSegwit": {
-    "message": "비트코인 네이티브 세그윗"
-  },
   "networkNameDefinition": {
     "message": "이 네트워크와 연결된 이름입니다."
   },

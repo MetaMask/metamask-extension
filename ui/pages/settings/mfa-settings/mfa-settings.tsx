@@ -18,6 +18,7 @@ import type { EnrolledCredential } from '@metamask/profile-sync-controller/sdk';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isMfaKitEnabled, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
+import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaQaPresets from './mfa-qa-presets';
 
@@ -43,7 +44,9 @@ const MfaSettings = () => {
     if (credential.status === 'pending') {
       return t('mfaSettingsEmailPending');
     }
-    return credential.email ?? t('mfaSettingsEmailLinked');
+    return credential.email
+      ? maskEmail(credential.email)
+      : t('mfaSettingsEmailLinked');
   };
 
   const setUpEmail = () => {
@@ -69,7 +72,6 @@ const MfaSettings = () => {
         gap={3}
         data-testid={MfaSettingsTestIds.EMAIL_ROW}
       >
-        <Icon name={IconName.Mail} color={IconColor.IconAlternative} />
         <Box flexDirection={BoxFlexDirection.Column} className="flex-1">
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('mfaMethodEmail')}

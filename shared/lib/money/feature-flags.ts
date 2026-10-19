@@ -64,6 +64,19 @@ export const MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME =
   'earnMoneyTokenListItemCtaEnabled';
 
 /**
+ * The LaunchDarkly flag that gates the dismissible "Earn up to X% APY" Money
+ * banner on token details. Same name and version-gated shape as mobile.
+ */
+export const MONEY_EARN_BANNER_ENABLED_FLAG_NAME = 'earnMoneyEarnBannerEnabled';
+
+/**
+ * The LaunchDarkly flag that gates the Money earn CTA in the token details
+ * "Your balance" section. Same name and version-gated shape as mobile.
+ */
+export const MONEY_ASSET_OVERVIEW_BALANCE_CTA_ENABLED_FLAG_NAME =
+  'earnMoneyAssetOverviewBalanceCtaEnabled';
+
+/**
  * The LaunchDarkly flag listing, per hex chain ID, the ERC-20 addresses that
  * get Money deposit CTAs. Same name and `{ [chainId]: address[] }` shape as
  * mobile.
@@ -241,6 +254,13 @@ export function isMoneyActivityDetailsEnabled(
   return process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS?.toString() === 'true';
 }
 
+const isMoneyAccountSubFeatureEnabled = (
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+  flagName: string,
+): boolean =>
+  isMoneyAccountEnabled(remoteFeatureFlags) &&
+  (validatedVersionGatedFeatureFlag(remoteFeatureFlags?.[flagName]) ?? false);
+
 /**
  * Whether the token list row Money deposit CTA is enabled.
  *
@@ -253,12 +273,45 @@ export function isMoneyActivityDetailsEnabled(
 export function isMoneyTokenListItemCtaEnabled(
   remoteFeatureFlags: Record<string, unknown> | undefined,
 ): boolean {
-  return (
-    isMoneyAccountEnabled(remoteFeatureFlags) &&
-    (validatedVersionGatedFeatureFlag(
-      remoteFeatureFlags?.[MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME],
-    ) ??
-      false)
+  return isMoneyAccountSubFeatureEnabled(
+    remoteFeatureFlags,
+    MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME,
+  );
+}
+
+/**
+ * Whether the token details Money earn banner is enabled.
+ *
+ * Both this flag and {@link MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME} are
+ * version-gated and fail closed.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether the earn banner is enabled.
+ */
+export function isMoneyEarnBannerEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return isMoneyAccountSubFeatureEnabled(
+    remoteFeatureFlags,
+    MONEY_EARN_BANNER_ENABLED_FLAG_NAME,
+  );
+}
+
+/**
+ * Whether the token details "Your balance" Money earn CTA is enabled.
+ *
+ * Both this flag and {@link MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME} are
+ * version-gated and fail closed.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether the balance CTA is enabled.
+ */
+export function isMoneyAssetOverviewBalanceCtaEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return isMoneyAccountSubFeatureEnabled(
+    remoteFeatureFlags,
+    MONEY_ASSET_OVERVIEW_BALANCE_CTA_ENABLED_FLAG_NAME,
   );
 }
 
