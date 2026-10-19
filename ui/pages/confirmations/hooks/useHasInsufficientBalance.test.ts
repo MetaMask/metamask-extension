@@ -3,13 +3,12 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  ApprovalType,
-  toChecksumHexAddress,
-  toHex,
-} from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import { getMockConfirmState } from '../../../../test/data/confirmations/helper';
+import {
+  buildNativeEvmBalancePatch,
+  getMockConfirmState,
+} from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
@@ -45,8 +44,6 @@ function buildState({
   excludeNativeTokenForFee?: boolean;
   omitNativeBalance?: boolean;
 } = {}) {
-  const accountAddress = transaction?.txParams?.from as string;
-
   let pendingApprovals = {};
   if (currentConfirmation) {
     pendingApprovals = {
@@ -57,19 +54,19 @@ function buildState({
     };
   }
 
+  const resolvedChainId = chainId ?? '0x5';
+  const nativeBalancePatch = omitNativeBalance
+    ? { assetsBalance: {}, assetsInfo: {} }
+    : buildNativeEvmBalancePatch({
+        hexChainId: resolvedChainId,
+        amountWei: balance ?? 0,
+      });
+
   return getMockConfirmState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
-      accountsByChainId: omitNativeBalance
-        ? {}
-        : {
-            [chainId ?? '0x5']: {
-              [toChecksumHexAddress(accountAddress)]: {
-                balance: toHex(balance ?? 0),
-              },
-            },
-          },
+      ...nativeBalancePatch,
       transactions: transaction
         ? [
             {

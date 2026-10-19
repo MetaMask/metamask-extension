@@ -14,9 +14,20 @@ describe('Confirm Transaction Selector', () => {
     it('returns conversionRate from state', () => {
       const state = {
         metamask: {
-          currencyRates: {
-            ETH: {
-              conversionRate: 556.12,
+          selectedCurrency: 'usd',
+          assetsInfo: {
+            'eip155:1/slip44:60': {
+              type: 'native',
+              decimals: 18,
+              symbol: 'ETH',
+            },
+          },
+          assetsPrice: {
+            'eip155:1/slip44:60': {
+              assetPriceType: 'fungible',
+              price: 556.12,
+              usdPrice: 556.12,
+              lastUpdated: 0,
             },
           },
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
