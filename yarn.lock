@@ -10964,9 +10964,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:72.2.0":
-  version: 72.2.0
-  resolution: "@metamask/transaction-controller@npm:72.2.0"
+"@metamask/transaction-controller@npm:72.2.1":
+  version: 72.2.1
+  resolution: "@metamask/transaction-controller@npm:72.2.1"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/rlp": "npm:^5.0.2"
@@ -10979,14 +10979,14 @@ __metadata:
     "@metamask/approval-controller": "npm:^10.0.0"
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/core-backend": "npm:^12.0.1"
+    "@metamask/core-backend": "npm:^12.1.0"
     "@metamask/gas-fee-controller": "npm:^27.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/network-controller": "npm:^37.0.1"
     "@metamask/nonce-tracker": "npm:^6.1.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/utils": "npm:^12.0.0"
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
@@ -10999,7 +10999,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/17b20d45dcd0468ad8b4e408b0b8bac2a355b931d4aeedf5d62ad572e7ac50e410c1874916f6e0815666e95ca0e753225f8cd0ffb41ea57c3dedbdc51250823b
+  checksum: 10/d2b69d73e50be01b60c2f476e98077ab3d5327fe8011e8fbe4cda672e609bd1cebfa6bc2740987e43a2e13d62943d87286d4a140c6913fb7da455905dabb1d08
   languageName: node
   linkType: hard
 
@@ -36210,7 +36210,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.6.0"
-    "@metamask/transaction-controller": "npm:^72.2.0"
+    "@metamask/transaction-controller": "npm:^72.2.1"
     "@metamask/transaction-pay-controller": "npm:^30.0.0"
     "@metamask/tron-wallet-snap": "npm:^4.1.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"

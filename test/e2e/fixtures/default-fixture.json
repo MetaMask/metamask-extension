@@ -174,10 +174,10 @@
       "analyticsId": null,
       "consentDecisionMade": true,
       "eventsConfig": {
+        "events": {},
         "schemaVersion": "0",
-        "version": "0",
         "timestamp": 0,
-        "events": {}
+        "version": "0"
       },
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
@@ -204,6 +204,7 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
@@ -213,7 +214,6 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -397,13 +397,13 @@
     },
     "ConfigRegistryController": {
       "configs": {
-        "networks": {},
         "eventsConfig": {
+          "events": {},
           "schemaVersion": "0",
-          "version": "0",
           "timestamp": 0,
-          "events": {}
-        }
+          "version": "0"
+        },
+        "networks": {}
       },
       "etag": null,
       "eventsConfigEtag": null,
@@ -987,6 +987,7 @@
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
       "hasSeenOnboardingCompletionPage": true,
+      "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
