@@ -25,8 +25,9 @@ function buildReferralMe(
   overrides: Partial<ReferralMeDto> = {},
 ): ReferralMeDto {
   return {
-    role: 'NONE',
-    variant: 'NONE',
+    roles: [],
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+    ui_variant: 'NONE',
     // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
     localized_text: {
       inviteTitle: 'Invite',
@@ -45,6 +46,16 @@ function buildReferralMe(
     invite_hero: null,
     // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
     referred_by: null,
+    /* eslint-disable @typescript-eslint/naming-convention -- money API fields */
+    earn_rates: {
+      cashback_rate_bps: null,
+      cashback_earning_start: null,
+      cashback_earning_end: null,
+      revshare_rate_bps: null,
+      revshare_earning_start: null,
+      revshare_earning_end: null,
+    },
+    /* eslint-enable @typescript-eslint/naming-convention */
     // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
     excluded_regions: ['GB'],
     ...overrides,

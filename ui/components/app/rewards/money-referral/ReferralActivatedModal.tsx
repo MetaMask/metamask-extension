@@ -26,21 +26,29 @@ import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../hooks/useTheme';
 
+function defaultFormatCashbackDate(date: Date): string {
+  return date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
 /**
- * Formats `referred_by.cashback_earning_end` for the current locale.
+ * Formats a cashback window timestamp for the current locale.
  *
- * @param earningEnd - ISO end timestamp, or missing.
- * @param formatDate - Formats a valid end date for the current locale.
+ * @param earningAt - ISO timestamp, or missing.
+ * @param formatDate - Formats a valid timestamp for the current locale.
  * @returns The locale date, or null when the timestamp is missing or invalid.
  */
-function formatCashbackEarningEnd(
-  earningEnd: string | null | undefined,
+function formatCashbackEarningDate(
+  earningAt: string | null | undefined,
   formatDate: (date: Date) => string,
 ): string | null {
-  if (!earningEnd) {
+  if (!earningAt) {
     return null;
   }
-  const parsed = new Date(earningEnd);
+  const parsed = new Date(earningAt);
   if (Number.isNaN(parsed.getTime())) {
     return null;
   }
@@ -48,36 +56,39 @@ function formatCashbackEarningEnd(
 }
 
 /**
- * Activated body copy. A usable end date fills `{date}` in the localized
- * `inviteAcceptedBody` as `through <locale date>`. Without a date, the whole
- * body is `fallback` so we do not inject English.
+ * Activated body copy. A usable cashback window fills `{date}` in the
+ * localized `inviteAcceptedBody` as `from <start> through <end>`. Without
+ * both dates, the whole body is `fallback` (`inviteMessageBody`) so we do
+ * not inject English. The percent in the sentence is already the server's,
+ * from `earn_rates.cashback_rate_bps`.
  *
  * @param acceptedBody - `localized_text.inviteAcceptedBody`.
- * @param fallback - Copy used when the end date is missing or invalid.
- * @param earningEnd - `referred_by.cashback_earning_end`.
- * @param formatDate - Formats a valid end date for the current locale.
+ * @param fallback - Copy used when either date is missing or invalid.
+ * @param earningStart - `earn_rates.cashback_earning_start`.
+ * @param earningEnd - `earn_rates.cashback_earning_end`.
+ * @param formatDate - Formats a valid timestamp for the current locale.
  * @returns The body to show.
  */
-function resolveActivatedBody(
+export function fillInviteAcceptedBodyDate(
   acceptedBody: string | undefined,
   fallback: string | undefined,
+  earningStart: string | null | undefined,
   earningEnd: string | null | undefined,
-  formatDate: (date: Date) => string = (date) =>
-    date.toLocaleDateString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    }),
+  formatDate: (date: Date) => string = defaultFormatCashbackDate,
 ): string {
-  const formattedEnd = formatCashbackEarningEnd(earningEnd, formatDate);
-  if (!formattedEnd) {
+  const formattedStart = formatCashbackEarningDate(earningStart, formatDate);
+  const formattedEnd = formatCashbackEarningDate(earningEnd, formatDate);
+  if (!formattedStart || !formattedEnd) {
     return fallback ?? '';
   }
   const template = acceptedBody ?? '';
   if (!template.includes('{date}')) {
     return template;
   }
-  return template.replaceAll('{date}', `through ${formattedEnd}`);
+  return template.replaceAll(
+    '{date}',
+    `from ${formattedStart} through ${formattedEnd}`,
+  );
 }
 
 type ReferralActivatedModalProps = {
@@ -110,10 +121,11 @@ export function ReferralActivatedModal({
   const hero = referralMe?.invite_hero;
   const imageUrl =
     theme === ThemeType.dark ? hero?.darkModeUrl : hero?.lightModeUrl;
-  const body = resolveActivatedBody(
+  const body = fillInviteAcceptedBodyDate(
     copy?.inviteAcceptedBody,
     copy?.inviteMessageBody,
-    referralMe?.referred_by?.cashback_earning_end,
+    referralMe?.earn_rates?.cashback_earning_start,
+    referralMe?.earn_rates?.cashback_earning_end,
   );
 
   return (

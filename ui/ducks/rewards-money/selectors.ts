@@ -9,6 +9,21 @@ export const selectReferralMeSettled = (state: MetaMaskReduxState): boolean =>
   state.rewardsMoney.referralMeSettled;
 
 /**
+ * A plain user and a cashback-experiment member can still accept an invite.
+ * A referrer or an existing referee cannot. `ui_variant` does not decide this:
+ * a cashback experiment is `REFEREE` on the screen and still eligible.
+ *
+ * @param referralMe - The settled referral-me payload, when one exists.
+ * @returns Whether this profile may still accept an invite.
+ */
+export function canAcceptMoneyReferralInvite(
+  referralMe: Pick<ReferralMeDto, 'roles'> | null | undefined,
+): boolean {
+  const roles = referralMe?.roles ?? [];
+  return !roles.includes('REFERRER') && !roles.includes('REFEREE');
+}
+
+/**
  * Country prefix from a geolocation string (`US-CA` → `US`).
  * Returns null for unknown locations so callers can fail open.
  *

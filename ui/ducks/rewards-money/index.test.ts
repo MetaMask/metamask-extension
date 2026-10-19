@@ -8,9 +8,9 @@ import reducer, {
 } from '.';
 
 const referralMe = {
-  role: 'NONE',
-  variant: 'NONE',
+  roles: [],
   /* eslint-disable @typescript-eslint/naming-convention -- money API fields */
+  ui_variant: 'NONE',
   localized_text: {
     inviteTitle: 'Invite',
     inviteMessageBody: 'Body',
@@ -26,6 +26,14 @@ const referralMe = {
   },
   invite_hero: null,
   referred_by: null,
+  earn_rates: {
+    cashback_rate_bps: null,
+    cashback_earning_start: null,
+    cashback_earning_end: null,
+    revshare_rate_bps: null,
+    revshare_earning_start: null,
+    revshare_earning_end: null,
+  },
   excluded_regions: ['US'],
   /* eslint-enable @typescript-eslint/naming-convention */
 } as ReferralMeDto;

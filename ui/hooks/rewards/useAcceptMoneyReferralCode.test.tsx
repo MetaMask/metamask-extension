@@ -45,6 +45,33 @@ const Harness = () => {
   );
 };
 
+const BusyValidateHarness = ({ status }: { status: number }) => {
+  const { errorMessage, isAcceptCoolingDown, accept } =
+    useAcceptMoneyReferralCode({
+      validateCode: async () => {
+        throw {
+          data: { status, retryAfterSeconds: 2, bodyText: '' },
+        };
+      },
+      fetchReferralMe: async () => ({ status: 'settled' }),
+      onAccepted: () => undefined,
+    });
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => {
+          accept('CODE').catch(() => undefined);
+        }}
+      >
+        accept
+      </button>
+      <span data-testid="error">{errorMessage}</span>
+      <span data-testid="cooling">{isAcceptCoolingDown ? 'yes' : 'no'}</span>
+    </div>
+  );
+};
+
 function httpFailure(status: number, bodyText?: string) {
   return { data: { status, bodyText } };
 }
@@ -182,4 +209,27 @@ describe('useAcceptMoneyReferralCode', () => {
       jest.useRealTimers();
     }
   });
+
+  it.each([
+    [429, 'rewardsMoneyReferralTooManyTries', 'yes'],
+    [503, 'rewardsMoneyReferralSomethingWentWrong', 'no'],
+  ] as const)(
+    'rethrows a %s from validate instead of calling register',
+    async (status, message, cooling) => {
+      const store = configureStore({ reducer: (state = {}) => state });
+      const view = render(
+        <Provider store={store}>
+          <BusyValidateHarness status={status} />
+        </Provider>,
+      );
+
+      await act(async () => {
+        view.getByRole('button', { name: 'accept' }).click();
+      });
+
+      expect(mockRegister).not.toHaveBeenCalled();
+      expect(view.getByTestId('error').textContent).toBe(message);
+      expect(view.getByTestId('cooling').textContent).toBe(cooling);
+    },
+  );
 });

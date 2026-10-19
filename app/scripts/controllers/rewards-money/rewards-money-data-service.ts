@@ -189,27 +189,18 @@ export class RewardsMoneyDataService {
   /**
    * Loads the signed-in profile's referral persona, copy, and excluded regions.
    *
-   * A busy pod answers `503` with `Retry-After` of 5 seconds or less. This
-   * waits that long and tries once more, so a shed does not close the invite
-   * sheet. A `429` is not retried: its window is 30 seconds.
+   * A `503` or `429` whose `Retry-After` is at most 5 seconds is waited out
+   * once, with jitter, and tried again. A longer wait, including a statement
+   * timeout's 30 seconds, is left for the UI's one-shot refetch.
    *
    * @returns The referral-me payload.
    */
   async getReferralMe(): Promise<ReferralMeDto> {
-    let response = await this.#makeRequest('/referral/me', { method: 'GET' });
-    if (response.status === 503) {
-      const retryAfterSeconds = parseRetryAfterSeconds(
-        response.headers.get('retry-after'),
-      );
-      if (retryAfterSeconds !== undefined && retryAfterSeconds <= 5) {
-        await new Promise((resolve) => {
-          setTimeout(resolve, retryAfterSeconds * 1000);
-        });
-        response = await this.#makeRequest('/referral/me', { method: 'GET' });
-      }
-    }
+    const response = await this.#requestOnce(() =>
+      this.#makeRequest('/referral/me', { method: 'GET' }),
+    );
     if (!response.ok) {
-      throw new Error(`Get referral me failed: ${response.status}`);
+      return throwRewardsMoneyHttp(response, 'Get referral me failed');
     }
     return (await response.json()) as ReferralMeDto;
   }
@@ -217,20 +208,24 @@ export class RewardsMoneyDataService {
   /**
    * Public code check. Never attaches Authorization.
    *
+   * A short `503` or `429` is waited out once, the same as the other reads.
+   *
    * @param code - The referral code to validate.
    * @returns Whether the server accepts the code.
    */
   async validateReferralCode(code: string): Promise<{ success: boolean }> {
     const params = new URLSearchParams();
     params.append('code', code);
-    const response = await this.#makeRequest(
-      `/referral/validate?${params.toString()}`,
-      { method: 'GET' },
-      DEFAULT_REQUEST_TIMEOUT_MS,
-      false,
+    const response = await this.#requestOnce(() =>
+      this.#makeRequest(
+        `/referral/validate?${params.toString()}`,
+        { method: 'GET' },
+        DEFAULT_REQUEST_TIMEOUT_MS,
+        false,
+      ),
     );
     if (!response.ok) {
-      throw new Error(`Validate referral code failed: ${response.status}`);
+      return throwRewardsMoneyHttp(response, 'Validate referral code failed');
     }
     return (await response.json()) as { success: boolean };
   }
@@ -383,6 +378,23 @@ export class RewardsMoneyDataService {
     }
   }
 
+  /**
+   * Runs `request` once, and once more after a short busy wait when the first
+   * answer is a `503` or `429` inside {@link BUSY_READ_RETRY_MAX_SECONDS}.
+   *
+   * @param request - The GET to run. Idempotent, so the second call is safe.
+   * @returns The first response, or the retry when the first was a short busy.
+   */
+  async #requestOnce(request: () => Promise<Response>): Promise<Response> {
+    const response = await request();
+    const waitSeconds = shortBusyRetrySeconds(response);
+    if (waitSeconds === undefined) {
+      return response;
+    }
+    await delay(busyRetryDelayMs(waitSeconds));
+    return request();
+  }
+
   #getLocale(): string {
     try {
       const preferencesState = this.#messenger.call(
@@ -427,6 +439,81 @@ export function getRewardsMoneyApiBaseUrl(): string {
     default:
       return REWARDS_MONEY_API_URL.DEV;
   }
+}
+
+/**
+ * A `503` or `429` whose `Retry-After` is at most this is waited out once. A
+ * busy pod sends 2. A statement timeout sends 30, and that is left to the UI.
+ */
+const BUSY_READ_RETRY_MAX_SECONDS = 5;
+
+/** Spread retries so a shed wave does not return in the same instant. */
+const BUSY_RETRY_JITTER_MS = 1000;
+
+/** 0..BUSY_RETRY_JITTER_MS inclusive. Jitter only, not a secret. */
+function busyRetryJitterMs(): number {
+  const values = new Uint32Array(1);
+  globalThis.crypto.getRandomValues(values);
+  return values[0] % (BUSY_RETRY_JITTER_MS + 1);
+}
+
+function busyRetryDelayMs(waitSeconds: number): number {
+  return waitSeconds * 1000 + busyRetryJitterMs();
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+/**
+ * A `503` or `429` with `Retry-After` of {@link BUSY_READ_RETRY_MAX_SECONDS}
+ * or less. Anything longer, or a missing header, is not retried here.
+ *
+ * @param response - The first response from a read.
+ * @returns Seconds to wait, or undefined when this response is not retried.
+ */
+function shortBusyRetrySeconds(response: Response): number | undefined {
+  if (response.ok || (response.status !== 503 && response.status !== 429)) {
+    return undefined;
+  }
+  const waitSeconds = parseRetryAfterSeconds(
+    response.headers?.get('retry-after') ?? null,
+  );
+  if (waitSeconds === undefined || waitSeconds > BUSY_READ_RETRY_MAX_SECONDS) {
+    return undefined;
+  }
+  return waitSeconds;
+}
+
+async function readBodyText(response: Response): Promise<string | undefined> {
+  try {
+    const bodyText = await response.text();
+    return bodyText.length > 0 ? bodyText : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Throws {@link RewardsMoneyHttpError} so status and `Retry-After` survive
+ * the background RPC boundary.
+ *
+ * @param response - The final non-OK response.
+ * @param label - The static prefix of the error message.
+ */
+async function throwRewardsMoneyHttp(
+  response: Response,
+  label: string,
+): Promise<never> {
+  const bodyText = await readBodyText(response);
+  throw new RewardsMoneyHttpError(
+    `${label}: ${response.status}`,
+    response.status,
+    bodyText,
+    parseRetryAfterSeconds(response.headers?.get('retry-after') ?? null),
+  );
 }
 
 /**

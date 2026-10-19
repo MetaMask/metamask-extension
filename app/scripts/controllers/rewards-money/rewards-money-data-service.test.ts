@@ -36,8 +36,9 @@ type AllEvents = MessengerEvents<RewardsMoneyDataServiceMessenger>;
 type RootMessenger = Messenger<MockAnyNamespace, AllActions, AllEvents>;
 
 const referralMe = {
-  role: 'NONE' as const,
-  variant: 'NONE' as const,
+  roles: [] as const,
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+  ui_variant: 'NONE' as const,
   // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
   localized_text: {
     inviteTitle: 'Invite',
@@ -56,9 +57,28 @@ const referralMe = {
   invite_hero: null,
   // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
   referred_by: null,
+  /* eslint-disable @typescript-eslint/naming-convention -- money API fields */
+  earn_rates: {
+    cashback_rate_bps: null,
+    cashback_earning_start: null,
+    cashback_earning_end: null,
+    revshare_rate_bps: null,
+    revshare_earning_start: null,
+    revshare_earning_end: null,
+  },
+  /* eslint-enable @typescript-eslint/naming-convention */
   // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
   excluded_regions: ['US'],
 };
+
+function zeroJitter() {
+  jest
+    .spyOn(globalThis.crypto, 'getRandomValues')
+    .mockImplementation((array) => {
+      (array as Uint32Array)[0] = 0;
+      return array;
+    });
+}
 
 function jsonResponse(
   body: unknown,
@@ -147,6 +167,7 @@ describe('RewardsMoneyDataService', () => {
 
   it('retries a busy referral me once and returns the next 200', async () => {
     jest.useFakeTimers();
+    zeroJitter();
     try {
       mockFetch
         .mockResolvedValueOnce(
@@ -169,12 +190,49 @@ describe('RewardsMoneyDataService', () => {
       await expect(pending).resolves.toEqual(referralMe);
       expect(mockFetch).toHaveBeenCalledTimes(2);
     } finally {
+      jest.restoreAllMocks();
       jest.useRealTimers();
     }
   });
 
+  it('retries a short 429 referral me once', async () => {
+    jest.useFakeTimers();
+    zeroJitter();
+    try {
+      mockFetch
+        .mockResolvedValueOnce(
+          jsonResponse({ message: 'slow down' }, 429, { 'retry-after': '2' }),
+        )
+        .mockResolvedValueOnce(jsonResponse(referralMe));
+      const service = createService();
+
+      const pending = service.getReferralMe();
+      await jest.advanceTimersByTimeAsync(2000);
+
+      await expect(pending).resolves.toEqual(referralMe);
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    } finally {
+      jest.restoreAllMocks();
+      jest.useRealTimers();
+    }
+  });
+
+  it('does not retry a 429 whose Retry-After is longer than 5 seconds', async () => {
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({ message: 'slow down' }, 429, { 'retry-after': '30' }),
+    );
+    const service = createService();
+
+    await expect(service.getReferralMe()).rejects.toMatchObject({
+      status: 429,
+      retryAfterSeconds: 30,
+    });
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
   it('throws when the referral me retry is still a 503', async () => {
     jest.useFakeTimers();
+    zeroJitter();
     try {
       const busy = jsonResponse(
         {
@@ -185,17 +243,20 @@ describe('RewardsMoneyDataService', () => {
         503,
         { 'retry-after': '2' },
       );
-      mockFetch.mockResolvedValueOnce(busy).mockResolvedValueOnce(busy);
+      mockFetch.mockResolvedValueOnce(busy).mockResolvedValueOnce(busy.clone());
       const service = createService();
 
-      const pending = expect(service.getReferralMe()).rejects.toThrow(
-        'Get referral me failed: 503',
-      );
+      const pending = service.getReferralMe();
+      const assertion = expect(pending).rejects.toMatchObject({
+        status: 503,
+        retryAfterSeconds: 2,
+      });
       await jest.advanceTimersByTimeAsync(2000);
 
-      await pending;
+      await assertion;
       expect(mockFetch).toHaveBeenCalledTimes(2);
     } finally {
+      jest.restoreAllMocks();
       jest.useRealTimers();
     }
   });
@@ -243,6 +304,29 @@ describe('RewardsMoneyDataService', () => {
     expect(
       (init?.headers as Record<string, string>).Authorization,
     ).toBeUndefined();
+  });
+
+  it('waits out one short busy answer before failing validation', async () => {
+    jest.useFakeTimers();
+    zeroJitter();
+    try {
+      mockFetch
+        .mockResolvedValueOnce(
+          jsonResponse({ message: 'busy' }, 503, { 'retry-after': '2' }),
+        )
+        .mockResolvedValueOnce(jsonResponse({ message: 'still busy' }, 503));
+      const service = createService();
+
+      const pending = service.validateReferralCode('ABC123');
+      const assertion = expect(pending).rejects.toMatchObject({ status: 503 });
+      await jest.advanceTimersByTimeAsync(2000);
+
+      await assertion;
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    } finally {
+      jest.restoreAllMocks();
+      jest.useRealTimers();
+    }
   });
 
   it('registers a referee and surfaces 403 body text', async () => {
