@@ -12,14 +12,18 @@ import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
  * @param options
  * @param options.driver
  * @param options.expectedTitleContains
+ * @param options.repushFillOnPerpsHome - TEMP diagnostic: pushes the fill again
+ * once Perps home is stable, before opening Activity.
  */
 export async function assertPerpsActivityShowsCloseFill({
   driver,
   expectedTitleContains,
+  repushFillOnPerpsHome,
 }: {
   driver: Driver;
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
+  repushFillOnPerpsHome?: () => void;
 }): Promise<void> {
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
@@ -33,6 +37,10 @@ export async function assertPerpsActivityShowsCloseFill({
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
   await perpsTab.waitForPerpsViewStable();
+  if (repushFillOnPerpsHome) {
+    console.log('[Perps] DIAGNOSTIC: re-pushing userFills on Perps home');
+    repushFillOnPerpsHome();
+  }
   await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 

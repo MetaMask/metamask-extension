@@ -26,6 +26,7 @@ import {
   WS_USER_WITH_ETH_LONG_POSITION,
   pushPositionClosed,
   pushUserFillsCloseFill,
+  type PushUserFillsCloseFillOpts,
 } from './mocks/websocketPositionMocks';
 
 describe('Perps Take Profit / Stop Loss', function (this: Suite) {
@@ -61,7 +62,7 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
         );
-        pushUserFillsCloseFill(perpsServer, {
+        const takeProfitFill: PushUserFillsCloseFillOpts = {
           coin: 'ETH',
           px: '3500.0',
           sz: '2.5',
@@ -70,7 +71,8 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
           startPosition: '2.5',
           oid: 9_101_001,
           tid: 9_101_002,
-        });
+        };
+        pushUserFillsCloseFill(perpsServer, takeProfitFill);
         pushPositionClosed(perpsServer);
 
         await marketDetailPage.waitForTradeCtaButtons();
@@ -78,6 +80,8 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         await assertPerpsActivityShowsCloseFill({
           driver,
           expectedTitleContains: 'Closed long',
+          repushFillOnPerpsHome: () =>
+            pushUserFillsCloseFill(perpsServer, takeProfitFill),
         });
       },
     );
@@ -112,7 +116,7 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
         );
-        pushUserFillsCloseFill(perpsServer, {
+        const stopLossFill: PushUserFillsCloseFillOpts = {
           coin: 'ETH',
           px: '2500.0',
           sz: '2.5',
@@ -121,7 +125,8 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
           startPosition: '2.5',
           oid: 9_102_001,
           tid: 9_102_002,
-        });
+        };
+        pushUserFillsCloseFill(perpsServer, stopLossFill);
         pushPositionClosed(perpsServer);
 
         await marketDetailPage.waitForTradeCtaButtons();
@@ -129,6 +134,8 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         await assertPerpsActivityShowsCloseFill({
           driver,
           expectedTitleContains: 'Closed long',
+          repushFillOnPerpsHome: () =>
+            pushUserFillsCloseFill(perpsServer, stopLossFill),
         });
       },
     );
