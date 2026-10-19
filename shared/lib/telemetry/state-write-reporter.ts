@@ -1,5 +1,5 @@
-import type { SplitStateWriteEvent } from '../../../shared/lib/stores/persistence-manager';
-import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
+import type { SplitStateWriteEvent } from '../stores/persistence-manager';
+import { trace, TraceName, TraceOperation } from '../trace';
 
 /**
  * Sentry transaction name for sampled split-state persistence writes.
@@ -18,6 +18,7 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
     'state.write.coalesced_updates': event.coalescedUpdates,
     'state.write.controller_count': event.bytesByController.size,
     'state.write.controllers': [...event.bytesByController.keys()].join(','),
+    'state.write.environment_type': event.environmentType,
     'state.write.idle_status': event.idleStatus,
     'state.write.measurement_duration_ms': event.measurementDurationMs,
     'state.write.sample_rate': event.sampleRate,
@@ -25,6 +26,26 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
     'state.write.total_bytes': event.totalBytes,
     'state.write.write_duration_ms': event.writeDurationMs,
   };
+
+  if (event.currentActivity.startupPhase !== undefined) {
+    data['state.write.startup_phase'] = event.currentActivity.startupPhase;
+  }
+
+  if (event.currentActivity.notificationIsOpen !== undefined) {
+    data['state.write.notification_is_open'] =
+      event.currentActivity.notificationIsOpen;
+  }
+
+  const uiCounts = {
+    popup: event.currentActivity.popupCount,
+    fullscreen: event.currentActivity.fullscreenCount,
+    sidepanel: event.currentActivity.sidePanelCount,
+  } as const;
+  for (const [uiType, count] of Object.entries(uiCounts)) {
+    if (count !== undefined) {
+      data[`state.write.ui_count.${uiType}`] = count;
+    }
+  }
 
   for (const [controllerKey, bytes] of event.bytesByController) {
     data[`state.write.bytes.${controllerKey}`] = bytes;

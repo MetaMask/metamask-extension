@@ -7,6 +7,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { StartupPhase } from '../../../shared/lib/telemetry/startup-phase';
 
 const mockGet = jest.fn();
 const mockGetBackup = jest.fn();
@@ -41,7 +42,7 @@ jest.mock('./segment/custom-segment-tracking', () => ({
   trackEarlySegmentEvent: mockTrackEarlySegmentEvent,
 }));
 
-jest.mock('./state-write-metrics', () => ({
+jest.mock('../../../shared/lib/telemetry/state-write-reporter', () => ({
   trackSplitStateWrite: mockTrackSplitStateWrite,
 }));
 
@@ -280,8 +281,16 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
       const event: SplitStateWriteEvent = {
+        currentActivity: {
+          fullscreenCount: 0,
+          notificationIsOpen: false,
+          popupCount: 0,
+          sidePanelCount: 0,
+          startupPhase: StartupPhase.Unknown,
+        },
         bytesByController: new Map([['FooController', 13]]),
         coalescedUpdates: 1,
+        environmentType: 'unknown',
         idleStatus: 'unknown',
         measurementDurationMs: 0.2,
         sampleRate: 0,

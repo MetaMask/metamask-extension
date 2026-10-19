@@ -12,6 +12,7 @@ import {
   MISSING_VAULT_ERROR,
 } from '../../constants/errors';
 import { StateCorruptionErrorType } from '../../constants/critical-error';
+import { StartupPhase } from '../telemetry/startup-phase';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -826,7 +827,96 @@ describe('PersistenceManager', () => {
       expect(passedMap.get('BarController')).toBeUndefined();
     });
 
+    it('reports the ambient emitting context and activity snapshot on write events', async () => {
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'chrome-extension://abc/popup.html' } },
+        configurable: true,
+      });
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setCurrentActivityProvider(() => ({
+        fullscreenCount: 1,
+        notificationIsOpen: false,
+        popupCount: 2,
+        sidePanelCount: 3,
+        startupPhase: StartupPhase.SettingUpController,
+      }));
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          environmentType: 'popup',
+          currentActivity: {
+            fullscreenCount: 1,
+            notificationIsOpen: false,
+            popupCount: 2,
+            sidePanelCount: 3,
+            startupPhase: StartupPhase.SettingUpController,
+          },
+        }),
+      );
+    });
+
+    it('reports an empty activity when no provider is configured', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          environmentType: 'popup',
+          currentActivity: {},
+        }),
+      );
+    });
+
+    it('reports the unavailable snapshot and still emits when the provider throws', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setCurrentActivityProvider(() => {
+        throw new Error('provider failed');
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currentActivity: {},
+          totalBytes: expect.any(Number),
+          writeDurationMs: expect.any(Number),
+        }),
+      );
+    });
+
     it('reports sampled write size, frequency, controllers, and idle status without state values', async () => {
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'chrome-extension://abc/popup.html' } },
+        configurable: true,
+      });
       manager = new PersistenceManager({
         getIsIdle: () => true,
         getPersistenceWriteSampleRate: () => 1,
@@ -853,11 +943,13 @@ describe('PersistenceManager', () => {
       }).length;
       const barControllerLength = JSON.stringify({ enabled: true }).length;
       expect(event).toStrictEqual({
+        currentActivity: {},
         bytesByController: new Map([
           ['BarController', barControllerLength],
           ['FooController', fooControllerLength],
         ]),
         coalescedUpdates: 3,
+        environmentType: 'popup',
         idleStatus: 'idle',
         measurementDurationMs: expect.any(Number),
         sampleRate: 1,
