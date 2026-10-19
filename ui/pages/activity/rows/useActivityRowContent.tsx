@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import cn from 'clsx';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { AddressPoisoningBadge } from '#ui/components/app/transaction/address-poisoning-badge';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
@@ -28,6 +29,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { formatPendingRampTokenLabel } from '../../../hooks/ramps/utils/formatPendingRampTokenLabel';
 import { hasPositiveNumericAmount } from '../../../hooks/ramps/utils/hasPositiveNumericAmount';
 import type { ActivityRowProps } from '../types';
+import { useAddressPoisoningActivity } from '../useAddressPoisoningActivity';
 import { useFormatAsFiat } from '../../../hooks/useFormatAsFiat';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
 
@@ -108,6 +110,7 @@ function getChainDisplay(caipChainId: CaipChainId) {
 
 export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const t = useI18nContext();
+  const showAddressPoisoningBadge = useAddressPoisoningActivity(activity);
   const formatTokenAmount = useFormatTokenAmount();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId } = getChainDisplay(activity.chainId);
@@ -462,14 +465,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       </ChainBadge>
     ),
     title: (
-      <span
-        className={cn(
-          'truncate',
-          activity.status === 'failed' && 'text-error-default',
-        )}
-      >
-        {content.title}
-      </span>
+      <>
+        <span
+          className={cn(
+            'truncate',
+            activity.status === 'failed' && 'text-error-default',
+          )}
+        >
+          {content.title}
+        </span>
+        {showAddressPoisoningBadge && <AddressPoisoningBadge />}
+      </>
     ),
     subtitle: content.subtitle,
     primaryAmount: hasPrimaryAmount ? (
