@@ -12,6 +12,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  SensitiveText,
   Skeleton,
   Text,
   TextColor,
@@ -25,6 +26,7 @@ import {
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
+import { useScrollContainerGutterWidth } from '../../contexts/scroll-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
@@ -144,6 +146,7 @@ const MoneyActionCard = ({
 
 export function MoneyHomePage() {
   const t = useI18nContext();
+  const scrollbarGutterWidth = useScrollContainerGutterWidth();
   const navigate = useNavigate();
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
@@ -408,7 +411,10 @@ export function MoneyHomePage() {
   return (
     <>
       <div className="min-h-full pb-5" data-testid="money-home-page">
-        <header className="flex h-14 items-center justify-between pl-4">
+        <header
+          className="flex h-14 items-center justify-between pl-4"
+          style={{ paddingRight: `calc(1rem - ${scrollbarGutterWidth}px)` }}
+        >
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
             {t('money')}
           </Text>
@@ -438,13 +444,14 @@ export function MoneyHomePage() {
 
         <div className="flex flex-col items-center gap-2 px-4 pt-2 mb-5">
           <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
-            <Text
+            <SensitiveText
               variant={TextVariant.DisplayMd}
               fontWeight={FontWeight.Medium}
+              isHidden={privacyMode}
               data-testid="money-balance"
             >
               {balanceDisplay}
-            </Text>
+            </SensitiveText>
             {isLastKnownBalance ? (
               <Text
                 variant={TextVariant.BodyXs}
@@ -559,6 +566,7 @@ export function MoneyHomePage() {
                     lifetimeEarnings={lifetimeEarnings}
                     isMonthlyLoading={isMonthlyEarningsLoading}
                     isLifetimeLoading={isLifetimeEarningsLoading}
+                    privacyMode={privacyMode}
                     onMonthlyTooltipOpen={handleMonthlyEarningsTooltipOpen}
                     onLifetimeTooltipOpen={handleLifetimeEarningsTooltipOpen}
                   />

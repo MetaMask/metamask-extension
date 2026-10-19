@@ -65,6 +65,7 @@
       "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": "object",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -195,6 +196,7 @@
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
       "hasSeenOnboardingCompletionPage": true,
+      "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -360,6 +362,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 232
+    "version": 233
   }
 }
