@@ -1,5 +1,6 @@
 import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import { isStrictHexString, type Hex } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import {
   commitTransactionPayUpdates,
@@ -35,22 +36,15 @@ export async function updateMoneyAccountWithdrawAmount(
   amountHuman: string,
   recipientOverride?: Hex,
 ): Promise<MoneyAccountWithdrawAmountUpdate | false> {
-  pruneStaleAmountCommits(messenger);
-
-  const amountRaw = parseMusdHumanAmount(amountHuman);
-  if (amountRaw === undefined) {
-    return false;
-  }
-
-  const transaction = getTransactionMeta(messenger, transactionId);
-  if (!transaction) {
-    return false;
-  }
-
   return withAmountCommitIntent<MoneyAccountWithdrawAmountUpdate>(
     messenger,
     transactionId,
-    async (isCurrent) => {
+    amountHuman,
+    async (
+      isCurrent: () => boolean,
+      amountRaw: bigint,
+      transaction: TransactionMeta,
+    ) => {
       const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
       const updates = await encodeWithdrawCalldata(
         messenger,

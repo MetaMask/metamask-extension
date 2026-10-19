@@ -3,11 +3,14 @@ import type {
   GetAmountDataRequest,
   GetAmountDataResponse,
 } from '@metamask/transaction-pay-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../../../shared/lib/money/money-account-flow';
 import {
+  beginAmountCommit,
+  clearAmountCommitIfCurrent,
   commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
@@ -57,22 +60,15 @@ export async function updateMoneyAccountDepositAmount(
   transactionId: string,
   amountHuman: string,
 ): Promise<boolean> {
-  pruneStaleAmountCommits(messenger);
-
-  const amountRaw = parseMusdHumanAmount(amountHuman);
-  if (amountRaw === undefined) {
-    return false;
-  }
-
-  const transaction = getTransactionMeta(messenger, transactionId);
-  if (!transaction) {
-    return false;
-  }
-
   return withAmountCommitIntent<boolean>(
     messenger,
     transactionId,
-    async (isCurrent) => {
+    amountHuman,
+    async (
+      isCurrent: () => boolean,
+      amountRaw: bigint,
+      transaction: TransactionMeta,
+    ) => {
       const { updates } = await getMoneyAccountAmountData(messenger, {
         amount: amountRaw.toString(10),
         transaction,

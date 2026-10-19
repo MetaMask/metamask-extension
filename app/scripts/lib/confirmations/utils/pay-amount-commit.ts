@@ -220,7 +220,8 @@ export async function withAmountCommitIntent<UpdateResult>(
   performUpdate: (
     isCurrent: () => boolean,
     amountRaw: bigint,
-  ) => Promise<UpdateResult>,
+    transaction: TransactionMeta,
+  ) => Promise<UpdateResult | false>,
 ): Promise<UpdateResult | false> {
   pruneStaleAmountCommits(messenger);
 
@@ -237,7 +238,7 @@ export async function withAmountCommitIntent<UpdateResult>(
   const isCurrent = beginAmountCommit(transactionId);
 
   try {
-    return await performUpdate(isCurrent, amountRaw);
+    return await performUpdate(isCurrent, amountRaw, transaction);
   } catch (error) {
     if (!isCurrent()) {
       return false as UpdateResult;
