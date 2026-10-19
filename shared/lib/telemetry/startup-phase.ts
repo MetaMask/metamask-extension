@@ -109,21 +109,29 @@ async function deduceFlavor(): Promise<StartupFlavor> {
       ? StartupFlavor.Cold
       : StartupFlavor.Repair;
   }
-  const sessionData = await browser.storage.session.get([
-    STARTUP_FLAVOR_SESSION_KEY,
-  ]);
-  const sessionFlavor = sessionData?.[STARTUP_FLAVOR_SESSION_KEY];
-  if (sessionFlavor === StartupFlavor.Repair) {
-    return StartupFlavor.Repair;
-  }
-  if (sessionFlavor === StartupFlavor.Warm && phase === StartupPhase.Unknown) {
-    return StartupFlavor.Warm;
+  try {
+    const sessionData = await browser.storage.session.get([
+      STARTUP_FLAVOR_SESSION_KEY,
+    ]);
+    const sessionFlavor = sessionData?.[STARTUP_FLAVOR_SESSION_KEY];
+    if (sessionFlavor === StartupFlavor.Repair) {
+      return StartupFlavor.Repair;
+    }
+    if (
+      sessionFlavor === StartupFlavor.Warm &&
+      phase === StartupPhase.Unknown
+    ) {
+      return StartupFlavor.Warm;
+    }
+  } catch {
+    // Telemetry must not block startup when session storage is unavailable.
   }
   return StartupFlavor.Cold;
 }
 
 /**
- * Persists a flavor in session (MV3). No-op on MV2.
+ * Best-effort persist of flavor in session (MV3). No-op on MV2. Failures are
+ * ignored so startup / repair are not blocked by telemetry storage errors.
  *
  * @param next - Flavor to store.
  */
@@ -131,9 +139,14 @@ async function setSessionFlavor(next: StartupFlavor): Promise<void> {
   if (!isManifestV3) {
     return;
   }
-  await browser.storage.session.set({
-    [STARTUP_FLAVOR_SESSION_KEY]: next,
-  });
+  try {
+    await browser.storage.session.set({
+      [STARTUP_FLAVOR_SESSION_KEY]: next,
+    });
+  } catch {
+    // Keep in-memory phase/flavor. Missed session write only affects later
+    // warm/repair classification for telemetry.
+  }
 }
 
 /**
@@ -148,9 +161,9 @@ async function setSessionFlavor(next: StartupFlavor): Promise<void> {
 export async function setStartupPhase(next: StartupPhase): Promise<void> {
   switch (next) {
     case StartupPhase.Repairing:
-      await setSessionFlavor(StartupFlavor.Repair);
       flavor = StartupFlavor.Repair;
       phase = next;
+      await setSessionFlavor(StartupFlavor.Repair);
       return;
 
     case StartupPhase.Initializing:

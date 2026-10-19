@@ -152,5 +152,32 @@ describe('startup-phase', () => {
       await setStartupPhase(StartupPhase.ShuttingDown);
       expect(getStartupPhase()).toBe('shutting-down');
     });
+
+    it('keeps in-memory phase when session write rejects', async () => {
+      mockStorageSessionSet.mockRejectedValueOnce(new Error('quota exceeded'));
+      const { getStartupPhase, setStartupPhase } =
+        await import('./startup-phase');
+
+      await expect(
+        setStartupPhase(StartupPhase.Repairing),
+      ).resolves.toBeUndefined();
+      expect(getStartupPhase()).toBe('repairing');
+
+      await expect(
+        setStartupPhase(StartupPhase.SettingUpController),
+      ).resolves.toBeUndefined();
+      expect(getStartupPhase()).toBe('repair-setting-up-controller');
+    });
+
+    it('falls back to cold when session read rejects', async () => {
+      mockStorageSessionGet.mockRejectedValueOnce(new Error('session unavailable'));
+      const { getStartupPhase, setStartupPhase } =
+        await import('./startup-phase');
+
+      await expect(
+        setStartupPhase(StartupPhase.Initializing),
+      ).resolves.toBeUndefined();
+      expect(getStartupPhase()).toBe('initializing');
+    });
   });
 });
