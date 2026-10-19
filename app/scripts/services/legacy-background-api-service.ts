@@ -2439,6 +2439,10 @@ export class LegacyBackgroundApiService {
         maxKeyChainLength: 20,
       })
       .catch((error: Error) => {
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+          name: TraceName.OnboardingSocialLoginPasswordSync,
+          data: { success: passwordSyncSuccess },
+        });
         if (error instanceof RecoveryError) {
           // Keyring controller password verification succeeds and seedless controller failed.
           if (
@@ -2454,11 +2458,6 @@ export class LegacyBackgroundApiService {
         }
         log.error('error while reconciling password', error);
         throw error;
-      }).finally(() => {
-        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
-          name: TraceName.OnboardingSocialLoginPasswordSync,
-          data: { success: passwordSyncSuccess },
-        });
       });
 
     try {
@@ -2495,10 +2494,7 @@ export class LegacyBackgroundApiService {
               password,
             )
             .catch((err) => {
-              log.error(
-                'error while tracking incomplete metadata backup',
-                err,
-              );
+              log.error('error while tracking incomplete metadata backup', err);
             });
           break;
         }
