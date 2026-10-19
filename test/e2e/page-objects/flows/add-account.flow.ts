@@ -1,6 +1,31 @@
 import { Driver } from '../../webdriver/driver';
+import { getCleanAppState } from '../../helpers';
+import {
+  BASE_ACCOUNT_SYNC_INTERVAL,
+  BASE_ACCOUNT_SYNC_TIMEOUT,
+} from '../../tests/identity/account-syncing/helpers';
 import HomePage from '../pages/home/homepage';
 import AccountListPage from '../pages/accounts/list-page';
+
+/**
+ * Waits until the AccountTreeController has finished synchronizing.
+ *
+ * @param driver - The WebDriver instance.
+ */
+export async function waitUntilAccountTreeSyncIdle(
+  driver: Driver,
+): Promise<void> {
+  await driver.waitUntil(
+    async () => {
+      const uiState = await getCleanAppState(driver);
+      return uiState?.metamask?.isAccountTreeSyncingInProgress === false;
+    },
+    {
+      interval: BASE_ACCOUNT_SYNC_INTERVAL,
+      timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+    },
+  );
+}
 
 /**
  * Opens the account menu, adds a new multichain account, verifies it is
@@ -50,32 +75,48 @@ export const addAccount = async ({
  * @param options - Flow options.
  * @param options.driver - The webdriver instance.
  * @param options.numberOfAccounts - Number of accounts to create. Defaults to 1.
- * @param options.accountToSelect - Account label to select once creation is done. Defaults to 'Account 1'.
+ * @param options.accountToSelect - Account label to select once creation is done. Pass `null` to close the account list without selecting. Defaults to 'Account 1'.
+ * @param options.waitForAccountTreeSync - Wait for the account tree sync to be idle before opening the menu and before each account creation. Defaults to false.
  */
 export const addMultipleAccounts = async ({
   driver,
   numberOfAccounts = 1,
   accountToSelect = 'Account 1',
+  waitForAccountTreeSync = false,
 }: {
   driver: Driver;
   numberOfAccounts?: number;
-  accountToSelect?: string;
+  accountToSelect?: string | null;
+  waitForAccountTreeSync?: boolean;
 }): Promise<void> => {
   const homepage = new HomePage(driver);
   const accountListPage = new AccountListPage(driver);
 
-  await homepage.checkExpectedBalanceIsDisplayed();
+  await homepage.checkPageIsLoaded();
+
+  if (waitForAccountTreeSync) {
+    await waitUntilAccountTreeSyncIdle(driver);
+  }
+
+  await homepage.headerNavbar.openAccountMenu();
 
   for (let i = 0; i < numberOfAccounts; i++) {
-    if (i === 0) {
-      await homepage.headerNavbar.openAccountMenu();
+    if (waitForAccountTreeSync && i > 0) {
+      await waitUntilAccountTreeSyncIdle(driver);
     }
 
     await accountListPage.checkPageIsLoaded();
     await accountListPage.addMultichainAccount();
+    await accountListPage.checkMultichainAccountNameDisplayed(
+      `Account ${i + 2}`,
+    );
   }
 
-  await accountListPage.selectAccount(accountToSelect);
+  if (accountToSelect === null) {
+    await accountListPage.closeMultichainAccountsPage();
+  } else {
+    await accountListPage.selectAccount(accountToSelect);
+  }
 };
 
 /**

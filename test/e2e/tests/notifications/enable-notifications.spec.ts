@@ -8,8 +8,10 @@ import {
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
-import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/account-derivation.flow';
-import { addAccount } from '../../page-objects/flows/add-account.flow';
+import {
+  addAccount,
+  waitUntilAccountTreeSyncIdle,
+} from '../../page-objects/flows/add-account.flow';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 

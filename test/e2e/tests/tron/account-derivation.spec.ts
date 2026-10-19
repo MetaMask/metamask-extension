@@ -4,9 +4,9 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import {
+  addMultipleAccounts,
   waitUntilAccountTreeSyncIdle,
-  addNHdAccountsForDerivation,
-} from '../../page-objects/flows/account-derivation.flow';
+} from '../../page-objects/flows/add-account.flow';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -182,7 +182,12 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        await addNHdAccountsForDerivation(driver, 8);
+        await addMultipleAccounts({
+          driver,
+          numberOfAccounts: 7,
+          accountToSelect: null,
+          waitForAccountTreeSync: true,
+        });
 
         await selectTronNetwork(driver);
 
@@ -226,7 +231,12 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addNHdAccountsForDerivation(driver, 8);
+        await addMultipleAccounts({
+          driver,
+          numberOfAccounts: 7,
+          accountToSelect: null,
+          waitForAccountTreeSync: true,
+        });
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -304,7 +314,12 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addNHdAccountsForDerivation(driver, 8);
+        await addMultipleAccounts({
+          driver,
+          numberOfAccounts: 7,
+          accountToSelect: null,
+          waitForAccountTreeSync: true,
+        });
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
