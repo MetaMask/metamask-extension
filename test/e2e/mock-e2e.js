@@ -795,6 +795,30 @@ async function setupMocking(
       };
     });
 
+  // Config registry: networks config (ConfigRegistryController polling) and
+  // events config (AnalyticsController event-purpose classification, added in
+  // config-registry-controller 5.0.0). Without these mocks the unmocked-host
+  // catch-all returns a bare 200 with an empty body, which fails JSON parsing
+  // and retries 4x per poll before surfacing as a Sentry capture.
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/config/networks')
+    .asPriority(RulePriority.FALLBACK)
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: { data: { version: '0', timestamp: 0, chains: [] } },
+    }));
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/config/events-config')
+    .asPriority(RulePriority.FALLBACK)
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: {
+        data: { schemaVersion: '0', version: '0', timestamp: 0, events: {} },
+      },
+    }));
+
   // Subscriptions Polling Get Subscriptions
   await server
     .forGet('https://subscription.api.cx.metamask.io/v1/subscriptions')
@@ -2047,71 +2071,80 @@ async function setupMocking(
       };
     });
 
-  // Tokens API: v2 supported networks — mocked globally so all tests work.
+  // v2 supported networks — mocked globally so all tests work.
+  // Rpc token detection calls token.api; TokenDataSource calls tokens.api.
+  // Both responses use the same chain list.
+  const tokenSupportedNetworks = {
+    fullSupport: [
+      'eip155:1',
+      'eip155:10',
+      'eip155:25',
+      'eip155:56',
+      'eip155:100',
+      'eip155:137',
+      'eip155:143',
+      'eip155:250',
+      'eip155:324',
+      'eip155:1101',
+      'eip155:1284',
+      'eip155:1285',
+      'eip155:1329',
+      'eip155:8453',
+      'eip155:42161',
+      'eip155:42220',
+      'eip155:43114',
+      'eip155:59144',
+      'eip155:1313161554',
+      'eip155:1666600000',
+      'eip155:11297108109',
+      'eip155:13371',
+      'eip155:534352',
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      'tron:728126428',
+      'stellar:pubnet',
+      'eip155:698',
+      'eip155:16507',
+      'eip155:41923',
+      'eip155:747474',
+      'eip155:80094',
+      'eip155:33139',
+      'eip155:2741',
+      'eip155:1868',
+      'eip155:166',
+      'eip155:1440000',
+      'eip155:252',
+      'eip155:43111',
+      'eip155:50',
+      'eip155:42',
+      'eip155:9745',
+      'eip155:999',
+      'eip155:1776',
+      'eip155:4326',
+      'eip155:196',
+      'eip155:68414',
+      'eip155:42793',
+      'eip155:60808',
+      'eip155:30',
+      'bip122:000000000019d6689c085ae165831e93',
+      'eip155:88888',
+      'eip155:988',
+      'eip155:42431',
+      'eip155:4217',
+      'eip155:5000',
+      'eip155:1337',
+    ],
+    partialSupport: ['solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
+  };
+
+  await server
+    .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, tokenSupportedNetworks);
+
   await server
     .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
     .always()
-    .thenJson(200, {
-      fullSupport: [
-        'eip155:1',
-        'eip155:10',
-        'eip155:25',
-        'eip155:56',
-        'eip155:100',
-        'eip155:137',
-        'eip155:143',
-        'eip155:250',
-        'eip155:324',
-        'eip155:1101',
-        'eip155:1284',
-        'eip155:1285',
-        'eip155:1329',
-        'eip155:8453',
-        'eip155:42161',
-        'eip155:42220',
-        'eip155:43114',
-        'eip155:59144',
-        'eip155:1313161554',
-        'eip155:1666600000',
-        'eip155:11297108109',
-        'eip155:13371',
-        'eip155:534352',
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        'tron:728126428',
-        'stellar:pubnet',
-        'eip155:698',
-        'eip155:16507',
-        'eip155:41923',
-        'eip155:747474',
-        'eip155:80094',
-        'eip155:33139',
-        'eip155:2741',
-        'eip155:1868',
-        'eip155:166',
-        'eip155:1440000',
-        'eip155:252',
-        'eip155:43111',
-        'eip155:50',
-        'eip155:42',
-        'eip155:9745',
-        'eip155:999',
-        'eip155:1776',
-        'eip155:4326',
-        'eip155:196',
-        'eip155:68414',
-        'eip155:42793',
-        'eip155:60808',
-        'eip155:30',
-        'bip122:000000000019d6689c085ae165831e93',
-        'eip155:88888',
-        'eip155:988',
-        'eip155:42431',
-        'eip155:4217',
-        'eip155:5000',
-        'eip155:1337',
-      ],
-      partialSupport: ['solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
-    });
+    .thenJson(200, tokenSupportedNetworks);
 
   // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
   await server

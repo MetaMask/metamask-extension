@@ -5619,9 +5619,6 @@
   "moneyBalanceLastKnown": {
     "message": "Số dư gần nhất được ghi nhận"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Thử lại"
   },
@@ -6247,9 +6244,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "SegWit Gốc của Bitcoin"
   },
   "networkNameDefinition": {
     "message": "Tên được liên kết với mạng này."

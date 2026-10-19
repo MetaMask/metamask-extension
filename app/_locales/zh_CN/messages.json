@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "最后已知余额"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "重试"
   },
@@ -6243,9 +6240,6 @@
   },
   "networkNameBitcoin": {
     "message": "比特币"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "比特币原生隔离见证"
   },
   "networkNameDefinition": {
     "message": "与此网络关联的名称。"

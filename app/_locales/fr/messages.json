@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "Dernier solde connu"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Réessayer"
   },
@@ -6243,9 +6240,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "Bitcoin Native SegWit"
   },
   "networkNameDefinition": {
     "message": "Le nom associé à ce réseau."
