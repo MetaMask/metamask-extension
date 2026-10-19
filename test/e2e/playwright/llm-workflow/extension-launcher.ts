@@ -141,11 +141,6 @@ export class MetaMaskExtensionLauncher {
     if (!this.options.selfOnboarding) {
       return;
     }
-    if (this.options.stateMode !== 'onboarding') {
-      throw new Error(
-        "Configuration error: selfOnboarding requires stateMode 'onboarding'.",
-      );
-    }
     if (!this.options.srp) {
       throw new Error(
         'Configuration error: selfOnboarding requires a secret recovery phrase.',
