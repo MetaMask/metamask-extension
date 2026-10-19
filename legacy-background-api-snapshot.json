@@ -459,7 +459,6 @@
     "updateTransaction",
     "updateViewedNotifications",
     "upsertTransactionUIMetricsFragment",
-    "validateRewardsReferralCode",
     "verifyPassword"
   ]
 }
