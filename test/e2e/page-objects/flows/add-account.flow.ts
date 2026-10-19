@@ -28,96 +28,73 @@ export async function waitUntilAccountTreeSyncIdle(
 }
 
 /**
- * Opens the account menu, adds a new multichain account, verifies it is
- * displayed, and either switches to the specified account or closes the page.
+ * Creates one or more multichain accounts through the account menu.
+ *
+ * Owns the invariant part of the flow: ensuring the homepage is ready,
+ * opening the account menu, clicking "Add account" for each account, and
+ * closing the account list page afterwards. Everything that varies between
+ * tests is expressed as hooks:
  *
  * @param options - Flow options.
  * @param options.driver - The webdriver instance.
- * @param options.createdAccountLabel - Expected label of the newly created account. Defaults to 'Account 2'.
- * @param options.switchToAccount - Account label to switch to after creation.
- * @param options.expectedBalance - Balance expected on the homepage before opening the account menu. Defaults to '25'.
+ * @param options.count - Number of accounts to create.
+ * @param options.onBeforeAdd - Hook that runs before each add (e.g. sync waits).
+ * @param options.onAfterAdd - Hook that runs after each add; receives the label the UI assigned to the account (e.g. 'Account 2').
+ * @param options.onDone - Hook that replaces the default ending (closing the account list page).
  */
-export const addAccount = async ({
+export async function addAccounts({
   driver,
-  createdAccountLabel = 'Account 2',
-  switchToAccount,
-  expectedBalance = '25',
+  count,
+  onBeforeAdd,
+  onAfterAdd,
+  onDone,
 }: {
   driver: Driver;
-  createdAccountLabel?: string;
-  switchToAccount?: string;
-  expectedBalance?: string;
-}): Promise<void> => {
-  const homepage = new HomePage(driver);
-  await homepage.checkExpectedBalanceIsDisplayed(expectedBalance);
-  await homepage.headerNavbar.openAccountMenu();
-
-  const accountListPage = new AccountListPage(driver);
-  await accountListPage.checkPageIsLoaded();
-  await accountListPage.addMultichainAccount();
-  await accountListPage.checkAccountDisplayedInAccountList(createdAccountLabel);
-
-  if (switchToAccount) {
-    await accountListPage.selectAccount(switchToAccount);
-  } else {
-    await accountListPage.closeMultichainAccountsPage();
-  }
-};
-
-/**
- * Opens the account menu once, creates the given number of accounts while
- * keeping the account list open, then selects the requested account.
- *
- * Use this flow when a test needs to create multiple accounts in one account
- * list session. For single-account creation with label verification, use
- * `addAccount`.
- *
- * @param options - Flow options.
- * @param options.driver - The webdriver instance.
- * @param options.numberOfAccounts - Number of accounts to create. Defaults to 1.
- * @param options.accountToSelect - Account label to select once creation is done. Pass `null` to close the account list without selecting. Defaults to 'Account 1'.
- * @param options.waitForAccountTreeSync - Wait for the account tree sync to be idle before opening the menu and before each account creation. Defaults to false.
- */
-export const addMultipleAccounts = async ({
-  driver,
-  numberOfAccounts = 1,
-  accountToSelect = 'Account 1',
-  waitForAccountTreeSync = false,
-}: {
-  driver: Driver;
-  numberOfAccounts?: number;
-  accountToSelect?: string | null;
-  waitForAccountTreeSync?: boolean;
-}): Promise<void> => {
+  count: number;
+  onBeforeAdd?: ({
+    driver,
+    index,
+  }: {
+    driver: Driver;
+    index: number;
+  }) => Promise<void>;
+  onAfterAdd?: ({
+    driver,
+    label,
+    index,
+  }: {
+    driver: Driver;
+    label: string;
+    index: number;
+  }) => Promise<void>;
+  onDone?: ({
+    driver,
+    accountList,
+  }: {
+    driver: Driver;
+    accountList: AccountListPage;
+  }) => Promise<void>;
+}): Promise<void> {
   const homepage = new HomePage(driver);
   const accountListPage = new AccountListPage(driver);
 
   await homepage.checkPageIsLoaded();
-
-  if (waitForAccountTreeSync) {
-    await waitUntilAccountTreeSyncIdle(driver);
-  }
-
   await homepage.headerNavbar.openAccountMenu();
 
-  for (let i = 0; i < numberOfAccounts; i++) {
-    if (waitForAccountTreeSync && i > 0) {
-      await waitUntilAccountTreeSyncIdle(driver);
-    }
+  for (let index = 0; index < count; index++) {
+    await onBeforeAdd?.({ driver, index });
 
     await accountListPage.checkPageIsLoaded();
     await accountListPage.addMultichainAccount();
-    await accountListPage.checkMultichainAccountNameDisplayed(
-      `Account ${i + 2}`,
-    );
+    await onAfterAdd?.({ driver, label: `Account ${index + 2}`, index });
   }
 
-  if (accountToSelect === null) {
-    await accountListPage.closeMultichainAccountsPage();
+  if (onDone) {
+    await onDone({ driver, accountList: accountListPage });
   } else {
-    await accountListPage.selectAccount(accountToSelect);
+    await accountListPage.closeMultichainAccountsPage();
   }
-};
+}
 
 /**
  * Opens the account menu and imports an account from a private key.

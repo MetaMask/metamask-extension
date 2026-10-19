@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import {
-  addMultipleAccounts,
+  addAccounts,
   waitUntilAccountTreeSyncIdle,
 } from '../../page-objects/flows/add-account.flow';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
@@ -182,11 +182,14 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        await addMultipleAccounts({
+        await addAccounts({
           driver,
-          numberOfAccounts: 7,
-          accountToSelect: null,
-          waitForAccountTreeSync: true,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
         });
 
         await selectTronNetwork(driver);
@@ -231,11 +234,14 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addMultipleAccounts({
+        await addAccounts({
           driver,
-          numberOfAccounts: 7,
-          accountToSelect: null,
-          waitForAccountTreeSync: true,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
         });
 
         const homepage = new HomePage(driver);
@@ -314,11 +320,14 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addMultipleAccounts({
+        await addAccounts({
           driver,
-          numberOfAccounts: 7,
-          accountToSelect: null,
-          waitForAccountTreeSync: true,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
         });
 
         const homepage = new HomePage(driver);
