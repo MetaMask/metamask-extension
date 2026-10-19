@@ -3440,6 +3440,12 @@
   "deepLinkQrBatchSellTitle": {
     "message": "Open batch sell on mobile"
   },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "Limit Orders are available on MetaMask mobile. Scan this code with your mobile device to use them."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Open Limit Orders on mobile"
+  },
   "deepLinkQrPredictDescription": {
     "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
   },
