@@ -2426,7 +2426,7 @@ export class LegacyBackgroundApiService {
    * @param password - The submitted global password.
    */
   async #recoverSeedlessPassword(password: string): Promise<void> {
-    let changePasswordSuccess = false;
+    let passwordSyncSuccess = false;
     this.#messenger.call('SentryTracingService:bufferedTrace', {
       name: TraceName.OnboardingSocialLoginPasswordSync,
       op: TraceOperation.OnboardingSecurityOp,
@@ -2454,6 +2454,11 @@ export class LegacyBackgroundApiService {
         }
         log.error('error while reconciling password', error);
         throw error;
+      }).finally(() => {
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+          name: TraceName.OnboardingSocialLoginPasswordSync,
+          data: { success: passwordSyncSuccess },
+        });
       });
 
     try {
@@ -2522,11 +2527,11 @@ export class LegacyBackgroundApiService {
         { skipCache: true },
       );
 
-      changePasswordSuccess = true;
+      passwordSyncSuccess = true;
     } finally {
       this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingSocialLoginPasswordSync,
-        data: { success: changePasswordSuccess },
+        data: { success: passwordSyncSuccess },
       });
     }
   }
