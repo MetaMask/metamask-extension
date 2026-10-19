@@ -8,6 +8,8 @@ import {
   toMusdAmountHex,
 } from '../../confirmations/utils/pay-amount-commit';
 import { createMoneyPayMessengerMock } from './test-mocks';
+import { updateMoneyAccountDepositAmount } from './update-deposit-amount';
+import { updateMoneyAccountWithdrawAmount } from './update-withdraw-amount';
 
 const TRANSACTION_ID = 'amount-commit-tx';
 const FIRST_CALL_DATA = '0xaaa1' as Hex;
@@ -278,5 +280,96 @@ describe('commitTransactionPayUpdates', () => {
     expect(nextTransaction.revert).toStrictEqual({
       receipt: { message: 'old receipt' },
     });
+  });
+});
+
+describe('updateMoneyAccountDepositAmount', () => {
+  it('commits the deposit amount using the pay update helper', async () => {
+    const transaction = createTransaction();
+    const updateTransaction = jest.fn();
+    const { messenger } = createMoneyPayMessengerMock({
+      handlers: {
+        'TransactionController:getState': () => ({
+          transactions: [transaction],
+        }),
+        'TransactionController:updateTransaction': updateTransaction,
+      },
+    });
+
+    const didUpdate = await updateMoneyAccountDepositAmount(
+      messenger,
+      TRANSACTION_ID,
+      '1',
+    );
+
+    expect(didUpdate).toBe(true);
+    expect(updateTransaction).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns false for invalid amounts', async () => {
+    const updateTransaction = jest.fn();
+    const { messenger } = createMoneyPayMessengerMock({
+      handlers: {
+        'TransactionController:getState': () => ({
+          transactions: [createTransaction()],
+        }),
+        'TransactionController:updateTransaction': updateTransaction,
+      },
+    });
+
+    await expect(
+      updateMoneyAccountDepositAmount(messenger, TRANSACTION_ID, '0'),
+    ).resolves.toBe(false);
+    expect(updateTransaction).not.toHaveBeenCalled();
+  });
+});
+
+describe('updateMoneyAccountWithdrawAmount', () => {
+  it('commits the withdraw amount using the pay update helper', async () => {
+    const transaction = createTransaction();
+    const updateTransaction = jest.fn();
+    const { messenger } = createMoneyPayMessengerMock({
+      handlers: {
+        'AccountsController:getSelectedAccount': () => ({
+          address: '0x4444444444444444444444444444444444444444',
+        }),
+        'TransactionController:getState': () => ({
+          transactions: [transaction],
+        }),
+        'TransactionController:updateTransaction': updateTransaction,
+      },
+    });
+
+    const result = await updateMoneyAccountWithdrawAmount(
+      messenger,
+      TRANSACTION_ID,
+      '1',
+    );
+
+    expect(result).toMatchObject({
+      withdrawData: expect.any(String),
+      transferData: expect.any(String),
+    });
+    expect(updateTransaction).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns false for invalid amounts', async () => {
+    const updateTransaction = jest.fn();
+    const { messenger } = createMoneyPayMessengerMock({
+      handlers: {
+        'AccountsController:getSelectedAccount': () => ({
+          address: '0x4444444444444444444444444444444444444444',
+        }),
+        'TransactionController:getState': () => ({
+          transactions: [createTransaction()],
+        }),
+        'TransactionController:updateTransaction': updateTransaction,
+      },
+    });
+
+    await expect(
+      updateMoneyAccountWithdrawAmount(messenger, TRANSACTION_ID, '0'),
+    ).resolves.toBe(false);
+    expect(updateTransaction).not.toHaveBeenCalled();
   });
 });
