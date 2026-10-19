@@ -5619,9 +5619,6 @@
   "moneyBalanceLastKnown": {
     "message": "Saldo terakhir yang diketahui"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Coba lagi"
   },
@@ -6247,9 +6244,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "SegWit Asli Bitcoin"
   },
   "networkNameDefinition": {
     "message": "Nama yang dikaitkan dengan jaringan ini."

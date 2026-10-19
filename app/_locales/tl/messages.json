@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "Huling kilalang balanse"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Subukang muli"
   },
@@ -6243,9 +6240,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "Native SegWit ng Bitcoin"
   },
   "networkNameDefinition": {
     "message": "Ang pangalan ay nauugnay sa network na ito."

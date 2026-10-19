@@ -300,6 +300,12 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  /**
+   * @deprecated Assets-unify reads fiat from `AssetsController`. Set a displayed
+   * rate with {@link FixtureBuilderV2.withAssetsController} `assetsPrice`, and
+   * the selected currency with `selectedCurrency`.
+   * @param data - Legacy CurrencyController state to merge.
+   */
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -352,6 +358,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  /**
+   * @deprecated Assets-unify reads non-EVM fiat from `AssetsController.assetsPrice`.
+   * Set that price with {@link FixtureBuilderV2.withAssetsController}.
+   * @param data - Legacy MultichainAssetsRatesController state to merge.
+   */
   withMultichainAssetsRatesController(
     data: MultichainAssetsRatesControllerFixturePatch,
   ): this {
@@ -744,6 +755,10 @@ class FixtureBuilderV2 {
     });
   }
 
+  /**
+   * @deprecated Set the non-EVM price with {@link FixtureBuilderV2.withAssetsController}.
+   * @param conversionRates - Legacy conversion rates to merge.
+   */
   withConversionRates(
     conversionRates: Partial<
       MultichainAssetsRatesControllerState['conversionRates']
@@ -752,6 +767,10 @@ class FixtureBuilderV2 {
     return this.withMultichainAssetsRatesController({ conversionRates });
   }
 
+  /**
+   * @deprecated Set the displayed native price with {@link FixtureBuilderV2.withAssetsController}.
+   * @param currencyRates - Legacy currency rates to merge.
+   */
   withCurrencyRates(
     currencyRates: CurrencyRateState['currencyRates'] = {},
   ): this {

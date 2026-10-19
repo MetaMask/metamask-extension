@@ -102,6 +102,99 @@ describe('SentryTracingService', () => {
     expect(span.end).toHaveBeenCalledWith(123);
   });
 
+  it('uses performance timestamps for buffered start and end defaults', () => {
+    const performanceNowSpy = jest
+      .spyOn(globalThis.performance, 'now')
+      .mockReturnValue(500);
+    const dateNowSpy = jest.spyOn(Date, 'now');
+    const timestamp = globalThis.performance.timeOrigin + 500;
+    const spanEndMock = jest.fn();
+    const span = { end: spanEndMock } as unknown as Sentry.Span;
+
+    startSpanManualMock.mockImplementationOnce((_, fn) =>
+      fn(span, () => undefined),
+    );
+
+    service.bufferedTrace({ name: NAME_MOCK, id: ID_MOCK });
+    service.bufferedEndTrace({ name: NAME_MOCK, id: ID_MOCK });
+
+    expect(dateNowSpy).not.toHaveBeenCalled();
+
+    service.trackTracesAfterMetricsOptIn();
+
+    expect(startSpanManualMock).toHaveBeenCalledWith(
+      expect.objectContaining({ startTime: timestamp }),
+      expect.any(Function),
+    );
+    expect(spanEndMock).toHaveBeenCalledWith(timestamp);
+    expect(performanceNowSpy).toHaveBeenCalledTimes(2);
+
+    performanceNowSpy.mockRestore();
+    dateNowSpy.mockRestore();
+  });
+
+  it('keeps buffered start and live end in the same clock domain', () => {
+    const { timeOrigin } = globalThis.performance;
+    const performanceNowSpy = jest
+      .spyOn(globalThis.performance, 'now')
+      .mockReturnValueOnce(100)
+      .mockReturnValueOnce(200);
+    const startTime = timeOrigin + 100;
+    const endTime = timeOrigin + 200;
+    const spanEndMock = jest.fn();
+    const span = { end: spanEndMock } as unknown as Sentry.Span;
+
+    startSpanManualMock.mockImplementationOnce((_, fn) =>
+      fn(span, () => undefined),
+    );
+
+    service.bufferedTrace({ name: NAME_MOCK, id: 'buffered-live' });
+
+    optedIn = true;
+    service.trackTracesAfterMetricsOptIn();
+    service.bufferedEndTrace({ name: NAME_MOCK, id: 'buffered-live' });
+
+    expect(startSpanManualMock).toHaveBeenCalledWith(
+      expect.objectContaining({ startTime }),
+      expect.any(Function),
+    );
+    expect(spanEndMock).toHaveBeenCalledWith(endTime);
+    expect(endTime).toBeGreaterThanOrEqual(startTime);
+
+    performanceNowSpy.mockRestore();
+  });
+
+  it('keeps buffered start and end in the same clock domain during replay', () => {
+    const { timeOrigin } = globalThis.performance;
+    const performanceNowSpy = jest
+      .spyOn(globalThis.performance, 'now')
+      .mockReturnValueOnce(300)
+      .mockReturnValueOnce(450);
+    const startTime = timeOrigin + 300;
+    const endTime = timeOrigin + 450;
+    const spanEndMock = jest.fn();
+    const span = { end: spanEndMock } as unknown as Sentry.Span;
+
+    startSpanManualMock.mockImplementationOnce((_, fn) =>
+      fn(span, () => undefined),
+    );
+
+    service.bufferedTrace({ name: NAME_MOCK, id: 'buffered-replay' });
+    service.bufferedEndTrace({ name: NAME_MOCK, id: 'buffered-replay' });
+
+    optedIn = true;
+    service.trackTracesAfterMetricsOptIn();
+
+    expect(startSpanManualMock).toHaveBeenCalledWith(
+      expect.objectContaining({ startTime }),
+      expect.any(Function),
+    );
+    expect(spanEndMock).toHaveBeenCalledWith(endTime);
+    expect(endTime).toBeGreaterThanOrEqual(startTime);
+
+    performanceNowSpy.mockRestore();
+  });
+
   it('preserves serialized parent context while buffering', () => {
     const parentSpan = { end: jest.fn() } as unknown as Sentry.Span;
     const childSpan = { end: jest.fn() } as unknown as Sentry.Span;
@@ -127,6 +220,46 @@ describe('SentryTracingService', () => {
     expect(startSpanManualMock.mock.calls[1][0]).toEqual(
       expect.objectContaining({ parentSpan }),
     );
+  });
+
+  it('reconnects a buffered onboarding child to its journey on replay', () => {
+    const journeyId = 'journey-id';
+    const journeySpan = { end: jest.fn() } as unknown as Sentry.Span;
+    const childSpan = { end: jest.fn() } as unknown as Sentry.Span;
+
+    startSpanManualMock
+      .mockImplementationOnce((_, fn) => fn(journeySpan, () => undefined))
+      .mockImplementationOnce((_, fn) => fn(childSpan, () => undefined));
+
+    service.bufferedTrace({
+      name: TraceName.OnboardingJourneyOverall,
+      id: journeyId,
+    });
+    service.bufferedTrace({
+      name: TraceName.OnboardingPasswordSetupAttempt,
+      parentContext: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _name: TraceName.OnboardingJourneyOverall,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _id: journeyId,
+      },
+    });
+
+    service.trackTracesAfterMetricsOptIn();
+
+    expect(startSpanManualMock.mock.calls[1][0]).toEqual(
+      expect.objectContaining({ parentSpan: journeySpan }),
+    );
+
+    optedIn = true;
+    service.bufferedEndTrace({
+      name: TraceName.OnboardingPasswordSetupAttempt,
+    });
+    service.bufferedEndTrace({
+      name: TraceName.OnboardingJourneyOverall,
+      id: journeyId,
+    });
+    service.clearTracesAfterMetricsOptIn();
   });
 
   it('clears buffered traces without tracking them', () => {

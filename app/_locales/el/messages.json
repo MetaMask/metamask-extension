@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "Υπόλοιπο κατά την τελευταία ενημέρωση"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Επανάληψη"
   },
@@ -6243,9 +6240,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "Bitcoin Native SegWit"
   },
   "networkNameDefinition": {
     "message": "Το όνομα που συνδέεται με αυτό το δίκτυο."

@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "Последний известный баланс"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Повтор"
   },
@@ -6243,9 +6240,6 @@
   },
   "networkNameBitcoin": {
     "message": "Биткойн"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "Нативный SegWit биткойна"
   },
   "networkNameDefinition": {
     "message": "Имя, связанное с этой сетью."

@@ -1,5 +1,4 @@
 import {
-  ARC_ERC20_USDC_BRIDGE_ASSET,
   ARC_HEX_CHAIN_ID,
   ARC_NATIVE_ASSET_ID,
   ARC_NATIVE_CAIP_CHAIN_ID,
@@ -435,7 +434,7 @@ describe('getBalanceAwareSwapDefaults', () => {
     });
   });
 
-  it('uses the Arc ERC20 USDC wrapper as from when the Arc native token has balance', () => {
+  it('uses Arc native USDC as from when the Arc native token has balance', () => {
     const arcNativeToken: BalanceAwareSwapSourceToken = {
       address: ZERO_ADDRESS,
       chainId: ARC_HEX_CHAIN_ID,
@@ -464,17 +463,11 @@ describe('getBalanceAwareSwapDefaults', () => {
     });
 
     expect(result).toEqual({
-      sourceToken: {
-        address: ARC_ERC20_USDC_BRIDGE_ASSET.address,
-        chainId: ARC_HEX_CHAIN_ID,
-        decimals: ARC_ERC20_USDC_BRIDGE_ASSET.decimals,
-        symbol: ARC_ERC20_USDC_BRIDGE_ASSET.symbol,
-        name: ARC_ERC20_USDC_BRIDGE_ASSET.name,
-      },
+      sourceToken: arcNativeToken,
     });
   });
 
-  it('uses the Arc ERC20 USDC wrapper as from when the Arc native token page omits the address', () => {
+  it('uses Arc native USDC as from when the Arc native token page omits the address', () => {
     const arcNativeToken: BalanceAwareSwapSourceToken = {
       address: '',
       chainId: ARC_HEX_CHAIN_ID,
@@ -489,12 +482,10 @@ describe('getBalanceAwareSwapDefaults', () => {
       assetsByChain: {},
     });
 
-    expect(result.sourceToken?.address).toBe(
-      ARC_ERC20_USDC_BRIDGE_ASSET.address,
-    );
+    expect(result.sourceToken).toBe(arcNativeToken);
   });
 
-  it('uses the Arc ERC20 USDC wrapper as from when the Arc native token has no balance', () => {
+  it('sets Arc native USDC as to when the Arc native token has no balance', () => {
     const arcNativeToken: BalanceAwareSwapSourceToken = {
       address: ZERO_ADDRESS,
       chainId: ARC_HEX_CHAIN_ID,
@@ -518,23 +509,21 @@ describe('getBalanceAwareSwapDefaults', () => {
       },
     });
 
-    expect(result.sourceToken?.address).toBe(
-      ARC_ERC20_USDC_BRIDGE_ASSET.address,
-    );
-    expect(result.destTokenAssetId).toBeUndefined();
+    expect(result.sourceToken?.address).toBe(USDC_ADDRESS);
+    expect(result.destTokenAssetId).toBe(ARC_NATIVE_ASSET_ID);
   });
 
-  it('keeps the Arc ERC20 USDC wrapper as from when EURC is a funded same-chain token', () => {
-    const arcErc20UsdcToken: BalanceAwareSwapSourceToken = {
-      address: ARC_ERC20_USDC_BRIDGE_ASSET.address,
+  it('sets Arc native USDC as to when EURC is a funded same-chain token', () => {
+    const arcNativeToken: BalanceAwareSwapSourceToken = {
+      address: ZERO_ADDRESS,
       chainId: ARC_HEX_CHAIN_ID,
-      decimals: ARC_ERC20_USDC_BRIDGE_ASSET.decimals,
-      symbol: ARC_ERC20_USDC_BRIDGE_ASSET.symbol,
-      name: ARC_ERC20_USDC_BRIDGE_ASSET.name,
+      decimals: 6,
+      symbol: 'USDC',
+      name: 'USDC',
     };
 
     const result = getBalanceAwareSwapDefaults({
-      currentToken: arcErc20UsdcToken,
+      currentToken: arcNativeToken,
       currentTokenBalance: '0',
       assetsByChain: {
         [ARC_HEX_CHAIN_ID]: [
@@ -553,10 +542,8 @@ describe('getBalanceAwareSwapDefaults', () => {
       },
     });
 
-    expect(result.sourceToken?.address).toBe(
-      ARC_ERC20_USDC_BRIDGE_ASSET.address,
-    );
-    expect(result.destTokenAssetId).toBeUndefined();
+    expect(result.sourceToken?.address).toBe(ARC_EURC_ADDRESS);
+    expect(result.destTokenAssetId).toBe(ARC_NATIVE_ASSET_ID);
   });
 
   it('sets an unfunded non-EVM native as the destination', () => {

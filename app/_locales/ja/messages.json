@@ -5619,9 +5619,6 @@
   "moneyBalanceLastKnown": {
     "message": "直近の残高"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "再試行"
   },
@@ -6247,9 +6244,6 @@
   },
   "networkNameBitcoin": {
     "message": "ビットコイン"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "ビットコインネイティブSegWit"
   },
   "networkNameDefinition": {
     "message": "このネットワークに関連付けられている名前。"
