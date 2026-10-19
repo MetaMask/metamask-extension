@@ -963,6 +963,18 @@ async function setupMocking(
     });
 
   await server
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/address/evm/scan`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result_type: 'Benign',
+          label: '',
+        },
+      };
+    });
+
+  await server
     .forPost(
       'https://arbitrum-mainnet.infura.io/v3/00000000000000000000000000000000',
     )
