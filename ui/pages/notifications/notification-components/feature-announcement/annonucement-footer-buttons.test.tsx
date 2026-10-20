@@ -290,8 +290,8 @@ describe('Feature announcement footer buttons', () => {
     const unifiedHref = '/ramps/buy-deeplink-entry?amount=100';
     const resolveTrustedDeepLinkHrefSpy = jest
       .spyOn(resolveDeepLinkHrefUtils, 'resolveTrustedDeepLinkHref')
-      .mockImplementation((href, isUnifiedBuyEnabled) =>
-        isUnifiedBuyEnabled
+      .mockImplementation((href, isRampsEnabled) =>
+        isRampsEnabled
           ? Promise.resolve(unifiedHref)
           : Promise.resolve(portfolioHref),
       );

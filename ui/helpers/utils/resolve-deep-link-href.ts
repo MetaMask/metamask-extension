@@ -1,6 +1,5 @@
 import { isDeepLinkHost } from '../../../shared/lib/deep-links/common';
 import { NavigationOrigin, parse } from '../../../shared/lib/deep-links/parse';
-import { resolveBuyDeepLinkDestination } from '../../../shared/lib/deep-links/buy-flow';
 
 export function isInternalRouteHref(href: string): boolean {
   return href.startsWith('/') && !href.startsWith('//');
@@ -23,14 +22,11 @@ function toInternalHref(path: string, query: URLSearchParams): string {
  * Security team.
  *
  * @param href - The link href to resolve.
- * @param isUnifiedBuyEnabled - Whether the unified buy (native in-app buy)
- * feature is enabled. With it on, `/buy` links resolve to the in-app entry
- * route instead of the external Portfolio redirect — matching how the
- * background deep-link router treats the same link.
+ * @param isRampsEnabled - Whether the ramps feature is enabled; with it on, `/buy` resolves to the in-app entry route.
  */
 export async function resolveTrustedDeepLinkHref(
   href: string,
-  isUnifiedBuyEnabled: boolean,
+  isRampsEnabled: boolean,
 ): Promise<string> {
   if (isInternalRouteHref(href)) {
     return href;
@@ -45,6 +41,7 @@ export async function resolveTrustedDeepLinkHref(
 
     const parsed = await parse(url, {
       navigationOrigin: NavigationOrigin.INTERNAL,
+      getIsRampsEnabled: () => isRampsEnabled,
     });
 
     if (!parsed) {
@@ -53,19 +50,11 @@ export async function resolveTrustedDeepLinkHref(
       return href;
     }
 
-    // Route-specific destination resolution (e.g. `/buy` into the in-app
-    // unified buy flow), so a trusted surface's `/buy` link behaves the same
-    // no matter which surface it is clicked from.
-    const destination = resolveBuyDeepLinkDestination(
-      parsed,
-      isUnifiedBuyEnabled,
-    );
-
-    if ('redirectTo' in destination) {
-      return destination.redirectTo.toString();
+    if ('redirectTo' in parsed.destination) {
+      return parsed.destination.redirectTo.toString();
     }
 
-    return toInternalHref(destination.path, destination.query);
+    return toInternalHref(parsed.destination.path, parsed.destination.query);
   } catch {
     return href;
   }

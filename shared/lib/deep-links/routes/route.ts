@@ -34,6 +34,14 @@ export type Destination =
       redirectTo: URL;
     };
 
+/**
+ * Context passed to route handlers. Lazy: only routes that need it call it.
+ */
+export type RouteHandlerContext = {
+  /** Whether the ramps feature is enabled (`rampsEnabled` remote flag). */
+  getIsRampsEnabled?: () => boolean;
+};
+
 export type RouteOptions = {
   /**
    * The pathname of the route.
@@ -50,7 +58,10 @@ export type RouteOptions = {
    *
    * @throws if the handler fails to process the params
    */
-  handler: (params: URLSearchParams) => Destination;
+  handler: (
+    params: URLSearchParams,
+    context?: RouteHandlerContext,
+  ) => Destination;
 };
 
 export const SWAP_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
