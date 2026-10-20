@@ -1,25 +1,19 @@
 import React from 'react';
-import { Outlet, useMatches } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { isMainNavRoute } from '../helpers/utils/main-nav';
 import { useFullScreenDesign } from '../hooks/useFullScreenDesign';
-
-/**
- * Route `handle` flag for routes rendered inside a layout that provides its
- * own side navigation. These routes use the full window width.
- */
-export type RouteHandle = { hasSideNav?: boolean };
 
 export const RootLayout = () => {
   const isFullScreenDesign = useFullScreenDesign();
-  const matches = useMatches();
-  const hasSideNav = matches.some(
-    (match) => (match.handle as RouteHandle | undefined)?.hasSideNav,
-  );
-  const isFullWidth = isFullScreenDesign && hasSideNav;
+  const { pathname } = useLocation();
+  // When full screen design is used, pages corresponding to main nav routes
+  // render next to the side nav and use the full page width.
+  const useFullWidth = isFullScreenDesign && isMainNavRoute(pathname);
 
   return (
     <div
       className={
-        isFullWidth
+        useFullWidth
           ? 'flex h-full w-full flex-col'
           : 'flex h-full w-full max-w-[var(--width-max)] flex-col'
       }

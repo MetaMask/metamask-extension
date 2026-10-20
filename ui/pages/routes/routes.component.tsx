@@ -8,7 +8,6 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 import { MainLayout } from '#ui/layouts/main-layout';
-import type { RouteHandle } from '#ui/layouts/root-layout';
 import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
@@ -695,7 +694,6 @@ export const routeConfig = [
       },
       {
         element: <MainLayout />,
-        handle: { hasSideNav: true } satisfies RouteHandle,
         children: [
           createRouteWithMessenger({
             path: DEFAULT_ROUTE,
