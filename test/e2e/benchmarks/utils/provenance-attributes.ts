@@ -17,6 +17,8 @@ const HOST_SCALAR_KEYS = [
   'imageOs',
   'imageVersion',
   'cpuModel',
+  'nodeVersion',
+  'anvilVersion',
   'cpuCount',
   'cpuSpeedMhz',
   'totalMemMb',
@@ -70,6 +72,11 @@ export function provenanceAttributes(
         'host.calibration.sampleCount',
         host.calibration.sampleCount,
       );
+      for (const [key, value] of Object.entries(
+        host.calibration.browser ?? {},
+      )) {
+        addIfDefined(out, `host.calibration.browser.${key}`, value);
+      }
       for (const [metric, statistic] of Object.entries(
         host.calibration.metrics,
       )) {
