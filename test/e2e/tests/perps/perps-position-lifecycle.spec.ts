@@ -35,7 +35,7 @@ import {
   pushUserFillsClosePositionSnapshot,
 } from './mocks/websocketPositionMocks';
 
-describe('Perps Position Lifecycle TEST', function (this: Suite) {
+describe('Perps Position Lifecycle', function (this: Suite) {
   this.timeout(10 * 60 * 1000);
 
   // ─── Open position flows ───────────────────────────────────────────────────
