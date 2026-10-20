@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { act, renderHook } from '@testing-library/react';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
