@@ -109,9 +109,6 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
     // Feature flag AND app lifecycle integration
     // Service will check this callback before connecting/reconnecting
     isEnabled: () => {
-      if (!isBasicFunctionality()) {
-        return false;
-      }
       try {
         // Client manifest flag
         const manifestFlag =
