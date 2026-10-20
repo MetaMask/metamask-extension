@@ -28,10 +28,5 @@ export const DelegationControllerInit: MessengerClientInitFunction<
     getDelegationEnvironment,
   });
 
-  return {
-    messengerClient,
-    api: {
-      signDelegation: messengerClient.signDelegation.bind(messengerClient),
-    },
-  };
+  return { messengerClient };
 };

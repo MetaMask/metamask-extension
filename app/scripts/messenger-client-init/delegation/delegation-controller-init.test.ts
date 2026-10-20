@@ -47,13 +47,4 @@ describe('DelegationControllerInit', () => {
       getDelegationEnvironment: expect.any(Function),
     });
   });
-
-  it('returns correct API methods', () => {
-    const requestMock = buildInitRequestMock();
-    const result = DelegationControllerInit(requestMock);
-
-    expect(result.api).toEqual({
-      signDelegation: expect.any(Function),
-    });
-  });
 });

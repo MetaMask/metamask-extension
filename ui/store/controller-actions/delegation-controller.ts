@@ -9,7 +9,11 @@ export const signDelegation = async ({
   delegation: UnsignedDelegation;
   chainId: Hex;
 }): Promise<Hex> => {
-  return await submitRequestToBackground('signDelegation', [
-    { delegation, chainId },
-  ]);
+  // Type assertion: This action returns a string, but we want a Hex.
+  // TODO: Ideally we should either update `signDelegation` to guarantee a Hex,
+  // or relax the return type of _this_ action function to `string`.
+  return (await submitRequestToBackground(
+    'DelegationController:signDelegation',
+    [{ delegation, chainId }],
+  )) as Hex;
 };

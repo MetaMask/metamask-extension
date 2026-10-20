@@ -50,7 +50,7 @@ describe('apiClient', () => {
 
     await expect(getBearerToken()).resolves.toBe('bearer-token-mock');
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'getBearerToken',
+      'AuthenticationController:getBearerToken',
     );
   });
 

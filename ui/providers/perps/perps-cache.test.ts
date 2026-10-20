@@ -23,8 +23,8 @@ describe('perps-cache', () => {
       await fetchMarketInfos('provider:mainnet:0xabc', true);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsGetMarkets',
-        [{ useTerminalApi: true }],
+        'messengerCall',
+        ['PerpsController:getMarkets', [{ useTerminalApi: true }]],
       );
     });
 
@@ -34,8 +34,8 @@ describe('perps-cache', () => {
       await fetchMarketInfos('provider:mainnet:0xabc', false);
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsGetMarkets',
-        [{ useTerminalApi: false }],
+        'messengerCall',
+        ['PerpsController:getMarkets', [{ useTerminalApi: false }]],
       );
     });
 
@@ -45,8 +45,8 @@ describe('perps-cache', () => {
       await fetchMarketInfos('provider:mainnet:0xabc');
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsGetMarkets',
-        [{ useTerminalApi: false }],
+        'messengerCall',
+        ['PerpsController:getMarkets', [{ useTerminalApi: false }]],
       );
     });
 

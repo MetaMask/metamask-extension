@@ -87,10 +87,10 @@ export function fetchMarketInfos(
     return Promise.resolve(entry.cached as MarketInfo[]);
   }
   if (!entry.inflight) {
-    entry.inflight = submitRequestToBackground<MarketInfo[]>(
-      'perpsGetMarkets',
+    entry.inflight = submitRequestToBackground<MarketInfo[]>('messengerCall', [
+      'PerpsController:getMarkets',
       [{ useTerminalApi }],
-    )
+    ])
       .then((infos) => {
         const validated = Array.isArray(infos) ? infos : [];
         entry.cached = validated;

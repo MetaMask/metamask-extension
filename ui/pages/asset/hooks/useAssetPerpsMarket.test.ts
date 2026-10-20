@@ -58,7 +58,7 @@ describe('useAssetPerpsMarket', () => {
       isLoading: true,
     });
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsGetMarkets',
+      'PerpsController:getMarkets',
       [{ symbols: ['ETH'], standalone: true, useTerminalApi: false }],
     );
   });
@@ -251,7 +251,7 @@ describe('useAssetPerpsMarket', () => {
     renderHook(() => useAssetPerpsMarket('ETH'));
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'perpsGetMarkets',
+      'PerpsController:getMarkets',
       [{ symbols: ['ETH'], standalone: true, useTerminalApi: true }],
     );
   });

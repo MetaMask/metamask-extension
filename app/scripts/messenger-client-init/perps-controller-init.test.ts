@@ -586,7 +586,6 @@ describe('PerpsControllerInit', () => {
       ['perpsUpdateWithdrawalProgress', 'updateWithdrawalProgress'],
       ['perpsGetWithdrawalProgress', 'getWithdrawalProgress'],
       ['perpsGetPositions', 'getPositions'],
-      ['perpsGetMarkets', 'getMarkets'],
       ['perpsGetMarketDataWithPrices', 'getMarketDataWithPrices'],
       ['perpsGetOrderFills', 'getOrderFills'],
       ['perpsGetOrders', 'getOrders'],
@@ -711,18 +710,10 @@ describe('PerpsControllerInit', () => {
       expect(result).toEqual([{ symbol: 'ETH' }]);
     });
 
-    it('retries after CLIENT_REINITIALIZING and succeeds', async () => {
-      const { api, messengerClient } = initWithApi();
-      const getMarkets = messengerClient.getMarkets as jest.Mock;
-      getMarkets
-        .mockRejectedValueOnce(new Error('CLIENT_REINITIALIZING'))
-        .mockResolvedValueOnce([{ market: 'BTC' }]);
+    it('does not expose the legacy market lookup alias', () => {
+      const { api } = initWithApi();
 
-      const result = await api.perpsGetMarkets();
-
-      expect(messengerClient.init).toHaveBeenCalledTimes(1);
-      expect(getMarkets).toHaveBeenCalledTimes(2);
-      expect(result).toEqual([{ market: 'BTC' }]);
+      expect(api).not.toHaveProperty('perpsGetMarkets');
     });
 
     it('does not retry for unrelated errors', async () => {

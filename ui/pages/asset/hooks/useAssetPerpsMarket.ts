@@ -120,16 +120,13 @@ function fetchAssetPerpsMarket(
     return Promise.resolve(entry.market);
   }
   if (!entry.inflight) {
-    entry.inflight = submitRequestToBackground<MarketInfo[]>(
-      'perpsGetMarkets',
-      [
-        {
-          symbols: [symbol],
-          standalone: true,
-          useTerminalApi,
-        },
-      ],
-    )
+    entry.inflight = submitRequestToBackground('PerpsController:getMarkets', [
+      {
+        symbols: [symbol],
+        standalone: true,
+        useTerminalApi,
+      },
+    ])
       .then((infos) => {
         const market = findMatchingMarket(
           Array.isArray(infos) ? infos : [],

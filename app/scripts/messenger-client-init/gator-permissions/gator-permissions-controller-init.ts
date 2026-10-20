@@ -58,15 +58,5 @@ export const GatorPermissionsControllerInit: MessengerClientInitFunction<
     state: persistedState.GatorPermissionsController,
   });
 
-  return {
-    messengerClient,
-    api: {
-      fetchAndUpdateGatorPermissions:
-        messengerClient.fetchAndUpdateGatorPermissions.bind(messengerClient),
-      addPendingRevocation:
-        messengerClient.addPendingRevocation.bind(messengerClient),
-      submitDirectRevocation:
-        messengerClient.submitDirectRevocation.bind(messengerClient),
-    },
-  };
+  return { messengerClient };
 };

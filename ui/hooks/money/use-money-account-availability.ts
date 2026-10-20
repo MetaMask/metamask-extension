@@ -41,10 +41,9 @@ export function useMoneyAccountAvailability() {
       isEnabled,
     ],
     queryFn: () =>
-      submitRequestToBackground<MoneyAccountAvailability>('messengerCall', [
+      submitRequestToBackground(
         MoneyAccountAvailabilityServiceQueryKeys.GetAvailability,
-        [],
-      ]),
+      ),
     enabled: isEnabled,
     refetchOnMount: 'always',
   });
