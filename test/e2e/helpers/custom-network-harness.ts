@@ -381,23 +381,47 @@ async function mockXdcNativeAndErc20V6Balances(
         .split(',')
         .map((accountId) => accountId.trim())
         .filter(Boolean);
-      const balances = accountIds.flatMap((accountId) => {
-        if (accountId.split(':')[1] !== String(network.chainIdDecimal)) {
-          return [];
+      const chainRef = String(network.chainIdDecimal);
+      const chain50AccountIds: string[] = [];
+      const otherAddresses: string[] = [];
+      for (const accountId of accountIds) {
+        const parts = accountId.split(':');
+        if (parts.length < 3 || parts[0] !== 'eip155') {
+          continue;
         }
-        return [
-          {
-            accountId,
-            assetId: network.nativeAssetId,
-            balance: '25',
-          },
-          {
-            accountId,
-            assetId: SEEDED_ERC20_ASSET_ID,
-            balance: '10',
-          },
-        ];
-      });
+        const address = parts.slice(2).join(':');
+        if (!address) {
+          continue;
+        }
+        if (parts[1] === chainRef) {
+          chain50AccountIds.push(accountId);
+        } else {
+          otherAddresses.push(address);
+        }
+      }
+      const seen = new Set(
+        chain50AccountIds.map((accountId) => accountId.toLowerCase()),
+      );
+      for (const address of otherAddresses) {
+        const chain50AccountId = `eip155:${chainRef}:${address}`;
+        if (seen.has(chain50AccountId.toLowerCase())) {
+          continue;
+        }
+        seen.add(chain50AccountId.toLowerCase());
+        chain50AccountIds.push(chain50AccountId);
+      }
+      const balances = chain50AccountIds.flatMap((accountId) => [
+        {
+          accountId,
+          assetId: network.nativeAssetId,
+          balance: '25',
+        },
+        {
+          accountId,
+          assetId: SEEDED_ERC20_ASSET_ID,
+          balance: '10',
+        },
+      ]);
 
       return {
         statusCode: 200,

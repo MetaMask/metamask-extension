@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
@@ -14,6 +15,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import {
   DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
 } from '../../constants';
 
@@ -90,6 +92,42 @@ async function mockSetup(mockServer: Mockttp) {
       }),
   ];
 }
+
+async function mockPolygonSendV6Balances(mockServer: Mockttp) {
+  return mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v6/multiaccount/balances')
+    .always()
+    .thenCallback((request) => {
+      const requested = (
+        new URL(request.url).searchParams.get('accountIds') ?? ''
+      )
+        .split(',')
+        .map((accountId) => accountId.trim())
+        .filter((accountId) => accountId.split(':')[1] === '137');
+      const accountIds =
+        requested.length > 0
+          ? requested
+          : [`eip155:137:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`];
+      const balances = accountIds.flatMap((accountId) => [
+        {
+          accountId,
+          assetId: 'eip155:137/slip44:60',
+          balance: '25',
+        },
+        {
+          accountId,
+          assetId: `eip155:137/erc20:${HST_TOKEN_ADDRESS}`,
+          balance: '10',
+        },
+      ]);
+
+      return {
+        statusCode: 200,
+        json: v6AccountsApiBalancesJson(request.url, balances),
+      };
+    });
+}
+
 function buildFixturesForAssetDetails(title: string) {
   return {
     fixtures: new FixtureBuilderV2()
@@ -230,7 +268,12 @@ function buildFixturesForSend(title: string) {
     ],
     smartContract: SMART_CONTRACTS.HST,
     title,
-    testSpecificMock: mockSetup,
+    testSpecificMock: async (mockServer: Mockttp) => {
+      return [
+        ...(await mockSetup(mockServer)),
+        await mockPolygonSendV6Balances(mockServer),
+      ];
+    },
     manifestFlags: {
       remoteFeatureFlags: {
         extensionUxTokenManagementFilter: true,
