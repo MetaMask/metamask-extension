@@ -139,7 +139,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             name: 'feature is ON',
             scope: {
               type: 'threshold',
-              value: 0,
+              value: 1,
             },
             value: true,
           },
@@ -147,7 +147,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             name: 'feature is OFF',
             scope: {
               type: 'threshold',
-              value: 1,
+              value: 0,
             },
             value: false,
           },
