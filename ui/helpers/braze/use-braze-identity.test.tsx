@@ -211,6 +211,45 @@ describe('useBrazeIdentity', () => {
     });
   });
 
+  it('wipes when sign-out happens while the first identify is in flight', async () => {
+    let resolveIdentify: (value: boolean) => void = () => undefined;
+    mockIdentifyBrazeUser.mockImplementationOnce(
+      () =>
+        new Promise<boolean>((resolve) => {
+          resolveIdentify = resolve;
+        }),
+    );
+
+    const { store } = renderHookWithProviderTyped(
+      () => useBrazeIdentity(),
+      arrangeState(),
+    );
+
+    await waitFor(() => {
+      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    });
+
+    await act(async () => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: {
+          isSignedIn: false,
+          srpSessionData: undefined,
+          keyrings: [hdKeyring('entropy-1')],
+        },
+      });
+    });
+    expect(mockClearBrazeUser).not.toHaveBeenCalled();
+
+    await act(async () => {
+      resolveIdentify(true);
+    });
+
+    await waitFor(() => {
+      expect(mockClearBrazeUser).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('wipes when basic functionality is turned off after identifying', async () => {
     const { store } = renderHookWithProviderTyped(
       () => useBrazeIdentity(),
