@@ -178,14 +178,15 @@ export function getBooleanFeatureFlag(
 /**
  * Whether the unified buy (native in-app buy) feature is enabled: the
  * `rampsEnabled` remote flag, supporting boolean, version-gated, and
- * progressive rollout formats. Shared so the UI selector
- * (`getIsRampsEnabled`) and the background deep-link router cannot drift.
- * Callers must pass manifest-merged flags (see `getRemoteFeatureFlags`).
+ * progressive rollout formats. The flag-reader half of the UI selector
+ * (`getIsRampsEnabled`), shared so the selector and the background
+ * deep-link router cannot drift. Callers must pass manifest-merged flags
+ * (see `getRemoteFeatureFlags`).
  *
  * @param remoteFeatureFlags - The (manifest-merged) remote feature flags.
  * @returns True if the unified buy feature is enabled.
  */
-export function getIsUnifiedBuyEnabled(
+export function getIsRampsEnabledFromFlags(
   remoteFeatureFlags?: FeatureFlags,
 ): boolean {
   return getBooleanFeatureFlag(remoteFeatureFlags?.rampsEnabled, false);

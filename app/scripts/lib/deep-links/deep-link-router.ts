@@ -16,7 +16,7 @@ import type { Destination } from '../../../../shared/lib/deep-links/routes/route
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 import { resolveBuyDeepLinkDestination } from '../../../../shared/lib/deep-links/buy-flow';
-import { getIsUnifiedBuyEnabled } from '../../../../shared/lib/remote-feature-flag-utils';
+import { getIsRampsEnabledFromFlags } from '../../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
@@ -52,8 +52,9 @@ export class DeepLinkRouter extends EventEmitter<{
   private getState: Options['getState'];
 
   /**
-   * Resolved via the manifest-merged flags (like the `getIsRampsEnabled` UI
-   * selector) so `.manifest-overrides.json` applies to deep links too.
+   * Resolved via the manifest-merged flags (like the UI's
+   * `getIsRampsEnabled` selector) so `.manifest-overrides.json` applies to
+   * deep links too.
    *
    * @returns True if the unified buy feature is enabled.
    */
@@ -62,7 +63,7 @@ export class DeepLinkRouter extends EventEmitter<{
     const flags = getRemoteFeatureFlags({
       metamask: { remoteFeatureFlags: remoteFeatureFlags ?? {} },
     });
-    return getIsUnifiedBuyEnabled(flags);
+    return getIsRampsEnabledFromFlags(flags);
   }
 
   constructor({ getExtensionURL, getState }: Options) {
