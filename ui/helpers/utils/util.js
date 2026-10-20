@@ -22,6 +22,7 @@ import {
 } from '../../../shared/lib/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_NON_EVM_ADDRESS_START_CHARS as truncatedNonEvmAddressStartChars,
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
@@ -298,20 +299,26 @@ export function shortenString(
 }
 
 /**
- * Shortens an Ethereum address for display, preserving the beginning and end.
+ * Shortens an address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
- * Shortened addresses are 13 characters long.
+ * EVM addresses keep the first 7 characters (`0x` plus 5). Non-EVM addresses
+ * keep the first 5 characters.
  *
  * Example output: 0xabcde...12345
+ * Example output: bc1qn...5eker
  *
  * @param {string} address - The address to shorten.
  * @returns {string} The shortened address, or the original if it was no longer
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
+  const truncatedStartChars = address.startsWith('0x')
+    ? TRUNCATED_ADDRESS_START_CHARS
+    : truncatedNonEvmAddressStartChars;
+
   return shortenString(address, {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
-    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
+    truncatedStartChars,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
     skipCharacterInEnd: false,
   });
