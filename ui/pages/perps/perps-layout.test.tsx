@@ -152,14 +152,14 @@ describe('PerpsLayout', () => {
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'AppStateController:setLastVisitedPerpsRoute',
+      'AppStateController:setLastVisitedRoute',
       ['perps', '/perps/market/BTC'],
     );
 
     unmount();
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'AppStateController:setLastVisitedPerpsRoute',
+      'AppStateController:setLastVisitedRoute',
       ['perps', null],
     );
   });
@@ -172,14 +172,14 @@ describe('PerpsLayout', () => {
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'AppStateController:setLastVisitedPerpsRoute',
+      'AppStateController:setLastVisitedRoute',
       ['perps', '/perps/market/BTC?source=toast'],
     );
   });
 
   it('does not fail when the background rejects setLastVisitedRoute', () => {
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
-      if (method === 'AppStateController:setLastVisitedPerpsRoute') {
+      if (method === 'AppStateController:setLastVisitedRoute') {
         return Promise.reject(new Error('boom'));
       }
       return Promise.resolve(undefined);

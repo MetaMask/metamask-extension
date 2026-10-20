@@ -4177,7 +4177,7 @@ export function setLastVisitedPerpsRoute(
     // the entire background state.
     try {
       await submitRequestToBackground(
-        'AppStateController:setLastVisitedPerpsRoute',
+        'AppStateController:setLastVisitedRoute',
         ['perps', path],
       );
     } catch (error) {
