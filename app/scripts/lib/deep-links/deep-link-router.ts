@@ -197,10 +197,13 @@ export class DeepLinkRouter extends EventEmitter<{
       const parsed = await parse(url);
       if (parsed) {
         // Resolve the final destination (e.g. `/buy` into the in-app buy flow).
-        const destination = resolveBuyDeepLinkDestination(
-          parsed,
-          this.isUnifiedBuyEnabled(),
-        );
+        // Only `/buy` can be rerouted, and reading the rollout flag builds the
+        // full controller state — keep that off every other link so this
+        // non-blocking (MV3) listener stays minimal before `redirectTab`.
+        const destination =
+          parsed.route?.pathname === '/buy'
+            ? resolveBuyDeepLinkDestination(parsed, this.isUnifiedBuyEnabled())
+            : parsed.destination;
         this.emit('navigate', { url, parsed, destination });
 
         // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**

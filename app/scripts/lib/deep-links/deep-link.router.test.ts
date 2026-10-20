@@ -594,6 +594,29 @@ describe('DeepLinkRouter', () => {
         });
       });
 
+      it('does not build controller state for links other than /buy', async () => {
+        // The listener is non-blocking on MV3, so work before `redirectTab`
+        // must stay minimal: reading the rollout flag builds the full
+        // controller state and must be limited to `/buy` links. The link is
+        // unsigned so the interstitial decision never reads state either.
+        getState.mockClear();
+        parseMock.mockResolvedValue({
+          signature: 'missing',
+          route: { pathname: '/sell' },
+          destination: {
+            redirectTo: new URL('https://example.com/sell-route'),
+          },
+        } as ParsedDeepLink);
+
+        await arrangeRequest('https://example.com/sell');
+
+        expect(getState).not.toHaveBeenCalled();
+        // The unsigned link still lands on the interstitial page.
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: 'chrome-extension://extension-id/home.html#link?u=%2Fsell',
+        });
+      });
+
       it('emits the resolved internal destination for /buy when rampsEnabled is on', async () => {
         arrangeState({ rampsEnabled: true });
         parseMock.mockResolvedValue(arrangeBuyLink());
