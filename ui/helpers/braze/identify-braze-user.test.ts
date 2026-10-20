@@ -1,5 +1,6 @@
 import {
   changeUser as mockBrazeChangeUser,
+  destroy as mockBrazeDestroy,
   initialize as mockBrazeInitialize,
   wipeData as mockBrazeWipeData,
 } from '@braze/web-sdk';
@@ -15,6 +16,7 @@ import {
 jest.mock('@braze/web-sdk', () => ({
   initialize: jest.fn().mockReturnValue(true),
   changeUser: jest.fn(),
+  destroy: jest.fn(),
   wipeData: jest.fn(),
 }));
 
@@ -31,6 +33,7 @@ const mockChangeUser = mockBrazeChangeUser as jest.MockedFunction<
 const mockWipeData = mockBrazeWipeData as jest.MockedFunction<
   typeof mockBrazeWipeData
 >;
+const mockDestroy = jest.mocked(mockBrazeDestroy);
 const mockCaptureException = captureException as jest.MockedFunction<
   typeof captureException
 >;
@@ -49,6 +52,7 @@ describe('identifyBrazeUser', () => {
     mockInitialize.mockReturnValue(true);
     mockChangeUser.mockReset();
     mockWipeData.mockReset();
+    mockDestroy.mockReset();
     jest.spyOn(console, 'warn').mockImplementation(() => undefined);
   });
 
@@ -124,6 +128,7 @@ describe('clearBrazeUser', () => {
     mockInitialize.mockReturnValue(true);
     mockChangeUser.mockReset();
     mockWipeData.mockReset();
+    mockDestroy.mockReset();
     jest.spyOn(console, 'warn').mockImplementation(() => undefined);
   });
 
@@ -134,28 +139,36 @@ describe('clearBrazeUser', () => {
     jest.mocked(console.warn).mockRestore();
   });
 
-  it('does not wipe when the SDK was never initialized', async () => {
+  it('does not wipe or destroy when the SDK was never initialized', async () => {
     await clearBrazeUser();
 
     expect(mockWipeData).not.toHaveBeenCalled();
+    expect(mockDestroy).not.toHaveBeenCalled();
   });
 
-  it('wipes local SDK data after identify', async () => {
+  it('wipes local SDK data before destroying the instance', async () => {
     await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
 
     await clearBrazeUser();
 
     expect(mockWipeData).toHaveBeenCalledTimes(1);
+    expect(mockDestroy).toHaveBeenCalledTimes(1);
+    expect(mockWipeData.mock.invocationCallOrder[0]).toBeLessThan(
+      mockDestroy.mock.invocationCallOrder[0],
+    );
     expect(getIdentifiedBrazeProfileId()).toBeUndefined();
   });
 
-  it('allows identifying again after wipe', async () => {
+  it('allows identifying again after teardown', async () => {
     await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
     await clearBrazeUser();
     await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
 
     expect(mockInitialize).toHaveBeenCalledTimes(2);
     expect(mockChangeUser).toHaveBeenCalledTimes(2);
+    expect(mockDestroy.mock.invocationCallOrder[0]).toBeLessThan(
+      mockInitialize.mock.invocationCallOrder[1],
+    );
   });
 
   it('does not wipe in a test build', async () => {
@@ -165,10 +178,11 @@ describe('clearBrazeUser', () => {
     await clearBrazeUser();
 
     expect(mockWipeData).not.toHaveBeenCalled();
+    expect(mockDestroy).not.toHaveBeenCalled();
     expect(getIdentifiedBrazeProfileId()).toBeUndefined();
   });
 
-  it('captures the error when wipeData throws and still resets identity', async () => {
+  it('destroys the instance even when wiping data fails', async () => {
     const error = new Error('wipe failed');
     mockWipeData.mockImplementation(() => {
       throw error;
@@ -178,7 +192,23 @@ describe('clearBrazeUser', () => {
     await clearBrazeUser();
 
     expect(mockCaptureException).toHaveBeenCalledWith(error);
+    expect(mockDestroy).toHaveBeenCalledTimes(1);
     expect(getIdentifiedBrazeProfileId()).toBeUndefined();
+  });
+
+  it('captures teardown errors and resets initialization', async () => {
+    const error = new Error('destroy failed');
+    mockDestroy.mockImplementationOnce(() => {
+      throw error;
+    });
+    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
+
+    await clearBrazeUser();
+
+    expect(mockCaptureException).toHaveBeenCalledWith(error);
+    expect(getIdentifiedBrazeProfileId()).toBeUndefined();
+    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
+    expect(mockInitialize).toHaveBeenCalledTimes(2);
   });
 
   it('runs a wipe requested while identify is in flight after the identify completes', async () => {
@@ -188,6 +218,7 @@ describe('clearBrazeUser', () => {
 
     expect(mockChangeUser).toHaveBeenCalledTimes(1);
     expect(mockWipeData).toHaveBeenCalledTimes(1);
+    expect(mockDestroy).toHaveBeenCalledTimes(1);
     expect(mockChangeUser.mock.invocationCallOrder[0]).toBeLessThan(
       mockWipeData.mock.invocationCallOrder[0],
     );
