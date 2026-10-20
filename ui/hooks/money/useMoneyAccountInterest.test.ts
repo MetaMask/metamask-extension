@@ -124,11 +124,39 @@ describe('useMoneyAccountInterest', () => {
     expect(mockUseQuery.mock.calls[1][0].enabled).toBe(false);
   });
 
-  it('forwards an interest fetch failure to Sentry', () => {
+  it('forwards a 30-day interest fetch failure to Sentry', () => {
     const last30Error = new Error('30d down');
-    const sinceInceptionError = new Error('inception down');
     mockUseQuery
       .mockReturnValueOnce({ isError: true, error: last30Error } as never)
+      .mockReturnValueOnce({ isError: false } as never);
+
+    renderHookWithProvider(() => useMoneyAccountInterest(), buildState());
+
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledTimes(1);
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+      'interest:30d',
+      '[Money Account] Interest fetch failed',
+      last30Error,
+      { window: '30d', errorName: 'Error' },
+    );
+  });
+
+  it('reports a lifetime earnings failure under its own Sentry feature tag', () => {
+    const sinceInceptionError = Object.assign(
+      new Error('Money Account API interest request failed'),
+      {
+        data: {
+          cause: {
+            name: 'MoneyAccountApiHttpError',
+            httpStatus: 502,
+            responseBody: '<html>Bad Gateway</html>',
+            responseHeaders: { 'x-amzn-trace-id': 'Root=1-abc' },
+          },
+        },
+      },
+    );
+    mockUseQuery
+      .mockReturnValueOnce({ isError: false } as never)
       .mockReturnValueOnce({
         isError: true,
         error: sinceInceptionError,
@@ -136,17 +164,19 @@ describe('useMoneyAccountInterest', () => {
 
     renderHookWithProvider(() => useMoneyAccountInterest(), buildState());
 
-    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
-      'interest:30d',
-      '[Money Account] Interest fetch failed',
-      last30Error,
-      { window: '30d' },
-    );
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledTimes(1);
     expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
       'interest:since_inception',
-      '[Money Account] Interest fetch failed',
+      '[Money Account] Lifetime earnings fetch failed',
       sinceInceptionError,
-      { window: 'since_inception' },
+      {
+        window: 'since_inception',
+        errorName: 'MoneyAccountApiHttpError',
+        httpStatus: 502,
+        responseBody: '<html>Bad Gateway</html>',
+        responseHeaders: { 'x-amzn-trace-id': 'Root=1-abc' },
+      },
+      { feature: 'money-lifetime-earnings', httpStatus: '502' },
     );
   });
 });

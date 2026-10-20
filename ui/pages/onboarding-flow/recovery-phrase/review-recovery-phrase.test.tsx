@@ -30,6 +30,13 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
+const mockEndJourney = jest.fn();
+
+jest.mock('../../../contexts/onboarding-trace', () => ({
+  useOnboardingTrace: () => ({
+    endJourney: mockEndJourney,
+  }),
+}));
 
 jest.mock('react-router-dom', () => {
   return {
@@ -245,6 +252,7 @@ describe('Review Recovery Phrase Component', () => {
         replace: true,
       });
     });
+    expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
   });
 
   it('should navigate to completion route on remind later when running on Firefox', async () => {

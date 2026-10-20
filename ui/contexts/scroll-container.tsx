@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 const ScrollContainerContext =
   createContext<React.RefObject<HTMLDivElement> | null>(null);
@@ -32,4 +38,32 @@ export const ScrollContainer = ({
  */
 export const useScrollContainer = () => {
   return useContext(ScrollContainerContext);
+};
+
+/**
+ * Hook to measure the width the scroll container reserves for its scrollbar.
+ * This is 0 when the platform uses overlay scrollbars.
+ *
+ * @returns Scrollbar gutter width in pixels
+ */
+export const useScrollContainerGutterWidth = () => {
+  const scrollContainerRef = useScrollContainer();
+  const [gutterWidth, setGutterWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    const element = scrollContainerRef?.current;
+    if (!element) {
+      return undefined;
+    }
+
+    const measure = () =>
+      setGutterWidth(element.offsetWidth - element.clientWidth);
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [scrollContainerRef]);
+
+  return gutterWidth;
 };

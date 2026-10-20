@@ -16,6 +16,8 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
   moduleNameMapper: {
+    // Stylesheets are imported as text via css-loader; Jest cannot parse them.
+    '\\.css$': '<rootDir>/test/mocks/style.ts',
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
     // Stub @metamask/perps-controller so every test suite can resolve it without

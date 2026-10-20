@@ -1,9 +1,37 @@
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import {
   base64urlencode,
   decodeBase64WithSafeUrlReplacements,
   decodeIdToken,
+  getOAuthTraceTags,
   padBase64String,
 } from './utils';
+
+describe('getOAuthTraceTags', () => {
+  it('marks rehydration as true', () => {
+    expect(getOAuthTraceTags(AuthConnection.Google, true)).toStrictEqual({
+      provider: AuthConnection.Google,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_rehydration: 'true',
+    });
+  });
+
+  it('marks rehydration as false', () => {
+    expect(getOAuthTraceTags(AuthConnection.Apple, false)).toStrictEqual({
+      provider: AuthConnection.Apple,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_rehydration: 'false',
+    });
+  });
+
+  it('marks rehydration as unknown when the status is unavailable', () => {
+    expect(getOAuthTraceTags(AuthConnection.Telegram, null)).toStrictEqual({
+      provider: AuthConnection.Telegram,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_rehydration: 'unknown',
+    });
+  });
+});
 
 describe('OAuthService - utils', () => {
   it('should be able to pad base64 string', () => {
