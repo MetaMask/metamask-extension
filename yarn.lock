@@ -9059,22 +9059,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/core-backend@npm:11.0.0"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@12.1.0-preview-34f990b":
+  version: 12.1.0-preview-34f990b
+  resolution: "@metamask-previews/core-backend@npm:12.1.0-preview-34f990b"
   dependencies:
-    "@metamask/account-tree-controller": "npm:^10.0.1"
+    "@metamask/account-tree-controller": "npm:^11.0.1"
     "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/keyring-controller": "npm:^28.0.0"
+    "@metamask/keyring-controller": "npm:^28.1.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^32.1.1"
+    "@metamask/profile-sync-controller": "npm:^34.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/utils": "npm:^12.0.0"
-    "@tanstack/query-core": "npm:^5.62.16"
+    "@tanstack/query-core": "npm:^5.103.2"
     async-mutex: "npm:^0.5.0"
-    cockatiel: "npm:^3.1.2"
-    uuid: "npm:^9.0.1"
-  checksum: 10/5743ece912208c0c8a38c1f031343e57af73f00714e61390ffd3b29ff9e50febf88a3e9d0b2358f0badafa4fa617202c4a6baa0e785fb8758da753ad678dc983
+    cockatiel: "npm:^3.2.1"
+    uuid: "npm:^11.1.1"
+  checksum: 10/cdd38791d2b8d53deeb98d8783caf4449a0b04c419b6584c9560b96507adf1ab00f2ffa4cf8d05d0e9bc4fb782ebf6953b6ced4333635f42b53f3938c182cea8
   languageName: node
   linkType: hard
 
@@ -11851,10 +11851,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:1.2.0-dev.21":
-  version: 1.2.0-dev.21
-  resolution: "@metamask/stellar-wallet-snap@npm:1.2.0-dev.21"
-  checksum: 10/149be815d0c2bfb616dd5acd735e5c6497b9980e9f34c97528e639cdd583dee358a0ba6343370e606c64fbfa67e99dbb606541e02db51b90edc06a4c62dbed58
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@1.2.0-preview-1df9cc94":
+  version: 1.2.0-preview-1df9cc94
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:1.2.0-preview-1df9cc94"
+  checksum: 10/d0dedec44a0467a7b1e0732ccc22bac44b2f5d4f191e25bbfadb5172ce7cf953029932dc6417abaf7a0f08d166da54465d30fe945c9601eea97cdef9963f08e4
   languageName: node
   linkType: hard
 
@@ -37488,7 +37488,7 @@ __metadata:
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
     "@metamask/solana-wallet-snap": "npm:^7.0.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:1.2.0-dev.21"
+    "@metamask/stellar-wallet-snap": "npm:^1.2.0"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^8.0.1"
     "@metamask/superstruct": "npm:^3.2.1"

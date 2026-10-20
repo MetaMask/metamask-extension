@@ -174,7 +174,7 @@ export function createStellarMigrationFlagTransitionService(
   return {
     async fetchRemoteFeatureFlags() {
       const stage = enabled ? 1 : 0;
-      enabled = !enabled;
+     // enabled = !enabled;
 
       let remoteFeatureFlags: FeatureFlags = {};
       try {
@@ -187,10 +187,10 @@ export function createStellarMigrationFlagTransitionService(
         );
       }
 
-      if (!flipIntervalStarted) {
-        flipIntervalStarted = true;
-        setInterval(forceUpdate, SIMULATED_FLIP_INTERVAL_MS);
-      }
+      // if (!flipIntervalStarted) {
+      //   flipIntervalStarted = true;
+      //   setInterval(forceUpdate, SIMULATED_FLIP_INTERVAL_MS);
+      // }
 
       console.info(
         `[remote-feature-flag simulation] ${stage === 1 ? 'enabled' : 'disabled'} (stage ${stage})`,
@@ -285,7 +285,7 @@ export function getRemoteFeatureFlagControllerInstanceOptions({
     // The 30s flip calls `updateRemoteFeatureFlags(true)`, which skips this
     // cache. Unforced callers (opening the UI) still wait for `fetchInterval`,
     // so match it to the flip interval while the simulation is on.
-    fetchInterval: SIMULATED_FLIP_INTERVAL_MS,
+    fetchInterval: REMOTE_FEATURE_FLAG_FETCH_INTERVAL,
     disabled:
       state.OnboardingController?.completedOnboarding !== true ||
       state.PreferencesController?.useExternalServices === false,
