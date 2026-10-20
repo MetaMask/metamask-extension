@@ -15,11 +15,12 @@ import { MpcMoneyKeyring } from './mpc-money-keyring';
  * in with the same keyring type. When the extension adopts the real V1
  * keyring this builder will construct it instead.
  *
- * Registration is fenced behind the `MPC_MONEY_KEYRING_ENABLED` compile-time
- * gate rather than unconditional like the Money builder. That is safe only
- * while no released build can hold an MPC money keyring in its vault, because
- * the controller needs the builder to recognize the type while deserializing
- * the vault. Once any released build can hold one, the fence must be removed.
+ * Registration is fenced behind the `MM_MONEY_MPC_KEYRING_ENABLED`
+ * compile-time gate rather than unconditional like the Money builder. That is
+ * safe only while no released build can hold an MPC money keyring in its
+ * vault, because the controller needs the builder to recognize the type while
+ * deserializing the vault. Once any released build can hold one, the fence
+ * must be removed.
  *
  * @returns The MPC money keyring builder.
  */

@@ -386,7 +386,7 @@ env:
   # with the KeyringController. Fenced while the feature is unreleased — no
   # released build can yet hold an MPC money keyring in its vault; once one
   # can, the registration must become unconditional.
-  - MPC_MONEY_KEYRING_ENABLED: false
+  - MM_MONEY_MPC_KEYRING_ENABLED: false
   # Optional: static hex address (all-lowercase or EIP-55 checksummed;
   # normalized to lowercase) served by the MPC money keyring stub through
   # `getAccounts`, so the keyring wiring can be verified without the MPC

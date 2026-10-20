@@ -120,7 +120,7 @@ export function getKeyringV2Builders(): KeyringV2Builder[] {
     snapKeyringV2Builder(),
   ];
 
-  // The MPC money keyring is fenced behind the `MPC_MONEY_KEYRING_ENABLED`
+  // The MPC money keyring is fenced behind the `MM_MONEY_MPC_KEYRING_ENABLED`
   // compile-time gate while the feature is unreleased, for the same reason as
   // in `getKeyringBuilders` below. See `buildMpcMoneyKeyringBuilder`.
   if (getIsMpcMoneyKeyringIncludedInBuild()) {
@@ -221,7 +221,7 @@ export function getKeyringBuilders(
     ),
   );
 
-  // The MPC money keyring is fenced behind the `MPC_MONEY_KEYRING_ENABLED`
+  // The MPC money keyring is fenced behind the `MM_MONEY_MPC_KEYRING_ENABLED`
   // compile-time gate while the feature is unreleased: no released build can
   // yet hold an MPC money keyring in its vault, so a build without the flag
   // never needs to recognize the type. See `buildMpcMoneyKeyringBuilder`.

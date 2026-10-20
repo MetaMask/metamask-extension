@@ -129,7 +129,7 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; Set this to `true` to register the MPC money keyring builder with the
 ; KeyringController (compile-time gate, see builds.yml). Fenced while the
 ; feature is unreleased.
-MPC_MONEY_KEYRING_ENABLED='false'
+MM_MONEY_MPC_KEYRING_ENABLED='false'
 
 ; Optional: static hex address (all-lowercase or EIP-55 checksummed;
 ; normalized to lowercase) served by the MPC money keyring stub through

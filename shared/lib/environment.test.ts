@@ -217,25 +217,25 @@ describe('getIsMpcMoneyKeyringIncludedInBuild', () => {
   let originalValue: string | undefined;
 
   beforeAll(() => {
-    originalValue = process.env.MPC_MONEY_KEYRING_ENABLED;
+    originalValue = process.env.MM_MONEY_MPC_KEYRING_ENABLED;
   });
 
   afterAll(() => {
-    process.env.MPC_MONEY_KEYRING_ENABLED = originalValue;
+    process.env.MM_MONEY_MPC_KEYRING_ENABLED = originalValue;
   });
 
-  it('returns true when MPC_MONEY_KEYRING_ENABLED is "true"', () => {
-    process.env.MPC_MONEY_KEYRING_ENABLED = 'true';
+  it('returns true when MM_MONEY_MPC_KEYRING_ENABLED is "true"', () => {
+    process.env.MM_MONEY_MPC_KEYRING_ENABLED = 'true';
     expect(getIsMpcMoneyKeyringIncludedInBuild()).toBe(true);
   });
 
-  it('returns false when MPC_MONEY_KEYRING_ENABLED is "false"', () => {
-    process.env.MPC_MONEY_KEYRING_ENABLED = 'false';
+  it('returns false when MM_MONEY_MPC_KEYRING_ENABLED is "false"', () => {
+    process.env.MM_MONEY_MPC_KEYRING_ENABLED = 'false';
     expect(getIsMpcMoneyKeyringIncludedInBuild()).toBe(false);
   });
 
-  it('returns false when MPC_MONEY_KEYRING_ENABLED is undefined', () => {
-    delete process.env.MPC_MONEY_KEYRING_ENABLED;
+  it('returns false when MM_MONEY_MPC_KEYRING_ENABLED is undefined', () => {
+    delete process.env.MM_MONEY_MPC_KEYRING_ENABLED;
     expect(getIsMpcMoneyKeyringIncludedInBuild()).toBe(false);
   });
 });
