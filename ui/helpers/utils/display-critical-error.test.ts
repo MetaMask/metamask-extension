@@ -1,4 +1,4 @@
-import 'navigator.locks';
+import { locks } from 'node:worker_threads';
 import { it } from '@jest/globals';
 import browser from 'webextension-polyfill';
 import { act } from 'react-dom/test-utils';
@@ -19,6 +19,9 @@ import {
   CriticalErrorTranslationKey,
   extractEnvelopeUrlFromDsn,
 } from './display-critical-error';
+
+// Use native locks with the native abort signals supplied by jest-fixed-jsdom.
+Object.defineProperty(navigator, 'locks', { configurable: true, value: locks });
 
 const MOCK_UUID = '550e8400e29b41d4a716446655440000';
 jest.mock('uuid', () => ({
