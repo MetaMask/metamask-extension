@@ -116,6 +116,25 @@ describe('parseCalibration', () => {
   it('rejects a non-numeric sample count', () => {
     expect(parseCalibration({ sampleCount: 'x', metrics })).toBeUndefined();
   });
+
+  it('carries the browser the calibration launched', () => {
+    const browser = {
+      name: 'firefox',
+      version: '131.0',
+      driverVersion: '0.36.0',
+      extra: 1,
+    };
+    expect(
+      parseCalibration({ sampleCount: 5, metrics, browser })?.browser,
+    ).toEqual({ name: 'firefox', version: '131.0', driverVersion: '0.36.0' });
+  });
+
+  it('omits the browser when it has no usable fields', () => {
+    const browser = { name: 3, version: '' };
+    expect(
+      parseCalibration({ sampleCount: 5, metrics, browser })?.browser,
+    ).toBeUndefined();
+  });
 });
 
 describe('parseSetupInfoRegion', () => {

@@ -3,7 +3,7 @@ import { createServer, type Server } from 'node:http';
 import { promises as fs } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
-import { Builder } from 'selenium-webdriver';
+import { Builder, type WebDriver } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 import { hideBin } from 'yargs/helpers';
@@ -29,9 +29,16 @@ type CalibrationMetric = {
   p90: number;
 };
 
+export type CalibrationBrowser = {
+  name?: string;
+  version?: string;
+  driverVersion?: string;
+};
+
 export type RunnerCalibration = {
   sampleCount: number;
   metrics: Record<keyof CalibrationSample, CalibrationMetric>;
+  browser?: CalibrationBrowser;
 };
 
 const fixture = `<!doctype html>
@@ -215,6 +222,20 @@ async function buildDriver() {
     .build();
 }
 
+async function readBrowser(driver: WebDriver): Promise<CalibrationBrowser> {
+  const capabilities = await driver.getCapabilities();
+  // ChromeDriver reports "126.0.6478.182 (<revision>)"; keep the version.
+  const chromedriver = capabilities.get('chrome')?.chromedriverVersion;
+  const driverVersion =
+    capabilities.get('moz:geckodriverVersion') ??
+    (typeof chromedriver === 'string' ? chromedriver.split(' ')[0] : undefined);
+  return {
+    name: capabilities.getBrowserName(),
+    version: capabilities.getBrowserVersion(),
+    driverVersion,
+  };
+}
+
 export async function main(): Promise<void> {
   const argv = await yargs(hideBin(process.argv))
     .option('out', {
@@ -246,7 +267,10 @@ export async function main(): Promise<void> {
       }
     }
 
-    const calibration = summarizeCalibration(samples);
+    const calibration = {
+      ...summarizeCalibration(samples),
+      browser: await readBrowser(driver),
+    };
     await fs.mkdir(path.dirname(argv.out), { recursive: true });
     await fs.writeFile(argv.out, `${JSON.stringify(calibration, null, 2)}\n`);
     console.log('Runner calibration:', JSON.stringify(calibration));

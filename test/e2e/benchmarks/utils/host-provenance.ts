@@ -1,8 +1,11 @@
+import { execFileSync } from 'child_process';
 import { createHash } from 'crypto';
 import { readdirSync, readFileSync } from 'fs';
 import os from 'os';
+import { delimiter, join } from 'path';
 import type {
   CalibrationStatistic,
+  HostBrowser,
   HostCalibration,
   HostProvenance,
 } from '../../../../shared/constants/benchmarks';
@@ -183,7 +186,7 @@ export function parseCalibration(json: unknown): HostCalibration | undefined {
   if (typeof json !== 'object' || json === null) {
     return undefined;
   }
-  const { sampleCount, metrics } = json as Record<string, unknown>;
+  const { sampleCount, metrics, browser } = json as Record<string, unknown>;
   if (typeof sampleCount !== 'number' || typeof metrics !== 'object') {
     return undefined;
   }
@@ -199,7 +202,49 @@ export function parseCalibration(json: unknown): HostCalibration | undefined {
       p90: statistic.p90,
     };
   }
-  return { sampleCount, metrics: kept };
+  const parsedBrowser = parseBrowser(browser);
+  return {
+    sampleCount,
+    metrics: kept,
+    ...(parsedBrowser && { browser: parsedBrowser }),
+  };
+}
+
+function parseBrowser(value: unknown): HostBrowser | undefined {
+  if (typeof value !== 'object' || value === null) {
+    return undefined;
+  }
+  const { name, version, driverVersion } = value as Record<string, unknown>;
+  const text = (field: unknown) =>
+    typeof field === 'string' && field ? field : undefined;
+  const browser = {
+    name: text(name),
+    version: text(version),
+    driverVersion: text(driverVersion),
+  };
+  return Object.values(browser).some(Boolean) ? browser : undefined;
+}
+
+let cachedAnvilVersion: string | undefined | null = null;
+
+// The seeder resolves anvil from node_modules/.bin, so do the same here.
+function readAnvilVersion(): string | undefined {
+  if (cachedAnvilVersion === null) {
+    try {
+      const output = execFileSync('anvil', ['--version'], {
+        encoding: 'utf8',
+        timeout: 5000,
+        env: {
+          ...process.env,
+          PATH: `${join(process.cwd(), 'node_modules', '.bin')}${delimiter}${process.env.PATH}`,
+        },
+      });
+      cachedAnvilVersion = output.split('\n')[0].trim() || undefined;
+    } catch {
+      cachedAnvilVersion = undefined;
+    }
+  }
+  return cachedAnvilVersion;
 }
 
 function readCalibration(
@@ -303,6 +348,8 @@ export function captureHostProvenance(
     arch: nonEmpty(env.RUNNER_ARCH) ?? os.arch(),
     imageOs: nonEmpty(env.ImageOS),
     imageVersion: nonEmpty(env.ImageVersion),
+    nodeVersion: process.version,
+    anvilVersion: readAnvilVersion(),
     cpuModel: first?.model,
     cpuCount: cpus.length,
     // `os.cpus()[0].speed` is 0 on Linux VMs; 0 MHz is not a reading.

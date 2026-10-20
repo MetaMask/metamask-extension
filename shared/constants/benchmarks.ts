@@ -112,6 +112,15 @@ export type CalibrationStatistic = {
 export type HostCalibration = {
   sampleCount: number;
   metrics: Record<string, CalibrationStatistic>;
+  /** The browser the calibration session actually launched. */
+  browser?: HostBrowser;
+};
+
+/** Versions reported by the calibration's WebDriver session. */
+export type HostBrowser = {
+  name?: string;
+  version?: string;
+  driverVersion?: string;
 };
 
 /**
@@ -140,6 +149,10 @@ export type HostProvenance = {
   /** GitHub-hosted runner image OS and version (`ImageOS`, `ImageVersion`). */
   imageOs?: string;
   imageVersion?: string;
+  /** `process.version` of the benchmark process. */
+  nodeVersion?: string;
+  /** First line of `anvil --version`; undefined if the binary is missing. */
+  anvilVersion?: string;
   cpuModel?: string;
   cpuCount?: number;
   /** Undefined on Linux VMs, where `os.cpus()[0].speed` reports 0. */
