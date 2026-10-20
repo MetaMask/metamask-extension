@@ -1,239 +1,129 @@
 import {
-  changeUser as mockBrazeChangeUser,
-  destroy as mockBrazeDestroy,
-  initialize as mockBrazeInitialize,
-  wipeData as mockBrazeWipeData,
+  changeUser,
+  destroy,
+  getUser,
+  isInitialized,
+  type User,
+  wipeData,
 } from '@braze/web-sdk';
 import { captureException } from '../../../shared/lib/sentry';
-import { resetBrazeInitializationForTesting } from './initialize-braze';
-import {
-  clearBrazeUser,
-  getIdentifiedBrazeProfileId,
-  identifyBrazeUser,
-  resetBrazeIdentityForTesting,
-} from './identify-braze-user';
+import { initializeBraze } from './initialize-braze';
+import { clearBrazeUser, identifyBrazeUser } from './identify-braze-user';
 
-jest.mock('@braze/web-sdk', () => ({
-  initialize: jest.fn().mockReturnValue(true),
-  changeUser: jest.fn(),
-  destroy: jest.fn(),
-  wipeData: jest.fn(),
-}));
-
+jest.mock('./initialize-braze');
 jest.mock('../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
 
-const mockInitialize = mockBrazeInitialize as jest.MockedFunction<
-  typeof mockBrazeInitialize
->;
-const mockChangeUser = mockBrazeChangeUser as jest.MockedFunction<
-  typeof mockBrazeChangeUser
->;
-const mockWipeData = mockBrazeWipeData as jest.MockedFunction<
-  typeof mockBrazeWipeData
->;
-const mockDestroy = jest.mocked(mockBrazeDestroy);
-const mockCaptureException = captureException as jest.MockedFunction<
-  typeof captureException
->;
+const getUserId = jest.fn() as jest.MockedFunction<User['getUserId']>;
+const user: Pick<User, 'getUserId'> = { getUserId };
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.mocked(initializeBraze).mockReturnValue(true);
+  jest.mocked(isInitialized).mockReturnValue(true);
+  jest.mocked(getUser).mockReturnValue(user as User);
+  getUserId.mockReset().mockReturnValue(undefined);
+  jest
+    .mocked(changeUser)
+    .mockReset()
+    .mockImplementation((id) => {
+      getUserId.mockReturnValue(id);
+    });
+  jest.mocked(wipeData).mockReset();
+  jest.mocked(destroy).mockReset();
+});
 
 describe('identifyBrazeUser', () => {
-  const originalEnv = process.env;
-
-  beforeEach(() => {
-    process.env = { ...originalEnv };
-    delete process.env.IN_TEST;
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
-    resetBrazeInitializationForTesting();
-    resetBrazeIdentityForTesting();
-    jest.clearAllMocks();
-    mockInitialize.mockReturnValue(true);
-    mockChangeUser.mockReset();
-    mockWipeData.mockReset();
-    mockDestroy.mockReset();
-    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+  it('identifies with the canonical profile ID', () => {
+    expect(identifyBrazeUser('canonical-123')).toBe(true);
+    expect(changeUser).toHaveBeenCalledWith('canonical-123');
   });
 
-  afterEach(() => {
-    process.env = originalEnv;
-    resetBrazeInitializationForTesting();
-    resetBrazeIdentityForTesting();
-    jest.mocked(console.warn).mockRestore();
+  it('does not repeat changeUser for the current SDK identity', () => {
+    getUserId.mockReturnValue('canonical-123');
+
+    expect(identifyBrazeUser('canonical-123')).toBe(true);
+    expect(changeUser).not.toHaveBeenCalled();
   });
 
-  it('identifies the user with the canonical profile ID', async () => {
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-    expect(mockChangeUser).toHaveBeenCalledTimes(1);
-    expect(mockChangeUser).toHaveBeenCalledWith('canonical-123');
-    expect(getIdentifiedBrazeProfileId()).toBe('canonical-123');
+  it('re-identifies when the canonical profile ID changes', () => {
+    identifyBrazeUser('canonical-123');
+
+    expect(identifyBrazeUser('canonical-456')).toBe(true);
+    expect(changeUser).toHaveBeenLastCalledWith('canonical-456');
   });
 
-  it('does not call changeUser twice for the same ID', async () => {
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-    expect(mockChangeUser).toHaveBeenCalledTimes(1);
+  it('does not initialize for an empty profile ID', () => {
+    expect(identifyBrazeUser('')).toBe(false);
+    expect(initializeBraze).not.toHaveBeenCalled();
   });
 
-  it('re-identifies when the canonical profile ID changes', async () => {
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-    await expect(identifyBrazeUser('canonical-456')).resolves.toBe(true);
-    expect(mockChangeUser).toHaveBeenCalledTimes(2);
-    expect(mockChangeUser).toHaveBeenLastCalledWith('canonical-456');
+  it('does not identify when initialization is unavailable', () => {
+    jest.mocked(initializeBraze).mockReturnValue(false);
+
+    expect(identifyBrazeUser('canonical-123')).toBe(false);
+    expect(changeUser).not.toHaveBeenCalled();
   });
 
-  it('resolves false for an empty profile ID', async () => {
-    await expect(identifyBrazeUser('')).resolves.toBe(false);
-    expect(mockChangeUser).not.toHaveBeenCalled();
-  });
-
-  it('resolves false in a test build', async () => {
-    process.env.IN_TEST = 'true';
-
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(false);
-    expect(mockChangeUser).not.toHaveBeenCalled();
-  });
-
-  it('resolves false when the SDK cannot initialize', async () => {
-    delete process.env.BRAZE_WEB_API_KEY;
-
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(false);
-    expect(mockChangeUser).not.toHaveBeenCalled();
-  });
-
-  it('resolves false and captures the error when changeUser throws', async () => {
+  it('reports identity errors', () => {
     const error = new Error('changeUser failed');
-    mockChangeUser.mockImplementation(() => {
+    jest.mocked(changeUser).mockImplementationOnce(() => {
       throw error;
     });
 
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(false);
-    expect(mockCaptureException).toHaveBeenCalledWith(error);
-    expect(getIdentifiedBrazeProfileId()).toBeUndefined();
+    expect(identifyBrazeUser('canonical-123')).toBe(false);
+    expect(captureException).toHaveBeenCalledWith(error);
+  });
+
+  it('returns false when the SDK rejects the ID without throwing', () => {
+    jest.mocked(changeUser).mockImplementationOnce(() => undefined);
+
+    expect(identifyBrazeUser('canonical-123')).toBe(false);
   });
 });
 
 describe('clearBrazeUser', () => {
-  const originalEnv = process.env;
+  it('does not activate an unused SDK to clear it', () => {
+    jest.mocked(isInitialized).mockReturnValue(false);
 
-  beforeEach(() => {
-    process.env = { ...originalEnv };
-    delete process.env.IN_TEST;
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
-    resetBrazeInitializationForTesting();
-    resetBrazeIdentityForTesting();
-    jest.clearAllMocks();
-    mockInitialize.mockReturnValue(true);
-    mockChangeUser.mockReset();
-    mockWipeData.mockReset();
-    mockDestroy.mockReset();
-    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    clearBrazeUser();
+
+    expect(initializeBraze).not.toHaveBeenCalled();
+    expect(wipeData).not.toHaveBeenCalled();
+    expect(destroy).not.toHaveBeenCalled();
   });
 
-  afterEach(() => {
-    process.env = originalEnv;
-    resetBrazeInitializationForTesting();
-    resetBrazeIdentityForTesting();
-    jest.mocked(console.warn).mockRestore();
-  });
+  it('wipes local data before destroying the SDK', () => {
+    clearBrazeUser();
 
-  it('does not wipe or destroy when the SDK was never initialized', async () => {
-    await clearBrazeUser();
-
-    expect(mockWipeData).not.toHaveBeenCalled();
-    expect(mockDestroy).not.toHaveBeenCalled();
-  });
-
-  it('wipes local SDK data before destroying the instance', async () => {
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-
-    await clearBrazeUser();
-
-    expect(mockWipeData).toHaveBeenCalledTimes(1);
-    expect(mockDestroy).toHaveBeenCalledTimes(1);
-    expect(mockWipeData.mock.invocationCallOrder[0]).toBeLessThan(
-      mockDestroy.mock.invocationCallOrder[0],
-    );
-    expect(getIdentifiedBrazeProfileId()).toBeUndefined();
-  });
-
-  it('allows identifying again after teardown', async () => {
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-    await clearBrazeUser();
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-
-    expect(mockInitialize).toHaveBeenCalledTimes(2);
-    expect(mockChangeUser).toHaveBeenCalledTimes(2);
-    expect(mockDestroy.mock.invocationCallOrder[0]).toBeLessThan(
-      mockInitialize.mock.invocationCallOrder[1],
+    expect(wipeData).toHaveBeenCalledTimes(1);
+    expect(destroy).toHaveBeenCalledTimes(1);
+    expect(jest.mocked(wipeData).mock.invocationCallOrder[0]).toBeLessThan(
+      jest.mocked(destroy).mock.invocationCallOrder[0],
     );
   });
 
-  it('does not wipe in a test build', async () => {
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-    process.env.IN_TEST = 'true';
-
-    await clearBrazeUser();
-
-    expect(mockWipeData).not.toHaveBeenCalled();
-    expect(mockDestroy).not.toHaveBeenCalled();
-    expect(getIdentifiedBrazeProfileId()).toBeUndefined();
-  });
-
-  it('destroys the instance even when wiping data fails', async () => {
+  it('still destroys the SDK if wiping data throws', () => {
     const error = new Error('wipe failed');
-    mockWipeData.mockImplementation(() => {
+    jest.mocked(wipeData).mockImplementationOnce(() => {
       throw error;
     });
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
 
-    await clearBrazeUser();
+    clearBrazeUser();
 
-    expect(mockCaptureException).toHaveBeenCalledWith(error);
-    expect(mockDestroy).toHaveBeenCalledTimes(1);
-    expect(getIdentifiedBrazeProfileId()).toBeUndefined();
+    expect(captureException).toHaveBeenCalledWith(error);
+    expect(destroy).toHaveBeenCalledTimes(1);
   });
 
-  it('captures teardown errors and resets initialization', async () => {
+  it('reports teardown errors', () => {
     const error = new Error('destroy failed');
-    mockDestroy.mockImplementationOnce(() => {
+    jest.mocked(destroy).mockImplementationOnce(() => {
       throw error;
     });
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
 
-    await clearBrazeUser();
+    clearBrazeUser();
 
-    expect(mockCaptureException).toHaveBeenCalledWith(error);
-    expect(getIdentifiedBrazeProfileId()).toBeUndefined();
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-    expect(mockInitialize).toHaveBeenCalledTimes(2);
-  });
-
-  it('runs a wipe requested while identify is in flight after the identify completes', async () => {
-    const identifyPromise = identifyBrazeUser('canonical-123');
-    await clearBrazeUser();
-    await expect(identifyPromise).resolves.toBe(true);
-
-    expect(mockChangeUser).toHaveBeenCalledTimes(1);
-    expect(mockWipeData).toHaveBeenCalledTimes(1);
-    expect(mockDestroy).toHaveBeenCalledTimes(1);
-    expect(mockChangeUser.mock.invocationCallOrder[0]).toBeLessThan(
-      mockWipeData.mock.invocationCallOrder[0],
-    );
-    expect(getIdentifiedBrazeProfileId()).toBeUndefined();
-  });
-
-  it('re-initializes and re-identifies when identify runs after a queued wipe', async () => {
-    const identifyPromise = identifyBrazeUser('canonical-123');
-    await clearBrazeUser();
-    await expect(identifyPromise).resolves.toBe(true);
-
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-
-    expect(mockInitialize).toHaveBeenCalledTimes(2);
-    expect(mockChangeUser).toHaveBeenCalledTimes(2);
-    expect(getIdentifiedBrazeProfileId()).toBe('canonical-123');
+    expect(captureException).toHaveBeenCalledWith(error);
   });
 });

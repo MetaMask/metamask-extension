@@ -1,10 +1,5 @@
 import * as braze from '@braze/web-sdk';
-import {
-  clearBrazeUser,
-  identifyBrazeUser,
-  resetBrazeIdentityForTesting,
-} from './identify-braze-user';
-import { resetBrazeInitializationForTesting } from './initialize-braze';
+import { clearBrazeUser, identifyBrazeUser } from './identify-braze-user';
 
 // Bypass the global SDK stub: cleanup must match the real SDK lifecycle.
 jest.mock('@braze/web-sdk', () =>
@@ -45,15 +40,14 @@ describe('Braze SDK lifecycle', () => {
   afterEach(() => {
     braze.wipeData();
     braze.destroy();
-    resetBrazeInitializationForTesting();
-    resetBrazeIdentityForTesting();
     jest.useRealTimers();
     process.env = originalEnv;
   });
 
   it('stops the SDK without flushing queued events on cleanup', async () => {
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
+    expect(identifyBrazeUser('canonical-123')).toBe(true);
     expect(braze.isInitialized()).toBe(true);
+    await jest.advanceTimersByTimeAsync(0);
     expect(window.XMLHttpRequest.prototype.send).toHaveBeenCalled();
     jest.mocked(window.XMLHttpRequest.prototype.send).mockClear();
     expect(braze.logCustomEvent('scheduled-before-opt-out')).toBe(true);
@@ -62,21 +56,48 @@ describe('Braze SDK lifecycle', () => {
     expect(braze.logCustomEvent('queued-before-opt-out')).toBe(true);
     jest.mocked(window.XMLHttpRequest.prototype.send).mockClear();
 
-    await clearBrazeUser();
+    clearBrazeUser();
     await jest.advanceTimersByTimeAsync(60_000);
 
     expect(braze.isInitialized()).toBe(false);
     expect(window.XMLHttpRequest.prototype.send).not.toHaveBeenCalled();
   });
 
-  it('reactivates and identifies after cleanup', async () => {
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
-    await clearBrazeUser();
+  it('identifies the same user immediately after clearing', () => {
+    expect(identifyBrazeUser('canonical-123')).toBe(true);
+    clearBrazeUser();
     expect(braze.isInitialized()).toBe(false);
 
-    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
+    expect(identifyBrazeUser('canonical-123')).toBe(true);
 
     expect(braze.isInitialized()).toBe(true);
     expect(braze.getUser()?.getUserId()).toBe('canonical-123');
+  });
+
+  it('starts a session on first identification without an explicit openSession', async () => {
+    expect(identifyBrazeUser('canonical-123')).toBe(true);
+    await jest.advanceTimersByTimeAsync(0);
+
+    const requests = jest.mocked(window.XMLHttpRequest.prototype.send).mock
+      .calls;
+    expect(
+      requests.some(([body]) => {
+        const request = JSON.parse(String(body));
+        return request.events?.some(
+          (event: { name: string }) => event.name === 'ss',
+        );
+      }),
+    ).toBe(true);
+  });
+
+  it('does not flush a second session when identifying the same user again', async () => {
+    identifyBrazeUser('canonical-123');
+    await jest.advanceTimersByTimeAsync(0);
+    jest.mocked(window.XMLHttpRequest.prototype.send).mockClear();
+
+    expect(identifyBrazeUser('canonical-123')).toBe(true);
+    await jest.advanceTimersByTimeAsync(0);
+
+    expect(window.XMLHttpRequest.prototype.send).not.toHaveBeenCalled();
   });
 });
