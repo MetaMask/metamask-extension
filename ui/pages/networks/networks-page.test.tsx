@@ -24,6 +24,35 @@ jest.mock('../../hooks/useAnalytics', () => {
   };
 });
 
+jest.mock('../../store/actions', () => {
+  const actual = jest.requireActual('../../store/actions');
+
+  return {
+    ...actual,
+    // The real action writes through the background, which then pushes state
+    // back. Unit tests have no background, so apply the preference locally.
+    setShowTestNetworksPreference: (value: boolean) => {
+      return (
+        dispatch: (action: { type: string; value: unknown }) => void,
+        getState: () => {
+          metamask: { preferences: Record<string, unknown> };
+        },
+      ) => {
+        const { preferences } = getState().metamask;
+        dispatch({
+          type: 'UPDATE_METAMASK_STATE',
+          value: {
+            preferences: {
+              ...preferences,
+              showTestNetworks: value,
+            },
+          },
+        });
+      };
+    },
+  };
+});
+
 const mockSafeChains = [
   {
     name: 'Gnosis',
@@ -592,7 +621,7 @@ describe('NetworksPage', () => {
     expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
   });
 
-  it('hides built-in test networks from Chainlist when test networks are hidden', async () => {
+  it('keeps default testnets under the Chainlist toggle when test networks are hidden', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
       networkConfigurationsByChainId: {
@@ -609,12 +638,31 @@ describe('NetworksPage', () => {
       ),
       { target: { value: 'Sepolia' } },
     );
-    await waitFor(() => {
-      expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
-    });
+
+    expect(await screen.findByText('Sepolia')).toBeInTheDocument();
     expect(
-      screen.queryByTestId('networks-page-chainlist-added-pill'),
+      screen.getByTestId('networks-page-chainlist-show-test-networks'),
+    ).not.toBeChecked();
+    expect(
+      screen.getByTestId('networks-page-chainlist-added-pill'),
+    ).toHaveTextContent(messages.added.message);
+
+    fireEvent.click(
+      screen.getByText('Sepolia').closest('button') as HTMLButtonElement,
+    );
+
+    expect(
+      await screen.findByText(messages.showTestnetNetworks.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('networks-page-show-test-networks'),
+    ).toBeChecked();
+    expect(screen.getByText('Sepolia')).toBeInTheDocument();
   });
 
   it('shows built-in test networks in Chainlist when test networks are shown', async () => {

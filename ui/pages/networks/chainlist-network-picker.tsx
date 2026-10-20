@@ -18,13 +18,21 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   TEST_CHAINS,
 } from '../../../shared/constants/network';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   type SafeChain,
   useSafeChains,
 } from '../../components/multichain/networks-form/use-safe-chains';
+import ToggleButton from '../../components/ui/toggle-button';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getShouldShowTestNetworks } from '../../selectors';
+import { getIsTestnetInUse, getShouldShowTestNetworks } from '../../selectors';
+import { setShowTestNetworksPreference } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
 import { NoSearchResult } from './no-search-result';
 
 export type ChainlistNetwork = SafeChain & {
@@ -109,6 +117,11 @@ type ChainlistNetworkPickerProps = {
   layout?: 'page' | 'dropdown';
   /** Pixel height available below the field the dropdown is anchored to. */
   maxHeight?: number;
+  /**
+   * Leaves Chainlist for the networks list. Used when a default testnet is
+   * chosen, including while Show test networks is off.
+   */
+  onOpenNetworkList: () => void;
 };
 
 export const ChainlistNetworkPicker = ({
@@ -120,52 +133,101 @@ export const ChainlistNetworkPicker = ({
   searchValue: searchValueProp = '',
   layout = 'page',
   maxHeight,
+  onOpenNetworkList,
 }: ChainlistNetworkPickerProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [internalSearchValue, setInternalSearchValue] = useState('');
   const searchValue = showSearchField ? internalSearchValue : searchValueProp;
   const [visibleNetworkCount, setVisibleNetworkCount] =
     useState(CHAINLIST_PAGE_SIZE);
   const { safeChains } = useSafeChains();
   const showTestNetworks = useSelector(getShouldShowTestNetworks);
+  const currentlyOnTestnet = useSelector(getIsTestnetInUse);
 
-  const chainlistNetworks = useMemo(() => {
+  const { chainlistNetworks, defaultTestnets } = useMemo(() => {
     const normalizedSearchValue = searchValue.trim().toLowerCase();
+    const networks: ChainlistNetwork[] = [];
+    const testnets: ChainlistNetwork[] = [];
 
-    return ((safeChains ?? []) as ChainlistNetwork[]).filter((network) => {
+    for (const network of (safeChains ?? []) as ChainlistNetwork[]) {
       const chainId = getHexChainId(network.chainId);
       const existingNetworkName = existingNetworkNamesByChainId[chainId];
       if (getUsableUrls(network.rpc).length === 0) {
-        return false;
+        continue;
       }
 
-      if (!showTestNetworks && BUILT_IN_TEST_CHAIN_IDS.has(chainId)) {
-        return false;
-      }
-
-      if (!normalizedSearchValue) {
-        return true;
-      }
-
-      return (
+      const matchesSearch =
+        !normalizedSearchValue ||
         network.name.toLowerCase().includes(normalizedSearchValue) ||
         existingNetworkName?.toLowerCase().includes(normalizedSearchValue) ||
-        String(network.chainId).includes(normalizedSearchValue)
-      );
-    });
-  }, [
-    existingNetworkNamesByChainId,
-    safeChains,
-    searchValue,
-    showTestNetworks,
-  ]);
+        String(network.chainId).includes(normalizedSearchValue);
+
+      if (!matchesSearch) {
+        continue;
+      }
+
+      if (BUILT_IN_TEST_CHAIN_IDS.has(chainId)) {
+        testnets.push(network);
+      } else {
+        networks.push(network);
+      }
+    }
+
+    return { chainlistNetworks: networks, defaultTestnets: testnets };
+  }, [existingNetworkNamesByChainId, safeChains, searchValue]);
 
   const visibleChainlistNetworks = useMemo(
     () => chainlistNetworks.slice(0, visibleNetworkCount),
     [chainlistNetworks, visibleNetworkCount],
   );
   const showNoSearchResults =
-    searchValue.trim().length > 0 && chainlistNetworks.length === 0;
+    searchValue.trim().length > 0 &&
+    chainlistNetworks.length === 0 &&
+    defaultTestnets.length === 0;
+
+  const handleToggleTestNetworks = useCallback(
+    (value: boolean) => {
+      if (currentlyOnTestnet) {
+        return;
+      }
+
+      const nextValue = !value;
+      dispatch(setShowTestNetworksPreference(nextValue));
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            value: nextValue,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, currentlyOnTestnet, dispatch, trackEvent],
+  );
+
+  const handleDefaultTestnetClick = useCallback(() => {
+    if (!showTestNetworks) {
+      dispatch(setShowTestNetworksPreference(true));
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            value: true,
+          })
+          .build(),
+      );
+    }
+
+    onOpenNetworkList();
+  }, [
+    createEventBuilder,
+    dispatch,
+    onOpenNetworkList,
+    showTestNetworks,
+    trackEvent,
+  ]);
 
   const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
   if (searchValue !== prevSearchValue) {
@@ -188,6 +250,75 @@ export const ChainlistNetworkPicker = ({
     },
     [chainlistNetworks.length],
   );
+
+  const renderChainlistNetwork = (
+    network: ChainlistNetwork,
+    onClick: () => void,
+  ) => {
+    const chainId = getHexChainId(network.chainId);
+    const isExistingNetwork = existingNetworkChainIds.has(chainId);
+    const displayName = existingNetworkNamesByChainId[chainId] ?? network.name;
+    const networkImageUrl =
+      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+        chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+      ];
+
+    return (
+      <button
+        className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
+        data-testid="networks-page-chainlist-network"
+        key={`${network.chainId}-${network.name}`}
+        type="button"
+        onClick={onClick}
+      >
+        {networkImageUrl ? (
+          <AvatarNetwork
+            className="shrink-0 rounded-lg"
+            name={displayName}
+            size="md"
+            src={networkImageUrl}
+          />
+        ) : (
+          <Box className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-medium text-text-default">
+            {displayName.charAt(0).toUpperCase()}
+          </Box>
+        )}
+        <Box className="min-w-0 flex-1">
+          <Box className="flex min-w-0 items-center gap-2">
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              className="truncate"
+            >
+              {displayName}
+            </Text>
+            {isExistingNetwork ? (
+              <Box
+                className="shrink-0 rounded bg-muted px-2 py-0.5"
+                data-testid="networks-page-chainlist-added-pill"
+              >
+                <Text
+                  variant={TextVariant.BodySm}
+                  className="text-text-alternative"
+                >
+                  {t('added')}
+                </Text>
+              </Box>
+            ) : null}
+          </Box>
+          <Text
+            variant={TextVariant.BodyMd}
+            className="truncate text-text-alternative"
+          >
+            {t('chainlistNetworkDetails', [
+              network.nativeCurrency.symbol,
+              String(network.chainId),
+            ])}
+          </Text>
+        </Box>
+      </button>
+    );
+  };
 
   const isDropdown = layout === 'dropdown';
 
@@ -263,77 +394,33 @@ export const ChainlistNetworkPicker = ({
             {showNoSearchResults ? (
               <NoSearchResult dataTestId="networks-page-chainlist-no-results" />
             ) : null}
-            {visibleChainlistNetworks.map((network) => {
-              const isExistingNetwork = existingNetworkChainIds.has(
-                getHexChainId(network.chainId),
-              );
-              const displayName =
-                existingNetworkNamesByChainId[getHexChainId(network.chainId)] ??
-                network.name;
-              const networkImageUrl =
-                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                  getHexChainId(
-                    network.chainId,
-                  ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                ];
-
-              return (
-                <button
-                  className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
-                  data-testid="networks-page-chainlist-network"
-                  key={`${network.chainId}-${network.name}`}
-                  onClick={() =>
-                    onSelect(network, searchValue.trim() || undefined)
-                  }
+            {defaultTestnets.length > 0 ? (
+              <Box
+                className="flex items-center justify-between px-4 py-3"
+                data-testid="networks-page-chainlist-default-testnets"
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  className="text-text-alternative"
                 >
-                  {networkImageUrl ? (
-                    <AvatarNetwork
-                      className="shrink-0 rounded-lg"
-                      name={displayName}
-                      size="md"
-                      src={networkImageUrl}
-                    />
-                  ) : (
-                    <Box className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-medium text-text-default">
-                      {displayName.charAt(0).toUpperCase()}
-                    </Box>
-                  )}
-                  <Box className="min-w-0 flex-1">
-                    <Box className="flex min-w-0 items-center gap-2">
-                      <Text
-                        variant={TextVariant.BodyMd}
-                        fontWeight={FontWeight.Medium}
-                        className="truncate"
-                      >
-                        {displayName}
-                      </Text>
-                      {isExistingNetwork ? (
-                        <Box
-                          className="shrink-0 rounded bg-muted px-2 py-0.5"
-                          data-testid="networks-page-chainlist-added-pill"
-                        >
-                          <Text
-                            variant={TextVariant.BodySm}
-                            className="text-text-alternative"
-                          >
-                            {t('added')}
-                          </Text>
-                        </Box>
-                      ) : null}
-                    </Box>
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      className="truncate text-text-alternative"
-                    >
-                      {t('chainlistNetworkDetails', [
-                        network.nativeCurrency.symbol,
-                        String(network.chainId),
-                      ])}
-                    </Text>
-                  </Box>
-                </button>
-              );
-            })}
+                  {t('showTestnetNetworks')}
+                </Text>
+                <ToggleButton
+                  dataTestId="networks-page-chainlist-show-test-networks"
+                  disabled={currentlyOnTestnet}
+                  onToggle={handleToggleTestNetworks}
+                  value={showTestNetworks}
+                />
+              </Box>
+            ) : null}
+            {defaultTestnets.map((network) =>
+              renderChainlistNetwork(network, handleDefaultTestnetClick),
+            )}
+            {visibleChainlistNetworks.map((network) =>
+              renderChainlistNetwork(network, () =>
+                onSelect(network, searchValue.trim() || undefined),
+              ),
+            )}
           </>
         )}
       </Box>
