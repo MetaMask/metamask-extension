@@ -10154,16 +10154,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^34.0.3":
-  version: 34.0.3
-  resolution: "@metamask/profile-sync-controller@npm:34.0.3"
+"@metamask/profile-sync-controller@npm:^34.1.0":
+  version: 34.1.0
+  resolution: "@metamask/profile-sync-controller@npm:34.1.0"
   dependencies:
     "@metamask/address-book-controller": "npm:^8.0.0"
-    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/cryptography": "npm:^1.1.2"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-controller": "npm:^28.1.0"
+    "@metamask/keyring-controller": "npm:^28.2.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/seedless-onboarding-controller": "npm:^12.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
@@ -10172,11 +10172,11 @@ __metadata:
     "@noble/hashes": "npm:^1.8.0"
     "@signinwithethereum/siwe": "npm:^4.2.1"
     immer: "npm:^11.1.18"
-    loglevel: "npm:^1.8.1"
+    loglevel: "npm:^1.9.2"
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/cfd1825f5c50e5fd11214dac17263a4fdf5706c1145b7c06d7ad6def11082c57c17dc911cec4af923ec83fc43c1c3a7fafc53c13f5e7dca1e0f8f3c438a9de6a
+  checksum: 10/d2771b885918f2c96b2513b421a108eda9276996d6864dece4abd2eed17e2b4a70ecbabb1f026978a6f96872ddddc02c64215ab7818ed9e7735128d0d19c41bb
   languageName: node
   linkType: hard
 
@@ -36190,7 +36190,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.8.1"
     "@metamask/profile-metrics-controller": "npm:^5.1.0"
-    "@metamask/profile-sync-controller": "npm:^34.0.3"
+    "@metamask/profile-sync-controller": "npm:^34.1.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/ramps-controller": "npm:^26.0.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
