@@ -27,6 +27,19 @@ asynchronously. This puts SDK parsing/evaluation on the UI load path, but avoids
 turning synchronous identity operations into a second asynchronous lifecycle.
 Revisit code splitting only with measured startup evidence.
 
+## LavaMoat policy
+
+`@braze/web-sdk` is restricted in each build's `policy-override.json`. The
+denied globals belong to SDK features this integration does not enable: push
+and Safari notifications, the real-time messaging `EventSource`, Braze-hosted
+in-app message/chat viewport helpers, action-link decoding, and `window.open`.
+`document`, `navigator`, and `localStorage` stay whole-object grants because the
+SDK initializes its base URL, cookie/local storage, and device metadata before
+any feature can be gated, and the current LavaMoat runtime does not support
+re-allowing several members of a denied parent. Add a capability to the
+override only together with the feature that needs it; `policy.json` is
+generated and re-adds the full set on the next `yarn lavamoat:auto`.
+
 ## Following integrations
 
 `changeUser` **starts a session when the ID changes**, even without an explicit
