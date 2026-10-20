@@ -2878,13 +2878,6 @@ export function setShowSupportDataConsentModal(show: boolean) {
   };
 }
 
-export function clearProductTour() {
-  return async () => {
-    return submitRequestToBackground('AppStateController:clearProductTour', [
-      '',
-    ]);
-  };
-}
 export function addToken(
   {
     address,
