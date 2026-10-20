@@ -3,6 +3,7 @@ import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
 import { type ErrorLike } from '../../../shared/constants/errors';
 import { hasAnalyticsConsent } from '../../../shared/lib/analytics';
+import { withTemporaryAllowance } from '../../../shared/lib/network-request-policy';
 import {
   getErrorHtml,
   maybeGetLocaleContext,
@@ -175,10 +176,10 @@ async function readStoredTheme(): Promise<ThemeType | undefined> {
 /**
  * Sends critical MetaMask errors to Sentry via direct API call.
  *
- * @param error - The error object to report to Sentry
- * @returns Promise that resolves when the report is sent
+ * @param startupError - The error object to report to Sentry
+ * @returns Promise that resolves after reporting finishes or its deadline expires.
  */
-async function sendErrorToSentry(error: ErrorLike): Promise<void> {
+async function sendErrorToSentry(startupError: ErrorLike): Promise<void> {
   const sentryDSN = getSentryTarget();
   if (!sentryDSN) {
     return;
@@ -191,7 +192,7 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
 
     // Extract sentryTags from error object (if present)
     // Any error can define error.sentryTags to add searchable tags to Sentry
-    const errorObj = error as Record<string, unknown>;
+    const errorObj = startupError as Record<string, unknown>;
     const errorSentryTags =
       errorObj?.sentryTags && typeof errorObj.sentryTags === 'object'
         ? (errorObj.sentryTags as Record<string, string>)
@@ -204,11 +205,11 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     // Create error_details without sentryTags to avoid duplication
     // (sentryTags are sent as top-level tags)
     let errorDetails: Record<string, unknown>;
-    if (error && typeof error === 'object') {
+    if (startupError && typeof startupError === 'object') {
       const { sentryTags: _omitted, ...rest } = errorObj;
       errorDetails = rest;
     } else {
-      errorDetails = { message: String(error) };
+      errorDetails = { message: String(startupError) };
     }
 
     // Create event payload according to Sentry specs
@@ -219,7 +220,8 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
       timestamp,
       platform: 'javascript',
       level: 'error',
-      message: error?.message || 'MetaMask extension crash critical error',
+      message:
+        startupError?.message || 'MetaMask extension crash critical error',
       release: browser.runtime.getManifest()?.version || 'unknown',
       extra: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -250,15 +252,43 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     const envelope = `${JSON.stringify(envelopeHeaders)}\n${JSON.stringify(itemHeader)}\n${eventPayloadString}`;
     const sentryEnvelopeURL = extractEnvelopeUrlFromDsn(sentryDSN);
 
-    // Send to Sentry envelope API (must match DSN region)
-    await fetch(sentryEnvelopeURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-sentry-envelope',
-      },
-      body: envelope,
-      keepalive: true,
+    const controller = new AbortController();
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    const deadline = new Promise<never>((_resolve, reject) => {
+      timeout = setTimeout(() => {
+        const timeoutError = new DOMException(
+          'Sentry reporting timed out',
+          'TimeoutError',
+        );
+        controller.abort(timeoutError);
+        reject(timeoutError);
+      }, SENTRY_REPORT_TIMEOUT_MS);
     });
+    try {
+      // Include lock acquisition, DNR installation and cleanup in the deadline:
+      // reporting must not prevent restarting or repairing a broken extension.
+      await Promise.race([
+        withTemporaryAllowance(
+          sentryEnvelopeURL,
+          async () => {
+            await fetch(sentryEnvelopeURL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-sentry-envelope',
+              },
+              body: envelope,
+              keepalive: true,
+              redirect: 'error',
+              signal: controller.signal,
+            });
+          },
+          { signal: controller.signal },
+        ),
+        deadline,
+      ]);
+    } finally {
+      clearTimeout(timeout);
+    }
   } catch (e) {
     console.error('Error sending report to Sentry:', e);
   }
@@ -445,12 +475,7 @@ export async function displayCriticalErrorMessage(
 
           try {
             if (shouldReportError()) {
-              await Promise.race([
-                sendErrorToSentry(error),
-                new Promise<void>((resolve) => {
-                  setTimeout(resolve, SENTRY_REPORT_TIMEOUT_MS);
-                }),
-              ]);
+              await sendErrorToSentry(error);
             }
             port.postMessage({
               data: {

@@ -3,6 +3,12 @@ import {
   getDefaultNetworkControllerState,
   type NetworkState,
 } from '@metamask/network-controller';
+import {
+  createAllowRules,
+  supportsTopDomains,
+  TEMPORARY_RULE_PAIRS,
+  type NetworkRequestRuleApi,
+} from '../../../shared/lib/network-request-policy';
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
@@ -21,20 +27,10 @@ const FRAME_BLOCK_RULE_ID = 1000001;
 const FRAME_LOCALHOST_RULE_ID = 1000011;
 const ALLOW_RULE_IDS = [1000002, 1000003];
 const REMOTE_REQUEST_PATTERN = '^(https?|wss?)://';
-// Reserve a pair per operation so overlapping callbacks can release independently.
-const TEMPORARY_RULE_PAIRS = Array.from({ length: 32 }, (_, index) => [
-  1000100 + index * 2,
-  1000101 + index * 2,
-]);
-
 type Domains = '*' | string[];
-type ReleaseAllowance = () => Promise<void>;
 let state: PolicyState = {};
 let onboardingDomains: string[] = [];
 let publish: (domains: Domains) => Promise<void> = async () => undefined;
-let acquireTemporaryAllowance:
-  | ((url: URL) => Promise<ReleaseAllowance>)
-  | undefined;
 
 /**
  * Install the Chrome request backstop and clear stale session allowances.
@@ -43,36 +39,16 @@ let acquireTemporaryAllowance:
  */
 export function initializeNetworkRequestPolicy(
   extensionId: string,
-  dnr: Pick<DeclarativeNetRequest.Static, 'updateSessionRules'> & {
-    // eslint-disable-next-line @typescript-eslint/naming-convention -- Native Chrome API spelling.
-    RuleConditionKeys?: Partial<Record<'TOP_DOMAINS', string>>;
-  },
+  dnr: NetworkRequestRuleApi,
 ): Promise<void> {
-  acquireTemporaryAllowance = undefined;
-  // Chrome 145+ exposes this enum specifically for condition feature detection.
-  // Never submit an unsupported top-only rule: an ignored condition could make
-  // it match ordinary browser traffic instead of just extension frames.
-  const supportsTopDomains =
-    dnr.RuleConditionKeys?.TOP_DOMAINS === 'topDomains';
-  const requestScopes = [
-    'initiatorDomains',
-    ...(supportsTopDomains ? ['topDomains'] : []),
-  ];
-  const createAllowRules = (
-    ruleIds: number[],
-    condition: DeclarativeNetRequest.Rule['condition'],
-  ): DeclarativeNetRequest.Rule[] =>
-    requestScopes.map((scope, index) => ({
-      id: ruleIds[index],
-      priority: 2,
-      action: { type: 'allow' },
-      condition: { ...condition, [scope]: [extensionId] },
-    }));
+  // Never submit unsupported top-only rules: an ignored condition could make
+  // them match ordinary browser traffic instead of just extension frames.
+  const hasTopDomains = supportsTopDomains(dnr);
   const frameCondition = {
     regexFilter: REMOTE_REQUEST_PATTERN,
     topDomains: [extensionId],
   };
-  const frameRules: DeclarativeNetRequest.Rule[] = supportsTopDomains
+  const frameRules: DeclarativeNetRequest.Rule[] = hasTopDomains
     ? [
         {
           id: FRAME_BLOCK_RULE_ID,
@@ -82,7 +58,7 @@ export function initializeNetworkRequestPolicy(
         },
       ]
     : [];
-  if (supportsTopDomains && process.env.IN_TEST) {
+  if (hasTopDomains && process.env.IN_TEST) {
     frameRules.push({
       id: FRAME_LOCALHOST_RULE_ID,
       priority: 3,
@@ -124,11 +100,16 @@ export function initializeNetworkRequestPolicy(
         const addRules =
           allowedDomains !== '*' && allowedDomains.length === 0
             ? []
-            : createAllowRules(ALLOW_RULE_IDS, {
-                regexFilter: REMOTE_REQUEST_PATTERN,
-                ...(allowedDomains === '*'
-                  ? {}
-                  : { requestDomains: allowedDomains }),
+            : createAllowRules({
+                extensionId,
+                dnr,
+                ruleIds: ALLOW_RULE_IDS,
+                condition: {
+                  regexFilter: REMOTE_REQUEST_PATTERN,
+                  ...(allowedDomains === '*'
+                    ? {}
+                    : { requestDomains: allowedDomains }),
+                },
               });
         try {
           await dnr.updateSessionRules({
@@ -146,76 +127,7 @@ export function initializeNetworkRequestPolicy(
     return result;
   };
 
-  const availableRulePairs = [...TEMPORARY_RULE_PAIRS];
-  const acquire = async (url: URL): Promise<ReleaseAllowance> => {
-    await pendingUpdate;
-    if (acquireTemporaryAllowance !== acquire) {
-      throw new Error('Network request policy was reinitialized');
-    }
-    const ruleIds = availableRulePairs.pop();
-    if (!ruleIds) {
-      throw new Error('Too many concurrent temporary network allowances');
-    }
-    const regexFilter = `^${url.href.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}$`;
-    try {
-      await dnr.updateSessionRules({
-        addRules: createAllowRules(ruleIds, {
-          regexFilter,
-          isUrlFilterCaseSensitive: true,
-        }),
-      });
-    } catch (error) {
-      availableRulePairs.push(ruleIds);
-      throw error;
-    }
-    return async () => {
-      // Initialization already cleared grants belonging to an older instance.
-      if (acquireTemporaryAllowance !== acquire) {
-        return;
-      }
-      await dnr.updateSessionRules({ removeRuleIds: ruleIds });
-      availableRulePairs.push(ruleIds);
-    };
-  };
-  acquireTemporaryAllowance = acquire;
   return pendingUpdate;
-}
-
-/**
- * Allow an exact HTTP(S) URL while a background callback runs, then revoke it.
- * Matching requests elsewhere in the extension can also use this allowance.
- * Await all work (including response consumption) inside the callback.
- *
- * @param url - Absolute URL to allow; fragments are ignored, credentials rejected.
- * @param callback - Work to run after browser enforcement confirms the allowance.
- * @returns The callback result after the allowance has been removed.
- */
-export async function withTemporaryAllowance<Result>(
-  url: string,
-  callback: () => Result | Promise<Result>,
-): Promise<Result> {
-  const endpoint = new URL(url);
-  if (
-    !['http:', 'https:'].includes(endpoint.protocol) ||
-    endpoint.username ||
-    endpoint.password
-  ) {
-    throw new Error(
-      'Temporary network allowances require an HTTP(S) URL without credentials',
-    );
-  }
-  endpoint.hash = '';
-  if (!acquireTemporaryAllowance) {
-    throw new Error(
-      'Network request policy is not initialized in this background context',
-    );
-  }
-  const release = await acquireTemporaryAllowance(endpoint);
-  try {
-    return await callback();
-  } finally {
-    await release();
-  }
 }
 
 /**

@@ -26,10 +26,11 @@ dependency security boundary. It does not cancel requests already in flight or
 make controller mutations atomic with browser rule updates. Unsaved RPC validation
 must explicitly acquire a temporary allowance if its URL is otherwise blocked.
 
-Background code can use a scoped allowance without changing the wallet policy:
+Background and UI code can use a scoped allowance without changing the wallet
+policy, even if background initialization fails:
 
 ```typescript
-import * as networkPolicy from './network-request-policy';
+import * as networkPolicy from '../../../shared/lib/network-request-policy';
 
 const result = await networkPolicy.withTemporaryAllowance(url, async () => {
   const response = await fetch(url, { redirect: 'error' });
@@ -43,13 +44,25 @@ without credentials, ignores fragments, and matches the exact normalized URL
 (including case-sensitive paths, ports and query strings). Other matching
 extension requests can also use that allowance while it is active. Independent
 rules support up to 32 overlapping operations without replacing the current
-wallet policy. Await all related work inside the callback; a callback that never
-settles keeps its allowance until background initialization clears it. There is
-no independent expiry or cancellation of requests already in flight.
+wallet policy. A shared Web Lock serializes only rule allocation and installation
+across UI and background contexts; callbacks run outside the lock, including
+nested calls. Await all related work inside the callback; a callback that never
+settles keeps its allowance until background initialization clears it.
+Initialization also revokes active temporary grants,
+so overlapping requests may fail. There is no independent expiry or cancellation
+of requests already in flight. Pass `{ signal }` as the third argument to cancel
+acquisition, and pass that same signal to `fetch` to cancel the request itself.
 
-This helper requires the initialized Chrome background context. Importing it in
-the UI does not create a background connection. RPC validation call sites do not
-yet use this helper.
+The critical error screen uses this helper only when its existing consent check
+permits reporting. It temporarily allows the configured Sentry envelope URL,
+with one two-second deadline covering lock acquisition, browser rule updates,
+the fetch and cleanup. Expiry cancels queued acquisition and aborts the fetch,
+letting restart and repair proceed. Redirects are rejected. Native DNR updates
+cannot be cancelled; a late installation is revoked without sending a report,
+and cleanup may finish after the deadline. A crashed UI can leave a grant until
+background initialization or the end of the browser session. Firefox runs the
+callback without changing browser rules. RPC validation call sites do not yet use
+this helper.
 
 On Chrome 123–144, opaque Snap sandbox traffic and other child frames with a
 different initiator are outside this backstop. Chrome 145+ adds top-frame coverage;
