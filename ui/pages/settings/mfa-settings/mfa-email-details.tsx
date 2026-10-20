@@ -14,12 +14,15 @@ import {
   IconAlert,
   IconAlertSeverity,
   IconName,
+  IconSize,
   Modal,
+  ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
   Text,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -192,24 +195,32 @@ const MfaEmailDetails = () => {
               onClose={() => setModal(undefined)}
               closeButtonProps={{ ariaLabel: t('close') }}
             />
-            <Box flexDirection={BoxFlexDirection.Column} gap={4} padding={4}>
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                <IconAlert severity={IconAlertSeverity.Danger} />
-                <Text variant={TextVariant.HeadingMd}>
-                  {t(MODALS[modal].title)}
+            <ModalBody>
+              <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.Center}
+                  gap={2}
+                >
+                  <IconAlert
+                    severity={IconAlertSeverity.Danger}
+                    size={IconSize.Xl}
+                  />
+                  <Text
+                    variant={TextVariant.HeadingSm}
+                    textAlign={TextAlign.Center}
+                  >
+                    {t(MODALS[modal].title)}
+                  </Text>
+                </Box>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                >
+                  {t(MODALS[modal].description)}
                 </Text>
               </Box>
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-              >
-                {t(MODALS[modal].description)}
-              </Text>
-            </Box>
+            </ModalBody>
             <ModalFooter>
               <Box flexDirection={BoxFlexDirection.Column} gap={4}>
                 {isConfirm ? (
