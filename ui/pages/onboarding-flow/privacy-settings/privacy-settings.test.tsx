@@ -265,15 +265,15 @@ describe('Privacy Settings Onboarding View', () => {
 
     fireEvent.click(getByRole('button', { name: messages.networks.message }));
 
-    expect(getByRole('button', { name: 'Ethereum' })).toHaveAttribute(
-      'type',
-      'button',
-    );
-    expect(getByRole('button', { name: 'Linea' })).toHaveAttribute(
-      'type',
-      'button',
-    );
-    expect(queryByRole('button', { name: 'Next' })).not.toBeInTheDocument();
+    expect(
+      getByRole('button', { name: messages.networkNameEthereum.message }),
+    ).toHaveAttribute('type', 'button');
+    expect(
+      getByRole('button', { name: messages.lineaMainnet.message }),
+    ).toHaveAttribute('type', 'button');
+    expect(
+      queryByRole('button', { name: messages.next.message }),
+    ).not.toBeInTheDocument();
     expect(queryByRole('button', { name: 'Sepolia' })).not.toBeInTheDocument();
   });
 
