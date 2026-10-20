@@ -1,8 +1,7 @@
 // The character limit on ENS names, nicknames and addresses before we truncate
 export const TRUNCATED_NAME_CHAR_LIMIT = 11;
 
-// Characters kept from the start of an address. A leading "0x" is removed
-// before this is applied, then added back for EVM addresses.
+// Characters kept from the start of an address, excluding "0x" if present
 // `${TRUNCATED_ADDRESS_START_CHARS}...${TRUNCATED_ADDRESS_END_CHARS}`
 export const TRUNCATED_ADDRESS_START_CHARS = 5;
 

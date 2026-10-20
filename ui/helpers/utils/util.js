@@ -300,8 +300,7 @@ export function shortenString(
 /**
  * Shortens an address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
- * A leading "0x" is removed before truncation and added back, so EVM and
- * non-EVM addresses keep the same number of address characters.
+ * Shortened addresses are 13 characters long for EVM.
  *
  * Example output: 0xabcde...12345
  * Example output: bc1qn...5eker
