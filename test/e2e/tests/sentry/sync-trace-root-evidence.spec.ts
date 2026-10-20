@@ -191,8 +191,13 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
           RENAMED_ACCOUNT,
         );
 
-        // Let contact syncing run and the background flush envelopes.
-        await driver.delay(30000);
+        // Wait for the contact-sync full transaction to reach the Sentry mock.
+        // Only that name is required below; the account-sync one is
+        // assert-if-present.
+        await driver.waitUntil(
+          async () => captured.some((t) => t.transaction === CONTACT_SYNC_FULL),
+          { interval: 500, timeout: 30000 },
+        );
 
         const accountSyncOps = captured.filter(
           (t) => t.transaction === ACCOUNT_SYNC_FULL,
