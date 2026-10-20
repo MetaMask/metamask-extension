@@ -6,8 +6,7 @@ import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
 
 /**
  * After a simulated position change in E2E, pushes a `userFills` snapshot via
- * opens Perps Activity, then pushUserFills and asserts a trade row appears
- and asserts a trade row appears
+ * `pushUserFills`, then opens Perps Activity and asserts a trade row appears
  * with the expected title fragment (same navigation pattern as other lifecycle tests).
  *
  * @param options
@@ -25,6 +24,8 @@ export async function assertPerpsActivityShowsCloseFill({
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
 }): Promise<void> {
+  pushUserFills();
+
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.checkPageIsLoaded();
   await marketDetailPage.clickBack();
@@ -40,7 +41,7 @@ export async function assertPerpsActivityShowsCloseFill({
   await perpsTab.waitForPerpsViewStable();
   // Activity only shows a just-closed trade via the live fill (REST history is
   // cached for 60s), and the wallet can drop a fill that arrives while leaving
-  // market detail. Push it now so the trade reliably reaches Activity.
+  // market detail. Push it again so the trade reliably reaches Activity.
   pushUserFills();
   await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
