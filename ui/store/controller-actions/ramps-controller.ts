@@ -43,7 +43,7 @@ export async function setRampsSelectedPaymentMethod(
 export async function getRampsTokens(
   region: string,
   action: 'buy' | 'sell' = 'buy',
-): Promise<TokensResponse | null> {
+): Promise<TokensResponse> {
   return submitRequestToBackground('getRampsTokens', [region, action]);
 }
 
