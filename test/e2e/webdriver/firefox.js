@@ -13,6 +13,7 @@ const firefox = require('selenium-webdriver/firefox');
 const { retry } = require('../../../development/lib/retry');
 const { isHeadless } = require('../../helpers/env');
 const { getOrBuildXpi } = require('../helpers/xpi');
+const { PINNED_FIREFOX_VERSION } = require('./pinned-browsers');
 
 // geckodriver 0.37.0 breaks some e2e tests as the dapp can't detect the wallet.
 // We pin the version as a temporary patch until migration to Playwright (in progress)
@@ -54,6 +55,8 @@ function resolveFirefoxPaths() {
       [
         '--browser',
         'firefox',
+        '--browser-version',
+        PINNED_FIREFOX_VERSION,
         '--driver',
         'geckodriver',
         '--driver-version',

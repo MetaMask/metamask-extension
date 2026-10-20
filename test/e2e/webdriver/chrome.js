@@ -5,6 +5,7 @@ const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 const { isHeadless } = require('../../helpers/env');
+const { PINNED_CHROME_VERSION } = require('./pinned-browsers');
 
 /**
  * Determine the appropriate proxy server value to use
@@ -91,8 +92,7 @@ class ChromeDriver {
       },
     });
 
-    // Temporarily lock to version 126
-    options.setBrowserVersion('126');
+    options.setBrowserVersion(PINNED_CHROME_VERSION);
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {

@@ -12,6 +12,7 @@ import type {
   DappPageLoadStats,
 } from '../../utils/types';
 import { DAPP_URL } from '../../../constants';
+import { resolvePinnedChromePath } from '../../../webdriver/pinned-browsers';
 import { aggregateDappPageLoadStatistics } from './dapp-page-load-stats';
 
 /**
@@ -84,8 +85,11 @@ export class PageLoadBenchmark {
     await fs.mkdir(userDataDir, { recursive: true });
 
     this.context = await chromium.launchPersistentContext(userDataDir, {
-      headless: Boolean(process.env.CI),
+      executablePath: resolvePinnedChromePath(),
+      // Headless is requested by flag below: new headless supports extensions.
+      headless: false,
       args: [
+        ...(process.env.CI ? ['--headless=new'] : []),
         `--disable-extensions-except=${this.extensionPath}`,
         `--load-extension=${this.extensionPath}`,
         '--disable-background-timer-throttling',

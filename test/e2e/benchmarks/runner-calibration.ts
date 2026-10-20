@@ -9,6 +9,10 @@ import firefox from 'selenium-webdriver/firefox';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { isHeadless } from '../../helpers/env';
+import {
+  PINNED_CHROME_VERSION,
+  PINNED_FIREFOX_VERSION,
+} from '../webdriver/pinned-browsers';
 
 const CALIBRATION_SAMPLES = 6;
 const WARMUP_SAMPLES = 1;
@@ -164,6 +168,8 @@ function resolveFirefoxPaths(): {
       [
         '--browser',
         'firefox',
+        '--browser-version',
+        PINNED_FIREFOX_VERSION,
         '--driver',
         'geckodriver',
         '--driver-version',
@@ -214,7 +220,9 @@ async function buildDriver() {
   if (isHeadless('SELENIUM')) {
     chromeArguments.push('--headless=new');
   }
-  const options = new chrome.Options().addArguments(chromeArguments);
+  const options = new chrome.Options()
+    .addArguments(chromeArguments)
+    .setBrowserVersion(PINNED_CHROME_VERSION);
   return await new Builder()
     .forBrowser('chrome')
     .setChromeOptions(options)
