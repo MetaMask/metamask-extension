@@ -1,274 +1,173 @@
+import { it } from '@jest/globals';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { act } from '@testing-library/react';
-import { waitFor } from '@testing-library/dom';
 import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
 import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
 import { clearBrazeUser, identifyBrazeUser } from './identify-braze-user';
 import { useBrazeIdentity } from './use-braze-identity';
 
-jest.mock('./identify-braze-user', () => ({
-  identifyBrazeUser: jest.fn(),
-  clearBrazeUser: jest.fn(),
-}));
+jest.mock('./identify-braze-user');
 
-const mockIdentifyBrazeUser = jest.mocked(identifyBrazeUser);
-const mockClearBrazeUser = jest.mocked(clearBrazeUser);
-
-const hdKeyring = (id: string) => ({
-  type: KeyringTypes.hd,
-  accounts: [],
-  metadata: { id, name: '' },
-});
-
-type ArrangeState = {
-  isUnlocked?: boolean;
-  useExternalServices?: boolean;
-  isSignedIn?: boolean;
-  canonicalProfileId?: string;
-  keyringId?: string;
-};
-
-const arrangeState = (overrides: ArrangeState = {}) => {
-  const {
-    isUnlocked = true,
-    useExternalServices = true,
-    isSignedIn = true,
-    keyringId = 'entropy-1',
-  } = overrides;
-  const canonicalProfileId =
-    'canonicalProfileId' in overrides
-      ? overrides.canonicalProfileId
-      : 'canonical-123';
-
-  return {
-    metamask: {
-      isUnlocked,
-      useExternalServices,
-      isSignedIn,
-      keyrings: canonicalProfileId ? [hdKeyring(keyringId)] : [],
-      srpSessionData: canonicalProfileId
-        ? {
-            [keyringId]: {
-              profile: { canonicalProfileId },
-            },
-          }
-        : undefined,
+const arrangeState = () => ({
+  metamask: {
+    isUnlocked: true,
+    useExternalServices: true,
+    isSignedIn: true,
+    keyrings: [
+      {
+        type: KeyringTypes.hd,
+        accounts: [],
+        metadata: { id: 'entropy-1', name: '' },
+      },
+    ],
+    srpSessionData: {
+      'entropy-1': { profile: { canonicalProfileId: 'canonical-123' } },
     },
-  };
-};
+  },
+});
 
 describe('useBrazeIdentity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIdentifyBrazeUser.mockResolvedValue(true);
-    mockClearBrazeUser.mockResolvedValue(undefined);
   });
 
-  it('identifies when unlocked, signed in, and a canonical profile ID is present', async () => {
+  it('identifies an unlocked, signed-in wallet with basic functionality enabled', () => {
     renderHookWithProviderTyped(() => useBrazeIdentity(), arrangeState());
 
-    await waitFor(() => {
-      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    expect(identifyBrazeUser).toHaveBeenCalledWith('canonical-123');
+    expect(clearBrazeUser).not.toHaveBeenCalled();
+  });
+
+  it('waits for the canonical profile ID', () => {
+    const state = arrangeState();
+    const { store } = renderHookWithProviderTyped(() => useBrazeIdentity(), {
+      metamask: { ...state.metamask, srpSessionData: {} },
     });
-    expect(mockIdentifyBrazeUser).toHaveBeenCalledWith('canonical-123');
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
+    expect(identifyBrazeUser).not.toHaveBeenCalled();
+
+    act(() => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: { srpSessionData: arrangeState().metamask.srpSessionData },
+      });
+    });
+
+    expect(identifyBrazeUser).toHaveBeenCalledWith('canonical-123');
+    expect(clearBrazeUser).not.toHaveBeenCalled();
   });
 
-  it('does not identify when the canonical profile ID is missing', () => {
-    renderHookWithProviderTyped(
-      () => useBrazeIdentity(),
-      arrangeState({ canonicalProfileId: undefined }),
-    );
-
-    expect(mockIdentifyBrazeUser).not.toHaveBeenCalled();
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
-  });
-
-  it('does not identify when the wallet is locked', () => {
-    renderHookWithProviderTyped(
-      () => useBrazeIdentity(),
-      arrangeState({ isUnlocked: false }),
-    );
-
-    expect(mockIdentifyBrazeUser).not.toHaveBeenCalled();
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
-  });
-
-  it('does not identify when basic functionality is off', () => {
-    renderHookWithProviderTyped(
-      () => useBrazeIdentity(),
-      arrangeState({ useExternalServices: false }),
-    );
-
-    expect(mockIdentifyBrazeUser).not.toHaveBeenCalled();
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
-  });
-
-  it('does not identify or wipe on the initial signed-out mount', () => {
-    renderHookWithProviderTyped(
-      () => useBrazeIdentity(),
-      arrangeState({ isSignedIn: false, canonicalProfileId: undefined }),
-    );
-
-    expect(mockIdentifyBrazeUser).not.toHaveBeenCalled();
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
-  });
-
-  it('does not call identify twice for the same ID', async () => {
+  it('waits for unlock before identifying', () => {
+    const state = arrangeState();
+    state.metamask.isUnlocked = false;
     const { store } = renderHookWithProviderTyped(
       () => useBrazeIdentity(),
-      arrangeState(),
+      state,
     );
+    expect(identifyBrazeUser).not.toHaveBeenCalled();
 
-    await waitFor(() => {
-      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
-    });
-
-    await act(async () => {
+    act(() => {
       store.dispatch({
         type: UPDATE_METAMASK_STATE,
         value: { isUnlocked: true },
       });
     });
 
-    expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    expect(identifyBrazeUser).toHaveBeenCalledWith('canonical-123');
+    expect(clearBrazeUser).not.toHaveBeenCalled();
   });
 
-  it('re-identifies when the canonical profile ID changes', async () => {
+  it.each(['isSignedIn', 'useExternalServices'] as const)(
+    'clears an active SDK instead of identifying when %s is off on mount',
+    (gate) => {
+      const state = arrangeState();
+      state.metamask[gate] = false;
+
+      renderHookWithProviderTyped(() => useBrazeIdentity(), state);
+
+      expect(identifyBrazeUser).not.toHaveBeenCalled();
+      expect(clearBrazeUser).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it('does not repeat identity synchronization on unrelated store updates', () => {
     const { store } = renderHookWithProviderTyped(
       () => useBrazeIdentity(),
       arrangeState(),
     );
 
-    await waitFor(() => {
-      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    act(() => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: { isUnlocked: true },
+      });
     });
 
-    await act(async () => {
+    expect(identifyBrazeUser).toHaveBeenCalledTimes(1);
+  });
+
+  it('re-identifies when the canonical profile ID changes', () => {
+    const { store } = renderHookWithProviderTyped(
+      () => useBrazeIdentity(),
+      arrangeState(),
+    );
+
+    act(() => {
       store.dispatch({
         type: UPDATE_METAMASK_STATE,
         value: {
-          keyrings: [hdKeyring('entropy-1')],
           srpSessionData: {
-            'entropy-1': {
-              profile: { canonicalProfileId: 'canonical-456' },
-            },
+            'entropy-1': { profile: { canonicalProfileId: 'canonical-456' } },
           },
         },
       });
     });
 
-    await waitFor(() => {
-      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(2);
-    });
-    expect(mockIdentifyBrazeUser).toHaveBeenLastCalledWith('canonical-456');
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
+    expect(identifyBrazeUser).toHaveBeenLastCalledWith('canonical-456');
+    expect(clearBrazeUser).not.toHaveBeenCalled();
   });
 
-  it('does not wipe when the wallet locks after identifying', async () => {
+  it('does not wipe when the wallet locks after identifying', () => {
     const { store } = renderHookWithProviderTyped(
       () => useBrazeIdentity(),
       arrangeState(),
     );
 
-    await waitFor(() => {
-      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
-    });
-
-    await act(async () => {
+    act(() => {
       store.dispatch({
         type: UPDATE_METAMASK_STATE,
-        value: { isUnlocked: false },
+        value: { isUnlocked: false, keyrings: [] },
       });
     });
 
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
+    expect(clearBrazeUser).not.toHaveBeenCalled();
+    expect(identifyBrazeUser).toHaveBeenCalledTimes(1);
   });
 
-  it('wipes after transitioning from signed in to signed out', async () => {
-    const { store } = renderHookWithProviderTyped(
-      () => useBrazeIdentity(),
-      arrangeState(),
-    );
+  it.each(['isSignedIn', 'useExternalServices'] as const)(
+    'clears when %s turns off and identifies again when it turns on',
+    (gate) => {
+      const { store } = renderHookWithProviderTyped(
+        () => useBrazeIdentity(),
+        arrangeState(),
+      );
 
-    await waitFor(() => {
-      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
-    });
-
-    await act(async () => {
-      store.dispatch({
-        type: UPDATE_METAMASK_STATE,
-        value: {
-          isSignedIn: false,
-          srpSessionData: undefined,
-          keyrings: [hdKeyring('entropy-1')],
-        },
+      act(() => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { [gate]: false },
+        });
       });
-    });
+      expect(clearBrazeUser).toHaveBeenCalledTimes(1);
 
-    await waitFor(() => {
-      expect(mockClearBrazeUser).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it('wipes when sign-out happens while the first identify is in flight', async () => {
-    let resolveIdentify: (value: boolean) => void = () => undefined;
-    mockIdentifyBrazeUser.mockImplementationOnce(
-      () =>
-        new Promise<boolean>((resolve) => {
-          resolveIdentify = resolve;
-        }),
-    );
-
-    const { store } = renderHookWithProviderTyped(
-      () => useBrazeIdentity(),
-      arrangeState(),
-    );
-
-    await waitFor(() => {
-      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
-    });
-
-    await act(async () => {
-      store.dispatch({
-        type: UPDATE_METAMASK_STATE,
-        value: {
-          isSignedIn: false,
-          srpSessionData: undefined,
-          keyrings: [hdKeyring('entropy-1')],
-        },
+      act(() => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { [gate]: true },
+        });
       });
-    });
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
 
-    await act(async () => {
-      resolveIdentify(true);
-    });
-
-    await waitFor(() => {
-      expect(mockClearBrazeUser).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it('wipes when basic functionality is turned off after identifying', async () => {
-    const { store } = renderHookWithProviderTyped(
-      () => useBrazeIdentity(),
-      arrangeState(),
-    );
-
-    await waitFor(() => {
-      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
-    });
-
-    await act(async () => {
-      store.dispatch({
-        type: UPDATE_METAMASK_STATE,
-        value: { useExternalServices: false },
-      });
-    });
-
-    await waitFor(() => {
-      expect(mockClearBrazeUser).toHaveBeenCalledTimes(1);
-    });
-  });
+      expect(identifyBrazeUser).toHaveBeenCalledTimes(2);
+      expect(identifyBrazeUser).toHaveBeenLastCalledWith('canonical-123');
+    },
+  );
 });

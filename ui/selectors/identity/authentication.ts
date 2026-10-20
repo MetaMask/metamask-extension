@@ -106,8 +106,8 @@ export const selectSessionData = createSelector([getMetamask], (metamask) =>
  * wallet it was created for. Keying by the first HD keyring — the same
  * identity Mobile uses — avoids identifying a reset-away session.
  *
- * Returns `undefined` when the identity is not knowable yet: signed out, no
- * session for the primary SRP, or the wallet is locked (keyrings emptied).
+ * Returns `undefined` when there is no primary HD keyring or no session for it.
+ * Callers gate SDK usage on sign-in and unlock separately.
  *
  * @param state - The current state of the Redux store.
  * @returns The canonical profile ID, or `undefined`.

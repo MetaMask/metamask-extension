@@ -1,152 +1,98 @@
-import { initialize as mockBrazeInitialize } from '@braze/web-sdk';
+import { it } from '@jest/globals';
+import { initialize, isInitialized } from '@braze/web-sdk';
 import { captureException } from '../../../shared/lib/sentry';
-import {
-  initializeBraze,
-  resetBrazeInitializationForTesting,
-} from './initialize-braze';
-
-jest.mock('@braze/web-sdk', () => ({
-  initialize: jest.fn().mockReturnValue(true),
-}));
+import { initializeBraze } from './initialize-braze';
 
 jest.mock('../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
 
-const mockInitialize = mockBrazeInitialize as jest.MockedFunction<
-  typeof mockBrazeInitialize
->;
-const mockCaptureException = captureException as jest.MockedFunction<
-  typeof captureException
->;
-
 describe('initializeBraze', () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
-    process.env = { ...originalEnv };
+    process.env = {
+      ...originalEnv,
+      BRAZE_WEB_API_KEY: 'test-key',
+      BRAZE_SDK_ENDPOINT: 'sdk.example.com',
+    };
     delete process.env.IN_TEST;
-    delete process.env.BRAZE_WEB_API_KEY;
-    delete process.env.BRAZE_SDK_ENDPOINT;
     delete process.env.METAMASK_DEBUG;
-    resetBrazeInitializationForTesting();
-    mockInitialize.mockReturnValue(true);
     jest.clearAllMocks();
-    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+    jest.mocked(initialize).mockReset().mockReturnValue(true);
+    jest.mocked(isInitialized).mockReturnValue(false);
   });
 
   afterEach(() => {
     process.env = originalEnv;
-    resetBrazeInitializationForTesting();
   });
 
-  it('resolves false when running in a test build', async () => {
+  it('does not initialize in a test build', () => {
     process.env.IN_TEST = 'true';
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
 
-    await expect(initializeBraze()).resolves.toBe(false);
-    expect(mockInitialize).not.toHaveBeenCalled();
+    expect(initializeBraze()).toBe(false);
+    expect(initialize).not.toHaveBeenCalled();
   });
 
-  it('resolves false when the API key is missing', async () => {
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
+  it.each(['BRAZE_WEB_API_KEY', 'BRAZE_SDK_ENDPOINT'])(
+    'does not initialize without %s',
+    (key) => {
+      delete process.env[key];
 
-    await expect(initializeBraze()).resolves.toBe(false);
-    expect(mockInitialize).not.toHaveBeenCalled();
-  });
+      expect(initializeBraze()).toBe(false);
+      expect(initialize).not.toHaveBeenCalled();
+    },
+  );
 
-  it('resolves false when the SDK endpoint is missing', async () => {
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-
-    await expect(initializeBraze()).resolves.toBe(false);
-    expect(mockInitialize).not.toHaveBeenCalled();
-  });
-
-  it('initializes the SDK with extension-safe options', async () => {
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
-    process.env.METAMASK_VERSION = '13.49.0';
+  it('initializes with extension-safe options', () => {
+    process.env.METAMASK_VERSION = '13.55.0';
     process.env.METAMASK_DEBUG = 'true';
 
-    await expect(initializeBraze()).resolves.toBe(true);
-    expect(mockInitialize).toHaveBeenCalledTimes(1);
-    expect(mockInitialize).toHaveBeenCalledWith('test-key', {
-      baseUrl: 'sdk.iad-07.braze.com',
+    expect(initializeBraze()).toBe(true);
+    expect(initialize).toHaveBeenCalledWith('test-key', {
+      baseUrl: 'sdk.example.com',
       enableLogging: true,
       noCookies: true,
       doNotLoadFontAwesome: true,
       allowUserSuppliedJavascript: false,
       manageServiceWorkerExternally: true,
       disablePushTokenMaintenance: true,
-      appVersion: '13.49.0',
+      appVersion: '13.55.0',
     });
   });
 
-  it('does not initialize twice', async () => {
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
+  it('does not enable SDK logging outside debug builds', () => {
+    initializeBraze();
 
-    await expect(initializeBraze()).resolves.toBe(true);
-    await expect(initializeBraze()).resolves.toBe(true);
-    expect(mockInitialize).toHaveBeenCalledTimes(1);
+    expect(initialize).toHaveBeenCalledWith(
+      'test-key',
+      expect.objectContaining({ enableLogging: false }),
+    );
   });
 
-  it('shares one initialization between concurrent calls', async () => {
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
+  it('reuses the initialized SDK', () => {
+    jest.mocked(isInitialized).mockReturnValue(true);
 
-    await expect(
-      Promise.all([initializeBraze(), initializeBraze()]),
-    ).resolves.toEqual([true, true]);
-    expect(mockInitialize).toHaveBeenCalledTimes(1);
+    expect(initializeBraze()).toBe(true);
+    expect(initialize).not.toHaveBeenCalled();
   });
 
-  it('resolves false and captures the error when initialize throws', async () => {
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
+  it('reports initialization errors without preventing a later attempt', () => {
     const error = new Error('init failed');
-    mockInitialize.mockImplementation(() => {
+    jest.mocked(initialize).mockImplementationOnce(() => {
       throw error;
     });
 
-    await expect(initializeBraze()).resolves.toBe(false);
-    expect(mockCaptureException).toHaveBeenCalledWith(error);
+    expect(initializeBraze()).toBe(false);
+    expect(captureException).toHaveBeenCalledWith(error);
+    expect(initializeBraze()).toBe(true);
   });
 
-  it('retries a later call after initialize throws', async () => {
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
-    const error = new Error('init failed');
-    mockInitialize.mockImplementationOnce(() => {
-      throw error;
-    });
+  it('allows a later attempt when the SDK reports failure', () => {
+    jest.mocked(initialize).mockReturnValueOnce(false);
 
-    await expect(initializeBraze()).resolves.toBe(false);
-
-    mockInitialize.mockReturnValue(true);
-    await expect(initializeBraze()).resolves.toBe(true);
-    expect(mockInitialize).toHaveBeenCalledTimes(2);
-  });
-
-  it('retries a later call after the SDK reports initialize failure', async () => {
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
-    mockInitialize.mockReturnValueOnce(false);
-
-    await expect(initializeBraze()).resolves.toBe(false);
-
-    mockInitialize.mockReturnValue(true);
-    await expect(initializeBraze()).resolves.toBe(true);
-    expect(mockInitialize).toHaveBeenCalledTimes(2);
-  });
-
-  it('resolves false when the SDK reports initialize failure', async () => {
-    process.env.BRAZE_WEB_API_KEY = 'test-key';
-    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
-    mockInitialize.mockReturnValue(false);
-
-    await expect(initializeBraze()).resolves.toBe(false);
-    expect(mockCaptureException).not.toHaveBeenCalled();
+    expect(initializeBraze()).toBe(false);
+    expect(captureException).not.toHaveBeenCalled();
+    expect(initializeBraze()).toBe(true);
   });
 });
