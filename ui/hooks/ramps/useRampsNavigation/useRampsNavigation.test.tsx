@@ -806,12 +806,45 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('normalizes the geolocation region when the persisted region is unavailable', async () => {
+  it('resolves the cold-start fetch region through the controller when the persisted region is unavailable', async () => {
+    // With no persisted region, the fetch region must be the one the
+    // controller itself resolves (and will use for `setSelectedToken`), not
+    // an ad-hoc lowercasing of the raw geolocation string.
     const assetId = 'eip155:1/erc20:0xabc';
     backgroundHandlers.getRampsTokens = () => ({
       topTokens: [],
       allTokens: [{ assetId, tokenSupported: true } as RampsToken],
     });
+    backgroundHandlers.setRampsUserRegion = () => region;
+    const { result } = run(
+      buildState({
+        userRegion: null,
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    await goToBuy(result, { assetId });
+
+    expect(mockBackground).toHaveBeenCalledWith('setRampsUserRegion', [
+      'US-CA',
+    ]);
+    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+      'us',
+      'buy',
+    ]);
+  });
+
+  it('falls back to the lowercased geolocation string when seeding the region fails', async () => {
+    // E.g. the countries catalog is not loaded yet: keep the old best-effort
+    // fetch rather than skipping it.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+    });
+    backgroundHandlers.setRampsUserRegion = () => {
+      throw new Error('No countries found');
+    };
     const { result } = run(
       buildState({
         userRegion: null,

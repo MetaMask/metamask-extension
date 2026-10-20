@@ -17,7 +17,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { getRampsTokens } from '../../../store/controller-actions/ramps-controller';
+import {
+  getRampsTokens,
+  setRampsUserRegion,
+} from '../../../store/controller-actions/ramps-controller';
 import { getIsRampsServiceDisruptionActive } from '../../../selectors/ramps-feature-flags';
 import { getIsRampRegionUnsupported } from '../../../selectors/ramps';
 import {
@@ -268,13 +271,22 @@ export default function useRampsNavigation() {
 
       // `tokens` isn't persisted, and setSelectedToken throws until it's fetched
       // (e.g. after an MV3 service-worker restart). The controller dedupes this
-      // with RampsBootstrap's in-flight fetch.
+      // with RampsBootstrap's in-flight fetch. Resolve the region through the
+      // controller so the catalog fetch and `setSelectedToken` agree on one
+      // region code: with no persisted region, seed it from geolocation via
+      // `setRampsUserRegion`, which normalizes the raw geolocation string
+      // against the countries catalog and persists the canonical region code.
+      // Lowercasing the raw string here could fetch a catalog for a region the
+      // controller does not use, failing preselection for a supported token.
+      // If seeding fails (e.g. the countries catalog is not loaded yet), fall
+      // back to the lowercased geolocation string.
+      const fetchRegion = userRegion?.regionCode
+        ? userRegion.regionCode
+        : ((await setRampsUserRegion(location).catch(() => null))?.regionCode ??
+          location.toLowerCase());
       const fetchedTokens = tokens.data
         ? null
-        : await getRampsTokens(
-            userRegion?.regionCode ?? location.toLowerCase(),
-            'buy',
-          ).catch(() => null);
+        : await getRampsTokens(fetchRegion, 'buy').catch(() => null);
 
       // Resolve against the catalog. Block on one that definitively lacks or
       // does not support the token — either the rendered catalog settled
