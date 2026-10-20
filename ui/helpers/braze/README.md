@@ -6,8 +6,11 @@ per UI document.
 
 ## Lifecycle
 
-- Import the bundled SDK normally. Initialization still waits for an unlocked,
-  signed-in wallet with basic functionality enabled and a canonical profile ID.
+- Import the bundled SDK normally. Initialization waits for completed onboarding
+  and an unlocked, signed-in wallet with basic functionality enabled and a
+  canonical profile ID. Basic Functionality defaults to enabled during onboarding;
+  completion confirms the user has had a chance to disable it and their choice
+  has been applied. Braze must not initialize or send requests before then.
 - `BRAZE_WEB_API_KEY` and `BRAZE_SDK_ENDPOINT` must be configured. Test builds
   and builds without these values do not initialize Braze.
 - SDK lifecycle methods are synchronous. The SDK's `isInitialized()` and

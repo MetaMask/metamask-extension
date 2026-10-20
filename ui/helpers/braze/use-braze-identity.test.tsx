@@ -10,6 +10,7 @@ jest.mock('./identify-braze-user');
 
 const arrangeState = () => ({
   metamask: {
+    completedOnboarding: true,
     isUnlocked: true,
     useExternalServices: true,
     isSignedIn: true,
@@ -37,6 +38,19 @@ describe('useBrazeIdentity', () => {
     expect(identifyBrazeUser).toHaveBeenCalledWith('canonical-123');
     expect(clearBrazeUser).not.toHaveBeenCalled();
   });
+
+  it.each([false, undefined])(
+    'does not identify before onboarding completion is confirmed (%s)',
+    (completedOnboarding) => {
+      const state = arrangeState();
+
+      renderHookWithProviderTyped(() => useBrazeIdentity(), {
+        metamask: { ...state.metamask, completedOnboarding },
+      });
+
+      expect(identifyBrazeUser).not.toHaveBeenCalled();
+    },
+  );
 
   it('waits for the canonical profile ID', () => {
     const state = arrangeState();

@@ -1,5 +1,11 @@
+import { it } from '@jest/globals';
 import * as braze from '@braze/web-sdk';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { act } from '@testing-library/react';
+import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
+import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
 import { clearBrazeUser, identifyBrazeUser } from './identify-braze-user';
+import { useBrazeIdentity } from './use-braze-identity';
 
 // Bypass the global SDK stub: cleanup must match the real SDK lifecycle.
 jest.mock('@braze/web-sdk', () =>
@@ -7,6 +13,7 @@ jest.mock('@braze/web-sdk', () =>
 );
 
 jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
   captureException: jest.fn(),
 }));
 
@@ -43,6 +50,64 @@ describe('Braze SDK lifecycle', () => {
     jest.useRealTimers();
     process.env = originalEnv;
   });
+
+  it.each([true, false])(
+    'makes no requests before onboarding completes, then respects Basic Functionality = %s',
+    async (useExternalServices) => {
+      const { store } = renderHookWithProviderTyped(() => useBrazeIdentity(), {
+        metamask: {
+          completedOnboarding: false,
+          isUnlocked: true,
+          isSignedIn: true,
+          // The default is still true before the onboarding choice is applied.
+          useExternalServices: true,
+          keyrings: [
+            {
+              type: KeyringTypes.hd,
+              accounts: [],
+              metadata: { id: 'entropy-1', name: '' },
+            },
+          ],
+          srpSessionData: {
+            'entropy-1': { profile: { canonicalProfileId: 'canonical-123' } },
+          },
+        },
+      });
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(60_000);
+      });
+
+      expect(braze.isInitialized()).toBe(false);
+      expect(window.XMLHttpRequest.prototype.send).not.toHaveBeenCalled();
+
+      // Onboarding applies the user's preference before marking completion.
+      act(() => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { useExternalServices },
+        });
+      });
+      expect(braze.isInitialized()).toBe(false);
+      expect(window.XMLHttpRequest.prototype.send).not.toHaveBeenCalled();
+
+      await act(async () => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { completedOnboarding: true },
+        });
+        await jest.advanceTimersByTimeAsync(60_000);
+      });
+
+      expect(braze.isInitialized()).toBe(useExternalServices);
+      if (useExternalServices) {
+        expect(braze.getUser()?.getUserId()).toBe('canonical-123');
+        expect(window.XMLHttpRequest.prototype.send).toHaveBeenCalled();
+      } else {
+        expect(window.XMLHttpRequest.prototype.send).not.toHaveBeenCalled();
+      }
+    },
+  );
 
   it('stops the SDK without flushing queued events on cleanup', async () => {
     expect(identifyBrazeUser('canonical-123')).toBe(true);
