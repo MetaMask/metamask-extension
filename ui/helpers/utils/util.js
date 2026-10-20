@@ -22,7 +22,6 @@ import {
 } from '../../../shared/lib/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
-  TRUNCATED_NON_EVM_ADDRESS_START_CHARS as truncatedNonEvmAddressStartChars,
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
@@ -301,8 +300,8 @@ export function shortenString(
 /**
  * Shortens an address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
- * EVM addresses keep the first 7 characters (`0x` plus 5). Non-EVM addresses
- * keep the first 5 characters.
+ * A leading "0x" is removed before truncation and added back, so EVM and
+ * non-EVM addresses keep the same number of address characters.
  *
  * Example output: 0xabcde...12345
  * Example output: bc1qn...5eker
@@ -312,16 +311,16 @@ export function shortenString(
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  const truncatedStartChars = address.startsWith('0x')
-    ? TRUNCATED_ADDRESS_START_CHARS
-    : truncatedNonEvmAddressStartChars;
-
-  return shortenString(address, {
+  const isEvmAddress = address.startsWith('0x');
+  const addressWithoutPrefix = isEvmAddress ? address.slice(2) : address;
+  const shortenedAddress = shortenString(addressWithoutPrefix, {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
-    truncatedStartChars,
+    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
     skipCharacterInEnd: false,
   });
+
+  return isEvmAddress ? `0x${shortenedAddress}` : shortenedAddress;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
