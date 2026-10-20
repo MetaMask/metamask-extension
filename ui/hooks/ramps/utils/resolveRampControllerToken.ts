@@ -11,9 +11,10 @@ import { normalizeAssetIdForApi } from './normalizeAssetIdForApi';
  * @param allTokens - Tokens from the RampsController (e.g. `selectTokens(state).data?.allTokens`)
  * @returns The matching catalog token, or undefined when none matches.
  */
-export function resolveRampControllerToken<
-  Token extends Pick<RampsToken, 'assetId' | 'chainId'>,
->(assetId: string, allTokens: Token[]): Token | undefined {
+export function resolveRampControllerToken(
+  assetId: string,
+  allTokens: RampsToken[],
+): RampsToken | undefined {
   const [chainId, assetReference = ''] = assetId.split('/');
   const [namespace, reference = ''] = assetReference.split(':');
 

@@ -1,13 +1,16 @@
+import type { RampsToken } from '@metamask/ramps-controller';
 import { resolveRampControllerToken } from './resolveRampControllerToken';
 
 const DAI = 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
 describe('resolveRampControllerToken', () => {
-  const catalog = [
+  // The catalog shape the resolver reads; cast up to the full RampsToken.
+  const asRampsTokens = (tokens: unknown[]) => tokens as RampsToken[];
+  const catalog = asRampsTokens([
     { assetId: DAI, chainId: 'eip155:1' },
     { assetId: 'eip155:1/slip44:60', chainId: 'eip155:1' },
     { assetId: 'eip155:137/slip44:966', chainId: 'eip155:137' },
-  ];
+  ]);
 
   const resolveCases: [string, string, object][] = [
     [
@@ -57,13 +60,13 @@ describe('resolveRampControllerToken', () => {
   it('compares non-EVM namespaces case-sensitively', () => {
     // Solana base58 asset references are case-sensitive; EVM-style blanket
     // lowercasing must not fold two distinct ids together.
-    const solanaCatalog = [
+    const solanaCatalog = asRampsTokens([
       {
         assetId:
           'solana:5eykt4UsFv8P8NJdTREpY1vzUMK2fF9q/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzUMK2fF9q',
       },
-    ];
+    ]);
     expect(
       resolveRampControllerToken(
         'solana:5eykt4UsFv8P8NJdTREpY1vzUMK2fF9q/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1V',
