@@ -706,8 +706,6 @@ function isValidSentrySpan(value: unknown): value is Sentry.Span {
  * @returns Resolved Sentry Span or null.
  */
 function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
-  // Nullish, not falsy: `TraceContext` is `unknown`, so `0` / `''` / `false`
-  // reach here, and none of them state "no parent was declared".
   if (parentContext === null || parentContext === undefined) {
     return null;
   }
@@ -778,6 +776,9 @@ function startSpan<T>(
   } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
+  // `resolveParentSpan` returns `null` for both `undefined` and `null`, so the
+  // distinction below is read from `parentContext` itself.
+  //
   // `undefined` and `null` are different statements and must not be collapsed:
   //
   //   undefined -> no parent was declared. The ambient span is inherited
