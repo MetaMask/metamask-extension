@@ -10,9 +10,9 @@ import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
-  addNHdAccountsForDerivation,
+  addAccounts,
   waitUntilAccountTreeSyncIdle,
-} from '../../page-objects/flows/account-derivation.flow';
+} from '../../page-objects/flows/add-account.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
@@ -127,7 +127,15 @@ describe('Bitcoin account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await addNHdAccountsForDerivation(driver, 8);
+        await addAccounts({
+          driver,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
+        });
         await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
 
         const homepage = new HomePage(driver);
