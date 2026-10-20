@@ -6,11 +6,11 @@ import type {
   TraceRequest as ControllerTraceRequest,
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
-import { sentryLogger } from './sentry';
 import type {
   SwapTraceRequest,
   SwapRelatedTraceName,
 } from '@metamask/bridge-controller';
+import { sentryLogger } from './sentry';
 
 /**
  * The supported trace names.
