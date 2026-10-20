@@ -19,11 +19,7 @@ export const SideNav = () => {
       style={{ viewTransitionName: 'side-nav' }}
     >
       <Box padding={4}>
-      <img
-          alt=""
-          className="size-7"
-          src="./images/logo/metamask-fox.svg"
-        />
+        <img alt="" className="size-7" src="./images/logo/metamask-fox.svg" />
       </Box>
       <nav className="flex shrink-0 flex-col gap-1 pb-2">
         {items.map(({ id, icon, label, isActive, onClick }) => (
