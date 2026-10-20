@@ -3,6 +3,7 @@ import {
   type MpcMoneyKeyringOptions,
 } from '@metamask/eth-money-mpc-keyring/v2';
 import { type KeyringV2Builder } from '@metamask/keyring-controller';
+import type { KeyringBuilder } from '@metamask/keyring-controller';
 
 import { MpcMoneyKeyring } from './mpc-money-keyring';
 
@@ -25,7 +26,7 @@ import { MpcMoneyKeyring } from './mpc-money-keyring';
  * @returns The MPC money keyring builder.
  */
 export function buildMpcMoneyKeyringBuilder() {
-  const builder = () => new MpcMoneyKeyring();
+  const builder: KeyringBuilder = () => new MpcMoneyKeyring();
 
   builder.type = MpcMoneyKeyring.type;
 
@@ -44,7 +45,7 @@ export function buildMpcMoneyKeyringBuilder() {
  * @returns The MPC money keyring V2 builder.
  */
 export function buildMpcMoneyKeyringV2Builder(): KeyringV2Builder {
-  const builder = Object.assign(
+  const builder: KeyringV2Builder = Object.assign(
     (keyring: unknown) =>
       new MpcMoneyKeyringV2({
         legacyKeyring: keyring as MpcMoneyKeyringOptions['legacyKeyring'],
@@ -52,9 +53,5 @@ export function buildMpcMoneyKeyringV2Builder(): KeyringV2Builder {
     { type: MpcMoneyKeyring.type },
   );
 
-  // `KeyringV2Builder` declares its parameter and return types in terms of
-  // `@metamask/keyring-controller`'s `Keyring` / `KeyringV2`, which the wrapper
-  // satisfies structurally; this single boundary cast keeps callers free of
-  // repeated assertions, as it does for the other builders.
-  return builder as unknown as KeyringV2Builder;
+  return builder;
 }
