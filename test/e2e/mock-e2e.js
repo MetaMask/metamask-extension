@@ -469,10 +469,6 @@ const privateHostMatchers = [
   // { pattern: RegExp, host: string }
   { pattern: /^.*\.btc.*\.quiknode\.pro$/iu, host: '*.btc*.quiknode.pro' },
   {
-    pattern: /^.*\.monad-mainnet\.quiknode\.pro$/iu,
-    host: '*.monad-mainnet.quiknode.pro',
-  },
-  {
     pattern: /^.*-solana.*-.*\.mainnet\.rpcpool\.com/iu,
     host: '*solana*.mainnet.rpcpool.com',
   },

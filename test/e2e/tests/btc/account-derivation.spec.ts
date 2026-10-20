@@ -4,6 +4,7 @@ import {
   EXPECTED_BTC_ADDRESSES_BY_INDEX,
   EXPECTED_BTC_SCRIPT_PUBKEYS_BY_INDEX,
 } from '../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -31,11 +32,30 @@ import {
 import { proxyBitcoinBlockchainCalls } from './mocks/local-bitcoin-node-mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
+async function mockFeatureFlags(mockServer: Mockttp) {
+  return mockServer
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        // Account discovery queries popular EVM chains, while these Bitcoin
+        // tests only mock Bitcoin. Disable failover to avoid unrelated hosts.
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
+    }));
+}
+
 async function mockBtcAccountDerivationMocks(
   mockServer: Mockttp,
   bitcoinNode: BitcoinNode,
 ) {
   return [
+    await mockFeatureFlags(mockServer),
     await mockExchangeRates(mockServer),
     await mockCurrencyExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
