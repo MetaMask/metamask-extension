@@ -32,5 +32,5 @@ export const SIG_PARAM = 'sig';
 export const SIG_PARAMS_PARAM = 'sig_params';
 
 // Internal page that receives `/buy` deep link params and routes into the
-// in-app unified buy flow (registered in the UI as RAMPS_BUY_DEEP_LINK_ENTRY_ROUTE).
+// in-app unified buy flow.
 export const RAMPS_BUY_DEEP_LINK_ENTRY_PATH = '/ramps/buy-deeplink-entry';

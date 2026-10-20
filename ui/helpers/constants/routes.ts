@@ -1,7 +1,6 @@
 import { memoize } from 'lodash';
 
 import { MUSD_ROUTE_DEFINITIONS } from '../../pages/musd/constants/routes';
-import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../../../shared/lib/deep-links/common';
 import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
@@ -212,8 +211,6 @@ export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
 export const RAMPS_COMPLETE_BUY_ROUTE = '/ramps/complete-buy';
-// Receives `/buy` deep link params and routes into the native buy flow.
-export const RAMPS_BUY_DEEP_LINK_ENTRY_ROUTE = RAMPS_BUY_DEEP_LINK_ENTRY_PATH;
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
