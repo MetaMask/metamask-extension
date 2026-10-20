@@ -15,9 +15,8 @@ import { getMoneyAccountDepositConfig } from './helpers';
 /**
  * Port of mobile `tests/smoke-appium/confirmations/pay/money-account-deposit-max.spec.ts`.
  *
- * Mainnet USDC → Monad mUSD is a fixed-spread ("No fee") route, so the
- * percentage row offers Max (100%) instead of 90% and the whole 100 USDC
- * balance can be deposited.
+ * Money account deposits offer Max (100%) in place of 90% for every
+ * non-native pay token, so the whole 100 USDC balance can be deposited.
  */
 describe('Money Account Deposit - Max', function (this: Suite) {
   this.timeout(180_000);
