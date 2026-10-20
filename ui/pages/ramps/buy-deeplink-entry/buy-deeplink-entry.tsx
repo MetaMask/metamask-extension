@@ -70,9 +70,13 @@ export function BuyDeepLinkEntry() {
     // Replace this page in history: it exists only to intercept the deep link,
     // and back-buttoning into it would re-run the interception forever.
     goToBuy(intent, { replace: true, portfolioRedirectUrl })
-      .then((didNavigate) => {
-        // No navigation was possible (an eligibility modal was shown instead).
-        if (!didNavigate) {
+      .then((result) => {
+        // `'native'`: the in-app buy flow navigated. Anything else ends this
+        // page: `false` means an eligibility modal was shown instead, and
+        // `'portfolio'` means the buy opened outside the extension (flag off,
+        // or the one-time Portfolio order migration) — without this, the
+        // spinner would spin forever.
+        if (result !== 'native') {
           goHome();
         }
       })
