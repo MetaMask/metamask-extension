@@ -173,8 +173,6 @@ export function useEnableNotifications(): {
     setError(null);
 
     try {
-      // First-time preferences take the marketing channels from marketing
-      // consent in NotificationServicesController.
       await dispatch(enableMetamaskNotifications());
       await updateNotificationSubscriptionExpiration();
     } catch (e) {
