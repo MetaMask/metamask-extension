@@ -282,6 +282,43 @@ describe('Feature announcement footer buttons', () => {
     expect(global.platform.openTab).not.toHaveBeenCalled();
   });
 
+  it('re-resolves the deep link when the unified buy flag changes', async () => {
+    // Remote flags can arrive after the notification rendered; a cached
+    // resolution keyed only on the URL would keep the stale Portfolio href.
+    const linkUrl = 'https://link.metamask.io/buy?amount=100';
+    const portfolioHref = 'https://app.metamask.io/buy?amount=100';
+    const unifiedHref = '/ramps/buy-deeplink-entry?amount=100';
+    const resolveTrustedDeepLinkHrefSpy = jest
+      .spyOn(resolveDeepLinkHrefUtils, 'resolveTrustedDeepLinkHref')
+      .mockImplementation((href, isUnifiedBuyEnabled) =>
+        isUnifiedBuyEnabled
+          ? Promise.resolve(unifiedHref)
+          : Promise.resolve(portfolioHref),
+      );
+    mockUseSelector.mockReturnValue(false);
+    const { rerender } = renderExternalLinkButton(linkUrl);
+
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: linkText })).toHaveAttribute(
+        'href',
+        portfolioHref,
+      ),
+    );
+
+    mockUseSelector.mockReturnValue(true);
+    rerender(createExternalLinkButton(linkUrl));
+
+    await waitFor(() =>
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(linkUrl, true),
+    );
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: linkText })).toHaveAttribute(
+        'href',
+        unifiedHref,
+      ),
+    );
+  });
+
   it('does not reuse a resolved href after the external link URL changes', async () => {
     const firstUrl = 'https://link.metamask.io/buy?amount=100';
     const firstResolvedUrl = 'https://app.metamask.io/buy?amount=100';

@@ -19,11 +19,13 @@ import { FeatureAnnouncementNotification } from './types';
 type ResolvedHref = {
   href: string;
   sourceUrl: string;
+  isRampsEnabled: boolean;
 };
 
 type PendingResolvedHref = {
   promise: Promise<string>;
   sourceUrl: string;
+  isRampsEnabled: boolean;
 };
 
 function shouldUseDefaultLinkNavigation(
@@ -150,13 +152,22 @@ export const ExternalLinkButton = (props: {
       return Promise.resolve('');
     }
 
+    // The cache key includes the unified buy flag: remote flags can arrive
+    // after the notification rendered, and a URL-only key would keep serving
+    // the stale Portfolio resolution for `/buy` links.
     const resolvedHrefForLink = resolvedHrefRef.current;
-    if (resolvedHrefForLink?.sourceUrl === linkUrl) {
+    if (
+      resolvedHrefForLink?.sourceUrl === linkUrl &&
+      resolvedHrefForLink.isRampsEnabled === isRampsEnabled
+    ) {
       return Promise.resolve(resolvedHrefForLink.href);
     }
 
     const pendingResolvedHref = pendingResolvedHrefRef.current;
-    if (pendingResolvedHref?.sourceUrl === linkUrl) {
+    if (
+      pendingResolvedHref?.sourceUrl === linkUrl &&
+      pendingResolvedHref.isRampsEnabled === isRampsEnabled
+    ) {
       return pendingResolvedHref.promise;
     }
 
@@ -173,6 +184,7 @@ export const ExternalLinkButton = (props: {
     pendingResolvedHrefRef.current = {
       promise,
       sourceUrl: linkUrl,
+      isRampsEnabled,
     };
 
     return promise;
@@ -197,7 +209,7 @@ export const ExternalLinkButton = (props: {
     pendingResolvedHref
       .then((href) => {
         if (isMounted) {
-          const nextResolvedHref = { href, sourceUrl };
+          const nextResolvedHref = { href, sourceUrl, isRampsEnabled };
           resolvedHrefRef.current = nextResolvedHref;
           setResolvedHref(nextResolvedHref);
         }
@@ -220,7 +232,7 @@ export const ExternalLinkButton = (props: {
         pendingResolvedHrefRef.current = undefined;
       }
     };
-  }, [externalLinkUrl, resolveHref]);
+  }, [externalLinkUrl, isRampsEnabled, resolveHref]);
 
   if (!externalLinkUrl || !externalLink) {
     return null;
@@ -228,7 +240,10 @@ export const ExternalLinkButton = (props: {
 
   const { externalLinkText } = externalLink;
   const resolvedHrefForExternalLink =
-    resolvedHref?.sourceUrl === externalLinkUrl ? resolvedHref.href : undefined;
+    resolvedHref?.sourceUrl === externalLinkUrl &&
+    resolvedHref.isRampsEnabled === isRampsEnabled
+      ? resolvedHref.href
+      : undefined;
 
   const openResolvedLink = async () => {
     const href = await resolveHref();
