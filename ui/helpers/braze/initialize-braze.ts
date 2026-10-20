@@ -118,11 +118,17 @@ export function initializeBraze(): Promise<boolean> {
         console.warn(`${LOG_PREFIX} SDK initialized`, { baseUrl, appVersion });
       } else {
         console.warn(`${LOG_PREFIX} initialize returned false`);
+        // Clear the cache so a later call can retry the failure.
+        initializationPromise = undefined;
       }
 
       return didInitialize;
     })
     .catch((error) => {
+      // Clear the cache so a transient failure (chunk-load or network error)
+      // can be retried by a later call instead of disabling Braze for the
+      // rest of this document.
+      initializationPromise = undefined;
       captureException(error);
       console.warn(`${LOG_PREFIX} initialize threw`, error);
       return false;

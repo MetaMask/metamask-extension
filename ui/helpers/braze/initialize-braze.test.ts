@@ -113,6 +113,33 @@ describe('initializeBraze', () => {
     expect(mockCaptureException).toHaveBeenCalledWith(error);
   });
 
+  it('retries a later call after initialize throws', async () => {
+    process.env.BRAZE_WEB_API_KEY = 'test-key';
+    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
+    const error = new Error('init failed');
+    mockInitialize.mockImplementationOnce(() => {
+      throw error;
+    });
+
+    await expect(initializeBraze()).resolves.toBe(false);
+
+    mockInitialize.mockReturnValue(true);
+    await expect(initializeBraze()).resolves.toBe(true);
+    expect(mockInitialize).toHaveBeenCalledTimes(2);
+  });
+
+  it('retries a later call after the SDK reports initialize failure', async () => {
+    process.env.BRAZE_WEB_API_KEY = 'test-key';
+    process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';
+    mockInitialize.mockReturnValueOnce(false);
+
+    await expect(initializeBraze()).resolves.toBe(false);
+
+    mockInitialize.mockReturnValue(true);
+    await expect(initializeBraze()).resolves.toBe(true);
+    expect(mockInitialize).toHaveBeenCalledTimes(2);
+  });
+
   it('resolves false when the SDK reports initialize failure', async () => {
     process.env.BRAZE_WEB_API_KEY = 'test-key';
     process.env.BRAZE_SDK_ENDPOINT = 'sdk.iad-07.braze.com';

@@ -19,10 +19,11 @@ import { clearBrazeUser, identifyBrazeUser } from './identify-braze-user';
  * load or activate it.
  *
  * Wipes local Braze data on sign-out or when basic functionality is turned
- * off — in the document that observes the transition. A document that opens
+ * off — in the document that observes the transition. This includes a sign-out
+ * that happens while an identify is still in flight: the wipe is deferred to
+ * the identify's resolution instead of being skipped. A document that opens
  * already signed out never initialized the SDK, so stale persisted data stays
- * inert there and is re-keyed by the next `changeUser`. Does not wipe on
- * lock.
+ * inert there and is re-keyed by the next `changeUser`. Does not wipe on lock.
  *
  * Does not call `openSession` and is not driven by Segment `identify`.
  */
@@ -35,20 +36,33 @@ export function useBrazeIdentity(): void {
   const canonicalProfileId = useSelector(selectCanonicalProfileId);
   const identifiedProfileIdRef = useRef<string | undefined>(undefined);
   const hasIdentifiedRef = useRef(false);
+  // Latest gating decision, mirrored into a ref so an in-flight identify can
+  // re-check it when it resolves and wipe if the gates flipped off meanwhile.
+  const shouldIdentifyRef = useRef(false);
 
   useEffect(() => {
-    if (
-      isUnlocked &&
-      isBasicFunctionalityEnabled &&
-      isSignedIn &&
-      canonicalProfileId
-    ) {
-      if (identifiedProfileIdRef.current !== canonicalProfileId) {
-        identifyBrazeUser(canonicalProfileId)
-          .then((didIdentify) => {
-            if (didIdentify) {
-              identifiedProfileIdRef.current = canonicalProfileId;
+    const profileId =
+      isUnlocked && isBasicFunctionalityEnabled && isSignedIn
+        ? canonicalProfileId
+        : undefined;
+    shouldIdentifyRef.current = Boolean(profileId);
+
+    if (profileId) {
+      if (identifiedProfileIdRef.current !== profileId) {
+        identifyBrazeUser(profileId)
+          .then(async (didIdentify) => {
+            if (!didIdentify) {
+              return;
+            }
+
+            if (shouldIdentifyRef.current) {
+              identifiedProfileIdRef.current = profileId;
               hasIdentifiedRef.current = true;
+            } else {
+              // The gates flipped off while this identify was in flight, so
+              // the sign-out wipe was skipped — do it now that the SDK is
+              // initialized and `changeUser` has completed.
+              await clearBrazeUser();
             }
           })
           .catch(console.error);
