@@ -82,7 +82,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver, undefined, true);
+          await completeOnboardFlowIdentity(driver, {
+            dataCollectionForMarketing: true,
+          });
           await addAccounts({
             driver,
             count: 1,
@@ -123,7 +125,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver, undefined, true);
+          await completeOnboardFlowIdentity(driver, {
+            dataCollectionForMarketing: true,
+          });
           await addAccounts({
             driver,
             count: 1,

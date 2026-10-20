@@ -135,7 +135,9 @@ describe('Contact Syncing - Existing User', function () {
         },
         async ({ driver }) => {
           // Complete onboarding with existing SRP to get remote contacts
-          await completeOnboardFlowIdentity(driver, IDENTITY_TEAM_SEED_PHRASE);
+          await completeOnboardFlowIdentity(driver, {
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+          });
 
           const { waitUntilSyncedContactsNumberEquals, getCurrentContacts } =
             arrangeContactSyncingTestUtils(
@@ -276,7 +278,9 @@ describe('Contact Syncing - Existing User', function () {
         },
         async ({ driver }) => {
           // Complete onboarding with existing SRP to get synced contacts
-          await completeOnboardFlowIdentity(driver, IDENTITY_TEAM_SEED_PHRASE);
+          await completeOnboardFlowIdentity(driver, {
+            seedPhrase: IDENTITY_TEAM_SEED_PHRASE,
+          });
 
           const { waitUntilSyncedContactsNumberEquals, getCurrentContacts } =
             arrangeContactSyncingTestUtils(

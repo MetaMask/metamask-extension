@@ -94,7 +94,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver, undefined, true);
+          await completeOnboardFlowIdentity(driver, {
+            dataCollectionForMarketing: true,
+          });
           await enableNotificationsThroughGlobalMenu(driver);
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
@@ -141,7 +143,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver, undefined, true);
+          await completeOnboardFlowIdentity(driver, {
+            dataCollectionForMarketing: true,
+          });
           await enableNotificationsThroughSettingsPage(driver);
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
