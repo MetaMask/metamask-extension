@@ -63,6 +63,20 @@ describe('rewriteRemovedSettingsToggles', () => {
     ).toBe('verify Basic functionality is ON');
   });
 
+  it('rewrites toggle when it comes before the removed control name', () => {
+    expect(rewriteRemovedSettingsToggles('toggle Autodetect tokens')).toBe(
+      'toggle Basic functionality',
+    );
+    expect(rewriteRemovedSettingsToggles('toggle Display NFT media')).toBe(
+      'toggle Basic functionality',
+    );
+    expect(
+      rewriteRemovedSettingsToggles(
+        'Toggle Autodetect NFTs and confirm the NFT tab updates.',
+      ),
+    ).toBe('Toggle Basic functionality and confirm the NFT tab updates.');
+  });
+
   it('leaves unrelated detection copy unchanged', () => {
     expect(
       rewriteRemovedSettingsToggles(

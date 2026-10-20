@@ -156,6 +156,10 @@ export function rewriteRemovedSettingsToggles(text: string): string {
     'Basic functionality toggle',
   );
   rewritten = rewritten.replace(
+    /\btoggle\s+(?:the\s+)?(nft\s+auto-?detect(?:ion)?|autodetect\s+nfts|token\s+auto-?detection|autodetect\s+tokens|display\s+nft\s+media)\b/giu,
+    (match) => matchLeadingCase(match, 'toggle Basic functionality'),
+  );
+  rewritten = rewritten.replace(
     /\b(?:nft\s+|token\s+)?auto-?detection\s+is\s+(off|on)\b/giu,
     (_match, state: string) => `Basic functionality is ${state.toUpperCase()}`,
   );
