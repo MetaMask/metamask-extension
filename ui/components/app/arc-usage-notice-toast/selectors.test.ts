@@ -1,23 +1,47 @@
 import mockState from '../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { selectShowArcUsageNoticeToast } from './selectors';
 
-const ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
-const NATIVE = '0x0000000000000000000000000000000000000000';
-const TOKEN = '0x3600000000000000000000000000000000000000';
+const ACCOUNT_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+const ARC_NATIVE_ASSET_ID = 'eip155:5042/slip44:5042';
+const ARC_TOKEN_ASSET_ID =
+  'eip155:5042/erc20:0x3600000000000000000000000000000000000000';
+const MAINNET_TOKEN_ASSET_ID =
+  'eip155:1/erc20:0x3600000000000000000000000000000000000000';
+
+const ARC_NATIVE_INFO = {
+  type: 'native' as const,
+  decimals: 18,
+  symbol: 'USDC',
+};
+
+const ARC_TOKEN_INFO = {
+  type: 'erc20' as const,
+  decimals: 18,
+  symbol: 'USDC',
+  name: 'USDC',
+};
 
 const createArcState = ({
   arcUsageNoticeShown = false,
-  tokenBalances = {},
+  assetsBalance = {},
+  assetsInfo = {},
 }: {
   arcUsageNoticeShown?: boolean;
-  tokenBalances?: Record<string, Record<string, Record<string, string>>>;
+  assetsBalance?: Record<string, Record<string, { amount: string }>>;
+  assetsInfo?: Record<string, Record<string, unknown>>;
 }) =>
   ({
     metamask: {
       ...mockState.metamask,
       arcUsageNoticeShown,
-      tokenBalances,
+      assetsBalance: {
+        ...mockState.metamask.assetsBalance,
+        ...assetsBalance,
+      },
+      assetsInfo: {
+        ...mockState.metamask.assetsInfo,
+        ...assetsInfo,
+      },
     },
   }) as unknown as Parameters<typeof selectShowArcUsageNoticeToast>[0];
 
@@ -26,8 +50,14 @@ describe('#selectShowArcUsageNoticeToast', () => {
     expect(
       selectShowArcUsageNoticeToast(
         createArcState({
-          tokenBalances: {
-            [ACCOUNT]: { [CHAIN_IDS.ARC]: { [NATIVE]: '0xde0b6b3a7640000' } },
+          assetsBalance: {
+            [ACCOUNT_ID]: {
+              ...mockState.metamask.assetsBalance[ACCOUNT_ID],
+              [ARC_NATIVE_ASSET_ID]: { amount: '1' },
+            },
+          },
+          assetsInfo: {
+            [ARC_NATIVE_ASSET_ID]: ARC_NATIVE_INFO,
           },
         }),
       ),
@@ -38,8 +68,14 @@ describe('#selectShowArcUsageNoticeToast', () => {
     expect(
       selectShowArcUsageNoticeToast(
         createArcState({
-          tokenBalances: {
-            [ACCOUNT]: { [CHAIN_IDS.ARC]: { [NATIVE]: '0x0' } },
+          assetsBalance: {
+            [ACCOUNT_ID]: {
+              ...mockState.metamask.assetsBalance[ACCOUNT_ID],
+              [ARC_NATIVE_ASSET_ID]: { amount: '0' },
+            },
+          },
+          assetsInfo: {
+            [ARC_NATIVE_ASSET_ID]: ARC_NATIVE_INFO,
           },
         }),
       ),
@@ -55,8 +91,14 @@ describe('#selectShowArcUsageNoticeToast', () => {
       selectShowArcUsageNoticeToast(
         createArcState({
           arcUsageNoticeShown: true,
-          tokenBalances: {
-            [ACCOUNT]: { [CHAIN_IDS.ARC]: { [NATIVE]: '0xde0b6b3a7640000' } },
+          assetsBalance: {
+            [ACCOUNT_ID]: {
+              ...mockState.metamask.assetsBalance[ACCOUNT_ID],
+              [ARC_NATIVE_ASSET_ID]: { amount: '1' },
+            },
+          },
+          assetsInfo: {
+            [ARC_NATIVE_ASSET_ID]: ARC_NATIVE_INFO,
           },
         }),
       ),
@@ -67,13 +109,16 @@ describe('#selectShowArcUsageNoticeToast', () => {
     expect(
       selectShowArcUsageNoticeToast(
         createArcState({
-          tokenBalances: {
-            [ACCOUNT]: {
-              [CHAIN_IDS.ARC]: {
-                [NATIVE]: '0x0',
-                [TOKEN]: '0xde0b6b3a7640000',
-              },
+          assetsBalance: {
+            [ACCOUNT_ID]: {
+              ...mockState.metamask.assetsBalance[ACCOUNT_ID],
+              [ARC_NATIVE_ASSET_ID]: { amount: '0' },
+              [ARC_TOKEN_ASSET_ID]: { amount: '1' },
             },
+          },
+          assetsInfo: {
+            [ARC_NATIVE_ASSET_ID]: ARC_NATIVE_INFO,
+            [ARC_TOKEN_ASSET_ID]: ARC_TOKEN_INFO,
           },
         }),
       ),
@@ -84,10 +129,14 @@ describe('#selectShowArcUsageNoticeToast', () => {
     expect(
       selectShowArcUsageNoticeToast(
         createArcState({
-          tokenBalances: {
-            [ACCOUNT]: {
-              [CHAIN_IDS.MAINNET]: { [TOKEN]: '0xde0b6b3a7640000' },
+          assetsBalance: {
+            [ACCOUNT_ID]: {
+              ...mockState.metamask.assetsBalance[ACCOUNT_ID],
+              [MAINNET_TOKEN_ASSET_ID]: { amount: '1' },
             },
+          },
+          assetsInfo: {
+            [MAINNET_TOKEN_ASSET_ID]: ARC_TOKEN_INFO,
           },
         }),
       ),
@@ -98,7 +147,15 @@ describe('#selectShowArcUsageNoticeToast', () => {
     expect(
       selectShowArcUsageNoticeToast(
         createArcState({
-          tokenBalances: { [ACCOUNT]: { [CHAIN_IDS.ARC]: { [TOKEN]: '0x0' } } },
+          assetsBalance: {
+            [ACCOUNT_ID]: {
+              ...mockState.metamask.assetsBalance[ACCOUNT_ID],
+              [ARC_TOKEN_ASSET_ID]: { amount: '0' },
+            },
+          },
+          assetsInfo: {
+            [ARC_TOKEN_ASSET_ID]: ARC_TOKEN_INFO,
+          },
         }),
       ),
     ).toBe(false);
