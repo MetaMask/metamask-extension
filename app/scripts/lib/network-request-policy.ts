@@ -22,10 +22,10 @@ const FRAME_LOCALHOST_RULE_ID = 1000011;
 const ALLOW_RULE_IDS = [1000002, 1000003];
 const REMOTE_REQUEST_PATTERN = '^(https?|wss?)://';
 // Reserve a pair per operation so overlapping callbacks can release independently.
-const TEMPORARY_RULE_IDS = Array.from(
-  { length: 64 },
-  (_, index) => 1000100 + index,
-);
+const TEMPORARY_RULE_PAIRS = Array.from({ length: 32 }, (_, index) => [
+  1000100 + index * 2,
+  1000101 + index * 2,
+]);
 
 type Domains = '*' | string[];
 type ReleaseAllowance = () => Promise<void>;
@@ -58,6 +58,16 @@ export function initializeNetworkRequestPolicy(
     'initiatorDomains',
     ...(supportsTopDomains ? ['topDomains'] : []),
   ];
+  const createAllowRules = (
+    ruleIds: number[],
+    condition: DeclarativeNetRequest.Rule['condition'],
+  ): DeclarativeNetRequest.Rule[] =>
+    requestScopes.map((scope, index) => ({
+      id: ruleIds[index],
+      priority: 2,
+      action: { type: 'allow' },
+      condition: { ...condition, [scope]: [extensionId] },
+    }));
   const frameCondition = {
     regexFilter: REMOTE_REQUEST_PATTERN,
     topDomains: [extensionId],
@@ -83,25 +93,20 @@ export function initializeNetworkRequestPolicy(
       },
     });
   }
-  // Clear interrupted temporary grants, then atomically install the frame guard
-  // and revoke stale policy grants before controllers and Snap sandboxes start.
-  // The packaged initiator guard is already active on every supported version.
+  // Clear stale grants and install the frame guard atomically before controllers
+  // and Snap sandboxes start. The packaged initiator guard is already active.
+  const grantRuleIds = [...ALLOW_RULE_IDS, ...TEMPORARY_RULE_PAIRS.flat()];
   let pendingUpdate = dnr
     .updateSessionRules({
-      removeRuleIds: TEMPORARY_RULE_IDS,
+      removeRuleIds: [
+        FRAME_BLOCK_RULE_ID,
+        FRAME_LOCALHOST_RULE_ID,
+        ...grantRuleIds,
+      ],
+      addRules: frameRules,
     })
-    .then(() =>
-      dnr.updateSessionRules({
-        removeRuleIds: [
-          FRAME_BLOCK_RULE_ID,
-          FRAME_LOCALHOST_RULE_ID,
-          ...ALLOW_RULE_IDS,
-        ],
-        addRules: frameRules,
-      }),
-    )
     .catch(async (error) => {
-      await dnr.updateSessionRules({ removeRuleIds: ALLOW_RULE_IDS });
+      await dnr.updateSessionRules({ removeRuleIds: grantRuleIds });
       throw error;
     });
   let publishedPolicyKey = '[]';
@@ -116,21 +121,15 @@ export function initializeNetworkRequestPolicy(
         if (policyKey === publishedPolicyKey) {
           return;
         }
-        const addRules: DeclarativeNetRequest.Rule[] =
+        const addRules =
           allowedDomains !== '*' && allowedDomains.length === 0
             ? []
-            : requestScopes.map((scope, index) => ({
-                id: ALLOW_RULE_IDS[index],
-                priority: 2,
-                action: { type: 'allow' },
-                condition: {
-                  regexFilter: REMOTE_REQUEST_PATTERN,
-                  [scope]: [extensionId],
-                  ...(allowedDomains === '*'
-                    ? {}
-                    : { requestDomains: allowedDomains }),
-                },
-              }));
+            : createAllowRules(ALLOW_RULE_IDS, {
+                regexFilter: REMOTE_REQUEST_PATTERN,
+                ...(allowedDomains === '*'
+                  ? {}
+                  : { requestDomains: allowedDomains }),
+              });
         try {
           await dnr.updateSessionRules({
             removeRuleIds: ALLOW_RULE_IDS,
@@ -147,36 +146,26 @@ export function initializeNetworkRequestPolicy(
     return result;
   };
 
-  const activeAllowances = new Set<number>();
+  const availableRulePairs = [...TEMPORARY_RULE_PAIRS];
   const acquire = async (url: URL): Promise<ReleaseAllowance> => {
     await pendingUpdate;
     if (acquireTemporaryAllowance !== acquire) {
       throw new Error('Network request policy was reinitialized');
     }
-    const firstRuleId = TEMPORARY_RULE_IDS.find(
-      (id, index) => index % 2 === 0 && !activeAllowances.has(id),
-    );
-    if (firstRuleId === undefined) {
+    const ruleIds = availableRulePairs.pop();
+    if (!ruleIds) {
       throw new Error('Too many concurrent temporary network allowances');
     }
-    activeAllowances.add(firstRuleId);
-    const ruleIds = requestScopes.map((_, index) => firstRuleId + index);
     const regexFilter = `^${url.href.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}$`;
     try {
       await dnr.updateSessionRules({
-        addRules: requestScopes.map((scope, index) => ({
-          id: ruleIds[index],
-          priority: 2,
-          action: { type: 'allow' },
-          condition: {
-            regexFilter,
-            isUrlFilterCaseSensitive: true,
-            [scope]: [extensionId],
-          },
-        })),
+        addRules: createAllowRules(ruleIds, {
+          regexFilter,
+          isUrlFilterCaseSensitive: true,
+        }),
       });
     } catch (error) {
-      activeAllowances.delete(firstRuleId);
+      availableRulePairs.push(ruleIds);
       throw error;
     }
     return async () => {
@@ -185,7 +174,7 @@ export function initializeNetworkRequestPolicy(
         return;
       }
       await dnr.updateSessionRules({ removeRuleIds: ruleIds });
-      activeAllowances.delete(firstRuleId);
+      availableRulePairs.push(ruleIds);
     };
   };
   acquireTemporaryAllowance = acquire;

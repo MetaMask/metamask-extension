@@ -9,6 +9,10 @@ import {
 } from './network-request-policy';
 
 describe('network request policy', () => {
+  const temporaryRuleIds = Array.from(
+    { length: 64 },
+    (_, index) => 1000100 + index,
+  );
   const updateSessionRules = jest.fn().mockResolvedValue(undefined);
   const lastAddedRules = () => updateSessionRules.mock.lastCall[0].addRules;
   beforeEach(async () => {
@@ -23,7 +27,7 @@ describe('network request policy', () => {
 
   it('clears stale grants at startup', () => {
     expect(updateSessionRules).toHaveBeenCalledWith({
-      removeRuleIds: [1000001, 1000011, 1000002, 1000003],
+      removeRuleIds: [1000001, 1000011, 1000002, 1000003, ...temporaryRuleIds],
       addRules: [
         {
           id: 1000001,
@@ -43,7 +47,7 @@ describe('network request policy', () => {
       updateSessionRules,
     });
     expect(updateSessionRules.mock.lastCall[0]).toEqual({
-      removeRuleIds: [1000001, 1000011, 1000002, 1000003],
+      removeRuleIds: [1000001, 1000011, 1000002, 1000003, ...temporaryRuleIds],
       addRules: [],
     });
     await updateNetworkRequestDomains(['rpc.example']);
@@ -93,7 +97,7 @@ describe('network request policy', () => {
       }),
     ).rejects.toThrow('DNR failed');
     expect(updateSessionRules.mock.lastCall[0]).toEqual({
-      removeRuleIds: [1000002, 1000003],
+      removeRuleIds: [1000002, 1000003, ...temporaryRuleIds],
     });
   });
 
