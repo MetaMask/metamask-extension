@@ -56,14 +56,14 @@ export const SideNavAccounts = () => {
 
   return (
     <section
-      className="flex min-h-0 flex-1 flex-col"
+      className="flex min-h-0 flex-1 flex-col border-t-2 border-border-muted"
       data-testid="side-nav-accounts"
     >
-      <div className="flex items-center justify-between px-4 py-2">
+      <div className="flex items-center justify-between p-4">
         <Text
           variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
-          color={TextColor.TextAlternative}
+          color={TextColor.TextDefault}
         >
           {t('accounts')}
         </Text>

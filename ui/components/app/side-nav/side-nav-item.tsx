@@ -30,7 +30,7 @@ export const SideNavItem = ({
       type="button"
       data-testid={testId}
       onClick={onClick}
-      className={`group/item flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-200 hover:bg-background-default-hover ${
+      className={`group/item flex w-full items-center gap-3 px-3 py-2 text-left transition-colors duration-200 hover:bg-background-default-hover ${
         isActive ? 'bg-background-muted' : ''
       }`}
       aria-current={isActive ? 'page' : undefined}
