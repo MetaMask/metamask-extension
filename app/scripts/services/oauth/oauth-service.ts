@@ -69,6 +69,8 @@ export class OAuthService {
 
   #trackEvent: OAuthServiceOptions['trackEvent'];
 
+  #onboardingNetworkPolicyReady: Promise<void> | undefined;
+
   constructor({
     messenger,
     webAuthenticator,
@@ -136,13 +138,14 @@ export class OAuthService {
               typeof value === 'string' && value.startsWith('https://'),
           )
         : [];
-    await setOnboardingNetworkDomains([
+    this.#onboardingNetworkPolicyReady = setOnboardingNetworkDomains([
       new URL(this.#config.authServerUrl).hostname,
       'api.web3auth.io',
       nodeDomain,
       `geolocation.${isProduction() ? '' : 'dev-'}api.cx.metamask.io`,
       ...telegram.map((url) => new URL(url).hostname),
     ]);
+    await this.#onboardingNetworkPolicyReady;
 
     // get the user location to determine if the user is in US region
     // the location value will be used later to determine if Marketing Opt-in should be enabled by default
@@ -157,10 +160,22 @@ export class OAuthService {
       authConnection,
       parentTraceContext,
     ).catch(async (error) => {
+      this.#onboardingNetworkPolicyReady = undefined;
       await setOnboardingNetworkDomains([]);
       throw error;
     });
     return oAuthLoginResult;
+  }
+
+  /**
+   * Wait for the selected social login path's browser allowances before preload.
+   * The login request sets this promise synchronously before its first await.
+   */
+  async waitForOnboardingNetworkPolicy(): Promise<void> {
+    if (!this.#onboardingNetworkPolicyReady) {
+      throw new Error('Social login must start before preloading node details');
+    }
+    await this.#onboardingNetworkPolicyReady;
   }
 
   /**

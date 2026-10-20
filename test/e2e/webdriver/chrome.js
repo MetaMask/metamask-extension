@@ -5,9 +5,6 @@ const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 const { isHeadless } = require('../../helpers/env');
-const {
-  installChromeAtomWorkaround,
-} = require('../helpers/chrome-atom-workaround');
 
 /**
  * Determine the appropriate proxy server value to use
@@ -41,10 +38,6 @@ class ChromeDriver {
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad', // disable Crashpad to prevent orphaned crash-reporter processes
       '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
-      // Chrome 145 starts browser-owned GCM despite disable-background-networking.
-      // Keep it out of extension traffic assertions without allowing its domains.
-      '--gcm-checkin-url=http://127.0.0.1:0',
-      '--gcm-registration-url=http://127.0.0.1:0',
       '--disable-dev-shm-usage',
       '--no-sandbox',
     ];
@@ -98,8 +91,8 @@ class ChromeDriver {
       },
     });
 
-    options.setBrowserVersion('145');
-    options.enableBidi();
+    // Temporarily lock to version 126
+    options.setBrowserVersion('126');
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
@@ -127,7 +120,6 @@ class ChromeDriver {
 
     builder.setChromeService(service);
     const driver = builder.build();
-    installChromeAtomWorkaround(driver);
 
     // Ensure Chrome is cleaned up if anything below fails (extension ID
     // lookup, etc.).  Without this, a partial failure orphans the browser.

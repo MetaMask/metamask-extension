@@ -16,6 +16,9 @@ is unrestricted except for SRP wallets with Basic Functionality disabled: only
 saved RPC and saved failover domains (including their subdomains) are permitted.
 A linked social profile does not exempt an SRP wallet.
 
+OAuth and TOPRF preloading still run in parallel. The background preload handler
+waits for the selected social flow's DNR allowances, rather than the OAuth result.
+
 `updateNetworkRequestDomains('*' | string[])` updates browser allowances. Existing
 wallet state changes automatically recompute them; await the function when the
 caller needs confirmation. This is an asynchronous privacy backstop, not a
@@ -56,3 +59,7 @@ browser-wide rules are not used to compensate. Privileged rule tampering,
 page-origin requests and browser-owned OAuth navigation remain outside this scope.
 Test builds allow localhost for fixtures and the test socket. Production packages
 must use their actual signing ID; other stores need a corresponding build mapping.
+
+Selenium stays on Chrome 126. Native Chrome 145+ top-frame/Snap enforcement has
+no automated browser coverage in this PR; rule-generation unit tests remain.
+Browser verification of that coverage is manual for now.

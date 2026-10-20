@@ -303,8 +303,8 @@ export function startOAuthLogin(
           authConnection,
           ...(parentTraceContext ? [parentTraceContext] : []),
         ]),
+        submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
       ]);
-      await submitRequestToBackground('preloadToprfNodeDetails');
 
       let seedlessAuthSuccess = false;
       let isNewUser = false;

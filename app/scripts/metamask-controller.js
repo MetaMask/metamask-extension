@@ -3108,10 +3108,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // SeedlessOnboardingController
-      preloadToprfNodeDetails:
-        this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
-          this.seedlessOnboardingController,
-        ),
+      preloadToprfNodeDetails: async () => {
+        await this.oauthService.waitForOnboardingNetworkPolicy();
+        return this.seedlessOnboardingController.preloadToprfNodeDetails();
+      },
       authenticate: this.seedlessOnboardingController.authenticate.bind(
         this.seedlessOnboardingController,
       ),
