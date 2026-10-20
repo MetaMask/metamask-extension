@@ -2829,6 +2829,9 @@ export default class MetamaskController extends EventEmitter {
         authenticationController.getUserProfileLineage.bind(
           authenticationController,
         ),
+      getBearerToken: authenticationController.getBearerToken.bind(
+        authenticationController,
+      ),
       requestProfilePairing:
         authenticationController.requestProfilePairing.bind(
           authenticationController,
