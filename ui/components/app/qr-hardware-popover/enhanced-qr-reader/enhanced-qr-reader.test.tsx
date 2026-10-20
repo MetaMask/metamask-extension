@@ -192,6 +192,59 @@ describe('EnhancedQrReader', () => {
     });
   });
 
+  describe('camera start failures', () => {
+    it('releases the stream and logs when decoding fails to start', async () => {
+      const logDebugSpy = jest.spyOn(log, 'debug');
+      const error = new Error('play failed');
+      mockDecodeFromStream.mockRejectedValue(error);
+
+      render(<EnhancedQrReader onFrame={jest.fn()} />);
+      await flushPromises();
+
+      expect(mockStream.track.stop).toHaveBeenCalledTimes(1);
+      expect(logDebugSpy).toHaveBeenCalledWith(error);
+    });
+
+    it('logs rejection instead of throwing when the camera fails to start', async () => {
+      const logDebugSpy = jest.spyOn(log, 'debug');
+      const error = new Error('camera unavailable');
+      mockGetUserMedia.mockRejectedValue(error);
+
+      render(<EnhancedQrReader onFrame={jest.fn()} />);
+      await flushPromises();
+
+      expect(logDebugSpy).toHaveBeenCalledWith(error);
+      expect(mockDecodeFromStream).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('StrictMode', () => {
+    it('attaches only one stream under StrictMode double mount', async () => {
+      const staleStream = createMockStream();
+      mockGetUserMedia
+        .mockResolvedValueOnce(staleStream.stream)
+        .mockResolvedValueOnce(mockStream.stream);
+
+      render(
+        <React.StrictMode>
+          <EnhancedQrReader onFrame={jest.fn()} />
+        </React.StrictMode>,
+      );
+      await flushPromises();
+
+      expect(mockGetUserMedia).toHaveBeenCalledTimes(2);
+      expect(staleStream.track.stop).toHaveBeenCalledTimes(1);
+      expect(mockDecodeFromStream).toHaveBeenCalledTimes(1);
+      expect(mockDecodeFromStream).toHaveBeenCalledWith(
+        mockStream.stream,
+        expect.any(HTMLVideoElement),
+        expect.any(Function),
+      );
+      expect(mockControls.stop).not.toHaveBeenCalled();
+      expect(mockStream.track.stop).not.toHaveBeenCalled();
+    });
+  });
+
   describe('cleanup on unmount', () => {
     it('stops scanner controls when component unmounts', async () => {
       const { unmount } = render(<EnhancedQrReader onFrame={jest.fn()} />);
@@ -229,53 +282,6 @@ describe('EnhancedQrReader', () => {
       });
 
       expect(mockControls.stop).toHaveBeenCalledTimes(1);
-    });
-
-    it('releases the stream and logs when decoding fails to start', async () => {
-      const logDebugSpy = jest.spyOn(log, 'debug');
-      mockDecodeFromStream.mockRejectedValue(new Error('play failed'));
-
-      render(<EnhancedQrReader onFrame={jest.fn()} />);
-      await flushPromises();
-
-      expect(mockStream.track.stop).toHaveBeenCalledTimes(1);
-      expect(logDebugSpy).toHaveBeenCalled();
-    });
-
-    it('logs rejection instead of throwing when the camera fails to start', async () => {
-      const logDebugSpy = jest.spyOn(log, 'debug');
-      mockGetUserMedia.mockRejectedValue(new Error('camera unavailable'));
-
-      render(<EnhancedQrReader onFrame={jest.fn()} />);
-      await flushPromises();
-
-      expect(logDebugSpy).toHaveBeenCalled();
-      expect(mockDecodeFromStream).not.toHaveBeenCalled();
-    });
-
-    it('attaches only one stream under StrictMode double mount', async () => {
-      const staleStream = createMockStream();
-      mockGetUserMedia
-        .mockResolvedValueOnce(staleStream.stream)
-        .mockResolvedValueOnce(mockStream.stream);
-
-      render(
-        <React.StrictMode>
-          <EnhancedQrReader onFrame={jest.fn()} />
-        </React.StrictMode>,
-      );
-      await flushPromises();
-
-      expect(mockGetUserMedia).toHaveBeenCalledTimes(2);
-      expect(staleStream.track.stop).toHaveBeenCalledTimes(1);
-      expect(mockDecodeFromStream).toHaveBeenCalledTimes(1);
-      expect(mockDecodeFromStream).toHaveBeenCalledWith(
-        mockStream.stream,
-        expect.any(HTMLVideoElement),
-        expect.any(Function),
-      );
-      expect(mockControls.stop).not.toHaveBeenCalled();
-      expect(mockStream.track.stop).not.toHaveBeenCalled();
     });
 
     it('removes canplay listener on unmount', () => {
