@@ -289,23 +289,40 @@ export function parseSetupInfoRegion(json: unknown): string | undefined {
   return undefined;
 }
 
+let cachedHostedRegion: string | undefined | null = null;
+
 function readHostedRegion(
   runnersDir: string = '/home/runner/actions-runner/cached',
 ): string | undefined {
+  if (cachedHostedRegion !== null) {
+    return cachedHostedRegion;
+  }
+  const failures: string[] = [];
   try {
+    // Several runner versions can be cached; only some carry `.setup_info`.
     for (const version of readdirSync(runnersDir)) {
-      const region = parseSetupInfoRegion(
-        JSON.parse(
-          readFileSync(`${runnersDir}/${version}/.setup_info`, 'utf8'),
-        ),
-      );
-      if (region) {
-        return region;
+      try {
+        const region = parseSetupInfoRegion(
+          JSON.parse(
+            readFileSync(`${runnersDir}/${version}/.setup_info`, 'utf8'),
+          ),
+        );
+        if (region) {
+          cachedHostedRegion = region;
+          return region;
+        }
+        failures.push(`${version}: no Region entry`);
+      } catch (error) {
+        failures.push(`${version}: ${(error as Error).message}`);
       }
     }
-  } catch {
-    // Not a hosted runner, or the provisioner layout changed.
+  } catch (error) {
+    failures.push((error as Error).message);
   }
+  console.warn(
+    `Unable to read the hosted runner region: ${failures.join('; ')}`,
+  );
+  cachedHostedRegion = undefined;
   return undefined;
 }
 

@@ -15,6 +15,9 @@ self-hosted-runner:
     - "ghcr.io/cirruslabs/ubuntu-runner-amd64:24.04-lg"
     - "ghcr.io/cirruslabs/ubuntu-runner-amd64:24.04-xl"
     - "low-priority"
+    # TEMPORARY: GitHub-hosted image newer than actionlint's built-in label list.
+    # Remove once actionlint knows ubuntu-26.04.
+    - "ubuntu-26.04"
     # Namespace runner profile labels (INFRA-3592). Format: namespace-profile-<profile-name>.
     - "namespace-profile-metamask-ci-linux"
     - "namespace-profile-metamask-android-build"
