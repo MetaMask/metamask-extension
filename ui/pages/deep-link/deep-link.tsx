@@ -19,7 +19,6 @@ import {
 } from '@metamask/design-system-react';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
-import { resolveBuyDeepLinkDestination } from '../../../shared/lib/deep-links/buy-flow';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
@@ -57,8 +56,7 @@ const { getExtensionURL } = globalThis.platform;
  * @param t - The translation function.
  * @param abortController
  * @param setPageNotFoundError - The function to call when the destination is missing.
- * @param isUnifiedBuyEnabled - Whether the unified buy (native in-app buy)
- * feature is enabled, e.g. the `rampsEnabled` remote feature flag.
+ * @param isRampsEnabled - Whether the ramps feature is enabled (`rampsEnabled`).
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -71,22 +69,20 @@ async function updateStateFromUrl(
   t: TranslateFunction,
   abortController: AbortController,
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
-  isUnifiedBuyEnabled: boolean,
+  isRampsEnabled: boolean,
 ) {
   try {
     const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
     const url = new URL(fullUrlStr);
     setIsLoading(true);
-    const parsed = await parse(url);
+    const parsed = await parse(url, {
+      getIsRampsEnabled: () => isRampsEnabled,
+    });
     if (abortController.signal.aborted) {
       return;
     }
     if (parsed) {
-      // Resolve the final destination (e.g. `/buy` into the in-app buy flow).
-      const destination = resolveBuyDeepLinkDestination(
-        parsed,
-        isUnifiedBuyEnabled,
-      );
+      const { destination } = parsed;
 
       const href =
         'redirectTo' in destination
@@ -155,7 +151,7 @@ export const DeepLink = () => {
     (state: MetaMaskReduxState) =>
       getPreferences(state).skipDeepLinkInterstitial,
   );
-  const isUnifiedBuyEnabled = useSelector(getIsRampsEnabled);
+  const isRampsEnabled = useSelector(getIsRampsEnabled);
 
   const [description, setDescription] = useState<string | null>(null);
   const [pageNotFoundError, setPageNotFoundError] = useState<boolean>(false);
@@ -244,7 +240,7 @@ export const DeepLink = () => {
         t,
         abortController,
         setPageNotFoundError,
-        isUnifiedBuyEnabled,
+        isRampsEnabled,
       );
     };
 
@@ -252,7 +248,7 @@ export const DeepLink = () => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError, isUnifiedBuyEnabled]);
+  }, [location.search, t, setPageNotFoundError, isRampsEnabled]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);

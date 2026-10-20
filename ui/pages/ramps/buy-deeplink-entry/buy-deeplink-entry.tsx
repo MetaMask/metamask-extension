@@ -10,7 +10,7 @@ import Spinner from '../../../components/ui/spinner';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-links/buy-flow';
+import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-links/routes/buy';
 import { parseRampIntent } from './parse-ramp-intent';
 
 /**

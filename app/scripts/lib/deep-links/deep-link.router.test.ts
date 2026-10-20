@@ -520,18 +520,6 @@ describe('DeepLinkRouter', () => {
     describe('unified buy routing (rampsEnabled)', () => {
       const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
       const BUY_URL = 'https://example.com/buy?address=0xabc&chainId=1';
-      const BUY_PORTFOLIO_DESTINATION =
-        'https://app.metamask.io/buy?address=0xabc&chainId=1';
-      const BUY_ENTRY_URL = `${EXTENSION_HOME}#/ramps/buy-deeplink-entry?address=0xabc&chainId=1`;
-
-      const arrangeBuyLink = (): ParsedDeepLink =>
-        ({
-          signature: 'valid',
-          route: { pathname: '/buy' },
-          destination: {
-            redirectTo: new URL(BUY_PORTFOLIO_DESTINATION),
-          },
-        }) as ParsedDeepLink;
 
       const arrangeState = (remoteFeatureFlags: Record<string, unknown>) => {
         getState.mockReturnValue({
@@ -546,59 +534,66 @@ describe('DeepLinkRouter', () => {
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
 
-      it.each([
-        ['a plain boolean', { rampsEnabled: true }, BUY_ENTRY_URL],
-        ['off', { rampsEnabled: false }, BUY_PORTFOLIO_DESTINATION],
-        ['missing from state', {}, BUY_PORTFOLIO_DESTINATION],
-      ])(
-        'resolves /buy predictably when rampsEnabled is %s',
-        async (_label, remoteFeatureFlags, expectedUrl) => {
-          arrangeState(remoteFeatureFlags);
-          parseMock.mockResolvedValue(arrangeBuyLink());
+      it('passes the ramps flag getter into parse so /buy resolves its destination there', async () => {
+        parseMock.mockResolvedValue({
+          signature: 'valid',
+          route: { pathname: '/buy' },
+          destination: {
+            redirectTo: new URL('https://example.com/internal-route'),
+          },
+        } as ParsedDeepLink);
 
-          await arrangeRequest();
+        await arrangeRequest();
 
-          expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-            url: expectedUrl,
-          });
-        },
-      );
+        expect(parseMock).toHaveBeenCalledWith(expect.any(URL), {
+          getIsRampsEnabled: expect.any(Function),
+        });
+      });
 
-      it.each([
-        [
-          'does not reroute other redirecting routes when rampsEnabled is on',
-          {
-            signature: 'valid',
-            route: { pathname: '/sell' },
-            destination: {
-              redirectTo: new URL('https://example.com/sell-route'),
-            },
-          } as ParsedDeepLink,
-          'https://example.com/sell',
-          'https://example.com/sell-route',
-        ],
-        [
-          'still shows the interstitial for unsigned /buy links from untrusted origins when rampsEnabled is on',
-          { ...arrangeBuyLink(), signature: 'missing' } as ParsedDeepLink,
-          BUY_URL,
-          `${EXTENSION_HOME}#link?u=%2Fbuy%3Faddress%3D0xabc%26chainId%3D1`,
-        ],
-      ])('%s', async (_label, parsed, url, expectedUrl) => {
+      it('redirects a flag-resolved /buy destination to the in-app entry page', async () => {
         arrangeState({ rampsEnabled: true });
-        parseMock.mockResolvedValue(parsed);
+        parseMock.mockResolvedValue({
+          signature: 'valid',
+          route: { pathname: '/buy' },
+          destination: {
+            path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
+            query: new URLSearchParams({ address: '0xabc', chainId: '1' }),
+          },
+        } as ParsedDeepLink);
 
-        await arrangeRequest(url);
+        await arrangeRequest();
 
         expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: expectedUrl,
+          url: `${EXTENSION_HOME}#${RAMPS_BUY_DEEP_LINK_ENTRY_PATH}?address=0xabc&chainId=1`,
+        });
+      });
+
+      it('still shows the interstitial for unsigned /buy links from untrusted origins when rampsEnabled is on', async () => {
+        arrangeState({ rampsEnabled: true });
+        parseMock.mockResolvedValue({
+          signature: 'missing',
+          route: { pathname: '/buy' },
+          destination: {
+            redirectTo: new URL(
+              'https://app.metamask.io/buy?address=0xabc&chainId=1',
+            ),
+          },
+        } as ParsedDeepLink);
+
+        await arrangeRequest();
+
+        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+          url: `${EXTENSION_HOME}#link?u=%2Fbuy%3Faddress%3D0xabc%26chainId%3D1`,
         });
       });
 
       it('does not build controller state for links other than /buy', async () => {
         // The listener is non-blocking on MV3, so work before `redirectTab`
         // must stay minimal: reading the rollout flag builds the full
-        // controller state and must be limited to `/buy` links. The link is
-        // unsigned so the interstitial decision never reads state either.
+        // controller state. The getter passed into `parse` must stay lazy and
+        // only ever be invoked by the `/buy` handler — never for other links.
+        // The link is unsigned so the interstitial decision never reads state
+        // either.
         getState.mockClear();
         parseMock.mockResolvedValue({
           signature: 'missing',
@@ -615,47 +610,6 @@ describe('DeepLinkRouter', () => {
         expect(browser.tabs.update).toHaveBeenCalledWith(1, {
           url: 'chrome-extension://extension-id/home.html#link?u=%2Fsell',
         });
-      });
-
-      it('emits the resolved internal destination for /buy when rampsEnabled is on', async () => {
-        arrangeState({ rampsEnabled: true });
-        parseMock.mockResolvedValue(arrangeBuyLink());
-
-        const navigateListener = jest.fn();
-        router.on('navigate', navigateListener);
-        await arrangeRequest();
-
-        expect(navigateListener).toHaveBeenCalledWith(
-          expect.objectContaining({
-            url: expect.any(URL),
-            destination: {
-              path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
-              query: expect.anything(),
-            },
-          }),
-        );
-        const { destination } = navigateListener.mock.calls[0][0];
-        expect(Object.fromEntries(destination.query)).toStrictEqual({
-          address: '0xabc',
-          chainId: '1',
-        });
-      });
-
-      it('emits the external redirect destination for /buy when rampsEnabled is off', async () => {
-        arrangeState({});
-        parseMock.mockResolvedValue(arrangeBuyLink());
-
-        const navigateListener = jest.fn();
-        router.on('navigate', navigateListener);
-        await arrangeRequest();
-
-        expect(navigateListener).toHaveBeenCalledWith(
-          expect.objectContaining({
-            destination: {
-              redirectTo: new URL(BUY_PORTFOLIO_DESTINATION),
-            },
-          }),
-        );
       });
     });
 
