@@ -14,7 +14,7 @@ export const SideNav = () => {
   return (
     <aside
       data-testid="side-nav"
-      className="side-nav flex h-full min-h-0 w-[260px] shrink-0 flex-col bg-background-default border-r border-[color:var(--bar-border-color)]"
+      className="side-nav flex h-full min-h-0 w-[320px] shrink-0 flex-col bg-background-default border-r border-border-muted"
       // Keeps the side nav out of the root page transition, like the bottom nav bar.
       style={{ viewTransitionName: 'side-nav' }}
     >

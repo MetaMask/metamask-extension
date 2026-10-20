@@ -30,7 +30,7 @@ export const SideNavItem = ({
       type="button"
       data-testid={testId}
       onClick={onClick}
-      className={`group/item flex w-full items-center gap-3 px-3 py-2 text-left transition-colors duration-200 hover:bg-background-default-hover ${
+      className={`group/item flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors duration-200 hover:bg-background-default-hover ${
         isActive ? 'bg-background-muted' : ''
       }`}
       aria-current={isActive ? 'page' : undefined}
@@ -38,15 +38,14 @@ export const SideNavItem = ({
     >
       <Icon
         name={icon}
-        size={IconSize.Md}
+        size={IconSize.Lg}
         color={isActive ? IconColor.IconDefault : IconColor.IconAlternative}
         className="transition-colors duration-200 group-hover/item:text-icon-default-hover"
       />
       <Text
         variant={TextVariant.BodyMd}
         fontWeight={FontWeight.Medium}
-        color={isActive ? TextColor.TextDefault : TextColor.TextAlternative}
-        className="transition-colors duration-200 group-hover/item:text-text-default"
+        color={TextColor.TextDefault}
       >
         {label}
       </Text>

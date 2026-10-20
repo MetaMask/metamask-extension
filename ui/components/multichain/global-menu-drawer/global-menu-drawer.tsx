@@ -8,6 +8,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
+import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -33,7 +34,7 @@ const dialogClassNameBase = classnames(
 
   // Reset + clip stencil
   'box-border border-0 bg-transparent p-0',
-  'm-0 ms-auto me-[max(0px,calc((100vw-var(--width-max))/2))]',
+  'm-0 ms-auto',
   'h-full max-h-full w-[min(400px,100%)] overflow-clip [translate:none]',
 
   // Dialog enter/exit
@@ -51,8 +52,12 @@ const dialogClassNameBase = classnames(
   'max-[575px]:mx-0 max-[575px]:w-full max-[575px]:max-w-full',
 );
 
+// Aligns the drawer with the right edge of the centred, width-capped column.
+const dialogClassNameCappedColumn =
+  'me-[max(0px,calc((100vw-var(--width-max))/2))]';
+
 const dialogClassNameFullscreen =
-  'min-[576px]:top-[91px] min-[576px]:h-[calc(100%-91px)] min-[576px]:max-h-[calc(100%-91px)]';
+  'min-[576px]:top-[68px] min-[576px]:h-[calc(100%-68px)] min-[576px]:max-h-[calc(100%-91px)]';
 
 const frameClassName = classnames(
   'h-full w-full',
@@ -92,6 +97,7 @@ export const GlobalMenuDrawer = ({
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isLargeDrawer = isFullscreen || isSidepanel;
+  const isFullScreenDesign = useFullScreenDesign();
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -152,6 +158,7 @@ export const GlobalMenuDrawer = ({
   const dialogClassName = classnames(
     dialogClassNameBase,
     isFullscreen && dialogClassNameFullscreen,
+    !isFullScreenDesign && dialogClassNameCappedColumn,
   );
 
   const panel = (
