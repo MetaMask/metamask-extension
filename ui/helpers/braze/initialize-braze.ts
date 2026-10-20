@@ -32,8 +32,8 @@ export function isBrazeInitialized(): boolean {
 }
 
 /**
- * Clear the initialize latch. Used after `wipeData` so the next identify can
- * re-initialize, and by tests.
+ * Clear the initialize latch after SDK teardown so the next identify can
+ * initialize a new instance. Also used by tests.
  */
 export function resetBrazeInitialization(): void {
   hasInitialized = false;

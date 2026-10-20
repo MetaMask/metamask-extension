@@ -106,14 +106,12 @@ export async function identifyBrazeUser(
 }
 
 /**
- * Clear the Braze identity and local SDK data.
+ * Clear local Braze data and destroy the SDK instance.
  *
  * Call on sign-out or when basic functionality is turned off. Serialized
  * against `identifyBrazeUser` so a wipe can never land after a newer
- * `changeUser`. Does not wipe on lock. After wipe the SDK must be initialized
- * again before the next `changeUser`; this resets the init latch and does not
- * re-initialize, so a signed-out document does not keep an anonymous Braze
- * profile.
+ * `changeUser`. Does not wipe on lock. Stops scheduled SDK activity without
+ * re-initializing; the next permitted identify initializes a new instance.
  */
 export async function clearBrazeUser(): Promise<void> {
   if (isTestBuild()) {
@@ -134,11 +132,17 @@ export async function clearBrazeUser(): Promise<void> {
 
     try {
       const braze = await loadBrazeSdk();
-      braze.wipeData();
+      try {
+        // Destroy attempts a final flush. Discard queued data first, while the
+        // SDK still has access to its storage and providers.
+        braze.wipeData();
+      } finally {
+        braze.destroy();
+      }
       console.warn(`${LOG_PREFIX} Cleared user identity`);
     } catch (error) {
       captureException(error);
-      console.warn(`${LOG_PREFIX} wipeData threw`, error);
+      console.warn(`${LOG_PREFIX} SDK cleanup threw`, error);
     } finally {
       resetBrazeInitialization();
     }

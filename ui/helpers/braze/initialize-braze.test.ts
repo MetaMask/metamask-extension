@@ -32,6 +32,7 @@ describe('initializeBraze', () => {
     resetBrazeInitializationForTesting();
     mockInitialize.mockReturnValue(true);
     jest.clearAllMocks();
+    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
