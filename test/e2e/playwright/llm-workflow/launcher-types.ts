@@ -42,6 +42,11 @@ export type LaunchOptions = {
   selfOnboarding?: boolean;
   /** Secret recovery phrase used when `selfOnboarding` is set. Cleared after use. */
   srp?: string;
+  /**
+   * Vault password set and used to unlock when `selfOnboarding` is set.
+   * Defaults to the e2e password. Cleared after use.
+   */
+  password?: string;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;
