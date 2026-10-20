@@ -15,7 +15,9 @@ jest.mock('../../../hooks/send/useSendTokens', () => ({
 
 const CHAIN_ID = '0x1';
 const TOKEN_ADDRESS = '0xtoken123';
+const TOKEN_ASSET_ID = `eip155:1/erc20:${TOKEN_ADDRESS}`;
 const FROM_ADDRESS = '0x123';
+const ACCOUNT_ID = 'account-1';
 const ACCOUNT_NAME = 'Account 1';
 
 const mockStore = configureMockStore([]);
@@ -26,8 +28,8 @@ function createMockState(includeToken = false) {
       transactions: [],
       internalAccounts: {
         accounts: {
-          'account-1': {
-            id: 'account-1',
+          [ACCOUNT_ID]: {
+            id: ACCOUNT_ID,
             address: FROM_ADDRESS,
             // Required so that getSelectedEvmInternalAccount can find this
             // account (it filters by isEvmAccountType).
@@ -37,27 +39,25 @@ function createMockState(includeToken = false) {
             methods: [],
           },
         },
-        selectedAccount: 'account-1',
+        selectedAccount: ACCOUNT_ID,
       },
-      allTokens: includeToken
+      assetsInfo: includeToken
         ? {
-            [CHAIN_ID]: {
-              '0xaccount': [
-                {
-                  address: TOKEN_ADDRESS,
-                  symbol: 'USDC',
-                  decimals: 6,
-                },
-              ],
+            [TOKEN_ASSET_ID]: {
+              type: 'erc20',
+              symbol: 'USDC',
+              decimals: 6,
             },
           }
-        : {
-            // Provide an empty token list for the chain so that selectors
-            // which look up tokens by chainId (e.g. findAssetByAddress) don't
-            // emit "No tokens found for chainId" warnings in tests.
-            [CHAIN_ID]: {},
-          },
-      tokenBalances: {},
+        : {},
+      customAssets: includeToken
+        ? {
+            [ACCOUNT_ID]: [TOKEN_ASSET_ID],
+          }
+        : {},
+      assetsBalance: {},
+      assetsPrice: {},
+      selectedCurrency: 'usd',
       tokensChainsCache: {},
       networkConfigurationsByChainId: {
         [CHAIN_ID]: {
@@ -71,11 +71,7 @@ function createMockState(includeToken = false) {
       multichainNetworkConfigurationsByChainId: {},
       selectedAccountGroup: null,
       accountTree: { wallets: {} },
-      allIgnoredTokens: {},
-      marketData: {},
-      currencyRates: {},
-      currentCurrency: 'usd',
-      accountsByChainId: {},
+      assetPreferences: {},
     },
   };
 }

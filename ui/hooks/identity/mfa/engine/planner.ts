@@ -31,7 +31,7 @@ const PLATFORM_METHODS: Record<MfaPlatform, readonly MfaMethod[]> = {
   extension: ['email_otp'],
 };
 
-const isMethodSupported = (method: MfaMethod, platform: MfaPlatform) =>
+export const isMethodSupported = (method: MfaMethod, platform: MfaPlatform) =>
   PLATFORM_METHODS[platform].includes(method);
 
 const sortByCost = (methods: Iterable<MfaMethod>): MfaMethod[] => {
