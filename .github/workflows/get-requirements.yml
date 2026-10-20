@@ -47,6 +47,10 @@ on:
         value: ${{ jobs.detect-changes.outputs.changed-files }}
 
 env:
+  # TEMPORARY (1/1): benchmark data collection. When set, every run uses the
+  # builds from this run instead of reusing or building. Fails if the run's
+  # artifacts have expired (90 days). Set to '' to restore normal behavior.
+  PINNED_BUILDS_RUN_ID: '39498044798'
   # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
   # For a `push` event, the head commit hash is `github.sha`.
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -70,9 +74,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
-      builds-from-run: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
-      builds-from-sha: ${{ steps.find-reusable-builds.outputs.builds-from-sha || env.HEAD_COMMIT_HASH }}
-      build-source-hash: ${{ steps.compute-build-hash.outputs.build-hash || '' }}
+      builds-from-run: ${{ steps.pinned-builds.outputs.builds-from-run || steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
+      builds-from-sha: ${{ steps.pinned-builds.outputs.builds-from-sha || steps.find-reusable-builds.outputs.builds-from-sha || env.HEAD_COMMIT_HASH }}
+      build-source-hash: ${{ steps.pinned-builds.outputs.build-hash || steps.compute-build-hash.outputs.build-hash || '' }}
       skip-builds: ${{ steps.build-overrides.outputs.skip == 'true' && steps.find-reusable-builds.outputs.builds-from-run != '' && 'true' || 'false' }}
       needs-locales: ${{ steps.set-needs-locales.outputs.needs-locales || 'false' }}
       just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false' }}
@@ -309,6 +313,39 @@ jobs:
           echo "names=$NAMES" >> "$GITHUB_OUTPUT"
           echo "-> Required build artifacts: $NAMES"
 
+      - name: Use pinned builds
+        id: pinned-builds
+        if: ${{ env.PINNED_BUILDS_RUN_ID != '' }}
+        uses: actions/github-script@v8
+        env:
+          REQUIRED_BUILD_NAMES: ${{ steps.extract-build-names.outputs.names }}
+        with:
+          script: |
+            const { repo: { owner, repo } } = context;
+            const runId = parseInt(process.env.PINNED_BUILDS_RUN_ID, 10);
+            const required = JSON.parse(process.env.REQUIRED_BUILD_NAMES);
+
+            const { data: run } = await github.rest.actions.getWorkflowRun({ owner, repo, run_id: runId });
+            const artifacts = await github.paginate(
+              github.rest.actions.listWorkflowRunArtifacts,
+              { owner, repo, run_id: runId, per_page: 100 },
+            );
+            const live = new Set(artifacts.filter(a => !a.expired).map(a => a.name));
+            const missing = required.filter(name => !live.has(name));
+            if (missing.length > 0) {
+              core.setFailed(`Pinned run ${runId} is missing build artifacts: ${missing.join(', ')}`);
+              return;
+            }
+
+            const { data: { statuses } } = await github.rest.repos.getCombinedStatusForRef({
+              owner, repo, ref: run.head_sha, per_page: 100,
+            });
+            const hash = statuses.find(s => s.context === 'build-source-hash')?.description ?? '';
+            core.setOutput('builds-from-run', String(runId));
+            core.setOutput('builds-from-sha', run.head_sha);
+            core.setOutput('build-hash', hash);
+            core.info(`-> Pinned builds: run ${runId} (SHA: ${run.head_sha}, hash: ${hash || 'unknown'})`);
+
       # Find a prior run whose builds match the current source hash.
       # Checks same branch first, then base branch (main).
       # Skipped on main, stable, and release/* branches (too high-risk to skip builds).
@@ -316,6 +353,7 @@ jobs:
         id: find-reusable-builds
         if: >-
           ${{
+            env.PINNED_BUILDS_RUN_ID == '' &&
             env.IS_RUN_EVERYTHING_BRANCH != 'true' &&
             !startsWith(env.BRANCH, 'release/') &&
             steps.compute-build-hash.outputs.build-hash &&
@@ -472,7 +510,7 @@ jobs:
         continue-on-error: true
         uses: actions/github-script@v8
         env:
-          BUILDS_FROM_RUN: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
+          BUILDS_FROM_RUN: ${{ steps.pinned-builds.outputs.builds-from-run || steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
           HEAD_COMMIT_HASH: ${{ env.HEAD_COMMIT_HASH }}
         with:
           script: |
