@@ -4,12 +4,16 @@ import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from '../components/sections';
+import { UntrustedSenderLabel } from '../components/untrusted-sender-label';
+import { useUntrustedSender } from '../hooks/useUntrustedSender';
 
 export function SendDetails({
   item,
 }: {
   item: Extract<ActivityListItem, { type: 'send' | 'receive' }>;
 }) {
+  const isUntrustedSender = useUntrustedSender(item);
+
   return (
     <div className="flex grow flex-col">
       <div className="divide-y divide-border-muted">
@@ -17,6 +21,7 @@ export function SendDetails({
         <MetadataSection
           item={item}
           addressRows={{ from: item.data.from, to: item.data.to }}
+          fromAccessory={isUntrustedSender ? <UntrustedSenderLabel /> : null}
         />
         <Section>
           <FeesRows item={item} />

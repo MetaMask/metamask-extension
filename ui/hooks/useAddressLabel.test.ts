@@ -49,40 +49,41 @@ describe('useAddressLabel', () => {
     mockIsSecurityAlertsAPIEnabled = true;
   });
 
-  it('returns an empty string until the scan resolves, then the label', async () => {
-    mockFetchEvmAddressScan.mockResolvedValue({
+  it('returns no data until the scan resolves, then the scan result', async () => {
+    const scan = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: AddressScanResultType.Benign,
       label: 'Relay',
-    });
+    };
+    mockFetchEvmAddressScan.mockResolvedValue(scan);
 
     const { result } = renderHook(
       () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper: createWrapper() },
     );
 
-    expect(result.current).toBe('');
-    await waitFor(() => expect(result.current).toBe('Relay'));
+    expect(result.current.data).toBeUndefined();
+    await waitFor(() => expect(result.current.data).toEqual(scan));
     expect(mockFetchEvmAddressScan).toHaveBeenCalledWith(
       arbitrum,
       relayAddress,
     );
   });
 
-  it('returns an empty string for malicious addresses', async () => {
-    mockFetchEvmAddressScan.mockResolvedValue({
+  it('returns the scan result for malicious addresses', async () => {
+    const scan = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: AddressScanResultType.Malicious,
       label: 'Relay',
-    });
+    };
+    mockFetchEvmAddressScan.mockResolvedValue(scan);
 
     const { result } = renderHook(
       () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper: createWrapper() },
     );
 
-    await waitFor(() => expect(mockFetchEvmAddressScan).toHaveBeenCalled());
-    expect(result.current).toBe('');
+    await waitFor(() => expect(result.current.data).toEqual(scan));
   });
 
   it('does not fetch when external services are disabled', () => {
@@ -93,7 +94,7 @@ describe('useAddressLabel', () => {
       { wrapper: createWrapper() },
     );
 
-    expect(result.current).toBe('');
+    expect(result.current.data).toBeUndefined();
     expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
   });
 
@@ -105,7 +106,7 @@ describe('useAddressLabel', () => {
       { wrapper: createWrapper() },
     );
 
-    expect(result.current).toBe('');
+    expect(result.current.data).toBeUndefined();
     expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
   });
 
@@ -120,11 +121,11 @@ describe('useAddressLabel', () => {
       { wrapper: createWrapper() },
     );
 
-    expect(result.current).toBe('');
+    expect(result.current.data).toBeUndefined();
     expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
   });
 
-  it('returns an already cached label on the first render', async () => {
+  it('returns an already cached scan result on the first render', async () => {
     mockFetchEvmAddressScan.mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: AddressScanResultType.Benign,
@@ -136,14 +137,14 @@ describe('useAddressLabel', () => {
       () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper },
     );
-    await waitFor(() => expect(first.result.current).toBe('Relay'));
+    await waitFor(() => expect(first.result.current.data?.label).toBe('Relay'));
 
     const second = renderHook(
       () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper },
     );
 
-    expect(second.result.current).toBe('Relay');
+    expect(second.result.current.data?.label).toBe('Relay');
     expect(mockFetchEvmAddressScan).toHaveBeenCalledTimes(1);
   });
 
@@ -153,7 +154,7 @@ describe('useAddressLabel', () => {
       { wrapper: createWrapper() },
     );
 
-    expect(result.current).toBe('');
+    expect(result.current.data).toBeUndefined();
     expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
   });
 
@@ -167,7 +168,7 @@ describe('useAddressLabel', () => {
       { wrapper: createWrapper() },
     );
 
-    expect(result.current).toBe('');
+    expect(result.current.data).toBeUndefined();
     expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
   });
 

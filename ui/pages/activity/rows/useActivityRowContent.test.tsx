@@ -343,8 +343,11 @@ describe('useActivityRowContent', () => {
     };
 
     beforeEach(() => {
-      mockUseAddressLabel.mockImplementation(({ address }) =>
-        address === labelledAddress ? 'Relay' : '',
+      mockUseAddressLabel.mockImplementation(
+        ({ address }) =>
+          ({
+            data: address === labelledAddress ? { label: 'Relay' } : undefined,
+          }) as ReturnType<typeof useAddressLabel>,
       );
     });
 
