@@ -252,7 +252,8 @@ export function captureHostProvenance(
     label: nonEmpty(env.BENCHMARK_RUNNER_LABEL),
     name: nonEmpty(env.RUNNER_NAME),
     instanceId: nonEmpty(env.NSC_INSTANCE_ID),
-    shape: nonEmpty(env.NSC_INSTANCE_SHAPE),
+    shape:
+      nonEmpty(env.NSC_INSTANCE_SHAPE) ?? nonEmpty(env.BENCHMARK_RUNNER_SHAPE),
     region: nonEmpty(env.BENCHMARK_RUNNER_REGION),
     placement: provider === 'namespace' ? namespacePlacement(env) : undefined,
     os: nonEmpty(env.RUNNER_OS) ?? os.platform(),

@@ -126,6 +126,8 @@ describe('captureHostProvenance', () => {
       RUNNER_OS: 'Linux',
       ImageOS: 'ubuntu24',
       ImageVersion: '20261001.1.0',
+      BENCHMARK_RUNNER_REGION: 'eastus',
+      BENCHMARK_RUNNER_SHAPE: 'Standard_D4ads_v5',
     });
     expect(host).toMatchObject({
       provider: 'github',
@@ -134,6 +136,8 @@ describe('captureHostProvenance', () => {
       os: 'Linux',
       imageOs: 'ubuntu24',
       imageVersion: '20261001.1.0',
+      region: 'eastus',
+      shape: 'Standard_D4ads_v5',
     });
     expect(host.placement).toBeUndefined();
   });
