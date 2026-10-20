@@ -7,7 +7,7 @@ exports[`NetworkListItem renders properly 1`] = `
     data-testid="network-list-item-0x1"
   >
     <div
-      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden h-8 w-8 rounded-md bg-white light:bg-alternative"
     >
       <img
         alt="Polygon"

@@ -33,6 +33,7 @@ import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 import { useIsNetworkGasSponsored } from '../../../hooks/useIsNetworkGasSponsored';
 import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
+import { CHAIN_LOGO_CLASS_NAME } from '../chain-logo';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
@@ -224,7 +225,7 @@ export const NetworkListItem = ({
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
-          className="rounded-md"
+          className={`rounded-md ${CHAIN_LOGO_CLASS_NAME}`}
           style={getAvatarNetworkStyle(name)}
         />
       )}

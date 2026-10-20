@@ -28,6 +28,7 @@ import {
   isRpcRateLimitError,
   jsonRpcRequest,
 } from '../../../shared/lib/rpc.utils';
+import { CHAIN_LOGO_CLASS_NAME } from '../../components/multichain/chain-logo';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useSafeChains } from '../../components/multichain/networks-form/use-safe-chains';
 import {
@@ -258,7 +259,7 @@ export const AddRpcUrlPageForm = ({
             <Box className="flex items-center gap-3">
               {networkImageUrl ? (
                 <AvatarNetwork
-                  className="shrink-0 rounded-lg"
+                  className={`shrink-0 rounded-lg ${CHAIN_LOGO_CLASS_NAME}`}
                   name={networkName}
                   size="md"
                   src={networkImageUrl}

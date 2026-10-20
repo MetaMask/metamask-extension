@@ -19,6 +19,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { CHAIN_LOGO_CLASS_NAME } from '../../chain-logo';
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
@@ -66,7 +67,7 @@ export const SelectRpcUrlModal = ({
               src={image}
               name={networkConfigurationToUse.name}
               size={AvatarNetworkSize.Sm}
-              className="mr-1"
+              className={`mr-1 ${CHAIN_LOGO_CLASS_NAME}`}
             />
           )}
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>

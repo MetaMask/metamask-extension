@@ -25,6 +25,7 @@ import {
 } from '../../components/multichain/networks-form/use-safe-chains';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getShouldShowTestNetworks } from '../../selectors';
+import { CHAIN_LOGO_CLASS_NAME } from '../../components/multichain/chain-logo';
 import { NoSearchResult } from './no-search-result';
 
 export type ChainlistNetwork = SafeChain & {
@@ -288,7 +289,7 @@ export const ChainlistNetworkPicker = ({
                 >
                   {networkImageUrl ? (
                     <AvatarNetwork
-                      className="shrink-0 rounded-lg"
+                      className={`shrink-0 rounded-lg ${CHAIN_LOGO_CLASS_NAME}`}
                       name={displayName}
                       size="md"
                       src={networkImageUrl}

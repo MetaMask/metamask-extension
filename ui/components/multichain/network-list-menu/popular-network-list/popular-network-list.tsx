@@ -35,6 +35,7 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import type { FeaturedNetwork } from '../../../../selectors/config-registry/config-registry';
 import { useDispatch } from '../../../../store/hooks';
+import { CHAIN_LOGO_CLASS_NAME } from '../../chain-logo';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -144,6 +145,7 @@ const PopularNetworkList = ({
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <AvatarNetwork
+                className={CHAIN_LOGO_CLASS_NAME}
                 size={AvatarNetworkSize.Sm}
                 src={
                   network.imageUrl ??

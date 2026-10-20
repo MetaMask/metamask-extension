@@ -49,6 +49,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
 } from '../../../shared/constants/network';
+import { CHAIN_LOGO_CLASS_NAME } from '../../components/multichain/chain-logo';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -121,7 +122,12 @@ const AdditionalNetworkRow = ({ network }: { network: AddNetworkFields }) => {
       key={network.chainId}
       data-testid={`popular-network-${network.chainId}`}
     >
-      <AvatarNetwork name={network.name} size="md" src={networkImageUrl} />
+      <AvatarNetwork
+        className={CHAIN_LOGO_CLASS_NAME}
+        name={network.name}
+        size="md"
+        src={networkImageUrl}
+      />
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}

@@ -17,6 +17,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
+import { CHAIN_LOGO_CLASS_NAME } from '../../../chain-logo';
 import {
   getFeaturedEvmNetworks,
   type FeaturedNetwork,
@@ -94,6 +95,7 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
       key={network.chainId}
     >
       <AvatarNetwork
+        className={CHAIN_LOGO_CLASS_NAME}
         name={network.name}
         size={AvatarNetworkSize.Md}
         src={networkImageUrl}

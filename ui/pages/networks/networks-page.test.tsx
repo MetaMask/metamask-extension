@@ -560,6 +560,9 @@ describe('NetworksPage', () => {
         .contains(screen.getByTestId('networks-page-chainlist-source-banner')),
     ).toBe(true);
     expect(screen.getByText('Gnosis')).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: 'Gnosis' }).parentElement,
+    ).toHaveClass('bg-white', 'light:bg-alternative');
     expect(screen.queryByText('HTTP Only Network')).not.toBeInTheDocument();
     expect(
       screen.getByText(
