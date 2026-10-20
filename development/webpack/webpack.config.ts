@@ -228,8 +228,6 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
-      // Cashtag stylesheets for the X host page, referenced by manifest content_scripts
-      { from: 'scripts/cashtag/*/page.css', context },
       // TODO: find alternative way to handle cashtag widget styles
       {
         from: join(context, 'scripts/cashtag/widget/widget.css'),
