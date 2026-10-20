@@ -1,0 +1,38 @@
+.github/scripts/shared/resolve-build-run.mts
+  s_6c19fcf64f789a::t_91dac67ffda953 7-13,21,138-139,160-179
+  s_6c19fcf64f789a::t_f26436b9048d7d 180-181
+development/download-builds-cli.test.ts
+  s_6c19fcf64f789a::t_91dac67ffda953 156-157,197
+development/download-builds-cli.ts
+  s_6c19fcf64f789a::t_91dac67ffda953 91
+docs/download-builds.md
+  s_6c19fcf64f789a::t_91dac67ffda953 24-31,41-44
+.github/scripts/shared/resolve-build-run.test.mts
+  s_6c19fcf64f789a::t_42a54a7360f9fc 6-11,28-30,37-39,64-70,88,97-99,132-141
+  s_6c19fcf64f789a::t_13dd50bb2758aa 100-131,142-168
+  s_6c19fcf64f789a::t_82de35cf2a4ef2 169
+development/download-builds.ts
+  s_6c19fcf64f789a::t_91dac67ffda953 106,108,159,161,165,177,229
+development/download-builds.test.ts
+  s_6c19fcf64f789a::t_42a54a7360f9fc 18,53,115,121-125,167
+  s_6c19fcf64f789a::t_ab920ddc5e88d6 126
+  s_6c19fcf64f789a::t_13dd50bb2758aa 128,159
+  s_6c19fcf64f789a::t_6a9a322195e8f3 127,189
+  s_6c19fcf64f789a::t_343904cfc77b91 129-158,160-166,168-188
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0c4231a3bc71c22930c19d62c6ebe9e551d89540",
+  "prompts": {},
+  "sessions": {
+    "s_6c19fcf64f789a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ea7e8b33fffej0McFoDjOVW7xr",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
