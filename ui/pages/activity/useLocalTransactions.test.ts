@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react';
-import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
   selectLocalActivityItems,
   selectLocalTransactionsByHash,
 } from '#ui/selectors/activity';
 import { selectRampsSettlementHashes } from '#ui/selectors/rampsController';
+import type { ActivityListItem } from '#shared/lib/activity/types';
 import { useLocalTransactions } from './useLocalTransactions';
 
 jest.mock('react-redux', () => ({
