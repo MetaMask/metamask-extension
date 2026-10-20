@@ -108,11 +108,8 @@ describe('submitRequestToBackground', () => {
   });
 
   it('passes traceContext to messengerCall when routing requests through it', async () => {
-    const serializedTraceContext = {
-      // This is what this property is called.
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _traceId: 'foo',
-    };
+    const serializedTraceContext =
+      '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
     getSerializedTraceContextMock.mockReturnValue(serializedTraceContext);
     const messengerCallMock = jest.fn().mockResolvedValue('installed');
     // @ts-expect-error Partial mock.
