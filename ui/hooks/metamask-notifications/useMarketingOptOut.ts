@@ -2,7 +2,10 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
-import { setDataCollectionForMarketing } from '../../store/actions';
+import {
+  saveMarketingConsent,
+  setDataCollectionForMarketing,
+} from '../../store/actions';
 import { useDispatch } from '../../store/hooks';
 import { useI18nContext } from '../useI18nContext';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
@@ -65,9 +68,7 @@ export function useMarketingOptOut({
     setError(null);
     try {
       try {
-        await dispatch(
-          setDataCollectionForMarketing(false, { waitForAus: true }),
-        );
+        await dispatch(saveMarketingConsent(false));
       } catch (consentError) {
         // Only restore consent the user actually had, so a rollback never
         // opts them in.

@@ -15,6 +15,7 @@ import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockSetDataCollectionForMarketing = jest.fn();
 const mockTrackAnalyticsEvent = jest.fn();
+const mockSaveMarketingConsent = jest.fn();
 const mockRefetchPreferences = jest.fn();
 const mockListNotifications = jest.fn();
 const mockEnsurePreferences = jest.fn();
@@ -52,6 +53,10 @@ jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setDataCollectionForMarketing: (val: boolean) => {
     mockSetDataCollectionForMarketing(val);
+    return () => mockConsentWrite();
+  },
+  saveMarketingConsent: (val: boolean) => {
+    mockSaveMarketingConsent(val);
     return () => mockConsentWrite();
   },
 }));
@@ -290,7 +295,7 @@ describe('DataCollectionToggleItem', () => {
     );
 
     await waitFor(() => {
-      expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(mockSaveMarketingConsent).toHaveBeenCalledWith(false);
       expect(mockMarkMarketingChannelsOff).toHaveBeenCalled();
       expect(mockRefetchPreferences).toHaveBeenCalled();
       expect(mockListNotifications).toHaveBeenCalled();
@@ -351,8 +356,9 @@ describe('DataCollectionToggleItem', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       messages.notificationsSettingsBoxError.message,
     );
-    expect(mockSetDataCollectionForMarketing).toHaveBeenNthCalledWith(1, false);
-    expect(mockSetDataCollectionForMarketing).toHaveBeenNthCalledWith(2, true);
+    expect(mockSaveMarketingConsent).toHaveBeenCalledWith(false);
+    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledTimes(1);
+    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
     expect(
       screen.getByTestId('marketing-consent-opt-out-sheet'),
     ).toBeInTheDocument();

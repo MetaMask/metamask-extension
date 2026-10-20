@@ -29,7 +29,7 @@ import type {
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
-import { setDataCollectionForMarketing } from '../../store/actions';
+import { saveMarketingConsent } from '../../store/actions';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
 import { MarketingConsentSheet } from '../../components/app/marketing-consent-sheet/marketing-consent-sheet';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
@@ -496,7 +496,7 @@ export function NotificationSettingsSection({
     setIsMarketingConsentSubmitting(true);
     setMarketingSheetError(null);
     try {
-      await dispatch(setDataCollectionForMarketing(true, { waitForAus: true }));
+      await dispatch(saveMarketingConsent(true));
       await savePreference(pendingMarketingChannel, true);
       setPendingMarketingChannel(null);
     } catch (error) {

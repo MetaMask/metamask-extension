@@ -17,7 +17,7 @@ import {
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
-import { setDataCollectionForMarketing } from '../../../store/actions';
+import { saveMarketingConsent } from '../../../store/actions';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
 const mockTrackEvent = jest.fn();
@@ -96,7 +96,7 @@ jest.mock(
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  setDataCollectionForMarketing: jest.fn(() => () => Promise.resolve()),
+  saveMarketingConsent: jest.fn(() => () => Promise.resolve()),
 }));
 
 const mockStore = configureMockStore([thunk]);
@@ -1141,9 +1141,9 @@ describe('NotificationSectionSubPage', () => {
         'keeps the sheet open when %s',
         async (_name: string, dismiss: () => void) => {
           let resolveConsent: () => void = () => undefined;
-          jest.mocked(setDataCollectionForMarketing).mockReturnValueOnce(() => {
-            return new Promise<[boolean, string]>((resolve) => {
-              resolveConsent = () => resolve([true, '']);
+          jest.mocked(saveMarketingConsent).mockReturnValueOnce(() => {
+            return new Promise<void>((resolve) => {
+              resolveConsent = () => resolve();
             });
           });
           const updatePreference = renderSection(
@@ -1203,9 +1203,7 @@ describe('NotificationSectionSubPage', () => {
       fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
 
       await waitFor(() => {
-        expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true, {
-          waitForAus: true,
-        });
+        expect(saveMarketingConsent).toHaveBeenCalledWith(true);
         expect(updatePreference).toHaveBeenCalledWith(
           'marketing',
           'inAppNotificationsEnabled',
