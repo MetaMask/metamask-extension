@@ -5,7 +5,6 @@ import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
 import type {
   Provider,
-  RampsOrder,
   RampsToken,
   ResourceState,
   TokensResponse,
@@ -119,60 +118,6 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
   }
 }
 
-async function attemptPortfolioOrderMigration({
-  everConnectedToPortfolio,
-  isBackupAndSyncEnabled,
-  isRampsSyncingEnabled,
-  rampsOrders,
-  migrationRef,
-  intent,
-  portfolioRedirectUrl,
-  openBuyCryptoInPdapp,
-}: {
-  everConnectedToPortfolio: boolean;
-  isBackupAndSyncEnabled: boolean;
-  isRampsSyncingEnabled: boolean;
-  rampsOrders: RampsOrder[];
-  migrationRef: { current: Promise<boolean> | null };
-  intent?: RampIntent;
-  portfolioRedirectUrl?: string;
-  openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => Promise<void>;
-}): Promise<boolean> {
-  const shouldAttemptMigration =
-    everConnectedToPortfolio &&
-    isBackupAndSyncEnabled &&
-    isRampsSyncingEnabled &&
-    rampsOrders.length === 0;
-  if (!shouldAttemptMigration) {
-    return false;
-  }
-
-  const migration =
-    migrationRef.current ??
-    (migrationRef.current = (async () => {
-      if (await hasAttemptedPortfolioBuyMigration()) {
-        return false;
-      }
-      if (portfolioRedirectUrl) {
-        await global.platform.openTab({ url: portfolioRedirectUrl });
-      } else {
-        await openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
-      }
-      // Record the attempt only after Portfolio was opened so a failed open
-      // does not permanently consume the one-time migration.
-      await markPortfolioBuyMigrationAttempted();
-      return true;
-    })());
-
-  try {
-    return await migration;
-  } finally {
-    if (migrationRef.current === migration) {
-      migrationRef.current = null;
-    }
-  }
-}
-
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
@@ -202,8 +147,8 @@ export default function useRampsNavigation() {
   const goToBuy = useCallback(
     async (
       intent?: RampIntent,
-      // `replace` swaps the history entry, so the deep-link entry page can't be
-      // navigated back to. `portfolioRedirectUrl` overrides the generic
+      // `replace` swaps the history entry, so the deep-link entry page can't
+      // be navigated back to. `portfolioRedirectUrl` overrides the generic
       // Portfolio buy URL used when the buy leaves the extension (the rollout
       // gate off, or the one-time Portfolio order migration), so e.g. `/buy`
       // deep-link params survive the redirect.
@@ -212,21 +157,45 @@ export default function useRampsNavigation() {
         portfolioRedirectUrl,
       }: { replace?: boolean; portfolioRedirectUrl?: string } = {},
     ): Promise<RampsNavigationResult> => {
+      // Opens Portfolio: the deep link's own redirect URL when present (its
+      // params survive), the generic buy URL otherwise. `getBuyURI` accepts
+      // any hex chain id; the narrower `ChainId` param is just an over-tight
+      // annotation.
+      const openPortfolio = () =>
+        portfolioRedirectUrl
+          ? global.platform.openTab({ url: portfolioRedirectUrl })
+          : openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+
       // Returning Portfolio users get one migration visit before native Buy.
       // This precedes native eligibility gates because Portfolio performs the
       // migration from its app shell, independently of native Buy support.
-      const didAttemptMigration = await attemptPortfolioOrderMigration({
-        everConnectedToPortfolio,
-        isBackupAndSyncEnabled,
-        isRampsSyncingEnabled,
-        rampsOrders,
-        migrationRef: portfolioMigrationRef,
-        intent,
-        portfolioRedirectUrl,
-        openBuyCryptoInPdapp,
-      });
-      if (didAttemptMigration) {
-        return 'portfolio';
+      if (
+        everConnectedToPortfolio &&
+        isBackupAndSyncEnabled &&
+        isRampsSyncingEnabled &&
+        rampsOrders.length === 0
+      ) {
+        const migration =
+          portfolioMigrationRef.current ??
+          (portfolioMigrationRef.current = (async () => {
+            if (await hasAttemptedPortfolioBuyMigration()) {
+              return false;
+            }
+            await openPortfolio();
+            // Record the attempt only after Portfolio was opened so a failed
+            // open does not permanently consume the one-time migration.
+            await markPortfolioBuyMigrationAttempted();
+            return true;
+          })());
+        try {
+          if (await migration) {
+            return 'portfolio';
+          }
+        } finally {
+          if (portfolioMigrationRef.current === migration) {
+            portfolioMigrationRef.current = null;
+          }
+        }
       }
 
       // 1. Service-disruption kill-switch for native Buy.
