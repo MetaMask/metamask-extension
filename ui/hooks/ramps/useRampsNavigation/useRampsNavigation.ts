@@ -240,14 +240,11 @@ export default function useRampsNavigation() {
         return 'native';
       }
 
-      // `tokens` isn't persisted, and `setSelectedToken` throws until it's
-      // fetched (e.g. after an MV3 service-worker restart). Resolve a region
-      // only when a fetch is actually needed: the controller's `setUserRegion`
-      // resets dependent resources on change and wipes state on failure, so
-      // seed it only when the countries list is loaded (it normalizes the raw
-      // geolocation into the canonical region code the controller itself
-      // uses); otherwise fall back to the lowercased geolocation string for
-      // this one-off fetch.
+      // `tokens` isn't persisted, and `setSelectedToken` requires both a
+      // fetched catalog and a region in controller state, so skip the fetch
+      // when no region is resolvable. Seed one via `setUserRegion` only when
+      // the countries list is loaded — it normalizes the geolocation into the
+      // controller's region code, and an unknown location fails the seeding.
       let fetchedTokens: TokensResponse | null = null;
       if (!tokens.data) {
         const region =
@@ -255,10 +252,9 @@ export default function useRampsNavigation() {
           (countries.data?.length
             ? (await setRampsUserRegion(location).catch(() => null))?.regionCode
             : undefined);
-        fetchedTokens = await getRampsTokens(
-          region ?? location.toLowerCase(),
-          'buy',
-        ).catch(() => null);
+        if (region) {
+          fetchedTokens = await getRampsTokens(region, 'buy').catch(() => null);
+        }
       }
 
       // Resolve against the catalog. Block on one that definitively lacks or

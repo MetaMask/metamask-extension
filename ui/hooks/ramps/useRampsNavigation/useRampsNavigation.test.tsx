@@ -871,15 +871,19 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('cold fetch with an unloaded countries list → skips seeding and fetches with the lowercased geolocation', async () => {
+  it('cold fetch with an unloaded countries list → skips seeding and fetches nothing', async () => {
     // Seeding through `setUserRegion` with no countries loaded is exactly the
     // failure path that wipes controller state, so it must not be attempted.
+    // No region is resolvable then, and preselection requires one, so the
+    // fetch is skipped too (real-controller parity: `setRampsSelectedToken`
+    // throws "Tokens not loaded").
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsTokens = () => ({
-      topTokens: [],
-      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
-    });
-    const { result } = run(
+    backgroundHandlers.setRampsSelectedToken = () => {
+      throw new Error(
+        'Tokens not loaded. Cannot set selected token before tokens are fetched.',
+      );
+    };
+    const { result, getModalName } = run(
       buildState({
         userRegion: null,
         countries: { ...loaded, data: [] },
@@ -887,42 +891,49 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
 
-    await goToBuy(result, { assetId });
+    const opened = await goToBuy(result, { assetId });
 
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
     expect(mockBackground).not.toHaveBeenCalledWith(
       'setRampsUserRegion',
       expect.anything(),
     );
-    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
-      'us-ca',
-      'buy',
-    ]);
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
   });
 
-  it('falls back to the lowercased geolocation string when seeding the region fails', async () => {
+  it('skips the fetch when seeding the region fails', async () => {
     // E.g. the geolocation string resolves to no region in the loaded
-    // countries list: keep the old best-effort fetch rather than skipping it.
+    // countries list: `setUserRegion` fails, the seeding is tolerated, and
+    // with no region there is nothing useful to fetch for — preselection
+    // requires one, so the flow ends at the unsupported modal.
     const assetId = 'eip155:1/erc20:0xabc';
-    backgroundHandlers.getRampsTokens = () => ({
-      topTokens: [],
-      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
-    });
+    backgroundHandlers.setRampsSelectedToken = () => {
+      throw new Error(
+        'Tokens not loaded. Cannot set selected token before tokens are fetched.',
+      );
+    };
     backgroundHandlers.setRampsUserRegion = () => {
       throw new Error('No countries found');
     };
-    const { result } = run(
+    const { result, getModalName } = run(
       buildState({
         userRegion: null,
         tokens: { data: null, selected: null, isLoading: false, error: null },
       }),
     );
 
-    await goToBuy(result, { assetId });
+    const opened = await goToBuy(result, { assetId });
 
-    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
-      'us-ca',
-      'buy',
-    ]);
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
   });
 
   it('cold catalog fetch that fails and a controller that cannot pre-select → shows RAMPS_UNSUPPORTED', async () => {
