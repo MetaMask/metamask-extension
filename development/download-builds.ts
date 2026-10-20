@@ -103,9 +103,9 @@ export async function downloadBuilds(
     },
     { api, sleep, now, log },
   );
-  const version = await readRequestedBuildVersion(
+  const version = await readBuildVersion(
     repository,
-    provenance.requestedCommit,
+    provenance.buildCommit,
     api,
   );
   const hostUrl = `${options.awsCloudfrontUrl.replace(/\/$/u, '')}/${options.repository}/${provenance.runId}`;
@@ -156,13 +156,13 @@ async function resolveRequestedRef(
   return latestRunCommit;
 }
 
-async function readRequestedBuildVersion(
+async function readBuildVersion(
   repository: string,
-  requestedCommit: string,
+  buildCommit: string,
   api: GitHubApi,
 ): Promise<string> {
   const packageFile = (await api(
-    `repos/${repository}/contents/package.json?ref=${requestedCommit}`,
+    `repos/${repository}/contents/package.json?ref=${buildCommit}`,
   )) as {
     content: string;
     encoding: string;
@@ -174,7 +174,7 @@ async function readRequestedBuildVersion(
     Buffer.from(packageFile.content, 'base64').toString('utf8'),
   ) as { version: string };
   if (!/^\d+\.\d+\.\d+$/u.test(version)) {
-    throw new Error('Invalid build version in requested commit');
+    throw new Error('Invalid build version in build commit');
   }
   return version;
 }
@@ -226,7 +226,7 @@ async function waitForBuildZipPublication(
  * @param buffer - Downloaded build ZIP.
  * @param destination - Parent output directory, normally dist.
  * @param browser - Browser output child to replace.
- * @param version - Expected base version from the selected source commit.
+ * @param version - Expected base version from the selected build commit.
  */
 async function installBrowserBuild(
   buffer: Buffer,

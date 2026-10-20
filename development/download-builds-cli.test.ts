@@ -153,7 +153,8 @@ describe('download-builds-cli', () => {
     const metadata = {
       runId: 123,
       requestedCommit: 'requested-sha',
-      buildCommit: 'donor-sha',
+      runHeadCommit: 'donor-sha',
+      buildCommit: 'merge-sha',
       destination: '/tmp/dist',
       version: '13.53.0',
       downloads: { chrome: 'https://example.invalid/build.zip' },
@@ -193,7 +194,7 @@ describe('download-builds-cli', () => {
     });
     expect(console.log).toHaveBeenNthCalledWith(
       1,
-      'Build run: 123 · source: requested-sha · donor: donor-sha',
+      'Build run: 123 · source: requested-sha · run head: donor-sha · build: merge-sha',
     );
     expect(console.log).toHaveBeenNthCalledWith(
       2,

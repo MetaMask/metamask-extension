@@ -88,7 +88,7 @@ program
       api: async (endpoint) => (await github.request(`GET /${endpoint}`)).data,
     });
     console.log(
-      `Build run: ${metadata.runId} · source: ${metadata.requestedCommit} · donor: ${metadata.buildCommit}`,
+      `Build run: ${metadata.runId} · source: ${metadata.requestedCommit} · run head: ${metadata.runHeadCommit} · build: ${metadata.buildCommit}`,
     );
     console.log('Builds downloaded and unzipped successfully.');
   });

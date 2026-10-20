@@ -4,7 +4,13 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 
-type BuildRun = { head_sha: string; html_url: string; status: string };
+type BuildRun = {
+  head_sha: string;
+  html_url: string;
+  status: string;
+  event: string;
+  referenced_workflows?: { path: string; sha: string }[];
+};
 type Artifact = { name: string; expired: boolean };
 type BuildJob = { name: string; status: string; conclusion: string | null };
 type BuildStatus = { context: string; description: string | null };
@@ -12,6 +18,7 @@ type BuildStatus = { context: string; description: string | null };
 export type GitHubApi = (endpoint: string) => Promise<unknown>;
 export type BuildProvenance = {
   requestedCommit: string;
+  runHeadCommit: string;
   buildCommit: string;
   runId: number;
   runUrl: string;
@@ -128,7 +135,8 @@ async function checkCanonicalBuildAvailability(
       status: 'ready',
       provenance: {
         requestedCommit,
-        buildCommit: run.head_sha,
+        runHeadCommit: run.head_sha,
+        buildCommit: resolveBuildCommit(repositoryPath, run),
         runId,
         runUrl: run.html_url,
         reusedBuild: run.head_sha !== requestedCommit,
@@ -147,6 +155,28 @@ async function checkCanonicalBuildAvailability(
     status: 'pending',
     message: `${missingArtifactNames.join(', ')} not uploaded yet: ${run.html_url}`,
   };
+}
+
+function resolveBuildCommit(repositoryPath: string, run: BuildRun): string {
+  const workflowPath = `${repositoryPath.slice('repos/'.length)}/.github/workflows/run-build.yml@`;
+  const workflows = (run.referenced_workflows ?? []).filter((workflow) =>
+    workflow.path.toLowerCase().startsWith(workflowPath.toLowerCase()),
+  );
+  // The same-repository reusable build workflow uses the default checkout.
+  // Its recorded SHA identifies the historical PR merge tree, unlike head_sha.
+  if (workflows.length === 1 && /^[a-f\d]{40}$/iu.test(workflows[0].sha)) {
+    return workflows[0].sha;
+  }
+  // These events check out head_sha directly; PR runs must have merge metadata.
+  if (
+    !workflows.length &&
+    ['push', 'schedule', 'merge_group'].includes(run.event)
+  ) {
+    return run.head_sha;
+  }
+  throw new Error(
+    `Cannot determine build commit from run-build.yml metadata on ${run.html_url}. Re-run the build.`,
+  );
 }
 
 async function findCanonicalBuildRunId(

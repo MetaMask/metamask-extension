@@ -15,6 +15,7 @@ import { downloadBuilds, type DownloadBuildsOptions } from './download-builds';
 
 const source = 'a'.repeat(40);
 const donor = 'b'.repeat(40);
+const merge = 'c'.repeat(40);
 
 function buildZip(version = '13.53.0'): Promise<Buffer> {
   const zip = new ZipFile();
@@ -49,6 +50,7 @@ async function githubApi(endpoint: string): Promise<unknown> {
       head_sha: donor,
       html_url: 'https://fixture.invalid/run/123',
       status: 'in_progress',
+      event: 'push',
     };
   }
   if (endpoint.includes('/contents/package.json')) {
@@ -110,10 +112,80 @@ describe('downloadBuilds', () => {
     ).toStrictEqual(result);
     expect(result).toMatchObject({
       requestedCommit: source,
+      runHeadCommit: donor,
       buildCommit: donor,
       runId: 123,
       reusedBuild: true,
       version: '13.53.0',
+    });
+    expect(api).toHaveBeenCalledWith(
+      `repos/MetaMask/metamask-extension/contents/package.json?ref=${donor}`,
+    );
+  });
+
+  [source, donor].forEach((headSha) => {
+    it(`downloads the merge version for PR run head ${headSha}`, async () => {
+      /* eslint-disable @typescript-eslint/naming-convention -- GitHub API response fields use snake_case. */
+      const api = jest.fn(async (endpoint: string): Promise<unknown> => {
+        if (endpoint === 'repos/MetaMask/metamask-extension/actions/runs/123') {
+          return {
+            head_sha: headSha,
+            html_url: 'https://fixture.invalid/run/123',
+            status: 'completed',
+            event: 'pull_request',
+            referenced_workflows: [
+              {
+                path: `MetaMask/metamask-extension/.github/workflows/run-build.yml@${merge}`,
+                ref: 'refs/pull/47118/merge',
+                sha: merge,
+              },
+            ],
+          };
+        }
+        if (endpoint.includes('/contents/package.json')) {
+          return {
+            encoding: 'base64',
+            content: Buffer.from(
+              JSON.stringify({
+                version: endpoint.endsWith(`ref=${merge}`)
+                  ? '13.55.0'
+                  : '13.54.0',
+              }),
+            ).toString('base64'),
+          };
+        }
+        return githubApi(endpoint);
+      });
+      /* eslint-enable @typescript-eslint/naming-convention */
+      const zip = await buildZip('13.55.0');
+      const fetchBuild = jest.fn(async () => new Response(new Uint8Array(zip)));
+      const result = await downloadBuilds(options, {
+        api,
+        fetch: fetchBuild,
+        log: jest.fn(),
+      });
+
+      expect(fetchBuild).toHaveBeenCalledWith(
+        'https://fixture.invalid/metamask-extension/123/build-dist-webpack/builds/metamask-chrome-13.55.0.zip',
+      );
+      expect(api).toHaveBeenCalledWith(
+        `repos/MetaMask/metamask-extension/contents/package.json?ref=${merge}`,
+      );
+      expect(result).toMatchObject({
+        requestedCommit: source,
+        runHeadCommit: headSha,
+        buildCommit: merge,
+        reusedBuild: headSha !== source,
+        version: '13.55.0',
+      });
+      expect(
+        JSON.parse(
+          await readFile(
+            join(options.destination, 'chrome/manifest.json'),
+            'utf8',
+          ),
+        ),
+      ).toStrictEqual({ version: '13.55.0.0' });
     });
   });
 

@@ -3,6 +3,12 @@ import { resolveBuildRun } from './resolve-build-run.mts';
 
 const commit = 'a'.repeat(40);
 const donor = 'b'.repeat(40);
+const merge = 'c'.repeat(40);
+const buildWorkflow = {
+  path: `MetaMask/metamask-extension/.github/workflows/run-build.yml@${merge}`,
+  ref: 'refs/pull/47118/merge',
+  sha: merge,
+};
 const runUrl =
   'https://github.com/MetaMask/metamask-extension/actions/runs/123';
 const options = {
@@ -19,12 +25,18 @@ function fixture({
   expired = false,
   runStatus = 'in_progress',
   conclusion = null,
+  event = 'push',
+  headSha = donor,
+  referencedWorkflows,
 }: {
   pointer?: string;
   artifact?: boolean;
   expired?: boolean;
   runStatus?: string;
   conclusion?: string | null;
+  event?: string;
+  headSha?: string;
+  referencedWorkflows?: { path: string; ref?: string; sha: string }[];
 } = {}) {
   let clock = 0;
   const api = jest.fn(async (endpoint: string): Promise<unknown> => {
@@ -49,7 +61,13 @@ function fixture({
         ],
       };
     if (endpoint.includes('/actions/runs/'))
-      return { head_sha: donor, html_url: runUrl, status: runStatus };
+      return {
+        head_sha: headSha,
+        html_url: runUrl,
+        status: runStatus,
+        event,
+        referenced_workflows: referencedWorkflows,
+      };
     return { sha: commit };
   });
   return {
@@ -67,6 +85,7 @@ describe('resolveBuildRun', () => {
     const dependencies = fixture();
     expect(await resolveBuildRun(options, dependencies)).toStrictEqual({
       requestedCommit: commit,
+      runHeadCommit: donor,
       buildCommit: donor,
       runId: 123,
       runUrl,
@@ -74,6 +93,79 @@ describe('resolveBuildRun', () => {
     });
     expect(dependencies.sleep).not.toHaveBeenCalled();
   });
+
+  it.each([
+    { headSha: commit, reusedBuild: false },
+    { headSha: donor, reusedBuild: true },
+  ])(
+    'resolves the historical PR merge SHA with reuse=$reusedBuild',
+    async ({ headSha, reusedBuild }) => {
+      const metadata = await resolveBuildRun(
+        // The CLI defaults to a lowercase owner; API workflow paths use MetaMask.
+        { ...options, repository: 'metamask/metamask-extension' },
+        fixture({
+          event: 'pull_request',
+          headSha,
+          referencedWorkflows: [
+            {
+              ...buildWorkflow,
+              path: 'other/repo/.github/workflows/run-build.yml@main',
+              sha: donor,
+            },
+            {
+              ...buildWorkflow,
+              path: `MetaMask/metamask-extension/.github/workflows/run-e2e.yml@${donor}`,
+              sha: donor,
+            },
+            buildWorkflow,
+          ],
+        }),
+      );
+      expect(metadata).toMatchObject({
+        requestedCommit: commit,
+        runHeadCommit: headSha,
+        buildCommit: merge,
+        reusedBuild,
+      });
+    },
+  );
+
+  it.each(['push', 'schedule', 'merge_group'])(
+    'uses the run head for a %s run without referenced build workflow metadata',
+    async (event) => {
+      const metadata = await resolveBuildRun(options, fixture({ event }));
+      expect(metadata.buildCommit).toBe(donor);
+    },
+  );
+
+  it.each([
+    { name: 'missing', referencedWorkflows: undefined },
+    { name: 'empty', referencedWorkflows: [] },
+    {
+      name: 'another repository',
+      referencedWorkflows: [
+        { ...buildWorkflow, path: 'other/repo/.github/workflows/run-build.yml@main' },
+      ],
+    },
+    {
+      name: 'a mutable ref instead of a SHA',
+      referencedWorkflows: [{ ...buildWorkflow, sha: 'refs/pull/47118/merge' }],
+    },
+    {
+      name: 'ambiguous',
+      referencedWorkflows: [buildWorkflow, { ...buildWorkflow, sha: donor }],
+    },
+  ])(
+    'rejects PR build workflow metadata that is $name',
+    async ({ referencedWorkflows }) => {
+      await expect(
+        resolveBuildRun(
+          options,
+          fixture({ event: 'pull_request', referencedWorkflows }),
+        ),
+      ).rejects.toThrow('Cannot determine build commit');
+    },
+  );
 
   it('pins a branch once and waits for the pointer and artifact', async () => {
     const dependencies = fixture();

@@ -21,8 +21,14 @@ yarn download-builds --branch release/13.53.0 --ref "<full-source-sha>" \
   --metadata /absolute/existing-parent/build.json --wait-seconds 1200
 ```
 
-`--ref` overrides branch-run selection. The package version is read from that requested
-commit, rather than the checkout running the downloader. `--browser` defaults to `all`;
+`--ref` overrides branch-run selection. The package version is read from the canonical
+run's build commit, rather than the requested commit or the checkout running the downloader.
+For PR builds, this is the historical merge SHA recorded for the same-repository
+`run-build.yml` in the run's `referenced_workflows` metadata. The build workflow uses the
+default checkout, so its workflow SHA also identifies the tree it builds. The current PR
+merge ref is never used: it can change after a run. If the workflow metadata is missing,
+push, scheduled, and merge-group runs use their head SHA; PR runs report an error.
+`--browser` defaults to `all`;
 outputs are `<destination>/chrome` and/or `<destination>/firefox`. Downloads are staged and
 checked before replacing a browser directory. HTTP failures and wrong manifest versions
 leave its previous build intact.
@@ -32,7 +38,10 @@ Prefer the environment or CLI login over token arguments. Polling defaults to tw
 at twenty-second intervals (`--wait-seconds`, `--poll-seconds`). Use zero wait to fail
 immediately. The same deadline covers artifact availability and CloudFront publication.
 This budget limits polling; it does not cancel in-flight requests or ZIP extraction.
-Metadata contains requested/donor commits, run ID/URL, reuse status, version and download URLs.
+Metadata contains `requestedCommit`, `runHeadCommit` (the canonical run's head),
+`buildCommit` (the tree built, which can be a PR merge commit), run ID/URL, reuse status,
+version and download URLs. Reuse compares the requested commit with the run head,
+not the merge SHA, so a fresh PR merge build is not marked as reused.
 
 The shared resolver at `.github/scripts/shared/resolve-build-run.mts` handles canonical
 selection and waiting for both this command and `update-e2e-fixtures.yml`. The fixture
