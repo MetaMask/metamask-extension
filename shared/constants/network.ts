@@ -657,7 +657,7 @@ export const ARC_NATIVE_TOKEN_IMAGE_URL = './images/arc-native-token-logo.svg';
 export const ARC_NETWORK_IMAGE_URL = './images/arc-network-logo.svg';
 export const GRAVITY_IMAGE_URL = './images/gravity.svg';
 export const SOMNIA_IMAGE_URL = './images/somnia.svg';
-export const MOBILENODE_TESTNET_IMAGE_URL = './images/mobilenode-testnet.svg';
+export const MOBILENODE_TESTNET_IMAGE_URL = './images/mobilenode-testnet.png';
 export const SOMNIA_NATIVE_TOKEN_IMAGE_URL = './images/somnia.svg';
 
 export const INFURA_PROVIDER_TYPES = [
