@@ -80,10 +80,6 @@ export function submitRequestToBackground(
       console.warn(NO_BACKGROUND_CONNECTION_MESSAGE);
       return Promise.resolve();
     }
-
-    if (!(actionOrMethod in background)) {
-      throw new Error(`Unknown method on background: ${actionOrMethod}`);
-    }
   }
 
   const traceContext = getSerializedTraceContext();
