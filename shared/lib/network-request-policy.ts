@@ -54,31 +54,22 @@ export function createAllowRules({
 }
 
 /**
- * Allow an exact HTTP(S) URL while a UI or background callback runs.
- * Does not require background initialization. Firefox runs the callback directly.
- * Other matching extension requests can use the grant while it is active.
- * Await all work inside the callback; abandoned grants have no automatic expiry.
+ * Temporarily allow an exact HTTP(S) URL in UI/background, including startup failure.
+ * Awaits installation and revocation; Firefox calls the callback directly.
+ * Other matching requests share the grant. Await all work: abandoned grants
+ * persist until background initialization or browser-session end.
  *
- * @param url - Absolute URL to allow; fragments are ignored, credentials rejected.
- * @param callback - Work to run after browser enforcement confirms the allowance.
- * @param options - Optional cancellation of allowance acquisition.
- * @param options.signal - Cancels queued acquisition and prevents starting an
- * aborted callback. The callback must use the signal to cancel its own work.
- * @returns The callback result after the allowance has been removed.
+ * @param url - Absolute HTTP(S) URL; no credentials, fragment ignored.
+ * @param callback - Work to run while the allowance is active.
+ * @param options - Cancellation options.
+ * @param options.signal - Cancels acquisition; pass to fetch to cancel the request.
+ * @returns The callback result after revocation.
  */
 export async function withTemporaryAllowance<Result>(
   url: string,
   callback: () => Result | Promise<Result>,
   { signal }: { signal?: AbortSignal } = {},
 ): Promise<Result> {
-  const throwIfAborted = () => {
-    if (signal?.aborted) {
-      throw new DOMException(
-        'Temporary network allowance aborted',
-        'AbortError',
-      );
-    }
-  };
   const endpoint = new URL(url);
   if (
     !['http:', 'https:'].includes(endpoint.protocol) ||
@@ -90,7 +81,7 @@ export async function withTemporaryAllowance<Result>(
     );
   }
   endpoint.hash = '';
-  throwIfAborted();
+  signal?.throwIfAborted();
   if (browser.runtime.getManifest().manifest_version !== 3) {
     return await callback();
   }
@@ -105,7 +96,7 @@ export async function withTemporaryAllowance<Result>(
       const occupiedIds = new Set(
         (await dnr.getSessionRules()).map(({ id }) => id),
       );
-      throwIfAborted();
+      signal?.throwIfAborted();
       const availablePair = TEMPORARY_RULE_PAIRS.find((pair) =>
         pair.every((id) => !occupiedIds.has(id)),
       );
@@ -127,7 +118,7 @@ export async function withTemporaryAllowance<Result>(
   try {
     // Native DNR updates cannot be cancelled. If installation finished after
     // cancellation, revoke the grant without starting the callback.
-    throwIfAborted();
+    signal?.throwIfAborted();
     return await callback();
   } finally {
     await dnr.updateSessionRules({ removeRuleIds: ruleIds });

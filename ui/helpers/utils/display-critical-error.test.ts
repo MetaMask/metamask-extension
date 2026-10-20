@@ -12,6 +12,7 @@ import { MISSING_VAULT_ERROR } from '../../../shared/constants/errors';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import * as errorUtils from '../../../shared/lib/error-utils';
+import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 import {
   displayCriticalErrorMessage,
@@ -524,10 +525,7 @@ describe('displayCriticalError', () => {
   it('restarts after the reporting deadline when rule cleanup stalls', async () => {
     jest.useFakeTimers();
     const reportError = jest.spyOn(console, 'error').mockImplementation();
-    let finishCleanup: () => void = () => undefined;
-    const cleanup = new Promise<void>((resolve) => {
-      finishCleanup = resolve;
-    });
+    const { promise: cleanup, resolve: finishCleanup } = withResolvers<void>();
     jest
       .mocked(browser.declarativeNetRequest.updateSessionRules)
       .mockResolvedValueOnce(undefined)
@@ -1163,115 +1161,110 @@ describe('repair button', () => {
     );
   });
 
-  it.each(['lookup', 'installation', 'fetch', 'cleanup'] as const)(
-    'starts repair when reporting times out during %s',
-    async (phase) => {
-      jest.useFakeTimers();
-      const reportError = jest.spyOn(console, 'error').mockImplementation();
+  const phases = ['lookup', 'installation', 'fetch', 'cleanup'] as const;
+  it.each(phases)('repairs after %s timeout', async (phase) => {
+    jest.useFakeTimers();
+    const reportError = jest.spyOn(console, 'error').mockImplementation();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const { promise: pending, resolve: finishPending } = withResolvers<void>();
+    if (phase === 'lookup') {
       jest
-        .spyOn(errorUtils, 'getErrorHtml')
-        .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
-      jest.spyOn(window, 'confirm').mockReturnValue(true);
-      let finishPending: () => void = () => undefined;
-      const pending = new Promise<void>((resolve) => {
-        finishPending = resolve;
-      });
-      if (phase === 'lookup') {
-        jest
-          .mocked(browser.declarativeNetRequest.getSessionRules)
-          .mockReturnValueOnce(pending.then(() => []));
-      } else if (phase === 'installation') {
-        jest
-          .mocked(browser.declarativeNetRequest.updateSessionRules)
-          .mockReturnValueOnce(pending);
-      } else if (phase === 'cleanup') {
-        jest
-          .mocked(browser.declarativeNetRequest.updateSessionRules)
-          .mockResolvedValueOnce(undefined)
-          .mockReturnValueOnce(pending);
-      } else {
-        jest.mocked(fetch).mockImplementation(
-          (_url, options) =>
-            new Promise<Response>((_resolve, reject) => {
-              options?.signal?.addEventListener('abort', () => {
-                reject(new DOMException('Aborted', 'AbortError'));
-              });
-            }),
-        );
-      }
-      const error = new Error('Background initialization timeout');
-      restoreGetBackupState = mockGetBackupStateWithVault({
-        ...MOCK_BACKUP_WITH_VAULT,
-        AnalyticsController: { consentDecisionMade: true, optedIn: true },
-      });
-
-      await expect(
-        displayCriticalErrorMessage(
-          container,
-          CriticalErrorTranslationKey.TroubleStarting,
-          error,
-          {
-            currentLocale: 'en',
-            port: mockPort,
-            criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
-          },
-        ),
-      ).rejects.toThrow(error);
-
-      const repairButton = rootContainer.querySelector<HTMLButtonElement>(
-        '#critical-error-repair-button',
-      );
-      act(() => {
-        jest.advanceTimersByTime(5_000);
-      });
-      await act(async () => {
-        repairButton?.click();
-        await Promise.resolve();
-      });
-
-      expect(fetch).toHaveBeenCalledTimes(
-        phase === 'fetch' || phase === 'cleanup' ? 1 : 0,
-      );
-      expect(mockPort.postMessage).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            method: METHOD_REPAIR_DATABASE,
+        .mocked(browser.declarativeNetRequest.getSessionRules)
+        .mockReturnValueOnce(pending.then(() => []));
+    } else if (phase === 'installation') {
+      jest
+        .mocked(browser.declarativeNetRequest.updateSessionRules)
+        .mockReturnValueOnce(pending);
+    } else if (phase === 'cleanup') {
+      jest
+        .mocked(browser.declarativeNetRequest.updateSessionRules)
+        .mockResolvedValueOnce(undefined)
+        .mockReturnValueOnce(pending);
+    } else {
+      jest.mocked(fetch).mockImplementation(
+        (_url, options) =>
+          new Promise<Response>((_resolve, reject) => {
+            options?.signal?.addEventListener('abort', () => {
+              reject(new DOMException('Aborted', 'AbortError'));
+            });
           }),
-        }),
       );
+    }
+    const error = new Error('Background initialization timeout');
+    restoreGetBackupState = mockGetBackupStateWithVault({
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { consentDecisionMade: true, optedIn: true },
+    });
 
-      await act(async () => {
-        jest.advanceTimersByTime(2_000);
-      });
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
+      ),
+    ).rejects.toThrow(error);
 
-      expect(reportError).toHaveBeenCalledWith(
-        'Error sending report to Sentry:',
-        expect.objectContaining({ name: 'TimeoutError' }),
-      );
-      expect(mockPort.postMessage).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            method: METHOD_REPAIR_DATABASE,
-          }),
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).toHaveBeenCalledTimes(
+      phase === 'fetch' || phase === 'cleanup' ? 1 : 0,
+    );
+    expect(mockPort.postMessage).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
         }),
-      );
-      await act(async () => {
-        finishPending();
-      });
-      expect(fetch).toHaveBeenCalledTimes(
-        phase === 'fetch' || phase === 'cleanup' ? 1 : 0,
-      );
-      if (phase === 'lookup') {
-        expect(
-          browser.declarativeNetRequest.updateSessionRules,
-        ).not.toHaveBeenCalled();
-      } else {
-        expect(
-          browser.declarativeNetRequest.updateSessionRules,
-        ).toHaveBeenLastCalledWith({ removeRuleIds: [1000100, 1000101] });
-      }
-    },
-  );
+      }),
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(2_000);
+    });
+
+    expect(reportError).toHaveBeenCalledWith(
+      'Error sending report to Sentry:',
+      expect.objectContaining({ name: 'TimeoutError' }),
+    );
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+    await act(async () => {
+      finishPending();
+    });
+    expect(fetch).toHaveBeenCalledTimes(
+      phase === 'fetch' || phase === 'cleanup' ? 1 : 0,
+    );
+    if (phase === 'lookup') {
+      expect(
+        browser.declarativeNetRequest.updateSessionRules,
+      ).not.toHaveBeenCalled();
+    } else {
+      expect(
+        browser.declarativeNetRequest.updateSessionRules,
+      ).toHaveBeenLastCalledWith({ removeRuleIds: [1000100, 1000101] });
+    }
+  });
 
   it('shows a checked report checkbox when analytics is disabled', async () => {
     jest

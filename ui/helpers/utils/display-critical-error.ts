@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { type ErrorLike } from '../../../shared/constants/errors';
 import { hasAnalyticsConsent } from '../../../shared/lib/analytics';
 import { withTemporaryAllowance } from '../../../shared/lib/network-request-policy';
+import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 import {
   getErrorHtml,
   maybeGetLocaleContext,
@@ -253,25 +254,23 @@ async function sendErrorToSentry(startupError: ErrorLike): Promise<void> {
     const sentryEnvelopeURL = extractEnvelopeUrlFromDsn(sentryDSN);
 
     const controller = new AbortController();
-    let timeout: ReturnType<typeof setTimeout> | undefined;
-    const deadline = new Promise<never>((_resolve, reject) => {
-      timeout = setTimeout(() => {
-        const timeoutError = new DOMException(
-          'Sentry reporting timed out',
-          'TimeoutError',
-        );
-        controller.abort(timeoutError);
-        reject(timeoutError);
-      }, SENTRY_REPORT_TIMEOUT_MS);
-    });
+    const { promise: deadline, reject } = withResolvers<never>();
+    const timeout = setTimeout(() => {
+      const timeoutError = new DOMException(
+        'Sentry reporting timed out',
+        'TimeoutError',
+      );
+      controller.abort(timeoutError);
+      reject(timeoutError);
+    }, SENTRY_REPORT_TIMEOUT_MS);
     try {
       // Include lock acquisition, DNR installation and cleanup in the deadline:
       // reporting must not prevent restarting or repairing a broken extension.
       await Promise.race([
         withTemporaryAllowance(
           sentryEnvelopeURL,
-          async () => {
-            await fetch(sentryEnvelopeURL, {
+          () =>
+            fetch(sentryEnvelopeURL, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/x-sentry-envelope',
@@ -280,8 +279,7 @@ async function sendErrorToSentry(startupError: ErrorLike): Promise<void> {
               keepalive: true,
               redirect: 'error',
               signal: controller.signal,
-            });
-          },
+            }),
           { signal: controller.signal },
         ),
         deadline,

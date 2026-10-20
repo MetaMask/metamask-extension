@@ -106,9 +106,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   manifests: Map<Browser, Manifest> = new Map();
 
-  private manifestSources: Map<Browser, sources.RawSource> = new Map();
-
-  private networkRequestSources = new Map<Browser, sources.RawSource>();
+  private browserAssets = new Map<Browser, Record<string, sources.RawSource>>();
 
   private watchedFiles: string[] = [];
 
@@ -195,32 +193,26 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   /**
-   * Emits each browser-specific manifest into its final output location.
+   * Emits browser-specific JSON assets into their final output locations.
    *
    * @param compilation - The active compilation.
    * @param browsers - The browsers being built.
    */
-  private emitManifestAssets(
+  private emitBrowserAssets(
     compilation: Compilation,
     browsers: readonly Browser[],
   ): void {
     browsers.forEach((browser) => {
-      const rules = this.networkRequestSources.get(browser);
-      if (rules) {
-        compilation.emitAsset(
-          path.posix.join(browser, 'network-request-rules.json'),
-          rules,
-        );
-      }
-      const manifest = this.manifestSources.get(browser) as sources.RawSource;
-      compilation.emitAsset(
-        path.posix.join(browser, 'manifest.json'),
-        manifest,
-        {
+      const assets = this.browserAssets.get(browser) as Record<
+        string,
+        sources.RawSource
+      >;
+      for (const [filename, source] of Object.entries(assets)) {
+        compilation.emitAsset(path.posix.join(browser, filename), source, {
           javascriptModule: false,
           contentType: 'application/json',
-        },
-      );
+        });
+      }
     });
   }
 
@@ -399,11 +391,22 @@ export class ManifestPlugin<Z extends boolean> {
     ).length;
 
     let filesProcessed = 0;
-    const totalWork = browsers.length * (zipEligibleAssetCount + 1);
+    const totalWork = browsers.reduce(
+      (total, browser) =>
+        total +
+        zipEligibleAssetCount +
+        Object.keys(
+          this.browserAssets.get(browser) as Record<string, sources.RawSource>,
+        ).length,
+      0,
+    );
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
     const zipBuilders = browsers.map((browser) => {
-      const manifest = this.manifestSources.get(browser) as sources.RawSource;
+      const browserAssets = this.browserAssets.get(browser) as Record<
+        string,
+        sources.RawSource
+      >;
       const onAssetAdded = (assetName: string) => {
         reportProgress(
           0,
@@ -417,19 +420,12 @@ export class ManifestPlugin<Z extends boolean> {
         builder: createBrowserZipBuilder({
           compressionOptions,
           excludeExtensions,
-          manifest,
+          assets: browserAssets,
           mtime,
           onAssetAdded,
         }),
       };
     });
-
-    for (const { browser, builder } of zipBuilders) {
-      const rules = this.networkRequestSources.get(browser);
-      if (rules) {
-        builder.addAsset('network-request-rules.json', rules);
-      }
-    }
 
     for (const assetName of assetNames) {
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
@@ -479,7 +475,7 @@ export class ManifestPlugin<Z extends boolean> {
       });
     }
 
-    this.emitManifestAssets(compilation, browsers);
+    this.emitBrowserAssets(compilation, browsers);
 
     for (const { browser, builder } of zipBuilders) {
       const data = await builder.finalize();
@@ -559,7 +555,7 @@ export class ManifestPlugin<Z extends boolean> {
       });
     }
 
-    this.emitManifestAssets(compilation, browsers);
+    this.emitBrowserAssets(compilation, browsers);
   }
 
   /**
@@ -591,7 +587,6 @@ export class ManifestPlugin<Z extends boolean> {
 
   private prepareManifests(compiler: Compiler): void {
     this.watchedFiles = [];
-    this.networkRequestSources.clear();
 
     const root = path.join(compiler.context, '../');
     const manifestOverridesPath = path.join(root, '.manifest-overrides.json');
@@ -689,27 +684,6 @@ export class ManifestPlugin<Z extends boolean> {
       // allow the user to `transform` the manifest
       if (transform) {
         manifest = transform(manifest, browser);
-      }
-
-      if (
-        browser === 'chrome' &&
-        manifest.manifest_version === 3 &&
-        manifest.declarative_net_request?.rule_resources?.some(
-          ({ id }) => id === 'network_request_policy',
-        )
-      ) {
-        this.networkRequestSources.set(
-          browser,
-          new RawSource(
-            JSON.stringify(
-              createNetworkRequestRules(
-                manifest,
-                this.options.buildType,
-                this.options.test ?? false,
-              ),
-            ),
-          ),
-        );
       }
 
       // Add the manifest file to manifests
@@ -965,11 +939,29 @@ export class ManifestPlugin<Z extends boolean> {
         ? { ...manifest, build_id: compilation.fullHash }
         : manifest;
 
-      // cache the resolved manifests as RawSource
-      this.manifestSources.set(
-        browser,
-        new RawSource(JSON.stringify(manifestForEmit, null, 2)),
-      );
+      const browserAssets: Record<string, sources.RawSource> = {
+        'manifest.json': new RawSource(
+          JSON.stringify(manifestForEmit, null, 2),
+        ),
+      };
+      if (
+        browser === 'chrome' &&
+        manifest.manifest_version === 3 &&
+        manifest.declarative_net_request?.rule_resources?.some(
+          ({ id }) => id === 'network_request_policy',
+        )
+      ) {
+        browserAssets['network-request-rules.json'] = new RawSource(
+          JSON.stringify(
+            createNetworkRequestRules(
+              manifest,
+              this.options.buildType,
+              this.options.test ?? false,
+            ),
+          ),
+        );
+      }
+      this.browserAssets.set(browser, browserAssets);
     }
   }
 
