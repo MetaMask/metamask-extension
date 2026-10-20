@@ -4,28 +4,24 @@
 import React from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import type { RampsNavigationResult } from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { BuyDeepLinkEntry } from './buy-deeplink-entry';
 
 const DAI_SEARCH =
   '?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
 
+const PORTFOLIO_URL =
+  'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
+
 const mockNavigate = jest.fn();
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
-const globalMockPlatformOpenTab = jest.fn();
-let mockOpensBuyInPortfolioTab = false;
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
 let mockSearch = '';
-let mockKey = 'abc';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-  useLocation: () => ({ search: mockSearch, key: mockKey }),
+  useLocation: () => ({ search: mockSearch, key: 'abc' }),
 }));
-
-// jsdom environment: `global` is the ambient window; give it a platform mock.
-(global as { platform?: object }).platform = {
-  openTab: globalMockPlatformOpenTab,
-};
 
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -33,7 +29,6 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   default: () => ({
     // Fresh reference each render so dependency changes are exercised.
     goToBuy: (...args: unknown[]) => mockGoToBuy(...args),
-    opensBuyInPortfolioTab: mockOpensBuyInPortfolioTab,
   }),
 }));
 
@@ -45,9 +40,7 @@ describe('BuyDeepLinkEntry', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockOpensBuyInPortfolioTab = false;
-    mockKey = 'abc';
-    mockGoToBuy.mockResolvedValue(true);
+    mockGoToBuy.mockResolvedValue('native');
   });
 
   it('calls goToBuy with the intent built from deep link params, once across re-renders', () => {
@@ -62,7 +55,7 @@ describe('BuyDeepLinkEntry', () => {
       {
         assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
       },
-      { replace: true },
+      { replace: true, portfolioRedirectUrl: PORTFOLIO_URL },
     );
   });
 
@@ -72,7 +65,11 @@ describe('BuyDeepLinkEntry', () => {
     await waitFor(() => {
       expect(mockGoToBuy).toHaveBeenCalledTimes(1);
     });
-    expect(mockGoToBuy).toHaveBeenCalledWith(undefined, { replace: true });
+    // With no intent params, Portfolio still receives the params verbatim.
+    expect(mockGoToBuy).toHaveBeenCalledWith(undefined, {
+      replace: true,
+      portfolioRedirectUrl: 'https://app.metamask.io/buy?utm_source=promo',
+    });
   });
 
   const navigateHomeCases: [string, () => void][] = [
@@ -97,10 +94,11 @@ describe('BuyDeepLinkEntry', () => {
     // The cleanup must be unmount-only: a dep change cancels the in-flight
     // navigation and the effect re-runs into the hasInitiatedRef guard,
     // stranding the user on the spinner.
-    let resolveGoToBuy: (value: boolean) => void = () => undefined;
+    let resolveGoToBuy: (value: RampsNavigationResult) => void = () =>
+      undefined;
     mockGoToBuy.mockImplementation(
       () =>
-        new Promise<boolean>((resolve) => {
+        new Promise<RampsNavigationResult>((resolve) => {
           resolveGoToBuy = resolve;
         }),
     );
@@ -117,10 +115,11 @@ describe('BuyDeepLinkEntry', () => {
   });
 
   it('does not navigate after unmount', async () => {
-    let resolveGoToBuy: (value: boolean) => void = () => undefined;
+    let resolveGoToBuy: (value: RampsNavigationResult) => void = () =>
+      undefined;
     mockGoToBuy.mockImplementation(
       () =>
-        new Promise<boolean>((resolve) => {
+        new Promise<RampsNavigationResult>((resolve) => {
           resolveGoToBuy = resolve;
         }),
     );
@@ -132,51 +131,5 @@ describe('BuyDeepLinkEntry', () => {
     });
 
     expect(mockNavigate).not.toHaveBeenCalled();
-  });
-
-  const PORTFOLIO_URL =
-    'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
-
-  it('redirects in place to Portfolio with verbatim params on initial load', async () => {
-    mockOpensBuyInPortfolioTab = true;
-    mockKey = 'default';
-    const originalLocation = window.location;
-    const locationMock: { href: string } = { href: '' };
-    Object.defineProperty(window, 'location', {
-      value: locationMock,
-      writable: true,
-    });
-
-    try {
-      renderEntry(DAI_SEARCH);
-
-      await waitFor(() => {
-        expect(locationMock.href).toBe(PORTFOLIO_URL);
-      });
-    } finally {
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-      });
-    }
-
-    expect(globalMockPlatformOpenTab).not.toHaveBeenCalled();
-    expect(mockGoToBuy).not.toHaveBeenCalled();
-    expect(mockNavigate).not.toHaveBeenCalled();
-  });
-
-  it('opens Portfolio in a new tab and returns home on in-app navigation', async () => {
-    mockOpensBuyInPortfolioTab = true;
-    renderEntry(DAI_SEARCH);
-
-    await waitFor(() => {
-      expect(globalMockPlatformOpenTab).toHaveBeenCalledWith({
-        url: PORTFOLIO_URL,
-      });
-    });
-    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-      replace: true,
-    });
-    expect(mockGoToBuy).not.toHaveBeenCalled();
   });
 });

@@ -204,7 +204,10 @@ export default function useRampsNavigation() {
     async (
       intent?: RampIntent,
       // `replace` swaps the history entry, so the deep-link entry page can't be
-      // navigated back to.
+      // navigated back to. `portfolioRedirectUrl` overrides the generic
+      // Portfolio buy URL used when the buy leaves the extension (the rollout
+      // gate off, or the one-time Portfolio order migration), so e.g. `/buy`
+      // deep-link params survive the redirect.
       {
         replace = false,
         portfolioRedirectUrl,
@@ -212,9 +215,13 @@ export default function useRampsNavigation() {
     ): Promise<RampsNavigationResult> => {
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
-        // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
-        // just an over-tight annotation.
-        await openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+        if (portfolioRedirectUrl) {
+          await global.platform.openTab({ url: portfolioRedirectUrl });
+        } else {
+          // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param
+          // is just an over-tight annotation.
+          await openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+        }
         return 'portfolio';
       }
 
