@@ -4,7 +4,7 @@ import { PerpsPositionsBase } from '../perps/perps-positions-base';
  * The Perps home tab: balance, positions, watchlist, explore markets, and
  * tutorial entry points.
  *
- * Screen: `#/perps` / `#/perps-home`, reached from the account overview via
+ * Screen: `#/perps-home`, reached from the bottom navigation bar via
  * `navigateToPerpsHome()`.
  * Owns: the balance header with persistent Add funds / Withdraw buttons,
  * position cards (via `PerpsPositionsBase`), watchlist, explore-markets and
@@ -171,11 +171,10 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
-   * Navigates to Perps Home by clicking the Perps tab on the account overview.
+   * Navigates to Perps Home by clicking the Perps tab in the bottom navigation bar.
    */
   async navigateToPerpsHome(): Promise<void> {
-    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
-    await this.driver.clickElement(this.accountOverviewPerpsTab);
+    await this.driver.clickElement(this.bottomNavPerpsButton);
     await this.checkPageIsLoaded();
   }
 

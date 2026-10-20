@@ -29,7 +29,7 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
  *
  * Screen: `#/` (DEFAULT_ROUTE), after unlock / onboarding.
  * Owns: balance and empty-state checks, Send / Swap / Bridge / Receive,
- * navigating to Tokens / NFTs / DeFi / Activity tabs, home notifications,
+ * navigating to Tokens / NFTs / DeFi and the Activity page, home notifications,
  * shield entry modal, survey and SRP toasts, and page-ready waits.
  * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
  * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
@@ -42,10 +42,6 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
 class HomePage {
   private readonly accountImportedToast =
     '[data-testid="account-imported-toast"]';
-
-  protected readonly activityTab = {
-    testId: 'account-overview__activity-tab',
-  };
 
   private readonly backupRemindMeLaterButton = {
     tag: 'button',
@@ -65,7 +61,12 @@ class HomePage {
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
+  protected readonly bottomNavActivityButton =
+    '[data-testid="bottom-nav-activity"]';
+
   private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
+
+  protected readonly bottomNavPerpsButton = '[data-testid="bottom-nav-perps"]';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -578,8 +579,11 @@ class HomePage {
   }
 
   async goToActivityList(): Promise<void> {
-    console.log(`Open activity tab on homepage`);
-    await this.driver.clickElement(this.activityTab);
+    console.log('Open the activity page from the bottom navigation bar');
+    await this.driver.clickElement(this.bottomNavActivityButton);
+    await this.driver.waitForSelector({
+      testId: 'parent-selector-activity-tab',
+    });
   }
 
   async goToBackupSRPPage(): Promise<void> {
@@ -629,8 +633,8 @@ class HomePage {
 
   async goToTokensTab(): Promise<void> {
     console.log(`Go to tokens tab on homepage`);
-    // With the bottom nav bar, activity is its own route instead of a home
-    // tab, so the tab strip is absent and we have to return home first.
+    // Activity is its own route, so the home tab strip is absent there and we
+    // have to return home first.
     const currentUrl = await this.driver.getCurrentUrl();
     if (currentUrl.includes(`#${ACTIVITY_ROUTE}`)) {
       await this.driver.clickElement(this.bottomNavHomeButton);

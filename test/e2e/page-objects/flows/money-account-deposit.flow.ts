@@ -9,7 +9,7 @@ import { login } from './login.flow';
 
 /**
  * Unlock the wallet and open the Money home page via the bottom nav Money
- * tab (bottom nav AB test treatment).
+ * tab.
  *
  * @param driver - The WebDriver instance.
  * @param localNode - The Anvil node backing Mainnet, for balance validation.
