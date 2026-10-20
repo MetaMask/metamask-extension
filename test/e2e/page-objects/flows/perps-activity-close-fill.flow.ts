@@ -5,26 +5,28 @@ import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
 
 /**
- * After a simulated fill in E2E (see `pushUserFillsCloseFill`), leaves market
- * detail, opens Perps Activity and asserts a trade row appears with the
- * expected title fragment (same navigation pattern as other lifecycle tests).
+ * After a simulated position change in E2E, pushes a `userFills` snapshot via
+ * `pushUserFills` (again once Perps home is stable), then opens Perps Activity
+ * and asserts a trade row appears with the expected title fragment (same
+ * navigation pattern as other lifecycle tests).
  *
  * @param options
  * @param options.driver
+ * @param options.pushUserFills
  * @param options.expectedTitleContains
- * @param options.repushFillOnPerpsHome - TEMP diagnostic: pushes the fill again
- * once Perps home is stable, before opening Activity.
  */
 export async function assertPerpsActivityShowsCloseFill({
   driver,
+  pushUserFills,
   expectedTitleContains,
-  repushFillOnPerpsHome,
 }: {
   driver: Driver;
+  pushUserFills: () => void;
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
-  repushFillOnPerpsHome?: () => void;
 }): Promise<void> {
+  pushUserFills();
+
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
 
@@ -37,10 +39,8 @@ export async function assertPerpsActivityShowsCloseFill({
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
   await perpsTab.waitForPerpsViewStable();
-  if (repushFillOnPerpsHome) {
-    console.log('[Perps] DIAGNOSTIC: re-pushing userFills on Perps home');
-    repushFillOnPerpsHome();
-  }
+  // A live fill sent while leaving market detail can be dropped by the wallet
+  pushUserFills();
   await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 

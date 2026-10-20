@@ -4,9 +4,8 @@
  * Two end-to-end flows that end with a mocked Hyperliquid-style stream update:
  * after configuring only TP or only SL on an ETH long, `pushPositionClosed` simulates
  * the clearinghouse state the server would send once that trigger has filled (UI cannot
- * run the real price-crossing matcher in E2E). Like the venue, each test streams the
- * `userFills` update just before that clearinghouse update, then opens Perps Activity
- * to assert the close-long trade row.
+ * run the real price-crossing matcher in E2E). Each test then pushes a `userFills`
+ * snapshot and opens Perps Activity to assert the close-long trade row.
  * A short delay before `pushPositionClosed` is required: `PerpsStreamManager` ignores
  * incoming position WS pushes for 3000 ms after optimistic TP/SL (`WEBSOCKET_BLOCK_MS`).
  *
@@ -25,8 +24,7 @@ import { getPerpsConfigEligibleWithEthLongPosition } from './perps-fixture-confi
 import {
   WS_USER_WITH_ETH_LONG_POSITION,
   pushPositionClosed,
-  pushUserFillsCloseFill,
-  type PushUserFillsCloseFillOpts,
+  pushUserFillsClosePositionSnapshot,
 } from './mocks/websocketPositionMocks';
 
 describe('Perps Take Profit / Stop Loss', function (this: Suite) {
@@ -62,26 +60,24 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
         );
-        const takeProfitFill: PushUserFillsCloseFillOpts = {
-          coin: 'ETH',
-          px: '3500.0',
-          sz: '2.5',
-          side: 'A',
-          dir: 'Close Long',
-          startPosition: '2.5',
-          oid: 9_101_001,
-          tid: 9_101_002,
-        };
-        pushUserFillsCloseFill(perpsServer, takeProfitFill);
         pushPositionClosed(perpsServer);
 
         await marketDetailPage.waitForTradeCtaButtons();
 
         await assertPerpsActivityShowsCloseFill({
           driver,
+          pushUserFills: () =>
+            pushUserFillsClosePositionSnapshot(perpsServer, {
+              coin: 'ETH',
+              px: '3500.0',
+              sz: '2.5',
+              side: 'A',
+              dir: 'Close Long',
+              startPosition: '2.5',
+              oid: 9_101_001,
+              tid: 9_101_002,
+            }),
           expectedTitleContains: 'Closed long',
-          repushFillOnPerpsHome: () =>
-            pushUserFillsCloseFill(perpsServer, takeProfitFill),
         });
       },
     );
@@ -116,26 +112,24 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
         );
-        const stopLossFill: PushUserFillsCloseFillOpts = {
-          coin: 'ETH',
-          px: '2500.0',
-          sz: '2.5',
-          side: 'A',
-          dir: 'Close Long',
-          startPosition: '2.5',
-          oid: 9_102_001,
-          tid: 9_102_002,
-        };
-        pushUserFillsCloseFill(perpsServer, stopLossFill);
         pushPositionClosed(perpsServer);
 
         await marketDetailPage.waitForTradeCtaButtons();
 
         await assertPerpsActivityShowsCloseFill({
           driver,
+          pushUserFills: () =>
+            pushUserFillsClosePositionSnapshot(perpsServer, {
+              coin: 'ETH',
+              px: '2500.0',
+              sz: '2.5',
+              side: 'A',
+              dir: 'Close Long',
+              startPosition: '2.5',
+              oid: 9_102_001,
+              tid: 9_102_002,
+            }),
           expectedTitleContains: 'Closed long',
-          repushFillOnPerpsHome: () =>
-            pushUserFillsCloseFill(perpsServer, stopLossFill),
         });
       },
     );
