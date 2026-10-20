@@ -86,7 +86,7 @@ function AlertDetails({
           <Box asChild paddingLeft={6}>
             <ul className="alert-modal__alert-details">
               {details.map((detail, index) => (
-                <Box asChild key={`disclosure-detail-${detail}-${index}`}>
+                <Box asChild key={`disclosure-detail-${index}`}>
                   <li>
                     <Text
                       variant={TextVariant.bodyMdMedium}

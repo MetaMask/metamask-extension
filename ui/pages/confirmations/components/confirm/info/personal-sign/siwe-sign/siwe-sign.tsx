@@ -42,6 +42,7 @@ const SIWESignInfo = () => {
   const hexChainId = toHex(chainId);
   const network =
     (NETWORK_TO_NAME_MAP as Record<string, string>)[hexChainId] ?? hexChainId;
+
   return (
     <ConfirmInfoRow
       label={t('message')}
@@ -86,10 +87,7 @@ const SIWESignInfo = () => {
         {resources && (
           <ConfirmInfoRow label={t('siweResources')}>
             {resources.map((resource, index) => (
-              <ConfirmInfoRowText
-                key={`resource-${resource}-${index}`}
-                text={resource}
-              />
+              <ConfirmInfoRowText key={`resource-${index}`} text={resource} />
             ))}
           </ConfirmInfoRow>
         )}

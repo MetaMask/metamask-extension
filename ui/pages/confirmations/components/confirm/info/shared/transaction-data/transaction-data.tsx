@@ -91,6 +91,7 @@ export const TransactionData = ({
   const { data: decodeData, source } = value;
   const isExpandable = decodeData.length > 1;
   const { chainId } = currentConfirmation;
+
   return (
     <Container transactionData={transactionData} noPadding={noPadding}>
       <>
@@ -101,7 +102,7 @@ export const TransactionData = ({
             APPROVAL_METHOD_NAMES.includes(method.name);
           if (isBatchedApproval) {
             return (
-              <React.Fragment key={`${method.name}-${index}`}>
+              <React.Fragment key={index}>
                 <BatchedApprovalFunction
                   method={method}
                   nestedTransactionIndex={nestedTransactionIndex}
@@ -111,7 +112,7 @@ export const TransactionData = ({
             );
           }
           return (
-            <React.Fragment key={`${method.name}-${index}`}>
+            <React.Fragment key={index}>
               <FunctionContainer
                 method={method}
                 source={source}
@@ -183,11 +184,12 @@ function FunctionContainer({
   chainId: string;
 }) {
   const t = useI18nContext();
+
   const paramRows = (
     <Box paddingLeft={2} data-testid={`advanced-details-${method.name}-params`}>
       {method.params.map((param, paramIndex) => (
         <ParamRow
-          key={`${param.name || param.type}-${paramIndex}`}
+          key={paramIndex}
           param={param}
           index={paramIndex}
           source={source}
@@ -278,9 +280,10 @@ function ParamRow({
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
   const dataTestId = `advanced-details-data-param-${index}`;
+
   const childRows = param.children?.map((childParam, childIndex) => (
     <ParamRow
-      key={`${childParam.name || childParam.type}-${childIndex}`}
+      key={childIndex}
       param={childParam}
       index={childIndex}
       source={source}

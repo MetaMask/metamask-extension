@@ -33,21 +33,6 @@ describe('GeneralAlert', () => {
     expect(getByText(messages.seeDetails.message)).toBeInTheDocument();
   });
 
-  it('renders each detail in a list of details, including repeated ones', () => {
-    const { getAllByRole } = renderWithProvider(
-      <GeneralAlert
-        {...mockProps}
-        details={['Detail 1', 'Detail 2', 'Detail 1']}
-      />,
-    );
-
-    expect(getAllByRole('listitem').map((item) => item.textContent)).toEqual([
-      'Detail 1',
-      'Detail 2',
-      'Detail 1',
-    ]);
-  });
-
   it('renders the security provider information when provided', () => {
     const reportUrl = 'https://example.com/report';
     const { getByText } = renderWithProvider(

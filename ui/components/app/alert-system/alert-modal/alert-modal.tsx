@@ -192,6 +192,7 @@ function AlertDetails({
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   const customAlertBg = selectedAlert.alertDetailsBackgroundColor;
+
   return (
     <Box
       key={selectedAlert.key}
@@ -225,10 +226,7 @@ function AlertDetails({
           <Box asChild paddingLeft={6}>
             <ul className="alert-modal__alert-details">
               {selectedAlert.alertDetails?.map((detail, index) => (
-                <Box
-                  asChild
-                  key={`${selectedAlert.key}-detail-${detail}-${index}`}
-                >
+                <Box asChild key={`${selectedAlert.key}-detail-${index}`}>
                   <li>
                     <Text variant={TextVariant.bodyMd}>{detail}</Text>
                   </li>
