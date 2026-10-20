@@ -376,6 +376,7 @@
     "rewardsVipPerpsFees": "object"
   },
   "RewardsDataService": "undefined",
+  "RewardsMoneyController": "object",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",

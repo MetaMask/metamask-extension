@@ -157,6 +157,7 @@
     "events": "object",
     "eventsConfig": "object",
     "eventsConfigEtag": null,
+    "excludedRegions": null,
     "fcmToken": "string",
     "featureFlagThresholdGroups": "object",
     "featureFlags": {},
