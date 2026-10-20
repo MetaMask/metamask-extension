@@ -3910,12 +3910,21 @@ describe('Actions', () => {
         ? sinon.stub().rejects(authenticateError)
         : sinon.stub().resolves({ isNewUser: true });
 
-      background.getApi.returns({
-        startOAuthLogin: startOAuthLoginStub,
-        preloadToprfNodeDetails: preloadToprfNodeDetailsStub,
-        authenticate: authenticateStub,
+      Object.assign(background, {
+        messengerCall: (actionType, args = []) => {
+          switch (actionType) {
+            case 'SeedlessOnboardingController:preloadToprfNodeDetails':
+              return preloadToprfNodeDetailsStub(...args);
+            case 'SeedlessOnboardingController:authenticate':
+              return authenticateStub(...args);
+            case 'OAuthService:startOAuthLogin':
+              return startOAuthLoginStub(...args);
+            default:
+              throw new Error(`Unknown action type '${actionType}'`);
+          }
+        },
       });
-      setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background);
 
       return {
         startOAuthLoginStub,
