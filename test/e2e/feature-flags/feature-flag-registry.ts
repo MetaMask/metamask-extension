@@ -2765,6 +2765,29 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  coreExtensionUxCeux1141AbtestBottomNav: {
+    inProd: true,
+    name: 'coreExtensionUxCeux1141AbtestBottomNav',
+    productionDefault: [
+      {
+        name: 'control',
+        scope: {
+          type: 'threshold',
+          value: 1,
+        },
+      },
+      {
+        name: 'treatment',
+        scope: {
+          type: 'threshold',
+          value: 0,
+        },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   corePlatformRpcFailoverForceEnabled: {
     inProd: true,
     name: 'corePlatformRpcFailoverForceEnabled',
