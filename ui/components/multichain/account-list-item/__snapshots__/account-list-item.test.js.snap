@@ -179,7 +179,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
               data-testid="account-list-address"
             >
-              bc1qn3s...5eker
+              bc1qn...5eker
             </p>
           </div>
           <div

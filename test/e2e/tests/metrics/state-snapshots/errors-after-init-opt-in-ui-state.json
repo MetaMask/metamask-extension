@@ -426,7 +426,6 @@
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object",
     "tokens": "object",
-    "tokensChainsCache": {},
     "tradeConfigurations": "object",
     "transactionBatches": "object",
     "transactionData": "object",
