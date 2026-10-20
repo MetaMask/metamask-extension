@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 import os from 'os';
 import type {
   CalibrationStatistic,
@@ -222,6 +222,48 @@ function readCalibration(
   }
 }
 
+/**
+ * Pull the region out of the `.setup_info` JSON that GitHub's provisioner
+ * writes next to the runner, e.g. `...\nRegion: eastus\nCloud: Azure`.
+ *
+ * @param json - Parsed `.setup_info` content.
+ * @returns The region, or undefined if no entry carries one.
+ */
+export function parseSetupInfoRegion(json: unknown): string | undefined {
+  if (!Array.isArray(json)) {
+    return undefined;
+  }
+  for (const entry of json) {
+    const detail = (entry as Record<string, unknown> | null)?.Detail;
+    const match =
+      typeof detail === 'string' ? /^Region:\s*(\S+)\s*$/mu.exec(detail) : null;
+    if (match) {
+      return match[1];
+    }
+  }
+  return undefined;
+}
+
+function readHostedRegion(
+  runnersDir: string = '/home/runner/actions-runner/cached',
+): string | undefined {
+  try {
+    for (const version of readdirSync(runnersDir)) {
+      const region = parseSetupInfoRegion(
+        JSON.parse(
+          readFileSync(`${runnersDir}/${version}/.setup_info`, 'utf8'),
+        ),
+      );
+      if (region) {
+        return region;
+      }
+    }
+  } catch {
+    // Not a hosted runner, or the provisioner layout changed.
+  }
+  return undefined;
+}
+
 function detectProvider(env: NodeJS.ProcessEnv): HostProvenance['provider'] {
   if (env.NSC_INSTANCE_ID) {
     return 'namespace';
@@ -252,9 +294,10 @@ export function captureHostProvenance(
     label: nonEmpty(env.BENCHMARK_RUNNER_LABEL),
     name: nonEmpty(env.RUNNER_NAME),
     instanceId: nonEmpty(env.NSC_INSTANCE_ID),
-    shape:
-      nonEmpty(env.NSC_INSTANCE_SHAPE) ?? nonEmpty(env.BENCHMARK_RUNNER_SHAPE),
-    region: nonEmpty(env.BENCHMARK_RUNNER_REGION),
+    shape: nonEmpty(env.NSC_INSTANCE_SHAPE),
+    region:
+      nonEmpty(env.BENCHMARK_RUNNER_REGION) ??
+      (provider === 'github' ? readHostedRegion() : undefined),
     placement: provider === 'namespace' ? namespacePlacement(env) : undefined,
     os: nonEmpty(env.RUNNER_OS) ?? os.platform(),
     arch: nonEmpty(env.RUNNER_ARCH) ?? os.arch(),

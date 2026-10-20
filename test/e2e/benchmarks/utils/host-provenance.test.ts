@@ -4,6 +4,7 @@ import {
   medianCpuProbe,
   parseCalibration,
   parseCpuTimes,
+  parseSetupInfoRegion,
   stealPercentBetween,
   timeCpuProbe,
 } from './host-provenance';
@@ -117,6 +118,30 @@ describe('parseCalibration', () => {
   });
 });
 
+describe('parseSetupInfoRegion', () => {
+  const provisioner = {
+    Group: 'Runner Image Provisioner',
+    Detail:
+      'Hosted Compute Agent\nVersion: 20261015.610\nWorker ID: {642f}\nRegion: eastus\nCloud: Azure',
+  };
+
+  it('reads the region from the provisioner entry', () => {
+    const image = { Group: 'Operating System', Detail: 'Ubuntu\n24.04.3' };
+    expect(parseSetupInfoRegion([image, provisioner])).toBe('eastus');
+  });
+
+  it('returns undefined when no entry has a region', () => {
+    expect(
+      parseSetupInfoRegion([{ Group: 'Image', Detail: 'Version: 1' }]),
+    ).toBeUndefined();
+  });
+
+  it('returns undefined for unexpected shapes', () => {
+    expect(parseSetupInfoRegion({})).toBeUndefined();
+    expect(parseSetupInfoRegion([null, { Detail: 5 }])).toBeUndefined();
+  });
+});
+
 describe('captureHostProvenance', () => {
   it('reads GitHub identity from the environment', () => {
     const host = captureHostProvenance({
@@ -127,7 +152,6 @@ describe('captureHostProvenance', () => {
       ImageOS: 'ubuntu24',
       ImageVersion: '20261001.1.0',
       BENCHMARK_RUNNER_REGION: 'eastus',
-      BENCHMARK_RUNNER_SHAPE: 'Standard_D4ads_v5',
     });
     expect(host).toMatchObject({
       provider: 'github',
@@ -137,7 +161,6 @@ describe('captureHostProvenance', () => {
       imageOs: 'ubuntu24',
       imageVersion: '20261001.1.0',
       region: 'eastus',
-      shape: 'Standard_D4ads_v5',
     });
     expect(host.placement).toBeUndefined();
   });

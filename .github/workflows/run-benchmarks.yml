@@ -69,15 +69,6 @@ jobs:
       # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
-      # GitHub-hosted runners answer the Azure instance metadata endpoint at once.
-      # Namespace has no such endpoint and exposes its placement through NSC_* vars.
-      - name: Record runner placement
-        run: |
-          if [ -n "$NSC_INSTANCE_ID" ]; then exit 0; fi
-          compute=$(curl -sS -m 3 -H 'Metadata: true' 'http://169.254.169.254/metadata/instance/compute?api-version=2021-02-01&format=json') || exit 0
-          echo "BENCHMARK_RUNNER_REGION=$(jq -r '.location // empty' <<< "$compute" || true)" >> "$GITHUB_ENV"
-          echo "BENCHMARK_RUNNER_SHAPE=$(jq -r '.vmSize // empty' <<< "$compute" || true)" >> "$GITHUB_ENV"
-
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
@@ -186,13 +177,6 @@ jobs:
       DAPP_BENCHMARK_JSON: benchmark-chrome-webpack-pageLoadBenchmark.json
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
-      - name: Record runner placement
-        run: |
-          if [ -n "$NSC_INSTANCE_ID" ]; then exit 0; fi
-          compute=$(curl -sS -m 3 -H 'Metadata: true' 'http://169.254.169.254/metadata/instance/compute?api-version=2021-02-01&format=json') || exit 0
-          echo "BENCHMARK_RUNNER_REGION=$(jq -r '.location // empty' <<< "$compute" || true)" >> "$GITHUB_ENV"
-          echo "BENCHMARK_RUNNER_SHAPE=$(jq -r '.vmSize // empty' <<< "$compute" || true)" >> "$GITHUB_ENV"
-
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
