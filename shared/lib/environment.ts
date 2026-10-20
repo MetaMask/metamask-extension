@@ -94,14 +94,15 @@ export const getIsNewHardwareWalletOnboardingEnabled = (): boolean => {
 };
 
 /**
- * Compile-time gate (`MPC_KEYRING_ENABLED`): when true the MPC keyring builder
- * is registered with the `KeyringController`. Gated while the feature is
- * unreleased — no released build can yet hold an MPC keyring in its vault —
- * and once one can, the registration must become unconditional so the
- * controller can always recognize the type while deserializing the vault.
+ * Compile-time gate (`MPC_MONEY_KEYRING_ENABLED`): when true the MPC money
+ * keyring builder is registered with the `KeyringController`. Gated while the
+ * feature is unreleased — no released build can yet hold an MPC money keyring
+ * in its vault — and once one can, the registration must become unconditional
+ * so the controller can always recognize the type while deserializing the
+ * vault.
  */
-export const getIsMpcKeyringIncludedInBuild = (): boolean => {
-  return process.env.MPC_KEYRING_ENABLED?.toString() === 'true';
+export const getIsMpcMoneyKeyringIncludedInBuild = (): boolean => {
+  return process.env.MPC_MONEY_KEYRING_ENABLED?.toString() === 'true';
 };
 
 export const getIsSidePanelFeatureEnabled = (): boolean => {

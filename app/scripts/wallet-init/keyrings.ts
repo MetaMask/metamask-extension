@@ -17,15 +17,15 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { getIsMpcKeyringIncludedInBuild } from '../../../shared/lib/environment';
+import { getIsMpcMoneyKeyringIncludedInBuild } from '../../../shared/lib/environment';
 import {
   buildMoneyKeyringBuilder,
   buildMoneyKeyringV2Builder,
 } from '../lib/money/money-keyring-builder';
 import {
-  buildMpcKeyringBuilder,
-  buildMpcKeyringV2Builder,
-} from '../lib/mpc-keyring/mpc-keyring-builder';
+  buildMpcMoneyKeyringBuilder,
+  buildMpcMoneyKeyringV2Builder,
+} from '../lib/mpc-money-keyring/mpc-money-keyring-builder';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { TrezorMv2Bridge } from '../lib/offscreen-bridge/trezor-mv2-bridge';
@@ -120,11 +120,11 @@ export function getKeyringV2Builders(): KeyringV2Builder[] {
     snapKeyringV2Builder(),
   ];
 
-  // The MPC keyring is fenced behind the `MPC_KEYRING_ENABLED` compile-time
-  // gate while the feature is unreleased, for the same reason as in
-  // `getKeyringBuilders` above. See `buildMpcKeyringBuilder`.
-  if (getIsMpcKeyringIncludedInBuild()) {
-    builders.push(buildMpcKeyringV2Builder());
+  // The MPC money keyring is fenced behind the `MPC_MONEY_KEYRING_ENABLED`
+  // compile-time gate while the feature is unreleased, for the same reason as
+  // in `getKeyringBuilders` below. See `buildMpcMoneyKeyringBuilder`.
+  if (getIsMpcMoneyKeyringIncludedInBuild()) {
+    builders.push(buildMpcMoneyKeyringV2Builder());
   }
 
   return builders;
@@ -221,12 +221,12 @@ export function getKeyringBuilders(
     ),
   );
 
-  // The MPC keyring is fenced behind the `MPC_KEYRING_ENABLED` compile-time
-  // gate while the feature is unreleased: no released build can yet hold an
-  // MPC keyring in its vault, so a build without the flag never needs to
-  // recognize the type. See `buildMpcKeyringBuilder`.
-  if (getIsMpcKeyringIncludedInBuild()) {
-    keyrings.push(buildMpcKeyringBuilder());
+  // The MPC money keyring is fenced behind the `MPC_MONEY_KEYRING_ENABLED`
+  // compile-time gate while the feature is unreleased: no released build can
+  // yet hold an MPC money keyring in its vault, so a build without the flag
+  // never needs to recognize the type. See `buildMpcMoneyKeyringBuilder`.
+  if (getIsMpcMoneyKeyringIncludedInBuild()) {
+    keyrings.push(buildMpcMoneyKeyringBuilder());
   }
 
   return keyrings;

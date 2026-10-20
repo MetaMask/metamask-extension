@@ -97,7 +97,8 @@ export function setEnvironmentVariables({
     QR_SYNC_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('QR_SYNC_ENABLED'),
-    MPC_KEYRING_ENABLED: variables.getMaybe('MPC_KEYRING_ENABLED'),
+    MPC_MONEY_KEYRING_ENABLED: variables.getMaybe('MPC_MONEY_KEYRING_ENABLED'),
+    MM_MONEY_MPC_ADDRESS: variables.getMaybe('MM_MONEY_MPC_ADDRESS'),
     COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
   });
 }
