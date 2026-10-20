@@ -95,8 +95,6 @@ class HomePage {
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
 
-  private readonly errorToast = '[data-testid="error-toast"]';
-
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
   };
@@ -383,7 +381,7 @@ class HomePage {
     });
     await this.driver.assertElementNotPresent(
       {
-        css: this.errorToast,
+        css: '.toast-container',
         text: 'cryptocurrencies',
       },
       {
@@ -393,7 +391,7 @@ class HomePage {
     );
     await this.driver.assertElementNotPresent(
       {
-        css: this.errorToast,
+        css: '.toast-container',
         text: 'unsupported',
       },
       {

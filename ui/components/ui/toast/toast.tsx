@@ -20,8 +20,6 @@ import { StatusIcon } from '../status-icon/status-icon';
 
 export { toast } from 'react-hot-toast';
 
-export const ERROR_TOAST_TEST_ID = 'error-toast';
-
 export type ToastWithClose = Toast & {
   onClose?: () => void;
 };
@@ -62,12 +60,7 @@ export function Toaster() {
       {(item) => (
         <ToastBar toast={item} position={item.position ?? 'bottom-center'}>
           {({ message }) => (
-            <div
-              data-testid={
-                item.type === 'error' ? ERROR_TOAST_TEST_ID : undefined
-              }
-              style={{ display: 'contents' }}
-            >
+            <>
               {item.icon ?? (
                 <StatusIcon
                   className="shrink-0"
@@ -91,7 +84,7 @@ export function Toaster() {
                   toast.dismiss(item.id);
                 }}
               />
-            </div>
+            </>
           )}
         </ToastBar>
       )}

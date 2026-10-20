@@ -28,8 +28,9 @@ export async function startMonitoringBlockingErrorToast(
  * {@link startMonitoringBlockingErrorToast} recorded the price-api message,
  * then re-checks that it is not currently displayed.
  *
- * Other `toast.error` copy is ignored: `[data-testid="error-toast"]` is set
- * on every error toast. The visible-toast assertion stays on `HomePage`.
+ * The monitor only records `.toast-container` text that includes
+ * `cryptocurrencies` or `unsupported`. The visible-toast assertion stays on
+ * `HomePage`.
  *
  * @param driver - WebDriver for the extension UI.
  * @param homePage - Homepage page object for the visible-toast assertion.

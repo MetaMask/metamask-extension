@@ -9,9 +9,9 @@ function flushPoll(): void {
   jest.advanceTimersByTime(BLOCKING_ERROR_TOAST_POLL_INTERVAL_MS);
 }
 
-function mountErrorToast(text: string): HTMLElement {
+function mountToastContainer(text: string): HTMLElement {
   const toast = document.createElement('div');
-  toast.setAttribute('data-testid', 'error-toast');
+  toast.className = 'toast-container';
   toast.textContent = text;
   document.body.appendChild(toast);
   return toast;
@@ -38,7 +38,9 @@ describe('installBlockingErrorToastMonitor', () => {
     flushPoll();
     expect(getRecordedBlockingErrorToasts()).toHaveLength(0);
 
-    mountErrorToast('None of the cryptocurrencies are supported by price api');
+    mountToastContainer(
+      'None of the cryptocurrencies are supported by price api',
+    );
     flushPoll();
 
     expect(getRecordedBlockingErrorToasts()).toEqual([
@@ -47,7 +49,7 @@ describe('installBlockingErrorToastMonitor', () => {
   });
 
   it('records an error toast that is already in the document', () => {
-    mountErrorToast('unsupported cryptocurrency');
+    mountToastContainer('unsupported cryptocurrency');
     flushPoll();
 
     expect(getRecordedBlockingErrorToasts()).toEqual([
@@ -55,9 +57,8 @@ describe('installBlockingErrorToastMonitor', () => {
     ]);
   });
 
-  it('does not record a toast without the error-toast test id', () => {
+  it('does not record price-api text outside the toast container', () => {
     const toast = document.createElement('div');
-    toast.className = 'toast-container';
     toast.textContent =
       'None of the cryptocurrencies are supported by price api';
     document.body.appendChild(toast);
@@ -66,8 +67,15 @@ describe('installBlockingErrorToastMonitor', () => {
     expect(getRecordedBlockingErrorToasts()).toHaveLength(0);
   });
 
+  it('does not record unrelated toast container copy', () => {
+    mountToastContainer('Network added successfully');
+    flushPoll();
+
+    expect(getRecordedBlockingErrorToasts()).toHaveLength(0);
+  });
+
   it('keeps a recorded toast after it is removed from the document', () => {
-    const toast = mountErrorToast('unsupported');
+    const toast = mountToastContainer('unsupported');
     flushPoll();
 
     toast.remove();
@@ -77,7 +85,7 @@ describe('installBlockingErrorToastMonitor', () => {
   });
 
   it('does not reset recordings when installed a second time', () => {
-    mountErrorToast('unsupported');
+    mountToastContainer('unsupported');
     flushPoll();
     const heartbeat = getBlockingErrorToastHeartbeat();
 
@@ -96,7 +104,7 @@ describe('installBlockingErrorToastMonitor', () => {
   });
 
   it('does not record the same matching toast text twice while it stays mounted', () => {
-    mountErrorToast('unsupported');
+    mountToastContainer('unsupported');
     flushPoll();
     flushPoll();
 

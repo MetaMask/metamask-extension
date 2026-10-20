@@ -9,8 +9,9 @@
  * Polls with `setTimeout` instead of `MutationObserver` because LavaMoat
  * scuttling blocks MutationObserver in the UI realm.
  *
- * Matches `[data-testid="error-toast"]` from `Toaster` error toasts. Keep that
- * selector in sync with `HomePage.errorToast`.
+ * Matches `.toast-container` text for the price-api phrases already asserted by
+ * `HomePage.checkNoErrorToastIsDisplayed` (`cryptocurrencies` / `unsupported`).
+ * Other toast copy is ignored. No production toast test id.
  */
 
 type BlockingErrorToastWindow = Window & {
@@ -63,17 +64,21 @@ export function installBlockingErrorToastMonitor(): void {
   win.__mmE2eBlockingErrorToastHeartbeat = 0;
   // Literal (not the exported const) so executeScript serialization stays self-contained.
   const pollIntervalMs = 50;
-  // Keep in sync with HomePage.errorToast / ERROR_TOAST_TEST_ID.
-  const errorToastSelector = '[data-testid="error-toast"]';
+  // Same container HomePage.checkNoErrorToastIsDisplayed already queries.
+  const toastContainerSelector = '.toast-container';
+
+  function isPriceApiToastText(text: string): boolean {
+    return text.includes('cryptocurrencies') || text.includes('unsupported');
+  }
 
   function scanDocument() {
     const recorded = win.__mmE2eBlockingErrorToasts;
     if (!recorded) {
       return;
     }
-    win.document.querySelectorAll(errorToastSelector).forEach((el) => {
+    win.document.querySelectorAll(toastContainerSelector).forEach((el) => {
       const text = (el.textContent || '').trim();
-      if (text && !recorded.includes(text)) {
+      if (isPriceApiToastText(text) && !recorded.includes(text)) {
         recorded.push(text);
       }
     });
