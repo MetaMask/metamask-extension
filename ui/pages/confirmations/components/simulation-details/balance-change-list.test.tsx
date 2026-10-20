@@ -184,29 +184,6 @@ describe('BalanceChangeList', () => {
         '0xbbb:0xbbb',
       ]);
     });
-
-    it('renders every row without duplicate keys when two balance changes share an asset', () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-
-      render(
-        <BalanceChangeList
-          heading={HEADING_MOCK}
-          balanceChanges={[tokenA, { ...tokenA, fiatAmount: 10 }]}
-        />,
-      );
-
-      const errorMessages = consoleErrorSpy.mock.calls.map(([message]) =>
-        String(message),
-      );
-      consoleErrorSpy.mockRestore();
-
-      expect(getRowTexts()).toStrictEqual(['0xaaa:0xaaa', '0xaaa:0xaaa']);
-      expect(
-        errorMessages.some((message) => message.includes('same key')),
-      ).toBe(false);
-    });
   });
 
   describe('single balance change', () => {

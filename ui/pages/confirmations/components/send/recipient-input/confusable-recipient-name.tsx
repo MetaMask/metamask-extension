@@ -45,30 +45,26 @@ export const ConfusableRecipientName = ({
     let prevIndex = 0;
     for (const confusableSlice of confusableList) {
       if (prevIndex !== confusableSlice.index) {
-        splits.push({
-          str: to.slice(prevIndex, confusableSlice.index),
-          start: prevIndex,
-        });
+        splits.push({ str: to.slice(prevIndex, confusableSlice.index) });
       }
       splits.push({
         str: confusableSlice.confusable.point,
-        start: confusableSlice.index,
         confusable: confusableSlice.confusable,
       });
       prevIndex =
         confusableSlice.index + confusableSlice.confusable.point.length;
     }
-    splits.push({ str: to.slice(prevIndex), start: prevIndex });
+    splits.push({ str: to.slice(prevIndex) });
     return splits;
   }, [to, confusableCharacters]);
 
   return nameSplits ? (
     <Box display={Display.Inline} className="break-all">
-      {nameSplits.map((split) => {
+      {nameSplits.map((split, index) => {
         if (split.confusable) {
           return (
             <Tooltip
-              key={`${split.start}-${split.str}`}
+              key={index}
               position="top"
               tag="span"
               html={
@@ -102,11 +98,7 @@ export const ConfusableRecipientName = ({
           );
         }
         return (
-          <Text
-            key={`${split.start}-${split.str}`}
-            as="span"
-            variant={TextVariant.bodyMd}
-          >
+          <Text key={index} as="span" variant={TextVariant.bodyMd}>
             {split.str}
           </Text>
         );

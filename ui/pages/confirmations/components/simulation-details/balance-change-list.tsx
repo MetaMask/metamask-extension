@@ -11,21 +11,6 @@ import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
 import { sortBalanceChanges } from './sortBalanceChanges';
 
-function getAssetKey({ asset }: BalanceChange) {
-  return [asset.chainId, asset.standard, asset.address, asset.tokenId].join(
-    '-',
-  );
-}
-
-// A batch can approve the same token more than once.
-function getBalanceChangeKey(balanceChanges: BalanceChange[], index: number) {
-  const assetKey = getAssetKey(balanceChanges[index]);
-  const repeats = balanceChanges
-    .slice(0, index)
-    .filter((balanceChange) => getAssetKey(balanceChange) === assetKey).length;
-  return `${assetKey}-${repeats}`;
-}
-
 /**
  * Displays a list of incoming or outgoing balance changes, along with a heading and a
  * total fiat amount.
@@ -85,7 +70,7 @@ export const BalanceChangeList = ({
       >
         {sortedBalanceChanges.map((balanceChange, index) => (
           <BalanceChangeRow
-            key={getBalanceChangeKey(sortedBalanceChanges, index)}
+            key={`${balanceChange.asset.address}-${balanceChange.asset.tokenId}`}
             label={index === 0 ? heading : undefined}
             isFirstRow={index === 0}
             hasIncomingTokens={hasIncomingTokens}

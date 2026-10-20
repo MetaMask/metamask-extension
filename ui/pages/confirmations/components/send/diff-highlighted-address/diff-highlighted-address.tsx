@@ -23,7 +23,6 @@ type DiffHighlightedAddressProps = Readonly<{
 type Segment = {
   text: string;
   isDiff: boolean;
-  start: number;
 };
 
 function getSegments(
@@ -40,7 +39,7 @@ function getSegments(
     if (previousSegment?.isDiff === isDiff) {
       previousSegment.text += address[i];
     } else {
-      segments.push({ text: address[i], isDiff, start: i });
+      segments.push({ text: address[i], isDiff });
     }
   }
 
@@ -90,9 +89,9 @@ export function DiffHighlightedAddress({
         className="break-all"
       >
         <span>
-          {segments.map((segment) => (
+          {segments.map((segment, index) => (
             <span
-              key={segment.start}
+              key={`${index}-${segment.isDiff}`}
               className={classnames(
                 segment.isDiff
                   ? [diffTextColor, highlightBackgroundColor, 'font-bold']
