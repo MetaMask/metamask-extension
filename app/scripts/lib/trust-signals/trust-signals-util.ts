@@ -218,7 +218,14 @@ export function getEip1193OriginScanFlow(
 }
 
 /**
- * Build the Multichain API request-source classifier for origin scans.
+ * Build the Multichain API request-source classifier for origin scans. This is
+ * authored independently of the EIP-1193 classifier because those method names
+ * do not exist on the Multichain API transport.
+ *
+ * Action requests are matched on the method wrapped inside
+ * `wallet_invokeMethod`, rather than on `wallet_invokeMethod` itself. A granted
+ * `eip155` scope permits nearly the entire RPC surface, so matching the outer
+ * method alone would scan the origin during routine polling reads.
  *
  * @param hasCaip25Permission - Whether the origin holds a CAIP-25 permission
  * @returns The request-source flow, or undefined if the request needs no scan
