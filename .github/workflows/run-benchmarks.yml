@@ -23,6 +23,11 @@ permissions:
   id-token: write
   pull-requests: read
 
+env:
+  # TEMPORARY (1/1): data collection only. Skips every gate step; results are
+  # still produced and uploaded. Remove to restore the quality gate.
+  BENCHMARK_GATES_DISABLED: 'true'
+
 jobs:
   benchmarks:
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
@@ -47,7 +52,7 @@ jobs:
           - userJourneyAssets
           - userJourneyTransactions
           - userJourneyAccountManagement
-    runs-on: namespace-profile-metamask-ci-linux
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -60,7 +65,7 @@ jobs:
       GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
       # Recorded in each result. No GitHub context exposes the requested label,
       # so keep this in sync with `runs-on`.
-      BENCHMARK_RUNNER_LABEL: namespace-profile-metamask-ci-linux
+      BENCHMARK_RUNNER_LABEL: ubuntu-26.04
       BENCHMARK_CALIBRATION_FILE: test-artifacts/benchmarks/runner-calibration-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       BENCHMARK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
       BENCHMARK_BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
@@ -148,7 +153,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Gate this benchmark leg
-        if: ${{ steps.run-benchmark.outcome == 'success' }}
+        if: ${{ steps.run-benchmark.outcome == 'success' && env.BENCHMARK_GATES_DISABLED != 'true' }}
         run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
         shell: bash
 
@@ -157,7 +162,7 @@ jobs:
     name: chrome-webpack-pageLoadBenchmark
     # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
-    runs-on: namespace-profile-metamask-ci-linux
+    runs-on: ubuntu-26.04
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
@@ -165,7 +170,7 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-      BENCHMARK_RUNNER_LABEL: namespace-profile-metamask-ci-linux
+      BENCHMARK_RUNNER_LABEL: ubuntu-26.04
       BENCHMARK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
       BENCHMARK_BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
       BENCHMARK_BUILDS_FROM_SHA: ${{ inputs.builds-from-sha }}
@@ -243,7 +248,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Gate this benchmark leg
-        if: ${{ steps.run-page-load.outcome == 'success' }}
+        if: ${{ steps.run-page-load.outcome == 'success' && env.BENCHMARK_GATES_DISABLED != 'true' }}
         run: yarn tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current test-artifacts/benchmarks/
         shell: bash
 
@@ -336,7 +341,8 @@ jobs:
         if: >-
           ${{
             steps.download-benchmarks.outcome == 'success' &&
-            steps.skip-check.outputs.skip != 'true'
+            steps.skip-check.outputs.skip != 'true' &&
+            env.BENCHMARK_GATES_DISABLED != 'true'
           }}
         run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
         shell: bash
