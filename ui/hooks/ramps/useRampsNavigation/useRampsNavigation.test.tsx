@@ -233,6 +233,26 @@ describe('useRampsNavigation goToBuy', () => {
     `);
   });
 
+  it('migration with a Portfolio redirect URL → opens that URL verbatim', async () => {
+    // The `/buy` deep-link entry passes the link's params through verbatim;
+    // falling back to `openBuyCryptoInPdapp` would drop them.
+    const portfolioRedirectUrl =
+      'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1';
+    const { result } = run(
+      buildState({ permissionHistory: connectedPortfolioHistory }),
+    );
+    let opened: RampsNavigationResult | undefined;
+    await act(async () => {
+      opened = await result.current.goToBuy(
+        { chainId: '0x1' },
+        { portfolioRedirectUrl },
+      );
+    });
+    expect(opened).toBe('portfolio');
+    expect(openTab).toHaveBeenCalledTimes(1);
+    expect(openTab).toHaveBeenCalledWith({ url: portfolioRedirectUrl });
+  });
+
   it('does not consume the migration when Portfolio fails to open', async () => {
     openTab.mockRejectedValueOnce(new Error('failed to open'));
     const { result } = run(

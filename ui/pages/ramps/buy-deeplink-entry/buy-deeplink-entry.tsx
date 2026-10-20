@@ -16,14 +16,14 @@ import { parseRampIntent } from './parse-ramp-intent';
 /**
  * Entry page for `/buy` deep links when the unified buy feature is enabled.
  *
- * The router lands the user here with the original query params. When the
- * in-app buy flow is available, the params are mapped to a buy intent and
- * handed to the shared `goToBuy` chain (same eligibility gating and token
- * preselection as the in-app Buy buttons). When Buy leaves the extension
- * instead (the Portfolio fallback), the legacy behavior is preserved: the
- * deep link params are forwarded verbatim to Portfolio. If no
- * navigation is possible, the user is taken to the wallet home page; any
- * eligibility modal is still displayed by the global modal manager.
+ * The router lands the user here with the original query params. The params
+ * are mapped to a buy intent and handed to the shared `goToBuy` chain (same
+ * eligibility gating and token preselection as the in-app Buy buttons),
+ * with the verbatim-params Portfolio URL attached so a Portfolio redirect
+ * (the rollout gate off, or the one-time Portfolio order migration) keeps
+ * the deep link params instead of dropping them. If no navigation is
+ * possible, the user is taken to the wallet home page; any eligibility
+ * modal is still displayed by the global modal manager.
  *
  * @returns The loading page shown while the buy flow is being resolved.
  */
@@ -31,7 +31,7 @@ export function BuyDeepLinkEntry() {
   const location = useLocation();
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
+  const { goToBuy } = useRampsNavigation();
   const hasInitiatedRef = useRef(false);
 
   // Unmount-only on purpose: `goToBuy`'s identity changes mid-flight, and
@@ -52,25 +52,14 @@ export function BuyDeepLinkEntry() {
     hasInitiatedRef.current = true;
 
     const params = new URLSearchParams(location.search);
-
-    if (opensBuyInPortfolioTab) {
-      // Forward the deep link params verbatim (the pre-UB2 `/buy` behavior).
-      // Intentionally not `openBuyCryptoInPdapp`: it drops the link's params
-      // and appends analytics params.
-      const url =
-        getBuyPortfolioRedirectDestination(params).redirectTo.toString();
-      if (location.key === 'default') {
-        // The deep-link tab itself: redirect in place, as `/buy` used to.
-        window.location.href = url;
-      } else {
-        // Reached via an in-app link: keep the wallet open.
-        global.platform.openTab({ url });
-        navigate(DEFAULT_ROUTE, { replace: true });
-      }
-      return;
-    }
-
     const intent = parseRampIntent(params);
+
+    // Portfolio must receive the deep link params verbatim (the pre-UB2
+    // `/buy` behavior) when the buy leaves the extension. Intentionally not
+    // `openBuyCryptoInPdapp`: it drops the link's params and appends
+    // analytics params.
+    const portfolioRedirectUrl =
+      getBuyPortfolioRedirectDestination(params).redirectTo.toString();
 
     const goHome = () => {
       if (!isCancelledRef.current) {
@@ -80,7 +69,7 @@ export function BuyDeepLinkEntry() {
 
     // Replace this page in history: it exists only to intercept the deep link,
     // and back-buttoning into it would re-run the interception forever.
-    goToBuy(intent, { replace: true })
+    goToBuy(intent, { replace: true, portfolioRedirectUrl })
       .then((didNavigate) => {
         // No navigation was possible (an eligibility modal was shown instead).
         if (!didNavigate) {
@@ -88,13 +77,7 @@ export function BuyDeepLinkEntry() {
         }
       })
       .catch(goHome);
-  }, [
-    goToBuy,
-    navigate,
-    opensBuyInPortfolioTab,
-    location.search,
-    location.key,
-  ]);
+  }, [goToBuy, navigate, location.search]);
 
   return (
     <Box
