@@ -128,6 +128,7 @@
     "fetchQuotes",
     "gasFeeStartPolling",
     "gasFeeStopPollingByPollingToken",
+    "getBearerToken",
     "getClaimDrafts",
     "getGeolocation",
     "getIsSeedlessOnboardingUserAuthenticated",
