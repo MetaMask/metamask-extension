@@ -47,7 +47,7 @@ jobs:
           - userJourneyAssets
           - userJourneyTransactions
           - userJourneyAccountManagement
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-metamask-ci-linux
     timeout-minutes: 30
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -60,7 +60,7 @@ jobs:
       GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
       # Recorded in each result. No GitHub context exposes the requested label,
       # so keep this in sync with `runs-on`.
-      BENCHMARK_RUNNER_LABEL: ubuntu-latest
+      BENCHMARK_RUNNER_LABEL: namespace-profile-metamask-ci-linux
       BENCHMARK_CALIBRATION_FILE: test-artifacts/benchmarks/runner-calibration-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       BENCHMARK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
       BENCHMARK_BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
@@ -166,7 +166,7 @@ jobs:
     name: chrome-webpack-pageLoadBenchmark
     # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-metamask-ci-linux
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
@@ -174,7 +174,7 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-      BENCHMARK_RUNNER_LABEL: ubuntu-latest
+      BENCHMARK_RUNNER_LABEL: namespace-profile-metamask-ci-linux
       BENCHMARK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
       BENCHMARK_BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
       BENCHMARK_BUILDS_FROM_SHA: ${{ inputs.builds-from-sha }}
