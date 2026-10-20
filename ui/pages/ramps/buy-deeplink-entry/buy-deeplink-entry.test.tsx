@@ -74,6 +74,10 @@ describe('BuyDeepLinkEntry', () => {
 
   const navigateHomeCases: [string, () => void][] = [
     ['reports it did not navigate', () => mockGoToBuy.mockResolvedValue(false)],
+    [
+      'opens Portfolio outside the extension',
+      () => mockGoToBuy.mockResolvedValue('portfolio'),
+    ],
     ['rejects', () => mockGoToBuy.mockRejectedValue(new Error('boom'))],
   ];
   for (const [label, arrange] of navigateHomeCases) {
