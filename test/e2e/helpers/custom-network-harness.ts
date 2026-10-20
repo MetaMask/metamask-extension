@@ -4,7 +4,10 @@ import type { NativeAssetIdentifiersMap } from '@metamask/network-enablement-con
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import { v6AccountsApiBalancesJson } from './accounts-api-v6-balances';
+import {
+  checksumErc20AssetId,
+  v6AccountsApiBalancesJson,
+} from './accounts-api-v6-balances';
 import {
   type CatalogAsset,
   type PriceMode,
@@ -48,6 +51,9 @@ export const SEEDED_ERC20_SYMBOL = 'TST';
 
 const SEEDED_ERC20_ADDRESS = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
 const SEEDED_ERC20_ASSET_ID = `eip155:50/erc20:${SEEDED_ERC20_ADDRESS}`;
+const SEEDED_ERC20_CHECKSUM_ASSET_ID = checksumErc20AssetId(
+  SEEDED_ERC20_ASSET_ID,
+);
 const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 const MAINNET_CHAIN_ID_HEX = '0x1';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -230,7 +236,9 @@ function erc20CatalogAsset(): CatalogAsset {
     symbol: SEEDED_ERC20_SYMBOL,
     decimals: 4,
     priceInUsd: 1,
-    assetIds: [SEEDED_ERC20_ASSET_ID],
+    assetIds: [
+      ...new Set([SEEDED_ERC20_ASSET_ID, SEEDED_ERC20_CHECKSUM_ASSET_ID]),
+    ],
   };
 }
 
@@ -366,6 +374,21 @@ function applyScenarioState(
 const ACCOUNTS_API_V6_BALANCES_URL =
   'https://accounts.api.cx.metamask.io/v6/multiaccount/balances';
 
+const ACCOUNTS_API_V2_SUPPORTED_NETWORKS_URL =
+  'https://accounts.api.cx.metamask.io/v2/supportedNetworks';
+
+const ACCOUNTS_API_V2_FULL_SUPPORT_WITH_XDC = [
+  'eip155:1',
+  'eip155:137',
+  'eip155:56',
+  'eip155:59144',
+  'eip155:8453',
+  'eip155:10',
+  'eip155:42161',
+  'eip155:534352',
+  'eip155:50',
+];
+
 async function mockXdcNativeAndErc20V6Balances(
   mockServer: Mockttp,
   network: CustomNetworkConfig,
@@ -410,23 +433,47 @@ async function mockXdcNativeAndErc20V6Balances(
         seen.add(chain50AccountId.toLowerCase());
         chain50AccountIds.push(chain50AccountId);
       }
-      const balances = chain50AccountIds.flatMap((accountId) => [
-        {
+      const tstRows = accountIds.flatMap((accountId) => {
+        const rows = [
+          {
+            accountId,
+            assetId: SEEDED_ERC20_CHECKSUM_ASSET_ID,
+            balance: '10',
+          },
+        ];
+        if (SEEDED_ERC20_CHECKSUM_ASSET_ID !== SEEDED_ERC20_ASSET_ID) {
+          rows.push({
+            accountId,
+            assetId: SEEDED_ERC20_ASSET_ID,
+            balance: '10',
+          });
+        }
+        return rows;
+      });
+      const balances = [
+        ...chain50AccountIds.map((accountId) => ({
           accountId,
           assetId: network.nativeAssetId,
           balance: '25',
-        },
-        {
-          accountId,
-          assetId: SEEDED_ERC20_ASSET_ID,
-          balance: '10',
-        },
-      ]);
+        })),
+        ...tstRows,
+      ];
 
       return {
         statusCode: 200,
         json: v6AccountsApiBalancesJson(request.url, balances),
       };
+    });
+}
+
+async function mockXdcAccountsApiSupportedNetworks(mockServer: Mockttp) {
+  return mockServer
+    .forGet(ACCOUNTS_API_V2_SUPPORTED_NETWORKS_URL)
+    .asPriority(99)
+    .always()
+    .thenJson(200, {
+      fullSupport: ACCOUNTS_API_V2_FULL_SUPPORT_WITH_XDC,
+      partialSupport: ['eip155:42220', 'eip155:43114'],
     });
 }
 
@@ -480,6 +527,7 @@ export function prepareCustomNetwork(
       return [
         ...tokenAndPriceMocks,
         await mockXdcNativeAndErc20V6Balances(mockServer, network),
+        await mockXdcAccountsApiSupportedNetworks(mockServer),
       ];
     },
     network,
