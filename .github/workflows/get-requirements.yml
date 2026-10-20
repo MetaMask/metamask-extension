@@ -9,6 +9,9 @@ on:
       builds-from-sha:
         description: The HEAD commit SHA of the run providing builds (for PR comment annotation)
         value: ${{ jobs.detect-changes.outputs.builds-from-sha }}
+      build-source-hash:
+        description: Content hash of the build-affecting source of this run's merged tree
+        value: ${{ jobs.detect-changes.outputs.build-source-hash }}
       skip-builds:
         description: Whether builds were skipped without hash verification (blocks merge)
         value: ${{ jobs.detect-changes.outputs.skip-builds }}
@@ -69,6 +72,7 @@ jobs:
     outputs:
       builds-from-run: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
       builds-from-sha: ${{ steps.find-reusable-builds.outputs.builds-from-sha || env.HEAD_COMMIT_HASH }}
+      build-source-hash: ${{ steps.compute-build-hash.outputs.build-hash || '' }}
       skip-builds: ${{ steps.build-overrides.outputs.skip == 'true' && steps.find-reusable-builds.outputs.builds-from-run != '' && 'true' || 'false' }}
       needs-locales: ${{ steps.set-needs-locales.outputs.needs-locales || 'false' }}
       just-repository-health-checks: ${{ steps.set-just-repository-health-checks.outputs.just-repository-health-checks || 'false' }}

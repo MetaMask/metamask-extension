@@ -5,6 +5,8 @@ import {
   type TimerStatistics,
 } from '../../../../../shared/constants/benchmarks';
 import { calculateTimerStatistics } from '../../utils/statistics';
+import { captureHostProvenance } from '../../utils/host-provenance';
+import { captureSourceProvenance } from '../../utils/source-provenance';
 import { convertTimerStatisticsToBenchmarkResults } from '../../utils/runner';
 import type { DappPageLoadSample, DappPageLoadStats } from '../../utils/types';
 
@@ -79,11 +81,15 @@ export function dappPageLoadStatsToBenchmarkResults(
   }
 
   return {
-    [DAPP_PAGE_LOAD_BENCHMARK_KEY]: convertTimerStatisticsToBenchmarkResults(
-      statsByPage[0].timers,
-      DAPP_PAGE_LOAD_BENCHMARK_KEY,
-      BENCHMARK_PERSONA.POWER_USER,
-      BENCHMARK_TYPE.PERFORMANCE,
-    ),
+    [DAPP_PAGE_LOAD_BENCHMARK_KEY]: {
+      ...convertTimerStatisticsToBenchmarkResults(
+        statsByPage[0].timers,
+        DAPP_PAGE_LOAD_BENCHMARK_KEY,
+        BENCHMARK_PERSONA.POWER_USER,
+        BENCHMARK_TYPE.PERFORMANCE,
+      ),
+      host: captureHostProvenance(),
+      source: captureSourceProvenance(),
+    },
   };
 }

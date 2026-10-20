@@ -7,6 +7,16 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
+      builds-from-sha:
+        required: false
+        type: string
+        default: ''
+        description: Head SHA of the run that produced the builds; recorded in results
+      build-source-hash:
+        required: false
+        type: string
+        default: ''
+        description: Build-source hash of the merged tree; recorded in results
 
 permissions:
   contents: read
@@ -48,6 +58,14 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
+      # Recorded in each result. No GitHub context exposes the requested label,
+      # so keep this in sync with `runs-on`.
+      BENCHMARK_RUNNER_LABEL: namespace-profile-metamask-ci-linux
+      BENCHMARK_CALIBRATION_FILE: test-artifacts/benchmarks/runner-calibration-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+      BENCHMARK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      BENCHMARK_BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
+      BENCHMARK_BUILDS_FROM_SHA: ${{ inputs.builds-from-sha }}
+      BENCHMARK_BUILD_SOURCE_HASH: ${{ inputs.build-source-hash }}
       # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
@@ -80,7 +98,7 @@ jobs:
         timeout-minutes: 3
         run: >-
           yarn tsx test/e2e/benchmarks/runner-calibration.ts
-          --out "test-artifacts/benchmarks/runner-calibration-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json"
+          --out "$BENCHMARK_CALIBRATION_FILE"
         shell: bash
 
       - name: Run the benchmark
@@ -97,7 +115,6 @@ jobs:
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
             --results "test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json" \
-            --calibration "test-artifacts/benchmarks/runner-calibration-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json" \
             --browser "${{ matrix.browser }}" \
             --buildType "${{ matrix.buildType }}"
         shell: bash
@@ -148,6 +165,11 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      BENCHMARK_RUNNER_LABEL: namespace-profile-metamask-ci-linux
+      BENCHMARK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      BENCHMARK_BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
+      BENCHMARK_BUILDS_FROM_SHA: ${{ inputs.builds-from-sha }}
+      BENCHMARK_BUILD_SOURCE_HASH: ${{ inputs.build-source-hash }}
       # Job env mirrors matrix job; step `if:` uses env.SENTRY_DSN_PERFORMANCE (same as send-to-sentry’s process.env).
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       BENCHMARK_BROWSER_LOADS: '10'

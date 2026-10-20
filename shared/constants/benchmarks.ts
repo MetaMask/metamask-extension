@@ -97,6 +97,89 @@ export type WebVitalsSummary = {
   aggregated: WebVitalsAggregated;
 };
 
+/** Summary of one in-browser calibration metric across its samples. */
+export type CalibrationStatistic = {
+  mean: number;
+  median: number;
+  p90: number;
+};
+
+/**
+ * The in-browser calibration probe's summary, taken before the benchmark ran.
+ * The raw per-sample artifact is `runner-calibration-*.json`; this is the part
+ * a result carries so it can be analysed without the sibling file.
+ */
+export type HostCalibration = {
+  sampleCount: number;
+  metrics: Record<string, CalibrationStatistic>;
+};
+
+/**
+ * The machine one result was measured on.
+ *
+ * A runner pool is not homogeneous, so without this a slow machine is
+ * indistinguishable from slow code. Fields are undefined when the provider does
+ * not expose them; undefined means "unknown", never "zero".
+ */
+export type HostProvenance = {
+  provider?: 'github' | 'namespace';
+  /** The `runs-on` value the job requested, from `BENCHMARK_RUNNER_LABEL`. */
+  label?: string;
+  /** Runner name. High-cardinality; keep it out of queryable Sentry fields. */
+  name?: string;
+  /** Namespace instance ID. */
+  instanceId?: string;
+  /** Namespace instance shape, e.g. `8x16`. GitHub does not expose a shape. */
+  shape?: string;
+  /** Cloud region or zone, where the provider exposes it. */
+  region?: string;
+  /** Provider-specific placement, e.g. Namespace storage/cluster regions. */
+  placement?: Record<string, string>;
+  os?: string;
+  arch?: string;
+  /** GitHub-hosted runner image OS and version (`ImageOS`, `ImageVersion`). */
+  imageOs?: string;
+  imageVersion?: string;
+  cpuModel?: string;
+  cpuCount?: number;
+  /** Undefined on Linux VMs, where `os.cpus()[0].speed` reports 0. */
+  cpuSpeedMhz?: number;
+  totalMemMb?: number;
+  /**
+   * Hypervisor CPU steal as a percentage of CPU time over this result's own
+   * window. A virtualization platform that does not report steal reads 0 here,
+   * so 0 is not evidence that the machine was uncontended.
+   */
+  stealPercent?: number;
+  /** Node-process sha256 probe median in ms, taken before the benchmark ran. */
+  nodeProbeBeforeMs?: number;
+  /** Same probe, taken after the measurements finished. */
+  nodeProbeAfterMs?: number;
+  calibration?: HostCalibration;
+};
+
+/**
+ * Which source and build one result describes. The commit under test depends
+ * on the event, and the binary can come from a donor run whose source hash
+ * matched, so the PR head SHA alone does not identify what was measured.
+ */
+export type SourceProvenance = {
+  /** `GITHUB_EVENT_NAME`. */
+  event?: string;
+  /** `GITHUB_SHA`: the merge commit for pull_request events, else the pushed commit. */
+  eventSha?: string;
+  /** The PR head commit (`HEAD_COMMIT_HASH`); the commit that Sentry labels use. */
+  headSha?: string;
+  /** `pull_request.base.sha`: the base tip when the event fired. */
+  baseSha?: string;
+  /** Run that produced the binary under test; differs from this run when reused. */
+  buildFromRun?: string;
+  /** Head SHA of the run that produced the binary. */
+  buildFromSha?: string;
+  /** Build-source hash that qualified the donor build for reuse. */
+  buildSourceHash?: string;
+};
+
 export type BenchmarkResults = {
   testTitle: string;
   persona: Persona;
@@ -111,6 +194,8 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
   trimmedCount?: StatisticalResult;
   outliers?: StatisticalResult;
+  host?: HostProvenance;
+  source?: SourceProvenance;
   webVitals?: WebVitalsSummary;
 };
 

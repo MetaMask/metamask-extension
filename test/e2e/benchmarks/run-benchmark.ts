@@ -33,6 +33,11 @@ import {
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_PATH,
   DAPP_PAGE_LOAD_BENCHMARK_SPEC_BASENAME,
 } from './utils/constants';
+import {
+  captureHostProvenance,
+  markBenchmarkWindowStart,
+} from './utils/host-provenance';
+import { captureSourceProvenance } from './utils/source-provenance';
 import { THRESHOLD_REGISTRY } from './utils/thresholds';
 import {
   validateResultThresholds,
@@ -201,6 +206,8 @@ async function runBenchmarkFile(
   let result: BenchmarkResults;
   let violations: ThresholdViolation[];
 
+  markBenchmarkWindowStart();
+
   if (supportsIterations(filePath) && options.iterations > 0) {
     const testTitle = benchmark.testTitle || fileName;
     const { persona } = benchmark;
@@ -241,7 +248,11 @@ async function runBenchmarkFile(
 
   logThresholdResult(violations);
 
-  return result;
+  return {
+    ...result,
+    host: captureHostProvenance(),
+    source: captureSourceProvenance(),
+  };
 }
 
 /**

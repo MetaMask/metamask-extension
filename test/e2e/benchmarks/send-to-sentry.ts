@@ -13,7 +13,6 @@
  */
 
 import { promises as fs, readFileSync } from 'fs';
-import os from 'os';
 import path from 'path';
 import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
@@ -30,6 +29,7 @@ import type {
   WebVitalsSummary,
 } from '../../../shared/constants/benchmarks';
 import { getGitBranch, getGitCommitHash } from './utils/git';
+import { provenanceAttributes } from './utils/provenance-attributes';
 import type { UserActionResult } from './utils/types';
 import { aggregateWebVitals, assessDataQuality } from './utils/statistics';
 
@@ -44,41 +44,6 @@ const WEB_VITALS_METRICS = [
   { key: 'lcp', ratingKey: 'lcpRating' },
   { key: 'cls', ratingKey: 'clsRating' },
 ] as const;
-
-type RunnerCalibration = {
-  sampleCount: number;
-  metrics: Record<
-    string,
-    {
-      mean: number;
-      median: number;
-      p90: number;
-    }
-  >;
-};
-
-function getHostname(value: string | undefined): string | null {
-  if (!value) {
-    return null;
-  }
-
-  try {
-    return new URL(value).hostname;
-  } catch {
-    return null;
-  }
-}
-
-function getHostnameLabel(
-  hostname: string | null,
-  labelIndex: number,
-): string | null {
-  if (!hostname) {
-    return null;
-  }
-
-  return hostname.split('.')[labelIndex] || null;
-}
 
 /**
  * Send web vitals to Sentry as spans — separate from timer-based structured logs.
@@ -103,7 +68,7 @@ function sendWebVitalsToSentry(
   webVitals: WebVitalsSummary,
   persona: string,
   testTitle: string | undefined,
-  ciAttributes: Record<string, string>,
+  ciAttributes: Record<string, string | number>,
 ): void {
   // Per-run spans: each iteration gets its own span with measurements
   for (const run of webVitals.runs) {
@@ -176,10 +141,6 @@ async function main() {
       demandOption: true,
       description: 'Path to benchmark results JSON file',
     })
-    .option('calibration', {
-      type: 'string',
-      description: 'Optional path to runner calibration JSON file',
-    })
     .option('browser', {
       type: 'string',
       default: 'chrome',
@@ -205,11 +166,6 @@ async function main() {
     string,
     BenchmarkResults | UserActionResult
   >;
-  const calibration = argv.calibration
-    ? (JSON.parse(
-        await fs.readFile(argv.calibration, 'utf-8'),
-      ) as RunnerCalibration)
-    : undefined;
 
   // Check if results are empty
   const resultEntries = Object.entries(results);
@@ -249,63 +205,13 @@ async function main() {
   });
 
   // CI metadata
-  const nscStorageHostname = getHostname(process.env.NSC_STORAGE_ENDPOINT);
-  const nscEndpointHostname = getHostname(process.env.NSC_ENDPOINT);
-  const namespaceActionsResultsHostname = getHostname(
-    process.env.NAMESPACE_ACTIONS_RESULTS_URL,
-  );
-  const runnerProvider = process.env.NSC_INSTANCE_ID ? 'namespace' : 'github';
-
   const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
     'ci.prNumber': process.env.PR_NUMBER || 'none',
     'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
     'ci.browser': argv.browser,
     'ci.buildType': argv.buildType,
-    'ci.runnerName': process.env.RUNNER_NAME || 'unknown',
-    'ci.runnerOs': process.env.RUNNER_OS || 'unknown',
-    'ci.runnerArch': process.env.RUNNER_ARCH || 'unknown',
-    'ci.runnerProvider': runnerProvider,
-    'ci.nscInstanceId': process.env.NSC_INSTANCE_ID || 'unknown',
-    'ci.nscInstanceUrl': process.env.NSC_INSTANCE_URL || 'unknown',
-    'ci.nscProfileTag': process.env.NSC_PROFILE_TAG || 'unknown',
-    'ci.nscInstanceShape': process.env.NSC_INSTANCE_SHAPE || 'unknown',
-    'ci.nscStorageEndpoint': process.env.NSC_STORAGE_ENDPOINT || 'unknown',
-    'ci.nscEndpoint': process.env.NSC_ENDPOINT || 'unknown',
-    'ci.namespaceActionsResultsUrl':
-      process.env.NAMESPACE_ACTIONS_RESULTS_URL || 'unknown',
-    'ci.namespaceStorageRegion':
-      getHostnameLabel(nscStorageHostname, 0) || 'unknown',
-    'ci.namespaceClusterRegion':
-      getHostnameLabel(nscEndpointHostname, 1) || 'unknown',
-    'ci.namespaceActionsResultsRegion':
-      getHostnameLabel(namespaceActionsResultsHostname, 1) || 'unknown',
   };
-
-  const calibrationAttributes = calibration
-    ? Object.fromEntries(
-        Object.entries(calibration.metrics).flatMap(([metric, summary]) => [
-          [`runnerCalibration.${metric}.mean`, summary.mean],
-          [`runnerCalibration.${metric}.median`, summary.median],
-          [`runnerCalibration.${metric}.p90`, summary.p90],
-        ]),
-      )
-    : {};
-
-  const runnerDiagnostics = {
-    ...baseCiAttributes,
-    'ci.hostname': os.hostname(),
-    'ci.cpuModel': os.cpus()[0]?.model || 'unknown',
-    'ci.cpuCount': os.cpus().length,
-    'ci.totalMemoryGb': Math.round(os.totalmem() / 1024 ** 3),
-    'runnerCalibration.sampleCount': calibration?.sampleCount || 0,
-    ...calibrationAttributes,
-  };
-
-  console.log(
-    'Benchmark runner diagnostics:',
-    JSON.stringify(runnerDiagnostics),
-  );
 
   let sentCount = 0;
   let skippedCount = 0;
@@ -315,7 +221,12 @@ async function main() {
       // Statistical benchmark result (page load or performance)
       const benchmark = value as BenchmarkResults;
       const type = benchmark.benchmarkType || BENCHMARK_TYPE.BENCHMARK;
-      const message = `benchmark.startupStandardHome.${runnerProvider}`;
+      const message = `${type}.${name}`;
+      // Host values are per result: each one has its own steal and probe window.
+      const resultCiAttributes = {
+        ...baseCiAttributes,
+        ...provenanceAttributes(benchmark.host, benchmark.source),
+      };
 
       // Skip if mean is empty
       if (Object.keys(benchmark.mean).length === 0) {
@@ -374,9 +285,7 @@ async function main() {
 
       // Timer data: structured logs (existing path, unchanged)
       Sentry.logger.info(message, {
-        ...baseCiAttributes,
-        ...calibrationAttributes,
-        'runnerCalibration.sampleCount': calibration?.sampleCount || 0,
+        ...resultCiAttributes,
         'ci.persona': benchmark.persona || BENCHMARK_PERSONA.STANDARD,
         'ci.testTitle': benchmark.testTitle,
         ...allMetrics,
@@ -391,7 +300,7 @@ async function main() {
           benchmark.webVitals,
           benchmark.persona || BENCHMARK_PERSONA.STANDARD,
           benchmark.testTitle,
-          baseCiAttributes,
+          resultCiAttributes,
         );
       }
       sentCount += 1;
