@@ -32,6 +32,8 @@ const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
 
+const DEFAULT_ETH_USD_PRICE = 3010;
+
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
 const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
@@ -701,18 +703,13 @@ function buildUnifiedEvmAccountsApiBalances(
  * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
- * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010.
  * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state). See UnifiedEvmAccountsApiBalances typedef in helpers.js.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
-  {
-    chainId,
-    ethConversionInUsd = 3010,
-    unifiedEvmAccountsApiBalances = {},
-  } = {},
+  { chainId, unifiedEvmAccountsApiBalances = {} } = {},
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
@@ -1596,7 +1593,7 @@ async function setupMocking(
         json: {
           'eip155:1/slip44:60': {
             id: 'ethereum',
-            price: ethConversionInUsd,
+            price: DEFAULT_ETH_USD_PRICE,
             marketCap: 382623505141,
             pricePercentChange1d: 0,
           },
@@ -1608,7 +1605,7 @@ async function setupMocking(
   // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
   const sepoliaSpotPrice = {
     id: 'ethereum',
-    price: ethConversionInUsd,
+    price: DEFAULT_ETH_USD_PRICE,
     marketCap: 382623505141,
     pricePercentChange1d: 0,
   };
@@ -1656,7 +1653,7 @@ async function setupMocking(
       json: {
         'eip155:1337/slip44:1': {
           id: 'ethereum',
-          price: ethConversionInUsd,
+          price: DEFAULT_ETH_USD_PRICE,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
@@ -1676,7 +1673,7 @@ async function setupMocking(
       json: {
         'eip155:143/slip44:268435779': {
           id: 'monad',
-          price: ethConversionInUsd,
+          price: DEFAULT_ETH_USD_PRICE,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
         },

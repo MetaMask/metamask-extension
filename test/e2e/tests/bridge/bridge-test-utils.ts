@@ -1115,6 +1115,7 @@ async function mockPriceSpotPricesV3(
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
       const vsCurrency =
@@ -1703,6 +1704,7 @@ export const getQuoteNegativeCasesFixtures = (
         await mockTokensLinea(mockServer),
         await mockGetPopularTokens(mockServer),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1760,6 +1762,7 @@ export const getBridgeNegativeCasesFixtures = (
         await mockETHtoETH(mockServer, featureFlags.sse?.enabled),
         await mockGetTxStatusInvalid(mockServer, options),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1819,6 +1822,7 @@ export const getInsufficientFundsFixtures = (
         await mockGetPopularTokens(mockServer),
         await mockETHtoWETH(mockServer, featureFlags.sse?.enabled),
         await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
