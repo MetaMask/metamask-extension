@@ -89,4 +89,27 @@ describe('AccountTreeControllerInit', () => {
       callback,
     );
   });
+
+  it('passes other traces through unchanged, with or without a callback', () => {
+    const requestMock = buildInitRequestMock();
+    AccountTreeControllerInit(requestMock);
+
+    const traceFn =
+      accountTreeControllerClassMock.mock.calls[0][0].config?.trace;
+    const callback = jest.fn();
+
+    traceFn?.({ name: TraceName.AccountSyncSaveIndividual } as never, callback);
+    traceFn?.({ name: TraceName.AccountSyncFull } as never);
+
+    expect(traceMock).toHaveBeenNthCalledWith(
+      1,
+      { name: TraceName.AccountSyncSaveIndividual },
+      callback,
+    );
+    expect(traceMock).toHaveBeenNthCalledWith(2, {
+      name: TraceName.AccountSyncFull,
+      root: true,
+    });
+    expect(traceMock.mock.calls[1]).toHaveLength(1);
+  });
 });

@@ -99,4 +99,19 @@ describe('UserStorageControllerInit', () => {
       callback,
     );
   });
+
+  it('roots a contact sync entry trace started without a callback', () => {
+    const requestMock = buildInitRequestMock();
+    UserStorageControllerInit(requestMock);
+
+    const traceFn = UserStorageControllerClassMock.mock.calls[0][0].trace;
+
+    traceFn?.({ name: TraceName.ContactSyncFull } as never);
+
+    expect(traceMock).toHaveBeenCalledWith({
+      name: TraceName.ContactSyncFull,
+      root: true,
+    });
+    expect(traceMock.mock.calls[0]).toHaveLength(1);
+  });
 });
