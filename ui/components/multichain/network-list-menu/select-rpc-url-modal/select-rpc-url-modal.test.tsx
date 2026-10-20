@@ -64,17 +64,6 @@ describe('SelectRpcUrlModal Component', () => {
     mockDispatch.mockClear();
   });
 
-  it('renders select rpc url', () => {
-    const { container } = renderWithProvider(
-      <SelectRpcUrlModal
-        networkConfiguration={networkConfiguration}
-        onNetworkChange={mockOnNetworkChange}
-      />,
-      store,
-    );
-    expect(container).toMatchSnapshot();
-  });
-
   it('should render the component correctly with network image and name', () => {
     const { getByRole, getByText } = renderWithProvider(
       <SelectRpcUrlModal

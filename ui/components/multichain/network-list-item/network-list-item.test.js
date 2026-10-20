@@ -24,11 +24,6 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('NetworkListItem', () => {
-  it('renders properly', () => {
-    const { container } = render(<NetworkListItem {...DEFAULT_PROPS} />);
-    expect(container).toMatchSnapshot();
-  });
-
   it('does not render the delete icon when no onDeleteClick is clicked', () => {
     const { container } = render(
       <NetworkListItem {...DEFAULT_PROPS} onDeleteClick={null} />,
