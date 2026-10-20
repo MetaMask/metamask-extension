@@ -931,5 +931,15 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/eth-json-rpc-middleware": {
+      "type": "non-breaking",
+      "previewVersion": "25.0.0-preview-3680ba557"
+    },
+    "@metamask/chain-agnostic-permission": {
+      "type": "non-breaking",
+      "previewVersion": "2.0.0-preview-049cbe150"
+    }
   }
 }

@@ -7800,17 +7800,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^1.6.2":
-  version: 1.6.2
-  resolution: "@metamask/chain-agnostic-permission@npm:1.6.2"
+"@metamask/chain-agnostic-permission@npm:@metamask-previews/chain-agnostic-permission@2.0.0-preview-049cbe150":
+  version: 2.0.0-preview-049cbe150
+  resolution: "@metamask-previews/chain-agnostic-permission@npm:2.0.0-preview-049cbe150"
   dependencies:
     "@metamask/api-specs": "npm:^0.15.0"
-    "@metamask/controller-utils": "npm:^12.2.0"
-    "@metamask/permission-controller": "npm:^13.1.1"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.11.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/ff3c2ab116a612010b4bb7b5406f80fa77392c09d3c07be1fb88787bef599b7c11b5267c8378b9c8ee2de7ae04d08a7050f56f9f54df3a00fbac358d683d21df
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/permission-controller": "npm:^14.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/utils": "npm:^12.0.0"
+    lodash-es: "npm:^4.18.1"
+  checksum: 10/526558fe43ae3a4dd7d941ec84d31e33e44528f17cb18c3301a4ceea24a13fe650c82739a6a99d071e9cdaf1d28d244e9724f70997e4699e91f6466b091649bd
   languageName: node
   linkType: hard
 
@@ -8370,18 +8370,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-block-tracker@npm:^15.0.1":
-  version: 15.0.1
-  resolution: "@metamask/eth-block-tracker@npm:15.0.1"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^11.9.0"
-    json-rpc-random-id: "npm:^1.0.1"
-  checksum: 10/8c0e0f5bde00fb40aa240fc562c29d0ce84156402132705d387c95453c6f265b3b738c9b649510771965d8b5b8036c2bdc6406142ff634383bf60df3741bdbfe
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-block-tracker@npm:^16.0.0":
   version: 16.0.0
   resolution: "@metamask/eth-block-tracker@npm:16.0.0"
@@ -8457,21 +8445,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^24.0.2":
-  version: 24.0.2
-  resolution: "@metamask/eth-json-rpc-middleware@npm:24.0.2"
+"@metamask/eth-json-rpc-middleware@npm:@metamask-previews/eth-json-rpc-middleware@25.0.0-preview-3680ba557":
+  version: 25.0.0-preview-3680ba557
+  resolution: "@metamask-previews/eth-json-rpc-middleware@npm:25.0.0-preview-3680ba557"
   dependencies:
-    "@metamask/eth-block-tracker": "npm:^15.0.1"
-    "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
+    "@metamask/eth-block-tracker": "npm:^16.0.0"
+    "@metamask/eth-json-rpc-provider": "npm:^7.0.0"
     "@metamask/eth-sig-util": "npm:^9.0.0"
-    "@metamask/json-rpc-engine": "npm:^10.5.0"
-    "@metamask/message-manager": "npm:^14.1.2"
-    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/json-rpc-engine": "npm:^11.0.0"
+    "@metamask/message-manager": "npm:^15.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     klona: "npm:^2.0.6"
-    safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/f01d71878e994b43a50f97e9da67373167a1f3e02343f16a692ee91ae99348336a278273c91d1c1c09203bc5c158390ba664bd8bd6a7b906138b922c75b30922
+    safe-stable-stringify: "npm:^2.5.0"
+  checksum: 10/4160a455151ef2e2572f782dffb9f119727994f746ccb5b41fbcc3b783ccd666c1628fc3adc597b5684385952cdb07acbde73d2bffb09a4d910be8851e10bf3b
   languageName: node
   linkType: hard
 
@@ -8519,7 +8507,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^6.0.0, @metamask/eth-json-rpc-provider@npm:^6.0.1":
+"@metamask/eth-json-rpc-provider@npm:^6.0.0":
   version: 6.0.1
   resolution: "@metamask/eth-json-rpc-provider@npm:6.0.1"
   dependencies:
@@ -9363,7 +9351,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^14.0.0, @metamask/message-manager@npm:^14.1.2":
+"@metamask/message-manager@npm:^14.0.0":
   version: 14.1.2
   resolution: "@metamask/message-manager@npm:14.1.2"
   dependencies:
@@ -43831,7 +43819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-stable-stringify@npm:^2.1.0, safe-stable-stringify@npm:^2.3.1, safe-stable-stringify@npm:^2.4.3":
+"safe-stable-stringify@npm:^2.1.0, safe-stable-stringify@npm:^2.3.1, safe-stable-stringify@npm:^2.4.3, safe-stable-stringify@npm:^2.5.0":
   version: 2.5.0
   resolution: "safe-stable-stringify@npm:2.5.0"
   checksum: 10/2697fa186c17c38c3ca5309637b4ac6de2f1c3d282da27cd5e1e3c88eca0fb1f9aea568a6aabdf284111592c8782b94ee07176f17126031be72ab1313ed46c5c
