@@ -30,6 +30,29 @@ describe('provenanceAttributes', () => {
     });
   });
 
+  it('flattens tool versions and the calibration browser', () => {
+    const host: HostProvenance = {
+      nodeVersion: 'v24.13.1',
+      anvilVersion: 'anvil 0.3.0',
+      calibration: {
+        sampleCount: 5,
+        metrics: { cpuWorkMs: statistic },
+        browser: {
+          name: 'chrome',
+          version: '126.0.6478.182',
+          driverVersion: '126.0.6478.182',
+        },
+      },
+    };
+    expect(provenanceAttributes(host)).toMatchObject({
+      'host.nodeVersion': 'v24.13.1',
+      'host.anvilVersion': 'anvil 0.3.0',
+      'host.calibration.browser.name': 'chrome',
+      'host.calibration.browser.version': '126.0.6478.182',
+      'host.calibration.browser.driverVersion': '126.0.6478.182',
+    });
+  });
+
   it('keeps a real zero but omits undefined fields', () => {
     const attributes = provenanceAttributes({
       stealPercent: 0,
