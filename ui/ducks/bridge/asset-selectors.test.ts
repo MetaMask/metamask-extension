@@ -536,6 +536,73 @@ describe('Bridge asset selectors', () => {
       );
     });
 
+    it('falls back to allTokens when tokensChainsCache is absent from state', () => {
+      const FALLBACK_TOKEN_ADDRESS =
+        '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      const FALLBACK_ASSET_ID = `eip155:1/erc20:${toChecksumHexAddress(FALLBACK_TOKEN_ADDRESS)}`;
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            priceImpactThreshold: { normal: 1, gasless: 2 },
+            maxRefreshCount: 5,
+            support: true,
+            chains: {
+              [CHAIN_IDS.MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) }],
+          },
+        },
+        metamaskStateOverrides: {
+          ...UNIFIED_BRIDGE_ASSET_STATE,
+          assetsInfo: {
+            ...UNIFIED_BRIDGE_ASSET_STATE.assetsInfo,
+            [FALLBACK_ASSET_ID]: {
+              type: 'erc20',
+              decimals: 18,
+              symbol: 'FALL',
+              name: 'Fallback Token',
+              image: 'https://example.com/fall.png',
+            },
+          },
+          assetsBalance: {
+            ...UNIFIED_BRIDGE_ASSET_STATE.assetsBalance,
+            [MOCK_EVM_ACCOUNT.id]: {
+              ...(
+                UNIFIED_BRIDGE_ASSET_STATE.assetsBalance as Record<
+                  string,
+                  Record<string, { amount: string }>
+                >
+              )[MOCK_EVM_ACCOUNT.id],
+              [FALLBACK_ASSET_ID]: { amount: '1' },
+            },
+          },
+        },
+      });
+
+      // `TokenListController` is no longer initialized, so state has no cache.
+      Reflect.deleteProperty(state.metamask, 'tokensChainsCache');
+
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
+      const assetsWithBalance = getBridgeSortedAssets(state, accountGroup.id);
+
+      expect(
+        assetsWithBalance.find((asset) =>
+          asset.assetId.toLowerCase().includes(FALLBACK_TOKEN_ADDRESS),
+        ),
+      ).toMatchObject({
+        symbol: 'FALL',
+        name: 'Fallback Token',
+        decimals: 18,
+        balance: '1',
+      });
+    });
+
     it('returns empty results when accountGroupId is undefined', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {

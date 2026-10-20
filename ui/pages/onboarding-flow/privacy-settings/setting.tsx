@@ -41,7 +41,7 @@ export const Setting = ({
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Center}
       alignItems={BoxAlignItems.Start}
-      marginTop={3}
+      marginTop={0}
       marginBottom={enableMarginBottom ? 3 : 0}
       data-testid={dataTestId}
     >
@@ -73,7 +73,7 @@ export const Setting = ({
         ) : null}
       </Box>
       <Text
-        variant={TextVariant.BodySm}
+        variant={TextVariant.BodyMd}
         color={TextColor.TextAlternative}
         asChild
         className="w-full"
