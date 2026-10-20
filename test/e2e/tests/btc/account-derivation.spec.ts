@@ -52,6 +52,40 @@ async function mockBtcAccountDerivationMocks(
 describe('Bitcoin account derivation', function (this: Suite) {
   this.timeout(240_000);
 
+  it("shows Account 1's Bitcoin address on the Receive page", async function () {
+    let bitcoinNode: BitcoinNode;
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2().build(),
+        localNodeOptions: [{ type: 'bitcoin' }],
+        afterLocalNodesStart: ({ localNodes }: { localNodes: unknown[] }) => {
+          bitcoinNode = localNodes.find(
+            (node): node is BitcoinNode => node instanceof BitcoinNode,
+          ) as BitcoinNode;
+        },
+        title: this.test?.fullTitle(),
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockBtcAccountDerivationMocks(mockServer, bitcoinNode),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
+
+        const homepage = new HomePage(driver);
+        const addressList = new AccountAddressListPage(driver);
+
+        await homepage.checkPageIsLoaded();
+        await homepage.clickOnReceiveButton('default');
+
+        await addressList.checkPageIsLoaded();
+        await addressList.checkNetworkAddressIsDisplayed(
+          shortenAddress(EXPECTED_BTC_ADDRESSES_BY_INDEX[0]),
+        );
+      },
+    );
+  });
+
   it('derives Bitcoin addresses while adding multichain accounts from Account 1 to Account 8', async function () {
     let bitcoinNode: BitcoinNode;
 
