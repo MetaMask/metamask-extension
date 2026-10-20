@@ -465,7 +465,7 @@
     "@metamask/keyring-utils": "^5.0.0",
     "@metamask/logging-controller": "^10.0.0",
     "@metamask/logo": "^4.0.0",
-    "@metamask/marketing-consent-controller": "^1.0.0",
+    "@metamask/marketing-consent-controller": "^1.0.1",
     "@metamask/message-manager": "^14.0.0",
     "@metamask/message-signing-snap": "1.1.4",
     "@metamask/messenger": "^3.0.0",

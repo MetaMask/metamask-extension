@@ -9385,17 +9385,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/marketing-consent-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/marketing-consent-controller@npm:1.0.0"
+"@metamask/marketing-consent-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/marketing-consent-controller@npm:1.0.1"
   dependencies:
     "@metamask/analytics-controller": "npm:^4.0.0"
     "@metamask/authenticated-user-storage": "npm:^4.1.0"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/keyring-controller": "npm:^28.2.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^34.0.3"
-  checksum: 10/f1da70e4df8414e823095d9635aa3b2be24b37d35100d0d6a75f5a386a1171a335ad33f9e3d689b2430e1d051890a2996c2f9dcc3fbc476a24619332267dec4a
+    "@metamask/profile-sync-controller": "npm:^34.1.0"
+  checksum: 10/33041d5686fe05e8d0f7b29c97ffa0cdebdf11c636f5fb666eae2430934f075a221be328e0076b2a705a8c6c7c26dd6239ec527f3ca33480c78cf9872af82b21
   languageName: node
   linkType: hard
 
@@ -36171,7 +36171,7 @@ __metadata:
     "@metamask/keyring-utils": "npm:^5.0.0"
     "@metamask/logging-controller": "npm:^10.0.0"
     "@metamask/logo": "npm:^4.0.0"
-    "@metamask/marketing-consent-controller": "npm:^1.0.0"
+    "@metamask/marketing-consent-controller": "npm:^1.0.1"
     "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/message-signing-snap": "npm:1.1.4"
     "@metamask/messenger": "npm:^3.0.0"
