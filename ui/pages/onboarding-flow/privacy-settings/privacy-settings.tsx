@@ -79,6 +79,7 @@ import { useDispatch } from '../../../store/hooks';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
+const IPFS_GATEWAY_ERROR_ID = 'onboarding-ipfs-gateway-error';
 
 type SettingsCategory = {
   id: 'privacy' | 'backup-and-sync' | 'networks';
@@ -459,7 +460,15 @@ export default function PrivacySettings() {
                           <TextField
                             value={ipfsURL}
                             style={{ width: '100%' }}
-                            inputProps={{ 'data-testid': 'ipfs-input' }}
+                            inputProps={{
+                              'data-testid': 'ipfs-input',
+                              ...(ipfsError
+                                ? {
+                                    'aria-invalid': true,
+                                    'aria-describedby': IPFS_GATEWAY_ERROR_ID,
+                                  }
+                                : {}),
+                            }}
                             onChange={(e) => {
                               handleIPFSChange(e.target.value);
                             }}
@@ -468,8 +477,9 @@ export default function PrivacySettings() {
                             <Text
                               variant={TextVariant.BodyMd}
                               color={TextColor.ErrorDefault}
+                              asChild
                             >
-                              {ipfsError}
+                              <p id={IPFS_GATEWAY_ERROR_ID}>{ipfsError}</p>
                             </Text>
                           ) : null}
                         </Box>
@@ -606,17 +616,15 @@ export default function PrivacySettings() {
                     </Box>
                   )}
                   {isSocialLoginFlow && (
-                    <>
-                      <MetametricsToggle
-                        dataCollectionForMarketing={
-                          dataCollectionForMarketing === true
-                        }
-                        setDataCollectionForMarketing={
-                          handleDataCollectionForMarketing
-                        }
-                        fromDefaultSettings
-                      />
-                    </>
+                    <MetametricsToggle
+                      dataCollectionForMarketing={
+                        dataCollectionForMarketing === true
+                      }
+                      setDataCollectionForMarketing={
+                        handleDataCollectionForMarketing
+                      }
+                      fromDefaultSettings
+                    />
                   )}
                 </>
               ) : null}
@@ -659,59 +667,70 @@ export default function PrivacySettings() {
                             )
                             .map((network) => (
                               <Box
+                                asChild
                                 key={network.chainId}
-                                className="privacy-settings__customizable-network"
-                                onClick={() => {
-                                  dispatch(
-                                    setEditedNetwork({
-                                      chainId: network.chainId,
-                                    }),
-                                  );
-                                  dispatch(toggleNetworkMenu());
-                                }}
-                                flexDirection={BoxFlexDirection.Row}
-                                alignItems={BoxAlignItems.Center}
-                                justifyContent={BoxJustifyContent.Between}
+                                className="privacy-settings__customizable-network w-full border-0 bg-transparent p-0 text-left"
                               >
-                                <Box
-                                  flexDirection={BoxFlexDirection.Row}
-                                  alignItems={BoxAlignItems.Center}
+                                <button
+                                  type="button"
+                                  aria-label={network.name}
+                                  onClick={() => {
+                                    dispatch(
+                                      setEditedNetwork({
+                                        chainId: network.chainId,
+                                      }),
+                                    );
+                                    dispatch(toggleNetworkMenu());
+                                  }}
                                 >
-                                  <AvatarNetwork
-                                    src={
-                                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                        network.chainId
-                                      ]
-                                    }
-                                    name={network.name}
-                                  />
-                                  <Box className="text-left" marginLeft={3}>
-                                    <Text
-                                      variant={TextVariant.BodyMd}
-                                      fontWeight={FontWeight.Medium}
+                                  <Box
+                                    flexDirection={BoxFlexDirection.Row}
+                                    alignItems={BoxAlignItems.Center}
+                                    justifyContent={BoxJustifyContent.Between}
+                                    className="w-full"
+                                  >
+                                    <Box
+                                      flexDirection={BoxFlexDirection.Row}
+                                      alignItems={BoxAlignItems.Center}
                                     >
-                                      {network.name}
-                                    </Text>
-                                    <Text
-                                      variant={TextVariant.BodyMd}
-                                      color={TextColor.TextAlternative}
-                                    >
-                                      {
-                                        // Get just the protocol + domain, not the infura key in path
-                                        new URL(
-                                          network?.rpcEndpoints[
-                                            network?.defaultRpcEndpointIndex
-                                          ]?.url,
-                                        )?.origin
-                                      }
-                                    </Text>
+                                      <AvatarNetwork
+                                        src={
+                                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                            network.chainId
+                                          ]
+                                        }
+                                        name={network.name}
+                                      />
+                                      <Box className="text-left" marginLeft={3}>
+                                        <Text
+                                          variant={TextVariant.BodyMd}
+                                          fontWeight={FontWeight.Medium}
+                                        >
+                                          {network.name}
+                                        </Text>
+                                        <Text
+                                          variant={TextVariant.BodyMd}
+                                          color={TextColor.TextAlternative}
+                                        >
+                                          {
+                                            // Get just the protocol + domain, not the infura key in path
+                                            new URL(
+                                              network?.rpcEndpoints[
+                                                network?.defaultRpcEndpointIndex
+                                              ]?.url,
+                                            )?.origin
+                                          }
+                                        </Text>
+                                      </Box>
+                                    </Box>
+                                    <Icon
+                                      name={IconName.ArrowRight}
+                                      size={IconSize.Md}
+                                      color={IconColor.IconDefault}
+                                      aria-hidden
+                                    />
                                   </Box>
-                                </Box>
-                                <ButtonIcon
-                                  iconName={IconName.ArrowRight}
-                                  size={ButtonIconSize.Md}
-                                  ariaLabel="Next"
-                                />
+                                </button>
                               </Box>
                             ))}
                           <TextButton

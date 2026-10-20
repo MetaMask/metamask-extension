@@ -257,6 +257,26 @@ describe('Privacy Settings Onboarding View', () => {
     });
   });
 
+  it('renders network rows as keyboard-operable buttons named for each network', () => {
+    const { getByRole, queryByRole } = renderWithProvider(
+      <PrivacySettings />,
+      store,
+    );
+
+    fireEvent.click(getByRole('button', { name: messages.networks.message }));
+
+    expect(getByRole('button', { name: 'Ethereum' })).toHaveAttribute(
+      'type',
+      'button',
+    );
+    expect(getByRole('button', { name: 'Linea' })).toHaveAttribute(
+      'type',
+      'button',
+    );
+    expect(queryByRole('button', { name: 'Next' })).not.toBeInTheDocument();
+    expect(queryByRole('button', { name: 'Sepolia' })).not.toBeInTheDocument();
+  });
+
   it('renders category rows as keyboard-operable buttons', () => {
     const { getByRole } = renderWithProvider(<PrivacySettings />, store);
 
@@ -337,7 +357,7 @@ describe('Privacy Settings Onboarding View', () => {
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
       expect(
-        queryByText(messages.onboardingAdvancedPrivacyIPFSValid.message),
+        queryByText(messages.onboardingAdvancedPrivacyIPFSInvalid.message),
       ).not.toBeInTheDocument();
 
       const backButton = queryByTestId('privacy-settings-back-button');
@@ -369,6 +389,15 @@ describe('Privacy Settings Onboarding View', () => {
       );
 
       expect(invalidErrorMsg).toBeInTheDocument();
+      expect(invalidErrorMsg).toHaveAttribute(
+        'id',
+        'onboarding-ipfs-gateway-error',
+      );
+      expect(ipfsInput).toHaveAttribute('aria-invalid', 'true');
+      expect(ipfsInput).toHaveAttribute(
+        'aria-describedby',
+        'onboarding-ipfs-gateway-error',
+      );
     });
 
     it('should error with ipfs.infura.io IPFS input', () => {
