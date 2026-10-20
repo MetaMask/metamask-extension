@@ -35,9 +35,10 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
       data,
       name: TraceName.StatePersist,
       op: TraceOperation.StateWrite,
-      // A state write is reported inside whatever operation triggered it, and is
-      // only meaningful attached to that operation's span.
-      allowActiveSpanFallback: true,
+      // Reported after a debounced, lock-gated write and an awaited size
+      // measurement, so the span active at this point is not the write's
+      // trigger. Start a trace of its own rather than join it.
+      root: true,
     },
     () => undefined,
   );
