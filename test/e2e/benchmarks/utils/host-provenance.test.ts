@@ -213,6 +213,13 @@ describe('captureHostProvenance', () => {
     expect(host.provider).toBe('namespace');
   });
 
+  it('stamps the capture time as ISO 8601 UTC', () => {
+    const before = Date.now();
+    const { capturedAt } = captureHostProvenance({});
+    expect(capturedAt).toMatch(/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/u);
+    expect(Date.parse(capturedAt as string)).toBeGreaterThanOrEqual(before);
+  });
+
   it('leaves the provider undefined outside CI', () => {
     expect(captureHostProvenance({}).provider).toBeUndefined();
   });

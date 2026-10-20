@@ -335,6 +335,7 @@ export function captureHostProvenance(
   const provider = detectProvider(env);
 
   return {
+    capturedAt: new Date().toISOString(),
     provider,
     label: nonEmpty(env.BENCHMARK_RUNNER_LABEL),
     name: nonEmpty(env.RUNNER_NAME),

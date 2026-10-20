@@ -5,8 +5,8 @@ import type {
 
 type Attributes = Record<string, string | number>;
 
-// `name` and `instanceId` stay in the artifact only: they are unique per
-// runner, so they would make every log a distinct series.
+// `name`, `instanceId` and `capturedAt` stay in the artifact only: they are
+// unique per runner or result, so they would make every log a distinct series.
 const HOST_SCALAR_KEYS = [
   'provider',
   'label',

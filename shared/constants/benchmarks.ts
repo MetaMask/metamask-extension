@@ -131,6 +131,8 @@ export type HostBrowser = {
  * not expose them; undefined means "unknown", never "zero".
  */
 export type HostProvenance = {
+  /** ISO 8601 UTC time the result was assembled, for time-of-day analysis. */
+  capturedAt?: string;
   provider?: 'github' | 'namespace';
   /** The `runs-on` value the job requested, from `BENCHMARK_RUNNER_LABEL`. */
   label?: string;
