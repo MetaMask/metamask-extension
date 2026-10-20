@@ -108,9 +108,10 @@ class BridgeQuotePage {
 
   private quoteOption = '.bridge-quote-option';
 
-  private quotesModal = '.quotes-modal';
+  private quotesModal = '[data-testid="quotes-modal"]';
 
-  private quotesModalBackButton = '.quotes-modal [aria-label="Back"]';
+  private quotesModalBackButton =
+    '[data-testid="quotes-modal"] [aria-label="Back"]';
 
   private quotesModalTitle = {
     css: this.quotesModal,
