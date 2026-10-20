@@ -8,15 +8,12 @@ import {
   MONEY_HOW_IT_WORKS_ROUTE,
   getMoneyTransactionDetailsRoute,
   PERPS_HOME_PAGE_ROUTE,
-} from '../../../helpers/constants/routes';
-import {
-  getActiveBottomNavTabs,
-  isBottomNavRoute,
-} from './bottom-nav-bar.utils';
+} from '../constants/routes';
+import { getActiveNavItems, isMainNavRoute } from './main-nav';
 
-describe('getActiveBottomNavTabs', () => {
+describe('getActiveNavItems', () => {
   it('marks isHome active on the default route', () => {
-    expect(getActiveBottomNavTabs(DEFAULT_ROUTE)).toStrictEqual({
+    expect(getActiveNavItems(DEFAULT_ROUTE)).toStrictEqual({
       isHome: true,
       isPerps: false,
       isMoney: false,
@@ -25,7 +22,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 
   it('marks isPerps active on the perps home route', () => {
-    expect(getActiveBottomNavTabs(PERPS_HOME_PAGE_ROUTE)).toStrictEqual({
+    expect(getActiveNavItems(PERPS_HOME_PAGE_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: true,
       isMoney: false,
@@ -34,7 +31,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 
   it('marks isActivity active on the activity route', () => {
-    expect(getActiveBottomNavTabs(ACTIVITY_ROUTE)).toStrictEqual({
+    expect(getActiveNavItems(ACTIVITY_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: false,
       isMoney: false,
@@ -43,7 +40,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 
   it('marks isMoney active on the Money home route', () => {
-    expect(getActiveBottomNavTabs(MONEY_HOME_ROUTE)).toStrictEqual({
+    expect(getActiveNavItems(MONEY_HOME_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: false,
       isMoney: true,
@@ -52,7 +49,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 
   it('marks isMoney active on the Money activity route', () => {
-    expect(getActiveBottomNavTabs(MONEY_ACTIVITY_ROUTE)).toStrictEqual({
+    expect(getActiveNavItems(MONEY_ACTIVITY_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: false,
       isMoney: true,
@@ -61,7 +58,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 
   it('marks isMoney active on the Money earn route', () => {
-    expect(getActiveBottomNavTabs(MONEY_EARN_ROUTE)).toStrictEqual({
+    expect(getActiveNavItems(MONEY_EARN_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: false,
       isMoney: true,
@@ -70,7 +67,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 
   it('marks isMoney active on the Money How it works route', () => {
-    expect(getActiveBottomNavTabs(MONEY_HOW_IT_WORKS_ROUTE)).toStrictEqual({
+    expect(getActiveNavItems(MONEY_HOW_IT_WORKS_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: false,
       isMoney: true,
@@ -80,9 +77,7 @@ describe('getActiveBottomNavTabs', () => {
 
   it('marks isMoney active on the Money transaction details route', () => {
     expect(
-      getActiveBottomNavTabs(
-        getMoneyTransactionDetailsRoute('money-tx-deposited'),
-      ),
+      getActiveNavItems(getMoneyTransactionDetailsRoute('money-tx-deposited')),
     ).toStrictEqual({
       isHome: false,
       isPerps: false,
@@ -92,7 +87,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 
   it('returns all false for an unrelated route', () => {
-    expect(getActiveBottomNavTabs('/settings')).toStrictEqual({
+    expect(getActiveNavItems('/settings')).toStrictEqual({
       isHome: false,
       isPerps: false,
       isMoney: false,
@@ -101,7 +96,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 });
 
-describe('isBottomNavRoute', () => {
+describe('isMainNavRoute', () => {
   it.each([
     ['default route', DEFAULT_ROUTE],
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
@@ -115,13 +110,13 @@ describe('isBottomNavRoute', () => {
     ],
     ['activity route', ACTIVITY_ROUTE],
   ])('returns true for the %s', (_label, route) => {
-    expect(isBottomNavRoute(route)).toBe(true);
+    expect(isMainNavRoute(route)).toBe(true);
   });
 
   it.each([['/settings'], ['/send'], ['/confirm-transaction'], ['/unknown']])(
     'returns false for %s',
     (route) => {
-      expect(isBottomNavRoute(route)).toBe(false);
+      expect(isMainNavRoute(route)).toBe(false);
     },
   );
 });
