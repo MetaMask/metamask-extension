@@ -1538,33 +1538,6 @@ export const getBridgeFixtures = ({
         },
       },
     })
-    .withTokenListController({
-      tokensChainsCache: {
-        '0xa4b1': {
-          timestamp: Date.now(),
-          data: {
-            '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              decimals: 6,
-              address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
-              name: 'Dai Stablecoin',
-              symbol: 'DAI',
-              decimals: 18,
-              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-      },
-    })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1857,47 +1830,6 @@ export const getBridgeL2Fixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0xe708')
-    .withTokenListController({
-      tokensChainsCache: {
-        '0xa4b1': {
-          timestamp: Date.now(),
-          data: {
-            '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-            '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
-              name: 'Dai Stablecoin',
-              symbol: 'DAI',
-              address: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-              decimals: 18,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-        '0xe708': {
-          timestamp: Date.now(),
-          data: {
-            '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5': {
-              name: 'Bridged Dai Stablecoin Linea',
-              symbol: 'DAI',
-              address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
-              decimals: 18,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-      },
-    })
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1987,38 +1919,6 @@ export const getMonadBaseBridgeFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x8f')
-    .withTokenListController({
-      tokensChainsCache: {
-        '0x2105': {
-          timestamp: Date.now(),
-          data: {
-            '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-        '0x8f': {
-          timestamp: Date.now(),
-          data: {
-            '0x754704bc059f8c67012fed69bc8a327a5aafb603': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0x754704bc059f8c67012fed69bc8a327a5aafb603',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-      },
-    })
     .withEnabledNetworks({
       eip155: {
         '0x8f': true,
