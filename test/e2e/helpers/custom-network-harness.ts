@@ -4,6 +4,7 @@ import type { NativeAssetIdentifiersMap } from '@metamask/network-enablement-con
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import { v6AccountsApiBalancesJson } from './accounts-api-v6-balances';
 import {
   type CatalogAsset,
   type PriceMode,
@@ -362,6 +363,49 @@ function applyScenarioState(
   }
 }
 
+const ACCOUNTS_API_V6_BALANCES_URL =
+  'https://accounts.api.cx.metamask.io/v6/multiaccount/balances';
+
+async function mockXdcNativeAndErc20V6Balances(
+  mockServer: Mockttp,
+  network: CustomNetworkConfig,
+) {
+  return mockServer
+    .forGet(ACCOUNTS_API_V6_BALANCES_URL)
+    .asPriority(99)
+    .always()
+    .thenCallback((request) => {
+      const accountIds = (
+        new URL(request.url).searchParams.get('accountIds') ?? ''
+      )
+        .split(',')
+        .map((accountId) => accountId.trim())
+        .filter(Boolean);
+      const balances = accountIds.flatMap((accountId) => {
+        if (accountId.split(':')[1] !== String(network.chainIdDecimal)) {
+          return [];
+        }
+        return [
+          {
+            accountId,
+            assetId: network.nativeAssetId,
+            balance: '25',
+          },
+          {
+            accountId,
+            assetId: SEEDED_ERC20_ASSET_ID,
+            balance: '10',
+          },
+        ];
+      });
+
+      return {
+        statusCode: 200,
+        json: v6AccountsApiBalancesJson(request.url, balances),
+      };
+    });
+}
+
 export type CustomNetworkSetup = {
   fixtures: ReturnType<FixtureBuilderV2['build']>;
   localNodeOptions: { type: 'anvil'; options: { chainId: number } }[];
@@ -402,10 +446,17 @@ export function prepareCustomNetwork(
       { type: 'anvil', options: { chainId: network.chainIdDecimal } },
     ],
     testSpecificMock: async (mockServer: Mockttp) => {
-      return mockTokenAndPriceApis(mockServer, {
+      const tokenAndPriceMocks = await mockTokenAndPriceApis(mockServer, {
         assets,
         priceMode,
       });
+      if (scenario !== 'nativeAndErc20') {
+        return tokenAndPriceMocks;
+      }
+      return [
+        ...tokenAndPriceMocks,
+        await mockXdcNativeAndErc20V6Balances(mockServer, network),
+      ];
     },
     network,
   };
