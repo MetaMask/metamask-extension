@@ -6,32 +6,23 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
-
-/**
- * Buy intent derived from `/buy` deep link params (mobile `parseRampIntent`
- * parity): the CAIP-19 asset to pre-select in the buy flow. `amount` and
- * `currency` are not consumable by the extension's in-app buy flow and are
- * intentionally dropped.
- */
-export type RampDeepLinkIntent = {
-  /** CAIP-19 asset to pre-select, e.g. `eip155:1/erc20:0x...`. */
-  assetId: CaipAssetType;
-};
-
-const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
+import type { RampIntent } from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 
 /**
  * Builds a buy intent from `/buy` deep link query params (mobile
  * `parseRampIntent` parity). Supports both a CAIP-19 `assetId` param and the
  * EVM-style `address` + `chainId` pair used by Portfolio links, converted to
  * a CAIP-19 asset id; the native token is the zero address or no address.
+ * `amount` and `currency` are not consumable by the extension's in-app buy
+ * flow and are intentionally dropped.
  *
  * @param params - The deep link query params.
  * @returns The intent, or undefined when no valid asset survives.
  */
 export function parseRampIntent(
   params: URLSearchParams,
-): RampDeepLinkIntent | undefined {
+): RampIntent | undefined {
   const address = params.get('address');
   const rawAssetId = params.get('assetId');
   const chainId = params.get('chainId');
@@ -59,7 +50,7 @@ export function parseRampIntent(
     return undefined;
   }
 
-  if (!address || address === NATIVE_ADDRESS) {
+  if (!address || address === NATIVE_TOKEN_ADDRESS) {
     // `slip44:.` is the native placeholder that `resolveRampControllerToken`
     // matches against the catalog's `slip44:{coinType}` native ids.
     return { assetId: `${evmChainId}/slip44:.` as CaipAssetType };
