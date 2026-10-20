@@ -834,9 +834,74 @@ describe('useRampsNavigation goToBuy', () => {
     ]);
   });
 
+  it('warm catalog with no persisted region → fetches nothing and does not touch the controller region', async () => {
+    // `setUserRegion` resets dependent resources on change and wipes state on
+    // failure, so a navigation hook must not call it when the catalog is
+    // already in state — even with no persisted region.
+    const assetId = 'eip155:1/erc20:0xabc';
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe('native');
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'setRampsUserRegion',
+      expect.anything(),
+    );
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      assetId,
+    ]);
+    expect(getModalName()).toBeNull();
+  });
+
+  it('cold fetch with an unloaded countries list → skips seeding and fetches with the lowercased geolocation', async () => {
+    // Seeding through `setUserRegion` with no countries loaded is exactly the
+    // failure path that wipes controller state, so it must not be attempted.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+    });
+    const { result } = run(
+      buildState({
+        userRegion: null,
+        countries: { ...loaded, data: [] },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    await goToBuy(result, { assetId });
+
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'setRampsUserRegion',
+      expect.anything(),
+    );
+    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+      'us-ca',
+      'buy',
+    ]);
+  });
+
   it('falls back to the lowercased geolocation string when seeding the region fails', async () => {
-    // E.g. the countries catalog is not loaded yet: keep the old best-effort
-    // fetch rather than skipping it.
+    // E.g. the geolocation string resolves to no region in the loaded
+    // countries list: keep the old best-effort fetch rather than skipping it.
     const assetId = 'eip155:1/erc20:0xabc';
     backgroundHandlers.getRampsTokens = () => ({
       topTokens: [],

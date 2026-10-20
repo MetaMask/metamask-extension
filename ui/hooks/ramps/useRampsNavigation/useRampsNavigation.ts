@@ -24,6 +24,7 @@ import {
 import { getIsRampsServiceDisruptionActive } from '../../../selectors/ramps-feature-flags';
 import { getIsRampRegionUnsupported } from '../../../selectors/ramps';
 import {
+  selectCountries,
   selectRampsOrders,
   selectProviders,
   selectTokens,
@@ -192,6 +193,7 @@ export default function useRampsNavigation() {
   const tokens = useSelector(selectTokens);
   const rampsOrders = useSelector(selectRampsOrders);
   const userRegion = useSelector(selectUserRegion);
+  const countries = useSelector(selectCountries);
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
@@ -269,24 +271,26 @@ export default function useRampsNavigation() {
         return 'native';
       }
 
-      // `tokens` isn't persisted, and setSelectedToken throws until it's fetched
-      // (e.g. after an MV3 service-worker restart). The controller dedupes this
-      // with RampsBootstrap's in-flight fetch. Resolve the region through the
-      // controller so the catalog fetch and `setSelectedToken` agree on one
-      // region code: with no persisted region, seed it from geolocation via
-      // `setRampsUserRegion`, which normalizes the raw geolocation string
-      // against the countries catalog and persists the canonical region code.
-      // Lowercasing the raw string here could fetch a catalog for a region the
-      // controller does not use, failing preselection for a supported token.
-      // If seeding fails (e.g. the countries catalog is not loaded yet), fall
-      // back to the lowercased geolocation string.
-      const fetchRegion = userRegion?.regionCode
-        ? userRegion.regionCode
-        : ((await setRampsUserRegion(location).catch(() => null))?.regionCode ??
-          location.toLowerCase());
-      const fetchedTokens = tokens.data
-        ? null
-        : await getRampsTokens(fetchRegion, 'buy').catch(() => null);
+      // `tokens` isn't persisted, and `setSelectedToken` throws until it's
+      // fetched (e.g. after an MV3 service-worker restart). Resolve a region
+      // only when a fetch is actually needed: the controller's `setUserRegion`
+      // resets dependent resources on change and wipes state on failure, so
+      // seed it only when the countries list is loaded (it normalizes the raw
+      // geolocation into the canonical region code the controller itself
+      // uses); otherwise fall back to the lowercased geolocation string for
+      // this one-off fetch.
+      let fetchedTokens: TokensResponse | null = null;
+      if (!tokens.data) {
+        const region =
+          userRegion?.regionCode ??
+          (countries.data?.length
+            ? (await setRampsUserRegion(location).catch(() => null))?.regionCode
+            : undefined);
+        fetchedTokens = await getRampsTokens(
+          region ?? location.toLowerCase(),
+          'buy',
+        ).catch(() => null);
+      }
 
       // Resolve against the catalog. Block on one that definitively lacks or
       // does not support the token — either the rendered catalog settled
@@ -327,6 +331,7 @@ export default function useRampsNavigation() {
       tokens,
       rampsOrders,
       userRegion,
+      countries,
       everConnectedToPortfolio,
       isBackupAndSyncEnabled,
       isRampsSyncingEnabled,
