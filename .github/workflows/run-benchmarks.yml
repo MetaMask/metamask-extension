@@ -166,7 +166,7 @@ jobs:
     name: chrome-webpack-pageLoadBenchmark
     # We decide whether to block the PR in the `quality-gate` step
     continue-on-error: true
-    runs-on: namespace-profile-metamask-ci-linux
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
@@ -174,7 +174,7 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-      BENCHMARK_RUNNER_LABEL: namespace-profile-metamask-ci-linux
+      BENCHMARK_RUNNER_LABEL: ubuntu-latest
       BENCHMARK_BASE_SHA: ${{ github.event.pull_request.base.sha }}
       BENCHMARK_BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
       BENCHMARK_BUILDS_FROM_SHA: ${{ inputs.builds-from-sha }}
@@ -186,6 +186,13 @@ jobs:
       DAPP_BENCHMARK_JSON: benchmark-chrome-webpack-pageLoadBenchmark.json
       MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
     steps:
+      - name: Record runner placement
+        run: |
+          if [ -n "$NSC_INSTANCE_ID" ]; then exit 0; fi
+          compute=$(curl -sS -m 3 -H 'Metadata: true' 'http://169.254.169.254/metadata/instance/compute?api-version=2021-02-01&format=json') || exit 0
+          echo "BENCHMARK_RUNNER_REGION=$(jq -r '.location // empty' <<< "$compute" || true)" >> "$GITHUB_ENV"
+          echo "BENCHMARK_RUNNER_SHAPE=$(jq -r '.vmSize // empty' <<< "$compute" || true)" >> "$GITHUB_ENV"
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
