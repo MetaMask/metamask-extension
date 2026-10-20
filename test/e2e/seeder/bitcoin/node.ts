@@ -165,6 +165,18 @@ type EsploraOutspend = {
   vin?: number;
 };
 
+export function transactionTouchesScriptPubKey(
+  transaction: EsploraTransaction,
+  scriptPubKey: string,
+): boolean {
+  return (
+    transaction.vout.some((output) => output.scriptpubkey === scriptPubKey) ||
+    transaction.vin.some(
+      (input) => input.prevout?.scriptpubkey === scriptPubKey,
+    )
+  );
+}
+
 export function bitcoinToSatoshis(value: number): number {
   return Math.round(value * 100_000_000);
 }
@@ -423,7 +435,8 @@ export class BitcoinNode {
   async getScriptHashTransactions(
     scriptHash: string,
   ): Promise<EsploraTransaction[]> {
-    if (!this.#targetsByScriptHash.has(scriptHash)) {
+    const target = this.#targetsByScriptHash.get(scriptHash);
+    if (!target) {
       return [];
     }
 
@@ -431,15 +444,18 @@ export class BitcoinNode {
       ...(this.#fundingTxIdsByScriptHash.has(scriptHash)
         ? [this.#fundingTxIdsByScriptHash.get(scriptHash) as string]
         : []),
-      ...(scriptHash === this.targetScriptHash ? this.#broadcastTxIds : []),
+      ...this.#broadcastTxIds,
     ];
 
     const transactions = await Promise.all(
       txIds.map((txId) => this.getTransaction(txId)),
     );
+    const matchingTransactions = transactions.filter((transaction) =>
+      transactionTouchesScriptPubKey(transaction, target.scriptPubKey),
+    );
 
     // Sort newest-first (descending block height); unconfirmed txs first.
-    return transactions.sort((a, b) => {
+    return matchingTransactions.sort((a, b) => {
       const heightA = a.status.block_height;
       const heightB = b.status.block_height;
 
@@ -464,10 +480,7 @@ export class BitcoinNode {
       return [];
     }
 
-    const txIds = [
-      fundingTxId,
-      ...(scriptHash === this.targetScriptHash ? this.#broadcastTxIds : []),
-    ];
+    const txIds = [fundingTxId, ...this.#broadcastTxIds];
     const utxos: EsploraUtxo[] = [];
 
     for (const txId of txIds) {
