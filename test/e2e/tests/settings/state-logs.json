@@ -429,6 +429,7 @@
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
     "eventsConfigEtag": "null",
+    "excludedRegions": "null",
     "eventsConfig": {
       "events": {},
       "schemaVersion": "string",
