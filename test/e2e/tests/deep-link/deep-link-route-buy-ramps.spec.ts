@@ -5,8 +5,8 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import RampsBuildQuotePage from '../../page-objects/pages/ramps/ramps-build-quote-page';
 import RampsTokenSelectionPage from '../../page-objects/pages/ramps/ramps-token-selection-page';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
-import { mockRampsCatalog } from '../btc/mocks/ramps';
 import {
+  mockRampsCatalog,
   bytesToB64,
   generateECDSAKeyPair,
   getConfig,
