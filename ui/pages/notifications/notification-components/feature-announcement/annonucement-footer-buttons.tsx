@@ -19,13 +19,11 @@ import { FeatureAnnouncementNotification } from './types';
 type ResolvedHref = {
   href: string;
   sourceUrl: string;
-  isRampsEnabled: boolean;
 };
 
 type PendingResolvedHref = {
   promise: Promise<string>;
   sourceUrl: string;
-  isRampsEnabled: boolean;
 };
 
 function shouldUseDefaultLinkNavigation(
@@ -124,12 +122,14 @@ export const ExtensionLinkButton = (props: {
   );
 };
 
-export const ExternalLinkButton = (props: {
+const ExternalLinkButtonInner = ({
+  notification,
+  isRampsEnabled,
+}: {
   notification: FeatureAnnouncementNotification;
+  isRampsEnabled: boolean;
 }) => {
   const navigate = useNavigate();
-  const isRampsEnabled = useSelector(getIsRampsEnabled);
-  const { notification } = props;
   const analyticCallback = useAnalyticEventCallback({
     notification,
     clickType: 'cta_button',
@@ -152,22 +152,13 @@ export const ExternalLinkButton = (props: {
       return Promise.resolve('');
     }
 
-    // The cache key includes the unified buy flag: remote flags can arrive
-    // after the notification rendered, and a URL-only key would keep serving
-    // the stale Portfolio resolution for `/buy` links.
     const resolvedHrefForLink = resolvedHrefRef.current;
-    if (
-      resolvedHrefForLink?.sourceUrl === linkUrl &&
-      resolvedHrefForLink.isRampsEnabled === isRampsEnabled
-    ) {
+    if (resolvedHrefForLink?.sourceUrl === linkUrl) {
       return Promise.resolve(resolvedHrefForLink.href);
     }
 
     const pendingResolvedHref = pendingResolvedHrefRef.current;
-    if (
-      pendingResolvedHref?.sourceUrl === linkUrl &&
-      pendingResolvedHref.isRampsEnabled === isRampsEnabled
-    ) {
+    if (pendingResolvedHref?.sourceUrl === linkUrl) {
       return pendingResolvedHref.promise;
     }
 
@@ -184,7 +175,6 @@ export const ExternalLinkButton = (props: {
     pendingResolvedHrefRef.current = {
       promise,
       sourceUrl: linkUrl,
-      isRampsEnabled,
     };
 
     return promise;
@@ -209,7 +199,7 @@ export const ExternalLinkButton = (props: {
     pendingResolvedHref
       .then((href) => {
         if (isMounted) {
-          const nextResolvedHref = { href, sourceUrl, isRampsEnabled };
+          const nextResolvedHref = { href, sourceUrl };
           resolvedHrefRef.current = nextResolvedHref;
           setResolvedHref(nextResolvedHref);
         }
@@ -232,7 +222,7 @@ export const ExternalLinkButton = (props: {
         pendingResolvedHrefRef.current = undefined;
       }
     };
-  }, [externalLinkUrl, isRampsEnabled, resolveHref]);
+  }, [externalLinkUrl, resolveHref]);
 
   if (!externalLinkUrl || !externalLink) {
     return null;
@@ -240,10 +230,7 @@ export const ExternalLinkButton = (props: {
 
   const { externalLinkText } = externalLink;
   const resolvedHrefForExternalLink =
-    resolvedHref?.sourceUrl === externalLinkUrl &&
-    resolvedHref.isRampsEnabled === isRampsEnabled
-      ? resolvedHref.href
-      : undefined;
+    resolvedHref?.sourceUrl === externalLinkUrl ? resolvedHref.href : undefined;
 
   const openResolvedLink = async () => {
     const href = await resolveHref();
@@ -284,6 +271,22 @@ export const ExternalLinkButton = (props: {
           : false
       }
       onClick={onClick}
+    />
+  );
+};
+
+// Remount on flag flip, so the URL-keyed href cache never goes stale when
+// remote flags arrive after the notification rendered.
+export const ExternalLinkButton = (props: {
+  notification: FeatureAnnouncementNotification;
+}) => {
+  const isRampsEnabled = useSelector(getIsRampsEnabled);
+
+  return (
+    <ExternalLinkButtonInner
+      key={String(isRampsEnabled)}
+      {...props}
+      isRampsEnabled={isRampsEnabled}
     />
   );
 };
