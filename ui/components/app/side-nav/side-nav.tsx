@@ -4,10 +4,8 @@ import { useMainNavItems } from '../../../hooks/useMainNavItems';
 import { SideNavAccounts } from './side-nav-accounts';
 import { SideNavItem } from './side-nav-item';
 
-/**
- * Persistent left navigation for the fullscreen design: the logo, the main
- * navigation items and the accounts list.
- */
+// Persistent left navigation for the fullscreen design: the logo, the main
+// navigation items and the accounts list.
 export const SideNav = () => {
   const items = useMainNavItems();
 

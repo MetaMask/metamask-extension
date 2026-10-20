@@ -25,10 +25,8 @@ import {
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 
-/**
- * The "Accounts" section of the side navigation: a header with manage/add
- * actions above the account list, which scrolls independently of the page.
- */
+// The "Accounts" section of the side navigation: a header with manage/add
+// actions above the account list, which scrolls independently of the page.
 export const SideNavAccounts = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -38,7 +36,6 @@ export const SideNavAccounts = () => {
   const { isAccountTreeSyncingInProgress } =
     useAccountsOperationsLoadingStates();
 
-  // The list shows the balance of every account, not just the selected one.
   useAssetsUpdateAllAccountBalances();
 
   const hasMultipleWallets = useMemo(
