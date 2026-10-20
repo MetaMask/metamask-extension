@@ -14,16 +14,12 @@ import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-
 import { parseRampIntent } from './parse-ramp-intent';
 
 /**
- * Entry page for `/buy` deep links when the unified buy feature is enabled.
- *
- * The router lands the user here with the original query params. The params
- * are mapped to a buy intent and handed to the shared `goToBuy` chain (same
- * eligibility gating and token preselection as the in-app Buy buttons),
- * with the verbatim-params Portfolio URL attached so a Portfolio redirect
- * (the rollout gate off, or the one-time Portfolio order migration) keeps
- * the deep link params instead of dropping them. If no navigation is
- * possible, the user is taken to the wallet home page; any eligibility
- * modal is still displayed by the global modal manager.
+ * Entry page for `/buy` deep links when the unified buy feature is enabled:
+ * maps the params to a buy intent and hands it to the shared `goToBuy` gate
+ * (same eligibility gating and token preselection as the in-app Buy
+ * buttons), keeping the deep link params on any Portfolio redirect. Falls
+ * back to the wallet home page when no navigation is possible; eligibility
+ * modals are displayed by the global modal manager.
  *
  * @returns The loading page shown while the buy flow is being resolved.
  */
