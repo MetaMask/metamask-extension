@@ -5,11 +5,11 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import RampsBuildQuotePage from '../../page-objects/pages/ramps/ramps-build-quote-page';
 import RampsTokenSelectionPage from '../../page-objects/pages/ramps/ramps-token-selection-page';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
+import { mockRampsCatalog } from '../btc/mocks/ramps';
 import {
   bytesToB64,
   generateECDSAKeyPair,
   getConfig,
-  mockRampsCatalog,
   prepareDeepLinkUrl,
   shouldRenderCheckbox,
 } from './helpers';
@@ -32,15 +32,22 @@ describe('Deep Link - /buy Route (unified buy)', function () {
         '/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
       signed: 'signed with sig_params',
       DestinationPage: RampsBuildQuotePage,
+      expectedToken: 'DAI',
     },
     {
       route: '/buy',
       signed: 'unsigned',
       DestinationPage: RampsTokenSelectionPage,
+      expectedToken: undefined,
     },
   ] as const;
 
-  for (const { signed, route, DestinationPage } of buyScenarios) {
+  for (const {
+    signed,
+    route,
+    DestinationPage,
+    expectedToken,
+  } of buyScenarios) {
     it(`routes ${signed} ${route} deep link into the in-app buy flow`, async function () {
       const keyPair = await generateECDSAKeyPair();
       const deepLinkPublicKey = bytesToB64(
@@ -75,8 +82,10 @@ describe('Deep Link - /buy Route (unified buy)', function () {
             DestinationPage,
           );
 
-          if (DestinationPage === RampsBuildQuotePage) {
-            await new RampsBuildQuotePage(driver).checkSelectedToken('DAI');
+          if (expectedToken) {
+            await new RampsBuildQuotePage(driver).checkSelectedToken(
+              expectedToken,
+            );
           }
         },
       );
