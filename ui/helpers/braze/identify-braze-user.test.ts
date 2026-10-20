@@ -180,4 +180,29 @@ describe('clearBrazeUser', () => {
     expect(mockCaptureException).toHaveBeenCalledWith(error);
     expect(getIdentifiedBrazeProfileId()).toBeUndefined();
   });
+
+  it('runs a wipe requested while identify is in flight after the identify completes', async () => {
+    const identifyPromise = identifyBrazeUser('canonical-123');
+    await clearBrazeUser();
+    await expect(identifyPromise).resolves.toBe(true);
+
+    expect(mockChangeUser).toHaveBeenCalledTimes(1);
+    expect(mockWipeData).toHaveBeenCalledTimes(1);
+    expect(mockChangeUser.mock.invocationCallOrder[0]).toBeLessThan(
+      mockWipeData.mock.invocationCallOrder[0],
+    );
+    expect(getIdentifiedBrazeProfileId()).toBeUndefined();
+  });
+
+  it('re-initializes and re-identifies when identify runs after a queued wipe', async () => {
+    const identifyPromise = identifyBrazeUser('canonical-123');
+    await clearBrazeUser();
+    await expect(identifyPromise).resolves.toBe(true);
+
+    await expect(identifyBrazeUser('canonical-123')).resolves.toBe(true);
+
+    expect(mockInitialize).toHaveBeenCalledTimes(2);
+    expect(mockChangeUser).toHaveBeenCalledTimes(2);
+    expect(getIdentifiedBrazeProfileId()).toBe('canonical-123');
+  });
 });
