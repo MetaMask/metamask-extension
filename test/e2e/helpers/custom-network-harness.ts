@@ -371,8 +371,32 @@ function applyScenarioState(
   }
 }
 
+const ACCOUNTS_API_V2_SUPPORTED_NETWORKS_URL =
+  'https://accounts.api.cx.metamask.io/v2/supportedNetworks';
+
 const ACCOUNTS_API_V6_BALANCES_URL =
   'https://accounts.api.cx.metamask.io/v6/multiaccount/balances';
+
+async function mockXdcAccountsApiSupportedNetworks(mockServer: Mockttp) {
+  return mockServer
+    .forGet(ACCOUNTS_API_V2_SUPPORTED_NETWORKS_URL)
+    .asPriority(99)
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+        'eip155:50',
+      ],
+      partialSupport: ['eip155:42220', 'eip155:43114'],
+    });
+}
 
 async function mockXdcNativeAndErc20V6Balances(
   mockServer: Mockttp,
@@ -508,6 +532,7 @@ export function prepareCustomNetwork(
       }
       return [
         ...tokenAndPriceMocks,
+        await mockXdcAccountsApiSupportedNetworks(mockServer),
         await mockXdcNativeAndErc20V6Balances(mockServer, network),
       ];
     },
