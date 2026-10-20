@@ -38,6 +38,20 @@ describe('PerpsHomePage', () => {
     expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
   });
 
+  it('renders PerpsTab while the bottom-nav assignment is unresolved', () => {
+    mockUseABTest.mockReturnValue({
+      variant: { withBottomNavBar: false },
+      variantName: 'control',
+      isActive: false,
+    });
+
+    render(<PerpsHomePage />);
+
+    expect(screen.getByTestId('perps-home-page')).toBeInTheDocument();
+    expect(screen.getByTestId('perps-tab')).toBeInTheDocument();
+    expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+  });
+
   it('redirects to /?tab=perps when bottom nav bar is disabled (control)', () => {
     mockUseABTest.mockReturnValue({
       variant: { withBottomNavBar: false },

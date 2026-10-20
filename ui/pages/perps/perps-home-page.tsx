@@ -18,14 +18,17 @@ export const PerpsHomePage = () => {
   // If not, redirect to the home page with the perps tab selected.
   // This handles the case where a deep link navigates to /perps but the
   // user doesn't have the bottom nav bar, which would leave them stuck.
-  const { variant } = useABTest(
+  const { variant, isActive } = useABTest(
     BOTTOM_NAV_AB_TEST_KEY,
     BOTTOM_NAV_AB_TEST_VARIANTS,
     BOTTOM_NAV_AB_TEST_EXPOSURE_METADATA,
     { trackExposure: false },
   );
 
-  if (!variant.withBottomNavBar) {
+  // A missing assignment falls back to the control variant with isActive false.
+  // Wait for a real assignment so a treatment user is not sent to /?tab=perps
+  // before the bottom nav, and its Perps tab, are available.
+  if (isActive && !variant.withBottomNavBar) {
     return <Navigate to={PERPS_HOME_TAB_ROUTE} replace />;
   }
 

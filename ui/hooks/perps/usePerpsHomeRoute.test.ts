@@ -24,6 +24,18 @@ describe('usePerpsHomeRoute', () => {
     expect(result.current).toBe(PERPS_ROUTE);
   });
 
+  it('returns the perps route while the bottom-nav assignment is unresolved', () => {
+    mockUseABTest.mockReturnValue({
+      variant: { withBottomNavBar: false },
+      variantName: 'control',
+      isActive: false,
+    });
+
+    const { result } = renderHook(() => usePerpsHomeRoute());
+
+    expect(result.current).toBe(PERPS_ROUTE);
+  });
+
   it('returns the wallet home perps tab for the bottom-nav control', () => {
     mockUseABTest.mockReturnValue({
       variant: { withBottomNavBar: false },
