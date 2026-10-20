@@ -1,6 +1,4 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../shared/constants/app';
-import { getEnvironmentType } from '../../shared/lib/environment-type';
 
 // Minimum viewport width at which the fullscreen design is used
 // Matches the Tailwind `md` breakpoint
@@ -31,16 +29,6 @@ function useMediaQueryMatches(query: string): boolean {
   return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-/**
- * Returns whether the fullscreen design should be used.
- * True only when fullscreen is open AND the viewport is wide enough.
- *
- * @returns Whether the fullscreen design should be shown.
- */
 export function useFullScreenDesign(): boolean {
-  const isFullscreenEnvironment =
-    getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
-  const isWideViewport = useMediaQueryMatches(FULL_SCREEN_DESIGN_MEDIA_QUERY);
-
-  return isFullscreenEnvironment && isWideViewport;
+  return useMediaQueryMatches(FULL_SCREEN_DESIGN_MEDIA_QUERY);
 }

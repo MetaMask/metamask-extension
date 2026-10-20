@@ -1,23 +1,8 @@
-import { it } from '@jest/globals';
 import { act, renderHook } from '@testing-library/react';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../shared/constants/app';
-import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   FULL_SCREEN_DESIGN_MIN_WIDTH,
   useFullScreenDesign,
 } from './useFullScreenDesign';
-
-jest.mock('../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../shared/lib/environment-type'),
-  getEnvironmentType: jest.fn(),
-}));
-
-const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
 /**
  * Mocks `window.matchMedia` with a controllable `min-width` media query.
@@ -55,15 +40,11 @@ function mockViewportWidth(initialWidth: number) {
 }
 
 describe('useFullScreenDesign', () => {
-  beforeEach(() => {
-    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
-  });
-
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('returns true in the fullscreen environment with a wide viewport', () => {
+  it('returns true when the viewport is at the minimum width', () => {
     mockViewportWidth(FULL_SCREEN_DESIGN_MIN_WIDTH);
 
     const { result } = renderHook(() => useFullScreenDesign());
@@ -71,7 +52,7 @@ describe('useFullScreenDesign', () => {
     expect(result.current).toBe(true);
   });
 
-  it('returns false in the fullscreen environment with a narrow viewport', () => {
+  it('returns false when the viewport is narrower than the minimum width', () => {
     mockViewportWidth(FULL_SCREEN_DESIGN_MIN_WIDTH - 1);
 
     const { result } = renderHook(() => useFullScreenDesign());
@@ -79,24 +60,9 @@ describe('useFullScreenDesign', () => {
     expect(result.current).toBe(false);
   });
 
-  it.each([
-    ENVIRONMENT_TYPE_POPUP,
-    ENVIRONMENT_TYPE_SIDEPANEL,
-    ENVIRONMENT_TYPE_NOTIFICATION,
-  ])(
-    'returns false in the %s environment even with a wide viewport',
-    (type) => {
-      mockGetEnvironmentType.mockReturnValue(type);
-      mockViewportWidth(1280);
-
-      const { result } = renderHook(() => useFullScreenDesign());
-
-      expect(result.current).toBe(false);
-    },
-  );
-
   it('updates when the viewport crosses the breakpoint', () => {
     const viewport = mockViewportWidth(1280);
+
     const { result } = renderHook(() => useFullScreenDesign());
     expect(result.current).toBe(true);
 

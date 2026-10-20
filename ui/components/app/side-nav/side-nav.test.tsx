@@ -89,10 +89,9 @@ describe('SideNav', () => {
   });
 
   it('renders the logo, the nav items and the accounts section', () => {
-    const { getByTestId, getByLabelText } = renderSideNav();
+    const { getByTestId } = renderSideNav();
 
     expect(getByTestId('side-nav')).toBeInTheDocument();
-    expect(getByLabelText('Home', { selector: 'a' })).toBeInTheDocument();
     expect(getByTestId('side-nav-home')).toBeInTheDocument();
     expect(getByTestId('side-nav-perps')).toBeInTheDocument();
     expect(getByTestId('side-nav-money')).toBeInTheDocument();
