@@ -129,6 +129,9 @@ export const BackupAndSyncToggle = ({
 
   // Cascading side effects: keep backup & sync in sync with basic functionality.
   // Disabling does not call `signIn()` so it's safe in either context.
+  // During onboarding the intent flag is also cleared in the app reducer when
+  // basic functionality is turned off, so this still repairs the toggle if it
+  // mounts with an already-inconsistent flag.
   useEffect(() => {
     if (isOnboarding) {
       if (
