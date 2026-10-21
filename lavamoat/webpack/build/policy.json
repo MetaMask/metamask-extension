@@ -1409,7 +1409,7 @@
       },
       "packages": {
         "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo>csso>css-tree>mdn-data": true,
-        "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo>csso>css-tree>source-map-js": true
+        "stylelint>postcss>source-map-js": true
       }
     },
     "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo>css-tree": {
@@ -1418,7 +1418,7 @@
       },
       "packages": {
         "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo>css-tree>mdn-data": true,
-        "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo>css-tree>source-map-js": true
+        "stylelint>postcss>source-map-js": true
       }
     },
     "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo>csso": {
@@ -2812,7 +2812,7 @@
       "packages": {
         "nanoid": true,
         "postcss>picocolors": true,
-        "postcss>source-map-js": true
+        "css-loader>postcss>source-map-js": true
       }
     },
     "postcss-rtlcss>rtlcss>postcss": {
@@ -2840,7 +2840,7 @@
       "packages": {
         "nanoid": true,
         "postcss>picocolors": true,
-        "postcss>source-map-js": true
+        "postcss-rtlcss>rtlcss>postcss>source-map-js": true
       }
     },
     "tailwindcss>postcss": {
@@ -2868,7 +2868,7 @@
       "packages": {
         "nanoid": true,
         "postcss>picocolors": true,
-        "postcss>source-map-js": true
+        "tailwindcss>postcss>source-map-js": true
       }
     },
     "mockttp>express>proxy-addr": {
@@ -3350,17 +3350,27 @@
         "uuid": true
       }
     },
-    "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo>csso>css-tree>source-map-js": {
-      "globals": {
-        "console": true
-      }
-    },
-    "@metamask/platform-api-docs>@docusaurus/preset-classic>@docusaurus/plugin-svgr>@svgr/webpack>@svgr/plugin-svgo>svgo>css-tree>source-map-js": {
-      "globals": {
-        "console": true
-      }
-    },
     "postcss>source-map-js": {
+      "globals": {
+        "console": true
+      }
+    },
+    "css-loader>postcss>source-map-js": {
+      "globals": {
+        "console": true
+      }
+    },
+    "postcss-rtlcss>rtlcss>postcss>source-map-js": {
+      "globals": {
+        "console": true
+      }
+    },
+    "stylelint>postcss>source-map-js": {
+      "globals": {
+        "console": true
+      }
+    },
+    "tailwindcss>postcss>source-map-js": {
       "globals": {
         "console": true
       }
