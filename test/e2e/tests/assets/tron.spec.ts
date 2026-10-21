@@ -1,12 +1,9 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import {
-  setupTronAssetsHome,
-  TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
-} from '../../page-objects/flows/tron-assets.flow';
+import { landOnTronHome } from '../../page-objects/flows/tron-network.flow';
+import { TRON_HOMEPAGE_TOKEN_TIMEOUT_MS } from '../../page-objects/flows/tron-assets.flow';
 import { selectAllNetworksFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
@@ -29,7 +26,7 @@ describe('Tron - Assets', function (this: Suite) {
         await withTronFixtures(
           tronAssetsTestConfig([EMPTY_TRON_ACCOUNT], this.test?.fullTitle()),
           async ({ driver }: { driver: Driver }) => {
-            await setupTronAssetsHome(driver);
+            await landOnTronHome(driver, { expectedTrxAmount: '0' });
 
             const tokensTab = new TokensTab(driver);
             await tokensTab.checkOnlyAssetsArePresent(['Tron']);
@@ -53,7 +50,7 @@ describe('Tron - Assets', function (this: Suite) {
             this.test?.fullTitle(),
           ),
           async ({ driver }: { driver: Driver }) => {
-            await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+            await landOnTronHome(driver, { expectedTrxAmount: '6.072' });
 
             const tokensTab = new TokensTab(driver);
             await tokensTab.checkTokenRowHasVisibleLogo('Tron');
@@ -126,17 +123,12 @@ describe('Tron - Assets', function (this: Suite) {
             this.test?.fullTitle(),
           ),
           async ({ driver }: { driver: Driver }) => {
-            await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+            await landOnTronHome(driver, { expectedTrxAmount: '6.072' });
             const tokensTab = new TokensTab(driver);
             await selectAllNetworksFromNetworkSelect(driver);
             await tokensTab.checkTokenExistsInList('Tron');
             await tokensTab.checkTokenExistsInList('Tether');
             await tokensTab.checkTokenExistsInList('Ethereum');
-
-            // Restore the Tron filter so the next steps start from a clean
-            // Tron-only home state.
-            await selectTronNetwork(driver);
-            await new HomePage(driver).navigateToHome();
           },
         );
       });
@@ -148,7 +140,7 @@ describe('Tron - Assets', function (this: Suite) {
             this.test?.fullTitle(),
           ),
           async ({ driver }: { driver: Driver }) => {
-            await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+            await landOnTronHome(driver, { expectedTrxAmount: '6.072' });
             const tokensTab = new TokensTab(driver);
             await tokensTab.checkOnlyAssetsArePresent([
               'Tron',
@@ -174,9 +166,9 @@ describe('Tron - Assets', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await setupTronAssetsHome(driver);
+          await landOnTronHome(driver, { expectedTrxAmount: '0' });
           const homePage = new HomePage(driver);
-          await homePage.navigateToHome('0 TRX');
+          await homePage.checkExpectedBalanceIsDisplayed('0 TRX');
         },
       );
     });
@@ -191,12 +183,12 @@ describe('Tron - Assets', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await setupTronAssetsHome(driver, { expectedTrxAmount: '106.072' });
+          await landOnTronHome(driver, { expectedTrxAmount: '106.072' });
 
           // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
           // Total Fiat = TRX $31.26, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $39.65
           const homePage = new HomePage(driver);
-          await homePage.navigateToHome('$39.65');
+          await homePage.checkExpectedBalanceIsDisplayed('$39.65');
 
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenAmountIsDisplayed('106.072');
@@ -210,7 +202,7 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
-          await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+          await landOnTronHome(driver, { expectedTrxAmount: '6.072' });
           const tokensTab = new TokensTab(driver);
           await tokensTab.clickOnAsset('Tron');
           const details = new AssetDetailsPage(driver);
@@ -225,8 +217,6 @@ describe('Tron - Assets', function (this: Suite) {
           });
           await details.checkDailyResourcesSection();
           await details.checkAllStandardSections();
-
-          await new HomePage(driver).navigateToHome();
         },
       );
     });
@@ -235,7 +225,7 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
-          await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+          await landOnTronHome(driver, { expectedTrxAmount: '6.072' });
           const tokensTab = new TokensTab(driver);
           await tokensTab.clickOnAsset('Tether');
           const details = new AssetDetailsPage(driver);
@@ -245,8 +235,6 @@ describe('Tron - Assets', function (this: Suite) {
           await details.checkTokenActionButtons();
           await details.checkAllStandardSections();
           await details.checkDailyResourcesSectionIsAbsent();
-
-          await new HomePage(driver).navigateToHome();
         },
       );
     });
