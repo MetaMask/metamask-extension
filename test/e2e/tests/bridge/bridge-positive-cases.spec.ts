@@ -59,8 +59,6 @@ describe('Bridge tests', function (this: Suite) {
           expectedDestAmount: '1,642',
           expectedActivityAmount: '+1,642.0043',
         });
-        await homePage.goToTokensTab();
-        await homePage.goToActivityList();
 
         await bridgeTransaction({
           driver,

@@ -581,9 +581,6 @@ class HomePage {
   async goToActivityList(): Promise<void> {
     console.log('Open the activity page from the bottom navigation bar');
     await this.driver.clickElement(this.bottomNavActivityButton);
-    await this.driver.waitForSelector({
-      testId: 'parent-selector-activity-tab',
-    });
   }
 
   async goToBackupSRPPage(): Promise<void> {
@@ -614,25 +611,13 @@ class HomePage {
 
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavHomeButton,
-      3000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
-      await this.checkPageIsLoaded();
-    }
+    await this.goToHomePage();
     await this.driver.clickElement(this.nftTab);
   }
 
   async goToTokensTab(): Promise<void> {
     console.log(`Go to tokens tab on homepage`);
-    // Activity is its own route, so the home tab strip is absent there and we
-    // have to return home first.
-    const currentUrl = await this.driver.getCurrentUrl();
-    if (currentUrl.includes(`#${ACTIVITY_ROUTE}`)) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
-    }
+    await this.goToHomePage();
     await this.driver.clickElement(this.tokensTab);
   }
 
