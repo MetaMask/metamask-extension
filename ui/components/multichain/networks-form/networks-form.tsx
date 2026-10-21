@@ -101,7 +101,6 @@ export type NetworksFormChainlist = {
   existingNetworkChainIds: Set<string>;
   existingNetworkNamesByChainId: Record<string, string>;
   onSelect: (network: ChainlistNetwork, searchQuery?: string) => void;
-  onOpenNetworkList: () => void;
 };
 
 export const NetworksForm = ({
@@ -794,7 +793,6 @@ export const NetworksForm = ({
                 maxHeight={chainlistMaxHeight}
                 searchValue={name}
                 showSearchField={false}
-                onOpenNetworkList={chainlist.onOpenNetworkList}
                 onSelect={(network, searchQuery) => {
                   setSource('chainlist');
                   closeChainlist();
@@ -982,7 +980,6 @@ export const NetworksForm = ({
                   maxHeight={chainlistMaxHeight}
                   searchValue={chainId}
                   showSearchField={false}
-                  onOpenNetworkList={chainlist.onOpenNetworkList}
                   onSelect={(network, searchQuery) => {
                     setSource('chainlist');
                     closeChainlist();

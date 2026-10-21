@@ -551,7 +551,6 @@ export const NetworksPage = () => {
                 ? {
                     existingNetworkChainIds,
                     existingNetworkNamesByChainId,
-                    onOpenNetworkList: handleGoHome,
                     onSelect: handleChainlistNetworkSelect,
                   }
                 : undefined
@@ -575,7 +574,6 @@ export const NetworksPage = () => {
             <ChainlistNetworkPicker
               existingNetworkChainIds={existingNetworkChainIds}
               existingNetworkNamesByChainId={existingNetworkNamesByChainId}
-              onOpenNetworkList={handleGoHome}
               onSelect={handleChainlistNetworkSelect}
             />
           </NetworksPageFormBody>

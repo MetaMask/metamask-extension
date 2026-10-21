@@ -700,6 +700,39 @@ describe('NetworksPage', () => {
     expect(screen.getByText('Sepolia')).toBeInTheDocument();
   });
 
+  it('selects a default testnet that is not added yet', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: false,
+    });
+
+    fireEvent.change(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      { target: { value: 'Sepolia' } },
+    );
+
+    expect(
+      screen.queryByTestId('networks-page-chainlist-added-pill'),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(
+      (await screen.findByText('Sepolia')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Sepolia',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('11155111');
+  });
+
   it('shows built-in test networks in Chainlist when test networks are shown', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,

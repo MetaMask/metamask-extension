@@ -140,11 +140,6 @@ type ChainlistNetworkPickerProps = {
   layout?: 'page' | 'dropdown';
   /** Pixel height available below the field the dropdown is anchored to. */
   maxHeight?: number;
-  /**
-   * Leaves Chainlist for the networks list. Used when a default testnet that
-   * is not already added is chosen.
-   */
-  onOpenNetworkList: () => void;
 };
 
 export const ChainlistNetworkPicker = ({
@@ -156,7 +151,6 @@ export const ChainlistNetworkPicker = ({
   searchValue: searchValueProp = '',
   layout = 'page',
   maxHeight,
-  onOpenNetworkList,
 }: ChainlistNetworkPickerProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -238,10 +232,6 @@ export const ChainlistNetworkPicker = ({
 
   const handleDefaultTestnetClick = useCallback(
     (network: ChainlistNetwork) => {
-      const isAdded = existingNetworkChainIds.has(
-        getHexChainId(network.chainId),
-      );
-
       if (!showTestNetworks) {
         dispatch(setShowTestNetworksPreference(true));
         trackEvent(
@@ -254,22 +244,11 @@ export const ChainlistNetworkPicker = ({
         );
       }
 
-      // An already-added testnet opens its edit page. When Show test networks
-      // is already on, selecting a testnet fills the form the same way as any
-      // other Chainlist row. Only a hidden, not-yet-added testnet leaves for
-      // the networks list.
-      if (showTestNetworks || isAdded) {
-        onSelect(network, searchValue.trim() || undefined);
-        return;
-      }
-
-      onOpenNetworkList();
+      onSelect(network, searchValue.trim() || undefined);
     },
     [
       createEventBuilder,
       dispatch,
-      existingNetworkChainIds,
-      onOpenNetworkList,
       onSelect,
       searchValue,
       showTestNetworks,
