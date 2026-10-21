@@ -712,6 +712,7 @@ export class OAuthService {
       throw error;
     }
   }
+
   /**
    * Starts the provider interaction trace and returns a function that ends it once.
    *
