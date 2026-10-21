@@ -1,4 +1,5 @@
 import { Mutex } from 'async-mutex';
+import { it } from '@jest/globals';
 import {
   Messenger,
   MessengerActions,
@@ -17,6 +18,7 @@ import {
 } from '@metamask/transaction-controller';
 import {
   add0x,
+  createDeferredPromise,
   hexToBytes,
   parseCaipChainId,
   toCaipAccountId,
@@ -25,6 +27,7 @@ import {
 import {
   AddNetworkFields,
   NetworkConfiguration,
+  RpcEndpointType,
 } from '@metamask/network-controller';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import {
@@ -84,6 +87,8 @@ import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-
 import { trackEvent } from '../controllers/analytics';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { flushPromises } from '../../../test/lib/timer-helpers';
+import { withTemporaryAllowance } from '../../../shared/lib/network-request-policy';
+import { refreshNetworkRequestPolicy } from '../lib/network-request-policy';
 import * as NetworkSelectors from '../../../shared/lib/selectors/networks';
 import {
   HARDWARE_DEVICE_READ_TIMEOUT_MS,
@@ -136,6 +141,8 @@ jest.mock('../lib/transaction/sentinel-api');
 jest.mock('../lib/transaction/transaction-relay');
 jest.mock('../lib/transaction/decode/util');
 jest.mock('../lib/open-update-tab-and-reload');
+jest.mock('../../../shared/lib/network-request-policy');
+jest.mock('../lib/network-request-policy');
 jest.mock('../../../shared/lib/sentry');
 jest.mock('../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../shared/lib/trace'),
@@ -2031,12 +2038,99 @@ describe('LegacyBackgroundApiService', () => {
   describe('addNetwork', () => {
     const networkConfiguration = {
       chainId: '0x1',
+      rpcEndpoints: [
+        {
+          type: RpcEndpointType.Custom,
+          url: 'https://rpc.example',
+          failoverUrls: ['https://fallback.example'],
+        },
+        {
+          type: RpcEndpointType.Infura,
+          url: 'https://zksync-mainnet.infura.io/v3/{infuraProjectId}',
+        },
+      ],
     } as unknown as AddNetworkFields;
     const addedNetwork = {
       chainId: '0x1',
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [{ networkClientId: 'network-client-id' }],
     } as unknown as NetworkConfiguration;
+
+    beforeEach(() => {
+      jest
+        .mocked(withTemporaryAllowance)
+        .mockReset()
+        .mockImplementation(async (_url, callback) => await callback());
+      jest
+        .mocked(refreshNetworkRequestPolicy)
+        .mockReset()
+        .mockResolvedValue(undefined);
+    });
+
+    it.each([
+      { outcome: 'succeeds', failsToAdd: false },
+      { outcome: 'fails', failsToAdd: true },
+    ])(
+      'holds RPC allowances through policy installation when adding $outcome',
+      async ({ failsToAdd }) => {
+        await withService(async ({ rootMessenger }) => {
+          const grant = createDeferredPromise();
+          const policy = createDeferredPromise();
+          const allowedUrls = new Set<string>();
+          jest
+            .mocked(withTemporaryAllowance)
+            .mockImplementation(async (url, callback) => {
+              await grant.promise;
+              allowedUrls.add(url);
+              try {
+                return await callback();
+              } finally {
+                allowedUrls.delete(url);
+              }
+            });
+          jest
+            .mocked(refreshNetworkRequestPolicy)
+            .mockReturnValue(policy.promise);
+          const addNetworkHandler = jest.fn(() => {
+            // Synchronous controller subscribers can start RPC requests here.
+            expect([...allowedUrls].sort()).toEqual([
+              'https://fallback.example',
+              'https://rpc.example',
+              'https://zksync-mainnet.infura.io/v3/test-infura-project-id',
+            ]);
+            if (failsToAdd) {
+              throw new Error('add network failed');
+            }
+            return addedNetwork;
+          });
+          rootMessenger.registerActionHandler(
+            'NetworkController:addNetwork',
+            addNetworkHandler,
+          );
+          rootMessenger.registerActionHandler(
+            'NetworkController:setActiveNetwork',
+            jest.fn(),
+          );
+
+          const result = rootMessenger.call(
+            'LegacyBackgroundApiService:addNetwork',
+            networkConfiguration,
+          );
+          const assertion = failsToAdd
+            ? expect(result).rejects.toThrow('add network failed')
+            : expect(result).resolves.toEqual(addedNetwork);
+          expect(addNetworkHandler).not.toHaveBeenCalled();
+          grant.resolve();
+          await flushPromises();
+          expect(addNetworkHandler).toHaveBeenCalledTimes(1);
+          expect(refreshNetworkRequestPolicy).toHaveBeenCalledTimes(1);
+          expect(allowedUrls.size).toBe(3);
+          policy.resolve();
+          await assertion;
+          expect(allowedUrls.size).toBe(0);
+        });
+      },
+    );
 
     it('adds the network and sets it as active by default', async () => {
       await withService(async ({ rootMessenger }) => {

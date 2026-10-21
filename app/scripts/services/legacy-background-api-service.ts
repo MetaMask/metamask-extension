@@ -18,6 +18,7 @@ import {
   NetworkControllerResetConnectionAction,
   NetworkControllerSetActiveNetworkAction,
   Provider,
+  RpcEndpointType,
 } from '@metamask/network-controller';
 import {
   NetworkEnablementControllerActions,
@@ -294,6 +295,8 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/envir
 import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
+import { withTemporaryAllowance } from '../../../shared/lib/network-request-policy';
+import { refreshNetworkRequestPolicy } from '../lib/network-request-policy';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -1288,6 +1291,36 @@ export class LegacyBackgroundApiService {
    * @returns The added network configuration.
    */
   async addNetwork(
+    networkConfiguration: AddNetworkFields,
+    options: { setActive?: boolean } = {},
+  ): Promise<NetworkConfiguration> {
+    const urls = new Set(
+      networkConfiguration.rpcEndpoints.flatMap(
+        ({ url, type, failoverUrls = [] }) => [
+          type === RpcEndpointType.Infura
+            ? url.replace('{infuraProjectId}', this.#infuraProjectId)
+            : url,
+          ...failoverUrls,
+        ],
+      ),
+    );
+    const addNetwork = async () => {
+      try {
+        return await this.#addNetwork(networkConfiguration, options);
+      } finally {
+        // Keep temporary grants until Chrome confirms the saved-network policy,
+        // including when adding or activating the network fails.
+        await refreshNetworkRequestPolicy();
+      }
+    };
+    // Install every endpoint grant before controllers can start RPC requests.
+    return [...urls].reduceRight(
+      (add, url) => () => withTemporaryAllowance(url, add),
+      addNetwork,
+    )();
+  }
+
+  async #addNetwork(
     networkConfiguration: AddNetworkFields,
     { setActive = true } = {},
   ): Promise<NetworkConfiguration> {
