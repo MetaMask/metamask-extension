@@ -130,7 +130,7 @@ export function useTransactionCustomAmount({
   const { payToken } = useTransactionPayToken();
   // No-fee routes, the atomic Max hint and the recorded Max balance are keyed
   // by EVM address and chain.
-  const evmPayToken = getEvmPaymentToken(payToken);
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const accountOverride = useTransactionAccountOverride();
   const isAccountTokensLoading = useAccountTokensLoading();
   const { isNoFeeToken } = usePayWithNoFeeToken();

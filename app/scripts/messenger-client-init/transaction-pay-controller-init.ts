@@ -317,7 +317,11 @@ function getApi(
         previousPaymentToken &&
         isNonEvmPaymentToken(previousPaymentToken)
       ) {
-        setSolanaPayDepositConfig(messengerClient, request.transactionId, false);
+        setSolanaPayDepositConfig(
+          messengerClient,
+          request.transactionId,
+          false,
+        );
       }
     },
   };

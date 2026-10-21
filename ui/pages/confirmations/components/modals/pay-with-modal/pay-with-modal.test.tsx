@@ -65,7 +65,7 @@ const PERPS_WITHDRAW_TOKEN = {
 const SOLANA_TOKEN = {
   accountId: 'solana-account-id',
   accountType: 'solana:data-account',
-  assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+  assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501' as const,
   balance: '1.5',
   chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   isNative: true,

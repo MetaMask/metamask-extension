@@ -1,10 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { useTransactionPayToken } from '../../hooks/pay/useTransactionPayToken';
-import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
