@@ -655,35 +655,11 @@ class TokensTab extends HomePage {
     expectedText: string,
   ): Promise<void> {
     console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
-    await this.expandLowValueAssetsIfPresent();
-
-    let lastSeenText = '';
-    try {
-      await this.driver.waitUntil(
-        async () => {
-          const rows = await this.driver.findElements(this.tokenListItem);
-          for (const row of rows) {
-            const nameElements = await row.findElements(By.css(this.tokenName));
-            if (nameElements.length === 0) {
-              continue;
-            }
-            if ((await nameElements[0].getText()) !== tokenName) {
-              continue;
-            }
-            lastSeenText = await row.getText();
-            if (lastSeenText.includes(expectedText)) {
-              return true;
-            }
-          }
-          return false;
-        },
-        { timeout: 10000, interval: 500 },
-      );
-    } catch {
-      throw new Error(
-        `Expected "${tokenName}" row to contain "${expectedText}", but last saw: "${lastSeenText}"`,
-      );
-    }
+    const row = await this.findTokenRowByName(tokenName);
+    await this.driver.waitUntil(
+      async () => (await row.getText()).includes(expectedText),
+      { timeout: 10000, interval: 500 },
+    );
   }
 
   async checkTokenRowHasVisibleLogo(tokenName: string): Promise<void> {

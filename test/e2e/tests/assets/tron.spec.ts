@@ -1,12 +1,12 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import { Driver } from '../../webdriver/driver';
+import { login } from '../../page-objects/flows/login.flow';
 import {
-  setupTronAssetsHome,
-  TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
-} from '../../page-objects/flows/tron-assets.flow';
-import { selectAllNetworksFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
+  selectAllNetworksFromNetworkSelect,
+  switchToNetworkFromNetworkSelect,
+} from '../../page-objects/flows/network.flow';
 import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
@@ -18,7 +18,6 @@ import {
   TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
 } from '../tron/fixtures/environments';
 import { withTronFixtures } from '../tron/fixtures/with-tron-fixtures';
-import { tronAssetsTestConfig } from './utils/tron';
 
 describe('Tron - Assets', function (this: Suite) {
   this.timeout(180_000);
@@ -27,11 +26,22 @@ describe('Tron - Assets', function (this: Suite) {
     describe('For an empty account', function () {
       it('TRX is present with a balance of 0', async function () {
         await withTronFixtures(
-          tronAssetsTestConfig([EMPTY_TRON_ACCOUNT], this.test?.fullTitle()),
+          {
+            accounts: [EMPTY_TRON_ACCOUNT],
+            localNode: false,
+            fixtures: new FixtureBuilderV2()
+              .withShowNativeTokenAsMainBalanceDisabled()
+              .build(),
+            title: this.test?.fullTitle(),
+          },
           async ({ driver }: { driver: Driver }) => {
-            await setupTronAssetsHome(driver);
+            await login(driver, { validateBalance: false });
+            await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
             const tokensTab = new TokensTab(driver);
+            await tokensTab.checkTokenNameVisible('Tron', {
+              timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+            });
             await tokensTab.checkOnlyAssetsArePresent(['Tron']);
             await tokensTab.checkTokenAmountIsDisplayed('0');
             await tokensTab.checkTokenRowHasVisibleLogo('Tron');
@@ -48,14 +58,22 @@ describe('Tron - Assets', function (this: Suite) {
     describe('For an account with assets', function () {
       it('Lists TRX, TRC10 and TRC20 assets - low-value assets section hides tokens under $1', async function () {
         await withTronFixtures(
-          tronAssetsTestConfig(
-            [TRON_PORTFOLIO_ACCOUNT],
-            this.test?.fullTitle(),
-          ),
+          {
+            accounts: [TRON_PORTFOLIO_ACCOUNT],
+            localNode: false,
+            fixtures: new FixtureBuilderV2()
+              .withShowNativeTokenAsMainBalanceDisabled()
+              .build(),
+            title: this.test?.fullTitle(),
+          },
           async ({ driver }: { driver: Driver }) => {
-            await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+            await login(driver, { validateBalance: false });
+            await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
             const tokensTab = new TokensTab(driver);
+            await tokensTab.checkTokenNameVisible('Tron', {
+              timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+            });
             await tokensTab.checkTokenRowHasVisibleLogo('Tron');
             await tokensTab.checkTokenRowContainsAllText('Tron', [
               'Tron',
@@ -98,7 +116,7 @@ describe('Tron - Assets', function (this: Suite) {
             );
             for (const tokenName of TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES) {
               await tokensTab.checkTokenNameVisible(tokenName, {
-                timeout: TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
+                timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
               });
             }
             await tokensTab.checkAssetIsAbsent('GasFreeTransferSolution');
@@ -121,35 +139,48 @@ describe('Tron - Assets', function (this: Suite) {
     describe('Networks filter', function () {
       it('All networks filter shows other chains alongside Tron', async function () {
         await withTronFixtures(
-          tronAssetsTestConfig(
-            [TRON_PORTFOLIO_ACCOUNT],
-            this.test?.fullTitle(),
-          ),
+          {
+            accounts: [TRON_PORTFOLIO_ACCOUNT],
+            localNode: false,
+            fixtures: new FixtureBuilderV2()
+              .withShowNativeTokenAsMainBalanceDisabled()
+              .build(),
+            title: this.test?.fullTitle(),
+          },
           async ({ driver }: { driver: Driver }) => {
-            await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+            await login(driver, { validateBalance: false });
+            await switchToNetworkFromNetworkSelect(driver, 'Tron');
+
             const tokensTab = new TokensTab(driver);
+            await tokensTab.checkTokenNameVisible('Tron', {
+              timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+            });
             await selectAllNetworksFromNetworkSelect(driver);
             await tokensTab.checkTokenExistsInList('Tron');
             await tokensTab.checkTokenExistsInList('Tether');
             await tokensTab.checkTokenExistsInList('Ethereum');
-
-            // Restore the Tron filter so the next steps start from a clean
-            // Tron-only home state.
-            await selectTronNetwork(driver);
-            await new HomePage(driver).navigateToHome();
           },
         );
       });
 
       it('Current network filter shows only Tron assets', async function () {
         await withTronFixtures(
-          tronAssetsTestConfig(
-            [TRON_PORTFOLIO_ACCOUNT],
-            this.test?.fullTitle(),
-          ),
+          {
+            accounts: [TRON_PORTFOLIO_ACCOUNT],
+            localNode: false,
+            fixtures: new FixtureBuilderV2()
+              .withShowNativeTokenAsMainBalanceDisabled()
+              .build(),
+            title: this.test?.fullTitle(),
+          },
           async ({ driver }: { driver: Driver }) => {
-            await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+            await login(driver, { validateBalance: false });
+            await switchToNetworkFromNetworkSelect(driver, 'Tron');
+
             const tokensTab = new TokensTab(driver);
+            await tokensTab.checkTokenNameVisible('Tron', {
+              timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+            });
             await tokensTab.checkOnlyAssetsArePresent([
               'Tron',
               'GasFreeTransferSolution',
@@ -174,9 +205,14 @@ describe('Tron - Assets', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await setupTronAssetsHome(driver);
+          await login(driver, { validateBalance: false });
+          await switchToNetworkFromNetworkSelect(driver, 'Tron');
+
           const homePage = new HomePage(driver);
-          await homePage.navigateToHome('0 TRX');
+          await homePage.checkExpectedBalanceIsDisplayed({
+            expectedBalance: '0 TRX',
+            timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+          });
         },
       );
     });
@@ -191,12 +227,16 @@ describe('Tron - Assets', function (this: Suite) {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await setupTronAssetsHome(driver, { expectedTrxAmount: '106.072' });
+          await login(driver, { validateBalance: false });
+          await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
           // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
           // Total Fiat = TRX $31.26, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $39.65
           const homePage = new HomePage(driver);
-          await homePage.navigateToHome('$39.65');
+          await homePage.checkExpectedBalanceIsDisplayed({
+            expectedBalance: '$39.65',
+            timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+          });
 
           const tokensTab = new TokensTab(driver);
           await tokensTab.checkTokenAmountIsDisplayed('106.072');
@@ -208,16 +248,27 @@ describe('Tron - Assets', function (this: Suite) {
   describe('Asset details', function () {
     it('TRX asset details: header, chart, action buttons, daily resource, sections', async function () {
       await withTronFixtures(
-        tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
+        {
+          accounts: [TRON_PORTFOLIO_ACCOUNT],
+          localNode: false,
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .build(),
+          title: this.test?.fullTitle(),
+        },
         async ({ driver }: { driver: Driver }) => {
-          await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+          await login(driver, { validateBalance: false });
+          await switchToNetworkFromNetworkSelect(driver, 'Tron');
+
           const tokensTab = new TokensTab(driver);
+          await tokensTab.checkTokenNameVisible('Tron', {
+            timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+          });
           await tokensTab.clickOnAsset('Tron');
           const details = new AssetDetailsPage(driver);
           await details.checkPageIsLoaded();
           await details.checkCurrentPriceHeader();
           await details.checkPriceChart();
-          // batchSell enabled → Receive lives in the More overflow menu (latest UI).
           await details.checkActionButtons({
             swap: true,
             send: true,
@@ -225,18 +276,28 @@ describe('Tron - Assets', function (this: Suite) {
           });
           await details.checkDailyResourcesSection();
           await details.checkAllStandardSections();
-
-          await new HomePage(driver).navigateToHome();
         },
       );
     });
 
     it('TRC20 asset details: header, chart, action buttons, sections — no daily resource', async function () {
       await withTronFixtures(
-        tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
+        {
+          accounts: [TRON_PORTFOLIO_ACCOUNT],
+          localNode: false,
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .build(),
+          title: this.test?.fullTitle(),
+        },
         async ({ driver }: { driver: Driver }) => {
-          await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
+          await login(driver, { validateBalance: false });
+          await switchToNetworkFromNetworkSelect(driver, 'Tron');
+
           const tokensTab = new TokensTab(driver);
+          await tokensTab.checkTokenNameVisible('Tether', {
+            timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+          });
           await tokensTab.clickOnAsset('Tether');
           const details = new AssetDetailsPage(driver);
           await details.checkPageIsLoaded();
@@ -245,8 +306,6 @@ describe('Tron - Assets', function (this: Suite) {
           await details.checkTokenActionButtons();
           await details.checkAllStandardSections();
           await details.checkDailyResourcesSectionIsAbsent();
-
-          await new HomePage(driver).navigateToHome();
         },
       );
     });

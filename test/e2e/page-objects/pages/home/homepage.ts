@@ -639,17 +639,11 @@ class HomePage {
   /**
    * Navigates to home.html so the current route is left, even when in-page
    * navigation elements are unavailable (e.g. header in search mode).
-   *
-   * @param expectedBalance - Optional balance text expected on the homepage
-   * after navigation.
    */
-  async navigateToHome(expectedBalance?: string): Promise<void> {
+  async navigateToHome(): Promise<void> {
     console.log('Navigate to home.html so the current route is left');
     await this.driver.navigate();
     await this.checkPageIsLoaded();
-    if (expectedBalance !== undefined) {
-      await this.checkExpectedBalanceIsDisplayed(expectedBalance);
-    }
   }
 
   async openPortfolioPage(): Promise<void> {
