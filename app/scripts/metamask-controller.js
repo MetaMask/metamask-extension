@@ -2555,8 +2555,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setPendingExtensionVersion.bind(appStateController),
       setLastUpdatedAt:
         appStateController.setLastUpdatedAt.bind(appStateController),
-      setProductTour:
-        appStateController.setProductTour.bind(appStateController),
       setLastPerpsDepositEntryPoint:
         appStateController.setLastPerpsDepositEntryPoint.bind(
           appStateController,

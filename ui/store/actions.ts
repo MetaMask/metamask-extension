@@ -2882,6 +2882,11 @@ export function setShowSupportDataConsentModal(show: boolean) {
   };
 }
 
+export function clearProductTour() {
+  return async () => {
+    return submitRequestToBackground('AppStateController:setProductTour', ['']);
+  };
+}
 export function addToken(
   {
     address,

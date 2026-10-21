@@ -167,7 +167,6 @@
     "setOnboardingDate",
     "setParticipateInMetaMetrics",
     "setPendingExtensionVersion",
-    "setProductTour",
     "setShieldEndingToastLastClickedOrClosed",
     "setShieldPausedToastLastClickedOrClosed",
     "staticAssetsStartPolling",
