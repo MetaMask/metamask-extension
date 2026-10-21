@@ -7,6 +7,10 @@ import {
   selectTransactionById,
   type TransactionState,
 } from '../../../../selectors/transactionController';
+import {
+  selectTransactionDataByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import {
   clearLastMoneyAccountWithdrawAmount,
@@ -64,8 +68,9 @@ function readTransactionFromStore(
  * the confirmation clone instead of requiring the IPC object to be funded.
  *
  * Funded nested calldata is reused only when it already encodes the latest
- * typed amount and pays the current recipient. Otherwise Send would approve a
- * previous encode while the footer shows a newer amount or recipient.
+ * typed amount and pays the current recipient, and never for a recipient-only
+ * route. Otherwise Send could approve a previous encode for an older amount,
+ * recipient, or receive token.
  *
  * @returns An object with `prepareWithdrawTransaction`.
  */
@@ -88,12 +93,19 @@ export function useMoneyAccountWithdrawConfirm() {
     ): Promise<TransactionMeta | null> => {
       const amountHuman = getLastMoneyAccountWithdrawAmount(transactionMeta.id);
       const fromStore = readTransactionFromStore(dispatch, transactionMeta.id);
+      const isRecipientOnly = dispatch(
+        (_, getState) =>
+          selectTransactionDataByTransactionId(
+            getState() as unknown as TransactionPayState,
+            transactionMeta.id,
+          )?.isAccountOverrideRecipientOnly,
+      );
 
       // Skip re-encode only when nested calldata already matches the amount
-      // on screen. A prior encode can still look "funded" after the user edits.
-      // A quoted hardware withdrawal pays the money account, so let the
-      // background pick the target unless the transfer pays the recipient.
+      // on screen and pays the recipient. A recipient-only route may keep the
+      // mUSD on the money account, so only the background can pick its target.
       const isReusable = (transaction: TransactionMeta | undefined) =>
+        !isRecipientOnly &&
         doesWithdrawCalldataMatchAmount(transaction, amountHuman) &&
         (!recipient ||
           isEqualCaseInsensitive(
@@ -143,7 +155,7 @@ export function useMoneyAccountWithdrawConfirm() {
       );
       // After encode, only accept store calldata that matches the typed amount.
       // A superseded commit can leave an older funded batch in the store.
-      if (doesWithdrawCalldataMatchAmount(fromStoreAfterEncode, amountHuman)) {
+      if (isReusable(fromStoreAfterEncode)) {
         const matching = withFundedBatchCalldata(fromStoreAfterEncode);
         if (matching) {
           return finalizePreparedWithdraw(matching);

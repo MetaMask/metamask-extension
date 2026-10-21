@@ -99,9 +99,13 @@ const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
  * @param storeTransactions - Transactions the store should hold, in order.
  * Each call to the thunk reads the next entry, so later reads can observe a
  * background write.
+ * @param transactionData - Pay controller data keyed by transaction id.
  * @returns A jest mock behaving like `useDispatch()`'s return value.
  */
-function buildDispatch(storeTransactions: (TransactionMeta | undefined)[]) {
+function buildDispatch(
+  storeTransactions: (TransactionMeta | undefined)[],
+  transactionData: Record<string, unknown> = {},
+) {
   let callIndex = 0;
   return jest.fn((thunk: unknown) => {
     if (typeof thunk !== 'function') {
@@ -113,7 +117,7 @@ function buildDispatch(storeTransactions: (TransactionMeta | undefined)[]) {
     callIndex += 1;
     return (thunk as (dispatch: unknown, getState: () => unknown) => unknown)(
       jest.fn(),
-      () => ({ metamask: { transactions } }),
+      () => ({ metamask: { transactions, transactionData } }),
     );
   });
 }
@@ -239,6 +243,50 @@ describe('useMoneyAccountWithdrawConfirm', () => {
 
     expect(result?.nestedTransactions?.[1].data).toBe(FUNDED_TRANSFER_DATA);
     expect(mockUpdateMoneyAccountWithdrawAmount).not.toHaveBeenCalled();
+  });
+
+  it('re-encodes a recipient-only withdrawal even when the transfer pays the recipient', async () => {
+    // A quoted receive token must keep the mUSD on the money account.
+    mockUseTransactionAccountOverride.mockReturnValue(TRANSFER_TARGET);
+    mockUseDispatch.mockReturnValue(
+      buildDispatch([buildTransaction(TYPED_FUNDED_NESTED)], {
+        [TRANSACTION_ID]: { isAccountOverrideRecipientOnly: true },
+      }) as never,
+    );
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
+    mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue({
+      withdrawData: WITHDRAW_DATA,
+      transferData: OVERRIDE_TRANSFER_DATA,
+    });
+    const { prepareWithdrawTransaction } = runHook();
+
+    const result = await prepareWithdrawTransaction(
+      buildTransaction(TYPED_FUNDED_NESTED),
+    );
+
+    expect(mockUpdateMoneyAccountWithdrawAmount).toHaveBeenCalledWith(
+      TRANSACTION_ID,
+      '0.05',
+      TRANSFER_TARGET,
+    );
+    expect(result?.nestedTransactions?.[1].data).toBe(OVERRIDE_TRANSFER_DATA);
+  });
+
+  it('does not approve a recipient-only store batch when the encode did not commit', async () => {
+    mockUseTransactionAccountOverride.mockReturnValue(TRANSFER_TARGET);
+    mockUseDispatch.mockReturnValue(
+      buildDispatch([buildTransaction(TYPED_FUNDED_NESTED)], {
+        [TRANSACTION_ID]: { isAccountOverrideRecipientOnly: true },
+      }) as never,
+    );
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
+    mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue(false);
+    const { prepareWithdrawTransaction } = runHook();
+
+    const result = await prepareWithdrawTransaction(buildTransaction());
+
+    expect(result).toBeNull();
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
   it('does not approve a stale funded store batch after a mismatched encode', async () => {
