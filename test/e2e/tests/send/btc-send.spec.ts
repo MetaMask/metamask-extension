@@ -97,7 +97,7 @@ describe('BTC Account - Send', function (this: Suite) {
           recipientAddress: RECIPIENT_ADDRESS,
         });
         await sendPage.pressContinueButton();
-        await sendPage.checkTransactionError();
+        await sendPage.checkInvalidValueError();
         await sendPage.checkContinueButtonIsDisabled();
       },
     );

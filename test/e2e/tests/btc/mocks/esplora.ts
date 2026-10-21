@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { Mockttp } from 'mockttp';
 import {
   DEFAULT_BTC_ADDRESS,
@@ -38,7 +39,7 @@ const FUNDING_BLOCK_HASH =
   '000000000000000000013d73c3bd23225714f2fd8b801ed076818f2971897748';
 const GENESIS_BLOCK_HASH =
   '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
-const BROADCAST_TX_ID =
+const DEFAULT_BROADCAST_TX_ID =
   'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
 const BROADCAST_BLOCK_HEIGHT = FUNDING_BLOCK_HEIGHT + 2;
 const BROADCAST_BLOCK_HASH =
@@ -48,11 +49,77 @@ const PRE_BROADCAST_TIP_HASH =
 const SEND_AMOUNT_IN_SATS = 50_000_000;
 const SEND_FEE_IN_SATS = 281;
 
+function readVarInt(buffer: Buffer, offset: number) {
+  const prefix = buffer[offset];
+  if (prefix < 0xfd) {
+    return { size: 1, value: prefix };
+  }
+  if (prefix === 0xfd) {
+    return { size: 3, value: buffer.readUInt16LE(offset + 1) };
+  }
+  if (prefix === 0xfe) {
+    return { size: 5, value: buffer.readUInt32LE(offset + 1) };
+  }
+  throw new Error('Unexpected 64-bit Bitcoin varint');
+}
+
+function getTransactionId(rawTransaction: string): string {
+  const transaction = Buffer.from(rawTransaction, 'hex');
+  const hasWitness = transaction[4] === 0 && transaction[5] !== 0;
+  if (!hasWitness) {
+    return createHash('sha256')
+      .update(createHash('sha256').update(transaction).digest())
+      .digest()
+      .reverse()
+      .toString('hex');
+  }
+
+  let offset = 6;
+  const inputsStart = offset;
+  const inputCount = readVarInt(transaction, offset);
+  offset += inputCount.size;
+  for (let index = 0; index < inputCount.value; index += 1) {
+    offset += 36;
+    const script = readVarInt(transaction, offset);
+    offset += script.size + script.value + 4;
+  }
+
+  const outputCount = readVarInt(transaction, offset);
+  offset += outputCount.size;
+  for (let index = 0; index < outputCount.value; index += 1) {
+    offset += 8;
+    const script = readVarInt(transaction, offset);
+    offset += script.size + script.value;
+  }
+  const outputsEnd = offset;
+
+  for (let index = 0; index < inputCount.value; index += 1) {
+    const witnessCount = readVarInt(transaction, offset);
+    offset += witnessCount.size;
+    for (let item = 0; item < witnessCount.value; item += 1) {
+      const witness = readVarInt(transaction, offset);
+      offset += witness.size + witness.value;
+    }
+  }
+
+  const transactionWithoutWitness = Buffer.concat([
+    transaction.subarray(0, 4),
+    transaction.subarray(inputsStart, outputsEnd),
+    transaction.subarray(offset, offset + 4),
+  ]);
+  return createHash('sha256')
+    .update(createHash('sha256').update(transactionWithoutWitness).digest())
+    .digest()
+    .reverse()
+    .toString('hex');
+}
+
 export type BtcSendLifecycle = {
   confirm: () => void;
+  getBroadcastTxId: () => string;
   isBroadcast: () => boolean;
   isConfirmed: () => boolean;
-  markBroadcast: () => void;
+  markBroadcast: (txid: string) => void;
 };
 
 /**
@@ -62,15 +129,18 @@ export type BtcSendLifecycle = {
  */
 export function createBtcSendLifecycle(): BtcSendLifecycle {
   let broadcast = false;
+  let broadcastTxId = DEFAULT_BROADCAST_TX_ID;
   let confirmed = false;
   return {
     confirm: () => {
       confirmed = true;
     },
+    getBroadcastTxId: () => broadcastTxId,
     isBroadcast: () => broadcast,
     isConfirmed: () => confirmed,
-    markBroadcast: () => {
+    markBroadcast: (txid: string) => {
       broadcast = true;
+      broadcastTxId = txid;
     },
   };
 }
@@ -130,8 +200,9 @@ const FUNDING_TX = {
 };
 
 function createBroadcastTransaction(lifecycle: BtcSendLifecycle) {
+  const broadcastTxId = lifecycle.getBroadcastTxId();
   return {
-    txid: BROADCAST_TX_ID,
+    txid: broadcastTxId,
     version: 2,
     locktime: 0,
     vin: [
@@ -205,7 +276,7 @@ const mockBlocks = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
               tx_count: 1,
               size: 141,
               weight: 561,
-              merkle_root: BROADCAST_TX_ID,
+              merkle_root: lifecycle?.getBroadcastTxId(),
               previousblockhash: PRE_BROADCAST_TIP_HASH,
               mediantime: 1768825157,
               nonce: 1,
@@ -348,7 +419,7 @@ const mockScriptHashUtxo = (
             statusCode: 200,
             json: [
               {
-                txid: BROADCAST_TX_ID,
+                txid: lifecycle.getBroadcastTxId(),
                 vout: 1,
                 status: transaction.status,
                 value: transaction.vout[1].value,
@@ -455,7 +526,11 @@ const mockTxDetails = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
         return { statusCode: 200, json: PREVOUT_TX };
       }
 
-      if (txid === BROADCAST_TX_ID && lifecycle?.isBroadcast()) {
+      if (
+        lifecycle &&
+        txid === lifecycle.getBroadcastTxId() &&
+        lifecycle.isBroadcast()
+      ) {
         return {
           statusCode: 200,
           json: createBroadcastTransaction(lifecycle),
@@ -519,7 +594,7 @@ const mockBlockDetails = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
             tx_count: 1,
             size: 141,
             weight: 561,
-            merkle_root: BROADCAST_TX_ID,
+            merkle_root: lifecycle.getBroadcastTxId(),
             previousblockhash: PRE_BROADCAST_TIP_HASH,
             mediantime: 1768825157,
             nonce: 1,
@@ -646,7 +721,7 @@ const mockTxOutspends = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
             json: [
               {
                 spent: true,
-                txid: BROADCAST_TX_ID,
+                txid: lifecycle.getBroadcastTxId(),
                 vin: 0,
                 status: createBroadcastTransaction(lifecycle).status,
               },
@@ -695,11 +770,13 @@ const mockBroadcastTx = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx$/u,
     )
     .always()
-    .thenCallback(() => {
-      lifecycle?.markBroadcast();
+    .thenCallback(async (request) => {
+      const rawTransaction = (await request.body.getText()) ?? '';
+      const broadcastTxId = getTransactionId(rawTransaction);
+      lifecycle?.markBroadcast(broadcastTxId);
       return {
         statusCode: 200,
-        body: BROADCAST_TX_ID,
+        body: broadcastTxId,
       };
     });
 
