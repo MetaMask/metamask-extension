@@ -2,7 +2,8 @@
 module.exports = {
 name: "@yarnpkg/plugin-allow-scripts",
 factory: function (/** @type {(arg0: string) => { execute: any; }} */ require) {
-    const { execute } = require(`@yarnpkg/shell`);
+
+  const { execute } = require(`@yarnpkg/shell`);
     return {
       hooks: {
         /**
