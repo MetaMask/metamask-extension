@@ -137,6 +137,7 @@ describe('BTC Account - Send', function (this: Suite) {
           mockBtcSendMocks(mockServer, lifecycle),
       },
       async ({ driver }) => {
+        const expectedAmount = `-${SEND_AMOUNT} BTC`;
         const sendPage = await landOnBitcoinSendScreen(driver);
         await sendPage.fillRecipient({
           recipientAddress: RECIPIENT_ADDRESS,
@@ -153,10 +154,13 @@ describe('BTC Account - Send', function (this: Suite) {
 
         const activityTab = await confirmBitcoinSendAndAssertPending({
           driver,
-          expectedAmount: `-${SEND_AMOUNT} BTC`,
+          expectedAmount,
         });
         lifecycle.confirm();
-        await waitForBitcoinSendConfirmation(activityTab);
+        await waitForBitcoinSendConfirmation({
+          activityTab,
+          expectedAmount,
+        });
       },
     );
   });

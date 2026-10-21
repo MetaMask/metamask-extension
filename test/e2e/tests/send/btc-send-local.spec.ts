@@ -78,6 +78,7 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
           mockBtcSendLocalMocks(mockServer, localNodes),
       },
       async ({ driver }) => {
+        const expectedAmount = `-${SEND_AMOUNT} BTC`;
         const bitcoinNode = localNodes.find(
           (node): node is BitcoinNode => node instanceof BitcoinNode,
         );
@@ -93,10 +94,13 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
 
         const activityTab = await confirmBitcoinSendAndAssertPending({
           driver,
-          expectedAmount: `-${SEND_AMOUNT} BTC`,
+          expectedAmount,
         });
         await bitcoinNode.mineBlocks();
-        await waitForBitcoinSendConfirmation(activityTab);
+        await waitForBitcoinSendConfirmation({
+          activityTab,
+          expectedAmount,
+        });
       },
     );
   });

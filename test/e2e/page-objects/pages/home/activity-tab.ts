@@ -520,6 +520,35 @@ class ActivityTab extends HomePage {
   }
 
   /**
+   * Waits for the activity row with the exact amount to reach the given status.
+   *
+   * @param expectedAmount - Exact primary-currency amount identifying the row.
+   * @param status - The expected transaction status.
+   * @param options - Optional wait configuration.
+   * @param options.timeout - Maximum time to wait in milliseconds.
+   */
+  async checkWaitForTransactionStatusByAmount(
+    expectedAmount: string,
+    status: 'confirmed' | 'cancelled' | 'pending',
+    { timeout = 5000 }: { timeout?: number } = {},
+  ): Promise<void> {
+    const amountsForStatus = `${this.transactionWithStatus(
+      status,
+    )} ${this.transactionAmountsInActivity}`;
+
+    await this.driver.waitUntil(
+      async () => {
+        const amounts = await this.driver.findElements(amountsForStatus);
+        const displayedAmounts = await Promise.all(
+          amounts.map((amount) => amount.getText()),
+        );
+        return displayedAmounts.includes(expectedAmount);
+      },
+      { interval: 100, timeout },
+    );
+  }
+
+  /**
    * Clicks the activity row whose visible text contains the provided text.
    *
    * @param text - The text shown on the activity row (e.g. 'Sent TRX').

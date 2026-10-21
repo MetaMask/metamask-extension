@@ -108,9 +108,13 @@ export const confirmBitcoinSendAndAssertPending = async ({
   await homePage.goToActivityList();
   const activityTab = new ActivityTab(driver);
   await activityTab.checkTransactionActivityByText('Sending');
-  await activityTab.checkWaitForTransactionStatus('pending');
   if (expectedAmount) {
-    await activityTab.checkTxAmountInActivity(expectedAmount);
+    await activityTab.checkWaitForTransactionStatusByAmount(
+      expectedAmount,
+      'pending',
+    );
+  } else {
+    await activityTab.checkWaitForTransactionStatus('pending');
   }
   return activityTab;
 };
@@ -118,12 +122,22 @@ export const confirmBitcoinSendAndAssertPending = async ({
 /**
  * Waits for the visible Bitcoin transaction to become confirmed.
  *
- * @param activityTab - Activity page object for the current Bitcoin account.
+ * @param params - Confirmation assertion parameters.
+ * @param params.activityTab - Activity page object for the current Bitcoin account.
+ * @param params.expectedAmount - Exact amount identifying the outgoing send.
  */
-export const waitForBitcoinSendConfirmation = async (
-  activityTab: ActivityTab,
-): Promise<void> => {
-  await activityTab.checkWaitForTransactionStatus('confirmed', {
-    timeout: BITCOIN_CONFIRMATION_TIMEOUT_MS,
-  });
+export const waitForBitcoinSendConfirmation = async ({
+  activityTab,
+  expectedAmount,
+}: {
+  activityTab: ActivityTab;
+  expectedAmount: string;
+}): Promise<void> => {
+  await activityTab.checkWaitForTransactionStatusByAmount(
+    expectedAmount,
+    'confirmed',
+    {
+      timeout: BITCOIN_CONFIRMATION_TIMEOUT_MS,
+    },
+  );
 };
