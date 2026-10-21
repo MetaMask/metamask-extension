@@ -448,10 +448,16 @@ describe('NetworksPage', () => {
     const confluxIndex = networkNames.indexOf('Chainlist Network 31');
     const plainNetworkIndex = networkNames.indexOf('Chainlist Network 1');
 
+    const sepoliaIndex = networkNames.indexOf('Sepolia');
+
     expect(gnosisIndex).toBeGreaterThanOrEqual(0);
     expect(cronosIndex).toBeGreaterThan(gnosisIndex);
     expect(confluxIndex).toBeGreaterThan(cronosIndex);
     expect(plainNetworkIndex).toBeGreaterThan(confluxIndex);
+    expect(sepoliaIndex).toBeGreaterThan(plainNetworkIndex);
+    expect(
+      screen.queryByTestId('networks-page-chainlist-show-test-networks'),
+    ).not.toBeInTheDocument();
   });
 
   it('caps the Chainlist list above the Save button', () => {
@@ -680,15 +686,16 @@ describe('NetworksPage', () => {
     );
 
     expect(
-      await screen.findByText(messages.showTestnetNetworks.message),
+      await screen.findByText(messages.editNetwork.message),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Sepolia',
+    );
+
+    fireEvent.click(screen.getByTestId('networks-page-form-back-button'));
+
     expect(
-      screen.queryByPlaceholderText(
-        messages.searchNetworkNameOrChainId.message,
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByTestId('networks-page-show-test-networks'),
+      await screen.findByTestId('networks-page-show-test-networks'),
     ).toBeChecked();
     expect(screen.getByText('Sepolia')).toBeInTheDocument();
   });

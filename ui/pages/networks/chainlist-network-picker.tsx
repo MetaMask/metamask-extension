@@ -141,8 +141,8 @@ type ChainlistNetworkPickerProps = {
   /** Pixel height available below the field the dropdown is anchored to. */
   maxHeight?: number;
   /**
-   * Leaves Chainlist for the networks list. Used when a default testnet is
-   * chosen, including while Show test networks is off.
+   * Leaves Chainlist for the networks list. Used when a default testnet that
+   * is not already added is chosen.
    */
   onOpenNetworkList: () => void;
 };
@@ -236,27 +236,38 @@ export const ChainlistNetworkPicker = ({
     [createEventBuilder, currentlyOnTestnet, dispatch, trackEvent],
   );
 
-  const handleDefaultTestnetClick = useCallback(() => {
-    if (!showTestNetworks) {
-      dispatch(setShowTestNetworksPreference(true));
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
-          .addCategory(MetaMetricsEventCategory.Network)
-          .addProperties({
-            value: true,
-          })
-          .build(),
-      );
-    }
+  const handleDefaultTestnetClick = useCallback(
+    (network: ChainlistNetwork) => {
+      if (!showTestNetworks) {
+        dispatch(setShowTestNetworksPreference(true));
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              value: true,
+            })
+            .build(),
+        );
+      }
 
-    onOpenNetworkList();
-  }, [
-    createEventBuilder,
-    dispatch,
-    onOpenNetworkList,
-    showTestNetworks,
-    trackEvent,
-  ]);
+      if (existingNetworkChainIds.has(getHexChainId(network.chainId))) {
+        onSelect(network, searchValue.trim() || undefined);
+        return;
+      }
+
+      onOpenNetworkList();
+    },
+    [
+      createEventBuilder,
+      dispatch,
+      existingNetworkChainIds,
+      onOpenNetworkList,
+      onSelect,
+      searchValue,
+      showTestNetworks,
+      trackEvent,
+    ],
+  );
 
   const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
   if (searchValue !== prevSearchValue) {
@@ -423,7 +434,12 @@ export const ChainlistNetworkPicker = ({
             {showNoSearchResults ? (
               <NoSearchResult dataTestId="networks-page-chainlist-no-results" />
             ) : null}
-            {defaultTestnets.length > 0 ? (
+            {visibleChainlistNetworks.map((network) =>
+              renderChainlistNetwork(network, () =>
+                onSelect(network, searchValue.trim() || undefined),
+              ),
+            )}
+            {defaultTestnets.length > 0 && !isDropdown ? (
               <Box
                 className="flex items-center justify-between px-4 py-3"
                 data-testid="networks-page-chainlist-default-testnets"
@@ -443,11 +459,8 @@ export const ChainlistNetworkPicker = ({
               </Box>
             ) : null}
             {defaultTestnets.map((network) =>
-              renderChainlistNetwork(network, handleDefaultTestnetClick),
-            )}
-            {visibleChainlistNetworks.map((network) =>
               renderChainlistNetwork(network, () =>
-                onSelect(network, searchValue.trim() || undefined),
+                handleDefaultTestnetClick(network),
               ),
             )}
           </>
