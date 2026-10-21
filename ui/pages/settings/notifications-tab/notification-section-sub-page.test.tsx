@@ -1034,6 +1034,25 @@ describe('NotificationSectionSubPage', () => {
       expect(updatePreference).not.toHaveBeenCalled();
     });
 
+    it('shows marketing consent before enabling a marketing channel when the other channel is already on', () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: true,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+
+      expect(screen.getByTestId('marketing-consent-sheet')).toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
     it('shows marketing consent before enabling a channel when consent is unset', () => {
       const updatePreference = jest.fn();
       const preferences = createMockNotificationPreferences({

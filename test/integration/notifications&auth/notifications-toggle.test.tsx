@@ -198,7 +198,10 @@ describe('Notifications Toggle', () => {
 
       const updateNotificationPreferencesCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'updateNotificationPreferences',
+          (call) =>
+            call[0] === 'messengerCall' &&
+            call[1]?.[0] ===
+              'NotificationServicesController:updateNotificationPreferences',
         );
 
       const fetchAndUpdateMetamaskNotificationsCall =
@@ -214,7 +217,8 @@ describe('Notifications Toggle', () => {
       // Only the changed field is sent; NotificationServicesController
       // merges it over the stored preferences.
       expect(updateNotificationPreferencesCall?.[1]).toStrictEqual([
-        { marketing: { inAppNotificationsEnabled: true } },
+        'NotificationServicesController:updateNotificationPreferences',
+        [{ marketing: { inAppNotificationsEnabled: true } }],
       ]);
 
       expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(

@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import type { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import {
@@ -14,17 +15,18 @@ import {
 import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockSetDataCollectionForMarketing = jest.fn();
-const mockTrackAnalyticsEvent = jest.fn();
 const mockSaveMarketingConsent = jest.fn();
 const mockRefetchPreferences = jest.fn();
 const mockListNotifications = jest.fn();
 const mockEnsurePreferences = jest.fn();
 const mockMarkMarketingChannelsOff = jest.fn();
+const mockUseNotificationPreferences = jest.fn();
 let mockConsentWrite: () => Promise<void> = () => Promise.resolve();
 let mockMarketingPreferences = {
   pushNotificationsEnabled: false,
   inAppNotificationsEnabled: false,
 };
+const mockTrackAnalyticsEvent = jest.fn();
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -64,12 +66,17 @@ jest.mock('../../../store/actions', () => ({
 jest.mock(
   '../../../hooks/metamask-notifications/useNotificationPreferences',
   () => ({
-    useNotificationPreferences: () => ({
-      preferences: { marketing: mockMarketingPreferences },
-      ensurePreferences: mockEnsurePreferences,
-      markMarketingChannelsOff: mockMarkMarketingChannelsOff,
-      refetchPreferences: mockRefetchPreferences,
-    }),
+    useNotificationPreferences: (
+      options: Parameters<typeof useNotificationPreferences>[0],
+    ) => {
+      mockUseNotificationPreferences(options);
+      return {
+        preferences: { marketing: mockMarketingPreferences },
+        ensurePreferences: mockEnsurePreferences,
+        markMarketingChannelsOff: mockMarkMarketingChannelsOff,
+        refetchPreferences: mockRefetchPreferences,
+      };
+    },
   }),
 );
 
@@ -364,10 +371,31 @@ describe('DataCollectionToggleItem', () => {
     ).toBeInTheDocument();
   });
 
+  it('does not read notification preferences while signed out', () => {
+    // Reading AUS needs a bearer token, which would sign the user in.
+    const mockStore = createMockStore({ isSignedIn: false });
+    renderWithProvider(<DataCollectionToggleItem />, mockStore);
+
+    expect(mockUseNotificationPreferences).toHaveBeenCalledWith({
+      enabled: false,
+    });
+    expect(mockUseNotificationPreferences).not.toHaveBeenCalledWith({
+      enabled: true,
+    });
+  });
+
+  it('reads notification preferences while signed in', () => {
+    const mockStore = createMockStore({ isSignedIn: true });
+    renderWithProvider(<DataCollectionToggleItem />, mockStore);
+
+    expect(mockUseNotificationPreferences).toHaveBeenCalledWith({
+      enabled: true,
+    });
+  });
+
   it('opts out directly for signed-out users even when marketing channels are enabled', async () => {
-    // Marketing channels live in AUS, which a signed-out user does not have:
-    // the preferences read always fails and the sheet confirm could never
-    // complete, so the opt-out must not require it.
+    // Marketing channels live in AUS, which a signed-out user cannot read
+    // without being signed in, so the opt-out must not require it.
     mockMarketingPreferences = {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: true,
@@ -383,6 +411,7 @@ describe('DataCollectionToggleItem', () => {
     await waitFor(() => {
       expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
     });
+    expect(mockEnsurePreferences).not.toHaveBeenCalled();
     expect(
       screen.queryByTestId('marketing-consent-opt-out-sheet'),
     ).not.toBeInTheDocument();

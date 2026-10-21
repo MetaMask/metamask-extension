@@ -264,7 +264,6 @@
     "performSignIn",
     "performSignOut",
     "preloadToprfNodeDetails",
-    "putNotificationPreferences",
     "rejectAllPendingApprovals",
     "rejectPendingApproval",
     "rejectPermissionsRequest",

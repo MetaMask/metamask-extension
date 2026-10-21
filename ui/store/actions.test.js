@@ -4281,25 +4281,24 @@ describe('Actions', () => {
   });
 
   describe('#updateNotificationPreferences', () => {
-    it('sends the update to the background and returns the saved preferences', async () => {
+    it('saves the update through NotificationServicesController and returns the saved preferences', async () => {
       const store = mockStore();
       const preferences = createMockNotificationPreferences();
       const update = { perps: { pushNotificationsEnabled: false } };
-      const updateNotificationPreferencesStub = sinon
-        .stub()
-        .resolves(preferences);
+      const messengerCall = sinon.stub().resolves(preferences);
 
-      setBackgroundConnection({
-        updateNotificationPreferences: updateNotificationPreferencesStub,
-      });
+      setBackgroundConnection({ messengerCall });
 
       const saved = await store.dispatch(
         actions.updateNotificationPreferences(update),
       );
 
-      expect(updateNotificationPreferencesStub.calledOnceWith(update)).toBe(
-        true,
-      );
+      expect(
+        messengerCall.calledOnceWith(
+          'NotificationServicesController:updateNotificationPreferences',
+          [update],
+        ),
+      ).toBe(true);
       expect(saved).toStrictEqual(preferences);
     });
   });

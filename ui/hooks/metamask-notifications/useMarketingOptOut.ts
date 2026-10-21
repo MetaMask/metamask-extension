@@ -31,18 +31,19 @@ export function useMarketingOptOut({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { listNotifications } = useMetamaskNotificationsContext();
-  const { ensurePreferences, markMarketingChannelsOff, refetchPreferences } =
-    useNotificationPreferences();
   const isSignedIn = useSelector(selectIsSignedIn);
+  // The privacy tab renders while signed out (e.g. with basic functionality
+  // off), where reading AUS would sign the user in.
+  const { ensurePreferences, markMarketingChannelsOff, refetchPreferences } =
+    useNotificationPreferences({ enabled: isSignedIn });
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const requestOptOut = useCallback(async (): Promise<boolean> => {
-    // The channels live in AUS, so the warning only applies while signed in. A
-    // signed-out user has no AUS preferences: the read always fails and the
-    // sheet confirm could never complete.
+    // The channels live in AUS, so the warning only applies while signed in.
+    // Reading AUS while signed out would sign the user in.
     if (!isSignedIn) {
       return false;
     }

@@ -343,4 +343,20 @@ describe('useNotificationPreferences', () => {
     );
     expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1);
   });
+
+  it('does not read preferences when disabled', async () => {
+    mockDispatch.mockResolvedValue(createMockNotificationPreferences());
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(
+      () => useNotificationPreferences({ enabled: false }),
+      { wrapper: Wrapper },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+    expect(result.current.preferences).toBeUndefined();
+    expect(mockGetNotificationPreferences).not.toHaveBeenCalled();
+  });
 });

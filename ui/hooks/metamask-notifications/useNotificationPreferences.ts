@@ -58,7 +58,19 @@ function getChangedFields<Section extends object>(
   ) as Partial<Section>;
 }
 
-export function useNotificationPreferences() {
+/**
+ * Reads and updates the user's notification preferences in Authenticated User
+ * Storage.
+ *
+ * @param options - Hook options.
+ * @param options.enabled - Whether to read the preferences. Reading needs a
+ * bearer token, which signs a signed-out user in, so callers that can render
+ * while signed out must pass `false` then.
+ * @returns The preferences and the functions that update them.
+ */
+export function useNotificationPreferences({
+  enabled = true,
+}: { enabled?: boolean } = {}) {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const [pendingWrites, setPendingWrites] = useState(0);
@@ -82,6 +94,7 @@ export function useNotificationPreferences() {
     useQuery<NotificationPreferences | null>({
       queryKey: NOTIFICATION_PREFERENCES_QUERY_KEY_ARRAY,
       queryFn: fetchPreferences,
+      enabled,
     });
 
   const getCachedPreferences = useCallback(
@@ -92,7 +105,8 @@ export function useNotificationPreferences() {
     [queryClient],
   );
 
-  // Resolves from the cache, or joins the in-flight read instead of starting another.
+  // Resolves from the cache whenever it holds data, even while a refetch is in
+  // flight. Only an empty cache waits for the in-flight read (or starts one).
   const ensurePreferences = useCallback(
     () =>
       queryClient.ensureQueryData<NotificationPreferences | null>({

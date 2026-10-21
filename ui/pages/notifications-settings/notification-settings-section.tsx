@@ -424,11 +424,10 @@ export function NotificationSettingsSection({
       : preferences[section.type];
   const SectionContent = SECTION_CONTENT_BY_TYPE[section.type];
   const showChannelToggles = section.type !== 'walletActivity';
+  // A channel can already be on without consent (e.g. seeded before consent
+  // was required), so the other channel still needs consent first.
   const isMarketingConsentRequired =
-    section.type === 'marketing' &&
-    dataCollectionForMarketing !== true &&
-    !sectionPreferences.pushNotificationsEnabled &&
-    !sectionPreferences.inAppNotificationsEnabled;
+    section.type === 'marketing' && dataCollectionForMarketing !== true;
 
   const savePreference = useCallback(
     async (key: NotificationPreferenceChannelKey, value: boolean) => {

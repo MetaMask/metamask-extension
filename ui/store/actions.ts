@@ -7439,9 +7439,13 @@ export function updateNotificationPreferences(
 > {
   return async () => {
     try {
-      return (await submitRequestToBackground('updateNotificationPreferences', [
-        update,
-      ])) as NotificationPreferences;
+      return await submitRequestToBackground<NotificationPreferences>(
+        'messengerCall',
+        [
+          'NotificationServicesController:updateNotificationPreferences',
+          [update],
+        ],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
