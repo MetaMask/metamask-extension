@@ -54,13 +54,6 @@ class ActivityTab extends HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
-  private readonly transactionAtIndexWithStatus = (
-    transactionIndex: number,
-    status: string,
-  ) => ({
-    xpath: `(//*[@data-testid="activity-list-item"])[${transactionIndex}][@data-tx-status="${status}"]`,
-  });
-
   private readonly transactionBaseFeeRowValue = {
     xpath:
       '//*[@data-testid="transaction-base-fee"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
@@ -83,6 +76,9 @@ class ActivityTab extends HomePage {
   private readonly transactionStatusLabel = (status: string) => ({
     testId: `transaction-details-status-${status}`,
   });
+
+  private readonly transactionWithStatus = (status: string) =>
+    `[data-testid="activity-list-item"][data-tx-status="${status}"]`;
 
   /**
    * This function checks a swap or bridge transaction's details
@@ -513,25 +509,12 @@ class ActivityTab extends HomePage {
    * where updates are slow; these transactions come from the snap.
    * @param options - Optional wait configuration.
    * @param options.timeout - Maximum time to wait in milliseconds.
-   * @param options.transactionIndex - One-based activity row index to scope the
-   * status check to. If omitted, waits for any row with the expected status.
    */
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
-    {
-      timeout = 5000,
-      transactionIndex,
-    }: { timeout?: number; transactionIndex?: number } = {},
+    { timeout = 5000 }: { timeout?: number } = {},
   ) {
-    if (transactionIndex) {
-      await this.driver.waitForSelector(
-        this.transactionAtIndexWithStatus(transactionIndex, status),
-        { timeout },
-      );
-      return;
-    }
-
-    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
+    await this.driver.waitForSelector(this.transactionWithStatus(status), {
       timeout,
     });
   }

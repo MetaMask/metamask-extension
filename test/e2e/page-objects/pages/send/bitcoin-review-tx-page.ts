@@ -67,7 +67,8 @@ class BitcoinReviewTxPage {
       `Check if send amount ${amount} is displayed on bitcoin review tx page`,
     );
     await this.driver.waitForSelector({
-      xpath: `//p[normalize-space(.)="You send"]/following-sibling::div[1]//p[normalize-space(.)="-${amount}"]`,
+      tag: 'p',
+      text: `-${amount}`,
     });
   }
 
