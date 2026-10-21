@@ -20,10 +20,9 @@ const SyncAccountsTab = () => {
   const navigate = useNavigate();
 
   const handleBack = async () => {
-    await submitRequestToBackground('messengerCall', [
-      'QrSyncController:cancelSync',
-      [],
-    ]).catch(() => undefined);
+    await submitRequestToBackground('QrSyncController:cancelSync', []).catch(
+      () => undefined,
+    );
     navigate(SETTINGS_ROUTE, { replace: true });
   };
 
