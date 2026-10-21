@@ -1,19 +1,20 @@
 import { strict as assert } from 'assert';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { CompletedRequest, Mockttp } from 'mockttp';
+import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import {
   withFixtures,
   isSidePanelEnabled,
   veryLargeDelayMs,
 } from '../../helpers';
-import { browserAPIRequestDomains } from '../../mock-e2e';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
@@ -24,7 +25,6 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { mockEmptyPrices, mockSpotPrices } from '../tokens/utils/mocks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   UserStorageMockttpController,
   UserStorageResponseData,
@@ -34,119 +34,13 @@ import {
   getAccountsSyncMockResponse,
 } from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
+import {
+  NonRpcRequests,
+  assertNoNewNonRpcRequests,
+  recordNonRpcRequests,
+} from './helpers';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
-
-const KNOWN_VIOLATIONS_FILE_NAME =
-  'basic-functionality-off-known-violations.json';
-
-/**
- * Hosts that are still contacted with basic functionality off. Every entry is
- * a bug: with the toggle off, only JSON-RPC requests to nodes are allowed.
- * Remove an entry once the underlying bug is fixed.
- */
-type BasicFunctionalityOffKnownViolations = {
-  knownViolations: string[];
-};
-
-/** Map of host to the set of `METHOD /pathname` requests seen for that host. */
-type NonRpcRequests = Map<string, Set<string>>;
-
-async function loadKnownViolations(): Promise<BasicFunctionalityOffKnownViolations> {
-  const knownViolationsRaw = await fs.readFile(
-    path.join(__dirname, KNOWN_VIOLATIONS_FILE_NAME),
-    'utf8',
-  );
-  return JSON.parse(knownViolationsRaw);
-}
-
-function isJsonRpcPayload(payload: unknown): boolean {
-  const entries = Array.isArray(payload) ? payload : [payload];
-  return (
-    entries.length > 0 &&
-    entries.every(
-      (entry) =>
-        typeof entry === 'object' &&
-        entry !== null &&
-        'jsonrpc' in entry &&
-        'method' in entry,
-    )
-  );
-}
-
-/**
- * Records every request that is not a JSON-RPC call, ignoring requests the
- * browser itself makes.
- *
- * @param server - The mock server proxying all extension traffic.
- * @returns A function resolving to the recorded non-RPC requests.
- */
-function recordNonRpcRequests(server: Mockttp): () => Promise<NonRpcRequests> {
-  const nonRpcRequests: NonRpcRequests = new Map();
-  const pendingClassifications: Promise<void>[] = [];
-
-  server.on('request', (request: CompletedRequest) => {
-    pendingClassifications.push(
-      (async () => {
-        const { host } = request.headers;
-        if (!host || browserAPIRequestDomains.test(host)) {
-          return;
-        }
-        if (
-          request.method === 'POST' &&
-          isJsonRpcPayload(await request.body.getJson())
-        ) {
-          return;
-        }
-        const requestsForHost = nonRpcRequests.get(host) ?? new Set<string>();
-        requestsForHost.add(
-          `${request.method} ${new URL(request.url).pathname}`,
-        );
-        nonRpcRequests.set(host, requestsForHost);
-      })(),
-    );
-  });
-
-  return async () => {
-    await Promise.all(pendingClassifications);
-    return nonRpcRequests;
-  };
-}
-
-async function assertNoNewNonRpcRequests(
-  getNonRpcRequests: () => Promise<NonRpcRequests>,
-) {
-  const { knownViolations } = await loadKnownViolations();
-  const nonRpcRequests = await getNonRpcRequests();
-
-  console.log(
-    'Non-RPC requests made with basic functionality off:',
-    JSON.stringify(
-      Object.fromEntries(
-        [...nonRpcRequests].map(([host, requests]) => [host, [...requests]]),
-      ),
-      null,
-      2,
-    ),
-  );
-
-  const unexpectedRequests = [...nonRpcRequests].filter(
-    ([host]) => !knownViolations.includes(host),
-  );
-
-  assert.equal(
-    unexpectedRequests.length,
-    0,
-    `Unexpected non-RPC requests with basic functionality off:\n${unexpectedRequests
-      .map(
-        ([host, requests]) =>
-          `  - ${host}\n${[...requests].map((request) => `      ${request}`).join('\n')}`,
-      )
-      .join(
-        '\n',
-      )}\n\nOnly JSON-RPC requests to nodes are allowed when basic functionality is off.\nIf this is a known bug that cannot be fixed yet, add the host to ${KNOWN_VIOLATIONS_FILE_NAME}.`,
-  );
-}
 
 async function mockFeatureFlagsForPrivacyTest(server: Mockttp) {
   const prodFlags = getProductionRemoteFlagApiResponse();
@@ -252,210 +146,219 @@ async function mockApis(
   return [stalelistMock, spotPricesMock, nftMock];
 }
 
-describe('MetaMask onboarding', function () {
-  const arrange = async () => {
-    const unencryptedAccounts = accountsToMockForAccountsSync;
-    const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
-    const userStorageMockttpController = new UserStorageMockttpController();
-    return {
-      unencryptedAccounts,
-      mockedAccountSyncResponse,
-      userStorageMockttpController,
+describe('Basic functionality', function () {
+  describe('During onboarding', function () {
+    const arrange = async () => {
+      const unencryptedAccounts = accountsToMockForAccountsSync;
+      const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
+      const userStorageMockttpController = new UserStorageMockttpController();
+      return {
+        unencryptedAccounts,
+        mockedAccountSyncResponse,
+        userStorageMockttpController,
+      };
     };
-  };
 
-  it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
-    const { mockedAccountSyncResponse, userStorageMockttpController } =
-      await arrange();
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        // Turning basic functionality off disables the remote feature flag
-        // controller, so the mocked `/v1/flags` response below is never
-        // fetched and the network filter falls back to its pre-redesign
-        // variant
-        manifestFlags: {
-          remoteFeatureFlags: {
-            extensionUxNetworkManagement: {
-              enabled: true,
-              minimumVersion: '13.36.0',
+    it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
+      const { mockedAccountSyncResponse, userStorageMockttpController } =
+        await arrange();
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          // Turning basic functionality off disables the remote feature flag
+          // controller, so the mocked `/v1/flags` response below is never
+          // fetched and the network filter falls back to its pre-redesign
+          // variant
+          manifestFlags: {
+            remoteFeatureFlags: {
+              extensionUxNetworkManagement: {
+                enabled: true,
+                minimumVersion: '13.36.0',
+              },
             },
           },
-        },
-        testSpecificMock: async (server: Mockttp) => {
-          await mockFeatureFlagsForPrivacyTest(server);
-          return mockApis(
-            server,
-            userStorageMockttpController,
-            mockedAccountSyncResponse,
-          );
-        },
-      },
-      async ({ driver, mockServer, mockedEndpoint: mockedEndpoints }) => {
-        await importSRPOnboardingFlow({ driver });
-
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
-
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.togglePrivacySettings();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-
-        await onboardingCompletePage.checkPageIsLoaded();
-        const getNonRpcRequests = recordNonRpcRequests(mockServer);
-        await onboardingCompletePage.completeOnboarding();
-
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
-        const tokensTab = new TokensTab(driver);
-        await tokensTab.refreshErc20TokenList();
-
-        // Intended delay: we assert on the absence of requests, so there is no
-        // condition to wait for. This covers at least one polling cycle.
-        await driver.delay(veryLargeDelayMs);
-
-        await assertNoNewNonRpcRequests(getNonRpcRequests);
-
-        for (const mockedEndpoint of mockedEndpoints) {
-          const requests = await mockedEndpoint.getSeenRequests();
-          assert.equal(
-            requests.length,
-            0,
-            `${mockedEndpoint} should make requests after onboarding`,
-          );
-        }
-      },
-    );
-  });
-
-  it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
-    const { mockedAccountSyncResponse, userStorageMockttpController } =
-      await arrange();
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: async (server: Mockttp) => {
-          await mockFeatureFlagsForPrivacyTest(server);
-          return mockApis(
-            server,
-            userStorageMockttpController,
-            mockedAccountSyncResponse,
-          );
-        },
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await completeImportSRPOnboardingFlow({ driver });
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00');
-
-        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
-        const tokensTab = new TokensTab(driver);
-        await tokensTab.refreshErc20TokenList();
-
-        // Check if sidepanel is enabled
-        const hasSidepanel = await isSidePanelEnabled();
-
-        // intended delay to allow for network requests to complete
-        await driver.delay(1000);
-        for (const mockedEndpoint of mockedEndpoints) {
-          const requests = await mockedEndpoint.getSeenRequests();
-
-          if (hasSidepanel) {
-            // Skip assertion for sidepanel builds - cannot accurately count requests
-            // when sidepanel loads home.html in parallel with the main test window
-            console.log(
-              `Skipping request count assertion for sidepanel build - ${mockedEndpoint}`,
+          testSpecificMock: async (server: Mockttp) => {
+            await mockFeatureFlagsForPrivacyTest(server);
+            return mockApis(
+              server,
+              userStorageMockttpController,
+              mockedAccountSyncResponse,
             );
-            continue;
-          }
-
-          // There could be more than 1 requests since we're dealing with multichain
-          // accounts (e.g 1 request per supported chains).
-          assert.ok(
-            requests.length >= 1,
-            `${mockedEndpoint} should make requests after onboarding`,
-          );
-        }
-      },
-    );
-  });
-
-  it('only makes RPC requests on an existing wallet with basic functionality off', async function () {
-    let getNonRpcRequests: () => Promise<NonRpcRequests> = async () =>
-      new Map();
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withUseBasicFunctionalityDisabled()
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: async (server: Mockttp) => {
-          getNonRpcRequests = recordNonRpcRequests(server);
-          return [];
+          },
         },
-      },
-      async ({ driver }) => {
-        await login(driver, { waitForNonEvmAccounts: false });
+        async ({ driver, mockServer, mockedEndpoint: mockedEndpoints }) => {
+          await importSRPOnboardingFlow({ driver });
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
+          const onboardingCompletePage = new OnboardingCompletePage(driver);
+          await onboardingCompletePage.checkPageIsLoaded();
+          await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+          await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
-        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
-        const tokensTab = new TokensTab(driver);
-        await tokensTab.refreshErc20TokenList();
+          const onboardingPrivacySettingsPage =
+            new OnboardingPrivacySettingsPage(driver);
+          await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+          await onboardingPrivacySettingsPage.togglePrivacySettings();
+          await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
-        // Intended delay: we assert on the absence of requests, so there is no
-        // condition to wait for. This covers at least one polling cycle.
-        await driver.delay(veryLargeDelayMs);
+          await onboardingCompletePage.checkPageIsLoaded();
+          const getNonRpcRequests = recordNonRpcRequests(mockServer);
+          await onboardingCompletePage.completeOnboarding();
 
-        await assertNoNewNonRpcRequests(getNonRpcRequests);
-      },
-    );
+          // Handle sidepanel navigation if needed
+          await handleSidepanelPostOnboarding(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+
+          await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.refreshErc20TokenList();
+
+          // Intended delay: we assert on the absence of requests, so there is no
+          // condition to wait for. This covers at least one polling cycle.
+          await driver.delay(veryLargeDelayMs);
+
+          await assertNoNewNonRpcRequests(getNonRpcRequests);
+
+          for (const mockedEndpoint of mockedEndpoints) {
+            const requests = await mockedEndpoint.getSeenRequests();
+            assert.equal(
+              requests.length,
+              0,
+              `${mockedEndpoint} should make requests after onboarding`,
+            );
+          }
+        },
+      );
+    });
+
+    it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
+      const { mockedAccountSyncResponse, userStorageMockttpController } =
+        await arrange();
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: async (server: Mockttp) => {
+            await mockFeatureFlagsForPrivacyTest(server);
+            return mockApis(
+              server,
+              userStorageMockttpController,
+              mockedAccountSyncResponse,
+            );
+          },
+        },
+        async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+          await completeImportSRPOnboardingFlow({ driver });
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedBalanceIsDisplayed('$42,500.00');
+
+          await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.refreshErc20TokenList();
+
+          // Check if sidepanel is enabled
+          const hasSidepanel = await isSidePanelEnabled();
+
+          // intended delay to allow for network requests to complete
+          await driver.delay(1000);
+          for (const mockedEndpoint of mockedEndpoints) {
+            const requests = await mockedEndpoint.getSeenRequests();
+
+            if (hasSidepanel) {
+              // Skip assertion for sidepanel builds - cannot accurately count requests
+              // when sidepanel loads home.html in parallel with the main test window
+              console.log(
+                `Skipping request count assertion for sidepanel build - ${mockedEndpoint}`,
+              );
+              continue;
+            }
+
+            // There could be more than 1 requests since we're dealing with multichain
+            // accounts (e.g 1 request per supported chains).
+            assert.ok(
+              requests.length >= 1,
+              `${mockedEndpoint} should make requests after onboarding`,
+            );
+          }
+        },
+      );
+    });
   });
 
-  it('User can turn off basic functionality in default settings', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await importSRPOnboardingFlow({ driver });
+  describe('Onboarded wallet', function () {
+    it('only makes RPC requests after unlocking with basic functionality off', async function () {
+      let getNonRpcRequests: () => Promise<NonRpcRequests> = async () =>
+        new Map();
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2()
+            .withUseBasicFunctionalityDisabled()
+            .build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: async (server: Mockttp) => {
+            getNonRpcRequests = recordNonRpcRequests(server);
+            return [];
+          },
+        },
+        async ({ driver }) => {
+          await login(driver, { waitForNonEvmAccounts: false });
 
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+          await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.refreshErc20TokenList();
 
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.completeOnboarding();
+          // Intended delay: we assert on the absence of requests, so there is no
+          // condition to wait for. This covers at least one polling cycle.
+          await driver.delay(veryLargeDelayMs);
 
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
+          await assertNoNewNonRpcRequests(getNonRpcRequests);
+        },
+      );
+    });
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-      },
-    );
+    it('only makes RPC requests after turning basic functionality off in settings', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, mockServer }) => {
+          await login(driver);
+
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.checkPageIsLoaded();
+          await privacySettings.toggleBasicFunctionalityOff();
+          await privacySettings.checkBasicFunctionalityIsOff();
+          const getNonRpcRequests = recordNonRpcRequests(mockServer);
+          await closeSettings(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+
+          await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+          const tokensTab = new TokensTab(driver);
+          await tokensTab.refreshErc20TokenList();
+
+          // Intended delay: we assert on the absence of requests, so there is no
+          // condition to wait for. This covers at least one polling cycle.
+          await driver.delay(veryLargeDelayMs);
+
+          await assertNoNewNonRpcRequests(getNonRpcRequests);
+        },
+      );
+    });
   });
 });

@@ -1,12 +1,13 @@
 /**
  * This test verifies that with maximum privacy settings during onboarding enabled,
- * only allowlisted network calls are made during the onboarding process.
+ * only expected network calls are made during the onboarding process.
  *
  * It checks two critical phases during onboarding:
- * 1. During onboarding (before clicking "Done" on complete onboarding screen)
- * 2. After completing onboarding (on homepage without any user action)
- *
- * The allowlist is defined in privacy-max-allowlist-onboarding.json
+ * 1. During onboarding (before clicking "Done" on complete onboarding screen):
+ *    every host must be in privacy-max-allowlist-onboarding.json
+ * 2. After turning basic functionality off (until landing on the homepage):
+ *    only JSON-RPC requests are allowed, apart from the hosts listed in
+ *    basic-functionality-off-known-violations.json
  */
 import { strict as assert } from 'assert';
 import { promises as fs } from 'fs';
@@ -23,6 +24,7 @@ import {
   createNewWalletOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import { assertNoNewNonRpcRequests, recordNonRpcRequests } from './helpers';
 
 const ALLOWLIST_FILE_NAME = 'privacy-max-allowlist-onboarding.json';
 
@@ -57,7 +59,6 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
 
 type OnboardingAllowlist = {
   duringOnboarding: string[];
-  untilOnboardingComplete: string[];
 };
 
 async function loadAllowlist(): Promise<OnboardingAllowlist> {
@@ -110,6 +111,7 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
+        const getNonRpcRequests = recordNonRpcRequests(mockServer);
 
         // Intended delay to ensure we cover at least 1 polling loop for network requests
         await driver.delay(veryLargeDelayMs);
@@ -147,31 +149,8 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         // Intended delay to ensure we cover at least 1 polling loop for network requests
         await driver.delay(veryLargeDelayMs);
 
-        // Check Phase 2: All calls (including previous ones) should be in untilOnboardingComplete allowlist
-        const unexpectedCallsAfterOnboardingComplete = [
-          ...capturedCalls,
-        ].filter((host) => !allowlist.untilOnboardingComplete.includes(host));
-
-        console.log('Checking calls until homepage');
-        console.log(
-          'Total calls made until landing on homepage:',
-          capturedCalls.size,
-        );
-        console.log(
-          'Calls made until landing on homepage:',
-          JSON.stringify([...capturedCalls].sort(), null, 2),
-        );
-
-        // Assert no unexpected hosts after onboarding complete
-        assert.equal(
-          unexpectedCallsAfterOnboardingComplete.length,
-          0,
-          `Unexpected network calls after onboarding complete:\n${unexpectedCallsAfterOnboardingComplete
-            .map((host) => `  - ${host}`)
-            .join(
-              '\n',
-            )}\n\nThese hosts are NOT in the untilOnboardingComplete allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
-        );
+        // Check Phase 2: only JSON-RPC requests since basic functionality was turned off
+        await assertNoNewNonRpcRequests(getNonRpcRequests);
       },
     );
   });
@@ -217,6 +196,7 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
+        const getNonRpcRequests = recordNonRpcRequests(mockServer);
 
         // Intended delay to ensure we cover at least 1 polling loop for network requests
         await driver.delay(veryLargeDelayMs);
@@ -254,31 +234,8 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         // Intended delay to ensure we cover at least 1 polling loop for network requests
         await driver.delay(veryLargeDelayMs);
 
-        // Check Phase 2: All calls (including previous ones) should be in untilOnboardingComplete allowlist
-        const unexpectedCallsAfterOnboardingComplete = [
-          ...capturedCalls,
-        ].filter((host) => !allowlist.untilOnboardingComplete.includes(host));
-
-        console.log('Checking calls until homepage');
-        console.log(
-          'Total calls made until landing on homepage:',
-          capturedCalls.size,
-        );
-        console.log(
-          'Calls made until landing on homepage:',
-          JSON.stringify([...capturedCalls].sort(), null, 2),
-        );
-
-        // Assert no unexpected hosts after onboarding complete
-        assert.equal(
-          unexpectedCallsAfterOnboardingComplete.length,
-          0,
-          `Unexpected network calls after onboarding complete:\n${unexpectedCallsAfterOnboardingComplete
-            .map((host) => `  - ${host}`)
-            .join(
-              '\n',
-            )}\n\nThese hosts are NOT in the untilOnboardingComplete allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
-        );
+        // Check Phase 2: only JSON-RPC requests since basic functionality was turned off
+        await assertNoNewNonRpcRequests(getNonRpcRequests);
       },
     );
   });
