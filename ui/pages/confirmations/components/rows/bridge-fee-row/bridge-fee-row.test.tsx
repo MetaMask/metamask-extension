@@ -222,6 +222,26 @@ describe('BridgeFeeRow', () => {
     expect(feeValue).toHaveTextContent('$1.23');
   });
 
+  it('renders a Solana quote fee from totals, including the Snap network fee', () => {
+    useTransactionPayQuotesMock.mockReturnValue([
+      {
+        request: { sourceChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' },
+      } as unknown as TransactionPayQuote<Json>,
+    ]);
+    useTransactionPayTotalsMock.mockReturnValue({
+      fees: {
+        provider: { usd: '0.50' },
+        sourceNetwork: { estimate: { usd: '0.01' } },
+        targetNetwork: { usd: '0' },
+      },
+    } as TransactionPayTotals);
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(getByTestId('transaction-fee-value')).toHaveTextContent('$0.51');
+    expect(queryByTestId('solana-pay-fee-row')).not.toBeInTheDocument();
+  });
+
   it('renders fee value with Text component for Small variant', () => {
     const { getByTestId } = render({
       variant: ConfirmInfoRowSize.Small,

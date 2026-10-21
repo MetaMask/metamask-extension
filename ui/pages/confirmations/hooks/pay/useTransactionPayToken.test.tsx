@@ -117,6 +117,51 @@ describe('useTransactionPayToken', () => {
     });
   });
 
+  it('selects a non-EVM token by CAIP asset and account', () => {
+    const { result } = renderHookWithProvider();
+
+    result.current.setPayToken({
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      walletAccountId: 'solana-account-id',
+    });
+
+    expect(updatePaymentTokenMock).toHaveBeenCalledWith({
+      transactionId: TRANSACTION_ID_MOCK,
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      walletAccountId: 'solana-account-id',
+    });
+  });
+
+  it('returns isNative from the CAIP asset namespace for non-EVM tokens', () => {
+    const solanaPayToken: TransactionPaymentToken = {
+      accountId:
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      balanceFiat: '150',
+      balanceHuman: '1.5',
+      balanceRaw: '1500000000',
+      balanceUsd: '150',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      decimals: 9,
+      symbol: 'SOL',
+      walletAccountId: 'solana-account-id',
+    };
+
+    const { result: nativeResult } = renderHookWithProvider({
+      payToken: solanaPayToken,
+    });
+    const { result: splResult } = renderHookWithProvider({
+      payToken: {
+        ...solanaPayToken,
+        assetId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      },
+    });
+
+    expect(nativeResult.current.isNative).toBe(true);
+    expect(splResult.current.isNative).toBe(false);
+  });
+
   it('returns isNative true when pay token is native address', () => {
     const { result } = renderHookWithProvider({
       payToken: {

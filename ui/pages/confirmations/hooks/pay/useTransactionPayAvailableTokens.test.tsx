@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
@@ -7,6 +8,10 @@ import { useTransactionPayBlockedTokens } from './useTransactionPayBlockedTokens
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
 jest.mock('../send/useSendTokens');
 jest.mock('./useTransactionPayBlockedTokens');
 jest.mock('./useTransactionPayToken');
@@ -59,6 +64,7 @@ describe('useTransactionPayAvailableTokens', () => {
       setPayToken: jest.fn(),
     });
     getAvailableTokensMock.mockReturnValue([TOKEN_MOCK]);
+    jest.mocked(useSelector).mockReturnValue(false);
   });
 
   it('returns available tokens', () => {
@@ -79,8 +85,19 @@ describe('useTransactionPayAvailableTokens', () => {
         }),
       ]),
       blockedTokens: blockedTokensMock,
+      isSolanaPayEnabled: false,
       payToken: undefined,
     });
+  });
+
+  it('passes the Solana Pay flag to getAvailableTokens', () => {
+    jest.mocked(useSelector).mockReturnValue(true);
+
+    renderHook(() => useTransactionPayAvailableTokens());
+
+    expect(getAvailableTokensMock).toHaveBeenCalledWith(
+      expect.objectContaining({ isSolanaPayEnabled: true }),
+    );
   });
 
   it('returns empty array when no tokens available', () => {

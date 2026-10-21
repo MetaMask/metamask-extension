@@ -4,9 +4,11 @@ import { renderWithConfirmContextProvider } from '../../../../../test/lib/confir
 import { getMockPersonalSignConfirmState } from '../../../../../test/data/confirmations/helper';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { useTransactionPayToken } from '../../hooks/pay/useTransactionPayToken';
+import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
+  useTransactionPayTotals,
 } from '../../hooks/pay/useTransactionPayData';
 import { PayTokenAmount } from './pay-token-amount';
 
@@ -72,6 +74,57 @@ describe('PayTokenAmount', () => {
   it('renders equivalent pay token value', () => {
     const { getByText } = render();
     expect(getByText('500', { exact: false })).toBeInTheDocument();
+  });
+
+  it('renders the Core source amount for a Solana payment token', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      isNative: true,
+      payToken: {
+        accountId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        balanceFiat: '150',
+        balanceHuman: '1.5',
+        balanceRaw: '1500000000',
+        balanceUsd: '150',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        decimals: 9,
+        symbol: 'SOL',
+        walletAccountId: 'solana-account-id',
+      },
+      setPayToken: jest.fn(),
+    });
+    jest.mocked(useTransactionPayTotals).mockReturnValue({
+      sourceAmount: { human: '0.25', raw: '250000000', fiat: '25', usd: '25' },
+    } as TransactionPayTotals);
+
+    const { getByTestId } = render();
+
+    expect(useTokenFiatRatesMock).toHaveBeenCalledWith([]);
+    expect(getByTestId('pay-token-amount')).toHaveTextContent('0.25 SOL');
+  });
+
+  it('renders a skeleton for a Solana payment token without totals', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        accountId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        balanceFiat: '150',
+        balanceHuman: '1.5',
+        balanceRaw: '1500000000',
+        balanceUsd: '150',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        decimals: 9,
+        symbol: 'SOL',
+        walletAccountId: 'solana-account-id',
+      },
+      setPayToken: jest.fn(),
+    });
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
   });
 
   it('renders pay token symbol', () => {

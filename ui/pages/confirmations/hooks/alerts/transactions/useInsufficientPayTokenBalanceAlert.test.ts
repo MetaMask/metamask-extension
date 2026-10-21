@@ -8,6 +8,7 @@ import {
   TransactionPayRequiredToken,
   TransactionPayTotals,
   EvmPaymentToken,
+  NonEvmPaymentToken,
   PaymentOverride,
 } from '@metamask/transaction-pay-controller';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
@@ -47,6 +48,21 @@ const PAY_TOKEN_MOCK = {
   balanceUsd: '10.00',
   balanceRaw: '10000000000000000000',
 } as EvmPaymentToken;
+
+const SOLANA_PAY_TOKEN_MOCK: NonEvmPaymentToken = {
+  accountId:
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
+  assetId:
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  balanceFiat: '10.00',
+  balanceHuman: '10',
+  balanceRaw: '10000000',
+  balanceUsd: '10.00',
+  chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  decimals: 6,
+  symbol: 'USDC',
+  walletAccountId: 'solana-account-id',
+};
 
 const REQUIRED_TOKEN_MOCK = {
   amountUsd: '5.00',
@@ -238,6 +254,58 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       balanceRaw: NATIVE_TOKEN_MOCK.balance,
       balanceFiat: '$0.00',
       tokenFiatAmount: 0,
+    });
+  });
+
+  describe('for a Solana pay token', () => {
+    beforeEach(() => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: SOLANA_PAY_TOKEN_MOCK,
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+    });
+
+    it('leaves the network fee and rent checks to the Core quote error', () => {
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        fees: {
+          ...TOTALS_MOCK.fees,
+          sourceNetwork: {
+            ...TOTALS_MOCK.fees.sourceNetwork,
+            max: { raw: '999999999999', usd: '999.00' },
+          },
+        },
+        sourceAmount: { raw: '20000000', usd: '20.00' },
+      } as TransactionPayTotals);
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: NATIVE_TOKEN_MOCK.chainId,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0',
+        balanceRaw: '0',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns the input alert when the required amount exceeds the Solana balance', () => {
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        { ...REQUIRED_TOKEN_MOCK, amountUsd: '15.00' },
+      ]);
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenBalance,
+        }),
+      ]);
     });
   });
 
