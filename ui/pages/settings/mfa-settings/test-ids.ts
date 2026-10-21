@@ -3,6 +3,8 @@ export const MfaSettingsTestIds = {
   ENTRY: 'mfa-settings-entry',
   EMAIL_ROW: 'mfa-settings-email-row',
   EMAIL_DETAILS: 'mfa-settings-email-details',
+  TOTP_ROW: 'mfa-settings-totp-row',
+  TOTP_DETAILS: 'mfa-settings-totp-details',
   REMOVE_BUTTON: 'mfa-settings-remove-button',
   CONFIRM_MODAL: 'mfa-settings-confirm-modal',
   CONFIRM_BUTTON: 'mfa-settings-confirm-button',

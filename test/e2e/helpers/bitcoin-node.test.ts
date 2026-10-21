@@ -4,6 +4,7 @@ import {
   bitcoinToSatoshis,
   createEsploraTransaction,
   scriptPubKeyToScriptHash,
+  transactionTouchesScriptPubKey,
 } from '../seeder/bitcoin/node';
 
 describe('BitcoinNode helpers', () => {
@@ -103,6 +104,131 @@ describe('BitcoinNode helpers', () => {
         ],
         weight: 328,
       });
+    });
+
+    it('maps configured mainnet addresses for multiple script public keys', () => {
+      const secondScriptPubKey = '0014b179e3f9e3d08721eb3c159a4352612d5d66f19c';
+      const transaction = createEsploraTransaction(
+        {
+          confirmations: 1,
+          hash: '1'.repeat(64),
+          hex: '02000000000100',
+          locktime: 0,
+          size: 110,
+          txid: '2'.repeat(64),
+          version: 2,
+          vin: [],
+          vout: [
+            {
+              n: 0,
+              scriptPubKey: {
+                address: 'bcrt1qk9u7870r6zrjr6euzkdyx5np94wkduvuj8e9fy',
+                asm: '0 b179e3f9e3d08721eb3c159a4352612d5d66f19c',
+                hex: secondScriptPubKey,
+                type: 'witness_v0_keyhash',
+              },
+              value: 0.5,
+            },
+          ],
+          vsize: 82,
+          weight: 328,
+        },
+        {
+          addressesByScriptPubKey: new Map([
+            [secondScriptPubKey, 'bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7'],
+          ]),
+        },
+      );
+
+      expect(transaction.vout[0]?.scriptpubkey_address).toBe(
+        'bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7',
+      );
+    });
+  });
+
+  describe('transactionTouchesScriptPubKey', () => {
+    const accountOneScriptPubKey =
+      '0014469d76e8387e11cbe9010c72ee4b748dd9152fa5';
+    const accountTwoScriptPubKey =
+      '0014b179e3f9e3d08721eb3c159a4352612d5d66f19c';
+
+    it('matches a transaction that pays the account', () => {
+      const transaction = createEsploraTransaction({
+        confirmations: 0,
+        hash: '1'.repeat(64),
+        hex: '02000000000100',
+        locktime: 0,
+        size: 110,
+        txid: '2'.repeat(64),
+        version: 2,
+        vin: [],
+        vout: [
+          {
+            n: 0,
+            scriptPubKey: {
+              asm: `0 ${accountTwoScriptPubKey.slice(4)}`,
+              hex: accountTwoScriptPubKey,
+              type: 'witness_v0_keyhash',
+            },
+            value: 0.5,
+          },
+        ],
+        vsize: 82,
+        weight: 328,
+      });
+
+      expect(
+        transactionTouchesScriptPubKey(transaction, accountTwoScriptPubKey),
+      ).toBe(true);
+      expect(
+        transactionTouchesScriptPubKey(transaction, accountOneScriptPubKey),
+      ).toBe(false);
+    });
+
+    it('matches a transaction that spends from the account', () => {
+      const transaction = createEsploraTransaction(
+        {
+          confirmations: 0,
+          hash: '1'.repeat(64),
+          hex: '02000000000100',
+          locktime: 0,
+          size: 110,
+          txid: '2'.repeat(64),
+          version: 2,
+          vin: [
+            {
+              sequence: 4294967295,
+              txid: '3'.repeat(64),
+              vout: 0,
+            },
+          ],
+          vout: [],
+          vsize: 82,
+          weight: 328,
+        },
+        {
+          prevouts: new Map([
+            [
+              `${'3'.repeat(64)}:0`,
+              {
+                scriptpubkey: accountTwoScriptPubKey,
+                scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${accountTwoScriptPubKey.slice(
+                  4,
+                )}`,
+                scriptpubkey_type: 'v0_p2wpkh',
+                value: 50_000_000,
+              },
+            ],
+          ]),
+        },
+      );
+
+      expect(
+        transactionTouchesScriptPubKey(transaction, accountTwoScriptPubKey),
+      ).toBe(true);
+      expect(
+        transactionTouchesScriptPubKey(transaction, accountOneScriptPubKey),
+      ).toBe(false);
     });
   });
 });
