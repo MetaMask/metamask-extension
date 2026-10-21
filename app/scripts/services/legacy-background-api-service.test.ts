@@ -2041,7 +2041,7 @@ describe('LegacyBackgroundApiService', () => {
       rpcEndpoints: [
         {
           type: RpcEndpointType.Custom,
-          url: 'https://rpc.example',
+          url: 'https://user:pass@rpc.example',
           failoverUrls: ['https://fallback.example'],
         },
         {
@@ -2094,8 +2094,8 @@ describe('LegacyBackgroundApiService', () => {
           const addNetworkHandler = jest.fn(() => {
             // Synchronous controller subscribers can start RPC requests here.
             expect([...allowedUrls].sort()).toEqual([
-              'https://fallback.example',
-              'https://rpc.example',
+              'https://fallback.example/',
+              'https://rpc.example/',
               'https://zksync-mainnet.infura.io/v3/test-infura-project-id',
             ]);
             if (failsToAdd) {

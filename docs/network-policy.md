@@ -33,7 +33,9 @@ installation only. Await all callback work. Pass `{ signal }` to cancel acquisit
 and pass it to fetch to cancel the request. No grant expires automatically: crashes
 or unsettled callbacks retain it until background initialization/session end.
 Initialization clears active grants too, possibly interrupting concurrent work.
-Firefox calls the callback directly; unsaved RPC validation does not yet use it.
+Firefox calls the callback directly. User-selected RPC validation grants only
+the probed URL. Network addition grants its RPC/failover URLs until the operation
+finishes and Chrome confirms the saved-network policy.
 
 Consented critical-error reporting permits only the configured Sentry envelope URL
 and rejects redirects. One two-second deadline covers acquisition, installation,

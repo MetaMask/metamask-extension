@@ -1315,7 +1315,11 @@ export class LegacyBackgroundApiService {
     };
     // Install every endpoint grant before controllers can start RPC requests.
     return [...urls].reduceRight(
-      (add, url) => () => withTemporaryAllowance(url, add),
+      (add, url) => () => {
+        // RPC URL credentials become an Authorization header on the wire.
+        const { origin, pathname, search } = new URL(url);
+        return withTemporaryAllowance(`${origin}${pathname}${search}`, add);
+      },
       addNetwork,
     )();
   }
