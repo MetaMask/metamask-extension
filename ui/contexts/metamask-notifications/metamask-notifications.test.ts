@@ -1,8 +1,10 @@
 import { waitFor, act } from '@testing-library/react';
+import { createDeferredPromise } from '@metamask/utils';
 import * as NotificationHooks from '../../hooks/metamask-notifications/useNotifications';
 import * as NotificationsSelectors from '../../selectors/metamask-notifications/metamask-notifications';
 import * as Selectors from '../../selectors/selectors';
 import * as MetamaskBaseSelectors from '../../ducks/metamask/base-selectors';
+import * as MetamaskSelectors from '../../ducks/metamask/metamask';
 import * as AuthenticationSelectors from '../../selectors/identity/authentication';
 import * as Actions from '../../store/actions';
 import * as StorageHelpers from '../../../shared/lib/storage-helpers';
@@ -157,6 +159,12 @@ describe('useBasicFunctionalityDisableEffect', () => {
 });
 
 describe('useFetchInitialNotificationsEffect', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(MetamaskSelectors, 'getCompletedOnboarding')
+      .mockReturnValue(true);
+  });
+
   const arrangeHooks = () => {
     const mockEnableNotifications = jest.fn();
     const mockListNotifications = jest.fn();
@@ -244,6 +252,62 @@ describe('useFetchInitialNotificationsEffect', () => {
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it('waits until onboarding completes before enabling or fetching notifications', async () => {
+    const mocks = arrange();
+    const completed = jest.mocked(MetamaskSelectors.getCompletedOnboarding);
+    completed.mockReturnValue(false);
+    const { store } = renderHookWithProvider(
+      () => useFetchInitialNotificationsEffect(),
+      {},
+    );
+
+    await act(async () => undefined);
+    expect(mocks.helpers.mockGetNotificationPreferences).not.toHaveBeenCalled();
+    expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+    expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
+
+    completed.mockReturnValue(true);
+    act(() => {
+      store.dispatch({ type: 'FORCE_UPDATE' });
+    });
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.listNotifications).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('cancels startup fetching when onboarding resets during the preferences lookup', async () => {
+    const mocks = arrange();
+    const preferences = createDeferredPromise<null>();
+    mocks.helpers.mockGetStorageItem.mockResolvedValue(Date.now() + 1000);
+    mocks.helpers.mockGetNotificationPreferences.mockImplementation(
+      () => async () => preferences.promise,
+    );
+    const { store } = renderHookWithProvider(
+      () => useFetchInitialNotificationsEffect(),
+      {},
+    );
+    await waitFor(() => {
+      expect(
+        mocks.helpers.mockGetNotificationPreferences,
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    jest
+      .mocked(MetamaskSelectors.getCompletedOnboarding)
+      .mockReturnValue(false);
+    act(() => {
+      store.dispatch({ type: 'FORCE_UPDATE' });
+    });
+    await act(async () => {
+      preferences.resolve(null);
+    });
+
+    expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+    expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
   });
 
   it('should enable and fetch notifications when all conditions are met', async () => {
@@ -429,6 +493,12 @@ describe('useFetchInitialNotificationsEffect', () => {
 });
 
 describe('useEnableNotificationsByDefaultEffect', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(MetamaskSelectors, 'getCompletedOnboarding')
+      .mockReturnValue(true);
+  });
+
   const arrangeHooks = () => {
     const mockEnableNotifications = jest.fn();
     const mockListNotifications = jest.fn();
@@ -509,6 +579,31 @@ describe('useEnableNotificationsByDefaultEffect', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('waits until onboarding completes before enabling notifications by default', async () => {
+    const mocks = arrange();
+    const completed = jest.mocked(MetamaskSelectors.getCompletedOnboarding);
+    completed.mockReturnValue(false);
+    const { store } = renderHookWithProvider(
+      () => useEnableNotificationsByDefaultEffect(),
+      {},
+    );
+
+    await act(async () => undefined);
+    expect(mocks.helpers.mockGetStorageItem).not.toHaveBeenCalled();
+    expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+    expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
+
+    completed.mockReturnValue(true);
+    act(() => {
+      store.dispatch({ type: 'FORCE_UPDATE' });
+    });
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.listNotifications).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('should enable notifications by default when all conditions are met and user has not turned off notifications', async () => {
