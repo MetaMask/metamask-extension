@@ -1,10 +1,8 @@
 import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { Driver } from '../../../webdriver/driver';
-import {
-  confirmTronSendAndAssertActivity,
-  landOnTronSendScreen,
-} from '../../../page-objects/flows/tron-send.flow';
+import { landOnTronSendScreen } from '../../../page-objects/flows/tron-send.flow';
+import { confirmSnapSendAndAssertActivity } from '../../../page-objects/flows/snap-send.flow';
 import { TRON_RECIPIENT_ADDRESS } from '../../tron/mocks/common-tron';
 import {
   TRON_PORTFOLIO_ACCOUNT,
@@ -41,7 +39,7 @@ describe('Tron Send', function (this: Suite) {
         await sendPage.fillAmount(sendAmount);
         await sendPage.pressContinueButton();
 
-        await confirmTronSendAndAssertActivity({ driver });
+        await confirmSnapSendAndAssertActivity({ driver });
       },
     );
   });
