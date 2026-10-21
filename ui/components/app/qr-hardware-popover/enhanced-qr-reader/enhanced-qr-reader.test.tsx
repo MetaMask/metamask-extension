@@ -169,12 +169,6 @@ describe('EnhancedQrReader', () => {
     });
 
     it('uses the latest onFrame without restarting the camera', async () => {
-      let scanCallback: ((result?: { getText: () => string }) => void) | null =
-        null;
-      mockDecodeFromStream.mockImplementation((_stream, _elem, callback) => {
-        scanCallback = callback;
-        return Promise.resolve(mockControls);
-      });
       const firstOnFrame = jest.fn();
       const secondOnFrame = jest.fn();
 
@@ -183,7 +177,8 @@ describe('EnhancedQrReader', () => {
       rerender(<EnhancedQrReader onFrame={secondOnFrame} />);
       await flushPromises();
 
-      scanCallback?.({ getText: () => 'decoded-payload' });
+      const [, , scanCallback] = mockDecodeFromStream.mock.calls[0];
+      scanCallback({ getText: () => 'decoded-payload' });
 
       expect(mockGetUserMedia).toHaveBeenCalledTimes(1);
       expect(mockControls.stop).not.toHaveBeenCalled();
