@@ -25,6 +25,7 @@ import StepLayout, { MfaShield, type StepProps } from './step-layout';
 const METHOD_ICONS: Record<MfaMethod, IconName> = {
   email_otp: IconName.Mail,
   passkey: IconName.Key,
+  totp: IconName.QrCode,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -44,6 +45,9 @@ const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
   ): string | undefined => {
     if (method === 'passkey') {
       return t(isDone ? 'mfaIntroPasskeyDone' : 'mfaIntroPasskeyDescription');
+    }
+    if (method === 'totp') {
+      return t(isDone ? 'mfaIntroTotpDone' : 'mfaIntroTotpDescription');
     }
     if (isDone) {
       return step.email ? maskEmail(step.email) : undefined;

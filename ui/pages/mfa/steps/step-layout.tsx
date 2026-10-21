@@ -13,6 +13,7 @@ import type {
   MfaFlowErrorCode,
   MfaFlowState,
   MfaFlowStep,
+  MfaMethod,
   MfaReason,
 } from '../../../hooks/identity/mfa/engine/types';
 import { getErrorMessageKey } from '../labels';
@@ -129,9 +130,17 @@ export const StepHeader = ({
   </Box>
 );
 
-export const StepError = ({ code }: { code: MfaFlowErrorCode }) => {
+export const StepError = ({
+  code,
+  method,
+}: {
+  code: MfaFlowErrorCode;
+  method?: MfaMethod;
+}) => {
   const t = useI18nContext();
-  return <StepMessage isError>{t(getErrorMessageKey(code))}</StepMessage>;
+  return (
+    <StepMessage isError>{t(getErrorMessageKey(code, method))}</StepMessage>
+  );
 };
 
 const StepLayout = ({
