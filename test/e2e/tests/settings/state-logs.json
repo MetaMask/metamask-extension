@@ -1240,7 +1240,6 @@
       "mainnet": {}
     },
     "batchTransactionCounts": {},
-    "tracesBeforeMetricsOptIn": [],
     "transactionBatches": [],
     "transactionData": {},
     "transactions": [],
