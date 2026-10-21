@@ -89,7 +89,7 @@ export class PerpsTab extends PerpsPositionsBase {
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors(
       [this.perpsPage, this.perpsBalanceActions],
-      { timeout: 30000 },
+      { timeout: 20000 },
     );
   }
 

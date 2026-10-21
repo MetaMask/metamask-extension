@@ -5,7 +5,6 @@ import {
   clearPendingUserFills,
   getResponsePayload,
 } from '../tests/perps/mocks/websocketDefaultMocks';
-import { resetClearinghouseStateOverride } from '../tests/perps/mocks/websocketPositionMocks';
 import type { WebSocketMessageMock } from './types';
 import type { WebSocketServiceConfig } from './registry';
 import type LocalWebSocketServer from './server';
@@ -37,7 +36,6 @@ async function setupPerpsWebsocketMocks(
   mocks: WebSocketMessageMock[] = [],
 ): Promise<void> {
   clearPendingUserFills();
-  resetClearinghouseStateOverride();
   const wsServer = server.getServer();
 
   const mergedMocks = [...mocks, ...DEFAULT_HYPERLIQUID_WS_MOCKS];
@@ -76,18 +74,16 @@ async function setupPerpsWebsocketMocks(
               );
             }
 
-            const followUpDelay = mock.followUpDelay ?? 50;
-            if (mock.dynamicFollowUp || mock.followUpResponse) {
+            const followUp = mock.dynamicFollowUp
+              ? mock.dynamicFollowUp(message)
+              : mock.followUpResponse;
+            if (followUp) {
+              const followUpDelay = mock.followUpDelay ?? 50;
               setTimeout(() => {
-                const followUp = mock.dynamicFollowUp
-                  ? mock.dynamicFollowUp(message)
-                  : mock.followUpResponse;
-                if (followUp) {
-                  socket.send(JSON.stringify(followUp));
-                  console.log(
-                    `[Perps] Follow-up message sent for: ${includes.join(' + ')}`,
-                  );
-                }
+                socket.send(JSON.stringify(followUp));
+                console.log(
+                  `[Perps] Follow-up message sent for: ${includes.join(' + ')}`,
+                );
               }, followUpDelay);
             }
           }, delay);

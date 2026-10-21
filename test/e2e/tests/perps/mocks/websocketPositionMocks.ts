@@ -103,85 +103,6 @@ export const ETH_LONG_CLEARING_HOUSE_STATE = {
   time: 0,
 };
 
-let clearinghouseStateOverride: object | null = null;
-
-/**
- * Drops a simulated account left by an earlier test. Called when the Perps
- * WebSocket mock server is set up.
- */
-export function resetClearinghouseStateOverride(): void {
-  clearinghouseStateOverride = null;
-}
-
-function currentClearinghouseState(fallback: object): object {
-  return clearinghouseStateOverride ?? fallback;
-}
-
-function rememberClearinghouseState(state: object): void {
-  clearinghouseStateOverride = state;
-}
-
-const WS_POSITION_MOCK_USER = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-
-function clearinghouseSubscribeFollowUp(fallback: object) {
-  return () => ({
-    channel: 'clearinghouseState',
-    data: {
-      clearinghouseState: currentClearinghouseState(fallback),
-      dex: '',
-      user: WS_POSITION_MOCK_USER,
-    },
-  });
-}
-
-function webData2FollowUp(fallback: object) {
-  return () => ({
-    channel: 'webData2',
-    data: {
-      clearinghouseState: currentClearinghouseState(fallback),
-      openOrders: [],
-      frontendOpenOrders: [],
-      fills: [],
-      userFundings: [],
-      userNonFundingLedgerUpdates: [],
-      serverTime: 0,
-    },
-  });
-}
-
-function webData3FollowUp(fallback: object) {
-  return () => ({
-    channel: 'webData3',
-    data: {
-      perpDexStates: [
-        {
-          clearinghouseState: currentClearinghouseState(fallback),
-          openOrders: [],
-          frontendOpenOrders: [],
-          fills: [],
-          userFundings: [],
-          userNonFundingLedgerUpdates: [],
-          serverTime: 0,
-          perpsAtOpenInterestCap: [],
-        },
-      ],
-    },
-  });
-}
-
-function clearinghousePostResponse(fallback: object) {
-  return (message: string) => {
-    const req = parseWsPost(message);
-    return req
-      ? buildWsPostResponse(
-          req.id,
-          req.type,
-          currentClearinghouseState(fallback),
-        )
-      : null;
-  };
-}
-
 /**
  * Account with an open ETH long position (HIP-3 compatible).
  *
@@ -192,9 +113,14 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"clearinghouseState"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: clearinghouseSubscribeFollowUp(
-      ETH_LONG_CLEARING_HOUSE_STATE,
-    ),
+    followUpResponse: {
+      channel: 'clearinghouseState',
+      data: {
+        clearinghouseState: ETH_LONG_CLEARING_HOUSE_STATE,
+        dex: '',
+        user: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage:
@@ -203,7 +129,18 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData2"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: webData2FollowUp(ETH_LONG_CLEARING_HOUSE_STATE),
+    followUpResponse: {
+      channel: 'webData2',
+      data: {
+        clearinghouseState: ETH_LONG_CLEARING_HOUSE_STATE,
+        openOrders: [],
+        frontendOpenOrders: [],
+        fills: [],
+        userFundings: [],
+        userNonFundingLedgerUpdates: [],
+        serverTime: 0,
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Perps ETH long mock: webData2 with ETH position',
@@ -211,14 +148,35 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData3"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: webData3FollowUp(ETH_LONG_CLEARING_HOUSE_STATE),
+    followUpResponse: {
+      channel: 'webData3',
+      data: {
+        perpDexStates: [
+          {
+            clearinghouseState: ETH_LONG_CLEARING_HOUSE_STATE,
+            openOrders: [],
+            frontendOpenOrders: [],
+            fills: [],
+            userFundings: [],
+            userNonFundingLedgerUpdates: [],
+            serverTime: 0,
+            perpsAtOpenInterestCap: [],
+          },
+        ],
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Perps ETH long mock: webData3 with ETH position',
   },
   {
     messageIncludes: ['"method":"post"', '"type":"clearinghouseState"'],
-    dynamicResponse: clearinghousePostResponse(ETH_LONG_CLEARING_HOUSE_STATE),
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(req.id, req.type, ETH_LONG_CLEARING_HOUSE_STATE)
+        : null;
+    },
     delay: 50,
     logMessage:
       'Perps ETH long mock: clearinghouseState POST with ETH position',
@@ -280,9 +238,14 @@ export const WS_USER_WITH_BTC_SHORT_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"clearinghouseState"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: clearinghouseSubscribeFollowUp(
-      BTC_SHORT_CLEARING_HOUSE_STATE,
-    ),
+    followUpResponse: {
+      channel: 'clearinghouseState',
+      data: {
+        clearinghouseState: BTC_SHORT_CLEARING_HOUSE_STATE,
+        dex: '',
+        user: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage:
@@ -291,7 +254,18 @@ export const WS_USER_WITH_BTC_SHORT_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData2"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: webData2FollowUp(BTC_SHORT_CLEARING_HOUSE_STATE),
+    followUpResponse: {
+      channel: 'webData2',
+      data: {
+        clearinghouseState: BTC_SHORT_CLEARING_HOUSE_STATE,
+        openOrders: [],
+        frontendOpenOrders: [],
+        fills: [],
+        userFundings: [],
+        userNonFundingLedgerUpdates: [],
+        serverTime: 0,
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Perps BTC short mock: webData2 with BTC position',
@@ -299,14 +273,35 @@ export const WS_USER_WITH_BTC_SHORT_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData3"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: webData3FollowUp(BTC_SHORT_CLEARING_HOUSE_STATE),
+    followUpResponse: {
+      channel: 'webData3',
+      data: {
+        perpDexStates: [
+          {
+            clearinghouseState: BTC_SHORT_CLEARING_HOUSE_STATE,
+            openOrders: [],
+            frontendOpenOrders: [],
+            fills: [],
+            userFundings: [],
+            userNonFundingLedgerUpdates: [],
+            serverTime: 0,
+            perpsAtOpenInterestCap: [],
+          },
+        ],
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Perps BTC short mock: webData3 with BTC position',
   },
   {
     messageIncludes: ['"method":"post"', '"type":"clearinghouseState"'],
-    dynamicResponse: clearinghousePostResponse(BTC_SHORT_CLEARING_HOUSE_STATE),
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(req.id, req.type, BTC_SHORT_CLEARING_HOUSE_STATE)
+        : null;
+    },
     delay: 50,
     logMessage:
       'Perps BTC short mock: clearinghouseState POST with BTC position',
@@ -328,9 +323,14 @@ export const WS_USER_WITH_FUNDED_ACCOUNT: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"clearinghouseState"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: clearinghouseSubscribeFollowUp(
-      FUNDED_CLEARING_HOUSE_STATE,
-    ),
+    followUpResponse: {
+      channel: 'clearinghouseState',
+      data: {
+        clearinghouseState: FUNDED_CLEARING_HOUSE_STATE,
+        dex: '',
+        user: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage:
@@ -339,7 +339,18 @@ export const WS_USER_WITH_FUNDED_ACCOUNT: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData2"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: webData2FollowUp(FUNDED_CLEARING_HOUSE_STATE),
+    followUpResponse: {
+      channel: 'webData2',
+      data: {
+        clearinghouseState: FUNDED_CLEARING_HOUSE_STATE,
+        openOrders: [],
+        frontendOpenOrders: [],
+        fills: [],
+        userFundings: [],
+        userNonFundingLedgerUpdates: [],
+        serverTime: 0,
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Perps funded account mock: webData2 with 10000 USDC balance',
@@ -347,14 +358,35 @@ export const WS_USER_WITH_FUNDED_ACCOUNT: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData3"'],
     dynamicResponse: buildSubscribedConfirmation,
-    dynamicFollowUp: webData3FollowUp(FUNDED_CLEARING_HOUSE_STATE),
+    followUpResponse: {
+      channel: 'webData3',
+      data: {
+        perpDexStates: [
+          {
+            clearinghouseState: FUNDED_CLEARING_HOUSE_STATE,
+            openOrders: [],
+            frontendOpenOrders: [],
+            fills: [],
+            userFundings: [],
+            userNonFundingLedgerUpdates: [],
+            serverTime: 0,
+            perpsAtOpenInterestCap: [],
+          },
+        ],
+      },
+    },
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Perps funded account mock: webData3 with 10000 USDC balance',
   },
   {
     messageIncludes: ['"method":"post"', '"type":"clearinghouseState"'],
-    dynamicResponse: clearinghousePostResponse(FUNDED_CLEARING_HOUSE_STATE),
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(req.id, req.type, FUNDED_CLEARING_HOUSE_STATE)
+        : null;
+    },
     delay: 50,
     logMessage:
       'Perps funded account mock: clearinghouseState POST with 10000 USDC',
@@ -444,8 +476,6 @@ export function pushPositionUpdate(
     time: Date.now(),
   };
 
-  rememberClearinghouseState(stateWithPosition);
-
   const user = opts.user ?? '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
   // @metamask/perps-controller HyperLiquidSubscriptionService only applies
@@ -512,8 +542,6 @@ export function pushPositionClosed(
     assetPositions: [],
     time: Date.now(),
   };
-
-  rememberClearinghouseState(emptyState);
 
   const broadcast = () => {
     server.sendMessage(
