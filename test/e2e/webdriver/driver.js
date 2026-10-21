@@ -542,18 +542,6 @@ class Driver {
   }
 
   /**
-   * @overload
-   * @param {string | object} rawLocator - Element locator
-   * @param {{ timeout?: number, state?: 'visible' | 'enabled' | 'disabled', waitAtLeastGuard?: number }} [options]
-   * @returns {Promise<WebElement>} promise resolving to the wrapped element
-   */
-  /**
-   * @overload
-   * @param {string | object} rawLocator - Element locator
-   * @param {{ timeout?: number, state: 'detached', waitAtLeastGuard?: number }} [options]
-   * @returns {Promise<undefined>} promise resolving once the element is removed from the DOM
-   */
-  /**
    * Waits for an element that matches the given locator to reach the specified state within the timeout period.
    *
    * @param {string | object} rawLocator - Element locator
@@ -566,9 +554,7 @@ class Driver {
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
    * @param {number} [options.waitAtLeastGuard] - minimum milliseconds to wait before passing
-   * @returns {Promise<WebElement | undefined>} promise resolving to the
-   * wrapped element for `visible` / `enabled` / `disabled`, or `undefined`
-   * when waiting for `detached` (no element remains to wrap).
+   * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
    * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
    */
   async waitForSelector(
@@ -594,15 +580,10 @@ class Driver {
         timeout,
       );
     } else if (state === 'detached') {
-      // Succeed if nothing matches, or when the match we found disappears.
-      // (Avoid findElement: it hangs when the element is already gone.)
-      const locator = this.buildLocator(rawLocator);
-      const found = await this.driver.findElements(locator);
-      if (found.length === 0) {
-        return undefined;
-      }
-      await this.driver.wait(until.stalenessOf(found[0]), timeout);
-      return undefined;
+      element = await this.driver.wait(
+        until.stalenessOf(await this.findElement(rawLocator)),
+        timeout,
+      );
     } else if (state === 'enabled') {
       element = await this.driver.wait(
         until.elementIsEnabled(await this.findElement(rawLocator)),
