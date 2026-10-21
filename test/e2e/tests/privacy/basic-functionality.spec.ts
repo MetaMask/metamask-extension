@@ -1,7 +1,14 @@
 import { strict as assert } from 'assert';
-import { Mockttp } from 'mockttp';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { CompletedRequest, Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures, isSidePanelEnabled } from '../../helpers';
+import {
+  withFixtures,
+  isSidePanelEnabled,
+  veryLargeDelayMs,
+} from '../../helpers';
+import { browserAPIRequestDomains } from '../../mock-e2e';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -10,6 +17,7 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
@@ -28,6 +36,116 @@ import {
 import { mockIdentityServices } from '../identity/mocks';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+const ALLOWLIST_FILE_NAME = 'basic-functionality-off-allowlist.json';
+
+/**
+ * Hosts that are still contacted with basic functionality off. Every entry is
+ * a bug: with the toggle off, only JSON-RPC requests to nodes are allowed.
+ * Remove an entry once the underlying bug is fixed.
+ */
+type BasicFunctionalityOffAllowlist = {
+  knownViolations: string[];
+};
+
+/** Map of host to the set of `METHOD /pathname` requests seen for that host. */
+type NonRpcRequests = Map<string, Set<string>>;
+
+async function loadAllowlist(): Promise<BasicFunctionalityOffAllowlist> {
+  const allowlistRaw = await fs.readFile(
+    path.join(__dirname, ALLOWLIST_FILE_NAME),
+    'utf8',
+  );
+  return JSON.parse(allowlistRaw);
+}
+
+function isJsonRpcPayload(payload: unknown): boolean {
+  const entries = Array.isArray(payload) ? payload : [payload];
+  return (
+    entries.length > 0 &&
+    entries.every(
+      (entry) =>
+        typeof entry === 'object' &&
+        entry !== null &&
+        'jsonrpc' in entry &&
+        'method' in entry,
+    )
+  );
+}
+
+/**
+ * Records every request that is not a JSON-RPC call, ignoring requests the
+ * browser itself makes.
+ *
+ * @param server - The mock server proxying all extension traffic.
+ * @returns A function resolving to the recorded non-RPC requests.
+ */
+function recordNonRpcRequests(server: Mockttp): () => Promise<NonRpcRequests> {
+  const nonRpcRequests: NonRpcRequests = new Map();
+  const pendingClassifications: Promise<void>[] = [];
+
+  server.on('request', (request: CompletedRequest) => {
+    pendingClassifications.push(
+      (async () => {
+        const { host } = request.headers;
+        if (!host || browserAPIRequestDomains.test(host)) {
+          return;
+        }
+        if (
+          request.method === 'POST' &&
+          isJsonRpcPayload(await request.body.getJson())
+        ) {
+          return;
+        }
+        const requestsForHost = nonRpcRequests.get(host) ?? new Set<string>();
+        requestsForHost.add(
+          `${request.method} ${new URL(request.url).pathname}`,
+        );
+        nonRpcRequests.set(host, requestsForHost);
+      })(),
+    );
+  });
+
+  return async () => {
+    await Promise.all(pendingClassifications);
+    return nonRpcRequests;
+  };
+}
+
+async function assertOnlyAllowlistedNonRpcRequests(
+  getNonRpcRequests: () => Promise<NonRpcRequests>,
+) {
+  const { knownViolations } = await loadAllowlist();
+  const nonRpcRequests = await getNonRpcRequests();
+
+  console.log(
+    'Non-RPC requests made with basic functionality off:',
+    JSON.stringify(
+      Object.fromEntries(
+        [...nonRpcRequests].map(([host, requests]) => [host, [...requests]]),
+      ),
+      null,
+      2,
+    ),
+  );
+
+  const unexpectedRequests = [...nonRpcRequests].filter(
+    ([host]) => !knownViolations.includes(host),
+  );
+
+  assert.equal(
+    unexpectedRequests.length,
+    0,
+    `Unexpected non-RPC requests with basic functionality off:\n${unexpectedRequests
+      .map(
+        ([host, requests]) =>
+          `  - ${host}\n${[...requests].map((request) => `      ${request}`).join('\n')}`,
+      )
+      .join(
+        '\n',
+      )}\n\nOnly JSON-RPC requests to nodes are allowed when basic functionality is off.\nIf this is a known bug that cannot be fixed yet, add the host to ${ALLOWLIST_FILE_NAME}.`,
+  );
+}
 
 async function mockFeatureFlagsForPrivacyTest(server: Mockttp) {
   const prodFlags = getProductionRemoteFlagApiResponse();
@@ -173,7 +291,7 @@ describe('MetaMask onboarding', function () {
           );
         },
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({ driver, mockServer, mockedEndpoint: mockedEndpoints }) => {
         await importSRPOnboardingFlow({ driver });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
@@ -189,6 +307,7 @@ describe('MetaMask onboarding', function () {
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
+        const getNonRpcRequests = recordNonRpcRequests(mockServer);
         await onboardingCompletePage.completeOnboarding();
 
         // Handle sidepanel navigation if needed
@@ -200,6 +319,12 @@ describe('MetaMask onboarding', function () {
         await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         const tokensTab = new TokensTab(driver);
         await tokensTab.refreshErc20TokenList();
+
+        // Intended delay: we assert on the absence of requests, so there is no
+        // condition to wait for. This covers at least one polling cycle.
+        await driver.delay(veryLargeDelayMs);
+
+        await assertOnlyAllowlistedNonRpcRequests(getNonRpcRequests);
 
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
@@ -264,6 +389,39 @@ describe('MetaMask onboarding', function () {
             `${mockedEndpoint} should make requests after onboarding`,
           );
         }
+      },
+    );
+  });
+
+  it('only makes RPC requests on an existing wallet with basic functionality off', async function () {
+    let getNonRpcRequests: () => Promise<NonRpcRequests> = async () =>
+      new Map();
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withUseBasicFunctionalityDisabled()
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (server: Mockttp) => {
+          getNonRpcRequests = recordNonRpcRequests(server);
+          return [];
+        },
+      },
+      async ({ driver }) => {
+        await login(driver, { waitForNonEvmAccounts: false });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.refreshErc20TokenList();
+
+        // Intended delay: we assert on the absence of requests, so there is no
+        // condition to wait for. This covers at least one polling cycle.
+        await driver.delay(veryLargeDelayMs);
+
+        await assertOnlyAllowlistedNonRpcRequests(getNonRpcRequests);
       },
     );
   });

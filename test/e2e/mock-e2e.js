@@ -2955,4 +2955,9 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking, emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES };
+module.exports = {
+  setupMocking,
+  emptyHtmlPage,
+  MOCK_SUGGESTED_GAS_FEES,
+  browserAPIRequestDomains,
+};
