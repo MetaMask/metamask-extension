@@ -581,6 +581,9 @@ class HomePage {
   async goToActivityList(): Promise<void> {
     console.log('Open the activity page from the bottom navigation bar');
     await this.driver.clickElement(this.bottomNavActivityButton);
+    await this.driver.waitForSelector({
+      testId: 'parent-selector-activity-tab',
+    });
   }
 
   async goToBackupSRPPage(): Promise<void> {

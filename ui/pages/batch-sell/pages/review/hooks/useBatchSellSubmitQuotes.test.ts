@@ -9,6 +9,7 @@ import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useDispatch } from '../../../../../store/hooks';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
+import { ACTIVITY_ROUTE } from '../../../../../helpers/constants/routes';
 
 jest.mock('../../../../../store/hooks', () => ({
   useDispatch: jest.fn(),
@@ -46,10 +47,6 @@ jest.mock('../../../../../ducks/bridge/utils', () => ({
 
 jest.mock('../../../../../../shared/lib/selectors', () => ({
   getIsSmartTransaction: jest.fn(),
-}));
-
-jest.mock('../../../../../helpers/constants/routes', () => ({
-  ACTIVITY_ROUTE: '/activity',
 }));
 
 const mockDispatch = jest.fn();
@@ -260,7 +257,7 @@ describe('useBatchSellSubmitQuotes', () => {
         await result.current.submitBatchSellQuotes();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith('/activity', {
+      expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
         state: { stayOnHomePage: true },
         replace: true,
       });
@@ -312,7 +309,7 @@ describe('useBatchSellSubmitQuotes', () => {
         await result.current.submitBatchSellQuotes();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith('/activity', {
+      expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
         state: { stayOnHomePage: true },
         replace: true,
       });

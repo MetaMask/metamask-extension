@@ -272,7 +272,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.clickFooterButton({ button: 'confirm' });
 
-        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAction({
           action: 'Sent USDC',
@@ -348,7 +347,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.clickFooterButton({ button: 'confirm' });
 
-        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkFailedTxNumberDisplayedInActivity();
         await activityTab.checkTxAction({
