@@ -203,7 +203,7 @@ const MfaMethodDetails = ({ method }: { method: MfaDetailsMethod }) => {
           alignItems={BoxAlignItems.Center}
           gap={4}
           padding={4}
-          className="rounded-2xl border border-muted"
+          className="rounded-2xl border-[1.5px] border-muted"
         >
           <AvatarIcon iconName={copy.icon} />
           <Box flexDirection={BoxFlexDirection.Column}>

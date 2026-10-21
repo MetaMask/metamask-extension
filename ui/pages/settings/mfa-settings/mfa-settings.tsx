@@ -18,6 +18,7 @@ import {
   MFA_SETTINGS_TOTP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../../components/ui/transition';
+import { toast } from '../../../components/ui/toast/toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isMfaKitEnabled, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
@@ -76,6 +77,11 @@ const MfaSettings = () => {
     }
     setIsEnrolling(true);
     enroll({ method, reason: { operation } })
+      .then(() => {
+        if (method === 'totp') {
+          toast.success(t('mfaSettingsAuthenticatorAppAdded'));
+        }
+      })
       .catch(() => undefined)
       .finally(() => setIsEnrolling(false));
   };

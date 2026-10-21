@@ -5675,9 +5675,6 @@
   "mfaOtpGetNewCode": {
     "message": "Get new code"
   },
-  "mfaOtpPaste": {
-    "message": "Paste"
-  },
   "mfaOtpResend": {
     "message": "Resend code"
   },
@@ -5704,9 +5701,6 @@
   "mfaOtpTitle": {
     "message": "Enter your verification code"
   },
-  "mfaOtpVerify": {
-    "message": "Verify"
-  },
   "mfaPasskeyTitleSetup": {
     "message": "Create a passkey"
   },
@@ -5730,6 +5724,9 @@
   },
   "mfaSettingsAdd": {
     "message": "Add"
+  },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Authenticator app added"
   },
   "mfaSettingsAddedOn": {
     "message": "Added $1"
@@ -5798,10 +5795,13 @@
     "message": "Copy setup key"
   },
   "mfaTotpSetupDescription": {
-    "message": "Scan the QR code with your authenticator app, or enter the setup key. Then enter the 6-digit code it shows."
+    "message": "Scan the QR code with your authenticator app, or enter the setup key."
   },
   "mfaTotpSetupKey": {
     "message": "Setup key"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Or enter manually"
   },
   "mfaTotpSetupQrAlt": {
     "message": "QR code to add MetaMask to your authenticator app"
