@@ -205,9 +205,11 @@ export async function runBenchmarkWithIterations(
   }
 
   const timerStats: TimerStatistics[] = [];
+  const rawSamples: Record<string, number[]> = {};
   let excludedDueToQuality = 0;
 
   for (const [timerId, durations] of timerMap) {
+    rawSamples[timerId] = [...durations];
     const stats = calculateTimerStatistics(timerId, durations, {
       ...(zeroAllowedTimers.has(timerId) ? { minDurationMs: 0 } : {}),
     });
@@ -250,6 +252,7 @@ export async function runBenchmarkWithIterations(
       maxDurationMs: MAX_TOTAL_DURATION_MS,
     });
     timerStats.push(totalStats);
+    rawSamples.total = [...perRunTotalDurations];
   }
 
   // Check overall run exclusion rate
@@ -279,6 +282,7 @@ export async function runBenchmarkWithIterations(
     successfulRuns,
     failedRuns,
     timers: timerStats,
+    rawSamples,
     timestamp: new Date().toISOString(),
     excludedDueToQuality,
     exclusionRatePassed: overallExclusionCheck.passed,
@@ -301,6 +305,7 @@ export async function runBenchmarkWithIterations(
  * @param platform - Optional platform label
  * @param buildType - Optional build label
  * @param webVitals - Optional aggregated web vitals (from {@link BenchmarkSummary.webVitals})
+ * @param samples - Optional raw per-load values by metric id
  */
 export function convertTimerStatisticsToBenchmarkResults(
   timers: TimerStatistics[],
@@ -310,6 +315,7 @@ export function convertTimerStatisticsToBenchmarkResults(
   platform?: string,
   buildType?: string,
   webVitals?: WebVitalsSummary,
+  samples?: Record<string, number[]>,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -351,6 +357,7 @@ export function convertTimerStatisticsToBenchmarkResults(
     p95,
     ...(hasTrimmedCounts && { trimmedCount }),
     ...(hasOutliers && { outliers }),
+    ...(samples && { samples }),
     ...(webVitals && { webVitals }),
   };
 }
@@ -382,6 +389,7 @@ export function convertSummaryToResults(
     platform,
     buildType,
     summary.webVitals,
+    summary.rawSamples,
   );
 }
 
@@ -487,9 +495,11 @@ export async function runPageLoadBenchmark(
   }
 
   const result: Record<string, number[]> = {};
+  const samples: Record<string, number[]> = {};
   const trimmedCounts: StatisticalResult = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
     const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    samples[key] = rawSamples;
     const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
     result[key] = [...filtered].sort((a, b) => a - b);
     trimmedCounts[key] = outlierCount;
@@ -535,6 +545,7 @@ export async function runPageLoadBenchmark(
     p95,
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
+    samples,
     ...(webVitals && { webVitals }),
   };
 }

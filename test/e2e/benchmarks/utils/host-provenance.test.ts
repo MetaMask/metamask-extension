@@ -3,6 +3,7 @@ import {
   markBenchmarkWindowStart,
   medianCpuProbe,
   parseCalibration,
+  parseCpuIdentity,
   parseCpuTimes,
   parseSetupInfoRegion,
   stealPercentBetween,
@@ -24,6 +25,39 @@ describe('timeCpuProbe', () => {
 describe('medianCpuProbe', () => {
   it('returns a positive duration', () => {
     expect(medianCpuProbe(3, 50)).toBeGreaterThan(0);
+  });
+});
+
+describe('parseCpuIdentity', () => {
+  const cpuinfo = [
+    'processor\t: 0',
+    'vendor_id\t: AuthenticAMD',
+    'cpu family\t: 25',
+    'model\t\t: 17',
+    'model name\t: AMD EPYC',
+    'stepping\t: 1',
+    'microcode\t: 0xa10113e',
+    '',
+    'processor\t: 1',
+    'cpu family\t: 99',
+  ].join('\n');
+
+  it('reads family, model, stepping and microcode from the first block', () => {
+    expect(parseCpuIdentity(cpuinfo)).toStrictEqual({
+      cpuFamily: 25,
+      cpuModelNumber: 17,
+      cpuStepping: 1,
+      cpuMicrocode: '0xa10113e',
+    });
+  });
+
+  it('leaves missing fields undefined', () => {
+    expect(parseCpuIdentity('processor\t: 0')).toStrictEqual({
+      cpuFamily: undefined,
+      cpuModelNumber: undefined,
+      cpuStepping: undefined,
+      cpuMicrocode: undefined,
+    });
   });
 });
 
