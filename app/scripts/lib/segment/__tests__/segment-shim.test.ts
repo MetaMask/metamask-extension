@@ -5,7 +5,14 @@ import { createSegmentMock } from '..';
 function importSegmentIndexModule(): Promise<typeof import('..')> {
   const parentDir = '..';
   const entryName = 'index';
-  return import(`${parentDir}/${entryName}`);
+  return import(`${parentDir}/${entryName}`).then((module) => {
+    module.updateSegmentDeliveryState({
+      OnboardingController: { completedOnboarding: true },
+      PreferencesController: { useExternalServices: true },
+      AnalyticsController: { analyticsId: 'u', optedIn: true },
+    });
+    return module;
+  });
 }
 
 /** Large enough that a few track() calls do not trigger auto-flush */
@@ -106,7 +113,10 @@ describe('segment module export', () => {
     jest.resetModules();
     delete process.env.SEGMENT_WRITE_KEY;
     const mod = await importSegmentIndexModule();
-    expect('queue' in mod.segment).toBe(true);
+    const callback = jest.fn();
+    mod.segment.track({ userId: 'u', event: 'mock event' }, callback);
+    await mod.segment.flush();
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it('constructs Analytics with dev defaults when write key is set', async () => {
@@ -152,9 +162,9 @@ describe('segment module export', () => {
     }));
     const { segment: client } = await importSegmentIndexModule();
 
-    client.track({ event: 'e' });
+    client.track({ userId: 'u', event: 'e' });
     client.identify({ userId: 'u' });
-    client.page({ name: 'n' });
+    client.page({ userId: 'u', name: 'n' });
 
     expect(analyticsInstance.track).toHaveBeenCalledTimes(1);
     expect(analyticsInstance.identify).toHaveBeenCalledTimes(1);
@@ -177,6 +187,7 @@ describe('segment module export', () => {
     const traits = Object.freeze({ plan: 'pro' });
 
     client.track({
+      userId: 'u',
       event: 'e',
       properties,
       context,
@@ -187,6 +198,7 @@ describe('segment module export', () => {
       context,
     });
     client.page({
+      userId: 'u',
       name: 'n',
       properties,
       context,
@@ -222,9 +234,9 @@ describe('segment module export', () => {
     const onTrack = jest.fn();
     const onIdentify = jest.fn();
     const onPage = jest.fn();
-    client.track({ event: 'e' }, onTrack);
+    client.track({ userId: 'u', event: 'e' }, onTrack);
     client.identify({ userId: 'u' }, onIdentify);
-    client.page({ name: 'n' }, onPage);
+    client.page({ userId: 'u', name: 'n' }, onPage);
     expect(analyticsInstance.track).toHaveBeenCalledWith(
       expect.anything(),
       onTrack,
