@@ -83,7 +83,7 @@ export const StepMessage = ({
   </Text>
 );
 
-/** The 2-step verification shield, above the title of the intro and picker. */
+/** The 2-step verification shield, above the picker's title. */
 export const MfaShield = () => (
   <img
     src="./images/mfa-shield.png"
@@ -95,8 +95,8 @@ export const MfaShield = () => (
 );
 
 /**
- * The step's title and description, centred under an image (the intro and
- * picker shield, the failure icon).
+ * The step's title and description, centred under an image (the picker
+ * shield, the failure icon).
  *
  * @param props - The header's props.
  * @param props.title - The title.
