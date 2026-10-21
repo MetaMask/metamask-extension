@@ -91,6 +91,29 @@ const BUILT_IN_TEST_CHAIN_IDS = new Set(
   TEST_CHAINS.map((chainId) => chainId.toLowerCase()),
 );
 
+/**
+ * Keeps Chainlist's order inside each group, and puts chains that have a
+ * built-in logo ahead of chains that only show a letter.
+ *
+ * @param networks - Chainlist rows in their original order.
+ */
+const sortChainlistNetworksWithLogosFirst = (
+  networks: ChainlistNetwork[],
+): ChainlistNetwork[] => {
+  const networksWithLogos: ChainlistNetwork[] = [];
+  const networksWithoutLogos: ChainlistNetwork[] = [];
+
+  for (const network of networks) {
+    if (getHexChainId(network.chainId) in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP) {
+      networksWithLogos.push(network);
+    } else {
+      networksWithoutLogos.push(network);
+    }
+  }
+
+  return [...networksWithLogos, ...networksWithoutLogos];
+};
+
 type ChainlistNetworkPickerProps = {
   existingNetworkChainIds: Set<string>;
   existingNetworkNamesByChainId: Record<string, string>;
@@ -132,29 +155,38 @@ export const ChainlistNetworkPicker = ({
   const chainlistNetworks = useMemo(() => {
     const normalizedSearchValue = searchValue.trim().toLowerCase();
 
-    return ((safeChains ?? []) as ChainlistNetwork[]).filter((network) => {
-      const chainId = getHexChainId(network.chainId);
-      const existingNetworkName = existingNetworkNamesByChainId[chainId];
-      if (getUsableUrls(network.rpc).length === 0) {
-        return false;
-      }
+    const matchingNetworks = ((safeChains ?? []) as ChainlistNetwork[]).filter(
+      (network) => {
+        const chainId = getHexChainId(network.chainId);
+        const existingNetworkName = existingNetworkNamesByChainId[chainId];
+        if (getUsableUrls(network.rpc).length === 0) {
+          return false;
+        }
 
-      if (!showTestNetworks && BUILT_IN_TEST_CHAIN_IDS.has(chainId)) {
-        return false;
-      }
+        if (!showTestNetworks && BUILT_IN_TEST_CHAIN_IDS.has(chainId)) {
+          return false;
+        }
 
-      if (!normalizedSearchValue) {
-        return true;
-      }
+        if (!normalizedSearchValue) {
+          return true;
+        }
 
-      return (
-        network.name.toLowerCase().includes(normalizedSearchValue) ||
-        existingNetworkName?.toLowerCase().includes(normalizedSearchValue) ||
-        String(network.chainId).includes(normalizedSearchValue)
-      );
-    });
+        return (
+          network.name.toLowerCase().includes(normalizedSearchValue) ||
+          existingNetworkName?.toLowerCase().includes(normalizedSearchValue) ||
+          String(network.chainId).includes(normalizedSearchValue)
+        );
+      },
+    );
+
+    if (layout !== 'dropdown') {
+      return matchingNetworks;
+    }
+
+    return sortChainlistNetworksWithLogosFirst(matchingNetworks);
   }, [
     existingNetworkNamesByChainId,
+    layout,
     safeChains,
     searchValue,
     showTestNetworks,

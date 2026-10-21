@@ -32,8 +32,6 @@ import {
   getAccountActivityServiceMessenger,
 } from './core-backend';
 import {
-  getMultichainBalancesControllerMessenger,
-  getMultichainBalancesControllerInitMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
   getMultichainAssetsControllerInitMessenger,
@@ -88,10 +86,6 @@ import {
 import { getNetworkConnectionBannerControllerMessenger } from './network-connection-banner';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
-import {
-  getTokenListControllerInitMessenger,
-  getTokenListControllerMessenger,
-} from './token-list-controller-messenger';
 import {
   getTokenDetectionControllerInitMessenger,
   getTokenDetectionControllerMessenger,
@@ -297,11 +291,6 @@ export {
   getTokenDetectionControllerMessenger,
   getTokenDetectionControllerInitMessenger,
 } from './token-detection-controller-messenger';
-export type { TokenListControllerInitMessenger } from './token-list-controller-messenger';
-export {
-  getTokenListControllerMessenger,
-  getTokenListControllerInitMessenger,
-} from './token-list-controller-messenger';
 export type { TokensControllerInitMessenger } from './tokens-controller-messenger';
 export {
   getTokensControllerMessenger,
@@ -486,10 +475,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getMultichainAssetsRatesControllerMessenger,
     getInitMessenger: getMultichainAssetsRatesControllerInitMessenger,
   },
-  MultichainBalancesController: {
-    getMessenger: getMultichainBalancesControllerMessenger,
-    getInitMessenger: getMultichainBalancesControllerInitMessenger,
-  },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,
     getInitMessenger: noop,
@@ -621,10 +606,6 @@ export const MESSENGER_FACTORIES = {
   TokenDetectionController: {
     getMessenger: getTokenDetectionControllerMessenger,
     getInitMessenger: getTokenDetectionControllerInitMessenger,
-  },
-  TokenListController: {
-    getMessenger: getTokenListControllerMessenger,
-    getInitMessenger: getTokenListControllerInitMessenger,
   },
   TokensController: {
     getMessenger: getTokensControllerMessenger,

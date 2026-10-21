@@ -26,6 +26,9 @@ const { PERPS_WS_PORT } = require('./websocket/perps-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
+  v6AccountsApiBalancesJson,
+} = require('./helpers/accounts-api-v6-balances');
+const {
   getProductionRemoteFlagApiResponse,
 } = require('./feature-flags/feature-flag-registry');
 const {
@@ -958,6 +961,18 @@ async function setupMocking(
           reason: '',
           description: '',
           features: [],
+        },
+      };
+    });
+
+  await server
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/address/evm/scan`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          result_type: 'Benign',
+          label: '',
         },
       };
     });
@@ -2218,13 +2233,21 @@ async function setupMocking(
   // when assetsUnifyState is enabled). Default: 25 ETH native per requested
   // chain for the default fixture account. Override via
   // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a
-  // custom fiat total. v6 rows include `object: 'token'` (core 15).
-  const respondWithUnifiedEvmAccountsApiBalances = (includeObjectField) => {
+  // custom fiat total. The v6 body checksums ERC-20 asset ids, honors
+  // includeAssetIds and excludeAssetIds, and sets unprocessedIncludeAssetIds.
+  const respondWithUnifiedEvmAccountsApiBalances = (useV6Contract) => {
     return (req) => {
       const balances = buildUnifiedEvmAccountsApiBalances(
         req,
         unifiedEvmAccountsApiBalances,
-      ).map((row) => (includeObjectField ? { ...row, object: 'token' } : row));
+      );
+
+      if (useV6Contract) {
+        return {
+          statusCode: 200,
+          json: v6AccountsApiBalancesJson(req.url, balances),
+        };
+      }
 
       return {
         statusCode: 200,
