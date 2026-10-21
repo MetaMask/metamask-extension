@@ -505,7 +505,7 @@ function PermissionsConnect() {
   const renderSnapChooseAccount = useCallback(
     () => (
       <SnapChooseAccount
-        permissions={permissions as PermissionsRequest | undefined}
+        request={permissionsRequest || {}}
         onSubmit={({ caipAccountIds, caipChainIds, addresses }) => {
           // Store CAIP account IDs and chain IDs for chain-agnostic permission approval
           setSelectedCaipAccountIds(caipAccountIds);
@@ -516,7 +516,7 @@ function PermissionsConnect() {
       />
     ),
     [
-      permissions,
+      permissionsRequest,
       selectAccounts,
       cancelPermissionsRequest,
       permissionsRequestId,
