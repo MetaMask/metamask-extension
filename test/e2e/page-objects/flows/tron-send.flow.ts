@@ -4,8 +4,8 @@ import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import TokensTab from '../pages/home/tokens-tab';
 import SendPage from '../pages/send/send-page';
 import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
+import { SNAP_HOMEPAGE_TOKEN_TIMEOUT_MS } from '../../constants';
 import { login } from './login.flow';
-import { TRON_HOMEPAGE_TOKEN_TIMEOUT_MS } from './tron-assets.flow';
 import { selectTronNetwork } from './tron-network.flow';
 import { waitUntilAccountTreeSyncIdle } from './add-account.flow';
 
@@ -30,7 +30,7 @@ export async function landOnTronSendScreen({
   await home.checkPageIsLoaded();
   const tokensTab = new TokensTab(driver);
   await tokensTab.checkTokenNameVisible('Tron', {
-    timeout: TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
+    timeout: SNAP_HOMEPAGE_TOKEN_TIMEOUT_MS,
   });
   if (expectedNativeBalance) {
     await home.checkExpectedTokenBalanceIsDisplayed(

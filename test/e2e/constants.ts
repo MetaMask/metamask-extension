@@ -8,6 +8,13 @@ export const E2E_DRIVER = Object.freeze({
   PLAYWRIGHT: 'playwright',
 } as const);
 
+/**
+ * Explicit timeout for a snap network's native token row to appear on the
+ * homepage after the network is selected (snap balances are fetched
+ * asynchronously).
+ */
+export const SNAP_HOMEPAGE_TOKEN_TIMEOUT_MS = 30_000;
+
 /** Address of the first account generated from {@link E2E_SRP}. */
 export const LOCAL_NODE_ACCOUNT = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 
