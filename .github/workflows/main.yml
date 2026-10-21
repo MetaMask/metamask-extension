@@ -118,9 +118,13 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
+    # TEMPORARY (1/1): scheduled benchmark data collection only. The job can open
+    # tracking issues and fails on unrelated advisories. Remove the
+    # `trigger-ci-sched-` line to restore it.
     if: >-
       ${{
         !cancelled() &&
+        !startsWith(github.ref_name, 'trigger-ci-sched-') &&
         !contains(needs.*.result, 'failure') &&
         (
           needs.get-requirements.outputs.skip-everything != 'true' ||
