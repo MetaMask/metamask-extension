@@ -63,14 +63,14 @@ function makeFeeResult(
 
 /**
  * Default background wiring: route `perpsCalculateFees` to a configurable fee
- * result and `rewardsGetPerpsDiscountForAccount` to a configurable discount.
+ * result and `RewardsController:getPerpsDiscountForAccount` to a configurable discount.
  * Tests that need finer control (per-call sequencing, rejection) can override
  * via `mockSubmitRequestToBackground.mockImplementation` directly.
  *
  * @param options0 - Configurable test wiring.
  * @param options0.feeResponse - Fee result returned from `perpsCalculateFees`.
  * @param options0.feeError - Error used to reject `perpsCalculateFees` instead of resolving.
- * @param options0.discountBips - Discount in bips returned from `rewardsGetPerpsDiscountForAccount`.
+ * @param options0.discountBips - Discount in bips returned from `RewardsController:getPerpsDiscountForAccount`.
  */
 function setBackgroundResponses({
   feeResponse,
@@ -88,7 +88,7 @@ function setBackgroundResponses({
       }
       return Promise.resolve(feeResponse ?? makeFeeResult());
     }
-    if (method === 'rewardsGetPerpsDiscountForAccount') {
+    if (method === 'RewardsController:getPerpsDiscountForAccount') {
       return Promise.resolve(discountBips ?? null);
     }
     return Promise.resolve(undefined);
@@ -535,10 +535,12 @@ describe('usePerpsOrderFees', () => {
       const calledMethods = mockSubmitRequestToBackground.mock.calls.map(
         (call) => call[0],
       );
-      expect(calledMethods).not.toContain('rewardsGetPerpsDiscountForAccount');
+      expect(calledMethods).not.toContain(
+        'RewardsController:getPerpsDiscountForAccount',
+      );
     });
 
-    it('calls rewardsGetPerpsDiscountForAccount with the CAIP-10 id and original MM bips', async () => {
+    it('calls RewardsController:getPerpsDiscountForAccount with the CAIP-10 id and original MM bips', async () => {
       setBackgroundResponses({
         feeResponse: makeFeeResult(),
         discountBips: 0,
@@ -549,7 +551,7 @@ describe('usePerpsOrderFees', () => {
       );
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'rewardsGetPerpsDiscountForAccount',
+          'RewardsController:getPerpsDiscountForAccount',
           [TEST_CAIP_ACCOUNT_ID, 10],
         );
       });
@@ -577,7 +579,7 @@ describe('usePerpsOrderFees', () => {
       });
 
       const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
-        (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
+        (call) => call[0] === 'RewardsController:getPerpsDiscountForAccount',
       );
       expect(discountCalls).toHaveLength(1);
     });
@@ -790,7 +792,7 @@ describe('usePerpsOrderFees', () => {
         if (method === 'perpsCalculateFees') {
           return Promise.resolve(makeFeeResult());
         }
-        if (method === 'rewardsGetPerpsDiscountForAccount') {
+        if (method === 'RewardsController:getPerpsDiscountForAccount') {
           return Promise.reject(new Error('network down'));
         }
         return Promise.resolve(null);

@@ -52,7 +52,7 @@ function setSelectors(
 
 function setDiscountResponse(discountBips: number | null | Error) {
   mockSubmitRequestToBackground.mockImplementation((method: string) => {
-    if (method === 'rewardsGetPerpsDiscountForAccount') {
+    if (method === 'RewardsController:getPerpsDiscountForAccount') {
       if (discountBips instanceof Error) {
         return Promise.reject(discountBips);
       }
@@ -185,7 +185,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 
-  it('calls rewardsGetPerpsDiscountForAccount with the CAIP-10 id and the original MM fee bips', async () => {
+  it('calls RewardsController:getPerpsDiscountForAccount with the CAIP-10 id and the original MM fee bips', async () => {
     setDiscountResponse(2500);
 
     renderHook(() =>
@@ -193,7 +193,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     );
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'rewardsGetPerpsDiscountForAccount',
+        'RewardsController:getPerpsDiscountForAccount',
         [TEST_CAIP_ACCOUNT_ID, ORIGINAL_METAMASK_FEE_BIPS],
       );
     });
@@ -215,7 +215,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     rerender();
 
     const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
-      (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
+      (call) => call[0] === 'RewardsController:getPerpsDiscountForAccount',
     );
     expect(discountCalls).toHaveLength(1);
     expect(result.current).toBe(2000);
@@ -244,7 +244,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
 
     expect(second.result.current).toBe(3000);
     const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
-      (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
+      (call) => call[0] === 'RewardsController:getPerpsDiscountForAccount',
     );
     expect(discountCalls).toHaveLength(1);
   });
@@ -277,7 +277,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     // Expired entry must not be shown — stay undefined until refresh resolves.
     expect(second.result.current).toBeUndefined();
     const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
-      (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
+      (call) => call[0] === 'RewardsController:getPerpsDiscountForAccount',
     );
     expect(discountCalls).toHaveLength(2);
 
@@ -307,7 +307,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     });
 
     const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
-      (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
+      (call) => call[0] === 'RewardsController:getPerpsDiscountForAccount',
     );
     expect(discountCalls).toHaveLength(2);
     expect(discountCalls[0][1][0]).toBe(TEST_CAIP_ACCOUNT_ID);
@@ -340,7 +340,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     });
 
     const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
-      (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
+      (call) => call[0] === 'RewardsController:getPerpsDiscountForAccount',
     );
     expect(discountCalls).toHaveLength(2);
   });
@@ -372,7 +372,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
   it('does not update state after unmount', async () => {
     let resolveDiscount!: (v: number | null) => void;
     mockSubmitRequestToBackground.mockImplementation((method: string) => {
-      if (method === 'rewardsGetPerpsDiscountForAccount') {
+      if (method === 'RewardsController:getPerpsDiscountForAccount') {
         return new Promise<number | null>((res) => {
           resolveDiscount = res;
         });

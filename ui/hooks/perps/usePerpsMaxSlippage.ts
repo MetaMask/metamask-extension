@@ -26,8 +26,8 @@ export function usePerpsMaxSlippage(): UsePerpsMaxSlippageReturn {
 
   const refresh = useCallback(async () => {
     try {
-      const value = await submitRequestToBackground<number | undefined>(
-        'perpsGetMaxSlippage',
+      const value = await submitRequestToBackground(
+        'PerpsController:getMaxSlippage',
         [],
       );
       setStoredBps(typeof value === 'number' ? value : undefined);
@@ -50,7 +50,7 @@ export function usePerpsMaxSlippage(): UsePerpsMaxSlippageReturn {
   }, [refresh]);
 
   const setMaxSlippage = useCallback(async (bps: number) => {
-    await submitRequestToBackground('perpsSetMaxSlippage', [bps]);
+    await submitRequestToBackground('PerpsController:setMaxSlippage', [bps]);
     setStoredBps(bps);
   }, []);
 

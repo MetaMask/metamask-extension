@@ -83,7 +83,7 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
 
   const handleClose = useCallback(() => {
     dispatch(markTutorialCompleted());
-    submitRequestToBackground('perpsMarkTutorialCompleted', []);
+    submitRequestToBackground('PerpsController:markTutorialCompleted', []);
     onClose?.();
   }, [dispatch, onClose]);
 
@@ -94,7 +94,7 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
           PERPS_EVENT_VALUE.INTERACTION_TYPE.TUTORIAL_COMPLETED,
       });
       dispatch(markTutorialCompleted());
-      submitRequestToBackground('perpsMarkTutorialCompleted', []);
+      submitRequestToBackground('PerpsController:markTutorialCompleted', []);
     } else {
       const nextStep = TUTORIAL_STEPS_ORDER[currentStepIndex + 1];
       track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -109,7 +109,7 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
 
   const handleSkip = useCallback(() => {
     dispatch(markTutorialCompleted());
-    submitRequestToBackground('perpsMarkTutorialCompleted', []);
+    submitRequestToBackground('PerpsController:markTutorialCompleted', []);
   }, [dispatch]);
 
   const renderContent = useCallback(() => {
