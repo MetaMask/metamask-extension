@@ -19,6 +19,7 @@ import log from 'loglevel';
 import { rawChainData } from 'eth-chainlist';
 import { nanoid } from 'nanoid';
 import { Messenger } from '@metamask/messenger';
+import { RequestSourceFlow } from '@metamask/phishing-controller';
 import {
   MethodNames,
   PermissionDoesNotExistError,
@@ -194,8 +195,8 @@ import {
   createOriginScanMiddleware,
 } from './lib/trust-signals/trust-signals-middleware';
 import {
-  createCaipOriginScanGate,
-  createEip1193OriginScanGate,
+  getCaipOriginScanFlow,
+  getEip1193OriginScanFlow,
 } from './lib/trust-signals/trust-signals-util';
 import {
   onMessageReceived,
@@ -3371,7 +3372,7 @@ export default class MetamaskController extends EventEmitter {
         return phishingController.checkAddressPoisoning(address);
       },
       scanUrlForPhishing: async (origin) => {
-        return phishingController.scanUrl(origin);
+        return phishingController.scanUrl(origin, RequestSourceFlow.RevealSrp);
       },
       deleteInterface: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -5309,7 +5310,7 @@ export default class MetamaskController extends EventEmitter {
       createOriginScanMiddleware(
         this.phishingController,
         this.preferencesController,
-        createEip1193OriginScanGate(this.getPermittedAccounts.bind(this)),
+        getEip1193OriginScanFlow(this.getPermittedAccounts.bind(this)),
         sender?.url,
       ),
     );
@@ -5746,7 +5747,7 @@ export default class MetamaskController extends EventEmitter {
       createOriginScanMiddleware(
         this.phishingController,
         this.preferencesController,
-        createCaipOriginScanGate((requestOrigin) =>
+        getCaipOriginScanFlow((requestOrigin) =>
           this.permissionController.hasPermission(
             requestOrigin,
             Caip25EndowmentPermissionName,
