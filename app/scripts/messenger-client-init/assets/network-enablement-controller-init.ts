@@ -2,6 +2,7 @@ import {
   NetworkEnablementController,
   NetworkEnablementControllerState,
   NetworkEnablementControllerMessenger,
+  Slip44Service,
 } from '@metamask/network-enablement-controller';
 import { selectEvmAutoEnabledNetworksChainIds } from '@metamask/config-registry-controller';
 import { NetworkState } from '@metamask/network-controller';
@@ -137,17 +138,39 @@ export const NetworkEnablementControllerInit: MessengerClientInitFunction<
   ).state;
 
   const networkControllerState = getMessengerClient('NetworkController').state;
+  const canFetchMetadata = () =>
+    getMessengerClient('OnboardingController').state.completedOnboarding &&
+    getMessengerClient('PreferencesController').state.useExternalServices;
 
-  const messengerClient = new NetworkEnablementController({
-    messenger: controllerMessenger,
-    state: {
-      ...generateDefaultNetworkEnablementControllerState(
-        networkControllerState,
-        multichainNetworkControllerState,
-      ),
-      ...persistedState.NetworkEnablementController,
-    },
-  });
+  const messengerClient: NetworkEnablementController =
+    new NetworkEnablementController({
+      messenger: controllerMessenger,
+      getEvmSlip44: async (chainId) => {
+        if (canFetchMetadata()) {
+          return Slip44Service.getEvmSlip44(chainId);
+        }
+        // Preserve known identifiers offline; otherwise use the packaged symbol map.
+        const existing =
+          messengerClient.state.nativeAssetIdentifiers[`eip155:${chainId}`];
+        if (existing) {
+          return Number(existing.split('/slip44:')[1]);
+        }
+        const network =
+          getMessengerClient('NetworkController').state
+            .networkConfigurationsByChainId[`0x${chainId.toString(16)}`];
+        return (
+          Slip44Service.getSlip44BySymbol(network?.nativeCurrency ?? 'ETH') ??
+          60
+        );
+      },
+      state: {
+        ...generateDefaultNetworkEnablementControllerState(
+          networkControllerState,
+          multichainNetworkControllerState,
+        ),
+        ...persistedState.NetworkEnablementController,
+      },
+    });
 
   if (
     !process.env.IN_TEST &&
@@ -207,6 +230,33 @@ export const NetworkEnablementControllerInit: MessengerClientInitFunction<
   // the nativeAssetIdentifiers state with CAIP-19-like identifiers for each network.
   // We intentionally don't await this - it will complete in the background.
   messengerClient.init();
+
+  let metadataWasAllowed = canFetchMetadata();
+  const refreshMetadata = () => {
+    const allowed = canFetchMetadata();
+    const becameAllowed = allowed && !metadataWasAllowed;
+    metadataWasAllowed = allowed;
+    if (becameAllowed) {
+      // A previously denied/failed lookup must not poison the newly allowed session.
+      Slip44Service.clearCache();
+      const networks = Object.entries(
+        getMessengerClient('NetworkController').state
+          .networkConfigurationsByChainId,
+      ).map(([chainId, { nativeCurrency }]) => ({
+        chainId: toEvmCaipChainId(chainId as Hex),
+        nativeCurrency,
+      }));
+      messengerClient
+        .initNativeAssetIdentifiers(networks)
+        .catch((error: unknown) => {
+          controllerMessenger.captureException?.(
+            error instanceof Error ? error : new Error(String(error)),
+          );
+        });
+    }
+  };
+  initMessenger.subscribe('OnboardingController:stateChange', refreshMetadata);
+  initMessenger.subscribe('PreferencesController:stateChange', refreshMetadata);
 
   // TODO: Remove this after BIP-44 rollout.
   initMessenger.subscribe(
