@@ -6,7 +6,10 @@ import {
   hasEvmChainName,
   isSecurityAlertsAPIEnabled,
 } from '#shared/lib/bridge-utils/security-alerts-api.util';
-import { getUseExternalServices } from '../selectors';
+import {
+  getIsAddressResolutionEnabled,
+  getUseExternalServices,
+} from '../selectors';
 
 export function useAddressLabel({
   address,
@@ -18,6 +21,9 @@ export function useAddressLabel({
   enabled?: boolean;
 }) {
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const isAddressResolutionFeatureEnabled = useSelector(
+    getIsAddressResolutionEnabled,
+  );
 
   return useQuery({
     ...queryOptions({
@@ -30,6 +36,7 @@ export function useAddressLabel({
       enabled &&
       Boolean(address) &&
       isExternalServicesEnabled &&
+      isAddressResolutionFeatureEnabled &&
       isSecurityAlertsAPIEnabled() &&
       hasEvmChainName(chainId),
   });
