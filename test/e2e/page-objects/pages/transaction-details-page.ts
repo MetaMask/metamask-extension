@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
 
 /**
  * Activity transaction details for a single tx identifier on a chain.
@@ -16,7 +17,7 @@ import { Driver } from '../../webdriver/driver';
 class TransactionDetailsPage {
   private readonly addressInLog = (address: string) => ({
     testId: 'transaction-details-address',
-    text: `${address.slice(0, 7)}...${address.slice(-5)}`,
+    text: shortenAddress(address),
   });
 
   private readonly addressLink = (address: string) =>

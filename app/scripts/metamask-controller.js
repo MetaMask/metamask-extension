@@ -19,6 +19,7 @@ import log from 'loglevel';
 import { rawChainData } from 'eth-chainlist';
 import { nanoid } from 'nanoid';
 import { Messenger } from '@metamask/messenger';
+import { RequestSourceFlow } from '@metamask/phishing-controller';
 import {
   MethodNames,
   PermissionDoesNotExistError,
@@ -194,8 +195,8 @@ import {
   createOriginScanMiddleware,
 } from './lib/trust-signals/trust-signals-middleware';
 import {
-  createCaipOriginScanGate,
-  createEip1193OriginScanGate,
+  getCaipOriginScanFlow,
+  getEip1193OriginScanFlow,
 } from './lib/trust-signals/trust-signals-util';
 import {
   onMessageReceived,
@@ -341,7 +342,6 @@ import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-l
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
-import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
@@ -598,7 +598,6 @@ export default class MetamaskController extends EventEmitter {
       NftDetectionController: NftDetectionControllerInit,
       CurrencyRateController: CurrencyRateControllerInit,
       RatesController: RatesControllerInit,
-      TokenListController: TokenListControllerInit,
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
@@ -752,7 +751,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenBalancesController =
       messengerClientsByName.TokenBalancesController;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
-    this.tokenListController = messengerClientsByName.TokenListController;
     this.tokenDetectionController =
       messengerClientsByName.TokenDetectionController;
     this.tokensController = messengerClientsByName.TokensController;
@@ -1382,7 +1380,6 @@ export default class MetamaskController extends EventEmitter {
       AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
       GatorPermissionsController: this.gatorPermissionsController,
-      TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       TokenBalancesController: this.tokenBalancesController,
       StaticAssetsController: this.staticAssetsController,
@@ -1447,7 +1444,6 @@ export default class MetamaskController extends EventEmitter {
         NetworkEnablementController: this.networkEnablementController,
         AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
-        TokenListController: this.tokenListController,
         TokensController: this.tokensController,
         TokenBalancesController: this.tokenBalancesController,
         StaticAssetsController: this.staticAssetsController,
@@ -1498,7 +1494,6 @@ export default class MetamaskController extends EventEmitter {
       this.signatureController.resetState.bind(this.signatureController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.approvalController.clearRequests.bind(this.approvalController),
-      // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
     if (isManifestV3) {
@@ -2411,7 +2406,6 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       tokenBalancesController,
       tokenDetectionController,
-      tokenListController,
       gasFeeController,
       gatorPermissionsController,
       networkController,
@@ -3378,7 +3372,7 @@ export default class MetamaskController extends EventEmitter {
         return phishingController.checkAddressPoisoning(address);
       },
       scanUrlForPhishing: async (origin) => {
-        return phishingController.scanUrl(origin);
+        return phishingController.scanUrl(origin, RequestSourceFlow.RevealSrp);
       },
       deleteInterface: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -3542,11 +3536,6 @@ export default class MetamaskController extends EventEmitter {
         tokenDetectionController.stopPollingByPollingToken.bind(
           tokenDetectionController,
         ),
-
-      tokenListStartPolling:
-        tokenListController.startPolling.bind(tokenListController),
-      tokenListStopPollingByPollingToken:
-        tokenListController.stopPollingByPollingToken.bind(tokenListController),
 
       tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
         tokenBalancesController,
@@ -5321,7 +5310,7 @@ export default class MetamaskController extends EventEmitter {
       createOriginScanMiddleware(
         this.phishingController,
         this.preferencesController,
-        createEip1193OriginScanGate(this.getPermittedAccounts.bind(this)),
+        getEip1193OriginScanFlow(this.getPermittedAccounts.bind(this)),
         sender?.url,
       ),
     );
@@ -5758,7 +5747,7 @@ export default class MetamaskController extends EventEmitter {
       createOriginScanMiddleware(
         this.phishingController,
         this.preferencesController,
-        createCaipOriginScanGate((requestOrigin) =>
+        getCaipOriginScanFlow((requestOrigin) =>
           this.permissionController.hasPermission(
             requestOrigin,
             Caip25EndowmentPermissionName,
@@ -6457,7 +6446,6 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
-      this.tokenListController.stopAllPolling();
       this.tokenBalancesController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
@@ -6487,7 +6475,6 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.tokenRatesController.stopPollingByPollingToken(pollingToken);
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
-      this.tokenListController.stopPollingByPollingToken(pollingToken);
       this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);

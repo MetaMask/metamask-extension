@@ -12,7 +12,7 @@ import {
   en as messages,
   renderWithProvider,
 } from '../../../../test/lib/render-helpers-navigate';
-import { SWAP_PATH } from '../../../helpers/constants/routes';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
@@ -366,7 +366,7 @@ describe('BridgeInputGroup', () => {
     expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });
 
-  it('replaces the asset picker route when closing the page', async () => {
+  it('returns to the previous page when closing the picker', async () => {
     setupFetchMock();
 
     renderAssetPickerPage();
@@ -379,10 +379,7 @@ describe('BridgeInputGroup', () => {
 
     await userEvent.click(screen.getByLabelText(messages.back.message));
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      { pathname: SWAP_PATH, search: '' },
-      { replace: true, state: { token: undefined } },
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('shows only the native representation of Arc USDC', async () => {

@@ -397,6 +397,34 @@ describe('NetworksPage', () => {
     expect(nameDropdown).toHaveAttribute('data-anchor', 'name');
   });
 
+  it('lists Chainlist dropdown networks with logos before networks without logos', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('network-form-network-name'));
+    });
+
+    const networkNames = screen
+      .getAllByTestId('networks-page-chainlist-network')
+      .map((network) => network.querySelector('.truncate')?.textContent);
+
+    const gnosisIndex = networkNames.indexOf('Gnosis');
+    const cronosIndex = networkNames.indexOf('Cronos Mainnet');
+    const confluxIndex = networkNames.indexOf('Chainlist Network 31');
+    const plainNetworkIndex = networkNames.indexOf('Chainlist Network 1');
+
+    expect(gnosisIndex).toBeGreaterThanOrEqual(0);
+    expect(cronosIndex).toBeGreaterThan(gnosisIndex);
+    expect(confluxIndex).toBeGreaterThan(cronosIndex);
+    expect(plainNetworkIndex).toBeGreaterThan(confluxIndex);
+  });
+
   it('caps the Chainlist list above the Save button', () => {
     const rectSpy = jest
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
