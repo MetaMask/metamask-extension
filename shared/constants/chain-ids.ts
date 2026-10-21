@@ -126,5 +126,5 @@ export const CHAIN_IDS = {
   STABLE: '0x3dc',
   SOMNIA: '0x13a7',
   ZERO_G: '0x4115',
-  MOBILENODE_TESTNET: '0x3a01511a',
+  MOBILENODE: '0x3a01511b',
 } as const;
