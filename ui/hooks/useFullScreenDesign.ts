@@ -1,4 +1,6 @@
 import { useCallback, useSyncExternalStore } from 'react';
+import { useSelector } from 'react-redux';
+import { getIsFullscreenRedesignEnabled } from '../selectors/multichain/feature-flags';
 
 // Minimum viewport width at which the fullscreen design is used
 // Matches the Tailwind `md` breakpoint
@@ -30,5 +32,8 @@ function useMediaQueryMatches(query: string): boolean {
 }
 
 export function useFullScreenDesign(): boolean {
-  return useMediaQueryMatches(FULL_SCREEN_DESIGN_MEDIA_QUERY);
+  const isFlagEnabled = useSelector(getIsFullscreenRedesignEnabled);
+  const isWideViewport = useMediaQueryMatches(FULL_SCREEN_DESIGN_MEDIA_QUERY);
+
+  return isFlagEnabled && isWideViewport;
 }
