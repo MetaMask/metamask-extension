@@ -38,7 +38,6 @@ const PROCESS_OUTPUT_LIMIT = 8_000;
 export type BitcoinLocalNodeOptions = {
   accounts?: BitcoinLocalNodeAccount[];
   initialBalance?: number;
-  p2pPort?: number;
   rpcPassword?: string;
   rpcPort?: number;
   rpcUser?: string;
@@ -786,7 +785,7 @@ export class BitcoinNode {
       cwd: process.cwd(),
     });
 
-    const [rpcPort, p2pPort] = await resolveNodePorts(options);
+    const rpcPort = await resolveNodeRpcPort(options);
     const dataDir = await mkdtemp(join(tmpdir(), 'bitcoin-regtest-e2e-'));
 
     this.#dataDir = dataDir;
@@ -805,7 +804,7 @@ export class BitcoinNode {
         `-rpcbind=${BITCOIN_LOCAL_NODE_HOST}`,
         `-rpcallowip=${BITCOIN_LOCAL_NODE_HOST}`,
         `-rpcport=${rpcPort}`,
-        `-port=${p2pPort}`,
+        '-listen=0',
         `-rpcuser=${this.#rpcUser}`,
         `-rpcpassword=${this.#rpcPassword}`,
       ],
@@ -841,44 +840,24 @@ export class BitcoinNode {
 }
 
 /**
- * Resolves the RPC and P2P ports for bitcoind. Explicitly requested ports are
- * validated and checked for availability; missing ports are allocated
- * dynamically so parallel test runs do not collide on the documented
- * defaults.
+ * Resolves the RPC port for bitcoind. An explicitly requested port is
+ * validated and checked for availability; otherwise a port is allocated
+ * dynamically so parallel test runs do not collide.
  *
  * @param options - Start options possibly carrying explicit ports.
- * @returns A `[rpcPort, p2pPort]` tuple.
+ * @returns The resolved RPC port.
  */
-async function resolveNodePorts(
+async function resolveNodeRpcPort(
   options: BitcoinLocalNodeOptions,
-): Promise<[number, number]> {
-  const explicitPorts: number[] = [];
-
-  for (const [label, port] of [
-    ['Bitcoin RPC port', options.rpcPort],
-    ['Bitcoin P2P port', options.p2pPort],
-  ] as const) {
-    if (port === undefined) {
-      continue;
+): Promise<number> {
+  if (options.rpcPort !== undefined) {
+    assertValidPort(options.rpcPort, 'Bitcoin RPC port');
+    if (!(await isTcpPortAvailable(options.rpcPort))) {
+      throw new Error(`Bitcoin RPC port ${options.rpcPort} is already in use`);
     }
-    assertValidPort(port, label);
-    if (explicitPorts.includes(port)) {
-      throw new Error(`${label} ${port} is used more than once`);
-    }
-    if (!(await isTcpPortAvailable(port))) {
-      throw new Error(`${label} ${port} is already in use`);
-    }
-    explicitPorts.push(port);
+    return options.rpcPort;
   }
 
-  const allocatedPorts = await getAvailablePorts(
-    (options.rpcPort === undefined ? 1 : 0) +
-      (options.p2pPort === undefined ? 1 : 0),
-    explicitPorts,
-  );
-
-  return [
-    options.rpcPort ?? (allocatedPorts.shift() as number),
-    options.p2pPort ?? (allocatedPorts.shift() as number),
-  ];
+  const [rpcPort] = await getAvailablePorts(1);
+  return rpcPort;
 }
