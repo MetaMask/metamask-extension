@@ -3721,9 +3721,7 @@ export function removeNetwork(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('NetworkController:removeNetwork', [
-        chainId,
-      ]);
+      await submitRequestToBackground('removeNetwork', [chainId]);
     } catch (error) {
       logErrorWithMessage(error);
     }

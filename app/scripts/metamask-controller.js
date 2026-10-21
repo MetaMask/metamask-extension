@@ -2482,6 +2482,12 @@ export default class MetamaskController extends EventEmitter {
         this.claimsController,
       ),
 
+      // MultichainNetworkController
+
+      removeNetwork: this.multichainNetworkController.removeNetwork.bind(
+        this.multichainNetworkController,
+      ),
+
       // PreferencesController
 
       dismissSidePanelMigrationToast:
