@@ -6,7 +6,10 @@ import {
 } from '@metamask/transaction-controller';
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import {
+  isNonEvmPaymentToken,
+  type TransactionPayControllerState,
+} from '@metamask/transaction-pay-controller';
 import {
   EthScope,
   isEvmAccountType,
@@ -565,9 +568,14 @@ export const selectLocalActivityItems = createSelector(
         const transactionPay =
           transactionPayData[transactionGroup.initialTransaction.id];
         const paymentToken = transactionPay?.paymentToken;
+        const evmPaymentToken =
+          paymentToken && !isNonEvmPaymentToken(paymentToken)
+            ? paymentToken
+            : undefined;
         const payTokenAddress =
-          metamaskPay?.tokenAddress ?? paymentToken?.address;
-        const payTokenChainId = metamaskPay?.chainId ?? paymentToken?.chainId;
+          metamaskPay?.tokenAddress ?? evmPaymentToken?.address;
+        const payTokenChainId =
+          metamaskPay?.chainId ?? evmPaymentToken?.chainId;
         const sourceTokenMetadata = resolveContractTokenMetadata(
           payTokenChainId,
           payTokenAddress,

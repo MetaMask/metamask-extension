@@ -2,7 +2,7 @@ import React from 'react';
 import { act, renderHook } from '@testing-library/react';
 import {
   PaymentOverride,
-  type TransactionPaymentToken,
+  type EvmPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import {
   TransactionType,
@@ -80,7 +80,7 @@ const PAY_TOKEN = {
   balanceHuman: '25',
   balanceRaw: '25000000',
   decimals: 6,
-} as TransactionPaymentToken;
+} as EvmPaymentToken;
 
 const ACCOUNT = {
   address: FROM_ADDRESS,

@@ -4,7 +4,6 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import {
   getTransactionType,
@@ -21,6 +20,7 @@ import {
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
 import { type RelayFixedSpreadConfig } from '../../utils/relay-fixed-spread';
+import { isMoneyAccountFunding } from '../../utils/transaction-pay';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
@@ -70,8 +70,11 @@ export function useAutomaticTransactionPayToken({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId ?? ''),
   );
-  const isMoneyPaymentOverride =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyPaymentOverride = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta: currentConfirmation,
+  });
   const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
     TransactionType.moneyAccountDeposit,
   ]);

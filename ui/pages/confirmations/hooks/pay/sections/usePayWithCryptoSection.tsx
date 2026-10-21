@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
+import { isNonEvmPaymentToken } from '@metamask/transaction-pay-controller';
+import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   Icon,
@@ -23,6 +24,7 @@ import type {
 } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 import { useTransactionPayToken } from '../useTransactionPayToken';
 import { useClearPaymentOverride } from '../useClearPaymentOverride';
+import { isMoneyAccountFunding } from '../../../utils/transaction-pay';
 
 export const PAY_WITH_CRYPTO_SECTION_TEST_ID = 'pay-with-section-crypto';
 export const PAY_WITH_CRYPTO_SELECTED_TOKEN_ROW_TEST_ID =
@@ -49,8 +51,11 @@ export function usePayWithCryptoSection({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyAccountSelected = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta: currentConfirmation,
+  });
 
   const handleSelectedTokenPress = useCallback(() => {
     if (!payToken) {
@@ -61,10 +66,14 @@ export function usePayWithCryptoSection({
       return;
     }
     clearOverride();
-    setPayToken({
-      address: payToken.address,
-      chainId: payToken.chainId,
-    });
+    setPayToken(
+      isNonEvmPaymentToken(payToken)
+        ? {
+            assetId: payToken.assetId,
+            walletAccountId: payToken.walletAccountId,
+          }
+        : { address: payToken.address, chainId: payToken.chainId },
+    );
     onClose();
   }, [clearOverride, isMoneyAccountSelected, onClose, payToken, setPayToken]);
 
@@ -85,8 +94,12 @@ export function usePayWithCryptoSection({
         id: 'crypto-selected-token',
         icon: (
           <TokenIcon
-            chainId={payToken.chainId}
-            tokenAddress={payToken.address}
+            chainId={payToken.chainId as Hex}
+            tokenAddress={
+              (isNonEvmPaymentToken(payToken)
+                ? payToken.assetId
+                : payToken.address) as Hex
+            }
             symbol={payToken.symbol}
             size="sm"
           />

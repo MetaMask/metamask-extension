@@ -54,6 +54,7 @@ import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getEvmPaymentToken } from '../../../utils/transaction-pay';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
@@ -203,9 +204,11 @@ export const CustomAmountInfo = React.memo(
       });
 
     const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
+    const evmPayToken = getEvmPaymentToken(payToken);
     const { isNoFeeToken } = usePayWithNoFeeToken();
     const isNoFeePayToken = Boolean(
-      payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
+      evmPayToken &&
+      isNoFeeToken(evmPayToken.address, String(evmPayToken.chainId)),
     );
     // Withdraw always offers Max. Deposit shows Max only for fixed-spread
     // ("No fee") tokens; other deposit tokens and native deposit tokens keep

@@ -506,6 +506,32 @@ export const selectRelayAtomicMaxEnabled = createSelector(
   },
 );
 
+type ConfirmationsPayFlag = {
+  payStrategies?: {
+    relay?: {
+      solana?: {
+        enabled?: boolean;
+      };
+    };
+  };
+};
+
+/**
+ * Whether Solana payment tokens may be offered in MetaMask Pay, from
+ * `confirmations_pay.payStrategies.relay.solana.enabled`. Mirrors the Core
+ * Relay admission gate: only `true` enables it.
+ */
+export const selectIsSolanaPayEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (flags): boolean =>
+    (
+      flags as unknown as {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay?: ConfirmationsPayFlag;
+      }
+    ).confirmations_pay?.payStrategies?.relay?.solana?.enabled === true,
+);
+
 /**
  * Parses the `confirmations_relay_fixed_spread` remote feature flag into a
  * normalised route config used to identify no-fee Money Account deposit tokens.

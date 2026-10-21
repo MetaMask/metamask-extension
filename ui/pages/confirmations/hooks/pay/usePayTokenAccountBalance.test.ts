@@ -1,5 +1,8 @@
 import { Hex } from '@metamask/utils';
-import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
+import type {
+  EvmPaymentToken,
+  TransactionPaymentToken,
+} from '@metamask/transaction-pay-controller';
 import { renderHook } from '@testing-library/react';
 import { useSendTokens } from '../send/useSendTokens';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
@@ -18,7 +21,7 @@ const PAY_TOKEN_MOCK = {
   balanceRaw: '5000000000000000000',
   decimals: 18,
   symbol: 'ETH',
-} as TransactionPaymentToken;
+} as EvmPaymentToken;
 
 const ACCOUNT_TOKEN_MOCK = {
   address: '0xabc',

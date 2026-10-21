@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import {
   TransactionMeta,
   TransactionType,
@@ -17,7 +17,11 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
-import { getAvailableTokens } from '../../../utils/transaction-pay';
+import {
+  getAvailableTokens,
+  isPaymentTokenSelected,
+  isSolanaPaySource,
+} from '../../../utils/transaction-pay';
 import { useClearPaymentOverride } from '../../../hooks/pay/useClearPaymentOverride';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
@@ -34,7 +38,10 @@ import {
 import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useDispatch } from '../../../../../store/hooks';
-import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
+import {
+  selectIsMoneyAccountTransactionEnabled,
+  selectIsSolanaPayEnabled,
+} from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
 import { PayWithSection } from './pay-with-section';
 
@@ -48,6 +55,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
+  const isSolanaPayEnabled = useSelector(selectIsSolanaPayEnabled);
   const requiredTokens = useTransactionPayRequiredTokens();
   const blockedTokens = useTransactionPayBlockedTokens();
   const clearOverride = useClearPaymentOverride();
@@ -104,12 +112,17 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
-      if (
-        payToken &&
-        payToken.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken.chainId.toLowerCase() ===
-          (token.chainId as string)?.toLowerCase()
-      ) {
+      if (isPaymentTokenSelected(token, payToken)) {
+        handleClose();
+        return;
+      }
+
+      if (isSolanaPaySource(token)) {
+        clearOverride();
+        await setPayToken({
+          assetId: token.assetId as CaipAssetType,
+          walletAccountId: token.accountId as string,
+        });
         handleClose();
         return;
       }
@@ -190,6 +203,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         requiredTokens,
         tokens,
         blockedTokens,
+        isSolanaPayEnabled,
       });
 
       available = musdTokenFilter(available);
@@ -200,6 +214,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
       blockedTokens,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
+      isSolanaPayEnabled,
       musdTokenFilter,
       payToken,
       postQuoteWithdrawTokenFilter,

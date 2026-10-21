@@ -27,6 +27,7 @@ import {
   useTransactionPayQuotes,
 } from '../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
+import { getEvmPaymentToken } from '../../utils/transaction-pay';
 
 /**
  * Hook for tracing mUSD conversion quote fetch time.
@@ -36,7 +37,7 @@ export function useMusdConversionQuoteTrace(): void {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
 
-  const { payToken } = useTransactionPayToken();
+  const payToken = getEvmPaymentToken(useTransactionPayToken().payToken);
   const quotes = useTransactionPayQuotes();
   const isLoading = useIsTransactionPayLoading();
 

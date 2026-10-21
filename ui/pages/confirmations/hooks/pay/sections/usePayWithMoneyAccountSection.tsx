@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   selectPaymentOverrideByTransactionId,
@@ -12,7 +11,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { selectPrimaryMoneyAccount } from '../../../../../selectors/money-account';
 import { useConfirmContext } from '../../../context/confirm';
-import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
+import {
+  applyMoneyAccountOverride,
+  isMoneyAccountFunding,
+} from '../../../utils/transaction-pay';
+import { useTransactionPayToken } from '../useTransactionPayToken';
 import type { PayWithSectionConfig } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
 
 export const PAY_WITH_MONEY_ACCOUNT_SECTION_TEST_ID =
@@ -42,8 +45,12 @@ export function usePayWithMoneyAccountSection({
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-  const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount;
+  const { payToken } = useTransactionPayToken();
+  const isMoneyAccountSelected = isMoneyAccountFunding({
+    paymentOverride,
+    payToken,
+    transactionMeta: currentConfirmation,
+  });
 
   const handlePress = useCallback(() => {
     if (!transactionId) {

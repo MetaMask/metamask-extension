@@ -3,7 +3,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -18,6 +17,7 @@ import {
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
+import { isMoneyAccountFunding } from '../../utils/transaction-pay';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
@@ -70,7 +70,11 @@ export function usePayWithToken(): PayWithToken {
   );
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount ||
+    isMoneyAccountFunding({
+      paymentOverride,
+      payToken,
+      transactionMeta: currentConfirmation,
+    }) ||
     (isDefaultMoneyAccount && !payToken);
   const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
     isMoneyAccountSelected,
@@ -136,7 +140,11 @@ export function usePayWithToken(): PayWithToken {
   } else if (resolvedToken?.chainId) {
     displayToken = {
       chainId: resolvedToken.chainId,
-      address: resolvedToken.address,
+      // Non-EVM payment tokens are identified by their CAIP-19 asset type.
+      address:
+        'address' in resolvedToken
+          ? resolvedToken.address
+          : resolvedToken.assetId,
       symbol: resolvedToken.symbol,
       balanceUsd: cryptoBalanceUsd,
     };

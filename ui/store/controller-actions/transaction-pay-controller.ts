@@ -1,25 +1,18 @@
-import type { PaymentOverride } from '@metamask/transaction-pay-controller';
+import type {
+  PaymentOverride,
+  UpdatePaymentTokenRequest,
+} from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../shared/lib/money/withdraw-amount-commit';
 import { submitRequestToBackground } from '../background-connection';
 
 export type { MoneyAccountWithdrawAmountUpdate };
 
-export async function updateTransactionPaymentToken({
-  transactionId,
-  tokenAddress,
-  chainId,
-}: {
-  transactionId: string;
-  tokenAddress: Hex;
-  chainId: Hex;
-}): Promise<void> {
+export async function updateTransactionPaymentToken(
+  request: UpdatePaymentTokenRequest,
+): Promise<void> {
   return await submitRequestToBackground('updateTransactionPaymentToken', [
-    {
-      transactionId,
-      tokenAddress,
-      chainId,
-    },
+    request,
   ]);
 }
 

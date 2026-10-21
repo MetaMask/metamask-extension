@@ -1,8 +1,10 @@
 import {
+  isNonEvmPaymentToken,
   PaymentOverride,
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
+  type UpdatePaymentTokenRequest,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -204,11 +206,19 @@ function getApi(
         messengerClient.state?.transactionData?.[transactionId]?.paymentToken;
       if (paymentToken) {
         try {
-          messengerClient.updatePaymentToken({
-            transactionId,
-            tokenAddress: paymentToken.address,
-            chainId: paymentToken.chainId,
-          });
+          messengerClient.updatePaymentToken(
+            isNonEvmPaymentToken(paymentToken)
+              ? {
+                  transactionId,
+                  assetId: paymentToken.assetId,
+                  walletAccountId: paymentToken.walletAccountId,
+                }
+              : {
+                  transactionId,
+                  tokenAddress: paymentToken.address,
+                  chainId: paymentToken.chainId,
+                },
+          );
         } catch {
           // Balance/rates may still be settling; amount commit below still runs.
         }
@@ -283,8 +293,33 @@ function getApi(
         }
       });
     },
-    updateTransactionPaymentToken:
-      messengerClient.updatePaymentToken.bind(messengerClient),
+    updateTransactionPaymentToken: (request: UpdatePaymentTokenRequest) => {
+      const transaction = moneyPayMessenger
+        .call('TransactionController:getState')
+        .transactions.find(({ id }) => id === request.transactionId);
+
+      const isDeposit =
+        getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
+
+      if (isDeposit && 'assetId' in request) {
+        setSolanaPayDepositConfig(messengerClient, request.transactionId, true);
+      }
+
+      const previousPaymentToken =
+        messengerClient.state.transactionData[request.transactionId]
+          ?.paymentToken;
+
+      messengerClient.updatePaymentToken(request);
+
+      if (
+        isDeposit &&
+        !('assetId' in request) &&
+        previousPaymentToken &&
+        isNonEvmPaymentToken(previousPaymentToken)
+      ) {
+        setSolanaPayDepositConfig(messengerClient, request.transactionId, false);
+      }
+    },
   };
 }
 
@@ -337,6 +372,32 @@ function seedDepositPayConfig(
   messengerClient.setTransactionConfig(transactionId, (config) => {
     config.accountOverride = accountOverride;
     config.isQuoteRequired = true;
+  });
+}
+
+/**
+ * Relay cannot embed the Money Account vault calls in a Solana-origin quote,
+ * so a deposit funded from Solana bridges to the deposit account and Core runs
+ * the vault deposit as a non-atomic second leg. Core only does that when the
+ * transaction carries the Money Account override with `atomic: false`. The
+ * config is set before a non-EVM token is selected, so the first Solana quote
+ * already includes the second leg, and cleared after switching back to an EVM
+ * token.
+ *
+ * @param messengerClient - TransactionPayController to write config on.
+ * @param transactionId - Money Account deposit transaction ID.
+ * @param isSolanaSource - Whether the deposit is funded from a non-EVM token.
+ */
+function setSolanaPayDepositConfig(
+  messengerClient: TransactionPayController,
+  transactionId: string,
+  isSolanaSource: boolean,
+): void {
+  messengerClient.setTransactionConfig(transactionId, (config) => {
+    config.atomic = isSolanaSource ? false : undefined;
+    config.paymentOverride = isSolanaSource
+      ? PaymentOverride.MoneyAccount
+      : undefined;
   });
 }
 

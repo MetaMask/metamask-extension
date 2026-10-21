@@ -2,7 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type {
   TransactionPayRequiredToken,
-  TransactionPaymentToken,
+  EvmPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
@@ -40,8 +40,8 @@ function createMockAsset(overrides: Partial<Asset> = {}): Asset {
 }
 
 function createMockPaymentToken(
-  overrides: Partial<TransactionPaymentToken> = {},
-): TransactionPaymentToken {
+  overrides: Partial<EvmPaymentToken> = {},
+): EvmPaymentToken {
   return {
     address: TOKEN_ADDRESS_MOCK,
     balanceFiat: '100.00',

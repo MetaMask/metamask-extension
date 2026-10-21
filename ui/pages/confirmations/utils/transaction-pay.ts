@@ -4,8 +4,11 @@ import {
   type NestedTransactionMetadata,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import { SolScope } from '@metamask/keyring-api';
 import {
+  isNonEvmPaymentToken,
   PaymentOverride,
+  type EvmPaymentToken,
   type TransactionPayRequiredToken,
   type TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
@@ -158,19 +161,35 @@ export function getAvailableTokens({
   requiredTokens,
   tokens,
   blockedTokens,
+  isSolanaPayEnabled = false,
 }: {
   payToken?: TransactionPaymentToken;
   requiredTokens?: TransactionPayRequiredToken[];
   tokens: Asset[];
   blockedTokens?: BlockedPayTokensListConfig;
+  isSolanaPayEnabled?: boolean;
 }): Asset[] {
   return tokens
     .filter((token) => {
       if (
-        (token.standard !== AssetStandard.ERC20 &&
-          token.standard !== AssetStandard.Native) ||
-        !token.accountType?.includes('eip155')
+        token.standard !== AssetStandard.ERC20 &&
+        token.standard !== AssetStandard.Native
       ) {
+        return false;
+      }
+
+      const isSelected = isPaymentTokenSelected(token, payToken);
+
+      // A selected Solana source stays listed after the flag is turned off so
+      // the confirmation can still show what the user picked.
+      if (isSolanaPaySource(token)) {
+        return (
+          isSelected ||
+          (isSolanaPayEnabled && new BigNumber(token.balance ?? 0).gt(0))
+        );
+      }
+
+      if (!token.accountType?.includes('eip155')) {
         return false;
       }
 
@@ -180,10 +199,6 @@ export function getAvailableTokens({
       if (token.chainId && isTestNetwork(token.chainId as Hex)) {
         return false;
       }
-
-      const isSelected =
-        payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken?.chainId === token.chainId;
 
       if (isSelected) {
         return true;
@@ -204,9 +219,7 @@ export function getAvailableTokens({
     })
     .map((token) => {
       const blocked = isTokenBlocked(token, blockedTokens);
-      const isSelected =
-        payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken?.chainId === token.chainId;
+      const isSelected = isPaymentTokenSelected(token, payToken);
 
       return {
         ...token,
@@ -215,6 +228,115 @@ export function getAvailableTokens({
       };
     })
     .sort((a, b) => Number(a.disabled) - Number(b.disabled));
+}
+
+/**
+ * Narrows a payment token to its EVM member. Hex address and chain lookups
+ * (market data, gas, no-fee routes) only apply to EVM payment tokens.
+ *
+ * @param payToken - Selected payment token, if any.
+ * @returns The EVM payment token, or `undefined` for none or a non-EVM token.
+ */
+export function getEvmPaymentToken(
+  payToken?: TransactionPaymentToken,
+): EvmPaymentToken | undefined {
+  return payToken && !isNonEvmPaymentToken(payToken) ? payToken : undefined;
+}
+
+/**
+ * Stable identity of the selected payment token, used to detect a switch.
+ * Non-EVM tokens are keyed by `InternalAccount` and CAIP-19 asset; EVM tokens
+ * by address and chain.
+ *
+ * @param payToken - Selected payment token, if any.
+ * @returns Identity key, or an empty-token key when none is selected.
+ */
+export function getPaymentTokenKey(payToken?: TransactionPaymentToken): string {
+  if (payToken && isNonEvmPaymentToken(payToken)) {
+    return `${payToken.walletAccountId}:${payToken.assetId}`;
+  }
+
+  return `${payToken?.address ?? ''}:${payToken?.chainId ?? ''}`;
+}
+
+/**
+ * Whether the confirmation is funded from the Money Account. A Money Account
+ * deposit funded from Solana also carries the Money Account override so Core
+ * runs the vault deposit as a second leg, but the funds come from the Solana
+ * account.
+ *
+ * @param options - Options.
+ * @param options.paymentOverride - Payment override on the transaction.
+ * @param options.payToken - Selected payment token, if any.
+ * @param options.transactionMeta - Current confirmation metadata.
+ * @returns True if the Money Account funds the confirmation.
+ */
+export function isMoneyAccountFunding({
+  paymentOverride,
+  payToken,
+  transactionMeta,
+}: {
+  paymentOverride?: PaymentOverride;
+  payToken?: TransactionPaymentToken;
+  transactionMeta?: TransactionMeta;
+}): boolean {
+  if (paymentOverride !== PaymentOverride.MoneyAccount) {
+    return false;
+  }
+
+  const isSolanaPayDeposit =
+    payToken !== undefined &&
+    isNonEvmPaymentToken(payToken) &&
+    hasTransactionType(transactionMeta, [TransactionType.moneyAccountDeposit]);
+
+  return !isSolanaPayDeposit;
+}
+
+/**
+ * Whether a send-flow asset is a Solana mainnet SOL or SPL balance that
+ * MetaMask Pay can quote from. Such assets are identified by their CAIP-19
+ * `assetId` and the `InternalAccount` that holds them.
+ *
+ * @param token - Send-flow asset.
+ * @returns True for Solana mainnet assets held by a Solana account.
+ */
+export function isSolanaPaySource(token: Asset): boolean {
+  return Boolean(
+    token.accountType?.startsWith('solana:') &&
+    String(token.chainId) === SolScope.Mainnet &&
+    token.assetId &&
+    token.accountId,
+  );
+}
+
+/**
+ * Whether a send-flow asset is the selected payment token. Non-EVM payment
+ * tokens match on CAIP-19 asset and `InternalAccount` ID; EVM tokens match on
+ * address and chain.
+ *
+ * @param token - Send-flow asset.
+ * @param payToken - Selected payment token, if any.
+ * @returns True if the asset is the selected payment token.
+ */
+export function isPaymentTokenSelected(
+  token: Asset,
+  payToken?: TransactionPaymentToken,
+): boolean {
+  if (!payToken) {
+    return false;
+  }
+
+  if (isNonEvmPaymentToken(payToken)) {
+    return (
+      token.assetId === payToken.assetId &&
+      token.accountId === payToken.walletAccountId
+    );
+  }
+
+  return (
+    payToken.address.toLowerCase() === token.address?.toLowerCase() &&
+    payToken.chainId === token.chainId
+  );
 }
 
 /**

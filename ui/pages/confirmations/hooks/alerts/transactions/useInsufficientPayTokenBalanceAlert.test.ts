@@ -7,7 +7,7 @@ import {
 import {
   TransactionPayRequiredToken,
   TransactionPayTotals,
-  TransactionPaymentToken,
+  EvmPaymentToken,
   PaymentOverride,
 } from '@metamask/transaction-pay-controller';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
@@ -46,7 +46,7 @@ const PAY_TOKEN_MOCK = {
   chainId: '0x1' as Hex,
   balanceUsd: '10.00',
   balanceRaw: '10000000000000000000',
-} as TransactionPaymentToken;
+} as EvmPaymentToken;
 
 const REQUIRED_TOKEN_MOCK = {
   amountUsd: '5.00',
