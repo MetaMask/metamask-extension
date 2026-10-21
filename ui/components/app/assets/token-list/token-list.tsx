@@ -59,6 +59,7 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -73,6 +74,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
 import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
+import { TokenListLoadingSkeleton } from './token-list-loading-skeleton';
 
 type TokenListProps = {
   onTokenClick: (
@@ -179,6 +181,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+  const isAssetsLoading = useSelector(
+    selectIsAssetsLoadingForSelectedAccountGroup,
+  );
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
     useBoolean(lowValueAssetsExpandedSessionValue);
@@ -260,7 +265,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   useCoordinatedTrace({
     name: TraceName.HomepageSectionTimeToContent,
     op: TraceOperation.HomepageSectionPerformance,
-    ready: true,
+    ready: !isAssetsLoading,
     sectionId: 'tokens',
     data: {
       success: true,
@@ -452,6 +457,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       safeChains,
     ],
   );
+
+  if (isAssetsLoading) {
+    return <TokenListLoadingSkeleton />;
+  }
 
   // Disable virtualization when empty balance state is shown
   if (!hasBalance) {

@@ -32,6 +32,7 @@ import { getIsSecurityTrustTdpEnabled } from '../../../../selectors/multichain/f
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
@@ -126,6 +127,7 @@ jest.mock('../../../../selectors/multichain/feature-flags', () => ({
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
+  selectIsAssetsLoadingForSelectedAccountGroup: jest.fn(),
 }));
 
 jest.mock('#ui/hooks/token-asset/useTokenAssetSecurityResults', () => ({
@@ -246,6 +248,32 @@ describe('TokenList', () => {
         typeof getSelectedMultichainNetworkConfiguration
       >);
     jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(true);
+    jest
+      .mocked(selectIsAssetsLoadingForSelectedAccountGroup)
+      .mockReturnValue(false);
+  });
+
+  it('shows five token row skeletons while assets are loading', () => {
+    jest
+      .mocked(selectIsAssetsLoadingForSelectedAccountGroup)
+      .mockReturnValue(true);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({ symbol: 'ETH', isNative: true, fiatBalance: 10 }),
+        createAsset({
+          symbol: 'mUSD',
+          address: MUSD_TOKEN_ADDRESS,
+          fiatBalance: 5,
+        }),
+      ]),
+    );
+
+    render();
+
+    expect(screen.getAllByTestId('token-list-loading-row')).toHaveLength(5);
+    expect(screen.queryByTestId('token-cell-ETH')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-mUSD')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('scam-warning')).not.toBeInTheDocument();
   });
 
   it('resolves the Money CTA once for the displayed tokens in order', () => {
