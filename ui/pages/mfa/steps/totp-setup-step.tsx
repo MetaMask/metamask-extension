@@ -89,11 +89,11 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
           gap={4}
           paddingVertical={2}
         >
-          <Box className="flex-1 border-t border-muted" />
+          <Box className="flex-1 border-t-[1.5px] border-muted" />
           <Text variant={TextVariant.BodyMd} color={TextColor.TextMuted}>
             {t('mfaTotpSetupManual')}
           </Text>
-          <Box className="flex-1 border-t border-muted" />
+          <Box className="flex-1 border-t-[1.5px] border-muted" />
         </Box>
         <ButtonBase
           className="h-auto w-full justify-start gap-3 rounded-2xl bg-muted p-4 text-left hover:bg-muted-hover active:bg-muted-pressed"
