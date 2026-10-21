@@ -277,6 +277,7 @@ module.exports = defineConfig([
       '@typescript-eslint/await-thenable': 'off',
       '@typescript-eslint/consistent-type-exports': 'off',
       '@typescript-eslint/consistent-type-imports': 'off',
+      'import-x/consistent-type-specifier-style': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/no-duplicate-type-constituents': 'off',

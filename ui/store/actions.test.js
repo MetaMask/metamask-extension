@@ -7,6 +7,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { RequestSourceFlow } from '@metamask/phishing-controller';
 import { stringToBytes } from '@metamask/utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -6367,6 +6368,7 @@ describe('Actions', () => {
       expect(
         messengerCallStub.calledOnceWithExactly('PhishingController:scanUrl', [
           'https://example.com',
+          RequestSourceFlow.RevealSrp,
         ]),
       ).toBe(true);
     });

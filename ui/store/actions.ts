@@ -29,6 +29,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+import { RequestSourceFlow } from '@metamask/phishing-controller';
 import type {
   PhishingDetectionScanResult,
   SimilarAddressMatch,
@@ -2206,6 +2207,7 @@ export async function scanUrlForPhishing(
 ): Promise<PhishingDetectionScanResult | null> {
   return await submitRequestToBackground('PhishingController:scanUrl', [
     origin,
+    RequestSourceFlow.RevealSrp,
   ]);
 }
 
@@ -6198,34 +6200,6 @@ export async function tokenDetectionStopPollingByPollingToken(
   pollingToken: string,
 ) {
   await submitRequestToBackground('tokenDetectionStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
- * Informs the TokenListController that the UI requires token list polling
- *
- * @param chainId
- * @returns polling token that can be used to stop polling
- */
-export async function tokenListStartPolling(chainId: string): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenListStartPolling',
-    [{ chainId }],
-  );
-
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the TokenListController that the UI no longer token list polling
- *
- * @param pollingToken - Poll token received from calling tokenListStartPolling
- */
-export async function tokenListStopPollingByPollingToken(pollingToken: string) {
-  await submitRequestToBackground('tokenListStopPollingByPollingToken', [
     pollingToken,
   ]);
   await removePollingTokenFromAppState(pollingToken);

@@ -1787,9 +1787,6 @@
   "assets": {
     "message": "Περιουσιακά στοιχεία"
   },
-  "assetsDescription": {
-    "message": "Αυτόματος εντοπισμός των tokens στο πορτοφόλι σας, εμφάνιση NFT και ομαδοποιημένες ενημερώσεις υπολοίπων λογαριασμών"
-  },
   "asterdexReferralSubtitle": {
     "message": "Λάβετε 4% επιστροφή στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -4393,9 +4390,6 @@
   "generalCameraErrorTitle": {
     "message": "Κάτι πήγε στραβά...."
   },
-  "generalDescription": {
-    "message": "Συγχρονισμός ρυθμίσεων σε όλες τις συσκευές, επιλογή προτιμήσεων δικτύου και παρακολούθηση δεδομένων των tokens"
-  },
   "generateNewQrCode": {
     "message": "Δημιουργία νέου κωδικού QR"
   },
@@ -6739,9 +6733,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Προσθήκη προσαρμοσμένης πύλης IPFS"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Η διεύθυνση URL της πύλης IPFS είναι έγκυρη"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Όταν χρησιμοποιείτε τις προεπιλεγμένες ρυθμίσεις και παραμέτρους μας, χρησιμοποιούμε την Infura ως προεπιλεγμένο πάροχο κλήσεων απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Σε ορισμένες περιπτώσεις, ενδέχεται να χρησιμοποιήσουμε άλλους παρόχους RPC προκειμένου να παρέχουμε την καλύτερη δυνατή εμπειρία στους χρήστες μας. Μπορείτε να επιλέξετε το δικό σας RPC, αλλά να θυμάστε ότι οποιοδήποτε RPC θα λάβει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιήσει συναλλαγές. Για να μάθετε περισσότερα σχετικά με το πώς η Infura χειρίζεται τα δεδομένα για λογαριασμούς EVM, διαβάστε την $1 μας, ενώ για λογαριασμούς Solana, $2."
@@ -9630,21 +9621,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Ασφάλεια & προστασία προσωπικών δεδομένων"
-  },
-  "securityDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς σας"
-  },
   "securityMessageLinkForNetworks": {
     "message": "διαδικτυακές απάτες και κίνδυνοι ασφαλείας"
   },
   "securityProviderPoweredBy": {
     "message": "Με την υποστήριξη του $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς και τα δεδομένα σας"
   },
   "securitySocialLoginEnabled": {
     "message": "Ενεργοποιημένο"
