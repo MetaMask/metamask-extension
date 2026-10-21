@@ -1,6 +1,10 @@
 name: Auto Create Release PR
 
 on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
   push:
     branches:
       # Glob, not regex. Same pattern as update-release-changelog.yml: three
@@ -8,10 +12,50 @@ on:
       - 'release/[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
+  cut-release-branch:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'version-bump/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      semver: ${{ steps.cut.outputs.semver }}
+      cut: ${{ steps.cut.outputs.cut }}
+    steps:
+      - name: Checkout the merge commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 2
+          token: ${{ secrets.PR_TOKEN }}
+
+      - name: Cut the release branch at the pre-bump commit
+        id: cut
+        env:
+          MERGE_COMMIT_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          VERSION_BUMP_HEAD: ${{ github.event.pull_request.head.ref }}
+        run: .github/scripts/cut-release-branch.sh
+
+  call-create-release-pr-from-bump:
+    needs: cut-release-branch
+    if: needs.cut-release-branch.outputs.cut == 'true'
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/create-release-pr.yml
+    secrets:
+      github-token: ${{ secrets.PR_TOKEN }}
+      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
+    with:
+      semver-version: ${{ needs.cut-release-branch.outputs.semver }}
+
   extract:
-    # Push also fires for later commits on release/X.Y.Z. Run only when this
-    # push creates the branch, so those commits do not open another release PR.
-    if: github.event.created
+    # Hotfix only. A minor release branch is cut when the version bump merges.
+    if: github.event_name == 'push' && github.event.created && !endsWith(github.ref_name, '.0')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:

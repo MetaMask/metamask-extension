@@ -1,0 +1,23 @@
+name: Open Version Bump PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  open-version-bump-pr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          token: ${{ secrets.PR_TOKEN }}
+
+      - name: Open the version bump pull request
+        env:
+          GH_TOKEN: ${{ secrets.PR_TOKEN }}
+        run: .github/scripts/open-version-bump-pr.sh
