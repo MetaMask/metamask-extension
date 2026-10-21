@@ -284,6 +284,29 @@ describe('TokenList', () => {
     expect(screen.queryByTestId('scam-warning')).not.toBeInTheDocument();
   });
 
+  it('keeps persisted tokens visible while assets are loading', () => {
+    jest
+      .mocked(selectIsAssetsLoadingForSelectedAccountGroup)
+      .mockReturnValue(true);
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({ symbol: 'ETH', isNative: true, fiatBalance: 10 }),
+        createAsset({
+          symbol: 'mUSD',
+          address: MUSD_TOKEN_ADDRESS,
+          fiatBalance: 0,
+          balance: '0',
+        }),
+        createAsset({ symbol: 'KickToken', fiatBalance: 1 }),
+      ]),
+    );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-KickToken')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-list-loading')).not.toBeInTheDocument();
+  });
+
   it('resolves the Money CTA once for the displayed tokens in order', () => {
     jest
       .mocked(getAssetsBySelectedAccountGroup)

@@ -69,6 +69,7 @@ import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { isMusdToken } from '../../musd/constants';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBoolean } from '../../../../hooks/useBoolean';
@@ -262,10 +263,19 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     useExternalServices,
   ]);
 
+  // Skeletons stand in for the native gas token and mUSD that render before
+  // the rest of the account's tokens. Tokens already in state stay visible,
+  // including when a token-list request fails and the load never settles.
+  const showLoadingSkeleton =
+    isAssetsLoading &&
+    sortedFilteredTokens.every(
+      (token) => token.isNative || isMusdToken(token.address),
+    );
+
   useCoordinatedTrace({
     name: TraceName.HomepageSectionTimeToContent,
     op: TraceOperation.HomepageSectionPerformance,
-    ready: !isAssetsLoading,
+    ready: !showLoadingSkeleton,
     sectionId: 'tokens',
     data: {
       success: true,
@@ -458,7 +468,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     ],
   );
 
-  if (isAssetsLoading) {
+  if (showLoadingSkeleton) {
     return <TokenListLoadingSkeleton />;
   }
 
