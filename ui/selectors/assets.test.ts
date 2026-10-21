@@ -275,13 +275,19 @@ describe('getAssetsMetadata', () => {
   });
 
   it('returns empty object when state has no metamask property', () => {
-    const invalidState = {} as AssetsState;
-    expect(getAssetsMetadata(invalidState)).toEqual({});
+    expect(
+      getAssetsMetadata(
+        {} as unknown as Parameters<typeof getAssetsMetadata>[0],
+      ),
+    ).toEqual({});
   });
 
   it('returns empty object when assetsInfo is missing', () => {
-    const state = { metamask: {} };
-    expect(getAssetsMetadata(state as AssetsState)).toEqual({});
+    expect(
+      getAssetsMetadata({
+        metamask: {},
+      } as unknown as Parameters<typeof getAssetsMetadata>[0]),
+    ).toEqual({});
   });
 });
 

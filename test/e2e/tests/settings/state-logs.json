@@ -157,10 +157,6 @@
     "accountIdByAddress": {
       "*": "string"
     },
-    "accountSourceBackfillEnqueued": "boolean",
-    "accountsAssets": {
-      "*": "array"
-    },
     "accountState": "null",
     "accountsByChainId": {
       "*": {
@@ -226,7 +222,6 @@
     "allDeFiPositionsCount": {},
     "allDeFiPositionsV2": {},
     "allDetectedTokens": {},
-    "allIgnoredAssets": {},
     "allIgnoredTokens": {},
     "allNftContracts": {},
     "allNfts": {},
@@ -265,21 +260,6 @@
     },
     "assetsLoadingStatus": {
       "*": "string"
-    },
-    "assetsMetadata": {
-      "*": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
-      }
     },
     "assetsPrice": {
       "*": {
@@ -672,7 +652,6 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
-    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -704,7 +683,6 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
-    "lastPerpsDepositEntryPoint": "null",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
@@ -1240,6 +1218,7 @@
       "mainnet": {}
     },
     "batchTransactionCounts": {},
+    "tracesBeforeMetricsOptIn": [],
     "transactionBatches": [],
     "transactionData": {},
     "transactions": [],

@@ -78,7 +78,10 @@ import {
 export { getMultichainNetwork, getMultichainIsEvm };
 
 export type AssetsState = {
-  metamask: MultichainAssetsControllerState;
+  metamask: Pick<
+    MultichainAssetsControllerState,
+    'accountsAssets' | 'assetsMetadata' | 'allIgnoredAssets'
+  >;
 };
 
 export type AssetsRatesState = {

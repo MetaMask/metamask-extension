@@ -258,8 +258,6 @@
     "markMetamaskNotificationsAsRead",
     "markNotificationPopupAsAutomaticallyClosed",
     "markPasswordForgotten",
-    "multichainAddAssets",
-    "multichainIgnoreAssets",
     "multichainUpdateTransactions",
     "openUpdateTabAndReload",
     "performSignIn",

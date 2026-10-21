@@ -33,8 +33,6 @@ import {
 } from './core-backend';
 import {
   getMultichainTransactionsControllerMessenger,
-  getMultichainAssetsControllerMessenger,
-  getMultichainAssetsControllerInitMessenger,
   getMultichainNetworkControllerMessenger,
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
@@ -464,10 +462,6 @@ export const MESSENGER_FACTORIES = {
   MoneyAccountUpgradeController: {
     getMessenger: getMoneyAccountUpgradeControllerMessenger,
     getInitMessenger: getMoneyAccountUpgradeControllerInitMessenger,
-  },
-  MultichainAssetsController: {
-    getMessenger: getMultichainAssetsControllerMessenger,
-    getInitMessenger: getMultichainAssetsControllerInitMessenger,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,

@@ -1,7 +1,6 @@
 import {
   AssetListState,
   DeFiPositionsControllerState,
-  MultichainAssetsControllerState,
   selectAllAssets,
   selectAssetsBySelectedAccountGroup,
   type AccountGroupAssets,
@@ -126,11 +125,10 @@ import {
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 
 export type AssetsState = {
-  metamask: MultichainAssetsControllerState &
-    Pick<
-      AssetsControllerState,
-      'assetsInfo' | 'assetsBalance' | 'customAssets' | 'assetPreferences'
-    >;
+  metamask: Pick<
+    AssetsControllerState,
+    'assetsInfo' | 'assetsBalance' | 'customAssets' | 'assetPreferences'
+  >;
 };
 
 export type AssetsRatesState = {
@@ -150,7 +148,6 @@ export type BalanceCalculationState = {
     MultichainBalancesControllerState &
     TokensControllerState &
     CurrencyRateState &
-    MultichainAssetsControllerState &
     AccountTrackerControllerState &
     NetworkEnablementControllerState &
     RemoteFeatureFlagControllerState &
