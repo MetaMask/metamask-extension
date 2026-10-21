@@ -608,14 +608,8 @@ class HomePage {
     if (alreadyOnHome) {
       return;
     }
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavHomeButton,
-      1000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
-      await this.checkPageIsLoaded();
-    }
+    await this.driver.clickElement(this.bottomNavHomeButton);
+    await this.checkPageIsLoaded();
   }
 
   async goToNftTab(): Promise<void> {
