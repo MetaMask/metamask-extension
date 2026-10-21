@@ -6240,22 +6240,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#multichainUpdateBalance', () => {
-    it('calls multichainUpdateBalance in the background with the account ID', async () => {
-      const accountId = 'account-id';
-      const multichainUpdateBalanceStub = sinon.stub().resolves();
-      setBackgroundConnection({
-        multichainUpdateBalance: multichainUpdateBalanceStub,
-      });
-
-      await actions.multichainUpdateBalance(accountId);
-
-      expect(multichainUpdateBalanceStub.calledOnceWithExactly(accountId)).toBe(
-        true,
-      );
-    });
-  });
-
   describe('linkRewardToShieldSubscription', () => {
     it('links rewards to a subscription before refreshing subscriptions', async () => {
       const store = mockStore();
