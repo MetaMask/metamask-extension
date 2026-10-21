@@ -67,7 +67,7 @@ class BitcoinReviewTxPage {
       `Check if send amount ${amount} is displayed on bitcoin review tx page`,
     );
     await this.driver.waitForSelector({
-      testId: 'simulation-details-amount-pill',
+      css: '.snap-ui-renderer__text.mm-box--color-error-default',
       text: `-${amount}`,
     });
   }
