@@ -18,17 +18,17 @@ import {
 import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
-import { Severity } from '../../../../helpers/constants/design-system';
-import {
-  useTrustSignals,
-  TrustSignalDisplayState,
-} from '../../../../hooks/useTrustSignals';
+import { useTrustSignals } from '../../../../hooks/useTrustSignals';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
 import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { shortenAddress } from '../../../../helpers/utils/util';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+import {
+  buildTrustSignalAlerts,
+  buildTrustSignalRequests,
+  TrustSignalAlertTarget,
+} from './utils';
 
 function isZeroAmount(amount: string | number | undefined): boolean {
   return amount === '0' || amount === 0;
@@ -189,10 +189,7 @@ export function useSpenderAlerts(): Alert[] {
       return [];
     }
 
-    const addresses: {
-      address: string;
-      nestedTransactionIndex?: number;
-    }[] = [];
+    const addresses: TrustSignalAlertTarget[] = [];
 
     // Handle approval transactions
     const txMeta = currentConfirmation as TransactionMeta;
@@ -253,11 +250,10 @@ export function useSpenderAlerts(): Alert[] {
   }, [currentConfirmation]);
 
   const trustSignalsRequests = useMemo(() => {
-    return spenderAddresses.map(({ address }) => ({
-      value: address,
-      type: NameType.ETHEREUM_ADDRESS,
-      chainId: currentConfirmation?.chainId as Hex | undefined,
-    }));
+    return buildTrustSignalRequests(
+      spenderAddresses,
+      currentConfirmation?.chainId as Hex | undefined,
+    );
   }, [spenderAddresses, currentConfirmation?.chainId]);
 
   const trustSignals = useTrustSignals(trustSignalsRequests);
@@ -267,60 +263,12 @@ export function useSpenderAlerts(): Alert[] {
       return [];
     }
 
-    const alerts: Alert[] = [];
-
-    trustSignals.forEach((signal, index) => {
-      const { address, nestedTransactionIndex } = spenderAddresses[index];
-      const isNested = nestedTransactionIndex !== undefined;
-      const field = isNested
-        ? `${RowAlertKey.Spender}-${nestedTransactionIndex}`
-        : RowAlertKey.Spender;
-
-      if (signal.state === TrustSignalDisplayState.Malicious) {
-        alerts.push({
-          actions: [],
-          field,
-          isBlocking: false,
-          key: isNested
-            ? `spenderTrustSignalMalicious-${nestedTransactionIndex}`
-            : 'spenderTrustSignalMalicious',
-          message: t(
-            isNested
-              ? 'alertMessageNestedAddressTrustSignalMaliciousWithAddress'
-              : 'alertMessageAddressTrustSignalMaliciousWithAddress',
-            [shortenAddress(address)],
-          ),
-          reason: t(
-            isNested
-              ? 'alertReasonNestedAddressTrustSignalMalicious'
-              : 'alertReasonAddressTrustSignalMalicious',
-          ),
-          severity: Severity.Danger,
-        });
-      } else if (signal.state === TrustSignalDisplayState.Warning) {
-        alerts.push({
-          actions: [],
-          field,
-          isBlocking: false,
-          key: isNested
-            ? `spenderTrustSignalWarning-${nestedTransactionIndex}`
-            : 'spenderTrustSignalWarning',
-          message: t(
-            isNested
-              ? 'alertMessageNestedAddressTrustSignalWarningWithAddress'
-              : 'alertMessageAddressTrustSignalWarningWithAddress',
-            [shortenAddress(address)],
-          ),
-          reason: t(
-            isNested
-              ? 'alertReasonNestedAddressTrustSignalWarning'
-              : 'alertReasonAddressTrustSignalWarning',
-          ),
-          severity: Severity.Warning,
-        });
-      }
+    return buildTrustSignalAlerts({
+      targets: spenderAddresses,
+      trustSignals,
+      field: RowAlertKey.Spender,
+      keyPrefix: 'spenderTrustSignal',
+      t,
     });
-
-    return alerts;
   }, [spenderAddresses, isSafeToSkipAlert, trustSignals, t]);
 }

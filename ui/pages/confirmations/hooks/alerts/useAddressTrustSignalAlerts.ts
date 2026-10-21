@@ -1,20 +1,19 @@
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { NameType } from '@metamask/name-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../context/confirm';
-import {
-  useTrustSignals,
-  TrustSignalDisplayState,
-} from '../../../../hooks/useTrustSignals';
+import { useTrustSignals } from '../../../../hooks/useTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { shortenAddress } from '../../../../helpers/utils/util';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+import {
+  buildTrustSignalAlerts,
+  buildTrustSignalRequests,
+  TrustSignalAlertTarget,
+} from './utils';
 
 export function useAddressTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
@@ -25,10 +24,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
       return [];
     }
 
-    const addresses: {
-      address: string;
-      nestedTransactionIndex?: number;
-    }[] = [];
+    const addresses: TrustSignalAlertTarget[] = [];
 
     // For transactions, check the original 'to' address before container
     // wrapping replaces it with the delegation manager address.
@@ -66,11 +62,10 @@ export function useAddressTrustSignalAlerts(): Alert[] {
   }, [currentConfirmation]);
 
   const trustSignalsRequests = useMemo(() => {
-    return addressesToCheck.map(({ address }) => ({
-      value: address,
-      type: NameType.ETHEREUM_ADDRESS,
-      chainId: currentConfirmation?.chainId as Hex | undefined,
-    }));
+    return buildTrustSignalRequests(
+      addressesToCheck,
+      currentConfirmation?.chainId as Hex | undefined,
+    );
   }, [addressesToCheck, currentConfirmation?.chainId]);
 
   const trustSignals = useTrustSignals(trustSignalsRequests);
@@ -80,60 +75,12 @@ export function useAddressTrustSignalAlerts(): Alert[] {
       return [];
     }
 
-    const alerts: Alert[] = [];
-
-    trustSignals.forEach((signal, index) => {
-      const { address, nestedTransactionIndex } = addressesToCheck[index];
-      const isNested = nestedTransactionIndex !== undefined;
-      const field = isNested
-        ? `${RowAlertKey.InteractingWith}-${nestedTransactionIndex}`
-        : RowAlertKey.InteractingWith;
-
-      if (signal.state === TrustSignalDisplayState.Malicious) {
-        alerts.push({
-          actions: [],
-          field,
-          isBlocking: false,
-          key: isNested
-            ? `trustSignalMalicious-${nestedTransactionIndex}`
-            : 'trustSignalMalicious',
-          message: t(
-            isNested
-              ? 'alertMessageNestedAddressTrustSignalMaliciousWithAddress'
-              : 'alertMessageAddressTrustSignalMaliciousWithAddress',
-            [shortenAddress(address)],
-          ),
-          reason: t(
-            isNested
-              ? 'alertReasonNestedAddressTrustSignalMalicious'
-              : 'alertReasonAddressTrustSignalMalicious',
-          ),
-          severity: Severity.Danger,
-        });
-      } else if (signal.state === TrustSignalDisplayState.Warning) {
-        alerts.push({
-          actions: [],
-          field,
-          isBlocking: false,
-          key: isNested
-            ? `trustSignalWarning-${nestedTransactionIndex}`
-            : 'trustSignalWarning',
-          message: t(
-            isNested
-              ? 'alertMessageNestedAddressTrustSignalWarningWithAddress'
-              : 'alertMessageAddressTrustSignalWarningWithAddress',
-            [shortenAddress(address)],
-          ),
-          reason: t(
-            isNested
-              ? 'alertReasonNestedAddressTrustSignalWarning'
-              : 'alertReasonAddressTrustSignalWarning',
-          ),
-          severity: Severity.Warning,
-        });
-      }
+    return buildTrustSignalAlerts({
+      targets: addressesToCheck,
+      trustSignals,
+      field: RowAlertKey.InteractingWith,
+      keyPrefix: 'trustSignal',
+      t,
     });
-
-    return alerts;
   }, [addressesToCheck, trustSignals, t]);
 }
