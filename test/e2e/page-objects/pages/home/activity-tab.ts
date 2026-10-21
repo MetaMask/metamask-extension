@@ -506,11 +506,32 @@ class ActivityTab extends HomePage {
    * where updates are slow; these transactions come from the snap.
    * @param options - Optional wait configuration.
    * @param options.timeout - Maximum time to wait in milliseconds.
+   * @param options.transactionIndex - One-based activity row index to scope the
+   * status check to. If omitted, waits for any row with the expected status.
    */
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
-    { timeout = 5000 }: { timeout?: number } = {},
+    {
+      timeout = 5000,
+      transactionIndex,
+    }: { timeout?: number; transactionIndex?: number } = {},
   ) {
+    if (transactionIndex) {
+      await this.driver.waitUntil(
+        async () => {
+          const transactionItems = await this.driver.findElements(
+            this.completedTransactions,
+          );
+          const transactionItem = transactionItems[transactionIndex - 1];
+          return (
+            (await transactionItem?.getAttribute('data-tx-status')) === status
+          );
+        },
+        { interval: 100, timeout },
+      );
+      return;
+    }
+
     await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
       timeout,
     });

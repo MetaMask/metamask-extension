@@ -108,7 +108,9 @@ export const confirmBitcoinSendAndAssertPending = async ({
   await homePage.goToActivityList();
   const activityTab = new ActivityTab(driver);
   await activityTab.checkTransactionActivityByText('Sending');
-  await activityTab.checkWaitForTransactionStatus('pending');
+  await activityTab.checkWaitForTransactionStatus('pending', {
+    transactionIndex: 1,
+  });
   if (expectedAmount) {
     await activityTab.checkTxAmountInActivity(expectedAmount);
   }
@@ -125,5 +127,6 @@ export const waitForBitcoinSendConfirmation = async (
 ): Promise<void> => {
   await activityTab.checkWaitForTransactionStatus('confirmed', {
     timeout: BITCOIN_CONFIRMATION_TIMEOUT_MS,
+    transactionIndex: 1,
   });
 };
