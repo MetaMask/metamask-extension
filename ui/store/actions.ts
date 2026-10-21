@@ -132,6 +132,7 @@ import {
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
+  getDataCollectionForMarketing,
 } from '../selectors';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
@@ -975,9 +976,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
       properties: {
         [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
         [MetaMetricsUserTrait.HasMarketingConsent]:
-          getState().metamask.marketingConsentDecisionMade === true
-            ? getState().metamask.optedInToMarketing === true
-            : null,
+          getDataCollectionForMarketing(getState()),
         location: 'onboarding_social_login_rehydration',
       },
     });

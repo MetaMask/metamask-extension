@@ -294,6 +294,36 @@ describe('Actions', () => {
       ).toStrictEqual(true);
     });
 
+    it('tracks the local marketing consent decision when one was made', async () => {
+      const store = mockStore({
+        metamask: {
+          ...defaultState.metamask,
+          marketingConsentDecisionMade: true,
+          optedInToMarketing: true,
+        },
+      });
+      const trackEventStub = sinon.stub().resolves();
+
+      background.restoreSocialBackupAndGetSeedPhrase.resolves('seed phrase');
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.restoreSocialBackupAndGetSeedPhrase('password', trackEventStub),
+      );
+
+      expect(
+        trackEventStub.calledOnceWith({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+          properties: {
+            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+            [MetaMetricsUserTrait.HasMarketingConsent]: true,
+            location: 'onboarding_social_login_rehydration',
+          },
+        }),
+      ).toStrictEqual(true);
+    });
+
     it('throws an error when restoring the social backup fails', async () => {
       const store = mockStore();
 
