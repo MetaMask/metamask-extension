@@ -504,12 +504,15 @@ class ActivityTab extends HomePage {
    * @param status - The expected transaction status: 'confirmed' (on-chain),
    * 'cancelled', or 'pending'. 'pending' is only for snap networks (e.g. BTC)
    * where updates are slow; these transactions come from the snap.
+   * @param options - Optional wait configuration.
+   * @param options.timeout - Maximum time to wait in milliseconds.
    */
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
+    { timeout = 5000 }: { timeout?: number } = {},
   ) {
     await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
-      timeout: 5000,
+      timeout,
     });
   }
 

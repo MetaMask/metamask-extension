@@ -38,6 +38,42 @@ const FUNDING_BLOCK_HASH =
   '000000000000000000013d73c3bd23225714f2fd8b801ed076818f2971897748';
 const GENESIS_BLOCK_HASH =
   '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
+const BROADCAST_TX_ID =
+  'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+const BROADCAST_BLOCK_HEIGHT = FUNDING_BLOCK_HEIGHT + 2;
+const BROADCAST_BLOCK_HASH =
+  '00000000000000000002d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
+const PRE_BROADCAST_TIP_HASH =
+  '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
+const SEND_AMOUNT_IN_SATS = 50_000_000;
+const SEND_FEE_IN_SATS = 281;
+
+export type BtcSendLifecycle = {
+  confirm: () => void;
+  isBroadcast: () => boolean;
+  isConfirmed: () => boolean;
+  markBroadcast: () => void;
+};
+
+/**
+ * Creates mutable per-test chain state for a mocked Bitcoin send lifecycle.
+ *
+ * @returns Controls used by the Esplora mocks and the test.
+ */
+export function createBtcSendLifecycle(): BtcSendLifecycle {
+  let broadcast = false;
+  let confirmed = false;
+  return {
+    confirm: () => {
+      confirmed = true;
+    },
+    isBroadcast: () => broadcast,
+    isConfirmed: () => confirmed,
+    markBroadcast: () => {
+      broadcast = true;
+    },
+  };
+}
 
 /**
  * Funding transaction that sends DEFAULT_BTC_BALANCE to the E2E test address.
@@ -93,13 +129,65 @@ const FUNDING_TX = {
   },
 };
 
+function createBroadcastTransaction(lifecycle: BtcSendLifecycle) {
+  return {
+    txid: BROADCAST_TX_ID,
+    version: 2,
+    locktime: 0,
+    vin: [
+      {
+        txid: FUNDING_TX_ID,
+        vout: 0,
+        prevout: FUNDING_TX.vout[0],
+        scriptsig: '',
+        scriptsig_asm: '',
+        witness: [],
+        is_coinbase: false,
+        sequence: 4294967293,
+      },
+    ],
+    vout: [
+      {
+        scriptpubkey: '00140000000000000000000000000000000000000001',
+        scriptpubkey_asm:
+          'OP_0 OP_PUSHBYTES_20 0000000000000000000000000000000000000001',
+        scriptpubkey_type: 'v0_p2wpkh',
+        scriptpubkey_address: 'bc1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqp7pn3ep',
+        value: SEND_AMOUNT_IN_SATS,
+      },
+      {
+        scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
+        scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${E2E_BTC_SCRIPTPUBKEY.slice(4)}`,
+        scriptpubkey_type: 'v0_p2wpkh',
+        scriptpubkey_address: DEFAULT_BTC_ADDRESS,
+        value:
+          DEFAULT_BTC_BALANCE * SATS_IN_1_BTC -
+          SEND_AMOUNT_IN_SATS -
+          SEND_FEE_IN_SATS,
+      },
+    ],
+    size: 141,
+    weight: 561,
+    fee: SEND_FEE_IN_SATS,
+    status: lifecycle.isConfirmed()
+      ? {
+          confirmed: true,
+          block_height: BROADCAST_BLOCK_HEIGHT,
+          block_hash: BROADCAST_BLOCK_HASH,
+          block_time: 1768825357,
+        }
+      : { confirmed: false },
+  };
+}
+
 /**
  * Mock /blocks endpoint.
  * Returns the latest blocks for BDK chain tip sync.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockBlocks = (mockServer: Mockttp) =>
+const mockBlocks = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks$/u,
@@ -107,11 +195,31 @@ const mockBlocks = (mockServer: Mockttp) =>
     .always()
     .thenCallback(() => {
       console.log('[BTC MOCK] /blocks endpoint called');
+      const confirmedBroadcastBlock = lifecycle?.isConfirmed()
+        ? [
+            {
+              id: BROADCAST_BLOCK_HASH,
+              height: BROADCAST_BLOCK_HEIGHT,
+              version: 1073676288,
+              timestamp: 1768825357,
+              tx_count: 1,
+              size: 141,
+              weight: 561,
+              merkle_root: BROADCAST_TX_ID,
+              previousblockhash: PRE_BROADCAST_TIP_HASH,
+              mediantime: 1768825157,
+              nonce: 1,
+              bits: 386001906,
+              difficulty: 146472570619930.78,
+            },
+          ]
+        : [];
       return {
         statusCode: 200,
         json: [
+          ...confirmedBroadcastBlock,
           {
-            id: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
+            id: PRE_BROADCAST_TIP_HASH,
             height: 932936,
             version: 1073676288,
             timestamp: 1768825157,
@@ -171,8 +279,12 @@ const mockBlocks = (mockServer: Mockttp) =>
  * and empty array for all other scripthashes.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockAllScriptHashTxs = (mockServer: Mockttp) =>
+const mockAllScriptHashTxs = (
+  mockServer: Mockttp,
+  lifecycle?: BtcSendLifecycle,
+) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
@@ -188,6 +300,12 @@ const mockAllScriptHashTxs = (mockServer: Mockttp) =>
 
       // Return funding transaction for the E2E test address
       if (scripthash === E2E_BTC_SCRIPTHASH) {
+        if (lifecycle?.isBroadcast()) {
+          return {
+            statusCode: 200,
+            json: [createBroadcastTransaction(lifecycle), FUNDING_TX],
+          };
+        }
         console.log(`[BTC MOCK] ✓ Matched scripthash - returning FUNDING_TX`);
         console.log(`[BTC MOCK] TX value: ${FUNDING_TX.vout[0].value} sats`);
         console.log(
@@ -206,8 +324,12 @@ const mockAllScriptHashTxs = (mockServer: Mockttp) =>
  * Returns the UTXO for the E2E test address.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockScriptHashUtxo = (mockServer: Mockttp) =>
+const mockScriptHashUtxo = (
+  mockServer: Mockttp,
+  lifecycle?: BtcSendLifecycle,
+) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/utxo$/u,
@@ -220,6 +342,20 @@ const mockScriptHashUtxo = (mockServer: Mockttp) =>
       const scripthash = scripthashMatch?.[1];
 
       if (scripthash === E2E_BTC_SCRIPTHASH) {
+        if (lifecycle?.isBroadcast()) {
+          const transaction = createBroadcastTransaction(lifecycle);
+          return {
+            statusCode: 200,
+            json: [
+              {
+                txid: BROADCAST_TX_ID,
+                vout: 1,
+                status: transaction.status,
+                value: transaction.vout[1].value,
+              },
+            ],
+          };
+        }
         return {
           statusCode: 200,
           json: [
@@ -295,8 +431,9 @@ const PREVOUT_TX = {
  * Required by BDK to fetch full transaction data.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockTxDetails = (mockServer: Mockttp) =>
+const mockTxDetails = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx\/[a-f0-9]{64}$/u,
@@ -318,6 +455,13 @@ const mockTxDetails = (mockServer: Mockttp) =>
         return { statusCode: 200, json: PREVOUT_TX };
       }
 
+      if (txid === BROADCAST_TX_ID && lifecycle?.isBroadcast()) {
+        return {
+          statusCode: 200,
+          json: createBroadcastTransaction(lifecycle),
+        };
+      }
+
       console.log(`[BTC MOCK] ⚠️ Unknown txid - returning 404`);
       return { statusCode: 404, body: 'Transaction not found' };
     });
@@ -327,8 +471,9 @@ const mockTxDetails = (mockServer: Mockttp) =>
  * Required by BDK to fetch block information.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockBlockDetails = (mockServer: Mockttp) =>
+const mockBlockDetails = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block\/[a-f0-9]{64}$/u,
@@ -363,6 +508,27 @@ const mockBlockDetails = (mockServer: Mockttp) =>
         };
       }
 
+      if (blockHash === BROADCAST_BLOCK_HASH && lifecycle?.isConfirmed()) {
+        return {
+          statusCode: 200,
+          json: {
+            id: BROADCAST_BLOCK_HASH,
+            height: BROADCAST_BLOCK_HEIGHT,
+            version: 1073676288,
+            timestamp: 1768825357,
+            tx_count: 1,
+            size: 141,
+            weight: 561,
+            merkle_root: BROADCAST_TX_ID,
+            previousblockhash: PRE_BROADCAST_TIP_HASH,
+            mediantime: 1768825157,
+            nonce: 1,
+            bits: 386001906,
+            difficulty: 146472570619930.78,
+          },
+        };
+      }
+
       return { statusCode: 404, body: 'Block not found' };
     });
 
@@ -371,8 +537,9 @@ const mockBlockDetails = (mockServer: Mockttp) =>
  * Required by BDK to get block hash at specific height.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockBlockHeight = (mockServer: Mockttp) =>
+const mockBlockHeight = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/\d+$/u,
@@ -390,6 +557,13 @@ const mockBlockHeight = (mockServer: Mockttp) =>
 
       if (height === String(FUNDING_BLOCK_HEIGHT)) {
         return { statusCode: 200, body: FUNDING_BLOCK_HASH };
+      }
+
+      if (
+        height === String(BROADCAST_BLOCK_HEIGHT) &&
+        lifecycle?.isConfirmed()
+      ) {
+        return { statusCode: 200, body: BROADCAST_BLOCK_HASH };
       }
 
       // Return a generic hash for other heights
@@ -453,8 +627,9 @@ const mockFeeEstimates = (mockServer: Mockttp) =>
  * Returns spending status of transaction outputs.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockTxOutspends = (mockServer: Mockttp) =>
+const mockTxOutspends = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx\/[a-f0-9]{64}\/outspends$/u,
@@ -465,6 +640,19 @@ const mockTxOutspends = (mockServer: Mockttp) =>
       const txid = txidMatch?.[1];
 
       if (txid === FUNDING_TX_ID) {
+        if (lifecycle?.isBroadcast()) {
+          return {
+            statusCode: 200,
+            json: [
+              {
+                spent: true,
+                txid: BROADCAST_TX_ID,
+                vin: 0,
+                status: createBroadcastTransaction(lifecycle).status,
+              },
+            ],
+          };
+        }
         return {
           statusCode: 200,
           json: [{ spent: false }],
@@ -499,18 +687,19 @@ const mockTxOutspends = (mockServer: Mockttp) =>
  * Returns a fake txid on success.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockBroadcastTx = (mockServer: Mockttp) =>
+const mockBroadcastTx = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
   mockServer
     .forPost(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx$/u,
     )
     .always()
     .thenCallback(() => {
-      // Return a fake txid for the broadcast transaction
+      lifecycle?.markBroadcast();
       return {
         statusCode: 200,
-        body: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        body: BROADCAST_TX_ID,
       };
     });
 
@@ -519,15 +708,24 @@ const mockBroadcastTx = (mockServer: Mockttp) =>
  * Returns the current chain tip height.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockBlocksTipHeight = (mockServer: Mockttp) =>
+const mockBlocksTipHeight = (
+  mockServer: Mockttp,
+  lifecycle?: BtcSendLifecycle,
+) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks\/tip\/height$/u,
     )
     .always()
     .thenCallback(() => {
-      return { statusCode: 200, body: '932936' };
+      return {
+        statusCode: 200,
+        body: String(
+          lifecycle?.isConfirmed() ? BROADCAST_BLOCK_HEIGHT : 932936,
+        ),
+      };
     });
 
 /**
@@ -535,8 +733,9 @@ const mockBlocksTipHeight = (mockServer: Mockttp) =>
  * Returns the current chain tip hash.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-const mockBlocksTipHash = (mockServer: Mockttp) =>
+const mockBlocksTipHash = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
   mockServer
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks\/tip\/hash$/u,
@@ -545,7 +744,9 @@ const mockBlocksTipHash = (mockServer: Mockttp) =>
     .thenCallback(() => {
       return {
         statusCode: 200,
-        body: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
+        body: lifecycle?.isConfirmed()
+          ? BROADCAST_BLOCK_HASH
+          : PRE_BROADCAST_TIP_HASH,
       };
     });
 
@@ -585,32 +786,36 @@ const mockCatchAllBitcoin = (mockServer: Mockttp) =>
  * The mock returns a funding transaction with DEFAULT_BTC_BALANCE (1 BTC) for this address.
  *
  * @param mockServer - The mock server instance
+ * @param lifecycle
  */
-export async function mockInitialFullScan(mockServer: Mockttp) {
+export async function mockInitialFullScan(
+  mockServer: Mockttp,
+  lifecycle?: BtcSendLifecycle,
+) {
   // Mock latest blocks - required by BDK for chain tip
-  await mockBlocks(mockServer);
+  await mockBlocks(mockServer, lifecycle);
 
-  await mockBlocksTipHeight(mockServer);
-  await mockBlocksTipHash(mockServer);
+  await mockBlocksTipHeight(mockServer, lifecycle);
+  await mockBlocksTipHash(mockServer, lifecycle);
   // Mock scripthash/*/txs - returns FUNDING_TX for E2E address
-  await mockAllScriptHashTxs(mockServer);
+  await mockAllScriptHashTxs(mockServer, lifecycle);
 
   // Mock transaction details - required by BDK
-  await mockTxDetails(mockServer);
-  await mockScriptHashUtxo(mockServer);
+  await mockTxDetails(mockServer, lifecycle);
+  await mockScriptHashUtxo(mockServer, lifecycle);
 
   // Mock block details - required by BDK
-  await mockTxOutspends(mockServer);
-  await mockBlockDetails(mockServer);
+  await mockTxOutspends(mockServer, lifecycle);
+  await mockBlockDetails(mockServer, lifecycle);
 
   // Mock block height lookups - required by BDK
-  await mockBlockHeight(mockServer);
+  await mockBlockHeight(mockServer, lifecycle);
 
   // Mock fee estimates - required for transaction building
   await mockFeeEstimates(mockServer);
 
   // Catch-all for debugging
-  await mockBroadcastTx(mockServer);
+  await mockBroadcastTx(mockServer, lifecycle);
   await mockCatchAllBitcoin(mockServer);
 }
 

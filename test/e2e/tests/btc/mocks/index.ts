@@ -1,4 +1,8 @@
-export { mockInitialFullScan, mockEmptyInitialFullScan } from './esplora';
+export {
+  createBtcSendLifecycle,
+  mockInitialFullScan,
+  mockEmptyInitialFullScan,
+} from './esplora';
 export {
   mockExchangeRates,
   mockCurrencyExchangeRates,

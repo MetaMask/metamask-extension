@@ -360,6 +360,21 @@ export class BitcoinNode {
     return txId;
   }
 
+  /**
+   * Mines blocks to a fresh wallet address so mempool transactions become
+   * confirmed and the proxied Esplora chain tip advances.
+   *
+   * @param count - Number of blocks to mine.
+   * @returns The hashes of the generated blocks.
+   */
+  async mineBlocks(count: number = 1): Promise<string[]> {
+    const miningAddress = await this.getNewAddress();
+    return await this.rpc<string[]>('generatetoaddress', [
+      count,
+      miningAddress,
+    ]);
+  }
+
   async getBlock(blockHash: string) {
     const block = await this.rpc<BitcoinBlock>('getblock', [blockHash, 1]);
     return createEsploraBlock(block);
@@ -629,11 +644,7 @@ export class BitcoinNode {
   private async fundAccounts(
     accounts: BitcoinLocalNodeAccount[],
   ): Promise<void> {
-    const miningAddress = await this.rpc<string>(
-      'getnewaddress',
-      ['', 'bech32'],
-      true,
-    );
+    const miningAddress = await this.getNewAddress();
     await this.rpc('generatetoaddress', [101, miningAddress]);
 
     for (const account of accounts) {
@@ -660,6 +671,10 @@ export class BitcoinNode {
       );
     }
     await this.rpc('generatetoaddress', [1, miningAddress]);
+  }
+
+  private async getNewAddress(): Promise<string> {
+    return await this.rpc<string>('getnewaddress', ['', 'bech32'], true);
   }
 
   private async getBlockHeight(blockHash: string): Promise<number | undefined> {
