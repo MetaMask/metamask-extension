@@ -99,6 +99,8 @@ export type BenchmarkSummary = {
   successfulRuns: number;
   failedRuns: number;
   timers: TimerStatistics[];
+  /** Raw per-run values by timer id, before outlier trimming. */
+  rawSamples?: Record<string, number[]>;
   timestamp: string;
   excludedDueToQuality: number;
   /** Whether the exclusion rate is within acceptable limits */

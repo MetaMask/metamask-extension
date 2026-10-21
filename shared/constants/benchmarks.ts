@@ -156,6 +156,14 @@ export type HostProvenance = {
   /** First line of `anvil --version`; undefined if the binary is missing. */
   anvilVersion?: string;
   cpuModel?: string;
+  /**
+   * From the first `/proc/cpuinfo` block. Tells CPU generations apart where the
+   * model name is generic (Namespace reports only "AMD EPYC").
+   */
+  cpuFamily?: number;
+  cpuModelNumber?: number;
+  cpuStepping?: number;
+  cpuMicrocode?: string;
   cpuCount?: number;
   /** Undefined on Linux VMs, where `os.cpus()[0].speed` reports 0. */
   cpuSpeedMhz?: number;
@@ -209,6 +217,11 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
   trimmedCount?: StatisticalResult;
   outliers?: StatisticalResult;
+  /**
+   * Raw per-load values by metric, in collection order, before any outlier
+   * trimming. Artifact only: not sent to Sentry.
+   */
+  samples?: Record<string, number[]>;
   host?: HostProvenance;
   source?: SourceProvenance;
   webVitals?: WebVitalsSummary;
