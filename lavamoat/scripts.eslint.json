@@ -1,9 +1,9 @@
 {
-  "extends": "scripts.native.json",
   "//inactive options": {
     "--inspect-brk": true,
     "--allow-inspector": true
   },
+  "extends": "scripts.native.json",
   "nodeOptions": {
     "--max-old-space-size": "9216",
     "--max-semi-space-size": "320"

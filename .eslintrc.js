@@ -26,7 +26,9 @@ const reactVersion = reactPackageJson.version;
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, __dirname);
-const tsconfigLookupSet = new Set(tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)))
+const tsconfigLookupSet = new Set(
+  tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
+);
 
 module.exports = defineConfig([
   {
@@ -126,7 +128,6 @@ module.exports = defineConfig([
     },
     settings: {
       'import-x/resolver': {
-
         // When determining the location of an `import`, use Node's resolution
         // algorithm, then fall back to TypeScript's. This allows TypeScript
         // files (which Node's algorithm doesn't recognize) to be imported
@@ -151,16 +152,17 @@ module.exports = defineConfig([
     // with webpack rules below. Otherwise webpack rules will try to parse
     // files that are omitted in tsconfig
     ignores: [
-      ".yarn/",
-      "node_modules/",
-      ".git/",
-      ".agents/",
-      ".claude/",
-      (filePath) => /\.tsx?$/u.test(filePath) && !tsconfigLookupSet.has(filePath)
+      '.yarn/',
+      'node_modules/',
+      '.git/',
+      '.agents/',
+      '.claude/',
+      (filePath) =>
+        /\.tsx?$/u.test(filePath) && !tsconfigLookupSet.has(filePath),
     ],
   },
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ['**/*.ts', '**/*.tsx'],
     // files: ["app/**/*.{ts,tsx}", "development/**/*.{ts,tsx}", "shared/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "types/**/*.{ts,tsx}", "ui/**/*.{ts,tsx}", "*.ts"],
     // a flat list of paths passed as files is being heavily processed
     // globbing everything and manually filtering against a set is more efficient.
@@ -169,7 +171,7 @@ module.exports = defineConfig([
       parserOptions: {
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
         tsconfigRootDir: __dirname,
-        projectService: true
+        projectService: true,
       },
     },
     extends: [

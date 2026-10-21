@@ -2,8 +2,7 @@
   "extends": "scripts.native.json",
   "nodeOptions": {
     "--allow-net": true,
-    "--disable-warning": ["SecurityWarning","ExperimentalWarning"]
-
+    "--disable-warning": ["SecurityWarning", "ExperimentalWarning"]
   },
   "notes": "Allows net access because tsx binds to a socket :("
 }
