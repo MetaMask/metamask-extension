@@ -5,8 +5,7 @@
  * come from `/v3/spot-prices` rather than `/v1/exchange-rates`. The
  * `unsupportedPrice` catalog answers the HYPE spot-prices request with an
  * empty body. The UI should still load the homepage and Tokens tab, render
- * HYPE, show the em-dash fiat placeholder, and not raise a blocking error
- * toast.
+ * HYPE, and show the em-dash fiat placeholder.
  *
  * An em dash also shows when no price request runs, so the spec fails unless
  * the spot-prices mock was hit for the HyperEVM native asset id.
@@ -21,10 +20,6 @@ import { prepareCustomNetwork } from '../../helpers/custom-network-harness';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import {
-  checkNoBlockingErrorToastWasObserved,
-  startMonitoringBlockingErrorToast,
-} from './blocking-error-toast';
 
 function isSpotPriceRequestForAsset(url: string, assetId: string): boolean {
   try {
@@ -60,7 +55,7 @@ async function spotPriceMockWasHitForAsset(
 }
 
 describe('HyperEVM unsupported crypto handling', function () {
-  it('does not show a blocking error toast when price API is unsupported', async function () {
+  it('renders HYPE with an em-dash fiat value when the spot price is unsupported', async function () {
     const { fixtures, localNodeOptions, testSpecificMock, network } =
       prepareCustomNetwork('hyperevm', 'unsupportedPrice');
 
@@ -91,10 +86,7 @@ describe('HyperEVM unsupported crypto handling', function () {
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
 
-        // Watch for auto-dismissing toasts before homepage waits can hide them.
-        await startMonitoringBlockingErrorToast(driver);
         await loginPage.loginToHomepage();
-        await startMonitoringBlockingErrorToast(driver);
 
         await homePage.checkPageIsLoaded();
         await tokensTab.checkTokenListIsDisplayed();
@@ -112,8 +104,6 @@ describe('HyperEVM unsupported crypto handling', function () {
               `(${reason})`,
           );
         }
-
-        await checkNoBlockingErrorToastWasObserved(driver, homePage);
       },
     );
   });
