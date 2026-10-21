@@ -4057,6 +4057,8 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {string} [scope] - Optional CAIP-2 scope to restrict the returned
+   * accounts to.
    * @returns {string[]} The origin's permitted accounts, or an empty
    * array.
    */
