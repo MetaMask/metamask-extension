@@ -594,15 +594,14 @@ class Driver {
         timeout,
       );
     } else if (state === 'detached') {
-      // If the element is already gone (common when Save closes a modal
-      // faster than the next wait), treat that as success. findElement()
-      // would otherwise hang looking for an element that is already detached.
-      // driver.wait() resolves to a boolean here, so do not wrap it as a
-      // WebElement.
-      await this.driver.wait(
-        until.elementIsNotPresent(this.buildLocator(rawLocator)),
-        timeout,
-      );
+      // Succeed if nothing matches, or when the match we found disappears.
+      // (Avoid findElement: it hangs when the element is already gone.)
+      const locator = this.buildLocator(rawLocator);
+      const found = await this.driver.findElements(locator);
+      if (found.length === 0) {
+        return undefined;
+      }
+      await this.driver.wait(until.stalenessOf(found[0]), timeout);
       return undefined;
     } else if (state === 'enabled') {
       element = await this.driver.wait(
