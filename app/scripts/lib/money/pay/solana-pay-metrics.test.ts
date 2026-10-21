@@ -29,7 +29,6 @@ describe('trackSolanaPayLifecycle', () => {
       phase: 'unknown',
       provider: 'relay',
       relayStatus: 'unknown',
-      requestIdPresent: true,
       sourceAssetClass: 'native',
       sourceStatus: 'confirmed',
       sourceTransactionIdPresent: true,
@@ -51,7 +50,6 @@ describe('trackSolanaPayLifecycle', () => {
         mm_pay_phase: 'unknown',
         mm_pay_provider: 'relay',
         mm_pay_relay_status: 'unknown',
-        mm_pay_request_id_present: true,
         mm_pay_source_asset_class: 'native',
         mm_pay_source_status: 'confirmed',
         mm_pay_source_transaction_id_present: true,
@@ -71,7 +69,6 @@ describe('trackSolanaPayLifecycle', () => {
       phase: 'ready',
       provider: 'relay',
       relayStatus: 'not-observed',
-      requestIdPresent: true,
       sourceAssetClass: 'token',
       sourceStatus: 'not-observed',
       sourceTransactionIdPresent: false,
@@ -82,5 +79,24 @@ describe('trackSolanaPayLifecycle', () => {
     expect(event.properties).not.toHaveProperty('mm_pay_error_code');
     expect(event.properties).not.toHaveProperty('mm_pay_analytics_id');
     expect(event.sensitiveProperties).toStrictEqual({});
+  });
+
+  it('omits the source asset class when Core has no source', () => {
+    trackSolanaPayLifecycle({
+      followUpStatus: 'not-required',
+      followUpTransactionIdPresent: false,
+      isRecovery: false,
+      notificationStatus: 'not-ready',
+      outcome: 'ready',
+      phase: 'ready',
+      provider: 'relay',
+      relayStatus: 'not-observed',
+      sourceStatus: 'not-observed',
+      sourceTransactionIdPresent: false,
+      targetTransactionIdPresent: false,
+    });
+
+    const event = jest.mocked(trackEvent).mock.calls[0][0];
+    expect(event.properties).not.toHaveProperty('mm_pay_source_asset_class');
   });
 });
