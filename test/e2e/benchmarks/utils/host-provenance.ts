@@ -84,6 +84,46 @@ export function parseCpuTimes(stat: string): CpuTimes | undefined {
   return { steal: fields[7], total: fields.reduce((sum, n) => sum + n, 0) };
 }
 
+export type CpuIdentity = {
+  cpuFamily?: number;
+  cpuModelNumber?: number;
+  cpuStepping?: number;
+  cpuMicrocode?: string;
+};
+
+/**
+ * Read family, model, stepping and microcode from the first `/proc/cpuinfo`
+ * block.
+ *
+ * @param cpuinfo - Contents of `/proc/cpuinfo`.
+ * @returns Whichever fields are present.
+ */
+export function parseCpuIdentity(cpuinfo: string): CpuIdentity {
+  const [block] = cpuinfo.split(/\n\s*\n/u);
+  const field = (name: string): string | undefined =>
+    new RegExp(`^${name}\\s*:\\s*(.+)$`, 'mu').exec(block)?.[1].trim();
+  const number = (name: string): number | undefined => {
+    const value = Number(field(name));
+    return field(name) !== undefined && Number.isFinite(value)
+      ? value
+      : undefined;
+  };
+  return {
+    cpuFamily: number('cpu family'),
+    cpuModelNumber: number('model'),
+    cpuStepping: number('stepping'),
+    cpuMicrocode: field('microcode'),
+  };
+}
+
+function readCpuIdentity(): CpuIdentity {
+  try {
+    return parseCpuIdentity(readFileSync('/proc/cpuinfo', 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
 function readCpuTimes(): CpuTimes | undefined {
   try {
     return parseCpuTimes(readFileSync('/proc/stat', 'utf8'));
@@ -375,6 +415,7 @@ export function captureHostProvenance(
     nodeVersion: process.version,
     anvilVersion: readAnvilVersion(),
     cpuModel: first?.model,
+    ...readCpuIdentity(),
     cpuCount: cpus.length,
     // `os.cpus()[0].speed` is 0 on Linux VMs; 0 MHz is not a reading.
     cpuSpeedMhz: first?.speed ? first.speed : undefined,
