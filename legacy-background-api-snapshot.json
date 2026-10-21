@@ -143,7 +143,6 @@
     "isPublicEndpointUrl",
     "multichainAssetsRatesStartPolling",
     "multichainAssetsRatesStopPollingByPollingToken",
-    "multichainUpdateBalance",
     "removeAndIgnoreNft",
     "removeNetwork",
     "removeNft",
