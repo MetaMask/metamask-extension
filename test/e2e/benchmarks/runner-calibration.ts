@@ -17,6 +17,8 @@ import {
 const CALIBRATION_SAMPLES = 6;
 const WARMUP_SAMPLES = 1;
 const WEBDRIVER_TIMEOUT_MS = 30_000;
+// A pinned Firefox is downloaded on first use; 30 s was not enough on Namespace.
+const SELENIUM_MANAGER_TIMEOUT_MS = 150_000;
 const PINNED_GECKODRIVER_VERSION = '0.36.0';
 
 type CalibrationSample = {
@@ -178,7 +180,7 @@ function resolveFirefoxPaths(): {
         'json',
         '--avoid-stats',
       ],
-      { encoding: 'utf8', timeout: WEBDRIVER_TIMEOUT_MS },
+      { encoding: 'utf8', timeout: SELENIUM_MANAGER_TIMEOUT_MS },
     );
     const { result } = JSON.parse(output);
     return {
@@ -253,9 +255,10 @@ export async function main(): Promise<void> {
     })
     .parse();
   const { server, url } = await startFixtureServer();
-  const driver = await buildDriver();
+  let driver: WebDriver | undefined;
 
   try {
+    driver = await buildDriver();
     await driver.manage().setTimeouts({
       pageLoad: WEBDRIVER_TIMEOUT_MS,
       script: WEBDRIVER_TIMEOUT_MS,
@@ -283,7 +286,8 @@ export async function main(): Promise<void> {
     await fs.writeFile(argv.out, `${JSON.stringify(calibration, null, 2)}\n`);
     console.log('Runner calibration:', JSON.stringify(calibration));
   } finally {
-    await driver.quit();
+    // Without closing the server a failed build leaves the process hanging.
+    await driver?.quit();
     await closeServer(server);
   }
 }
