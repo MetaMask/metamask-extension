@@ -3698,13 +3698,13 @@ export function setActiveNetworkConfigurationId(
     log.debug(
       `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
     );
-    try {
-      await submitRequestToBackground('NetworkController:setActiveNetwork', [
-        networkConfigurationId,
-      ]);
-    } catch (error) {
+    // Avoid returning promise so that initial call to switch network
+    // doesn't block on the network lookup step
+    submitRequestToBackground('NetworkController:setActiveNetwork', [
+      networkConfigurationId,
+    ]).catch((error) => {
       logErrorWithMessage(error);
-    }
+    });
   };
 }
 
