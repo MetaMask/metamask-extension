@@ -89,6 +89,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity();
         await activityTab.checkTxAmountInActivity('-4 ETH');
       },
