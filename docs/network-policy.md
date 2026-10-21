@@ -21,6 +21,12 @@ background releases deferred telemetry only after Chrome applies the latest
 policy update; a superseded update cannot release it. Early startup diagnostics
 use persisted onboarding and preference state and remain subject to DNR.
 
+Network metadata and notification startup respect onboarding completion and Basic
+Functionality. Their background requests await policy publication before starting,
+so completing onboarding cannot race the browser's rule update. Offline network
+metadata uses known identifiers or the packaged SLIP-44 map; remote enrichment
+refreshes it only when onboarding and Basic Functionality permit access.
+
 UI/background callers can allow an exact URL even if background startup fails:
 
 ```typescript

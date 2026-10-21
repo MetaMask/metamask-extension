@@ -307,7 +307,10 @@ import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
-import { setOnboardingNetworkDomains } from './lib/network-request-policy';
+import {
+  refreshNetworkRequestPolicy,
+  setOnboardingNetworkDomains,
+} from './lib/network-request-policy';
 import {
   CronjobControllerInit,
   ExecutionServiceInit,
@@ -2431,6 +2434,12 @@ export default class MetamaskController extends EventEmitter {
       staticAssetsController,
     } = this;
 
+    const waitForNetworkPolicy = async () => {
+      if (isManifestV3) {
+        await refreshNetworkRequestPolicy(this.store.getState());
+      }
+    };
+
     return {
       // etc
       setCurrentCurrency: this.controllerMessenger.call.bind(
@@ -3653,10 +3662,10 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
-      getNotificationPreferences:
-        authenticatedUserStorageService.getNotificationPreferences.bind(
-          authenticatedUserStorageService,
-        ),
+      getNotificationPreferences: async () => {
+        await waitForNetworkPolicy();
+        return authenticatedUserStorageService.getNotificationPreferences();
+      },
       putNotificationPreferences:
         authenticatedUserStorageService.putNotificationPreferences.bind(
           authenticatedUserStorageService,
@@ -3676,10 +3685,12 @@ export default class MetamaskController extends EventEmitter {
       enableAccounts: notificationServicesController.enableAccounts.bind(
         notificationServicesController,
       ),
-      fetchAndUpdateMetamaskNotifications:
-        notificationServicesController.fetchAndUpdateMetamaskNotifications.bind(
-          notificationServicesController,
-        ),
+      fetchAndUpdateMetamaskNotifications: async (previewToken) => {
+        await waitForNetworkPolicy();
+        return notificationServicesController.fetchAndUpdateMetamaskNotifications(
+          previewToken,
+        );
+      },
       deleteNotificationsById:
         notificationServicesController.deleteNotificationsById.bind(
           notificationServicesController,
@@ -3704,8 +3715,12 @@ export default class MetamaskController extends EventEmitter {
         notificationServicesPushController.disablePushNotifications.bind(
           notificationServicesPushController,
         ),
-      enableMetamaskNotifications: (options) =>
-        notificationServicesController.enableMetamaskNotifications(options),
+      enableMetamaskNotifications: async (options) => {
+        await waitForNetworkPolicy();
+        return notificationServicesController.enableMetamaskNotifications(
+          options,
+        );
+      },
       disableMetamaskNotifications:
         notificationServicesController.disableNotificationServices.bind(
           notificationServicesController,

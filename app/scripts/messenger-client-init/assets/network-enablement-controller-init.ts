@@ -26,6 +26,7 @@ import {
 import { NetworkEnablementControllerInitMessenger } from '../messengers/assets';
 import { MessengerClientInitFunction } from '../types';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { refreshNetworkRequestPolicy } from '../../lib/network-request-policy';
 
 /**
  * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.
@@ -147,7 +148,16 @@ export const NetworkEnablementControllerInit: MessengerClientInitFunction<
       messenger: controllerMessenger,
       getEvmSlip44: async (chainId) => {
         if (canFetchMetadata()) {
-          return Slip44Service.getEvmSlip44(chainId);
+          await refreshNetworkRequestPolicy({
+            OnboardingController: getMessengerClient('OnboardingController')
+              .state,
+            PreferencesController: getMessengerClient('PreferencesController')
+              .state,
+            NetworkController: getMessengerClient('NetworkController').state,
+          });
+          if (canFetchMetadata()) {
+            return Slip44Service.getEvmSlip44(chainId);
+          }
         }
         // Preserve known identifiers offline; otherwise use the packaged symbol map.
         const existing =
