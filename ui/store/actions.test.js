@@ -2978,18 +2978,14 @@ describe('Actions', () => {
 
     it('calls removeNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
-
-      const messengerCallStub = sinon
-        .stub()
-        .withArgs('NetworkController:removeNetwork', [
-          'testNetworkConfigurationId',
-        ])
-        .resolves();
-      setBackgroundConnection({ messengerCall: messengerCallStub });
+      const removeNetworkStub = sinon.stub().resolves();
+      setBackgroundConnection({ removeNetwork: removeNetworkStub });
 
       await store.dispatch(actions.removeNetwork('testNetworkConfigurationId'));
 
-      expect(messengerCallStub.calledOnce).toBe(true);
+      expect(
+        removeNetworkStub.calledOnceWithExactly('testNetworkConfigurationId'),
+      ).toBe(true);
     });
   });
 
@@ -4613,6 +4609,46 @@ describe('Actions', () => {
     });
   });
 
+  describe('#resetOAuthLoginState', () => {
+    it('clears seedless onboarding state through the messenger', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({ messengerCall: messengerCallStub });
+
+      await store.dispatch(actions.resetOAuthLoginState());
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'SeedlessOnboardingController:clearState',
+          [],
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('#getIsSeedlessOnboardingUserAuthenticated', () => {
+    it('checks authentication through SeedlessOnboardingController', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon
+        .stub()
+        .withArgs('SeedlessOnboardingController:getIsUserAuthenticated', [])
+        .resolves(true);
+      setBackgroundConnection({ messengerCall: messengerCallStub });
+
+      const isAuthenticated = await store.dispatch(
+        actions.getIsSeedlessOnboardingUserAuthenticated(),
+      );
+
+      expect(isAuthenticated).toBe(true);
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'SeedlessOnboardingController:getIsUserAuthenticated',
+          [],
+        ),
+      ).toBe(true);
+    });
+  });
+
   describe('#getNotificationPreferences', () => {
     it('calls getNotificationPreferences in the background', async () => {
       const store = mockStore();
@@ -6194,15 +6230,28 @@ describe('Actions', () => {
     });
 
     it('calls perpsToggleTestnet in the background', async () => {
-      const messengerCallStub = sinon.stub().resolves();
-      setBackgroundConnection({ messengerCall: messengerCallStub });
+      const perpsToggleTestnetStub = sinon.stub().resolves();
+      setBackgroundConnection({
+        perpsToggleTestnet: perpsToggleTestnetStub,
+      });
       await actions.perpsToggleTestnet();
-      expect(
-        messengerCallStub.calledOnceWithExactly(
-          'PerpsController:toggleTestnet',
-          [],
-        ),
-      ).toBe(true);
+      expect(perpsToggleTestnetStub.calledOnceWithExactly()).toBe(true);
+    });
+  });
+
+  describe('#multichainUpdateBalance', () => {
+    it('calls multichainUpdateBalance in the background with the account ID', async () => {
+      const accountId = 'account-id';
+      const multichainUpdateBalanceStub = sinon.stub().resolves();
+      setBackgroundConnection({
+        multichainUpdateBalance: multichainUpdateBalanceStub,
+      });
+
+      await actions.multichainUpdateBalance(accountId);
+
+      expect(multichainUpdateBalanceStub.calledOnceWithExactly(accountId)).toBe(
+        true,
+      );
     });
   });
 

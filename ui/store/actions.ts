@@ -390,7 +390,9 @@ export function resetOAuthLoginState() {
     dispatch(showLoadingIndication());
 
     try {
-      await submitRequestToBackground('OAuthService:resetOAuthLoginState');
+      await submitRequestToBackground(
+        'SeedlessOnboardingController:clearState',
+      );
 
       dispatch({
         type: actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING,
@@ -1107,7 +1109,7 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
     try {
       dispatch(showLoadingIndication());
       const isAuthenticated = await submitRequestToBackground(
-        'SeedlessOnboardingController:isAuthenticated',
+        'SeedlessOnboardingController:getIsUserAuthenticated',
         [],
       );
       return isAuthenticated;
@@ -7917,10 +7919,9 @@ export async function decodeTransactionData({
 export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {
-  return await submitRequestToBackground<void>(
-    'MultichainBalancesController:updateBalance',
-    [accountId],
-  );
+  return await submitRequestToBackground<void>('multichainUpdateBalance', [
+    accountId,
+  ]);
 }
 
 export async function multichainUpdateTransactions(
@@ -8256,7 +8257,7 @@ export function removeDeferredDeepLink(): ThunkAction<
 export async function perpsToggleTestnet(): Promise<void> {
   log.debug(`background.perpsToggleTestnet`);
   try {
-    await submitRequestToBackground<void>('PerpsController:toggleTestnet');
+    await submitRequestToBackground<void>('perpsToggleTestnet');
   } catch (error) {
     logErrorWithMessage(error);
   }
