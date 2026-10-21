@@ -1,31 +1,9 @@
 import type { PaymentOverride } from '@metamask/transaction-pay-controller';
-import type { CaipAccountId, CaipAssetType, Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../shared/lib/money/withdraw-amount-commit';
 import { submitRequestToBackground } from '../background-connection';
 
 export type { MoneyAccountWithdrawAmountUpdate };
-
-export async function setSolanaPaySource({
-  transactionId,
-  sourceWalletAccountId,
-  sourceAccountId,
-  sourceAssetId,
-  sourceAmountRaw,
-}: {
-  transactionId: string;
-  sourceWalletAccountId: string;
-  sourceAccountId: CaipAccountId;
-  sourceAssetId: CaipAssetType;
-  sourceAmountRaw: string;
-}): Promise<void> {
-  await submitRequestToBackground('setSolanaPaySource', [
-    transactionId,
-    sourceWalletAccountId,
-    sourceAccountId,
-    sourceAssetId,
-    sourceAmountRaw,
-  ]);
-}
 
 export async function updateTransactionPaymentToken({
   transactionId,

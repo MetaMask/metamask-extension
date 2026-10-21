@@ -1,11 +1,5 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { SolScope } from '@metamask/keyring-api';
-import { ConfirmContext } from '../../context/confirm';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
 import { Asset, AssetStandard } from '../../types/send';
@@ -41,31 +35,6 @@ const TOKEN_MOCK: Asset = {
   isSelected: false,
 };
 
-const TRANSACTION_ID_MOCK = 'tx-1';
-
-const mockStore = configureStore([]);
-
-function createWrapper(metamaskPay?: TransactionMeta['metamaskPay']) {
-  const store = mockStore({
-    metamask: {
-      transactions: [{ id: TRANSACTION_ID_MOCK, metamaskPay, time: 0 }],
-      transactionData: {},
-    },
-  });
-
-  const confirmContextValue = {
-    currentConfirmation: { id: TRANSACTION_ID_MOCK },
-  };
-
-  return ({ children }: { children: React.ReactNode }) => (
-    <Provider store={store}>
-      <ConfirmContext.Provider value={confirmContextValue as never}>
-        {children}
-      </ConfirmContext.Provider>
-    </Provider>
-  );
-}
-
 describe('useTransactionPayAvailableTokens', () => {
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useTransactionPayBlockedTokensMock = jest.mocked(
@@ -93,17 +62,13 @@ describe('useTransactionPayAvailableTokens', () => {
   });
 
   it('returns available tokens', () => {
-    const { result } = renderHook(() => useTransactionPayAvailableTokens(), {
-      wrapper: createWrapper(),
-    });
+    const { result } = renderHook(() => useTransactionPayAvailableTokens());
 
     expect(result.current).toMatchObject([TOKEN_MOCK]);
   });
 
   it('calls getAvailableTokens with tokens and LD blocked tokens', () => {
-    renderHook(() => useTransactionPayAvailableTokens(), {
-      wrapper: createWrapper(),
-    });
+    renderHook(() => useTransactionPayAvailableTokens());
 
     expect(getAvailableTokensMock).toHaveBeenCalledWith({
       tokens: expect.arrayContaining([
@@ -115,32 +80,14 @@ describe('useTransactionPayAvailableTokens', () => {
       ]),
       blockedTokens: blockedTokensMock,
       payToken: undefined,
-      paySource: undefined,
     });
-  });
-
-  it('passes the persisted pay source to getAvailableTokens', () => {
-    const source = {
-      sourceAccountId: `${SolScope.Mainnet}:solana-address`,
-      sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
-    } as const;
-
-    renderHook(() => useTransactionPayAvailableTokens(), {
-      wrapper: createWrapper({ source } as TransactionMeta['metamaskPay']),
-    });
-
-    expect(getAvailableTokensMock).toHaveBeenCalledWith(
-      expect.objectContaining({ paySource: source }),
-    );
   });
 
   it('returns empty array when no tokens available', () => {
     useSendTokensMock.mockReturnValue([]);
     getAvailableTokensMock.mockReturnValue([]);
 
-    const { result } = renderHook(() => useTransactionPayAvailableTokens(), {
-      wrapper: createWrapper(),
-    });
+    const { result } = renderHook(() => useTransactionPayAvailableTokens());
 
     expect(result.current).toEqual([]);
   });

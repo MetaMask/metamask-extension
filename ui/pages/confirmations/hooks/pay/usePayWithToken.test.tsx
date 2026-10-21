@@ -1,6 +1,5 @@
 import React from 'react';
 import { act, renderHook } from '@testing-library/react';
-import { SolScope } from '@metamask/keyring-api';
 import {
   PaymentOverride,
   type TransactionPaymentToken,
@@ -12,11 +11,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
-import {
-  selectPaymentOverrideByTransactionId,
-  selectSolanaPayExecutionByTransactionId,
-  selectTransactionPaySourceByTransactionId,
-} from '../../../../selectors/transactionPayController';
+import { selectPaymentOverrideByTransactionId } from '../../../../selectors/transactionPayController';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -49,8 +44,6 @@ jest.mock('../../../../selectors/accounts', () => ({
 }));
 jest.mock('../../../../selectors/transactionPayController', () => ({
   selectPaymentOverrideByTransactionId: jest.fn(),
-  selectSolanaPayExecutionByTransactionId: jest.fn(),
-  selectTransactionPaySourceByTransactionId: jest.fn(),
 }));
 jest.mock('./useIsMoneyAccountFlagDefault', () => ({
   useIsMoneyAccountFlagDefault: jest.fn(),
@@ -111,12 +104,6 @@ describe('usePayWithToken', () => {
   const selectPaymentOverrideByTransactionIdMock = jest.mocked(
     selectPaymentOverrideByTransactionId,
   );
-  const selectSolanaPayExecutionByTransactionIdMock = jest.mocked(
-    selectSolanaPayExecutionByTransactionId,
-  );
-  const selectTransactionPaySourceByTransactionIdMock = jest.mocked(
-    selectTransactionPaySourceByTransactionId,
-  );
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
   );
@@ -150,8 +137,6 @@ describe('usePayWithToken', () => {
     });
     getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
-    selectSolanaPayExecutionByTransactionIdMock.mockReturnValue(undefined);
-    selectTransactionPaySourceByTransactionIdMock.mockReturnValue(undefined);
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
       withdrawableFiatFormatted: '$12.34',
@@ -161,36 +146,6 @@ describe('usePayWithToken', () => {
     useSelectorMock.mockImplementation(
       (selector: (state: unknown) => unknown) => selector({}),
     );
-  });
-
-  it('shows the immutable Solana source instead of the Money Account override', () => {
-    selectPaymentOverrideByTransactionIdMock.mockReturnValue(
-      PaymentOverride.MoneyAccount,
-    );
-    selectTransactionPaySourceByTransactionIdMock.mockReturnValue({
-      sourceAccountId: `${SolScope.Mainnet}:solana-address`,
-      sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
-    });
-    selectSolanaPayExecutionByTransactionIdMock.mockReturnValue({
-      phase: 'ready',
-    } as never);
-    useTransactionPayAvailableTokensMock.mockReturnValue([
-      {
-        accountAddress: 'solana-address',
-        accountId: 'solana-account-id',
-        assetId: `${SolScope.Mainnet}/slip44:501`,
-        chainId: SolScope.Mainnet,
-        fiat: { balance: 25 },
-        isNative: true,
-        symbol: 'SOL',
-      },
-    ]);
-
-    const { result } = renderHook(() => usePayWithToken());
-
-    expect(result.current.displayToken).toMatchObject({ symbol: 'SOL' });
-    expect(result.current.isMoneyAccountSelected).toBe(false);
-    expect(result.current.from).toBeUndefined();
   });
 
   it('returns the crypto pay token display values by default', () => {

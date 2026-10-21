@@ -29,7 +29,7 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
-  it('delegates the externally published transaction lifecycle actions', () => {
+  it('delegates the Solana Pay quote, submit and recovery actions', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
@@ -38,6 +38,8 @@ describe('getTransactionPayControllerMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: expect.arrayContaining([
+          'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
+          'SnapController:handleRequest',
           'TransactionController:confirmTransaction',
           'TransactionController:failTransaction',
         ]),
@@ -80,10 +82,7 @@ describe('getTransactionPayControllerInitMessenger', () => {
       expect.objectContaining({
         actions: expect.arrayContaining([
           'AccountsController:getSelectedAccount',
-          'MultichainTransactionsController:getState',
-          'MultichainTransactionsController:updateTransactionsForAccount',
           'NetworkController:getNetworkClientById',
-          'SnapController:handleRequest',
           'TransactionController:getState',
           'TransactionController:updateTransaction',
         ]),

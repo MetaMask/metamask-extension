@@ -261,7 +261,7 @@
       "packages": {
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
-        "@solana/web3.js>bn.js": true
+        "ethereumjs-util>bn.js": true
       }
     },
     "@ethersproject/bytes": {
@@ -415,7 +415,7 @@
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/logger": true,
         "ethers>@ethersproject/properties": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "ethers>@ethersproject/sha2>hash.js": true
       }
     },
@@ -955,7 +955,7 @@
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@metamask/assets-controllers>immer": true,
         "@metamask/assets-controller>lodash-es": true,
         "@metamask/assets-controllers>multiformats": true,
@@ -972,7 +972,7 @@
       },
       "packages": {
         "@noble/hashes": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eslint>json-stable-stringify-without-jsonify": true
       }
@@ -987,7 +987,7 @@
       "packages": {
         "@noble/curves": true,
         "@noble/hashes": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "@toruslabs/eccrypto>elliptic": true,
         "eslint>json-stable-stringify-without-jsonify": true
@@ -1201,7 +1201,7 @@
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1220,7 +1220,7 @@
         "@ethersproject/abi": true,
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1238,7 +1238,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1256,7 +1256,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1273,7 +1273,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1290,7 +1290,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1307,7 +1307,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1325,7 +1325,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1342,7 +1342,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1359,7 +1359,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1376,7 +1376,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1394,7 +1394,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1413,7 +1413,7 @@
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1431,7 +1431,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1449,7 +1449,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1472,7 +1472,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1489,7 +1489,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1506,7 +1506,7 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -1525,7 +1525,7 @@
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/wallet>@metamask/controller-utils>@signinwithethereum/siwe-parser": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
         "eth-ens-namehash": true,
@@ -1905,7 +1905,7 @@
         "@ethersproject/providers": true,
         "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
         "@metamask/safe-event-emitter": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@metamask/eth-token-tracker>deep-equal": true,
         "human-standard-token-abi": true
       }
@@ -1975,7 +1975,7 @@
     "@metamask/controller-utils>@metamask/ethjs-unit": {
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
-        "@solana/web3.js>bn.js": true
+        "ethereumjs-util>bn.js": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": {
@@ -1999,7 +1999,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "uuid": true
       }
     },
@@ -2013,7 +2013,7 @@
         "@metamask/transaction-controller>@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": true
       }
     },
@@ -2027,7 +2027,7 @@
         "@metamask/wallet>@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/wallet>@metamask/gas-fee-controller>@metamask/polling-controller": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "uuid": true
       }
     },
@@ -2598,7 +2598,7 @@
     },
     "@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": {
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
@@ -3281,7 +3281,7 @@
         "@toruslabs/eccrypto": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/fetch-node-details": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup>@toruslabs/http-helpers": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true
       }
     },
@@ -3313,7 +3313,7 @@
         "@metamask/utils": true,
         "async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-method-registry": true,
         "ethereum-cryptography": true,
@@ -3359,7 +3359,7 @@
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "webpack>events": true,
         "lodash": true,
         "uuid": true
@@ -4251,25 +4251,9 @@
         "@solana/addresses>@solana/errors": true
       }
     },
-    "@solana/web3.js>@solana/buffer-layout": {
-      "packages": {
-        "buffer": true
-      }
-    },
     "@solana/addresses>@solana/codecs-core": {
       "packages": {
         "@solana/addresses>@solana/errors": true
-      }
-    },
-    "@solana/web3.js>@solana/codecs-numbers>@solana/codecs-core": {
-      "packages": {
-        "@solana/web3.js>@solana/codecs-numbers>@solana/errors": true
-      }
-    },
-    "@solana/web3.js>@solana/codecs-numbers": {
-      "packages": {
-        "@solana/web3.js>@solana/codecs-numbers>@solana/codecs-core": true,
-        "@solana/web3.js>@solana/codecs-numbers>@solana/errors": true
       }
     },
     "@solana/addresses>@solana/codecs-strings": {
@@ -4287,36 +4271,6 @@
     "@solana/addresses>@solana/errors": {
       "globals": {
         "btoa": true
-      }
-    },
-    "@solana/web3.js>@solana/codecs-numbers>@solana/errors": {
-      "globals": {
-        "btoa": true
-      }
-    },
-    "@solana/web3.js": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@noble/curves": true,
-        "@noble/hashes": true,
-        "@solana/web3.js>@solana/buffer-layout": true,
-        "@solana/web3.js>@solana/codecs-numbers": true,
-        "@solana/web3.js>bn.js": true,
-        "@solana/web3.js>borsh": true,
-        "@solana/web3.js>bs58": true,
-        "buffer": true,
-        "@solana/web3.js>jayson": true,
-        "@solana/web3.js>rpc-websockets": true,
-        "@solana/web3.js>superstruct": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser": {
@@ -4654,7 +4608,7 @@
     },
     "crypto-browserify>public-encrypt>parse-asn1>asn1.js": {
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "duplexify>inherits": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true
@@ -4705,7 +4659,7 @@
         "TextEncoder": true
       }
     },
-    "@solana/web3.js>bs58>base-x": {
+    "@ensdomains/content-hash>multihashes>multibase>base-x": {
       "packages": {
         "mockttp>express>safe-buffer": true
       }
@@ -4789,23 +4743,9 @@
         "btoa": true
       }
     },
-    "@solana/web3.js>bn.js": {
+    "ethereumjs-util>bn.js": {
       "globals": {
         "Buffer": true
-      }
-    },
-    "@solana/web3.js>borsh": {
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "TextDecoder": true
-      },
-      "packages": {
-        "@solana/web3.js>bn.js": true,
-        "@solana/web3.js>borsh>bs58": true,
-        "buffer": true,
-        "@solana/web3.js>borsh>text-encoding-utf-8": true
       }
     },
     "bowser": {
@@ -4852,14 +4792,14 @@
     },
     "crypto-browserify>public-encrypt>browserify-rsa": {
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "crypto-browserify>randombytes": true,
         "mockttp>express>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-sign": {
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "crypto-browserify>public-encrypt>browserify-rsa": true,
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>create-hmac": true,
@@ -4875,19 +4815,9 @@
         "bs58>base-x": true
       }
     },
-    "@solana/web3.js>bs58": {
-      "packages": {
-        "@solana/web3.js>bs58>base-x": true
-      }
-    },
-    "@solana/web3.js>borsh>bs58": {
-      "packages": {
-        "@solana/web3.js>bs58>base-x": true
-      }
-    },
     "ethereumjs-util>ethereum-cryptography>bs58check>bs58": {
       "packages": {
-        "@solana/web3.js>bs58>base-x": true
+        "@ensdomains/content-hash>multihashes>multibase>base-x": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>bs58check": {
@@ -5176,7 +5106,7 @@
         "Buffer": true
       },
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "@toruslabs/eccrypto>elliptic": true
       }
@@ -5310,7 +5240,7 @@
         "Buffer": true
       },
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "crypto-browserify>diffie-hellman>miller-rabin": true,
         "crypto-browserify>randombytes": true
@@ -5337,7 +5267,7 @@
     },
     "@toruslabs/eccrypto>elliptic": {
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@toruslabs/eccrypto>elliptic>brorand": true,
         "ethers>@ethersproject/sha2>hash.js": true,
         "@toruslabs/eccrypto>elliptic>hmac-drbg": true,
@@ -5388,7 +5318,7 @@
       "packages": {
         "@ethereumjs/tx": true,
         "eth-lattice-keyring>@ethereumjs/util": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "crypto-browserify": true,
         "webpack>events": true,
@@ -5567,7 +5497,7 @@
       },
       "packages": {
         "@ngraveio/bc-ur>assert": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
@@ -5580,7 +5510,7 @@
       },
       "packages": {
         "@ngraveio/bc-ur>assert": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "ethereumjs-util>create-hash": true,
         "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": true,
@@ -5643,7 +5573,7 @@
         "Buffer": true
       },
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash>js-sha3": true,
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": true
@@ -5809,7 +5739,7 @@
         "eth-lattice-keyring>gridplus-sdk>aes-js": true,
         "bitcoin-address-validation>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "eth-lattice-keyring>gridplus-sdk>bs58check": true,
         "buffer": true,
         "eth-lattice-keyring>gridplus-sdk>cbor-bigdecimal": true,
@@ -6037,11 +5967,6 @@
     "viem>isows": {
       "globals": {
         "WebSocket": true
-      }
-    },
-    "@solana/web3.js>jayson": {
-      "packages": {
-        "uuid": true
       }
     },
     "@segment/analytics-node>jose": {
@@ -6304,7 +6229,7 @@
     },
     "crypto-browserify>diffie-hellman>miller-rabin": {
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "@toruslabs/eccrypto>elliptic>brorand": true
       }
     },
@@ -6319,7 +6244,7 @@
     },
     "@ensdomains/content-hash>multihashes>multibase": {
       "packages": {
-        "@solana/web3.js>bs58>base-x": true,
+        "@ensdomains/content-hash>multihashes>multibase>base-x": true,
         "@ensdomains/content-hash>multihashes>buffer": true,
         "@ensdomains/content-hash>multihashes>web-encoding": true
       }
@@ -6369,7 +6294,7 @@
     },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": {
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": true
       }
     },
@@ -6523,7 +6448,7 @@
     },
     "crypto-browserify>public-encrypt": {
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "crypto-browserify>public-encrypt>browserify-rsa": true,
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
@@ -7218,7 +7143,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "@solana/web3.js>bn.js": true,
+        "ethereumjs-util>bn.js": true,
         "buffer": true
       }
     },
@@ -7227,17 +7152,6 @@
         "__DEV__": true,
         "__fbBatchedBridgeConfig": true,
         "console": true
-      }
-    },
-    "@solana/web3.js>rpc-websockets": {
-      "globals": {
-        "WebSocket": true,
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "buffer": true,
-        "@metamask/mobile-wallet-protocol-core>eventemitter3": true
       }
     },
     "mockttp>express>safe-buffer": {
@@ -7505,11 +7419,6 @@
     "react-markdown>style-to-object": {
       "packages": {
         "react-markdown>style-to-object>inline-style-parser": true
-      }
-    },
-    "@solana/web3.js>superstruct": {
-      "globals": {
-        "console.warn": true
       }
     },
     "mockttp>@httptoolkit/subscriptions-transport-ws>symbol-observable": {

@@ -6,20 +6,13 @@ import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { useTransactionPayToken } from '../../hooks/pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
-  useSolanaPayQuote,
   useTransactionPayIsMaxAmount,
 } from '../../hooks/pay/useTransactionPayData';
-import { useTransactionPayAvailableTokens } from '../../hooks/pay/useTransactionPayAvailableTokens';
-import { selectTransactionPaySourceByTransactionId } from '../../../../selectors/transactionPayController';
 import { PayTokenAmount } from './pay-token-amount';
 
 jest.mock('../../hooks/tokens/useTokenFiatRates');
 jest.mock('../../hooks/pay/useTransactionPayToken');
 jest.mock('../../hooks/pay/useTransactionPayData');
-jest.mock('../../hooks/pay/useTransactionPayAvailableTokens');
-jest.mock('../../../../selectors/transactionPayController', () => ({
-  selectTransactionPaySourceByTransactionId: jest.fn(),
-}));
 
 const ASSET_AMOUNT_MOCK = '100';
 const ASSET_FIAT_RATE_MOCK = 10;
@@ -41,13 +34,6 @@ function render({ disabled = false } = {}) {
 
 describe('PayTokenAmount', () => {
   const useTokenFiatRatesMock = jest.mocked(useTokenFiatRates);
-  const useSolanaPayQuoteMock = jest.mocked(useSolanaPayQuote);
-  const useTransactionPayAvailableTokensMock = jest.mocked(
-    useTransactionPayAvailableTokens,
-  );
-  const selectTransactionPaySourceByTransactionIdMock = jest.mocked(
-    selectTransactionPaySourceByTransactionId,
-  );
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
@@ -79,9 +65,6 @@ describe('PayTokenAmount', () => {
       setPayToken: jest.fn(),
     } as ReturnType<typeof useTransactionPayToken>);
 
-    useSolanaPayQuoteMock.mockReturnValue(undefined);
-    useTransactionPayAvailableTokensMock.mockReturnValue([]);
-    selectTransactionPaySourceByTransactionIdMock.mockReturnValue(undefined);
     useIsTransactionPayLoadingMock.mockReturnValue(false);
     useTransactionPayIsMaxAmountMock.mockReturnValue(false);
   });
@@ -96,31 +79,6 @@ describe('PayTokenAmount', () => {
     expect(
       getByText(PAY_TOKEN_SYMBOL_MOCK, { exact: false }),
     ).toBeInTheDocument();
-  });
-
-  it('renders the provider-final exact-output Solana amount', () => {
-    selectTransactionPaySourceByTransactionIdMock.mockReturnValue({
-      sourceAccountId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:solana-address',
-      sourceAssetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-    });
-    useTransactionPayAvailableTokensMock.mockReturnValue([
-      {
-        accountAddress: 'solana-address',
-        accountId: 'solana-account-id',
-        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        decimals: 9,
-        symbol: 'SOL',
-      },
-    ]);
-    useSolanaPayQuoteMock.mockReturnValue({
-      preflight: { sourceAmountRaw: '1500000000' },
-      route: { tradeType: 'EXACT_OUTPUT' },
-    } as never);
-
-    const { getByText } = render();
-
-    expect(getByText('1.5 SOL')).toBeInTheDocument();
   });
 
   it('renders skeleton if missing fiat rate', () => {
