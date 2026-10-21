@@ -8,8 +8,8 @@ import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useDispatch } from '../../../../../store/hooks';
-import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
 import { ACTIVITY_ROUTE } from '../../../../../helpers/constants/routes';
+import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
 
 jest.mock('../../../../../store/hooks', () => ({
   useDispatch: jest.fn(),
