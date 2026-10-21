@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import {
   BITCOIN_WALLET_SNAP_ID,
   SOLANA_WALLET_SNAP_ID,
+  STELLAR_WALLET_SNAP_ID,
 } from '../../../../../../shared/lib/accounts';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../../helpers/constants/routes';
 import { Loader } from './loader';
@@ -69,6 +70,21 @@ describe('Loader', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
       `${CONFIRMATION_V_NEXT_ROUTE}/test-id-2`,
+      { replace: true },
+    );
+  });
+
+  it('navigates to confirmation route when stellar pending send exists', () => {
+    const pendingSend = {
+      id: 'test-id-3',
+      origin: STELLAR_WALLET_SNAP_ID,
+    };
+    mockUseSelector.mockReturnValue([pendingSend]);
+
+    render(<Loader />);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${CONFIRMATION_V_NEXT_ROUTE}/test-id-3`,
       { replace: true },
     );
   });

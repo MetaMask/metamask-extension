@@ -2,6 +2,7 @@ import { Driver } from '../../../webdriver/driver';
 import { largeDelayMs } from '../../../helpers';
 import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import { ACCOUNT_TYPE } from '../../../constants';
+import { BASE_ACCOUNT_SYNC_TIMEOUT } from '../../../tests/identity/account-syncing/helpers';
 
 /**
  * Multichain account list: wallets, accounts, add/hide/pin, and related menus.
@@ -1320,7 +1321,7 @@ class AccountListPage {
    * @param timeout - Maximum time in ms to wait for the button to stay ready.
    */
   async waitForAddWalletButtonStablyReady(
-    timeout: number = 15000,
+    timeout: number = BASE_ACCOUNT_SYNC_TIMEOUT,
   ): Promise<void> {
     console.log('Waiting for add wallet button to be stably enabled');
     await this.driver.waitUntil(
@@ -1346,7 +1347,9 @@ class AccountListPage {
    *
    * @param timeout - Maximum time in ms to wait for syncing to finish.
    */
-  async waitUntilSyncingIsCompleted(timeout: number = 15000): Promise<void> {
+  async waitUntilSyncingIsCompleted(
+    timeout: number = BASE_ACCOUNT_SYNC_TIMEOUT,
+  ): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
     await this.waitForAddWalletButtonStablyReady(timeout);
   }

@@ -9,14 +9,13 @@ import {
 } from './linked-social-login-profile';
 
 /**
- * Builds auth state with paired identifiers on the primary SRP session
- * profile. Core PR #10394 adds `pairedIdentifierIds` to `UserProfile`; cast
- * until that lands in the installed `@metamask/profile-sync-controller`.
+ * Builds auth state as `performSignIn` writes it: paired identifiers on the
+ * SRP session profile.
  *
- * @param pairedIdentifierIds - Paired identifiers to attach to the profile.
+ * @param pairedIdentifierIds - Identifiers to attach to the session profile.
  */
 function buildAuthState(
-  pairedIdentifierIds: PairedIdentifier[],
+  pairedIdentifierIds?: PairedIdentifier[],
 ): AuthenticationControllerState {
   return {
     isSignedIn: true,
@@ -27,7 +26,7 @@ function buildAuthState(
           metaMetricsId: 'mm-1',
           profileId: 'profile-1',
           canonicalProfileId: 'profile-1',
-          pairedIdentifierIds,
+          ...(pairedIdentifierIds ? { pairedIdentifierIds } : {}),
         },
         token: {
           accessToken: 'token',
@@ -68,20 +67,26 @@ describe('pairedIdentifiersIncludeSocialLogin', () => {
 });
 
 describe('getPairedIdentifierIdsFromAuthState', () => {
-  it('reads paired identifier ids from the primary srp session profile', () => {
+  it('reads paired identifier ids from the srp session profile', () => {
     expect(
       getPairedIdentifierIdsFromAuthState(
         buildAuthState([{ type: 'GOOGLE' }, { type: 'SRP' }]),
       ),
     ).toStrictEqual([{ type: 'GOOGLE' }, { type: 'SRP' }]);
   });
+
+  it('returns undefined when the profile has no paired identifiers', () => {
+    expect(
+      getPairedIdentifierIdsFromAuthState(buildAuthState()),
+    ).toBeUndefined();
+  });
 });
 
 describe('authenticationStateIncludesLinkedSocialLogin', () => {
-  it('reads paired identifier ids from srpSessionData profile', () => {
+  it('detects a social login from srp session paired identifiers', () => {
     expect(
       authenticationStateIncludesLinkedSocialLogin(
-        buildAuthState([{ type: 'GOOGLE' }]),
+        buildAuthState([{ type: 'APPLE' }]),
       ),
     ).toBe(true);
   });
@@ -92,6 +97,12 @@ describe('authenticationStateIncludesLinkedSocialLogin', () => {
         buildAuthState([{ type: 'SRP' }]),
       ),
     ).toBe(false);
+  });
+
+  it('returns false when the controller version predates paired identifiers', () => {
+    expect(authenticationStateIncludesLinkedSocialLogin(buildAuthState())).toBe(
+      false,
+    );
   });
 });
 

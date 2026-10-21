@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -19,7 +20,9 @@ import {
 import { PopoverPosition } from '../../../component-library';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
+import { MONEY_HOME_ROUTE } from '../../../../helpers/constants/routes';
 import { isMoneyBalanceFunded } from '../../../../helpers/money/format';
+import { transitionForward } from '../../../ui/transition';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
@@ -37,6 +40,8 @@ import {
 import { TooltipText } from '../tooltip-text';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
+export const MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID =
+  'money-account-balance-summary';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
   'money-account-balance-value';
 export const MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID =
@@ -49,40 +54,21 @@ export const MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID =
 export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
 export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
   'money-account-balance-add-button';
+export const MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID =
+  'money-account-balance-add-section';
 
-const AddOrBalance = ({
+const Balance = ({
   fiatBalance,
-  showAddButton,
   isLoading,
   privacyMode,
-  onAddClick,
-  isDepositLoading,
   isLastKnown,
 }: {
   fiatBalance: string | undefined;
-  showAddButton: boolean;
   isLoading: boolean;
   privacyMode: boolean;
-  onAddClick: () => void;
-  isDepositLoading: boolean;
   isLastKnown: boolean;
 }) => {
   const t = useI18nContext();
-
-  if (showAddButton) {
-    return (
-      <Button
-        size={ButtonSize.Md}
-        variant={ButtonVariant.Primary}
-        className="shrink-0"
-        isLoading={isDepositLoading}
-        data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={onAddClick}
-      >
-        {t('moneyAdd')}
-      </Button>
-    );
-  }
 
   return (
     <>
@@ -99,11 +85,11 @@ const AddOrBalance = ({
         // padding via -mb-4 so the row keeps its height when it appears.
         <Box
           flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.End}
+          alignItems={BoxAlignItems.Start}
           className={isLastKnown ? '-mb-4 shrink-0' : 'shrink-0'}
         >
           <SensitiveText
-            variant={TextVariant.BodyMd}
+            variant={TextVariant.HeadingMd}
             isHidden={privacyMode}
             fontWeight={FontWeight.Medium}
             data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
@@ -124,6 +110,34 @@ const AddOrBalance = ({
         </Box>
       )}
     </>
+  );
+};
+
+const Add = ({
+  onAddClick,
+  isDepositLoading,
+  moneyAccountEmpty,
+}: {
+  onAddClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  isDepositLoading: boolean;
+  moneyAccountEmpty: boolean;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <Button
+      size={ButtonSize.Md}
+      variant={
+        // If the user has no balance this is a primary CTA
+        moneyAccountEmpty ? ButtonVariant.Primary : ButtonVariant.Secondary
+      }
+      className="shrink-0"
+      isLoading={isDepositLoading}
+      data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
+      onClick={onAddClick}
+    >
+      {t('moneyAdd')}
+    </Button>
   );
 };
 
@@ -176,10 +190,18 @@ const AddOrBalance = ({
  * APY slot. If the query fails with nothing to show, the slot is omitted
  * rather than inventing a rate.
  *
+ * ## Click targets
+ *
+ * The label, APY and balance section opens Money Home, by click or from the
+ * keyboard. The Add section, the button and the padding around it, starts a
+ * deposit. The deposit handler sits on that section rather than the whole card
+ * so a drag from the summary into the Add section cannot start a deposit.
+ *
  * @returns The balance row, or `null`.
  */
 export const MoneyAccountBalance = () => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const { privacyMode } = useSelector(getPreferences);
   const isHomeCardEnabled = useSelector(selectMoneyHomeScreenCardEnabled);
   const { hasMoneyAccount } = useMoneyAccountInfo();
@@ -193,11 +215,15 @@ export const MoneyAccountBalance = () => {
   } = useMoneyAccountBalance();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
-  const { trackButtonClicked, trackComponentViewed, trackTooltipClicked } =
-    useMoneyAnalytics({
-      screenName: MoneyScreenName.WalletHome,
-      componentName: MoneyComponentName.BalanceCard,
-    });
+  const {
+    trackButtonClicked,
+    trackSurfaceClicked,
+    trackComponentViewed,
+    trackTooltipClicked,
+  } = useMoneyAnalytics({
+    screenName: MoneyScreenName.WalletHome,
+    componentName: MoneyComponentName.BalanceCard,
+  });
 
   const fiatBalance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
   const isLoading = isBalanceLoading && fiatBalance === undefined;
@@ -207,9 +233,8 @@ export const MoneyAccountBalance = () => {
     isHomeCardEnabled &&
     hasMoneyAccount &&
     (fiatBalance !== undefined || isLoading);
-  const hasLiveUnfundedBalance =
+  const moneyAccountEmpty =
     tokenTotal !== undefined && !isMoneyBalanceFunded(tokenTotal);
-  const showAddButton = hasLiveUnfundedBalance && !privacyMode;
 
   useTrackOnce(isVisible, trackComponentViewed);
 
@@ -217,7 +242,34 @@ export const MoneyAccountBalance = () => {
     return null;
   }
 
-  const handleAddClick = () => {
+  const openMoneyHome = () => {
+    trackSurfaceClicked({
+      redirectTarget: MoneyScreenName.MoneyHome,
+    });
+    transitionForward(() =>
+      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
+    );
+  };
+
+  const handleSummaryClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    openMoneyHome();
+  };
+
+  const handleSummaryKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openMoneyHome();
+    }
+  };
+
+  const startDeposit = () => {
+    if (isDepositLoading) {
+      return;
+    }
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
@@ -225,6 +277,11 @@ export const MoneyAccountBalance = () => {
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     initiateDeposit();
+  };
+
+  const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    startDeposit();
   };
 
   const handleInfoOpen = () => {
@@ -237,17 +294,26 @@ export const MoneyAccountBalance = () => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
+      alignItems={BoxAlignItems.Stretch}
       justifyContent={BoxJustifyContent.Between}
       backgroundColor={BoxBackgroundColor.BackgroundSection}
-      padding={4}
-      gap={4}
       // 458px matches .wallet-overview__buttons ($wallet-overview-sidepanel-max-width - 32px)
       // so this row lines up with the action buttons above it.
       className="w-full max-w-[458px] self-center rounded-2xl"
       data-testid={MONEY_ACCOUNT_BALANCE_TEST_ID}
     >
-      <Box flexDirection={BoxFlexDirection.Column} gap={1} className="min-w-0">
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
+        gap={1}
+        padding={4}
+        className="min-w-0 flex-1 cursor-pointer rounded-l-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        role="link"
+        tabIndex={0}
+        onClick={handleSummaryClick}
+        onKeyDown={handleSummaryKeyDown}
+        data-testid={MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID}
+      >
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
@@ -257,7 +323,7 @@ export const MoneyAccountBalance = () => {
             text={t('money')}
             position={PopoverPosition.Auto}
             data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
-            variant={TextVariant.BodyMd}
+            variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             onOpen={handleInfoOpen}
@@ -288,7 +354,7 @@ export const MoneyAccountBalance = () => {
           ) : (
             apyPercentFormatted && (
               <Text
-                variant={TextVariant.BodyMd}
+                variant={TextVariant.BodySm}
                 fontWeight={FontWeight.Medium}
                 color={TextColor.SuccessDefault}
                 data-testid={MONEY_ACCOUNT_BALANCE_APY_TEST_ID}
@@ -298,16 +364,28 @@ export const MoneyAccountBalance = () => {
             )
           )}
         </Box>
+        <Balance
+          fiatBalance={fiatBalance}
+          isLoading={isLoading}
+          privacyMode={privacyMode}
+          isLastKnown={isLastKnown}
+        />
       </Box>
-      <AddOrBalance
-        fiatBalance={fiatBalance}
-        showAddButton={showAddButton}
-        isLoading={isLoading}
-        privacyMode={privacyMode}
-        onAddClick={handleAddClick}
-        isDepositLoading={isDepositLoading}
-        isLastKnown={isLastKnown}
-      />
+
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        padding={4}
+        className="cursor-pointer rounded-r-2xl"
+        onClick={startDeposit}
+        data-testid={MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID}
+      >
+        <Add
+          moneyAccountEmpty={moneyAccountEmpty}
+          onAddClick={handleAddClick}
+          isDepositLoading={isDepositLoading}
+        />
+      </Box>
     </Box>
   );
 };

@@ -108,9 +108,10 @@ class BridgeQuotePage {
 
   private quoteOption = '.bridge-quote-option';
 
-  private quotesModal = '.quotes-modal';
+  private quotesModal = '[data-testid="quotes-modal"]';
 
-  private quotesModalBackButton = '.quotes-modal [aria-label="Back"]';
+  private quotesModalBackButton =
+    '[data-testid="quotes-modal"] [aria-label="Back"]';
 
   private quotesModalTitle = {
     css: this.quotesModal,
@@ -507,7 +508,11 @@ class BridgeQuotePage {
           this.assetPrickerSearchInput,
           quote.tokenTo,
         );
-        await this.driver.delay(2000);
+        // Wait for search results to load before clicking
+        await this.driver.waitForElementToStopMoving({
+          text: quote.tokenTo,
+          css: this.tokenButton,
+        });
         await this.driver.clickElementAndWaitToDisappear({
           text: quote.tokenTo,
           css: this.tokenButton,

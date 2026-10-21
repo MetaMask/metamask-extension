@@ -18,6 +18,7 @@ import {
 } from '@metamask/design-system-react';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { getEvmAccountsGroupedByWallet } from '../../utils/evm-accounts-grouped-by-wallet';
@@ -29,6 +30,14 @@ export type AccountSelectModalProps = {
    * flows that cannot be funded by a hardware device.
    */
   excludeHardwareAccounts?: boolean;
+  /**
+   * When true, QR hardware wallet accounts are omitted from the list.
+   */
+  excludeQrAccounts?: boolean;
+  /**
+   * When true, only the globally selected hardware account is included.
+   */
+  restrictHardwareAccountsToSelected?: boolean;
   /**
    * Called when the modal requests to close (backdrop, escape, or close button).
    */
@@ -55,6 +64,9 @@ export type AccountSelectModalProps = {
  *
  * @param props - Component props.
  * @param props.excludeHardwareAccounts - Whether to omit hardware accounts.
+ * @param props.excludeQrAccounts - Whether to omit QR hardware accounts.
+ * @param props.restrictHardwareAccountsToSelected - Whether to omit
+ * non-selected hardware accounts.
  * @param props.onClose - Called when the modal should close.
  * @param props.onSelect - Called with the chosen account address. The consumer
  * must close the modal after handling selection.
@@ -63,6 +75,8 @@ export type AccountSelectModalProps = {
  */
 export function AccountSelectModal({
   excludeHardwareAccounts = false,
+  excludeQrAccounts = false,
+  restrictHardwareAccountsToSelected = false,
   onClose,
   onSelect,
   selectedAddress = '',
@@ -70,10 +84,24 @@ export function AccountSelectModal({
 }: AccountSelectModalProps) {
   const t = useI18nContext();
   const wallets = useSelector(getWalletsWithAccounts);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const accountsGroupedByWallet = useMemo(
-    () => getEvmAccountsGroupedByWallet(wallets, { excludeHardwareAccounts }),
-    [wallets, excludeHardwareAccounts],
+    () =>
+      getEvmAccountsGroupedByWallet(wallets, {
+        excludeHardwareAccounts,
+        excludeQrAccounts,
+        allowedHardwareAccountAddress: restrictHardwareAccountsToSelected
+          ? (selectedAccount?.address ?? null)
+          : undefined,
+      }),
+    [
+      wallets,
+      excludeHardwareAccounts,
+      excludeQrAccounts,
+      restrictHardwareAccountsToSelected,
+      selectedAccount?.address,
+    ],
   );
 
   return (

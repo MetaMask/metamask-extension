@@ -139,6 +139,44 @@ export const normalizeTokenAssetId = (assetId: CaipAssetType) => {
 };
 
 /**
+ * Builds a normalized CAIP-19 token id from a contract address and chain, or
+ * from an id that is already in CAIP-19 form. Returns `undefined` when the
+ * address or chain cannot be used (for example a decimal chain id like `"1").
+ *
+ * @param addressOrAssetId - Contract address, or an existing CAIP-19 asset id.
+ * @param chainId - Hex or CAIP chain id when `addressOrAssetId` is an address.
+ * @returns Normalized CAIP-19 asset id, or `undefined`.
+ */
+export const toNormalizedCaipAssetId = (
+  addressOrAssetId: string | undefined,
+  chainId?: CaipChainId | Hex | string | number,
+): CaipAssetType | undefined => {
+  if (!addressOrAssetId) {
+    return undefined;
+  }
+
+  let chainIdForLookup: CaipChainId | Hex | undefined;
+
+  // Get a chain id to pass to toAssetId
+  if (!isCaipAssetType(addressOrAssetId)) {
+    if (chainId === undefined || chainId === null) {
+      return undefined;
+    }
+    const chainIdString =
+      typeof chainId === 'string' ? chainId : String(chainId);
+    // Reject decimal and other invalid chain ids so toAssetId doesn't throw
+    if (!isStrictHexString(chainIdString) && !isCaipChainId(chainIdString)) {
+      return undefined;
+    }
+
+    chainIdForLookup = chainIdString;
+  }
+
+  const caipAssetId = toAssetId(addressOrAssetId, chainIdForLookup);
+  return caipAssetId ? normalizeTokenAssetId(caipAssetId) : undefined;
+};
+
+/**
  * Returns the image url for a caip-formatted asset
  *
  * @param assetId - The hex address or caip-formatted asset id
@@ -150,7 +188,11 @@ export const getAssetImageUrl = (
   chainId: CaipChainId | Hex,
 ) => {
   try {
-    const assetIdInCaip = toAssetId(assetId, chainId);
+    // SLIP-44 references are coin types, not addresses: `toAssetId` would
+    // rebuild them as `erc20:0x<coinType>` for chains outside the bridge map
+    const assetIdInCaip = isNativeCaipAssetId(assetId as CaipAssetType)
+      ? (assetId as CaipAssetType)
+      : toAssetId(assetId, chainId);
     if (!assetIdInCaip) {
       return undefined;
     }

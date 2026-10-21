@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { mapKeys, omit, snakeCase } from 'lodash';
+import { mapKeys, snakeCase } from 'lodash';
 import {
   TransactionType,
   type TransactionMeta,
@@ -26,6 +26,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneySurfaceType,
   MoneyTooltipName,
@@ -57,10 +58,11 @@ export type MoneyButtonClickedProperties =
   | ({
       buttonType: MoneyButtonType.Text;
       labelKey: string;
+      labelSubstitutions?: string[];
     } & MoneyButtonClickedBase)
   | ({ buttonType: MoneyButtonType.Icon } & MoneyButtonClickedBase);
 
-export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties & {
+type MoneyTokenProperties = {
   tokenSymbol: string;
   tokenChainId: string;
   tokenPositionInList: number;
@@ -68,10 +70,16 @@ export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties & {
   tokenHasBalance: boolean;
 };
 
+export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties &
+  MoneyTokenProperties;
+
 export type MoneySurfaceClickedProperties = {
   componentName?: MoneyComponentName;
   redirectTarget: MoneyRedirectTarget;
 };
+
+export type MoneyTokenSurfaceClickedProperties = MoneySurfaceClickedProperties &
+  MoneyTokenProperties;
 
 export type MoneyActivitySurfaceClickedProperties =
   MoneySurfaceClickedProperties & {
@@ -82,6 +90,14 @@ export type MoneyTooltipClickedProperties = {
   tooltipName: MoneyTooltipName;
   tooltipType: MoneyTooltipType;
   componentName?: MoneyComponentName;
+};
+
+export type MoneyOnboardingEventProperties = {
+  step: number;
+  stepTitleKey: string;
+  totalSteps: number;
+  stepAction: MoneyOnboardingStepAction;
+  redirectTarget?: MoneyRedirectTarget;
 };
 
 type WireValue = string | number | boolean | null | undefined;
@@ -144,9 +160,12 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
   }, [bottomSheetName, componentName, moneyAccountAddress, screenName]);
 
   const resolveLabel = useCallback(
-    (labelKey: string) => ({
-      labelEn: asLabel(getMessage('en', enMessages ?? {}, labelKey), labelKey),
-      labelLocalized: asLabel(t(labelKey), labelKey),
+    (labelKey: string, substitutions?: string[]) => ({
+      labelEn: asLabel(
+        getMessage('en', enMessages ?? {}, labelKey, substitutions),
+        labelKey,
+      ),
+      labelLocalized: asLabel(t(labelKey, substitutions), labelKey),
     }),
     [enMessages, t],
   );
@@ -170,13 +189,18 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
 
   const trackButtonClicked = useCallback(
     (properties: MoneyButtonClickedProperties) => {
+      const { labelKey, labelSubstitutions, ...wireProperties } = {
+        labelKey: undefined,
+        labelSubstitutions: undefined,
+        ...properties,
+      };
       const label =
-        properties.buttonType === MoneyButtonType.Text
-          ? resolveLabel(properties.labelKey)
-          : {};
+        labelKey === undefined
+          ? {}
+          : resolveLabel(labelKey, labelSubstitutions);
 
       track(MetaMetricsEventName.MoneyButtonClicked, {
-        ...omit(properties, 'labelKey'),
+        ...wireProperties,
         ...label,
         redirectTargetType: redirectTargetTypeOf(properties.redirectTarget),
       });
@@ -198,6 +222,12 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
       });
     },
     [track],
+  );
+
+  const trackTokenSurfaceClicked = useCallback(
+    (properties: MoneyTokenSurfaceClickedProperties) =>
+      trackSurfaceClicked(properties),
+    [trackSurfaceClicked],
   );
 
   const trackActivitySurfaceClicked = useCallback(
@@ -254,15 +284,28 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
     [trackSurfaceViewed],
   );
 
+  const trackOnboardingEvent = useCallback(
+    ({ stepTitleKey, ...properties }: MoneyOnboardingEventProperties) => {
+      track(MetaMetricsEventName.MoneyOnboardingEvent, {
+        ...properties,
+        stepTitle: resolveLabel(stepTitleKey).labelEn,
+        redirectTargetType: redirectTargetTypeOf(properties.redirectTarget),
+      });
+    },
+    [resolveLabel, track],
+  );
+
   return {
     trackButtonClicked,
     trackTokenButtonClicked,
     trackSurfaceClicked,
+    trackTokenSurfaceClicked,
     trackActivitySurfaceClicked,
     trackTooltipClicked,
     trackScreenViewed,
     trackBottomSheetViewed,
     trackComponentViewed,
+    trackOnboardingEvent,
   };
 };
 

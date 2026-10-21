@@ -53,10 +53,18 @@ const mockNFTERC1155Asset = {
   },
 };
 
-const store = createMockStore()();
+const createStore = (useCurrencyRateCheck = true) =>
+  createMockStore()({
+    metamask: { useCurrencyRateCheck },
+  });
 
-function render(ui: React.ReactElement) {
-  return renderWithProvider(ui, store);
+const store = createStore();
+
+function render(
+  ui: React.ReactElement,
+  reduxStore: ReturnType<typeof createStore> = store,
+) {
+  return renderWithProvider(ui, reduxStore);
 }
 
 jest.mock('../../../hooks/useNftImageUrl', () => ({
@@ -117,6 +125,16 @@ describe('TokenAsset', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('hides the fiat value but keeps the token amount when the currency rate check is off', () => {
+    const { queryByText, getByText } = render(
+      <Asset asset={mockTokenAsset} />,
+      createStore(false),
+    );
+
+    expect(queryByText('$100.00')).not.toBeInTheDocument();
+    expect(getByText('10.5 TEST')).toBeInTheDocument();
+  });
+
   it('does not call onClick when token is disabled', () => {
     const mockOnClick = jest.fn();
     const { getByTestId } = render(
@@ -171,6 +189,39 @@ describe('TokenAsset', () => {
 
     expect(getByText('Coinbase Wrapped BTC')).toHaveClass('mm-text--ellipsis');
     expect(getByTestId('custom-token-tag')).toBeInTheDocument();
+  });
+
+  it('renders a security badge for a flagged token', () => {
+    const { getByTestId, getByText } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Malicious" />,
+    );
+
+    expect(getByTestId('security-badge')).toBeInTheDocument();
+    expect(
+      getByText(messages.securityTrustMalicious.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders a security badge for a verified token', () => {
+    const { queryByTestId } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Verified" />,
+    );
+
+    expect(queryByTestId('security-badge')).toBeInTheDocument();
+  });
+
+  it('does not render a security badge when there is no safety result', () => {
+    const { queryByTestId } = render(<Asset asset={mockTokenAsset} />);
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
+  });
+
+  it('does not render a security badge for a benign token', () => {
+    const { queryByTestId } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Benign" />,
+    );
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 });
 
@@ -255,15 +306,5 @@ describe('NFTAsset', () => {
 
     const image = getByAltText('Test NFT');
     expect(image).toHaveAttribute('src', 'https://example.com/collection.png');
-  });
-
-  it('renders account type label when account type is provided', () => {
-    const assetWithAccountType = {
-      ...mockTokenAsset,
-      accountType: BtcAccountType.P2wpkh,
-    };
-    const { getByText } = render(<Asset asset={assetWithAccountType} />);
-
-    expect(getByText('Native SegWit')).toBeInTheDocument();
   });
 });

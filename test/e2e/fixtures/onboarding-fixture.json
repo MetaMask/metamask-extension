@@ -34,6 +34,7 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": false,
+      "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": false,
       "optedIn": false,
       "optedInToMarketing": false,
@@ -51,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 228,
+      "currentMigrationVersion": 233,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -71,16 +72,17 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
-      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -129,9 +131,11 @@
     },
     "ConfigRegistryController": {
       "configs": {
+        "eventsConfig": null,
         "networks": {}
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
       "version": null
     },
@@ -162,9 +166,6 @@
     "KeyringController": {},
     "LoggingController": {
       "logs": {}
-    },
-    "MetaMetricsController": {
-      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -587,6 +588,7 @@
       "completedOnboarding": false,
       "firstTimeFlowType": null,
       "hasSeenOnboardingCompletionPage": false,
+      "onboardingJourneyEnded": false,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -2253,6 +2255,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 228
+    "version": 233
   }
 }

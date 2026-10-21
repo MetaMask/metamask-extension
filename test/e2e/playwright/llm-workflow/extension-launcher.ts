@@ -5,9 +5,7 @@ import { chromium, type Page, type BrowserContext } from '@playwright/test';
 import {
   ConsoleErrorBuffer,
   resolveExtensionId,
-  waitForExtensionUiReady,
 } from '@metamask/client-mcp-core';
-import type { ExtensionReadinessConfig } from '@metamask/client-mcp-core';
 import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
 import {
   CONNECT_ROUTE,
@@ -17,6 +15,7 @@ import {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { validateExtensionBuilt } from './validate-extension';
 import type {
   LauncherLaunchOptions,
@@ -26,9 +25,16 @@ import type {
   NetworkConfig,
 } from './launcher-types';
 import { resolveRepoRoot } from './resolve-repo-root';
+import { finishOnboarding, runSelfOnboarding } from './self-onboarding';
+import { getE2EDriver, withTimeout } from './e2e-driver';
+import {
+  LAUNCH_SCREEN_CHECKS,
+  waitForAnyScreen,
+} from './launcher/state-inspector';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
+const UI_READY_TIMEOUT_MS = 30_000;
 const REPO_ROOT = resolveRepoRoot();
 
 // Routes that indicate a confirmation screen when matched against the sidepanel URL hash.
@@ -40,19 +46,6 @@ const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 ];
-const METAMASK_EXTENSION_READINESS_CONFIG: ExtensionReadinessConfig = {
-  readySelectors: [
-    '[data-testid="unlock-password"]',
-    '[data-testid="onboarding-create-wallet"]',
-    '[data-testid="onboarding-import-wallet"]',
-    '[data-testid="account-menu-icon"]',
-    '[data-testid="get-started"]',
-    '[data-testid="onboarding-terms-checkbox"]',
-    '[data-testid="onboarding-privacy-policy"]',
-  ],
-  expectedStatesDescription: 'unlock page, onboarding page, or home page',
-};
-
 type ResolvedOptions = {
   extensionPath: string;
   headless: boolean;
@@ -65,11 +58,14 @@ type ResolvedOptions = {
   network: NetworkConfig;
   proxyServer?: string;
   manifestFlags?: Partial<ManifestFlags>;
+  selfOnboarding: boolean;
+  srp?: string;
 };
 
 export function buildChromiumLaunchArgs(
   extensionPath: string,
   proxyServer?: string,
+  headless = false,
 ): string[] {
   const launchArgs = [
     `--disable-extensions-except=${extensionPath}`,
@@ -79,6 +75,10 @@ export function buildChromiumLaunchArgs(
     '--disable-renderer-backgrounding',
     '--disable-features=TranslateUI',
   ];
+
+  if (headless) {
+    launchArgs.push('--headless=new');
+  }
 
   if (proxyServer) {
     launchArgs.unshift('--allow-insecure-localhost');
@@ -123,6 +123,8 @@ export class MetaMaskExtensionLauncher {
       },
       proxyServer: options.proxyServer,
       manifestFlags: options.manifestFlags,
+      selfOnboarding: options.selfOnboarding === true,
+      srp: options.srp,
     };
     this.userDataDir = '';
 
@@ -132,6 +134,18 @@ export class MetaMaskExtensionLauncher {
   private validateConfig(): void {
     this.ensureDependenciesInstalled();
     this.validateNetworkModeRequiresRpcUrl();
+    this.validateSelfOnboarding();
+  }
+
+  private validateSelfOnboarding(): void {
+    if (!this.options.selfOnboarding) {
+      return;
+    }
+    if (!this.options.srp) {
+      throw new Error(
+        'Configuration error: selfOnboarding requires a secret recovery phrase.',
+      );
+    }
   }
 
   private ensureDependenciesInstalled(): void {
@@ -230,10 +244,13 @@ export class MetaMaskExtensionLauncher {
       const launchArgs = buildChromiumLaunchArgs(
         this.options.extensionPath,
         this.options.proxyServer,
+        this.options.headless,
       );
 
       this.context = await chromium.launchPersistentContext(this.userDataDir, {
-        headless: this.options.headless,
+        // Playwright's headless-shell does not load browser extensions. Use
+        // full Chromium with the modern headless flag so MV3 workers attach.
+        headless: false,
         channel: 'chromium',
         args: launchArgs,
         ignoreHTTPSErrors: Boolean(this.options.proxyServer),
@@ -252,6 +269,31 @@ export class MetaMaskExtensionLauncher {
       await this.waitForExtensionReady();
 
       this.ensureExtensionInitialized();
+
+      if (this.options.selfOnboarding) {
+        let phrase = this.options.srp ?? '';
+        this.options.srp = undefined;
+        try {
+          await runSelfOnboarding(
+            getE2EDriver(this.extensionPage as Page),
+            phrase,
+            DEFAULT_PASSWORD,
+          );
+        } finally {
+          phrase = '';
+        }
+        const driver = withTimeout(
+          getE2EDriver(this.extensionPage as Page),
+          UI_READY_TIMEOUT_MS,
+        );
+        // Reloading lets the UI route to unlock or the completion page from
+        // the real wallet state; Done never navigates the tab when it opens
+        // the side panel, so home is loaded again afterwards.
+        await this.navigateToHome();
+        await finishOnboarding(driver, DEFAULT_PASSWORD);
+        await this.navigateToHome();
+        await new HomePage(driver).checkPageIsLoaded();
+      }
 
       return {
         context: this.context as BrowserContext,
@@ -307,19 +349,33 @@ export class MetaMaskExtensionLauncher {
 
     this.attachConsoleListeners(page);
 
-    await waitForExtensionUiReady(
-      {
-        page,
-        screenshotDir: this.options.screenshotDir,
-        log: {
-          info: (message: string) => console.log(message),
-          error: (message: string) => console.error(message),
-        },
-      },
-      METAMASK_EXTENSION_READINESS_CONFIG,
-    );
-
     this.extensionPage = page;
+    await this.waitForUiReady(page);
+  }
+
+  private async waitForUiReady(page: Page): Promise<void> {
+    try {
+      const { description } = await waitForAnyScreen(
+        withTimeout(getE2EDriver(page), UI_READY_TIMEOUT_MS),
+        LAUNCH_SCREEN_CHECKS,
+      );
+      console.log(`Extension UI is ready (${description})`);
+    } catch {
+      const screenshotPath = path.join(
+        this.options.screenshotDir,
+        `ui-ready-failure-${Date.now()}.png`,
+      );
+      await page
+        .screenshot({ path: screenshotPath, fullPage: true })
+        .catch(() => undefined);
+      console.error(`Debug screenshot saved: ${screenshotPath}`);
+      throw new Error(
+        `Extension UI did not reach expected state within ${UI_READY_TIMEOUT_MS}ms. ` +
+          `Current URL: ${page.url()}. ` +
+          `Expected one of: ${LAUNCH_SCREEN_CHECKS.map(({ description }) => description).join(', ')}. ` +
+          `Debug screenshot saved to: ${screenshotPath}`,
+      );
+    }
   }
 
   private attachConsoleListeners(page: Page): void {
