@@ -425,8 +425,6 @@
     "tokenBalancesStopPollingByPollingToken",
     "tokenDetectionStartPolling",
     "tokenDetectionStopPollingByPollingToken",
-    "tokenListStartPolling",
-    "tokenListStopPollingByPollingToken",
     "tokenRatesStartPolling",
     "tokenRatesStopPollingByPollingToken",
     "trackAnalyticsEvent",

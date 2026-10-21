@@ -148,7 +148,7 @@ describe('shortenDisplayAddress', () => {
   });
 
   it('shortens a non-EVM address without adding a hex prefix', () => {
-    expect(shortenDisplayAddress(mockSolanaAddress)).toBe('EPjFWdd...TDt1v');
+    expect(shortenDisplayAddress(mockSolanaAddress)).toBe('EPjFW...TDt1v');
   });
 
   it('returns an empty string for an empty address', () => {

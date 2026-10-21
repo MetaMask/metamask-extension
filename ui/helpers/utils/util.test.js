@@ -1106,6 +1106,12 @@ describe('util', () => {
         util.shortenAddress('0x1234567890123456789012345678901234567890'),
       ).toStrictEqual('0x12345...67890');
     });
+
+    it('keeps the first 5 characters of a non-EVM address', () => {
+      expect(
+        util.shortenAddress('bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker'),
+      ).toStrictEqual('bc1qn...5eker');
+    });
   });
 
   describe('shortenString', () => {

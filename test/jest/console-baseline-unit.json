@@ -605,8 +605,7 @@
       "MetaMask: Background connection not initialized": 56
     },
     "ui/pages/confirmations/components/confirm/info/shared/transaction-data/transaction-data.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: Missing key props in lists": 1
+      "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/components/confirm/info/shared/transaction-details/transaction-details.test.tsx": {
       "Reselect: Input stability warnings": 1

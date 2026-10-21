@@ -307,12 +307,7 @@ export function RampsProviderSelectionModal({
         setIsSelecting(false);
       }
     },
-    [
-      onClose,
-      selectedProvider?.name,
-      setSelectedProvider,
-      trackProviderSelected,
-    ],
+    [onClose, selectedProvider, setSelectedProvider, trackProviderSelected],
   );
 
   let testId = 'ramps-provider-selection-modal';

@@ -211,14 +211,13 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           minimumVersion: null,
         },
         '13.37.0': {
-          deprecatedControllers: ['TokenListController'],
+          deprecatedControllers: [],
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
         },
         '13.42.0': {
           deprecatedControllers: [
-            'TokenListController',
             'TokenDetectionController',
             'TokensController',
             'CurrencyRateController',
@@ -235,7 +234,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         },
         '13.43.0': {
           deprecatedControllers: [
-            'TokenListController',
             'TokenDetectionController',
             'TokensController',
             'CurrencyRateController',
@@ -253,7 +251,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         },
         '13.46.1': {
           deprecatedControllers: [
-            'TokenListController',
             'TokenDetectionController',
             'TokensController',
             'CurrencyRateController',
