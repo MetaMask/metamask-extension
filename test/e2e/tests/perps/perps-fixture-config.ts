@@ -19,6 +19,7 @@ import {
   MOCK_USDC_DEPOSIT,
 } from './mocks/websocketActivityMocks';
 import { ETH_LONG_CLEARING_HOUSE_STATE } from './mocks/websocketPositionMocks';
+import { getCurrentClearinghouseState } from './mocks/websocketDefaultMocks';
 
 /**
  * Production remote flag defaults used as the base for Perps remote flag state
@@ -701,7 +702,7 @@ export function getPerpsConfigEligibleWithEthLongPosition(title?: string) {
         .withJsonBodyIncluding({ type: 'clearinghouseState' })
         .thenCallback(() => ({
           statusCode: 200,
-          json: ETH_LONG_CLEARING_HOUSE_STATE,
+          json: getCurrentClearinghouseState(ETH_LONG_CLEARING_HOUSE_STATE),
         }));
     },
   };

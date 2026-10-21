@@ -13,25 +13,54 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { MFA_SETTINGS_EMAIL_ROUTE } from '../../../helpers/constants/routes';
+import {
+  MFA_SETTINGS_EMAIL_ROUTE,
+  MFA_SETTINGS_TOTP_ROUTE,
+} from '../../../helpers/constants/routes';
 import { transitionForward } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isMfaKitEnabled, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
+import type { MfaDetailsMethod } from './mfa-method-details';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaQaPresets from './mfa-qa-presets';
 
+const ROWS: {
+  method: MfaDetailsMethod;
+  label: string;
+  route: string;
+  operation: string;
+  testId: string;
+}[] = [
+  {
+    method: 'email_otp',
+    label: 'mfaMethodEmail',
+    route: MFA_SETTINGS_EMAIL_ROUTE,
+    operation: 'settings.addEmail',
+    testId: MfaSettingsTestIds.EMAIL_ROW,
+  },
+  {
+    method: 'totp',
+    label: 'mfaMethodTotp',
+    route: MFA_SETTINGS_TOTP_ROUTE,
+    operation: 'settings.addAuthenticatorApp',
+    testId: MfaSettingsTestIds.TOTP_ROW,
+  },
+];
+
 /**
  * The profile's verification methods: "Add" sets one up, the chevron opens
- * one that is set up. Passkeys are mobile only, so only email shows here.
+ * one that is set up. Passkeys are mobile only, so they do not show here.
  */
 const MfaSettings = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { credentials, enroll } = useMfa();
   const [isEnrolling, setIsEnrolling] = useState(false);
-  const hasEmail = credentials.some(
-    ({ type, status }) => type === 'email_otp' && status === 'active',
+  const activeTypes = new Set(
+    credentials
+      .filter(({ status }) => status === 'active')
+      .map(({ type }) => type),
   );
 
   useEffect(() => {
@@ -40,16 +69,13 @@ const MfaSettings = () => {
       .catch(() => undefined);
   }, []);
 
-  const openEmail = () => {
-    if (hasEmail) {
-      transitionForward(() => navigate(MFA_SETTINGS_EMAIL_ROUTE));
+  const open = ({ method, route, operation }: (typeof ROWS)[number]) => {
+    if (activeTypes.has(method)) {
+      transitionForward(() => navigate(route));
       return;
     }
     setIsEnrolling(true);
-    enroll({
-      method: 'email_otp',
-      reason: { operation: 'settings.addEmail' },
-    })
+    enroll({ method, reason: { operation } })
       .catch(() => undefined)
       .finally(() => setIsEnrolling(false));
   };
@@ -66,47 +92,50 @@ const MfaSettings = () => {
       >
         {t('mfaSettingsNotice')}
       </Text>
-      <Box
-        asChild
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        paddingVertical={3}
-        paddingHorizontal={4}
-        className="w-full border-0 bg-transparent text-left text-inherit cursor-pointer hover:bg-background-default-hover disabled:cursor-default"
-      >
-        <button
-          type="button"
-          onClick={openEmail}
-          disabled={isEnrolling}
-          aria-busy={isEnrolling}
-          data-testid={MfaSettingsTestIds.EMAIL_ROW}
+      {ROWS.map((row) => (
+        <Box
+          key={row.method}
+          asChild
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          paddingVertical={3}
+          paddingHorizontal={4}
+          className="w-full border-0 bg-transparent text-left text-inherit cursor-pointer hover:bg-background-default-hover disabled:cursor-default"
         >
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {t('mfaMethodEmail')}
-          </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={1}
+          <button
+            type="button"
+            onClick={() => open(row)}
+            disabled={isEnrolling}
+            aria-busy={isEnrolling}
+            data-testid={row.testId}
           >
-            {hasEmail ? null : (
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextAlternative}
-              >
-                {t('mfaSettingsAdd')}
-              </Text>
-            )}
-            <Icon
-              name={IconName.ArrowRight}
-              size={IconSize.Sm}
-              className="text-icon-alternative"
-            />
-          </Box>
-        </button>
-      </Box>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              {t(row.label)}
+            </Text>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+            >
+              {activeTypes.has(row.method) ? null : (
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('mfaSettingsAdd')}
+                </Text>
+              )}
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Sm}
+                className="text-icon-alternative"
+              />
+            </Box>
+          </button>
+        </Box>
+      ))}
       {isMfaKitEnabled() ? (
         <Box padding={4}>
           <MfaQaPresets />
