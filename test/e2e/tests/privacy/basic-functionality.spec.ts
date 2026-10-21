@@ -37,26 +37,27 @@ import { mockIdentityServices } from '../identity/mocks';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
-const ALLOWLIST_FILE_NAME = 'basic-functionality-off-allowlist.json';
+const KNOWN_VIOLATIONS_FILE_NAME =
+  'basic-functionality-off-known-violations.json';
 
 /**
  * Hosts that are still contacted with basic functionality off. Every entry is
  * a bug: with the toggle off, only JSON-RPC requests to nodes are allowed.
  * Remove an entry once the underlying bug is fixed.
  */
-type BasicFunctionalityOffAllowlist = {
+type BasicFunctionalityOffKnownViolations = {
   knownViolations: string[];
 };
 
 /** Map of host to the set of `METHOD /pathname` requests seen for that host. */
 type NonRpcRequests = Map<string, Set<string>>;
 
-async function loadAllowlist(): Promise<BasicFunctionalityOffAllowlist> {
-  const allowlistRaw = await fs.readFile(
-    path.join(__dirname, ALLOWLIST_FILE_NAME),
+async function loadKnownViolations(): Promise<BasicFunctionalityOffKnownViolations> {
+  const knownViolationsRaw = await fs.readFile(
+    path.join(__dirname, KNOWN_VIOLATIONS_FILE_NAME),
     'utf8',
   );
-  return JSON.parse(allowlistRaw);
+  return JSON.parse(knownViolationsRaw);
 }
 
 function isJsonRpcPayload(payload: unknown): boolean {
@@ -112,10 +113,10 @@ function recordNonRpcRequests(server: Mockttp): () => Promise<NonRpcRequests> {
   };
 }
 
-async function assertOnlyAllowlistedNonRpcRequests(
+async function assertNoNewNonRpcRequests(
   getNonRpcRequests: () => Promise<NonRpcRequests>,
 ) {
-  const { knownViolations } = await loadAllowlist();
+  const { knownViolations } = await loadKnownViolations();
   const nonRpcRequests = await getNonRpcRequests();
 
   console.log(
@@ -143,7 +144,7 @@ async function assertOnlyAllowlistedNonRpcRequests(
       )
       .join(
         '\n',
-      )}\n\nOnly JSON-RPC requests to nodes are allowed when basic functionality is off.\nIf this is a known bug that cannot be fixed yet, add the host to ${ALLOWLIST_FILE_NAME}.`,
+      )}\n\nOnly JSON-RPC requests to nodes are allowed when basic functionality is off.\nIf this is a known bug that cannot be fixed yet, add the host to ${KNOWN_VIOLATIONS_FILE_NAME}.`,
   );
 }
 
@@ -324,7 +325,7 @@ describe('MetaMask onboarding', function () {
         // condition to wait for. This covers at least one polling cycle.
         await driver.delay(veryLargeDelayMs);
 
-        await assertOnlyAllowlistedNonRpcRequests(getNonRpcRequests);
+        await assertNoNewNonRpcRequests(getNonRpcRequests);
 
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
@@ -421,7 +422,7 @@ describe('MetaMask onboarding', function () {
         // condition to wait for. This covers at least one polling cycle.
         await driver.delay(veryLargeDelayMs);
 
-        await assertOnlyAllowlistedNonRpcRequests(getNonRpcRequests);
+        await assertNoNewNonRpcRequests(getNonRpcRequests);
       },
     );
   });
