@@ -4,6 +4,8 @@ import { describe, it, afterEach, before, after, mock } from 'node:test';
 import assert from 'node:assert';
 import process from 'node:process';
 import { join, resolve } from 'node:path';
+import { runInNewContext } from 'node:vm';
+import { transform } from '@swc/core';
 import {
   type Configuration,
   type FileCacheOptions,
@@ -22,6 +24,7 @@ import {
   DEFAULT_ZIP_MTIME,
   isValidZipMtime,
 } from '../utils/plugins/ManifestPlugin/zip-mtime';
+import type { SwcLoaderOptions } from '../utils/loaders/swcLoader';
 
 // `buildDependencies` entries are either a path or `{ dependency, optional }`.
 // The config only ever writes paths, but the type allows both.
@@ -339,73 +342,92 @@ ${Object.entries(env)
     );
   });
 
-  type SwcEnvRule = RuleSetRule & {
-    include: unknown;
-    use: {
-      options: {
-        jsc: { transform: { optimizer: { globals: { envs: unknown } } } };
-      };
-    };
-  };
+  for (const mode of ['development', 'production']) {
+    for (const test of [false, true]) {
+      it(`inlines public flags only for the npm loader in ${mode} with test=${test}`, async () => {
+        mockOptionalRcFiles();
+        const config: Configuration = getWebpackConfig(
+          [
+            '--mode',
+            mode,
+            '--env',
+            'testing',
+            '--no-validateEnv',
+            ...(test ? ['--test'] : []),
+          ],
+          { INFURA_PROJECT_ID: 'sentinel-build-value' },
+        );
+        const source =
+          'const flags = [process.env.IN_TEST, process.env.NODE_ENV, process.env.INFURA_PROJECT_ID];';
+        const firstPartyUse = getSwcReactRules(config)[0].use as {
+          options: SwcLoaderOptions;
+        };
+        // Warm SWC's environment cache with first-party values before vendors.
+        await transform(source, {
+          ...firstPartyUse.options,
+          filename: '/test/file.ts',
+          swcrc: false,
+        });
+        const vendorRule = config.module?.rules?.find(
+          (rule): rule is RuleSetRule =>
+            typeof rule === 'object' && Array.isArray(rule?.oneOf),
+        );
+        assert(vendorRule?.oneOf);
+        assert.strictEqual(vendorRule.oneOf.length, 2, 'npm and cjs loaders');
 
-  function flattenRules(rules: unknown): RuleSetRule[] {
-    if (!Array.isArray(rules)) {
-      return [];
+        for (const rule of vendorRule.oneOf) {
+          assert(rule && typeof rule === 'object');
+          assert.strictEqual(String(rule.include), String(NODE_MODULES_RE));
+          const use = rule.use as { options: SwcLoaderOptions };
+          assert(use.options.module);
+          const isCjs = use.options.module.type === 'commonjs';
+          const { code } = await transform(source, {
+            ...use.options,
+            filename: `/test/node_modules/vendor/file.${isCjs ? 'cjs' : 'js'}`,
+            swcrc: false,
+          });
+          const flags: unknown = runInNewContext(`${code}\nflags;`, {
+            process: {
+              env: {
+                IN_TEST: 'runtime-test',
+                NODE_ENV: 'runtime-mode',
+                INFURA_PROJECT_ID: 'runtime-value',
+              },
+            },
+          });
+
+          assert(Array.isArray(flags));
+          assert.deepStrictEqual(
+            [...flags],
+            isCjs
+              ? ['runtime-test', 'runtime-mode', 'runtime-value']
+              : [test, mode, 'runtime-value'],
+          );
+        }
+      });
     }
-    return rules.flatMap((rule) => {
-      if (!rule || typeof rule !== 'object') {
-        return [];
+  }
+
+  for (const watch of [false, true]) {
+    it(`compiles TypeScript files with configured loaders and watch=${watch}`, async () => {
+      const config = getWebpackConfig(watch ? ['--watch'] : []);
+      for (const extension of ['ts', 'mts', 'tsx']) {
+        const filename = resolve(__dirname, `../../../ui/test.${extension}`);
+        const rule = getSwcReactRules(config).find(
+          ({ test }) => test instanceof RegExp && test.test(filename),
+        );
+        assert(rule, `Missing loader for .${extension}`);
+        const { options } = rule.use as { options: SwcLoaderOptions };
+
+        await transform(
+          extension === 'tsx'
+            ? 'export const Component = (text: string) => <div>{text}</div>;'
+            : 'export const identity = <T>(value: T): T => value;',
+          { ...options, filename, swcrc: false },
+        );
       }
-      const { rules: nested, oneOf } = rule as RuleSetRule;
-      return [
-        rule as RuleSetRule,
-        ...flattenRules(nested),
-        ...flattenRules(oneOf),
-      ];
     });
   }
-
-  function getVendorSwcRules(config: Configuration): SwcEnvRule[] {
-    // the npm and cjs loader rules are the ones scoped to node_modules
-    return flattenRules(config.module?.rules).filter(
-      (rule): rule is SwcEnvRule => {
-        const maybeRule = rule as Partial<SwcEnvRule>;
-        return (
-          String(maybeRule.include) === String(NODE_MODULES_RE) &&
-          typeof maybeRule.use?.options?.jsc?.transform?.optimizer?.globals ===
-            'object'
-        );
-      },
-    );
-  }
-
-  it('inlines only IN_TEST for the vendor loaders in test builds', () => {
-    mockOptionalRcFiles();
-
-    const config: Configuration = getWebpackConfig(['--test']);
-    const vendorRules = getVendorSwcRules(config);
-
-    assert.strictEqual(vendorRules.length, 2, 'npm and cjs loader rules');
-    for (const rule of vendorRules) {
-      assert.deepStrictEqual(rule.use.options.jsc.transform.optimizer.globals, {
-        envs: { IN_TEST: 'true' },
-      });
-    }
-  });
-
-  it('inlines only IN_TEST=false for the vendor loaders outside test builds', () => {
-    mockOptionalRcFiles();
-
-    const config: Configuration = getWebpackConfig();
-    const vendorRules = getVendorSwcRules(config);
-
-    assert.strictEqual(vendorRules.length, 2, 'npm and cjs loader rules');
-    for (const rule of vendorRules) {
-      assert.deepStrictEqual(rule.use.options.jsc.transform.optimizer.globals, {
-        envs: { IN_TEST: 'false' },
-      });
-    }
-  });
 
   it('enables React Refresh for development watch builds', () => {
     mockOptionalRcFiles();
@@ -425,15 +447,11 @@ ${Object.entries(env)
     );
     assert.deepStrictEqual(
       reactRefreshRules.map((rule) => rule.test?.toString()),
-      [
-        /\.(?:ts|mts)$/u.toString(),
-        /\.tsx$/u.toString(),
-        /\.(?:js|mjs|jsx)$/u.toString(),
-      ],
+      [/\.(?:ts|mts|tsx)$/u.toString(), /\.(?:js|mjs|jsx)$/u.toString()],
     );
     assert.deepStrictEqual(
       reactRefreshRules.map((rule) => rule.exclude),
-      [undefined, undefined, undefined],
+      [undefined, undefined],
     );
     assert.ok(
       reactRefreshRules.every(
