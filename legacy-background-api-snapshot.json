@@ -259,8 +259,6 @@
     "markNotificationPopupAsAutomaticallyClosed",
     "markPasswordForgotten",
     "multichainAddAssets",
-    "multichainAssetsRatesStartPolling",
-    "multichainAssetsRatesStopPollingByPollingToken",
     "multichainIgnoreAssets",
     "multichainUpdateTransactions",
     "openUpdateTabAndReload",
