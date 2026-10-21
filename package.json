@@ -195,8 +195,7 @@
     "start*": "lavamoat/scripts.yarn.json",
     "foundryup": "lavamoat/scripts.foundry.json",
     "postinstall": "lavamoat/scripts.yarn.json",
-    "skills*": "lavamoat/scripts.spawns.json",
-    "storybook*": "lavamoat/scripts.yarn.json"
+    "skills*": "lavamoat/scripts.spawns.json"
   },
   "resolutions": {
     "@metamask/config-registry-controller": "^5.0.0",
