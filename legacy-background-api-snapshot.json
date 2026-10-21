@@ -262,7 +262,6 @@
     "multichainAssetsRatesStartPolling",
     "multichainAssetsRatesStopPollingByPollingToken",
     "multichainIgnoreAssets",
-    "multichainUpdateBalance",
     "multichainUpdateTransactions",
     "openUpdateTabAndReload",
     "performSignIn",

@@ -19,6 +19,7 @@ import log from 'loglevel';
 import { rawChainData } from 'eth-chainlist';
 import { nanoid } from 'nanoid';
 import { Messenger } from '@metamask/messenger';
+import { RequestSourceFlow } from '@metamask/phishing-controller';
 import {
   MethodNames,
   PermissionDoesNotExistError,
@@ -194,8 +195,8 @@ import {
   createOriginScanMiddleware,
 } from './lib/trust-signals/trust-signals-middleware';
 import {
-  createCaipOriginScanGate,
-  createEip1193OriginScanGate,
+  getCaipOriginScanFlow,
+  getEip1193OriginScanFlow,
 } from './lib/trust-signals/trust-signals-util';
 import {
   onMessageReceived,
@@ -282,7 +283,6 @@ import { InstitutionalSnapControllerInit } from './messenger-client-init/institu
 import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
-  MultichainBalancesControllerInit,
   MultichainAssetsRatesControllerInit,
   MultichainNetworkControllerInit,
 } from './messenger-client-init/multichain';
@@ -614,7 +614,6 @@ export default class MetamaskController extends EventEmitter {
       SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
-      MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
@@ -739,8 +738,6 @@ export default class MetamaskController extends EventEmitter {
     this.assetsController = messengerClientsByName.AssetsController;
     this.multichainAssetsController =
       messengerClientsByName.MultichainAssetsController;
-    this.multichainBalancesController =
-      messengerClientsByName.MultichainBalancesController;
     this.multichainTransactionsController =
       messengerClientsByName.MultichainTransactionsController;
     this.multichainAssetsRatesController =
@@ -1417,7 +1414,6 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
-        MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
         MultichainAssetsRatesController: this.multichainAssetsRatesController,
         TokenRatesController: this.tokenRatesController,
@@ -3371,7 +3367,7 @@ export default class MetamaskController extends EventEmitter {
         return phishingController.checkAddressPoisoning(address);
       },
       scanUrlForPhishing: async (origin) => {
-        return phishingController.scanUrl(origin);
+        return phishingController.scanUrl(origin, RequestSourceFlow.RevealSrp);
       },
       deleteInterface: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -3730,10 +3726,6 @@ export default class MetamaskController extends EventEmitter {
 
       multichainIgnoreAssets: (assetIds, accountId) =>
         this.multichainAssetsController.ignoreAssets(assetIds, accountId),
-
-      // MultichainBalancesController
-      multichainUpdateBalance: (accountId) =>
-        this.multichainBalancesController.updateBalance(accountId),
 
       // MultichainTransactionsController
       multichainUpdateTransactions: (accountId) =>
@@ -5309,7 +5301,7 @@ export default class MetamaskController extends EventEmitter {
       createOriginScanMiddleware(
         this.phishingController,
         this.preferencesController,
-        createEip1193OriginScanGate(this.getPermittedAccounts.bind(this)),
+        getEip1193OriginScanFlow(this.getPermittedAccounts.bind(this)),
         sender?.url,
       ),
     );
@@ -5746,7 +5738,7 @@ export default class MetamaskController extends EventEmitter {
       createOriginScanMiddleware(
         this.phishingController,
         this.preferencesController,
-        createCaipOriginScanGate((requestOrigin) =>
+        getCaipOriginScanFlow((requestOrigin) =>
           this.permissionController.hasPermission(
             requestOrigin,
             Caip25EndowmentPermissionName,
