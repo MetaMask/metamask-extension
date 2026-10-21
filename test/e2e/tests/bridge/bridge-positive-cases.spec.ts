@@ -175,6 +175,7 @@ describe('Bridge tests', function (this: Suite) {
           mockedEndpoint,
         );
 
+        await homePage.goToHomePage();
         console.log('Navigating back to Swap page');
         await homePage.startSwapFlow();
         await bridgePage.checkAssetsAreSelected('ETH', 'mUSD');
