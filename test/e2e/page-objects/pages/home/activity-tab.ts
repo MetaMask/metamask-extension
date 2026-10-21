@@ -54,6 +54,13 @@ class ActivityTab extends HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly transactionAtIndexWithStatus = (
+    transactionIndex: number,
+    status: string,
+  ) => ({
+    xpath: `(//*[@data-testid="activity-list-item"])[${transactionIndex}][@data-tx-status="${status}"]`,
+  });
+
   private readonly transactionBaseFeeRowValue = {
     xpath:
       '//*[@data-testid="transaction-base-fee"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
@@ -517,17 +524,9 @@ class ActivityTab extends HomePage {
     }: { timeout?: number; transactionIndex?: number } = {},
   ) {
     if (transactionIndex) {
-      await this.driver.waitUntil(
-        async () => {
-          const transactionItems = await this.driver.findElements(
-            this.completedTransactions,
-          );
-          const transactionItem = transactionItems[transactionIndex - 1];
-          return (
-            (await transactionItem?.getAttribute('data-tx-status')) === status
-          );
-        },
-        { interval: 100, timeout },
+      await this.driver.waitForSelector(
+        this.transactionAtIndexWithStatus(transactionIndex, status),
+        { timeout },
       );
       return;
     }
