@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser';
+import { SwapFeatureTag } from '@metamask/bridge-controller';
 import { endTrace, trace, TraceName } from './trace';
-import { TraceFeatureTag } from '@metamask/bridge-controller';
 
 type SentEvent = { name?: string; tags?: Record<string, unknown> };
 
@@ -63,7 +63,7 @@ describe('trace tags', () => {
   it('keeps the tag a started trace was given when another trace ends first', async () => {
     trace({
       name: TraceName.BatchSellModal,
-      tags: { feature: TraceFeatureTag.BatchSellModal },
+      tags: { feature: SwapFeatureTag.BATCH_SELL },
     });
     trace(
       { name: TraceName.Transaction, tags: { feature: 'swap' } },
