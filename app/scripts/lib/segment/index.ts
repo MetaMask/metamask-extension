@@ -2,6 +2,7 @@ import { Analytics } from '@segment/analytics-node';
 import { cloneDeep } from 'lodash';
 import { SECOND } from '../../../../shared/constants/time';
 import type { MetaMetricsUserTraits } from '../../../../shared/constants/metametrics';
+import { createSegmentDeliveryGate } from './delivery';
 
 const SEGMENT_WRITE_KEY = process.env.SEGMENT_WRITE_KEY ?? null;
 const SEGMENT_HOST = process.env.SEGMENT_HOST || undefined;
@@ -166,7 +167,7 @@ export const createSegmentMock = (
   return segmentMock;
 };
 
-export const segment: SegmentClient = SEGMENT_WRITE_KEY
+const client: SegmentClient = SEGMENT_WRITE_KEY
   ? createSegmentClient(
       SEGMENT_WRITE_KEY,
       SEGMENT_HOST,
@@ -174,3 +175,9 @@ export const segment: SegmentClient = SEGMENT_WRITE_KEY
       SEGMENT_FLUSH_INTERVAL,
     )
   : createSegmentMock(SEGMENT_FLUSH_AT);
+
+export const {
+  segment,
+  updateState: updateSegmentDeliveryState,
+  initializeState: initializeSegmentDeliveryState,
+} = createSegmentDeliveryGate(client);

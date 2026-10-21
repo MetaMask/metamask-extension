@@ -8,6 +8,7 @@ import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './track-vault-corruption';
 
 jest.mock('../segment', () => ({
+  initializeSegmentDeliveryState: jest.fn(),
   segment: {
     track: jest.fn(),
     flush: jest.fn(),

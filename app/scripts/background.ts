@@ -82,6 +82,7 @@ import { registerCashtagBackgroundBridge } from './cashtag/background';
 import NotificationManager from './lib/notification-manager';
 import MetamaskController from './metamask-controller';
 import { createEventBuilder, trackEvent } from './controllers/analytics';
+import { updateSegmentDeliveryState } from './lib/segment';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
 import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
@@ -723,13 +724,30 @@ export function setupController(
   });
 
   const metamaskController = controller;
+  const updateAnalyticsDelivery = () =>
+    updateSegmentDeliveryState(metamaskController.store.getState());
   if (isManifestV3) {
-    const refresh = () =>
-      refreshNetworkRequestPolicy(metamaskController.store.getState()).catch(
-        log.error,
-      );
+    let policyRevision = 0;
+    const refresh = () => {
+      policyRevision += 1;
+      const revision = policyRevision;
+      const state = metamaskController.store.getState();
+      const policyUpdate = refreshNetworkRequestPolicy(state);
+      updateSegmentDeliveryState(state, false);
+      policyUpdate
+        .then(() => {
+          // A newer state change may still be applying more restrictive rules.
+          if (revision === policyRevision) {
+            updateAnalyticsDelivery();
+          }
+        })
+        .catch(log.error);
+    };
     metamaskController.store.subscribe(refresh);
     refresh();
+  } else {
+    metamaskController.store.subscribe(updateAnalyticsDelivery);
+    updateAnalyticsDelivery();
   }
 
   // Wire up the callback to notify the UI when set operations fail

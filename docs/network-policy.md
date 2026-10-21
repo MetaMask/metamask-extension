@@ -15,6 +15,12 @@ Linking a social profile does not exempt SRP. Wallet state recomputes policy;
 await `updateNetworkRequestDomains('*' | string[])` for browser confirmation.
 Updates neither cancel in-flight requests nor make controller mutations atomic.
 
+Segment onboarding events remain in the existing analytics queue until onboarding
+is complete, Basic Functionality is enabled and consent permits delivery. The
+background releases deferred telemetry only after Chrome applies the latest
+policy update; a superseded update cannot release it. Early startup diagnostics
+use persisted onboarding and preference state and remain subject to DNR.
+
 UI/background callers can allow an exact URL even if background startup fails:
 
 ```typescript
