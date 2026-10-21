@@ -49,12 +49,9 @@ type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
   testId: string;
   isSelected: boolean;
-  isDisabled?: boolean;
   onChange: () => void;
   label: React.ReactNode;
   description: React.ReactNode;
-  containerClassName: string;
-  isInteractive?: boolean;
 }>;
 
 const stopClickPropagation = (e: React.MouseEvent) => {
@@ -66,42 +63,32 @@ function MetametricsCheckboxOption({
   id,
   testId,
   isSelected,
-  isDisabled,
   onChange,
   label,
   description,
-  containerClassName,
-  isInteractive = true,
 }: Readonly<MetametricsCheckboxOptionProps>) {
-  const handleContainerActivate = () => {
-    if (isInteractive) {
-      onChange();
-    }
-  };
-
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
       gap={2}
       padding={3}
       backgroundColor={BoxBackgroundColor.BackgroundMuted}
-      className={`${containerClassName} rounded-lg`}
+      className="onboarding-metametrics__checkbox rounded-lg"
       data-testid={testId}
       data-checked={String(isSelected)}
-      role={isInteractive ? 'button' : undefined}
-      tabIndex={isInteractive ? 0 : undefined}
-      onClick={isInteractive ? handleContainerActivate : undefined}
+      role="button"
+      tabIndex={0}
+      onClick={onChange}
       onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-        if ((e.key === ' ' || e.key === 'Enter') && isInteractive) {
+        if (e.key === ' ' || e.key === 'Enter') {
           e.preventDefault();
-          handleContainerActivate();
+          onChange();
         }
       }}
     >
       <Checkbox
         id={id}
         isSelected={isSelected}
-        isDisabled={isDisabled}
         onChange={onChange}
         onClick={stopClickPropagation}
         inputProps={{ onClick: stopClickPropagation }}
@@ -269,7 +256,6 @@ export default function OnboardingMetametrics() {
         testId="metametrics-checkbox"
         isSelected={isParticipateInMetaMetricsChecked}
         onChange={handleParticipateInMetaMetricsChange}
-        containerClassName="onboarding-metametrics__checkbox"
         label={
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricCheckboxTitleOne')}
@@ -283,7 +269,6 @@ export default function OnboardingMetametrics() {
         testId="metametrics-data-collection-checkbox"
         isSelected={isDataCollectionForMarketingChecked}
         onChange={handleMarketingChange}
-        containerClassName="onboarding-metametrics__checkbox"
         label={
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricCheckboxTitleTwo')}
