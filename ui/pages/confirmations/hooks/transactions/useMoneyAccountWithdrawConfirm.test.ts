@@ -32,12 +32,15 @@ jest.mock('./useTransactionAccountOverride');
 
 const FROM = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' as Hex;
 const TELLER_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
+const TRANSFER_TARGET = '0x2222222222222222222222222222222222222222' as Hex;
 const MUSD_ADDRESS = '0x3333333333333333333333333333333333333333' as Hex;
 const OVERRIDE_ADDRESS = '0x4444444444444444444444444444444444444444' as Hex;
 const WITHDRAW_DATA = '0x1234567890abcdef1234567890abcdef12345678' as Hex;
 const PLACEHOLDER_DATA = '0xemptyexecute';
 const FUNDED_TRANSFER_DATA =
   '0xa9059cbb0000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000c350' as Hex;
+const OVERRIDE_TRANSFER_DATA =
+  '0xa9059cbb0000000000000000000000004444444444444444444444444444444444444444000000000000000000000000000000000000000000000000000000000000c350' as Hex;
 const ZERO_TRANSFER_DATA =
   '0xa9059cbb00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000000000' as Hex;
 const TRANSACTION_ID = 'tx-1';
@@ -50,6 +53,15 @@ const PLACEHOLDER_NESTED = [
 const FUNDED_NESTED = [
   { to: TELLER_ADDRESS, data: WITHDRAW_DATA },
   { to: MUSD_ADDRESS, data: FUNDED_TRANSFER_DATA },
+] as TransactionMeta['nestedTransactions'];
+
+const TYPED_FUNDED_NESTED = [
+  { to: TELLER_ADDRESS, data: WITHDRAW_DATA },
+  {
+    to: MUSD_ADDRESS,
+    data: FUNDED_TRANSFER_DATA,
+    type: TransactionType.tokenMethodTransfer,
+  },
 ] as TransactionMeta['nestedTransactions'];
 
 const FUNDED_UPDATE = {
@@ -188,6 +200,45 @@ describe('useMoneyAccountWithdrawConfirm', () => {
       undefined,
     );
     expect(result?.nestedTransactions?.[1].data).toBe(FUNDED_TRANSFER_DATA);
+  });
+
+  it('re-encodes when the funded transfer does not pay the current recipient', async () => {
+    // The batch pays TRANSFER_TARGET (e.g. the money account for a quoted
+    // hardware withdrawal) while the user switched the recipient.
+    mockUseTransactionAccountOverride.mockReturnValue(OVERRIDE_ADDRESS);
+    mockUseDispatch.mockReturnValue(
+      buildDispatch([buildTransaction(TYPED_FUNDED_NESTED)]) as never,
+    );
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
+    mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue({
+      withdrawData: WITHDRAW_DATA,
+      transferData: OVERRIDE_TRANSFER_DATA,
+    });
+    const { prepareWithdrawTransaction } = runHook();
+
+    const result = await prepareWithdrawTransaction(
+      buildTransaction(TYPED_FUNDED_NESTED),
+    );
+
+    expect(mockUpdateMoneyAccountWithdrawAmount).toHaveBeenCalledWith(
+      TRANSACTION_ID,
+      '0.05',
+      OVERRIDE_ADDRESS,
+    );
+    expect(result?.nestedTransactions?.[1].data).toBe(OVERRIDE_TRANSFER_DATA);
+  });
+
+  it('reuses funded calldata that already pays the current recipient', async () => {
+    mockUseTransactionAccountOverride.mockReturnValue(TRANSFER_TARGET);
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
+    const { prepareWithdrawTransaction } = runHook();
+
+    const result = await prepareWithdrawTransaction(
+      buildTransaction(TYPED_FUNDED_NESTED),
+    );
+
+    expect(result?.nestedTransactions?.[1].data).toBe(FUNDED_TRANSFER_DATA);
+    expect(mockUpdateMoneyAccountWithdrawAmount).not.toHaveBeenCalled();
   });
 
   it('does not approve a stale funded store batch after a mismatched encode', async () => {

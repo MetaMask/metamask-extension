@@ -2,6 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useCallback } from 'react';
 
+import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import {
   selectTransactionById,
   type TransactionState,
@@ -18,6 +19,7 @@ import {
   applyWithdrawCalldata,
   asFundedWithdrawUpdate,
   doesWithdrawCalldataMatchAmount,
+  getMoneyAccountWithdrawTransferDetails,
   withFundedBatchCalldata,
 } from '../../utils/money-account-withdraw';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
@@ -62,8 +64,8 @@ function readTransactionFromStore(
  * the confirmation clone instead of requiring the IPC object to be funded.
  *
  * Funded nested calldata is reused only when it already encodes the latest
- * typed amount. Otherwise Send would approve a previous encode while the
- * footer shows a newer amount that has not finished committing.
+ * typed amount and pays the current recipient. Otherwise Send would approve a
+ * previous encode while the footer shows a newer amount or recipient.
  *
  * @returns An object with `prepareWithdrawTransaction`.
  */
@@ -89,11 +91,18 @@ export function useMoneyAccountWithdrawConfirm() {
 
       // Skip re-encode only when nested calldata already matches the amount
       // on screen. A prior encode can still look "funded" after the user edits.
+      // A quoted hardware withdrawal pays the money account, so let the
+      // background pick the target unless the transfer pays the recipient.
+      const isReusable = (transaction: TransactionMeta | undefined) =>
+        doesWithdrawCalldataMatchAmount(transaction, amountHuman) &&
+        (!recipient ||
+          isEqualCaseInsensitive(
+            getMoneyAccountWithdrawTransferDetails(transaction).recipient ?? '',
+            recipient,
+          ));
       const ready =
-        (doesWithdrawCalldataMatchAmount(fromStore, amountHuman)
-          ? withFundedBatchCalldata(fromStore)
-          : null) ??
-        (doesWithdrawCalldataMatchAmount(transactionMeta, amountHuman)
+        (isReusable(fromStore) ? withFundedBatchCalldata(fromStore) : null) ??
+        (isReusable(transactionMeta)
           ? withFundedBatchCalldata(transactionMeta)
           : null);
 
