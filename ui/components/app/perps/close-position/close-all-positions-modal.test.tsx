@@ -64,7 +64,7 @@ const defaultFeeResult = {
 
 function setDefaultBackgroundResponses() {
   mockSubmitRequestToBackground.mockImplementation((method: string) => {
-    if (method === 'rewardsGetPerpsDiscountForAccount') {
+    if (method === 'RewardsController:getPerpsDiscountForAccount') {
       return Promise.resolve(null);
     }
     return Promise.resolve(defaultFeeResult);
@@ -338,7 +338,7 @@ describe('CloseAllPositionsModal', () => {
     };
     mockSubmitRequestToBackground.mockImplementation(
       (method: string, args: unknown[]) => {
-        if (method === 'rewardsGetPerpsDiscountForAccount') {
+        if (method === 'RewardsController:getPerpsDiscountForAccount') {
           return Promise.resolve(null);
         }
         const { symbol } = (args as [{ symbol: string }])[0];

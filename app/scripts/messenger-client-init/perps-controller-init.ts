@@ -149,10 +149,8 @@ type PerpsActionName =
   | 'perpsFlipPosition'
   | 'perpsWithdraw'
   | 'perpsValidateWithdrawal'
-  | 'perpsGetWithdrawalRoutes'
   | 'perpsUpdateWithdrawalStatus'
   | 'perpsUpdateWithdrawalProgress'
-  | 'perpsGetWithdrawalProgress'
   | 'perpsGetUserNonFundingLedgerUpdates'
   | 'perpsDepositWithConfirmation'
   | 'perpsGetPositions'
@@ -168,47 +166,10 @@ type PerpsActionName =
   | 'perpsCalculateFees'
   | 'perpsCalculateLiquidationPrice'
   | 'perpsGetAvailableDexs'
-  | 'perpsRefreshEligibility'
   | 'perpsStartEligibilityMonitoring'
   | 'perpsStopEligibilityMonitoring'
   | 'perpsToggleTestnet'
-  | 'perpsSaveTradeConfiguration'
-  | 'perpsGetTradeConfiguration'
-  | 'perpsSavePendingTradeConfiguration'
-  | 'perpsGetPendingTradeConfiguration'
-  | 'perpsClearPendingTradeConfiguration'
-  | 'perpsSaveMarketFilterPreferences'
-  | 'perpsGetMarketFilterPreferences'
-  | 'perpsSetSelectedPaymentToken'
-  | 'perpsResetSelectedPaymentToken'
-  | 'perpsMarkTutorialCompleted'
-  | 'perpsMarkFirstOrderCompleted'
-  | 'perpsResetFirstTimeUserState'
-  | 'perpsClearPendingTransactionRequests'
-  | 'perpsSaveOrderBookGrouping'
-  | 'perpsGetOrderBookGrouping'
-  | 'perpsGetOrderBookPreferences'
-  | 'perpsSetOrderBookPreferences'
-  | 'perpsGetSelectedOrderType'
-  | 'perpsSetSelectedOrderType'
-  | 'perpsGetVisibleCandleCount'
-  | 'perpsSetVisibleCandleCount'
-  | 'perpsGetProLayoutPreferences'
-  | 'perpsSetProLayoutPreferences'
-  | 'perpsGetMaxSlippage'
-  | 'perpsSetMaxSlippage'
-  | 'perpsGetUserHistory'
-  | 'perpsClearDepositResult'
-  | 'perpsClearWithdrawResult'
-  | 'perpsGetBlockExplorerUrl'
-  | 'perpsGetCurrentNetwork'
-  | 'perpsIsFirstTimeUserOnCurrentNetwork'
-  | 'perpsGetWatchlistMarkets'
-  | 'perpsToggleWatchlistMarket'
-  | 'perpsIsWatchlistMarket'
-  | 'perpsReconnect'
-  | 'perpsGetConnectionState'
-  | 'perpsSetAttributionContext';
+  | 'perpsGetUserHistory';
 
 // TODO: These methods have custom signatures that don't match their controller
 // counterparts. Once the controller package is updated to return the deposit
@@ -217,8 +178,7 @@ type PerpsActionName =
 type PerpsCustomApiNames =
   | 'perpsDepositWithConfirmation'
   | 'perpsGetUserHistory'
-  | 'perpsGetUserNonFundingLedgerUpdates'
-  | 'perpsGetConnectionState';
+  | 'perpsGetUserNonFundingLedgerUpdates';
 
 type PerpsBackgroundApi = {
   [ActionName in Exclude<
@@ -243,7 +203,6 @@ type PerpsBackgroundApi = {
     endTime?: number;
     accountId?: string;
   }) => Promise<RawLedgerUpdate[]>;
-  perpsGetConnectionState: () => string;
 };
 
 /**
@@ -445,8 +404,6 @@ function getApi(
     perpsValidateWithdrawal: read(
       messengerClient.validateWithdrawal.bind(messengerClient),
     ),
-    perpsGetWithdrawalRoutes:
-      messengerClient.getWithdrawalRoutes.bind(messengerClient),
     // updateWithdrawalStatus / updateWithdrawalProgress post to the broker
     perpsUpdateWithdrawalStatus: write(
       messengerClient.updateWithdrawalStatus.bind(messengerClient),
@@ -454,8 +411,6 @@ function getApi(
     perpsUpdateWithdrawalProgress: write(
       messengerClient.updateWithdrawalProgress.bind(messengerClient),
     ),
-    perpsGetWithdrawalProgress:
-      messengerClient.getWithdrawalProgress.bind(messengerClient),
 
     // -- Data fetches (read-guard: init errors + benign disconnect) --
     perpsGetPositions: read(messengerClient.getPositions.bind(messengerClient)),
@@ -491,8 +446,6 @@ function getApi(
     ),
 
     // -- Eligibility (no guard — state-only) --
-    perpsRefreshEligibility:
-      messengerClient.refreshEligibility.bind(messengerClient),
     perpsStartEligibilityMonitoring:
       messengerClient.startEligibilityMonitoring.bind(messengerClient),
     perpsStopEligibilityMonitoring:
@@ -500,56 +453,6 @@ function getApi(
 
     // -- Toggle (no guard — handled by bridge) --
     perpsToggleTestnet: messengerClient.toggleTestnet.bind(messengerClient),
-
-    // -- Preferences (no guard — never call getActiveProvider) --
-    perpsSaveTradeConfiguration:
-      messengerClient.saveTradeConfiguration.bind(messengerClient),
-    perpsGetTradeConfiguration:
-      messengerClient.getTradeConfiguration.bind(messengerClient),
-    perpsSavePendingTradeConfiguration:
-      messengerClient.savePendingTradeConfiguration.bind(messengerClient),
-    perpsGetPendingTradeConfiguration:
-      messengerClient.getPendingTradeConfiguration.bind(messengerClient),
-    perpsClearPendingTradeConfiguration:
-      messengerClient.clearPendingTradeConfiguration.bind(messengerClient),
-    perpsSaveMarketFilterPreferences:
-      messengerClient.saveMarketFilterPreferences.bind(messengerClient),
-    perpsGetMarketFilterPreferences:
-      messengerClient.getMarketFilterPreferences.bind(messengerClient),
-    perpsSetSelectedPaymentToken:
-      messengerClient.setSelectedPaymentToken.bind(messengerClient),
-    perpsResetSelectedPaymentToken:
-      messengerClient.resetSelectedPaymentToken.bind(messengerClient),
-    perpsMarkTutorialCompleted:
-      messengerClient.markTutorialCompleted.bind(messengerClient),
-    perpsMarkFirstOrderCompleted:
-      messengerClient.markFirstOrderCompleted.bind(messengerClient),
-    perpsResetFirstTimeUserState:
-      messengerClient.resetFirstTimeUserState.bind(messengerClient),
-    perpsClearPendingTransactionRequests:
-      messengerClient.clearPendingTransactionRequests.bind(messengerClient),
-    perpsSaveOrderBookGrouping:
-      messengerClient.saveOrderBookGrouping.bind(messengerClient),
-    perpsGetOrderBookGrouping:
-      messengerClient.getOrderBookGrouping.bind(messengerClient),
-    perpsGetOrderBookPreferences:
-      messengerClient.getOrderBookPreferences.bind(messengerClient),
-    perpsSetOrderBookPreferences:
-      messengerClient.setOrderBookPreferences.bind(messengerClient),
-    perpsGetSelectedOrderType:
-      messengerClient.getSelectedOrderType.bind(messengerClient),
-    perpsSetSelectedOrderType:
-      messengerClient.setSelectedOrderType.bind(messengerClient),
-    perpsGetVisibleCandleCount:
-      messengerClient.getVisibleCandleCount.bind(messengerClient),
-    perpsSetVisibleCandleCount:
-      messengerClient.setVisibleCandleCount.bind(messengerClient),
-    perpsGetProLayoutPreferences:
-      messengerClient.getProLayoutPreferences.bind(messengerClient),
-    perpsSetProLayoutPreferences:
-      messengerClient.setProLayoutPreferences.bind(messengerClient),
-    perpsGetMaxSlippage: messengerClient.getMaxSlippage.bind(messengerClient),
-    perpsSetMaxSlippage: messengerClient.setMaxSlippage.bind(messengerClient),
 
     // -- Provider passthrough (read-guard) --
     perpsGetUserHistory: read(
@@ -572,36 +475,5 @@ function getApi(
           .getUserNonFundingLedgerUpdates(params);
       },
     ),
-
-    // -- Misc (no guard — state-only) --
-    perpsClearDepositResult:
-      messengerClient.clearDepositResult.bind(messengerClient),
-    perpsClearWithdrawResult:
-      messengerClient.clearWithdrawResult.bind(messengerClient),
-    perpsGetBlockExplorerUrl:
-      messengerClient.getBlockExplorerUrl.bind(messengerClient),
-    perpsGetCurrentNetwork:
-      messengerClient.getCurrentNetwork.bind(messengerClient),
-    perpsIsFirstTimeUserOnCurrentNetwork:
-      messengerClient.isFirstTimeUserOnCurrentNetwork.bind(messengerClient),
-    perpsGetWatchlistMarkets:
-      messengerClient.getWatchlistMarkets.bind(messengerClient),
-    perpsToggleWatchlistMarket:
-      messengerClient.toggleWatchlistMarket.bind(messengerClient),
-    perpsIsWatchlistMarket:
-      messengerClient.isWatchlistMarket.bind(messengerClient),
-
-    // -- Connection health --
-    perpsReconnect: messengerClient.reconnect.bind(messengerClient),
-    perpsGetConnectionState: () =>
-      messengerClient.getWebSocketConnectionState(),
-
-    // -- Analytics attribution --
-    // Only the setter is exposed: the UI writes the UTM context here, and the
-    // merge back into controller-emitted events happens through the
-    // `mergeAttributionContext` closure passed to createPerpsInfrastructure
-    // above, not through a background action.
-    perpsSetAttributionContext:
-      messengerClient.setAttributionContext.bind(messengerClient),
   };
 }

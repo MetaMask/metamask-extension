@@ -42,7 +42,7 @@ describe('PerpsWithdrawToast', () => {
     ).toBeInTheDocument();
   });
 
-  it('calls perpsClearWithdrawResult when dismissed', async () => {
+  it('clears the withdrawal result through the messenger when dismissed', async () => {
     const user = userEvent.setup();
     const store = configureStore({
       metamask: {
@@ -57,7 +57,10 @@ describe('PerpsWithdrawToast', () => {
       screen.getByRole('button', { name: messages.close.message }),
     );
 
-    expect(mockSubmit).toHaveBeenCalledWith('perpsClearWithdrawResult', []);
+    expect(mockSubmit).toHaveBeenCalledWith(
+      'PerpsController:clearWithdrawResult',
+      [],
+    );
   });
 
   it('renders nothing when there is no lastWithdrawResult', () => {

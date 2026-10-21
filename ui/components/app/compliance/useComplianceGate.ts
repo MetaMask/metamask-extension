@@ -86,8 +86,8 @@ export function useComplianceGate(address?: AddressInput) {
       return undefined;
     }
 
-    return await submitRequestToBackground<WalletComplianceStatus[]>(
-      'complianceCheckWalletsCompliance',
+    return await submitRequestToBackground(
+      'ComplianceController:checkWalletsCompliance',
       [addresses],
     );
   }, [addresses]);

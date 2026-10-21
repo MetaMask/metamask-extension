@@ -138,10 +138,10 @@ export function usePerpsMetamaskFeeDiscountBips(
       };
     }
 
-    submitRequestToBackground<number | null>(
-      'rewardsGetPerpsDiscountForAccount',
-      [caipAccountId, baseFeeBips],
-    )
+    submitRequestToBackground('RewardsController:getPerpsDiscountForAccount', [
+      caipAccountId,
+      baseFeeBips,
+    ])
       .then((bips) => {
         if (cancelled) {
           return;
