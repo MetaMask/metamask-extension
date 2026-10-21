@@ -6426,7 +6426,6 @@ export default class MetamaskController extends EventEmitter {
 
     if (open) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
-      // Consent may have changed on another device since the last read.
       this.controllerMessenger.call('MarketingConsentController:refresh');
     } else {
       this.controllerMessenger.call('BackendWebSocketService:disconnect');
