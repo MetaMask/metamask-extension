@@ -328,6 +328,29 @@ describe('createPerpsInfrastructure', () => {
         expect(mockScope.setTag).toHaveBeenCalledWith('network', 'mainnet');
       });
 
+      it('forwards the shared Perps dashboard tags to Sentry', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), {
+          tags: {
+            operation: 'order_management',
+            action: 'place_order',
+            component: 'PerpsConnectionManager',
+          },
+        });
+
+        expect(mockScope.setTag).toHaveBeenCalledWith(
+          'operation',
+          'order_management',
+        );
+        expect(mockScope.setTag).toHaveBeenCalledWith('action', 'place_order');
+        expect(mockScope.setTag).toHaveBeenCalledWith(
+          'component',
+          'PerpsConnectionManager',
+        );
+      });
+
       it('converts numeric tag values to strings', () => {
         const mockScope = setupSentryScope();
 

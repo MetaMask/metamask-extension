@@ -70,15 +70,15 @@ describe('MetaMetricsConsentContainer', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders nothing when MetaMetrics is not enabled', () => {
+  it('renders when MetaMetrics is off and no marketing decision was made', () => {
     renderWithProvider(
       <MetaMetricsConsentContainer />,
       createMockStore({ optedIn: false }),
     );
 
     expect(
-      screen.queryByText(messages.onboardedMetametricsTitle.message),
-    ).not.toBeInTheDocument();
+      screen.getByText(messages.onboardedMetametricsTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('opts in when the accept button is clicked', () => {

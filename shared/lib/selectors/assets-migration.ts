@@ -68,11 +68,11 @@ import { createDeepEqualSelector } from './selector-creators';
 // allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: DONE
+// balances: unused (controller removed)
 //
 // MultichainAssetsRatesController
-// conversionRates: DONE
-// historicalPrices: TODO (This state should be removed)
+// conversionRates: DONE (via AssetsController.assetsPrice when unify enabled)
+// historicalPrices: unused (controller removed; charts use Price API)
 //
 // RatesController
 // rates: DONE

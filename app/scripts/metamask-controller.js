@@ -283,8 +283,6 @@ import { InstitutionalSnapControllerInit } from './messenger-client-init/institu
 import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
-  MultichainBalancesControllerInit,
-  MultichainAssetsRatesControllerInit,
   MultichainNetworkControllerInit,
 } from './messenger-client-init/multichain';
 import {
@@ -614,8 +612,6 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
-      MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
-      MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
@@ -740,12 +736,8 @@ export default class MetamaskController extends EventEmitter {
     this.assetsController = messengerClientsByName.AssetsController;
     this.multichainAssetsController =
       messengerClientsByName.MultichainAssetsController;
-    this.multichainBalancesController =
-      messengerClientsByName.MultichainBalancesController;
     this.multichainTransactionsController =
       messengerClientsByName.MultichainTransactionsController;
-    this.multichainAssetsRatesController =
-      messengerClientsByName.MultichainAssetsRatesController;
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
     this.tokenBalancesController =
@@ -1418,9 +1410,7 @@ export default class MetamaskController extends EventEmitter {
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
-        MultichainBalancesController: this.multichainBalancesController,
         MultichainTransactionsController: this.multichainTransactionsController,
-        MultichainAssetsRatesController: this.multichainAssetsRatesController,
         TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
@@ -2426,7 +2416,6 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
-      multichainAssetsRatesController,
       staticAssetsController,
     } = this;
 
@@ -3513,14 +3502,6 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
-      multichainAssetsRatesStartPolling:
-        multichainAssetsRatesController.startPolling.bind(
-          multichainAssetsRatesController,
-        ),
-      multichainAssetsRatesStopPollingByPollingToken:
-        multichainAssetsRatesController.stopPollingByPollingToken.bind(
-          multichainAssetsRatesController,
-        ),
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),
@@ -3731,10 +3712,6 @@ export default class MetamaskController extends EventEmitter {
 
       multichainIgnoreAssets: (assetIds, accountId) =>
         this.multichainAssetsController.ignoreAssets(assetIds, accountId),
-
-      // MultichainBalancesController
-      multichainUpdateBalance: (accountId) =>
-        this.multichainBalancesController.updateBalance(accountId),
 
       // MultichainTransactionsController
       multichainUpdateTransactions: (accountId) =>

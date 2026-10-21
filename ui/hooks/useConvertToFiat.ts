@@ -171,7 +171,7 @@ function fiatFromCurrencyOrMarketRates(
  *
  * Rate lookup order:
  * 1. `assetsPrice` (all chains; price already in user currency)
- * 2. MultichainAssetsRatesController conversion rates (CAIP assetId)
+ * 2. Conversion rates via assets-migration selectors (CAIP assetId)
  * 3. `currencyRates` by token symbol (non-EVM natives only)
  * 4. EVM `marketRates` fallback
  *
