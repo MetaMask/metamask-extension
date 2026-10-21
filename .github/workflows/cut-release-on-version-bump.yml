@@ -1,0 +1,44 @@
+name: Cut Release On Version Bump
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+
+concurrency:
+  group: cut-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  cut-release-branch:
+    name: Cut release branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: default-branch
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          filter: blob:none
+          token: ${{ steps.token.outputs.token }}
+
+      - name: Cut the release branch at the commit before the version bump
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: .github/scripts/cut-release-branch.sh
