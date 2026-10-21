@@ -350,6 +350,14 @@ export function captureHostProvenance(
   const stealPercent = stealPercentBetween(benchmarkWindow.cpu, readCpuTimes());
   const nodeProbeAfterMs = medianCpuProbe();
   const provider = detectProvider(env);
+  const placement =
+    provider === 'namespace' ? namespacePlacement(env) : undefined;
+  // Provider-native: Azure region names on GitHub, Namespace cluster ids
+  // (e.g. iad3-a). Only compare regions within one provider.
+  const region = (
+    nonEmpty(env.BENCHMARK_RUNNER_REGION) ??
+    (provider === 'github' ? readHostedRegion() : placement?.clusterRegion)
+  )?.toLowerCase();
 
   return {
     capturedAt: new Date().toISOString(),
@@ -358,10 +366,8 @@ export function captureHostProvenance(
     name: nonEmpty(env.RUNNER_NAME),
     instanceId: nonEmpty(env.NSC_INSTANCE_ID),
     shape: nonEmpty(env.NSC_INSTANCE_SHAPE),
-    region:
-      nonEmpty(env.BENCHMARK_RUNNER_REGION) ??
-      (provider === 'github' ? readHostedRegion() : undefined),
-    placement: provider === 'namespace' ? namespacePlacement(env) : undefined,
+    region,
+    placement,
     os: nonEmpty(env.RUNNER_OS) ?? os.platform(),
     arch: nonEmpty(env.RUNNER_ARCH) ?? os.arch(),
     imageOs: nonEmpty(env.ImageOS),

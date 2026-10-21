@@ -197,12 +197,21 @@ describe('captureHostProvenance', () => {
       provider: 'namespace',
       instanceId: 'abc',
       shape: '8x16',
+      region: 'iad2-a',
       placement: {
         storageRegion: 'iad2',
         clusterRegion: 'iad2-a',
         actionsResultsRegion: 'ord',
       },
     });
+  });
+
+  it('lowercases an explicit region', () => {
+    const host = captureHostProvenance({
+      GITHUB_ACTIONS: 'true',
+      BENCHMARK_RUNNER_REGION: 'WestUS3',
+    });
+    expect(host.region).toBe('westus3');
   });
 
   it('prefers Namespace when both signals are present', () => {
