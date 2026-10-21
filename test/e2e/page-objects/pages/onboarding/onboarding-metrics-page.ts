@@ -18,9 +18,6 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingMetricsPage {
   private readonly continueButton = '[data-testid="metametrics-i-agree"]';
 
-  private readonly continueEnabled =
-    '[data-testid="metametrics-i-agree"]:not([disabled])';
-
   private readonly dataCollectionForMarketingCheckbox =
     '[data-testid="metametrics-data-collection-checkbox"]';
 
@@ -31,9 +28,6 @@ class OnboardingMetricsPage {
 
   private readonly marketingChecked =
     '[data-testid="metametrics-data-collection-checkbox"][data-checked="true"]';
-
-  private readonly marketingUnchecked =
-    '[data-testid="metametrics-data-collection-checkbox"][data-checked="false"]';
 
   private readonly metametricsMessage = {
     text: 'Help improve MetaMask',
@@ -82,49 +76,6 @@ class OnboardingMetricsPage {
   }
 
   /**
-   * Ensures the marketing data-collection checkbox is checked, without
-   * assuming its initial state: social login users in the US are checked by
-   * default once the geolocation lookup settles, so an unconditional click
-   * could uncheck it.
-   *
-   * We check for the *unchecked* state (the default for everyone else)
-   * rather than the checked state so the lookup succeeds instantly in the
-   * common case.
-   */
-  async ensureDataCollectionForMarketingIsChecked(): Promise<void> {
-    await this.waitForMarketingPreferenceReady();
-    const isCurrentlyUnchecked = await this.driver.isElementPresentAndVisible(
-      this.marketingUnchecked,
-      1000,
-    );
-    if (isCurrentlyUnchecked) {
-      await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
-    }
-    await this.validateDataCollectionForMarketingIsChecked();
-  }
-
-  /**
-   * Ensures the marketing data-collection checkbox is unchecked. Social login
-   * users in the US are checked by default once the geolocation lookup
-   * settles, so the checkbox must be explicitly unchecked in that case.
-   *
-   * We check for the *unchecked* state (the default for everyone else)
-   * rather than the checked state so the lookup succeeds instantly in the
-   * common case.
-   */
-  async ensureDataCollectionForMarketingIsUnchecked(): Promise<void> {
-    await this.waitForMarketingPreferenceReady();
-    const isCurrentlyUnchecked = await this.driver.isElementPresentAndVisible(
-      this.marketingUnchecked,
-      1000,
-    );
-    if (!isCurrentlyUnchecked) {
-      await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
-      await this.driver.waitForSelector(this.marketingUnchecked);
-    }
-  }
-
-  /**
    * Ensures the "Participate in MetaMetrics" checkbox is unchecked.
    * If it is already unchecked (e.g. state restored from a previous session
    * during vault recovery), the click is skipped to avoid toggling it back on.
@@ -145,9 +96,6 @@ class OnboardingMetricsPage {
 
   async skipMetricAndContinue(): Promise<void> {
     await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
-    // Marketing defaults to checked for social login users in the US (the
-    // E2E geolocation mock).
-    await this.ensureDataCollectionForMarketingIsUnchecked();
     await this.driver.clickElement(this.continueButton);
   }
 
@@ -157,15 +105,6 @@ class OnboardingMetricsPage {
 
   async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
     await this.driver.waitForSelector(this.participateChecked);
-  }
-
-  /**
-   * Waits until the geolocation lookup settles and the marketing checkbox
-   * becomes interactive: for social login users, the continue button is
-   * disabled while the lookup that decides the US default is pending.
-   */
-  private async waitForMarketingPreferenceReady(): Promise<void> {
-    await this.driver.waitForSelector(this.continueEnabled);
   }
 }
 

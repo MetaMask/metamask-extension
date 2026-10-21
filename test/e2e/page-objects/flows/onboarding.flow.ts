@@ -428,13 +428,9 @@ export async function onboardingMetricsFlow(
   const { optedIn = false, dataCollectionForMarketing = false } = options;
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
   await onboardingMetricsPage.checkPageIsLoaded();
-  // The marketing checkbox defaults to checked for social login users in the
-  // US once the geolocation lookup settles, so drive it to the desired state
-  // instead of assuming it starts unchecked.
   if (dataCollectionForMarketing) {
-    await onboardingMetricsPage.ensureDataCollectionForMarketingIsChecked();
-  } else {
-    await onboardingMetricsPage.ensureDataCollectionForMarketingIsUnchecked();
+    await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
+    await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
 
   // The participate in MetaMetrics checkbox defaults to checked, but may

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
@@ -28,7 +28,6 @@ import {
   getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
-import { getIsBasicFunctionalityForcedOnDuringOnboarding } from '../../../selectors/multichain/basic-functionality';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 
 import {
@@ -45,7 +44,6 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useDispatch } from '../../../store/hooks';
-import { submitRequestToBackground } from '../../../store/background-connection';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -120,14 +118,6 @@ function MetametricsCheckboxOption({
   );
 }
 
-function isUnitedStates(location: string | null | undefined): boolean {
-  if (!location || location === 'UNKNOWN') {
-    return false;
-  }
-
-  return location.toUpperCase().split('-')[0] === 'US';
-}
-
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -139,64 +129,6 @@ export default function OnboardingMetametrics() {
   const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-
-  const isBasicFunctionalityForcedOn = useSelector(
-    getIsBasicFunctionalityForcedOnDuringOnboarding,
-  );
-
-  const [isUsByGeolocation, setIsUsByGeolocation] = useState(false);
-  const [geolocationSettled, setGeolocationSettled] = useState(false);
-  const hasStoredMarketingPreference = dataCollectionForMarketing !== null;
-  // The geolocation lookup needs basic functionality. At this step it is only
-  // known to be on where it is forced on (social login); everyone else can
-  // still turn it off, so they get no regional default.
-  const usesRegionDefault =
-    isBasicFunctionalityForcedOn && !hasStoredMarketingPreference;
-  const marketingPreferenceReady = !usesRegionDefault || geolocationSettled;
-
-  useEffect(() => {
-    if (!usesRegionDefault) {
-      return;
-    }
-
-    let cancelled = false;
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-    const withTimeout = Promise.race([
-      submitRequestToBackground<string>('getGeolocation'),
-      new Promise<never>((_, reject) => {
-        timeoutId = setTimeout(
-          () => reject(new Error('Geolocation timed out')),
-          5000,
-        );
-      }),
-    ]);
-
-    withTimeout
-      .then((location) => {
-        if (!cancelled) {
-          setIsUsByGeolocation(isUnitedStates(location));
-        }
-      })
-      .catch(() => {
-        // Leave marketing unchecked when the lookup fails.
-      })
-      .finally(() => {
-        if (timeoutId !== undefined) {
-          clearTimeout(timeoutId);
-        }
-        if (!cancelled) {
-          setGeolocationSettled(true);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-      if (timeoutId !== undefined) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [usesRegionDefault]);
 
   const [checkboxDraft, setCheckboxDraft] = useState({
     participateTouched: false,
@@ -219,7 +151,7 @@ export default function OnboardingMetametrics() {
   }
   const isDataCollectionForMarketingChecked = marketingTouched
     ? marketingLocal
-    : (dataCollectionForMarketing ?? isUsByGeolocation);
+    : Boolean(dataCollectionForMarketing);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
@@ -350,14 +282,8 @@ export default function OnboardingMetametrics() {
         id="metametrics-datacollection-opt-in"
         testId="metametrics-data-collection-checkbox"
         isSelected={isDataCollectionForMarketingChecked}
-        isDisabled={!marketingPreferenceReady}
         onChange={handleMarketingChange}
-        containerClassName={
-          marketingPreferenceReady
-            ? 'onboarding-metametrics__checkbox'
-            : 'onboarding-metametrics__checkbox-disabled'
-        }
-        isInteractive={marketingPreferenceReady}
+        containerClassName="onboarding-metametrics__checkbox"
         label={
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricCheckboxTitleTwo')}
@@ -371,7 +297,6 @@ export default function OnboardingMetametrics() {
           data-testid="metametrics-i-agree"
           size={ButtonSize.Lg}
           className="w-full"
-          isDisabled={!marketingPreferenceReady}
           onClick={handleContinue}
         >
           {t('onboardingMetametricsContinue')}
