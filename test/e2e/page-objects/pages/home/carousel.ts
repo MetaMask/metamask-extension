@@ -4,7 +4,7 @@ import { Driver } from '../../../webdriver/driver';
  * Home promotional carousel: stacked slides above the account overview tabs.
  *
  * Screen: `#/` (DEFAULT_ROUTE), rendered in the account overview layout above
- * the Tokens / DeFi / NFTs / Activity tabs.
+ * the Tokens / DeFi / NFTs tabs.
  * Owns: the carousel container, current-slide title and description, and
  * dismissing one or many slides via their close buttons.
  * Boundaries: the carousel surface only. Balance, tab content, and home CTAs

@@ -49,7 +49,7 @@ jest.mock('../../../../../../shared/lib/selectors', () => ({
 }));
 
 jest.mock('../../../../../helpers/constants/routes', () => ({
-  DEFAULT_ROUTE: '/home',
+  ACTIVITY_ROUTE: '/activity',
 }));
 
 const mockDispatch = jest.fn();
@@ -260,7 +260,7 @@ describe('useBatchSellSubmitQuotes', () => {
         await result.current.submitBatchSellQuotes();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith('/home?tab=activity', {
+      expect(mockNavigate).toHaveBeenCalledWith('/activity', {
         state: { stayOnHomePage: true },
         replace: true,
       });
@@ -312,7 +312,7 @@ describe('useBatchSellSubmitQuotes', () => {
         await result.current.submitBatchSellQuotes();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith('/home?tab=activity', {
+      expect(mockNavigate).toHaveBeenCalledWith('/activity', {
         state: { stayOnHomePage: true },
         replace: true,
       });

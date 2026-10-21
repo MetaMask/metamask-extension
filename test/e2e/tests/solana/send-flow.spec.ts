@@ -137,6 +137,7 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.clickFooterButton({ button: 'confirm' });
 
+        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         // 2 confirmed txs: the send + the initial funding airdrop from the
         // local solana-test-validator (requestAirdrop in the seeder).
@@ -184,6 +185,7 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.checkSecurityAlertsErrorIsDisplayed();
         await confirmation.clickFooterButton({ button: 'confirm' });
+        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkFailedTxNumberDisplayedInActivity();
         await activityTab.checkTxAction({

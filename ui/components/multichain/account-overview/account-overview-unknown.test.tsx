@@ -25,7 +25,7 @@ const render = (props: AccountOverviewUnknownProps) => {
 };
 
 describe('AccountOverviewUnknown', () => {
-  it('shows only the activity tab', () => {
+  it('does not show home tabs for an unsupported account', () => {
     const { queryByTestId } = render({
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),
@@ -35,7 +35,6 @@ describe('AccountOverviewUnknown', () => {
       queryByTestId('account-overview__asset-tab'),
     ).not.toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).not.toBeInTheDocument();
-    expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
   });
 });

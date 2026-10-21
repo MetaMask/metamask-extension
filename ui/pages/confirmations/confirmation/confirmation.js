@@ -30,7 +30,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACTIVITY_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useHideToasts } from '../../../hooks/useHideToasts';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -384,9 +387,7 @@ export default function ConfirmationPage({
       const shouldShowActivity = SNAP_DIALOG_TYPE.includes(
         lastConfirmationTypeRef.current,
       );
-      const to = shouldShowActivity
-        ? `${DEFAULT_ROUTE}?tab=activity`
-        : DEFAULT_ROUTE;
+      const to = shouldShowActivity ? ACTIVITY_ROUTE : DEFAULT_ROUTE;
 
       navigate(to);
     }
