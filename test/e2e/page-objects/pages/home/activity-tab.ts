@@ -532,17 +532,25 @@ class ActivityTab extends HomePage {
     status: 'confirmed' | 'cancelled' | 'pending',
     { timeout = 5000 }: { timeout?: number } = {},
   ): Promise<void> {
-    const amountsForStatus = `${this.transactionWithStatus(
-      status,
-    )} ${this.transactionAmountsInActivity}`;
-
     await this.driver.waitUntil(
       async () => {
-        const amounts = await this.driver.findElements(amountsForStatus);
-        const displayedAmounts = await Promise.all(
-          amounts.map((amount) => amount.getText()),
+        const transactions = await this.driver.findElements(
+          this.completedTransactions,
         );
-        return displayedAmounts.includes(expectedAmount);
+
+        for (const transaction of transactions) {
+          const amount = await this.driver.findNestedElement(
+            transaction,
+            this.transactionAmountsInActivity,
+          );
+          if ((await amount.getText()) === expectedAmount) {
+            return (
+              (await transaction.getAttribute('data-tx-status')) === status
+            );
+          }
+        }
+
+        return false;
       },
       { interval: 100, timeout },
     );
