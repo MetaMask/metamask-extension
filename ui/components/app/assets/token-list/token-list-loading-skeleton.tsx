@@ -19,11 +19,8 @@ export const TokenListLoadingSkeleton = () => {
   const t = useI18nContext();
 
   return (
-    <Box
-      aria-busy="true"
-      aria-label={t('loading')}
-      data-testid="token-list-loading"
-    >
+    <Box aria-busy="true" data-testid="token-list-loading">
+      <span className="sr-only">{t('loading')}</span>
       {loadingRowKeys.map((rowKey) => (
         <Box
           key={rowKey}

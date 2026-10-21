@@ -271,6 +271,14 @@ describe('TokenList', () => {
     render();
 
     expect(screen.getAllByTestId('token-list-loading-row')).toHaveLength(5);
+    expect(screen.getByTestId('token-list-loading')).toHaveAttribute(
+      'aria-busy',
+      'true',
+    );
+    expect(screen.getByTestId('token-list-loading')).not.toHaveAttribute(
+      'aria-label',
+    );
+    expect(screen.getByText(messages.loading.message)).toHaveClass('sr-only');
     expect(screen.queryByTestId('token-cell-ETH')).not.toBeInTheDocument();
     expect(screen.queryByTestId('token-cell-mUSD')).not.toBeInTheDocument();
     expect(screen.queryByTestId('scam-warning')).not.toBeInTheDocument();
