@@ -19,6 +19,7 @@ import {
 import { getNotificationPreferences } from '../../store/actions';
 import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { useDispatch } from '../../store/hooks';
 
@@ -106,6 +107,7 @@ export function useFetchInitialNotificationsEffect() {
     selectIsMetamaskNotificationsEnabled,
   );
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
   const isSignedIn = useSelector(selectIsSignedIn);
   const shouldFetchNotifications =
@@ -137,11 +139,15 @@ export function useFetchInitialNotificationsEffect() {
           return;
         }
         if (
+          completedOnboarding &&
           isBasicFunctionalityEnabled &&
           shouldFetchNotifications &&
           isUnlocked
         ) {
-          await enableAndRefresh(await shouldEnableNotificationsOnStartup());
+          const shouldEnable = await shouldEnableNotificationsOnStartup();
+          if (!cancelled) {
+            await enableAndRefresh(shouldEnable);
+          }
         }
       } catch {
         // Do nothing
@@ -154,6 +160,7 @@ export function useFetchInitialNotificationsEffect() {
       cancelled = true;
     };
   }, [
+    completedOnboarding,
     shouldFetchNotifications,
     isBasicFunctionalityEnabled,
     isUnlocked,
@@ -167,6 +174,7 @@ export function useEnableNotificationsByDefaultEffect() {
     selectIsMetamaskNotificationsEnabled,
   );
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
   const isNotificationsEnabledByDefaultFeatureFlag = useSelector(
     getIsNotificationEnabledByDefaultFeatureFlag,
@@ -182,6 +190,7 @@ export function useEnableNotificationsByDefaultEffect() {
           return;
         }
         if (
+          completedOnboarding &&
           !isNotificationsEnabled &&
           isBasicFunctionalityEnabled &&
           isUnlocked &&
@@ -205,6 +214,7 @@ export function useEnableNotificationsByDefaultEffect() {
       cancelled = true;
     };
   }, [
+    completedOnboarding,
     enableAndRefresh,
     isBasicFunctionalityEnabled,
     isNotificationsEnabled,
