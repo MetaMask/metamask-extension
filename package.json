@@ -52,8 +52,8 @@
     "dist:mv2": "yarn webpack:lavamoat:build:mv2 --zip",
     "build": "yarn webpack:lavamoat:build",
     "build:dev": "yarn webpack",
-    "circular-deps:check": "tsx development/circular-deps.ts check",
-    "circular-deps:update": "tsx development/circular-deps.ts update",
+    "circular-deps:check": "node development/circular-deps.ts check",
+    "circular-deps:update": "node development/circular-deps.ts update",
     "legacy-background-api:check": "tsx development/legacy-background-api.ts check",
     "legacy-background-api:update": "tsx development/legacy-background-api.ts update",
     "start:test": "yarn env:e2e webpack --watch --test",
@@ -179,7 +179,7 @@
     "lint": "lavamoat/scripts.yarn.json",
     "lint:*": "lavamoat/scripts.native.json",
     "lint:images*": "lavamoat/scripts.tsx-net.json",
-    "lint:styles": "lavamoat/scripts.spawns.json",
+    "lint:styles": "lavamoat/scripts.tsx-net.json",
     "lint:fix": "lavamoat/scripts.yarn.json",
     "lint:debug": "lavamoat/scripts.yarn.json",
     "lint:eslint:fix": "lavamoat/scripts.yarn.json",
@@ -188,10 +188,12 @@
     "lint:lockfile:dedupe": "lavamoat/scripts.yarn.json",
     "lint:lockfile:dedupe:fix": "lavamoat/scripts.yarn.json",
     "lint:styles:fix": "lavamoat/scripts.yarn.json",
+    "yarn circular-deps:update": "lavamoat/scripts.yarn.json",
     "messenger-action-types:check": "lavamoat/scripts.spawns.json",
     "legacy-background-api:check": "lavamoat/scripts.tsx-net.json",
     "legacy-background-api:check// ^ problem with yargs in node26": "",
     "start*": "lavamoat/scripts.yarn.json",
+    "foundryup": "lavamoat/scripts.foundry.json",
     "postinstall": "lavamoat/scripts.yarn.json",
     "skills*": "lavamoat/scripts.spawns.json",
     "storybook*": "lavamoat/scripts.yarn.json"
@@ -391,7 +393,8 @@
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
     "@metamask/utils": "^12.0.0",
-    "@eslint/config-array": "0.23.5"
+    "@eslint/config-array": "0.23.5",
+    "precinct": "13.0.1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -904,9 +907,17 @@
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
   },
-  "engines": {
-    "node": ">=24.13.0",
-    "yarn": "^4.14.1"
+  "devEngines": {
+    "packageManager": {
+      "name": "yarn",
+      "version": ">=4.16.0",
+      "onFail": "error"
+    },
+    "runtime": {
+      "name": "node",
+      "version": ">=26.0.0",
+      "onFail": "error"
+    }
   },
   "lavamoat": {
     "allowScripts": {
@@ -938,7 +949,6 @@
       "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail#2.0.0": false
     }
   },
-  "packageManager": "yarn@4.14.1+sha256.5c7a0c5ea1c5b690df603c8e16b3742f87169b814d56bb5e63881145e8a84033",
   "foundryup": {
     "binaries": [
       "anvil"
@@ -956,5 +966,6 @@
       }
     },
     "version": "v0.3.0"
-  }
+  },
+  "packageManager": "yarn@4.18.1+sha512.b2e1e7524f654f2749d32b4ebcb4622473cb5bcbc485df2007e12a154e50162a4d795526768bc5f5b8f81717bfd79deb2472813d86fb5ae2eb551fa9c872b08f"
 }

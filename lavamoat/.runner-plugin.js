@@ -236,6 +236,7 @@ function makeRunScriptWrapper(
     let conf
     try {
       conf = readScriptConfig(configPath)
+      // process._rawDebug(`Loaded script config from ${configPath}:`, conf)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       throw Error(
