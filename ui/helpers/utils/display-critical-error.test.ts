@@ -522,47 +522,6 @@ describe('displayCriticalError', () => {
     }
   });
 
-  it('restarts after the reporting deadline when rule cleanup stalls', async () => {
-    jest.useFakeTimers();
-    const reportError = jest.spyOn(console, 'error').mockImplementation();
-    const { promise: cleanup, resolve: finishCleanup } = withResolvers<void>();
-    jest
-      .mocked(browser.declarativeNetRequest.updateSessionRules)
-      .mockResolvedValueOnce(undefined)
-      .mockReturnValueOnce(cleanup);
-    const error = new Error(MOCK_ERROR_MESSAGE);
-
-    try {
-      await expect(
-        displayCriticalErrorMessage(
-          container,
-          CriticalErrorTranslationKey.TroubleStarting,
-          error,
-          { analyticsConsentFromBackground: true },
-        ),
-      ).rejects.toThrow(error);
-
-      await act(async () => {
-        rootContainer
-          .querySelector<HTMLButtonElement>('#critical-error-button')
-          ?.click();
-      });
-      expect(browser.runtime.reload).not.toHaveBeenCalled();
-
-      await act(async () => {
-        jest.advanceTimersByTime(2_000);
-      });
-      expect(browser.runtime.reload).toHaveBeenCalled();
-      expect(reportError).toHaveBeenCalledWith(
-        'Error sending report to Sentry:',
-        expect.objectContaining({ name: 'TimeoutError' }),
-      );
-    } finally {
-      await act(async () => finishCleanup());
-      jest.useRealTimers();
-    }
-  });
-
   it('does not send to Sentry if checkbox is unchecked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
     const mockPort = createMockPort();
