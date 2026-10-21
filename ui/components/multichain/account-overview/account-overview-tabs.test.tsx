@@ -36,7 +36,6 @@ const renderTabs = () => {
       remoteFeatureFlags: {
         ...mockState.metamask.remoteFeatureFlags,
         assetsDefiPositionsEnabled: true,
-        perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
       },
     },
   });
