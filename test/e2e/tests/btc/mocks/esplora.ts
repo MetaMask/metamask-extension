@@ -46,10 +46,50 @@ const BROADCAST_BLOCK_HASH =
   '00000000000000000002d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
 const PRE_BROADCAST_TIP_HASH =
   '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
-const SEND_AMOUNT_IN_SATS = 50_000_000;
-const SEND_FEE_IN_SATS = 281;
 
-function readVarInt(buffer: Buffer, offset: number) {
+type EsploraTransactionOutput = {
+  scriptpubkey: string;
+  scriptpubkey_address?: string;
+  scriptpubkey_asm: string;
+  scriptpubkey_type: string;
+  value: number;
+};
+
+const E2E_FUNDING_OUTPUT: EsploraTransactionOutput = {
+  scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
+  scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${E2E_BTC_SCRIPTPUBKEY.slice(4)}`,
+  scriptpubkey_type: 'v0_p2wpkh',
+  scriptpubkey_address: DEFAULT_BTC_ADDRESS,
+  value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC,
+};
+
+type BroadcastTransaction = {
+  fee: number;
+  locktime: number;
+  size: number;
+  txid: string;
+  version: number;
+  vin: {
+    is_coinbase: boolean;
+    prevout: EsploraTransactionOutput | null;
+    scriptsig: string;
+    scriptsig_asm: string;
+    sequence: number;
+    txid: string;
+    vout: number;
+    witness: string[];
+  }[];
+  vout: EsploraTransactionOutput[];
+  weight: number;
+};
+
+function readVarInt(
+  buffer: Buffer,
+  offset: number,
+): {
+  size: number;
+  value: number;
+} {
   const prefix = buffer[offset];
   if (prefix < 0xfd) {
     return { size: 1, value: prefix };
@@ -63,50 +103,7 @@ function readVarInt(buffer: Buffer, offset: number) {
   throw new Error('Unexpected 64-bit Bitcoin varint');
 }
 
-function getTransactionId(rawTransaction: string): string {
-  const transaction = Buffer.from(rawTransaction, 'hex');
-  const hasWitness = transaction[4] === 0 && transaction[5] !== 0;
-  if (!hasWitness) {
-    return createHash('sha256')
-      .update(createHash('sha256').update(transaction).digest())
-      .digest()
-      .reverse()
-      .toString('hex');
-  }
-
-  let offset = 6;
-  const inputsStart = offset;
-  const inputCount = readVarInt(transaction, offset);
-  offset += inputCount.size;
-  for (let index = 0; index < inputCount.value; index += 1) {
-    offset += 36;
-    const script = readVarInt(transaction, offset);
-    offset += script.size + script.value + 4;
-  }
-
-  const outputCount = readVarInt(transaction, offset);
-  offset += outputCount.size;
-  for (let index = 0; index < outputCount.value; index += 1) {
-    offset += 8;
-    const script = readVarInt(transaction, offset);
-    offset += script.size + script.value;
-  }
-  const outputsEnd = offset;
-
-  for (let index = 0; index < inputCount.value; index += 1) {
-    const witnessCount = readVarInt(transaction, offset);
-    offset += witnessCount.size;
-    for (let item = 0; item < witnessCount.value; item += 1) {
-      const witness = readVarInt(transaction, offset);
-      offset += witness.size + witness.value;
-    }
-  }
-
-  const transactionWithoutWitness = Buffer.concat([
-    transaction.subarray(0, 4),
-    transaction.subarray(inputsStart, outputsEnd),
-    transaction.subarray(offset, offset + 4),
-  ]);
+function getTransactionId(transactionWithoutWitness: Buffer): string {
   return createHash('sha256')
     .update(createHash('sha256').update(transactionWithoutWitness).digest())
     .digest()
@@ -114,12 +111,136 @@ function getTransactionId(rawTransaction: string): string {
     .toString('hex');
 }
 
+function getScriptPubKeyDetails(scriptpubkey: string): {
+  scriptpubkey_address?: string;
+  scriptpubkey_asm: string;
+  scriptpubkey_type: string;
+} {
+  if (scriptpubkey === E2E_BTC_SCRIPTPUBKEY) {
+    return {
+      scriptpubkey_address: DEFAULT_BTC_ADDRESS,
+      scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${scriptpubkey.slice(4)}`,
+      scriptpubkey_type: 'v0_p2wpkh',
+    };
+  }
+  if (scriptpubkey.startsWith('0014') && scriptpubkey.length === 44) {
+    return {
+      scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${scriptpubkey.slice(4)}`,
+      scriptpubkey_type: 'v0_p2wpkh',
+    };
+  }
+  return {
+    scriptpubkey_asm: scriptpubkey,
+    scriptpubkey_type: 'unknown',
+  };
+}
+
+function decodeBroadcastTransaction(
+  rawTransaction: string,
+): BroadcastTransaction {
+  const transaction = Buffer.from(rawTransaction, 'hex');
+  const hasWitness = transaction[4] === 0 && transaction[5] !== 0;
+  let offset = hasWitness ? 6 : 4;
+  const inputsStart = offset;
+  const inputCount = readVarInt(transaction, offset);
+  offset += inputCount.size;
+  const vin: BroadcastTransaction['vin'] = [];
+  for (let index = 0; index < inputCount.value; index += 1) {
+    const txid = Buffer.from(transaction.subarray(offset, offset + 32))
+      .reverse()
+      .toString('hex');
+    offset += 32;
+    const vout = transaction.readUInt32LE(offset);
+    offset += 4;
+    const script = readVarInt(transaction, offset);
+    offset += script.size;
+    const scriptsig = transaction
+      .subarray(offset, offset + script.value)
+      .toString('hex');
+    offset += script.value;
+    const sequence = transaction.readUInt32LE(offset);
+    offset += 4;
+    vin.push({
+      is_coinbase: false,
+      prevout: txid === FUNDING_TX_ID && vout === 0 ? E2E_FUNDING_OUTPUT : null,
+      scriptsig,
+      scriptsig_asm: scriptsig,
+      sequence,
+      txid,
+      vout,
+      witness: [],
+    });
+  }
+
+  const outputCount = readVarInt(transaction, offset);
+  offset += outputCount.size;
+  const vout: BroadcastTransaction['vout'] = [];
+  for (let index = 0; index < outputCount.value; index += 1) {
+    const value = Number(transaction.readBigUInt64LE(offset));
+    offset += 8;
+    const script = readVarInt(transaction, offset);
+    offset += script.size;
+    const scriptpubkey = transaction
+      .subarray(offset, offset + script.value)
+      .toString('hex');
+    offset += script.value;
+    vout.push({
+      scriptpubkey,
+      ...getScriptPubKeyDetails(scriptpubkey),
+      value,
+    });
+  }
+  const outputsEnd = offset;
+
+  if (hasWitness) {
+    for (const input of vin) {
+      const witnessCount = readVarInt(transaction, offset);
+      offset += witnessCount.size;
+      for (let item = 0; item < witnessCount.value; item += 1) {
+        const witness = readVarInt(transaction, offset);
+        offset += witness.size;
+        input.witness.push(
+          transaction.subarray(offset, offset + witness.value).toString('hex'),
+        );
+        offset += witness.value;
+      }
+    }
+  }
+
+  const locktime = transaction.readUInt32LE(offset);
+  const transactionWithoutWitness = Buffer.concat([
+    transaction.subarray(0, 4),
+    transaction.subarray(inputsStart, outputsEnd),
+    transaction.subarray(offset, offset + 4),
+  ]);
+  const inputValue = vin.reduce(
+    (total, input) => total + (input.prevout?.value ?? 0),
+    0,
+  );
+  const outputValue = vout.reduce((total, output) => total + output.value, 0);
+
+  return {
+    fee: inputValue - outputValue,
+    locktime,
+    size: transaction.length,
+    txid: getTransactionId(transactionWithoutWitness),
+    version: transaction.readInt32LE(0),
+    vin,
+    vout,
+    weight:
+      transactionWithoutWitness.length * 4 +
+      transaction.length -
+      transactionWithoutWitness.length,
+  };
+}
+
 export type BtcSendLifecycle = {
   confirm: () => void;
+  getBroadcastTransaction: () => BroadcastTransaction | undefined;
   getBroadcastTxId: () => string;
   isBroadcast: () => boolean;
   isConfirmed: () => boolean;
-  markBroadcast: (txid: string) => void;
+  markBroadcast: (transaction: BroadcastTransaction) => void;
 };
 
 /**
@@ -128,19 +249,19 @@ export type BtcSendLifecycle = {
  * @returns Controls used by the Esplora mocks and the test.
  */
 export function createBtcSendLifecycle(): BtcSendLifecycle {
-  let broadcast = false;
-  let broadcastTxId = DEFAULT_BROADCAST_TX_ID;
+  let broadcastTransaction: BroadcastTransaction | undefined;
   let confirmed = false;
   return {
     confirm: () => {
       confirmed = true;
     },
-    getBroadcastTxId: () => broadcastTxId,
-    isBroadcast: () => broadcast,
+    getBroadcastTransaction: () => broadcastTransaction,
+    getBroadcastTxId: () =>
+      broadcastTransaction?.txid ?? DEFAULT_BROADCAST_TX_ID,
+    isBroadcast: () => Boolean(broadcastTransaction),
     isConfirmed: () => confirmed,
-    markBroadcast: (txid: string) => {
-      broadcast = true;
-      broadcastTxId = txid;
+    markBroadcast: (transaction: BroadcastTransaction) => {
+      broadcastTransaction = transaction;
     },
   };
 }
@@ -178,16 +299,7 @@ const FUNDING_TX = {
       sequence: 4294967293,
     },
   ],
-  vout: [
-    {
-      // Output to the E2E test address (P2WPKH)
-      scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
-      scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${E2E_BTC_SCRIPTPUBKEY.slice(4)}`,
-      scriptpubkey_type: 'v0_p2wpkh',
-      scriptpubkey_address: DEFAULT_BTC_ADDRESS,
-      value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC, // 1 BTC = 100,000,000 sats
-    },
-  ],
+  vout: [E2E_FUNDING_OUTPUT],
   size: 191,
   weight: 437,
   fee: 1000,
@@ -200,46 +312,12 @@ const FUNDING_TX = {
 };
 
 function createBroadcastTransaction(lifecycle: BtcSendLifecycle) {
-  const broadcastTxId = lifecycle.getBroadcastTxId();
+  const transaction = lifecycle.getBroadcastTransaction();
+  if (!transaction) {
+    throw new Error('Broadcast transaction is unavailable');
+  }
   return {
-    txid: broadcastTxId,
-    version: 2,
-    locktime: 0,
-    vin: [
-      {
-        txid: FUNDING_TX_ID,
-        vout: 0,
-        prevout: FUNDING_TX.vout[0],
-        scriptsig: '',
-        scriptsig_asm: '',
-        witness: [],
-        is_coinbase: false,
-        sequence: 4294967293,
-      },
-    ],
-    vout: [
-      {
-        scriptpubkey: '00140000000000000000000000000000000000000001',
-        scriptpubkey_asm:
-          'OP_0 OP_PUSHBYTES_20 0000000000000000000000000000000000000001',
-        scriptpubkey_type: 'v0_p2wpkh',
-        scriptpubkey_address: 'bc1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqp7pn3ep',
-        value: SEND_AMOUNT_IN_SATS,
-      },
-      {
-        scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
-        scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${E2E_BTC_SCRIPTPUBKEY.slice(4)}`,
-        scriptpubkey_type: 'v0_p2wpkh',
-        scriptpubkey_address: DEFAULT_BTC_ADDRESS,
-        value:
-          DEFAULT_BTC_BALANCE * SATS_IN_1_BTC -
-          SEND_AMOUNT_IN_SATS -
-          SEND_FEE_IN_SATS,
-      },
-    ],
-    size: 141,
-    weight: 561,
-    fee: SEND_FEE_IN_SATS,
+    ...transaction,
     status: lifecycle.isConfirmed()
       ? {
           confirmed: true,
@@ -415,16 +493,19 @@ const mockScriptHashUtxo = (
       if (scripthash === E2E_BTC_SCRIPTHASH) {
         if (lifecycle?.isBroadcast()) {
           const transaction = createBroadcastTransaction(lifecycle);
+          const walletOutputs = transaction.vout
+            .map((output, index) => ({ index, output }))
+            .filter(
+              ({ output }) => output.scriptpubkey === E2E_BTC_SCRIPTPUBKEY,
+            );
           return {
             statusCode: 200,
-            json: [
-              {
-                txid: lifecycle.getBroadcastTxId(),
-                vout: 1,
-                status: transaction.status,
-                value: transaction.vout[1].value,
-              },
-            ],
+            json: walletOutputs.map(({ index, output }) => ({
+              txid: lifecycle.getBroadcastTxId(),
+              vout: index,
+              status: transaction.status,
+              value: output.value,
+            })),
           };
         }
         return {
@@ -772,11 +853,11 @@ const mockBroadcastTx = (mockServer: Mockttp, lifecycle?: BtcSendLifecycle) =>
     .always()
     .thenCallback(async (request) => {
       const rawTransaction = (await request.body.getText()) ?? '';
-      const broadcastTxId = getTransactionId(rawTransaction);
-      lifecycle?.markBroadcast(broadcastTxId);
+      const transaction = decodeBroadcastTransaction(rawTransaction);
+      lifecycle?.markBroadcast(transaction);
       return {
         statusCode: 200,
-        body: broadcastTxId,
+        body: transaction.txid,
       };
     });
 
