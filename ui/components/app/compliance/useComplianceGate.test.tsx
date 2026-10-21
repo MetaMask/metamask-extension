@@ -115,7 +115,7 @@ describe('useComplianceGate', () => {
     });
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'ComplianceService:checkWalletsCompliance',
+      'ComplianceController:checkWalletsCompliance',
       [[ADDRESS]],
     );
   });
