@@ -2965,5 +2965,6 @@ module.exports = {
   emptyHtmlPage,
   MOCK_SUGGESTED_GAS_FEES,
   browserAPIRequestDomains,
+  getWellKnownTokenAssetMetadata,
   SENTRY_PERFORMANCE_ENVELOPE_URL,
 };

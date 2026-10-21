@@ -10,6 +10,65 @@ import {
 const KNOWN_VIOLATIONS_FILE_NAME =
   'basic-functionality-off-known-violations.json';
 
+const ONBOARDING_ALLOWLIST_FILE_NAME = 'onboarding-allowlist.json';
+
+/** Hosts allowed before the user clicks "Done" on the onboarding complete page. */
+type OnboardingAllowlist = {
+  duringOnboarding: string[];
+};
+
+/**
+ * Records the host of every request made through the mock server.
+ *
+ * @param server - The mock server proxying all extension traffic.
+ * @returns The set of requested hosts, updated as requests come in.
+ */
+export function recordRequestedHosts(server: Mockttp): Set<string> {
+  const requestedHosts = new Set<string>();
+  server.on('request-initiated', (request) => {
+    const { host } = request.headers;
+    if (host) {
+      requestedHosts.add(host);
+    }
+  });
+  return requestedHosts;
+}
+
+/**
+ * Asserts that every requested host is in the `duringOnboarding` list of
+ * onboarding-allowlist.json.
+ *
+ * @param requestedHosts - The set returned by `recordRequestedHosts`.
+ */
+export async function assertOnlyOnboardingAllowlistedHosts(
+  requestedHosts: Set<string>,
+): Promise<void> {
+  const allowlistRaw = await fs.readFile(
+    path.join(__dirname, ONBOARDING_ALLOWLIST_FILE_NAME),
+    'utf8',
+  );
+  const { duringOnboarding }: OnboardingAllowlist = JSON.parse(allowlistRaw);
+
+  console.log(
+    'Hosts requested during onboarding:',
+    JSON.stringify([...requestedHosts].sort(), null, 2),
+  );
+
+  const unexpectedHosts = [...requestedHosts].filter(
+    (host) => !duringOnboarding.includes(host),
+  );
+
+  assert.equal(
+    unexpectedHosts.length,
+    0,
+    `Unexpected network calls during onboarding:\n${unexpectedHosts
+      .map((host) => `  - ${host}`)
+      .join(
+        '\n',
+      )}\n\nThese hosts are NOT in the duringOnboarding allowlist.\nIf these are expected, add them to ${ONBOARDING_ALLOWLIST_FILE_NAME}`,
+  );
+}
+
 /**
  * Hosts that are still contacted with basic functionality off. Every entry is
  * a bug: with the toggle off, only JSON-RPC requests to nodes are allowed.
