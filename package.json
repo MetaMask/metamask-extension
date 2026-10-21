@@ -176,7 +176,6 @@
   },
   "resolutions": {
     "@metamask/config-registry-controller": "^5.0.0",
-    "@metamask/core-backend@npm:^11.0.0": "12.3.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^37.1.0",
     "@metamask/transaction-controller": "72.2.1",
