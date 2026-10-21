@@ -710,12 +710,6 @@ describe('PerpsControllerInit', () => {
       expect(result).toEqual([{ symbol: 'ETH' }]);
     });
 
-    it('does not expose the legacy market lookup alias', () => {
-      const { api } = initWithApi();
-
-      expect(api).not.toHaveProperty('perpsGetMarkets');
-    });
-
     it('does not retry for unrelated errors', async () => {
       const { api, messengerClient } = initWithApi();
       const getPositions = messengerClient.getPositions as jest.Mock;

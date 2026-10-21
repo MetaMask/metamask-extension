@@ -135,7 +135,7 @@ describe('submitRequestToBackground', () => {
     expect(result).toBe('installed');
   });
 
-  it('calls messenger transport methods without routing through messengerCall', async () => {
+  it('continues to accept names of methods within the legacy background API', async () => {
     const messengerSubscribeMock = jest.fn();
     const messengerCallMock = jest.fn();
     // @ts-expect-error Partial mock.

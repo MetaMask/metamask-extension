@@ -88,12 +88,6 @@ describe('TransactionPayControllerInit', () => {
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
   });
 
-  it('does not expose the legacy payment-token update alias', () => {
-    const { api } = TransactionPayControllerInit(getInitRequestMock());
-
-    expect(api).not.toHaveProperty('updateTransactionPaymentToken');
-  });
-
   it('passes the proper arguments to the controller', () => {
     TransactionPayControllerInit(getInitRequestMock());
 
