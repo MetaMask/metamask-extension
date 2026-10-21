@@ -5263,7 +5263,7 @@
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "The ledger device was not connected. If you wish to connect your Ledger, click 'Continue' again and approve HID connection",
+    "message": "The Ledger device was not connected. If you wish to connect your Ledger, click 'Continue' again and approve HID connection",
     "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
