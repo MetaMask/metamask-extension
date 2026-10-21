@@ -100,7 +100,7 @@ jobs:
         run: .github/scripts/pin-geckodriver.sh
 
       - name: Calibrate runner
-        timeout-minutes: 3
+        timeout-minutes: 5
         run: >-
           yarn tsx test/e2e/benchmarks/runner-calibration.ts
           --out "$BENCHMARK_CALIBRATION_FILE"
