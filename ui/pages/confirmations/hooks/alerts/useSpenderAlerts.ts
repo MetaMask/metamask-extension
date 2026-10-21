@@ -20,12 +20,13 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import {
-  useTrustSignal,
+  useTrustSignals,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
 import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
 import { useAsyncResult } from '../../../../hooks/useAsync';
+import { shortenAddress } from '../../../../helpers/utils/util';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 
@@ -183,10 +184,15 @@ export function useSpenderAlerts(): Alert[] {
     isNFTPendingFromTxTo,
   ]);
 
-  const spenderAddress = useMemo(() => {
+  const spenderAddresses = useMemo(() => {
     if (!currentConfirmation) {
-      return null;
+      return [];
     }
+
+    const addresses: {
+      address: string;
+      nestedTransactionIndex?: number;
+    }[] = [];
 
     // Handle approval transactions
     const txMeta = currentConfirmation as TransactionMeta;
@@ -197,11 +203,26 @@ export function useSpenderAlerts(): Alert[] {
         txData as `0x${string}`,
       );
       if (approvalData?.spender) {
-        return approvalData.spender;
+        addresses.push({ address: approvalData.spender });
       }
     }
+
+    txMeta?.nestedTransactions?.forEach((nested, index) => {
+      if (nested.data) {
+        const nestedApprovalData = parseApprovalTransactionData(
+          nested.data as `0x${string}`,
+        );
+        if (nestedApprovalData?.spender) {
+          addresses.push({
+            address: nestedApprovalData.spender,
+            nestedTransactionIndex: index,
+          });
+        }
+      }
+    });
+
     // Handle permit signatures
-    else if (
+    if (
       isSignatureTransactionType(currentConfirmation) &&
       currentConfirmation.type === 'eth_signTypedData'
     ) {
@@ -213,56 +234,93 @@ export function useSpenderAlerts(): Alert[] {
 
         if (PRIMARY_TYPES_PERMIT.some((type) => type === primaryType)) {
           const { message, types } = parseSanitizeTypedDataMessage(msgData);
-          return isEip712PrimaryTypeField(
-            types,
-            primaryType,
-            'spender',
-            'address',
-          )
-            ? message.spender || null
-            : null;
+          if (
+            isEip712PrimaryTypeField(
+              types,
+              primaryType,
+              'spender',
+              'address',
+            ) &&
+            message.spender
+          ) {
+            addresses.push({ address: message.spender });
+          }
         }
       }
     }
 
-    return null;
+    return addresses;
   }, [currentConfirmation]);
 
-  const { state: trustSignalDisplayState } = useTrustSignal(
-    spenderAddress || '',
-    NameType.ETHEREUM_ADDRESS,
-    currentConfirmation?.chainId as Hex | undefined,
-  );
+  const trustSignalsRequests = useMemo(() => {
+    return spenderAddresses.map(({ address }) => ({
+      value: address,
+      type: NameType.ETHEREUM_ADDRESS,
+      chainId: currentConfirmation?.chainId as Hex | undefined,
+    }));
+  }, [spenderAddresses, currentConfirmation?.chainId]);
+
+  const trustSignals = useTrustSignals(trustSignalsRequests);
 
   return useMemo(() => {
-    if (!spenderAddress || isSafeToSkipAlert) {
+    if (spenderAddresses.length === 0 || isSafeToSkipAlert) {
       return [];
     }
 
     const alerts: Alert[] = [];
 
-    if (trustSignalDisplayState === TrustSignalDisplayState.Malicious) {
-      alerts.push({
-        actions: [],
-        field: RowAlertKey.Spender,
-        isBlocking: false,
-        key: 'spenderTrustSignalMalicious',
-        message: t('alertMessageAddressTrustSignalMalicious'),
-        reason: t('alertReasonAddressTrustSignalMalicious'),
-        severity: Severity.Danger,
-      });
-    } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
-      alerts.push({
-        actions: [],
-        field: RowAlertKey.Spender,
-        isBlocking: false,
-        key: 'spenderTrustSignalWarning',
-        message: t('alertMessageAddressTrustSignal'),
-        reason: t('alertReasonAddressTrustSignalWarning'),
-        severity: Severity.Warning,
-      });
-    }
+    trustSignals.forEach((signal, index) => {
+      const { address, nestedTransactionIndex } = spenderAddresses[index];
+      const isNested = nestedTransactionIndex !== undefined;
+      const field = isNested
+        ? `${RowAlertKey.Spender}-${nestedTransactionIndex}`
+        : RowAlertKey.Spender;
+
+      if (signal.state === TrustSignalDisplayState.Malicious) {
+        alerts.push({
+          actions: [],
+          field,
+          isBlocking: false,
+          key: isNested
+            ? `spenderTrustSignalMalicious-${nestedTransactionIndex}`
+            : 'spenderTrustSignalMalicious',
+          message: t(
+            isNested
+              ? 'alertMessageNestedAddressTrustSignalMaliciousWithAddress'
+              : 'alertMessageAddressTrustSignalMaliciousWithAddress',
+            [shortenAddress(address)],
+          ),
+          reason: t(
+            isNested
+              ? 'alertReasonNestedAddressTrustSignalMalicious'
+              : 'alertReasonAddressTrustSignalMalicious',
+          ),
+          severity: Severity.Danger,
+        });
+      } else if (signal.state === TrustSignalDisplayState.Warning) {
+        alerts.push({
+          actions: [],
+          field,
+          isBlocking: false,
+          key: isNested
+            ? `spenderTrustSignalWarning-${nestedTransactionIndex}`
+            : 'spenderTrustSignalWarning',
+          message: t(
+            isNested
+              ? 'alertMessageNestedAddressTrustSignalWarningWithAddress'
+              : 'alertMessageAddressTrustSignalWarningWithAddress',
+            [shortenAddress(address)],
+          ),
+          reason: t(
+            isNested
+              ? 'alertReasonNestedAddressTrustSignalWarning'
+              : 'alertReasonAddressTrustSignalWarning',
+          ),
+          severity: Severity.Warning,
+        });
+      }
+    });
 
     return alerts;
-  }, [spenderAddress, isSafeToSkipAlert, trustSignalDisplayState, t]);
+  }, [spenderAddresses, isSafeToSkipAlert, trustSignals, t]);
 }

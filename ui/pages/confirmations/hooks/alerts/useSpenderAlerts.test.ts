@@ -7,7 +7,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import {
-  useTrustSignal,
+  useTrustSignals,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
@@ -30,7 +30,7 @@ jest.mock('../../context/confirm', () => ({
 }));
 
 jest.mock('../../../../hooks/useTrustSignals', () => ({
-  useTrustSignal: jest.fn(),
+  useTrustSignals: jest.fn(),
   TrustSignalDisplayState: {
     Loading: 'Loading',
     Malicious: 'malicious',
@@ -66,8 +66,8 @@ const mockUseIsNFT = useIsNFT as jest.MockedFunction<typeof useIsNFT>;
 const mockUseAsyncResult = useAsyncResult as jest.MockedFunction<
   typeof useAsyncResult
 >;
-const mockUseTrustSignal = useTrustSignal as jest.MockedFunction<
-  typeof useTrustSignal
+const mockUseTrustSignals = useTrustSignals as jest.MockedFunction<
+  typeof useTrustSignals
 >;
 const mockUseI18nContext = useI18nContext as jest.MockedFunction<
   typeof useI18nContext
@@ -82,10 +82,12 @@ const MOCK_TRANSACTION_ID = 'test-tx-id';
 function setupDefaultMocks() {
   jest.clearAllMocks();
   mockUseI18nContext.mockReturnValue((key: string) => key);
-  mockUseTrustSignal.mockReturnValue({
-    state: TrustSignalDisplayState.Unknown,
-    label: null,
-  });
+  mockUseTrustSignals.mockReturnValue([
+    {
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    },
+  ]);
   mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
   mockUseIsNFT.mockReturnValue({ isNFT: false, pending: false });
   mockUseAsyncResult.mockReturnValue({
@@ -107,7 +109,7 @@ function setupTrustSignal(
   state: TrustSignalDisplayState,
   label: string | null = null,
 ) {
-  mockUseTrustSignal.mockReturnValue({ state, label });
+  mockUseTrustSignals.mockReturnValue([{ state, label }]);
 }
 
 const expectedWarningAlert = {
@@ -115,7 +117,7 @@ const expectedWarningAlert = {
   field: RowAlertKey.Spender,
   isBlocking: false,
   key: 'spenderTrustSignalWarning',
-  message: 'alertMessageAddressTrustSignal',
+  message: 'alertMessageAddressTrustSignalWarningWithAddress',
   reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
@@ -125,7 +127,7 @@ const expectedMaliciousAlert = {
   field: RowAlertKey.Spender,
   isBlocking: false,
   key: 'spenderTrustSignalMalicious',
-  message: 'alertMessageAddressTrustSignalMalicious',
+  message: 'alertMessageAddressTrustSignalMaliciousWithAddress',
   reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
@@ -234,11 +236,13 @@ describe('useSpenderAlerts', () => {
 
       const { result } = renderHook(() => useSpenderAlerts());
 
-      expect(mockUseTrustSignal).toHaveBeenCalledWith(
-        MOCK_SPENDER_ADDRESS,
-        NameType.ETHEREUM_ADDRESS,
-        '0x1',
-      );
+      expect(mockUseTrustSignals).toHaveBeenCalledWith([
+        {
+          value: MOCK_SPENDER_ADDRESS,
+          type: NameType.ETHEREUM_ADDRESS,
+          chainId: '0x1',
+        },
+      ]);
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
     });
