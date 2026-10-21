@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { act, screen, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import configureStore from '../../../store/store';
@@ -37,7 +37,7 @@ jest.mock('../../../../shared/lib/trace', () => ({
   trace: jest.fn(),
 }));
 
-const mockTrackEvent = jest.fn();
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
@@ -253,29 +253,48 @@ describe('MultichainAccountDetailsPage', () => {
     expect(mockDispatch).toHaveBeenNthCalledWith(1, expect.any(Function));
   });
 
-  it('tracks Account Removed from account details with the hardware device as the account type', () => {
+  it('tracks Account Removed from account details with the hardware device as the account type once the removal succeeds', async () => {
     setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
     renderComponent();
 
     fireEvent.click(screen.getByTestId('account-remove-action'));
     fireEvent.click(screen.getByText(messages.remove.message));
 
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      name: MetaMetricsEventName.AccountRemoved,
-      properties: {
-        category: MetaMetricsEventCategory.Accounts,
-        // The schema's `account_type` enum carries the device name for
-        // hardware wallets, matching `account_hardware_type`.
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: MetaMetricsHardwareWalletDeviceType.Ledger,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_hardware_type: MetaMetricsHardwareWalletDeviceType.Ledger,
-        location: MetaMetricsAccountRemovedLocation.AccountDetails,
-      },
-      sensitiveProperties: {},
-    });
+    await waitFor(() =>
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.AccountRemoved,
+        properties: {
+          category: MetaMetricsEventCategory.Accounts,
+          // The schema's `account_type` enum carries the device name for
+          // hardware wallets, matching `account_hardware_type`.
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: MetaMetricsHardwareWalletDeviceType.Ledger,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_hardware_type: MetaMetricsHardwareWalletDeviceType.Ledger,
+          location: MetaMetricsAccountRemovedLocation.AccountDetails,
+        },
+        sensitiveProperties: {},
+      }),
+    );
+  });
+
+  it('does not track Account Removed when the removal fails', async () => {
+    // `removeAccount` rejects when the background fails to remove.
+    mockDispatch.mockRejectedValueOnce(new Error('Removal failed'));
+    setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId('account-remove-action'));
+    fireEvent.click(screen.getByText(messages.remove.message));
+
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    await act(async () => undefined);
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ name: MetaMetricsEventName.AccountRemoved }),
+    );
   });
 
   describe('tracing', () => {

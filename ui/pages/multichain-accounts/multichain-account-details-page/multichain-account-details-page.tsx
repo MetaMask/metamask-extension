@@ -55,13 +55,9 @@ import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo'
 import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
 import { removeAccount } from '../../../store/actions';
-import {
-  MetaMetricsAccountRemovedLocation,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { getAccountWalletMetricProps } from '../../../helpers/utils/account-wallet';
-import { useAnalytics } from '../../../hooks/useAnalytics';
+import { MetaMetricsAccountRemovedLocation } from '../../../../shared/constants/metametrics';
+import { logErrorWithMessage } from '../../../../shared/lib/error';
+import { useTrackAccountRemoved } from '../../../components/multichain-accounts/hooks/useTrackAccountRemoved';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useDispatch } from '../../../store/hooks';
 
@@ -69,7 +65,7 @@ export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { trackEvent, createEventBuilder } = useAnalytics();
+  const trackAccountRemoved = useTrackAccountRemoved();
   const [searchParams] = useSearchParams();
 
   const accountGroupId = (searchParams.get('accountGroupId') ??
@@ -142,31 +138,28 @@ export const MultichainAccountDetailsPage = () => {
     setIsAccountRenameModalOpen(true);
   };
 
-  const handleAccountRemoveAction = useCallback(() => {
+  const handleAccountRemoveAction = useCallback(async () => {
     const firstAccountAddress = accountsWithAddresses[0]?.address;
     if (firstAccountAddress) {
       // Don't want to blindly call removeAccount without an invalid or empty parameter
-      dispatch(removeAccount(firstAccountAddress));
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.AccountRemoved)
-          .addCategory(MetaMetricsEventCategory.Accounts)
-          .addProperties({
-            ...getAccountWalletMetricProps(wallet),
-            location: MetaMetricsAccountRemovedLocation.AccountDetails,
-          })
-          .build(),
-      );
-
+      const removal = dispatch(removeAccount(firstAccountAddress));
+      // Leave the page straight away, as this account is about to disappear.
       navigate(DEFAULT_ROUTE);
+
+      try {
+        await removal;
+      } catch (error) {
+        // The account is still there, so there is no removal to report.
+        logErrorWithMessage(error);
+        return;
+      }
+      // Resolved before the removal, so it still describes the removed account.
+      trackAccountRemoved(
+        wallet,
+        MetaMetricsAccountRemovedLocation.AccountDetails,
+      );
     }
-  }, [
-    dispatch,
-    trackEvent,
-    createEventBuilder,
-    navigate,
-    wallet,
-    accountsWithAddresses,
-  ]);
+  }, [dispatch, navigate, trackAccountRemoved, wallet, accountsWithAddresses]);
 
   const handleWalletAction = () => {
     navigate({

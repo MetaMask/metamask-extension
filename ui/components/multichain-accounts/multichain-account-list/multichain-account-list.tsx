@@ -52,6 +52,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { logErrorWithMessage } from '../../../../shared/lib/error';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -78,15 +79,12 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
-import {
-  getAccountWalletMetricProps,
-  isPrivateKeyWallet,
-  type AccountWalletMetricProps,
-} from '../../../helpers/utils/account-wallet';
+import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
 import { useTrackAccountHidden } from '../hooks/useTrackAccountHidden';
+import { useTrackAccountRemoved } from '../hooks/useTrackAccountRemoved';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -106,6 +104,8 @@ export type MultichainAccountListProps = {
    */
   isEditMode?: boolean;
 };
+
+type WalletData = AccountTreeWallets[AccountWalletId];
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
 
@@ -223,6 +223,7 @@ export const MultichainAccountList = ({
   const { privacyMode } = useSelector(getPreferences);
   const internalAccountsById = useSelector(getInternalAccountsObject);
   const trackAccountHidden = useTrackAccountHidden();
+  const trackAccountRemoved = useTrackAccountRemoved();
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -239,7 +240,9 @@ export const MultichainAccountList = ({
     groupId: AccountGroupId;
     accountName: string;
     address?: string;
-    metricProps: AccountWalletMetricProps;
+    // Captured when the removal is requested, as the wallet leaves the tree
+    // once the removal succeeds.
+    wallet?: WalletData;
   } | null>(null);
 
   // Optimistic visibility so a hide/reveal shows on the cell before Redux
@@ -312,22 +315,24 @@ export const MultichainAccountList = ({
     setAccountToDelete(null);
   }, []);
 
-  const handleAccountDeleteConfirm = useCallback(() => {
-    const address = accountToDelete?.address;
-    if (address) {
-      dispatch(removeAccount(address));
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.AccountRemoved)
-          .addCategory(MetaMetricsEventCategory.Accounts)
-          .addProperties({
-            ...accountToDelete.metricProps,
-            location: MetaMetricsAccountRemovedLocation.ManageAccounts,
-          })
-          .build(),
-      );
-    }
+  const handleAccountDeleteConfirm = useCallback(async () => {
     setAccountToDelete(null);
-  }, [accountToDelete, createEventBuilder, dispatch, trackEvent]);
+    if (!accountToDelete?.address) {
+      return;
+    }
+
+    try {
+      await dispatch(removeAccount(accountToDelete.address));
+    } catch (error) {
+      // The account is still there, so there is no removal to report.
+      logErrorWithMessage(error);
+      return;
+    }
+    trackAccountRemoved(
+      accountToDelete.wallet,
+      MetaMetricsAccountRemovedLocation.ManageAccounts,
+    );
+  }, [accountToDelete, dispatch, trackAccountRemoved]);
 
   const handleVisibilityToggle = useCallback(
     async (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
@@ -568,7 +573,7 @@ export const MultichainAccountList = ({
                       groupId: groupId as AccountGroupId,
                       accountName: groupData.metadata.name,
                       address,
-                      metricProps: getAccountWalletMetricProps(wallet),
+                      wallet,
                     });
                   }
                 : undefined

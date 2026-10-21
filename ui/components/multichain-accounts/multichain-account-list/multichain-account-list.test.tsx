@@ -2044,7 +2044,7 @@ describe('MultichainAccountList', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('tracks the removal', () => {
+    it('tracks the removal once it succeeds', async () => {
       renderComponent(
         {
           wallets: mockWalletsWithPrivateKey,
@@ -2062,17 +2062,46 @@ describe('MultichainAccountList', () => {
 
       // Asserted exactly, not with `objectContaining`, so a stray or renamed
       // property cannot slip past the schema contract.
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        name: MetaMetricsEventName.AccountRemoved,
-        properties: {
-          category: MetaMetricsEventCategory.Accounts,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Imported,
-          location: MetaMetricsAccountRemovedLocation.ManageAccounts,
-        },
-        sensitiveProperties: {},
+      await waitFor(() =>
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          name: MetaMetricsEventName.AccountRemoved,
+          properties: {
+            category: MetaMetricsEventCategory.Accounts,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: MetaMetricsEventAccountType.Imported,
+            location: MetaMetricsAccountRemovedLocation.ManageAccounts,
+          },
+          sensitiveProperties: {},
+        }),
+      );
+    });
+
+    it('does not track the removal when it fails', async () => {
+      // `removeAccount` rejects when the background fails to remove.
+      mockRemoveAccount.mockImplementationOnce(() => async () => {
+        throw new Error('Removal failed');
       });
+      renderComponent(
+        {
+          wallets: mockWalletsWithPrivateKey,
+          isEditMode: true,
+        },
+        stateWithPrivateKeyAccount,
+      );
+
+      fireEvent.click(
+        screen.getByTestId('multichain-account-cell-edit-mode-delete-icon'),
+      );
+      fireEvent.click(
+        screen.getByTestId('account-delete-confirm-modal-remove-button'),
+      );
+
+      expect(mockRemoveAccount).toHaveBeenCalledWith(privateKeyAccountAddress);
+      await act(async () => undefined);
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({ name: MetaMetricsEventName.AccountRemoved }),
+      );
     });
 
     it('does not remove anything when the account address cannot be resolved', () => {
