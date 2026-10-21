@@ -13,11 +13,7 @@ on:
         required: true
         type: string
     secrets:
-      github-token:
-        required: false
       google-application-creds-base64:
-        required: false
-      PR_TOKEN:
         required: false
       GCP_RLS_SHEET_ACCOUNT_BASE64:
         required: false
@@ -77,10 +73,21 @@ jobs:
     needs: [resolve-bases, resolve-previous-ref]
     name: Create Release Pull Request using Github Tools
     runs-on: ubuntu-latest
+    environment: release-ci
     permissions:
       contents: write
+      id-token: write
       pull-requests: write
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: write
+
       - name: Create Release PR
         uses: MetaMask/github-tools/.github/actions/create-release-pr@v1
         with:
@@ -89,8 +96,5 @@ jobs:
           release-pr-base-branch: ${{ needs.resolve-bases.outputs.release_base }}
           semver-version: ${{ inputs.semver-version }}
           previous-version-ref: ${{ needs.resolve-previous-ref.outputs.previous_ref }}
-          # This token needs write permissions to metamask-extension & read permissions to metamask-planning
-          # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values
-          # (this is due to github limitations on fetching secrets from called workflows).
-          github-token: ${{ github.event_name == 'workflow_dispatch' && secrets.PR_TOKEN || secrets.github-token }}
+          github-token: ${{ steps.token.outputs.token }}
           google-application-creds-base64: ${{ github.event_name == 'workflow_dispatch' && secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 || secrets.google-application-creds-base64 }}

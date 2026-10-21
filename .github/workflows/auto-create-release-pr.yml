@@ -3,19 +3,57 @@ name: Auto Create Release PR
 on:
   push:
     branches:
+      - main
       # Glob, not regex. Same pattern as update-release-changelog.yml: three
       # dot-separated segments that each start with a digit, e.g. release/13.53.0.
       - 'release/[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
+  cut-release-branch:
+    # Runs on main, so it uses default-branch. release-ci only allows release/*.*.*.
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      contains(toJSON(github.event.commits), 'package.json')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: default-branch
+    permissions:
+      contents: write
+      id-token: write
+    outputs:
+      semver: ${{ steps.cut.outputs.semver }}
+      cut: ${{ steps.cut.outputs.cut }}
+    steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+
+      - name: Checkout the merge commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          token: ${{ steps.token.outputs.token }}
+
+      - name: Cut the release branch at the pre-bump commit
+        id: cut
+        env:
+          MERGE_COMMIT_SHA: ${{ github.sha }}
+        run: .github/scripts/cut-release-branch.sh
+
   extract:
-    # Push also fires for later commits on release/X.Y.Z. Run only when this
-    # push creates the branch, so those commits do not open another release PR.
-    if: github.event.created
+    # Same trigger as the changelog job: a new release/* branch. A minor branch
+    # only continues when it is the commit before the version bump on main.
+    if: github.event_name == 'push' && github.event.created && startsWith(github.ref, 'refs/heads/release/')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
       semver: ${{ steps.out.outputs.semver }}
+      proceed: ${{ steps.gate.outputs.proceed }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -25,14 +63,43 @@ jobs:
         run: |
           .github/scripts/extract-semver.sh
 
+      - id: gate
+        shell: bash
+        env:
+          SEMVER: ${{ steps.out.outputs.semver }}
+        run: |
+          set -euo pipefail
+          patch="${SEMVER##*.}"
+          if [ "$patch" -gt 0 ]; then
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git fetch --depth=2 origin main
+          parent_sha="$(git rev-parse origin/main^1)"
+          head_sha="$(git rev-parse HEAD)"
+          main_version="$(git show origin/main:package.json | python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])')"
+          major="${SEMVER%%.*}"
+          minor="${SEMVER#*.}"
+          minor="${minor%%.*}"
+          expected="${major}.$((minor + 1)).0"
+
+          if [ "$head_sha" = "$parent_sha" ] && [ "$main_version" = "$expected" ]; then
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "release/${SEMVER} is not the commit before main ${main_version}. Not opening a release pull request."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+          fi
+
   call-create-release-pr:
     needs: extract
+    if: needs.extract.outputs.proceed == 'true'
     permissions:
       contents: write
+      id-token: write
       pull-requests: write
     uses: ./.github/workflows/create-release-pr.yml
     secrets:
-      github-token: ${{ secrets.PR_TOKEN }}
       google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
     with:
       semver-version: ${{ needs.extract.outputs.semver }}

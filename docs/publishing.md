@@ -19,9 +19,14 @@ We try to ensure certain criteria are met before deploying:
 
 ## Incrementing Version & Changelog
 
-Version can be automatically incremented by creating a branch with the name `release/X.Y.Z`, where `X`, `Y`, and `Z` are numbers. Branches should be created off of the main branch. [Branches can be created on GitHub.](https://help.github.com/en/articles/creating-and-deleting-branches-within-your-repository)
+A minor release starts when the version bump pull request is merged to `main`.
 
-Once a version branch has been created, a build on CI will create a Pull Request for the release with the app manifest and changelog versions bumped.
+1. The version bump pull request comes from `version-bump/X.Y.Z` and bumps `package.json` from the version on `main` to the next minor version.
+2. Merging it cuts `release/<previous version>` from the commit before the bump. [Auto Create Release PR](../.github/workflows/auto-create-release-pr.yml) then opens the release pull request and the changelog pull request.
+
+Until that merge, `package.json` on `main` is still the version being released, and pull requests merged to `main` are part of that release. The post-merge validation sheet reads that version, so it files those pull requests under the release they are actually in.
+
+Hotfixes are unchanged. Create `release/X.Y.Z` with a patch greater than 0. That push opens the hotfix release pull request and does not bump `main`.
 
 ## Preparing for Sensitive Changes
 
