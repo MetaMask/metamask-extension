@@ -376,7 +376,7 @@ export async function mockBridgeTxStatus(mockServer: Mockttp) {
           isExpectedToken: true,
           bridge: 'rango',
           srcChain: {
-            chainId: srcChainId,
+            chainId: Number(srcChainId),
             txHash,
           },
           destChain: {
