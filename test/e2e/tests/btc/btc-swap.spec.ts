@@ -282,10 +282,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkCompletedBridgeTransactionActivity(1);
+        await activityTab.checkCompletedBridgeTransactionActivity(2);
+        await activityTab.checkTxAction({
+          action: 'Bridged BTC',
+          confirmedTx: 2,
+        });
+        await activityTab.checkTxAmountInActivity('+14.7226 ETH');
         await activityTab.checkTxAction({
           action: 'Received BTC',
-          confirmedTx: 1,
+          confirmedTx: 2,
+          txIndex: 2,
         });
       },
     );
@@ -327,10 +333,16 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkCompletedBridgeTransactionActivity(1);
+        await activityTab.checkCompletedBridgeTransactionActivity(2);
+        await activityTab.checkTxAction({
+          action: 'Bridged BTC',
+          confirmedTx: 2,
+        });
+        await activityTab.checkTxAmountInActivity('+40,296.22 USDC');
         await activityTab.checkTxAction({
           action: 'Received BTC',
-          confirmedTx: 1,
+          confirmedTx: 2,
+          txIndex: 2,
         });
       },
     );
