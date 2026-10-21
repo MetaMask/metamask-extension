@@ -558,7 +558,7 @@ export function MoneyHomePage() {
         </div>
 
         <div
-          className={`mx-auto w-full max-w-[816px] ${showFundedLayout ? '' : 'mt-3'}`}
+          className={`mx-auto w-full ${showFundedLayout ? '' : 'mt-3'}`}
         >
           {showFundedLayout ? (
             <>
