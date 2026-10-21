@@ -156,6 +156,7 @@ type PerpsActionName =
   | 'perpsGetUserNonFundingLedgerUpdates'
   | 'perpsDepositWithConfirmation'
   | 'perpsGetPositions'
+  | 'perpsGetMarkets'
   | 'perpsGetMarketDataWithPrices'
   | 'perpsGetOrderFills'
   | 'perpsGetOrders'
@@ -458,6 +459,7 @@ function getApi(
 
     // -- Data fetches (read-guard: init errors + benign disconnect) --
     perpsGetPositions: read(messengerClient.getPositions.bind(messengerClient)),
+    perpsGetMarkets: read(messengerClient.getMarkets.bind(messengerClient)),
     perpsGetMarketDataWithPrices: read(
       messengerClient.getMarketDataWithPrices.bind(messengerClient),
     ),
