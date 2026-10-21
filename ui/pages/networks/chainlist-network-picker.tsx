@@ -238,6 +238,10 @@ export const ChainlistNetworkPicker = ({
 
   const handleDefaultTestnetClick = useCallback(
     (network: ChainlistNetwork) => {
+      const isAdded = existingNetworkChainIds.has(
+        getHexChainId(network.chainId),
+      );
+
       if (!showTestNetworks) {
         dispatch(setShowTestNetworksPreference(true));
         trackEvent(
@@ -250,7 +254,11 @@ export const ChainlistNetworkPicker = ({
         );
       }
 
-      if (existingNetworkChainIds.has(getHexChainId(network.chainId))) {
+      // An already-added testnet opens its edit page. When Show test networks
+      // is already on, selecting a testnet fills the form the same way as any
+      // other Chainlist row. Only a hidden, not-yet-added testnet leaves for
+      // the networks list.
+      if (showTestNetworks || isAdded) {
         onSelect(network, searchValue.trim() || undefined);
         return;
       }
