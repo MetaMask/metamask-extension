@@ -7,10 +7,28 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import {
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
+} from '../../../../shared/constants/metametrics';
 import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockSetDataCollectionForMarketing = jest.fn();
 const mockGetMarketingConsent = jest.fn().mockResolvedValue(true);
+const mockTrackAnalyticsEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackAnalyticsEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../selectors/first-time-flow', () => {
   const actual = jest.requireActual<
@@ -121,10 +139,7 @@ describe('DataCollectionToggleItem', () => {
   });
 
   it('is enabled when metrics participation is off', () => {
-    const mockStore = createMockStore({
-      optedIn: false,
-      optedInToMarketing: false,
-    });
+    const mockStore = createMockStore({ optedIn: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     const toggle = screen.getByRole('checkbox');
@@ -133,6 +148,14 @@ describe('DataCollectionToggleItem', () => {
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
     expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: expect.objectContaining({
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+        }),
+      }),
+    );
   });
 
   it('fetches remote marketing consent on mount when social login flow is active', async () => {

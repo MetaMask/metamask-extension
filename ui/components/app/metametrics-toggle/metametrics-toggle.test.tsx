@@ -33,6 +33,8 @@ type StateOverrides = {
   useExternalServices?: boolean;
   consentDecisionMade?: boolean;
   optedIn?: boolean;
+  marketingConsentDecisionMade?: boolean;
+  optedInToMarketing?: boolean;
   isBackupAndSyncEnabled?: boolean;
 };
 
@@ -137,6 +139,8 @@ describe('MetametricsToggle', () => {
       useExternalServices: true,
       consentDecisionMade: true,
       optedIn: true,
+      marketingConsentDecisionMade: true,
+      optedInToMarketing: true,
     });
 
     fireEvent.click(metaMetricsToggleButton);
@@ -158,7 +162,7 @@ describe('MetametricsToggle', () => {
       properties: {
         category: MetaMetricsEventCategory.Settings,
         [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
-        [MetaMetricsUserTrait.HasMarketingConsent]: false,
+        [MetaMetricsUserTrait.HasMarketingConsent]: true,
         location: 'Settings',
       },
       sensitiveProperties: {},
