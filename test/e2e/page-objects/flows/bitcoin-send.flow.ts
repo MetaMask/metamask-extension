@@ -29,7 +29,7 @@ export const landOnBitcoinSendScreen = async (
   await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
   // Refresh re-hydrates the UI from background state so the asynchronously
   // fetched Snap balance is shown reliably.
-  await driver.refresh();
+  await homePage.refreshPage();
   await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
     `${expectedBalance}`,
     'BTC',
