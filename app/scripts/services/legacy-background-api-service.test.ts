@@ -1734,12 +1734,13 @@ describe('LegacyBackgroundApiService', () => {
         });
       });
 
+      // @ts-expect-error 'each' function is not recognized by TypeScript types
       it.each([
         ['an empty', ''],
         ['a missing', undefined],
       ])(
         'creates the account for a QR device that reports %s name',
-        async (_description, name) => {
+        async (_description: string, name: string | undefined) => {
           await withService(async ({ rootMessenger }) => {
             const getName = jest.fn().mockReturnValue(name);
             registerWithKeyringV2(rootMessenger, {
