@@ -3,7 +3,10 @@ import {
   NetworkController,
   NetworkClientId,
 } from '@metamask/network-controller';
-import { PhishingController } from '@metamask/phishing-controller';
+import {
+  PhishingController,
+  RequestSourceFlow,
+} from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import {
@@ -39,13 +42,16 @@ export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
  *
  * @param phishingController - Owns the URL scan and its cache
  * @param preferencesController - Source of the user's security alerts setting
- * @param shouldScanOrigin - Per-transport gate, since no method name is shared
+ * @param getRequestSourceFlow - Per-transport flow classifier, since no method
+ * name is shared
  * @param requestUrl - Full sender URL, preferred over the bare origin
  */
 export function createOriginScanMiddleware(
   phishingController: PhishingController,
   preferencesController: PreferencesController,
-  shouldScanOrigin: (req: TrustSignalsMiddlewareRequest) => boolean,
+  getRequestSourceFlow: (
+    req: TrustSignalsMiddlewareRequest,
+  ) => RequestSourceFlow | undefined,
   requestUrl?: string,
 ) {
   return async (
@@ -63,8 +69,9 @@ export function createOriginScanMiddleware(
         return;
       }
 
-      if (shouldScanOrigin(req)) {
-        scanUrl(req, phishingController);
+      const flow = getRequestSourceFlow(req);
+      if (flow) {
+        scanUrl(req, phishingController, flow);
       }
     } catch (error) {
       console.error('[createOriginScanMiddleware] error: ', error);
@@ -136,11 +143,12 @@ export function createAddressScanMiddleware(
 function scanUrl(
   req: TrustSignalsMiddlewareRequest,
   phishingController: PhishingController,
+  flow: RequestSourceFlow,
 ) {
   const urlToScan = req.requestUrl ?? req.origin;
 
   if (urlToScan) {
-    phishingController.scanUrl(urlToScan).catch((error) => {
+    phishingController.scanUrl(urlToScan, flow).catch((error) => {
       console.error('[createOriginScanMiddleware] error:', error);
     });
   }

@@ -99,6 +99,29 @@ const BUILT_IN_TEST_CHAIN_IDS = new Set(
   TEST_CHAINS.map((chainId) => chainId.toLowerCase()),
 );
 
+/**
+ * Keeps Chainlist's order inside each group, and puts chains that have a
+ * built-in logo ahead of chains that only show a letter.
+ *
+ * @param networks - Chainlist rows in their original order.
+ */
+const sortChainlistNetworksWithLogosFirst = (
+  networks: ChainlistNetwork[],
+): ChainlistNetwork[] => {
+  const networksWithLogos: ChainlistNetwork[] = [];
+  const networksWithoutLogos: ChainlistNetwork[] = [];
+
+  for (const network of networks) {
+    if (getHexChainId(network.chainId) in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP) {
+      networksWithLogos.push(network);
+    } else {
+      networksWithoutLogos.push(network);
+    }
+  }
+
+  return [...networksWithLogos, ...networksWithoutLogos];
+};
+
 type ChainlistNetworkPickerProps = {
   existingNetworkChainIds: Set<string>;
   existingNetworkNamesByChainId: Record<string, string>;
@@ -175,8 +198,14 @@ export const ChainlistNetworkPicker = ({
       }
     }
 
-    return { chainlistNetworks: networks, defaultTestnets: testnets };
-  }, [existingNetworkNamesByChainId, safeChains, searchValue]);
+    return {
+      chainlistNetworks:
+        layout === 'dropdown'
+          ? sortChainlistNetworksWithLogosFirst(networks)
+          : networks,
+      defaultTestnets: testnets,
+    };
+  }, [existingNetworkNamesByChainId, layout, safeChains, searchValue]);
 
   const visibleChainlistNetworks = useMemo(
     () => chainlistNetworks.slice(0, visibleNetworkCount),
