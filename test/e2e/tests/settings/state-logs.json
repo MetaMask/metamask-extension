@@ -157,6 +157,7 @@
     "accountIdByAddress": {
       "*": "string"
     },
+    "accountSourceBackfillEnqueued": "boolean",
     "accountState": "null",
     "accountsByChainId": {
       "*": {
@@ -652,6 +653,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
+    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -683,6 +685,7 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
+    "lastPerpsDepositEntryPoint": "null",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
@@ -1218,7 +1221,6 @@
       "mainnet": {}
     },
     "batchTransactionCounts": {},
-    "tracesBeforeMetricsOptIn": [],
     "transactionBatches": [],
     "transactionData": {},
     "transactions": [],
