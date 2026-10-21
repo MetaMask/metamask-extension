@@ -138,7 +138,6 @@
     "isNftOwner",
     "multichainAssetsRatesStartPolling",
     "multichainAssetsRatesStopPollingByPollingToken",
-    "multichainUpdateBalance",
     "removeAndIgnoreNft",
     "removeNetwork",
     "removeNft",
