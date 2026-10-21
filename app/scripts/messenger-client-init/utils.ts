@@ -52,7 +52,6 @@ export type MessengerClientsToInitialize =
   | 'ExecutionService'
   | 'MultichainAssetsController'
   | 'MultichainAssetsRatesController'
-  | 'MultichainBalancesController'
   | 'MultichainNetworkController'
   | 'MultichainTransactionsController'
   | 'NotificationServicesController'

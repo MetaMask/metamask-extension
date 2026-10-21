@@ -106,7 +106,6 @@
     "assetsMetadata": "object",
     "assetsPrice": "object",
     "autoramps": "object",
-    "balances": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
     "batchTransactionCounts": "object",
