@@ -1889,6 +1889,12 @@ export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }
 
+export const getIsAddressResolutionEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(remoteFeatureFlags?.addressResolution, false),
+);
+
 export function getUSDConversionRate(state) {
   return getCurrencyRateControllerCurrencyRates(state)[
     getProviderConfig(state).ticker
