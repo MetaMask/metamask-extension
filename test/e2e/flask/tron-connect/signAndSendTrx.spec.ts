@@ -1,6 +1,6 @@
 import { TestDappTron } from '../../page-objects/pages/test-dapp-tron';
 import { WINDOW_TITLES, DEFAULT_TRON_ADDRESS_2 } from '../../constants';
-import { connectTronTestDapp } from '../../page-objects/flows/tron-dapp.flow';
+import { connectSnapTestDapp } from '../../page-objects/flows/snap-dapp.flow';
 import SnapSignTransactionConfirmation from '../../page-objects/pages/confirmations/snap-sign-transaction-confirmation';
 import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap, TRANSACTION_HASH_MOCK } from './common-tron';
@@ -22,7 +22,9 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
         await testDappTron.openTestDappPage();
 
         // 1. Connect
-        await connectTronTestDapp(driver, testDappTron);
+        await connectSnapTestDapp(driver, testDappTron, () =>
+          testDappTron.connectToMetaMaskWallet(),
+        );
 
         // 2. Set recipient and amount
         await testDappTron.setTRXRecipientAddress(DEFAULT_TRON_ADDRESS_2);
@@ -59,7 +61,9 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
         await testDappTron.openTestDappPage();
 
         // 1. Connect
-        await connectTronTestDapp(driver, testDappTron);
+        await connectSnapTestDapp(driver, testDappTron, () =>
+          testDappTron.connectToMetaMaskWallet(),
+        );
 
         // 2. Set recipient and amount
         await testDappTron.setTRXRecipientAddress(DEFAULT_TRON_ADDRESS_2);
@@ -97,7 +101,9 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
         await testDappTron.openTestDappPage();
 
         // 1. Connect
-        await connectTronTestDapp(driver, testDappTron);
+        await connectSnapTestDapp(driver, testDappTron, () =>
+          testDappTron.connectToMetaMaskWallet(),
+        );
 
         // 2. Set recipient and amount
         await testDappTron.setTRXRecipientAddress(DEFAULT_TRON_ADDRESS_2);

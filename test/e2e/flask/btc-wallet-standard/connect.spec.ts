@@ -4,7 +4,7 @@ import {
   WalletConnectionType,
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
-import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
+import { connectSnapTestDapp } from '../../page-objects/flows/snap-dapp.flow';
 import { switchToAccount } from '../../page-objects/flows/account-list.flow';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
@@ -44,7 +44,9 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await testDapp.findHeaderNotConnectedState();
 
           // 2. Connect again
-          await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
+          await connectSnapTestDapp(driver, testDapp, () =>
+            testDapp.connectToWallet(connectionLibrary),
+          );
 
           // Verify successful connection
           await testDapp.findHeaderConnectedState();
@@ -64,7 +66,9 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await testDapp.openTestDappPage();
 
           // 1. Connect
-          await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
+          await connectSnapTestDapp(driver, testDapp, () =>
+            testDapp.connectToWallet(connectionLibrary),
+          );
           await testDapp.findHeaderConnectedState();
           await testDapp.findConnectedAccount(account1Short);
 
@@ -73,7 +77,9 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await testDapp.findHeaderNotConnectedState();
 
           // 3. Connect again
-          await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
+          await connectSnapTestDapp(driver, testDapp, () =>
+            testDapp.connectToWallet(connectionLibrary),
+          );
           await testDapp.findHeaderConnectedState();
           await testDapp.findConnectedAccount(account1Short);
         },
@@ -136,9 +142,9 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           const testDapp = new TestDappBitcoin(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
-          await connectBitcoinTestDapp(driver, testDapp, {
-            connectionLibrary: WalletConnectionType.Standard,
-          });
+          await connectSnapTestDapp(driver, testDapp, () =>
+            testDapp.connectToWallet(WalletConnectionType.Standard),
+          );
 
           await testDapp.findConnectedAccount(account1Short);
 

@@ -1,5 +1,5 @@
 import { TestDappTron } from '../../page-objects/pages/test-dapp-tron';
-import { connectTronTestDapp } from '../../page-objects/flows/tron-dapp.flow';
+import { connectSnapTestDapp } from '../../page-objects/flows/snap-dapp.flow';
 import { DEFAULT_TRON_ADDRESS_SHORT } from '../../constants';
 import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap } from './common-tron';
@@ -16,7 +16,9 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
 
         await testDappTron.openTestDappPage();
 
-        await connectTronTestDapp(driver, testDappTron);
+        await connectSnapTestDapp(driver, testDappTron, () =>
+          testDappTron.connectToMetaMaskWallet(),
+        );
 
         await testDappTron.findHeaderConnectedState();
         await testDappTron.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
@@ -36,7 +38,9 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
         await testDappTron.openTestDappPage();
 
         // 1. Connect
-        await connectTronTestDapp(driver, testDappTron);
+        await connectSnapTestDapp(driver, testDappTron, () =>
+          testDappTron.connectToMetaMaskWallet(),
+        );
 
         await testDappTron.findHeaderConnectedState();
         await testDappTron.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
@@ -46,7 +50,9 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
         await testDappTron.findHeaderNotConnectedState();
 
         // // 3. Connect again
-        await connectTronTestDapp(driver, testDappTron);
+        await connectSnapTestDapp(driver, testDappTron, () =>
+          testDappTron.connectToMetaMaskWallet(),
+        );
 
         await testDappTron.switchTo();
 
@@ -67,7 +73,9 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
 
         await testDappTron.openTestDappPage();
 
-        await connectTronTestDapp(driver, testDappTron);
+        await connectSnapTestDapp(driver, testDappTron, () =>
+          testDappTron.connectToMetaMaskWallet(),
+        );
 
         await testDappTron.findHeaderConnectedState();
         await testDappTron.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
