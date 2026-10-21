@@ -145,6 +145,7 @@
     "multichainAssetsRatesStopPollingByPollingToken",
     "multichainUpdateBalance",
     "removeAndIgnoreNft",
+    "removeNetwork",
     "removeNft",
     "requestProfilePairing",
     "resetState",

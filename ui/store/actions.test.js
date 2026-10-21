@@ -6359,7 +6359,7 @@ describe('Actions', () => {
   });
 
   describe('scanUrlForPhishing', () => {
-    it('forwards the URL through the messenger', async () => {
+    it('forwards the URL through the messenger, also adding the "reveal-srp" argument', async () => {
       const messengerCallStub = sinon.stub().resolves();
       setBackgroundConnection({ messengerCall: messengerCallStub });
 
