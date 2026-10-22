@@ -184,7 +184,7 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  it('when the participate in MetaMetrics checkbox is unchecked, setDataCollectionForMarketing should be called with false', async () => {
+  it('when both checkboxes are unchecked, setDataCollectionForMarketing should be called with false', async () => {
     const { queryByText, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -204,7 +204,6 @@ describe('Onboarding Metametrics Component', () => {
       'metametrics-checkbox',
     ) as HTMLElement;
 
-    // Opt out of MetaMetrics; this should clear marketing consent
     await clickElement(participateContainer);
 
     const continueButton = getByTestId('metametrics-i-agree');
@@ -230,7 +229,7 @@ describe('Onboarding Metametrics Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('on uncheking the participate meatametric, checked datacollection marketing checkbox should be unchecked', async () => {
+  it('keeps the marketing checkbox checked and enabled when metametrics is unchecked', async () => {
     const { getAllByRole, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -256,7 +255,25 @@ describe('Onboarding Metametrics Component', () => {
     await clickElement(participateContainer);
 
     await waitFor(() => {
-      expect(marketingCheckbox).not.toBeChecked();
+      expect(getAllByRole('checkbox')[0]).not.toBeChecked();
+    });
+    expect(marketingCheckbox).toBeChecked();
+    expect(marketingCheckbox).toBeEnabled();
+  });
+
+  it('saves marketing consent independently when MetaMetrics is unchecked', async () => {
+    const { getByTestId } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    await clickElement(getByTestId('metametrics-data-collection-checkbox'));
+    await clickElement(getByTestId('metametrics-checkbox'));
+    await clickElement(getByTestId('metametrics-i-agree'));
+
+    await waitFor(() => {
+      expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
+      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
     });
   });
 

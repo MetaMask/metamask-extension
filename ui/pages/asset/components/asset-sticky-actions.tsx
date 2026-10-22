@@ -220,7 +220,7 @@ export const AssetStickyActions = ({
       if (isNative) {
         transitionForward(() =>
           openBridgeExperience(
-            MetaMetricsSwapsEventSource.MainView,
+            MetaMetricsSwapsEventSource.TokenView,
             sourceToken,
             destTokenAssetId,
           ),

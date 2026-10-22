@@ -638,16 +638,6 @@
       "count": 1
     }
   },
-  "ui/pages/ramps/build-quote/hooks/useRampsBuildQuote.ts": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 2
-    }
-  },
-  "ui/pages/ramps/provider-selection/provider-selection.tsx": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    }
-  },
   "ui/pages/settings/settings.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 3

@@ -348,16 +348,27 @@ export function MoneyHomePage() {
     setIsTransferSheetOpen(false);
   }, []);
 
+  const header = (
+    <header
+      className="flex items-center justify-between pl-4 pt-4 pb-2"
+      style={{ paddingRight: `calc(1rem - ${scrollbarGutterWidth}px)` }}
+    >
+      <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+        {t('money')}
+      </Text>
+      {isPageLoading ? null : <MoneyMoreMenu />}
+    </header>
+  );
+
   if (isPageLoading) {
     return (
-      <div
-        className="flex min-h-full flex-col gap-4 p-4"
-        data-testid="money-home-loading"
-      >
-        <Skeleton className="h-8 w-24" />
-        <Skeleton className="h-12 w-36" />
-        <Skeleton className="h-20 w-full rounded-xl" />
-        <Skeleton className="h-80 w-full rounded-2xl" />
+      <div className="min-h-full" data-testid="money-home-loading">
+        {header}
+        <div className="flex flex-col gap-4 p-4">
+          <Skeleton className="h-12 w-36" />
+          <Skeleton className="h-20 w-full rounded-xl" />
+          <Skeleton className="h-80 w-full rounded-2xl" />
+        </div>
       </div>
     );
   }
@@ -411,15 +422,7 @@ export function MoneyHomePage() {
   return (
     <>
       <div className="min-h-full pb-5" data-testid="money-home-page">
-        <header
-          className="flex h-14 items-center justify-between pl-4"
-          style={{ paddingRight: `calc(1rem - ${scrollbarGutterWidth}px)` }}
-        >
-          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-            {t('money')}
-          </Text>
-          <MoneyMoreMenu />
-        </header>
+        {header}
 
         {isBalanceFetchError ? (
           <div className="px-4 pt-2">
@@ -554,9 +557,7 @@ export function MoneyHomePage() {
           )}
         </div>
 
-        <div
-          className={`mx-auto w-full max-w-[816px] ${showFundedLayout ? '' : 'mt-3'}`}
-        >
+        <div className={`mx-auto w-full ${showFundedLayout ? '' : 'mt-3'}`}>
           {showFundedLayout ? (
             <>
               {isMoneyEarningSectionEnabled ? (

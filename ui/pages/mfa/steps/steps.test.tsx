@@ -7,6 +7,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import type {
+  MfaFlowErrorCode,
   MfaFlowState,
   MfaFlowStep,
   MfaReason,
@@ -18,9 +19,19 @@ import FailureStep from './failure-step';
 import IntroStep from './intro-step';
 import PasskeyStep from './passkey-step';
 import PickerStep from './picker-step';
+import TotpSetupStep from './totp-setup-step';
 
 jest.mock('webextension-polyfill', () => ({
   permissions: { request: jest.fn() },
+}));
+
+const mockCopy = jest.fn();
+const mockUseCopyToClipboard = jest.fn();
+jest.mock('../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: (...args: unknown[]) => {
+    mockUseCopyToClipboard(...args);
+    return [false, mockCopy];
+  },
 }));
 
 const reason = { operation: 'test' };
@@ -224,6 +235,26 @@ describe('PickerStep', () => {
   );
 });
 
+describe('PickerStep with an authenticator app', () => {
+  it('offers the authenticator app among the other methods', () => {
+    const onAction = jest.fn();
+    render(
+      <PickerStep
+        {...buildState({
+          name: 'picker',
+          purpose: 'verify',
+          options: ['totp', 'email_otp'],
+        })}
+        reason={reason}
+        onAction={onAction}
+      />,
+    );
+
+    fireEvent.click(screen.getByText(messages.mfaPickerTotp.message));
+    expect(onAction).toHaveBeenCalledWith({ type: 'choose', method: 'totp' });
+  });
+});
+
 describe('EmailEntryStep', () => {
   it('prefills the pending address and submits it trimmed', () => {
     const onAction = jest.fn();
@@ -338,7 +369,16 @@ describe('CodeStep', () => {
   const otp = (codeSent: boolean): Extract<MfaFlowStep, { name: 'otp' }> => ({
     name: 'otp',
     purpose: 'verify',
+    method: 'email_otp',
     email: 'a@b.co',
+    codeSent,
+  });
+  const totpCode = (
+    codeSent = true,
+  ): Extract<MfaFlowStep, { name: 'otp' }> => ({
+    name: 'otp',
+    purpose: 'verify',
+    method: 'totp',
     codeSent,
   });
 
@@ -622,6 +662,61 @@ describe('CodeStep', () => {
     );
     expect(screen.getByRole('textbox')).toHaveValue('');
   });
+
+  it('asks for the code from the authenticator app, with nothing to resend', () => {
+    const { onAction } = renderCode(totpCode());
+
+    expect(
+      screen.getByText(messages.mfaOtpDescriptionTotp.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeNull();
+    expect(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeDisabled();
+
+    fireEvent.change(screen.getByTestId(MfaFlowTestIds.CODE_INPUT), {
+      target: { value: '123456' },
+    });
+    expect(onAction).toHaveBeenCalledWith({
+      type: 'submitCode',
+      code: '123456',
+    });
+  });
+
+  it.each<[MfaFlowErrorCode, string]>([
+    ['flow_expired', messages.mfaErrorTotpExpired.message],
+    ['invalid_code', messages.mfaErrorInvalidTotpCode.message],
+  ])('words %s for the authenticator app', (error, message) => {
+    renderCode(totpCode(), { error });
+
+    expect(screen.getByText(message)).toBeInTheDocument();
+  });
+
+  it('offers to try again when the app verification failed to start', () => {
+    const { onAction } = renderCode(totpCode(false), {
+      error: 'server_error',
+    });
+
+    expect(
+      screen.getByText(messages.mfaErrorGeneric.message),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
+  });
+
+  it('shows a cooldown and its countdown before trying again', () => {
+    renderCode(totpCode(false), {
+      error: 'rate_limited',
+      resendAvailableAt: 1_000_000 + 30_000,
+    });
+
+    expect(
+      screen.getByText(messages.mfaErrorCooldown.message),
+    ).toBeInTheDocument();
+    const retry = screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON);
+    expect(retry).toHaveTextContent(
+      messages.mfaOtpRetryIn.message.replace('$1', '30'),
+    );
+    expect(retry).toBeDisabled();
+  });
 });
 
 describe('PasskeyStep', () => {
@@ -691,5 +786,70 @@ describe('FailureStep', () => {
       screen.getByText(messages.mfaErrorLimitReached.message),
     ).toBeInTheDocument();
     expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
+  });
+});
+
+describe('TotpSetupStep', () => {
+  const setup = (
+    isRestart = false,
+  ): Extract<MfaFlowStep, { name: 'totpSetup' }> => ({
+    name: 'totpSetup',
+    secret: 'JBSWY3DPEHPK3PXP',
+    qrCode: 'data:image/png;base64,QR',
+    setupUri: 'otpauth://totp/MetaMask?secret=JBSWY3DPEHPK3PXP',
+    isRestart,
+  });
+
+  const renderSetup = (step = setup()) => {
+    const onAction = jest.fn();
+    const props = buildState(step);
+    return {
+      onAction,
+      ...render(
+        <TotpSetupStep
+          step={props.step}
+          state={props.state}
+          reason={reason}
+          onAction={onAction}
+        />,
+      ),
+    };
+  };
+
+  it('shows the QR code and the setup key in groups', () => {
+    renderSetup();
+
+    expect(screen.getByTestId(MfaFlowTestIds.TOTP_QR_IMAGE)).toHaveAttribute(
+      'src',
+      'data:image/png;base64,QR',
+    );
+    expect(screen.getByTestId(MfaFlowTestIds.TOTP_SETUP_KEY)).toHaveTextContent(
+      'JBSW Y3DP EHPK 3PXP',
+    );
+  });
+
+  it('copies the setup key as sensitive data', () => {
+    renderSetup();
+
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.TOTP_COPY_KEY));
+
+    expect(mockUseCopyToClipboard).toHaveBeenCalledWith({ sensitive: true });
+    expect(mockCopy).toHaveBeenCalledWith('JBSWY3DPEHPK3PXP');
+  });
+
+  it('warns that an earlier setup key stopped working', () => {
+    renderSetup(setup(true));
+
+    expect(
+      screen.getByText(messages.mfaTotpSetupRestarted.message),
+    ).toBeInTheDocument();
+  });
+
+  it('continues to the code', () => {
+    const { onAction } = renderSetup();
+
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+
+    expect(onAction).toHaveBeenCalledWith({ type: 'continue' });
   });
 });

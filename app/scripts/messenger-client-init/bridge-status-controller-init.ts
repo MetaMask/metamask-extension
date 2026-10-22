@@ -78,8 +78,7 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
     },
 
-    // @ts-expect-error: `trace` function type does not match the expected type.
-    traceFn: (...args) => trace(...args),
+    traceFn: trace,
     onQuoteStatusManagerError: (
       error: QuoteStatusUpdateError | QuoteStatusGetError,
     ) => {
