@@ -32,6 +32,8 @@ export function useUsefulScreenReady(screen: UsefulScreen, ready = true): void {
     if (!ready || key === undefined) {
       return undefined;
     }
+    // Double rAF allows a paint opportunity between callbacks.
+    // https://lists.w3.org/Archives/Public/public-web-perf/2024Sep/0001.html
     let frame = requestAnimationFrame(() => {
       frame = requestAnimationFrame(() => reportUsefulScreenReady(key, screen));
     });
