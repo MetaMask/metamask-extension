@@ -617,6 +617,11 @@ describe('NetworksPage', () => {
 
     const nameInput = screen.getByTestId('network-form-network-name');
     nameInput.focus();
+    expect(
+      screen.getByRole('button', {
+        name: messages.chainlistLearnHowToStaySafe.message,
+      }),
+    ).toHaveAttribute('tabindex', '-1');
 
     let tabMovesFocus = false;
     await act(async () => {

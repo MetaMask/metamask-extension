@@ -46,10 +46,13 @@ export const getHexChainId = (chainId: string | number) =>
 
 export const ChainlistSourceBanner = ({
   description,
+  learnMoreTabIndex,
   onLearnMoreMouseDown,
   testId,
 }: {
   description: (learnMore: React.ReactNode) => React.ReactNode;
+  /** Removes the learn-more link from the tab order inside a suggestion list. */
+  learnMoreTabIndex?: number;
   onLearnMoreMouseDown?: (event: React.MouseEvent) => void;
   testId: string;
 }) => {
@@ -69,6 +72,7 @@ export const ChainlistSourceBanner = ({
               }}
               onMouseDown={onLearnMoreMouseDown}
               size={TextButtonSize.BodySm}
+              tabIndex={learnMoreTabIndex}
             >
               {t('chainlistLearnHowToStaySafe')}
             </TextButton>,
@@ -601,6 +605,7 @@ export const ChainlistNetworkPicker = ({
                 description={(learnMore) =>
                   t('chainlistNetworkDataSourceBanner', [learnMore])
                 }
+                learnMoreTabIndex={isDropdown ? -1 : undefined}
                 testId="networks-page-chainlist-source-banner"
               />
             </Box>
