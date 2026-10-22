@@ -52,7 +52,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { logErrorWithMessage } from '../../../../shared/lib/error';
+import { captureException } from '../../../../shared/lib/sentry';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -324,8 +324,9 @@ export const MultichainAccountList = ({
     try {
       await dispatch(removeAccount(accountToDelete.address));
     } catch (error) {
-      // The account is still there, so there is no removal to report.
-      logErrorWithMessage(error);
+      // Still reported to Sentry, but the account is still there, so there is
+      // no removal to track.
+      captureException(error);
       return;
     }
     trackAccountRemoved(

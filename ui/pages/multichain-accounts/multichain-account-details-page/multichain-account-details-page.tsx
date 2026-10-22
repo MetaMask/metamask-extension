@@ -56,7 +56,7 @@ import { MultichainAccountEditModal } from '../../../components/multichain-accou
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
 import { removeAccount } from '../../../store/actions';
 import { MetaMetricsAccountRemovedLocation } from '../../../../shared/constants/metametrics';
-import { logErrorWithMessage } from '../../../../shared/lib/error';
+import { captureException } from '../../../../shared/lib/sentry';
 import { useTrackAccountRemoved } from '../../../components/multichain-accounts/hooks/useTrackAccountRemoved';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useDispatch } from '../../../store/hooks';
@@ -149,8 +149,9 @@ export const MultichainAccountDetailsPage = () => {
       try {
         await removal;
       } catch (error) {
-        // The account is still there, so there is no removal to report.
-        logErrorWithMessage(error);
+        // Still reported to Sentry, but the account is still there, so there is
+        // no removal to track.
+        captureException(error);
         return;
       }
       // Resolved before the removal, so it still describes the removed account.

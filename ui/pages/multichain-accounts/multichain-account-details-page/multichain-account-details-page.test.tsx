@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import configureStore from '../../../store/store';
@@ -36,6 +36,14 @@ jest.mock('../../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../../shared/lib/trace'),
   trace: jest.fn(),
 }));
+
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
+const mockCaptureException = jest.requireMock('../../../../shared/lib/sentry')
+  .captureException as jest.Mock;
 
 const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -251,6 +259,7 @@ describe('MultichainAccountDetailsPage', () => {
 
     // First call should be the removeAccount thunk (AsyncFunction)
     expect(mockDispatch).toHaveBeenNthCalledWith(1, expect.any(Function));
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('tracks Account Removed from account details with the hardware device as the account type once the removal succeeds', async () => {
@@ -280,9 +289,10 @@ describe('MultichainAccountDetailsPage', () => {
     );
   });
 
-  it('does not track Account Removed when the removal fails', async () => {
+  it('reports a failed removal without tracking it', async () => {
     // `removeAccount` rejects when the background fails to remove.
-    mockDispatch.mockRejectedValueOnce(new Error('Removal failed'));
+    const removalError = new Error('Removal failed');
+    mockDispatch.mockRejectedValueOnce(removalError);
     setSearchParams(LEDGER_ACCOUNT_GROUP_ID);
     renderComponent();
 
@@ -291,7 +301,9 @@ describe('MultichainAccountDetailsPage', () => {
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-    await act(async () => undefined);
+    await waitFor(() =>
+      expect(mockCaptureException).toHaveBeenCalledWith(removalError),
+    );
     expect(mockTrackEvent).not.toHaveBeenCalledWith(
       expect.objectContaining({ name: MetaMetricsEventName.AccountRemoved }),
     );

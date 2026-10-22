@@ -678,6 +678,61 @@ describe('MultichainAccountMenu', () => {
     });
   });
 
+  it('tracks Account Hidden event when clicking the show option on a hidden account', async () => {
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+    const stateWithHiddenAccount = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        accountTree: {
+          wallets: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Test Account',
+                    pinned: false,
+                    hidden: true,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    await renderComponent(
+      {
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithHiddenAccount,
+    );
+
+    const showOption = document.querySelectorAll(menuItemSelector)[4];
+    await act(async () => {
+      fireEvent.click(showOption);
+    });
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.AccountHidden,
+      properties: {
+        category: MetaMetricsEventCategory.Accounts,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: MetaMetricsEventAccountType.Default,
+        hidden: false,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        hidden_count_after: 0,
+        location: MetaMetricsAccountHiddenLocation.AccountMenu,
+      },
+      sensitiveProperties: {},
+    });
+  });
+
   it('does not track Account Hidden when the write does not take effect', async () => {
     // The real action logs and swallows background errors, so a failed write
     // resolves without changing the store.

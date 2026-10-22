@@ -43,6 +43,14 @@ const backgroundConnectionMock = new Proxy(
   },
 );
 
+jest.mock('../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
+const mockCaptureException = jest.requireMock('../../../../shared/lib/sentry')
+  .captureException as jest.Mock;
+
 jest.mock('../../../../shared/lib/trace', () => {
   const actual = jest.requireActual('../../../../shared/lib/trace');
   return {
@@ -2077,10 +2085,11 @@ describe('MultichainAccountList', () => {
       );
     });
 
-    it('does not track the removal when it fails', async () => {
+    it('reports a failed removal without tracking it', async () => {
       // `removeAccount` rejects when the background fails to remove.
+      const removalError = new Error('Removal failed');
       mockRemoveAccount.mockImplementationOnce(() => async () => {
-        throw new Error('Removal failed');
+        throw removalError;
       });
       renderComponent(
         {
@@ -2098,7 +2107,12 @@ describe('MultichainAccountList', () => {
       );
 
       expect(mockRemoveAccount).toHaveBeenCalledWith(privateKeyAccountAddress);
-      await act(async () => undefined);
+      expect(
+        screen.queryByTestId('account-delete-confirm-modal'),
+      ).not.toBeInTheDocument();
+      await waitFor(() =>
+        expect(mockCaptureException).toHaveBeenCalledWith(removalError),
+      );
       expect(mockTrackEvent).not.toHaveBeenCalledWith(
         expect.objectContaining({ name: MetaMetricsEventName.AccountRemoved }),
       );
