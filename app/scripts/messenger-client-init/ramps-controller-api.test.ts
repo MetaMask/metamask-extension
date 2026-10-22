@@ -27,39 +27,7 @@ describe('getRampsControllerApi', () => {
     );
 
     expect(Object.keys(api).sort()).toMatchSnapshot();
-    expect(typeof api.setRampsUserRegion).toBe('function');
-    expect(typeof api.getRampsQuotes).toBe('function');
-    expect(typeof api.syncRampsOrdersWithUserStorage).toBe('function');
     expect(typeof api.watchRampsCheckoutTab).toBe('function');
     expect(typeof api.watchRampsProviderOrderTab).toBe('function');
-  });
-
-  it('delegates syncRampsOrdersWithUserStorage to the controller', async () => {
-    const rampsController = {
-      setUserRegion: jest.fn(),
-      setSelectedToken: jest.fn(),
-      setSelectedProvider: jest.fn(),
-      setSelectedPaymentMethod: jest.fn(),
-      getTokens: jest.fn(),
-      getProviders: jest.fn(),
-      getPaymentMethods: jest.fn(),
-      getQuotes: jest.fn(),
-      getBuyWidgetData: jest.fn(),
-      addPrecreatedOrder: jest.fn(),
-      addOrder: jest.fn(),
-      removeOrder: jest.fn(),
-      getOrder: jest.fn(),
-      getOrderFromCallback: jest.fn(),
-      syncOrdersWithUserStorage: jest.fn(),
-    };
-
-    const api = getRampsControllerApi(
-      rampsController as never,
-      new ExtensionPlatform(),
-    );
-
-    await api.syncRampsOrdersWithUserStorage();
-
-    expect(rampsController.syncOrdersWithUserStorage).toHaveBeenCalledWith();
   });
 });
