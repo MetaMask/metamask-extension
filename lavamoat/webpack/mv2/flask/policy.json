@@ -910,7 +910,7 @@
         "@metamask/client-controller": true,
         "@metamask/assets-controller>@metamask/controller-utils": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/phishing-controller": true,
+        "@metamask/assets-controller>@metamask/phishing-controller": true,
         "@metamask/assets-controller>@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -947,7 +947,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/phishing-controller": true,
+        "@metamask/assets-controllers>@metamask/phishing-controller": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
@@ -958,7 +958,7 @@
         "@metamask/assets-controllers>immer": true,
         "@metamask/assets-controller>lodash-es": true,
         "@metamask/assets-controllers>multiformats": true,
-        "@metamask/assets-controllers>reselect": true,
+        "reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "@metamask/assets-controllers>uuid": true
       }
@@ -1048,8 +1048,29 @@
         "@metamask/bridge-controller>bignumber.js": true,
         "buffer": true,
         "@metamask/assets-controller>lodash-es": true,
-        "@metamask/bridge-controller>reselect": true,
+        "reselect": true,
         "@metamask/bridge-controller>uuid": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/bridge-controller": {
+      "globals": {
+        "Buffer.from": true,
+        "URLSearchParams": true,
+        "console.warn": true
+      },
+      "packages": {
+        "ethers>@ethersproject/address": true,
+        "ethers>@ethersproject/constants": true,
+        "@ethersproject/contracts": true,
+        "@metamask/bridge-status-controller>@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>bignumber.js": true,
+        "buffer": true,
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/bridge-status-controller": {
@@ -1063,7 +1084,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/bridge-controller": true,
+        "@metamask/bridge-status-controller>@metamask/bridge-controller": true,
         "@metamask/bridge-status-controller>@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/bridge-status-controller>@metamask/polling-controller": true,
@@ -1092,23 +1113,8 @@
       }
     },
     "@metamask/chain-agnostic-permission": {
-      "globals": {
-        "console.error": true
-      },
       "packages": {
         "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
-        "@metamask/chain-agnostic-permission>@metamask/controller-utils": true,
-        "@metamask/permission-controller": true,
-        "@metamask/utils": true,
-        "@metamask/assets-controller>lodash-es": true
-      }
-    },
-    "@metamask/multichain-api-middleware>@metamask/chain-agnostic-permission": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/multichain-api-middleware>@metamask/api-specs": true,
         "@metamask/controller-utils": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
@@ -1312,23 +1318,6 @@
         "@metamask/assets-controller>lodash-es": true
       }
     },
-    "@metamask/chain-agnostic-permission>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "@metamask/assets-controller>lodash-es": true
-      }
-    },
     "@metamask/config-registry-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1452,23 +1441,6 @@
       }
     },
     "@metamask/perps-controller>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "@metamask/assets-controller>lodash-es": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
@@ -1828,7 +1800,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true,
         "async-mutex": true,
         "pify": true
@@ -1841,21 +1813,29 @@
       },
       "packages": {
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true
       }
     },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
-        "TextEncoder": true,
-        "setTimeout": true
+        "TextEncoder": true
       },
       "packages": {
         "@metamask/eth-sig-util": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "@metamask/json-rpc-engine>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
@@ -1863,7 +1843,7 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "uuid": true
@@ -1871,7 +1851,7 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/json-rpc-engine": true,
+        "@metamask/network-controller>@metamask/json-rpc-engine": true,
         "nanoid": true
       }
     },
@@ -2176,33 +2156,7 @@
         "@metamask/json-rpc-engine>klona": true
       }
     },
-    "@metamask/eth-json-rpc-filters>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/messenger": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "@metamask/json-rpc-engine>klona": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/messenger": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "@metamask/json-rpc-engine>klona": true
-      }
-    },
-    "@metamask/providers>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/messenger": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/json-rpc-engine": {
+    "@metamask/network-controller>@metamask/json-rpc-engine": {
       "packages": {
         "@metamask/messenger": true,
         "@metamask/rpc-errors": true,
@@ -2589,10 +2543,10 @@
       },
       "packages": {
         "@metamask/multichain-api-middleware>@metamask/api-specs": true,
-        "@metamask/multichain-api-middleware>@metamask/chain-agnostic-permission": true,
+        "@metamask/chain-agnostic-permission": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
-        "@metamask/multichain-api-middleware>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
@@ -2615,6 +2569,11 @@
       }
     },
     "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": {
       "packages": {
         "@metamask/utils": true
       }
@@ -2676,10 +2635,10 @@
         "@metamask/network-controller>@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
+        "@metamask/network-controller>@metamask/json-rpc-engine": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
@@ -2779,7 +2738,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/permission-controller>@metamask/controller-utils": true,
-        "@metamask/json-rpc-engine": true,
+        "@metamask/permission-controller>@metamask/json-rpc-engine": true,
         "@metamask/messenger": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -2813,7 +2772,7 @@
         "@metamask/utils": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
         "@metamask/perps-controller>bignumber.js": true,
-        "@metamask/perps-controller>reselect": true,
+        "reselect": true,
         "@metamask/perps-controller>uuid": true
       }
     },
@@ -2827,10 +2786,10 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/transaction-controller": true,
         "@noble/hashes": true,
-        "ethereum-cryptography": true,
+        "@metamask/phishing-controller>ethereum-cryptography": true,
         "stylelint>fastest-levenshtein": true,
         "punycode": true
       }
@@ -3042,7 +3001,7 @@
         "console": true
       },
       "packages": {
-        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
@@ -3071,14 +3030,6 @@
         "@metamask/ramps-controller>bignumber.js": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/transaction-pay-controller>@metamask/controller-utils": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -3279,7 +3230,7 @@
       "packages": {
         "@metamask/approval-controller": true,
         "@metamask/base-controller": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
         "@metamask/object-multiplex": true,
         "@metamask/permission-controller": true,
@@ -3486,7 +3437,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -3536,6 +3487,7 @@
       "packages": {
         "@metamask/accounts-controller": true,
         "@metamask/wallet>@metamask/address-book-controller": true,
+        "@metamask/analytics-controller": true,
         "@metamask/wallet>@metamask/approval-controller": true,
         "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
@@ -3935,6 +3887,11 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "@open-rpc/schema-utils-js": {
@@ -5601,6 +5558,16 @@
         "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "@metamask/phishing-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
     "ethereumjs-util>ethereum-cryptography": {
       "globals": {
         "Buffer.from": true
@@ -7265,25 +7232,7 @@
         "console.warn": true
       }
     },
-    "@metamask/assets-controllers>reselect": {
-      "globals": {
-        "WeakRef": true,
-        "console.warn": true
-      }
-    },
-    "@metamask/bridge-controller>reselect": {
-      "globals": {
-        "WeakRef": true,
-        "console.warn": true
-      }
-    },
     "@metamask/network-controller>reselect": {
-      "globals": {
-        "WeakRef": true,
-        "console.warn": true
-      }
-    },
-    "@metamask/perps-controller>reselect": {
       "globals": {
         "WeakRef": true,
         "console.warn": true
