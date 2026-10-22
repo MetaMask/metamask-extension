@@ -113,6 +113,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  addressResolution: {
+    inProd: true,
+    name: 'addressResolution',
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   assetsAccountApiBalances: {
     inProd: true,
     name: 'assetsAccountApiBalances',

@@ -1738,9 +1738,6 @@
     "message": "Одобрено $1 для $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Добро пожаловать в Arc! Чтобы обеспечить и проверить ваше использование сети Arc, мы можем передавать информацию команде Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Уведомление"
   },
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Назад в безопасное место"
+  },
+  "backToWallet": {
+    "message": "Вернуться в кошелек"
   },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Сбор данных для маркетинга"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "Мы будем использовать MetaMetrics, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем делиться соответствующими новостями (например, новостями о функциях продукта и другими материалами)."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Получайте обновления, советы и новости о продуктах, в том числе по эл. почте. Мы можем использовать ваши сообщения для улучшения того, чем мы делимся."
   },
@@ -4253,10 +4250,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask покрывает комиссию сети за эту транзакцию. Сюда входит однократная активация смарт-счета."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Эта конкретная сеть требует поддержания резерва в размере $1 $2 на вашем счете.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 ч",
     "description": "$1 represents a number of hours"
@@ -4505,6 +4498,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Продолжить"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Разблокируйте его и попробуйте снова, чтобы продолжить",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Ваш $1 может подписывать только типизированные данные версии 4 (V4). Этот сайт запросил более старый тип подписи, который не поддерживается",
@@ -5431,6 +5428,57 @@
   "metrics": {
     "message": "Показатели"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Продолжить"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Введите действительный адрес эл. почты."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Адрес элю почты"
+  },
+  "mfaErrorCooldown": {
+    "message": "Слишком много запросов. Подождите немного и повторите попытку."
+  },
+  "mfaErrorGeneric": {
+    "message": "Возникла какая-то проблема. Повторите попытку."
+  },
+  "mfaFailureClose": {
+    "message": "Закрыть"
+  },
+  "mfaFailureRetry": {
+    "message": "Повторить попытку"
+  },
+  "mfaFailureTitle": {
+    "message": "Что-то пошло не так"
+  },
+  "mfaIntroContinue": {
+    "message": "Начало работы"
+  },
+  "mfaMethodEmail": {
+    "message": "Эл. почта"
+  },
+  "mfaOtpPaste": {
+    "message": "Вставить"
+  },
+  "mfaOtpResend": {
+    "message": "Повторно отправить код"
+  },
+  "mfaOtpRetry": {
+    "message": "Повторить попытку"
+  },
+  "mfaOtpVerify": {
+    "message": "Проверить"
+  },
+  "mfaPickerOr": {
+    "message": "или"
+  },
+  "mfaSettingsAdd": {
+    "message": "Добавить"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Продолжить"
+  },
   "minimumReceivedExplanation": {
     "message": "Минимум, которые вы получите, если цена изменится во время обработки вашей транзакции, рассчитывается на основе настроек проскальзывания. Оценка предоставляется поставщиками ликвидности, поэтому окончательная сумма может отличаться."
   },
@@ -5643,6 +5691,14 @@
   "moneyEarnApyTitle": {
     "message": "Зарабатывайте до $1 годовых"
   },
+  "moneyEarnBannerCta": {
+    "message": "Добавить $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Зарабатывайте с вашим счетом Money Account",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "Зарабатывайте на своей криптовалюте"
   },
@@ -5797,6 +5853,10 @@
   },
   "moneySend": {
     "message": "Отправить"
+  },
+  "moneyStartEarning": {
+    "message": "Начните зарабатывать",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Не удалось добавить средства. Повторите попытку."
@@ -6772,7 +6832,7 @@
     "message": "Собирать основные данные об использовании"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Новости о товаре"
+    "message": "Рекламные новости"
   },
   "onboardingMetametricsContinue": {
     "message": "Продолжить"
@@ -7460,6 +7520,9 @@
   "perps24hVolume": {
     "message": "Объем за 24 ч"
   },
+  "perpsAbout": {
+    "message": "О MetaMask"
+  },
   "perpsActivity": {
     "message": "Деятельность"
   },
@@ -8062,6 +8125,9 @@
   "perpsRateLimitExceeded": {
     "message": "Слишком много запросов. Подождите немного и повторите попытку."
   },
+  "perpsReadMore": {
+    "message": "Подробнее"
+  },
   "perpsRecentActivity": {
     "message": "Недавняя активность"
   },
@@ -8108,6 +8174,18 @@
   "perpsSeeAll": {
     "message": "Смотреть все",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "обратитесь в поддержку",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Посмотрите варианты действий в разделе часто задаваемых вопросов",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Произошел сбой",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Сервис временно недоступен. Повторите попытку позже."
@@ -12131,6 +12209,9 @@
   },
   "turnOn": {
     "message": "Включить"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "включить базовый функционал"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Произошла ошибка при создании уведомлений. Повторите попытку позже."

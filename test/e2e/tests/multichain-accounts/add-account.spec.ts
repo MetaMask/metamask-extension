@@ -28,7 +28,7 @@ const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
 const CUSTOM_ACCOUNT_NAME = 'Custom 1';
 const TEST_PRIVATE_KEY =
   '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
-// Matches mock-e2e default `ethConversionInUsd`; 25 ETH × 3010 = $75,250.00
+// Matches mock-e2e `DEFAULT_ETH_USD_PRICE`; 25 ETH × 3010 = $75,250.00
 const ETH_USD_CONVERSION_RATE = 3010;
 
 const importedAccount = {

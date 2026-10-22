@@ -24,6 +24,35 @@ jest.mock('../../hooks/useAnalytics', () => {
   };
 });
 
+jest.mock('../../store/actions', () => {
+  const actual = jest.requireActual('../../store/actions');
+
+  return {
+    ...actual,
+    // The real action writes through the background, which then pushes state
+    // back. Unit tests have no background, so apply the preference locally.
+    setShowTestNetworksPreference: (value: boolean) => {
+      return (
+        dispatch: (action: { type: string; value: unknown }) => void,
+        getState: () => {
+          metamask: { preferences: Record<string, unknown> };
+        },
+      ) => {
+        const { preferences } = getState().metamask;
+        dispatch({
+          type: 'UPDATE_METAMASK_STATE',
+          value: {
+            preferences: {
+              ...preferences,
+              showTestNetworks: value,
+            },
+          },
+        });
+      };
+    },
+  };
+});
+
 const mockSafeChains = [
   {
     name: 'Gnosis',
@@ -419,10 +448,16 @@ describe('NetworksPage', () => {
     const confluxIndex = networkNames.indexOf('Chainlist Network 31');
     const plainNetworkIndex = networkNames.indexOf('Chainlist Network 1');
 
+    const sepoliaIndex = networkNames.indexOf('Sepolia');
+
     expect(gnosisIndex).toBeGreaterThanOrEqual(0);
     expect(cronosIndex).toBeGreaterThan(gnosisIndex);
     expect(confluxIndex).toBeGreaterThan(cronosIndex);
     expect(plainNetworkIndex).toBeGreaterThan(confluxIndex);
+    expect(sepoliaIndex).toBeGreaterThan(plainNetworkIndex);
+    expect(
+      screen.queryByTestId('networks-page-chainlist-show-test-networks'),
+    ).not.toBeInTheDocument();
   });
 
   it('caps the Chainlist list above the Save button', () => {
@@ -620,7 +655,7 @@ describe('NetworksPage', () => {
     expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
   });
 
-  it('hides built-in test networks from Chainlist when test networks are hidden', async () => {
+  it('keeps default testnets under the Chainlist toggle when test networks are hidden', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
       networkConfigurationsByChainId: {
@@ -637,12 +672,65 @@ describe('NetworksPage', () => {
       ),
       { target: { value: 'Sepolia' } },
     );
-    await waitFor(() => {
-      expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+
+    expect(await screen.findByText('Sepolia')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('networks-page-chainlist-show-test-networks'),
+    ).not.toBeChecked();
+    expect(
+      screen.getByTestId('networks-page-chainlist-added-pill'),
+    ).toHaveTextContent(messages.added.message);
+
+    fireEvent.click(
+      screen.getByText('Sepolia').closest('button') as HTMLButtonElement,
+    );
+
+    expect(
+      await screen.findByText(messages.editNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Sepolia',
+    );
+
+    fireEvent.click(screen.getByTestId('networks-page-form-back-button'));
+
+    expect(
+      await screen.findByTestId('networks-page-show-test-networks'),
+    ).toBeChecked();
+    expect(screen.getByText('Sepolia')).toBeInTheDocument();
+  });
+
+  it('selects a default testnet that is not added yet', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+      showTestNetworks: false,
     });
+
+    fireEvent.change(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      { target: { value: 'Sepolia' } },
+    );
+
     expect(
       screen.queryByTestId('networks-page-chainlist-added-pill'),
     ).not.toBeInTheDocument();
+
+    fireEvent.click(
+      (await screen.findByText('Sepolia')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+
+    expect(
+      await screen.findByText(messages.addNetwork.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Sepolia',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('11155111');
   });
 
   it('shows built-in test networks in Chainlist when test networks are shown', async () => {

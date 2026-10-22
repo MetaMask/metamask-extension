@@ -85,7 +85,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
           hardfork: 'muirGlacier',
         },
         smartContract,
-        ethConversionInUsd: MOCK_ETH_CONVERSION_RATE, // 25 ETH × $3401 = $85,025.00
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockPriceApi(mockServer);

@@ -141,8 +141,6 @@
     "handleSnapRequest",
     "isNftOwner",
     "isPublicEndpointUrl",
-    "multichainAssetsRatesStartPolling",
-    "multichainAssetsRatesStopPollingByPollingToken",
     "removeAndIgnoreNft",
     "removeNetwork",
     "removeNft",

@@ -1738,9 +1738,6 @@
     "message": "Aprovada em $1 para $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Boas-vindas à Arc! Para facilitar e verificar seu uso da rede Arc, podemos ter que compartilhar informações com a equipe da Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Aviso"
   },
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Voltar para a segurança"
+  },
+  "backToWallet": {
+    "message": "Voltar à carteira"
   },
   "backUpIncomplete": {
     "message": "Backup incompleto"
@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Coleta de dados para marketing"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "Usaremos o MetaMetrics para saber como você interage com nossas comunicações de marketing. Poderemos compartilhar novidades relevantes (como recursos de produtos e outros materiais)."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Receba atualizações de produtos, dicas e novidades, inclusive por e-mail. Podemos usar suas interações para aprimorar o que compartilharmos."
   },
@@ -4253,10 +4250,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "A MetaMask cobre a taxa de rede desta transação. Isso inclui a ativação única da conta inteligente."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Esta rede específica requer que você mantenha uma reserva de $1 a $2 em sua conta.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 h",
     "description": "$1 represents a number of hours"
@@ -4505,6 +4498,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Continuar"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Desbloqueie-o e tente novamente para continuar",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Seu $1 só pode assinar dados digitados na versão 4 (V4). Este site solicitou um tipo de assinatura mais antigo, que não é suportado.",
@@ -5431,6 +5428,57 @@
   "metrics": {
     "message": "Métricas"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Continuar"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Insira um endereço de e-mail válido."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Endereço de e-mail"
+  },
+  "mfaErrorCooldown": {
+    "message": "Excesso de solicitações. Aguarde um pouco e tente novamente."
+  },
+  "mfaErrorGeneric": {
+    "message": "Algo deu errado. Tente de novo."
+  },
+  "mfaFailureClose": {
+    "message": "Fechar"
+  },
+  "mfaFailureRetry": {
+    "message": "Tentar novamente"
+  },
+  "mfaFailureTitle": {
+    "message": "Ocorreu algum erro"
+  },
+  "mfaIntroContinue": {
+    "message": "Começar"
+  },
+  "mfaMethodEmail": {
+    "message": "E-mail"
+  },
+  "mfaOtpPaste": {
+    "message": "Colar"
+  },
+  "mfaOtpResend": {
+    "message": "Reenviar código"
+  },
+  "mfaOtpRetry": {
+    "message": "Tentar novamente"
+  },
+  "mfaOtpVerify": {
+    "message": "Verificar"
+  },
+  "mfaPickerOr": {
+    "message": "ou"
+  },
+  "mfaSettingsAdd": {
+    "message": "Adicionar"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Continuar"
+  },
   "minimumReceivedExplanation": {
     "message": "O valor mínimo que você receberá se o preço mudar enquanto sua transação é processada, com base em sua configuração de slippage. A estimativa é fornecida pelos provedores de liquidez, portanto o valor final pode ser diferente."
   },
@@ -5643,6 +5691,14 @@
   "moneyEarnApyTitle": {
     "message": "Ganhe até $1 de APY"
   },
+  "moneyEarnBannerCta": {
+    "message": "Adicionar $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Ganhe com sua conta Money",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "Ganhe com suas criptomoedas"
   },
@@ -5797,6 +5853,10 @@
   },
   "moneySend": {
     "message": "Enviar"
+  },
+  "moneyStartEarning": {
+    "message": "Comece a ganhar",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Não foi possível adicionar fundos. Tente novamente."
@@ -6772,7 +6832,7 @@
     "message": "Coletar dados básicos de uso"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Atualizações de produtos"
+    "message": "Atualizações de marketing"
   },
   "onboardingMetametricsContinue": {
     "message": "Continuar"
@@ -7460,6 +7520,9 @@
   "perps24hVolume": {
     "message": "Volume em 24 horas"
   },
+  "perpsAbout": {
+    "message": "Sobre"
+  },
   "perpsActivity": {
     "message": "Atividade"
   },
@@ -8062,6 +8125,9 @@
   "perpsRateLimitExceeded": {
     "message": "Excesso de solicitações. Aguarde e tente novamente."
   },
+  "perpsReadMore": {
+    "message": "Saiba mais"
+  },
   "perpsRecentActivity": {
     "message": "Atividade recente"
   },
@@ -8108,6 +8174,18 @@
   "perpsSeeAll": {
     "message": "Ver tudo",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "entre em contato com o suporte",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Consulte suas opções nas Perguntas frequentes (FAQs).",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Estamos tendo um apagão",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Serviço temporariamente indisponível. Tente novamente mais tarde."
@@ -12131,6 +12209,9 @@
   },
   "turnOn": {
     "message": "Ativar"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "ativar funcionalidade básica"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Ocorreu um erro ao criar as notificações. Tente novamente mais tarde."
