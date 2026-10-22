@@ -21,7 +21,9 @@ type Navigation = { key: string; pathname: string; navigationType: string };
 let startup:
   | (StartupOptions & { backgroundInitializedAt?: number })
   | undefined;
-let route: { key: string; screen: UsefulScreen } | undefined;
+let route:
+  | { key: string; screen: UsefulScreen; confirmationId?: string }
+  | undefined;
 let finished = false;
 
 function getScreenForPath(pathname: string): UsefulScreen | undefined {
@@ -102,11 +104,19 @@ export function observeUsefulScreenNavigation({
     return;
   }
   const screen = getScreenForPath(pathname);
-  if (!screen || (route && navigationType !== 'REPLACE')) {
+  const confirmationId =
+    screen === 'confirmation' ? pathname.split('/')[2] || undefined : undefined;
+  if (
+    !screen ||
+    (route && navigationType !== 'REPLACE') ||
+    (route?.confirmationId && confirmationId !== route.confirmationId)
+  ) {
     discard();
     return;
   }
-  route = { key, screen };
+  // A REPLACE can also follow approval/rejection or switching pending requests.
+  // Keep the first request identity local, without adding it to telemetry.
+  route = { key, screen, confirmationId };
 }
 
 /**

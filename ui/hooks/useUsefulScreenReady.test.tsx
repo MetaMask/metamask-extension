@@ -214,6 +214,75 @@ describe('useUsefulScreenReady', () => {
     expect(startSpanManual).toHaveBeenCalledTimes(1);
   });
 
+  jestIt.each([
+    '/confirm-transaction/signature/signature-request',
+    '/confirmation/unsupported-request',
+    '/confirm-transaction/first-transaction',
+  ])('excludes replacement of an initial request at %s', (pathname) => {
+    initialize('confirmation');
+    mockLocation.pathname = pathname;
+    const { rerender } = renderScreen('confirmation', false);
+    advance(20_000);
+
+    mockLocation = {
+      key: 'next-request',
+      pathname: '/confirm-transaction/next-request',
+    };
+    mockNavigationType = 'REPLACE';
+    rerender({ ready: true });
+    advance();
+
+    expect(startSpanManual).not.toHaveBeenCalled();
+  });
+
+  jestIt.each(['/confirmation', '/confirm-transaction'])(
+    'allows startup resolution of the first request from %s',
+    (pathname) => {
+      initialize('confirmation');
+      mockLocation.pathname = pathname;
+      const { rerender } = renderScreen('confirmation', false);
+
+      mockLocation = {
+        key: 'resolved-request',
+        pathname: '/confirm-transaction/request',
+      };
+      mockNavigationType = 'REPLACE';
+      rerender({ ready: true });
+      advance();
+
+      expect(startSpanManual).toHaveBeenCalledTimes(1);
+      expect(setTag).toHaveBeenCalledWith('screen', 'confirmation');
+    },
+  );
+
+  it('allows a replacement redirect that retains the first request', () => {
+    initialize('confirmation');
+    const { rerender } = renderScreen('confirmation', false);
+
+    mockLocation = {
+      key: 'same-request',
+      pathname: '/confirm-transaction/request',
+    };
+    mockNavigationType = 'REPLACE';
+    rerender({ ready: true });
+    advance();
+
+    expect(startSpanManual).toHaveBeenCalledTimes(1);
+  });
+
+  it('excludes Home after replacing the initial confirmation', () => {
+    initialize('confirmation');
+    const confirmation = renderScreen('confirmation', false);
+
+    mockLocation = { key: 'home', pathname: '/' };
+    mockNavigationType = 'REPLACE';
+    confirmation.rerender({ ready: false });
+    renderScreen('home');
+    advance();
+
+    expect(startSpanManual).not.toHaveBeenCalled();
+  });
+
   jestIt.each(['PUSH', 'POP'] as const)(
     'excludes later %s navigation even if the first screen never became ready',
     (navigationType) => {

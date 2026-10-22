@@ -18,7 +18,9 @@ ready={ready} />`, supports the existing class-based Unlock screen.
 
 No network refresh, password input, animation, simulation, security check, or
 approval-button enabling is required. Existing approval validation is unchanged.
-Other initial Home tabs, signatures, and non-transaction approvals are outside v1.
+Other initial Home tabs, unsupported account types, signatures, and
+non-transaction approvals are outside v1. An empty Tokens list for a supported
+account is included; the unsupported-account screen without a Tokens tab is not.
 Keep the marker with the useful content if introducing separate Suspense boundaries.
 
 ## Measurement contract
@@ -28,6 +30,10 @@ Keep the marker with the useful content if introducing separate Suspense boundar
 - Startup `REPLACE` redirects are allowed. Subsequent `PUSH`/`POP`, unsupported
   routes, hidden documents, and page close abandon measurement. Unmounting or
   becoming unready cancels a pending report.
+- Once the confirmation URL identifies the first request, replacing it with a
+  different request or Home abandons measurement, even for `REPLACE` navigation.
+  Resolving an ID-less startup URL or redirecting the same request is allowed.
+  Request identity is kept local and is never attached to telemetry.
 - Visibility and page-close tracking starts before background initialization.
   Where supported, buffered `visibility-state` entries also exclude documents
   hidden before the UI bundle ran. Other browsers use the current visibility
