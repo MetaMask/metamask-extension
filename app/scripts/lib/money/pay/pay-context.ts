@@ -14,7 +14,7 @@ import type {
   TransactionControllerAddTransactionBatchAction,
   TransactionControllerGetStateAction,
   TransactionControllerUnapprovedTransactionAddedEvent,
-  TransactionControllerUpdateTransactionAction,
+  TransactionControllerUpdateTransactionMetadataAction,
 } from '@metamask/transaction-controller';
 import { isStrictHexString, type Hex } from '@metamask/utils';
 import {
@@ -32,7 +32,7 @@ export type MoneyPayActions =
   | MoneyAccountControllerGetMoneyAccountAction
   | TransactionControllerAddTransactionBatchAction
   | TransactionControllerGetStateAction
-  | TransactionControllerUpdateTransactionAction;
+  | TransactionControllerUpdateTransactionMetadataAction;
 
 type MoneyPayEvents = TransactionControllerUnapprovedTransactionAddedEvent;
 

@@ -54,6 +54,20 @@ const SIGNING_RECIPIENT_QUOTED_ROUTE = {
   paymentToken: BRIDGED_RECEIVE_TOKEN,
 };
 
+type UpdateTransactionMetadataOptions = {
+  transactionId: string;
+  callback: (transaction: TransactionMeta) => void;
+};
+
+function getUpdateCallback(
+  updateTransactionMetadata: jest.Mock,
+): UpdateTransactionMetadataOptions['callback'] {
+  const [options] = updateTransactionMetadata.mock.calls[0] as [
+    UpdateTransactionMetadataOptions,
+  ];
+  return options.callback;
+}
+
 function encodeTransfer(to: Hex, amount: bigint): Hex {
   return new Interface([
     'function transfer(address to, uint256 amount)',
@@ -68,6 +82,10 @@ function createWithdrawTransaction({
     id: TRANSACTION_ID,
     chainId: VAULT_CONFIG_MOCK.chainId,
     status: TransactionStatus.unapproved,
+    txParams: {
+      from: MONEY_ACCOUNT_ADDRESS_MOCK,
+      data: '0x',
+    },
     nestedTransactions: [
       {
         to: VAULT_CONFIG_MOCK.tellerAddress,
@@ -93,18 +111,28 @@ function setup({
   selectedAddress?: string;
   handlers?: Record<string, (...args: unknown[]) => unknown>;
 } = {}) {
-  const updateTransaction = jest.fn();
+  const updateTransactionMetadata = jest.fn((options: unknown) => {
+    const { transactionId, callback } =
+      options as UpdateTransactionMetadataOptions;
+    const transaction = transactions.find(({ id }) => id === transactionId);
+    if (!transaction) {
+      throw new Error(`Transaction not found: ${transactionId}`);
+    }
+    callback(transaction);
+    return transaction;
+  });
   const mock = createMoneyPayMessengerMock({
     handlers: {
       'TransactionController:getState': () => ({ transactions }),
-      'TransactionController:updateTransaction': updateTransaction,
+      'TransactionController:updateTransactionMetadata':
+        updateTransactionMetadata,
       'AccountsController:getSelectedAccount': () => ({
         address: selectedAddress,
       }),
       ...handlers,
     },
   });
-  return { ...mock, updateTransaction };
+  return { ...mock, updateTransactionMetadata };
 }
 
 describe('updateMoneyAccountWithdrawAmount', () => {
@@ -131,7 +159,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
   });
 
   it('encodes withdraw + transfer calldata for the account override recipient', async () => {
-    const { messenger, updateTransaction } = setup();
+    const { messenger, updateTransactionMetadata } = setup();
 
     const result = await updateMoneyAccountWithdrawAmount(
       messenger,
@@ -143,6 +171,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     expect(result).toStrictEqual({
       withdrawData: WITHDRAW_DATA,
       transferData: TRANSFER_DATA,
+      transactionData: expect.stringMatching(/^0x/u),
     });
     expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -154,9 +183,10 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       }),
     );
 
-    const [nextTransaction] = updateTransaction.mock.calls[0];
-    expect(nextTransaction.nestedTransactions[0].data).toBe(WITHDRAW_DATA);
-    expect(nextTransaction.nestedTransactions[1].data).toBe(TRANSFER_DATA);
+    const nextTransaction = createWithdrawTransaction();
+    getUpdateCallback(updateTransactionMetadata)(nextTransaction);
+    expect(nextTransaction.nestedTransactions?.[0].data).toBe(WITHDRAW_DATA);
+    expect(nextTransaction.nestedTransactions?.[1].data).toBe(TRANSFER_DATA);
     expect(nextTransaction.requiredAssets).toBeUndefined();
   });
 
@@ -184,6 +214,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     expect(result).toStrictEqual({
       withdrawData: WITHDRAW_DATA,
       transferData: TRANSFER_DATA,
+      transactionData: expect.stringMatching(/^0x/u),
     });
     expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -211,6 +242,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     expect(result).toStrictEqual({
       withdrawData: WITHDRAW_DATA,
       transferData: TRANSFER_DATA,
+      transactionData: expect.stringMatching(/^0x/u),
     });
     expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
       expect.objectContaining({ recipient: SELECTED_ACCOUNT }),
@@ -265,8 +297,22 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
   });
 
+  it('continues to round fractional mUSD up before encoding', async () => {
+    const { messenger } = setup();
+
+    await updateMoneyAccountWithdrawAmount(
+      messenger,
+      TRANSACTION_ID,
+      '1.0000005',
+    );
+
+    expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({ amount: 1_000_001n }),
+    );
+  });
+
   it('returns false for a zero amount without encoding', async () => {
-    const { messenger, updateTransaction } = setup();
+    const { messenger, updateTransactionMetadata } = setup();
 
     const result = await updateMoneyAccountWithdrawAmount(
       messenger,
@@ -276,7 +322,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
 
     expect(result).toBe(false);
     expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
-    expect(updateTransaction).not.toHaveBeenCalled();
+    expect(updateTransactionMetadata).not.toHaveBeenCalled();
   });
 
   it('throws when no valid recipient is available', async () => {
@@ -288,7 +334,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
   });
 
   it('lets a later typed amount supersede an in-flight encode', async () => {
-    const { messenger, updateTransaction } = setup();
+    const { messenger, updateTransactionMetadata } = setup();
     let resolveFirst: (value: unknown) => void = () => undefined;
 
     buildWithdrawBatchMock
@@ -333,6 +379,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     await expect(second).resolves.toStrictEqual({
       withdrawData: WITHDRAW_DATA_2,
       transferData: TRANSFER_DATA_2,
+      transactionData: expect.stringMatching(/^0x/u),
     });
     resolveFirst({
       withdrawTx: {
@@ -353,7 +400,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       },
     });
     await expect(first).resolves.toBe(false);
-    expect(updateTransaction).toHaveBeenCalledTimes(1);
+    expect(updateTransactionMetadata).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -381,7 +428,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
   });
 
   it('re-encodes the same amount to the money account when the token becomes quoted', async () => {
-    const { messenger, updateTransaction } = setup({
+    const { messenger, updateTransactionMetadata } = setup({
       transactions: [
         createWithdrawTransaction({
           transferData: encodeTransfer(HARDWARE_RECIPIENT, 2_500_000n),
@@ -403,7 +450,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
         recipient: MONEY_ACCOUNT_ADDRESS_MOCK,
       }),
     );
-    expect(updateTransaction).toHaveBeenCalledTimes(1);
+    expect(updateTransactionMetadata).toHaveBeenCalledTimes(1);
   });
 
   it('re-encodes to the recipient when the token becomes direct', async () => {
@@ -454,7 +501,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
   });
 
   it('leaves the batch alone when the transfer target already matches', async () => {
-    const { messenger, updateTransaction } = setup({
+    const { messenger, updateTransactionMetadata } = setup({
       transactions: [
         createWithdrawTransaction({
           transferData: encodeTransfer(MONEY_ACCOUNT_ADDRESS_MOCK, 1_000_000n),
@@ -471,7 +518,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
 
     expect(result).toBe(false);
     expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
-    expect(updateTransaction).not.toHaveBeenCalled();
+    expect(updateTransactionMetadata).not.toHaveBeenCalled();
   });
 
   it('leaves an unfunded placeholder alone', async () => {

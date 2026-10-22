@@ -30,7 +30,7 @@ index 12fd754e5b50a43a6c4ca47d5c47c50498748c35..100d31fb13d08af0bb1c95f7addb0295
              const isFiatPaymentMethodUpdated = current.fiatPayment?.selectedPaymentMethodId !==
                  originalFiatPaymentMethodId;
 diff --git a/dist/types.d.ts b/dist/types.d.ts
-index 27e0b825002e0de1271a2d9767fdbc807be6bf3f..410e53a6e82a4a2725d3f663212341a3ee5387db 100644
+index 2c6214a07991ebb3dc09f566c19db4fd5730fcd1..8a4a1f5f77d001fac1668f4ef231c1bc8297e343 100644
 --- a/dist/types.d.ts
 +++ b/dist/types.d.ts
 @@ -43,6 +43,13 @@ export type TransactionConfig = {
