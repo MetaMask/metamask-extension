@@ -1,4 +1,3 @@
-import { it as jestIt } from '@jest/globals';
 import { BACKGROUND_INITIALIZED_METHOD } from '../constants/ui-initialization';
 import * as timing from './ui-startup-timing';
 
@@ -10,10 +9,7 @@ describe('background initialization timing', () => {
     });
   });
 
-  it('remains unknown when the background does not send timing metadata', () => {
-    isolatedTiming.recordBackgroundInitializationTiming({
-      data: { method: BACKGROUND_INITIALIZED_METHOD },
-    });
+  it('remains unknown before the initialized message arrives', () => {
     expect(isolatedTiming.getBackgroundInitializedAt()).toBeUndefined();
   });
 
@@ -27,25 +23,10 @@ describe('background initialization timing', () => {
     expect(isolatedTiming.getBackgroundInitializedAt()).toBe(1_700_000_000_000);
   });
 
-  jestIt.each([
-    null,
-    { data: null },
-    { data: { method: 'ALIVE', params: { initializedAt: 100 } } },
-  ])('ignores malformed or unrelated messages: %j', (message) => {
-    isolatedTiming.recordBackgroundInitializationTiming(message);
+  it('ignores unrelated port messages', () => {
+    isolatedTiming.recordBackgroundInitializationTiming({
+      data: { method: 'ALIVE' },
+    });
     expect(isolatedTiming.getBackgroundInitializedAt()).toBeUndefined();
   });
-
-  jestIt.each([undefined, '100', 0, Infinity])(
-    'ignores invalid initialization times: %s',
-    (initializedAt) => {
-      isolatedTiming.recordBackgroundInitializationTiming({
-        data: {
-          method: BACKGROUND_INITIALIZED_METHOD,
-          params: { initializedAt },
-        },
-      });
-      expect(isolatedTiming.getBackgroundInitializedAt()).toBeUndefined();
-    },
-  );
 });

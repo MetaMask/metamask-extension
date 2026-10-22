@@ -18,9 +18,8 @@ export type UsefulScreen = 'unlock' | 'home' | 'confirmation';
 type StartupOptions = { isUnlocked: boolean; uiType: EnvironmentType };
 type Navigation = { key: string; pathname: string; navigationType: string };
 
-let startup:
-  | (StartupOptions & { backgroundInitializedAt?: number })
-  | undefined;
+// startApp captures this before rendering the router or readiness markers.
+let startup: StartupOptions & { backgroundInitializedAt?: number };
 let route:
   | { key: string; screen: UsefulScreen; confirmationId?: string }
   | undefined;
@@ -93,7 +92,7 @@ export function observeUsefulScreenNavigation({
   pathname,
   navigationType,
 }: Navigation): void {
-  if (!startup || finished || route?.key === key) {
+  if (finished || route?.key === key) {
     return;
   }
   const screen = getScreenForPath(pathname);
@@ -122,7 +121,6 @@ export function reportUsefulScreenReady(
   screen: UsefulScreen,
 ): void {
   if (
-    !startup ||
     finished ||
     route?.key !== key ||
     route.screen !== screen ||

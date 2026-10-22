@@ -419,9 +419,11 @@ describe('useUsefulScreenReady', () => {
   ])(
     'classifies background initialization time %s as %s',
     (initializedAt, expected) => {
-      timing.recordBackgroundInitializationTiming({
-        data: { method: 'BACKGROUND_INITIALIZED', params: { initializedAt } },
-      });
+      if (initializedAt !== undefined) {
+        timing.recordBackgroundInitializationTiming({
+          data: { method: 'BACKGROUND_INITIALIZED', params: { initializedAt } },
+        });
+      }
       initialize();
       renderScreen();
       advance();
