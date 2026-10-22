@@ -97,6 +97,7 @@ import {
   getAllScopesFromCaip25CaveatValue,
   requestPermittedChainsPermissionIncremental,
   getCaip25PermissionFromLegacyPermissions,
+  getEthAccountsForScope,
 } from '@metamask/chain-agnostic-permission';
 import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
 
@@ -283,7 +284,6 @@ import { InstitutionalSnapControllerInit } from './messenger-client-init/institu
 import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
-  MultichainAssetsRatesControllerInit,
   MultichainNetworkControllerInit,
 } from './messenger-client-init/multichain';
 import {
@@ -614,7 +614,6 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
-      MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
@@ -742,8 +741,6 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.MultichainAssetsController;
     this.multichainTransactionsController =
       messengerClientsByName.MultichainTransactionsController;
-    this.multichainAssetsRatesController =
-      messengerClientsByName.MultichainAssetsRatesController;
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
     this.tokenBalancesController =
@@ -1004,13 +1001,13 @@ export default class MetamaskController extends EventEmitter {
       }, this.onboardingController.state),
     );
 
-    const getAccounts = ({ origin: innerOrigin }) => {
+    const getAccounts = ({ origin: innerOrigin, scope }) => {
       if (innerOrigin === ORIGIN_METAMASK) {
         const selectedAddress =
           this.accountsController.getSelectedAccount().address;
         return selectedAddress ? [selectedAddress] : [];
       }
-      return this.getPermittedAccounts(innerOrigin);
+      return this.getPermittedAccounts(innerOrigin, scope);
     };
 
     this.eip5792Middleware = createScaffoldMiddleware({
@@ -1157,7 +1154,12 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
+      getAccounts: (requestOrigin, scope) =>
+        getAccounts({ origin: requestOrigin, scope }),
+      getNetworkClientById: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'NetworkController:getNetworkClientById',
+      ),
       // tx signing
       processTransaction: (transactionParams, dappRequest, requestContext) => {
         const networkClientId = requestContext?.get('networkClientId');
@@ -1420,7 +1422,6 @@ export default class MetamaskController extends EventEmitter {
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
         MultichainTransactionsController: this.multichainTransactionsController,
-        MultichainAssetsRatesController: this.multichainAssetsRatesController,
         TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
@@ -2426,7 +2427,6 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
-      multichainAssetsRatesController,
       staticAssetsController,
     } = this;
 
@@ -3513,14 +3513,6 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
-      multichainAssetsRatesStartPolling:
-        multichainAssetsRatesController.startPolling.bind(
-          multichainAssetsRatesController,
-        ),
-      multichainAssetsRatesStopPollingByPollingToken:
-        multichainAssetsRatesController.stopPollingByPollingToken.bind(
-          multichainAssetsRatesController,
-        ),
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),
@@ -4036,10 +4028,12 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {string} [scope] - Optional CAIP-2 scope to restrict the returned
+   * accounts to.
    * @returns {string[]} The origin's permitted accounts, or an empty
    * array.
    */
-  getPermittedAccounts(origin) {
+  getPermittedAccounts(origin, scope) {
     let caveat;
     try {
       caveat = this.permissionController.getCaveat(
@@ -4056,7 +4050,9 @@ export default class MetamaskController extends EventEmitter {
       throw err;
     }
 
-    const ethAccounts = getEthAccounts(caveat.value);
+    const ethAccounts = scope
+      ? getEthAccountsForScope(caveat.value, scope)
+      : getEthAccounts(caveat.value);
     return this.sortAddressesByLastSelected(ethAccounts);
   }
 

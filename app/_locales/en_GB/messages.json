@@ -5638,9 +5638,6 @@
   "mfaIntroEmailDescription": {
     "message": "Get a 6-digit code sent to your inbox"
   },
-  "mfaIntroListTitle": {
-    "message": "You’ll set up"
-  },
   "mfaIntroPasskeyDescription": {
     "message": "Confirm with your device or password manager"
   },
@@ -6658,6 +6655,9 @@
   },
   "networkNameSolana": {
     "message": "Solana"
+  },
+  "networkNameStellar": {
+    "message": "Stellar"
   },
   "networkNameTron": {
     "message": "Tron"

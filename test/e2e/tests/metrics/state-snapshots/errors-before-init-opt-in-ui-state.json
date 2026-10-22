@@ -136,7 +136,6 @@
     "MoneyAccountController": { "moneyAccounts": "object" },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {},
-    "MultichainAssetsRatesController": {},
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],

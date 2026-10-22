@@ -6,6 +6,10 @@ import type {
   TraceRequest as ControllerTraceRequest,
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
+import type {
+  SwapTraceRequest,
+  SwapRelatedTraceName,
+} from '@metamask/bridge-controller';
 import { sentryLogger } from './sentry';
 
 /**
@@ -25,6 +29,11 @@ export enum TraceName {
   BackgroundConnect = 'Background Connect',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
+  BridgeTransactionApprovalCompleted = 'Bridge Transaction Approval Completed',
+  BridgeTransactionCompleted = 'Bridge Transaction Completed',
+  SwapOperationCompleted = 'Swap Operation Completed',
+  SwapTransactionApprovalCompleted = 'Swap Transaction Approval Completed',
+  SwapTransactionCompleted = 'Swap Transaction Completed',
   ConnectPage = 'Connect Page',
   CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
@@ -347,12 +356,26 @@ export function annotateTrace(
   }
 }
 
-export function trace<ResultType>(
-  request: TraceRequest,
+type GenericTraceName = TraceRequest['name'];
+
+/**
+ * Overloads the {@link TraceRequest} type for swap-related trace names.
+ * The {@link SwapTraceRequest} type defines required properties for swap-related traces
+ */
+type TraceRequestFor<TName extends GenericTraceName> = [TName] extends [
+  SwapRelatedTraceName<TraceName>,
+]
+  ? Omit<SwapTraceRequest<TName>, 'op'> & { op?: TraceOperation }
+  : Omit<TraceRequest, 'name'> & { name: TName };
+
+export function trace<ResultType, TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
   fn: TraceCallback<ResultType>,
 ): ResultType;
 
-export function trace(request: TraceRequest): TraceContext;
+export function trace<TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
+): TraceContext;
 
 /**
  * Create a Sentry transaction to analyse the duration of a code flow.
@@ -722,8 +745,8 @@ function startSpan<T>(
   let parentSpan = resolveParentSpan(parentContext);
 
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
-  // when no explicit parent is provided. Must capture before withIsolationScope
-  // severs the active span context chain.
+  // when no explicit parent is provided. Must capture before withScope
+  // forks the scope.
   // forceTransaction preserves transaction-level visibility for monitoring while
   // linking to the auto-instrumentation hierarchy.
   let forceTransaction: boolean | undefined;
@@ -749,14 +772,14 @@ function startSpan<T>(
   if (!parentSpan && hasDistributedTraceIds(parentContext)) {
     const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
     return sentryContinueTrace(sentryTrace, () =>
-      sentryWithIsolationScope((scope: Sentry.Scope) => {
+      sentryWithScope((scope: Sentry.Scope) => {
         initScope(scope, request);
         return callback({ ...spanOptions, parentSpan: undefined });
       }),
     );
   }
 
-  return sentryWithIsolationScope((scope: Sentry.Scope) => {
+  return sentryWithScope((scope: Sentry.Scope) => {
     initScope(scope, request);
     return callback(spanOptions);
   });
@@ -902,6 +925,29 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
     return callback(scope);
   }
 
+  return actual(callback);
+}
+
+/**
+ * Run the callback in a forked current scope, so tags set on it reach this
+ * trace's own events only. The browser SDK's `withIsolationScope` hands the
+ * callback the existing isolation scope rather than a fork, so a tag set there
+ * stays on every later event in the process.
+ *
+ * @param callback - Receives the forked scope.
+ * @returns The callback's return value.
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryWithScope<T>(callback: (scope: Sentry.Scope) => T): T {
+  const actual = globalThis.sentry?.withScope;
+
+  if (!actual) {
+    const scope = {
+      // eslint-disable-next-line no-empty-function
+      setTag: () => {},
+    } as unknown as Sentry.Scope;
+    return callback(scope);
+  }
   return actual(callback);
 }
 
