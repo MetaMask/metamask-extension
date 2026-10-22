@@ -2404,7 +2404,6 @@ export default class MetamaskController extends EventEmitter {
       announcementController,
       preferencesController,
       tokensController,
-      txController,
       backup,
       tokenRatesController,
       // Notification Controllers
@@ -2590,7 +2589,6 @@ export default class MetamaskController extends EventEmitter {
 
       // TransactionController
 
-      updateTransaction: txController.updateTransaction.bind(txController),
       createCancelTransaction: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'TransactionController:stopTransaction',
