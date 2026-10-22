@@ -27,7 +27,7 @@ import {
   pushUserFillsClosePositionSnapshot,
 } from './mocks/websocketPositionMocks';
 
-describe('Perps Take Profit / Stop Loss', function (this: Suite) {
+describe('Perps Take Profit / Stop Loss TEST', function (this: Suite) {
   this.timeout(120000);
 
   it('simulates take-profit fill: TP set on ETH long then stream clears the position', async function () {
