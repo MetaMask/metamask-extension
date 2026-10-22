@@ -56,6 +56,12 @@ const dialogClassNameBase = classnames(
 const dialogClassNameCappedColumn =
   'me-[max(0px,calc((100vw-var(--width-max))/2))]';
 
+// Same, for the fullscreen design, where RootLayout caps the column at 1200px.
+// Keep in sync with the `max-w-[1200px]` in `ui/layouts/root-layout.tsx`.
+const dialogClassNameFullScreenDesignColumn =
+  'me-[max(0px,calc((100vw-1200px)/2))]';
+
+// Leaves the app header visible above the drawer.
 const dialogClassNameFullscreen =
   'min-[576px]:top-[68px] min-[576px]:h-[calc(100%-68px)] min-[576px]:max-h-[calc(100%-68px)]';
 
@@ -157,8 +163,10 @@ export const GlobalMenuDrawer = ({
   const titleId = 'global-menu-drawer-title';
   const dialogClassName = classnames(
     dialogClassNameBase,
-    isFullscreen && dialogClassNameFullscreen,
-    !isFullScreenDesign && dialogClassNameCappedColumn,
+    (isFullscreen || isFullScreenDesign) && dialogClassNameFullscreen,
+    isFullScreenDesign
+      ? dialogClassNameFullScreenDesignColumn
+      : dialogClassNameCappedColumn,
   );
 
   const panel = (

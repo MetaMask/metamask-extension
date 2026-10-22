@@ -2,14 +2,10 @@ import { it } from '@jest/globals';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
-  MONEY_ACTIVITY_ROUTE,
-  MONEY_EARN_ROUTE,
   MONEY_HOME_ROUTE,
-  MONEY_HOW_IT_WORKS_ROUTE,
-  getMoneyTransactionDetailsRoute,
   PERPS_HOME_PAGE_ROUTE,
 } from '../constants/routes';
-import { getActiveNavItems, isBottomOrSideNavRoute } from './main-nav';
+import { getActiveNavItems, isMainNavRoute } from './main-nav';
 
 describe('getActiveNavItems', () => {
   it('marks isHome active on the default route', () => {
@@ -48,44 +44,6 @@ describe('getActiveNavItems', () => {
     });
   });
 
-  it('marks isMoney active on the Money activity route', () => {
-    expect(getActiveNavItems(MONEY_ACTIVITY_ROUTE)).toStrictEqual({
-      isHome: false,
-      isPerps: false,
-      isMoney: true,
-      isActivity: false,
-    });
-  });
-
-  it('marks isMoney active on the Money earn route', () => {
-    expect(getActiveNavItems(MONEY_EARN_ROUTE)).toStrictEqual({
-      isHome: false,
-      isPerps: false,
-      isMoney: true,
-      isActivity: false,
-    });
-  });
-
-  it('marks isMoney active on the Money How it works route', () => {
-    expect(getActiveNavItems(MONEY_HOW_IT_WORKS_ROUTE)).toStrictEqual({
-      isHome: false,
-      isPerps: false,
-      isMoney: true,
-      isActivity: false,
-    });
-  });
-
-  it('marks isMoney active on the Money transaction details route', () => {
-    expect(
-      getActiveNavItems(getMoneyTransactionDetailsRoute('money-tx-deposited')),
-    ).toStrictEqual({
-      isHome: false,
-      isPerps: false,
-      isMoney: true,
-      isActivity: false,
-    });
-  });
-
   it('returns all false for an unrelated route', () => {
     expect(getActiveNavItems('/settings')).toStrictEqual({
       isHome: false,
@@ -96,20 +54,20 @@ describe('getActiveNavItems', () => {
   });
 });
 
-describe('isBottomOrSideNavRoute', () => {
+describe('isMainNavRoute', () => {
   it.each([
     ['default route', DEFAULT_ROUTE],
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
     ['Money home route', MONEY_HOME_ROUTE],
     ['activity route', ACTIVITY_ROUTE],
   ])('returns true for the %s', (_label, route) => {
-    expect(isBottomOrSideNavRoute(route)).toBe(true);
+    expect(isMainNavRoute(route)).toBe(true);
   });
 
   it.each([['/settings'], ['/send'], ['/confirm-transaction'], ['/unknown']])(
     'returns false for %s',
     (route) => {
-      expect(isBottomOrSideNavRoute(route)).toBe(false);
+      expect(isMainNavRoute(route)).toBe(false);
     },
   );
 });

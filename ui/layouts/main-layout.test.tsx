@@ -1,12 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { useBottomNavBar } from '../hooks/useBottomNavBar';
-import { useFullScreenDesign } from '../hooks/useFullScreenDesign';
+import { useMainNavBars } from '../hooks/useMainNavBars';
 import { MainLayout } from './main-layout';
 
-jest.mock('../hooks/useBottomNavBar');
-jest.mock('../hooks/useFullScreenDesign');
+jest.mock('../hooks/useMainNavBars');
 
 jest.mock('../components/app/side-nav/side-nav', () => ({
   SideNav: () => <div data-testid="side-nav" />,
@@ -18,8 +16,7 @@ jest.mock('../components/multichain/app-header', () => ({
   AppHeader: () => <div data-testid="app-header" />,
 }));
 
-const mockUseBottomNavBar = jest.mocked(useBottomNavBar);
-const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
+const mockUseMainNavBars = jest.mocked(useMainNavBars);
 
 const renderMainLayout = () => {
   const router = createMemoryRouter([
@@ -41,8 +38,11 @@ const renderMainLayout = () => {
 
 describe('MainLayout', () => {
   beforeEach(() => {
-    mockUseBottomNavBar.mockReturnValue(false);
-    mockUseFullScreenDesign.mockReturnValue(false);
+    mockUseMainNavBars.mockReturnValue({
+      hasNav: false,
+      showSideNav: false,
+      showBottomNav: false,
+    });
   });
 
   it('renders the page', () => {
@@ -51,49 +51,39 @@ describe('MainLayout', () => {
     expect(screen.getByTestId('page')).toBeInTheDocument();
   });
 
-  describe('when the fullscreen design is off', () => {
-    it('does not render the side nav', () => {
-      renderMainLayout();
+  it('renders no nav or app header when the route has no nav', () => {
+    renderMainLayout();
 
-      expect(screen.queryByTestId('side-nav')).not.toBeInTheDocument();
-    });
-
-    it('renders the app header and bottom nav bar when the bottom nav is shown', () => {
-      mockUseBottomNavBar.mockReturnValue(true);
-
-      renderMainLayout();
-
-      expect(screen.getByTestId('app-header')).toBeInTheDocument();
-      expect(screen.getByTestId('bottom-nav-bar')).toBeInTheDocument();
-    });
-
-    it('does not render the app header or bottom nav bar when the bottom nav is hidden', () => {
-      renderMainLayout();
-
-      expect(screen.queryByTestId('app-header')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('bottom-nav-bar')).not.toBeInTheDocument();
-    });
+    expect(screen.queryByTestId('side-nav')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('bottom-nav-bar')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('app-header')).not.toBeInTheDocument();
   });
 
-  describe('when the fullscreen design is on', () => {
-    beforeEach(() => {
-      mockUseFullScreenDesign.mockReturnValue(true);
+  it('renders the app header and bottom nav bar when the bottom nav is shown', () => {
+    mockUseMainNavBars.mockReturnValue({
+      hasNav: true,
+      showSideNav: false,
+      showBottomNav: true,
     });
 
-    it('renders the side nav regardless of the bottom nav', () => {
-      renderMainLayout();
+    renderMainLayout();
 
-      expect(screen.getByTestId('side-nav')).toBeInTheDocument();
+    expect(screen.getByTestId('app-header')).toBeInTheDocument();
+    expect(screen.getByTestId('bottom-nav-bar')).toBeInTheDocument();
+    expect(screen.queryByTestId('side-nav')).not.toBeInTheDocument();
+  });
+
+  it('renders the app header and side nav, without the bottom nav bar, when the side nav is shown', () => {
+    mockUseMainNavBars.mockReturnValue({
+      hasNav: true,
+      showSideNav: true,
+      showBottomNav: false,
     });
 
-    it('does not render the bottom nav bar when the bottom nav is shown', () => {
-      mockUseBottomNavBar.mockReturnValue(true);
+    renderMainLayout();
 
-      renderMainLayout();
-
-      expect(screen.getByTestId('side-nav')).toBeInTheDocument();
-      expect(screen.getByTestId('app-header')).toBeInTheDocument();
-      expect(screen.queryByTestId('bottom-nav-bar')).not.toBeInTheDocument();
-    });
+    expect(screen.getByTestId('side-nav')).toBeInTheDocument();
+    expect(screen.getByTestId('app-header')).toBeInTheDocument();
+    expect(screen.queryByTestId('bottom-nav-bar')).not.toBeInTheDocument();
   });
 });

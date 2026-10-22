@@ -5,7 +5,7 @@ import {
   BOTTOM_NAV_AB_TEST_VARIANTS,
   BOTTOM_NAV_AB_TEST_EXPOSURE_METADATA,
 } from '../../shared/lib/ab-testing/configs/bottom-nav-bar';
-import { isBottomOrSideNavRoute } from '../helpers/utils/main-nav';
+import { isMainNavRoute } from '../helpers/utils/main-nav';
 import { useABTest } from './useABTest';
 
 /**
@@ -18,7 +18,7 @@ import { useABTest } from './useABTest';
 export function useBottomNavBar(): boolean {
   const { pathname } = useLocation();
 
-  const isApplicableRoute = isBottomOrSideNavRoute(pathname);
+  const isApplicableRoute = isMainNavRoute(pathname);
 
   const { variant } = useABTest(
     BOTTOM_NAV_AB_TEST_KEY,
