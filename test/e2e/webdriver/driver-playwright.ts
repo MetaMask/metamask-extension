@@ -890,9 +890,10 @@ export class PlaywrightDriver {
   }
 
   /**
-   * Evaluates a JavaScript expression via CDP's Runtime.evaluate.
-   * This bypasses LavaMoat scuttling because CDP evaluation runs in an
-   * isolated context unaffected by the extension's content security policies.
+   * Evaluates a JavaScript expression via CDP in an isolated world.
+   * This bypasses LavaMoat scuttling because the isolated world has its own
+   * pristine set of globals (DataTransfer, Float32Array, etc.) that LavaMoat
+   * hasn't touched.
    *
    * @param expression - JavaScript expression to evaluate (should be an IIFE)
    * @param options - Configuration options
@@ -906,8 +907,26 @@ export class PlaywrightDriver {
     const { awaitPromise = false } = options;
     const cdp = await this.page.context().newCDPSession(this.page);
     try {
+      // Get the frame ID for the current page
+      const { frameTree } = await cdp.send('Page.getFrameTree');
+      const frameId = frameTree.frame.id;
+
+      // Create an isolated world - this gives us a fresh JS context with
+      // pristine globals that LavaMoat scuttling hasn't modified
+      const { executionContextId } = await cdp.send(
+        'Page.createIsolatedWorld',
+        {
+          frameId,
+          worldName: 'playwright-cdp-bypass',
+          // grantUniveralAccess allows the isolated world to access the DOM
+          grantUniveralAccess: true,
+        },
+      );
+
+      // Evaluate in the isolated world using the execution context ID
       const { result, exceptionDetails } = await cdp.send('Runtime.evaluate', {
         expression,
+        contextId: executionContextId,
         returnByValue: true,
         awaitPromise,
       });
