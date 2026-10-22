@@ -20,23 +20,6 @@ const WebSocketConnectionState = {
 type WebSocketConnectionState =
   (typeof WebSocketConnectionState)[keyof typeof WebSocketConnectionState];
 
-// TEMP perps fills diagnostic — do not merge.
-// `getActiveProvider()` writes `lastError` to controller state when the
-// controller isn't ready, so only call it when it can't have side effects.
-function peekActiveProvider(controller: PerpsController): unknown {
-  if (
-    controller.isCurrentlyReinitializing() ||
-    controller.state.initializationState !== 'initialized'
-  ) {
-    return undefined;
-  }
-  try {
-    return controller.getActiveProvider();
-  } catch {
-    return undefined;
-  }
-}
-
 /** Every notification channel the bridge emits on. */
 export type PerpsStreamChannel =
   | 'account'
@@ -110,12 +93,6 @@ const settledControllers = new WeakSet<PerpsController>();
 type FillsSubscription = {
   unsubscribe?: () => void;
   cache?: OrderFill[];
-  // TEMP perps fills diagnostic — do not merge.
-  diagProvider?: unknown;
-  diagCreatedAt?: number;
-  diagCallbacks?: number;
-  diagEmitted?: number;
-  diagEmitSkipped?: number;
 };
 type AccountSession = {
   address?: string;
@@ -411,39 +388,6 @@ export class PerpsStreamBridge {
       perpsToggleTestnet: async (...args: unknown[]) => {
         PerpsStreamBridge.invalidateController(this.#controller);
         return this.#perpsToggleTestnet(...args);
-      },
-      // TEMP perps fills diagnostic — do not merge.
-      perpsGetFillsDebug: () => {
-        const session = accountSessions.get(this.#controller);
-        const fills = session?.fills;
-        const activeProvider = peekActiveProvider(this.#controller);
-        return {
-          now: Date.now(),
-          hasSession: Boolean(session),
-          sessionAddress: session?.address ?? null,
-          hasSessionFills: Boolean(fills),
-          subscribedProviderDefined: fills?.diagProvider !== undefined,
-          activeProviderDefined: activeProvider !== undefined,
-          subscribedOnActiveProvider: Boolean(
-            fills && fills.diagProvider === activeProvider,
-          ),
-          fillsCreatedAt: fills?.diagCreatedAt ?? null,
-          callbacks: fills?.diagCallbacks ?? null,
-          emitted: fills?.diagEmitted ?? null,
-          emitSkipped: fills?.diagEmitSkipped ?? null,
-          cacheLength: fills?.cache?.length ?? null,
-          cache: (fills?.cache ?? []).slice(0, 5).map((fill) => ({
-            symbol: fill.symbol,
-            orderId: fill.orderId,
-            timestamp: fill.timestamp,
-          })),
-          bridgeCount: controllerBridges.get(this.#controller)?.size ?? 0,
-          thisBridge: {
-            connectionAlive: this.#isConnectionAlive(),
-            preloadAllowed: this.#isPreloadAllowed(),
-            canEmitFills: this.canEmit('fills'),
-          },
-        };
       },
       perpsViewActive: (active: boolean) => {
         this.#viewActive = active;
@@ -1167,15 +1111,9 @@ export class PerpsStreamBridge {
     const fills: FillsSubscription = {};
     session.fills = fills;
     const controller = this.#controller;
-    fills.diagCreatedAt = Date.now();
-    fills.diagCallbacks = 0;
-    fills.diagEmitted = 0;
-    fills.diagEmitSkipped = 0;
-    fills.diagProvider = peekActiveProvider(controller);
     try {
       fills.unsubscribe = controller.subscribeToOrderFills({
         callback: (data, isSnapshot) => {
-          fills.diagCallbacks = (fills.diagCallbacks ?? 0) + 1;
           if (session.fills !== fills) {
             return;
           }
@@ -1192,10 +1130,7 @@ export class PerpsStreamBridge {
               bridge.#isPreloadAllowed() &&
               bridge.canEmit('fills')
             ) {
-              fills.diagEmitted = (fills.diagEmitted ?? 0) + 1;
               bridge.#emit('fills', fills.cache);
-            } else {
-              fills.diagEmitSkipped = (fills.diagEmitSkipped ?? 0) + 1;
             }
           }
         },

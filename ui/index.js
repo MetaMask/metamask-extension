@@ -470,8 +470,7 @@ function setupStateHooks(store) {
   }
 
   // Agentic dev hooks — expose internals for CDP automation
-  // TEMP perps fills diagnostic: also exposed in test builds — do not merge.
-  if (process.env.METAMASK_DEBUG || process.env.IN_TEST) {
+  if (process.env.METAMASK_DEBUG) {
     globalThis.stateHooks.store = store;
     globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
     globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
