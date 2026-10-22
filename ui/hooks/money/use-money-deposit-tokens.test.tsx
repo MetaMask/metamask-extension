@@ -87,6 +87,7 @@ describe('useMoneyDepositTokens', () => {
 
       expect(result.current.isNoFeeToken(ETH_USDC_TOKEN)).toBe(false);
       expect(result.current.isNoFeeToken(MONAD_MUSD_TOKEN)).toBe(false);
+      expect(useIsHardwareWalletAccountMock).toHaveBeenCalledWith();
     });
   });
 });
