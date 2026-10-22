@@ -361,9 +361,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
         this.ctx.bufferedEndTrace({
           name: TraceName.OnboardingPasswordLoginAttempt,
         });
-        this.ctx.bufferedEndTrace({
-          name: TraceName.OnboardingJourneyOverall,
-        });
       }
 
       this.ctx.trackEvent(

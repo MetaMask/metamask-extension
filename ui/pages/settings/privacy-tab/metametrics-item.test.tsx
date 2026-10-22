@@ -62,6 +62,7 @@ const createMockStore = (overrides = {}) =>
       optedIn: false,
       marketingConsentDecisionMade: true,
       optedInToMarketing: false,
+      isSignedIn: false,
       ...overrides,
     },
   });
@@ -130,18 +131,21 @@ describe('MetametricsToggleItem', () => {
     });
   });
 
-  it('disables data collection for marketing when turning off metametrics', async () => {
+  it('keeps marketing consent when turning off metametrics', async () => {
     const mockStore = createMockStore({
       optedIn: true,
       optedInToMarketing: true,
+      isSignedIn: true,
     });
     renderWithProvider(<MetametricsToggleItem />, mockStore);
 
     fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
 
     await waitFor(() => {
-      expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(mockDisableMetametrics).toHaveBeenCalled();
     });
+    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('is disabled when useExternalServices is false', () => {

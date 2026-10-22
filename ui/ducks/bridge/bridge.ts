@@ -9,6 +9,7 @@ import {
   RequestStatus,
   assetIdsMatch,
   type QuoteResponse,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
@@ -20,7 +21,7 @@ import {
   TraceOperation,
 } from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
-import type { BridgeState, TokenPayload } from './types';
+import type { BridgeState, BridgeToken, TokenPayload } from './types';
 
 const clearSlippageState = (state: BridgeState) => {
   state.slippage = undefined;
@@ -83,6 +84,7 @@ const getBalanceAmount = async ({
   trace({
     name: TraceName.BridgeBalancesUpdated,
     op: TraceOperation.BridgeDataFetch,
+    tags: { feature: SwapFeatureTag.SWAP },
     id: traceId,
     data: {
       srcChainId: chainId,
@@ -181,6 +183,24 @@ const bridgeSlice = createSlice({
         )
       ) {
         clearSlippageState(state);
+      }
+    },
+    setToTokenSecurityData: (
+      state,
+      {
+        payload,
+      }: {
+        payload: Pick<BridgeToken, 'assetId' | 'isVerified' | 'securityData'>;
+      },
+    ) => {
+      if (
+        state.toToken &&
+        !state.toToken.securityData?.type &&
+        assetIdsMatch(state.toToken.assetId, payload.assetId)
+      ) {
+        state.toToken.securityData = payload.securityData;
+        state.toToken.isVerified =
+          state.toToken.isVerified ?? payload.isVerified;
       }
     },
     setFromTokenInputValue: (

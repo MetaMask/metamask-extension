@@ -43,6 +43,7 @@ import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../../create-password-form';
 import { useDispatch } from '../../../store/hooks';
+import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;
@@ -67,6 +68,7 @@ export default function CreatePassword({
   const resetOnboardingAndReturn = useOnboardingReset();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { endJourney } = useOnboardingTrace();
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -214,7 +216,7 @@ export default function CreatePassword({
     }
 
     bufferedEndTrace?.({ name: TraceName.OnboardingExistingSrpImport });
-    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+    endJourney({ success: true });
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.WalletImported)
@@ -283,7 +285,7 @@ export default function CreatePassword({
 
     if (isSocialLoginFlow) {
       bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
-      bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+      endJourney({ success: true });
     }
 
     trackEvent(
@@ -328,8 +330,8 @@ export default function CreatePassword({
 
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
-        dispatch(setDataCollectionForMarketing(true));
       }
+      dispatch(setDataCollectionForMarketing(termsChecked));
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });

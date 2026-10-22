@@ -21,6 +21,7 @@ import {
   formatChainIdToHex,
   isNativeAddress,
   isNonEvmChainId,
+  SwapFeatureTag,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
@@ -43,7 +44,6 @@ import {
   resetBridgeController,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
-import { getArcAssetDetailsRouteAssetId } from '../../components/app/assets/enablement/arc';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { useDispatch } from '../../store/hooks';
 import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
@@ -137,6 +137,7 @@ export const startSwapViewLoadTrace = ({
   trace({
     name: TraceName.SwapViewLoaded,
     op: TraceOperation.BridgeScreenPerformance,
+    tags: { feature: SwapFeatureTag.SWAP },
     id,
     data: {
       /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */
@@ -304,9 +305,8 @@ export const useBridgeNavigation = () => {
    */
   const navigateToAssetPage = useCallback(
     (asset: BridgeToken) => {
-      const routeAssetId = getArcAssetDetailsRouteAssetId(asset.assetId);
       // Parse the CAIP assetId to get the address
-      const { assetReference } = parseCaipAssetType(routeAssetId);
+      const { assetReference } = parseCaipAssetType(asset.assetId);
       const isNonEvm = isNonEvmChainId(asset.chainId);
       // For EVM: convert CAIP chainId to hex format; for non-EVM: keep CAIP format
       const routeChainId = isNonEvm
@@ -320,13 +320,13 @@ export const useBridgeNavigation = () => {
         isNonEvm ? assetReference : tokenAddress,
       );
 
-      navigate(buildAssetRoutePath(routeAssetId), {
+      navigate(buildAssetRoutePath(asset.assetId), {
         state: {
           ...state,
           bridgeState,
           token: {
             type: isNative ? AssetType.native : AssetType.token,
-            assetId: routeAssetId,
+            assetId: asset.assetId,
             address: tokenAddress,
             symbol: asset.symbol,
             name: asset.name ?? asset.symbol,

@@ -20,6 +20,8 @@ import {
   ModalOverlay,
 } from '../../../component-library';
 import { MusdConvertLink } from '../../musd';
+import { MoneyTokenListCta } from '../../money/money-token-list-cta';
+import type { MoneyTokenListCta as MoneyTokenListCtaConfig } from '../../../../hooks/money/useMoneyTokenListCta';
 import type { MusdConvertLinkEntryPoint } from '../../musd/musd-events';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
@@ -47,6 +49,10 @@ export type TokenCellProps = {
   safeChains?: SafeChain[];
   /** mUSD convert surface; parent must pass an explicit analytics entry point. */
   musd?: TokenCellMusdOptions;
+  /** Money deposit CTA; takes priority over the mUSD convert link. */
+  moneyCta?: MoneyTokenListCtaConfig;
+  /** Replaces the price change, after any CTA. */
+  priceChangeOverride?: React.ReactNode;
 };
 
 export default function TokenCell({
@@ -56,6 +62,8 @@ export default function TokenCell({
   fixCurrencyToUSD = false,
   safeChains,
   musd,
+  moneyCta,
+  priceChangeOverride,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -86,6 +94,11 @@ export default function TokenCell({
     shouldShowTokenListItemCta,
   ]);
 
+  const showMoneyCta = useMemo(
+    () => Boolean(moneyCta?.shouldShow(token)),
+    [moneyCta, token],
+  );
+
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
     fixCurrencyToUSD,
@@ -104,6 +117,9 @@ export default function TokenCell({
   };
 
   const renderFooterLeft = () => {
+    if (showMoneyCta && moneyCta) {
+      return <MoneyTokenListCta cta={moneyCta} token={token} />;
+    }
     if (showMusdCta && musd?.convert) {
       return (
         <MusdConvertLink
@@ -114,7 +130,9 @@ export default function TokenCell({
         />
       );
     }
-    return <TokenCellPercentChange token={displayToken} />;
+    return (
+      priceChangeOverride ?? <TokenCellPercentChange token={displayToken} />
+    );
   };
 
   if (!token.chainId) {

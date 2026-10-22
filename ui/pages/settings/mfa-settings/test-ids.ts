@@ -1,0 +1,15 @@
+export const MfaSettingsTestIds = {
+  CONTAINER: 'mfa-settings',
+  ENTRY: 'mfa-settings-entry',
+  EMAIL_ROW: 'mfa-settings-email-row',
+  EMAIL_DETAILS: 'mfa-settings-email-details',
+  TOTP_ROW: 'mfa-settings-totp-row',
+  TOTP_DETAILS: 'mfa-settings-totp-details',
+  REMOVE_BUTTON: 'mfa-settings-remove-button',
+  CONFIRM_MODAL: 'mfa-settings-confirm-modal',
+  CONFIRM_BUTTON: 'mfa-settings-confirm-button',
+  LAST_METHOD_MODAL: 'mfa-settings-last-method-modal',
+  ELSEWHERE_MODAL: 'mfa-settings-elsewhere-modal',
+  QA_PRESETS: 'mfa-settings-qa-presets',
+  QA_RESULT: 'mfa-settings-qa-result',
+} as const;

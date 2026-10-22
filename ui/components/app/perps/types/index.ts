@@ -2,9 +2,16 @@
  * Perps shared types and re-exports.
  */
 
+import type {
+  PerpsErrorCode,
+  PerpsErrorDetails,
+} from '@metamask/perps-controller';
+
 export type PerpsBackgroundResult = {
   success: boolean;
   error?: string;
+  errorCode?: PerpsErrorCode;
+  errorDetails?: PerpsErrorDetails;
 };
 
 export {
