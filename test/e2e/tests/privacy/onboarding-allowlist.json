@@ -4,6 +4,7 @@
     "authentication.api.cx.metamask.io",
     "geolocation.dev-api.cx.metamask.io",
     "oidc.api.cx.metamask.io",
+    "start.metamask.io",
     "subscription.api.cx.metamask.io"
   ],
   "additionalDuringOnboardingWithMetaMetricsDescription": "Hosts allowed during onboarding on top of duringOnboarding, only when the user opts in to MetaMetrics. Same time window as duringOnboarding.",
