@@ -39,7 +39,7 @@ describe('registerDocumentLoadMeasurement', () => {
     );
     jest.replaceProperty(global, 'sentry', {
       startSpanManual,
-      withIsolationScope: (callback: (scope: Sentry.Scope) => unknown) =>
+      withScope: (callback: (scope: Sentry.Scope) => unknown) =>
         callback({ setTag } as unknown as Sentry.Scope),
     });
     jest.isolateModules(() => {
