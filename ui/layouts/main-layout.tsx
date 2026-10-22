@@ -16,7 +16,7 @@ export const MainLayout = () => {
     <div className="flex h-full min-h-0">
       {isFullScreenDesign ? <SideNav /> : null}
       <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col">
-        {showBottomNav ? <AppHeader /> : null}
+        {showBottomNav || isFullScreenDesign ? <AppHeader /> : null}
         <ScrollContainer
           className={
             showBottomNav

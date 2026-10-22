@@ -9,7 +9,7 @@ import {
   getMoneyTransactionDetailsRoute,
   PERPS_HOME_PAGE_ROUTE,
 } from '../constants/routes';
-import { getActiveNavItems, isMainNavRoute } from './main-nav';
+import { getActiveNavItems, isBottomOrSideNavRoute } from './main-nav';
 
 describe('getActiveNavItems', () => {
   it('marks isHome active on the default route', () => {
@@ -96,27 +96,20 @@ describe('getActiveNavItems', () => {
   });
 });
 
-describe('isMainNavRoute', () => {
+describe('isBottomOrSideNavRoute', () => {
   it.each([
     ['default route', DEFAULT_ROUTE],
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
     ['Money home route', MONEY_HOME_ROUTE],
-    ['Money activity route', MONEY_ACTIVITY_ROUTE],
-    ['Money earn route', MONEY_EARN_ROUTE],
-    ['Money How it works route', MONEY_HOW_IT_WORKS_ROUTE],
-    [
-      'Money transaction details route',
-      getMoneyTransactionDetailsRoute('money-tx-deposited'),
-    ],
     ['activity route', ACTIVITY_ROUTE],
   ])('returns true for the %s', (_label, route) => {
-    expect(isMainNavRoute(route)).toBe(true);
+    expect(isBottomOrSideNavRoute(route)).toBe(true);
   });
 
   it.each([['/settings'], ['/send'], ['/confirm-transaction'], ['/unknown']])(
     'returns false for %s',
     (route) => {
-      expect(isMainNavRoute(route)).toBe(false);
+      expect(isBottomOrSideNavRoute(route)).toBe(false);
     },
   );
 });
