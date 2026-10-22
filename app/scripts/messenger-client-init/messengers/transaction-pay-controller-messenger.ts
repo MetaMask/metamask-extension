@@ -46,6 +46,9 @@ export function getTransactionPayControllerMessenger(
       'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
       'SnapController:handleRequest',
+      // Solana Pay recovery runs the Money Account second leg from the
+      // controller messenger rather than from the publish hook.
+      'TransactionController:addTransactionBatch',
       'TransactionController:confirmTransaction',
       'TransactionController:estimateGas',
       'TransactionController:estimateGasBatch',
