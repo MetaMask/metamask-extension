@@ -14,14 +14,14 @@ import {
   type Browser,
   uniqueSort,
   toOrange,
-} from './helpers';
-import { ENVIRONMENTS, MODES } from './constants';
+} from './helpers.ts';
+import { ENVIRONMENTS, MODES } from './constants.ts';
 import {
   getAvailableMemoryMB,
   resolveAutoJobs,
   resolveAutoThreads,
-} from './loaders/threadLoader';
-import { getDefaultZipMtime } from './plugins/ManifestPlugin/zip-mtime';
+} from './loaders/threadLoader.ts';
+import { getDefaultZipMtime } from './plugins/ManifestPlugin/zip-mtime.ts';
 
 const ENV_PREFIX = 'BUNDLE_';
 const addFeat = 'addFeature' as const;

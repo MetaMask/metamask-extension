@@ -4,7 +4,7 @@ import {
   DEFAULT_ZIP_MTIME,
   ZIP_MTIME_EXCLUSIVE_MAXIMUM,
   ZIP_MTIME_MINIMUM,
-} from './zip-mtime';
+} from './zip-mtime.ts';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 

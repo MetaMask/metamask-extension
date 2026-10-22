@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
-import { closeSocket, connectToDevServer } from './connect-to-dev-server';
-import { BACKGROUND_UPDATE_MESSAGE_TYPE } from './protocol';
+import { closeSocket, connectToDevServer } from './connect-to-dev-server.ts';
+import { BACKGROUND_UPDATE_MESSAGE_TYPE } from './protocol.ts';
 
 // `__resourceQuery` is the query string of the request that pulled this module
 // in as an entry (e.g. `?url=ws%3A%2F%2Flocalhost%3A8080%2Fws`). webpack

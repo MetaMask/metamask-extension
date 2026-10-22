@@ -8,7 +8,7 @@ import {
   type StatsCompilation,
 } from 'webpack';
 import * as helpers from '../utils/helpers';
-import { type Combination, generateCases } from './helpers';
+import { type Combination, generateCases } from './helpers.ts';
 
 describe('./utils/helpers.ts', () => {
   afterEach(() => mock.restoreAll());

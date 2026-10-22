@@ -4,13 +4,13 @@ import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables.js';
 import type { BuildTypesConfig, BuildType } from '../../lib/build-type.js';
-import { type Args } from './cli';
-import { getExtensionVersion } from './version';
+import { type Args } from './cli.ts';
+import { getExtensionVersion } from './version.ts';
 import {
   ENVIRONMENTS,
   MODES,
   VARIABLES_REQUIRED_IN_PRODUCTION,
-} from './constants';
+} from './constants.ts';
 
 /**
  * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript

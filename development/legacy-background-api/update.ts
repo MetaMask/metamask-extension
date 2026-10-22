@@ -1,8 +1,8 @@
 import { writeFileSync } from 'node:fs';
 import type { Writable } from 'node:stream';
 
-import { LEGACY_APIS, readApiMemberNames } from './legacy-apis';
-import { SNAPSHOT_PATH } from './constants';
+import { LEGACY_APIS, readApiMemberNames } from './legacy-apis.ts';
+import { SNAPSHOT_PATH } from './constants.ts';
 
 /**
  * Replaces the snapshot with the names currently exposed by both APIs.

@@ -32,20 +32,20 @@ import {
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
   UI_DIR_RE,
-} from './utils/helpers';
-import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
-import { parseArgv, getDryRunMessage } from './utils/cli';
-import { getSwcLoader } from './utils/loaders/getSwcLoader';
-import { getVariables } from './utils/config';
-import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
-import { getThreadLoader } from './utils/loaders/threadLoader';
-import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
-import { getLatestCommit } from './utils/git';
-import { MODES } from './utils/constants';
-import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
-import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
-import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
-import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
+} from './utils/helpers.ts';
+import { transformManifest } from './utils/plugins/ManifestPlugin/helpers.ts';
+import { parseArgv, getDryRunMessage } from './utils/cli.ts';
+import { getSwcLoader } from './utils/loaders/getSwcLoader.ts';
+import { getVariables } from './utils/config.ts';
+import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader.ts';
+import { getThreadLoader } from './utils/loaders/threadLoader.ts';
+import { ManifestPlugin } from './utils/plugins/ManifestPlugin.ts';
+import { getLatestCommit } from './utils/git.ts';
+import { MODES } from './utils/constants.ts';
+import { getDevServerOptions, injectEntryScripts } from './utils/dev-server.ts';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol.ts';
+import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats.ts';
+import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime.ts';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);

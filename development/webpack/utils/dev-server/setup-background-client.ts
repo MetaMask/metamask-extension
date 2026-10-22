@@ -6,8 +6,8 @@ import {
   BACKGROUND_CLIENT_ENTRY_NAME,
   BACKGROUND_UPDATE_MESSAGE_TYPE,
   UI_UPDATE_MESSAGE_TYPE,
-} from './protocol';
-import { createAnnouncer, getClientRequest } from './websocket';
+} from './protocol.ts';
+import { createAnnouncer, getClientRequest } from './websocket.ts';
 
 /**
  * Matches the entries of privileged HTML pages that cannot self-reload: the

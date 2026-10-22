@@ -2,9 +2,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import type { Writable } from 'node:stream';
 import { hasProperty, isObject } from '@metamask/utils';
 import chalk from 'chalk';
-import { CommandError } from './command-error';
-import { LEGACY_APIS, readApiMemberNames, type LegacyApi } from './legacy-apis';
-import { SNAPSHOT_PATH } from './constants';
+import { CommandError } from './command-error.ts';
+import { LEGACY_APIS, readApiMemberNames, type LegacyApi } from './legacy-apis.ts';
+import { SNAPSHOT_PATH } from './constants.ts';
 
 /**
  * The names stored for each tracked legacy background API.

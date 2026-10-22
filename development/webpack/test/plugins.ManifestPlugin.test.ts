@@ -24,7 +24,7 @@ import {
 } from '../utils/constants';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
 import { getLatestCommit } from '../utils/git';
-import { generateCases, type Combination, mockWebpack } from './helpers';
+import { generateCases, type Combination, mockWebpack } from './helpers.ts';
 
 const { RawSource } = sources;
 

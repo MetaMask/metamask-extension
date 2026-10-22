@@ -1,4 +1,4 @@
-import type { SwcLoaderOptions } from './swcLoader';
+import type { SwcLoaderOptions } from './swcLoader.ts';
 
 export type SwcConfig = {
   browsersListQuery: string;

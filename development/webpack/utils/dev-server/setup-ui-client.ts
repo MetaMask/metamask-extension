@@ -1,6 +1,6 @@
 import type { Compiler, RuleSetRule } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
-import { getClientRequest } from './websocket';
+import { getClientRequest } from './websocket.ts';
 
 export type UiClientRule = Pick<RuleSetRule, 'include' | 'test'>;
 

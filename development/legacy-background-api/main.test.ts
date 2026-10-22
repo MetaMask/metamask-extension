@@ -1,5 +1,5 @@
 import { Writable } from 'node:stream';
-import { main } from './main';
+import { main } from './main.ts';
 
 describe('main', () => {
   it('fails when no command is given', async () => {

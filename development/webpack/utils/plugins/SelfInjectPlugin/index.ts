@@ -1,10 +1,10 @@
 import { dirname, relative } from 'node:path';
 import { ModuleFilenameHelpers, Compilation, sources } from 'webpack';
 import { validate } from 'schema-utils';
-import { schema } from './schema';
-import type { SelfInjectPluginOptions, Source, Compiler } from './types';
+import { schema } from './schema.ts';
+import type { SelfInjectPluginOptions, Source, Compiler } from './types.ts';
 
-export { type SelfInjectPluginOptions } from './types';
+export { type SelfInjectPluginOptions } from './types.ts';
 
 /**
  * Generates a runtime URL expression for a given path.

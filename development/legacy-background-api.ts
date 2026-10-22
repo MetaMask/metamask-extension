@@ -1,5 +1,5 @@
-import { CommandError } from './legacy-background-api/command-error';
-import { main } from './legacy-background-api/main';
+import { CommandError } from './legacy-background-api/command-error.ts';
+import { main } from './legacy-background-api/main.ts';
 
 main({
   argv: process.argv,

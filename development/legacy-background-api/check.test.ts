@@ -1,9 +1,9 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { Writable } from 'node:stream';
-import { check } from './check';
-import { CommandError } from './command-error';
-import { SNAPSHOT_PATH } from './constants';
-import { LEGACY_APIS } from './legacy-apis';
+import { check } from './check.ts';
+import { CommandError } from './command-error.ts';
+import { SNAPSHOT_PATH } from './constants.ts';
+import { LEGACY_APIS } from './legacy-apis.ts';
 
 /**
  * The source files that each tracked API is parsed from.

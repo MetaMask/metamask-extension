@@ -1,11 +1,11 @@
 import { webpack } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
-import { logStats, noop, ignoreCacheShutdownSignal } from './utils/helpers';
-import config from './webpack.config';
+import { logStats, noop, ignoreCacheShutdownSignal } from './utils/helpers.ts';
+import config from './webpack.config.ts';
 import {
   logWatchBuildStats,
   suppressDevServerInfoLogs,
-} from './utils/dev-server';
+} from './utils/dev-server.ts';
 
 // disable browserslist stats as it needlessly traverses the filesystem multiple
 // times looking for a stats file that doesn't exist.

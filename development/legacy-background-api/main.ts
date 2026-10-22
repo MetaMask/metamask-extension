@@ -1,10 +1,10 @@
 import type { Writable } from 'node:stream';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { check } from './check';
-import { CommandError } from './command-error';
-import { SNAPSHOT_PATH } from './constants';
-import { update } from './update';
+import { check } from './check.ts';
+import { CommandError } from './command-error.ts';
+import { SNAPSHOT_PATH } from './constants.ts';
+import { update } from './update.ts';
 
 /**
  * Dispatches the `check` and `update` commands for the legacy background API

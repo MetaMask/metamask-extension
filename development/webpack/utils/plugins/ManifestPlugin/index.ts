@@ -24,10 +24,10 @@ import {
   getBundlePartSizes,
   type BundleSizeAssetStat,
   type BundleSizeDebugEntrypoint,
-} from './stats';
-import { schema } from './schema';
-import type { BundleSizeCategory, ManifestPluginOptions } from './types';
-import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
+} from './stats.ts';
+import { schema } from './schema.ts';
+import type { BundleSizeCategory, ManifestPluginOptions } from './types.ts';
+import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip.ts';
 
 const { CachedSource, RawSource } = sources;
 

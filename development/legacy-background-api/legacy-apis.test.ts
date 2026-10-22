@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { LEGACY_APIS, readApiMemberNames } from './legacy-apis';
+import { LEGACY_APIS, readApiMemberNames } from './legacy-apis.ts';
 
 jest.mock('node:fs', () => ({
   ...jest.requireActual('node:fs'),

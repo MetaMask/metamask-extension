@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { LoaderContext } from 'webpack';
 import swcLoader, { type SwcLoaderOptions } from '../utils/loaders/swcLoader';
 import { getSwcLoader, type SwcConfig } from '../utils/loaders/getSwcLoader';
-import { Combination, generateCases } from './helpers';
+import { Combination, generateCases } from './helpers.ts';
 
 describe('swcLoader', () => {
   type CallbackArgs = Parameters<LoaderContext<SwcLoaderOptions>['callback']>;
