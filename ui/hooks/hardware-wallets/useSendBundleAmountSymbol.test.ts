@@ -7,7 +7,9 @@ import { getMockConfirmStateForTransaction } from '../../../test/data/confirmati
 import { useSendBundleAmountSymbol } from './useSendBundleAmountSymbol';
 
 const FROM = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const FROM_ACCOUNT_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 const TOKEN_ADDRESS = '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6';
+const TOKEN_ASSET_ID = `eip155:5/erc20:${TOKEN_ADDRESS.toLowerCase()}`;
 
 describe('useSendBundleAmountSymbol', () => {
   it('returns an empty object when there is no transaction', () => {
@@ -139,10 +141,15 @@ describe('useSendBundleAmountSymbol', () => {
       () => useSendBundleAmountSymbol(transactionMeta),
       getMockConfirmStateForTransaction(transactionMeta, {
         metamask: {
-          allTokens: {
-            '0x5': {
-              [FROM]: [{ address: TOKEN_ADDRESS, symbol: 'TST', decimals: 6 }],
+          assetsInfo: {
+            [TOKEN_ASSET_ID]: {
+              type: 'erc20',
+              symbol: 'TST',
+              decimals: 6,
             },
+          },
+          customAssets: {
+            [FROM_ACCOUNT_ID]: [TOKEN_ASSET_ID],
           },
           networkConfigurationsByChainId: {
             '0x5': { nativeCurrency: 'ETH' },
@@ -186,10 +193,15 @@ describe('useSendBundleAmountSymbol', () => {
       () => useSendBundleAmountSymbol(transactionMeta),
       getMockConfirmStateForTransaction(transactionMeta, {
         metamask: {
-          allTokens: {
-            '0x5': {
-              [FROM]: [{ address: TOKEN_ADDRESS, symbol: 'TST', decimals: 6 }],
+          assetsInfo: {
+            [TOKEN_ASSET_ID]: {
+              type: 'erc20',
+              symbol: 'TST',
+              decimals: 6,
             },
+          },
+          customAssets: {
+            [FROM_ACCOUNT_ID]: [TOKEN_ASSET_ID],
           },
           networkConfigurationsByChainId: {
             '0x5': { nativeCurrency: 'ETH' },

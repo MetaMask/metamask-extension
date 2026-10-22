@@ -1,11 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { toChecksumHexAddress, toHex } from '@metamask/controller-utils';
+import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { createElement, Fragment, PropsWithChildren } from 'react';
 
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
+  buildNativeEvmBalancePatch,
   getMockConfirmState,
   getMockConfirmStateForTransaction,
 } from '../../../../../../test/data/confirmations/helper';
@@ -17,7 +18,6 @@ const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: CHAIN_IDS.MONAD,
 }) as TransactionMeta;
 
-const ACCOUNT_ADDRESS = CONFIRMATION_MOCK.txParams.from;
 const DELEGATION_ADDRESS: Hex = '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b';
 const BALANCE_15_MON = toHex(15n * 10n ** 18n);
 const BALANCE_7_MON = toHex(7n * 10n ** 18n);
@@ -78,15 +78,10 @@ describe('useIsMonadReserveViolation', () => {
             },
           },
           {
-            metamask: {
-              accountsByChainId: {
-                [CHAIN_IDS.MONAD]: {
-                  [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                    balance: BALANCE_15_MON,
-                  },
-                },
-              },
-            },
+            metamask: buildNativeEvmBalancePatch({
+              hexChainId: CHAIN_IDS.MONAD,
+              amountWei: BALANCE_15_MON,
+            }),
           },
         ),
       ),
@@ -106,15 +101,10 @@ describe('useIsMonadReserveViolation', () => {
             },
           },
           {
-            metamask: {
-              accountsByChainId: {
-                [CHAIN_IDS.MONAD]: {
-                  [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                    balance: BALANCE_7_MON,
-                  },
-                },
-              },
-            },
+            metamask: buildNativeEvmBalancePatch({
+              hexChainId: CHAIN_IDS.MONAD,
+              amountWei: BALANCE_7_MON,
+            }),
           },
         ),
       ),

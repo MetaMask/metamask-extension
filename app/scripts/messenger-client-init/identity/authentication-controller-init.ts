@@ -6,6 +6,7 @@ import { Platform } from '@metamask/profile-sync-controller/sdk';
 import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
 import { getIsBasicFunctionalityConsolidationGateEnabled } from '../../../../shared/lib/basic-functionality-consolidation-gate';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
+import { trace } from '../../../../shared/lib/trace';
 import { MessengerClientInitFunction } from '../types';
 import {
   AuthenticationControllerInitMessenger,
@@ -65,6 +66,10 @@ export const AuthenticationControllerInit: MessengerClientInitFunction<
       env,
       isSocialPairingEnabled,
     },
+    // `shared/lib/trace` narrows the span name; the controller takes any name.
+    trace: trace as unknown as ConstructorParameters<
+      typeof AuthenticationController
+    >[0]['trace'],
   });
 
   return {

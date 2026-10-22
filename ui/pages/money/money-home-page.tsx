@@ -12,6 +12,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  SensitiveText,
   Skeleton,
   Text,
   TextColor,
@@ -25,6 +26,7 @@ import {
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
+import { useScrollContainerGutterWidth } from '../../contexts/scroll-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
@@ -144,6 +146,7 @@ const MoneyActionCard = ({
 
 export function MoneyHomePage() {
   const t = useI18nContext();
+  const scrollbarGutterWidth = useScrollContainerGutterWidth();
   const navigate = useNavigate();
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
@@ -188,15 +191,16 @@ export function MoneyHomePage() {
   const monthlyEarnings =
     formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ??
     projectedMonthlyEarnings;
-  const lifetimeEarnings =
-    formatInterestEarned(sinceInceptionQuery.data?.interest_earned_usd) ??
-    FORMATTED_ZERO;
+  const lifetimeEarnings = sinceInceptionQuery.isError
+    ? undefined
+    : formatInterestEarned(sinceInceptionQuery.data?.interest_earned_usd);
   const isMonthlyEarningsLoading =
     last30DaysQuery.isLoading ||
     (formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ===
       undefined &&
       (vaultApyQuery.isLoading || isBalanceLoading));
-  const isLifetimeEarningsLoading = sinceInceptionQuery.isLoading;
+  const isLifetimeEarningsLoading =
+    !sinceInceptionQuery.isError && sinceInceptionQuery.isLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
   const {
@@ -344,16 +348,27 @@ export function MoneyHomePage() {
     setIsTransferSheetOpen(false);
   }, []);
 
+  const header = (
+    <header
+      className="flex items-center justify-between pl-4 pt-4 pb-2"
+      style={{ paddingRight: `calc(1rem - ${scrollbarGutterWidth}px)` }}
+    >
+      <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+        {t('money')}
+      </Text>
+      {isPageLoading ? null : <MoneyMoreMenu />}
+    </header>
+  );
+
   if (isPageLoading) {
     return (
-      <div
-        className="flex min-h-full flex-col gap-4 p-4"
-        data-testid="money-home-loading"
-      >
-        <Skeleton className="h-8 w-24" />
-        <Skeleton className="h-12 w-36" />
-        <Skeleton className="h-20 w-full rounded-xl" />
-        <Skeleton className="h-80 w-full rounded-2xl" />
+      <div className="min-h-full" data-testid="money-home-loading">
+        {header}
+        <div className="flex flex-col gap-4 p-4">
+          <Skeleton className="h-12 w-36" />
+          <Skeleton className="h-20 w-full rounded-xl" />
+          <Skeleton className="h-80 w-full rounded-2xl" />
+        </div>
       </div>
     );
   }
@@ -407,12 +422,7 @@ export function MoneyHomePage() {
   return (
     <>
       <div className="min-h-full pb-5" data-testid="money-home-page">
-        <header className="flex h-14 items-center justify-between px-4">
-          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-            {t('money')}
-          </Text>
-          <MoneyMoreMenu />
-        </header>
+        {header}
 
         {isBalanceFetchError ? (
           <div className="px-4 pt-2">
@@ -437,13 +447,14 @@ export function MoneyHomePage() {
 
         <div className="flex flex-col items-center gap-2 px-4 pt-2 mb-5">
           <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
-            <Text
-              variant={TextVariant.DisplayLg}
+            <SensitiveText
+              variant={TextVariant.DisplayMd}
               fontWeight={FontWeight.Medium}
+              isHidden={privacyMode}
               data-testid="money-balance"
             >
               {balanceDisplay}
-            </Text>
+            </SensitiveText>
             {isLastKnownBalance ? (
               <Text
                 variant={TextVariant.BodyXs}
@@ -492,7 +503,7 @@ export function MoneyHomePage() {
             </div>
           </div>
 
-          <div className="mt-2 flex w-full max-w-[389px] gap-2 pt-2">
+          <div className="mt-2 flex w-full max-w-[389px] gap-2 self-start pt-2 sm:self-center">
             <MoneyActionCard
               icon={IconName.Add}
               label={t('moneyAdd')}
@@ -546,9 +557,7 @@ export function MoneyHomePage() {
           )}
         </div>
 
-        <div
-          className={`mx-auto w-full max-w-[816px] ${showFundedLayout ? '' : 'mt-3'}`}
-        >
+        <div className={`mx-auto w-full ${showFundedLayout ? '' : 'mt-3'}`}>
           {showFundedLayout ? (
             <>
               {isMoneyEarningSectionEnabled ? (
@@ -558,6 +567,7 @@ export function MoneyHomePage() {
                     lifetimeEarnings={lifetimeEarnings}
                     isMonthlyLoading={isMonthlyEarningsLoading}
                     isLifetimeLoading={isLifetimeEarningsLoading}
+                    privacyMode={privacyMode}
                     onMonthlyTooltipOpen={handleMonthlyEarningsTooltipOpen}
                     onLifetimeTooltipOpen={handleLifetimeEarningsTooltipOpen}
                   />

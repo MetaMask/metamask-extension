@@ -1,4 +1,4 @@
-import { BtcAccountType, EthScope } from '@metamask/keyring-api';
+import { EthScope } from '@metamask/keyring-api';
 import {
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
@@ -11,7 +11,6 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import mockState from '../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
 import {
   getAccountLabels,
   getAccountNameErrorMessage,
@@ -341,39 +340,6 @@ describe('Accounts', () => {
           ),
         ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
       });
-    });
-
-    describe('Bitcoin account type label', () => {
-      it.each([
-        [BtcAccountType.P2pkh, 'Legacy'],
-        [BtcAccountType.P2sh, 'SegWit'],
-        [BtcAccountType.P2wpkh, 'Native SegWit'],
-        [BtcAccountType.P2tr, 'Taproot'],
-      ])(
-        'should show Bitcoin account type label: %s',
-        (type, expectedLabel) => {
-          const mockBitcoinAccount = {
-            ...mockAccount,
-            address: 'bc1q4degm5k044n9xv3ds7d8l6hfavydte6wn6sesw',
-            type,
-            metadata: {
-              ...mockAccount.metadata,
-              snap: {
-                ...mockAccount.metadata.snap,
-                id: BITCOIN_WALLET_SNAP_ID,
-              },
-            },
-          };
-
-          expect(
-            getAccountLabels(
-              KeyringType.snap,
-              mockBitcoinAccount,
-              keyringsWithMetadata,
-            ),
-          ).toStrictEqual([{ label: expectedLabel, icon: null }]);
-        },
-      );
     });
   });
 });

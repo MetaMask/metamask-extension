@@ -3,11 +3,30 @@ import type { Hex } from '@metamask/utils';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useTokenWithBalance } from './useTokenWithBalance';
 
+/**
+ * This suite seeds AssetsController fields (`assetsInfo`, `assetsBalance`,
+ * `assetsPrice`). Override the global jest setup mock so migration
+ * selectors resolve those fields instead of legacy controller slices.
+ */
+jest.mock(
+  '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
+
 const CHAIN_ID = '0x1' as Hex;
+const ACCOUNT_ID = 'account-id-1';
+const OTHER_ACCOUNT_ID = 'account-id-2';
 const ACCOUNT_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
 const OTHER_ACCOUNT_ADDRESS =
   '0x4444444444444444444444444444444444444444' as Hex;
 const TOKEN_ADDRESS = '0x2222222222222222222222222222222222222222' as Hex;
+const NATIVE_ASSET_ID = 'eip155:1/slip44:60';
+const TOKEN_ASSET_ID = `eip155:1/erc20:${TOKEN_ADDRESS}`;
 
 function createMockState() {
   return {
@@ -17,66 +36,60 @@ function createMockState() {
       en: {},
     },
     metamask: {
-      currentCurrency: 'usd',
+      selectedCurrency: 'usd',
       internalAccounts: {
-        selectedAccount: 'account-id-1',
+        selectedAccount: ACCOUNT_ID,
         accounts: {
-          'account-id-1': {
-            id: 'account-id-1',
+          [ACCOUNT_ID]: {
+            id: ACCOUNT_ID,
             address: ACCOUNT_ADDRESS,
+            type: 'eip155:eoa',
+          },
+          [OTHER_ACCOUNT_ID]: {
+            id: OTHER_ACCOUNT_ID,
+            address: OTHER_ACCOUNT_ADDRESS,
             type: 'eip155:eoa',
           },
         },
       },
-      allTokens: {
-        [CHAIN_ID]: {
-          [ACCOUNT_ADDRESS]: [
-            {
-              address: TOKEN_ADDRESS,
-              symbol: 'T1',
-              decimals: 4,
-              image: '',
-              isNative: false,
-            },
-          ],
+      assetsInfo: {
+        [NATIVE_ASSET_ID]: {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        [TOKEN_ASSET_ID]: {
+          type: 'erc20',
+          symbol: 'T1',
+          decimals: 4,
+          image: '',
         },
       },
-      tokenBalances: {
-        [ACCOUNT_ADDRESS]: {
-          [CHAIN_ID]: {
-            [TOKEN_ADDRESS]: '0x64',
-          },
+      assetsBalance: {
+        [ACCOUNT_ID]: {
+          [NATIVE_ASSET_ID]: { amount: '2' },
+          // 0x64 at 4 decimals → 0.01
+          [TOKEN_ASSET_ID]: { amount: '0.01' },
         },
-        [OTHER_ACCOUNT_ADDRESS]: {
-          [CHAIN_ID]: {
-            [TOKEN_ADDRESS]: '0xc8',
-          },
-        },
-      },
-      accountsByChainId: {
-        [CHAIN_ID]: {
-          [ACCOUNT_ADDRESS]: {
-            address: ACCOUNT_ADDRESS,
-            balance: '0x1bc16d674ec80000',
-          },
-          [OTHER_ACCOUNT_ADDRESS]: {
-            address: OTHER_ACCOUNT_ADDRESS,
-            balance: '0xde0b6b3a7640000',
-          },
+        [OTHER_ACCOUNT_ID]: {
+          [NATIVE_ASSET_ID]: { amount: '1' },
+          // 0xc8 at 4 decimals → 0.02
+          [TOKEN_ASSET_ID]: { amount: '0.02' },
         },
       },
-      marketData: {
-        [CHAIN_ID]: {
-          [TOKEN_ADDRESS]: {
-            tokenAddress: TOKEN_ADDRESS,
-            price: 1,
-          },
+      assetsPrice: {
+        [NATIVE_ASSET_ID]: {
+          assetPriceType: 'fungible',
+          price: 10000,
+          usdPrice: 10000,
+          lastUpdated: 1,
         },
-      },
-      currencyRates: {
-        ETH: {
-          conversionRate: 10000,
-          usdConversionRate: 10000,
+        // marketData price is in native units; store price * nativeConversionRate
+        [TOKEN_ASSET_ID]: {
+          assetPriceType: 'fungible',
+          price: 1 * 10000,
+          usdPrice: 1 * 10000,
+          lastUpdated: 1,
         },
       },
       networkConfigurationsByChainId: {

@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import type {
   AccountState,
   CandleData,
@@ -170,6 +171,7 @@ jest.mock('@metamask/perps-controller', () => ({
     TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
     ORDER_REJECTED: 'ORDER_REJECTED',
     SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
+    PRICE_MOVED: 'PRICE_MOVED',
     RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
@@ -3824,6 +3826,33 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
+    it('uses the structured error code when the order price moved', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Price moved too much',
+            errorCode: 'PRICE_MOVED',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsSlippageExceeded'),
+      });
+    });
+
     it('shows order failure toast when controller throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
@@ -3851,6 +3880,46 @@ describe('PerpsOrderEntryPage', () => {
         description: 'A network error occurred. Please try again.',
       });
     });
+
+    it.each(['', '   ', '.', '2 ETH', 'Infinity'])(
+      'renders close mode with malformed live size %p and restores submission after recovery',
+      async (size) => {
+        mockSearchParams.set('mode', 'close');
+        mockLivePositions.mockReturnValue({
+          positions: [{ ...mockPositions[0], size }],
+          isInitialLoading: false,
+        });
+        const store = mockStore(createMockState());
+        const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        const submit = screen.getByTestId('submit-order-button');
+        expect(submit).toBeDisabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: undefined,
+        });
+        await act(async () => fireEvent.click(submit));
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsClosePosition',
+          expect.anything(),
+        );
+
+        mockUsePerpsOrderFees.mockClear();
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        rerender(<PerpsOrderEntryPage />);
+
+        expect(submit).toBeEnabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: String(Math.abs(Number(mockPositions[0].size)) * 3025.5),
+        });
+      },
+    );
 
     it('calls closePosition when in close mode', async () => {
       mockSearchParams.set('mode', 'close');

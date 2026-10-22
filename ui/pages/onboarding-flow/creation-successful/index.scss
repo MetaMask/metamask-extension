@@ -15,27 +15,6 @@
     letter-spacing: -0.26px;
     margin-bottom: 48px;
   }
-
-  &__settings-actions {
-    .mm-box.mm-text {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    &-text {
-      width: 100%;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .mm-button-base {
-      height: 60px;
-    }
-  }
 }
 
 .riv-animation {

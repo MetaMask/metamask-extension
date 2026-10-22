@@ -16,6 +16,10 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import {
+  type FeatureFlags,
+  RemoteFeatureFlagControllerGetStateAction,
+} from '@metamask/remote-feature-flag-controller';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
@@ -73,6 +77,7 @@ describe('Delegation 7702 Publish Hook', () => {
 
   let messenger: TransactionControllerInitMessenger;
   let hookClass: Delegation7702PublishHook;
+  const remoteFeatureFlags: FeatureFlags = {};
 
   const signTypedMessageMock: jest.MockedFn<
     KeyringControllerSignTypedMessageAction['handler']
@@ -109,6 +114,7 @@ describe('Delegation 7702 Publish Hook', () => {
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
+      | RemoteFeatureFlagControllerGetStateAction
       | TransactionControllerGetNonceLockAction
       | TransactionControllerIsAtomicBatchSupportedAction
       | TransactionControllerUpdateTransactionAction,
@@ -122,6 +128,7 @@ describe('Delegation 7702 Publish Hook', () => {
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction
+      | RemoteFeatureFlagControllerGetStateAction
       | TransactionControllerGetNonceLockAction
       | TransactionControllerIsAtomicBatchSupportedAction
       | TransactionControllerUpdateTransactionAction,
@@ -137,6 +144,7 @@ describe('Delegation 7702 Publish Hook', () => {
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
         'DelegationController:signDelegation',
+        'RemoteFeatureFlagController:getState',
         'TransactionController:getNonceLock',
         'TransactionController:isAtomicBatchSupported',
         'TransactionController:updateTransaction',
@@ -156,6 +164,11 @@ describe('Delegation 7702 Publish Hook', () => {
     baseMessenger.registerActionHandler(
       'DelegationController:signDelegation',
       signDelegationControllerMock,
+    );
+
+    baseMessenger.registerActionHandler(
+      'RemoteFeatureFlagController:getState',
+      () => ({ cacheTimestamp: 0, remoteFeatureFlags }),
     );
 
     baseMessenger.registerActionHandler(
@@ -537,7 +550,7 @@ describe('Delegation 7702 Publish Hook', () => {
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
-    expect(signArgs.delegation.caveats).toHaveLength(3);
+    expect(signArgs.delegation.caveats).toHaveLength(4);
   });
 
   it('relays the parent execute as a single execution for sponsored batches with nested calls', async () => {
@@ -620,7 +633,7 @@ describe('Delegation 7702 Publish Hook', () => {
     // Ensure caveats contain a single exactExecution for gasless flow
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
     expect(Array.isArray(signArgs.delegation.caveats)).toBe(true);
-    expect(signArgs.delegation.caveats).toHaveLength(3);
+    expect(signArgs.delegation.caveats).toHaveLength(4);
     // No transfer execution should be included for gasless flow
   });
 
@@ -645,7 +658,7 @@ describe('Delegation 7702 Publish Hook', () => {
 
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
-    expect(signArgs.delegation.caveats).toHaveLength(3);
+    expect(signArgs.delegation.caveats).toHaveLength(4);
   });
 
   describe('redeemer caveat', () => {
@@ -684,7 +697,7 @@ describe('Delegation 7702 Publish Hook', () => {
 
       const signArgs = signDelegationControllerMock.mock.calls[0][0];
 
-      expect(signArgs.delegation.caveats).toHaveLength(3);
+      expect(signArgs.delegation.caveats).toHaveLength(4);
       expect(signArgs.delegation.caveats).toContainEqual({
         enforcer: caveatEnforcers.RedeemerEnforcer,
         terms:
