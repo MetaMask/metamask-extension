@@ -3,17 +3,16 @@ import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getEnabledChainIds } from '../selectors';
-import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import { refreshAssetsForSelectedAccount } from '../store/actions';
 import { useDispatch } from '../store/hooks';
 
 /**
- * Assets hook to refresh balance state for the selected account when account
+ * Refreshes AssetsController balances for the selected account when account
  * lists are displayed.
  *
- * When assets-unify is enabled, this triggers AssetsController via
- * `refreshAssetsForSelectedAccount`. TokenBalancesController (and its
- * `updateBalances` API) has been removed.
+ * Only the selected account is refreshed. Refreshing every account writes
+ * balances for groups that have not been opened yet, and the account list
+ * then renders those as if they were loaded.
  *
  * @returns Object containing updateBalances function for manual triggering if needed
  * @example
@@ -31,22 +30,14 @@ export const useAssetsUpdateAllAccountBalances = (): {
 } => {
   const enabledChainIds = useSelector(getEnabledChainIds);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
   const dispatch = useDispatch();
 
   const updateBalances = useCallback(async () => {
     try {
-      if (!isAssetsUnifyStateEnabled || !selectedAccount) {
+      if (!selectedAccount || enabledChainIds.length === 0) {
         return;
       }
 
-      if (enabledChainIds.length === 0) {
-        return;
-      }
-
-      // Only the selected account. Refreshing every account writes balances
-      // for groups that have not been opened yet, and the account list then
-      // renders those as if they were loaded.
       await dispatch(
         refreshAssetsForSelectedAccount([selectedAccount], {
           chainIds: enabledChainIds.map(formatChainIdToCaip),
@@ -56,18 +47,11 @@ export const useAssetsUpdateAllAccountBalances = (): {
     } catch (error) {
       console.warn('Error updating balances state for all accounts', error);
     }
-  }, [dispatch, enabledChainIds, selectedAccount, isAssetsUnifyStateEnabled]);
+  }, [dispatch, enabledChainIds, selectedAccount]);
 
   useEffect(() => {
-    if (!isAssetsUnifyStateEnabled) {
-      return;
-    }
-    if (enabledChainIds.length === 0) {
-      return;
-    }
-
     updateBalances();
-  }, [enabledChainIds, isAssetsUnifyStateEnabled, updateBalances]);
+  }, [updateBalances]);
 
   return { updateBalances };
 };

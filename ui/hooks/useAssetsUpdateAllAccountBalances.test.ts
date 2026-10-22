@@ -4,7 +4,6 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { refreshAssetsForSelectedAccount } from '../store/actions';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getEnabledChainIds } from '../selectors';
-import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import { useDispatch } from '../store/hooks';
 import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
 
@@ -26,10 +25,6 @@ jest.mock('../selectors', () => ({
 
 jest.mock('../../shared/lib/selectors/accounts', () => ({
   getSelectedInternalAccount: jest.fn(),
-}));
-
-jest.mock('../selectors/assets-unify-state', () => ({
-  getIsAssetsUnifyStateEnabled: jest.fn(),
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
@@ -65,9 +60,6 @@ describe('useAssetsUpdateAllAccountBalances', () => {
       if (selector === getSelectedInternalAccount) {
         return SELECTED_ACCOUNT;
       }
-      if (selector === getIsAssetsUnifyStateEnabled) {
-        return true;
-      }
       return undefined;
     });
   });
@@ -84,7 +76,7 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     expect(typeof result.current.updateBalances).toBe('function');
   });
 
-  it('refreshes AssetsController when unify is enabled and chain ids exist', () => {
+  it('refreshes AssetsController for the selected account when chain ids exist', () => {
     renderHook(() => useAssetsUpdateAllAccountBalances());
 
     expect(mockRefreshAssetsForSelectedAccount).toHaveBeenCalledWith(
@@ -97,26 +89,6 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function));
   });
 
-  it('does not refresh when unify is disabled', () => {
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return ['0x1', '0x89'];
-      }
-      if (selector === getSelectedInternalAccount) {
-        return SELECTED_ACCOUNT;
-      }
-      if (selector === getIsAssetsUnifyStateEnabled) {
-        return false;
-      }
-      return undefined;
-    });
-
-    renderHook(() => useAssetsUpdateAllAccountBalances());
-
-    expect(mockDispatch).not.toHaveBeenCalled();
-    expect(mockRefreshAssetsForSelectedAccount).not.toHaveBeenCalled();
-  });
-
   it('does not refresh when enabledChainIds is empty', () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getEnabledChainIds) {
@@ -124,9 +96,6 @@ describe('useAssetsUpdateAllAccountBalances', () => {
       }
       if (selector === getSelectedInternalAccount) {
         return SELECTED_ACCOUNT;
-      }
-      if (selector === getIsAssetsUnifyStateEnabled) {
-        return true;
       }
       return undefined;
     });
