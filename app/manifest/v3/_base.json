@@ -54,6 +54,15 @@
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "network_request_policy",
+        "enabled": true,
+        "path": "network-request-rules.json"
+      }
+    ]
+  },
   "default_locale": "en",
   "description": "__MSG_appDescription__",
   "host_permissions": [
@@ -88,7 +97,8 @@
     "offscreen",
     "identity",
     "sidePanel",
-    "cookies"
+    "cookies",
+    "declarativeNetRequestWithHostAccess"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]

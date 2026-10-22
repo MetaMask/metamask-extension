@@ -11,6 +11,7 @@ import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
 import { trackCriticalErrorEvent } from './track-critical-error';
 
 jest.mock('../segment', () => ({
+  initializeSegmentDeliveryState: jest.fn(),
   segment: {
     track: jest.fn(),
     flush: jest.fn(),

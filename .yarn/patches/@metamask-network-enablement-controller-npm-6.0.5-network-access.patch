@@ -1,0 +1,158 @@
+diff --git a/dist/NetworkEnablementController.mjs b/dist/NetworkEnablementController.mjs
+--- a/dist/NetworkEnablementController.mjs
++++ b/dist/NetworkEnablementController.mjs
+@@ -3,7 +3,7 @@
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _NetworkEnablementController_instances, _NetworkEnablementController_ensureNamespaceBucket, _NetworkEnablementController_isInPopularNetworksMode, _NetworkEnablementController_removeNetworkEntry, _NetworkEnablementController_onAddNetwork, _NetworkEnablementController_getRegistryPopularEvmChainIds, _NetworkEnablementController_getPopularEvmChainIds;
++var _NetworkEnablementController_getEvmSlip44, _NetworkEnablementController_instances, _NetworkEnablementController_ensureNamespaceBucket, _NetworkEnablementController_isInPopularNetworksMode, _NetworkEnablementController_removeNetworkEntry, _NetworkEnablementController_onAddNetwork, _NetworkEnablementController_getRegistryPopularEvmChainIds, _NetworkEnablementController_getPopularEvmChainIds;
+ import { BaseController } from "@metamask/base-controller";
+ import { BuiltInNetworkName, ChainId, toHex } from "@metamask/controller-utils";
+ import { BtcScope, SolScope, TrxScope, XlmScope } from "@metamask/keyring-api";
+@@ -110,7 +110,7 @@
+      * @param args.messenger - Messenger used to communicate with BaseV2 controller.
+      * @param args.state - Initial state to set on this controller.
+      */
+-    constructor({ messenger, state, }) {
++    constructor({ messenger, state, getEvmSlip44, }) {
+         super({
+             messenger,
+             metadata,
+@@ -121,6 +121,7 @@
+             },
+         });
+         _NetworkEnablementController_instances.add(this);
++        _NetworkEnablementController_getEvmSlip44.set(this, getEvmSlip44 ?? Slip44Service.getEvmSlip44.bind(Slip44Service));
+         messenger.registerMethodActionHandlers(this, MESSENGER_EXPOSED_METHODS);
+         messenger.subscribe('NetworkController:networkAdded', ({ chainId }) => {
+             // eslint-disable-next-line no-void
+@@ -293,7 +294,7 @@
+             // Parse hex chainId to number for chainid.network lookup
+             const numericChainId = parseInt(chainId, 16);
+             // EVM networks: use getEvmSlip44 (chainid.network data)
+-            const slip44CoinType = await Slip44Service.getEvmSlip44(numericChainId);
++            const slip44CoinType = await __classPrivateFieldGet(this, _NetworkEnablementController_getEvmSlip44, "f").call(this, numericChainId);
+             evmNativeAssetUpdates.push({
+                 caipChainId,
+                 identifier: buildNativeAssetIdentifier(caipChainId, slip44CoinType),
+@@ -365,7 +366,7 @@
+             if (namespace === 'eip155') {
+                 // EVM networks: use getEvmSlip44 (chainid.network data)
+                 const numericChainId = parseInt(reference, 10);
+-                slip44CoinType = await Slip44Service.getEvmSlip44(numericChainId);
++                slip44CoinType = await __classPrivateFieldGet(this, _NetworkEnablementController_getEvmSlip44, "f").call(this, numericChainId);
+             }
+             else {
+                 // Non-EVM networks: use getSlip44BySymbol (@metamask/slip44 package)
+@@ -484,6 +485,7 @@
+         return [...evmCaip, ...this.listPopularMultichainNetworks()];
+     }
+ }
++_NetworkEnablementController_getEvmSlip44 = new WeakMap();
+ _NetworkEnablementController_instances = new WeakSet(), _NetworkEnablementController_ensureNamespaceBucket = function _NetworkEnablementController_ensureNamespaceBucket(state, ns) {
+     if (!state.enabledNetworkMap[ns]) {
+         state.enabledNetworkMap[ns] = {};
+@@ -535,7 +537,7 @@
+     // Parse reference (decimal string from CAIP-2) to number for chainid.network lookup
+     const numericChainId = parseInt(reference, 10);
+     // EVM networks: use getEvmSlip44 (chainid.network data)
+-    const slip44CoinType = await Slip44Service.getEvmSlip44(numericChainId);
++    const slip44CoinType = await __classPrivateFieldGet(this, _NetworkEnablementController_getEvmSlip44, "f").call(this, numericChainId);
+     this.update((state) => {
+         // Ensure the namespace bucket exists
+         __classPrivateFieldGet(this, _NetworkEnablementController_instances, "m", _NetworkEnablementController_ensureNamespaceBucket).call(this, state, namespace);
+diff --git a/dist/NetworkEnablementController.cjs b/dist/NetworkEnablementController.cjs
+--- a/dist/NetworkEnablementController.cjs
++++ b/dist/NetworkEnablementController.cjs
+@@ -4,7 +4,7 @@
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _NetworkEnablementController_instances, _NetworkEnablementController_ensureNamespaceBucket, _NetworkEnablementController_isInPopularNetworksMode, _NetworkEnablementController_removeNetworkEntry, _NetworkEnablementController_onAddNetwork, _NetworkEnablementController_getRegistryPopularEvmChainIds, _NetworkEnablementController_getPopularEvmChainIds;
++var _NetworkEnablementController_getEvmSlip44, _NetworkEnablementController_instances, _NetworkEnablementController_ensureNamespaceBucket, _NetworkEnablementController_isInPopularNetworksMode, _NetworkEnablementController_removeNetworkEntry, _NetworkEnablementController_onAddNetwork, _NetworkEnablementController_getRegistryPopularEvmChainIds, _NetworkEnablementController_getPopularEvmChainIds;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.NetworkEnablementController = void 0;
+ const base_controller_1 = require("@metamask/base-controller");
+@@ -113,7 +113,7 @@
+      * @param args.messenger - Messenger used to communicate with BaseV2 controller.
+      * @param args.state - Initial state to set on this controller.
+      */
+-    constructor({ messenger, state, }) {
++    constructor({ messenger, state, getEvmSlip44, }) {
+         super({
+             messenger,
+             metadata,
+@@ -124,6 +124,7 @@
+             },
+         });
+         _NetworkEnablementController_instances.add(this);
++        _NetworkEnablementController_getEvmSlip44.set(this, getEvmSlip44 ?? index_js_1.Slip44Service.getEvmSlip44.bind(index_js_1.Slip44Service));
+         messenger.registerMethodActionHandlers(this, MESSENGER_EXPOSED_METHODS);
+         messenger.subscribe('NetworkController:networkAdded', ({ chainId }) => {
+             // eslint-disable-next-line no-void
+@@ -296,7 +297,7 @@
+             // Parse hex chainId to number for chainid.network lookup
+             const numericChainId = parseInt(chainId, 16);
+             // EVM networks: use getEvmSlip44 (chainid.network data)
+-            const slip44CoinType = await index_js_1.Slip44Service.getEvmSlip44(numericChainId);
++            const slip44CoinType = await __classPrivateFieldGet(this, _NetworkEnablementController_getEvmSlip44, "f").call(this, numericChainId);
+             evmNativeAssetUpdates.push({
+                 caipChainId,
+                 identifier: buildNativeAssetIdentifier(caipChainId, slip44CoinType),
+@@ -368,7 +369,7 @@
+             if (namespace === 'eip155') {
+                 // EVM networks: use getEvmSlip44 (chainid.network data)
+                 const numericChainId = parseInt(reference, 10);
+-                slip44CoinType = await index_js_1.Slip44Service.getEvmSlip44(numericChainId);
++                slip44CoinType = await __classPrivateFieldGet(this, _NetworkEnablementController_getEvmSlip44, "f").call(this, numericChainId);
+             }
+             else {
+                 // Non-EVM networks: use getSlip44BySymbol (@metamask/slip44 package)
+@@ -488,6 +489,7 @@
+     }
+ }
+ exports.NetworkEnablementController = NetworkEnablementController;
++_NetworkEnablementController_getEvmSlip44 = new WeakMap();
+ _NetworkEnablementController_instances = new WeakSet(), _NetworkEnablementController_ensureNamespaceBucket = function _NetworkEnablementController_ensureNamespaceBucket(state, ns) {
+     if (!state.enabledNetworkMap[ns]) {
+         state.enabledNetworkMap[ns] = {};
+@@ -539,7 +541,7 @@
+     // Parse reference (decimal string from CAIP-2) to number for chainid.network lookup
+     const numericChainId = parseInt(reference, 10);
+     // EVM networks: use getEvmSlip44 (chainid.network data)
+-    const slip44CoinType = await index_js_1.Slip44Service.getEvmSlip44(numericChainId);
++    const slip44CoinType = await __classPrivateFieldGet(this, _NetworkEnablementController_getEvmSlip44, "f").call(this, numericChainId);
+     this.update((state) => {
+         // Ensure the namespace bucket exists
+         __classPrivateFieldGet(this, _NetworkEnablementController_instances, "m", _NetworkEnablementController_ensureNamespaceBucket).call(this, state, namespace);
+diff --git a/dist/NetworkEnablementController.d.mts b/dist/NetworkEnablementController.d.mts
+--- a/dist/NetworkEnablementController.d.mts
++++ b/dist/NetworkEnablementController.d.mts
+@@ -83,9 +83,10 @@
+      * @param args.messenger - Messenger used to communicate with BaseV2 controller.
+      * @param args.state - Initial state to set on this controller.
+      */
+-    constructor({ messenger, state, }: {
++    constructor({ messenger, state, getEvmSlip44, }: {
+         messenger: NetworkEnablementControllerMessenger;
+         state?: Partial<NetworkEnablementControllerState>;
++        getEvmSlip44?: (chainId: number) => Promise<number>;
+     });
+     /**
+      * Enables or disables a network for the user.
+diff --git a/dist/NetworkEnablementController.d.cts b/dist/NetworkEnablementController.d.cts
+--- a/dist/NetworkEnablementController.d.cts
++++ b/dist/NetworkEnablementController.d.cts
+@@ -83,9 +83,10 @@
+      * @param args.messenger - Messenger used to communicate with BaseV2 controller.
+      * @param args.state - Initial state to set on this controller.
+      */
+-    constructor({ messenger, state, }: {
++    constructor({ messenger, state, getEvmSlip44, }: {
+         messenger: NetworkEnablementControllerMessenger;
+         state?: Partial<NetworkEnablementControllerState>;
++        getEvmSlip44?: (chainId: number) => Promise<number>;
+     });
+     /**
+      * Enables or disables a network for the user.

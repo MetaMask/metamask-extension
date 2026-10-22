@@ -306,6 +306,10 @@ import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-c
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
 import {
+  refreshNetworkRequestPolicy,
+  setOnboardingNetworkDomains,
+} from './lib/network-request-policy';
+import {
   CronjobControllerInit,
   ExecutionServiceInit,
   RateLimitControllerInit,
@@ -2419,6 +2423,12 @@ export default class MetamaskController extends EventEmitter {
       staticAssetsController,
     } = this;
 
+    const waitForNetworkPolicy = async () => {
+      if (isManifestV3) {
+        await refreshNetworkRequestPolicy(this.store.getState());
+      }
+    };
+
     return {
       // etc
       setCurrentCurrency: this.controllerMessenger.call.bind(
@@ -3096,16 +3106,17 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // SeedlessOnboardingController
-      preloadToprfNodeDetails:
-        this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
-          this.seedlessOnboardingController,
-        ),
+      preloadToprfNodeDetails: async () => {
+        await this.oauthService.waitForOnboardingNetworkPolicy();
+        return this.seedlessOnboardingController.preloadToprfNodeDetails();
+      },
       authenticate: this.seedlessOnboardingController.authenticate.bind(
         this.seedlessOnboardingController,
       ),
-      resetOAuthLoginState: this.seedlessOnboardingController.clearState.bind(
-        this.seedlessOnboardingController,
-      ),
+      resetOAuthLoginState: async () => {
+        await setOnboardingNetworkDomains([]);
+        return this.seedlessOnboardingController.clearState();
+      },
       createSeedPhraseBackup: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:createSeedPhraseBackup',
@@ -3632,10 +3643,10 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
-      getNotificationPreferences:
-        authenticatedUserStorageService.getNotificationPreferences.bind(
-          authenticatedUserStorageService,
-        ),
+      getNotificationPreferences: async () => {
+        await waitForNetworkPolicy();
+        return authenticatedUserStorageService.getNotificationPreferences();
+      },
       putNotificationPreferences:
         authenticatedUserStorageService.putNotificationPreferences.bind(
           authenticatedUserStorageService,
@@ -3655,10 +3666,12 @@ export default class MetamaskController extends EventEmitter {
       enableAccounts: notificationServicesController.enableAccounts.bind(
         notificationServicesController,
       ),
-      fetchAndUpdateMetamaskNotifications:
-        notificationServicesController.fetchAndUpdateMetamaskNotifications.bind(
-          notificationServicesController,
-        ),
+      fetchAndUpdateMetamaskNotifications: async (previewToken) => {
+        await waitForNetworkPolicy();
+        return notificationServicesController.fetchAndUpdateMetamaskNotifications(
+          previewToken,
+        );
+      },
       deleteNotificationsById:
         notificationServicesController.deleteNotificationsById.bind(
           notificationServicesController,
@@ -3683,8 +3696,12 @@ export default class MetamaskController extends EventEmitter {
         notificationServicesPushController.disablePushNotifications.bind(
           notificationServicesPushController,
         ),
-      enableMetamaskNotifications: (options) =>
-        notificationServicesController.enableMetamaskNotifications(options),
+      enableMetamaskNotifications: async (options) => {
+        await waitForNetworkPolicy();
+        return notificationServicesController.enableMetamaskNotifications(
+          options,
+        );
+      },
       disableMetamaskNotifications:
         notificationServicesController.disableNotificationServices.bind(
           notificationServicesController,

@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import { join, resolve } from 'node:path';
 import { Open } from 'unzipper';
 import { sources, type Compilation } from 'webpack';
+import { createNetworkRequestRules } from '../utils/plugins/ManifestPlugin/network-request-policy';
 import {
   BUNDLE_SIZE_DEBUG_FILE,
   BUNDLE_SIZE_SUMMARY_FILE,
@@ -2255,5 +2256,46 @@ describe('ManifestPlugin', () => {
         'should not watch non-existent build type manifest files',
       );
     });
+  });
+});
+
+describe('packaged network request rules', () => {
+  it('packages only extension initiator conditions supported by Chrome 123', () => {
+    const rules = createNetworkRequestRules(
+      { manifest_version: 3 } as Manifest,
+      'main',
+      false,
+    );
+    assert.deepStrictEqual(rules, [
+      {
+        id: 1000000,
+        priority: 1,
+        action: { type: 'block' },
+        condition: {
+          regexFilter: '^(https?|wss?)://',
+          initiatorDomains: ['nkbihfbeogaeaoehlefnkodbefgpgknn'],
+        },
+      },
+    ]);
+  });
+
+  it('adds localhost infrastructure access only in test builds', () => {
+    const rules = createNetworkRequestRules(
+      { manifest_version: 3 } as Manifest,
+      'main',
+      true,
+    );
+    assert.deepStrictEqual(
+      rules.map(({ action }) => action.type),
+      ['block', 'allow'],
+    );
+    assert.deepStrictEqual(rules[1].condition.requestDomains, ['localhost']);
+    assert.throws(() =>
+      createNetworkRequestRules(
+        { manifest_version: 3 } as Manifest,
+        'unknown-store',
+        false,
+      ),
+    );
   });
 });
