@@ -68,6 +68,17 @@ const MfaFlowHost = () => {
   const { step } = state;
   const isPicker = step.name === 'picker';
   const cancel = () => active.flow.dispatch({ type: 'cancel' });
+  const goBack = () => {
+    if (
+      step.name === 'otp' &&
+      step.method === 'totp' &&
+      step.purpose === 'setup'
+    ) {
+      active.flow.dispatch({ type: 'back' });
+      return;
+    }
+    cancel();
+  };
   const close = () => {
     closeToHome.current = true;
     cancel();
@@ -132,7 +143,7 @@ const MfaFlowHost = () => {
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
-            onClick={cancel}
+            onClick={goBack}
             data-testid={MfaFlowTestIds.BACK_BUTTON}
           />
         )}

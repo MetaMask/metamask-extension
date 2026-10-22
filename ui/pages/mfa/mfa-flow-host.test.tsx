@@ -41,11 +41,22 @@ const createController = (
   let session: VerificationToken | null = null;
   return {
     refreshEnrolledCredentials: jest.fn(async () => credentials),
-    beginCredentialEnrollment: jest.fn(async () => ({
-      type: 'email_otp' as const,
-      flowId: 'enroll-1',
-      expiresAt: Date.now(),
-    })),
+    beginCredentialEnrollment: jest.fn(async ({ type }) =>
+      type === 'totp'
+        ? {
+            type,
+            flowId: 'enroll-1',
+            expiresAt: Date.now(),
+            secret: 'JBSWY3DPEHPK3PXP',
+            qrCode: 'data:image/png;base64,QR',
+            setupUri: 'otpauth://totp/MetaMask?secret=JBSWY3DPEHPK3PXP',
+          }
+        : {
+            type: 'email_otp' as const,
+            flowId: 'enroll-1',
+            expiresAt: Date.now(),
+          },
+    ),
     completeCredentialEnrollment: jest.fn(async () => {
       credentials = [activeEmail];
       return credentials;
@@ -202,6 +213,29 @@ describe('MfaFlowHost', () => {
     );
     const result = await outcome;
     expect(result.ok && result.value.token?.claims.amr).toEqual(['email_otp']);
+  });
+
+  it('returns from the authenticator code to its setup page', async () => {
+    await start({ kind: 'enroll', method: 'totp' }, createController());
+    renderHost();
+
+    expect(
+      screen.getByTestId(`${MfaFlowTestIds.CONTAINER}-totpSetup`),
+    ).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+    });
+    expect(
+      screen.getByTestId(`${MfaFlowTestIds.CONTAINER}-otp`),
+    ).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.BACK_BUTTON));
+    });
+
+    expect(
+      screen.getByTestId(`${MfaFlowTestIds.CONTAINER}-totpSetup`),
+    ).toBeInTheDocument();
   });
 
   it('shows back and close actions on setup pages and closes the flow', async () => {
