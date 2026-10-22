@@ -7,6 +7,7 @@ import {
   translatePerpsError,
   handlePerpsError,
   isPerpsErrorCode,
+  isSlippageFailure,
 } from './translate-perps-error';
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -592,5 +593,26 @@ describe('isPerpsErrorCode', () => {
         PERPS_ERROR_CODES.IOC_CANCEL,
       ),
     ).toBe(true);
+  });
+});
+
+describe('isSlippageFailure', () => {
+  [
+    PERPS_ERROR_CODES.PRICE_MOVED,
+    PERPS_ERROR_CODES.IOC_CANCEL,
+    PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED,
+  ].forEach((errorCode) => {
+    it(`matches ${errorCode}`, () => {
+      expect(isSlippageFailure({ error: errorCode, errorCode })).toBe(true);
+    });
+  });
+
+  it('does not match an unrelated error code', () => {
+    expect(
+      isSlippageFailure({
+        error: PERPS_ERROR_CODES.INSUFFICIENT_MARGIN,
+        errorCode: PERPS_ERROR_CODES.INSUFFICIENT_MARGIN,
+      }),
+    ).toBe(false);
   });
 });

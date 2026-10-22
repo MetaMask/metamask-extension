@@ -3888,6 +3888,81 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
+    it('uses the default tolerance when slippage configuration is disabled', async () => {
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 500,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'IOC_CANCEL',
+            errorCode: 'IOC_CANCEL',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+      const state = createMockState();
+      state.metamask.remoteFeatureFlags.perpsSlippageConfig2 = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      enterAmount('1000');
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            maxSlippageBps: 300,
+            trackingData: expect.objectContaining({
+              maxSlippageBps: 300,
+              maxSlippageSource: 'default',
+            }),
+          }),
+        ],
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['3']),
+      });
+    });
+
+    it('explains a thrown IOC cancellation using the submitted tolerance', async () => {
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 500,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.reject(
+            Object.assign(new Error('IOC_CANCEL'), { code: 'IOC_CANCEL' }),
+          );
+        }
+        return Promise.resolve({ success: true });
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('1000');
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['5']),
+      });
+    });
+
     it('shows order failure toast when controller throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {

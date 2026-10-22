@@ -1313,6 +1313,31 @@ describe('ClosePositionModal', () => {
       );
     });
 
+    it('explains a thrown IOC cancellation using the close tolerance', async () => {
+      mockSubmitRequestToBackground.mockRejectedValue(
+        Object.assign(new Error('IOC_CANCEL'), { code: 'IOC_CANCEL' }),
+      );
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastCloseFailed',
+          description: tEn('perpsIocCancel', ['3']),
+        });
+      });
+    });
+
     it('explains structured price movement on a partial market close', async () => {
       mockSubmitRequestToBackground.mockResolvedValue({
         success: false,

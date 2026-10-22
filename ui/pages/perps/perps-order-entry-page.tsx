@@ -35,7 +35,6 @@ import {
 import {
   ORDER_SLIPPAGE_CONFIG,
   PERPS_CONSTANTS,
-  PERPS_ERROR_CODES,
   PERFORMANCE_CONFIG,
   TRADING_DEFAULTS,
   type ClosePositionParams,
@@ -119,7 +118,7 @@ import {
 } from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import {
-  isPerpsErrorCode,
+  isSlippageFailure,
   translatePerpsError,
   type PerpsErrorInput,
 } from '../../components/app/perps/utils/translate-perps-error';
@@ -720,6 +719,12 @@ const PerpsOrderEntryPage = () => {
     setMaxSlippage,
     isLoading: isMaxSlippageLoading,
   } = usePerpsMaxSlippage();
+  const submittedMaxSlippageBps = isSlippageConfigEnabled
+    ? maxSlippageBps
+    : ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps;
+  const submittedMaxSlippageSource = isSlippageConfigEnabled
+    ? maxSlippageSource
+    : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT;
 
   const isOrderPending = isSubmitting;
 
@@ -2004,10 +2009,7 @@ const PerpsOrderEntryPage = () => {
       );
       if (orderMode === 'close') {
         const shouldExplainFailure =
-          orderFormState.type === 'market' &&
-          (isPerpsErrorCode(error, PERPS_ERROR_CODES.PRICE_MOVED) ||
-            isPerpsErrorCode(error, PERPS_ERROR_CODES.IOC_CANCEL) ||
-            isPerpsErrorCode(error, PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED));
+          orderFormState.type === 'market' && isSlippageFailure(error);
         if (isPartialClose) {
           setSubmitError(translatedError ?? t('somethingWentWrong'));
         }
@@ -2038,7 +2040,7 @@ const PerpsOrderEntryPage = () => {
         currentPrice,
         orderMode,
         position?.size,
-        isSlippageConfigEnabled ? maxSlippageBps : undefined,
+        submittedMaxSlippageBps,
       );
       orderParams.trackingData = buildTrackingData({
         totalFee: orderCalculations?.estimatedFees ?? 0,
@@ -2063,7 +2065,7 @@ const PerpsOrderEntryPage = () => {
         ...(orderFormState.type === 'market'
           ? {
               maxSlippageBps: orderParams.maxSlippageBps,
-              maxSlippageSource,
+              maxSlippageSource: submittedMaxSlippageSource,
               estimatedSlippageBps:
                 typeof estimatedSlippageBps === 'number'
                   ? estimatedSlippageBps
@@ -2374,7 +2376,7 @@ const PerpsOrderEntryPage = () => {
           maxSlippageBps:
             orderMode === 'close'
               ? ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps
-              : maxSlippageBps,
+              : submittedMaxSlippageBps,
         });
       }
       surfaceControllerFailure(failure);
@@ -2409,7 +2411,8 @@ const PerpsOrderEntryPage = () => {
     estimatedSlippageBps,
     maxSlippageBps,
     maxSlippageSource,
-    isSlippageConfigEnabled,
+    submittedMaxSlippageBps,
+    submittedMaxSlippageSource,
     positionSizeAbs,
     buildTrackingData,
     buildTpslTrackingData,

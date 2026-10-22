@@ -16,13 +16,6 @@ type PerpsTranslation = (key: string, substitutions?: string[]) => string;
 const formatBpsAsPercent = (bps: number): string =>
   (Math.round(bps) / 100).toString();
 
-function isPerpsErrorCodeValue(value: unknown): value is PerpsErrorCode {
-  return (
-    typeof value === 'string' &&
-    Object.values(PERPS_ERROR_CODES).includes(value as PerpsErrorCode)
-  );
-}
-
 function normalizePerpsError(error: unknown): PerpsErrorInput | null {
   if (typeof error === 'string') {
     return { error };
@@ -295,6 +288,12 @@ export const ERROR_CODE_TO_I18N_KEY = {
   // values. Exhaustiveness over `PerpsErrorCode` is unchanged.
 } as const satisfies Record<PerpsErrorCode, string>;
 
+function isPerpsErrorCodeValue(value: unknown): value is PerpsErrorCode {
+  return (
+    typeof value === 'string' && Object.hasOwn(ERROR_CODE_TO_I18N_KEY, value)
+  );
+}
+
 /**
  * Cancel-flow remapping of the keys above.
  *
@@ -382,12 +381,12 @@ export const API_ERROR_PATTERNS: {
 /**
  * Translate a Perps error to a user-facing string using the extension i18n system.
  *
- * Resolution order:
- * 1. If the error has a `code` property matching a known PerpsErrorCode, use
- * `ERROR_CODE_TO_I18N_KEY` to look up the message key.
- * 2. If the error message itself is a known PerpsErrorCode string, use it directly.
- * 3. If the error message matches an API error pattern, use the mapped code's key.
- * 4. Fall back to `null` (caller should show a generic fallback).
+ * Accepts strings, Error instances, and structured `PerpsErrorInput` objects.
+ * Structured codes take precedence over message-as-code values and legacy API
+ * pattern matching. IOC cancellation includes the submitted tolerance when
+ * available, and price-movement errors include the measured delta and maximum
+ * tolerance when Core supplies complete details. Missing interpolation data
+ * uses substitution-free fallback copy. Unknown errors return `null`.
  *
  * @param error - The unknown thrown value.
  * @param t - The extension i18n translation function from `useI18nContext()`.
@@ -449,6 +448,20 @@ export function isPerpsErrorCode(
 ): boolean {
   const normalizedError = normalizePerpsError(error);
   return normalizedError ? getErrorCode(normalizedError) === code : false;
+}
+
+/**
+ * Check whether an error is caused by a market-order slippage guard.
+ *
+ * @param error - The unknown error value.
+ * @returns Whether the error represents a slippage-related failure.
+ */
+export function isSlippageFailure(error: unknown): boolean {
+  return (
+    isPerpsErrorCode(error, PERPS_ERROR_CODES.PRICE_MOVED) ||
+    isPerpsErrorCode(error, PERPS_ERROR_CODES.IOC_CANCEL) ||
+    isPerpsErrorCode(error, PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED)
+  );
 }
 
 /**

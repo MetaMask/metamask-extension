@@ -65,6 +65,7 @@ import {
 import {
   handlePerpsError,
   isPerpsErrorCode,
+  isSlippageFailure,
   type PerpsErrorInput,
 } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
@@ -290,10 +291,7 @@ const getCloseFailureToastConfig = ({
       ])
     : handlePerpsError(error, t as (key: string) => string);
   const shouldExplainFailure =
-    orderType === 'market' &&
-    (isPerpsErrorCode(error, PERPS_ERROR_CODES.PRICE_MOVED) ||
-      isPerpsErrorCode(error, PERPS_ERROR_CODES.IOC_CANCEL) ||
-      isPerpsErrorCode(error, PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED));
+    orderType === 'market' && isSlippageFailure(error);
 
   if (orderType === 'limit') {
     return {
