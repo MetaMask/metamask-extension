@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, fireEvent, waitFor } from '@testing-library/react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -10,7 +11,10 @@ import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
 import { ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE } from '../../helpers/constants/routes';
 import { UsefulScreenReadyContext } from '../../hooks/useUsefulScreenReady';
-import { reportUsefulScreenReady } from '../../helpers/utils/useful-screen-ready';
+import {
+  discardUsefulScreenReadyTrace,
+  reportUsefulScreenReady,
+} from '../../helpers/utils/useful-screen-ready';
 import UnlockPage from './unlock-page.component';
 
 const mockTrackEvent = jest.fn();
@@ -18,6 +22,7 @@ const mockUnlockWithPasskey = jest.fn();
 
 jest.mock('../../helpers/utils/useful-screen-ready', () => ({
   ...jest.requireActual('../../helpers/utils/useful-screen-ready'),
+  discardUsefulScreenReadyTrace: jest.fn(),
   reportUsefulScreenReady: jest.fn(),
 }));
 
@@ -140,31 +145,77 @@ describe('UnlockPage component (passkey UI)', () => {
     beforeEach(() => {
       jest.useFakeTimers();
       jest.mocked(reportUsefulScreenReady).mockClear();
+      jest.mocked(discardUsefulScreenReadyTrace).mockClear();
     });
 
     afterEach(() => {
       jest.useRealTimers();
     });
 
-    it('waits for automatic passkey authentication to finish', async () => {
+    it('excludes successful automatic passkey authentication with real navigation', async () => {
       const unlock = createDeferredPromise<void>();
       mockUnlockWithPasskey.mockReturnValueOnce(unlock.promise);
 
-      renderWithProvider(
+      const UnlockRoute = () => {
+        const navigate = useNavigate();
+        const { pathname } = useLocation();
+        return pathname === '/unlock' ? (
+          <UnlockPage
+            {...buildProps({
+              passkeyAutoUnlockSuppressed: false,
+              navigateAfterUnlock: async () => navigate('/', { replace: true }),
+            })}
+          />
+        ) : (
+          <div data-testid="unlocked-home" />
+        );
+      };
+
+      const { getByTestId } = renderWithProvider(
         <UsefulScreenReadyContext.Provider value="initial">
-          <UnlockPage {...buildProps({ passkeyAutoUnlockSuppressed: false })} />
+          <UnlockRoute />
         </UsefulScreenReadyContext.Provider>,
         mockStore,
         '/unlock',
       );
       act(() => jest.advanceTimersByTime(48));
       expect(mockUnlockWithPasskey).toHaveBeenCalledTimes(1);
+      expect(discardUsefulScreenReadyTrace).toHaveBeenCalledTimes(1);
       expect(reportUsefulScreenReady).not.toHaveBeenCalled();
 
       await act(async () => unlock.resolve());
       act(() => jest.advanceTimersByTime(48));
-      expect(reportUsefulScreenReady).toHaveBeenCalledWith('initial', 'unlock');
+      expect(getByTestId('unlocked-home')).toBeInTheDocument();
+      expect(reportUsefulScreenReady).not.toHaveBeenCalled();
     });
+
+    it.each([
+      ['failed', { code: PasskeyControllerErrorCode.NotEnrolled }],
+      ['cancelled', new DOMException('Not allowed', 'NotAllowedError')],
+    ])(
+      'excludes %s automatic passkey authentication before password fallback',
+      async (_, error) => {
+        const unlock = createDeferredPromise<void>();
+        mockUnlockWithPasskey.mockReturnValueOnce(unlock.promise);
+        const { getByTestId } = renderWithProvider(
+          <UsefulScreenReadyContext.Provider value="initial">
+            <UnlockPage
+              {...buildProps({ passkeyAutoUnlockSuppressed: false })}
+            />
+          </UsefulScreenReadyContext.Provider>,
+          mockStore,
+          '/unlock',
+        );
+        expect(discardUsefulScreenReadyTrace).toHaveBeenCalledTimes(1);
+
+        await act(async () => unlock.reject(error));
+        expect(getByTestId('unlock-passkey-button')).toBeEnabled();
+        fireEvent.click(getByTestId('unlock-use-password-button'));
+
+        expect(getByTestId('unlock-password')).toBeInTheDocument();
+        expect(discardUsefulScreenReadyTrace).toHaveBeenCalledTimes(1);
+      },
+    );
 
     it('reports the available password form', () => {
       renderWithProvider(
@@ -178,6 +229,7 @@ describe('UnlockPage component (passkey UI)', () => {
       act(() => jest.advanceTimersByTime(48));
 
       expect(reportUsefulScreenReady).toHaveBeenCalledWith('initial', 'unlock');
+      expect(discardUsefulScreenReadyTrace).not.toHaveBeenCalled();
     });
   });
 

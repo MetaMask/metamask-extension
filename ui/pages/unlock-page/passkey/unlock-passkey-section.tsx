@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -44,7 +45,11 @@ import {
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
-import { useUsefulScreenReady } from '../../../hooks/useUsefulScreenReady';
+import {
+  UsefulScreenReadyContext,
+  useUsefulScreenReady,
+} from '../../../hooks/useUsefulScreenReady';
+import { discardUsefulScreenReadyTrace } from '../../../helpers/utils/useful-screen-ready';
 
 export type PasskeyUnlockSuccessContext = {
   /**
@@ -82,6 +87,7 @@ export const UnlockPasskeySection = ({
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const isPasskeyMigrationEligible = useSelector(getIsPasskeyUserHandleBased);
   const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
+  const readinessKey = useContext(UsefulScreenReadyContext);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -117,6 +123,12 @@ export const UnlockPasskeySection = ({
       }
       if (!isPasskeyActive) {
         return;
+      }
+
+      // Automatic authentication never offers an idle form before user input.
+      // Exclude the whole document, including cancellation/password fallback.
+      if (isAutoPrompt && readinessKey !== undefined) {
+        discardUsefulScreenReadyTrace();
       }
 
       if (isMountedRef.current) {
@@ -230,6 +242,7 @@ export const UnlockPasskeySection = ({
       isPasswordInProgress,
       passkeyInProgress,
       isPasskeyActive,
+      readinessKey,
       onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,

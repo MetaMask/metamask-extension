@@ -365,14 +365,12 @@ describe('UnlockPasskeySection', () => {
       mockUnlockWithPasskey.mockReturnValueOnce(unlock.promise);
       const { getByTestId, getByRole } = renderWithProvider(
         <UsefulScreenReadyContext.Provider value="initial">
-          <UnlockPasskeySection
-            {...baseProps}
-            passkeyAutoUnlockSuppressed={false}
-          />
+          <UnlockPasskeySection {...baseProps} />
         </UsefulScreenReadyContext.Provider>,
         mockStore,
         '/unlock',
       );
+      fireEvent.click(getByTestId('unlock-passkey-button'));
       fireEvent.click(getByTestId('unlock-passkey-troubleshoot-button'));
       await act(async () => unlock.resolve());
 

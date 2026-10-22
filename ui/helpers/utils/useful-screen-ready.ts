@@ -43,15 +43,16 @@ function getScreenForPath(pathname: string): UsefulScreen | undefined {
   return undefined;
 }
 
-function discard(): void {
+/** Permanently exclude this document from useful-screen readiness sampling. */
+export function discardUsefulScreenReadyTrace(): void {
   finished = true;
   document.removeEventListener('visibilitychange', onVisibilityChange);
-  window.removeEventListener('pagehide', discard);
+  window.removeEventListener('pagehide', discardUsefulScreenReadyTrace);
 }
 
 function onVisibilityChange(): void {
   if (document.visibilityState !== 'visible') {
-    discard();
+    discardUsefulScreenReadyTrace();
   }
 }
 
@@ -61,12 +62,12 @@ export function trackUsefulScreenVisibility(): void {
     return;
   }
   document.addEventListener('visibilitychange', onVisibilityChange);
-  window.addEventListener('pagehide', discard);
+  window.addEventListener('pagehide', discardUsefulScreenReadyTrace);
   // The bundle itself may have loaded after the document became visible.
   const visibilityEntries =
     performance.getEntriesByType?.('visibility-state') ?? [];
   if (visibilityEntries.some((entry) => entry.name === 'hidden')) {
-    discard();
+    discardUsefulScreenReadyTrace();
   }
   onVisibilityChange();
 }
@@ -111,7 +112,7 @@ export function observeUsefulScreenNavigation({
     (route && navigationType !== 'REPLACE') ||
     (route?.confirmationId && confirmationId !== route.confirmationId)
   ) {
-    discard();
+    discardUsefulScreenReadyTrace();
     return;
   }
   // A REPLACE can also follow approval/rejection or switching pending requests.
@@ -139,7 +140,7 @@ export function reportUsefulScreenReady(
     return;
   }
   const timestamp = getPerformanceTimestamp();
-  discard();
+  discardUsefulScreenReadyTrace();
   trace({
     name: TraceName.UsefulScreenReady,
     op: TraceOperation.UiScreenPerformance,

@@ -38,8 +38,13 @@ Keep the marker with the useful content if introducing separate Suspense boundar
   Where supported, buffered `visibility-state` entries also exclude documents
   hidden before the UI bundle ran. Other browsers use the current visibility
   state and subsequent events; visibility before script execution is unknown.
-- Passkey readiness also waits for authentication to finish and its
-  troubleshooting modal to close.
+- Documents that start automatic passkey authentication are excluded for all
+  outcomes: success, failure, cancellation, and subsequent password fallback.
+  This keeps authentication/user-interaction time out of form readiness and
+  avoids sampling only the automatic attempts that leave Unlock visible.
+  The existing `AppUnlocked` event measures successful authentication duration.
+  Manually initiated passkey authentication still suppresses pending readiness
+  while authentication or the troubleshooting modal is active.
 - Create and immediately end the span when ready, backdating to document navigation.
   Abandoned loads produce no successful sample or incomplete span.
 - Compare p50/p95 within matching `screen`, `wallet.ui_type`, `wallet.unlocked`,

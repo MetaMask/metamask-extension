@@ -183,6 +183,20 @@ describe('useUsefulScreenReady', () => {
     expect(end).toHaveBeenCalledTimes(1);
   });
 
+  it('keeps an explicitly excluded document excluded after readiness and remount', () => {
+    initialize('unlock');
+    const { rerender, unmount } = renderScreen('unlock', false);
+
+    mockReadiness.discardUsefulScreenReadyTrace();
+    rerender({ ready: true });
+    advance();
+    unmount();
+    renderScreen('unlock');
+    advance();
+
+    expect(startSpanManual).not.toHaveBeenCalled();
+  });
+
   jestIt.each(['unmount', 'unready'] as const)(
     'cancels a pending report on %s',
     (reason) => {
