@@ -83,19 +83,22 @@ function getErrorTranslation({
   maxSlippageBps?: number;
   defaultI18nKey: string;
 }): { i18nKey: string; substitutions?: string[] } {
-  if (
-    errorCode === PERPS_ERROR_CODES.PRICE_MOVED &&
-    errorDetails?.code === PERPS_ERROR_CODES.PRICE_MOVED &&
-    Number.isFinite(errorDetails.priceDeltaBps) &&
-    Number.isFinite(errorDetails.maxSlippageBps)
-  ) {
-    return {
-      i18nKey: 'perpsPriceMoved',
-      substitutions: [
-        formatBpsAsPercent(errorDetails.priceDeltaBps),
-        formatBpsAsPercent(errorDetails.maxSlippageBps),
-      ],
-    };
+  if (errorCode === PERPS_ERROR_CODES.PRICE_MOVED) {
+    if (
+      errorDetails?.code === PERPS_ERROR_CODES.PRICE_MOVED &&
+      Number.isFinite(errorDetails.priceDeltaBps) &&
+      Number.isFinite(errorDetails.maxSlippageBps)
+    ) {
+      return {
+        i18nKey: 'perpsPriceMoved',
+        substitutions: [
+          formatBpsAsPercent(errorDetails.priceDeltaBps),
+          formatBpsAsPercent(errorDetails.maxSlippageBps),
+        ],
+      };
+    }
+
+    return { i18nKey: 'perpsSlippageExceeded' };
   }
 
   if (errorCode === PERPS_ERROR_CODES.IOC_CANCEL) {

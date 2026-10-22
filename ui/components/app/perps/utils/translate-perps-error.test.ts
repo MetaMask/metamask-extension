@@ -447,6 +447,31 @@ describe('translatePerpsError', () => {
     );
   });
 
+  it('uses substitution-free copy when PRICE_MOVED details are unavailable', () => {
+    expect(translatePerpsError(PERPS_ERROR_CODES.PRICE_MOVED, tEn)).toBe(
+      tEn('perpsSlippageExceeded'),
+    );
+  });
+
+  it('uses substitution-free copy when PRICE_MOVED details are incomplete', () => {
+    expect(
+      translatePerpsError(
+        {
+          error: 'Price moved too much',
+          errorCode: PERPS_ERROR_CODES.PRICE_MOVED,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.PRICE_MOVED,
+            priceDeltaBps: Number.NaN,
+            maxSlippageBps: 300,
+            expectedPrice: 788.71,
+            currentPrice: 815.22,
+          },
+        },
+        tEn,
+      ),
+    ).toBe(tEn('perpsSlippageExceeded'));
+  });
+
   it('formats IOC_CANCEL with the submitted slippage tolerance', () => {
     expect(
       translatePerpsError(
