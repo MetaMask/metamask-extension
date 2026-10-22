@@ -242,7 +242,6 @@
     "location": "string",
     "logs": "object",
     "manageInstitutionalWallets": "boolean",
-    "marketData": "object",
     "marketFilterPreferences": "object",
     "marketingCampaignCookieId": null,
     "marketingConsentDecisionMade": "boolean",

@@ -117,7 +117,7 @@ const fetchTokenExchangeRates = async (
 };
 
 // This fetches the exchange rate for a token in a given currency. This is only called when the exchange
-// rate is not available in the TokenRatesController, which happens when the selected token has not been
+// rate is not available in marketData, which happens when the selected token has not been
 // imported into the wallet
 export const getTokenExchangeRate = async (request: {
   assetId: CaipAssetType;
