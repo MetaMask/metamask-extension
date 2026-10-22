@@ -310,7 +310,7 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('getTokenStandardAndDetails', () => {
-    it('gets token data from the token list and a balance retrieved via the global provider', async () => {
+    it('gets imported token data and a balance retrieved via the global provider', async () => {
       const providerResultStub = {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_getCode: '0x123',
@@ -323,6 +323,11 @@ describe('LegacyBackgroundApiService', () => {
         networkId: '5',
         chainId: '5',
       });
+      const accountAddress = '0xf0d172594caedee459b89ad44c94098e474571b6';
+      const accountId = 'test-account-id';
+      const tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+      const tokenAssetId =
+        'eip155:5/erc20:0x6b175474e89094c44da98b954eedeac495271d0f';
 
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(
@@ -331,14 +336,39 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'AccountsController:getState',
-          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+          jest.fn().mockReturnValue({
+            internalAccounts: {
+              accounts: {
+                [accountId]: {
+                  id: accountId,
+                  address: accountAddress,
+                  type: EthAccountType.Eoa,
+                },
+              },
+            },
+          }),
         );
+        // Unify mode reads imported tokens from AssetsController, not
+        // TokensController.allTokens.
         rootMessenger.registerActionHandler(
           'AssetsController:getState',
           jest.fn().mockReturnValue({
-            assetsInfo: {},
-            assetsBalance: {},
-            customAssets: {},
+            assetsInfo: {
+              [tokenAssetId]: {
+                type: 'erc20',
+                symbol: 'DAI',
+                name: 'Dai Stablecoin',
+                decimals: 18,
+              },
+            },
+            assetsBalance: {
+              [accountId]: {
+                [tokenAssetId]: { amount: '3' },
+              },
+            },
+            customAssets: {
+              [accountId]: [tokenAssetId],
+            },
           }),
         );
         rootMessenger.registerActionHandler(
@@ -352,29 +382,14 @@ describe('LegacyBackgroundApiService', () => {
             .mockReturnValue({ configuration: { chainId: '0x5' }, provider }),
         );
         rootMessenger.registerActionHandler(
-          'TokenListController:getState',
-          jest.fn().mockReturnValue({
-            tokensChainsCache: {
-              '0x5': {
-                data: {
-                  '0x6b175474e89094c44da98b954eedeac495271d0f': {
-                    decimals: 18,
-                    symbol: 'DAI',
-                  },
-                },
-              },
-            },
-          }),
-        );
-        rootMessenger.registerActionHandler(
           'TokensController:getState',
           jest.fn().mockReturnValue({ allTokens: {} }),
         );
 
         const result = await rootMessenger.call(
           'LegacyBackgroundApiService:getTokenStandardAndDetails',
-          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          tokenAddress,
+          accountAddress,
         );
 
         expect(result.standard).toStrictEqual('ERC20');
@@ -411,10 +426,6 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
         );
         rootMessenger.registerActionHandler(
-          'TokenListController:getState',
-          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
-        );
-        rootMessenger.registerActionHandler(
           'TokensController:getState',
           jest.fn().mockReturnValue({ allTokens: {} }),
         );
@@ -439,6 +450,61 @@ describe('LegacyBackgroundApiService', () => {
         expect(result.standard).toStrictEqual('ERC20');
         expect(result.decimals).toStrictEqual('18');
         expect(result.balance).toStrictEqual('333');
+      });
+    });
+
+    it('does not apply STATIC_MAINNET_TOKEN_LIST metadata on non-mainnet chains', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x89' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+          standard: 'ERC20',
+          decimals: '6',
+          symbol: 'OTHER',
+          balance: 42,
+        });
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        // Mainnet DAI address — must not be treated as DAI on Polygon.
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalled();
+        expect(result.symbol).toStrictEqual('OTHER');
+        expect(result.decimals).toStrictEqual('6');
+        expect(result.balance).toStrictEqual('42');
       });
     });
   });
@@ -488,10 +554,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountsController:getSelectedAccount',
           jest.fn().mockReturnValue({ address: '0xabc' }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokenListController:getState',
-          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
         );
         rootMessenger.registerActionHandler(
           'TokensController:getState',
@@ -1671,6 +1733,50 @@ describe('LegacyBackgroundApiService', () => {
           );
         });
       });
+
+      // @ts-expect-error 'each' function is not recognized by TypeScript types
+      it.each([
+        ['an empty', ''],
+        ['a missing', undefined],
+      ])(
+        'creates the account for a QR device that reports %s name',
+        async (_description: string, name: string | undefined) => {
+          await withService(async ({ rootMessenger }) => {
+            const getName = jest.fn().mockReturnValue(name);
+            registerWithKeyringV2(rootMessenger, {
+              entropySource: 'entropy-1',
+              hdPath: "m/44'/60'/0'/0",
+              getMode: jest.fn().mockReturnValue('account'),
+              getName,
+              createAccounts: jest
+                .fn()
+                .mockResolvedValue([{ address: '0x333' }]),
+            });
+
+            rootMessenger.registerActionHandler(
+              'AccountsController:listAccounts',
+              jest.fn().mockReturnValue([{ id: 'qr-3', address: '0x333' }]),
+            );
+            rootMessenger.registerActionHandler(
+              'AccountsController:getAccountByAddress',
+              jest.fn().mockReturnValue({ id: 'qr-3', address: '0x333' }),
+            );
+            rootMessenger.registerActionHandler(
+              'AccountsController:setSelectedAccount',
+              jest.fn(),
+            );
+
+            const result = await rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'QR Hardware',
+            );
+
+            expect(getName).toHaveBeenCalled();
+            expect(result.unlockedAccount).toStrictEqual('0x333');
+          });
+        },
+      );
     });
 
     describe('attemptLedgerTransportCreation', () => {
@@ -4844,6 +4950,10 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:revokePendingRefreshTokens',
           jest.fn().mockResolvedValue(undefined),
         );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+          jest.fn().mockResolvedValue(undefined),
+        );
         registerUnlockSideEffectHandlers(rootMessenger);
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -4897,6 +5007,10 @@ describe('LegacyBackgroundApiService', () => {
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:revokePendingRefreshTokens',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+          'global-password',
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SentryTracingService:bufferedEndTrace',
@@ -8369,7 +8483,6 @@ function getMessenger(
       'AssetsController:getAssets',
       'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
-      'TokenListController:getState',
       'TokensController:addToken',
       'TokensController:getState',
       'KeyringController:exportSeedPhrase',
@@ -8441,6 +8554,7 @@ function getMessenger(
       'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:loadKeyringEncryptionKey',
       'SeedlessOnboardingController:revokePendingRefreshTokens',
+      'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
       'SeedlessOnboardingController:setLocked',
       'SeedlessOnboardingController:storeKeyringEncryptionKey',
       'SeedlessOnboardingController:submitGlobalPassword',

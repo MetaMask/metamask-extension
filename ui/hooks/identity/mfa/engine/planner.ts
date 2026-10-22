@@ -17,9 +17,14 @@ import type {
  * Credential types the server knows, cheapest to verify first. Picker
  * order, the "confirm it's you" default and setup order (after the
  * `verifyWith` methods move last) all follow it. Each platform only offers
- * the ones it can run (`PLATFORM_METHODS`).
+ * the ones it can run (`PLATFORM_METHODS`). An authenticator app code comes
+ * before an email code, which has to arrive first.
  */
-const METHOD_COST_RANKING: readonly MfaMethod[] = ['passkey', 'email_otp'];
+const METHOD_COST_RANKING: readonly MfaMethod[] = [
+  'passkey',
+  'totp',
+  'email_otp',
+];
 
 /**
  * Methods each client's kit is built for. On mobile, passkeys also need the
@@ -27,11 +32,11 @@ const METHOD_COST_RANKING: readonly MfaMethod[] = ['passkey', 'email_otp'];
  * request that includes a passkey with `passkey_unsupported`.
  */
 const PLATFORM_METHODS: Record<MfaPlatform, readonly MfaMethod[]> = {
-  mobile: ['passkey', 'email_otp'],
-  extension: ['email_otp'],
+  mobile: ['passkey', 'totp', 'email_otp'],
+  extension: ['totp', 'email_otp'],
 };
 
-const isMethodSupported = (method: MfaMethod, platform: MfaPlatform) =>
+export const isMethodSupported = (method: MfaMethod, platform: MfaPlatform) =>
   PLATFORM_METHODS[platform].includes(method);
 
 const sortByCost = (methods: Iterable<MfaMethod>): MfaMethod[] => {
@@ -55,7 +60,8 @@ const getMethodStatus = (
     method,
     isActive,
     canVerify: isActive && isSupported,
-    // One email per profile; passkeys can always be added.
+    // One email and one authenticator app per profile; passkeys can always
+    // be added.
     canEnroll: isSupported && (method === 'passkey' || !isActive),
     pendingIdentifier:
       pendingRow?.type === 'email_otp' ? pendingRow.email : undefined,
@@ -227,7 +233,7 @@ export const planVerifyOrEnroll = (
 
   const steps: PlanStep[] = [];
   if (missing.length > 0 && !context.introShown) {
-    steps.push({ kind: 'intro', missing });
+    steps.push({ kind: 'intro', methods: request.methods, missing });
   }
 
   const simulation = startSimulation(statuses, context);
@@ -283,10 +289,11 @@ export const planVerifyOrEnroll = (
 export const planEnroll = (method: MfaMethod, context: PlanContext): Plan => {
   const statuses = getMethodStatuses(context.credentials, context.platform);
   if (!statuses[method].canEnroll) {
+    if (!isMethodSupported(method, context.platform)) {
+      return fail('passkey_unsupported');
+    }
     return fail(
-      isMethodSupported(method, context.platform)
-        ? 'email_already_enrolled'
-        : 'passkey_unsupported',
+      method === 'totp' ? 'totp_already_enrolled' : 'email_already_enrolled',
     );
   }
 

@@ -185,7 +185,7 @@ describe('MetaMask onboarding', function () {
           driver,
         );
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.togglePrivacySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
@@ -264,6 +264,38 @@ describe('MetaMask onboarding', function () {
             `${mockedEndpoint} should make requests after onboarding`,
           );
         }
+      },
+    );
+  });
+
+  it('User can turn off basic functionality in default settings', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await importSRPOnboardingFlow({ driver });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+        await onboardingCompletePage.navigateToDefaultPrivacySettings();
+
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+          driver,
+        );
+        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
+        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
+
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
       },
     );
   });

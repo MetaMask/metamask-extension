@@ -120,7 +120,11 @@ describe('planVerifyOrEnroll', () => {
     expect(planVerifyOrEnroll(KALSHI, buildContext())).toStrictEqual({
       ok: true,
       steps: [
-        { kind: 'intro', missing: ['email_otp', 'passkey'] },
+        {
+          kind: 'intro',
+          methods: ['email_otp', 'passkey'],
+          missing: ['email_otp', 'passkey'],
+        },
         { kind: 'setup', method: 'email_otp', prefillEmail: undefined },
         { kind: 'setup', method: 'passkey', prefillEmail: undefined },
       ],
@@ -136,7 +140,11 @@ describe('planVerifyOrEnroll', () => {
     ).toStrictEqual({
       ok: true,
       steps: [
-        { kind: 'intro', missing: ['passkey'] },
+        {
+          kind: 'intro',
+          methods: ['email_otp', 'passkey'],
+          missing: ['passkey'],
+        },
         { kind: 'confirm', options: ['email_otp'] },
         { kind: 'setup', method: 'passkey', prefillEmail: undefined },
       ],
@@ -152,7 +160,11 @@ describe('planVerifyOrEnroll', () => {
     ).toStrictEqual({
       ok: true,
       steps: [
-        { kind: 'intro', missing: ['passkey', 'email_otp'] },
+        {
+          kind: 'intro',
+          methods: ['email_otp', 'passkey'],
+          missing: ['passkey', 'email_otp'],
+        },
         { kind: 'setup', method: 'passkey', prefillEmail: undefined },
         { kind: 'setup', method: 'email_otp', prefillEmail: undefined },
       ],
@@ -253,7 +265,7 @@ describe('planVerifyOrEnroll', () => {
     ).toStrictEqual({
       ok: true,
       steps: [
-        { kind: 'intro', missing: ['email_otp'] },
+        { kind: 'intro', methods: ['email_otp'], missing: ['email_otp'] },
         { kind: 'setup', method: 'email_otp', prefillEmail: undefined },
       ],
     });
@@ -279,7 +291,7 @@ describe('planVerifyOrEnroll', () => {
     ).toStrictEqual({
       ok: true,
       steps: [
-        { kind: 'intro', missing: ['email_otp'] },
+        { kind: 'intro', methods: ['email_otp'], missing: ['email_otp'] },
         { kind: 'setup', method: 'email_otp', prefillEmail: 'pending@b.co' },
       ],
     });
@@ -400,7 +412,7 @@ describe('planVerifyOrEnroll', () => {
     ).toStrictEqual({
       ok: true,
       steps: [
-        { kind: 'intro', missing: ['email_otp'] },
+        { kind: 'intro', methods: ['email_otp'], missing: ['email_otp'] },
         { kind: 'setup', method: 'email_otp', prefillEmail: undefined },
       ],
     });
@@ -448,6 +460,28 @@ describe('planEnroll', () => {
     expect(
       planEnroll('passkey', buildContext({ platform: 'extension' })),
     ).toStrictEqual({ ok: false, code: 'passkey_unsupported' });
+  });
+
+  it('refuses a second authenticator app', () => {
+    expect(
+      planEnroll(
+        'totp',
+        buildContext({ credentials: [{ type: 'totp', status: 'active' }] }),
+      ),
+    ).toStrictEqual({ ok: false, code: 'totp_already_enrolled' });
+  });
+
+  it('offers the authenticator app on the extension, unlike passkeys', () => {
+    const context = buildContext({ platform: 'extension' });
+
+    expect(planEnroll('totp', context)).toStrictEqual({
+      ok: true,
+      steps: [{ kind: 'setup', method: 'totp', prefillEmail: undefined }],
+    });
+    expect(planEnroll('passkey', context)).toStrictEqual({
+      ok: false,
+      code: 'passkey_unsupported',
+    });
   });
 });
 

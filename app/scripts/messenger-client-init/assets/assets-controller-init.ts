@@ -45,7 +45,10 @@ let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
 async function safeGetBearerToken(
   initMessenger: AssetsControllerInitMessenger,
 ): Promise<string | undefined> {
-  if (isBackendAuthDisabled()) {
+  // Same gate as the price and accounts API lanes. Fetching a token signs the
+  // SRP in to the identity APIs, so skip it while basic functionality is off
+  // or onboarding is incomplete. Requests still go out unauthenticated.
+  if (isBackendAuthDisabled() || !getIsBasicFunctionality(initMessenger)()) {
     return undefined;
   }
   try {

@@ -302,12 +302,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     getBuyWidgetData,
     isContinuing,
     navigate,
-    selectedProvider?.id,
-    selectedProvider?.name,
+    selectedProvider,
     selectedQuote,
     selectedToken,
     t,
-    userRegion?.regionCode,
+    userRegion,
     walletAddress,
   ]);
 

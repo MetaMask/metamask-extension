@@ -1,3 +1,29 @@
+import { AuthConnection } from '../../../../shared/constants/onboarding';
+import type { OAuthTraceRehydrationValue, OAuthTraceTags } from './types';
+
+/**
+ * Build the shared dimensions for OAuth-related traces.
+ *
+ * @param authConnection - The OAuth provider used for the login.
+ * @param isRehydration - Whether the login is rehydrating an existing wallet.
+ * @returns The provider and rehydration trace dimensions.
+ */
+export function getOAuthTraceTags(
+  authConnection: AuthConnection,
+  isRehydration: boolean | null,
+): OAuthTraceTags {
+  let rehydrationValue: OAuthTraceRehydrationValue = 'unknown';
+  if (isRehydration !== null) {
+    rehydrationValue = isRehydration ? 'true' : 'false';
+  }
+
+  return {
+    provider: authConnection,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    is_rehydration: rehydrationValue,
+  };
+}
+
 /**
  * Pads a string to a length of 4 characters
  *
@@ -42,7 +68,7 @@ export function convertUrlSafeBase64StringToBase64String(base64String: string) {
  * @param buffer - The buffer to encode
  * @returns The base64url encoded string
  */
-export function base64urlencode(buffer: ArrayBuffer) {
+export function base64urlencode(buffer: ArrayBuffer | Uint8Array) {
   let str = '';
   const bytes = new Uint8Array(buffer);
   for (let i = 0; i < bytes.byteLength; i++) {

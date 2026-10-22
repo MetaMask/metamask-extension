@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import {
   Box,
   BoxFlexDirection,
+  FontWeight,
   Text,
   TextColor,
   TextVariant,
@@ -12,6 +13,7 @@ import type {
   MfaFlowErrorCode,
   MfaFlowState,
   MfaFlowStep,
+  MfaMethod,
   MfaReason,
 } from '../../../hooks/identity/mfa/engine/types';
 import { getErrorMessageKey } from '../labels';
@@ -67,7 +69,8 @@ export const StepMessage = ({
 }) => (
   <Text
     asChild
-    variant={TextVariant.BodyMd}
+    variant={TextVariant.BodySm}
+    fontWeight={FontWeight.Medium}
     color={isError ? TextColor.ErrorDefault : TextColor.TextAlternative}
   >
     <p
@@ -80,20 +83,64 @@ export const StepMessage = ({
   </Text>
 );
 
-/** The 2-step verification shield, above the title of the intro and picker. */
+/** The 2-step verification shield, above the picker's title. */
 export const MfaShield = () => (
   <img
     src="./images/mfa-shield.png"
     alt=""
-    width={64}
-    height={67}
+    width={88}
+    height={88}
     className="self-center"
   />
 );
 
-export const StepError = ({ code }: { code: MfaFlowErrorCode }) => {
+/**
+ * The step's title and description, centred under an image (the picker
+ * shield, the failure icon).
+ *
+ * @param props - The header's props.
+ * @param props.title - The title.
+ * @param props.description - The line under it, if any.
+ * @param props.isCentered - Whether an image sits above it.
+ */
+export const StepHeader = ({
+  title,
+  description,
+  isCentered,
+}: Pick<StepLayoutProps, 'title' | 'description'> & {
+  isCentered: boolean;
+}) => (
+  <Box
+    flexDirection={BoxFlexDirection.Column}
+    gap={2}
+    className={isCentered ? 'text-center' : undefined}
+  >
+    <Text asChild variant={TextVariant.HeadingLg}>
+      <h2 id={STEP_TITLE_ID}>{title}</h2>
+    </Text>
+    {description ? (
+      <Text
+        asChild
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+      >
+        <p id={STEP_DESCRIPTION_ID}>{description}</p>
+      </Text>
+    ) : null}
+  </Box>
+);
+
+export const StepError = ({
+  code,
+  method,
+}: {
+  code: MfaFlowErrorCode;
+  method?: MfaMethod;
+}) => {
   const t = useI18nContext();
-  return <StepMessage isError>{t(getErrorMessageKey(code))}</StepMessage>;
+  return (
+    <StepMessage isError>{t(getErrorMessageKey(code, method))}</StepMessage>
+  );
 };
 
 const StepLayout = ({
@@ -114,18 +161,11 @@ const StepLayout = ({
       className="flex-1 overflow-y-auto"
     >
       {top}
-      <Text asChild variant={TextVariant.HeadingLg}>
-        <h2 id={STEP_TITLE_ID}>{title}</h2>
-      </Text>
-      {description ? (
-        <Text
-          asChild
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-        >
-          <p id={STEP_DESCRIPTION_ID}>{description}</p>
-        </Text>
-      ) : null}
+      <StepHeader
+        title={title}
+        description={description}
+        isCentered={top !== undefined}
+      />
       {children}
       {error ? <StepError code={error} /> : null}
     </Box>

@@ -189,15 +189,6 @@ describe('MetaMask onboarding', function () {
               '0x1': true,
             },
           })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_PRICE,
-                usdConversionRate: MOCK_ETH_PRICE,
-              },
-            },
-          })
           .withAssetsController({
             assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
           })
@@ -366,38 +357,6 @@ describe('MetaMask onboarding', function () {
 
         await homePage.checkPageIsLoaded();
         await networkFilter.checkLabelIs(networkName);
-      },
-    );
-  });
-
-  it('User can turn off basic functionality in default settings', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await importSRPOnboardingFlow({ driver });
-
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
-
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.completeOnboarding();
-
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
       },
     );
   });

@@ -161,7 +161,7 @@ describe('delegation', () => {
           0x42,
         );
       }
-      return array as ArrayBufferView;
+      return array;
     });
 
     const baseMessenger = new Messenger<

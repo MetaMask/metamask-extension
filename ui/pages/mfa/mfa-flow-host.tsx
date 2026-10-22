@@ -16,9 +16,9 @@ import { MfaFlowTestIds } from './test-ids';
 import IntroStep from './steps/intro-step';
 import PickerStep from './steps/picker-step';
 import EmailEntryStep from './steps/email-entry-step';
+import TotpSetupStep from './steps/totp-setup-step';
 import CodeStep from './steps/code-step';
 import PasskeyStep from './steps/passkey-step';
-import SuccessStep from './steps/success-step';
 import FailureStep from './steps/failure-step';
 
 /**
@@ -61,6 +61,8 @@ const MfaFlowHost = () => {
 
   const { state } = active;
   const { step } = state;
+  const isPicker = step.name === 'picker';
+  const cancel = () => active.flow.dispatch({ type: 'cancel' });
   const key = 'purpose' in step ? `${step.name}-${step.purpose}` : step.name;
   const shared = {
     state,
@@ -76,12 +78,12 @@ const MfaFlowHost = () => {
         return <PickerStep key={key} {...shared} step={step} />;
       case 'emailEntry':
         return <EmailEntryStep key={key} {...shared} step={step} />;
+      case 'totpSetup':
+        return <TotpSetupStep key={key} {...shared} step={step} />;
       case 'otp':
         return <CodeStep key={key} {...shared} step={step} />;
       case 'passkey':
         return <PasskeyStep key={key} {...shared} step={step} />;
-      case 'success':
-        return <SuccessStep key={key} {...shared} step={step} />;
       case 'failure':
         return <FailureStep key={key} {...shared} step={step} />;
       default:
@@ -100,22 +102,30 @@ const MfaFlowHost = () => {
   };
 
   return (
+    // A centred column, as wide as the onboarding flow's, so wide windows
+    // and the side panel show the same phone-width screens.
     <Box
       flexDirection={BoxFlexDirection.Column}
-      className="h-full w-full bg-default"
+      className="h-full w-full max-w-[446px] mx-auto bg-default"
       data-testid={`${MfaFlowTestIds.CONTAINER}-${step.name}`}
     >
+      {/* The picker mirrors mobile's sheet, closed from its end; the other
+          steps go back from their start. */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.End}
+        justifyContent={
+          isPicker ? BoxJustifyContent.End : BoxJustifyContent.Start
+        }
         padding={4}
       >
         <ButtonIcon
-          iconName={IconName.Close}
-          ariaLabel={t('close')}
-          onClick={() => active.flow.dispatch({ type: 'cancel' })}
-          data-testid={MfaFlowTestIds.CLOSE_BUTTON}
+          iconName={isPicker ? IconName.Close : IconName.ArrowLeft}
+          ariaLabel={t(isPicker ? 'close' : 'back')}
+          onClick={cancel}
+          data-testid={
+            isPicker ? MfaFlowTestIds.CLOSE_BUTTON : MfaFlowTestIds.BACK_BUTTON
+          }
         />
       </Box>
       {renderStep()}
