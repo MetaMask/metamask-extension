@@ -220,7 +220,7 @@ export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_TRANSACTION_DETAILS_ROUTE = '/perps/transaction-details';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
-export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
+export const LEGACY_PERPS_HOME_PAGE_ROUTE = '/perps-home';
 export const MONEY_HOME_ROUTE = '/money-home';
 export const MONEY_ACTIVITY_ROUTE = '/money-home/activity';
 export const MONEY_HOW_IT_WORKS_ROUTE = '/money-home/how-it-works';
@@ -250,7 +250,7 @@ export const ACTIVITY_ROUTE = '/activity';
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: ACTIVITY_ROUTE, label: 'Activity', trackInAnalytics: true },
-  { path: PERPS_HOME_PAGE_ROUTE, label: 'Perps', trackInAnalytics: true },
+  { path: PERPS_ROUTE, label: 'Perps Tab', trackInAnalytics: true },
   { path: MONEY_HOME_ROUTE, label: 'Money', trackInAnalytics: true },
   {
     path: MONEY_HOW_IT_WORKS_ROUTE,
@@ -276,7 +276,6 @@ export const ROUTES = [
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
-  { path: PERPS_ROUTE, label: 'Perps Tab', trackInAnalytics: true },
   {
     path: PERPS_MARKET_LIST_ROUTE,
     label: 'Perps Market List',

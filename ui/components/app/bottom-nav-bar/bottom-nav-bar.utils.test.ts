@@ -7,7 +7,7 @@ import {
   MONEY_HOME_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
   getMoneyTransactionDetailsRoute,
-  PERPS_HOME_PAGE_ROUTE,
+  PERPS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getActiveBottomNavTabs,
@@ -25,7 +25,7 @@ describe('getActiveBottomNavTabs', () => {
   });
 
   it('marks isPerps active on the perps home route', () => {
-    expect(getActiveBottomNavTabs(PERPS_HOME_PAGE_ROUTE)).toStrictEqual({
+    expect(getActiveBottomNavTabs(PERPS_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: true,
       isMoney: false,
@@ -104,7 +104,7 @@ describe('getActiveBottomNavTabs', () => {
 describe('isBottomNavRoute', () => {
   it.each([
     ['default route', DEFAULT_ROUTE],
-    ['perps home route', PERPS_HOME_PAGE_ROUTE],
+    ['perps home route', PERPS_ROUTE],
     ['Money home route', MONEY_HOME_ROUTE],
     ['Money activity route', MONEY_ACTIVITY_ROUTE],
     ['Money earn route', MONEY_EARN_ROUTE],

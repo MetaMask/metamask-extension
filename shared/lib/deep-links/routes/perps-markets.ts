@@ -1,7 +1,7 @@
-import { DEFAULT_ROUTE, Route } from './route';
+import { PERPS_ROUTE, Route } from './route';
 
 /**
- * Deeplink alias for the Perps home tab (wallet home with Perps tab selected).
+ * Deeplink alias for the Perps home page.
  * Mirrors mobile's ACTIONS.PERPS_MARKETS. Equivalent to /perps with no params.
  *
  * Supported URL formats:
@@ -13,8 +13,6 @@ export const perpsMarkets = new Route({
   pathname: '/perps-markets',
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
   handler: function handler(_params: URLSearchParams) {
-    const query = new URLSearchParams();
-    query.set('tab', 'perps');
-    return { path: DEFAULT_ROUTE, query };
+    return { path: PERPS_ROUTE, query: new URLSearchParams() };
   },
 });

@@ -5,7 +5,7 @@ import {
   MONEY_EARN_ROUTE,
   MONEY_HOME_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
-  PERPS_HOME_PAGE_ROUTE,
+  PERPS_ROUTE,
 } from '../../../helpers/constants/routes';
 
 export type ActiveBottomNavTabs = {
@@ -25,7 +25,7 @@ export const getActiveBottomNavTabs = (
 ): ActiveBottomNavTabs => {
   return {
     isHome: pathname === DEFAULT_ROUTE,
-    isPerps: pathname === PERPS_HOME_PAGE_ROUTE,
+    isPerps: pathname === PERPS_ROUTE,
     isMoney:
       pathname === MONEY_HOME_ROUTE ||
       pathname === MONEY_ACTIVITY_ROUTE ||

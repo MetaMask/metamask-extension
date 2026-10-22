@@ -3,6 +3,8 @@ import {
   getPaths,
   PATH_NAME_MAP,
   DEVELOPER_OPTIONS_ROUTE,
+  LEGACY_PERPS_HOME_PAGE_ROUTE,
+  PERPS_ROUTE,
 } from './routes';
 
 describe('Routes Constants', () => {
@@ -28,6 +30,13 @@ describe('Routes Constants', () => {
       const paths = ROUTES.map((route) => route.path);
       const uniquePaths = new Set(paths);
       expect(uniquePaths.size).toBe(paths.length);
+    });
+
+    it('tracks /perps as the canonical Perps home route', () => {
+      expect(PATH_NAME_MAP.get(PERPS_ROUTE)).toBe('Perps Tab');
+      expect([...PATH_NAME_MAP.keys()]).not.toContain(
+        LEGACY_PERPS_HOME_PAGE_ROUTE,
+      );
     });
   });
 

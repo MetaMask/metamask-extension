@@ -19,8 +19,10 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
+  PERPS_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
+import { PERPS_HOME_TAB_ROUTE } from '../../hooks/perps/usePerpsHomeRoute';
 
 // Mobile test convention: mock the Compliance barrel so the gate hook never runs
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
@@ -260,6 +262,7 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockUsePerpsHomeRoute = jest.fn(() => PERPS_ROUTE);
 const mockPerpsTrack = jest.fn();
 const mockAboutRef = jest.fn();
 const mockUsePerpsMarketAboutTracking = jest.fn(
@@ -276,6 +279,7 @@ const mockPerpsScreenViewedOptions: {
 }[] = [];
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+  usePerpsHomeRoute: () => mockUsePerpsHomeRoute(),
   usePerpsEventTracking: (options?: {
     eventName?: unknown;
     properties?: Record<string, unknown>;
@@ -1231,29 +1235,32 @@ describe('PerpsMarketDetailPage', () => {
       });
     });
 
-    it('falls back to Perps tab when history is empty', async () => {
+    it('falls back to the control Perps tab when history is empty', async () => {
       const originalLength = window.history.length;
       Object.defineProperty(window.history, 'length', {
         value: 1,
         configurable: true,
       });
+      mockUsePerpsHomeRoute.mockReturnValue(PERPS_HOME_TAB_ROUTE);
 
-      const store = mockStore(createMockState(true));
+      try {
+        const store = mockStore(createMockState(true));
 
-      const { getByTestId } = await renderPage(store);
+        const { getByTestId } = await renderPage(store);
 
-      const backButton = getByTestId('perps-market-detail-back-button');
-      backButton.click();
+        const backButton = getByTestId('perps-market-detail-back-button');
+        backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        { pathname: '/', search: 'tab=perps' },
-        { replace: true },
-      );
-
-      Object.defineProperty(window.history, 'length', {
-        value: originalLength,
-        configurable: true,
-      });
+        expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_HOME_TAB_ROUTE, {
+          replace: true,
+        });
+      } finally {
+        mockUsePerpsHomeRoute.mockReturnValue(PERPS_ROUTE);
+        Object.defineProperty(window.history, 'length', {
+          value: originalLength,
+          configurable: true,
+        });
+      }
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {

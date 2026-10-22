@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { PERPS_HOME_PAGE_ROUTE } from '../../helpers/constants/routes';
+import { PERPS_ROUTE } from '../../helpers/constants/routes';
 import { useABTest } from '../useABTest';
 import { PERPS_HOME_TAB_ROUTE, usePerpsHomeRoute } from './usePerpsHomeRoute';
 
@@ -21,7 +21,19 @@ describe('usePerpsHomeRoute', () => {
 
     const { result } = renderHook(() => usePerpsHomeRoute());
 
-    expect(result.current).toBe(PERPS_HOME_PAGE_ROUTE);
+    expect(result.current).toBe(PERPS_ROUTE);
+  });
+
+  it('returns the perps route while the bottom-nav assignment is unresolved', () => {
+    mockUseABTest.mockReturnValue({
+      variant: { withBottomNavBar: false },
+      variantName: 'control',
+      isActive: false,
+    });
+
+    const { result } = renderHook(() => usePerpsHomeRoute());
+
+    expect(result.current).toBe(PERPS_ROUTE);
   });
 
   it('returns the wallet home perps tab for the bottom-nav control', () => {

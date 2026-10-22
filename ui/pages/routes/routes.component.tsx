@@ -78,7 +78,8 @@ import {
   PERPS_TRANSACTION_DETAILS_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   ACTIVITY_ROUTE,
-  PERPS_HOME_PAGE_ROUTE,
+  LEGACY_PERPS_HOME_PAGE_ROUTE,
+  PERPS_ROUTE,
   MONEY_HOME_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
@@ -713,8 +714,12 @@ export const routeConfig = [
                 element: <ActivityPage />,
               },
               {
-                path: PERPS_HOME_PAGE_ROUTE,
+                path: PERPS_ROUTE,
                 element: <PerpsPage />,
+              },
+              {
+                path: LEGACY_PERPS_HOME_PAGE_ROUTE,
+                element: <Navigate to={PERPS_ROUTE} replace />,
               },
               createRouteWithMessenger({
                 path: MONEY_HOME_ROUTE,
