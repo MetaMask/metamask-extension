@@ -57,7 +57,7 @@ const dialogClassNameCappedColumn =
   'me-[max(0px,calc((100vw-var(--width-max))/2))]';
 
 const dialogClassNameFullscreen =
-  'min-[576px]:top-[68px] min-[576px]:h-[calc(100%-68px)] min-[576px]:max-h-[calc(100%-91px)]';
+  'min-[576px]:top-[68px] min-[576px]:h-[calc(100%-68px)] min-[576px]:max-h-[calc(100%-68px)]';
 
 const frameClassName = classnames(
   'h-full w-full',
