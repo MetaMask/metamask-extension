@@ -24,7 +24,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Get token
-        id: get-token
+        id: token
         uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
@@ -39,4 +39,4 @@ jobs:
           repository-url: ${{ github.server_url }}/${{ github.repository }}
           platform: extension
           previous-version-ref: 'null'
-          github-token: ${{ steps.get-token.outputs.token }}
+          github-token: ${{ steps.token.outputs.token }}
