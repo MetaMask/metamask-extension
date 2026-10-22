@@ -12,8 +12,11 @@ const KNOWN_VIOLATIONS_FILE_NAME =
 
 const ONBOARDING_ALLOWLIST_FILE_NAME = 'onboarding-allowlist.json';
 
-/** Hosts allowed before the user clicks "Done" on the onboarding complete page. */
 type OnboardingAllowlist = {
+  /**
+   * Hosts allowed during onboarding: every request from the moment the test
+   * starts until just before clicking "Done" on the onboarding complete page.
+   */
   duringOnboarding: string[];
   /**
    * Hosts allowed on top of `duringOnboarding` when the user opts in to
