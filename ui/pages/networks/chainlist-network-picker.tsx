@@ -301,6 +301,11 @@ export const ChainlistNetworkPicker = ({
       if (event.key === 'Escape') {
         event.preventDefault();
         onDismiss?.();
+        return;
+      }
+      // Tab skips the suggestions, so close the list and let focus move on.
+      if (event.key === 'Tab') {
+        onDismiss?.();
       }
     };
 

@@ -543,6 +543,29 @@ describe('NetworksPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('closes the Chainlist suggestions when Tab is pressed', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    const nameInput = screen.getByTestId('network-form-network-name');
+    nameInput.focus();
+
+    let tabMovesFocus = false;
+    await act(async () => {
+      tabMovesFocus = fireEvent.keyDown(nameInput, { key: 'Tab' });
+    });
+
+    expect(tabMovesFocus).toBe(true);
+    expect(
+      screen.queryByTestId('networks-page-chainlist-dropdown'),
+    ).not.toBeInTheDocument();
+  });
+
   it('closes the Chainlist suggestions when Escape is pressed', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
