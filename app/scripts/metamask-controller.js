@@ -127,7 +127,7 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import { RestrictedMethods } from '../../shared/constants/permissions';
-import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
+import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -165,7 +165,6 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -343,7 +342,6 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
-import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
@@ -599,7 +597,6 @@ export default class MetamaskController extends EventEmitter {
       RatesController: RatesControllerInit,
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
-      TokenBalancesController: TokenBalancesControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
       // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
       // because TokenRatesController depends on NetworkEnablementController:getState during construction.
@@ -741,8 +738,6 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.MultichainTransactionsController;
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
-    this.tokenBalancesController =
-      messengerClientsByName.TokenBalancesController;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
     this.tokenDetectionController =
       messengerClientsByName.TokenDetectionController;
@@ -1379,7 +1374,6 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       GatorPermissionsController: this.gatorPermissionsController,
       TokensController: this.tokensController,
-      TokenBalancesController: this.tokenBalancesController,
       StaticAssetsController: this.staticAssetsController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
@@ -1441,7 +1435,6 @@ export default class MetamaskController extends EventEmitter {
         AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
         TokensController: this.tokensController,
-        TokenBalancesController: this.tokenBalancesController,
         StaticAssetsController: this.staticAssetsController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
@@ -1596,29 +1589,6 @@ export default class MetamaskController extends EventEmitter {
     return rpcEndpoints[defaultRpcEndpointIndex].networkClientId;
   }
 
-  // Provides a method for getting feature flags for the multichain
-  // initial rollout, such that we can remotely modify polling interval
-  getInfuraFeatureFlags() {
-    fetchWithCache({
-      url: 'https://bridge.api.cx.metamask.io/featureFlags',
-      cacheRefreshTime: MINUTE * 20,
-    })
-      .then(this.onFeatureFlagResponseReceived)
-      .catch((e) => {
-        // API unreachable (?)
-        log.warn('Feature flag endpoint is unreachable', e);
-      });
-  }
-
-  onFeatureFlagResponseReceived(response) {
-    const { multiChainAssets = {} } = response;
-    const { pollInterval } = multiChainAssets;
-    // Polling interval is provided in seconds
-    if (pollInterval > 0) {
-      this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
-    }
-  }
-
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.state;
 
@@ -1663,7 +1633,6 @@ export default class MetamaskController extends EventEmitter {
 
   triggerNetworkrequests() {
     this.tokenDetectionController.enable();
-    this.getInfuraFeatureFlags();
     if (
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
@@ -2400,7 +2369,6 @@ export default class MetamaskController extends EventEmitter {
       nftController,
       nftDetectionController,
       currencyRateController,
-      tokenBalancesController,
       tokenDetectionController,
       gasFeeController,
       gatorPermissionsController,
@@ -3524,14 +3492,6 @@ export default class MetamaskController extends EventEmitter {
           tokenDetectionController,
         ),
 
-      tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
-        tokenBalancesController,
-      ),
-      tokenBalancesStopPollingByPollingToken:
-        tokenBalancesController.stopPollingByPollingToken.bind(
-          tokenBalancesController,
-        ),
-
       staticAssetsStartPolling: staticAssetsController.startPolling.bind(
         staticAssetsController,
       ),
@@ -3539,9 +3499,6 @@ export default class MetamaskController extends EventEmitter {
         staticAssetsController.stopPollingByPollingToken.bind(
           staticAssetsController,
         ),
-      updateBalances: tokenBalancesController.updateBalances.bind(
-        tokenBalancesController,
-      ),
 
       deFiStartPolling: deFiPositionsController.startPolling.bind(
         deFiPositionsController,
@@ -6433,7 +6390,6 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
-      this.tokenBalancesController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
@@ -6462,7 +6418,6 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.tokenRatesController.stopPollingByPollingToken(pollingToken);
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
-      this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
@@ -6707,9 +6662,6 @@ export default class MetamaskController extends EventEmitter {
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
-    await this.tokenBalancesController.updateBalances({
-      chainIds: [transactionMeta.chainId],
-    });
     endTrace({
       name: TraceName.OnFinishedTransaction,
       timestamp: performance.timeOrigin + startTime,

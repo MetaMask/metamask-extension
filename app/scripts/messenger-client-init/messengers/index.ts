@@ -93,10 +93,6 @@ import {
   getTokensControllerMessenger,
 } from './tokens-controller-messenger';
 import {
-  getTokenBalancesControllerInitMessenger,
-  getTokenBalancesControllerMessenger,
-} from './token-balances-controller-messenger';
-import {
   getStaticAssetsControllerInitMessenger,
   getStaticAssetsControllerMessenger,
 } from './static-assets-controller-messenger';
@@ -274,11 +270,6 @@ export {
   getSignatureControllerInitMessenger,
 } from './signature-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
-export type { TokenBalancesControllerInitMessenger } from './token-balances-controller-messenger';
-export {
-  getTokenBalancesControllerMessenger,
-  getTokenBalancesControllerInitMessenger,
-} from './token-balances-controller-messenger';
 export type { StaticAssetsControllerInitMessenger } from './static-assets-controller-messenger';
 export {
   getStaticAssetsControllerMessenger,
@@ -592,10 +583,6 @@ export const MESSENGER_FACTORIES = {
   RampsController: {
     getMessenger: getRampsControllerMessenger,
     getInitMessenger: getRampsControllerInitMessenger,
-  },
-  TokenBalancesController: {
-    getMessenger: getTokenBalancesControllerMessenger,
-    getInitMessenger: getTokenBalancesControllerInitMessenger,
   },
   TokenDetectionController: {
     getMessenger: getTokenDetectionControllerMessenger,

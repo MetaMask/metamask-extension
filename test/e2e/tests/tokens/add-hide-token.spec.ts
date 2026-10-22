@@ -120,7 +120,6 @@ describe('Add hide token', function () {
   const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
   const chainId = 1337;
   const chainIdHex = toHex(chainId);
-  const rawBalance = '0x186a0'; // 100000 raw = 10 TST (4 decimals)
 
   it('hides the token when clicked', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
@@ -176,15 +175,6 @@ describe('Add hide token', function () {
           [chainIdHex]: {
             [account]: {
               balance: '0x15af1d78b58c400000', // 25 ETH
-            },
-          },
-        },
-      },
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [chainIdHex]: {
-              [tokenAddress]: rawBalance,
             },
           },
         },
@@ -251,17 +241,6 @@ describe('Add hide token', function () {
         },
       })
       .build();
-    merge(fixture.data, {
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [chainIdHex]: {
-              [tokenAddress]: rawBalance,
-            },
-          },
-        },
-      },
-    });
     await withFixtures(
       {
         fixtures: fixture,
