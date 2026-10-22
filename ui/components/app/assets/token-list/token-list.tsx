@@ -36,6 +36,7 @@ import {
 } from '#shared/lib/asset-utils';
 import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
+import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -44,7 +45,11 @@ import {
   getUseExternalServices,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import {
+  endTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';
 import {
   getSelectedMultichainNetworkConfiguration,
@@ -54,6 +59,7 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -63,10 +69,13 @@ import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { isMusdToken } from '../../musd/constants';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
+import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
+import { TokenListLoadingSkeleton } from './token-list-loading-skeleton';
 
 type TokenListProps = {
   onTokenClick: (
@@ -173,6 +182,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+  const isAssetsLoading = useSelector(
+    selectIsAssetsLoadingForSelectedAccountGroup,
+  );
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
     useBoolean(lowValueAssetsExpandedSessionValue);
@@ -251,6 +263,26 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     useExternalServices,
   ]);
 
+  // Skeletons stand in for the native gas token and mUSD that render before
+  // the rest of the account's tokens. Tokens already in state stay visible,
+  // including when a token-list request fails and the load never settles.
+  const showLoadingSkeleton =
+    isAssetsLoading &&
+    sortedFilteredTokens.every(
+      (token) => token.isNative || isMusdToken(token.address),
+    );
+
+  useCoordinatedTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    ready: !showLoadingSkeleton,
+    sectionId: 'tokens',
+    data: {
+      success: true,
+      contentState: sortedFilteredTokens.length ? 'filled' : 'empty',
+    },
+  });
+
   // Low value collapse only applies to declining-balance sort.
   const shouldPartitionLowValueTokens =
     tokenSortConfig?.key === 'tokenFiatAmount' &&
@@ -322,6 +354,16 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     securityResultByAssetId,
     visibleTokens,
   ]);
+
+  const displayedTokens = useMemo(
+    () =>
+      tokenListItems.flatMap((item) =>
+        item.type === 'token' ? [item.token] : [],
+      ),
+    [tokenListItems],
+  );
+
+  const moneyTokenListCta = useMoneyTokenListCta(displayedTokens);
 
   useEffect(() => {
     if (sortedFilteredTokens) {
@@ -412,6 +454,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
           onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
           safeChains={safeChains}
           musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+          moneyCta={moneyTokenListCta}
         />
       );
     },
@@ -419,10 +462,15 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       handleLowValueAssetsToggle,
       handleTokenClick,
       isLowValueAssetsExpanded,
+      moneyTokenListCta,
       privacyMode,
       safeChains,
     ],
   );
+
+  if (showLoadingSkeleton) {
+    return <TokenListLoadingSkeleton />;
+  }
 
   // Disable virtualization when empty balance state is shown
   if (!hasBalance) {

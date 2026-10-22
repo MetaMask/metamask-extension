@@ -119,6 +119,7 @@ function getApi(
       transactionId: string,
       isMaxAmount: boolean,
       options: {
+        isAtomicMaxAllowed?: boolean;
         isMoneyAccountDeposit?: boolean;
         sourceAccountAddress?: string;
         sourceBalanceRaw?: string;
@@ -150,7 +151,18 @@ function getApi(
         config.isMaxAmount = isMaxAmount;
 
         if (options.isMoneyAccountDeposit) {
-          config.atomic = isMaxAmount ? false : undefined;
+          // Leave `atomic` unset when Core may quote Max atomically: the route
+          // match only predicts the subsidy, and Core verifies it and re-quotes
+          // non-atomically when the response is unsubsidized.
+          config.atomic =
+            isMaxAmount && !options.isAtomicMaxAllowed ? false : undefined;
+        }
+      });
+    },
+    setTransactionPayAtomic: (transactionId: string, isAllowed: boolean) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        if (config.isMaxAmount) {
+          config.atomic = isAllowed ? undefined : false;
         }
       });
     },
@@ -246,10 +258,15 @@ function getApi(
           const transaction = moneyPayMessenger
             .call('TransactionController:getState')
             .transactions.find(({ id }) => id === transactionId);
-          const keepNonAtomic =
+          // An armed Max deposit already holds the correct hint (`false`, or
+          // `undefined` when Core may quote it atomically). Clearing the
+          // override must not re-derive it.
+          const keepAtomicHint =
             config.isMaxAmount &&
             getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
-          config.atomic = keepNonAtomic ? false : undefined;
+          if (!keepAtomicHint) {
+            config.atomic = undefined;
+          }
           config.refundTo = undefined;
           return;
         }
@@ -297,11 +314,6 @@ function seedAccountOverride(
  * Leave `atomic` unset. Relay embeds the vault calls for EXACT_OUTPUT only
  * on the atomic path. `atomic: false` is Max-only (exact source spend /
  * EXACT_INPUT), matching mobile `setIsMax`.
- *
- * Amount commits still write `requiredAssets` before the vault encode
- * finishes, and Pay requotes on that write, so the first quote for each
- * amount goes out against the placeholder batch and is superseded by the
- * requote carrying the encoded calldata.
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Created transaction id.

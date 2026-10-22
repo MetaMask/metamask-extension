@@ -69,26 +69,6 @@ export function getBridgeMockUsdSpotPrice(
   return BRIDGE_MOCK_TOKEN_SPOT_PRICES[assetId.toLowerCase()]?.price;
 }
 
-export const BRIDGE_MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
-      usdConversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
-    },
-  },
-};
-
-export const BRIDGE_L2_MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: BRIDGE_L2_ETH_USD_SPOT_PRICE,
-      usdConversionRate: BRIDGE_L2_ETH_USD_SPOT_PRICE,
-    },
-  },
-};
-
 /** Native MON (Monad) + Base ETH balances for Monad→Base bridge E2E. */
 export const BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN = 25;
 
@@ -97,21 +77,6 @@ export const BRIDGE_MONAD_TOTAL_NATIVE_BALANCE_HUMAN =
 
 export const BRIDGE_MONAD_USD_SPOT_PRICE =
   BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_MONAD_TOTAL_NATIVE_BALANCE_HUMAN;
-
-export const BRIDGE_MONAD_MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    MON: {
-      conversionDate: 1665507609.0,
-      conversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
-      usdConversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
-    },
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
-      usdConversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
-    },
-  },
-};
 
 /** Monad native CAIP-19 (slip44:268435779, not ETH slip44:60). */
 export const MONAD_NATIVE_ASSET_ID = 'eip155:143/slip44:268435779';
@@ -193,17 +158,14 @@ export function getBridgeMonadBaseAssetsControllerConfig() {
 }
 
 export const BRIDGE_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
 };
 
 export const BRIDGE_L2_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_L2_ETH_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: BRIDGE_L2_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
 };
 
 export const BRIDGE_MONAD_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_MONAD_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: {
     nativeBalance: String(BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN),
   },

@@ -310,6 +310,36 @@ describe('App State', () => {
     expect(pendingTokensState.pendingTokens).toStrictEqual(payload);
   });
 
+  it('turns off backup and sync intent when basic functionality is turned off during onboarding', () => {
+    const state = reduceApp(
+      {
+        externalServicesOnboardingToggleState: true,
+        backupAndSyncOnboardingToggleState: true,
+      },
+      {
+        type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
+      },
+    );
+
+    expect(state.externalServicesOnboardingToggleState).toStrictEqual(false);
+    expect(state.backupAndSyncOnboardingToggleState).toStrictEqual(false);
+  });
+
+  it('keeps backup and sync intent unchanged when basic functionality is turned on during onboarding', () => {
+    const state = reduceApp(
+      {
+        externalServicesOnboardingToggleState: false,
+        backupAndSyncOnboardingToggleState: false,
+      },
+      {
+        type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON,
+      },
+    );
+
+    expect(state.externalServicesOnboardingToggleState).toStrictEqual(true);
+    expect(state.backupAndSyncOnboardingToggleState).toStrictEqual(false);
+  });
+
   it('clears pending tokens', () => {
     const payload = {
       address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',

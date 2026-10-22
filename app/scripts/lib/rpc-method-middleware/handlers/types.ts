@@ -13,7 +13,7 @@ import type {
   MetaMetricsEventPayload,
 } from '../../../../../shared/constants/metametrics';
 
-export type GetAccounts = MetamaskController['getPermittedAccounts'];
+export type GetAccounts = () => string[];
 
 export type RequestPermissionsForOrigin = (
   requestedPermissions: RequestedPermissions,

@@ -102,6 +102,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_SCALE_COUNT_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_SCALE_SIZE_TOO_SMALL]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_SCALE_NOTIONAL_TOO_SMALL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_PREVIEW_STALE]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_INTERVAL_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_DURATION_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_MAX_DISTANCE_INVALID]: 'perpsOrderFailed',
@@ -168,6 +169,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   // Order execution
   [PERPS_ERROR_CODES.ORDER_REJECTED]: 'perpsOrderRejected',
   [PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED]: 'perpsSlippageExceeded',
+  [PERPS_ERROR_CODES.PRICE_MOVED]: 'perpsSlippageExceeded',
   [PERPS_ERROR_CODES.RATE_LIMIT_EXCEEDED]: 'perpsRateLimitExceeded',
 
   // Network / service

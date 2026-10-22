@@ -99,7 +99,7 @@ describe('MetaMask onboarding ', function () {
           driver,
         );
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.togglePrivacySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
@@ -140,15 +140,6 @@ describe('MetaMask onboarding ', function () {
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-            },
-          })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_PRICE,
-                usdConversionRate: MOCK_ETH_PRICE,
-              },
             },
           })
           .withAssetsController({
