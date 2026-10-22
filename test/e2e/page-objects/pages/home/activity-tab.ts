@@ -44,11 +44,6 @@ class ActivityTab extends HomePage {
 
   private readonly failedTransactions = '[data-tx-status="failed"]';
 
-  private readonly networkFilterModal =
-    '[data-testid="home-network-filter-modal"]';
-
-  private readonly networkFilterToggle = '[data-testid="sort-by-networks"]';
-
   private readonly pendingTransactionItems =
     '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
@@ -170,35 +165,6 @@ class ActivityTab extends HomePage {
     }, 10000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
-    );
-  }
-
-  /**
-   * Waits for a completed ramps order row, identified by its provider subtitle.
-   *
-   * @param providerName - Provider display name shown in the row subtitle.
-   */
-  async checkRampsOrderIsDisplayed(providerName: string): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.completedTransactions,
-      text: 'Bought ETH',
-    });
-    await this.driver.waitForSelector({
-      css: this.completedTransactions,
-      text: providerName,
-    });
-  }
-
-  /**
-   * Selects a single network in the Activity network filter.
-   *
-   * @param chainId - Hex chain id, e.g. "0x1" for Ethereum Mainnet.
-   */
-  async selectNetwork(chainId: string): Promise<void> {
-    await this.driver.clickElement(this.networkFilterToggle);
-    await this.driver.waitForSelector(this.networkFilterModal);
-    await this.driver.clickElement(
-      `[data-testid="home-network-filter-network-${chainId}"]`,
     );
   }
 
@@ -366,6 +332,22 @@ class ActivityTab extends HomePage {
     console.log(
       `${expectedNumber} pending transactions found in activity list on homepage`,
     );
+  }
+
+  /**
+   * Waits for a completed ramps order row, identified by its title and provider
+   * subtitle.
+   *
+   * @param providerName - Provider display name shown in the row subtitle.
+   * @param tokenSymbol - Token symbol shown in the row title, e.g. "ETH".
+   */
+  async checkRampsOrderIsDisplayed(
+    providerName: string,
+    tokenSymbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid="activity-list-item" and contains(., 'Bought ${tokenSymbol}') and contains(., '${providerName}')]`,
+    });
   }
 
   async checkSpeedUpInlineButtonIsPresent(): Promise<void> {

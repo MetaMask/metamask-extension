@@ -5,8 +5,6 @@ import { Driver } from '../../../webdriver/driver';
  * the Continue action that opens the provider checkout tab.
  */
 class RampsBuildQuotePage {
-  private driver: Driver;
-
   private readonly amountInput =
     '[data-testid="ramps-build-quote-amount-input"]';
 
@@ -15,6 +13,8 @@ class RampsBuildQuotePage {
 
   private readonly continueButton =
     '[data-testid="ramps-build-quote-continue"]';
+
+  private driver: Driver;
 
   private readonly providerLabel =
     '[data-testid="ramps-build-quote-provider-label"]';
@@ -25,25 +25,6 @@ class RampsBuildQuotePage {
 
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForSelector(this.buildQuoteScreen);
-  }
-
-  /**
-   * Waits for the quote request to settle and Continue to become enabled.
-   */
-  async waitForQuote(): Promise<void> {
-    await this.driver.wait(async () => {
-      const buttons = await this.driver.findElements(this.continueButton);
-      return buttons.length > 0 && (await buttons[0].isEnabled());
-    }, 30000);
-  }
-
-  /**
-   * Sets the fiat amount.
-   *
-   * @param amount - Fiat amount as a string, e.g. "100".
-   */
-  async enterAmount(amount: string): Promise<void> {
-    await this.driver.fill(this.amountInput, amount);
   }
 
   /**
@@ -60,6 +41,25 @@ class RampsBuildQuotePage {
 
   async clickContinue(): Promise<void> {
     await this.driver.clickElement(this.continueButton);
+  }
+
+  /**
+   * Sets the fiat amount.
+   *
+   * @param amount - Fiat amount as a string, e.g. "100".
+   */
+  async enterAmount(amount: string): Promise<void> {
+    await this.driver.fill(this.amountInput, amount);
+  }
+
+  /**
+   * Waits for the quote request to settle and Continue to become enabled.
+   */
+  async waitForQuote(): Promise<void> {
+    await this.driver.wait(async () => {
+      const buttons = await this.driver.findElements(this.continueButton);
+      return buttons.length > 0 && (await buttons[0].isEnabled());
+    }, 30000);
   }
 }
 

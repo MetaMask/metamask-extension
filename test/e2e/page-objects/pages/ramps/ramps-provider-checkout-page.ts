@@ -1,3 +1,4 @@
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -5,15 +6,15 @@ import { Driver } from '../../../webdriver/driver';
  * The page is served by the standalone mock provider, not the extension.
  */
 class RampsProviderCheckoutPage {
-  private driver: Driver;
-
   private readonly completePurchaseLink = {
     css: 'a.outcome-link',
     text: 'Complete purchase',
   };
 
+  private driver: Driver;
+
   private readonly providerPageTitle = {
-    text: 'Mock Ramp Provider',
+    text: WINDOW_TITLES.MockRampProvider,
     tag: 'title',
   };
 
@@ -26,8 +27,14 @@ class RampsProviderCheckoutPage {
     await this.driver.waitForSelector(this.completePurchaseLink);
   }
 
+  /**
+   * Completes the purchase, then waits for the provider tab to close once the
+   * extension's checkout watcher resolves the callback.
+   */
   async clickCompletePurchase(): Promise<void> {
-    await this.driver.clickElement(this.completePurchaseLink);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.completePurchaseLink,
+    );
   }
 }
 

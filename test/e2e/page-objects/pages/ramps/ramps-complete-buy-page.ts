@@ -4,10 +4,10 @@ import { Driver } from '../../../webdriver/driver';
  * Ramps complete-buy interstitial shown after the provider checkout tab opens.
  */
 class RampsCompleteBuyPage {
-  private driver: Driver;
-
   private readonly completeBuyScreen =
     '[data-testid="ramps-complete-buy-screen"]';
+
+  private driver: Driver;
 
   constructor(driver: Driver) {
     this.driver = driver;

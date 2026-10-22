@@ -139,12 +139,10 @@ const widgetHtml = `<!doctype html>
 </html>`;
 
 /**
- * Builds the extension fixture used by both the hermetic and local-stack
- * ramps Buy specs.
+ * Builds the extension fixture for the hermetic ramps Buy spec.
  *
- * The selected provider is seeded so the quote request targets the standalone
- * provider. The local catalog also contains the in-process
- * `mockprovider-staging` fixture first, which returns no quote at $100.
+ * The selected provider is seeded so the quote request targets the mocked
+ * standalone provider; the mocked catalog contains only that provider.
  *
  * @returns Fixture build result.
  */

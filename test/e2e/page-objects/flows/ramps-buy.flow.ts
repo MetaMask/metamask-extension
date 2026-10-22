@@ -1,10 +1,17 @@
+import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import ActivityTab from '../pages/home/activity-tab';
 import HomePage from '../pages/home/homepage';
+import { NetworkId } from '../pages/networks/select-network-modal';
 import RampsBuildQuotePage from '../pages/ramps/ramps-build-quote-page';
 import RampsCompleteBuyPage from '../pages/ramps/ramps-complete-buy-page';
 import RampsProviderCheckoutPage from '../pages/ramps/ramps-provider-checkout-page';
 import RampsTokenSelectionPage from '../pages/ramps/ramps-token-selection-page';
+import { switchToNetworkFromNetworkSelect } from './network.flow';
+
+// Token rows use hex chain ids, while the network filter takes CAIP ids.
+const RAMPS_BUY_TOKEN_CHAIN_ID = '0x1';
+const RAMPS_BUY_TOKEN_SYMBOL = 'ETH';
 
 /**
  * Switches to the extension Activity tab opened by the ramps checkout watcher.
@@ -42,7 +49,10 @@ export async function startRampsBuyFromHome(
 
   const tokenSelectionPage = new RampsTokenSelectionPage(driver);
   await tokenSelectionPage.checkPageIsLoaded();
-  await tokenSelectionPage.selectToken({ chainId: '0x1', symbol: 'ETH' });
+  await tokenSelectionPage.selectToken({
+    chainId: RAMPS_BUY_TOKEN_CHAIN_ID,
+    symbol: RAMPS_BUY_TOKEN_SYMBOL,
+  });
 
   const buildQuotePage = new RampsBuildQuotePage(driver);
   await buildQuotePage.checkPageIsLoaded();
@@ -67,16 +77,18 @@ export async function completeRampsCheckoutInProviderTab(
   driver: Driver,
   providerName = 'Mock HTTP Provider (Staging)',
 ): Promise<void> {
-  await driver.switchToWindowWithTitle('Mock Ramp Provider');
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.MockRampProvider);
   const providerCheckoutPage = new RampsProviderCheckoutPage(driver);
   await providerCheckoutPage.checkPageIsLoaded();
 
-  const providerHandle = await driver.getCurrentWindowHandle();
   await providerCheckoutPage.clickCompletePurchase();
-  await driver.waitForWindowToClose(providerHandle);
   await switchToActivityWindow(driver);
 
+  await switchToNetworkFromNetworkSelect(driver, NetworkId.ETHEREUM);
+
   const activityTab = new ActivityTab(driver);
-  await activityTab.selectNetwork('0x1');
-  await activityTab.checkRampsOrderIsDisplayed(providerName);
+  await activityTab.checkRampsOrderIsDisplayed(
+    providerName,
+    RAMPS_BUY_TOKEN_SYMBOL,
+  );
 }

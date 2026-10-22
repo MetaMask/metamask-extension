@@ -7,11 +7,11 @@ import { Driver } from '../../../webdriver/driver';
 class RampsTokenSelectionPage {
   private driver: Driver;
 
-  private readonly tokenSelectionScrollContainer =
-    '[data-testid="ramps-token-selection-scroll-container"]';
-
   private readonly tokenSelectionScreen =
     '[data-testid="ramps-token-selection-screen"]';
+
+  private readonly tokenSelectionScrollContainer =
+    '[data-testid="ramps-token-selection-scroll-container"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
