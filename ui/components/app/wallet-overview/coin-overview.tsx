@@ -92,8 +92,12 @@ const BalanceOverviewSkeleton = () => (
     data-testid="coin-overview-balance-skeleton"
   >
     <Box className="wallet-overview__balance-skeleton-lines flex w-full flex-col items-start">
-      <Skeleton className="h-[2.8rem] w-36 rounded-lg" />
-      <Skeleton className="h-6 w-[180px] rounded-lg" />
+      <Box className="flex h-[2.8rem] items-center">
+        <Skeleton className="h-8 w-[7rem]" />
+      </Box>
+      <Box className="flex h-6 items-center">
+        <Skeleton className="h-4 w-52" />
+      </Box>
     </Box>
   </Box>
 );
