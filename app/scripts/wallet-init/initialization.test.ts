@@ -7,6 +7,7 @@ import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
+import { getAnalyticsControllerInstanceOptions } from './instance-options/analytics-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
@@ -16,6 +17,7 @@ import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
@@ -42,6 +44,9 @@ jest.mock('@metamask/wallet', () => ({
 }));
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
+}));
+jest.mock('./instance-options/analytics-controller', () => ({
+  getAnalyticsControllerInstanceOptions: jest.fn(() => 'analytics-options'),
 }));
 jest.mock('./instance-options/approval-controller', () => ({
   getApprovalControllerInstanceOptions: jest.fn(() => 'approval-options'),
@@ -105,6 +110,11 @@ jest.mock('./messengers/transaction-controller-messenger', () => ({
     () => 'transaction-controller-init-messenger',
   ),
 }));
+jest.mock('./messengers/analytics-controller-messenger', () => ({
+  getAnalyticsControllerInitMessenger: jest.fn(
+    () => 'analytics-controller-init-messenger',
+  ),
+}));
 jest.mock('./messengers/gas-fee-controller-messenger', () => ({
   getGasFeeControllerInitMessenger: jest.fn(
     () => 'gas-fee-controller-init-messenger',
@@ -150,6 +160,7 @@ describe('initializeWallet', () => {
 
     expect(MockWallet).toHaveBeenCalledWith({
       instanceOptions: {
+        analyticsController: 'analytics-options',
         approvalController: 'approval-options',
         claimsService: 'claims-options',
         configRegistryApiService: 'config-registry-api-service-options',
@@ -284,6 +295,12 @@ describe('initializeWallet', () => {
     );
     expect(getConnectivityControllerInstanceOptions).toHaveBeenCalledWith({
       connectivityAdapter,
+    });
+    expect(getAnalyticsControllerInitMessenger).toHaveBeenCalledWith(messenger);
+    expect(getAnalyticsControllerInstanceOptions).toHaveBeenCalledWith({
+      initMessenger: 'analytics-controller-init-messenger',
+      state,
+      platform,
     });
     expect(getGasFeeControllerInitMessenger).toHaveBeenCalledWith(messenger);
     expect(getGasFeeControllerInstanceOptions).toHaveBeenCalledWith({

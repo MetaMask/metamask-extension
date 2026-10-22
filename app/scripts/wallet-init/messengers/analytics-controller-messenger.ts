@@ -1,10 +1,5 @@
-import {
-  Messenger,
-  MessengerActions,
-  MessengerEvents,
-} from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
 import type {
-  AnalyticsControllerMessenger,
   AnalyticsControllerCreateEventFragmentAction,
   AnalyticsControllerFinalizeEventFragmentAction,
   AnalyticsControllerGetEventFragmentByIdAction,
@@ -32,13 +27,13 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import type { RootMessenger } from '../../lib/messenger';
 import type {
   SentryTracingServiceClearTracesAfterMetricsOptInAction,
   SentryTracingServiceTrackTracesAfterMetricsOptInAction,
 } from '../../services/sentry/sentry-tracing-service-method-action-types';
-import type { RootMessenger } from '../../lib/messenger';
 
-type InitActions =
+export type AnalyticsControllerInitMessengerActions =
   | ConfigRegistryControllerGetStateAction
   | PreferencesControllerGetStateAction
   | MultichainNetworkControllerGetStateAction
@@ -63,54 +58,32 @@ type InitActions =
   | SentryTracingServiceTrackTracesAfterMetricsOptInAction
   | SentryTracingServiceClearTracesAfterMetricsOptInAction;
 
-type InitEvents = ConfigRegistryControllerStateChangedEvent;
-
-/**
- * Create a messenger restricted to the allowed actions and events of the
- * analytics controller.
- *
- * @param messenger - The base messenger used to create the restricted
- * messenger.
- */
-export function getAnalyticsControllerMessenger(
-  messenger: RootMessenger<
-    MessengerActions<AnalyticsControllerMessenger>,
-    MessengerEvents<AnalyticsControllerMessenger>
-  >,
-) {
-  const analyticsControllerMessenger: AnalyticsControllerMessenger =
-    new Messenger({
-      namespace: 'AnalyticsController',
-      parent: messenger,
-    });
-  messenger.delegate({
-    messenger: analyticsControllerMessenger,
-    actions: [
-      'GeolocationController:getGeolocationData',
-      'ConfigRegistryController:getState',
-    ],
-    events: ['ConfigRegistryController:stateChanged'],
-  });
-  return analyticsControllerMessenger;
-}
+export type AnalyticsControllerInitMessengerEvents =
+  ConfigRegistryControllerStateChangedEvent;
 
 export type AnalyticsControllerInitMessenger = ReturnType<
   typeof getAnalyticsControllerInitMessenger
 >;
 
 /**
- * Create a messenger restricted to analytics initialization dependencies.
+ * Create a messenger restricted to the actions and events the extension-side
+ * analytics helpers need. The wallet-owned `AnalyticsController` builds its
+ * own controller messenger; this init messenger is only for platform-adapter
+ * enrichment and `configureAnalytics`.
  *
- * @param messenger - The base messenger used to create the restricted
- * messenger.
+ * @param messenger - The root messenger used to create the restricted messenger.
+ * @returns The restricted analytics init messenger.
  */
 export function getAnalyticsControllerInitMessenger(
-  messenger: RootMessenger<InitActions, InitEvents>,
+  messenger: RootMessenger<
+    AnalyticsControllerInitMessengerActions,
+    AnalyticsControllerInitMessengerEvents
+  >,
 ) {
   const analyticsControllerInitMessenger = new Messenger<
     'AnalyticsControllerInit',
-    InitActions,
-    InitEvents,
+    AnalyticsControllerInitMessengerActions,
+    AnalyticsControllerInitMessengerEvents,
     typeof messenger
   >({
     namespace: 'AnalyticsControllerInit',

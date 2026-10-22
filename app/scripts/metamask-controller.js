@@ -340,7 +340,6 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
@@ -556,12 +555,11 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: PermissionLogControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
-      // GeolocationController must init before AnalyticsController, which
-      // resolves geolocation during its own init via
-      // GeolocationController:getGeolocationData.
+      // GeolocationController should init early so AnalyticsController (owned
+      // by the wallet) can resolve geolocation via
+      // GeolocationController:getGeolocationData when enrichment is enabled.
       GeolocationApiService: GeolocationApiServiceInit,
       GeolocationController: GeolocationControllerInit,
-      AnalyticsController: AnalyticsControllerInit,
       SentryTracingService: SentryTracingServiceInit,
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -699,7 +697,7 @@ export default class MetamaskController extends EventEmitter {
     );
     this.appStateController = messengerClientsByName.AppStateController;
     this.networkController = this.wallet.getInstance('NetworkController');
-    this.analyticsController = messengerClientsByName.AnalyticsController;
+    this.analyticsController = this.wallet.getInstance('AnalyticsController');
     this.userTraitsService = messengerClientsByName.UserTraitsService;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
