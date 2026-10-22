@@ -62,12 +62,10 @@ export async function assertPerpsActivityShowsCloseFill({
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
 }): Promise<void> {
-  await logFillsDiagnostic(driver, 'before first push');
   pushUserFills();
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.checkPageIsLoaded();
-  await logFillsDiagnostic(driver, 'after first push (market detail)');
   await marketDetailPage.clickBack();
 
   const marketListPage = new PerpsMarketListPage(driver);

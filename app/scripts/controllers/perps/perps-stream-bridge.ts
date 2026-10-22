@@ -20,6 +20,23 @@ const WebSocketConnectionState = {
 type WebSocketConnectionState =
   (typeof WebSocketConnectionState)[keyof typeof WebSocketConnectionState];
 
+// TEMP perps fills diagnostic — do not merge.
+// `getActiveProvider()` writes `lastError` to controller state when the
+// controller isn't ready, so only call it when it can't have side effects.
+function peekActiveProvider(controller: PerpsController): unknown {
+  if (
+    controller.isCurrentlyReinitializing() ||
+    controller.state.initializationState !== 'initialized'
+  ) {
+    return undefined;
+  }
+  try {
+    return controller.getActiveProvider();
+  } catch {
+    return undefined;
+  }
+}
+
 /** Every notification channel the bridge emits on. */
 export type PerpsStreamChannel =
   | 'account'
@@ -399,12 +416,7 @@ export class PerpsStreamBridge {
       perpsGetFillsDebug: () => {
         const session = accountSessions.get(this.#controller);
         const fills = session?.fills;
-        let activeProvider: unknown;
-        try {
-          activeProvider = this.#controller.getActiveProvider();
-        } catch {
-          activeProvider = undefined;
-        }
+        const activeProvider = peekActiveProvider(this.#controller);
         return {
           now: Date.now(),
           hasSession: Boolean(session),
@@ -1159,11 +1171,7 @@ export class PerpsStreamBridge {
     fills.diagCallbacks = 0;
     fills.diagEmitted = 0;
     fills.diagEmitSkipped = 0;
-    try {
-      fills.diagProvider = controller.getActiveProvider();
-    } catch {
-      fills.diagProvider = undefined;
-    }
+    fills.diagProvider = peekActiveProvider(controller);
     try {
       fills.unsubscribe = controller.subscribeToOrderFills({
         callback: (data, isSnapshot) => {
