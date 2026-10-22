@@ -23,7 +23,6 @@ import { assertPerpsActivityShowsCloseFill } from '../../page-objects/flows/perp
 import { getPerpsConfigEligibleWithEthLongPosition } from './perps-fixture-config';
 import {
   WS_USER_WITH_ETH_LONG_POSITION,
-  forceReconnectPerpsClients,
   pushPositionClosed,
   pushUserFillsClosePositionSnapshot,
 } from './mocks/websocketPositionMocks';
@@ -79,7 +78,6 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
               tid: 9_101_002,
             }),
           expectedTitleContains: 'Closed long',
-          forceReconnect: () => forceReconnectPerpsClients(perpsServer),
         });
       },
     );
@@ -132,7 +130,6 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
               tid: 9_102_002,
             }),
           expectedTitleContains: 'Closed long',
-          forceReconnect: () => forceReconnectPerpsClients(perpsServer),
         });
       },
     );

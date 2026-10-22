@@ -13,7 +13,6 @@
  * ```
  */
 
-import type { WebSocketServer } from 'ws';
 import type { WebSocketMessageMock } from '../../../websocket/types';
 import {
   buildSubscribedConfirmation,
@@ -579,21 +578,6 @@ export function pushPositionClosed(
 const WS_MOCK_DEFAULT_USER = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
 const MOCK_L1_FILL_HASH = `0x${'b'.repeat(64)}`;
-
-/**
- * Drops every perps WebSocket client so the wallet reconnects and re-subscribes.
- * The `userFills` subscribe follow-up replays the pending fills snapshot, which
- * recovers a fill the wallet's live `userFills` listener never delivered.
- * Workaround for https://github.com/MetaMask/metamask-extension/issues/47287
- *
- * @param server - The LocalWebSocketServer for the perps service
- * @param server.getServer
- */
-export function forceReconnectPerpsClients(server: {
-  getServer: () => WebSocketServer;
-}): void {
-  server.getServer().clients.forEach((client) => client.terminate());
-}
 
 export type PushUserFillsClosePositionSnapshotOpts = {
   user?: string;

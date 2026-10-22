@@ -3,6 +3,7 @@ import { PerpsActivityPage } from '../pages/perps/perps-activity-page';
 import { PerpsTab } from '../pages/home/perps-tab';
 import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
+import { lockAndWaitForLoginPage, login } from './login.flow';
 
 /**
  * After a simulated position change in E2E, pushes a `userFills` snapshot via
@@ -13,20 +14,16 @@ import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
  * @param options.driver
  * @param options.pushUserFills
  * @param options.expectedTitleContains
- * @param options.forceReconnect
  */
 export async function assertPerpsActivityShowsCloseFill({
   driver,
   pushUserFills,
   expectedTitleContains,
-  forceReconnect,
 }: {
   driver: Driver;
   pushUserFills: () => void;
   /** Substring of the trade title, e.g. `Closed long` or `Closed short`. */
   expectedTitleContains: string;
-  /** Drops the perps WebSocket so the wallet re-subscribes to `userFills`. */
-  forceReconnect?: () => void;
 }): Promise<void> {
   pushUserFills();
 
@@ -54,14 +51,22 @@ export async function assertPerpsActivityShowsCloseFill({
   await activityPage.checkPageIsLoaded();
   try {
     await activityPage.waitForAnyTransactionCard();
-  } catch (error) {
-    if (!forceReconnect) {
-      throw error;
-    }
-    // The wallet's live `userFills` listener can stop receiving pushes. A
-    // reconnect re-subscribes, and the subscribe snapshot replays the fill.
-    // Remove once #47287 issue is fixed.
-    forceReconnect();
+  } catch {
+    // The wallet's live `userFills` listener can stop receiving pushes. Lock
+    // and unlock rebuild the perps session, and the new `userFills` subscribe
+    // snapshot replays the fill.
+    // Remove once https://github.com/MetaMask/metamask-extension/issues/47287 is fixed.
+    await driver.navigate();
+    await lockAndWaitForLoginPage(driver);
+    await login(driver, {
+      validateBalance: false,
+      waitForNonEvmAccounts: false,
+    });
+    await perpsTab.navigateToPerpsHome();
+    await perpsTab.waitForPerpsViewStable();
+    await perpsTab.waitForRecentActivitySection();
+    await perpsTab.clickRecentActivitySeeAll();
+    await activityPage.checkPageIsLoaded();
     await activityPage.waitForAnyTransactionCard();
   }
   await activityPage.waitForActivityTradeTitleContaining(expectedTitleContains);
