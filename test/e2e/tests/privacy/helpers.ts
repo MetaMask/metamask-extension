@@ -15,6 +15,11 @@ const ONBOARDING_ALLOWLIST_FILE_NAME = 'onboarding-allowlist.json';
 /** Hosts allowed before the user clicks "Done" on the onboarding complete page. */
 type OnboardingAllowlist = {
   duringOnboarding: string[];
+  /**
+   * Hosts allowed on top of `duringOnboarding` when the user opts in to
+   * MetaMetrics during onboarding.
+   */
+  additionalDuringOnboardingWithMetaMetrics: string[];
 };
 
 /**
@@ -36,18 +41,28 @@ export function recordRequestedHosts(server: Mockttp): Set<string> {
 
 /**
  * Asserts that every requested host is in the `duringOnboarding` list of
- * onboarding-allowlist.json.
+ * onboarding-allowlist.json, plus the `additionalDuringOnboardingWithMetaMetrics` list
+ * when the user opted in to MetaMetrics.
  *
  * @param requestedHosts - The set returned by `recordRequestedHosts`.
+ * @param options - The options object.
+ * @param options.withMetaMetrics - Whether the user opted in to MetaMetrics during onboarding.
  */
 export async function assertOnlyOnboardingAllowlistedHosts(
   requestedHosts: Set<string>,
+  { withMetaMetrics = false }: { withMetaMetrics?: boolean } = {},
 ): Promise<void> {
   const allowlistRaw = await fs.readFile(
     path.join(__dirname, ONBOARDING_ALLOWLIST_FILE_NAME),
     'utf8',
   );
-  const { duringOnboarding }: OnboardingAllowlist = JSON.parse(allowlistRaw);
+  const allowlist: OnboardingAllowlist = JSON.parse(allowlistRaw);
+  const duringOnboarding = withMetaMetrics
+    ? [
+        ...allowlist.duringOnboarding,
+        ...allowlist.additionalDuringOnboardingWithMetaMetrics,
+      ]
+    : allowlist.duringOnboarding;
 
   console.log(
     'Hosts requested during onboarding:',
@@ -65,7 +80,7 @@ export async function assertOnlyOnboardingAllowlistedHosts(
       .map((host) => `  - ${host}`)
       .join(
         '\n',
-      )}\n\nThese hosts are NOT in the duringOnboarding allowlist.\nIf these are expected, add them to ${ONBOARDING_ALLOWLIST_FILE_NAME}`,
+      )}\n\nThese hosts are NOT in the ${withMetaMetrics ? 'duringOnboarding or additionalDuringOnboardingWithMetaMetrics allowlists' : 'duringOnboarding allowlist'}.\nIf these are expected, add them to ${ONBOARDING_ALLOWLIST_FILE_NAME}`,
   );
 }
 

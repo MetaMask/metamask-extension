@@ -7,6 +7,13 @@
     "metamask.github.io",
     "sentry.io"
   ],
+  "additionalDuringOnboardingWithMetaMetrics": [
+    "api.segment.io",
+    "authentication.api.cx.metamask.io",
+    "geolocation.dev-api.cx.metamask.io",
+    "oidc.api.cx.metamask.io",
+    "subscription.api.cx.metamask.io"
+  ],
   "toBeRemoved": {
     "accounts.google.com": "Should be removed - web3auth team - will only call during social login"
   }
