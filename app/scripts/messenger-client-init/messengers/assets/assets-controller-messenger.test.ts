@@ -1,12 +1,57 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../../lib/messenger';
 import {
-  ASSETS_CONTROLLER_DELEGATED_ACTIONS,
-  ASSETS_CONTROLLER_DELEGATED_EVENTS,
   ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
 } from './assets-controller-messenger';
+
+/**
+ * Actions delegated by `@metamask/wallet`'s `assetsController.getMessenger`.
+ */
+const WALLET_ASSETS_CONTROLLER_ACTIONS = [
+  'AccountsController:getSelectedAccount',
+  'AccountTreeController:getAccountsFromSelectedAccountGroup',
+  'AccountTreeController:isInitialized',
+  'ClientController:getState',
+  'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
+  'KeyringController:isUnlocked',
+  'NetworkController:getNetworkClientById',
+  'NetworkController:getState',
+  'NetworkEnablementController:getState',
+  'PermissionController:getPermissions',
+  'PhishingController:bulkScanTokens',
+  'RemoteFeatureFlagController:getState',
+  'SnapController:getRunnableSnaps',
+  'SnapController:handleRequest',
+] as const;
+
+/**
+ * Events delegated by `@metamask/wallet`'s `assetsController.getMessenger`.
+ */
+const WALLET_ASSETS_CONTROLLER_EVENTS = [
+  'AccountActivityService:balanceUpdated',
+  'AccountActivityService:statusChanged',
+  'AccountsController:accountBalancesUpdated',
+  'AccountTreeController:initialized',
+  'AccountTreeController:selectedAccountGroupChange',
+  'AccountTreeController:uninitialized',
+  'ClientController:stateChange',
+  'KeyringController:lock',
+  'KeyringController:unlock',
+  'MultichainTransactionsController:transactionConfirmed',
+  'NetworkController:networkAdded',
+  'NetworkController:networkDidChange',
+  'NetworkController:networkRemoved',
+  'NetworkController:stateChange',
+  'NetworkEnablementController:stateChange',
+  'PermissionController:stateChange',
+  'PreferencesController:stateChange',
+  'RemoteFeatureFlagController:stateChange',
+  'SnapController:snapInstalled',
+  'TransactionController:transactionConfirmed',
+  'TransactionController:unapprovedTransactionAdded',
+] as const;
 
 describe('getAssetsControllerMessenger', () => {
   it('returns a messenger instance', () => {
@@ -23,8 +68,22 @@ describe('getAssetsControllerMessenger', () => {
     expect(assetsControllerMessenger).toBeDefined();
   });
 
+  it('delegates the wallet AssetsController actions and events', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: [...WALLET_ASSETS_CONTROLLER_ACTIONS],
+        events: [...WALLET_ASSETS_CONTROLLER_EVENTS],
+      }),
+    );
+  });
+
   // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(ASSETS_CONTROLLER_DELEGATED_ACTIONS)(
+  it.each(WALLET_ASSETS_CONTROLLER_ACTIONS)(
     'delegates %s action',
     (action: string) => {
       const messenger = getRootMessenger<never, never>();
@@ -41,7 +100,7 @@ describe('getAssetsControllerMessenger', () => {
   );
 
   // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(ASSETS_CONTROLLER_DELEGATED_EVENTS)(
+  it.each(WALLET_ASSETS_CONTROLLER_EVENTS)(
     'delegates %s event',
     (event: string) => {
       const messenger = getRootMessenger<never, never>();
