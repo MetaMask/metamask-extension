@@ -112,11 +112,7 @@ const Info = () => {
   // Info and Footer share a commit; wait for a transaction, not enrichment.
   useUsefulScreenReady(
     'confirmation',
-    Boolean(
-      currentConfirmation?.type &&
-      'txParams' in currentConfirmation &&
-      currentConfirmation.txParams,
-    ),
+    Boolean(currentConfirmation?.type && 'txParams' in currentConfirmation),
   );
   const { loader } = useConfirmationNavigationOptions();
   const enabledPermissions = useEnabledAdvancedPermissions();
