@@ -883,7 +883,6 @@ export class PlaywrightDriver {
     const locator = this.buildLocator(rawLocator).first();
     await locator.click();
 
-    // On Chrome extension pages, use CDP to bypass LavaMoat scuttling which
     if (this.shouldUseCDPBypass()) {
       const pasteHandled = await this.pasteIntoFieldViaCDP(
         locator,
@@ -920,7 +919,7 @@ export class PlaywrightDriver {
 
   /**
    * Checks if the current page is an extension page where LavaMoat scuttling
-   * may block Playwright's evaluate() from accessing globals like Float32Array.
+   * may block Playwright from accessing globals.
    */
   private isExtensionPage(): boolean {
     const currentUrl = this.page.url();
@@ -932,22 +931,17 @@ export class PlaywrightDriver {
 
   /**
    * Returns true if we should use CDP to bypass LavaMoat scuttling.
-   * Only applies to Chrome extension pages.
    */
   private shouldUseCDPBypass(): boolean {
     return this.browser === 'chrome' && this.isExtensionPage();
   }
 
   /**
-   * Evaluates a JavaScript expression via CDP in an isolated world.
-   * This bypasses LavaMoat scuttling because the isolated world has its own
-   * pristine set of globals (DataTransfer, Float32Array, etc.) that LavaMoat
-   * hasn't touched.
-   *
+   * Evaluates a JavaScript expression via CDP in an isolated world to bypass LavaMoat scuttling.
    * @param expression - JavaScript expression to evaluate (should be an IIFE)
    * @param options - Configuration options
-   * @param options.awaitPromise - Whether to await the result if it's a Promise
-   * @returns The result value, or undefined if evaluation failed
+   * @param options.awaitPromise - Whether to await the result if it's a Promise.
+   * @returns The result value, or undefined if evaluation failed.
    */
   private async evaluateViaCDP<TResult = unknown>(
     expression: string,
