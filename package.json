@@ -339,7 +339,7 @@
     "jiti@npm:^2.5.1": "npm:npm-empty-package@1.0.0",
     "esbuild": "0.28.1",
     "valibot": "^1.4.2",
-    "@metamask/snaps-controllers": "^21.1.2",
+    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A21.1.2#~/.yarn/patches/@metamask-snaps-controllers-npm-21.1.2-cbf7b2b2de.patch",
     "@metamask/permission-controller@npm:^12.2.0": "^14.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^14.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^14.0.0",
