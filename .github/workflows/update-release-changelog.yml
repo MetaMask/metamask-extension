@@ -20,8 +20,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
       pull-requests: write
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: write
+
       - name: Update Release Changelog
         uses: MetaMask/github-tools/.github/actions/update-release-changelog@v1
         with:
@@ -29,4 +39,4 @@ jobs:
           repository-url: ${{ github.server_url }}/${{ github.repository }}
           platform: extension
           previous-version-ref: 'null'
-          github-token: ${{ secrets.PR_TOKEN }}
+          github-token: ${{ steps.token.outputs.token }}
