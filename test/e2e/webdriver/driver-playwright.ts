@@ -426,6 +426,14 @@ export class PlaywrightDriver {
       source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
     }
 
+    // On Chrome extension pages, use CDP to bypass LavaMoat scuttling.
+    // Playwright's page.evaluate() internally uses Float32Array for serialization,
+    // which triggers scuttling errors. CDP Runtime.evaluate avoids this.
+    if (this.shouldUseCDPBypass()) {
+      return this.executeScriptViaCDPMainWorld<TResult>(source, args);
+    }
+
+    // Standard path for non-extension pages or Firefox
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -437,6 +445,46 @@ export class PlaywrightDriver {
       },
       { source, passedArgs: args },
     )) as TResult;
+  }
+
+  /**
+   * Executes a script via CDP in the MAIN world to:
+   * 1. Bypass LavaMoat scuttling (Playwright's serialization uses Float32Array)
+   * 2. Access main world variables like window.stateHooks
+   * @param source
+   * @param args
+   */
+  private async executeScriptViaCDPMainWorld<TResult>(
+    source: string,
+    args: unknown[],
+  ): Promise<TResult> {
+    const cdp = await this.page.context().newCDPSession(this.page);
+    try {
+      // Build expression that evaluates the function with args
+      const expression = `
+        (function() {
+          const fn = new Function('args', 'return (' + ${JSON.stringify(source)} + ').apply(null, args);');
+          return fn(${JSON.stringify(args)});
+        })()
+      `;
+
+      // Evaluate in the main world (no contextId = default execution context)
+      const { result, exceptionDetails } = await cdp.send('Runtime.evaluate', {
+        expression,
+        returnByValue: true,
+        awaitPromise: true,
+      });
+
+      if (exceptionDetails) {
+        throw new Error(
+          `CDP executeScript failed: ${exceptionDetails.exception?.description ?? exceptionDetails.text}`,
+        );
+      }
+
+      return result.value as TResult;
+    } finally {
+      await cdp.detach();
+    }
   }
 
   // Selenium's executeAsyncScript resolves when the script invokes its trailing
