@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
-import log from 'loglevel';
 import {
   Box,
   Text,
@@ -37,6 +36,7 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
+import { getIsBasicFunctionalityForcedOnDuringOnboarding } from '../../../selectors/multichain/basic-functionality';
 
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
@@ -45,7 +45,6 @@ import {
   getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
   getIsSocialLoginFlow,
-  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
@@ -59,8 +58,6 @@ import {
   setUseTransactionSimulations,
   setUseExternalNameSources,
   setEditedNetwork,
-  setDataCollectionForMarketing,
-  setMarketingConsent,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -113,10 +110,9 @@ export default function PrivacySettings() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isBasicFunctionalityConsolidationEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
-  const isSocialLoginBasicFunctionalityLocked =
-    isSocialLoginFlow && isBasicFunctionalityConsolidationEnabled;
-  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-
+  const isBasicFunctionalityForcedOn = useSelector(
+    getIsBasicFunctionalityForcedOnDuringOnboarding,
+  );
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -239,15 +235,6 @@ export default function PrivacySettings() {
       title: t('networks'),
     },
   ];
-
-  const handleDataCollectionForMarketing = async (value: boolean) => {
-    try {
-      dispatch(setMarketingConsent(value));
-    } catch (error) {
-      log.error('Error setting marketing consent in default settings', error);
-    }
-    dispatch(setDataCollectionForMarketing(value));
-  };
 
   return (
     <>
@@ -405,9 +392,9 @@ export default function PrivacySettings() {
                     <Setting
                       dataTestId="basic-functionality-toggle"
                       value={externalServicesOnboardingToggleState}
-                      disabled={isSocialLoginBasicFunctionalityLocked}
+                      disabled={isBasicFunctionalityForcedOn}
                       setValue={(toggledValue) => {
-                        if (isSocialLoginBasicFunctionalityLocked) {
+                        if (isBasicFunctionalityForcedOn) {
                           return;
                         }
                         if (toggledValue) {
@@ -616,15 +603,7 @@ export default function PrivacySettings() {
                     </Box>
                   )}
                   {isSocialLoginFlow && (
-                    <MetametricsToggle
-                      dataCollectionForMarketing={
-                        dataCollectionForMarketing === true
-                      }
-                      setDataCollectionForMarketing={
-                        handleDataCollectionForMarketing
-                      }
-                      fromDefaultSettings
-                    />
+                    <MetametricsToggle fromDefaultSettings />
                   )}
                 </>
               ) : null}

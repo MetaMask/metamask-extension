@@ -236,8 +236,6 @@ async function withFixtures(options, testSuite) {
     useMockingPassThrough,
     useBundler,
     usePaymaster,
-    ethConversionInUsd,
-    monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     accountActivityWebSocketSpecificMocks = [],
@@ -509,8 +507,6 @@ async function withFixtures(options, testSuite) {
       clearNetworkReport,
     } = await mockingSetupFunction(mockServer, testSpecificMock, {
       chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-      ethConversionInUsd,
-      monConversionInUsd,
       unifiedEvmAccountsApiBalances: effectiveUnifiedEvmAccountsApiBalances,
     });
 

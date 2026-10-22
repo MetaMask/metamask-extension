@@ -76,7 +76,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-10-13
+ * Production defaults last synced: 2026-10-20
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -113,6 +113,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  addressResolution: {
+    inProd: true,
+    name: 'addressResolution',
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   assetsAccountApiBalances: {
     inProd: true,
     name: 'assetsAccountApiBalances',
@@ -139,7 +147,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             name: 'feature is ON',
             scope: {
               type: 'threshold',
-              value: 0,
+              value: 1,
             },
             value: true,
           },
@@ -147,7 +155,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             name: 'feature is OFF',
             scope: {
               type: 'threshold',
-              value: 1,
+              value: 0,
             },
             value: false,
           },
@@ -695,8 +703,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'cashtagInjection',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '13.42.0',
+      enabled: true,
+      minimumVersion: '13.53.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -1386,7 +1394,24 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'confirmations_pay_hardware',
     productionDefault: {
-      enabled: true,
+      versions: {
+        '0.0.0': {
+          enabled: false,
+        },
+        '13.55.0': {
+          default: {
+            enabled: false,
+          },
+          overrides: {
+            moneyAccountDeposit: {
+              enabled: true,
+            },
+            musdConversion: {
+              enabled: true,
+            },
+          },
+        },
+      },
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2712,6 +2737,11 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           '0x2105': 5,
         },
       },
+      replaceUnderpricedDappGasFees: {
+        perChainConfig: {
+          '0x13b2': true,
+        },
+      },
       timeoutAttempts: {
         default: 30,
         perChainConfig: {
@@ -3388,6 +3418,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyBalanceShowMusdLabel: {
+    inProd: true,
+    name: 'moneyBalanceShowMusdLabel',
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   moneyEnableActivityDetails: {
     inProd: true,
     name: 'moneyEnableActivityDetails',
@@ -3899,7 +3937,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       },
       '0x1237': {
         extensionActive: true,
-        gaslessBridgeWith7702Enabled: false,
+        gaslessBridgeWith7702Enabled: true,
         sentinelUrl: 'https://tx-sentinel-robinhood-mainnet.api.cx.metamask.io',
       },
       '0x144': {
