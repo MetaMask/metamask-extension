@@ -4,6 +4,9 @@
 navigation (`performance.timeOrigin`) to committed useful content, followed by
 two animation frames. This is a paint opportunity proxy, not an actual paint timestamp.
 
+The shared lifecycle and API do not emit screen results on their own. Unlock,
+Home, and transaction confirmation add readiness signals in separate page integrations.
+
 ## Screen API
 
 Call `useUsefulScreenReady(screen, ready)` in a component whose commit includes

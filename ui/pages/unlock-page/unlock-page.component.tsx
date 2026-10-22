@@ -66,7 +66,6 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
-import { UsefulScreenReady } from '../../hooks/useUsefulScreenReady';
 import { getCaretCoordinates } from './unlock-page.util';
 import {
   UnlockPasskeyIconButton,
@@ -669,13 +668,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
     const showPasswordUnlockForm =
       !this.props.isPasskeyActive || isPasswordUnlockMode;
-    const isUnlockReady =
-      isOnboardingCompleted &&
-      !isLocked &&
-      !isSubmitting &&
-      !showResetPasswordModal &&
-      !showLoginErrorModal &&
-      !showConnectionsRemovedModal;
 
     return (
       <Box
@@ -691,9 +683,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
           <ResetPasswordModal
             onClose={() => this.setState({ showResetPasswordModal: false })}
           />
-        )}
-        {showPasswordUnlockForm && (
-          <UsefulScreenReady screen="unlock" ready={isUnlockReady} />
         )}
         {showLoginErrorModal && (
           <LoginErrorModal
@@ -845,7 +834,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
           ) : (
             <UnlockPasskeySection
               logoSection={this.renderLogoSection(isRehydrationFlow)}
-              isUnlockReady={isUnlockReady}
               isPasskeyActive={this.props.isPasskeyActive}
               passkeyAutoUnlockSuppressed={
                 this.props.passkeyAutoUnlockSuppressed

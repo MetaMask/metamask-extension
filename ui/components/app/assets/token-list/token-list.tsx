@@ -58,7 +58,6 @@ import {
 } from '../../../../selectors/multichain/networks';
 import {
   getAssetsBySelectedAccountGroup,
-  getSelectedAccountGroupNetworkGenerationKey,
   selectAccountGroupBalanceForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../../selectors/assets';
@@ -67,7 +66,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { useUsefulScreenReady } from '../../../../hooks/useUsefulScreenReady';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
@@ -176,11 +174,6 @@ const LowValueAssetsToggle = ({
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
-  const accountGroupNetworkKey = useSelector(
-    getSelectedAccountGroupNetworkGenerationKey,
-  );
-  // The account overview and Tokens tab commit together; no fresh data needed.
-  useUsefulScreenReady('home', Boolean(accountGroupNetworkKey));
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);

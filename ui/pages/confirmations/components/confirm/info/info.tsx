@@ -10,7 +10,6 @@ import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permis
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
-import { useUsefulScreenReady } from '../../../../../hooks/useUsefulScreenReady';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
@@ -109,15 +108,6 @@ export const InfoSkeleton = ({
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
-  // Info and Footer share a commit; wait for a transaction, not enrichment.
-  useUsefulScreenReady(
-    'confirmation',
-    Boolean(
-      currentConfirmation?.type &&
-      'txParams' in currentConfirmation &&
-      currentConfirmation.txParams,
-    ),
-  );
   const { loader } = useConfirmationNavigationOptions();
   const enabledPermissions = useEnabledAdvancedPermissions();
 

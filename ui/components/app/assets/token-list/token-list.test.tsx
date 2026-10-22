@@ -126,7 +126,6 @@ jest.mock('../../../../selectors/multichain/feature-flags', () => ({
 
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
-  getSelectedAccountGroupNetworkGenerationKey: jest.fn(() => 'group-a:0x1'),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
   selectIsAssetsLoadingForSelectedAccountGroup: jest.fn(),
 }));
