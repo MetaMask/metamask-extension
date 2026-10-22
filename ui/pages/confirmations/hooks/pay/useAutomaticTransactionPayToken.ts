@@ -20,7 +20,10 @@ import {
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
 import { type RelayFixedSpreadConfig } from '../../utils/relay-fixed-spread';
-import { isMoneyAccountFunding } from '../../utils/transaction-pay';
+import {
+  isMoneyAccountFunding,
+  isSolanaPaySource,
+} from '../../utils/transaction-pay';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
@@ -114,8 +117,10 @@ export function useAutomaticTransactionPayToken({
     ],
   );
 
+  // Automatic selection picks an EVM `{ address, chainId }` request. A Solana
+  // source has no Hex address and is only ever an explicit user pick.
   const tokensWithBalance = useMemo(
-    () => tokens.filter((t) => !t.disabled),
+    () => tokens.filter((t) => !t.disabled && !isSolanaPaySource(t)),
     [tokens],
   );
 
