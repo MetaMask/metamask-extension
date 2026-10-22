@@ -1,5 +1,4 @@
 import {
-  AccountProviderWrapper,
   MultichainAccountService,
   MultichainAccountServiceMessenger,
 } from '@metamask/multichain-account-service';
@@ -78,20 +77,19 @@ describe('MultichainAccountServiceInit', () => {
   });
 
   describe('MultichainAccountService constructor', () => {
-    it('is called with controller messenger, providers array, providerConfigs and config', () => {
+    it('is called with controller messenger, providerConfigs and config', () => {
       const requestMock = buildInitRequestMock();
       MultichainAccountServiceInit(requestMock);
 
       expect(multichainAccountServiceClassMock).toHaveBeenCalledWith({
         messenger: requestMock.controllerMessenger,
-        providers: [expect.any(AccountProviderWrapper)],
         providerConfigs: expect.any(Object),
         config: expect.any(Object),
         ensureOnboardingComplete: requestMock.ensureOnboardingComplete,
       });
     });
 
-    it('passes Solana, Bitcoin, and Tron provider configs with maxConcurrency 1', () => {
+    it('passes Solana, Bitcoin, Tron, and Stellar provider configs with maxConcurrency 1', () => {
       const requestMock = buildInitRequestMock();
       MultichainAccountServiceInit(requestMock);
 
@@ -114,8 +112,11 @@ describe('MultichainAccountServiceInit', () => {
         Tron: {
           maxConcurrency: 1,
         },
+        Stellar: {
+          maxConcurrency: 1,
+        },
       });
-      expect(callArg.providerConfigs).not.toHaveProperty('Stellar');
+      expect(callArg).not.toHaveProperty('providers');
     });
 
     it('passes config with trace function', () => {
