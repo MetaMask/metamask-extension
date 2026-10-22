@@ -6,7 +6,7 @@
  *    of onboarding-allowlist.json, and in particular no Infura or token price
  *    requests are made.
  * 2. After clicking "Done": balances (Infura or Accounts API) and token prices
- *    are fetched. When importing a wallet, the stalelist, NFT and token
+ *    are fetched. When importing a wallet, the stalelist and token
  *    metadata APIs are fetched as well.
  */
 import { strict as assert } from 'assert';
@@ -58,13 +58,6 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
       statusCode: 200,
       json: [{ fakedata: true }],
     }));
-  const nftMock = await mockServer
-    .forGet(/https:\/\/nft\.api\.cx\.metamask\.io\/users\/.*\/tokens/u)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: { tokens: [] },
-    }));
   const tokenMetadataMock = await mockServer
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
@@ -77,7 +70,6 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
     tokenPriceMock,
     stalelistMock,
-    nftMock,
     tokenMetadataMock,
     ...(await mockOnboardingInfuraPrivacy(mockServer)),
   ];
@@ -86,11 +78,11 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
 function splitMocks(
   mockedEndpoints: MockedEndpoint[],
 ): BasicFunctionalityOnMocks {
-  const [tokenPriceMock, stalelistMock, nftMock, tokenMetadataMock, ...rest] =
+  const [tokenPriceMock, stalelistMock, tokenMetadataMock, ...rest] =
     mockedEndpoints;
   return {
     tokenPriceMock,
-    importedWalletMocks: [stalelistMock, nftMock, tokenMetadataMock],
+    importedWalletMocks: [stalelistMock, tokenMetadataMock],
     ...splitOnboardingPrivacyMocks(rest),
   };
 }
@@ -114,7 +106,7 @@ async function waitForRequests(
 ): Promise<void> {
   for (const mockedEndpoint of mockedEndpoints) {
     await driver.wait(
-      async () => !(await mockedEndpoint.isPending()),
+      async () => (await mockedEndpoint.getSeenRequests()).length > 0,
       POST_ONBOARDING_ACTIVITY_TIMEOUT_MS,
     );
   }
