@@ -9,6 +9,7 @@ import {
   RequestStatus,
   assetIdsMatch,
   type QuoteResponse,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
@@ -83,6 +84,7 @@ const getBalanceAmount = async ({
   trace({
     name: TraceName.BridgeBalancesUpdated,
     op: TraceOperation.BridgeDataFetch,
+    tags: { feature: SwapFeatureTag.SWAP },
     id: traceId,
     data: {
       srcChainId: chainId,

@@ -1,3 +1,4 @@
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 
@@ -22,6 +23,106 @@ type RootState = { metamask: Record<string, unknown> } & Record<
   string,
   unknown
 >;
+
+/** Selected EVM account UUID from `test/data/mock-state.json`. */
+export const MOCK_CONFIRMATIONS_ACCOUNT_ID =
+  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+
+/**
+ * Convert a wei hex string or integer into the human-readable decimal amount
+ * string stored in unified `assetsBalance`.
+ * @param wei
+ * @param decimals
+ */
+export function weiToAssetAmount(wei: string | number, decimals = 18): string {
+  const value = typeof wei === 'string' ? BigInt(wei) : BigInt(wei);
+  if (value === 0n) {
+    return '0';
+  }
+  const padded = value.toString().padStart(decimals + 1, '0');
+  const whole = padded.slice(0, -decimals).replace(/^0+/u, '') || '0';
+  const frac = padded.slice(-decimals).replace(/0+$/u, '');
+  return frac ? `${whole}.${frac}` : whole;
+}
+
+/**
+ * Look up bridge-controller native-asset metadata for an EVM chain.
+ * Returns undefined when the chain is unknown to the bridge catalog (e.g. Tempo).
+ *
+ * @param hexChainId
+ */
+function getNativeAssetMetadata(hexChainId: string):
+  | {
+      assetId?: string;
+      decimals?: number;
+      symbol?: string;
+    }
+  | undefined {
+  const decimalChainId = Number.parseInt(hexChainId, 16);
+  try {
+    return getNativeAssetForChainId(decimalChainId);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * CAIP-19 asset id for the native asset on an EVM chain.
+ * Uses bridge-controller metadata so non-ETH natives (e.g. Monad) get the
+ * correct slip44 reference instead of always assuming ETH (`slip44:60`).
+ *
+ * @param hexChainId
+ */
+export function nativeEvmAssetId(hexChainId: string): string {
+  const decimalChainId = Number.parseInt(hexChainId, 16);
+  return (
+    getNativeAssetMetadata(hexChainId)?.assetId ??
+    `eip155:${decimalChainId}/slip44:60`
+  );
+}
+
+/**
+ * Minimal AssetsController native-balance patch for confirmation unit tests.
+ * Required when the global unify-state mock is enabled: migration selectors
+ * ignore legacy `accountsByChainId` and only read `assetsBalance` + `assetsInfo`.
+ *
+ * @param options
+ * @param options.accountId
+ * @param options.hexChainId
+ * @param options.amountWei
+ */
+export function buildNativeEvmBalancePatch({
+  accountId = MOCK_CONFIRMATIONS_ACCOUNT_ID,
+  hexChainId,
+  amountWei,
+}: {
+  accountId?: string;
+  hexChainId: string;
+  amountWei: string | number;
+}): {
+  assetsBalance: Record<string, Record<string, { amount: string }>>;
+  assetsInfo: Record<
+    string,
+    { type: 'native'; decimals: number; symbol?: string }
+  >;
+} {
+  const assetId = nativeEvmAssetId(hexChainId);
+  const native = getNativeAssetMetadata(hexChainId);
+  return {
+    assetsBalance: {
+      [accountId]: {
+        [assetId]: { amount: weiToAssetAmount(amountWei) },
+      },
+    },
+    assetsInfo: {
+      [assetId]: {
+        type: 'native',
+        decimals: native?.decimals ?? 18,
+        ...(native?.symbol ? { symbol: native.symbol } : {}),
+      },
+    },
+  };
+}
 
 export const getMockTypedSignConfirmState = (
   args: RootState = { metamask: {} },

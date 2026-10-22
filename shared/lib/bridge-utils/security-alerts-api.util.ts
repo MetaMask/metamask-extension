@@ -1,3 +1,4 @@
+import type { AddressScanResult } from '@metamask/phishing-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SolMethod } from '@metamask/keyring-api';
 import { base58 } from 'ethers/lib/utils';
@@ -136,7 +137,7 @@ export function getTokenFeatureTitleDescriptionIds(
   return { ...tokenFeature, titleId, descriptionId };
 }
 
-const CHAIN_ID_TO_SECURITY_API_NAME: Record<string, string | null> = {
+const CHAIN_ID_TO_SECURITY_API_NAME: Record<string, string> = {
   [CHAIN_IDS.MAINNET]: 'ethereum',
   [CHAIN_IDS.LINEA_MAINNET]: 'linea',
   [CHAIN_IDS.POLYGON]: 'polygon',
@@ -150,26 +151,67 @@ const CHAIN_ID_TO_SECURITY_API_NAME: Record<string, string | null> = {
   [CHAIN_IDS.MONAD]: 'monad',
   [MultichainNetworks.SOLANA]: 'solana',
   [MultichainNetworks.BITCOIN]: 'bitcoin',
-  [MultichainNetworks.BITCOIN_TESTNET]: null, // not supported
-  [MultichainNetworks.BITCOIN_SIGNET]: null, // not supported
-  [MultichainNetworks.SOLANA_DEVNET]: null, // not supported
-  [MultichainNetworks.SOLANA_TESTNET]: null, // not supported
 };
 
-export function convertChainIdToBlockAidChainName(
-  chainId: CaipChainId,
-): string | null {
+function getEvmAddressChainName(chainId: CaipChainId) {
   try {
-    const { namespace, reference } = parseCaipChainId(chainId);
-    const name =
-      CHAIN_ID_TO_SECURITY_API_NAME[
-        namespace === KnownCaipNamespace.Eip155
-          ? decimalToPrefixedHex(reference)
-          : chainId
-      ];
-    return name ?? null;
+    const { namespace } = parseCaipChainId(chainId);
+    return namespace === KnownCaipNamespace.Eip155
+      ? convertChainIdToBlockAidChainName(chainId)
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export function hasEvmChainName(chainId: CaipChainId) {
+  return getEvmAddressChainName(chainId) !== undefined;
+}
+
+export async function fetchEvmAddressScan(
+  chainId: CaipChainId,
+  address: string,
+): Promise<AddressScanResult | null> {
+  const chain = getEvmAddressChainName(chainId);
+
+  if (!isSecurityAlertsAPIEnabled() || !address || !chain) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(getUrl('address/evm/scan'), {
+      method: 'POST',
+      priority: 'low',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chain,
+        address: address.toLowerCase(),
+      }),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return (await response.json()) as AddressScanResult;
   } catch {
     return null;
+  }
+}
+
+export function convertChainIdToBlockAidChainName(chainId: CaipChainId) {
+  try {
+    const { namespace, reference } = parseCaipChainId(chainId);
+    return CHAIN_ID_TO_SECURITY_API_NAME[
+      namespace === KnownCaipNamespace.Eip155
+        ? decimalToPrefixedHex(reference)
+        : chainId
+    ];
+  } catch {
+    return undefined;
   }
 }
 

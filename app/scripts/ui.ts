@@ -336,29 +336,43 @@ async function queryCurrentActiveTab(
     }
   }
 
-  // Only popup queries the active tab
-  // Sidepanel uses appActiveTab from tab listeners instead
+  // Sidepanel uses appActiveTab from tab listeners, but retain the existing
+  // active-tab lookup for its initial UI state.
   if (
     windowType !== ENVIRONMENT_TYPE_POPUP &&
-    windowType !== ENVIRONMENT_TYPE_SIDEPANEL
+    windowType !== ENVIRONMENT_TYPE_SIDEPANEL &&
+    windowType !== ENVIRONMENT_TYPE_FULLSCREEN
   ) {
     return {};
   }
 
-  const tabs =
-    (await browser.tabs
-      .query({ active: true, currentWindow: true })
-      .catch((e) => {
-        checkForLastErrorAndLog() || log.error(e);
-        return undefined;
-      })) ?? [];
+  let currentTab: browser.Tabs.Tab | undefined;
+  if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+    currentTab = await browser.tabs.getCurrent().catch((e) => {
+      checkForLastErrorAndLog() || log.error(e);
+      return undefined;
+    });
+  } else {
+    const tabs =
+      (await browser.tabs
+        .query({ active: true, currentWindow: true })
+        .catch((e) => {
+          checkForLastErrorAndLog() || log.error(e);
+          return undefined;
+        })) ?? [];
+    currentTab = tabs[0];
+  }
 
-  const [activeTab] = tabs;
-  if (!activeTab) {
+  if (!currentTab) {
     return {};
   }
 
-  const { id, title, url } = activeTab;
+  const { id } = currentTab;
+  if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+    return { id };
+  }
+
+  const { title, url } = currentTab;
   const { origin, protocol } = url ? new URL(url) : {};
 
   if (!origin || origin === 'null') {

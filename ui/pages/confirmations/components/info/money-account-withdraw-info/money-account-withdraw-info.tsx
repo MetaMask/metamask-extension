@@ -66,6 +66,7 @@ const MoneyAccountWithdrawInfoContent = () => {
       disablePercentageButtons={!hasWithdrawableBalance}
       displayAccountRow
       displayPercentageButtons
+      hasMax
       hidePayTokenAmount
       preferredToken={MONEY_ACCOUNT_WITHDRAW_PREFERRED_TOKEN}
     />
