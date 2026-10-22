@@ -138,7 +138,91 @@ describe('CreatePasswordForm', () => {
     fireEvent.click(createNewWalletButton as HTMLButtonElement);
 
     await waitFor(() => {
-      expect(onSubmit).toHaveBeenCalledWith(password, true);
+      expect(onSubmit).toHaveBeenCalledWith(password, true, true);
+    });
+  });
+
+  describe('social login marketing checkbox decision', () => {
+    const submitSocialLoginForm = async ({
+      isInUSRegion,
+      clicks,
+    }: {
+      isInUSRegion: boolean;
+      clicks: number;
+    }) => {
+      const onSubmit = jest.fn();
+      const { getByRole, getByTestId } = renderWithProvider(
+        <CreatePasswordForm
+          isSocialLoginFlow
+          onSubmit={onSubmit}
+          onBack={jest.fn()}
+        />,
+        createMockStore(isInUSRegion),
+      );
+
+      fireEvent.change(getByTestId('create-password-new-input'), {
+        target: { value: '12345678' },
+      });
+      fireEvent.change(getByTestId('create-password-confirm-input'), {
+        target: { value: '12345678' },
+      });
+      await waitFor(() => {
+        expect(getByRole('checkbox')).toHaveProperty('checked', isInUSRegion);
+      });
+      for (let i = 0; i < clicks; i++) {
+        fireEvent.click(getByRole('checkbox'));
+      }
+      fireEvent.click(getByTestId('create-password-submit'));
+
+      await waitFor(() => {
+        expect(onSubmit).toHaveBeenCalledTimes(1);
+      });
+      return onSubmit;
+    };
+
+    it('reports a decision when the box was checked by default and the user unchecked it', async () => {
+      const onSubmit = await submitSocialLoginForm({
+        isInUSRegion: true,
+        clicks: 1,
+      });
+
+      expect(onSubmit).toHaveBeenCalledWith('12345678', false, true);
+    });
+
+    it('reports no decision when the box was unchecked by default and never touched', async () => {
+      const onSubmit = await submitSocialLoginForm({
+        isInUSRegion: false,
+        clicks: 0,
+      });
+
+      expect(onSubmit).toHaveBeenCalledWith('12345678', false, false);
+    });
+
+    it('reports a decision when the user checks the box', async () => {
+      const onSubmit = await submitSocialLoginForm({
+        isInUSRegion: false,
+        clicks: 1,
+      });
+
+      expect(onSubmit).toHaveBeenCalledWith('12345678', true, true);
+    });
+
+    it('reports a decision when the box was checked by default and left checked', async () => {
+      const onSubmit = await submitSocialLoginForm({
+        isInUSRegion: true,
+        clicks: 0,
+      });
+
+      expect(onSubmit).toHaveBeenCalledWith('12345678', true, true);
+    });
+
+    it('reports a decision when the user checks and then unchecks the box', async () => {
+      const onSubmit = await submitSocialLoginForm({
+        isInUSRegion: false,
+        clicks: 2,
+      });
+
+      expect(onSubmit).toHaveBeenCalledWith('12345678', false, true);
     });
   });
 });

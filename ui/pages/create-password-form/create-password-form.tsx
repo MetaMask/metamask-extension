@@ -29,7 +29,15 @@ import { useBoolean } from '../../hooks/useBoolean';
 
 type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
-  onSubmit: (password: string, termsChecked: boolean) => Promise<void>;
+  /**
+   * `termsDecisionMade` is false only when the checkbox was unchecked by
+   * default and the user never touched it.
+   */
+  onSubmit: (
+    password: string,
+    termsChecked: boolean,
+    termsDecisionMade: boolean,
+  ) => Promise<void>;
   onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
   error?: boolean;
   loading?: boolean;
@@ -71,7 +79,11 @@ const CreatePasswordForm = ({
 
   const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await onSubmit(password, termsChecked);
+    await onSubmit(
+      password,
+      termsChecked,
+      termsChecked || hasUserInteractedWithTermsRef.current,
+    );
   };
 
   const handleLearnMoreClick = (

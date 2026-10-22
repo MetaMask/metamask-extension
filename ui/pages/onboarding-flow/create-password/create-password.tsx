@@ -255,6 +255,7 @@ export default function CreatePassword({
   const handleCreateNewWallet = async (
     password: string,
     termsChecked: boolean,
+    termsDecisionMade: boolean,
   ) => {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.WalletCreationAttempted)
@@ -331,7 +332,10 @@ export default function CreatePassword({
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
       }
-      dispatch(setDataCollectionForMarketing(termsChecked));
+      // Without a decision, the home consent modal asks the user later.
+      if (termsDecisionMade) {
+        dispatch(setDataCollectionForMarketing(termsChecked));
+      }
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
@@ -367,6 +371,7 @@ export default function CreatePassword({
   const handleCreatePassword = async (
     password: string,
     termsChecked: boolean,
+    termsDecisionMade: boolean,
   ) => {
     if (!password || isSubmitting) {
       return;
@@ -383,7 +388,7 @@ export default function CreatePassword({
         await handleWalletImport(password);
       } else {
         // Otherwise we are in create new wallet flow
-        await handleCreateNewWallet(password, termsChecked);
+        await handleCreateNewWallet(password, termsChecked, termsDecisionMade);
       }
     } catch (error) {
       log.error('Error creating password', error);
