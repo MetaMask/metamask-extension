@@ -8229,6 +8229,13 @@
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
   },
+  "perpsIocCancel": {
+    "message": "Your order couldn't fill within your $1% slippage tolerance. Try a limit order or adjust your slippage.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage."
+  },
   "perpsKeepPositions": {
     "message": "Keep positions"
   },
@@ -8447,13 +8454,6 @@
   "perpsOrderFailed": {
     "message": "Order could not be placed. Try again."
   },
-  "perpsIocCancel": {
-    "message": "Your order couldn't fill within your $1% slippage tolerance. Try a limit order or adjust your slippage.",
-    "description": "$1 is the configured maximum slippage percentage"
-  },
-  "perpsIocCancelUnknownTolerance": {
-    "message": "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage."
-  },
   "perpsOrderFilled": {
     "message": "Filled"
   },
@@ -8490,6 +8490,10 @@
   },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsPriceMoved": {
+    "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
   },
   "perpsProducts": {
     "message": "Products",
@@ -8594,10 +8598,6 @@
   },
   "perpsSlippageExceeded": {
     "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
-  },
-  "perpsPriceMoved": {
-    "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
-    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
   },
   "perpsSlippageExceedsMax": {
     "message": "Estimated slippage ($1%) exceeds your max slippage ($2%). Increase the cap or reduce the order size.",
