@@ -2,7 +2,7 @@ import type { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   ACCOUNT_2,
-} from '../../../../constants';
+} from '../../../constants';
 
 const BASE_TIMESTAMP = Date.now();
 
@@ -39,8 +39,8 @@ const EVM_SEND_TX = {
 
 /**
  * Serves an EVM send from the accounts activity API only when the request
- * covers EVM networks. Under the Tron-only filter the UI never queries EVM
- * networks, so the mocked transaction stays hidden.
+ * covers EVM networks. Under a non-EVM-only filter (Tron, Solana, …) the UI
+ * never queries EVM networks, so the mocked transaction stays hidden.
  *
  * @param mockServer - The Mockttp server instance.
  */

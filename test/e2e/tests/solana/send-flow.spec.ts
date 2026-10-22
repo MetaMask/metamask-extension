@@ -145,6 +145,12 @@ describe('Send flow', function (this: Suite) {
           confirmedTx: 2,
         });
         await activityTab.checkTxAmountInActivity('-0.1 SOL', 1);
+        // The airdrop is a real receive, classified by the snap mapper.
+        await activityTab.checkTxAction({
+          action: 'Received SOL',
+          txIndex: 2,
+          confirmedTx: 2,
+        });
         await activityTab.checkNoFailedTransactions();
       },
     );
