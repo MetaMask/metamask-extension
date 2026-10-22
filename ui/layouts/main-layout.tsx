@@ -26,11 +26,11 @@ export const MainLayout = () => {
         >
           <ScrollToTop />
           <main
-            className={
+            className={`max-w-[var(--width-max)] justify-start ${
               showBottomNav
                 ? 'grow shrink-0 bg-background-default'
                 : 'flex min-h-0 flex-1 flex-col bg-background-default'
-            }
+            }`}
           >
             <Outlet />
           </main>
