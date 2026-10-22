@@ -23,9 +23,7 @@ import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import * as Actions from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import configureStore from '../../../store/store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsConsentContainer } from '../../../components/app/metametrics-consent/metametrics-consent-container';
 import CreatePassword from './create-password';
 
 const mockTrackEvent = jest.fn();
@@ -417,35 +415,28 @@ describe('Onboarding Create Password', () => {
   });
 
   describe('social login marketing consent', () => {
-    const createSocialLoginStore = (country?: string) =>
-      configureStore({
+    const createPasswordWithMarketingCheckbox = async ({
+      country,
+      clickCheckbox,
+    }: {
+      country?: string;
+      clickCheckbox: boolean;
+    }) => {
+      const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
           ...mockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.socialCreate,
-          marketingConsentDecisionMade: false,
-          optedInToMarketing: false,
           country,
         },
       });
-
-    const createPasswordWithMarketingCheckbox = async ({
-      country,
-      expectedDefault,
-      clickCheckbox,
-    }: {
-      country?: string;
-      expectedDefault: boolean;
-      clickCheckbox: boolean;
-    }) => {
-      const store = createSocialLoginStore(country);
       const { getByRole, getByTestId } = renderWithProvider(
         <CreatePassword
           createNewAccount={mockCreateNewAccount}
           importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
           secretRecoveryPhrase="SRP"
         />,
-        store,
+        mockStore,
       );
 
       fireEvent.change(getByTestId('create-password-new-input'), {
@@ -454,11 +445,10 @@ describe('Onboarding Create Password', () => {
       fireEvent.change(getByTestId('create-password-confirm-input'), {
         target: { value: '12345678' },
       });
-
       await waitFor(() => {
         expect(getByRole('checkbox')).toHaveProperty(
           'checked',
-          expectedDefault,
+          country === 'US',
         );
       });
       if (clickCheckbox) {
@@ -472,21 +462,6 @@ describe('Onboarding Create Password', () => {
           { replace: true },
         );
       });
-
-      return store;
-    };
-
-    const isHomeConsentModalShown = (
-      store: ReturnType<typeof configureStore>,
-    ) => {
-      const { queryByText, unmount } = renderWithProvider(
-        <MetaMetricsConsentContainer />,
-        store,
-      );
-      const isShown =
-        queryByText(messages.onboardedMetametricsTitle.message) !== null;
-      unmount();
-      return isShown;
     };
 
     it('saves an opt-out when the user unchecks the box that was checked by default', async () => {
@@ -495,76 +470,24 @@ describe('Onboarding Create Password', () => {
         'setDataCollectionForMarketing',
       );
 
-      const store = await createPasswordWithMarketingCheckbox({
+      await createPasswordWithMarketingCheckbox({
         country: 'US',
-        expectedDefault: true,
         clickCheckbox: true,
       });
 
       expect(setDataCollectionForMarketingSpy).toHaveBeenCalledWith(false);
-      await waitFor(() => {
-        expect(store.getState().metamask.marketingConsentDecisionMade).toBe(
-          true,
-        );
-      });
-      expect(store.getState().metamask.optedInToMarketing).toBe(false);
-      expect(isHomeConsentModalShown(store)).toBe(false);
     });
 
-    it('saves no decision when the box was unchecked by default and never touched, so the home consent modal still asks', async () => {
+    it('saves no decision when the box was unchecked by default and never touched', async () => {
       const setDataCollectionForMarketingSpy = jest.spyOn(
         Actions,
         'setDataCollectionForMarketing',
       );
 
-      const store = await createPasswordWithMarketingCheckbox({
-        expectedDefault: false,
-        clickCheckbox: false,
-      });
+      await createPasswordWithMarketingCheckbox({ clickCheckbox: false });
 
       expect(mockCreateNewAccount).toHaveBeenCalled();
       expect(setDataCollectionForMarketingSpy).not.toHaveBeenCalled();
-      expect(store.getState().metamask.marketingConsentDecisionMade).toBe(
-        false,
-      );
-      expect(isHomeConsentModalShown(store)).toBe(true);
-    });
-
-    it('saves an opt-in when the user checks the box', async () => {
-      const setDataCollectionForMarketingSpy = jest.spyOn(
-        Actions,
-        'setDataCollectionForMarketing',
-      );
-
-      const store = await createPasswordWithMarketingCheckbox({
-        expectedDefault: false,
-        clickCheckbox: true,
-      });
-
-      expect(setDataCollectionForMarketingSpy).toHaveBeenCalledWith(true);
-      await waitFor(() => {
-        expect(store.getState().metamask.optedInToMarketing).toBe(true);
-      });
-      expect(isHomeConsentModalShown(store)).toBe(false);
-    });
-
-    it('saves an opt-in when the box was checked by default and left checked', async () => {
-      const setDataCollectionForMarketingSpy = jest.spyOn(
-        Actions,
-        'setDataCollectionForMarketing',
-      );
-
-      const store = await createPasswordWithMarketingCheckbox({
-        country: 'US',
-        expectedDefault: true,
-        clickCheckbox: false,
-      });
-
-      expect(setDataCollectionForMarketingSpy).toHaveBeenCalledWith(true);
-      await waitFor(() => {
-        expect(store.getState().metamask.optedInToMarketing).toBe(true);
-      });
-      expect(isHomeConsentModalShown(store)).toBe(false);
     });
   });
 

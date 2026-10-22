@@ -29,10 +29,7 @@ import { useBoolean } from '../../hooks/useBoolean';
 
 type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
-  /**
-   * `termsDecisionMade` is false only when the checkbox was unchecked by
-   * default and the user never touched it.
-   */
+  /** `termsDecisionMade` is false when the box was unchecked by default and never touched. */
   onSubmit: (
     password: string,
     termsChecked: boolean,
