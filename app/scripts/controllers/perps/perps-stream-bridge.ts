@@ -93,6 +93,12 @@ const settledControllers = new WeakSet<PerpsController>();
 type FillsSubscription = {
   unsubscribe?: () => void;
   cache?: OrderFill[];
+  // TEMP perps fills diagnostic — do not merge.
+  diagProvider?: unknown;
+  diagCreatedAt?: number;
+  diagCallbacks?: number;
+  diagEmitted?: number;
+  diagEmitSkipped?: number;
 };
 type AccountSession = {
   address?: string;
@@ -388,6 +394,44 @@ export class PerpsStreamBridge {
       perpsToggleTestnet: async (...args: unknown[]) => {
         PerpsStreamBridge.invalidateController(this.#controller);
         return this.#perpsToggleTestnet(...args);
+      },
+      // TEMP perps fills diagnostic — do not merge.
+      perpsGetFillsDebug: () => {
+        const session = accountSessions.get(this.#controller);
+        const fills = session?.fills;
+        let activeProvider: unknown;
+        try {
+          activeProvider = this.#controller.getActiveProvider();
+        } catch {
+          activeProvider = undefined;
+        }
+        return {
+          now: Date.now(),
+          hasSession: Boolean(session),
+          sessionAddress: session?.address ?? null,
+          hasSessionFills: Boolean(fills),
+          subscribedProviderDefined: fills?.diagProvider !== undefined,
+          activeProviderDefined: activeProvider !== undefined,
+          subscribedOnActiveProvider: Boolean(
+            fills && fills.diagProvider === activeProvider,
+          ),
+          fillsCreatedAt: fills?.diagCreatedAt ?? null,
+          callbacks: fills?.diagCallbacks ?? null,
+          emitted: fills?.diagEmitted ?? null,
+          emitSkipped: fills?.diagEmitSkipped ?? null,
+          cacheLength: fills?.cache?.length ?? null,
+          cache: (fills?.cache ?? []).slice(0, 5).map((fill) => ({
+            symbol: fill.symbol,
+            orderId: fill.orderId,
+            timestamp: fill.timestamp,
+          })),
+          bridgeCount: controllerBridges.get(this.#controller)?.size ?? 0,
+          thisBridge: {
+            connectionAlive: this.#isConnectionAlive(),
+            preloadAllowed: this.#isPreloadAllowed(),
+            canEmitFills: this.canEmit('fills'),
+          },
+        };
       },
       perpsViewActive: (active: boolean) => {
         this.#viewActive = active;
@@ -1111,9 +1155,19 @@ export class PerpsStreamBridge {
     const fills: FillsSubscription = {};
     session.fills = fills;
     const controller = this.#controller;
+    fills.diagCreatedAt = Date.now();
+    fills.diagCallbacks = 0;
+    fills.diagEmitted = 0;
+    fills.diagEmitSkipped = 0;
+    try {
+      fills.diagProvider = controller.getActiveProvider();
+    } catch {
+      fills.diagProvider = undefined;
+    }
     try {
       fills.unsubscribe = controller.subscribeToOrderFills({
         callback: (data, isSnapshot) => {
+          fills.diagCallbacks = (fills.diagCallbacks ?? 0) + 1;
           if (session.fills !== fills) {
             return;
           }
@@ -1130,7 +1184,10 @@ export class PerpsStreamBridge {
               bridge.#isPreloadAllowed() &&
               bridge.canEmit('fills')
             ) {
+              fills.diagEmitted = (fills.diagEmitted ?? 0) + 1;
               bridge.#emit('fills', fills.cache);
+            } else {
+              fills.diagEmitSkipped = (fills.diagEmitSkipped ?? 0) + 1;
             }
           }
         },
