@@ -53,9 +53,9 @@ Keep the marker with the useful content if introducing separate Suspense boundar
 - Compare p50/p95 within matching `screen`, `wallet.ui_type`, `wallet.unlocked`,
   `ui.background_initialized_before_navigation`, release, and browser cohorts.
   Additional tags: `ui.navigation=document` and `ui.readiness_version=1`.
-- Background warmness uses an optional timestamp on the existing
+- Background warmness uses the timestamp on the existing
   `BACKGROUND_INITIALIZED` message: before navigation=true, afterward=false,
-  missing/invalid=unknown. No new RPC or wait. Initial wallet state is the state
+  not received=unknown. No new RPC or wait. Initial wallet state is the state
   received at UI startup, not necessarily the exact navigation instant.
 - Default sampling is 0.1%, with existing consent, remote overrides, and ceilings.
 
