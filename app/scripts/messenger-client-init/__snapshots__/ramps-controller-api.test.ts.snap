@@ -2,21 +2,6 @@
 
 exports[`getRampsControllerApi exposes ramps background methods 1`] = `
 [
-  "addRampsOrder",
-  "addRampsPrecreatedOrder",
-  "getRampsBuyWidgetData",
-  "getRampsOrderFromCallback",
-  "getRampsPaymentMethods",
-  "getRampsProviders",
-  "getRampsQuotes",
-  "getRampsTokens",
-  "refreshRampsOrder",
-  "removeRampsOrder",
-  "setRampsSelectedPaymentMethod",
-  "setRampsSelectedProvider",
-  "setRampsSelectedToken",
-  "setRampsUserRegion",
-  "syncRampsOrdersWithUserStorage",
   "watchRampsCheckoutTab",
   "watchRampsProviderOrderTab",
 ]

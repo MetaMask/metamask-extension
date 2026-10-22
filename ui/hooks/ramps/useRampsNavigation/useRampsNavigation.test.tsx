@@ -50,7 +50,7 @@ jest.mock('react-router-dom', () => ({
 
 const mockBackground = submitRequestToBackground as jest.Mock;
 // `submitRequestToBackground` backs both the geolocation lookup and
-// `setRampsSelectedToken`; the geolocation result is what the gate reads.
+// `RampsController:setSelectedToken`; the geolocation result is what the gate reads.
 const mockGetGeolocation = mockBackground;
 const openTab = jest.fn();
 
@@ -507,9 +507,13 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result, { assetId });
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      assetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'GeolocationController:getGeolocation',
+    );
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [assetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
     });
@@ -519,10 +523,10 @@ describe('useRampsNavigation goToBuy', () => {
   it('intent with assetId when pre-select fails → shows RAMPS_UNSUPPORTED and does not navigate', async () => {
     const assetId = 'eip155:1/erc20:0xabc';
     mockBackground.mockImplementation(async (method: string) => {
-      if (method === 'getGeolocation') {
+      if (method === 'GeolocationController:getGeolocation') {
         return 'US-CA';
       }
-      if (method === 'setRampsSelectedToken') {
+      if (method === 'RampsController:setSelectedToken') {
         throw new Error('Token not found');
       }
       return undefined;
@@ -597,9 +601,10 @@ describe('useRampsNavigation goToBuy', () => {
     });
 
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      catalogAssetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [catalogAssetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId: catalogAssetId },
     });
@@ -723,9 +728,10 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result, { assetId });
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      assetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [assetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
     });
@@ -758,9 +764,10 @@ describe('useRampsNavigation goToBuy', () => {
     });
 
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      catalogAssetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [catalogAssetId],
+    );
   });
 
   it('intent with assetId and incomplete settled catalog → fails open to build quote', async () => {
@@ -782,9 +789,10 @@ describe('useRampsNavigation goToBuy', () => {
     const opened = await goToBuy(result, { assetId });
 
     expect(opened).toBe('native');
-    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
-      assetId,
-    ]);
+    expect(mockBackground).toHaveBeenCalledWith(
+      'RampsController:setSelectedToken',
+      [assetId],
+    );
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
       state: { assetId },
     });

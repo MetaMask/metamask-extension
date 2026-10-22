@@ -3,7 +3,7 @@
 exports[`ramps-controller actions matches snapshot for background action calls 1`] = `
 [
   [
-    "setRampsUserRegion",
+    "RampsController:setUserRegion",
     [
       "us-ca",
       {
@@ -12,13 +12,13 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "setRampsSelectedToken",
+    "RampsController:setSelectedToken",
     [
       "eip155:1/erc20:0x0",
     ],
   ],
   [
-    "setRampsSelectedProvider",
+    "RampsController:setSelectedProvider",
     [
       "transak",
       {
@@ -27,33 +27,33 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "setRampsSelectedPaymentMethod",
+    "RampsController:setSelectedPaymentMethod",
     [
       "credit_debit_card",
     ],
   ],
   [
-    "getRampsTokens",
+    "RampsController:getTokens",
     [
       "us-ca",
       "buy",
     ],
   ],
   [
-    "getRampsTokens",
+    "RampsController:getTokens",
     [
       "us-ca",
       "sell",
     ],
   ],
   [
-    "getRampsProviders",
+    "RampsController:getProviders",
     [
       "us-ca",
     ],
   ],
   [
-    "getRampsPaymentMethods",
+    "RampsController:getPaymentMethods",
     [
       "us-ca",
       {
@@ -64,7 +64,7 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "getRampsQuotes",
+    "RampsController:getQuotes",
     [
       {
         "amount": 100,
@@ -74,7 +74,7 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "getRampsBuyWidgetData",
+    "RampsController:getBuyWidgetData",
     [
       {
         "id": "quote-1",
@@ -82,7 +82,7 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "addRampsPrecreatedOrder",
+    "RampsController:addPrecreatedOrder",
     [
       {
         "chainId": "eip155:1",
@@ -93,7 +93,7 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "addRampsOrder",
+    "RampsController:addOrder",
     [
       {
         "id": "order-1",
@@ -102,13 +102,13 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "removeRampsOrder",
+    "RampsController:removeOrder",
     [
       "order-1",
     ],
   ],
   [
-    "refreshRampsOrder",
+    "RampsController:getOrder",
     [
       "transak",
       "order-1",
@@ -116,7 +116,7 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "getRampsOrderFromCallback",
+    "RampsController:getOrderFromCallback",
     [
       "transak",
       "https://callback",
@@ -124,7 +124,7 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
-    "syncRampsOrdersWithUserStorage",
+    "RampsController:syncOrdersWithUserStorage",
   ],
 ]
 `;
