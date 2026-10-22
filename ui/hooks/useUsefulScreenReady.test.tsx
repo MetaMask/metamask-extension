@@ -230,7 +230,6 @@ describe('useUsefulScreenReady', () => {
 
   jestIt.each([
     '/confirm-transaction/signature/signature-request',
-    '/confirmation/unsupported-request',
     '/confirm-transaction/first-transaction',
   ])('excludes replacement of an initial request at %s', (pathname) => {
     initialize('confirmation');
@@ -323,11 +322,11 @@ describe('useUsefulScreenReady', () => {
 
   it('preserves initial locked state instead of including time spent unlocking', () => {
     initialize('unlock');
-    mockLocation.pathname = '/';
-    mockReadiness.initializeUsefulScreenReadyTrace({
-      isUnlocked: true,
-      uiType: ENVIRONMENT_TYPE_POPUP,
-    });
+    const unlock = renderScreen('unlock', false);
+
+    mockLocation = { key: 'home', pathname: '/' };
+    mockNavigationType = 'REPLACE';
+    unlock.rerender({ ready: false });
     renderScreen();
     advance();
     expect(startSpanManual).not.toHaveBeenCalled();

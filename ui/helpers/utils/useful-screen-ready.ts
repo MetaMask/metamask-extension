@@ -58,14 +58,10 @@ function onVisibilityChange(): void {
 
 /** Track document visibility before waiting for background initialization. */
 export function trackUsefulScreenVisibility(): void {
-  if (finished) {
-    return;
-  }
   document.addEventListener('visibilitychange', onVisibilityChange);
   window.addEventListener('pagehide', discardUsefulScreenReadyTrace);
   // The bundle itself may have loaded after the document became visible.
-  const visibilityEntries =
-    performance.getEntriesByType?.('visibility-state') ?? [];
+  const visibilityEntries = performance.getEntriesByType('visibility-state');
   if (visibilityEntries.some((entry) => entry.name === 'hidden')) {
     discardUsefulScreenReadyTrace();
   }
@@ -79,14 +75,10 @@ export function trackUsefulScreenVisibility(): void {
 export function initializeUsefulScreenReadyTrace(
   options: StartupOptions,
 ): void {
-  if (startup) {
-    return;
-  }
   startup = {
     ...options,
     backgroundInitializedAt: getBackgroundInitializedAt(),
   };
-  onVisibilityChange();
 }
 
 /**
@@ -134,8 +126,7 @@ export function reportUsefulScreenReady(
     finished ||
     route?.key !== key ||
     route.screen !== screen ||
-    (screen === 'unlock' ? startup.isUnlocked : !startup.isUnlocked) ||
-    document.visibilityState !== 'visible'
+    (screen === 'unlock' ? startup.isUnlocked : !startup.isUnlocked)
   ) {
     return;
   }

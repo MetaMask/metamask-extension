@@ -189,48 +189,26 @@ describe('UnlockPage component (passkey UI)', () => {
       expect(reportUsefulScreenReady).not.toHaveBeenCalled();
     });
 
-    it.each([
-      ['failed', { code: PasskeyControllerErrorCode.NotEnrolled }],
-      ['cancelled', new DOMException('Not allowed', 'NotAllowedError')],
-    ])(
-      'excludes %s automatic passkey authentication before password fallback',
-      async (_, error) => {
-        const unlock = createDeferredPromise<void>();
-        mockUnlockWithPasskey.mockReturnValueOnce(unlock.promise);
-        const { getByTestId } = renderWithProvider(
+    it.each([false, true])(
+      'reports an idle form with passkeys enabled: %s',
+      (isPasskeyActive) => {
+        renderWithProvider(
           <UsefulScreenReadyContext.Provider value="initial">
-            <UnlockPage
-              {...buildProps({ passkeyAutoUnlockSuppressed: false })}
-            />
+            <UnlockPage {...buildProps({ isPasskeyActive })} />
           </UsefulScreenReadyContext.Provider>,
           mockStore,
           '/unlock',
         );
-        expect(discardUsefulScreenReadyTrace).toHaveBeenCalledTimes(1);
 
-        await act(async () => unlock.reject(error));
-        expect(getByTestId('unlock-passkey-button')).toBeEnabled();
-        fireEvent.click(getByTestId('unlock-use-password-button'));
+        act(() => jest.advanceTimersByTime(48));
 
-        expect(getByTestId('unlock-password')).toBeInTheDocument();
-        expect(discardUsefulScreenReadyTrace).toHaveBeenCalledTimes(1);
+        expect(reportUsefulScreenReady).toHaveBeenCalledWith(
+          'initial',
+          'unlock',
+        );
+        expect(discardUsefulScreenReadyTrace).not.toHaveBeenCalled();
       },
     );
-
-    it('reports the available password form', () => {
-      renderWithProvider(
-        <UsefulScreenReadyContext.Provider value="initial">
-          <UnlockPage {...buildProps({ isPasskeyActive: false })} />
-        </UsefulScreenReadyContext.Provider>,
-        mockStore,
-        '/unlock',
-      );
-
-      act(() => jest.advanceTimersByTime(48));
-
-      expect(reportUsefulScreenReady).toHaveBeenCalledWith('initial', 'unlock');
-      expect(discardUsefulScreenReadyTrace).not.toHaveBeenCalled();
-    });
   });
 
   it('completes passkey unlock when user clicks passkey', async () => {

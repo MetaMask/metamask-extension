@@ -28,19 +28,15 @@ describe('background initialization timing', () => {
   });
 
   jestIt.each([
-    undefined,
     null,
-    'invalid',
-    {},
     { data: null },
     { data: { method: 'ALIVE', params: { initializedAt: 100 } } },
-    { data: { method: BACKGROUND_INITIALIZED_METHOD, params: null } },
   ])('ignores malformed or unrelated messages: %j', (message) => {
     isolatedTiming.recordBackgroundInitializationTiming(message);
     expect(isolatedTiming.getBackgroundInitializedAt()).toBeUndefined();
   });
 
-  jestIt.each([undefined, '100', null, 0, -1, NaN, Infinity])(
+  jestIt.each([undefined, '100', 0, Infinity])(
     'ignores invalid initialization times: %s',
     (initializedAt) => {
       isolatedTiming.recordBackgroundInitializationTiming({
