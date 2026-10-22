@@ -4651,7 +4651,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Continue to make sure:"
+    "message": "To continue make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Your $1 device is unlocked",
