@@ -148,29 +148,33 @@ describe('getMfaMoneyAccountEncryptionKey', () => {
       ENTROPY_SOURCE,
     );
 
-    const encryptionKey = getMfaMoneyAccountEncryptionKey(privateKey);
+    const encryptionKey = await getMfaMoneyAccountEncryptionKey(privateKey);
 
     expect(encryptionKey).toHaveLength(32);
     expect(bytesToHex(encryptionKey)).toBe(EXPECTED_MFA_ENCRYPTION_KEY);
   });
 
-  it('accepts a 0x-prefixed private key', () => {
+  it('accepts a 0x-prefixed private key', async () => {
     expect(
       bytesToHex(
-        getMfaMoneyAccountEncryptionKey(`0x${EXPECTED_MONEY_PRIVATE_KEY}`),
+        await getMfaMoneyAccountEncryptionKey(
+          `0x${EXPECTED_MONEY_PRIVATE_KEY}`,
+        ),
       ),
     ).toBe(EXPECTED_MFA_ENCRYPTION_KEY);
   });
 
-  it('derives a different key for a different private key', () => {
-    const encryptionKey = getMfaMoneyAccountEncryptionKey('11'.repeat(32));
+  it('derives a different key for a different private key', async () => {
+    const encryptionKey = await getMfaMoneyAccountEncryptionKey(
+      '11'.repeat(32),
+    );
 
     expect(bytesToHex(encryptionKey)).not.toBe(EXPECTED_MFA_ENCRYPTION_KEY);
     expect(encryptionKey).toHaveLength(32);
   });
 
-  it('throws when the private key is not 32 bytes', () => {
-    expect(() => getMfaMoneyAccountEncryptionKey('abcd')).toThrow(
+  it('throws when the private key is not 32 bytes', async () => {
+    await expect(getMfaMoneyAccountEncryptionKey('abcd')).rejects.toThrow(
       'Money account private key must be a 32-byte hex string',
     );
   });

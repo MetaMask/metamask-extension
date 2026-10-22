@@ -1655,10 +1655,17 @@
         "@metamask/core-backend>uuid": true
       }
     },
+    "@metamask/cryptography": {
+      "globals": {
+        "crypto.subtle.deriveBits": true,
+        "crypto.subtle.importKey": true
+      }
+    },
     "@metamask/snaps-utils>@metamask/cryptography": {
       "globals": {
         "crypto.getRandomValues": true,
         "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveBits": true,
         "crypto.subtle.digest": true,
         "crypto.subtle.encrypt": true,
         "crypto.subtle.importKey": true

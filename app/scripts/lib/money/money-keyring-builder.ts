@@ -1,3 +1,4 @@
+import { hkdfSha256 } from '@metamask/cryptography/hkdf';
 import { HdKeyring } from '@metamask/eth-hd-keyring';
 import {
   MONEY_DERIVATION_PATH,
@@ -12,8 +13,6 @@ import {
 import { encodeMnemonic } from '@metamask/keyring-sdk';
 import type { Messenger } from '@metamask/messenger';
 import { add0x, hexToBytes } from '@metamask/utils';
-import { hkdf } from '@noble/hashes/hkdf';
-import { sha256 } from '@noble/hashes/sha2';
 
 export type MoneyKeyringBuilderMessenger = Messenger<
   'MoneyKeyringBuilder',
@@ -25,8 +24,15 @@ export type MoneyKeyringBuilderMessenger = Messenger<
  * mixed into the output, so the AES key stays distinct from the account key
  * it is derived from.
  */
-const MFA_MONEY_ACCOUNT_ENCRYPTION_KEY_INFO =
-  'metamask:money-account:mfa:encryption-key:v1';
+const MFA_MONEY_ACCOUNT_ENCRYPTION_KEY_INFO = new TextEncoder().encode(
+  'metamask:money-account:mfa:encryption-key:v1',
+);
+
+/**
+ * Salt for the MFA encryption-key HKDF. 32 zero bytes is the SHA-256 default
+ * salt from RFC 5869.
+ */
+const MFA_MONEY_ACCOUNT_ENCRYPTION_KEY_SALT = new Uint8Array(32);
 
 /** AES-256 keys are 32 bytes. */
 const AES_256_KEY_LENGTH = 32;
@@ -122,19 +128,18 @@ export async function getMoneyAccountPrivateKey(
  * `0x` prefix is accepted.
  * @returns A 32-byte AES-256 key.
  */
-export function getMfaMoneyAccountEncryptionKey(
+export async function getMfaMoneyAccountEncryptionKey(
   moneyAccountPrivateKey: string,
-): Uint8Array {
+): Promise<Uint8Array> {
   const privateKeyBytes = hexToBytes(add0x(moneyAccountPrivateKey));
 
   if (privateKeyBytes.length !== AES_256_KEY_LENGTH) {
     throw new Error('Money account private key must be a 32-byte hex string');
   }
 
-  return hkdf(
-    sha256,
+  return hkdfSha256(
     privateKeyBytes,
-    undefined,
+    MFA_MONEY_ACCOUNT_ENCRYPTION_KEY_SALT,
     MFA_MONEY_ACCOUNT_ENCRYPTION_KEY_INFO,
     AES_256_KEY_LENGTH,
   );

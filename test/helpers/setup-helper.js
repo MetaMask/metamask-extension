@@ -165,6 +165,13 @@ if (!window.crypto.getRandomValues) {
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
 }
 
+// JSDOM's `crypto` has no WebCrypto `subtle`. `@metamask/cryptography` HKDF
+// derives keys through `crypto.subtle`.
+if (!window.crypto.subtle) {
+  // eslint-disable-next-line n/global-require
+  window.crypto.subtle = require('crypto').webcrypto.subtle;
+}
+
 // Ensure `crypto.randomUUID` exists in the test environment (some Jest
 // environments don't expose the webcrypto `crypto.randomUUID` even on Node 18+).
 if (typeof window.crypto.randomUUID !== 'function') {

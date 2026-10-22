@@ -427,6 +427,7 @@
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^12.3.0",
     "@metamask/core-backend": "^12.3.0",
+    "@metamask/cryptography": "^1.1.2",
     "@metamask/delegation-controller": "^3.0.2",
     "@metamask/delegation-core": "^2.0.0",
     "@metamask/delegation-deployments": "^2.1.0",
