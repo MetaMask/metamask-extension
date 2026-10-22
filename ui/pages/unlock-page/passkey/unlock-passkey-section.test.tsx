@@ -7,6 +7,7 @@ import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { createDeferredPromise } from '@metamask/utils';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
@@ -373,7 +374,7 @@ describe('UnlockPasskeySection', () => {
       act(() => jest.advanceTimersByTime(48));
       expect(measurement.reportReady).not.toHaveBeenCalled();
 
-      fireEvent.click(getByRole('button', { name: 'Close' }));
+      fireEvent.click(getByRole('button', { name: messages.close.message }));
       act(() => jest.advanceTimersByTime(48));
       expect(measurement.reportReady).toHaveBeenCalledTimes(1);
     });
