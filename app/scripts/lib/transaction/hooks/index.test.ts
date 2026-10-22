@@ -215,6 +215,27 @@ describe('Transaction Controller Hooks', () => {
       expect(result).toStrictEqual({ transactionHash: '0xpayHash' });
     });
 
+    it('returns pay hook result without falling back when the pay hook handled publication externally', async () => {
+      payHookMock.mockResolvedValue({
+        externallyHandled: true,
+        outcome: 'submitted',
+      });
+
+      const request = buildMockRequest();
+      const { publish } = getTransactionControllerHooks(request);
+
+      const result = await publish?.(mockTransactionMeta);
+
+      expect(result).toStrictEqual({
+        externallyHandled: true,
+        outcome: 'submitted',
+      });
+      expect(jest.mocked(Delegation7702PublishHook)).not.toHaveBeenCalled();
+      expect(
+        smartTransactionsModule.submitSmartTransactionHook,
+      ).not.toHaveBeenCalled();
+    });
+
     it('skips Delegation7702PublishHook for hardware wallet accounts', async () => {
       const messenger = buildMockMessenger();
       (messenger.call as jest.Mock).mockImplementation((action: string) => {

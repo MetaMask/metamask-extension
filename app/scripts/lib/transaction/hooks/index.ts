@@ -146,7 +146,9 @@ function publishHook({
       messenger: messenger as unknown as TransactionPayControllerMessenger,
     }).getHook()(transactionMeta, signedTx as Hex);
 
-    if (payResult?.transactionHash) {
+    // A non-EVM Pay source (Solana) is signed and broadcast through its Snap
+    // and has no EVM hash; it must never fall through to EVM publication.
+    if (payResult?.transactionHash || payResult?.externallyHandled) {
       return payResult;
     }
 
