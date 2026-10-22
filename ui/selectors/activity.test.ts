@@ -489,12 +489,15 @@ describe('selectLocalTransactions', () => {
     ).toBe(false);
   });
 
-  describe('when a hardware account funds the deposit', () => {
+  describe('when a funding account is known', () => {
     const LEDGER_ACCOUNT_ID = '15e69915-2a1a-4019-93b3-916e11fd432f';
     const LEDGER_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
     const LEDGER_GROUP_ID = `keyring:Ledger Hardware/${LEDGER_ADDRESS}`;
 
-    function buildFundedDepositState() {
+    function buildFundedDepositState(
+      payer = '0xC42EDFCC21ED14DDA456AA0756C153F7985D8813',
+      overrides: Partial<TransactionMeta> = {},
+    ) {
       const fundingTx = {
         id: 'funding-tx',
         chainId: '0x1',
@@ -502,11 +505,12 @@ describe('selectLocalTransactions', () => {
         status: EvmTransactionStatus.confirmed,
         time: 1,
         type: EvmTransactionType.simpleSend,
-        txParams: { from: LEDGER_ADDRESS, nonce: '0x5', value: '0x0' },
+        txParams: { from: payer, nonce: '0x5', value: '0x0' },
       } as TransactionMeta;
       const depositTx = buildMoneyAccountTransaction({
         time: 2,
         requiredTransactionIds: [fundingTx.id],
+        ...overrides,
       });
       const state = buildStateWithMoneyAccount(depositTx);
       state.metamask.transactions = [fundingTx, depositTx];
@@ -556,6 +560,43 @@ describe('selectLocalTransactions', () => {
 
       expect(getGroupIds(state)).toStrictEqual([]);
       expect(getGroupIds(ledgerState)).toStrictEqual(['money-account-tx']);
+    });
+
+    it('keeps the SRP rule when the payer is in the money account SRP', () => {
+      const secondSrpAccountAddress =
+        '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+      const state = buildFundedDepositState(secondSrpAccountAddress);
+      const ledgerState = structuredClone(state);
+      selectLedger(ledgerState);
+
+      expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+      expect(getGroupIds(ledgerState)).toStrictEqual([]);
+    });
+
+    it('keeps the SRP rule when the payer is no longer in the wallet', () => {
+      const state = buildFundedDepositState(
+        '0x2222222222222222222222222222222222222222',
+      );
+
+      expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+    });
+
+    it('keeps withdrawals in the money account SRP account activity', () => {
+      const state = buildFundedDepositState(MONEY_ACCOUNT_ADDRESS, {
+        nestedTransactions: [{ type: EvmTransactionType.moneyAccountWithdraw }],
+      });
+      (
+        state.metamask as unknown as {
+          transactionData: Record<string, { accountOverride: string }>;
+        }
+      ).transactionData = {
+        'money-account-tx': { accountOverride: LEDGER_ADDRESS },
+      };
+      const ledgerState = structuredClone(state);
+      selectLedger(ledgerState);
+
+      expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+      expect(getGroupIds(ledgerState)).toStrictEqual([]);
     });
   });
 });

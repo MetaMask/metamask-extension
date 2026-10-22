@@ -42,7 +42,7 @@ import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
 } from '../ducks/bridge-status/selectors';
-import { getInternalAccountsObject } from './accounts';
+import { getInternalAccounts, getInternalAccountsObject } from './accounts';
 import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getSelectedAccountGroup,
@@ -181,6 +181,7 @@ export const selectLocalTransactions = createSelector(
   selectPrimaryMoneyAccount,
   getSelectedAccountGroup,
   selectTransactionPayData,
+  getInternalAccounts,
   (
     transactions,
     evmAddress,
@@ -190,6 +191,7 @@ export const selectLocalTransactions = createSelector(
     primaryMoneyAccount,
     selectedAccountGroup,
     transactionPayData,
+    internalAccounts,
   ): TransactionGroup[] => {
     if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
@@ -219,6 +221,16 @@ export const selectLocalTransactions = createSelector(
       (transactions ?? []).map((tx) => [tx.id, tx]),
     );
 
+    // Payers from the money account's own SRP keep the wallet-wide rule.
+    const isPayerOutsideMoneyAccountWallet = (payer: string) =>
+      payer !== moneyAccountAddress &&
+      internalAccounts.some(
+        (account) =>
+          account.address.toLowerCase() === payer &&
+          account.options?.entropySource !==
+            primaryMoneyAccount?.options?.entropy?.id,
+      );
+
     const isSelectedMoneyAccountTransaction = (tx: TransactionMeta) => {
       if (!isMoneyAccountTransaction(tx, moneyAccountAddress)) {
         return false;
@@ -228,7 +240,7 @@ export const selectLocalTransactions = createSelector(
         transactionsById,
         transactionPayData,
       );
-      if (payer && payer !== moneyAccountAddress) {
+      if (payer && isPayerOutsideMoneyAccountWallet(payer)) {
         return payer === selectedAddress;
       }
       return includeMoneyAccountTransactions;
