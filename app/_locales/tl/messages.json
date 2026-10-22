@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "Bumalik sa ligtas"
   },
-  "backToWallet": {
-    "message": "Bumalik sa wallet"
-  },
   "backUpIncomplete": {
     "message": "Hindi nakumpleto ang pag-back up"
   },
@@ -5473,20 +5470,8 @@
   "mfaOtpResend": {
     "message": "Ipadala muli ang code"
   },
-  "mfaOtpRetry": {
-    "message": "Subukang muli"
-  },
-  "mfaOtpVerify": {
-    "message": "I-verify"
-  },
   "mfaPickerOr": {
     "message": "o"
-  },
-  "mfaSettingsAdd": {
-    "message": "Idagdag"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "Magpatuloy"
   },
   "minimumReceivedExplanation": {
     "message": "Ang pinakamababang halaga na iyong matatanggap kapag nagbago ang presyo habang pinoproseso ang iyong transaksyon, batay sa setting ng iyong slippage. Mula sa pagtatantiya ang mga liquidity provider, kaya psibleng mag-iba ang huling halaga."

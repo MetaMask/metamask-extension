@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "Güvenliğe geri dön"
   },
-  "backToWallet": {
-    "message": "Cüzdana geri dön"
-  },
   "backUpIncomplete": {
     "message": "Yedekleme tamamlanmadı"
   },
@@ -5477,20 +5474,8 @@
   "mfaOtpResend": {
     "message": "Kodu tekrar gönder"
   },
-  "mfaOtpRetry": {
-    "message": "Tekrar deneyin"
-  },
-  "mfaOtpVerify": {
-    "message": "Doğrula"
-  },
   "mfaPickerOr": {
     "message": "veya"
-  },
-  "mfaSettingsAdd": {
-    "message": "Ekle"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "Devam Et"
   },
   "minimumReceivedExplanation": {
     "message": "Kayma ayarlarınıza göre işleminiz gerçekleştirilirken fiyat değişirse alacağınız minimum tutar. Bu tahmin likidite sağlayıcılarından alınır, yani nihai tutar değişiklik gösterebilir."

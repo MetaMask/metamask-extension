@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "안전성으로 돌아가기"
   },
-  "backToWallet": {
-    "message": "지갑으로 돌아가기"
-  },
   "backUpIncomplete": {
     "message": "백업 미완료"
   },
@@ -5477,20 +5474,8 @@
   "mfaOtpResend": {
     "message": "코드 다시 보내기"
   },
-  "mfaOtpRetry": {
-    "message": "다시 시도"
-  },
-  "mfaOtpVerify": {
-    "message": "인증"
-  },
   "mfaPickerOr": {
     "message": "또는"
-  },
-  "mfaSettingsAdd": {
-    "message": "추가"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "계속"
   },
   "minimumReceivedExplanation": {
     "message": "슬리피지 설정에 따라 거래가 처리되는 동안 가격이 변동하는 경우 받을 수 있는 최소 금액입니다. 이 예상치는 유동성 공급자로부터 제공되며 최종 금액은 다를 수 있습니다."

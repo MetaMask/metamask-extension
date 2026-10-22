@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "Volver a Seguridad"
   },
-  "backToWallet": {
-    "message": "Volver a billetera"
-  },
   "backUpIncomplete": {
     "message": "Copia de seguridad incompleta"
   },
@@ -5477,20 +5474,8 @@
   "mfaOtpResend": {
     "message": "Reenviar código"
   },
-  "mfaOtpRetry": {
-    "message": "Inténtalo de nuevo"
-  },
-  "mfaOtpVerify": {
-    "message": "Verificar"
-  },
   "mfaPickerOr": {
     "message": "o"
-  },
-  "mfaSettingsAdd": {
-    "message": "Añadir"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "Continuar"
   },
   "minimumReceivedExplanation": {
     "message": "El mínimo que recibirás si el precio cambia durante el procesamiento de tu transacción, según tu configuración de deslizamiento. La estimación proviene de los proveedores de liquidez, por lo que el monto final puede variar."

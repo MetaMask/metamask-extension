@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "Quay lại mục an toàn"
   },
-  "backToWallet": {
-    "message": "Quay lại ví"
-  },
   "backUpIncomplete": {
     "message": "Sao lưu chưa hoàn tất"
   },
@@ -5477,20 +5474,8 @@
   "mfaOtpResend": {
     "message": "Gửi lại mã"
   },
-  "mfaOtpRetry": {
-    "message": "Thử lại"
-  },
-  "mfaOtpVerify": {
-    "message": "Xác minh"
-  },
   "mfaPickerOr": {
     "message": "hoặc"
-  },
-  "mfaSettingsAdd": {
-    "message": "Thêm"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "Tiếp tục"
   },
   "minimumReceivedExplanation": {
     "message": "Số lượng tối thiểu bạn sẽ nhận được nếu giá thay đổi trong quá trình giao dịch, dựa trên chế độ cài đặt trượt giá của bạn. Ước tính này đến từ các nhà cung cấp thanh khoản, nên số lượng cuối cùng có thể khác."

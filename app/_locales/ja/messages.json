@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "安全な場所に戻る"
   },
-  "backToWallet": {
-    "message": "ウォレットに戻る"
-  },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
   },
@@ -5477,20 +5474,8 @@
   "mfaOtpResend": {
     "message": "コードを再送する"
   },
-  "mfaOtpRetry": {
-    "message": "もう一度お試しください"
-  },
-  "mfaOtpVerify": {
-    "message": "検証"
-  },
   "mfaPickerOr": {
     "message": "または"
-  },
-  "mfaSettingsAdd": {
-    "message": "追加"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "続行"
   },
   "minimumReceivedExplanation": {
     "message": "トランザクションの処理中に価格が変動した場合に、お客様のスリッページ設定に基づいて受け取る最低額です。これは流動性プロバイダーから提供される見積もりであり、最終的な金額は異なる場合があります。"

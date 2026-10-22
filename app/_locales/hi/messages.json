@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "सुरक्षा पर वापस जाएं"
   },
-  "backToWallet": {
-    "message": "वॉलेट पर वापस जाएँ"
-  },
   "backUpIncomplete": {
     "message": "बैकअप अधूरा है"
   },
@@ -5470,20 +5467,8 @@
   "mfaOtpResend": {
     "message": "कोड फिर से भेजें"
   },
-  "mfaOtpRetry": {
-    "message": "फिर से प्रयास करें"
-  },
-  "mfaOtpVerify": {
-    "message": "सत्यापित करें"
-  },
   "mfaPickerOr": {
     "message": "या"
-  },
-  "mfaSettingsAdd": {
-    "message": "जोड़ें"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "जारी रखें"
   },
   "minimumReceivedExplanation": {
     "message": "यदि आपके ट्रांसेक्शन के दौरान प्राइस बदलती है, तो न्यूनतम राशि जो आपको मिलेगी, वह आपके स्लिपेज (slippage) सेटिंग पर आधारित होगी। यह अनुमान लिक्विडिटी प्रोवाइडर्स से लिया गया है, इसलिए अंतिम राशि अलग हो सकती है।"

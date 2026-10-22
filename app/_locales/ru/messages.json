@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "Назад в безопасное место"
   },
-  "backToWallet": {
-    "message": "Вернуться в кошелек"
-  },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
   },
@@ -5473,20 +5470,8 @@
   "mfaOtpResend": {
     "message": "Повторно отправить код"
   },
-  "mfaOtpRetry": {
-    "message": "Повторить попытку"
-  },
-  "mfaOtpVerify": {
-    "message": "Проверить"
-  },
   "mfaPickerOr": {
     "message": "или"
-  },
-  "mfaSettingsAdd": {
-    "message": "Добавить"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "Продолжить"
   },
   "minimumReceivedExplanation": {
     "message": "Минимум, которые вы получите, если цена изменится во время обработки вашей транзакции, рассчитывается на основе настроек проскальзывания. Оценка предоставляется поставщиками ликвидности, поэтому окончательная сумма может отличаться."

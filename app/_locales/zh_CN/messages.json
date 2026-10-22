@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "返回以确保安全"
   },
-  "backToWallet": {
-    "message": "返回钱包"
-  },
   "backUpIncomplete": {
     "message": "备份未完成"
   },
@@ -5473,20 +5470,8 @@
   "mfaOtpResend": {
     "message": "重新发送验证码"
   },
-  "mfaOtpRetry": {
-    "message": "请重试"
-  },
-  "mfaOtpVerify": {
-    "message": "验证"
-  },
   "mfaPickerOr": {
     "message": "或"
-  },
-  "mfaSettingsAdd": {
-    "message": "添加"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "继续"
   },
   "minimumReceivedExplanation": {
     "message": "若交易处理期间价格发生波动，根据您设置的滑点容差范围，此为您至少可获得的代币数量。该估算值由流动性提供商提供，因此实际兑换数量可能有所差异。"

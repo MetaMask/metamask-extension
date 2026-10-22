@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "Kembali ke keamanan"
   },
-  "backToWallet": {
-    "message": "Kembali ke dompet"
-  },
   "backUpIncomplete": {
     "message": "Pencadangan tidak selesai"
   },
@@ -5477,20 +5474,8 @@
   "mfaOtpResend": {
     "message": "Kirim ulang kode"
   },
-  "mfaOtpRetry": {
-    "message": "Coba lagi"
-  },
-  "mfaOtpVerify": {
-    "message": "Verifikasikan"
-  },
   "mfaPickerOr": {
     "message": "atau"
-  },
-  "mfaSettingsAdd": {
-    "message": "Tambah"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "Lanjutkan"
   },
   "minimumReceivedExplanation": {
     "message": "Nilai minimum yang akan Anda dapatkan jika harga berubah selama proses transaksi, berdasarkan pengaturan selip. Estimasi ini berasal dari penyedia likuiditas, sehingga jumlah akhirnya dapat berbeda."

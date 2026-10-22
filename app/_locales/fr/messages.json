@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "Retour à la sécurité"
   },
-  "backToWallet": {
-    "message": "Retour au portefeuille"
-  },
   "backUpIncomplete": {
     "message": "Sauvegarde incomplète"
   },
@@ -5473,20 +5470,8 @@
   "mfaOtpResend": {
     "message": "Renvoyer le code"
   },
-  "mfaOtpRetry": {
-    "message": "Réessayer"
-  },
-  "mfaOtpVerify": {
-    "message": "Vérifier"
-  },
   "mfaPickerOr": {
     "message": "ou"
-  },
-  "mfaSettingsAdd": {
-    "message": "Ajouter"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "Continuer"
   },
   "minimumReceivedExplanation": {
     "message": "Le montant minimum que vous obtiendrez si le prix change pendant le traitement de votre transaction, en fonction de votre paramètre de slippage. L’estimation provient des fournisseurs de liquidité, le montant final peut donc différer."

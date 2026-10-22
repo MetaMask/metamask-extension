@@ -1845,9 +1845,6 @@
   "backToSafety": {
     "message": "Πίσω στην ασφάλεια"
   },
-  "backToWallet": {
-    "message": "Επιστροφή στο πορτοφόλι"
-  },
   "backUpIncomplete": {
     "message": "Η δημιουργία αντιγράφου ασφαλείας δεν ολοκληρώθηκε"
   },
@@ -5473,20 +5470,8 @@
   "mfaOtpResend": {
     "message": "Επαναποστολή κωδικού"
   },
-  "mfaOtpRetry": {
-    "message": "Προσπαθήστε ξανά"
-  },
-  "mfaOtpVerify": {
-    "message": "Επαλήθευση"
-  },
   "mfaPickerOr": {
     "message": "ή"
-  },
-  "mfaSettingsAdd": {
-    "message": "Προσθήκη"
-  },
-  "mfaTotpSetupContinue": {
-    "message": "Συνεχίστε"
   },
   "minimumReceivedExplanation": {
     "message": "Το ελάχιστο ποσό που θα λάβετε, αν αλλάξει η τιμή κατά τη διάρκεια της επεξεργασίας της συναλλαγής σας, με βάση τη ρύθμιση απόκλισης. Η εκτίμηση προέρχεται από τους παρόχους ρευστότητας, επομένως το τελικό ποσό ενδέχεται να διαφέρει."
