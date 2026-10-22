@@ -190,8 +190,6 @@
     "lint:styles:fix": "lavamoat/scripts.yarn.json",
     "yarn circular-deps:update": "lavamoat/scripts.yarn.json",
     "messenger-action-types:check": "lavamoat/scripts.spawns.json",
-    "legacy-background-api:check": "lavamoat/scripts.tsx-net.json",
-    "legacy-background-api:check// ^ problem with yargs in node26": "",
     "start*": "lavamoat/scripts.yarn.json",
     "foundryup": "lavamoat/scripts.foundry.json",
     "postinstall": "lavamoat/scripts.yarn.json",
