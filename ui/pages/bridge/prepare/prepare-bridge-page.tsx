@@ -13,10 +13,13 @@ import {
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-
+import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+  Box,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
 import { toast, ToastContent } from '#ui/components/ui/toast/toast';
-
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
@@ -52,12 +55,7 @@ import {
   getFromTokenBalance,
   getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
-import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  ButtonIcon,
-  IconName,
-} from '../../../components/component-library';
+import { ButtonIcon, IconName } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
@@ -466,8 +464,6 @@ const PrepareBridgePage = ({
 
   const handleBlockExplorerClick = (token: BridgeToken) => {
     toast.success(<ToastContent title={t('bridgeBlockExplorerLinkCopied')} />, {
-      id: 'bridge-block-explorer-copied',
-      duration: 2500,
       icon: (
         <AvatarFavicon
           name={token.symbol}
