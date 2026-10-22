@@ -666,35 +666,6 @@ export const routeConfig = [
             path: REWARDS_ROUTE,
             element: <RewardsPage />,
           },
-          {
-            element: <PerpsLayout />,
-            children: [
-              {
-                path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-                element: <PerpsMarketDetailPage />,
-              },
-              {
-                path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-                element: <PerpsOrderEntryPage />,
-              },
-              {
-                path: PERPS_ACTIVITY_ROUTE,
-                element: <PerpsActivityPage />,
-              },
-              {
-                path: PERPS_TRANSACTION_DETAILS_ROUTE,
-                element: <PerpsTransactionDetailsPage />,
-              },
-              {
-                path: PERPS_MARKET_LIST_ROUTE,
-                element: <MarketListView />,
-              },
-              {
-                path: PERPS_WITHDRAW_ROUTE,
-                element: <PerpsWithdrawPage />,
-              },
-            ],
-          },
         ],
       },
       {
@@ -715,6 +686,35 @@ export const routeConfig = [
               {
                 path: PERPS_HOME_PAGE_ROUTE,
                 element: <PerpsPage />,
+              },
+              {
+                element: <PerpsLayout />,
+                children: [
+                  {
+                    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+                    element: <PerpsMarketDetailPage />,
+                  },
+                  {
+                    path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+                    element: <PerpsOrderEntryPage />,
+                  },
+                  {
+                    path: PERPS_ACTIVITY_ROUTE,
+                    element: <PerpsActivityPage />,
+                  },
+                  {
+                    path: PERPS_TRANSACTION_DETAILS_ROUTE,
+                    element: <PerpsTransactionDetailsPage />,
+                  },
+                  {
+                    path: PERPS_MARKET_LIST_ROUTE,
+                    element: <MarketListView />,
+                  },
+                  {
+                    path: PERPS_WITHDRAW_ROUTE,
+                    element: <PerpsWithdrawPage />,
+                  },
+                ],
               },
               createRouteWithMessenger({
                 path: MONEY_HOME_ROUTE,
