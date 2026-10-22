@@ -6,6 +6,7 @@ import {
   CANCEL_ORDER_I18N_KEY_OVERRIDES,
   translatePerpsError,
   handlePerpsError,
+  isPerpsErrorCode,
 } from './translate-perps-error';
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -261,9 +262,9 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
     );
   });
 
-  it('maps PRICE_MOVED to perpsSlippageExceeded', () => {
+  it('maps PRICE_MOVED to perpsPriceMoved', () => {
     expect(ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.PRICE_MOVED]).toBe(
-      'perpsSlippageExceeded',
+      'perpsPriceMoved',
     );
   });
 
@@ -425,6 +426,56 @@ describe('translatePerpsError', () => {
     expect(translatePerpsError(error, mockT)).toBe('[perpsSlippageExceeded]');
   });
 
+  it('formats structured PRICE_MOVED details for localized copy', () => {
+    expect(
+      translatePerpsError(
+        {
+          error: 'Price moved too much',
+          errorCode: PERPS_ERROR_CODES.PRICE_MOVED,
+          errorDetails: {
+            code: PERPS_ERROR_CODES.PRICE_MOVED,
+            priceDeltaBps: 336,
+            maxSlippageBps: 300,
+            expectedPrice: 788.71,
+            currentPrice: 815.22,
+          },
+        },
+        tEn,
+      ),
+    ).toBe(
+      'The price moved 3.36%, exceeding your 3% slippage tolerance. Review the updated price and try again.',
+    );
+  });
+
+  it('formats IOC_CANCEL with the submitted slippage tolerance', () => {
+    expect(
+      translatePerpsError(
+        {
+          error: PERPS_ERROR_CODES.IOC_CANCEL,
+          errorCode: PERPS_ERROR_CODES.IOC_CANCEL,
+          maxSlippageBps: 500,
+        },
+        tEn,
+      ),
+    ).toBe(
+      "Your order couldn't fill within your 5% slippage tolerance. Try a limit order or adjust your slippage.",
+    );
+  });
+
+  it('uses non-numeric IOC_CANCEL copy when tolerance is unavailable', () => {
+    expect(translatePerpsError(PERPS_ERROR_CODES.IOC_CANCEL, tEn)).toBe(
+      "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage.",
+    );
+  });
+
+  it('maps insufficient liquidity to non-numeric IOC cancellation copy', () => {
+    expect(
+      translatePerpsError(new Error('Insufficient liquidity for trade'), tEn),
+    ).toBe(
+      "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage.",
+    );
+  });
+
   it('returns translated string for BATCH_CANCEL_FAILED', () => {
     const error = Object.assign(new Error('batch cancel failed'), {
       code: PERPS_ERROR_CODES.BATCH_CANCEL_FAILED,
@@ -491,5 +542,30 @@ describe('handlePerpsError', () => {
   it('returns translated message when pattern match succeeds', () => {
     const error = new Error('connection timed out waiting for server');
     expect(handlePerpsError(error, mockT)).toBe('[perpsConnectionTimeout]');
+  });
+});
+
+describe('isPerpsErrorCode', () => {
+  it('matches a structured error code', () => {
+    expect(
+      isPerpsErrorCode(
+        {
+          error: 'Price moved too much',
+          errorCode: PERPS_ERROR_CODES.PRICE_MOVED,
+        },
+        PERPS_ERROR_CODES.PRICE_MOVED,
+      ),
+    ).toBe(true);
+  });
+
+  it('matches an Error code property', () => {
+    expect(
+      isPerpsErrorCode(
+        Object.assign(new Error('rejected'), {
+          code: PERPS_ERROR_CODES.IOC_CANCEL,
+        }),
+        PERPS_ERROR_CODES.IOC_CANCEL,
+      ),
+    ).toBe(true);
   });
 });

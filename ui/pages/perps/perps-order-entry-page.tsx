@@ -35,6 +35,7 @@ import {
 import {
   ORDER_SLIPPAGE_CONFIG,
   PERPS_CONSTANTS,
+  PERPS_ERROR_CODES,
   PERFORMANCE_CONFIG,
   TRADING_DEFAULTS,
   type ClosePositionParams,
@@ -117,7 +118,11 @@ import {
   getTradeableBalanceRaw,
 } from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
-import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
+import {
+  isPerpsErrorCode,
+  translatePerpsError,
+  type PerpsErrorInput,
+} from '../../components/app/perps/utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
 import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-config';
@@ -222,11 +227,14 @@ export function shouldShowPerpsOrderSubmissionToasts(
 function createPerpsBackgroundError(
   result: PerpsBackgroundResult,
   fallbackMessage: string,
-): Error {
-  const error = new Error(result.error ?? fallbackMessage);
-  return result.errorCode
-    ? Object.assign(error, { code: result.errorCode })
-    : error;
+  maxSlippageBps?: number,
+): PerpsErrorInput {
+  return {
+    error: result.error ?? fallbackMessage,
+    errorCode: result.errorCode,
+    errorDetails: result.errorDetails,
+    maxSlippageBps,
+  };
 }
 
 /**
@@ -321,6 +329,7 @@ function buildClosePositionParams(
     symbol: formState.asset,
     orderType: 'market',
     currentPrice,
+    maxSlippageBps: ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps,
     ...(closePercent >= FULL_CLOSE_PERCENT ? {} : { size: closeSize }),
   };
 }
@@ -1601,16 +1610,17 @@ const PerpsOrderEntryPage = () => {
   }, [formatPercentWithMinThreshold, orderMode, position, t]);
 
   const getCloseFailureToastConfig = useCallback(
-    (translatedError?: string) => {
+    (translatedError?: string, shouldExplainFailure = false) => {
       const closePercent = orderFormState?.closePercent ?? FULL_CLOSE_PERCENT;
       const isPartialClose = closePercent < FULL_CLOSE_PERCENT;
 
       if (isPartialClose) {
         return {
           key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED,
-          // Match mobile toast copy for partial-close failures; detailed errors
-          // are shown separately in the page-level submit error.
-          description: t('perpsToastPositionStillActive'),
+          description:
+            shouldExplainFailure && translatedError
+              ? translatedError
+              : t('perpsToastPositionStillActive'),
         };
       }
 
@@ -1990,14 +2000,22 @@ const PerpsOrderEntryPage = () => {
       );
       const translatedError = translatePerpsError(
         error,
-        t as (key: string) => string,
+        t as (key: string, substitutions?: string[]) => string,
       );
       if (orderMode === 'close') {
+        const shouldExplainFailure =
+          orderFormState.type === 'market' &&
+          (isPerpsErrorCode(error, PERPS_ERROR_CODES.PRICE_MOVED) ||
+            isPerpsErrorCode(error, PERPS_ERROR_CODES.IOC_CANCEL) ||
+            isPerpsErrorCode(error, PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED));
         if (isPartialClose) {
           setSubmitError(translatedError ?? t('somethingWentWrong'));
         }
         replacePerpsToastByKey(
-          getCloseFailureToastConfig(translatedError ?? undefined),
+          getCloseFailureToastConfig(
+            translatedError ?? undefined,
+            shouldExplainFailure,
+          ),
         );
         return;
       }
@@ -2034,6 +2052,8 @@ const PerpsOrderEntryPage = () => {
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
           hlFeeRate: protocolFeeRate,
+          maxSlippageBps: closeParams.maxSlippageBps,
+          maxSlippageSource: PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
         });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
@@ -2041,7 +2061,11 @@ const PerpsOrderEntryPage = () => {
         );
         if (!result.success) {
           surfaceControllerFailure(
-            createPerpsBackgroundError(result, 'Failed to close position'),
+            createPerpsBackgroundError(
+              result,
+              'Failed to close position',
+              closeParams.maxSlippageBps,
+            ),
           );
           return;
         }
@@ -2088,6 +2112,16 @@ const PerpsOrderEntryPage = () => {
                   }
                 : undefined,
             ),
+            ...(orderFormState.type === 'market'
+              ? {
+                  maxSlippageBps: orderParams.maxSlippageBps,
+                  maxSlippageSource,
+                  estimatedSlippageBps:
+                    typeof estimatedSlippageBps === 'number'
+                      ? estimatedSlippageBps
+                      : undefined,
+                }
+              : {}),
           });
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
@@ -2102,7 +2136,11 @@ const PerpsOrderEntryPage = () => {
           );
           if (!result.success) {
             surfaceControllerFailure(
-              createPerpsBackgroundError(result, 'Failed to add to position'),
+              createPerpsBackgroundError(
+                result,
+                'Failed to add to position',
+                orderParams.maxSlippageBps,
+              ),
             );
             return;
           }
@@ -2193,6 +2231,16 @@ const PerpsOrderEntryPage = () => {
               }
             : undefined,
         ),
+        ...(orderFormState.type === 'market'
+          ? {
+              maxSlippageBps: orderParams.maxSlippageBps,
+              maxSlippageSource,
+              estimatedSlippageBps:
+                typeof estimatedSlippageBps === 'number'
+                  ? estimatedSlippageBps
+                  : undefined,
+            }
+          : {}),
       });
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
@@ -2227,7 +2275,11 @@ const PerpsOrderEntryPage = () => {
       );
       if (!result.success) {
         surfaceControllerFailure(
-          createPerpsBackgroundError(result, 'Failed to place order'),
+          createPerpsBackgroundError(
+            result,
+            'Failed to place order',
+            orderParams.maxSlippageBps,
+          ),
         );
         return;
       }
@@ -2290,7 +2342,7 @@ const PerpsOrderEntryPage = () => {
             tpslResult.error || 'Failed to attach TP/SL to position';
           const translatedTpslError = translatePerpsError(
             createPerpsBackgroundError(tpslResult, tpslMessage),
-            t as (key: string) => string,
+            t as (key: string, substitutions?: string[]) => string,
           );
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.UPDATE_FAILED,
@@ -2346,7 +2398,17 @@ const PerpsOrderEntryPage = () => {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: rawErrorMessage,
       });
-      surfaceControllerFailure(error);
+      const failure =
+        error instanceof Error ? error : new Error(rawErrorMessage);
+      if (orderFormState.type === 'market') {
+        Object.assign(failure, {
+          maxSlippageBps:
+            orderMode === 'close'
+              ? ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps
+              : maxSlippageBps,
+        });
+      }
+      surfaceControllerFailure(failure);
     } finally {
       setIsSubmitting(false);
     }

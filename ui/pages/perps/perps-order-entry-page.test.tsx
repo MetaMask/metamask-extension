@@ -3315,11 +3315,9 @@ describe('PerpsOrderEntryPage', () => {
       await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
         timeout: 2000,
       });
-      // These three moved here when the client trade event was removed: the
-      // controller's TrackingData has no slippage fields. Coverage is partial by
-      // construction — see the note in report.md. Exact values, not shapes: the
-      // mocks fix maxSlippageBps at 300 and estimatedSlippageBps at 50, so a
-      // regression in the bps->pct conversion or the source mapping fails here.
+      // Exact values, not shapes: the mocks fix maxSlippageBps at 300 and
+      // estimatedSlippageBps at 50, so a regression in the bps->pct conversion
+      // or the source mapping fails here.
       expect(consideredCalls()[0][0].properties).toEqual(
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: 3,
@@ -3713,6 +3711,9 @@ describe('PerpsOrderEntryPage', () => {
             orderType: 'market',
             trackingData: expect.objectContaining({
               hlFeeRate: 0.00045,
+              maxSlippageBps: 300,
+              maxSlippageSource: PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+              estimatedSlippageBps: 50,
               // No existing position -> create_position; the controller only
               // emits the tx `action` when trackingData.tradeAction is set.
               tradeAction: PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,
@@ -3833,6 +3834,13 @@ describe('PerpsOrderEntryPage', () => {
             success: false,
             error: 'Price moved too much',
             errorCode: 'PRICE_MOVED',
+            errorDetails: {
+              code: 'PRICE_MOVED',
+              priceDeltaBps: 336,
+              maxSlippageBps: 300,
+              expectedPrice: 788.71,
+              currentPrice: 815.22,
+            },
           });
         }
         return Promise.resolve({ success: true });
@@ -3849,7 +3857,34 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
         key: 'perpsToastOrderFailed',
-        description: tEn('perpsSlippageExceeded'),
+        description: tEn('perpsPriceMoved', ['3.36', '3']),
+      });
+    });
+
+    it('explains IOC cancellation using the submitted tolerance', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'IOC_CANCEL',
+            errorCode: 'IOC_CANCEL',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['3']),
       });
     });
 
