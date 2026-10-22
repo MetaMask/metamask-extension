@@ -341,24 +341,25 @@ export class MetaMaskExtensionLauncher {
 
     const extensionPrefix = `chrome-extension://${this.extensionId}/`;
 
-    // Give the extension a moment to potentially open its own page (dist builds)
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // Wait for the extension to open its own page (dist builds).
+    // Poll for up to 3 seconds to give the extension time to auto-open.
+    let page: Page | undefined;
+    const pollStart = Date.now();
+    const pollTimeout = 3000;
 
-    // Check if an extension page already exists (auto-opened by dist builds)
-    const pages = (this.context as BrowserContext).pages();
-    let page = pages.find((p) => p.url().startsWith(extensionPrefix));
-
-    if (page) {
-      // Extension already opened a page, reuse it
-      console.log('Reusing existing extension page:', page.url());
-      // Close any leftover blank pages to avoid multiple windows
-      for (const p of pages) {
-        if (p !== page && p.url() === 'about:blank') {
-          await p.close().catch(() => undefined);
-        }
+    while (Date.now() - pollStart < pollTimeout) {
+      const pages = (this.context as BrowserContext).pages();
+      page = pages.find((p) => p.url().startsWith(extensionPrefix));
+      if (page) {
+        console.log('Reusing existing extension page:', page.url());
+        break;
       }
-    } else {
-      // No extension page exists, create one
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+
+    // If no extension page appeared, create one
+    if (!page) {
+      const pages = (this.context as BrowserContext).pages();
       page = pages.find((p) => p.url() === 'about:blank') ?? pages[0];
       if (!page) {
         page = await this.context.newPage();
