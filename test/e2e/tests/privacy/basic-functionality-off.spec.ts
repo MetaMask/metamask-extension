@@ -45,7 +45,6 @@ describe('Onboarded wallet with basic functionality off', function () {
         await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         const tokensTab = new TokensTab(driver);
         await tokensTab.refreshErc20TokenList();
-        await driver.delay(veryLargeDelayMs);
 
         // Intended delay: we assert on the absence of requests, so there is no
         // condition to wait for. This covers at least one polling cycle.
@@ -84,7 +83,6 @@ describe('Onboarded wallet with basic functionality off', function () {
         await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         const tokensTab = new TokensTab(driver);
         await tokensTab.refreshErc20TokenList();
-        await driver.delay(veryLargeDelayMs);
 
         // Intended delay: we assert on the absence of requests, so there is no
         // condition to wait for. This covers at least one polling cycle.
