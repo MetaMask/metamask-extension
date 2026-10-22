@@ -5591,7 +5591,7 @@
     "message": "Your passkey couldn't be verified. Try again."
   },
   "mfaErrorInvalidTotpCode": {
-    "message": "That code isn’t right. Check that your device’s time is set automatically, then enter the current code."
+    "message": "This code isn’t correct. Try again"
   },
   "mfaErrorLimitReached": {
     "message": "You've reached the limit for this method."
