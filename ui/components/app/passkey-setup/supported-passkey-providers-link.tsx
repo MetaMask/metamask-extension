@@ -30,11 +30,6 @@ export function SupportedPasskeyProvidersLink() {
   );
 }
 
-type PasskeyEnrollmentErrorProps = {
-  message: string;
-  passkeyMethodLabel: string;
-};
-
 /**
  * Renders a passkey setup error. The PRF-not-supported message includes the
  * supported-providers link.
@@ -46,7 +41,10 @@ type PasskeyEnrollmentErrorProps = {
 export function PasskeyEnrollmentError({
   message,
   passkeyMethodLabel,
-}: PasskeyEnrollmentErrorProps) {
+}: Readonly<{
+  message: string;
+  passkeyMethodLabel: string;
+}>) {
   const t = useI18nContext() as (
     key: string,
     substitutions?: string[],
