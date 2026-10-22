@@ -132,15 +132,6 @@ export function buildMoneyAccountDepositFixture({
         ),
       },
     })
-    .withCurrencyController({
-      currencyRates: {
-        ETH: {
-          conversionDate: 0,
-          conversionRate: ETH_USD_PRICE,
-          usdConversionRate: ETH_USD_PRICE,
-        },
-      },
-    })
     .withAssetsController({
       customAssets: Object.fromEntries(
         accountIds.map((accountId) => [accountId, [MAINNET_USDC_ASSET_ID]]),

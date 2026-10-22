@@ -52,7 +52,7 @@
       "error: Error: A handler for SnapController:setClientActive": 2
     },
     "app/scripts/metamask-controller.test.js": {
-      "MetaMask: MetaMetrics invalid trait types": 1,
+      "MetaMask: MetaMetrics invalid trait types": 2,
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "error: AssertionError: The Snaps platform requires": 1,
       "error: {": 1,
