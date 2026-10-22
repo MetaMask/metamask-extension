@@ -6,6 +6,7 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   buildMoneyKeyringBuilder,
   buildMoneyKeyringV2Builder,
+  getMoneyAccountPrivateKey,
   type MoneyKeyringBuilderMessenger,
 } from './money-keyring-builder';
 
@@ -18,6 +19,14 @@ const TEST_MNEMONIC =
  * bare deriver are held to producing the same account.
  */
 const EXPECTED_MONEY_ADDRESS = '0xd5fe9b0579443e7025cf3309ba420977710e7183';
+
+/**
+ * The private key for `EXPECTED_MONEY_ADDRESS`. Hard-coded so that any change
+ * to the derivation path, the mnemonic encoding, or the account index shows up
+ * as a failure here.
+ */
+const EXPECTED_MONEY_PRIVATE_KEY =
+  'c523f60cc6d537f09a17d785729287e782e4eac3eb9a1c3cc6b034b454b98756';
 
 const ENTROPY_SOURCE = 'primary-hd-keyring-id';
 
@@ -74,6 +83,53 @@ function buildMessengerMock({
 
   return { messenger, calls };
 }
+
+describe('getMoneyAccountPrivateKey', () => {
+  it('returns the private key of the money account for the entropy source', async () => {
+    const { messenger } = buildMessengerMock();
+
+    await expect(
+      getMoneyAccountPrivateKey(messenger, ENTROPY_SOURCE),
+    ).resolves.toBe(EXPECTED_MONEY_PRIVATE_KEY);
+  });
+
+  it('returns a different key for a different seed', async () => {
+    const { messenger } = buildMessengerMock({
+      mnemonic:
+        'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
+    });
+
+    const privateKey = await getMoneyAccountPrivateKey(
+      messenger,
+      ENTROPY_SOURCE,
+    );
+
+    expect(privateKey).not.toBe(EXPECTED_MONEY_PRIVATE_KEY);
+  });
+
+  it('reads the mnemonic for the given entropy source without taking the controller lock', async () => {
+    const { messenger, calls } = buildMessengerMock();
+
+    await getMoneyAccountPrivateKey(messenger, ENTROPY_SOURCE);
+
+    expect(calls).toHaveLength(1);
+    expect(calls[0][0]).toBe('KeyringController:withKeyringUnsafe');
+    expect(
+      calls[0][1].filter({ type: KeyringTypes.hd }, { id: ENTROPY_SOURCE }),
+    ).toBe(true);
+    expect(
+      calls[0][1].filter({ type: KeyringTypes.hd }, { id: 'other-srp' }),
+    ).toBe(false);
+  });
+
+  it('throws when the selected keyring has no mnemonic', async () => {
+    const { messenger } = buildMessengerMock({ mnemonic: null });
+
+    await expect(
+      getMoneyAccountPrivateKey(messenger, ENTROPY_SOURCE),
+    ).rejects.toThrow('Unable to get mnemonic to initialize MoneyKeyring');
+  });
+});
 
 describe('buildMoneyKeyringBuilder', () => {
   it('is keyed by the Money keyring type', () => {

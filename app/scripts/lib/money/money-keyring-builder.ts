@@ -1,5 +1,8 @@
-import type { HdKeyring } from '@metamask/eth-hd-keyring';
-import { MoneyKeyring } from '@metamask/eth-money-keyring';
+import { HdKeyring } from '@metamask/eth-hd-keyring';
+import {
+  MONEY_DERIVATION_PATH,
+  MoneyKeyring,
+} from '@metamask/eth-money-keyring';
 import { MoneyKeyring as MoneyKeyringV2 } from '@metamask/eth-money-keyring/v2';
 import {
   KeyringTypes,
@@ -56,6 +59,42 @@ async function getMnemonic(
       // to its `void` default, so the callback's return type is lost here.
     },
   )) as unknown as number[];
+}
+
+/**
+ * Derive the private key of the Money account for an entropy source.
+ *
+ * The account is the first account on `MONEY_DERIVATION_PATH`, the same
+ * account `MoneyKeyring` creates. The mnemonic is resolved the same way the
+ * keyring resolves it: through `withKeyringUnsafe`, which takes no lock, so
+ * this can run while the controller mutex is held.
+ *
+ * @param messenger - The messenger used to reach the `KeyringController`.
+ * @param entropySource - The id of the HD keyring the Money account is derived
+ * from.
+ * @returns The private key as a hex string without a `0x` prefix, which is
+ * what `HdKeyring.exportAccount` returns.
+ */
+export async function getMoneyAccountPrivateKey(
+  messenger: MoneyKeyringBuilderMessenger,
+  entropySource: string,
+): Promise<string> {
+  const mnemonic = await getMnemonic(messenger, entropySource);
+
+  const keyring = new HdKeyring();
+  await keyring.deserialize({
+    mnemonic,
+    numberOfAccounts: 1,
+    hdPath: MONEY_DERIVATION_PATH,
+  });
+
+  const [address] = await keyring.getAccounts();
+
+  if (!address) {
+    throw new Error('Failed to derive the money account private key');
+  }
+
+  return keyring.exportAccount(address);
 }
 
 /**
