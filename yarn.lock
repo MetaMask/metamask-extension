@@ -10464,9 +10464,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^21.1.2":
-  version: 21.1.2
-  resolution: "@metamask/snaps-controllers@npm:21.1.2"
+"@metamask/snaps-controllers@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/snaps-controllers@npm:22.0.0"
   dependencies:
     "@metamask/analytics-controller": "npm:^1.2.1"
     "@metamask/approval-controller": "npm:^9.0.2"
@@ -10504,7 +10504,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/2596e856ba3254f232ad09a672d6fec6914540ec3300da56e72ec7992c71d9d6698a156e12b58488aefa1556ff232ee54933224b25fd61e76635651d243f1630
+  checksum: 10/9d080b75db121cf47e54b72f812f0fe679d3e1b04ed045d123045801ea7c43810790a7f16fbf6802de65527694602497e30df5e0fcc38e3c672ede507edb1288
   languageName: node
   linkType: hard
 
@@ -36062,7 +36062,7 @@ __metadata:
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-account-service": "npm:^4.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
-    "@metamask/snaps-controllers": "npm:^21.1.2"
+    "@metamask/snaps-controllers": "npm:^22.0.0"
     "@metamask/snaps-execution-environments": "npm:^11.3.2"
     "@metamask/snaps-registry": "npm:^4.0.0"
     "@metamask/snaps-rpc-methods": "npm:^17.2.0"
