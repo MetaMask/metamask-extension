@@ -534,23 +534,34 @@ class ActivityTab extends HomePage {
   ): Promise<void> {
     await this.driver.waitUntil(
       async () => {
-        const transactions = await this.driver.findElements(
-          this.completedTransactions,
-        );
-
-        for (const transaction of transactions) {
-          const amount = await this.driver.findNestedElement(
-            transaction,
-            this.transactionAmountsInActivity,
+        try {
+          const transactions = await this.driver.findElements(
+            this.completedTransactions,
           );
-          if ((await amount.getText()) === expectedAmount) {
-            return (
-              (await transaction.getAttribute('data-tx-status')) === status
-            );
-          }
-        }
 
-        return false;
+          for (const transaction of transactions) {
+            const amount = await this.driver.findNestedElement(
+              transaction,
+              this.transactionAmountsInActivity,
+            );
+            if ((await amount.getText()) === expectedAmount) {
+              return (
+                (await transaction.getAttribute('data-tx-status')) === status
+              );
+            }
+          }
+
+          return false;
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            error.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+
+          throw error;
+        }
       },
       { interval: 100, timeout },
     );
