@@ -1306,7 +1306,25 @@ describe('MetaMaskController', () => {
     });
 
     describe('#getBalance', () => {
-      it('should ask the network for a balance when not known by accountTrackerController', async () => {
+      it('should return the balance from AssetsController-derived AccountTracker state', async () => {
+        const balance = '0x14ced5122ce0a000';
+
+        jest.spyOn(metamaskController, '_getMetaMaskState').mockReturnValue({
+          metamask: {
+            accountsByChainId: {
+              '0x1': {
+                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
+              },
+            },
+          },
+        });
+
+        const gotten = await metamaskController.getBalance(TEST_ADDRESS);
+
+        expect(balance).toStrictEqual(gotten);
+      });
+
+      it('should ask the network for a balance when not known in derived AccountTracker state', async () => {
         const balance = '0x14ced5122ce0a000';
         const { provider } = createTestProviderTools({
           scaffold: {
@@ -1314,15 +1332,11 @@ describe('MetaMaskController', () => {
           },
         });
 
-        jest
-          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
-          .mockReturnValue({
-            accountsByChainId: {
-              '0x1': {
-                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
-              },
-            },
-          });
+        jest.spyOn(metamaskController, '_getMetaMaskState').mockReturnValue({
+          metamask: {
+            accountsByChainId: {},
+          },
+        });
 
         const gotten = await metamaskController.getBalance(
           TEST_ADDRESS,
