@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -28,10 +28,13 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
+import {
+  AccountListDialog,
+  accountListDialogId,
+} from './account-list-dialog';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
-  ACCOUNT_LIST_PAGE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DISCOVER_SEARCH_ROUTE,
@@ -56,6 +59,7 @@ type AppHeaderUnlockedContentProps = {
 export const AppHeaderUnlockedContent = ({
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
+  const accountDialogRef = useRef<HTMLDialogElement>(null);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -144,12 +148,13 @@ export const AppHeaderUnlockedContent = ({
             address={''} // No address shown in multichain mode
             name={accountName}
             showAvatarAccount={false}
+            command={disableAccountPicker ? undefined : 'show-modal'}
+            commandfor={accountListDialogId}
             onClick={() => {
               trace({
                 name: TraceName.ShowAccountList,
                 op: TraceOperation.AccountUi,
               });
-              transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
               trackEvent(
                 createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
                   .addCategory(MetaMetricsEventCategory.Navigation)
@@ -167,6 +172,12 @@ export const AppHeaderUnlockedContent = ({
                   })
                   .build(),
               );
+              const supportsInvoker =
+                'commandForElement' in HTMLButtonElement.prototype;
+              const dialog = accountDialogRef.current;
+              if (!supportsInvoker && dialog && !dialog.open) {
+                dialog.showModal();
+              }
             }}
             disabled={disableAccountPicker}
             paddingLeft={2}
@@ -200,7 +211,6 @@ export const AppHeaderUnlockedContent = ({
     accountName,
     disableAccountPicker,
     selectedMultichainAccountId,
-    navigate,
     trackEvent,
     createEventBuilder,
     accountListStats,
@@ -215,6 +225,7 @@ export const AppHeaderUnlockedContent = ({
         className="min-w-0"
       >
         {multichainAccountAppContent}
+        <AccountListDialog dialogRef={accountDialogRef} />
       </Box>
       <Box
         alignItems={BoxAlignItems.Center}

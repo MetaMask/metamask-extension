@@ -32,4 +32,8 @@ export type MultichainAccountMenuProps = {
    * Callback to toggle the menu popover open/closed state.
    */
   onToggle?: () => void;
+
+  onShowDetails?: (accountGroupId: AccountGroupId) => void;
+
+  onShowAddresses?: (accountGroupId: AccountGroupId) => void;
 };

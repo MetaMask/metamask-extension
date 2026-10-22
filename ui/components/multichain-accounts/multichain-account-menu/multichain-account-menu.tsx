@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -47,6 +41,8 @@ export const MultichainAccountMenu = ({
   handleAccountRenameAction,
   isOpen = false,
   onToggle,
+  onShowDetails,
+  onShowAddresses,
 }: MultichainAccountMenuProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -115,6 +111,12 @@ export const MultichainAccountMenu = ({
     ) => {
       mouseEvent.stopPropagation();
 
+      if (onShowDetails) {
+        onShowDetails(accountGroupId);
+        onToggle?.();
+        return;
+      }
+
       navigate({
         pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
         search: createSearchParams({
@@ -142,6 +144,11 @@ export const MultichainAccountMenu = ({
         name: TraceName.ShowAccountAddressList,
         op: TraceOperation.AccountUi,
       });
+      if (onShowAddresses) {
+        onShowAddresses(accountGroupId);
+        onToggle?.();
+        return;
+      }
       const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`;
       navigate(multichainAccountAddressesPageRoute);
     };
@@ -263,6 +270,8 @@ export const MultichainAccountMenu = ({
     return baseMenuItems;
   }, [
     accountGroupId,
+    onShowDetails,
+    onShowAddresses,
     handleAccountRenameAction,
     navigate,
     isRemovable,
