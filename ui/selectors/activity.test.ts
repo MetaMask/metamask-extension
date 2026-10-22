@@ -488,4 +488,74 @@ describe('selectLocalTransactions', () => {
       ),
     ).toBe(false);
   });
+
+  describe('when a hardware account funds the deposit', () => {
+    const LEDGER_ACCOUNT_ID = '15e69915-2a1a-4019-93b3-916e11fd432f';
+    const LEDGER_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    const LEDGER_GROUP_ID = `keyring:Ledger Hardware/${LEDGER_ADDRESS}`;
+
+    function buildFundedDepositState() {
+      const fundingTx = {
+        id: 'funding-tx',
+        chainId: '0x1',
+        networkClientId: 'mainnet',
+        status: EvmTransactionStatus.confirmed,
+        time: 1,
+        type: EvmTransactionType.simpleSend,
+        txParams: { from: LEDGER_ADDRESS, nonce: '0x5', value: '0x0' },
+      } as TransactionMeta;
+      const depositTx = buildMoneyAccountTransaction({
+        time: 2,
+        requiredTransactionIds: [fundingTx.id],
+      });
+      const state = buildStateWithMoneyAccount(depositTx);
+      state.metamask.transactions = [fundingTx, depositTx];
+      return state;
+    }
+
+    function selectLedger(state: ReturnType<typeof buildFundedDepositState>) {
+      state.metamask.selectedAccountGroup = LEDGER_GROUP_ID as never;
+      state.metamask.internalAccounts.selectedAccount = LEDGER_ACCOUNT_ID;
+    }
+
+    function getGroupIds(state: ReturnType<typeof buildFundedDepositState>) {
+      return selectLocalTransactions(state).map(
+        (group) => group.initialTransaction.id,
+      );
+    }
+
+    it('shows the deposit in the hardware account activity', () => {
+      const state = buildFundedDepositState();
+      selectLedger(state);
+
+      expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+    });
+
+    it('hides the deposit from the money account SRP account activity', () => {
+      const state = buildFundedDepositState();
+
+      expect(getGroupIds(state)).toStrictEqual([]);
+    });
+
+    it('uses the Pay account override before funding transactions exist', () => {
+      const state = buildStateWithMoneyAccount(
+        buildMoneyAccountTransaction({
+          status: EvmTransactionStatus.approved,
+        }),
+      );
+      (
+        state.metamask as unknown as {
+          transactionData: Record<string, { accountOverride: string }>;
+        }
+      ).transactionData = {
+        'money-account-tx': { accountOverride: LEDGER_ADDRESS },
+      };
+
+      const ledgerState = structuredClone(state);
+      selectLedger(ledgerState);
+
+      expect(getGroupIds(state)).toStrictEqual([]);
+      expect(getGroupIds(ledgerState)).toStrictEqual(['money-account-tx']);
+    });
+  });
 });
