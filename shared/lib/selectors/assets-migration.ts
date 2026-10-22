@@ -914,7 +914,7 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-) as unknown as MigratingControllerStateSelector<
+  ) as unknown as MigratingControllerStateSelector<
     MultichainAssetsRatesControllerState['conversionRates']
   >;
 
