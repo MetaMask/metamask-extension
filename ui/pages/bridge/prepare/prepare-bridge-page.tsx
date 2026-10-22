@@ -726,7 +726,7 @@ const PrepareBridgePage = ({
 
         {!isInitialQuoteLoading && (
           <Column
-            className="sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16"
+            className="sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 cta-footer"
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
             gap={3}
