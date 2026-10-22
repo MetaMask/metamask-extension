@@ -9,14 +9,37 @@ on:
   push:
     branches:
       - 'release/[0-9]+.[0-9]+.[0-9]+'
+      - fix/release-changelog-oidc-token
 
 concurrency:
   group: update-release-changelog-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
+  test-checkout-auth:
+    name: Test changelog token checkout
+    if: github.ref_name == 'fix/release-changelog-oidc-token'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Get token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: read
+
+      - name: Checkout with minted token
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.get-token.outputs.token }}
+
   refresh-changelog:
     name: Update changelog
+    if: startsWith(github.ref_name, 'release/')
     runs-on: ubuntu-latest
     permissions:
       contents: write
