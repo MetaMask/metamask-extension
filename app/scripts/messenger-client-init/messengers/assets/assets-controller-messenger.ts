@@ -1,18 +1,24 @@
+import type { AssetsControllerMessenger } from '@metamask/assets-controller';
 import {
   Messenger,
   type MessengerActions,
   type MessengerEvents,
 } from '@metamask/messenger';
-import type { AssetsControllerMessenger } from '@metamask/assets-controller';
-import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
+import {
+  assetsController,
+  type DefaultActions,
+  type DefaultEvents,
+  type RootMessenger as WalletRootMessenger,
+} from '@metamask/wallet';
 import {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
 } from '../../../controllers/onboarding';
-import { RootMessenger } from '../../../lib/messenger';
 import type { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 /**
  * Messenger type for AssetsController initialization.
@@ -20,54 +26,6 @@ import type { PreferencesControllerGetStateAction } from '../../../controllers/p
 export type AssetsControllerInitMessenger = ReturnType<
   typeof getAssetsControllerInitMessenger
 >;
-
-/**
- * Actions delegated to the AssetsController messenger.
- */
-export const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
-  'AccountTreeController:getAccountsFromSelectedAccountGroup',
-  'AccountTreeController:isInitialized',
-  'ClientController:getState',
-  'KeyringController:isUnlocked',
-  'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
-  'NetworkEnablementController:getState',
-  'NetworkController:getState',
-  'NetworkController:getNetworkClientById',
-  'AccountsController:getSelectedAccount',
-  'SnapController:handleRequest',
-  'SnapController:getRunnableSnaps',
-  'PermissionController:getPermissions',
-  'PhishingController:bulkScanTokens',
-  'RemoteFeatureFlagController:getState',
-] as const;
-
-/**
- * Events delegated to the AssetsController messenger.
- */
-export const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
-  'AccountTreeController:selectedAccountGroupChange',
-  'AccountTreeController:initialized',
-  'AccountTreeController:uninitialized',
-  'NetworkEnablementController:stateChange',
-  'ClientController:stateChange',
-  'KeyringController:lock',
-  'KeyringController:unlock',
-  'NetworkController:networkDidChange',
-  'NetworkController:networkAdded',
-  'NetworkController:networkRemoved',
-  'NetworkController:stateChange',
-  'AccountsController:accountBalancesUpdated',
-  'PermissionController:stateChange',
-  'SnapController:snapInstalled',
-  'PreferencesController:stateChange',
-  'TransactionController:transactionConfirmed',
-  'TransactionController:unapprovedTransactionAdded',
-  // core#10585: Snap keyring confirmations refresh balances when AccountActivity is down
-  'MultichainTransactionsController:transactionConfirmed',
-  'AccountActivityService:balanceUpdated',
-  'AccountActivityService:statusChanged',
-  'RemoteFeatureFlagController:stateChange',
-] as const;
 
 /**
  * Actions delegated to the AssetsController initialization messenger.
@@ -83,12 +41,9 @@ export const ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS = [
 /**
  * Get a messenger for the AssetsController.
  *
- * The AssetsController uses the messenger pattern and requires a child messenger
- * with the 'AssetsController' namespace.
- *
- * Note: Currently includes data source dependencies because the package creates
- * data sources internally using the controller's messenger. When the package
- * supports separate data source messengers, these should be decoupled.
+ * Delegations are owned by `@metamask/wallet`'s `assetsController.getMessenger`.
+ * The extension root messenger is wider than the wallet's default root, so it
+ * is cast to the type that configuration expects.
  *
  * @param messenger - The root controller messenger.
  * @returns The controller messenger.
@@ -99,18 +54,9 @@ export function getAssetsControllerMessenger(
     MessengerEvents<AssetsControllerMessenger>
   >,
 ): AssetsControllerMessenger {
-  const controllerMessenger: AssetsControllerMessenger = new Messenger({
-    namespace: 'AssetsController',
-    parent: messenger,
-  });
-
-  messenger.delegate({
-    messenger: controllerMessenger,
-    actions: [...ASSETS_CONTROLLER_DELEGATED_ACTIONS],
-    events: [...ASSETS_CONTROLLER_DELEGATED_EVENTS],
-  });
-
-  return controllerMessenger;
+  return assetsController.getMessenger(
+    messenger as unknown as WalletRootMessenger<DefaultActions, DefaultEvents>,
+  );
 }
 
 /**

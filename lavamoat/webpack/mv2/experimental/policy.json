@@ -3479,6 +3479,7 @@
         "@metamask/accounts-controller": true,
         "@metamask/wallet>@metamask/address-book-controller": true,
         "@metamask/wallet>@metamask/approval-controller": true,
+        "@metamask/assets-controller": true,
         "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/wallet>@metamask/claims-controller": true,
