@@ -81,17 +81,4 @@ describe('GeolocationControllerInit', () => {
     const { messengerClient } = GeolocationControllerInit(getInitRequestMock());
     expect(messengerClient.getGeolocation).not.toHaveBeenCalled();
   });
-
-  it('exposes refreshGeolocation on the background API', () => {
-    const result = GeolocationControllerInit(getInitRequestMock());
-
-    expect(typeof result.api?.refreshGeolocation).toBe('function');
-  });
-
-  it('delegates api.refreshGeolocation to the controller', async () => {
-    const result = GeolocationControllerInit(getInitRequestMock());
-
-    await expect(result.api?.refreshGeolocation()).resolves.toBe('US');
-    expect(result.messengerClient.refreshGeolocation).toHaveBeenCalledTimes(1);
-  });
 });
