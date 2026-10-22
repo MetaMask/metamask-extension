@@ -3,9 +3,11 @@ import { MoneyKeyring as MoneyKeyringV2 } from '@metamask/eth-money-keyring/v2';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { encodeMnemonic } from '@metamask/keyring-sdk';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { bytesToHex } from '@metamask/utils';
 import {
   buildMoneyKeyringBuilder,
   buildMoneyKeyringV2Builder,
+  getMfaMoneyAccountEncryptionKey,
   getMoneyAccountPrivateKey,
   type MoneyKeyringBuilderMessenger,
 } from './money-keyring-builder';
@@ -27,6 +29,13 @@ const EXPECTED_MONEY_ADDRESS = '0xd5fe9b0579443e7025cf3309ba420977710e7183';
  */
 const EXPECTED_MONEY_PRIVATE_KEY =
   'c523f60cc6d537f09a17d785729287e782e4eac3eb9a1c3cc6b034b454b98756';
+
+/**
+ * HKDF-SHA256 of `EXPECTED_MONEY_PRIVATE_KEY` with the MFA encryption-key
+ * info string. Hard-coded so a change to the label, hash, or length fails here.
+ */
+const EXPECTED_MFA_ENCRYPTION_KEY =
+  '0xeab419629b14806650848a2ad513616e91ea0684d467a81d7dafa441c73146f3';
 
 const ENTROPY_SOURCE = 'primary-hd-keyring-id';
 
@@ -128,6 +137,42 @@ describe('getMoneyAccountPrivateKey', () => {
     await expect(
       getMoneyAccountPrivateKey(messenger, ENTROPY_SOURCE),
     ).rejects.toThrow('Unable to get mnemonic to initialize MoneyKeyring');
+  });
+});
+
+describe('getMfaMoneyAccountEncryptionKey', () => {
+  it('derives the AES-256 MFA key from the money account private key', async () => {
+    const { messenger } = buildMessengerMock();
+    const privateKey = await getMoneyAccountPrivateKey(
+      messenger,
+      ENTROPY_SOURCE,
+    );
+
+    const encryptionKey = getMfaMoneyAccountEncryptionKey(privateKey);
+
+    expect(encryptionKey).toHaveLength(32);
+    expect(bytesToHex(encryptionKey)).toBe(EXPECTED_MFA_ENCRYPTION_KEY);
+  });
+
+  it('accepts a 0x-prefixed private key', () => {
+    expect(
+      bytesToHex(
+        getMfaMoneyAccountEncryptionKey(`0x${EXPECTED_MONEY_PRIVATE_KEY}`),
+      ),
+    ).toBe(EXPECTED_MFA_ENCRYPTION_KEY);
+  });
+
+  it('derives a different key for a different private key', () => {
+    const encryptionKey = getMfaMoneyAccountEncryptionKey('11'.repeat(32));
+
+    expect(bytesToHex(encryptionKey)).not.toBe(EXPECTED_MFA_ENCRYPTION_KEY);
+    expect(encryptionKey).toHaveLength(32);
+  });
+
+  it('throws when the private key is not 32 bytes', () => {
+    expect(() => getMfaMoneyAccountEncryptionKey('abcd')).toThrow(
+      'Money account private key must be a 32-byte hex string',
+    );
   });
 });
 
