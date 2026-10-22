@@ -339,7 +339,7 @@
     "jiti@npm:^2.5.1": "npm:npm-empty-package@1.0.0",
     "esbuild": "0.28.1",
     "valibot": "^1.4.2",
-    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A21.1.2#~/.yarn/patches/@metamask-snaps-controllers-npm-21.1.2-cbf7b2b2de.patch",
+    "@metamask/snaps-controllers": "^22.0.0",
     "@metamask/permission-controller@npm:^12.2.0": "^14.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^14.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^14.0.0",
@@ -368,9 +368,7 @@
     "@opentelemetry/instrumentation-tedious@npm:0.30.0": "0.40.0",
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
-    "@metamask/utils": "^12.0.0",
-    "@metamask/snaps-controllers@npm:^19.0.0": "patch:@metamask/snaps-controllers@npm%3A21.1.2#~/.yarn/patches/@metamask-snaps-controllers-npm-21.1.2-cbf7b2b2de.patch",
-    "@metamask/snaps-controllers@npm:^19.0.1": "patch:@metamask/snaps-controllers@npm%3A21.1.2#~/.yarn/patches/@metamask-snaps-controllers-npm-21.1.2-cbf7b2b2de.patch"
+    "@metamask/utils": "^12.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -517,7 +515,7 @@
     "@metamask/signature-controller": "^39.2.6",
     "@metamask/smart-transactions-controller": "^27.1.0",
     "@metamask/snap-account-service": "^4.0.0",
-    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A21.1.2#~/.yarn/patches/@metamask-snaps-controllers-npm-21.1.2-cbf7b2b2de.patch",
+    "@metamask/snaps-controllers": "^22.0.0",
     "@metamask/snaps-execution-environments": "^11.3.2",
     "@metamask/snaps-rpc-methods": "^17.2.0",
     "@metamask/snaps-sdk": "^12.1.0",
