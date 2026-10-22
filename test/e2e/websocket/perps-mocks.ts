@@ -76,16 +76,20 @@ async function setupPerpsWebsocketMocks(
               );
             }
 
-            const followUp = mock.dynamicFollowUp
-              ? mock.dynamicFollowUp(message)
-              : mock.followUpResponse;
-            if (followUp) {
-              const followUpDelay = mock.followUpDelay ?? 50;
+            // Read dynamic follow-ups at send time. A close can land during
+            // this delay, and an earlier snapshot would restore the open position.
+            const followUpDelay = mock.followUpDelay ?? 50;
+            if (mock.dynamicFollowUp || mock.followUpResponse) {
               setTimeout(() => {
-                socket.send(JSON.stringify(followUp));
-                console.log(
-                  `[Perps] Follow-up message sent for: ${includes.join(' + ')}`,
-                );
+                const followUp = mock.dynamicFollowUp
+                  ? mock.dynamicFollowUp(message)
+                  : mock.followUpResponse;
+                if (followUp) {
+                  socket.send(JSON.stringify(followUp));
+                  console.log(
+                    `[Perps] Follow-up message sent for: ${includes.join(' + ')}`,
+                  );
+                }
               }, followUpDelay);
             }
           }, delay);
