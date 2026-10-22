@@ -425,6 +425,14 @@ export class PlaywrightDriver {
     if (typeof script === 'function' && source.includes('__name')) {
       source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
     }
+
+    // On Chrome extension pages, use CDP isolated world to bypass LavaMoat
+    // scuttling which blocks access to globals like Float32Array, DataTransfer
+    if (this.shouldUseCDPBypass()) {
+      return this.executeScriptViaCDP<TResult>(source, args);
+    }
+
+    // Standard path for non-extension pages or Firefox
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -436,6 +444,26 @@ export class PlaywrightDriver {
       },
       { source, passedArgs: args },
     )) as TResult;
+  }
+
+  /**
+   * Executes a script via CDP in an isolated world to bypass LavaMoat scuttling.
+   * @param source
+   * @param args
+   */
+  private async executeScriptViaCDP<TResult>(
+    source: string,
+    args: unknown[],
+  ): Promise<TResult> {
+    const expression = `
+      (function() {
+        const fn = new Function('args', 'return (' + ${JSON.stringify(source)} + ').apply(null, args);');
+        return fn(${JSON.stringify(args)});
+      })()
+    `;
+
+    const result = await this.evaluateViaCDP<TResult>(expression);
+    return result as TResult;
   }
 
   // Selenium's executeAsyncScript resolves when the script invokes its trailing
