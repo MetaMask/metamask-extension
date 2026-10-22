@@ -73,10 +73,14 @@ async function replacePlaceholderInReferenceLogs(
 ): Promise<StateLogsTypeDefinition> {
   // We'll use this mapping to replace placeholders in the reference logs with actual account IDs
   // from the downloaded logs (e.g "<bitcoin-account-1>" -> "75ad4470-156b-4f7f-b0a5-ffe6cd114ac9").
-  const accountsMapping: Record<'solana' | 'bitcoin' | 'tron', string[]> = {
+  const accountsMapping: Record<
+    'solana' | 'bitcoin' | 'tron' | 'stellar',
+    string[]
+  > = {
     tron: [],
     solana: [],
     bitcoin: [],
+    stellar: [],
   };
 
   for (const [id, account] of Object.entries(
@@ -88,6 +92,8 @@ async function replacePlaceholderInReferenceLogs(
       accountsMapping.solana.push(id);
     } else if (account.type.startsWith('tron')) {
       accountsMapping.tron.push(id);
+    } else if (account.type.startsWith('stellar')) {
+      accountsMapping.stellar.push(id);
     }
   }
 
