@@ -318,17 +318,12 @@ export class MetaMaskExtensionLauncher {
 
   private async waitForExtensionReady(): Promise<void> {
     // Extension initialization flow:
-    // 1. Get an existing page or create a new one (browser may have blank tab)
-    // 2. Resolve the extension ID from Chrome's extension management API
-    // 3. Navigate to home.html and wait for the UI to fully render
+    // 1. Resolve the extension ID from Chrome's extension management API
+    // 2. Check if an extension page already exists (dist builds auto-open one)
+    // 3. If not, get an existing blank page or create a new one
+    // 4. Navigate to home.html and wait for the UI to fully render
     if (!this.context) {
       throw new Error('Browser context not initialized');
-    }
-
-    const pages = (this.context as BrowserContext).pages();
-    let page = pages[0];
-    if (!page) {
-      page = await this.context.newPage();
     }
 
     this.extensionId = await resolveExtensionId({
@@ -344,7 +339,33 @@ export class MetaMaskExtensionLauncher {
       throw new Error('Could not find MetaMask extension ID');
     }
 
-    await page.goto(`chrome-extension://${this.extensionId}/home.html`);
+    const extensionPrefix = `chrome-extension://${this.extensionId}/`;
+
+    // Give the extension a moment to potentially open its own page (dist builds)
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Check if an extension page already exists (auto-opened by dist builds)
+    const pages = (this.context as BrowserContext).pages();
+    let page = pages.find((p) => p.url().startsWith(extensionPrefix));
+
+    if (page) {
+      // Extension already opened a page, reuse it
+      console.log('Reusing existing extension page:', page.url());
+      // Close any leftover blank pages to avoid multiple windows
+      for (const p of pages) {
+        if (p !== page && p.url() === 'about:blank') {
+          await p.close().catch(() => undefined);
+        }
+      }
+    } else {
+      // No extension page exists, create one
+      page = pages.find((p) => p.url() === 'about:blank') ?? pages[0];
+      if (!page) {
+        page = await this.context.newPage();
+      }
+      await page.goto(`${extensionPrefix}home.html`);
+    }
+
     await page.waitForLoadState('domcontentloaded');
 
     this.attachConsoleListeners(page);
