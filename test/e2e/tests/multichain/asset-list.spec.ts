@@ -225,23 +225,11 @@ function buildFixturesForSend(title: string) {
       .withAssetsController({
         assetsBalance: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            // Pre-seed Polygon native balance so the home page shows 25 at login
+            // Pre-seed Polygon native balance so the home page shows 25 at login.
+            // The ERC-20 is imported during the test, so it must not be seeded
+            // here or the import form treats it as already added.
             'eip155:137/slip44:60': { amount: '25' },
-            [`eip155:137/erc20:${HST_TOKEN_ADDRESS}`]: { amount: '1000' },
           },
-        },
-        assetsInfo: {
-          [`eip155:137/erc20:${HST_TOKEN_ADDRESS}`]: {
-            type: 'erc20',
-            decimals: 18,
-            symbol: 'TST',
-            name: 'TST',
-          },
-        },
-        customAssets: {
-          [DEFAULT_FIXTURE_ACCOUNT_ID]: [
-            `eip155:137/erc20:${HST_TOKEN_ADDRESS}`,
-          ],
         },
       })
       .build(),

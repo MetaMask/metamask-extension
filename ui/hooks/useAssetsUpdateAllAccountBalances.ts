@@ -1,8 +1,8 @@
 import { useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getEnabledChainIds } from '../selectors';
-import { getInternalAccounts } from '../selectors/accounts';
 import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import { refreshAssetsForSelectedAccount } from '../store/actions';
 import { useDispatch } from '../store/hooks';
@@ -30,13 +30,13 @@ export const useAssetsUpdateAllAccountBalances = (): {
   updateBalances: () => Promise<void>;
 } => {
   const enabledChainIds = useSelector(getEnabledChainIds);
-  const internalAccounts = useSelector(getInternalAccounts);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
   const dispatch = useDispatch();
 
   const updateBalances = useCallback(async () => {
     try {
-      if (!isAssetsUnifyStateEnabled || internalAccounts.length === 0) {
+      if (!isAssetsUnifyStateEnabled || !selectedAccount) {
         return;
       }
 
@@ -44,8 +44,11 @@ export const useAssetsUpdateAllAccountBalances = (): {
         return;
       }
 
+      // Only the selected account. Refreshing every account writes balances
+      // for groups that have not been opened yet, and the account list then
+      // renders those as if they were loaded.
       await dispatch(
-        refreshAssetsForSelectedAccount(internalAccounts, {
+        refreshAssetsForSelectedAccount([selectedAccount], {
           chainIds: enabledChainIds.map(formatChainIdToCaip),
           assetTypes: ['token', 'price', 'metadata'],
         }),
@@ -53,7 +56,7 @@ export const useAssetsUpdateAllAccountBalances = (): {
     } catch (error) {
       console.warn('Error updating balances state for all accounts', error);
     }
-  }, [dispatch, enabledChainIds, internalAccounts, isAssetsUnifyStateEnabled]);
+  }, [dispatch, enabledChainIds, selectedAccount, isAssetsUnifyStateEnabled]);
 
   useEffect(() => {
     if (!isAssetsUnifyStateEnabled) {

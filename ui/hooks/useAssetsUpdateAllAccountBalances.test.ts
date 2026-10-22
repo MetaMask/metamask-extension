@@ -2,8 +2,8 @@ import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { refreshAssetsForSelectedAccount } from '../store/actions';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getEnabledChainIds } from '../selectors';
-import { getInternalAccounts } from '../selectors/accounts';
 import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import { useDispatch } from '../store/hooks';
 import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
@@ -24,8 +24,8 @@ jest.mock('../selectors', () => ({
   getEnabledChainIds: jest.fn(),
 }));
 
-jest.mock('../selectors/accounts', () => ({
-  getInternalAccounts: jest.fn(),
+jest.mock('../../shared/lib/selectors/accounts', () => ({
+  getSelectedInternalAccount: jest.fn(),
 }));
 
 jest.mock('../selectors/assets-unify-state', () => ({
@@ -62,8 +62,8 @@ describe('useAssetsUpdateAllAccountBalances', () => {
       if (selector === getEnabledChainIds) {
         return ['0x1', '0x89'];
       }
-      if (selector === getInternalAccounts) {
-        return [SELECTED_ACCOUNT];
+      if (selector === getSelectedInternalAccount) {
+        return SELECTED_ACCOUNT;
       }
       if (selector === getIsAssetsUnifyStateEnabled) {
         return true;
@@ -102,8 +102,8 @@ describe('useAssetsUpdateAllAccountBalances', () => {
       if (selector === getEnabledChainIds) {
         return ['0x1', '0x89'];
       }
-      if (selector === getInternalAccounts) {
-        return [SELECTED_ACCOUNT];
+      if (selector === getSelectedInternalAccount) {
+        return SELECTED_ACCOUNT;
       }
       if (selector === getIsAssetsUnifyStateEnabled) {
         return false;
@@ -122,8 +122,8 @@ describe('useAssetsUpdateAllAccountBalances', () => {
       if (selector === getEnabledChainIds) {
         return [];
       }
-      if (selector === getInternalAccounts) {
-        return [SELECTED_ACCOUNT];
+      if (selector === getSelectedInternalAccount) {
+        return SELECTED_ACCOUNT;
       }
       if (selector === getIsAssetsUnifyStateEnabled) {
         return true;
