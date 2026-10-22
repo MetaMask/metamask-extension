@@ -125,6 +125,8 @@ describe('BackendWebSocketServiceInit', () => {
       url: 'wss://gateway.api.cx.metamask.io/v1',
       traceFn: expect.any(Function),
       isEnabled: expect.any(Function),
+      isBasicFunctionality: expect.any(Function),
+      subscribeToBasicFunctionalityChange: expect.any(Function),
     });
   });
 
@@ -281,6 +283,108 @@ describe('BackendWebSocketServiceInit', () => {
       );
 
       consoleWarnSpy.mockRestore();
+    });
+  });
+
+  describe('isBasicFunctionality', () => {
+    it('returns false before onboarding is complete', () => {
+      const request = getInitRequestMock();
+      jest.spyOn(request.initMessenger, 'call').mockImplementation(((
+        action: string,
+      ) => {
+        if (action === 'OnboardingController:getState') {
+          return { completedOnboarding: false };
+        }
+        if (action === 'PreferencesController:getState') {
+          return { useExternalServices: true };
+        }
+        return { remoteFeatureFlags: {} };
+      }) as never);
+
+      BackendWebSocketServiceInit(request);
+      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService).mock
+        .calls[0][0];
+
+      expect(isBasicFunctionality?.()).toBe(false);
+    });
+
+    it('returns the useExternalServices preference after onboarding', () => {
+      const request = getInitRequestMock();
+      jest.spyOn(request.initMessenger, 'call').mockImplementation(((
+        action: string,
+      ) => {
+        if (action === 'OnboardingController:getState') {
+          return { completedOnboarding: true };
+        }
+        if (action === 'PreferencesController:getState') {
+          return { useExternalServices: false };
+        }
+        return { remoteFeatureFlags: {} };
+      }) as never);
+
+      BackendWebSocketServiceInit(request);
+      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService).mock
+        .calls[0][0];
+
+      expect(isBasicFunctionality?.()).toBe(false);
+    });
+
+    it('returns true when preference state cannot be read', () => {
+      const request = getInitRequestMock();
+      jest.spyOn(request.initMessenger, 'call').mockImplementation(((
+        action: string,
+      ) => {
+        if (
+          action === 'OnboardingController:getState' ||
+          action === 'PreferencesController:getState'
+        ) {
+          throw new Error('state unavailable');
+        }
+        return { remoteFeatureFlags: {} };
+      }) as never);
+
+      BackendWebSocketServiceInit(request);
+      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService).mock
+        .calls[0][0];
+
+      expect(isBasicFunctionality?.()).toBe(true);
+    });
+
+    it('notifies when useExternalServices changes', () => {
+      const request = getInitRequestMock();
+      const onChange = jest.fn();
+      let preferenceListener: (() => void) | undefined;
+      jest.spyOn(request.initMessenger, 'subscribe').mockImplementation(((
+        event: string,
+        listener: () => void,
+      ) => {
+        if (event === 'PreferencesController:stateChange') {
+          preferenceListener = listener;
+        }
+        return undefined;
+      }) as never);
+
+      BackendWebSocketServiceInit(request);
+      const { subscribeToBasicFunctionalityChange, isBasicFunctionality } =
+        jest.mocked(BackendWebSocketService).mock.calls[0][0];
+
+      jest.spyOn(request.initMessenger, 'call').mockImplementation(((
+        action: string,
+      ) => {
+        if (action === 'OnboardingController:getState') {
+          return { completedOnboarding: true };
+        }
+        if (action === 'PreferencesController:getState') {
+          return { useExternalServices: false };
+        }
+        return { remoteFeatureFlags: {} };
+      }) as never);
+
+      subscribeToBasicFunctionalityChange?.(onChange);
+      preferenceListener?.();
+
+      expect(onChange).toHaveBeenCalledWith(false);
+      expect(isBasicFunctionality?.()).toBe(false);
     });
   });
 });

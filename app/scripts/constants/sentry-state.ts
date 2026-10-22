@@ -118,16 +118,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
-  MultichainBalancesController: {
-    balances: false,
-  },
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
     allIgnoredAssets: false,
-  },
-  MultichainAssetsRatesController: {
-    assetsRates: false,
   },
   BridgeController: {
     assetExchangeRates: false,
@@ -372,11 +366,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   // TokenDetectionController has no public controller state.
   TokenDetectionController: {},
-  TokenListController: {
-    tokensChainsCache: {
-      [AllProperties]: false,
-    },
-  },
   TokenBalancesController: {
     tokenBalances: false,
   },

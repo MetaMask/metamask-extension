@@ -120,12 +120,19 @@ describe('DataCollectionToggleItem', () => {
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
 
-  it('is disabled when metrics participation is false', () => {
-    const mockStore = createMockStore({ optedIn: false });
+  it('is enabled when metrics participation is off', () => {
+    const mockStore = createMockStore({
+      optedIn: false,
+      optedInToMarketing: false,
+    });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     const toggle = screen.getByRole('checkbox');
-    expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
+    expect(toggle.closest('.toggle-button--disabled')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
   });
 
   it('fetches remote marketing consent on mount when social login flow is active', async () => {

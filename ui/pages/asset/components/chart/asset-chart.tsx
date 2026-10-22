@@ -11,9 +11,10 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import classnames from 'clsx';
-import { Hex } from '@metamask/utils';
+import { Hex, isCaipAssetType } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   BoxBackgroundColor,
@@ -31,8 +32,9 @@ import {
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
-import { finiteFallback, loadingOpacity } from '../../util';
+import { finiteFallback, loadingOpacity, processAssetParams } from '../../util';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
@@ -118,6 +120,19 @@ const getTranslatedTimeRangeLabel = (
 
 const TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
 
+// Non-EVM routes carry the CAIP-19 id. `address` can be the selected
+// account's native asset on a different chain.
+const getChartAddress = (
+  chainId: Hex,
+  decodedAsset: string | undefined,
+  address: string,
+): string => {
+  if (!isEvmChainId(chainId) && decodedAsset && isCaipAssetType(decodedAsset)) {
+    return decodedAsset;
+  }
+  return address;
+};
+
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
   chainId,
@@ -131,6 +146,7 @@ const AssetChart = ({
   currency: string;
 }) => {
   const t = useI18nContext();
+  const { decodedAsset } = processAssetParams(useParams());
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     TIME_RANGES[0],
   );
@@ -145,7 +161,7 @@ const AssetChart = ({
     },
   } = useHistoricalPrices({
     chainId,
-    address,
+    address: getChartAddress(chainId, decodedAsset, address),
     currency,
     timeRange: selectedTimeRange,
   });
