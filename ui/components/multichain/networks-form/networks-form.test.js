@@ -20,6 +20,7 @@ import {
   updateNetwork,
 } from '../../../store/actions';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { NetworksForm } from './networks-form';
 
 const mockTrackEvent = jest.fn();
@@ -805,6 +806,10 @@ describe('NetworkForm Component', () => {
 
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalled();
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:isPublicEndpointUrl',
+        ['https://custom-rpc.example.com'],
+      );
       expect(mockTrackEvent).toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'Network Connection Banner RPC Updated',
