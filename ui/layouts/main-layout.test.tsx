@@ -39,7 +39,7 @@ const renderMainLayout = () => {
 describe('MainLayout', () => {
   beforeEach(() => {
     mockUseMainNavBars.mockReturnValue({
-      hasNav: false,
+      hasNavBar: false,
       showSideNav: false,
       showBottomNav: false,
     });
@@ -61,7 +61,7 @@ describe('MainLayout', () => {
 
   it('renders the app header and bottom nav bar when the bottom nav is shown', () => {
     mockUseMainNavBars.mockReturnValue({
-      hasNav: true,
+      hasNavBar: true,
       showSideNav: false,
       showBottomNav: true,
     });
@@ -75,7 +75,7 @@ describe('MainLayout', () => {
 
   it('renders the app header and side nav, without the bottom nav bar, when the side nav is shown', () => {
     mockUseMainNavBars.mockReturnValue({
-      hasNav: true,
+      hasNavBar: true,
       showSideNav: true,
       showBottomNav: false,
     });
