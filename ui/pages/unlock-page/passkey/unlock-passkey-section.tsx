@@ -45,11 +45,8 @@ import {
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
-import {
-  UsefulScreenReadyContext,
-  useUsefulScreenReady,
-} from '../../../hooks/useUsefulScreenReady';
-import { discardUsefulScreenReadyTrace } from '../../../helpers/utils/useful-screen-ready';
+import { useAfterPaint } from '../../../hooks/useAfterPaint';
+import { UnlockMeasurementContext } from '../unlock-performance';
 
 export type PasskeyUnlockSuccessContext = {
   /**
@@ -87,15 +84,15 @@ export const UnlockPasskeySection = ({
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const isPasskeyMigrationEligible = useSelector(getIsPasskeyUserHandleBased);
   const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
-  const readinessKey = useContext(UsefulScreenReadyContext);
+  const measurement = useContext(UnlockMeasurementContext);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
   const [showTroubleshootModal, setShowTroubleshootModal] = useState(false);
 
-  useUsefulScreenReady(
-    'unlock',
+  useAfterPaint(
     isUnlockReady && !passkeyInProgress && !showTroubleshootModal,
+    measurement?.reportReady,
   );
 
   const [mountAutoUnlockEligible] = useState(
@@ -127,8 +124,8 @@ export const UnlockPasskeySection = ({
 
       // Automatic authentication never offers an idle form before user input.
       // Exclude the whole document, including cancellation/password fallback.
-      if (isAutoPrompt && readinessKey !== undefined) {
-        discardUsefulScreenReadyTrace();
+      if (isAutoPrompt) {
+        measurement?.discard();
       }
 
       if (isMountedRef.current) {
@@ -242,7 +239,7 @@ export const UnlockPasskeySection = ({
       isPasswordInProgress,
       passkeyInProgress,
       isPasskeyActive,
-      readinessKey,
+      measurement,
       onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,

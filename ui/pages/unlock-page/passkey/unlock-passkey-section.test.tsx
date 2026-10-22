@@ -10,17 +10,13 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
-import { UsefulScreenReadyContext } from '../../../hooks/useUsefulScreenReady';
-import { reportUsefulScreenReady } from '../../../helpers/utils/useful-screen-ready';
+import { UnlockMeasurementContext } from '../unlock-performance';
 import { UnlockPasskeySection } from './unlock-passkey-section';
 
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
 
-jest.mock('../../../helpers/utils/useful-screen-ready', () => ({
-  ...jest.requireActual('../../../helpers/utils/useful-screen-ready'),
-  reportUsefulScreenReady: jest.fn(),
-}));
+const measurement = { reportReady: jest.fn(), discard: jest.fn() };
 
 jest.mock('../../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
@@ -364,9 +360,9 @@ describe('UnlockPasskeySection', () => {
       const unlock = createDeferredPromise<void>();
       mockUnlockWithPasskey.mockReturnValueOnce(unlock.promise);
       const { getByTestId, getByRole } = renderWithProvider(
-        <UsefulScreenReadyContext.Provider value="initial">
+        <UnlockMeasurementContext.Provider value={measurement}>
           <UnlockPasskeySection {...baseProps} />
-        </UsefulScreenReadyContext.Provider>,
+        </UnlockMeasurementContext.Provider>,
         mockStore,
         '/unlock',
       );
@@ -375,11 +371,11 @@ describe('UnlockPasskeySection', () => {
       await act(async () => unlock.resolve());
 
       act(() => jest.advanceTimersByTime(48));
-      expect(reportUsefulScreenReady).not.toHaveBeenCalled();
+      expect(measurement.reportReady).not.toHaveBeenCalled();
 
       fireEvent.click(getByRole('button', { name: 'Close' }));
       act(() => jest.advanceTimersByTime(48));
-      expect(reportUsefulScreenReady).toHaveBeenCalledWith('initial', 'unlock');
+      expect(measurement.reportReady).toHaveBeenCalledTimes(1);
     });
   });
 
