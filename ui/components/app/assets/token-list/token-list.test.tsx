@@ -130,9 +130,15 @@ jest.mock('../../../../selectors/multichain/feature-flags', () => ({
   getIsSecurityTrustTdpEnabled: jest.fn(),
 }));
 
+jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual(
+    '../../../../selectors/multichain-accounts/account-tree',
+  ),
+  getSelectedAccountGroup: jest.fn(() => 'group-a'),
+}));
+
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
-  getSelectedAccountGroupNetworkGenerationKey: jest.fn(() => 'group-a:0x1'),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
   selectIsAssetsLoadingForSelectedAccountGroup: jest.fn(),
 }));
