@@ -44,6 +44,7 @@ import {
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
+import { useUsefulScreenReady } from '../../../hooks/useUsefulScreenReady';
 
 export type PasskeyUnlockSuccessContext = {
   /**
@@ -55,6 +56,7 @@ export type PasskeyUnlockSuccessContext = {
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
+  isUnlockReady: boolean;
   isPasskeyActive: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
@@ -65,6 +67,7 @@ export type UnlockPasskeySectionProps = {
 
 export const UnlockPasskeySection = ({
   logoSection,
+  isUnlockReady,
   isPasskeyActive,
   passkeyAutoUnlockSuppressed,
   mustDeferPasskeyToBrowserTab,
@@ -83,6 +86,11 @@ export const UnlockPasskeySection = ({
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
   const [showTroubleshootModal, setShowTroubleshootModal] = useState(false);
+
+  useUsefulScreenReady(
+    'unlock',
+    isUnlockReady && !passkeyInProgress && !showTroubleshootModal,
+  );
 
   const [mountAutoUnlockEligible] = useState(
     () =>

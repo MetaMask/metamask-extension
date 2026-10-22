@@ -34,6 +34,7 @@ import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
 import {
   launchMetamaskUi,
+  trackUsefulScreenVisibility,
   CriticalStartupErrorHandler,
   connectToBackground,
   displayCriticalErrorMessage,
@@ -61,6 +62,8 @@ import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+
+trackUsefulScreenVisibility();
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';

@@ -672,6 +672,13 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
     const showPasswordUnlockForm =
       !this.props.isPasskeyActive || isPasswordUnlockMode;
+    const isUnlockReady =
+      isOnboardingCompleted &&
+      !isLocked &&
+      !isSubmitting &&
+      !showResetPasswordModal &&
+      !showLoginErrorModal &&
+      !showConnectionsRemovedModal;
 
     return (
       <Box
@@ -688,17 +695,9 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
             onClose={() => this.setState({ showResetPasswordModal: false })}
           />
         )}
-        <UsefulScreenReady
-          screen="unlock"
-          ready={
-            isOnboardingCompleted &&
-            !isLocked &&
-            !isSubmitting &&
-            !showResetPasswordModal &&
-            !showLoginErrorModal &&
-            !showConnectionsRemovedModal
-          }
-        />
+        {showPasswordUnlockForm && (
+          <UsefulScreenReady screen="unlock" ready={isUnlockReady} />
+        )}
         {showLoginErrorModal && (
           <LoginErrorModal
             loginError={LOGIN_ERROR.RESET_WALLET}
@@ -849,6 +848,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
           ) : (
             <UnlockPasskeySection
               logoSection={this.renderLogoSection(isRehydrationFlow)}
+              isUnlockReady={isUnlockReady}
               isPasskeyActive={this.props.isPasskeyActive}
               passkeyAutoUnlockSuppressed={
                 this.props.passkeyAutoUnlockSuppressed

@@ -53,6 +53,22 @@ function onVisibilityChange(): void {
   }
 }
 
+/** Track document visibility before waiting for background initialization. */
+export function trackUsefulScreenVisibility(): void {
+  if (finished) {
+    return;
+  }
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  window.addEventListener('pagehide', discard);
+  // The bundle itself may have loaded after the document became visible.
+  const visibilityEntries =
+    performance.getEntriesByType?.('visibility-state') ?? [];
+  if (visibilityEntries.some((entry) => entry.name === 'hidden')) {
+    discard();
+  }
+  onVisibilityChange();
+}
+
 /**
  * Capture the initial wallet state once, before React renders.
  * @param options - Initial state received from the background.
@@ -67,8 +83,6 @@ export function initializeUsefulScreenReadyTrace(
     ...options,
     backgroundInitializedAt: getBackgroundInitializedAt(),
   };
-  document.addEventListener('visibilitychange', onVisibilityChange);
-  window.addEventListener('pagehide', discard);
   onVisibilityChange();
 }
 

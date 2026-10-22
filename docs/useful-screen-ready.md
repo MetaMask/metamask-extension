@@ -28,6 +28,12 @@ Keep the marker with the useful content if introducing separate Suspense boundar
 - Startup `REPLACE` redirects are allowed. Subsequent `PUSH`/`POP`, unsupported
   routes, hidden documents, and page close abandon measurement. Unmounting or
   becoming unready cancels a pending report.
+- Visibility and page-close tracking starts before background initialization.
+  Where supported, buffered `visibility-state` entries also exclude documents
+  hidden before the UI bundle ran. Other browsers use the current visibility
+  state and subsequent events; visibility before script execution is unknown.
+- Passkey readiness also waits for authentication to finish and its
+  troubleshooting modal to close.
 - Create and immediately end the span when ready, backdating to document navigation.
   Abandoned loads produce no successful sample or incomplete span.
 - Compare p50/p95 within matching `screen`, `wallet.ui_type`, `wallet.unlocked`,

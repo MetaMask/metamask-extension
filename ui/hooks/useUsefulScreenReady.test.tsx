@@ -46,6 +46,7 @@ describe('useUsefulScreenReady', () => {
   const end = jest.fn();
   const startSpanManual = jest.fn();
   let timing: typeof Timing;
+  let getEntriesByTypeDescriptor: PropertyDescriptor | undefined;
 
   const initialize = (screen: Readiness.UsefulScreen = 'home') => {
     mockLocation.pathname = {
@@ -53,6 +54,7 @@ describe('useUsefulScreenReady', () => {
       unlock: '/unlock',
       confirmation: '/confirmation/request',
     }[screen];
+    mockReadiness.trackUsefulScreenVisibility();
     mockReadiness.initializeUsefulScreenReadyTrace({
       isUnlocked: screen !== 'unlock',
       uiType:
@@ -80,6 +82,16 @@ describe('useUsefulScreenReady', () => {
     jest.spyOn(performance, 'now').mockImplementation(() => Date.now());
     jest.clearAllMocks();
     jest.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
+    // JSDOM does not implement the performance timeline.
+    getEntriesByTypeDescriptor = Object.getOwnPropertyDescriptor(
+      performance,
+      'getEntriesByType',
+    );
+    Object.defineProperty(performance, 'getEntriesByType', {
+      configurable: true,
+      writable: true,
+      value: jest.fn().mockReturnValue([]),
+    });
     startSpanManual.mockImplementation((_, callback) =>
       callback({ end, setAttribute: jest.fn() } as unknown as Sentry.Span),
     );
@@ -100,6 +112,15 @@ describe('useUsefulScreenReady', () => {
 
   afterEach(() => {
     window.dispatchEvent(new Event('pagehide'));
+    if (getEntriesByTypeDescriptor) {
+      Object.defineProperty(
+        performance,
+        'getEntriesByType',
+        getEntriesByTypeDescriptor,
+      );
+    } else {
+      Reflect.deleteProperty(performance, 'getEntriesByType');
+    }
     jest.useRealTimers();
   });
 
@@ -227,6 +248,61 @@ describe('useUsefulScreenReady', () => {
     renderScreen();
     advance();
     expect(startSpanManual).not.toHaveBeenCalled();
+  });
+
+  jestIt.each([
+    { states: ['hidden', 'visible'] },
+    { states: ['visible', 'hidden', 'visible'] },
+  ])('excludes earlier hidden visibility history $states', ({ states }) => {
+    jest
+      .spyOn(performance, 'getEntriesByType')
+      .mockImplementation((type) =>
+        type === 'visibility-state'
+          ? states.map((name) => ({ name }) as PerformanceEntry)
+          : [],
+      );
+
+    initialize();
+    renderScreen();
+    advance();
+
+    expect(startSpanManual).not.toHaveBeenCalled();
+  });
+
+  jestIt.each(['hidden', 'closed'] as const)(
+    'excludes a document %s before background state arrives without visibility history',
+    (reason) => {
+      mockReadiness.trackUsefulScreenVisibility();
+      if (reason === 'hidden') {
+        jest
+          .spyOn(document, 'visibilityState', 'get')
+          .mockReturnValue('hidden');
+        document.dispatchEvent(new Event('visibilitychange'));
+        jest
+          .spyOn(document, 'visibilityState', 'get')
+          .mockReturnValue('visible');
+      } else {
+        window.dispatchEvent(new Event('pagehide'));
+      }
+
+      initialize();
+      renderScreen();
+      advance();
+
+      expect(startSpanManual).not.toHaveBeenCalled();
+    },
+  );
+
+  it('accepts an entirely visible document history', () => {
+    jest
+      .spyOn(performance, 'getEntriesByType')
+      .mockReturnValue([{ name: 'visible' } as PerformanceEntry]);
+
+    initialize();
+    renderScreen();
+    advance();
+
+    expect(startSpanManual).toHaveBeenCalledTimes(1);
   });
 
   jestIt.each(['initially hidden', 'hidden during load', 'closed'] as const)(
