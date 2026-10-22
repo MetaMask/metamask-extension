@@ -1,4 +1,5 @@
 import type * as Sentry from '@sentry/browser';
+import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
@@ -317,6 +318,11 @@ export type EndTraceRequest = {
   timestamp?: number;
 
   /**
+   * Final status to record on the span.
+   */
+  status?: 'ok' | 'error';
+
+  /**
    * Custom data to associate with the trace when ending it.
    * These will be set as attributes on the span.
    */
@@ -502,6 +508,12 @@ export function endTrace(request: EndTraceRequest): void {
     for (const [attrKey, attrValue] of Object.entries(request.data)) {
       span.setAttribute(attrKey, attrValue);
     }
+  }
+
+  if (request.status && pendingTrace.span) {
+    pendingTrace.span.setStatus({
+      code: request.status === 'ok' ? SPAN_STATUS_OK : SPAN_STATUS_ERROR,
+    });
   }
 
   const endTime = timestamp ?? getPerformanceTimestamp();
