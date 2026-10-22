@@ -32,7 +32,7 @@ const ZENDESK_URLS = {
   PASSKEYS:
     'https://support.metamask.io/configure/wallet/passkeys/?utm_source=extension',
   SUPPORTED_PASSKEYS:
-    'https://support.metamask.io/configure/wallet/passkeys/?utm_source=extension#supported-providers',
+    'https://support.metamask.io/configure/wallet/passkeys/?utm_source=extension#supported-passkey-providers',
   PASSWORD_ARTICLE:
     'https://support.metamask.io/configure/wallet/passwords-and-metamask/?utm_source=extension',
   PASSWORD_AND_SRP_ARTICLE:
