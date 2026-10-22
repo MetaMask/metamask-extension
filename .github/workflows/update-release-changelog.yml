@@ -31,7 +31,6 @@ jobs:
           permissions: |
             contents: write
             pull_requests: write
-            workflows: write
 
       - name: Update Release Changelog
         uses: MetaMask/github-tools/.github/actions/update-release-changelog@v1
