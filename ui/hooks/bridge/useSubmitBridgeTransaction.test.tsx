@@ -27,6 +27,10 @@ import {
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
+import {
+  submitBridgeTx,
+  submitBridgeIntent,
+} from '../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
@@ -36,7 +40,6 @@ import {
 import { createHardwareWalletError } from '../../contexts/hardware-wallets/errors';
 import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 import { CHAIN_VALUE_ORDER_AB_KEY } from '../../../shared/lib/ab-testing/configs/chain-value-order';
-import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 jest.mock('../../../shared/lib/sentry', () => ({
@@ -222,10 +225,14 @@ const makeWrapper = (
   );
 };
 
-const originalSubmitBridgeTx = bridgeStatusActions.submitBridgeTx;
-const originalSubmitBridgeIntent = bridgeStatusActions.submitBridgeIntent;
-const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
-const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
+let submitTxSpy: jest.SpyInstance<
+  ReturnType<typeof submitBridgeTx>,
+  Parameters<typeof submitBridgeTx>
+>;
+let submitIntentSpy: jest.SpyInstance<
+  ReturnType<typeof submitBridgeIntent>,
+  Parameters<typeof submitBridgeIntent>
+>;
 const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
@@ -235,18 +242,22 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      submitTxSpy.mockImplementation(originalSubmitBridgeTx);
-      submitIntentSpy.mockImplementation(originalSubmitBridgeIntent);
+      submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
+      submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(null);
       captureExceptionSpy.mockReturnValue(undefined);
       setBackgroundConnection({
-        submitTx: submitTxSpy,
-        submitIntent: submitIntentSpy,
-        getLocation: jest.fn().mockResolvedValue('Main View'),
         getStatePatches: jest.fn(),
-        messengerCall: jest.fn(),
-        resetState: () => mockResetState(),
+        messengerCall: jest.fn((actionType: string) => {
+          if (actionType === 'BridgeController:getLocation') {
+            return Promise.resolve('Main View');
+          }
+          if (actionType === 'BridgeController:resetState') {
+            return Promise.resolve(mockResetState());
+          }
+          return Promise.resolve(undefined);
+        }),
       } as never);
     });
 
@@ -431,9 +442,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         },
       });
       const submitError = new Error('transport disconnected');
-      submitTxSpy.mockImplementationOnce((async () => {
+      submitTxSpy.mockReturnValueOnce(async () => {
         throw submitError;
-      }) as never);
+      });
       isHardwareWalletSpy.mockImplementation(() => true);
       const { result, unmount } = renderHook(
         () => useSubmitBridgeTransaction(),
@@ -484,9 +495,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         },
       });
       const submitError = new Error('user rejected the request');
-      submitTxSpy.mockImplementationOnce((async () => {
+      submitTxSpy.mockReturnValueOnce(async () => {
         throw submitError;
-      }) as never);
+      });
       isHardwareWalletSpy.mockImplementation(() => true);
       const { result, unmount } = renderHook(
         () => useSubmitBridgeTransaction(),
@@ -531,9 +542,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         },
       });
       // Never-resolving promise simulates a hung hardware-wallet RPC.
-      submitTxSpy.mockImplementation(
-        (() => new Promise(() => undefined)) as never,
-      );
+      submitTxSpy.mockReturnValue(() => new Promise(() => undefined));
       isHardwareWalletSpy.mockImplementation(() => true);
       const { result, unmount } = renderHook(
         () => useSubmitBridgeTransaction(),
@@ -683,9 +692,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
     it('does not show the hardware wallet error modal for non-device submit failures', async () => {
       const store = makeMockStore();
       const submitError = new Error('quote submit failed');
-      submitIntentSpy.mockImplementationOnce((async () => {
+      submitIntentSpy.mockReturnValueOnce(async () => {
         throw submitError;
-      }) as never);
+      });
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
@@ -737,7 +746,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         accountAddress: expect.any(String),
         location: 'Main View',
         tokenSecurityTypeDestination: null,
-        migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
         activeAbTests: undefined,
         inputPrimaryDenomination: 'fiat_value',
         quotesReceivedContext: expect.objectContaining({
@@ -871,9 +879,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
     it('routes to default route with replace when non-HW intent submission fails', async () => {
       const store = makeMockStore();
       const submitError = new Error('submit failed');
-      submitIntentSpy.mockImplementationOnce((async () => {
+      submitIntentSpy.mockReturnValueOnce(async () => {
         throw submitError;
-      }) as never);
+      });
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
