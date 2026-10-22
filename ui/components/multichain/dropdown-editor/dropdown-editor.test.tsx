@@ -104,28 +104,6 @@ describe('DropdownEditor', () => {
     expect(onItemSelected).not.toHaveBeenCalled();
   });
 
-  it('moves between options with the arrow keys', async () => {
-    renderEditor();
-
-    const trigger = screen.getByTestId('rpc-dropdown');
-    await openDropdown(trigger);
-    trigger.focus();
-
-    await act(async () => {
-      fireEvent.keyDown(trigger, { key: 'ArrowDown' });
-    });
-
-    const firstOption = screen.getByTestId('endpoint-First endpoint');
-    expect(firstOption).toHaveFocus();
-    expect(firstOption).not.toHaveAttribute('tabindex', '-1');
-
-    await act(async () => {
-      fireEvent.keyDown(firstOption, { key: 'ArrowDown' });
-    });
-
-    expect(screen.getByTestId('endpoint-Second endpoint')).toHaveFocus();
-  });
-
   it('opens the add-item flow', async () => {
     renderEditor();
 

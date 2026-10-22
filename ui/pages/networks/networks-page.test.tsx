@@ -481,7 +481,46 @@ describe('NetworksPage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('reaches a Chainlist network with the arrow keys', async () => {
+  it('highlights a Chainlist suggestion without leaving the name field', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    const nameInput = screen.getByTestId('network-form-network-name');
+    nameInput.focus();
+    expect(nameInput).toHaveAttribute('role', 'combobox');
+    expect(nameInput).toHaveAttribute('aria-expanded', 'true');
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'ArrowDown' });
+    });
+    const [firstNetwork, secondNetwork] = screen.getAllByTestId(
+      'networks-page-chainlist-network',
+    );
+    expect(nameInput).toHaveFocus();
+    expect(firstNetwork).toHaveAttribute('aria-selected', 'true');
+    expect(firstNetwork).toHaveAttribute('tabindex', '-1');
+    expect(secondNetwork).toHaveAttribute('aria-selected', 'false');
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'ArrowDown' });
+    });
+    expect(nameInput).toHaveFocus();
+    expect(secondNetwork).toHaveAttribute('aria-selected', 'true');
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'Enter' });
+    });
+
+    expect(nameInput).toHaveValue('Cronos');
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('25');
+  });
+
+  it('keeps the typed name when Enter is pressed before a suggestion is highlighted', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
       remoteFeatureFlags: {
@@ -494,23 +533,35 @@ describe('NetworksPage', () => {
     nameInput.focus();
 
     await act(async () => {
-      fireEvent.keyDown(nameInput, { key: 'ArrowDown' });
+      fireEvent.keyDown(nameInput, { key: 'Enter' });
     });
-    const [firstNetwork, secondNetwork] = screen.getAllByTestId(
-      'networks-page-chainlist-network',
-    );
-    expect(firstNetwork).toHaveFocus();
-    expect(firstNetwork).not.toHaveAttribute('tabindex', '-1');
+
+    expect(nameInput).toHaveValue('');
+    expect(nameInput).toHaveFocus();
+    expect(
+      screen.getByTestId('networks-page-chainlist-dropdown'),
+    ).toBeInTheDocument();
+  });
+
+  it('closes the Chainlist suggestions when Escape is pressed', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    const nameInput = screen.getByTestId('network-form-network-name');
+    nameInput.focus();
 
     await act(async () => {
-      fireEvent.keyDown(firstNetwork, { key: 'ArrowDown' });
+      fireEvent.keyDown(nameInput, { key: 'Escape' });
     });
-    expect(secondNetwork).toHaveFocus();
 
-    await userEvent.keyboard('{Enter}');
-
-    expect(nameInput).toHaveValue('Cronos');
-    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('25');
+    expect(
+      screen.queryByTestId('networks-page-chainlist-dropdown'),
+    ).not.toBeInTheDocument();
   });
 
   it('keeps a typed network name when Chainlist has no match', async () => {
