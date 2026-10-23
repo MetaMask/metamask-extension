@@ -17,18 +17,11 @@ import {
 import type { FeatureAnnouncementNotification } from './types';
 
 const mockNavigate = jest.fn();
-const mockUseSelector = jest.fn();
 const linkText = 'Learn more';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-}));
-
-// ExternalLinkButton reads the unified buy flag via `useSelector`.
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: (selector: unknown) => mockUseSelector(selector),
 }));
 
 jest.mock('../../../../hooks/useAnalytics', () => {
@@ -115,7 +108,6 @@ function createDeferred<ResolvedValue = void>() {
 describe('Feature announcement footer buttons', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseSelector.mockReturnValue(false);
     global.platform = {
       openExtensionInBrowser: jest.fn(),
       openTab: jest.fn(),
@@ -257,68 +249,6 @@ describe('Feature announcement footer buttons', () => {
     );
   });
 
-  it('resolves deep links with the unified buy flag on', async () => {
-    const resolveTrustedDeepLinkHrefSpy = jest
-      .spyOn(resolveDeepLinkHrefUtils, 'resolveTrustedDeepLinkHref')
-      .mockResolvedValue('/ramps/buy-deeplink-entry?amount=100');
-    mockUseSelector.mockReturnValue(true);
-
-    renderExternalLinkButton('https://link.metamask.io/buy?amount=100');
-
-    await waitFor(() =>
-      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(
-        'https://link.metamask.io/buy?amount=100',
-        true,
-      ),
-    );
-
-    fireEvent.click(screen.getByRole('link', { name: linkText }));
-
-    await waitFor(() =>
-      expect(mockNavigate).toHaveBeenCalledWith(
-        '/ramps/buy-deeplink-entry?amount=100',
-      ),
-    );
-    expect(global.platform.openTab).not.toHaveBeenCalled();
-  });
-
-  it('re-resolves the deep link when the unified buy flag changes', async () => {
-    // Remote flags can arrive after the notification rendered; a cached
-    // resolution keyed only on the URL would keep the stale Portfolio href.
-    const linkUrl = 'https://link.metamask.io/buy?amount=100';
-    const portfolioHref = 'https://app.metamask.io/buy?amount=100';
-    const unifiedHref = '/ramps/buy-deeplink-entry?amount=100';
-    const resolveTrustedDeepLinkHrefSpy = jest
-      .spyOn(resolveDeepLinkHrefUtils, 'resolveTrustedDeepLinkHref')
-      .mockImplementation((href, isRampsEnabled) =>
-        isRampsEnabled
-          ? Promise.resolve(unifiedHref)
-          : Promise.resolve(portfolioHref),
-      );
-    mockUseSelector.mockReturnValue(false);
-    const { rerender } = renderExternalLinkButton(linkUrl);
-
-    await waitFor(() =>
-      expect(screen.getByRole('link', { name: linkText })).toHaveAttribute(
-        'href',
-        portfolioHref,
-      ),
-    );
-
-    mockUseSelector.mockReturnValue(true);
-    rerender(createExternalLinkButton(linkUrl));
-
-    await waitFor(() =>
-      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(linkUrl, true),
-    );
-    await waitFor(() =>
-      expect(screen.getByRole('link', { name: linkText })).toHaveAttribute(
-        'href',
-        unifiedHref,
-      ),
-    );
-  });
-
   it('does not reuse a resolved href after the external link URL changes', async () => {
     const firstUrl = 'https://link.metamask.io/buy?amount=100';
     const firstResolvedUrl = 'https://app.metamask.io/buy?amount=100';
@@ -354,10 +284,7 @@ describe('Feature announcement footer buttons', () => {
       secondUrl,
     );
     await waitFor(() =>
-      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(
-        secondUrl,
-        false,
-      ),
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(secondUrl),
     );
 
     fireEvent.click(screen.getByRole('link', { name: linkText }));
@@ -402,19 +329,13 @@ describe('Feature announcement footer buttons', () => {
     const { rerender } = renderExternalLinkButton(firstUrl);
 
     await waitFor(() =>
-      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(
-        firstUrl,
-        false,
-      ),
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(firstUrl),
     );
 
     rerender(createExternalLinkButton(secondUrl));
 
     await waitFor(() =>
-      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(
-        secondUrl,
-        false,
-      ),
+      expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledWith(secondUrl),
     );
     expect(resolveTrustedDeepLinkHrefSpy).toHaveBeenCalledTimes(2);
 
@@ -458,7 +379,9 @@ describe('Feature announcement footer buttons', () => {
   });
 
   it('opens a deep link redirect URL in a new tab', async () => {
-    renderExternalLinkButton('https://link.metamask.io/buy?amount=100');
+    renderExternalLinkButton(
+      'https://link.metamask.io/card-onboarding?amount=100',
+    );
 
     const link = screen.getByRole('link', { name: linkText });
     await waitFor(() => expect(link).toHaveAttribute('target', '_blank'));
@@ -467,7 +390,7 @@ describe('Feature announcement footer buttons', () => {
 
     await waitFor(() =>
       expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: 'https://app.metamask.io/buy?amount=100',
+        url: 'https://metamask.io/card?amount=100',
       }),
     );
     expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();

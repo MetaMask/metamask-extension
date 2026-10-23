@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -13,7 +12,6 @@ import {
   resolveTrustedDeepLinkHref,
 } from '../../../../helpers/utils/resolve-deep-link-href';
 import { getNotificationTypeForAnalytics } from '../../../../helpers/utils/notification.util';
-import { getIsRampsEnabled } from '../../../../selectors/ramps-feature-flags';
 import { FeatureAnnouncementNotification } from './types';
 
 type ResolvedHref = {
@@ -122,14 +120,11 @@ export const ExtensionLinkButton = (props: {
   );
 };
 
-const ExternalLinkButtonInner = ({
-  notification,
-  isRampsEnabled,
-}: {
+export const ExternalLinkButton = (props: {
   notification: FeatureAnnouncementNotification;
-  isRampsEnabled: boolean;
 }) => {
   const navigate = useNavigate();
+  const { notification } = props;
   const analyticCallback = useAnalyticEventCallback({
     notification,
     clickType: 'cta_button',
@@ -162,15 +157,13 @@ const ExternalLinkButtonInner = ({
       return pendingResolvedHref.promise;
     }
 
-    const promise = resolveTrustedDeepLinkHref(linkUrl, isRampsEnabled).catch(
-      (error) => {
-        console.error(
-          '[ExternalLinkButton] error resolving external link',
-          error,
-        );
-        return linkUrl;
-      },
-    );
+    const promise = resolveTrustedDeepLinkHref(linkUrl).catch((error) => {
+      console.error(
+        '[ExternalLinkButton] error resolving external link',
+        error,
+      );
+      return linkUrl;
+    });
 
     pendingResolvedHrefRef.current = {
       promise,
@@ -178,7 +171,7 @@ const ExternalLinkButtonInner = ({
     };
 
     return promise;
-  }, [externalLinkUrl, isRampsEnabled]);
+  }, [externalLinkUrl]);
 
   useEffect(() => {
     if (!externalLinkUrl) {
@@ -271,22 +264,6 @@ const ExternalLinkButtonInner = ({
           : false
       }
       onClick={onClick}
-    />
-  );
-};
-
-// Remount on flag flip, so the URL-keyed href cache never goes stale when
-// remote flags arrive after the notification rendered.
-export const ExternalLinkButton = (props: {
-  notification: FeatureAnnouncementNotification;
-}) => {
-  const isRampsEnabled = useSelector(getIsRampsEnabled);
-
-  return (
-    <ExternalLinkButtonInner
-      key={String(isRampsEnabled)}
-      {...props}
-      isRampsEnabled={isRampsEnabled}
     />
   );
 };
