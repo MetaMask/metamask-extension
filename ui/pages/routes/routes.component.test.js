@@ -25,7 +25,11 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
-import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
+import Routes, {
+  routeConfig,
+  TokenManagementFeatureRoute,
+  PageNotFound,
+} from '.';
 
 const middlewares = [thunk];
 
@@ -223,6 +227,18 @@ describe('Routes Component', () => {
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
+  });
+
+  it('shows the missing-page screen for unknown routes', () => {
+    const fallbackRoute = matchRoutes(routeConfig, '/unknown-route')?.at(
+      -1,
+    )?.route;
+    expect(fallbackRoute).toMatchObject({
+      path: '*',
+      element: expect.objectContaining({
+        type: PageNotFound,
+      }),
+    });
   });
 
   it('registers the hardware wallet signing page outside guarded swap routes', () => {

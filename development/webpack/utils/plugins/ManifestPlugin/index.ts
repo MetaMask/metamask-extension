@@ -934,6 +934,28 @@ export class ManifestPlugin<Z extends boolean> {
     }
   }
 
+  private emitContentScriptCssAssets(compilation: Compilation) {
+    const cssPaths = new Set(
+      [...this.manifests.values()].flatMap((manifest) =>
+        (manifest.content_scripts ?? []).flatMap(
+          (contentScript: { css?: string[] }) => contentScript.css ?? [],
+        ),
+      ),
+    );
+
+    for (const cssPath of cssPaths) {
+      if (compilation.getAsset(cssPath)) {
+        continue;
+      }
+
+      const sourcePath = path.join(compilation.compiler.context, cssPath);
+      compilation.fileDependencies.add(sourcePath);
+      compilation.emitAsset(cssPath, new RawSource(readFileSync(sourcePath)), {
+        contentType: 'text/css',
+      });
+    }
+  }
+
   private hookIntoPipelines(compilation: Compilation): void {
     // hook into the processAssets hook to move/zip assets
     const tapOptions = { name: NAME, stage: Infinity };
@@ -942,6 +964,7 @@ export class ManifestPlugin<Z extends boolean> {
       compilation.hooks.processAssets.tapPromise(
         tapOptions,
         async (assets: Assets) => {
+          this.emitContentScriptCssAssets(compilation);
           this.resolveEntrypoints(compilation);
           const bundleSizeStats = this.collectBundleSizeStats(compilation);
           await this.zipAndMoveAssets(compilation, assets, options);
@@ -951,6 +974,7 @@ export class ManifestPlugin<Z extends boolean> {
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
+        this.emitContentScriptCssAssets(compilation);
         this.resolveEntrypoints(compilation);
         const bundleSizeStats = this.collectBundleSizeStats(compilation);
         this.moveAssets(compilation, assets, options);

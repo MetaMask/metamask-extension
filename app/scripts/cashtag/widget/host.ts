@@ -1,13 +1,7 @@
 import { findCashtagAnchors, symbolFromCashtagAnchor } from '../lib/helpers';
 import type { ResolvedTicker } from '../lib/types';
-import {
-  bindHostColorScheme,
-  injectPageStyles,
-  removePageStyles,
-} from '../lib/ui';
-import widgetPageStyles from './page.css';
+import { bindHostColorScheme } from '../lib/ui';
 
-const widgetPageStyleAttr = 'data-mm-cashtag-widget-css';
 const widgetFramePath = 'cashtag-widget.html';
 const anchorNameProp = 'anchor-name';
 const positionAnchorProp = 'position-anchor';
@@ -28,8 +22,6 @@ function frameUrl(symbol: string, theme: 'light' | 'dark') {
 }
 
 export function injectWidget(): WidgetHandle {
-  injectPageStyles(widgetPageStyles, widgetPageStyleAttr);
-
   const host = document.createElement('div');
   host.id = 'mm-cashtag-popover';
   host.setAttribute('popover', 'auto');
@@ -72,7 +64,6 @@ export function injectWidget(): WidgetHandle {
     stop() {
       unbindColorScheme();
       host.remove();
-      removePageStyles(widgetPageStyleAttr);
     },
   };
 }
