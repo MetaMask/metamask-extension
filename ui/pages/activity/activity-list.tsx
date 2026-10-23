@@ -44,6 +44,20 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 const itemHeight = 62;
 const headerHeight = 40;
 
+const ACTIVITY_STATUS_TO_TRANSACTION_STATUS = {
+  success: 'confirmed',
+  pending: 'submitted',
+  cancelled: 'dropped',
+  failed: 'failed',
+  unapproved: 'unapproved',
+  approved: 'approved',
+  signed: 'signed',
+  submitted: 'submitted',
+  confirmed: 'confirmed',
+  dropped: 'dropped',
+  rejected: 'rejected',
+} as const;
+
 export function ActivityList({
   filter,
   entryPoint,
@@ -126,7 +140,10 @@ export function ActivityList({
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
           activity_type: item.type,
-          transaction_status: item.status,
+          transaction_status:
+            ACTIVITY_STATUS_TO_TRANSACTION_STATUS[
+              item.status as keyof typeof ACTIVITY_STATUS_TO_TRANSACTION_STATUS
+            ] ?? item.status,
           location: filter && 'assetId' in filter ? 'asset_details' : 'home',
           chain_id_source: item.chainId,
           chain_id_destination: item.chainId,
