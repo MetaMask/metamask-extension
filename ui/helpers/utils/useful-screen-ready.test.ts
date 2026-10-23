@@ -10,6 +10,7 @@ describe('registerDocumentLoadMeasurement', () => {
   const setTag = jest.fn();
   const end = jest.fn();
   const startSpanManual = jest.fn();
+  const getEntriesByType = jest.fn();
   let timing: typeof Timing;
   let getEntriesByTypeDescriptor: PropertyDescriptor | undefined;
 
@@ -32,7 +33,7 @@ describe('registerDocumentLoadMeasurement', () => {
     Object.defineProperty(performance, 'getEntriesByType', {
       configurable: true,
       writable: true,
-      value: jest.fn().mockReturnValue([]),
+      value: getEntriesByType.mockReturnValue([]),
     });
     startSpanManual.mockImplementation((_, callback) =>
       callback({ end, setAttribute: jest.fn() } as unknown as Sentry.Span),
@@ -113,13 +114,7 @@ describe('registerDocumentLoadMeasurement', () => {
     { states: ['hidden', 'visible'] },
     { states: ['visible', 'hidden', 'visible'] },
   ])('excludes earlier hidden visibility history $states', ({ states }) => {
-    jest
-      .spyOn(performance, 'getEntriesByType')
-      .mockImplementation((type) =>
-        type === 'visibility-state'
-          ? states.map((name) => ({ name }) as PerformanceEntry)
-          : [],
-      );
+    getEntriesByType.mockReturnValue(states.map((name) => ({ name })));
 
     mockReadiness.trackUsefulScreenVisibility();
     const measurement = register();
@@ -152,9 +147,7 @@ describe('registerDocumentLoadMeasurement', () => {
   );
 
   it('accepts an entirely visible document history', () => {
-    jest
-      .spyOn(performance, 'getEntriesByType')
-      .mockReturnValue([{ name: 'visible' } as PerformanceEntry]);
+    getEntriesByType.mockReturnValue([{ name: 'visible' }]);
 
     mockReadiness.trackUsefulScreenVisibility();
     const measurement = register();
