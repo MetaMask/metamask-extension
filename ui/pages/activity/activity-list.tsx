@@ -48,14 +48,6 @@ const ACTIVITY_STATUS_TO_TRANSACTION_STATUS = {
   success: 'confirmed',
   pending: 'submitted',
   cancelled: 'dropped',
-  failed: 'failed',
-  unapproved: 'unapproved',
-  approved: 'approved',
-  signed: 'signed',
-  submitted: 'submitted',
-  confirmed: 'confirmed',
-  dropped: 'dropped',
-  rejected: 'rejected',
 } as const;
 
 export function ActivityList({
