@@ -22,7 +22,6 @@ describe('Asset sticky actions', function () {
           .withEnabledNetworks({ eip155: { [chainId]: true } })
           .build(),
         title: (this as Context).test?.fullTitle(),
-        ethConversionInUsd: 1700,
         // Known SubscriptionsController startup race, unrelated to this page.
         // Tracked in https://github.com/MetaMask/metamask-extension/issues/45612
         ignoredConsoleErrors: ['getSubscriptions'],

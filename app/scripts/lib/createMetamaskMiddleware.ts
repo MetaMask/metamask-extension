@@ -21,6 +21,7 @@ type Options = Parameters<typeof createWalletMiddleware>[0] & {
 export default function createMetamaskMiddleware({
   version,
   getAccounts,
+  getNetworkClientById,
   processTransaction,
   processTypedMessage,
   processTypedMessageV3,
@@ -44,6 +45,7 @@ export default function createMetamaskMiddleware({
       /* eslint-enable @typescript-eslint/naming-convention */
       createWalletMiddleware({
         getAccounts,
+        getNetworkClientById,
         processTransaction,
         processTypedMessage,
         processTypedMessageV3,

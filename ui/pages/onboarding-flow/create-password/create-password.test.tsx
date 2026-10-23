@@ -414,6 +414,10 @@ describe('Onboarding Create Password', () => {
     });
 
     it('should create new wallet without marketing checked when its social login flow', async () => {
+      const setDataCollectionForMarketingSpy = jest.spyOn(
+        Actions,
+        'setDataCollectionForMarketing',
+      );
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -464,6 +468,7 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockCreateNewAccount).toHaveBeenCalled();
+        expect(setDataCollectionForMarketingSpy).toHaveBeenCalledWith(false);
       });
     });
   });
