@@ -66,14 +66,16 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
    * in-flight request deduplication, so concurrent calls from multiple hook
    * instances collapse into a single network request.
    *
-   * @param method - Background API method to invoke. `getGeolocation`
+   * @param method - Messenger action to invoke. `getGeolocation`
    * respects the controller's cache; `refreshGeolocation` bypasses it.
    * @param options.isCancelled - When this returns true, state updates are
    * skipped (e.g. after the hook unmounts while the request is in flight).
    */
   const fetchGeolocation = useCallback(
     async (
-      method: 'getGeolocation' | 'refreshGeolocation',
+      method:
+        | 'GeolocationController:getGeolocation'
+        | 'GeolocationController:refreshGeolocation',
       options: { isCancelled: () => boolean },
     ): Promise<string | null> => {
       const shouldCommit = () => !options.isCancelled();
@@ -83,9 +85,7 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
       }
 
       try {
-        const location = await (method === 'getGeolocation'
-          ? submitRequestToBackground('GeolocationController:getGeolocation')
-          : submitRequestToBackground<string>('refreshGeolocation'));
+        const location = await submitRequestToBackground(method);
         const resolved = location === UNKNOWN_LOCATION ? null : location;
         if (shouldCommit()) {
           setUserCountry(resolved);
@@ -115,7 +115,7 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
 
     queueMicrotask(() => {
       if (!cancelled) {
-        fetchGeolocation('getGeolocation', {
+        fetchGeolocation('GeolocationController:getGeolocation', {
           isCancelled: () => cancelled,
         });
       }
@@ -129,7 +129,7 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
   const refreshGeolocation = useCallback(async (): Promise<void> => {
     setIsLoading(true);
     setError(null);
-    await fetchGeolocation('refreshGeolocation', {
+    await fetchGeolocation('GeolocationController:refreshGeolocation', {
       isCancelled: () => false,
     });
   }, [fetchGeolocation]);

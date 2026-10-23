@@ -26,9 +26,5 @@ export const GeolocationControllerInit: MessengerClientInitFunction<
 
   return {
     messengerClient,
-    api: {
-      refreshGeolocation:
-        messengerClient.refreshGeolocation.bind(messengerClient),
-    },
   };
 };

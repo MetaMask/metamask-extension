@@ -173,7 +173,7 @@ describe('useMusdGeoBlocking', () => {
 
     expect(submitRequestToBackground).toHaveBeenCalledTimes(2);
     expect(submitRequestToBackground).toHaveBeenLastCalledWith(
-      'refreshGeolocation',
+      'GeolocationController:refreshGeolocation',
     );
     expect(result.current.userCountry).toBe('DE');
   });
