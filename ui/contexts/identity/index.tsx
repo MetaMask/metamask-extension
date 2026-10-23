@@ -6,7 +6,6 @@ import {
   useAutoSignIn,
   useAutoSignOut,
 } from '../../hooks/identity/useAuthentication';
-import { useBrazeIdentity } from '../../helpers/braze/use-braze-identity';
 
 export const MetamaskIdentityProvider = ({
   children,
@@ -19,7 +18,6 @@ export const MetamaskIdentityProvider = ({
     useRampsOrderSyncing();
   const { autoSignIn, shouldAutoSignIn } = useAutoSignIn();
   const { autoSignOut, shouldAutoSignOut } = useAutoSignOut();
-  useBrazeIdentity();
 
   /**
    * Backup and sync effects
@@ -47,7 +45,6 @@ export const MetamaskIdentityProvider = ({
    *
    * - Users should be automatically signed in based on various conditions. (see `useAutoSignIn`).
    * - Users should be signed out if basic functionality is disabled. (see `useAutoSignOut`)
-   * - Braze is identified with the canonical profile ID after sign-in. (see `useBrazeIdentity`)
    */
   useEffect(() => {
     let cancelled = false;

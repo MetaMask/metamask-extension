@@ -38,7 +38,7 @@ INFURA_STORYBOOK_PROJECT_ID=
 
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
-; Braze Web SDK (UI only). Leave unset to skip initialize.
+; Braze Web SDK (MV3 offscreen document only). Leave unset to disable Braze.
 ; From Braze dashboard → Settings → App Settings for the Extension app.
 ; Endpoint looks like sdk.iad-07.braze.com (no https://).
 ;BRAZE_WEB_API_KEY=
