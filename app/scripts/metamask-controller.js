@@ -98,7 +98,6 @@ import {
   getCaip25PermissionFromLegacyPermissions,
   getEthAccountsForScope,
 } from '@metamask/chain-agnostic-permission';
-import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
 
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -2599,7 +2598,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'TransactionController:speedUpTransaction',
       ),
-      estimateGasFee: txController.estimateGasFee.bind(txController),
 
       // permissions
 
@@ -2617,52 +2615,6 @@ export default class MetamaskController extends EventEmitter {
       disconnectOriginFromSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:disconnectOrigin',
-      ),
-
-      // Bridge
-
-      resetState: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:resetState`,
-      ),
-      setInputPrimaryDenomination: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:setInputPrimaryDenomination`,
-      ),
-      updateBridgeQuoteRequestParams: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:updateBridgeQuoteRequestParams`,
-      ),
-      trackUnifiedSwapBridgeEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:trackUnifiedSwapBridgeEvent`,
-      ),
-      setLocation: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:setLocation`,
-      ),
-      getLocation: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:getLocation`,
-      ),
-      updateBatchSellTrades: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
-      ),
-
-      // Bridge Tx submission
-
-      submitTx: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitTx'}`,
-      ),
-      submitIntent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitIntent'}`,
-      ),
-      submitBatchSell: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitBatchSell'}`,
       ),
 
       // MetaMetrics
