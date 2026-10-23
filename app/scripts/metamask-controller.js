@@ -1711,7 +1711,9 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (
-        this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
+        this.controllerMessenger.call(
+          'PerpsController:getWebSocketConnectionState',
+        ) === 'disconnected'
       ) {
         return;
       }
@@ -2446,13 +2448,6 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
 
-      // rewards
-
-      rewardsGetPerpsDiscountForAccount:
-        this.rewardsController.getPerpsDiscountForAccount.bind(
-          this.rewardsController,
-        ),
-
       // claims
 
       getClaimDrafts: this.claimsController.getClaimDrafts.bind(
@@ -2542,10 +2537,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setPendingExtensionVersion.bind(appStateController),
       setLastUpdatedAt:
         appStateController.setLastUpdatedAt.bind(appStateController),
-      setLastPerpsDepositEntryPoint:
-        appStateController.setLastPerpsDepositEntryPoint.bind(
-          appStateController,
-        ),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,

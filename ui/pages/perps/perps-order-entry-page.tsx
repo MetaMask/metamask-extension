@@ -653,9 +653,10 @@ const PerpsOrderEntryPage = () => {
     ) {
       return;
     }
-    submitRequestToBackground('perpsClearPendingTradeConfiguration', [
-      decodedSymbol,
-    ]).catch(() => {
+    submitRequestToBackground(
+      'PerpsController:clearPendingTradeConfiguration',
+      [decodedSymbol],
+    ).catch(() => {
       // A mismatched draft is ignored locally even if best-effort cleanup fails.
     });
   }, [
@@ -677,28 +678,31 @@ const PerpsOrderEntryPage = () => {
       }
       const { formState: latestFormState } = latestFormSnapshot;
       const { autoCloseEnabled } = latestFormState;
-      submitRequestToBackground('perpsSavePendingTradeConfiguration', [
-        decodedSymbol,
-        {
-          amount: latestFormState.amount,
-          leverage: latestFormState.leverage,
-          // Restoration derives Auto-close from these prices, so omit them
-          // when the trader disabled Auto-close or the next visit would
-          // re-enable exits they turned off.
-          takeProfitPrice: autoCloseEnabled
-            ? latestFormState.takeProfitPrice || undefined
-            : undefined,
-          stopLossPrice: autoCloseEnabled
-            ? latestFormState.stopLossPrice || undefined
-            : undefined,
-          limitPrice:
-            latestFormState.type === 'limit'
-              ? latestFormState.limitPrice || undefined
+      submitRequestToBackground(
+        'PerpsController:savePendingTradeConfiguration',
+        [
+          decodedSymbol,
+          {
+            amount: latestFormState.amount,
+            leverage: latestFormState.leverage,
+            // Restoration derives Auto-close from these prices, so omit them
+            // when the trader disabled Auto-close or the next visit would
+            // re-enable exits they turned off.
+            takeProfitPrice: autoCloseEnabled
+              ? latestFormState.takeProfitPrice || undefined
               : undefined,
-          orderType: latestFormState.type,
-          direction: latestFormState.direction,
-        },
-      ]).catch(() => {
+            stopLossPrice: autoCloseEnabled
+              ? latestFormState.stopLossPrice || undefined
+              : undefined,
+            limitPrice:
+              latestFormState.type === 'limit'
+                ? latestFormState.limitPrice || undefined
+                : undefined,
+            orderType: latestFormState.type,
+            direction: latestFormState.direction,
+          },
+        ],
+      ).catch(() => {
         // Draft persistence is best-effort and must not block navigation.
       });
     },
@@ -1163,7 +1167,7 @@ const PerpsOrderEntryPage = () => {
   const handlePeriodChange = useCallback(
     (period: CandlePeriod) => {
       setLocalPeriodOverride(period);
-      submitRequestToBackground('setPreference', [
+      submitRequestToBackground('PreferencesController:setPreference', [
         'perpsSelectedCandlePeriod',
         period,
       ]).catch(() => {
@@ -1177,11 +1181,11 @@ const PerpsOrderEntryPage = () => {
   );
 
   const handleVisibleCandleCountChange = useCallback((count: number) => {
-    submitRequestToBackground('perpsSetVisibleCandleCount', [count]).catch(
-      () => {
-        // The chart remains interactive if preference persistence fails.
-      },
-    );
+    submitRequestToBackground('PerpsController:setVisibleCandleCount', [
+      count,
+    ]).catch(() => {
+      // The chart remains interactive if preference persistence fails.
+    });
   }, []);
 
   // Oracle mark price from HyperLiquid's activeAssetCtx feed (oraclePx).
@@ -1662,9 +1666,10 @@ const PerpsOrderEntryPage = () => {
       });
       if (decodedSymbol) {
         setIgnoredDraftSymbol(decodedSymbol);
-        submitRequestToBackground('perpsClearPendingTradeConfiguration', [
-          decodedSymbol,
-        ]).catch(() => {
+        submitRequestToBackground(
+          'PerpsController:clearPendingTradeConfiguration',
+          [decodedSymbol],
+        ).catch(() => {
           // The local reset still takes effect if best-effort cleanup fails.
         });
       }
@@ -1676,7 +1681,9 @@ const PerpsOrderEntryPage = () => {
   const handleOrderTypeChange = useCallback((type: OrderType) => {
     setHasUserPickedOrderType(true);
     setOrderType(type);
-    submitRequestToBackground('perpsSetSelectedOrderType', [type]).catch(() => {
+    submitRequestToBackground('PerpsController:setSelectedOrderType', [
+      type,
+    ]).catch(() => {
       // The local order type still updates if persistence fails.
     });
   }, []);
@@ -1686,7 +1693,7 @@ const PerpsOrderEntryPage = () => {
       if (!decodedSymbol) {
         return;
       }
-      submitRequestToBackground('perpsSaveTradeConfiguration', [
+      submitRequestToBackground('PerpsController:saveTradeConfiguration', [
         decodedSymbol,
         leverage,
       ]).catch(() => {
@@ -1840,7 +1847,7 @@ const PerpsOrderEntryPage = () => {
   const handleToggleOrderBook = useCallback(() => {
     const next = !isOrderBookOpen;
     setIsOrderBookOpen(next);
-    submitRequestToBackground('perpsSetProLayoutPreferences', [
+    submitRequestToBackground('PerpsController:setProLayoutPreferences', [
       { orderBookExpanded: next },
     ]).catch((error) =>
       console.error('Failed to persist order book open state', error),
@@ -1861,7 +1868,7 @@ const PerpsOrderEntryPage = () => {
   const handleToggleChart = useCallback(() => {
     const next = !isChartOpen;
     setIsChartOpen(next);
-    submitRequestToBackground('perpsSetProLayoutPreferences', [
+    submitRequestToBackground('PerpsController:setProLayoutPreferences', [
       { chartExpanded: next },
     ]).catch((error) =>
       console.error('Failed to persist chart open state', error),
@@ -2110,7 +2117,7 @@ const PerpsOrderEntryPage = () => {
           // catch block's failure toast renders on the current page.
           handleBackClick();
 
-          submitRequestToBackground('perpsSaveTradeConfiguration', [
+          submitRequestToBackground('PerpsController:saveTradeConfiguration', [
             orderFormState.asset,
             orderFormState.leverage,
           ]).catch((e) => {
@@ -2232,9 +2239,10 @@ const PerpsOrderEntryPage = () => {
         return;
       }
       if (orderMode === 'new') {
-        submitRequestToBackground('perpsClearPendingTradeConfiguration', [
-          orderFormState.asset,
-        ]).catch(() => {
+        submitRequestToBackground(
+          'PerpsController:clearPendingTradeConfiguration',
+          [orderFormState.asset],
+        ).catch(() => {
           // placeOrder already clears the controller draft; this is defensive.
         });
       }
@@ -2319,7 +2327,7 @@ const PerpsOrderEntryPage = () => {
           : undefined,
       );
 
-      submitRequestToBackground('perpsSaveTradeConfiguration', [
+      submitRequestToBackground('PerpsController:saveTradeConfiguration', [
         orderFormState.asset,
         orderFormState.leverage,
       ]).catch((e) => {
