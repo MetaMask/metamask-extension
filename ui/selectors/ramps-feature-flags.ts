@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
-export { getIsRampsEnabled } from '../../shared/lib/selectors/ramps';
+
 
 /**
  * Selector to determine if the ramps service disruption is active.
