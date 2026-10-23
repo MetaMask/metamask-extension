@@ -12,6 +12,10 @@ export const AuthServer = {
 
   // Mint token from Profile Sync OIDC server to Auth Service
   MintToken: 'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/mint',
+
+  // Pair the social login identifier to the profile, authorised with the social access token (`social_jwt`)
+  PairSocialIdentifier:
+    'https://authentication.api.cx.metamask.io/api/v2/profile/pair/identifier',
 };
 
 export const ProfileSyncServer = {
