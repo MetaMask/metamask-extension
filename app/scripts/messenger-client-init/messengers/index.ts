@@ -41,7 +41,6 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
-  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
@@ -49,7 +48,6 @@ import {
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
-  getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
 } from './assets';
@@ -651,10 +649,6 @@ export const MESSENGER_FACTORIES = {
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  NetworkEnablementController: {
-    getMessenger: getNetworkEnablementControllerMessenger,
-    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,

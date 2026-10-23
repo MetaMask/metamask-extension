@@ -38,6 +38,11 @@ import {
 import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
 import { getPermissionControllerInstanceOptions } from './instance-options/permission-controller';
 import { getPermissionControllerInitMessenger } from './messengers/permission-controller-messenger';
+import { getNetworkEnablementControllerInitMessenger } from './messengers/network-enablement-controller-messenger';
+import {
+  setupNetworkEnablementControllerListeners,
+  withNetworkEnablementControllerTestState,
+} from './network-enablement-controller';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -126,7 +131,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
       }),
     },
     messenger,
-    state,
+    state: withNetworkEnablementControllerTestState(state),
   });
 
   // Fixture-less test builds (like `yarn build:test:dev`) have no persisted
@@ -170,6 +175,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
         | AuthenticationControllerState['srpSessionData']
         | undefined,
     },
+  });
+
+  setupNetworkEnablementControllerListeners({
+    controller: wallet.getInstance('NetworkEnablementController'),
+    messenger: getNetworkEnablementControllerInitMessenger(messenger),
   });
 
   wallet.init().catch((error) => console.error(error));

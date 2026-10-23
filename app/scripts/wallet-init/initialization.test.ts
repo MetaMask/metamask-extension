@@ -4,6 +4,11 @@ import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { unrestrictedMethods } from '../controllers/permissions';
 import { initializeWallet } from './initialization';
+import {
+  setupNetworkEnablementControllerListeners,
+  withNetworkEnablementControllerTestState,
+} from './network-enablement-controller';
+import { getNetworkEnablementControllerInitMessenger } from './messengers/network-enablement-controller-messenger';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
@@ -44,6 +49,15 @@ jest.mock('@metamask/wallet', () => ({
 }));
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
+}));
+jest.mock('./network-enablement-controller', () => ({
+  setupNetworkEnablementControllerListeners: jest.fn(),
+  withNetworkEnablementControllerTestState: jest.fn((state) => state),
+}));
+jest.mock('./messengers/network-enablement-controller-messenger', () => ({
+  getNetworkEnablementControllerInitMessenger: jest.fn(
+    () => 'network-enablement-controller-init-messenger',
+  ),
 }));
 jest.mock('./instance-options/analytics-controller', () => ({
   getAnalyticsControllerInstanceOptions: jest.fn(() => 'analytics-options'),
@@ -351,6 +365,58 @@ describe('initializeWallet', () => {
     const walletConstructorCallOrder = MockWallet.mock.invocationCallOrder[0];
 
     expect(setupListenersCallOrder).toBeLessThan(walletConstructorCallOrder);
+  });
+
+  it('constructs the Wallet with the NetworkEnablementController test state applied', () => {
+    const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
+    const seededState = {
+      ...state,
+      NetworkEnablementController: { enabledNetworkMap: {} },
+    };
+    jest
+      .mocked(withNetworkEnablementControllerTestState)
+      .mockReturnValueOnce(seededState);
+
+    initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
+      messenger: createMockMessenger(),
+      platform,
+      state,
+    });
+
+    expect(withNetworkEnablementControllerTestState).toHaveBeenCalledWith(
+      state,
+    );
+    expect(MockWallet).toHaveBeenCalledWith(
+      expect.objectContaining({ state: seededState }),
+    );
+  });
+
+  it('sets up the NetworkEnablementController listeners with the wallet-owned instance', () => {
+    const messenger = createMockMessenger();
+
+    initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
+      messenger,
+      platform,
+      state: {},
+    });
+
+    expect(getNetworkEnablementControllerInitMessenger).toHaveBeenCalledWith(
+      messenger,
+    );
+    expect(setupNetworkEnablementControllerListeners).toHaveBeenCalledWith({
+      controller: mockNetworkController,
+      messenger: 'network-enablement-controller-init-messenger',
+    });
   });
 });
 
