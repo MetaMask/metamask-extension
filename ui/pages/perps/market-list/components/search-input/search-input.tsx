@@ -49,6 +49,7 @@ export const SearchInput = ({
       autoFocus={autoFocus}
       className="w-full"
       clearButtonOnClick={onClear}
+      data-testid="search-input-container"
       inputProps={
         {
           'data-testid': 'search-input',

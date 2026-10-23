@@ -364,9 +364,9 @@ export const ChainlistNetworkPicker = ({
           <TextFieldSearch
             className="w-full"
             clearButtonOnClick={() => setInternalSearchValue('')}
+            data-testid="networks-page-chainlist-search"
             inputProps={
               {
-                'data-testid': 'networks-page-chainlist-search',
                 'aria-label': t('searchNetworkNameOrChainId'),
               } as React.ComponentPropsWithoutRef<'input'>
             }

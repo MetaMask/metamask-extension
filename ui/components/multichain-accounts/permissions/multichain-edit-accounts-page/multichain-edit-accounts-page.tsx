@@ -226,9 +226,9 @@ export const MultichainEditAccountsPage = ({
         <TextFieldSearch
           className="w-full"
           clearButtonOnClick={clearSearch}
+          data-testid="multichain-edit-account-list-search"
           inputProps={
             {
-              'data-testid': 'multichain-edit-account-list-search',
               'aria-label': t('searchYourAccounts'),
             } as React.ComponentPropsWithoutRef<'input'>
           }
