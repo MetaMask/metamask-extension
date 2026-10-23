@@ -14,18 +14,12 @@ import {
   shouldRenderCheckbox,
 } from './helpers';
 
-const RAMPS_FEATURE_FLAGS = {
-  remoteFeatureFlags: {
-    rampsEnabled: true,
-  },
-};
-
 describe('Deep Link - /buy Route (unified buy)', function () {
-  // With the `rampsEnabled` flag on, `/buy` deep links must route into the
-  // in-app unified buy flow instead of the external Portfolio redirect. With
-  // a token intent the flow pre-selects it and lands on build-quote; without
-  // one it opens token selection. Interstitial behavior (signed vs unsigned)
-  // is covered by the other deep-link specs, so one case per destination.
+  // `/buy` deep links must route into the in-app unified buy flow instead of
+  // the external Portfolio redirect. With a token intent the flow pre-selects
+  // it and lands on build-quote; without one it opens token selection.
+  // Interstitial behavior (signed vs unsigned) is covered by the other
+  // deep-link specs, so one case per destination.
   const buyScenarios = [
     {
       route:
@@ -58,7 +52,6 @@ describe('Deep Link - /buy Route (unified buy)', function () {
         await getConfig({
           title: this.test?.fullTitle(),
           deepLinkPublicKey,
-          manifestFlags: RAMPS_FEATURE_FLAGS,
           additionalMocks: mockRampsCatalog,
         }),
         async ({ driver }: { driver: Driver }) => {
