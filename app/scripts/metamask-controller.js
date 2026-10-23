@@ -2406,10 +2406,7 @@ export default class MetamaskController extends EventEmitter {
       tokensController,
       backup,
       tokenRatesController,
-      // Notification Controllers
       authenticationController,
-      notificationServicesController,
-      notificationServicesPushController,
       deFiPositionsController,
       staticAssetsController,
     } = this;
@@ -2680,21 +2677,6 @@ export default class MetamaskController extends EventEmitter {
       requestProfilePairing:
         authenticationController.requestProfilePairing.bind(
           authenticationController,
-        ),
-
-      // NotificationServicesController
-
-      getNotificationsByType:
-        notificationServicesController.getNotificationsByType.bind(
-          notificationServicesController,
-        ),
-      enablePushNotifications:
-        notificationServicesPushController.enablePushNotifications.bind(
-          notificationServicesPushController,
-        ),
-      disablePushNotifications:
-        notificationServicesPushController.disablePushNotifications.bind(
-          notificationServicesPushController,
         ),
     };
   }
