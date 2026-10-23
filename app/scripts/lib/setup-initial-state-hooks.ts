@@ -12,9 +12,9 @@ import {
 } from '../../../shared/constants/metametrics';
 import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
 import { getPersistenceWriteTelemetrySampleRate } from '../../../shared/lib/sentry-remote-rates';
+import { trackSplitStateWrite } from '../../../shared/lib/telemetry/state-write-reporter';
 import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
-import { trackSplitStateWrite } from './state-write-metrics';
 
 const platform = new ExtensionPlatform();
 
