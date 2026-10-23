@@ -3,10 +3,9 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
-  
-  parse
+  type ParsedDeepLink,
+  parse,
 } from '../../../../shared/lib/deep-links/parse';
-import type {ParsedDeepLink} from '../../../../shared/lib/deep-links/parse';
 import {
   DEEP_LINK_HOSTS,
   DEEP_LINK_MAX_LENGTH,

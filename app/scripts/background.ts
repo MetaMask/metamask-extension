@@ -20,15 +20,14 @@ import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
-  
+  type EnvironmentType,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
-  MESSAGE_TYPE
+  MESSAGE_TYPE,
 } from '../../shared/constants/app';
-import type {EnvironmentType} from '../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {

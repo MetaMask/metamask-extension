@@ -10,8 +10,7 @@
 import log from 'loglevel';
 import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
-import { verify  } from './verify';
-import type {SignatureStatus} from './verify';
+import { verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
 import { SIG_PARAMS_PARAM } from './common';
 

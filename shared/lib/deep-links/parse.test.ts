@@ -1,8 +1,7 @@
 import log from 'loglevel';
 import { NavigationOrigin, parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
-import {  routes } from './routes';
-import type {Route} from './routes';
+import { type Route, routes } from './routes';
 import { SIG_PARAM } from './common';
 
 const mockVerify = verify as jest.MockedFunction<typeof verify>;

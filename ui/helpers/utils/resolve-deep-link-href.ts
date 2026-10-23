@@ -21,7 +21,7 @@ function toInternalHref(path: string, query: URLSearchParams): string {
  * content without explicit, documented approval from the MetaMask Extension
  * Security team.
  *
- * @param href - The link href to resolve.
+ * @param href
  */
 export async function resolveTrustedDeepLinkHref(
   href: string,
