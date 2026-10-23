@@ -2546,13 +2546,6 @@ export default class MetamaskController extends EventEmitter {
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
 
-      // SeedlessOnboardingController
-
-      getIsSeedlessOnboardingUserAuthenticated:
-        this.seedlessOnboardingController.getIsUserAuthenticated.bind(
-          this.seedlessOnboardingController,
-        ),
-
       // GatorPermissionsController
 
       fetchAndUpdateGatorPermissions:
