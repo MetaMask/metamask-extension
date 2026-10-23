@@ -92,9 +92,9 @@ export async function createOffscreen() {
 
     await chrome.offscreen.createDocument({
       url: './offscreen.html',
-      reasons: ['IFRAME_SCRIPTING'],
+      reasons: ['IFRAME_SCRIPTING', 'LOCAL_STORAGE'],
       justification:
-        'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
+        'Used for Hardware Wallet and Snaps scripts to communicate with the extension, and for the Braze SDK to persist its identity in DOM storage.',
     });
   } catch (error) {
     if (offscreenDocumentLoadedListener) {
