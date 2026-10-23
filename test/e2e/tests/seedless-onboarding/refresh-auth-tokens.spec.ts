@@ -61,6 +61,22 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         await importWalletWithSocialLoginOnboardingFlow({ driver });
         await new HomePage(driver).checkPageIsLoaded();
 
+        // Pairing is sent asynchronously after sign-in, so wait for it first.
+        await driver.wait(
+          async () =>
+            (
+              await Promise.all(
+                mockedEndpoints.map((endpoint) => endpoint.getSeenRequests()),
+              )
+            )
+              .flat()
+              .some((request) =>
+                request.url.includes(AuthServer.PairSocialIdentifier),
+              ),
+          driver.timeout,
+          true,
+        );
+
         const mockedRequests = await getMockedRequests(driver, mockedEndpoints);
         const tokenRequests = mockedRequests.filter((request) =>
           request.url.includes(AuthServer.RequestToken),
@@ -82,16 +98,13 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
 
         // The first request that sends the social token after the refresh is
         // the social identifier pairing, which must carry the refreshed one.
-        const getPairingRequests = async () =>
-          (await getMockedRequests(driver, mockedEndpoints)).filter((request) =>
-            request.url.includes(AuthServer.PairSocialIdentifier),
-          );
-        await driver.wait(
-          async () => (await getPairingRequests()).length > 0,
-          driver.timeout,
-          true,
+        const [pairingRequest] = mockedRequests.filter((request) =>
+          request.url.includes(AuthServer.PairSocialIdentifier),
         );
-        const [pairingRequest] = await getPairingRequests();
+        assert.ok(
+          pairingRequest,
+          'Expected the social identifier pairing request',
+        );
         const pairingBody = (await pairingRequest.body.getJson()) as {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           social_jwt?: string;
