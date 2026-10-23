@@ -12,6 +12,9 @@ import { StateCorruptionErrorType } from '../../constants/critical-error';
 import { getManifestFlags } from '../manifestFlags';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
+import type { EnvironmentType } from '../../constants/app';
+import { getEnvironmentType } from '../environment-type';
+import type { ReportedStartupPhase } from '../telemetry/startup-phase';
 import { IndexedDBStore } from './indexeddb-store';
 import {
   BACKUP_INDEXED_DB_NAME,
@@ -72,6 +75,19 @@ export type WriteRetryRecoveredEvent = {
   retryDelayMs: number;
 };
 
+/**
+ * UI presence from `uiPresence` plus {@link ReportedStartupPhase} at write
+ * time. All fields undefined when no provider ran (UI context, not wired yet,
+ * or threw).
+ */
+export type CurrentActivity = {
+  startupPhase?: ReportedStartupPhase;
+  popupCount?: number;
+  notificationIsOpen?: boolean;
+  fullscreenCount?: number;
+  sidePanelCount?: number;
+};
+
 export type SplitStateWriteEvent = {
   /**
    * Per-controller size measurements. Exact storage bytes when
@@ -91,6 +107,8 @@ export type SplitStateWriteEvent = {
    */
   totalBytes: number;
   writeDurationMs: number;
+  environmentType: EnvironmentType | 'unknown';
+  currentActivity: CurrentActivity;
 };
 
 export type PersistenceManagerEventMap = {
@@ -338,6 +356,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   #getIsIdle: () => boolean | undefined;
 
+  #getCurrentActivity: (() => CurrentActivity) | undefined;
+
   #getPersistenceWriteSampleRate: () => number;
 
   #random: () => number;
@@ -353,6 +373,15 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#localStore = localStore;
     this.#getPersistenceWriteSampleRate = getPersistenceWriteSampleRate;
     this.#random = random;
+  }
+
+  /**
+   * Sets the activity provider (background only).
+   *
+   * @param getCurrentActivity - Returns the current activity snapshot.
+   */
+  setCurrentActivityProvider(getCurrentActivity: () => CurrentActivity) {
+    this.#getCurrentActivity = getCurrentActivity;
   }
 
   /**
@@ -802,6 +831,31 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       return;
     }
 
+    // Snapshot activity before any awaits so init / UI changes during size
+    // measurement cannot skew the write's reported context.
+    const isIdle = this.#getIsIdle();
+    let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
+    if (isIdle === true) {
+      idleStatus = 'idle';
+    } else if (isIdle === false) {
+      idleStatus = 'active';
+    }
+
+    // Best-effort: missing/throwing provider → empty activity, write still emits.
+    let currentActivity: CurrentActivity = {};
+    if (this.#getCurrentActivity) {
+      try {
+        currentActivity = this.#getCurrentActivity();
+      } catch {
+        // Keep empty snapshot.
+      }
+    }
+
+    const href = globalThis.self?.location?.href;
+    const environmentType = (
+      href !== undefined && href !== '' ? getEnvironmentType(href) : 'unknown'
+    ) as EnvironmentType | 'unknown';
+
     let bytesByController: Map<string, number> | undefined;
     let sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'] =
       'json_string_length_estimate';
@@ -839,14 +893,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       sizeMeasurementSource = 'json_string_length_estimate';
     }
 
-    const isIdle = this.#getIsIdle();
-    let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
-    if (isIdle === true) {
-      idleStatus = 'idle';
-    } else if (isIdle === false) {
-      idleStatus = 'active';
-    }
-
     this.emit('splitStateWrite', {
       bytesByController,
       coalescedUpdates,
@@ -856,6 +902,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       sizeMeasurementSource,
       totalBytes,
       writeDurationMs,
+      environmentType,
+      currentActivity,
     });
   }
 
