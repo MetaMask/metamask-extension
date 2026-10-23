@@ -218,21 +218,37 @@ describe('buildResults', () => {
       ];
       const quotes = [
         buildRecommendedQuote({
+          src: {
+            asset: {
+              assetId: ASSET_ID_A,
+            },
+          },
           dest: {
             amount: '10000000',
             normalizedAmount: '10',
             valueInCurrency: '100',
             minAmountNormalized: '9',
             minAmount: '9000000',
+            asset: {
+              assetId: BATCH_SELL_ASSET_IDS.USDC,
+            },
           },
         }),
         buildRecommendedQuote({
+          src: {
+            asset: {
+              assetId: ASSET_ID_B,
+            },
+          },
           dest: {
             amount: '5000000',
             normalizedAmount: '5',
             valueInCurrency: '50',
             minAmountNormalized: '4',
             minAmount: '4000000',
+            asset: {
+              assetId: BATCH_SELL_ASSET_IDS.USDC,
+            },
           },
         }),
       ];
@@ -258,12 +274,20 @@ describe('buildResults', () => {
         buildSendAssetEntry({ assetId: ASSET_ID_B, enabled: false }),
       ];
       const enabledQuote = buildRecommendedQuote({
+        src: {
+          asset: {
+            assetId: ASSET_ID_B,
+          },
+        },
         dest: {
           amount: '10000000',
           normalizedAmount: '10',
           valueInCurrency: '100',
           minAmountNormalized: '9',
           minAmount: '9000000',
+          asset: {
+            assetId: BATCH_SELL_ASSET_IDS.USDC,
+          },
         },
       });
       const result = buildResults({

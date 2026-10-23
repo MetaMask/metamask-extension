@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 
 describe('Sort By Networks Filter', function (this: Suite) {
   it('should display the selected network name when only Ethereum is enabled', async function () {
@@ -20,10 +20,10 @@ describe('Sort By Networks Filter', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const tokensTab = new TokensTab(driver);
+        const networkFilter = new NetworkFilter(driver);
 
-        await tokensTab.waitForNetworksFilter();
-        await tokensTab.waitUntilFilterLabelIs('Network: Ethereum');
+        await networkFilter.checkIsLoaded();
+        await networkFilter.waitUntilLabelIs('Network: Ethereum');
       },
     );
   });

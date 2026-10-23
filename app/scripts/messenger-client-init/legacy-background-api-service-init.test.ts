@@ -44,7 +44,6 @@ describe('LegacyBackgroundApiServiceInit', () => {
       updateTabUrl: undefined,
       infuraProjectId: undefined,
       offscreenPromise: expect.any(Promise),
-      seedlessOperationMutex: undefined,
       sendUpdate: undefined,
     });
   });

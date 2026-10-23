@@ -1,5 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Settings → Experimental: beta account Snap and watch-account toggles.
+ *
+ * Screen: `#/settings/experimental`, reached from
+ * `SettingsPage.goToExperimentalSettings`.
+ * Owns: page load check, Add account Snap toggle, and Watch account toggle
+ * (including reading toggle state).
+ * Boundaries: experimental toggles only. Preinstalled Snap settings UI belongs
+ * to `PreinstalledExampleSettings`; developer/debug options belong to
+ * `SettingsPage` / developer-tools surfaces.
+ * Related: `SettingsPage`.
+ *
+ * @see ui/pages/settings/experimental-tab/experimental-tab.tsx
+ */
 class ExperimentalSettings {
   // Locators
   private readonly addAccountSnapToggle =
@@ -10,6 +24,10 @@ class ExperimentalSettings {
   private readonly experimentalPageTitle = {
     text: 'Enable "Add account Snap (Beta)"',
     tag: 'p',
+  };
+
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
   };
 
   private readonly watchAccountToggle =
@@ -24,7 +42,10 @@ class ExperimentalSettings {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.experimentalPageTitle);
+      await this.driver.waitForMultipleSelectors([
+        this.experimentalPageTitle,
+        this.settingsPage,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Experimental Settings page to be loaded',

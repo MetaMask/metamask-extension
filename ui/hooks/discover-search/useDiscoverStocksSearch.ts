@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { fetchRwas, type TrendingAsset } from '@metamask/assets-controllers';
+import {
+  fetchRwas,
+  type RwaToken,
+  type TokenSecurityData,
+  type TrendingAsset,
+} from '@metamask/assets-controllers';
 
 import {
   DISCOVER_SEARCH_GC_TIME_MS,
@@ -34,9 +39,11 @@ type StocksSearchPage = {
   };
 };
 
-const normalizeRwaToken = (
-  token: Awaited<ReturnType<typeof fetchRwas>>['data'][number],
-): TrendingAsset => ({
+type RwaTokenWithSecurityData = RwaToken & {
+  securityData?: TokenSecurityData;
+};
+
+const normalizeRwaToken = (token: RwaTokenWithSecurityData): TrendingAsset => ({
   assetId: token.assetId,
   symbol: token.symbol,
   name: token.name,
@@ -46,6 +53,7 @@ const normalizeRwaToken = (
   marketCap: token.rwaData.marketCap,
   priceChangePct: { h24: token.rwaData.priceChange },
   rwaData: token.rwaData as unknown as TrendingAsset['rwaData'],
+  securityData: token.securityData,
 });
 
 /**
@@ -69,24 +77,21 @@ export const useDiscoverStocksSearch = ({
     [hasQuery],
   );
 
-  const stocksQuery = useInfiniteQuery<StocksSearchPage, Error>({
+  const stocksQuery = useInfiniteQuery({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'stocks',
       trimmedQuery,
       chainIds,
     ] as const,
-    queryFn: async ({
-      pageParam,
-    }: {
-      pageParam?: string;
-    }): Promise<StocksSearchPage> => {
+    queryFn: async ({ pageParam }): Promise<StocksSearchPage> => {
       const response = await fetchRwas({
         chainIds,
         query: hasQuery ? trimmedQuery : undefined,
         sortBy: 'price_change_desc',
         limit: DISCOVER_SEARCH_PAGE_SIZE,
         after: pageParam,
+        includeTokenSecurityData: true,
       });
 
       const data = response.data.map(normalizeRwaToken);
@@ -96,13 +101,14 @@ export const useDiscoverStocksSearch = ({
         pageInfo: response.pageInfo,
       };
     },
+    initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) =>
       lastPage.pageInfo.hasNextPage
         ? (lastPage.pageInfo.nextCursor ?? undefined)
         : undefined,
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
+    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
   const pages = stocksQuery.data?.pages ?? [];

@@ -85,6 +85,7 @@ describe('TokenBalancesControllerInit', () => {
       accountsApiChainIds: expect.any(Function),
       platform: 'extension',
       isOnboarded: expect.any(Function),
+      isDeprecated: expect.any(Function),
     });
   });
 });

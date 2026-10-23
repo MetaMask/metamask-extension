@@ -1,60 +1,61 @@
-import { SECOND } from '../../../../shared/constants/time';
-import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
+import {
+  AddressScanResultType,
+  PhishingController,
+  type AddressScanResult,
+} from '@metamask/phishing-controller';
+import type { Hex } from '@metamask/utils';
 import {
   AddAddressSecurityAlertResponse,
   createCacheKey,
   GetAddressSecurityAlertResponse,
   ResultType,
-  ScanAddressRequest,
   ScanAddressResponse,
-  SupportedEVMChain,
 } from '../../../../shared/lib/trust-signals';
 
-const TIMEOUT = 5 * SECOND;
-const ENDPOINT_ADDRESS_SCAN = 'address/evm/scan';
-
-export async function scanAddress(
-  chain: SupportedEVMChain,
-  address: string,
-): Promise<ScanAddressResponse> {
-  const baseUrl = process.env.SECURITY_ALERTS_API_URL;
-  if (!baseUrl) {
-    throw new Error('SECURITY_ALERTS_API_URL is not set');
-  }
-  const endpoint = `${baseUrl}/${ENDPOINT_ADDRESS_SCAN}`;
-  const body: ScanAddressRequest = {
-    chain,
-    address,
+/**
+ * Translates a PhishingController address-scan result into the extension's
+ * ScanAddressResponse. The only wire-value divergence is the error case:
+ * the controller uses 'ErrorResult' where the extension uses 'Error'.
+ * Verdicts outside the controller's declared union (e.g. 'Trusted') are
+ * passed through unchanged — the controller forwards the API's result_type
+ * without validation.
+ *
+ * @param result - The PhishingController address-scan result to translate
+ */
+export function mapAddressScanResult(
+  result: AddressScanResult,
+): ScanAddressResponse {
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result_type:
+      result.result_type === AddressScanResultType.ErrorResult
+        ? ResultType.ErrorResult
+        : (result.result_type as unknown as ResultType),
+    label: result.label ?? '',
   };
-
-  const response = await getFetchWithTimeout(TIMEOUT)(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-  const data = await response.json();
-  return data;
 }
 
 /**
- * Scans an address for security alerts, using cached response if available,
- * otherwise making a new API call and caching the result.
+ * Scans an address for security alerts via the PhishingController, using the
+ * extension's cached response if available. A Loading placeholder is written
+ * before the scan so UI consumers can render an in-flight state.
  *
  * @param address - The address to scan for security alerts
  * @param getAddressSecurityAlertResponse - Function to retrieve cached security alert response for an address
  * @param addAddressSecurityAlertResponse - Function to add a new security alert response to the cache
- * @param chain - The chain that the address exists on
+ * @param chainId - The hex chainId of the chain the address exists on
+ * @param phishingController - Controller providing scanAddress; it resolves
+ * chain support internally and returns ErrorResult for unsupported chains
  * @returns Promise that resolves to the security scan response containing result type and label
  */
 export async function scanAddressAndAddToCache(
   address: string,
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse,
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse,
-  chain: SupportedEVMChain,
+  chainId: Hex,
+  phishingController: Pick<PhishingController, 'scanAddress'>,
 ): Promise<ScanAddressResponse> {
-  const cacheKey = createCacheKey(chain, address);
+  const cacheKey = createCacheKey(chainId, address);
   const cachedResponse = getAddressSecurityAlertResponse(cacheKey);
   if (cachedResponse) {
     return cachedResponse;
@@ -68,8 +69,15 @@ export async function scanAddressAndAddToCache(
   };
   addAddressSecurityAlertResponse(cacheKey, loadingResponse);
 
+  // With the real PhishingController, scanAddress never rejects; every
+  // failure (including unsupported chains) resolves to an ErrorResult. This
+  // catch only guards against a malformed or nonconforming controller
+  // instance (e.g. in tests) — do not remove it as "dead code", and note
+  // that callers' `.catch` handlers will not fire under normal operation.
   try {
-    const result = await scanAddress(chain, address);
+    const result = mapAddressScanResult(
+      await phishingController.scanAddress(chainId, address),
+    );
     addAddressSecurityAlertResponse(cacheKey, result);
     return result;
   } catch (error) {

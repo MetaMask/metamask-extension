@@ -25,22 +25,23 @@ Use the rules in the [coding-guidelines](rules/coding-guidelines/RULE.md) to enf
 
 ### 2. Unit Tests
 
-- **ALWAYS** load and reference [unit testing guidelines](rules/unit-testing-guidelines/RULE.md)
+- **ALWAYS** load and reference [extension-testing unit](rules/mms-extension-testing/RULE.md) → `references/unit.md` (or installed `knowledge/extension-testing-layers.md` first)
 - Verify test file naming pattern: `*.test.{ts,tsx,js,jsx}`
 - Check for proper Jest and testing library imports
 - Ensure tests are colocated with implementation files
 
-Use the rules in the [unit testing guidelines](rules/unit-testing-guidelines/RULE.md) to enforce the test quality and bug detection.
+Use `mms-extension-testing` unit reference for unit-test quality and bug detection.
 
 ### 3. E2E Tests
 
-- **ALWAYS** load and reference [e2e-testing-guidelines](rules/e2e-testing-guidelines/RULE.md)
+- **ALWAYS** load and reference [extension-testing](rules/mms-extension-testing/RULE.md) → `references/e2e.md` (and nested writing-tests / pom-antipatterns)
 - Verify test file naming pattern: `test/e2e/**/*.spec.{ts,js}`
 - Check for proper imports from the E2E framework
 - Verify Page Object Model pattern is used
 - Ensure tests are written in TypeScript (.spec.ts)
+- **ALWAYS** apply the Page Object Model rules in sections **3.3–3.9** to every changed file under `test/e2e/`. These sections are written for **local review** (CODEBOT / `/review` / local Bugbot run) and for agent self-check while writing tests — see `mms-extension-testing` → `references/e2e/pom-antipatterns.md`.
 
-Use the rules in the [e2e-testing-guidelines](rules/e2e-testing-guidelines/RULE.md) to enforce the test quality and bug detection.
+Use `mms-extension-testing` E2E references for test quality and POM enforcement.
 
 #### 3.1 Deprecated Pattern Detection (Non-Blocking): Prefer `FixtureBuilderV2`
 
@@ -106,6 +107,55 @@ When both conditions hold, inspect the fixture builder chain in the same `withFi
 - Suggested comment:
   - `📋 Snap E2E tests should use \`.withSnapsPrivacyWarningAlreadyShown()\` on the fixture builder so the snap privacy warning is already dismissed. This avoids extra UI steps and reduces flakiness.`
   - `✅ Add \`.withSnapsPrivacyWarningAlreadyShown()\` to the FixtureBuilderV2 chain, e.g. \`new FixtureBuilderV2().withSnapsPrivacyWarningAlreadyShown().build()\` or chain it with other methods.`
+
+#### 3.3 Locators in flow files
+
+- Scope: `test/e2e/page-objects/flows/**/*.{ts,js}`.
+- Detect: `/data-testid|\{\s*css\s*:|\{\s*text\s*:.*tag\s*:|(const|let)\s+\w*(Button|Input|Link|Selector|Locator|TestId)\s*(:|=)/`
+- Do not report when the line only calls a page object method, another flow, `driver.navigate()`, or a window-switching helper.
+- Severity: **HIGH**. Comment: "Locators must live in page object classes, not in flows. Move this locator into a page object under `test/e2e/page-objects/pages/` and call that page object method from the flow."
+
+#### 3.4 Flows that use a single page object
+
+- Scope: `test/e2e/page-objects/flows/**/*.{ts,js}`.
+- Detect: an exported function that instantiates exactly one page object type (`/new\s+\w+Page\s*\(/` matched once for a single type) and calls no other flow.
+- Do not report when the function instantiates two or more distinct page objects, or combines a page object with a call to another flow.
+- Severity: **HIGH**. Comment: "Flows exist for workflows that span more than one page object. Move this method onto the page object class it already uses."
+
+#### 3.5 UI helper functions in spec files
+
+- Scope: `test/e2e/**/*.spec.{ts,js}`.
+- Detect: a function declared at module or `describe` scope whose body contains `/driver\.(clickElement|findElement|waitForSelector|fill|delay)|new\s+\w+Page\s*\(/`.
+- Do not report pure data helpers such as fixtures, mock JSON, expected values, and constants.
+- Severity: **HIGH**. Comment: "Specs must not define helpers that perform UI actions. Move the steps into a page object method, or into a flow when more than one page object is involved."
+
+#### 3.6 Specs interacting with elements directly
+
+- Scope: `test/e2e/**/*.spec.{ts,js}`.
+- Detect: `/driver\.(clickElement|clickElementSafe|clickElementAndWaitToDisappear|clickElementAndWaitForWindowToClose|findElement|findElements|waitForSelector|waitForElementNotPresent|fill|press|isElementPresent|isElementPresentAndVisible)\s*\(/`
+- Do not report `driver.navigate()`, window and tab helpers, fixture setup, or request mocking.
+- Severity: **HIGH**. Comment: "Specs must not interact with page elements directly. Call a page object method or a flow, and keep locators inside page objects."
+
+#### 3.7 Hardcoded delays
+
+- Scope: `test/e2e/**/*.{ts,js}`.
+- Detect: `/driver\.delay\s*\(|setTimeout\s*\(\s*resolve/`
+- Do not report when a comment within the three preceding lines explains why a condition wait is impossible, and do not report files under `test/e2e/webdriver/`.
+- Severity: **MEDIUM**. Comment: "Wait for a condition instead of a fixed delay: use `waitForSelector`, `waitForElementNotPresent`, or `driver.wait`. If a fixed delay is unavoidable, add a comment explaining why."
+
+#### 3.8 Page objects invoking other page objects
+
+- Scope: `test/e2e/page-objects/pages/**/*.{ts,js}`.
+- Detect: an import of another page class, or `/new\s+\w+(Page|Navbar|Modal)\s*\(\s*this\.driver\s*\)/`.
+- Do not report imports of types, enums, constants, or non-page helpers, and do not report `extends` of a shared base page.
+- Severity: **HIGH**. Comment: "Page objects must stay independent to avoid circular references and hidden workflows. Move multi-page steps into a flow under `test/e2e/page-objects/flows/`."
+
+#### 3.9 try/catch in page objects and flows
+
+- Scope: `test/e2e/page-objects/**/*.{ts,js}`.
+- Detect: `/\btry\s*\{/` or `/\}\s*catch\s*\(/`.
+- Do not report `try`/`catch` inside a `driver.wait` polling callback that returns `false`, or framework helpers under `test/e2e/webdriver/`.
+- Severity: **MEDIUM**. Comment: "Do not swallow failures in page objects or flows. Let the error surface, and use driver wait helpers and `check*` methods with clear error messages."
 
 ### 4. Controller Guidelines
 

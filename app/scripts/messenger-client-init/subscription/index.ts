@@ -1,2 +1,1 @@
-export { SubscriptionControllerInit } from './subscription-controller-init';
-export { SubscriptionServiceInit } from './subscription-service-init';
+export { ShieldSubscriptionServiceInit } from './shield-subscription-service-init';

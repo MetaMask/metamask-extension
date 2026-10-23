@@ -1,0 +1,66 @@
+diff --git a/dist/purify.cjs.js b/dist/purify.cjs.js
+index 16b5653cd32434cd9211447c0867b808e40d8ffd..a84ffde011ac3edb3865432edfe3bce178927d37 100644
+--- a/dist/purify.cjs.js
++++ b/dist/purify.cjs.js
+@@ -2326,7 +2326,7 @@ function createDOMPurify() {
+ 		let currentNode = null;
+ 		let returnNode = null;
+ 		IS_EMPTY_INPUT = !dirty;
+-		if (IS_EMPTY_INPUT) dirty = "<!-->";
++		if (IS_EMPTY_INPUT) dirty = "<!" + "--" + ">";
+ 		if (typeof dirty !== "string" && !_isNode(dirty)) {
+ 			dirty = stringifyValue(dirty);
+ 			if (typeof dirty !== "string") throw typeErrorCreate("dirty is not a string, aborting");
+@@ -2361,7 +2361,7 @@ function createDOMPurify() {
+ 				throw error;
+ 			}
+ 		} else if (_isNode(dirty)) {
+-			body = _initDocument("<!---->");
++			body = _initDocument("<!" + "--" + "-->");
+ 			importedNode = body.ownerDocument.importNode(dirty, true);
+ 			if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === "BODY") body = importedNode;
+ 			else if (importedNode.nodeName === "HTML") body = importedNode;
+diff --git a/dist/purify.es.mjs b/dist/purify.es.mjs
+index 5b666ff5c08dd16acb48daca25fa74695e056607..f03f3ac16a9247311c2f911c14c87a2ec2130fea 100644
+--- a/dist/purify.es.mjs
++++ b/dist/purify.es.mjs
+@@ -2325,7 +2325,7 @@ function createDOMPurify() {
+ 		let currentNode = null;
+ 		let returnNode = null;
+ 		IS_EMPTY_INPUT = !dirty;
+-		if (IS_EMPTY_INPUT) dirty = "<!-->";
++		if (IS_EMPTY_INPUT) dirty = "<!" + "--" + ">";
+ 		if (typeof dirty !== "string" && !_isNode(dirty)) {
+ 			dirty = stringifyValue(dirty);
+ 			if (typeof dirty !== "string") throw typeErrorCreate("dirty is not a string, aborting");
+@@ -2360,7 +2360,7 @@ function createDOMPurify() {
+ 				throw error;
+ 			}
+ 		} else if (_isNode(dirty)) {
+-			body = _initDocument("<!---->");
++			body = _initDocument("<!" + "--" + "-->");
+ 			importedNode = body.ownerDocument.importNode(dirty, true);
+ 			if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === "BODY") body = importedNode;
+ 			else if (importedNode.nodeName === "HTML") body = importedNode;
+diff --git a/dist/purify.js b/dist/purify.js
+index 5f6dfbcd44a2a0439379f009b214c5933b4afcfc..b02e0376e3f60c06d5107ff34c3f03618746f3c6 100644
+--- a/dist/purify.js
++++ b/dist/purify.js
+@@ -2329,7 +2329,7 @@
+ 			let currentNode = null;
+ 			let returnNode = null;
+ 			IS_EMPTY_INPUT = !dirty;
+-			if (IS_EMPTY_INPUT) dirty = "<!-->";
++			if (IS_EMPTY_INPUT) dirty = "<!" + "--" + ">";
+ 			if (typeof dirty !== "string" && !_isNode(dirty)) {
+ 				dirty = stringifyValue(dirty);
+ 				if (typeof dirty !== "string") throw typeErrorCreate("dirty is not a string, aborting");
+@@ -2364,7 +2364,7 @@
+ 					throw error;
+ 				}
+ 			} else if (_isNode(dirty)) {
+-				body = _initDocument("<!---->");
++				body = _initDocument("<!" + "--" + "-->");
+ 				importedNode = body.ownerDocument.importNode(dirty, true);
+ 				if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === "BODY") body = importedNode;
+ 				else if (importedNode.nodeName === "HTML") body = importedNode;

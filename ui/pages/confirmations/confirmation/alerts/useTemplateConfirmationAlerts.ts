@@ -1,5 +1,3 @@
-'use no memo';
-
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { useEffect, useMemo } from 'react';
 

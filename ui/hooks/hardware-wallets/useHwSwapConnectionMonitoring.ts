@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useRef } from 'react';
-
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
+
 import {
   ConnectionStatus,
   getHardwareWalletErrorCode,
-  isUserRejectedHardwareWalletError,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets';
+import { isInE2eTest } from '../../../shared/lib/environment';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
 } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { getHardwareWalletSignatureErrorEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletConnectionMonitoringOptions = {
   signatureState: HardwareWalletSignaturesState;
@@ -44,10 +45,18 @@ export function useHwSwapConnectionMonitoring({
   dispatchSignatureEvent,
 }: UseHardwareWalletConnectionMonitoringOptions) {
   const { connectionState } = useHardwareWalletState();
+  const inE2e = isInE2eTest();
   const handledConnectionErrorRef = useRef<unknown>(null);
   const isDeviceDisconnectedRef = useRef(false);
 
   useEffect(() => {
+    // E2E has no physical device, so the connection always looks disconnected.
+    // Treating that as a signing failure would strand the signing page in a
+    // terminal state instead of following the transaction to Submitted.
+    if (inE2e) {
+      return;
+    }
+
     if (
       signatureState.status !==
         HardwareWalletSignatureStatus.AwaitingFirstSignature &&
@@ -80,25 +89,29 @@ export function useHwSwapConnectionMonitoring({
 
     handledConnectionErrorRef.current = connectionState.error;
 
-    const errorCode = getHardwareWalletErrorCode(connectionState.error);
-
+    // When the Ethereum app is closed on the device, connectionState is in
+    // ErrorState so HardwareWalletErrorProvider can show the "Open Ethereum App"
+    // modal. The swap signature flow must remain on the awaiting-app path
+    // rather than failing the transaction.
     if (
-      errorCode === ErrorCode.ConnectionClosed ||
-      errorCode === ErrorCode.DeviceDisconnected
+      getHardwareWalletErrorCode(connectionState.error) ===
+      ErrorCode.DeviceStateEthAppClosed
     ) {
-      isDeviceDisconnectedRef.current = true;
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.DeviceDisconnected,
-      });
       return;
     }
 
-    dispatchSignatureEvent({
-      type: isUserRejectedHardwareWalletError(connectionState.error)
-        ? HardwareWalletSignatureEvent.TransactionRejected
-        : HardwareWalletSignatureEvent.TransactionFailed,
-    });
-  }, [connectionState, signatureState.status, dispatchSignatureEvent]);
+    const event = getHardwareWalletSignatureErrorEvent(connectionState.error);
+
+    if (!event) {
+      return;
+    }
+
+    if (event.type === HardwareWalletSignatureEvent.DeviceDisconnected) {
+      isDeviceDisconnectedRef.current = true;
+    }
+
+    dispatchSignatureEvent(event);
+  }, [connectionState, inE2e, signatureState.status, dispatchSignatureEvent]);
 
   const resetConnectionError = useCallback((preserveError?: unknown) => {
     handledConnectionErrorRef.current = preserveError ?? null;

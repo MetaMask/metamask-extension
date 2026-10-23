@@ -66,6 +66,11 @@ const FILE_SOURCES: Array<{
     exportName: 'PAY_EXTENDED_FEATURE_FLAG',
   },
   {
+    key: 'PAY_RPC_FEATURE_FLAG',
+    file: 'shared/lib/transaction/pay-rpc.ts',
+    exportName: 'PAY_RPC_FEATURE_FLAG',
+  },
+  {
     key: 'DEFI_CONTROLLER_V2_FLAG',
     file: 'shared/lib/defi-controller-v2/remote-feature-flag.ts',
     exportName: 'DEFI_CONTROLLER_V2_FLAG',
@@ -74,6 +79,66 @@ const FILE_SOURCES: Array<{
     key: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
     file: 'shared/lib/assets/security-trust-feature-flags.ts',
     exportName: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
+  },
+  {
+    key: 'TOKEN_DETAILS_ADVANCED_CHARTS_FLAG',
+    file: 'shared/lib/assets/advanced-charts-feature-flags.ts',
+    exportName: 'TOKEN_DETAILS_ADVANCED_CHARTS_FLAG',
+  },
+  {
+    key: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/vault-config.ts',
+    exportName: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/chomp-config.ts',
+    exportName: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
+  },
+  {
+    key: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+    file: 'app/scripts/lib/transaction/caveats.ts',
+    exportName: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
   },
 ];
 

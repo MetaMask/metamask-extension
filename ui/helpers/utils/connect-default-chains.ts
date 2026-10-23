@@ -15,6 +15,7 @@ export type GetDefaultConnectChainIdsParams = {
   requestedNamespaces: CaipNamespace[];
   requestedNamespacesWithoutWallet: CaipNamespace[];
   isEip1193Request?: boolean;
+  isEip1193CompatibleRequest: boolean;
   isSolanaWalletStandardRequest: boolean;
   isTronWalletAdapterRequest: boolean;
 };
@@ -31,6 +32,7 @@ export type GetDefaultConnectChainIdsParams = {
  * @param options.requestedNamespaces - CAIP namespaces requested by the dapp (e.g., "eip155", "solana").
  * @param options.requestedNamespacesWithoutWallet - Requested namespaces excluding the "wallet" namespace.
  * @param options.isEip1193Request - Whether this is a legacy EIP-1193 connection request.
+ * @param options.isEip1193CompatibleRequest - Whether this request carries an `eip1193-compatible` session property set by `@metamask/connect-evm`.
  * @param options.isSolanaWalletStandardRequest - Whether this is a Solana Wallet Standard request.
  * @param options.isTronWalletAdapterRequest - Whether this is a Tron Wallet Adapter request.
  * @returns The CAIP chain IDs to grant by default.
@@ -44,6 +46,7 @@ export function getDefaultConnectChainIds({
   requestedNamespaces,
   requestedNamespacesWithoutWallet,
   isEip1193Request,
+  isEip1193CompatibleRequest,
   isSolanaWalletStandardRequest,
   isTronWalletAdapterRequest,
 }: GetDefaultConnectChainIdsParams): CaipChainId[] {
@@ -65,11 +68,19 @@ export function getDefaultConnectChainIds({
       )
     : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-  // If the request is an EIP-1193 request (with no specific chains requested),
-  // a Solana wallet standard or a tronWallet library request, return early with
-  // the default selected network list
+  // Return the default selected network list if the request is an EIP-1193
+  // request (with no specific chains requested), an EIP-1193 compatible
+  // request (a Multichain API request carrying the `eip1193-compatible`
+  // session property, set by MetaMask Connect's `@metamask/connect-evm`), a
+  // Solana wallet standard request, or a tronWallet library request.
+  // Legacy EIP-1193 requests also carry the `eip1193-compatible` session
+  // property (it is added by `getCaip25PermissionFromLegacyPermissions`), so
+  // the flag only takes the all-networks path for non-legacy requests;
+  // otherwise legacy requests with specific chains would lose their
+  // requested-chains-only pre-selection.
   if (
     (requestedCaipChainIds.length === 0 && isEip1193Request) ||
+    (isEip1193CompatibleRequest && !isEip1193Request) ||
     isSolanaWalletStandardRequest ||
     isTronWalletAdapterRequest
   ) {

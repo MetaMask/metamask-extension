@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import {
   FeeType,
+  assetIdsMatch,
   sumAmounts,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
@@ -196,9 +197,9 @@ export const isQuoteExpiredOrInvalid = ({
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    return (
-      activeQuote.quote.dest.asset.assetId.toLowerCase() !==
-      toToken.assetId.toLowerCase()
+    return !assetIdsMatch(
+      activeQuote.quote.dest.asset.assetId,
+      toToken.assetId,
     );
   }
 
@@ -260,6 +261,10 @@ export const getTotalNetworkFee = (quote?: QuoteResponse | null) => {
     quote?.quote.feeData[FeeType.NETWORK],
     quote?.quote.feeData[FeeType.RELAYER],
   );
+};
+
+export const getNativeReserve = (quote?: QuoteResponse | null) => {
+  return sumAmounts(quote?.quote.feeData.reserve);
 };
 
 export const getIncludedTxFees = (quote?: QuoteResponse | null) => {

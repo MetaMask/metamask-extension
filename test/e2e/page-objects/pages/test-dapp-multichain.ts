@@ -9,6 +9,18 @@ import { replaceColon } from '../../flask/multichain-api/testHelpers';
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
+/**
+ * Multichain API test dapp for session create/get/revoke and method invokes.
+ *
+ * Screen: `http://127.0.0.1:8080` served from `@metamask/test-dapp-multichain`.
+ * Owns: extension-id connect, scope checkboxes, wallet session buttons,
+ * session/method result panels, and connected-account assertions.
+ * Boundaries: the multichain dapp only. MetaMask permission/connect
+ * confirmations belong to confirmation page objects.
+ * Related: connect and review-permissions confirmations.
+ *
+ * @see node_modules/@metamask/test-dapp-multichain/build/index.html
+ */
 class TestDappMultichain {
   private readonly connectedAccount = (account: string) => {
     return {

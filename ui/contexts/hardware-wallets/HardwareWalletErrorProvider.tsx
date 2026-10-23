@@ -19,6 +19,7 @@ import {
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
 import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
 import { useDispatch } from '../../store/hooks';
+import { isInE2eTest } from '../../../shared/lib/environment';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -34,7 +35,7 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import { isHardwareWalletRoute } from './utils';
+import { isHardwareWalletErrorModalRoute } from './utils';
 
 /**
  * Route prefixes where hardware wallet error modals should auto-show.
@@ -101,10 +102,10 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
 
   /**
    * Check if the current route is one where auto-shown error modals are allowed.
-   * Only transaction, signing, and bridge pages should auto-show errors.
+   * Only transaction and signing pages should auto-show errors.
    */
   const isOnErrorModalRoute = useMemo(
-    () => isHardwareWalletRoute(location.pathname),
+    () => isHardwareWalletErrorModalRoute(location.pathname),
     [location.pathname],
   );
 
@@ -307,6 +308,12 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
     }
 
     if (isErrorModalSuppressed) {
+      return;
+    }
+
+    // E2E has no physical device; auto-shown connection modals block flows that
+    // already skip ensureDeviceReady (same policy as useHardwareFooter).
+    if (isInE2eTest()) {
       return;
     }
 

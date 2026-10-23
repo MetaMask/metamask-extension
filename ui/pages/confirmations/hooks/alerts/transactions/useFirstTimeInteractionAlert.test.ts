@@ -251,6 +251,27 @@ describe('useFirstTimeInteractionAlert', () => {
     ]);
   });
 
+  [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.perpsDeposit,
+    TransactionType.musdConversion,
+  ].forEach((payType) => {
+    it(`returns no alerts for ${payType} even when isFirstTimeInteraction is true`, () => {
+      const firstTimeConfirmation = {
+        ...TRANSACTION_META_MOCK,
+        isFirstTimeInteraction: true,
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: payType }],
+      };
+
+      expect(
+        runHook({
+          currentConfirmation: firstTimeConfirmation,
+        }),
+      ).toEqual([]);
+    });
+  });
+
   it('does not return alert if recipient is a first-party contract', () => {
     mockIsFirstPartyContract.mockReturnValue(EXPERIENCES_TYPE.METAMASK_BRIDGE);
 

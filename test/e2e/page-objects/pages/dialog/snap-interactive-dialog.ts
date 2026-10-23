@@ -12,7 +12,9 @@ const selectors = {
   exampleSelectorDropdown: '.snap-ui-renderer__selector',
   selectorItem: '.snap-ui-renderer__selector-item',
   rendererPanel: '.snap-ui-renderer__panel',
-  exampleCheckbox: '.mm-checkbox__input',
+  exampleCheckbox: {
+    testId: 'snap-ui-checkbox-example-checkbox',
+  },
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
@@ -38,6 +40,20 @@ const pickerClockNumberWithLabel = (label: string) => ({
   text: label,
 });
 
+/**
+ * Interactive Snap UI dialog (example interactive UI snap_dialog).
+ *
+ * Screen: notification/dialog window opened by a snap `snap_dialog` with custom
+ * interactive UI (inputs, dropdowns, checkboxes, MUI date/time pickers).
+ * Owns: interactive form controls, nested MUI picker dialogs, submit/OK/cancel,
+ * and result panel assertions.
+ * Boundaries: stops at this snap dialog window. Snap install/update belongs to
+ * `SnapInstall`; tx insights under confirmations belong to `SnapTxInsights`.
+ * Related: `SnapInstall`, confirmation host
+ * `ui/pages/confirmations/confirmation/confirmation.js`.
+ *
+ * @see ui/pages/confirmations/confirmation/confirmation.js
+ */
 class SnapInteractiveDialog {
   private driver: Driver;
 

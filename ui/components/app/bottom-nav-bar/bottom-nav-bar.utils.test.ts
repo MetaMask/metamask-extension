@@ -2,8 +2,8 @@ import { it } from '@jest/globals';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  SWAP_PATH,
 } from '../../../helpers/constants/routes';
 import {
   getActiveBottomNavTabs,
@@ -15,7 +15,7 @@ describe('getActiveBottomNavTabs', () => {
     expect(getActiveBottomNavTabs(DEFAULT_ROUTE)).toStrictEqual({
       isHome: true,
       isPerps: false,
-      isSwaps: false,
+      isMoney: false,
       isActivity: false,
     });
   });
@@ -24,16 +24,7 @@ describe('getActiveBottomNavTabs', () => {
     expect(getActiveBottomNavTabs(PERPS_HOME_PAGE_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: true,
-      isSwaps: false,
-      isActivity: false,
-    });
-  });
-
-  it('marks isSwaps active on the swap path', () => {
-    expect(getActiveBottomNavTabs(SWAP_PATH)).toStrictEqual({
-      isHome: false,
-      isPerps: false,
-      isSwaps: true,
+      isMoney: false,
       isActivity: false,
     });
   });
@@ -42,8 +33,17 @@ describe('getActiveBottomNavTabs', () => {
     expect(getActiveBottomNavTabs(ACTIVITY_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: false,
-      isSwaps: false,
+      isMoney: false,
       isActivity: true,
+    });
+  });
+
+  it('marks isMoney active on the Money home route', () => {
+    expect(getActiveBottomNavTabs(MONEY_HOME_ROUTE)).toStrictEqual({
+      isHome: false,
+      isPerps: false,
+      isMoney: true,
+      isActivity: false,
     });
   });
 
@@ -51,7 +51,7 @@ describe('getActiveBottomNavTabs', () => {
     expect(getActiveBottomNavTabs('/settings')).toStrictEqual({
       isHome: false,
       isPerps: false,
-      isSwaps: false,
+      isMoney: false,
       isActivity: false,
     });
   });
@@ -61,7 +61,7 @@ describe('isBottomNavRoute', () => {
   it.each([
     ['default route', DEFAULT_ROUTE],
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
-    ['swap path', SWAP_PATH],
+    ['Money home route', MONEY_HOME_ROUTE],
     ['activity route', ACTIVITY_ROUTE],
   ])('returns true for the %s', (_label, route) => {
     expect(isBottomNavRoute(route)).toBe(true);

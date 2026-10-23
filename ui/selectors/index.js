@@ -10,3 +10,4 @@ export * from './accounts';
 export * from './origin-throttling';
 export * from './multichain/networks';
 export * from './onboarding';
+export * from './test-networks';

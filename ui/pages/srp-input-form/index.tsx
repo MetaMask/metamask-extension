@@ -24,6 +24,8 @@ type SrpInputFormProps = {
   error?: string;
   setSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
   onClearCallback: () => void;
+  onClearClipboardRetry?: () => void;
+  onClipboardClearFailed?: () => void;
   /**
    * Whether to show the default description
    */
@@ -42,6 +44,8 @@ const SrpInputForm = ({
   error,
   setSecretRecoveryPhrase,
   onClearCallback,
+  onClearClipboardRetry,
+  onClipboardClearFailed,
   showDescription = true,
   toggleSrpDetailsModal = false,
   onSrpDetailsModalClose,
@@ -105,6 +109,8 @@ const SrpInputForm = ({
             <SrpInputImport
               onChange={setSecretRecoveryPhrase}
               onClearCallback={onClearCallback}
+              onClearClipboardRetry={onClearClipboardRetry}
+              onClipboardClearFailed={onClipboardClearFailed}
             />
             {error && (
               <Box marginTop={2}>

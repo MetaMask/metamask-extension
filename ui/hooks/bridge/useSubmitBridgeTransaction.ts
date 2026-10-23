@@ -3,12 +3,12 @@ import { useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   isCrossChain,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import type {
   InputPrimaryDenomination,
   QuoteResponse,
 } from '@metamask/bridge-controller';
-import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -21,10 +21,14 @@ import {
 } from '../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
+  getFromAmountInCurrency,
   getFromAccount,
+  getFromToken,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getIsSlippageUserOverride,
   getInputPrimaryDenomination,
+  getSlippage,
   getToToken,
   getWarningLabels,
   type BridgeAppState,
@@ -34,12 +38,9 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { useHardwareWalletError } from '../../contexts/hardware-wallets/HardwareWalletErrorProvider';
+import { isInE2eTest } from '../../../shared/lib/environment';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-  HARDWARE_WALLET_SIGNATURES_ROUTE,
-} from '../../helpers/constants/routes';
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { getDestChainId } from '../../pages/bridge/utils/quote';
@@ -56,16 +57,12 @@ import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 export default function useSubmitBridgeTransaction(
   inputPrimaryDenominationOverride?: InputPrimaryDenomination,
 ) {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const isHardwareWalletSigningPage = Boolean(
-    matchPath(
-      `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
-      pathname,
-    ),
-  );
-  const { navigateToBridgePage, navigateToHwSigningPage } =
-    useBridgeNavigation();
+  const {
+    navigateToBridgePage,
+    navigateToHwSigningPage,
+    navigateToDefaultRoute,
+    isHardwareWalletSigningPage,
+  } = useBridgeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -76,7 +73,11 @@ export default function useSubmitBridgeTransaction(
   const inputPrimaryDenomination =
     inputPrimaryDenominationOverride ?? persistedInputPrimaryDenomination;
   const fromAccount = useSelector(getFromAccount);
+  const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
+  const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+  const slippage = useSelector(getSlippage);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
@@ -86,8 +87,10 @@ export default function useSubmitBridgeTransaction(
   const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
-  const { ensureDeviceReady } = useHardwareWalletActions();
+  const { ensureDeviceReadyOrError } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
+  const { showErrorModal } = useHardwareWalletError();
+  const inE2e = isInE2eTest();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     variantName: chainValueOrderVariantName,
@@ -126,6 +129,26 @@ export default function useSubmitBridgeTransaction(
     try {
       const location = await getBridgeLocation();
       const intentData = quoteResponse.quote.intent;
+      const quotesReceivedContext = getQuotesReceivedProperties(
+        quoteResponse,
+        warnings,
+        true,
+        recommendedQuote,
+        fromTokenBalanceInUsd,
+        getHasSufficientGasForQuote(quoteResponse),
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          custom_slippage: isSlippageUserOverride,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          slippage_limit: slippage === undefined ? undefined : Number(slippage),
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          usd_amount_source: fromAmountInCurrency.usd.toNumber() || undefined,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          token_symbol_source: fromToken?.symbol,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+          token_symbol_destination: toToken?.symbol,
+        },
+      );
 
       if (intentData) {
         await dispatch(
@@ -136,6 +159,7 @@ export default function useSubmitBridgeTransaction(
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
             activeAbTests,
             inputPrimaryDenomination,
+            quotesReceivedContext,
           }),
         );
         return;
@@ -153,14 +177,7 @@ export default function useSubmitBridgeTransaction(
             fromAccount.address,
             quoteResponse,
             smartTransactionsEnabled,
-            getQuotesReceivedProperties(
-              quoteResponse,
-              warnings,
-              true,
-              recommendedQuote,
-              fromTokenBalanceInUsd,
-              getHasSufficientGasForQuote(quoteResponse),
-            ),
+            quotesReceivedContext,
             location,
             toToken?.securityData?.type ?? null,
             activeAbTests,
@@ -205,12 +222,19 @@ export default function useSubmitBridgeTransaction(
 
     try {
       if (
+        !inE2e &&
         isHardwareWalletAccount &&
         connectionState.status !== ConnectionStatus.Ready
       ) {
-        const isDeviceReady = await ensureDeviceReady();
-        if (!isDeviceReady) {
-          throw new Error('Hardware wallet device is not ready');
+        // Device preflight: a failure here must surface the error modal even
+        // on bridge/quote pages, where auto-shown modals are route-gated off.
+        // Manual showErrorModal calls bypass that gate; the provider still
+        // filters user rejections itself.
+        const deviceError = await ensureDeviceReadyOrError();
+        if (deviceError) {
+          showErrorModal(deviceError);
+          setIsSubmitting(false);
+          return;
         }
       }
 
@@ -239,7 +263,7 @@ export default function useSubmitBridgeTransaction(
     try {
       await submitQuote(quoteResponse, options);
     } catch (e) {
-      captureException(e);
+      captureException(e, { tags: { feature: SwapFeatureTag.SWAP } });
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         // Only user rejection should set wasTxDeclined; timeouts/disconnects must not.
         dispatch(setWasTxDeclined(true));
@@ -262,10 +286,7 @@ export default function useSubmitBridgeTransaction(
       return;
     }
 
-    navigate(DEFAULT_ROUTE, {
-      state: { stayOnHomePage: true },
-      replace: true,
-    });
+    await navigateToDefaultRoute({ replace: true }, false);
   };
 
   return {

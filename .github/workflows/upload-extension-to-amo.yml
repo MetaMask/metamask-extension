@@ -117,7 +117,6 @@ jobs:
           ADDON_GUID_PROD: ${{ vars.AMO_ADDON_GUID }}
         run: |
           set -euo pipefail
-          GITHUB_REF="${{ github.ref }}"
           # Flask is Runway/orchestrator-only, enforced by the sender check below (human/non-Runway
           # rejected) and by omitting flask from the workflow_dispatch target options. github.event_name
           # cannot gate this: a workflow_call from the Runway orchestrator still reports the caller's
@@ -227,7 +226,7 @@ jobs:
             echo "| Lambda | \`${LAMBDA_NAME}:${LAMBDA_QUALIFIER}\` |"
             echo "| AWS region | \`${AWS_REGION}\` |"
             echo "| Deployment env | \`${DEPLOYMENT_ENV}\` |"
-            echo "| Branch | \`${{ github.ref }}\` |"
+            echo "| Branch | \`${GITHUB_REF}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
       # Defense-in-depth: production/flask must be Runway (automated) or a human (AMO production manual
@@ -245,7 +244,7 @@ jobs:
           RUNWAY_ACTOR_ID: '73448015'
         run: |
           set -euo pipefail
-          echo "sender.type=${SENDER_TYPE} actor=${{ github.actor }} sender=${SENDER_LOGIN} (id=${SENDER_ID}) target=${TARGET}"
+          echo "sender.type=${SENDER_TYPE} actor=${GITHUB_ACTOR} sender=${SENDER_LOGIN} (id=${SENDER_ID}) target=${TARGET}"
           if [[ "${SENDER_TYPE}" == "Bot" ]]; then
             if [[ "${SENDER_ID}" != "${RUNWAY_ACTOR_ID}" ]]; then
               echo "::error::Non-Runway bot dispatch is not permitted for production/flask (sender_id=${SENDER_ID}). Automated uploads must use Runway (id=${RUNWAY_ACTOR_ID})."
@@ -269,6 +268,12 @@ jobs:
 
       - name: Submit AMO upload via Lambda invoke (B1)
         id: amo-upload
+        env:
+          # A successful AMO Flask submission took 103 seconds. Wait for the
+          # synchronous Lambda response without AWS CLI retries spawning
+          # overlapping submissions for the same version.
+          AWS_MAX_ATTEMPTS: '1'
+          TARGET: ${{ inputs.target }}
         run: |
           set -euo pipefail
 
@@ -298,6 +303,7 @@ jobs:
             --qualifier "${LAMBDA_QUALIFIER}" \
             --invocation-type RequestResponse \
             --cli-binary-format raw-in-base64-out \
+            --cli-read-timeout 600 \
             --payload "${PAYLOAD}" \
             /tmp/amo-response.json || INVOKE_RESULT=$?
 
@@ -362,7 +368,7 @@ jobs:
             echo "### AMO submission accepted"
             echo ""
             echo "- Version: \`${VERSION}\`"
-            echo "- Target: \`${{ inputs.target }}\`"
+            echo "- Target: \`${TARGET}\`"
             echo "- Upload UUID: \`$(jq -r '.upload_uuid // "n/a"' /tmp/amo-response.json)\`"
             echo "- AMO Version ID: \`$(jq -r '.amo_version_id // "n/a"' /tmp/amo-response.json)\`"
             echo "- AMO Version URL: $(jq -r '.amo_version_url // "n/a"' /tmp/amo-response.json)"
@@ -377,6 +383,9 @@ jobs:
 
       - name: Summary
         if: always()
+        env:
+          TARGET: ${{ inputs.target }}
+          VERSION: ${{ inputs.version }}
         run: |
           {
             echo ""
@@ -384,9 +393,9 @@ jobs:
             echo ""
             echo "| Field | Value |"
             echo "|-------|-------|"
-            echo "| Target | \`${{ inputs.target }}\` |"
-            echo "| Version | \`${{ inputs.version }}\` |"
-            echo "| Branch | \`${{ github.ref }}\` |"
+            echo "| Target | \`${TARGET}\` |"
+            echo "| Version | \`${VERSION}\` |"
+            echo "| Branch | \`${GITHUB_REF}\` |"
             echo "| Upload step | \`${{ steps.amo-upload.outcome }}\` |"
             echo "| Upload UUID | \`${{ steps.amo-upload.outputs.upload_uuid || 'n/a' }}\` |"
             echo "| AMO version ID | \`${{ steps.amo-upload.outputs.amo_version_id || 'n/a' }}\` |"

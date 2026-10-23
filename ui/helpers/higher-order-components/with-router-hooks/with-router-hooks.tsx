@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import {
   useNavigate,
   useLocation,
@@ -15,6 +15,15 @@ export type RouterHooksProps = {
   params: ReturnType<typeof useParams>;
 };
 
+function isSameLocationParams(a: RouterLocation, b: RouterLocation): boolean {
+  return (
+    a.pathname === b.pathname &&
+    a.search === b.search &&
+    a.hash === b.hash &&
+    shallowEqual(a.state, b.state)
+  );
+}
+
 /**
  * Stabilizes location by comparing only meaningful properties.
  * Intentionally excludes `key` which changes on every navigation, even to the same path.
@@ -23,19 +32,13 @@ export type RouterHooksProps = {
  * @returns Referentially stable location that only changes when pathname/search/hash/state change
  */
 function useLocationStable(location: RouterLocation): RouterLocation {
-  const ref = useRef<RouterLocation>(location);
+  const [stableLocation, setStableLocation] = useState(location);
 
-  const isLocationParamsEqual =
-    ref.current.pathname === location.pathname &&
-    ref.current.search === location.search &&
-    ref.current.hash === location.hash &&
-    shallowEqual(ref.current.state, location.state);
-
-  if (!isLocationParamsEqual) {
-    ref.current = location;
+  if (!isSameLocationParams(stableLocation, location)) {
+    setStableLocation(location);
   }
 
-  return ref.current;
+  return stableLocation;
 }
 
 function withRouterHooks<Props extends object>(

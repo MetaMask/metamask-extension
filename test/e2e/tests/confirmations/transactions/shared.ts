@@ -19,14 +19,14 @@ export async function toggleAdvancedDetails(driver: Driver) {
 }
 
 export async function assertAdvancedGasDetails(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
-  await driver.waitForSelector({ css: 'p', text: 'Speed' });
-  await driver.waitForSelector({ css: 'p', text: 'Max fee' });
+  await driver.waitForSelector({ testId: 'edit-gas-fees-row' });
+  await driver.waitForSelector({ testId: 'gas-fee-details-speed' });
+  await driver.waitForSelector({ testId: 'gas-fee-details-max-fee' });
 }
 
 export async function assertAdvancedGasDetailsWithFewerFields(driver: Driver) {
-  await driver.waitForSelector({ css: 'p', text: 'Network fee' });
-  await driver.waitForSelector({ css: 'p', text: 'Speed' });
+  await driver.waitForSelector({ testId: 'edit-gas-fees-row' });
+  await driver.waitForSelector({ testId: 'gas-fee-details-speed' });
 }
 
 export async function mocked4BytesApprove(mockServer: MockttpServer) {

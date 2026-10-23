@@ -60,7 +60,11 @@ export const AmountRecipient = () => {
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError) ||
     addressPoisoningDetectionResult.pending;
-  const isDisabled = hasBlockingError || !toResolved || isNetworkUnreliable;
+  const isDisabled =
+    hasBlockingError ||
+    !toResolved ||
+    isNetworkUnreliable ||
+    recipientValidationResult.isRecipientValidationPending;
 
   const openAlertModal = useCallback(() => {
     setShouldSubmitOnAcknowledge(false);

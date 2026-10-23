@@ -1,5 +1,3 @@
-'use no memo';
-
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Severity } from '../../../../../helpers/constants/design-system';

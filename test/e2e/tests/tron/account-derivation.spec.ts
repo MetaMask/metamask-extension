@@ -4,15 +4,14 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import {
+  addAccounts,
   waitUntilAccountTreeSyncIdle,
-  addNHdAccountsForTronDerivation,
-} from '../../page-objects/flows/tron-account-derivation.flow';
+} from '../../page-objects/flows/add-account.flow';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
 import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import { base58AddressToHex } from '../../seeder/tron/assets';
 import {
@@ -73,7 +72,7 @@ async function assertTronAddressesForAccounts(
 ): Promise<void> {
   const homepage = new HomePage(driver);
   const accountList = new AccountListPage(driver);
-  const addressList = new AddressListModal(driver);
+  const addressList = new AccountAddressListPage(driver);
 
   await homepage.headerNavbar.openAccountMenu();
   await accountList.checkPageIsLoaded();
@@ -136,7 +135,7 @@ describe('Tron account derivation', function (this: Suite) {
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
 
         // Open account menu to let the UI sync complete
         await homepage.headerNavbar.openAccountMenu();
@@ -183,7 +182,15 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await addAccounts({
+          driver,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
+        });
 
         await selectTronNetwork(driver);
 
@@ -220,16 +227,26 @@ describe('Tron account derivation', function (this: Suite) {
         accounts: [EMPTY_TRON_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         includeAnvil: false,
+        // To investigate why is this error appearing (#46623)
+        ignoredConsoleErrors: ['[PerpsStreamManager] Failed to fetch account'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await addAccounts({
+          driver,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
+        });
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
 
         for (let index = 0; index < 8; index += 1) {
           const accountLabel = `Account ${index + 1}`;
@@ -270,7 +287,7 @@ describe('Tron account derivation', function (this: Suite) {
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
         await homepage.headerNavbar.openAccountMenu();
         await accountList.checkPageIsLoaded();
 
@@ -303,11 +320,19 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await addAccounts({
+          driver,
+          count: 7,
+          onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+          onAfterAdd: ({ label }) =>
+            new AccountListPage(driver).checkMultichainAccountNameDisplayed(
+              label,
+            ),
+        });
 
-        const homepage = new NonEvmHomepage(driver);
+        const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
 
         for (let index = 0; index < 8; index += 1) {
           const accountLabel = `Account ${index + 1}`;
@@ -319,7 +344,7 @@ describe('Tron account derivation', function (this: Suite) {
           await waitUntilAccountTreeSyncIdle(driver);
 
           await homepage.checkPageIsLoaded();
-          await homepage.clickOnReceiveButton();
+          await homepage.clickOnReceiveButton('default');
           await addressList.checkPageIsLoaded();
           await addressList.checkNetworkAddressIsDisplayedForNetwork({
             networkName: 'Tron',

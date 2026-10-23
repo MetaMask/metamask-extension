@@ -5,6 +5,9 @@ import {
   UnifiedSwapBridgeEventName,
   isCrossChain,
   isNonEvmChainId,
+  assetIdsMatch,
+  MetaMetricsSwapsEventSource,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
@@ -26,7 +29,6 @@ import {
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
-import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import {
   bridgeSlice,
   setSrcTokenExchangeRates,
@@ -54,6 +56,7 @@ import { BridgeMissingNetworkConfigError } from './errors';
 const {
   setFromToken: setFromTokenAction,
   setToToken: setToTokenAction,
+  setToTokenSecurityData,
   setFromTokenInputValue,
   resetInputFields,
   rehydrateBridgeStore,
@@ -71,6 +74,7 @@ export {
   resetInputFields,
   rehydrateBridgeStore,
   setFromTokenInputValue,
+  setToTokenSecurityData,
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
@@ -219,6 +223,7 @@ export const setFromToken = (token: TokenPayload) => {
           // this is a configuration bug that must be fixed in FEATURED_RPCS.
           captureException(
             new BridgeMissingNetworkConfigError(chainId, maybeHexChainId),
+            { tags: { feature: SwapFeatureTag.SWAP } },
           );
           return;
         }
@@ -265,7 +270,7 @@ export const setToToken = (newToToken: TokenPayload) => {
     const fromChains = getFromChains(bridgeState);
     // If the new toToken is the same as the current fromToken
     // try to set the fromToken to the old toToken
-    if (fromToken?.assetId.toLowerCase() === newToToken.assetId.toLowerCase()) {
+    if (assetIdsMatch(fromToken?.assetId, newToToken.assetId)) {
       let fromTokenToUse = toToken;
 
       // If the old toToken's chain is disabled, it can't be set as the fromToken
@@ -286,9 +291,9 @@ export const setToToken = (newToToken: TokenPayload) => {
           typeof dispatch
         >[0],
       );
+      dispatch(setFromTokenInputValue(currentFromAmount));
     }
 
     dispatch(setToTokenAction(newToToken));
-    dispatch(setFromTokenInputValue(currentFromAmount));
   };
 };

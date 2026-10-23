@@ -33,6 +33,18 @@ const MARKETING_UTM_PARAMETERS = [...UTM_PARAMETERS];
 const APP_NAME = 'MetaMask Extension';
 
 /**
+ * Reads the current user agent for analytics enrichment. Returns an empty
+ * string when there is no window (e.g. the MV3 service worker).
+ *
+ * Segment's server-side enrichment parses to derive the browser name and version.
+ *
+ * @returns The current user agent, or an empty string if unavailable.
+ */
+export function getUserAgent(): string {
+  return typeof window === 'undefined' ? '' : window.navigator.userAgent;
+}
+
+/**
  * Dependencies for universal analytics event enrichment at delivery time.
  */
 export type PlatformAdapterEnrichmentContext = {
@@ -44,6 +56,7 @@ export type PlatformAdapterEnrichmentContext = {
   hasMarketingConsent: () => boolean;
   hasBasicFunctionalityEnabled: () => boolean;
   getRemoteFeatureFlags: () => Record<string, unknown>;
+  getFeatureFlagThresholdGroups: () => Record<string, string>;
   appVersion: string;
   userAgent: string;
 };
@@ -103,11 +116,11 @@ export function createEnrichmentContext(
     },
     getProfileIdentityProperties,
     getMarketingCampaignCookieId: () =>
-      messenger.call('MetaMetricsController:getState')
-        .marketingCampaignCookieId,
+      messenger.call('AnalyticsController:getState')
+        .marketingCampaignCookieId ?? null,
     hasMarketingConsent: () =>
-      messenger.call('MetaMetricsController:getState')
-        .dataCollectionForMarketing === true,
+      messenger.call('AnalyticsController:getState').optedInToMarketing ===
+      true,
     hasBasicFunctionalityEnabled: () =>
       messenger.call('PreferencesController:getState').useExternalServices,
     getRemoteFeatureFlags: () =>
@@ -115,8 +128,12 @@ export function createEnrichmentContext(
         messenger.call('RemoteFeatureFlagController:getState')
           ?.remoteFeatureFlags as Record<string, unknown> | undefined,
       ),
+    getFeatureFlagThresholdGroups: () =>
+      (messenger.call('RemoteFeatureFlagController:getState')
+        ?.featureFlagThresholdGroups as Record<string, string> | undefined) ??
+      {},
     appVersion,
-    userAgent: typeof window === 'undefined' ? '' : window.navigator.userAgent,
+    userAgent: getUserAgent(),
   };
 }
 
@@ -205,6 +222,8 @@ export function enrichWithABTestAnalytics(
       enrichWithABTests(
         { name: eventName, properties: enrichedProperties },
         ctx.getRemoteFeatureFlags(),
+        undefined,
+        ctx.getFeatureFlagThresholdGroups(),
       ).properties ?? enrichedProperties
     );
   } catch {

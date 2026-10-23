@@ -10,9 +10,10 @@
  *
  * Two layers of dedup are provided: concurrent callers for the same key share
  * one in-flight Promise, and follow-up callers inside the TTL window get the
- * cached value without issuing a new request. 10 s matches the staleness
- * tolerance of the passive "Recent activity" preview on the perps home — the
- * only path that actually reads the TTL cache today. Top-level consumers
+ * cached value without issuing a new request. The default 10 s matches the
+ * staleness tolerance of the passive "Recent activity" preview on the perps
+ * home; callers that need a tighter window pass their own TTL, as the Perps
+ * withdraw confirmation alert does at 5 s. Top-level consumers
  * (`PerpsActivityPage`) pass `forceFreshOnMount` and bypass the cache
  * entirely.
  *

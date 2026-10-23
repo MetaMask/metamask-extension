@@ -32,6 +32,10 @@ jest.mock('../../../hooks/useAnalytics', () => {
   };
 });
 
+jest.mock('../../../hooks/passkey/usePasskeyPrivateKeyExport', () => ({
+  usePasskeyPrivateKeyExport: () => jest.fn().mockResolvedValue([]),
+}));
+
 describe('MultichainAccountAddressListPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();

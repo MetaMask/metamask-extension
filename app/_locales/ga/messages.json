@@ -127,9 +127,6 @@
   "accountsConnected": {
     "message": "Cuntais ceangailte"
   },
-  "accountsPermissionsTitle": {
-    "message": "Féach ar do chuntais agus mol idirbhearta"
-  },
   "accountsSmallCase": {
     "message": "cuntais"
   },
@@ -356,9 +353,6 @@
   "alertMessageGasFeeLow": {
     "message": "Agus táille íseal á roghnú agat, bí ag súil le hidirbhearta níos moille agus amanna feithimh níos faide. Le haghaidh idirbhearta níos tapúla, roghnaigh roghanna táille Margaidh nó Ionsaitheach."
   },
-  "alertMessageGasTooLow": {
-    "message": "Chun leanúint leis an idirbheart seo, beidh ort an teorainn gáis a mhéadú go 21000 nó níos airde."
-  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Níl go leor $1 i do chuntas agat chun táillí líonra a íoc."
   },
@@ -448,9 +442,6 @@
   },
   "allNetworks": {
     "message": "Gach líonra"
-  },
-  "allPermissions": {
-    "message": "Gach cead"
   },
   "allPopularNetworks": {
     "message": "Gach líonra tóir"
@@ -543,9 +534,6 @@
   "assets": {
     "message": "Sócmhainní"
   },
-  "assetsDescription": {
-    "message": "Braith comharthaí i do sparán go huathoibríoch, taispeáin NFTanna, agus faigh nuashonruithe baisce ar iarmhéid an chuntais"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Iarracht an malartú a chealú saor in aisce"
   },
@@ -614,9 +602,6 @@
   },
   "backupAndSyncPrivacyLink": {
     "message": "Foghlaim conas a chosnaímid do phríobháideacht"
-  },
-  "backupApprovalInfo": {
-    "message": "Tá an cód rúnda seo ag teastáil chun do sparán a aisghabháil i gcás go gcaillfidh tú do ghléas, go ndéanfaidh tú dearmad ar do phasfhocal, go gcaithfidh tú MetaMask a athshuiteáil, nó más mian leat rochtain a fháil ar do sparán ar ghléas eile."
   },
   "backupApprovalNotice": {
     "message": "Déan cúltaca de do Rúnd-Frása Aisghabhála chun do sparán agus do chistí a choinneáil slán."
@@ -695,29 +680,8 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidAlertDescriptionBlur": {
-    "message": "Má leanann tú ar aghaidh, d’fhéadfadh na sócmhainní go léir atá liostaithe agat ar Blur a bheith i mbaol."
-  },
-  "blockaidAlertDescriptionMalicious": {
-    "message": "Tá tú ag idirghníomhú le suíomh mailíseach. Má leanann tú ar aghaidh, caillfidh tú do shócmhainní."
-  },
-  "blockaidAlertDescriptionOpenSea": {
-    "message": "Má leanann tú ar aghaidh, d’fhéadfadh na sócmhainní go léir atá liostaithe agat ar OpenSea a bheith i mbaol."
-  },
-  "blockaidAlertDescriptionOthers": {
-    "message": "Má dheimhníonn tú an t-iarratas seo, d’fhéadfá do shócmhainní a chailleadh. Molaimid duit an t-iarratas seo a chealú."
-  },
-  "blockaidAlertDescriptionTokenTransfer": {
-    "message": "Tá tú ag seoladh do shócmhainní chuig camscéimeoir. Má leanann tú ar aghaidh, caillfidh tú na sócmhainní sin."
-  },
-  "blockaidAlertDescriptionWithdraw": {
-    "message": "Má dheimhníonn tú an t-iarratas seo, tá tú ag ligean do chalaoiseoir do shócmhainní a tharraingt siar agus a chaitheamh. Ní bhfaighidh tú ar ais iad."
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "Má cheadaíonn tú an t-iarratas seo, d’fhéadfadh tríú páirtí atá aitheanta as camscéimeanna do shócmhainní go léir a thógáil."
-  },
-  "blockaidDescriptionBlurFarming": {
-    "message": "Má cheadaíonn tú an t-iarratas seo, is féidir le duine éigin do shócmhainní atá liostaithe ar Blur a ghoid."
   },
   "blockaidDescriptionErrored": {
     "message": "Mar gheall ar earráid, ní raibh muid in ann foláirimh slándála a sheiceáil. Ná lean ar aghaidh ach amháin má tá muinín agat as gach seoladh lena mbaineann."
@@ -725,23 +689,11 @@
   "blockaidDescriptionMaliciousDomain": {
     "message": "Tá tú ag idirghníomhú le fearann ​​mailíseach. Má cheadaíonn tú an t-iarratas seo, d'fhéadfá do shócmhainní a chailleadh."
   },
-  "blockaidDescriptionMightLoseAssets": {
-    "message": "Má cheadaíonn tú an t-iarratas seo, d’fhéadfá do shócmhainní a chailleadh."
-  },
-  "blockaidDescriptionSeaportFarming": {
-    "message": "Má cheadaíonn tú an iarratas seo, is féidir le duine éigin do shócmhainní atá liostaithe ar OpenSea a ghoid."
-  },
   "blockaidDescriptionTransferFarming": {
     "message": "Má cheadaíonn tú an t-iarratas seo, tógfaidh tríú páirtí atá aitheanta as camscéimeanna do shócmhainní go léir."
   },
-  "blockaidTitleDeceptive": {
-    "message": "Is iarratas mealltach é seo"
-  },
   "blockaidTitleMayNotBeSafe": {
     "message": "Bí cúramach"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "Is iarratas amhrasach é seo"
   },
   "blockies": {
     "message": "Blocaigh"
@@ -1093,9 +1045,6 @@
   "connect": {
     "message": "Ceangail"
   },
-  "connectAccounts": {
-    "message": "Ceangail cuntais"
-  },
   "connectManually": {
     "message": "Ceangail de láimh leis an suíomh reatha"
   },
@@ -1135,18 +1084,6 @@
   },
   "connectedSnaps": {
     "message": "Snapanna Ceangailte"
-  },
-  "connectedWithAccount": {
-    "message": "Cuntas $1 ceangailte",
-    "description": "$1 represents account length"
-  },
-  "connectedWithAccountName": {
-    "message": "Ceangailte le $1",
-    "description": "$1 represents account name"
-  },
-  "connectedWithNetwork": {
-    "message": "$1 líonra ceangailte",
-    "description": "$1 represents network length"
   },
   "connecting": {
     "message": "Ag ceangal"
@@ -1234,9 +1171,6 @@
   "copyAddressShort": {
     "message": "Cóipeáil an seoladh"
   },
-  "copyPrivateKey": {
-    "message": "Cóipeáil eochair phríobháideach"
-  },
   "copyToClipboard": {
     "message": "Cóipeáil chuig an ghearrthaisce"
   },
@@ -1282,6 +1216,9 @@
   "creatorAddress": {
     "message": "Seoladh an chruthaitheora"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Athshocraigh Stádas Meitea-Masc"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -1297,9 +1234,6 @@
   },
   "currencySymbolDefinition": {
     "message": "An tsiombail ticéir a thaispeántar d’airgeadra an líonra seo."
-  },
-  "currentAccountNotConnected": {
-    "message": "Níl do chuntas reatha ceangailte"
   },
   "currentExtension": {
     "message": "Leathanach síneadh reatha"
@@ -1562,12 +1496,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "An bhfuil tú cinnte gur mian leat dícheangal? D’fhéadfá feidhmiúlacht an tsuímh a chailleadh."
   },
-  "disconnectAllDescriptionText": {
-    "message": "Má dhícheanglaíonn tú ón suíomh seo, beidh ort do chuntais agus do líonraí a athcheangal le go mbeidh tú in ann an suíomh seo a úsáid arís."
-  },
-  "disconnectMessage": {
-    "message": "Déanfaidh sé seo tú a dhícheangal ón suíomh seo"
-  },
   "disconnectPrompt": {
     "message": "Dícheangail $1"
   },
@@ -1715,17 +1643,11 @@
   "editNetworkLink": {
     "message": "cuir an líonra bunaidh in eagar"
   },
-  "editNetworksTitle": {
-    "message": "Cuir líonraí in eagar"
-  },
   "editNonceField": {
     "message": "Cuir in eagar nonce"
   },
   "editNonceMessage": {
     "message": "Is gné ardteicneolaíochta í seo, bain úsáid as go cúramach."
-  },
-  "editPermissions": {
-    "message": "Ceadanna a chur in eagar"
   },
   "editSpendingCap": {
     "message": "Cuir an teorainn caiteachais in eagar"
@@ -2073,9 +1995,6 @@
   "gasLimit": {
     "message": "Teorainn gáis"
   },
-  "gasLimitTooLow": {
-    "message": "Ní mór teorainn gáis a bheith 21000 ar a laghad"
-  },
   "gasPriceExcessive": {
     "message": "Tá do tháille gáis socraithe ró-ard. Smaoinigh ar an méid a ísliú."
   },
@@ -2108,9 +2027,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Chuaigh rud éigin mícheart...."
-  },
-  "generalDescription": {
-    "message": "Sioncrónaigh socruithe trasna gléasanna, roghnaigh roghanna líonra, agus rianaigh sonraí comharthaí"
   },
   "genericExplorerView": {
     "message": "Féach ar chuntas ar $1"
@@ -2495,9 +2411,6 @@
   "lastSold": {
     "message": "Díolta go deireanach"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Ar mhaithe le do shábháilteacht, ní féidir an téacs seo a roghnú faoi láthair."
-  },
   "learnHow": {
     "message": "Foghlaim conas"
   },
@@ -2798,10 +2711,6 @@
   "more": {
     "message": "níos mó"
   },
-  "moreAccounts": {
-    "message": "+ $1 cuntas eile",
-    "description": "$1 is the number of accounts"
-  },
   "moreNetworks": {
     "message": "+ $1 líonraí breise",
     "description": "$1 is the number of networks"
@@ -2876,10 +2785,6 @@
     "message": "Ná sábháil ach seoltaí a bhfuil muinín agat astu.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Aithníodh gur seoladh mailíseach é seo. Molaimid gan idirghníomhú leis an seoladh seo.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Más eol duit an seoladh seo, tabhair leasainm dó le go n-aithneoidh tú é amach anseo.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -2891,10 +2796,6 @@
   "nameInstructionsSaved": {
     "message": "Chuir tú leasainm leis an seoladh seo cheana. Is féidir leat leasainmneacha molta eile a chur in eagar nó a fheiceáil.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Aithníodh gur amhrasach an rud é seo. Má tá muinín agat as an údar seo, socraigh ainm taispeána pearsanta chun é a aithint feasta.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Leasainm",
@@ -2923,10 +2824,6 @@
   "nameModalTitleVerified": {
     "message": "Seoladh fíoraithe",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Seoladh amhrasach",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Molta ag $1",
@@ -3013,9 +2910,6 @@
   "networkFeeExplanationTitle": {
     "message": "Táille Líonra"
   },
-  "networkMenu": {
-    "message": "Roghchlár Líonra"
-  },
   "networkMenuHeading": {
     "message": "Roghnaigh líonra"
   },
@@ -3042,9 +2936,6 @@
   },
   "networkOptions": {
     "message": "Roghanna líonra"
-  },
-  "networkPermissionToast": {
-    "message": "Ceadanna líonra nuashonraithe"
   },
   "networkStatus": {
     "message": "Stádas an líonra"
@@ -3078,9 +2969,6 @@
   },
   "networks": {
     "message": "Líonraí"
-  },
-  "networksSmallCase": {
-    "message": "líonraí"
   },
   "new": {
     "message": "Nua!"
@@ -3188,9 +3076,6 @@
   "noAccountsFound": {
     "message": "Ní bhfuarthas aon chuntais don fhiosrúchán cuardaigh tugtha"
   },
-  "noConnectionDescription": {
-    "message": "Chun ceangal le suíomh, aimsigh agus roghnaigh an cnaipe \"ceangail\". Cuimhnigh nach féidir le MetaMask ceangal ach le suíomhanna ar an ngréasán 3."
-  },
   "noDomainResolution": {
     "message": "Níor soláthraíodh aon réiteach don fhearann."
   },
@@ -3281,18 +3166,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Réidh le Tarraingt Siar"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Is féidir leat do $1 neamh-gheallta a tharraingt siar anois"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "Tá d’iarratas chun $1 a bhaint den gheall seolta"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "Fuarthas NFT ó"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFT seolta chuig"
-  },
   "notificationItemNetwork": {
     "message": "Líonra"
   },
@@ -3301,18 +3174,6 @@
   },
   "notificationItemReceived": {
     "message": "Faighte"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "Fuarthas ó"
-  },
-  "notificationItemSent": {
-    "message": "Seolta"
-  },
-  "notificationItemSentTo": {
-    "message": "Seolta chuig"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "Geall críochnaithe"
   },
   "notificationItemStaked": {
     "message": "Geallta"
@@ -3326,17 +3187,11 @@
   "notificationItemSwapped": {
     "message": "Malartaithe"
   },
-  "notificationItemSwappedFor": {
-    "message": "do"
-  },
   "notificationItemTo": {
     "message": "Chuig"
   },
   "notificationItemTransactionId": {
     "message": "Aitheantas Idirbhirt"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "Dí-Geallchur críochnaithe"
   },
   "notificationItemUnStaked": {
     "message": "Gan Geallta"
@@ -3453,9 +3308,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Cuir Geata IPFS saincheaptha leis"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Tá URL geata IPFS bailí"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Nuair a úsáideann tú ár socruithe agus cumraíochtaí réamhshocraithe, úsáidimid Infura mar ár soláthraí glaonna nós imeachta cianda (RPC) réamhshocraithe chun an rochtain is iontaofa agus is príobháideacha is féidir a thairiscint ar shonraí Ethereum. I gcásanna teoranta, féadfaimid soláthraithe RPC eile a úsáid chun an taithí is fearr a sholáthar dár n-úsáideoirí. Is féidir leat do RPC féin a roghnú, ach cuimhnigh go bhfaighidh aon RPC do sheoladh IP agus do sparán Ethereum chun idirbhearta a dhéanamh. Chun tuilleadh a fhoghlaim faoi mar a láimhseálann Infura sonraí le haghaidh cuntais EVM, léigh ár $1; le haghaidh cuntais Solana, $2."
@@ -3911,9 +3763,6 @@
   "permitSimulationDetailInfo": {
     "message": "Tá tú ag tabhairt cead don chaiteoir an líon seo comharthaí a chaitheamh ó do chuntas."
   },
-  "permittedChainToastUpdate": {
-    "message": "Tá rochtain ag $1 ar $2."
-  },
   "personalAddressDetected": {
     "message": "Seoladh pearsanta braite. Cuir isteach seoladh an chonartha comhartha."
   },
@@ -3971,10 +3820,6 @@
     "message": "Eochair phríobháideach",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "Eochair phríobháideach ar $1",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Tá an eochair phríobháideach i bhfolach",
     "description": "Explains that the private key input is hidden"
@@ -3986,9 +3831,6 @@
   "privateKeyShown": {
     "message": "Tá an eochair phríobháideach seo á taispeáint",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Rabhadh: Ná nocht an eochair seo choíche. Is féidir le duine ar bith a bhfuil d’eochracha príobháideacha aige aon sócmhainní atá i do chuntas a ghoid."
   },
   "privateKeys": {
     "message": "Eochracha príobháideacha",
@@ -4136,9 +3978,6 @@
   },
   "requestFromTransactionDescription": {
     "message": "Seo é an suíomh atá ag iarraidh do dheimhniú."
-  },
-  "requestingFor": {
-    "message": "Ag iarraidh"
   },
   "required": {
     "message": "Riachtanach"
@@ -4301,21 +4140,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Pasfhocal nua sábháilte"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Slándáil & príobháideacht"
-  },
-  "securityDescription": {
-    "message": "Laghdaigh do sheans go mbeidh tú páirteach i líonraí neamhshábháilte agus cosain do chuntais"
-  },
   "securityMessageLinkForNetworks": {
     "message": "camscéimeanna líonra agus rioscaí slándála"
   },
   "securityProviderPoweredBy": {
     "message": "Cumhachtaithe ag $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Laghdaigh do sheansanna dul isteach i líonraí neamhshábháilte agus cosain do chuntais agus do shonraí"
   },
   "securitySocialLoginEnabled": {
     "message": "Cumasaithe"
@@ -4350,9 +4180,6 @@
   "select": {
     "message": "Roghnaigh"
   },
-  "selectAccountToConnect": {
-    "message": "Roghnaigh cuntas le ceangal"
-  },
   "selectAll": {
     "message": "Roghnaigh gach rud"
   },
@@ -4370,9 +4197,6 @@
   },
   "selectNFTPrivacyPreference": {
     "message": "Cumasaigh Uathbhrath NFT"
-  },
-  "selectNetworkToFilter": {
-    "message": "Roghnaigh líonra le scagadh"
   },
   "selectPathHelp": {
     "message": "Mura bhfeiceann tú na cuntais a bhfuil súil agat leo, déan iarracht an cosán HD nó an líonra atá roghnaithe faoi láthair a athrú."
@@ -4394,9 +4218,6 @@
   },
   "send": {
     "message": "Seol"
-  },
-  "sendBugReport": {
-    "message": "Seol tuairisc fabht chugainn."
   },
   "sendSelectReceiveAsset": {
     "message": "Roghnaigh sócmhainn le fáil"
@@ -4658,12 +4479,6 @@
   "showPermissions": {
     "message": "Taispeáin ceadanna"
   },
-  "showPrivateKey": {
-    "message": "Taispeáin eochair phríobháideach"
-  },
-  "showSRP": {
-    "message": "Taispeáin Frása Rúnda Aisghabhála"
-  },
   "showTestnetNetworks": {
     "message": "Taispeáin líonraí tástála"
   },
@@ -4748,9 +4563,6 @@
   },
   "singleNetwork": {
     "message": "1 líonra"
-  },
-  "sites": {
-    "message": "Suíomhanna"
   },
   "siweIssued": {
     "message": "Eisithe"
@@ -5174,38 +4986,19 @@
   "stateCorruptionAreYouSure": {
     "message": "An bhfuil tú cinnte gur mian leat dul ar aghaidh?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Is féidir leat iarracht a dhéanamh do chomhad stáit a chóipeáil agus a athchóiriú de láimh sula ndéanann tú cinneadh do chruinneachán a athchóiriú trí $1 a leanúint.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "Is féidir leat iarracht a dhéanamh do chomhad stáit a chóipeáil agus a athchóiriú de láimh sula ndéanann tú cinneadh MetaMask a athshocrú trí $1 a leanúint.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ní féidir do chruinneachán a aisghabháil go huathoibríoch."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Is féidir do chruinneachán a aisghabháil ó chúltaca uathoibrithe. Scriosfaidh aisghabháil uathoibríoch do shocruithe agus do chuid sainroghanna reatha, agus ní athchóireofar ach do chruinneachán."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Earráid Inmheánach: Ní féidir rochtain a fháil ar an mbunachar sonraí"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Athshocraigh Stádas Meitea-Masc"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Ag athshocrú an bhunachair shonraí…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Athchóirigh Cuntais"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Ag athchóiriú bunachar sonraí…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "na treoracha seo",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Conas do Rún Aisghabhála Frása a aisghabháil"
@@ -5839,9 +5632,6 @@
   },
   "unapproved": {
     "message": "Gan cheadú"
-  },
-  "unexpectedBehavior": {
-    "message": "Ní raibh súil leis an iompraíocht seo agus ba chóir í a thuairisciú mar fhabht, fiú má athchóirítear do chuntais."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Ceadaigh rochtain chruinn ar $1 $2 ar $3 le haghaidh malartú"

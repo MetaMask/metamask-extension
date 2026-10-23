@@ -9,7 +9,11 @@ import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shi
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
-import { NETWORK_CLIENT_ID } from '../../constants';
+import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
@@ -164,6 +168,40 @@ function createShieldFixtureCrypto() {
   );
 }
 
+function mockShieldCryptoV6Balances(mockServer: Mockttp) {
+  const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+  const balances = [
+    {
+      accountId: `eip155:1337:${account}`,
+      assetId: 'eip155:1337/slip44:1',
+      balance: '25',
+    },
+    {
+      accountId: `eip155:1:${account}`,
+      assetId: 'eip155:1/slip44:60',
+      balance: '25',
+    },
+    {
+      accountId: `eip155:1:${account}`,
+      assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      balance: '1000',
+    },
+    {
+      accountId: `eip155:1:${account}`,
+      assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      balance: '1000',
+    },
+  ];
+
+  return mockServer
+    .forGet('https://accounts.api.cx.metamask.io/v6/multiaccount/balances')
+    .always()
+    .thenCallback((request) => ({
+      statusCode: 200,
+      json: v6AccountsApiBalancesJson(request.url, balances),
+    }));
+}
+
 describe('Shield Subscription Tests', function () {
   describe('Card Payment', function () {
     describe('Shield Entry Modal', function () {
@@ -271,11 +309,7 @@ describe('Shield Subscription Tests', function () {
           {
             fixtures: createShieldFixtureCard().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: async (server: Mockttp) => {
-              await mockAccountsApiV2SupportedNetworks(server);
-              await mockAccountsApiV5MultiaccountBalances(server);
-              await mockTokensV2SupportedNetworks(server);
-              await mockTokensV3Assets(server);
+            testSpecificMock: (server: Mockttp) => {
               const shieldMockttpService = new ShieldMockttpService();
               return shieldMockttpService.setup(server, {
                 mockNotEligible: true,
@@ -321,6 +355,7 @@ describe('Shield Subscription Tests', function () {
               // checksummed erc20 IDs so filterResponseToKnownAssets keeps updates.
               await mockAccountsApiV2SupportedNetworks(server);
               await mockAccountsApiV5MultiaccountBalances(server);
+              await mockShieldCryptoV6Balances(server);
               await mockTokensV2SupportedNetworks(server);
               await mockTokensV3Assets(server);
               const shieldMockttpService = new ShieldMockttpService();
@@ -379,6 +414,7 @@ describe('Shield Subscription Tests', function () {
             testSpecificMock: async (server: Mockttp) => {
               await mockAccountsApiV2SupportedNetworks(server);
               await mockAccountsApiV5MultiaccountBalances(server);
+              await mockShieldCryptoV6Balances(server);
               await mockTokensV2SupportedNetworks(server);
               await mockTokensV3Assets(server);
               const shieldMockttpService = new ShieldMockttpService();

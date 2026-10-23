@@ -19,6 +19,27 @@ const getPermitData = (permitType: string, accountAddress: string) => {
   switch (permitType) {
     case 'Permit':
       return PERMIT_DATA.replace('{ownerAddress}', accountAddress);
+    case 'PermitUnsignedFields': {
+      const permitData = JSON.parse(
+        PERMIT_DATA.replace('{ownerAddress}', accountAddress),
+      );
+      permitData.domain = {
+        name: 'USD Coin',
+        version: '2',
+        chainId: 1,
+        verifyingContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      };
+      permitData.message = {
+        ...permitData.message,
+        value:
+          '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+        nonce: '0',
+        deadline: '1893456000',
+        tokenId: '0',
+        allowed: false,
+      };
+      return JSON.stringify(permitData);
+    }
     case 'PermitBatch':
       return PERMIT_BATCH_DATA;
     case 'PermitSingle':
@@ -45,6 +66,7 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
   permitType:
     | 'Permit'
     | 'PermitBatch'
+    | 'PermitUnsignedFields'
     | 'PermitSingle'
     | 'PermitSeaport'
     | 'TradeOrder',

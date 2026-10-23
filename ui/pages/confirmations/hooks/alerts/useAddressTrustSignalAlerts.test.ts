@@ -49,7 +49,7 @@ const expectedMaliciousAlert = {
   isBlocking: false,
   key: 'trustSignalMalicious',
   message: 'alertMessageAddressTrustSignalMalicious',
-  reason: 'nameModalTitleMalicious',
+  reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
 
@@ -59,7 +59,7 @@ const expectedWarningAlert = {
   isBlocking: false,
   key: 'trustSignalWarning',
   message: 'alertMessageAddressTrustSignal',
-  reason: 'nameModalTitleWarning',
+  reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
 

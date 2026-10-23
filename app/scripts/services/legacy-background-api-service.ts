@@ -1,19 +1,34 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
+import type {
+  AnalyticsControllerGetEventFragmentByIdAction,
+  AnalyticsControllerUpsertEventFragmentAction,
+  ReadonlyAnalyticsEventFragment,
+} from '@metamask/analytics-controller';
 import {
+  AddNetworkFields,
+  NetworkConfiguration,
+  NetworkControllerAddNetworkAction,
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetNetworkConfigurationByNetworkClientIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
   NetworkControllerLookupNetworkAction,
   NetworkControllerResetConnectionAction,
+  NetworkControllerSetActiveNetworkAction,
   Provider,
 } from '@metamask/network-controller';
 import {
+  NetworkEnablementControllerActions,
   NetworkEnablementControllerEnableAllPopularNetworksAction,
   NetworkEnablementControllerEnableNetworkAction,
   NetworkEnablementControllerGetStateAction,
+  NetworkEnablementControllerIsNetworkEnabledAction,
+  NetworkEnablementControllerState,
+  NetworkEnablementControllerStateChangeEvent,
 } from '@metamask/network-enablement-controller';
+import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import {
   add0x,
   bytesToHex,
@@ -24,11 +39,14 @@ import {
   Json,
   NonEmptyArray,
   parseCaipAccountId,
+  parseCaipChainId,
+  toCaipAccountId,
 } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   BtcAccountType,
+  EthAccountType,
   isEvmAccountType,
   SolAccountType,
   TrxAccountType,
@@ -40,6 +58,7 @@ import {
   KeyringControllerExportAccountAction,
   KeyringControllerExportEncryptionKeyAction,
   KeyringControllerExportSeedPhraseAction,
+  KeyringControllerGetKeyringForAccountAction,
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerGetStateAction,
   KeyringControllerImportAccountWithStrategyAction,
@@ -55,6 +74,7 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
+  AccountsControllerClearStateAction,
   AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -81,25 +101,40 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { normalize } from '@metamask/eth-sig-util';
 import {
   TransactionContainerType,
+  TransactionControllerAddTransactionAction,
+  TransactionControllerAddTransactionBatchAction,
   TransactionControllerClearUnapprovedTransactionsAction,
   TransactionControllerEstimateGasAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
+  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateEditableParamsAction,
+  TransactionControllerUpdateSecurityAlertResponseAction,
   TransactionControllerWipeTransactionsAction,
+  type TransactionMeta,
+  type TransactionParams,
 } from '@metamask/transaction-controller';
+import {
+  UserOperationControllerAddUserOperationFromTransactionAction,
+  UserOperationControllerStartPollingByNetworkClientIdAction,
+} from '@metamask/user-operation-controller';
+import {
+  GetSignatureState,
+  SignatureStateChange,
+} from '@metamask/signature-controller';
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
-  GetTokenListState,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
+  TokensControllerAddTokenAction,
   TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import {
   AccountId,
   Asset,
+  AssetsControllerAddCustomAssetAction,
   AssetsControllerGetAssetsAction,
   AssetsControllerGetStateAction,
   AssetsControllerSetSelectedCurrencyAction,
@@ -110,11 +145,13 @@ import { SupportedCurrency } from '@metamask/core-backend';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PhishingControllerMaybeUpdateStateAction,
+  PhishingControllerScanAddressAction,
   PhishingControllerTestOriginAction,
 } from '@metamask/phishing-controller';
 import {
   ApprovalControllerAcceptRequestAction,
   ApprovalControllerAddAction,
+  ApprovalControllerAddAndShowApprovalRequestAction,
   ApprovalControllerGetStateAction,
   ApprovalControllerHasRequestAction,
   ApprovalControllerRejectRequestAction,
@@ -131,6 +168,7 @@ import {
   SeedlessOnboardingControllerAddNewSecretDataAction,
   SeedlessOnboardingControllerChangePasswordAction,
   SeedlessOnboardingControllerCheckIsPasswordOutdatedAction,
+  SeedlessOnboardingControllerClearStateAction,
   SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction,
   SeedlessOnboardingControllerErrorMessage,
   SeedlessOnboardingControllerFetchAllSecretDataAction,
@@ -145,16 +183,23 @@ import {
   SeedlessOnboardingControllerSubmitPasswordAction,
   SeedlessOnboardingControllerSyncLatestGlobalPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
+  SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction,
 } from '@metamask/seedless-onboarding-controller';
 import {
   CaveatSpecificationConstraint,
   ExtractPermission,
+  MethodNames,
   OriginString,
   PermissionControllerAcceptPermissionsRequestAction,
   PermissionControllerClearStateAction,
+  PermissionControllerGetCaveatAction,
+  PermissionControllerGrantPermissionsAction,
   PermissionControllerRejectPermissionsRequestAction,
+  PermissionControllerRevokePermissionAction,
   PermissionControllerRevokePermissionsAction,
+  PermissionControllerUpdateCaveatAction,
   PermissionControllerUpdatePermissionsByCaveatAction,
+  PermissionDoesNotExistError,
   PermissionSpecificationConstraint,
   PermissionsRequest,
   PermissionsRequestNotFoundError,
@@ -163,12 +208,23 @@ import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25CaveatValue,
+  Caip25EndowmentPermissionName,
+  getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  isCaipAccountIdInPermittedAccountIds,
+  isInternalAccountInPermittedAccountIds,
+  setChainIdsInCaip25CaveatValue,
+  setNonSCACaipAccountIdsInCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   SnapControllerClearStateAction,
+  SnapControllerGetStateAction,
   SnapInterfaceControllerDeleteInterfaceAction,
 } from '@metamask/snaps-controllers';
+import { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
+import { nanoid } from 'nanoid';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
   ApprovalType,
@@ -199,17 +255,24 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerClearStateAction,
+  AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
 } from '@metamask/profile-sync-controller/auth';
 import {
+  SubscriptionControllerClearStateAction,
   SubscriptionControllerGetStateAction,
+  SubscriptionControllerGetSubscriptionByProductAction,
   SubscriptionControllerStopAllPollingAction,
 } from '@metamask/subscription-controller';
 import {
+  ShieldControllerClearStateAction,
   ShieldControllerStartAction,
   ShieldControllerStopAction,
 } from '@metamask/shield-controller';
+import { ClaimsControllerClearStateAction } from '@metamask/claims-controller';
+import { AddressBookControllerClearAction } from '@metamask/address-book-controller';
 import {
   GasFeeControllerDisableNonRPCGasFeeApisAction,
   GasFeeControllerEnableNonRPCGasFeeApisAction,
@@ -218,6 +281,8 @@ import { DelegationControllerSignDelegationAction } from '@metamask/delegation-c
 import type {
   PasskeyAuthenticationResponse,
   PasskeyControllerChangePasswordWithPasskeyVerificationAction,
+  PasskeyControllerClearStateAction,
+  PasskeyControllerExportSeedPhraseWithPasskeyAction,
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
@@ -225,13 +290,12 @@ import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
 } from '../lib/util';
-import {
-  getIsAssetsUnifiedStateIncludedInBuild,
-  getIsSeedlessOnboardingFeatureEnabled,
-} from '../../../shared/lib/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
+import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import {
   fetchTokenBalance,
@@ -239,24 +303,27 @@ import {
 } from '../../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  getNetworkConfigurationsByCaipChainId,
+  getProviderConfig,
+} from '../../../shared/lib/selectors/networks';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
-import {
-  ASSETS_UNIFY_STATE_VERSION_1,
-  AssetsUnifyStateFeatureFlag,
-  isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
-} from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { LedgerHandlerMode } from '../../../shared/constants/offscreen-communication';
 import { MINUTE } from '../../../shared/constants/time';
 import { KeyringType as KeyringTypes } from '../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventFragment,
+  MetaMetricsEventFragmentPayload,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
-import { OnboardingControllerGetIsSocialLoginFlowAction } from '../controllers/onboarding-method-action-types';
+import type { UsePPOMAction } from '../lib/ppom/ppom-util';
+import {
+  OnboardingControllerGetIsSocialLoginFlowAction,
+  OnboardingControllerResetOnboardingAction,
+} from '../controllers/onboarding-method-action-types';
 import { getAccountsBySnapId } from '../lib/snap-keyring';
 import {
   getSentinelNetworkFlags,
@@ -267,12 +334,20 @@ import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
 import { applyTransactionContainers } from '../lib/transaction/containers/util';
 import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
+import {
+  addTransaction as addTransactionToPipeline,
+  type AddTransactionOptions,
+  type AddTransactionRequest,
+} from '../lib/transaction/util';
 import { TransactionControllerInitMessenger } from '../wallet-init/messengers/transaction-controller-messenger';
 import {
   PreferencesControllerAddReferralApprovedAccountAction,
   PreferencesControllerAddReferralDeclinedAccountAction,
   PreferencesControllerAddReferralPassedAccountAction,
+  PreferencesControllerConsolidateBasicFunctionalityAction,
+  PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction,
   PreferencesControllerRemoveReferralDeclinedAccountAction,
+  PreferencesControllerResetStateAction,
   PreferencesControllerSetAccountsReferralApprovedAction,
   PreferencesControllerSetPasswordForgottenAction,
   PreferencesControllerToggleExternalServicesAction,
@@ -282,13 +357,6 @@ import {
   ReferralStatus,
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
-import {
-  MetaMetricsControllerCreateEventFragmentAction,
-  MetaMetricsControllerGetEventFragmentByIdAction,
-  MetaMetricsControllerUpdateEventFragmentAction,
-  MetaMetricsControllerBufferedEndTraceAction,
-  MetaMetricsControllerBufferedTraceAction,
-} from '../controllers/metametrics-controller-method-action-types';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import {
   DefiReferralPartner,
@@ -312,6 +380,9 @@ import {
   trace,
 } from '../../../shared/lib/trace';
 import {
+  AppStateControllerAddAddressSecurityAlertResponseAction,
+  AppStateControllerAddSignatureSecurityAlertResponseAction,
+  AppStateControllerGetAddressSecurityAlertResponseAction,
   AppStateControllerGetIsWalletResetInProgressAction,
   AppStateControllerSetIsWalletResetInProgressAction,
   AppStateControllerSetPasskeyAutoUnlockSuppressedAction,
@@ -330,14 +401,17 @@ import {
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
 } from '../../../shared/lib/hardware-wallets';
-import { ENABLE_DMK_FEATURE_FLAG } from '../../../shared/lib/hardware-wallets/feature-flags';
+import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
@@ -407,6 +481,14 @@ type TokenStandardAndDetails = {
  */
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
+  'addNetwork',
+  'addPermittedAccount',
+  'addPermittedAccounts',
+  'addPermittedChain',
+  'addPermittedChains',
+  'addToken',
+  'addTransaction',
+  'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
   'attemptLedgerTransportCreation',
   'captureTestError',
@@ -424,6 +506,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
+  'exportSeedPhraseWithPasskey',
   'forgetDevice',
   'getAccountsBySnapId',
   'getAppNameAndVersion',
@@ -448,11 +531,11 @@ const MESSENGER_EXPOSED_METHODS = [
   'handleDefiReferralOnPermittedAccountsAdded',
   'importAccountWithStrategy',
   'importMnemonicToVault',
-  'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
   'isRelaySupported',
   'isSendBundleSupported',
   'lookupSelectedNetworks',
+  'closeNotificationPopup',
   'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
@@ -464,14 +547,20 @@ const MESSENGER_EXPOSED_METHODS = [
   'resolvePendingApproval',
   'removeAccount',
   'removePermissionsFor',
+  'removePermittedAccount',
+  'removePermittedChain',
+  'requestAccountsAndChainPermissionsWithId',
   'requestSafeReload',
   'resetAccount',
+  'resetWallet',
   'restoreSocialBackupAndGetSeedPhrase',
   'setAccountLabel',
   'setCurrentCurrency',
   'setEnabledAllPopularNetworks',
   'setEnabledNetworks',
   'setLocked',
+  'setPermittedAccounts',
+  'setPermittedChains',
   'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
   'syncKeyringEncryptionKey',
@@ -492,6 +581,15 @@ const MESSENGER_EXPOSED_METHODS = [
 export type LegacyBackgroundApiServiceActions =
   LegacyBackgroundApiServiceMethodActions;
 
+// `@metamask/network-enablement-controller`@6.0.0 defines this action type but
+// omits it from the package's public exports, so derive it from the exported
+// actions union. Import it directly once the package re-exports
+// `NetworkEnablementControllerRestoreEnabledNetworkMapAction`.
+type NetworkEnablementControllerRestoreEnabledNetworkMapAction = Extract<
+  NetworkEnablementControllerActions,
+  { type: 'NetworkEnablementController:restoreEnabledNetworkMap' }
+>;
+
 type AllowedActions =
   | AccountOrderControllerUpdateHiddenAccountsListAction
   | AccountTreeControllerClearStateAction
@@ -500,6 +598,7 @@ type AllowedActions =
   | AccountTreeControllerReinitAction
   | AccountTreeControllerSyncWithUserStorageAction
   | AccountTreeControllerSyncWithUserStorageAtLeastOnceAction
+  | AccountsControllerClearStateAction
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
@@ -508,23 +607,32 @@ type AllowedActions =
   | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerUpdateAccountsAction
+  | AddressBookControllerClearAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
+  | ApprovalControllerAddAndShowApprovalRequestAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerHasRequestAction
   | ApprovalControllerRejectRequestAction
+  | AppStateControllerAddAddressSecurityAlertResponseAction
+  | AppStateControllerAddSignatureSecurityAlertResponseAction
+  | AppStateControllerGetAddressSecurityAlertResponseAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerGetStateAction
   | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetTrezorModelAction
   | AssetsContractControllerGetTokenStandardAndDetailsAction
+  | AssetsControllerAddCustomAssetAction
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerClearStateAction
+  | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
   | BridgeStatusControllerWipeBridgeStatusAction
+  | ClaimsControllerClearStateAction
   | CurrencyRateControllerSetCurrentCurrencyAction
   | DelegationControllerSignDelegationAction
   | GasFeeControllerDisableNonRPCGasFeeApisAction
@@ -534,6 +642,7 @@ type AllowedActions =
   | KeyringControllerExportAccountAction
   | KeyringControllerExportEncryptionKeyAction
   | KeyringControllerExportSeedPhraseAction
+  | KeyringControllerGetKeyringForAccountAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerGetStateAction
   | KeyringControllerImportAccountWithStrategyAction
@@ -541,48 +650,64 @@ type AllowedActions =
   | KeyringControllerWithControllerAction
   | KeyringControllerWithKeyringV2Action
   | KeyringControllerWithKeyringV2UnsafeAction
-  | MetaMetricsControllerCreateEventFragmentAction
-  | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerUpdateEventFragmentAction
+  | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerUpsertEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSubmitEncryptionKeyAction
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
   | KeyringControllerWithKeyringAction
-  | MetaMetricsControllerBufferedTraceAction
-  | MetaMetricsControllerBufferedEndTraceAction
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceRemoveMultichainAccountWalletAction
   | MultichainAccountServiceResyncAccountsAction
+  | MultichainNetworkControllerGetStateAction
+  | NetworkControllerAddNetworkAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetNetworkConfigurationByNetworkClientIdAction
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction
   | NetworkControllerLookupNetworkAction
   | NetworkControllerResetConnectionAction
+  | NetworkControllerSetActiveNetworkAction
   | NetworkEnablementControllerEnableAllPopularNetworksAction
   | NetworkEnablementControllerEnableNetworkAction
+  | NetworkEnablementControllerIsNetworkEnabledAction
   | NetworkEnablementControllerGetStateAction
+  | NetworkEnablementControllerRestoreEnabledNetworkMapAction
   | OnboardingControllerGetIsSocialLoginFlowAction
   | OnboardingControllerGetStateAction
+  | OnboardingControllerResetOnboardingAction
   | PasskeyControllerChangePasswordWithPasskeyVerificationAction
+  | PasskeyControllerClearStateAction
+  | PasskeyControllerExportSeedPhraseWithPasskeyAction
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
+  | PermissionControllerGetCaveatAction
+  | PermissionControllerGrantPermissionsAction
   | PermissionControllerRejectPermissionsRequestAction
+  | PermissionControllerRevokePermissionAction
   | PermissionControllerRevokePermissionsAction
+  | PermissionControllerUpdateCaveatAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PhishingControllerMaybeUpdateStateAction
+  | PhishingControllerScanAddressAction
   | PhishingControllerTestOriginAction
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
   | PreferencesControllerAddReferralPassedAccountAction
+  | PreferencesControllerConsolidateBasicFunctionalityAction
+  | PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction
   | PreferencesControllerGetStateAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
+  | PreferencesControllerResetStateAction
   | PreferencesControllerSetAccountsReferralApprovedAction
   | PreferencesControllerSetPasswordForgottenAction
   | PreferencesControllerToggleExternalServicesAction
@@ -590,6 +715,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
   | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction
+  | SeedlessOnboardingControllerClearStateAction
   | SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction
   | SeedlessOnboardingControllerFetchAllSecretDataAction
   | SeedlessOnboardingControllerGetSecretDataBackupStateAction
@@ -603,24 +729,48 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction
+  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
+  | GetSignatureState
+  | ShieldControllerClearStateAction
   | ShieldControllerStartAction
   | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapControllerClearStateAction
+  | SnapControllerGetStateAction
   | SnapInterfaceControllerDeleteInterfaceAction
+  | SubscriptionControllerClearStateAction
   | SubscriptionControllerGetStateAction
+  | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
+  | TokensControllerAddTokenAction
   | TokensControllerGetStateAction
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerAddTransactionBatchAction
   | TransactionControllerClearUnapprovedTransactionsAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateEditableParamsAction
-  | TransactionControllerWipeTransactionsAction;
+  | TransactionControllerUpdateSecurityAlertResponseAction
+  | TransactionControllerWipeTransactionsAction
+  | UsePPOMAction
+  | UserOperationControllerAddUserOperationFromTransactionAction
+  | UserOperationControllerStartPollingByNetworkClientIdAction;
+
+/**
+ * The events that the {@link LegacyBackgroundApiService} can subscribe to.
+ *
+ * Consumed by the shared transaction-add pipeline to await the pending
+ * transaction or signature request while running PPOM security validation.
+ */
+type AllowedEvents =
+  | NetworkEnablementControllerStateChangeEvent
+  | TransactionControllerUnapprovedTransactionAddedEvent
+  | SignatureStateChange;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -628,7 +778,7 @@ type AllowedActions =
 export type LegacyBackgroundApiServiceMessenger = Messenger<
   typeof serviceName,
   LegacyBackgroundApiServiceActions | AllowedActions,
-  never
+  AllowedEvents
 >;
 
 /**
@@ -637,12 +787,12 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
-  seedlessOperationMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   getPermittedAccounts: (origin: string) => Promise<string[]>;
   getTabUrl: (tabId: number) => Promise<string | undefined>;
   updateTabUrl: (tabId: number, url: string) => Promise<void>;
+  closeNotificationPopup: () => Promise<void>;
   markNotificationPopupAsAutomaticallyClosed: () => void;
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
@@ -675,6 +825,8 @@ export class LegacyBackgroundApiService {
 
   readonly #updateTabUrl: (tabId: number, url: string) => Promise<void>;
 
+  readonly #closeNotificationPopup: () => Promise<void>;
+
   readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
 
   readonly #requestSafeReload: () => Promise<void>;
@@ -699,10 +851,10 @@ export class LegacyBackgroundApiService {
    * @param options.getPermittedAccounts - A function that returns the permitted accounts for an origin.
    * @param options.getTabUrl - A function that returns the current URL of a browser tab.
    * @param options.updateTabUrl - A function that navigates a browser tab to a URL.
+   * @param options.closeNotificationPopup - A function that closes the notification popup window.
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
-   * @param options.seedlessOperationMutex - A mutex to use for seedless operations.
    * @param options.offscreenPromise - A promise that resolves when the offscreen document is ready.
    */
   constructor({
@@ -713,10 +865,10 @@ export class LegacyBackgroundApiService {
     getPermittedAccounts,
     getTabUrl,
     updateTabUrl,
+    closeNotificationPopup,
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
-    seedlessOperationMutex,
     offscreenPromise,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
@@ -727,15 +879,12 @@ export class LegacyBackgroundApiService {
     this.#getPermittedAccounts = getPermittedAccounts;
     this.#getTabUrl = getTabUrl;
     this.#updateTabUrl = updateTabUrl;
+    this.#closeNotificationPopup = closeNotificationPopup;
     this.#markNotificationPopupAsAutomaticallyClosed =
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
     this.#sendUpdate = sendUpdate;
-    // Temporarily get the mutex from `MetamaskController` until
-    // changePasswordWithPasskeyVerification is migrated here (the only remaining
-    // MetamaskController user of this mutex).
-    // TODO: Remove this injection once that migration is complete.
-    this.#seedlessOperationMutex = seedlessOperationMutex;
+    this.#seedlessOperationMutex = new Mutex();
     this.#createVaultMutex = new Mutex();
     this.#offscreenPromise = offscreenPromise;
 
@@ -746,28 +895,7 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Checks if the assets unify state feature is enabled based on the remote feature flag and build configuration.
-   *
-   * @returns `true` if the assets unify state feature is enabled, `false` otherwise.
-   */
-  isAssetsUnifyStateEnabled(): boolean {
-    const featureFlagsState = this.#messenger.call(
-      'RemoteFeatureFlagController:getState',
-    );
-
-    const assetsUnifyState =
-      featureFlagsState.remoteFeatureFlags?.assetsUnifyState;
-
-    return (
-      getIsAssetsUnifyStateFeatureEnabled(
-        assetsUnifyState as AssetsUnifyStateFeatureFlag,
-        ASSETS_UNIFY_STATE_VERSION_1,
-      ) && getIsAssetsUnifiedStateIncludedInBuild()
-    );
-  }
-
-  /**
-   * Sets the current currency for the CurrencyRateController and AssetsController (if the assets unify state feature is enabled).
+   * Sets the current currency for the CurrencyRateController and AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
@@ -777,38 +905,80 @@ export class LegacyBackgroundApiService {
       currencyCode,
     );
 
-    if (this.isAssetsUnifyStateEnabled()) {
-      this.#messenger.call(
-        'AssetsController:setSelectedCurrency',
-        currencyCode,
-      );
-    }
+    this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
   }
 
   /**
    * Refreshes and returns the assets for the given accounts via the
    * AssetsController (force-updating from remote sources).
    *
-   * No-ops when the assets unify state feature is not enabled, since the
-   * AssetsController is not registered in that case.
-   *
    * @param accounts - The accounts to fetch assets for.
    * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
-   * @returns The assets for the given accounts, or `undefined` when the feature
-   * is not enabled.
+   * @returns The assets for the given accounts.
    */
   async getAssets(
     accounts: InternalAccount[],
     options?: Parameters<AssetsControllerGetAssetsAction['handler']>[1],
   ): Promise<Record<AccountId, Record<Caip19AssetId, Asset>> | undefined> {
-    if (!this.isAssetsUnifyStateEnabled()) {
-      return undefined;
-    }
-
     return await this.#messenger.call('AssetsController:getAssets', accounts, {
       ...options,
       forceUpdate: true,
     });
+  }
+
+  /**
+   * Adds a token to the wallet as a custom asset on the AssetsController for
+   * the currently selected account (resolving the chain ID from the given
+   * network client and building the CAIP-19 asset ID from the address).
+   *
+   * @param token - The token to add.
+   * @param token.address - The token contract address.
+   * @param token.symbol - The token symbol.
+   * @param token.decimals - The number of decimals the token uses.
+   * @param token.image - An optional icon URL for the token.
+   * @param token.networkClientId - The ID of the network client the token is on.
+   */
+  async addToken({
+    address,
+    symbol,
+    decimals,
+    image,
+    networkClientId,
+  }: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    image?: string;
+    networkClientId: string;
+  }): Promise<void> {
+    const selectedAccount = this.#messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+    const {
+      configuration: { chainId },
+    } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
+    const assetId = toAssetId(address, chainId);
+    if (!assetId) {
+      throw new Error(
+        `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
+      );
+    }
+    await this.#messenger.call(
+      'AssetsController:addCustomAsset',
+      selectedAccount.id,
+      assetId,
+      {
+        address,
+        symbol,
+        name: symbol,
+        decimals,
+        chainId,
+        ...(image ? { iconUrl: image } : {}),
+      },
+    );
   }
 
   /**
@@ -877,6 +1047,14 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call('PhishingController:maybeUpdateState');
 
     return this.#messenger.call('PhishingController:testOrigin', website);
+  }
+
+  /**
+   * Closes the notification popup window if one is open.
+   * Marks it as automatically closed so triggerUi knows not to reopen it.
+   */
+  async closeNotificationPopup(): Promise<void> {
+    await this.#closeNotificationPopup();
   }
 
   /**
@@ -1020,6 +1198,177 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, without waiting for the
+   * transaction to be published.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The transaction metadata.
+   */
+  async addTransaction(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        false,
+      ),
+    );
+  }
+
+  /**
+   * Adds a transaction to the TransactionController (or a user operation for
+   * smart accounts) after running security validation, waiting for the
+   * transaction to be published and returning the final transaction metadata.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @returns The final transaction metadata.
+   */
+  async addTransactionAndWaitForPublish(
+    transactionParams: TransactionParams,
+    transactionOptions?: Partial<AddTransactionOptions>,
+  ): Promise<TransactionMeta> {
+    return addTransactionToPipeline(
+      this.#buildAddTransactionRequest(
+        transactionParams,
+        transactionOptions,
+        true,
+      ),
+    );
+  }
+
+  /**
+   * Builds the request consumed by the shared transaction-add pipeline from the
+   * messenger, mirroring the former `MetamaskController.getAddTransactionRequest`.
+   *
+   * @param transactionParams - The parameters of the transaction to add.
+   * @param transactionOptions - Options for adding the transaction.
+   * @param waitForSubmit - Whether to wait for the transaction to be published.
+   * @returns The transaction-add request.
+   */
+  #buildAddTransactionRequest(
+    transactionParams: TransactionParams,
+    transactionOptions: Partial<AddTransactionOptions> | undefined,
+    waitForSubmit: boolean,
+  ): AddTransactionRequest {
+    const networkClientId = transactionOptions?.networkClientId;
+    const { chainId } = this.#messenger.call(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      networkClientId as string,
+    ) as NetworkConfiguration;
+
+    return {
+      messenger: this.#messenger,
+      internalAccounts: this.#messenger.call('AccountsController:listAccounts'),
+      selectedAccount: this.#messenger.call(
+        'AccountsController:getAccountByAddress',
+        transactionParams.from,
+      ) as InternalAccount,
+      networkClientId: networkClientId as string,
+      chainId,
+      transactionParams,
+      transactionOptions: { ...transactionOptions, isInternal: true },
+      securityAlertsEnabled: this.#messenger.call(
+        'PreferencesController:getState',
+      ).securityAlertsEnabled,
+      waitForSubmit,
+    };
+  }
+
+  /**
+   * Adds a network and (optionally) sets it as the active network.
+   *
+   * @param networkConfiguration - The network configuration to add.
+   * @param options - Options for post-add behavior.
+   * @param options.setActive - Whether to switch to the added network.
+   * @returns The added network configuration.
+   */
+  async addNetwork(
+    networkConfiguration: AddNetworkFields,
+    { setActive = true } = {},
+  ): Promise<NetworkConfiguration> {
+    if (setActive) {
+      const addedNetwork = this.#messenger.call(
+        'NetworkController:addNetwork',
+        networkConfiguration,
+      );
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await this.#messenger.call(
+        'NetworkController:setActiveNetwork',
+        networkClientId,
+      );
+      return addedNetwork;
+    }
+
+    const { enabledNetworkMap } = this.#messenger.call(
+      'NetworkEnablementController:getState',
+    );
+    const previousEnabledNetworkMap = Object.fromEntries(
+      Object.entries(enabledNetworkMap).map(([namespace, networks]) => [
+        namespace,
+        { ...networks },
+      ]),
+    ) as NetworkEnablementControllerState['enabledNetworkMap'];
+
+    const addedNetwork = this.#messenger.call(
+      'NetworkController:addNetwork',
+      networkConfiguration,
+    );
+    await this.lookupSelectedNetworks();
+
+    // The NetworkEnablementController enables the newly added network
+    // asynchronously (its `onAddNetwork` handler awaits a SLIP-44 lookup before
+    // updating state), which switches the active network filter. Wait for that
+    // enablement to land, then restore the previous map.
+    //
+    // The restore runs here in the linear flow rather than from a
+    // `NetworkEnablementController:stateChange` subscriber on purpose: calling
+    // the `restoreEnabledNetworkMap` action synchronously from inside the
+    // subscriber re-enters the messenger's publish and the restore update is
+    // dropped. Awaiting first defers the restore to a microtask outside that
+    // publish.
+    await this.#waitForNetworkToBeEnabled(networkConfiguration.chainId);
+    this.#messenger.call(
+      'NetworkEnablementController:restoreEnabledNetworkMap',
+      previousEnabledNetworkMap,
+    );
+
+    return addedNetwork;
+  }
+
+  /**
+   * Resolves once the given network is enabled in the
+   * NetworkEnablementController. `NetworkEnablementController.onAddNetwork`
+   * always enables a newly added network, so this is guaranteed to resolve.
+   *
+   * @param chainId - The chain ID of the newly added network.
+   */
+  async #waitForNetworkToBeEnabled(chainId: Hex): Promise<void> {
+    if (
+      this.#messenger.call(
+        'NetworkEnablementController:isNetworkEnabled',
+        chainId,
+      )
+    ) {
+      return;
+    }
+
+    await this.#messenger.waitUntil('NetworkEnablementController:stateChange', {
+      condition: () =>
+        this.#messenger.call(
+          'NetworkEnablementController:isNetworkEnabled',
+          chainId,
+        ),
+    });
+  }
+
+  /**
    * Verifies the validity of the current vault's seed phrase.
    *
    * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -1141,6 +1490,48 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Resets the wallet to a clean state, clearing sensitive controller state and
+   * signing the user out.
+   *
+   * @param restoreOnly - When `true`, onboarding state is preserved (used by the
+   * restore-vault flow); when `false`, onboarding is also reset and the wallet
+   * reset progress flag is set.
+   */
+  async resetWallet(restoreOnly = false): Promise<void> {
+    // Sign out and re-arm profile/social pairing for the next wallet.
+    this.#messenger.call('AuthenticationController:clearState');
+
+    // clear SeedlessOnboardingController state
+    this.#messenger.call('SeedlessOnboardingController:clearState');
+
+    // clear passkey early (vault-bound unlock material; runs for restoreOnly too)
+    this.#messenger.call('PasskeyController:clearState');
+
+    // stop subscription polling
+    this.#messenger.call('SubscriptionController:stopAllPolling');
+
+    // clear States
+    this.#messenger.call('SubscriptionController:clearState');
+    this.#messenger.call('ShieldController:clearState');
+    this.#messenger.call('ClaimsController:clearState');
+
+    // clear contacts (address book)
+    this.#messenger.call('AddressBookController:clear');
+
+    // reset preferences to defaults
+    this.#messenger.call('PreferencesController:resetState');
+
+    if (!restoreOnly) {
+      // reset onboarding state
+      this.#messenger.call('OnboardingController:resetOnboarding');
+      this.#messenger.call(
+        'AppStateController:setIsWalletResetInProgress',
+        true,
+      );
+    }
+  }
+
+  /**
    * @deprecated Avoid new references to the global network.
    * Will be removed once multi-chain support is fully implemented.
    *
@@ -1177,20 +1568,12 @@ export class LegacyBackgroundApiService {
 
   /**
    * Returns the `TokensController.allTokens` map, reconstructed from the
-   * `AssetsController` state when the assets unify state feature is enabled.
+   * `AssetsController` state.
    *
    * @returns The `ChainId -> AccountAddress -> Token[]` map.
    */
   #getAllTokens(): ReturnType<typeof getTokensControllerAllTokens> {
     const { allTokens } = this.#messenger.call('TokensController:getState');
-
-    // When the assets unify state feature is disabled, the selector simply
-    // returns `TokensController.allTokens`; the additional slices are only
-    // needed to reconstruct the token list from the (conditionally registered)
-    // AssetsController state when the feature is enabled.
-    if (!this.isAssetsUnifyStateEnabled()) {
-      return allTokens;
-    }
 
     const { internalAccounts } = this.#messenger.call(
       'AccountsController:getState',
@@ -1233,17 +1616,18 @@ export class LegacyBackgroundApiService {
   ): Promise<TokenStandardAndDetails> {
     const currentChainId = this.getGlobalChainId();
 
-    const { tokensChainsCache } = this.#messenger.call(
-      'TokenListController:getState',
-    );
-    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
     const allTokens = this.#getAllTokens();
 
     const tokens = allTokens?.[currentChainId]?.[userAddress as string] || [];
 
-    const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
+    // Only consult the static mainnet list on mainnet. On other chains a
+    // matching address can belong to a different token, and must not short-
+    // circuit the on-chain lookup (same guard as getTokenStandardAndDetailsByChain).
+    let staticTokenListDetails = {};
+    if (currentChainId === CHAIN_IDS.MAINNET) {
+      staticTokenListDetails =
+        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    }
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
@@ -1251,7 +1635,6 @@ export class LegacyBackgroundApiService {
 
     const tokenDetails = {
       ...staticTokenListDetails,
-      ...tokenListDetails,
       ...userDefinedTokenDetails,
     } as MergedTokenDetails;
 
@@ -1376,11 +1759,6 @@ export class LegacyBackgroundApiService {
     tokenId?: string,
     chainId?: Hex,
   ): Promise<TokenStandardAndDetails> {
-    const { tokensChainsCache } = this.#messenger.call(
-      'TokenListController:getState',
-    );
-    const tokenList = (chainId && tokensChainsCache?.[chainId]?.data) || {};
-
     const allTokens = this.#getAllTokens();
     const selectedAccount = this.#messenger.call(
       'AccountsController:getSelectedAccount',
@@ -1394,14 +1772,12 @@ export class LegacyBackgroundApiService {
         STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
     }
 
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
       ) || {};
     const tokenDetails = {
       ...staticTokenListDetails,
-      ...tokenListDetails,
       ...userDefinedTokenDetails,
     } as MergedTokenDetails;
 
@@ -2016,7 +2392,7 @@ export class LegacyBackgroundApiService {
           },
         );
 
-        this.#messenger.call('MetaMetricsController:bufferedTrace', {
+        this.#messenger.call('SentryTracingService:bufferedTrace', {
           name: TraceName.OnboardingResetPassword,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -2041,6 +2417,16 @@ export class LegacyBackgroundApiService {
           .catch((err) => {
             log.error('error while revoking pending refresh tokens', err);
           });
+
+        // Asynchronously track incomplete metadata backup events
+        this.#messenger
+          .call(
+            'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+            password,
+          )
+          .catch((err) => {
+            log.error('error while tracking incomplete metadata backup', err);
+          });
       } catch (err) {
         this.#messenger?.captureException?.(
           createSentryError(TraceName.OnboardingResetPasswordError, err),
@@ -2051,7 +2437,7 @@ export class LegacyBackgroundApiService {
         await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
-        this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
           name: TraceName.OnboardingResetPassword,
           data: { success: changePasswordSuccess },
         });
@@ -2130,6 +2516,27 @@ export class LegacyBackgroundApiService {
         params,
       ),
     );
+  }
+
+  /**
+   * Exports and JSON-encodes a seed phrase after passkey verification.
+   *
+   * @param params - Passkey seed export parameters.
+   * @param params.authenticationResponse - WebAuthn authentication response.
+   * @param params.keyringId - Optional HD keyring id.
+   * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+   */
+  async exportSeedPhraseWithPasskey(params: {
+    authenticationResponse: PasskeyAuthenticationResponse;
+    keyringId?: string;
+  }): Promise<number[]> {
+    const mnemonic = await this.#messenger.call(
+      'PasskeyController:exportSeedPhraseWithPasskey',
+      params.authenticationResponse,
+      params.keyringId,
+    );
+
+    return Array.from(convertEnglishWordlistIndicesToCodepoints(mnemonic));
   }
 
   /**
@@ -2369,9 +2776,9 @@ export class LegacyBackgroundApiService {
    */
   #getTransactionUIMetricsFragment(
     transactionId: string,
-  ): MetaMetricsEventFragment | undefined {
+  ): ReadonlyAnalyticsEventFragment | undefined {
     return this.#messenger.call(
-      'MetaMetricsController:getEventFragmentById',
+      'AnalyticsController:getEventFragmentById',
       this.#getTransactionUIMetricsFragmentId(transactionId),
     );
   }
@@ -2379,41 +2786,26 @@ export class LegacyBackgroundApiService {
   /**
    * Creates or updates the UI metrics fragment for a given transaction.
    *
+   * This fragment declares no events: the UI writes properties into it as the
+   * user interacts with a confirmation, and the transaction metrics builders
+   * read them back when they emit their own events.
+   *
    * @param transactionId - The id of the transaction.
-   * @param payload - The fragment settings and properties to store.
+   * @param payload - The fragment properties to store.
    */
   upsertTransactionUIMetricsFragment(
     transactionId: string,
-    payload: Partial<MetaMetricsEventFragment>,
+    payload: MetaMetricsEventFragmentPayload,
   ): void {
     if (!transactionId || !payload) {
       return;
     }
 
-    const fragmentId = this.#getTransactionUIMetricsFragmentId(transactionId);
-    const existingFragment =
-      this.#getTransactionUIMetricsFragment(transactionId);
-
-    if (existingFragment) {
-      this.#messenger.call(
-        'MetaMetricsController:updateEventFragment',
-        fragmentId,
-        payload,
-      );
-      return;
-    }
-
-    this.#messenger.call('MetaMetricsController:createEventFragment', {
-      // `createEventFragment` derives the fragment `id` from `uniqueIdentifier`.
-      uniqueIdentifier: fragmentId,
-      // Required by createEventFragment, but this fragment is storage-only.
-      // We never finalize this fragment and we do not set initialEvent.
-      successEvent: 'Transaction Fragment Created',
-      category: MetaMetricsEventCategory.Transactions,
-      canDeleteIfAbandoned: true,
-      properties: payload.properties ?? {},
-      sensitiveProperties: payload.sensitiveProperties ?? {},
-    });
+    this.#messenger.call(
+      'AnalyticsController:upsertEventFragment',
+      this.#getTransactionUIMetricsFragmentId(transactionId),
+      payload,
+    );
   }
 
   /**
@@ -2652,11 +3044,20 @@ export class LegacyBackgroundApiService {
    * and the shield service is stopped if applicable.
    *
    * @param useExternal - Whether external services should be enabled.
+   * @param ownedPreferences - Optional per-preference values forwarded to
+   * PreferencesController so enabling can preserve granular onboarding choices
+   * in one write.
    */
-  toggleExternalServices(useExternal: boolean): void {
+  toggleExternalServices(
+    useExternal: boolean,
+    ownedPreferences?: Partial<
+      Record<ExternalServicesOwnedPreference, boolean>
+    >,
+  ): void {
     this.#messenger.call(
       'PreferencesController:toggleExternalServices',
       useExternal,
+      ownedPreferences,
     );
 
     const subscriptionState = this.#messenger.call(
@@ -2764,7 +3165,7 @@ export class LegacyBackgroundApiService {
       state.remoteFeatureFlags ?? {},
       getManifestFlags().remoteFeatureFlags ?? {},
     );
-    return getBooleanFeatureFlag(merged[ENABLE_DMK_FEATURE_FLAG], false)
+    return isDmkFeatureEnabled(merged)
       ? LedgerHandlerMode.DMK
       : LedgerHandlerMode.Legacy;
   }
@@ -2931,7 +3332,7 @@ export class LegacyBackgroundApiService {
     index: number,
     hdPathDescription?: string,
   ): string {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
+    return `${name.charAt(0).toUpperCase()}${name.slice(1)} ${
       index + 1
     } ${hdPathDescription || ''}`.trim();
   }
@@ -3042,8 +3443,11 @@ export class LegacyBackgroundApiService {
         return {
           address: normalize(createdAccount.address) as string,
           label: this.#getAccountLabel(
+            // QR devices report a user-defined name that can be empty or
+            // missing (e.g. a Keystone wallet with no name), so fall back to
+            // the device name.
             deviceName === HardwareDeviceNames.qr
-              ? (keyring as QrKeyringV2).getName()
+              ? (keyring as QrKeyringV2).getName() || deviceName
               : deviceName,
             index,
             hdPathDescription,
@@ -3368,7 +3772,7 @@ export class LegacyBackgroundApiService {
   ): Promise<void> {
     let createSeedPhraseBackupSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3396,7 +3800,7 @@ export class LegacyBackgroundApiService {
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         data: { success: createSeedPhraseBackupSuccess },
       });
@@ -3412,7 +3816,7 @@ export class LegacyBackgroundApiService {
   async #fetchAllSecretData(password?: string): Promise<SecretMetadata[]> {
     let fetchAllSeedPhrasesSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingFetchSrps,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3424,7 +3828,7 @@ export class LegacyBackgroundApiService {
 
       return allSeedPhrases;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingFetchSrps,
         data: { success: fetchAllSeedPhrasesSuccess },
       });
@@ -3521,7 +3925,7 @@ export class LegacyBackgroundApiService {
       await this.#seedlessOperationMutex.runExclusive(async () => {
         let addNewSeedPhraseBackupSuccess = false;
         try {
-          this.#messenger.call('MetaMetricsController:bufferedTrace', {
+          this.#messenger.call('SentryTracingService:bufferedTrace', {
             name: TraceName.OnboardingAddSrp,
             op: TraceOperation.OnboardingSecurityOp,
           });
@@ -3545,7 +3949,7 @@ export class LegacyBackgroundApiService {
 
           throw err;
         } finally {
-          this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+          this.#messenger.call('SentryTracingService:bufferedEndTrace', {
             name: TraceName.OnboardingAddSrp,
             data: { success: addNewSeedPhraseBackupSuccess },
           });
@@ -3634,6 +4038,9 @@ export class LegacyBackgroundApiService {
 
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
+
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
@@ -3813,7 +4220,7 @@ export class LegacyBackgroundApiService {
       options;
     const releaseLock = await this.#createVaultMutex.acquire();
     try {
-      const { entropySource: id } = await this.#messenger.call(
+      const wallet = await this.#messenger.call(
         'MultichainAccountService:createMultichainAccountWallet',
         {
           type: 'import',
@@ -3822,12 +4229,15 @@ export class LegacyBackgroundApiService {
           ),
         },
       );
+      const id = wallet.entropySource;
 
-      const [newAccount] = (await this.#messenger.call(
-        'KeyringController:withKeyringV2',
-        { id },
-        async ({ keyring }) => keyring.getAccounts(),
-      )) as { address: string }[];
+      const newAccount = wallet
+        .getMultichainAccountGroup(0)
+        ?.get({ type: EthAccountType.Eoa });
+
+      if (!newAccount) {
+        throw new Error('No new account found');
+      }
 
       const isSocialLoginFlow = this.#messenger.call(
         'OnboardingController:getIsSocialLoginFlow',
@@ -4050,6 +4460,9 @@ export class LegacyBackgroundApiService {
 
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
+
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
@@ -4287,6 +4700,25 @@ export class LegacyBackgroundApiService {
 
     if (hasPendingApproval) {
       return;
+    }
+
+    // If the partner requires a specific chain and user's chain doesn't match,
+    // return early to avoid the referral code potentially not being applied.
+    // Don't write any account status so that the prompt can show on the next
+    // trigger (NewConnection or OnNavigateConnectedTab) once the user has switched chain
+    if (partner.requiredChainId) {
+      const networkClientId = this.#messenger.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        partner.origin,
+      );
+      const networkConfig = this.#messenger.call(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        networkClientId,
+      );
+      const currentChainId = networkConfig?.chainId;
+      if (currentChainId !== partner.requiredChainId) {
+        return;
+      }
     }
 
     const { activePermittedAddressOverride } = options;
@@ -4545,5 +4977,457 @@ export class LegacyBackgroundApiService {
         error,
       );
     }
+  }
+
+  /**
+   * Returns the CAIP-25 caveat for the given origin, or `undefined` if the
+   * origin does not currently have the CAIP-25 permission.
+   *
+   * @param origin - The origin to get the CAIP-25 caveat for.
+   * @returns The CAIP-25 caveat, or `undefined` if it does not exist.
+   */
+  #getCaip25Caveat(origin: string): { value: Caip25CaveatValue } | undefined {
+    try {
+      return this.#messenger.call(
+        'PermissionController:getCaveat',
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      ) as { value: Caip25CaveatValue } | undefined;
+    } catch (err) {
+      // suppress expected error in case that the origin
+      // does not have the target permission yet
+      if (err instanceof PermissionDoesNotExistError) {
+        return undefined;
+      }
+      throw err;
+    }
+  }
+
+  /**
+   * Adds a permitted account for the given origin.
+   *
+   * @param origin - The origin to add the permitted account for.
+   * @param address - The address of the account to permit.
+   */
+  addPermittedAccount(origin: string, address: string): void {
+    this.#addMoreAccounts(origin, [address]);
+  }
+
+  /**
+   * Adds permitted accounts for the given origin.
+   *
+   * @param origin - The origin to add the permitted accounts for.
+   * @param addresses - The addresses of the accounts to permit.
+   */
+  addPermittedAccounts(origin: string, addresses: string[]): void {
+    this.#addMoreAccounts(origin, addresses);
+  }
+
+  /**
+   * Removes a permitted account for the given origin.
+   *
+   * @param origin - The origin to remove the permitted account for.
+   * @param address - The address of the account to remove.
+   */
+  removePermittedAccount(origin: string, address: string): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot remove account "${address}": No permissions exist for origin "${origin}".`,
+      );
+    }
+
+    const existingAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    const internalAccount = this.#messenger.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    ) as InternalAccount;
+
+    const remainingAccountIds = existingAccountIds.filter(
+      (existingAccountId) => {
+        return !isInternalAccountInPermittedAccountIds(internalAccount, [
+          existingAccountId,
+        ]);
+      },
+    );
+
+    if (existingAccountIds.length === remainingAccountIds.length) {
+      return;
+    }
+
+    this.setPermittedAccounts(origin, remainingAccountIds);
+  }
+
+  /**
+   * Sets the permitted accounts for the given origin, syncing chain scopes for
+   * each account's namespace. Revokes the entire permission when no accounts
+   * are provided.
+   *
+   * @param origin - The origin to set the permitted accounts for.
+   * @param caipAccountIds - The CAIP account ids to permit.
+   */
+  setPermittedAccounts(origin: string, caipAccountIds: string[]): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot set account permissions "${caipAccountIds.join(
+          ', ',
+        )}" for origin "${origin}": no permission currently exists for this origin.`,
+      );
+    }
+
+    if (caipAccountIds.length === 0) {
+      this.#messenger.call(
+        'PermissionController:revokePermission',
+        origin,
+        Caip25EndowmentPermissionName,
+      );
+      return;
+    }
+
+    const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    let updatedPermittedChainIds = [...existingPermittedChainIds];
+
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+    const { multichainNetworkConfigurationsByChainId } = this.#messenger.call(
+      'MultichainNetworkController:getState',
+    );
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const { snaps } = this.#messenger.call('SnapController:getState');
+
+    const allNetworksList = Object.keys(
+      getNetworkConfigurationsByCaipChainId({
+        networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId,
+        internalAccounts,
+        snaps,
+      }),
+    );
+
+    caipAccountIds.forEach((caipAccountAddress) => {
+      const {
+        chain: { namespace: accountNamespace },
+      } = parseCaipAccountId(caipAccountAddress as CaipAccountId);
+
+      const existsSelectedChainForNamespace = updatedPermittedChainIds.some(
+        (caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(
+              caipChainId as CaipChainId,
+            );
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+
+      if (!existsSelectedChainForNamespace) {
+        const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(
+              caipChainId as CaipChainId,
+            );
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        });
+
+        updatedPermittedChainIds = [
+          ...updatedPermittedChainIds,
+          ...(chainIdsForNamespace as CaipChainId[]),
+        ];
+      }
+    });
+
+    const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
+      caip25Caveat.value,
+      updatedPermittedChainIds as CaipChainId[],
+    );
+
+    const updatedCaveatValueWithAccountIds =
+      setNonSCACaipAccountIdsInCaip25CaveatValue(
+        updatedCaveatValueWithChainIds,
+        caipAccountIds as CaipAccountId[],
+      );
+
+    this.#messenger.call(
+      'PermissionController:updateCaveat',
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValueWithAccountIds,
+    );
+  }
+
+  /**
+   * Adds a permitted chain for the given origin.
+   *
+   * @param origin - The origin to add the permitted chain for.
+   * @param chainId - The chain id to permit.
+   */
+  addPermittedChain(origin: string, chainId: string): void {
+    this.#addMoreChains(origin, [chainId]);
+  }
+
+  /**
+   * Adds permitted chains for the given origin.
+   *
+   * @param origin - The origin to add the permitted chains for.
+   * @param chainIds - The chain ids to permit.
+   */
+  addPermittedChains(origin: string, chainIds: string[]): void {
+    this.#addMoreChains(origin, chainIds);
+  }
+
+  /**
+   * Removes a permitted chain for the given origin.
+   *
+   * @param origin - The origin to remove the permitted chain for.
+   * @param chainId - The chain id to remove.
+   */
+  removePermittedChain(origin: string, chainId: string): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot remove permission for chainId "${chainId}": No permissions exist for origin "${origin}".`,
+      );
+    }
+
+    const existingChainIds = getAllScopesFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    const remainingChainIds = existingChainIds.filter(
+      (existingChainId) => existingChainId !== chainId,
+    );
+
+    if (existingChainIds.length === remainingChainIds.length) {
+      return;
+    }
+
+    this.setPermittedChains(origin, remainingChainIds);
+  }
+
+  /**
+   * Sets the permitted chains for the given origin, preserving existing
+   * permitted accounts. Revokes the entire permission when no chains are
+   * provided (unless the origin is a Snap).
+   *
+   * @param origin - The origin to set the permitted chains for.
+   * @param chainIds - The chain ids to permit.
+   */
+  setPermittedChains(origin: string, chainIds: string[]): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot set permission for chainIds "${chainIds.join(
+          ', ',
+        )}": No permissions exist for origin "${origin}".`,
+      );
+    }
+
+    if (chainIds.length === 0 && !isSnapId(origin)) {
+      this.#messenger.call(
+        'PermissionController:revokePermission',
+        origin,
+        Caip25EndowmentPermissionName,
+      );
+    } else {
+      const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
+        caip25Caveat.value,
+        chainIds as CaipChainId[],
+      );
+
+      const existingPermittedAccountIds =
+        getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value);
+
+      const updatedCaveatValueWithAccountIds =
+        setNonSCACaipAccountIdsInCaip25CaveatValue(
+          updatedCaveatValueWithChainIds,
+          existingPermittedAccountIds,
+        );
+
+      this.#messenger.call(
+        'PermissionController:updateCaveat',
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+        updatedCaveatValueWithAccountIds,
+      );
+    }
+  }
+
+  /**
+   * Requests `eth_accounts` and `endowment:permitted-chains` permissions via an
+   * approval flow and returns the id of the created request.
+   *
+   * @param origin - The origin requesting the permissions.
+   * @returns The id of the created approval request.
+   */
+  requestAccountsAndChainPermissionsWithId(origin: string): string {
+    const id = nanoid();
+    // eslint-disable-next-line no-void
+    void this.#requestAccountsAndChainPermissions(origin, id);
+    return id;
+  }
+
+  /**
+   * Extends the permitted accounts for an origin with the accounts for the
+   * given addresses, then triggers the DeFi referral flow for any newly
+   * permitted CAIP account ids.
+   *
+   * @param origin - The origin to add the accounts for.
+   * @param addresses - The addresses of the accounts to permit.
+   */
+  #addMoreAccounts(origin: string, addresses: string[]): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
+    }
+
+    const internalAccounts = addresses.map(
+      (address) =>
+        this.#messenger.call(
+          'AccountsController:getAccountByAddress',
+          address,
+        ) as InternalAccount,
+    );
+
+    // Only the first scope in the scopes array is needed because
+    // setPermittedAccounts currently sets accounts on all matching
+    // namespaces, not just the exact CaipChainId.
+    const caipAccountIds = internalAccounts.map((internalAccount) => {
+      const { namespace, reference } = parseCaipChainId(
+        internalAccount.scopes[0],
+      );
+      return toCaipAccountId(namespace, reference, internalAccount.address);
+    });
+
+    const existingPermittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    const updatedAccountIds = Array.from(
+      new Set<CaipAccountId>([
+        ...existingPermittedAccountIds,
+        ...caipAccountIds,
+      ]),
+    );
+
+    const newCaipAccountIds = caipAccountIds.filter(
+      (id) =>
+        !isCaipAccountIdInPermittedAccountIds(id, existingPermittedAccountIds),
+    );
+
+    this.setPermittedAccounts(origin, updatedAccountIds);
+
+    if (newCaipAccountIds.length > 0) {
+      try {
+        this.handleDefiReferralOnPermittedAccountsAdded({
+          origin,
+          newCaipAccountIds,
+        });
+      } catch (error) {
+        log.error(
+          'DeFi referral handler threw after permitted accounts added:',
+          error,
+        );
+      }
+    }
+  }
+
+  /**
+   * Extends the permitted chains for an origin with the given chain ids.
+   *
+   * @param origin - The origin to add the chains for.
+   * @param chainIds - The chain ids to permit.
+   */
+  #addMoreChains(origin: string, chainIds: string[]): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot add chain permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
+    }
+
+    const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    const updatedChainIds = Array.from(
+      new Set([...existingPermittedChainIds, ...chainIds]),
+    );
+
+    this.setPermittedChains(origin, updatedChainIds as CaipChainId[]);
+  }
+
+  /**
+   * Requests an approval for a legacy CAIP-25 permission and grants it once the
+   * user approves.
+   *
+   * Note that we are purposely requesting an approval from the ApprovalController
+   * and then manually forming the permission that is then granted via the
+   * PermissionController rather than calling the PermissionController.requestPermissions()
+   * directly because the CAIP-25 permission is missing the factory method implementation.
+   * After the factory method is added, we can move to requesting "endowment:caip25"
+   * directly from the PermissionController instead.
+   *
+   * @param origin - The origin requesting the permissions.
+   * @param id - The id of the approval request.
+   */
+  async #requestAccountsAndChainPermissions(
+    origin: string,
+    id: string,
+  ): Promise<void> {
+    const { permissions } = (await this.#messenger.call(
+      'ApprovalController:addAndShowApprovalRequest',
+      {
+        id,
+        origin,
+        requestData: {
+          metadata: {
+            id,
+            origin,
+          },
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+        },
+        type: MethodNames.RequestPermissions,
+      },
+    )) as { permissions: Record<string, unknown> };
+
+    this.#messenger.call('PermissionController:grantPermissions', {
+      subject: { origin },
+      approvedPermissions: permissions as Parameters<
+        PermissionControllerGrantPermissionsAction['handler']
+      >[0]['approvedPermissions'],
+    });
   }
 }

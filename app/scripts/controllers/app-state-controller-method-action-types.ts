@@ -65,6 +65,16 @@ export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
   handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
 };
 
+/**
+ * Records when the legacy passkey PRF migration reminder was last shown.
+ *
+ * @param lastShown - Timestamp when the reminder was shown.
+ */
+export type AppStateControllerSetLastShownPrfMigrationReminderAtAction = {
+  type: `AppStateController:setLastShownPrfMigrationReminderAt`;
+  handler: AppStateController['setLastShownPrfMigrationReminderAt'];
+};
+
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
   handler: AppStateController['setNewPrivacyPolicyToastClickedOrClosed'];
@@ -73,6 +83,11 @@ export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
 export type AppStateControllerSetNewPrivacyPolicyToastShownDateAction = {
   type: `AppStateController:setNewPrivacyPolicyToastShownDate`;
   handler: AppStateController['setNewPrivacyPolicyToastShownDate'];
+};
+
+export type AppStateControllerSetArcUsageNoticeShownAction = {
+  type: `AppStateController:setArcUsageNoticeShown`;
+  handler: AppStateController['setArcUsageNoticeShown'];
 };
 
 export type AppStateControllerSetPna25AcknowledgedAction = {
@@ -308,6 +323,18 @@ export type AppStateControllerAddMusdConversionDismissedCtaKeyAction = {
 };
 
 /**
+ * Adds a token whose Money earn banner on token details was dismissed, so
+ * the banner stays hidden for it.
+ *
+ * @param key - Key in `chainId:address` format, both lowercased (e.g.
+ * "0x1:0xa0b86991...").
+ */
+export type AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction = {
+  type: `AppStateController:addMoneyEarnBannerDismissedTokenKey`;
+  handler: AppStateController['addMoneyEarnBannerDismissedTokenKey'];
+};
+
+/**
  * Sets the product tour to be shown to the user
  *
  * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
@@ -315,16 +342,6 @@ export type AppStateControllerAddMusdConversionDismissedCtaKeyAction = {
 export type AppStateControllerSetProductTourAction = {
   type: `AppStateController:setProductTour`;
   handler: AppStateController['setProductTour'];
-};
-
-/**
- * Updates the network connection banner state
- *
- * @param networkConnectionBanner - The new banner state
- */
-export type AppStateControllerUpdateNetworkConnectionBannerAction = {
-  type: `AppStateController:updateNetworkConnectionBanner`;
-  handler: AppStateController['updateNetworkConnectionBanner'];
 };
 
 /**
@@ -368,7 +385,8 @@ export type AppStateControllerAddSignatureSecurityAlertResponseAction = {
 };
 
 /**
- * A setter for the currentPopupId which indicates the id of popup window that's currently active
+ * A setter for the currentPopupId which indicates the id of popup window that's currently active.
+ * Pass `undefined` to clear when the popup is closed.
  *
  * @param currentPopupId
  */
@@ -393,6 +411,16 @@ export type AppStateControllerGetLastInteractedConfirmationInfoAction = {
 export type AppStateControllerSetLastInteractedConfirmationInfoAction = {
   type: `AppStateController:setLastInteractedConfirmationInfo`;
   handler: AppStateController['setLastInteractedConfirmationInfo'];
+};
+
+/**
+ * Sets the entry point that initiated the last Perps deposit flow.
+ *
+ * @param entryPoint - The entry point identifier, or undefined to clear.
+ */
+export type AppStateControllerSetLastPerpsDepositEntryPointAction = {
+  type: `AppStateController:setLastPerpsDepositEntryPoint`;
+  handler: AppStateController['setLastPerpsDepositEntryPoint'];
 };
 
 /**
@@ -503,11 +531,6 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
-export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
-  type: `AppStateController:setCanTrackWalletFundsObtained`;
-  handler: AppStateController['setCanTrackWalletFundsObtained'];
-};
-
 export type AppStateControllerSetIsWalletResetInProgressAction = {
   type: `AppStateController:setIsWalletResetInProgress`;
   handler: AppStateController['setIsWalletResetInProgress'];
@@ -587,8 +610,10 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AppStateControllerSetLastShownPrfMigrationReminderAtAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
+  | AppStateControllerSetArcUsageNoticeShownAction
   | AppStateControllerSetPna25AcknowledgedAction
   | AppStateControllerSetShieldPausedToastLastClickedOrClosedAction
   | AppStateControllerSetShieldEndingToastLastClickedOrClosedAction
@@ -613,8 +638,8 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPerpsTabBadgeSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
+  | AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction
   | AppStateControllerSetProductTourAction
-  | AppStateControllerUpdateNetworkConnectionBannerAction
   | AppStateControllerSetCurrentExtensionPopupIdAction
   | AppStateControllerSetTrezorModelAction
   | AppStateControllerUpdateNftDropDownStateAction
@@ -623,6 +648,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetCurrentPopupIdAction
   | AppStateControllerGetLastInteractedConfirmationInfoAction
   | AppStateControllerSetLastInteractedConfirmationInfoAction
+  | AppStateControllerSetLastPerpsDepositEntryPointAction
   | AppStateControllerGetCurrentPopupIdAction
   | AppStateControllerGetThrottledOriginStateAction
   | AppStateControllerUpdateThrottledOriginStateAction
@@ -635,7 +661,6 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetLastVisitedRouteAction
   | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerSetDefaultSubscriptionPaymentOptionsAction

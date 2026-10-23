@@ -17,8 +17,6 @@ import useMultiPolling from '../../../../hooks/useMultiPolling';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { selectAccountGroupBalanceForEmptyState } from '../../../../selectors/assets';
-import { BuyGetMusdCtaVariant } from '../../../../hooks/musd';
 import AssetList from '.';
 
 // Specific to just the ETH FIAT conversion
@@ -30,8 +28,6 @@ const LINK_CONTRACT = '0x514910771AF9Ca656af840dff83E8264EcF986CA';
 const WBTC_CONTRACT = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599';
 
 const mockOnClickAsset = jest.fn();
-const mockShouldShowBuyGetMusdCta = jest.fn();
-const mockHasConvertibleTokensByChainId = jest.fn();
 
 jest.mock('../../../../hooks/useAnalytics', () => {
   const mockTrackEvent = jest.fn();
@@ -50,10 +46,6 @@ jest.mock('../../../../hooks/useAnalytics', () => {
 const getMockTrackEvent = () =>
   jest.requireMock('../../../../hooks/useAnalytics')
     .mockTrackEvent as jest.Mock;
-
-const mockUseMusdBalance = jest.fn();
-const mockUseMusdNetworkFilter = jest.fn();
-const mockUseMusdConversionTokens = jest.fn();
 
 jest.mock('../token-list', () => {
   const { CHAIN_IDS: chainIds } = jest.requireActual(
@@ -139,40 +131,6 @@ jest.mock('../hooks', () => ({
   }),
 }));
 
-jest.mock('../../../../selectors/assets', () => ({
-  ...jest.requireActual('../../../../selectors/assets'),
-  selectAccountGroupBalanceForEmptyState: jest.fn(),
-}));
-
-jest.mock('../../../../hooks/musd', () => ({
-  useMusdCtaVisibility: () => ({
-    shouldShowBuyGetMusdCta: mockShouldShowBuyGetMusdCta,
-  }),
-  useMusdBalance: () => mockUseMusdBalance(),
-  useMusdNetworkFilter: () => mockUseMusdNetworkFilter(),
-  useMusdConversionTokens: () => mockUseMusdConversionTokens(),
-  BuyGetMusdCtaVariant: {
-    BUY: 'buy',
-    GET: 'get',
-  },
-}));
-
-jest.mock('../../musd', () => ({
-  MusdBuyGetCta: ({
-    variant,
-    selectedChainId,
-  }: {
-    variant: string | null;
-    selectedChainId: string | null;
-  }) => (
-    <div
-      data-testid="musd-buy-get-cta"
-      data-variant={variant ?? ''}
-      data-chain-id={selectedChainId ?? ''}
-    />
-  ),
-}));
-
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
@@ -232,8 +190,6 @@ describe('AssetList', () => {
     jest.clearAllMocks();
     mockOnClickAsset.mockClear();
     getMockTrackEvent().mockClear();
-    mockShouldShowBuyGetMusdCta.mockClear();
-    mockHasConvertibleTokensByChainId.mockReset();
 
     (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
       const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
@@ -260,20 +216,6 @@ describe('AssetList', () => {
       }
       return null;
     });
-
-    jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(true);
-    mockUseMusdBalance.mockReturnValue({ hasMusdBalance: false });
-    mockUseMusdNetworkFilter.mockReturnValue({ selectedChainId: null });
-    mockUseMusdConversionTokens.mockReturnValue({
-      tokens: [],
-      hasConvertibleTokensByChainId: mockHasConvertibleTokensByChainId,
-    });
-    mockShouldShowBuyGetMusdCta.mockReturnValue({
-      shouldShowCta: false,
-      selectedChainId: null,
-      isEmptyWallet: false,
-      variant: null,
-    });
   });
 
   it('renders AssetList component and shows AssetList control bar', async () => {
@@ -286,101 +228,6 @@ describe('AssetList', () => {
       expect(
         screen.getByTestId('asset-list-control-bar-action-button'),
       ).toBeInTheDocument();
-    });
-  });
-
-  describe('mUSD CTA', () => {
-    it('renders MusdBuyGetCta when shouldShowBuyGetMusdCta returns visible state', async () => {
-      mockShouldShowBuyGetMusdCta.mockReturnValue({
-        shouldShowCta: true,
-        selectedChainId: CHAIN_IDS.MAINNET,
-        isEmptyWallet: false,
-        variant: BuyGetMusdCtaVariant.BUY,
-      });
-
-      await act(async () => {
-        renderAssetList();
-      });
-
-      await waitFor(() => {
-        expect(screen.getByTestId('musd-buy-get-cta')).toBeInTheDocument();
-        expect(screen.getByTestId('musd-buy-get-cta')).toHaveAttribute(
-          'data-variant',
-          BuyGetMusdCtaVariant.BUY,
-        );
-      });
-    });
-
-    it('does not render MusdBuyGetCta when shouldShowBuyGetMusdCta returns hidden state', async () => {
-      await act(async () => {
-        renderAssetList();
-      });
-
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId('musd-buy-get-cta'),
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    it('passes hasConvertibleTokens false when the wallet has no balance', async () => {
-      jest
-        .mocked(selectAccountGroupBalanceForEmptyState)
-        .mockReturnValue(false);
-
-      await act(async () => {
-        renderAssetList({ balance: '0x0' });
-      });
-
-      await waitFor(() => {
-        expect(mockShouldShowBuyGetMusdCta).toHaveBeenCalledWith({
-          hasConvertibleTokens: false,
-          hasMusdBalance: false,
-          isEmptyWallet: true,
-          selectedChainId: null,
-        });
-      });
-    });
-
-    it('checks convertible tokens on the selected chain when a network filter is active', async () => {
-      mockUseMusdNetworkFilter.mockReturnValue({
-        selectedChainId: CHAIN_IDS.MAINNET,
-      });
-      mockHasConvertibleTokensByChainId.mockReturnValue(true);
-
-      await act(async () => {
-        renderAssetList();
-      });
-
-      await waitFor(() => {
-        expect(mockHasConvertibleTokensByChainId).toHaveBeenCalledWith(
-          CHAIN_IDS.MAINNET,
-        );
-        expect(mockShouldShowBuyGetMusdCta).toHaveBeenCalledWith(
-          expect.objectContaining({
-            hasConvertibleTokens: true,
-          }),
-        );
-      });
-    });
-
-    it('uses conversion token count when no chain filter is selected', async () => {
-      mockUseMusdConversionTokens.mockReturnValue({
-        tokens: [{ symbol: 'USDC' }],
-        hasConvertibleTokensByChainId: mockHasConvertibleTokensByChainId,
-      });
-
-      await act(async () => {
-        renderAssetList();
-      });
-
-      await waitFor(() => {
-        expect(mockShouldShowBuyGetMusdCta).toHaveBeenCalledWith(
-          expect.objectContaining({
-            hasConvertibleTokens: true,
-          }),
-        );
-      });
     });
   });
 

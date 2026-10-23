@@ -12,11 +12,7 @@ import React, {
   useState,
 } from 'react';
 
-const RIVE_WASM_URL = new URL(
-  '@rive-app/canvas/rive.wasm',
-  // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
-  import.meta.url,
-);
+const RIVE_WASM_URL = new URL('@rive-app/canvas/rive.wasm', import.meta.url);
 
 /**
  * Module-level WASM init. Survives createRoot/StrictMode remounts of

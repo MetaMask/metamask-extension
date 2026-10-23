@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { act } from '@testing-library/react';
 
 import {
   genUnapprovedContractInteractionConfirmation,
@@ -13,6 +14,7 @@ import {
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { useConfirmContext } from '../../context/confirm';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -30,10 +32,12 @@ import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupported
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
 import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
+import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
 const mockGetEnvironmentType = jest.fn();
 const mockUseIsHardwareWalletAccount = jest.fn();
+const mockUseTransactionPayingAccount = jest.fn();
 
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../../../shared/lib/environment-type'),
@@ -74,6 +78,11 @@ jest.mock('../../../../store/actions', () => ({
   updateAndApproveTx: jest.fn(),
 }));
 
+jest.mock('./useMoneyAccountWithdrawConfirm');
+jest.mock('./useTransactionPayingAccount', () => ({
+  useTransactionPayingAccount: () => mockUseTransactionPayingAccount(),
+}));
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
@@ -104,6 +113,11 @@ jest.mock(
   }),
 );
 
+const mockPrepareWithdrawTransaction = jest.fn<
+  Promise<TransactionMeta | null>,
+  [TransactionMeta]
+>();
+
 const CUSTOM_NONCE_VALUE = '1234';
 const originalConsoleWarn = console.warn;
 
@@ -130,7 +144,7 @@ function runHook({
     isGasFeeSponsored,
     isExternalSign,
     selectedGasFeeToken,
-  });
+  }) as TransactionMeta;
   if (type) {
     confirmation.type = type;
   }
@@ -145,7 +159,7 @@ function runHook({
     }),
   );
 
-  return result.current;
+  return { ...result.current, confirmation };
 }
 
 describe('useTransactionConfirm', () => {
@@ -162,6 +176,9 @@ describe('useTransactionConfirm', () => {
   const isHardwareWalletMock = jest.mocked(isHardwareWallet);
   const useGasSponsorshipPreferenceMock = jest.mocked(
     useGasSponsorshipPreference,
+  );
+  const useMoneyAccountWithdrawConfirmMock = jest.mocked(
+    useMoneyAccountWithdrawConfirm,
   );
   beforeEach(() => {
     jest.resetAllMocks();
@@ -214,8 +231,15 @@ describe('useTransactionConfirm', () => {
       sendAmount: '1.5',
       sendSymbol: 'ETH',
     });
+    mockUseTransactionPayingAccount.mockReturnValue(
+      TRANSACTION_META_MOCK.txParams.from,
+    );
     mockIsHardwareWalletError.mockReturnValue(false);
     mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    mockPrepareWithdrawTransaction.mockResolvedValue(null);
+    useMoneyAccountWithdrawConfirmMock.mockReturnValue({
+      prepareWithdrawTransaction: mockPrepareWithdrawTransaction,
+    });
     useHardwareWalletErrorMock.mockReturnValue({
       showErrorModal: jest.fn(),
       dismissErrorModal: jest.fn(),
@@ -234,6 +258,38 @@ describe('useTransactionConfirm', () => {
     await onTransactionConfirm();
 
     expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the paying account to detect hardware wallet signing', async () => {
+    const payingAccount = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+    mockUseTransactionPayingAccount.mockReturnValue(payingAccount);
+    mockUseIsHardwareWalletAccount.mockReturnValue(true);
+
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      false,
+      'Confirm with your hardware wallet',
+      payingAccount,
+    );
+  });
+
+  it('skips the loading indicator when the paying account is not a hardware wallet', async () => {
+    mockUseIsHardwareWalletAccount.mockReturnValue(false);
+
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      true,
+      '',
+      TRANSACTION_META_MOCK.txParams.from,
+    );
   });
 
   it('updates custom nonce', async () => {
@@ -511,6 +567,7 @@ describe('useTransactionConfirm', () => {
       }),
       true,
       '',
+      TRANSACTION_META_MOCK.txParams.from,
     );
   });
 
@@ -896,5 +953,149 @@ describe('useTransactionConfirm', () => {
     const { onTransactionConfirm } = runHook();
 
     await expect(onTransactionConfirm()).rejects.toThrow('Network error');
+  });
+
+  describe('money account withdraw', () => {
+    it('approves the transaction prepared by useMoneyAccountWithdrawConfirm', async () => {
+      const prepared = {
+        id: 'prepared-id',
+        type: TransactionType.moneyAccountWithdraw,
+        txParams: { from: '0xabc', to: '0xabc', data: '0xbatchdata' },
+      } as unknown as TransactionMeta;
+      mockPrepareWithdrawTransaction.mockResolvedValue(prepared);
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const result = await onTransactionConfirm();
+
+      expect(result).toBe(true);
+      expect(mockPrepareWithdrawTransaction).toHaveBeenCalledWith(
+        expect.objectContaining({ id: confirmation.id }),
+      );
+      const approved = updateAndApproveTxMock.mock.calls[0][0];
+      expect(approved.id).toBe('prepared-id');
+      expect(approved.txParams.data).toBe('0xbatchdata');
+    });
+
+    it('does not prepare a withdraw for other transaction types', async () => {
+      const { onTransactionConfirm } = runHook();
+
+      await onTransactionConfirm();
+
+      expect(mockPrepareWithdrawTransaction).not.toHaveBeenCalled();
+      expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not approve when the withdraw could not be prepared', async () => {
+      mockPrepareWithdrawTransaction.mockResolvedValue(null);
+
+      const { onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const result = await onTransactionConfirm();
+
+      expect(result).toBe(false);
+      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    });
+
+    it('rethrows when preparing the withdraw fails', async () => {
+      mockPrepareWithdrawTransaction.mockRejectedValue(
+        new Error('Update Amount: Money Account Withdrawal: missing vault'),
+      );
+
+      const { onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      await expect(onTransactionConfirm()).rejects.toThrow(
+        'Update Amount: Money Account Withdrawal: missing vault',
+      );
+      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    });
+
+    it('keeps gas sponsorship on money account withdraw when gasless support is unknown', async () => {
+      useIsGaslessSupportedMock.mockReturnValue({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+        isGasFeeSponsored: true,
+      });
+      mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
+
+      await onTransactionConfirm();
+
+      expect(updateAndApproveTxMock.mock.calls[0][0].isGasFeeSponsored).toBe(
+        true,
+      );
+    });
+
+    it('keeps isExternalSign on sponsored money account withdraw when gasless is unsupported', async () => {
+      useIsGaslessSupportedMock.mockReturnValue({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+        isGasFeeSponsored: true,
+        isExternalSign: true,
+      });
+      mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
+
+      await onTransactionConfirm();
+
+      const actual = updateAndApproveTxMock.mock.calls[0][0];
+      expect(actual.isExternalSign).toBe(true);
+      expect(actual.isGasFeeSponsored).toBe(true);
+    });
+
+    it('clears gas sponsorship on money account withdraw when the user opted out', async () => {
+      useGasSponsorshipPreferenceMock.mockReturnValue({
+        isSponsorshipOptedOut: true,
+        setSponsorshipOptedOut: jest.fn(),
+      });
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+        isGasFeeSponsored: true,
+        isExternalSign: true,
+      });
+      mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
+
+      await onTransactionConfirm();
+
+      const actual = updateAndApproveTxMock.mock.calls[0][0];
+      expect(actual.isGasFeeSponsored).toBe(false);
+      expect(actual.isExternalSign).toBe(false);
+    });
+  });
+
+  describe('pending amount', () => {
+    it('does not approve while the typed amount has not been committed', async () => {
+      const confirmation =
+        genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+      const { result } = renderHookWithConfirmContextProvider(() => {
+        const confirm = useTransactionConfirm();
+        const { setIsAmountPending } = useConfirmContext();
+        return { ...confirm, setIsAmountPending };
+      }, getMockConfirmStateForTransaction(confirmation));
+
+      act(() => {
+        result.current.setIsAmountPending(true);
+      });
+
+      const approved = await result.current.onTransactionConfirm();
+
+      expect(approved).toBe(false);
+      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    });
   });
 });

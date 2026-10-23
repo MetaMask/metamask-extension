@@ -1,5 +1,11 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useDebouncedValue } from './useDebouncedValue';
+
+async function flushMicrotasks(): Promise<void> {
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
 
 describe('useDebouncedValue', () => {
   beforeEach(() => {
@@ -7,7 +13,9 @@ describe('useDebouncedValue', () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
     jest.useRealTimers();
   });
 
@@ -22,8 +30,10 @@ describe('useDebouncedValue', () => {
       { initialProps: { value: 'a' } },
     );
 
-    rerender({ value: 'ab' });
-    rerender({ value: 'abc' });
+    act(() => {
+      rerender({ value: 'ab' });
+      rerender({ value: 'abc' });
+    });
 
     expect(result.current).toBe('a');
 
@@ -38,13 +48,42 @@ describe('useDebouncedValue', () => {
     expect(result.current).toBe('abc');
   });
 
+  it('keeps debounced state in sync when switching from immediate to delayed mode', async () => {
+    const { result, rerender } = renderHook(
+      ({ value, delayMs }: { value: string; delayMs: number }) =>
+        useDebouncedValue(value, delayMs),
+      { initialProps: { value: 'a', delayMs: 0 } },
+    );
+
+    act(() => {
+      rerender({ value: 'b', delayMs: 0 });
+    });
+    await flushMicrotasks();
+    expect(result.current).toBe('b');
+
+    act(() => {
+      rerender({ value: 'b', delayMs: 200 });
+    });
+    await waitFor(() => {
+      expect(result.current).toBe('b');
+    });
+
+    // A second render before the debounce window must not resurrect stale state.
+    act(() => {
+      rerender({ value: 'b', delayMs: 200 });
+    });
+    expect(result.current).toBe('b');
+  });
+
   it('tracks the source synchronously when delayMs <= 0', () => {
     const { result, rerender } = renderHook(
       ({ value }: { value: number }) => useDebouncedValue(value, 0),
       { initialProps: { value: 1 } },
     );
 
-    rerender({ value: 2 });
+    act(() => {
+      rerender({ value: 2 });
+    });
     expect(result.current).toBe(2);
   });
 
@@ -54,12 +93,16 @@ describe('useDebouncedValue', () => {
       { initialProps: { value: 'first' } },
     );
 
-    rerender({ value: 'second' });
+    act(() => {
+      rerender({ value: 'second' });
+    });
 
     act(() => {
       jest.advanceTimersByTime(50);
     });
-    rerender({ value: 'third' });
+    act(() => {
+      rerender({ value: 'third' });
+    });
 
     act(() => {
       jest.advanceTimersByTime(99);

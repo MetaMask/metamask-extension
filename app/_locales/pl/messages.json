@@ -81,9 +81,6 @@
   "back": {
     "message": "Wstecz"
   },
-  "backupApprovalInfo": {
-    "message": "Ten tajny kod jest wymagany do odzyskania portfela w przypadku zgubienia urządzenia, zapomnienia hasła, ponownego zainstalowania MetaMask lub potrzeby uzyskania dostępu do portfela na innym urządzeniu."
-  },
   "backupApprovalNotice": {
     "message": "Utwórz kopię zapasową tajnego kodu odzyskiwania, aby zapewnić bezpieczeństwo swojego portfela i środków."
   },
@@ -226,9 +223,6 @@
   },
   "gasLimit": {
     "message": "Limit gazu"
-  },
-  "gasLimitTooLow": {
-    "message": "Limit gazu musi wynosić co najmniej 21000"
   },
   "gasUsed": {
     "message": "Użyty gaz"
@@ -411,9 +405,6 @@
   "privateKey": {
     "message": "Klucz prywatny",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Uwaga: Nie ujawniaj nikomu tego klucza. Ktokolwiek posiadający Twoje prywatne klucze może użyć środków znajdujących się na Twoim koncie."
   },
   "privateNetwork": {
     "message": "Sieć prywatna"

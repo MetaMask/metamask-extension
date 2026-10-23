@@ -1,0 +1,272 @@
+import React from 'react';
+import { act, fireEvent, screen } from '@testing-library/react';
+import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
+import { MoneyPotentialEarnings } from './money-potential-earnings';
+
+const createToken = (
+  index: number,
+  overrides: Partial<MoneyDepositToken> = {},
+): MoneyDepositToken => ({
+  address: `0x${index.toString().padStart(40, '0')}`,
+  chainId: '0x1',
+  decimals: 18,
+  image: 'token.png',
+  symbol: `TOK${index}`,
+  title: `Token ${index}`,
+  moneyFiatAmountUsd: index * 100,
+  ...overrides,
+});
+
+describe('MoneyPotentialEarnings', () => {
+  it('renders nothing when there are no eligible tokens', () => {
+    const { container } = renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+    expect(
+      screen.queryByTestId('money-potential-earnings'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyEarnOnCrypto.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders nothing when all tokens have zero fiat balance', () => {
+    const { container } = renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[
+          createToken(1, { moneyFiatAmountUsd: 0 }),
+          createToken(2, { moneyFiatAmountUsd: 0 }),
+        ]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+    expect(
+      screen.queryByTestId('money-potential-earnings'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders aggregate and per-token projected earnings', () => {
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[createToken(50)]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(messages.moneyEarnOnCrypto.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-potential-earnings-total'),
+    ).toHaveTextContent('$5,000.00');
+    expect(
+      screen.getByTestId('money-potential-earnings-projection-trigger'),
+    ).toHaveTextContent('+$200.00');
+    expect(
+      screen.getByTestId('money-potential-earnings-token-projection'),
+    ).toHaveTextContent('+$200.00');
+  });
+
+  it('renders the generic description when APY is unavailable', () => {
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[createToken(1)]}
+        apyDecimal={undefined}
+        apyPercent={undefined}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(messages.moneyEarnOnCryptoDescription.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-potential-earnings-projection-trigger'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders at most five token rows and View all for additional tokens', () => {
+    const onViewAll = jest.fn();
+
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={Array.from({ length: 6 }, (_, index) => createToken(index + 1))}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={onViewAll}
+      />,
+    );
+
+    expect(
+      screen.getAllByTestId('money-potential-earnings-token-row'),
+    ).toHaveLength(5);
+    expect(screen.queryByText('Token 6')).not.toBeInTheDocument();
+    const viewAllButton = screen.getByTestId(
+      'money-potential-earnings-view-all',
+    );
+    expect(viewAllButton).toBeEnabled();
+    fireEvent.click(viewAllButton);
+    expect(onViewAll).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides View all when all tokens are visible', () => {
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[createToken(1)]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole('button', { name: messages.viewAll.message }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders No fee only for subsidized tokens', () => {
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[createToken(1), createToken(2)]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={({ symbol }) => symbol === 'TOK1'}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getAllByText(messages.moneyEarnOnCryptoNoFee.message),
+    ).toHaveLength(1);
+  });
+
+  it('masks balances and projections in privacy mode', () => {
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[createToken(50)]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-potential-earnings-total'),
+    ).toHaveTextContent('•'.repeat(9));
+    expect(
+      screen.getByTestId('money-potential-earnings-projection-trigger'),
+    ).toHaveTextContent('•'.repeat(6));
+    expect(
+      screen.getByTestId('money-potential-earnings-token-projection'),
+    ).toHaveTextContent('•'.repeat(6));
+  });
+
+  it('shows the projection disclaimer tooltip with the APY on hover', async () => {
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[createToken(50)]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-potential-earnings-projection-trigger'),
+      );
+    });
+
+    expect(
+      screen.getByTestId('money-potential-earnings-projection'),
+    ).toHaveTextContent(
+      messages.moneyEarnSectionAccountProjectedBalanceTooltip.message.replace(
+        '$1',
+        '4',
+      ),
+    );
+  });
+
+  it('calls onAddToken with the row token, its position and the list size when Add is clicked', () => {
+    const onAddToken = jest.fn();
+    const tokens = [createToken(1), createToken(2), createToken(3)];
+
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={tokens}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={onAddToken}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getAllByTestId('money-potential-earnings-token-add')[1],
+    );
+
+    expect(onAddToken).toHaveBeenCalledWith(tokens[1], 1, 3);
+  });
+
+  it('disables the row Add buttons while a deposit is initiating', () => {
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[createToken(1)]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+        isAddDisabled
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-potential-earnings-token-add'),
+    ).toBeDisabled();
+  });
+});

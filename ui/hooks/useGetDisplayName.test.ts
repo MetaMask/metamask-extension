@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
-import { useGetDisplayName } from './useGetDisplayName';
+import { NameEntry } from '@metamask/name-controller';
+import { shortenDisplayAddress, useGetDisplayName } from './useGetDisplayName';
 
 type MockState = {
   addressBook: { address: string; name?: string }[];
@@ -8,7 +9,7 @@ type MockState = {
     accounts: { address: string }[];
   }[];
   tokenList: Record<string, { name?: string }>;
-  metamask: { ensResolutionsByAddress: Record<string, string> };
+  names: Record<string, Record<string, Record<string, NameEntry>>>;
 };
 
 // Declared before jest.mock factories so eslint no-use-before-define is happy.
@@ -26,6 +27,7 @@ jest.mock('../selectors', () => ({
     (state: { addressBook: unknown }) => state.addressBook,
   ),
   getTokenList: jest.fn((state: { tokenList: unknown }) => state.tokenList),
+  getNames: jest.fn((state: { names: unknown }) => state.names),
 }));
 
 jest.mock('../selectors/multichain-accounts/account-tree', () => ({
@@ -42,7 +44,7 @@ function setState(overrides: Partial<MockState> = {}) {
     addressBook: [],
     accountGroups: [],
     tokenList: {},
-    metamask: { ensResolutionsByAddress: {} },
+    names: {},
     ...overrides,
   };
 }
@@ -94,10 +96,19 @@ describe('useGetDisplayName', () => {
     expect(result.current(mockAddress)).toBe('Wrapped Ether');
   });
 
-  it('falls back to the decoded ENS name', () => {
+  it('falls back to names from NameController', () => {
     setState({
-      metamask: {
-        ensResolutionsByAddress: { [mockAddress]: 'xn--e1afmkfd.eth' },
+      names: {
+        ethereumAddress: {
+          [mockAddress.toLowerCase()]: {
+            '*': {
+              name: 'пример.eth',
+              sourceId: null,
+              origin: null,
+              proposedNames: {},
+            },
+          },
+        },
       },
     });
 
@@ -116,22 +127,31 @@ describe('useGetDisplayName', () => {
     expect(result.current(mockSolanaAddress)).toBe('Solana Me');
   });
 
-  it('falls back to a shortened address', () => {
+  it('returns an empty string when the address has no name', () => {
     const { result } = renderHook(() => useGetDisplayName());
 
-    expect(result.current(mockAddress)).toBe('0xd8dA6...96045');
+    expect(result.current(mockAddress)).toBe('');
   });
 
   it('returns an empty string for a missing address', () => {
     const { result } = renderHook(() => useGetDisplayName());
 
-    expect(result.current(undefined)).toBe('');
     expect(result.current('')).toBe('');
+  });
+});
+
+describe('shortenDisplayAddress', () => {
+  it('shortens an EVM address using its checksum form', () => {
+    expect(shortenDisplayAddress(mockAddress.toLowerCase())).toBe(
+      '0xd8dA6...96045',
+    );
   });
 
   it('shortens a non-EVM address without adding a hex prefix', () => {
-    const { result } = renderHook(() => useGetDisplayName());
+    expect(shortenDisplayAddress(mockSolanaAddress)).toBe('EPjFW...TDt1v');
+  });
 
-    expect(result.current(mockSolanaAddress)).toBe('EPjFWdd...TDt1v');
+  it('returns an empty string for an empty address', () => {
+    expect(shortenDisplayAddress('')).toBe('');
   });
 });
