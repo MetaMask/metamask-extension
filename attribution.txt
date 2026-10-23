@@ -6452,7 +6452,7 @@ SOFTWARE.
 ******************************
 
 dompurify
-3.4.16 <https://github.com/cure53/DOMPurify>
+3.4.17 <https://github.com/cure53/DOMPurify>
 
                                  Apache License
                            Version 2.0, January 2004
@@ -16900,7 +16900,7 @@ SOFTWARE.
 ******************************
 
 ip-address
-10.7.2 <https://github.com/beaugunderson/ip-address>
+10.7.4 <https://github.com/beaugunderson/ip-address>
 Copyright (C) 2011 by Beau Gunderson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -40437,7 +40437,7 @@ authors: undefined
 ******************************
 
 toml
-4.3.0 <https://github.com/BinaryMuse/toml-node>
+5.0.1 <https://github.com/BinaryMuse/toml-node>
 Copyright (c) 2012 Michelle Tilley
 
 Permission is hereby granted, free of charge, to any person
