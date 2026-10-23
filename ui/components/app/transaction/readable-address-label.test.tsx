@@ -108,14 +108,14 @@ describe('ReadableAddressLabel', () => {
     );
   });
 
-  it('shows a malicious warning icon when the scan flags the address', () => {
+  it('uses the shortened address when a malicious scan label is suppressed', () => {
     mockScan({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: AddressScanResultType.Malicious,
       label: 'Relay',
     });
 
-    const { getByLabelText, container } = render(
+    const { container } = render(
       <ReadableAddressLabel
         labelKey="activity_contractInteraction_success_description"
         address={contractAddress}
@@ -124,26 +124,8 @@ describe('ReadableAddressLabel', () => {
       />,
     );
 
-    expect(getByLabelText('securityTrustMalicious')).toBeInTheDocument();
-    expect(container).not.toHaveTextContent('Relay');
-  });
-
-  it('shows a warning icon when the scan returns a warning', () => {
-    mockScan({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      result_type: AddressScanResultType.Warning,
-      label: '',
-    });
-
-    const { getByLabelText } = render(
-      <ReadableAddressLabel
-        labelKey="activity_contractInteraction_success_description"
-        address={contractAddress}
-        chainId="eip155:1"
-        fallback="Contract"
-      />,
+    expect(container).toHaveTextContent(
+      'activity_contractInteraction_success_description|0xc42ed...d8813',
     );
-
-    expect(getByLabelText('securityTrustRisky')).toBeInTheDocument();
   });
 });

@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
 import { isValidHexAddress } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/keyring-api';
+import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { getSendRecipients } from '@metamask/transaction-controller';
 import { type AccountsState } from '#shared/lib/selectors/accounts';
 import { normalizeAddress, isEthAddress } from '#shared/lib/multichain/address';
@@ -17,7 +19,25 @@ import {
   type TransactionState,
 } from './transactionController';
 
-type SelectorState = TransactionState & AccountsState;
+type SelectorState = TransactionState &
+  AccountsState & {
+    metamask: MultichainTransactionsControllerState;
+  };
+
+const selectNonEvmTransactions = (state: SelectorState) =>
+  state.metamask.nonEvmTransactions;
+
+function isUserOriginatedTransaction(type: string | undefined) {
+  return (
+    type === TransactionType.Send ||
+    type === TransactionType.Swap ||
+    type === TransactionType.BridgeSend ||
+    type === TransactionType.StakeDeposit ||
+    type === TransactionType.StakeWithdraw ||
+    type === TransactionType.TokenApprove ||
+    type === TransactionType.TokenDisapprove
+  );
+}
 
 export function normalizeKnownAddress(
   address: string | undefined,
@@ -52,7 +72,8 @@ export const selectKnownAddresses = createSelector(
   (state: SelectorState) => getCompleteAddressBook(state),
   selectTransactions,
   getInternalAccounts,
-  (addressBook, transactions, internalAccounts) => {
+  selectNonEvmTransactions,
+  (addressBook, transactions, internalAccounts, nonEvmTransactions) => {
     const known = new Set<string>();
 
     const add = (address: string | undefined) => {
@@ -76,6 +97,22 @@ export const selectKnownAddresses = createSelector(
 
       for (const recipient of getSendRecipients(transaction)) {
         add(recipient);
+      }
+    }
+
+    for (const transactionsByChain of Object.values(nonEvmTransactions ?? {})) {
+      for (const { transactions: nonEvmTransactionsForChain } of Object.values(
+        transactionsByChain,
+      )) {
+        for (const transaction of nonEvmTransactionsForChain ?? []) {
+          if (!isUserOriginatedTransaction(transaction.type)) {
+            continue;
+          }
+
+          for (const transfer of transaction.to) {
+            add(transfer.address);
+          }
+        }
       }
     }
 

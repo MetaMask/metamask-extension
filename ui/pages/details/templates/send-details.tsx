@@ -4,7 +4,7 @@ import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
 import { MetadataSection, TokensSection } from '../components/sections';
-import { UntrustedSenderLabel } from '../components/untrusted-sender-label';
+import { UntrustedSenderBanner } from '../components/untrusted-sender-label';
 import { useUntrustedSender } from '../hooks/useUntrustedSender';
 
 export function SendDetails({
@@ -16,12 +16,16 @@ export function SendDetails({
 
   return (
     <div className="flex grow flex-col">
+      {isUntrustedSender && (
+        <div className="pb-4">
+          <UntrustedSenderBanner />
+        </div>
+      )}
       <div className="divide-y divide-border-muted">
         <TokensSection tokens={[{ token: item.data.token }]} />
         <MetadataSection
           item={item}
           addressRows={{ from: item.data.from, to: item.data.to }}
-          fromAccessory={isUntrustedSender ? <UntrustedSenderLabel /> : null}
         />
         <Section>
           <FeesRows item={item} />

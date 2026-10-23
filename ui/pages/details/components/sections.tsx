@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React from 'react';
 import type {
   ActivityListItem,
   TokenAmount,
@@ -43,11 +43,9 @@ export function TokensSection({
 export function MetadataSection({
   item,
   addressRows,
-  fromAccessory,
 }: {
   item: ActivityListItem;
   addressRows?: { from?: string; to?: string };
-  fromAccessory?: ReactNode;
 }) {
   const t = useI18nContext();
   const { formatDateTime } = useFormatters();
@@ -72,16 +70,7 @@ export function MetadataSection({
         <>
           <Row
             label={t('from')}
-            value={
-              fromAccessory ? (
-                <div className="flex items-center justify-end gap-2">
-                  <AccountName address={addressRows?.from} />
-                  {fromAccessory}
-                </div>
-              ) : (
-                <AccountName address={addressRows?.from} />
-              )
-            }
+            value={<AccountName address={addressRows?.from} />}
           />
           <Row
             label={t('to')}
