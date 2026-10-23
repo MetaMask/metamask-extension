@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useDeferredValue,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -392,6 +393,7 @@ const getImportedTokensWithoutBalances = ({
 };
 
 export const TokenManagementPage = () => {
+  const id = useId();
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -1481,11 +1483,6 @@ export const TokenManagementPage = () => {
     ],
   );
 
-  const getSearchResultKey = useCallback(
-    (result: TokenSearchResult) => `search-${result.assetId.toLowerCase()}`,
-    [],
-  );
-
   const tokenListResult = useMemo(() => {
     const order = new Map(tokenListOrder);
     let orderChanged = false;
@@ -1700,29 +1697,22 @@ export const TokenManagementPage = () => {
     >
       <Header startAccessory={startAccessory}>{t('manageTokens')}</Header>
 
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        paddingHorizontal={4}
-        paddingTop={2}
-        paddingBottom={2}
-      >
-        <search className="w-full">
-          <TextFieldSearch
-            className="w-full"
-            clearButtonOnClick={handleSearchClear}
-            inputProps={
-              {
-                'data-testid': 'token-management-search-input',
-                spellCheck: false,
-              } as React.ComponentPropsWithoutRef<'input'>
-            }
-            onChange={handleSearchChange}
-            placeholder={t('enterTokenNameOrAddressManageTokens')}
-            value={searchQuery}
-          />
-        </search>
-      </Box>
+      <search className="px-4 py-2">
+        <TextFieldSearch
+          id={id}
+          className="w-full"
+          clearButtonOnClick={handleSearchClear}
+          inputProps={
+            {
+              'data-testid': 'token-management-search-input',
+              spellCheck: false,
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+          onChange={handleSearchChange}
+          placeholder={t('enterTokenNameOrAddressManageTokens')}
+          value={searchQuery}
+        />
+      </search>
 
       <Box
         flexDirection={BoxFlexDirection.Row}

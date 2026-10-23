@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { TextFieldSearch } from '@metamask/design-system-react';
-import { Box } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type RecipientFilterInputProps = {
@@ -12,24 +11,24 @@ export const RecipientFilterInput = ({
   searchQuery,
   onChange,
 }: RecipientFilterInputProps) => {
+  const id = useId();
   const t = useI18nContext();
 
   return (
-    <Box paddingInline={4} paddingBottom={4}>
-      <search>
-        <TextFieldSearch
-          className="w-full"
-          clearButtonOnClick={() => onChange('')}
-          inputProps={
-            {
-              'data-testid': 'recipient-filter-search-input',
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={t('searchAnAcccountOrContact')}
-          value={searchQuery}
-        />
-      </search>
-    </Box>
+    <search className="p-4">
+      <TextFieldSearch
+        id={id}
+        className="w-full"
+        clearButtonOnClick={() => onChange('')}
+        inputProps={
+          {
+            'data-testid': 'recipient-filter-search-input',
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={t('searchAnAcccountOrContact')}
+        value={searchQuery}
+      />
+    </search>
   );
 };

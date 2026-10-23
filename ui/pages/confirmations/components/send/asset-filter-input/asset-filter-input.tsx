@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { TextFieldSearch } from '@metamask/design-system-react';
-import { Box } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetFilterInputProps = {
@@ -14,25 +13,25 @@ export const AssetFilterInput = ({
   onChange,
   placeholder,
 }: AssetFilterInputProps) => {
+  const id = useId();
   const t = useI18nContext();
 
   return (
-    <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
-      <search>
-        <TextFieldSearch
-          autoFocus
-          className="w-full"
-          clearButtonOnClick={() => onChange('')}
-          inputProps={
-            {
-              'data-testid': 'asset-filter-search-input',
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={placeholder ?? t('searchForAnAssetToSend')}
-          value={searchQuery}
-        />
-      </search>
-    </Box>
+    <search className="px-4 py-2">
+      <TextFieldSearch
+        id={id}
+        autoFocus
+        className="w-full"
+        clearButtonOnClick={() => onChange('')}
+        inputProps={
+          {
+            'data-testid': 'asset-filter-search-input',
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder ?? t('searchForAnAssetToSend')}
+        value={searchQuery}
+      />
+    </search>
   );
 };

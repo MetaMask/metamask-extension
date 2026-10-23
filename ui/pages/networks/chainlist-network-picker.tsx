@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useId, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
@@ -152,6 +152,7 @@ export const ChainlistNetworkPicker = ({
   layout = 'page',
   maxHeight,
 }: ChainlistNetworkPickerProps) => {
+  const id = useId();
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -360,18 +361,17 @@ export const ChainlistNetworkPicker = ({
       style={isDropdown && maxHeight !== undefined ? { maxHeight } : undefined}
     >
       {showSearchField ? (
-        <Box className="px-4 pb-4">
-          <search>
-            <TextFieldSearch
-              className="w-full"
-              clearButtonOnClick={() => setInternalSearchValue('')}
-              data-testid="networks-page-chainlist-search"
-              onChange={(event) => setInternalSearchValue(event.target.value)}
-              placeholder={t('searchNetworkNameOrChainId')}
-              value={searchValue}
-            />
-          </search>
-        </Box>
+        <search className="px-4 pb-4">
+          <TextFieldSearch
+            id={id}
+            className="w-full"
+            clearButtonOnClick={() => setInternalSearchValue('')}
+            data-testid="networks-page-chainlist-search"
+            onChange={(event) => setInternalSearchValue(event.target.value)}
+            placeholder={t('searchNetworkNameOrChainId')}
+            value={searchValue}
+          />
+        </search>
       ) : null}
       <Box
         className={isDropdown ? undefined : 'min-h-0 flex-1 overflow-y-auto'}

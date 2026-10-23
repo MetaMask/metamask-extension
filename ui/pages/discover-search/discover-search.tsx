@@ -872,22 +872,20 @@ export const DiscoverSearchPage = () => {
             data-testid="discover-search-back-button"
           />
         </Link>
-        <search className="min-w-0 flex-1">
-          <TextFieldSearch
-            autoFocus={true}
-            className="min-w-0 flex-1"
-            placeholder={t('searchTokens')}
-            value={searchQuery}
-            onChange={handleSearchChange}
-            clearButtonOnClick={handleSearchClear}
-            inputProps={
-              {
-                'data-testid': 'discover-search-input',
-                spellCheck: false,
-              } as React.ComponentPropsWithoutRef<'input'>
-            }
-          />
-        </search>
+        <TextFieldSearch
+          autoFocus={true}
+          className="min-w-0 flex-1"
+          placeholder={t('searchTokens')}
+          value={searchQuery}
+          onChange={handleSearchChange}
+          clearButtonOnClick={handleSearchClear}
+          inputProps={
+            {
+              'data-testid': 'discover-search-input',
+              spellCheck: false,
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+        />
       </Box>
 
       <Tabs

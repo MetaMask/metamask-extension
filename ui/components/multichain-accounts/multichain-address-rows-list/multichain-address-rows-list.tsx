@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useId } from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -47,6 +47,7 @@ export const MultichainAddressRowsList = ({
   groupId,
   onQrClick,
 }: MultichainAddressRowsListProps) => {
+  const id = useId();
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
 
@@ -156,18 +157,17 @@ export const MultichainAddressRowsList = ({
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
-      <Box paddingLeft={4} paddingRight={4}>
-        <search>
-          <TextFieldSearch
-            className="w-full"
-            clearButtonOnClick={handleClearSearch}
-            data-testid="multichain-address-rows-list-search"
-            onChange={handleSearchChange}
-            placeholder={t('searchNetworks')}
-            value={searchPattern}
-          />
-        </search>
-      </Box>
+      <search className="px-4">
+        <TextFieldSearch
+          id={id}
+          className="w-full"
+          clearButtonOnClick={handleClearSearch}
+          data-testid="multichain-address-rows-list-search"
+          onChange={handleSearchChange}
+          placeholder={t('searchNetworks')}
+          value={searchPattern}
+        />
+      </search>
 
       <Box>
         {filteredItems.length > 0 ? (

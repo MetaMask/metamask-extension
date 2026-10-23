@@ -2,6 +2,7 @@ import React, {
   forwardRef,
   useCallback,
   useEffect,
+  useId,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -73,6 +74,7 @@ export const BridgeAssetPickerContent = forwardRef<
     },
     ref,
   ) => {
+    const id = useId();
     const [accountGroup] = useSelector((state: BridgeAppState) =>
       getAccountGroupsByAddress(state, [accountAddress]),
     );
@@ -157,23 +159,22 @@ export const BridgeAssetPickerContent = forwardRef<
     return (
       <>
         <div className="flex flex-col gap-4">
-          <Box className="mx-4">
-            <search>
-              <TextFieldSearch
-                autoFocus
-                className="w-full"
-                clearButtonOnClick={() => setSearchQuery('')}
-                inputProps={
-                  {
-                    'data-testid': 'bridge-asset-picker-search-input',
-                  } as React.ComponentPropsWithoutRef<'input'>
-                }
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={t('enterTokenNameOrAddress')}
-                value={searchQuery}
-              />
-            </search>
-          </Box>
+          <search className="mx-4">
+            <TextFieldSearch
+              id={id}
+              autoFocus
+              className="w-full"
+              clearButtonOnClick={() => setSearchQuery('')}
+              inputProps={
+                {
+                  'data-testid': 'bridge-asset-picker-search-input',
+                } as React.ComponentPropsWithoutRef<'input'>
+              }
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder={t('enterTokenNameOrAddress')}
+              value={searchQuery}
+            />
+          </search>
           <ButtonBase
             onClick={() =>
               isNetworkPickerOpen

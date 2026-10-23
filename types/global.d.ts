@@ -216,7 +216,6 @@ declare global {
 }
 // #endregion
 
-// #region search element JSX support
 declare global {
   namespace JSX {
     // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -228,4 +227,3 @@ declare global {
     }
   }
 }
-// #endregion

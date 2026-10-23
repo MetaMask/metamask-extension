@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useId } from 'react';
 import { TextFieldSearch, TextFieldSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
@@ -33,6 +33,7 @@ export const SearchInput = ({
   onInputClick,
   autoFocus = false,
 }: SearchInputProps) => {
+  const id = useId();
   const t = useI18nContext();
 
   const handleKeyDown = useCallback(
@@ -45,25 +46,24 @@ export const SearchInput = ({
   );
 
   return (
-    <search>
-      <TextFieldSearch
-        autoFocus={autoFocus}
-        className="w-full"
-        clearButtonOnClick={onClear}
-        data-testid="search-input-container"
-        inputProps={
-          {
-            'data-testid': 'search-input',
-            onClick: onInputClick,
-            onKeyDown: handleKeyDown,
-          } as React.ComponentPropsWithoutRef<'input'>
-        }
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={t('perpsSearchMarkets')}
-        size={TextFieldSize.Md}
-        value={value}
-      />
-    </search>
+    <TextFieldSearch
+      id={id}
+      autoFocus={autoFocus}
+      className="w-full"
+      clearButtonOnClick={onClear}
+      data-testid="search-input-container"
+      inputProps={
+        {
+          'data-testid': 'search-input',
+          onClick: onInputClick,
+          onKeyDown: handleKeyDown,
+        } as React.ComponentPropsWithoutRef<'input'>
+      }
+      onChange={(event) => onChange(event.target.value)}
+      placeholder={t('perpsSearchMarkets')}
+      size={TextFieldSize.Md}
+      value={value}
+    />
   );
 };
 

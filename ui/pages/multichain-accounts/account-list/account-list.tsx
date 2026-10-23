@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useId, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useStore } from 'react-redux';
 
@@ -60,6 +60,7 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 
 export const AccountList = () => {
+  const id = useId();
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -202,24 +203,17 @@ export const AccountList = () => {
         {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          paddingTop={1}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingBottom={2}
-        >
-          <search>
-            <TextFieldSearch
-              className="w-full"
-              clearButtonOnClick={clearSearch}
-              data-testid="multichain-account-list-search"
-              onChange={onSearchBarChange}
-              placeholder={t('searchYourAccounts')}
-              value={searchPattern}
-            />
-          </search>
-        </Box>
+        <search className="px-4 py-2">
+          <TextFieldSearch
+            id={id}
+            className="w-full"
+            clearButtonOnClick={clearSearch}
+            data-testid="multichain-account-list-search"
+            onChange={onSearchBarChange}
+            placeholder={t('searchYourAccounts')}
+            value={searchPattern}
+          />
+        </search>
         <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
           {hasFilteredWallets ? (
             <MultichainAccountList

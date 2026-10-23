@@ -88,32 +88,30 @@ export const DestinationAccountPickerModal = ({
 
       <ModalContent paddingTop={4} paddingBottom={4} gap={3}>
         <ModalHeader onClose={onClose}>{t('recipient')}</ModalHeader>
-        <search className="mx-4" style={{ marginBottom: 12 }}>
-          <TextField
-            autoFocus
-            data-testid="destination-account-picker-modal-search-input"
-            placeholder={
-              (isDestinationSolana
-                ? t('destinationAccountPickerSearchPlaceholderToSolana')
-                : t('destinationAccountPickerSearchPlaceholderToMainnet')) ??
-              undefined
-            }
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            backgroundColor={BackgroundColor.backgroundSubsection}
-            borderRadius={BorderRadius.XL}
-            borderWidth={0}
-            color={TextColor.textAlternative}
-            inputProps={{
-              disableStateStyles: true,
-            }}
-            style={{
-              minHeight: 48,
-              outline: 'none',
-            }}
-            startAccessory={<Icon name={IconName.Search} size={IconSize.Md} />}
-          />
-        </search>
+        <TextField
+          autoFocus
+          data-testid="destination-account-picker-modal-search-input"
+          placeholder={
+            (isDestinationSolana
+              ? t('destinationAccountPickerSearchPlaceholderToSolana')
+              : t('destinationAccountPickerSearchPlaceholderToMainnet')) ??
+            undefined
+          }
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          backgroundColor={BackgroundColor.backgroundSubsection}
+          borderRadius={BorderRadius.XL}
+          borderWidth={0}
+          color={TextColor.textAlternative}
+          inputProps={{
+            disableStateStyles: true,
+          }}
+          style={{
+            minHeight: 48,
+            outline: 'none',
+          }}
+          startAccessory={<Icon name={IconName.Search} size={IconSize.Md} />}
+        />
         <ModalBody
           paddingRight={0}
           paddingLeft={0}

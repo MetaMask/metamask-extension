@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import {
   Box,
   TextFieldSearch,
@@ -33,35 +33,29 @@ export const Search = ({
   placeholder?: JSX.Element | string | null;
   autoFocus?: boolean;
 }) => {
+  const id = useId();
   const t = useI18nContext();
 
   return (
-    <Box
-      paddingTop={4}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingBottom={2}
-      {...props}
-    >
-      <search>
-        <TextFieldSearch
-          autoFocus={autoFocus}
-          className="w-full"
-          clearButtonOnClick={() => onChange('')}
-          inputProps={
-            {
-              'data-testid': 'asset-picker-modal-search-input',
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={
-            placeholder ??
-            t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
-          }
-          size={TextFieldSize.Lg}
-          value={searchQuery}
-        />
-      </search>
-    </Box>
+    <search className="px-4 pt-4 pb-2" {...props}>
+      <TextFieldSearch
+        id={id}
+        autoFocus={autoFocus}
+        className="w-full"
+        clearButtonOnClick={() => onChange('')}
+        inputProps={
+          {
+            'data-testid': 'asset-picker-modal-search-input',
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={
+          placeholder ??
+          t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
+        }
+        size={TextFieldSize.Lg}
+        value={searchQuery}
+      />
+    </search>
   );
 };

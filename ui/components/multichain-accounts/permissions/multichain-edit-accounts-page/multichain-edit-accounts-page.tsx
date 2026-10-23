@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useId, useMemo, useState } from 'react';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import {
-  Box,
   IconName,
   BannerBase,
   ButtonIcon,
@@ -82,6 +81,7 @@ export const MultichainEditAccountsPage = ({
   siteMetadata,
   onDisconnect,
 }: MultichainEditAccountsPageProps) => {
+  const id = useId();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
@@ -223,18 +223,17 @@ export const MultichainEditAccountsPage = ({
           {title ?? t('editAccounts')}
         </Header>
       )}
-      <Box paddingTop={1} paddingBottom={2} paddingHorizontal={4}>
-        <search>
-          <TextFieldSearch
-            className="w-full"
-            clearButtonOnClick={clearSearch}
-            data-testid="multichain-edit-account-list-search"
-            onChange={onSearchBarChange}
-            placeholder={t('searchYourAccounts')}
-            value={searchPattern}
-          />
-        </search>
-      </Box>
+      <search className="px-4 py-2">
+        <TextFieldSearch
+          id={id}
+          className="w-full"
+          clearButtonOnClick={clearSearch}
+          data-testid="multichain-edit-account-list-search"
+          onChange={onSearchBarChange}
+          placeholder={t('searchYourAccounts')}
+          value={searchPattern}
+        />
+      </search>
       <ScrollContainer className="flex-1 overflow-y-auto">
         {siteMetadata && (
           <BannerBase
