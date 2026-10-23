@@ -16,17 +16,19 @@ const NetworkListSearch = ({
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={0}>
-      <TextFieldSearch
-        autoFocus
-        className="w-full"
-        clearButtonOnClick={() => setSearchQuery('')}
-        data-testid="search-list"
-        onBlur={() => setFocusSearch(false)}
-        onFocus={() => setFocusSearch(true)}
-        onChange={(event) => setSearchQuery(event.target.value)}
-        placeholder={t('search')}
-        value={searchQuery}
-      />
+      <search>
+        <TextFieldSearch
+          autoFocus
+          className="w-full"
+          clearButtonOnClick={() => setSearchQuery('')}
+          data-testid="search-list"
+          onBlur={() => setFocusSearch(false)}
+          onFocus={() => setFocusSearch(true)}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder={t('search')}
+          value={searchQuery}
+        />
+      </search>
     </Box>
   );
 };

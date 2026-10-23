@@ -361,14 +361,16 @@ export const ChainlistNetworkPicker = ({
     >
       {showSearchField ? (
         <Box className="px-4 pb-4">
-          <TextFieldSearch
-            className="w-full"
-            clearButtonOnClick={() => setInternalSearchValue('')}
-            data-testid="networks-page-chainlist-search"
-            onChange={(event) => setInternalSearchValue(event.target.value)}
-            placeholder={t('searchNetworkNameOrChainId')}
-            value={searchValue}
-          />
+          <search>
+            <TextFieldSearch
+              className="w-full"
+              clearButtonOnClick={() => setInternalSearchValue('')}
+              data-testid="networks-page-chainlist-search"
+              onChange={(event) => setInternalSearchValue(event.target.value)}
+              placeholder={t('searchNetworkNameOrChainId')}
+              value={searchValue}
+            />
+          </search>
         </Box>
       ) : null}
       <Box

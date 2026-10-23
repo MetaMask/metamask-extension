@@ -1707,19 +1707,21 @@ export const TokenManagementPage = () => {
         paddingTop={2}
         paddingBottom={2}
       >
-        <TextFieldSearch
-          className="w-full"
-          clearButtonOnClick={handleSearchClear}
-          inputProps={
-            {
-              'data-testid': 'token-management-search-input',
-              spellCheck: false,
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
-          onChange={handleSearchChange}
-          placeholder={t('enterTokenNameOrAddressManageTokens')}
-          value={searchQuery}
-        />
+        <search className="w-full">
+          <TextFieldSearch
+            className="w-full"
+            clearButtonOnClick={handleSearchClear}
+            inputProps={
+              {
+                'data-testid': 'token-management-search-input',
+                spellCheck: false,
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
+            onChange={handleSearchChange}
+            placeholder={t('enterTokenNameOrAddressManageTokens')}
+            value={searchQuery}
+          />
+        </search>
       </Box>
 
       <Box

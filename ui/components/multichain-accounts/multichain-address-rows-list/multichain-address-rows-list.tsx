@@ -157,14 +157,16 @@ export const MultichainAddressRowsList = ({
       data-testid="multichain-address-rows-list"
     >
       <Box paddingLeft={4} paddingRight={4}>
-        <TextFieldSearch
-          className="w-full"
-          clearButtonOnClick={handleClearSearch}
-          data-testid="multichain-address-rows-list-search"
-          onChange={handleSearchChange}
-          placeholder={t('searchNetworks')}
-          value={searchPattern}
-        />
+        <search>
+          <TextFieldSearch
+            className="w-full"
+            clearButtonOnClick={handleClearSearch}
+            data-testid="multichain-address-rows-list-search"
+            onChange={handleSearchChange}
+            placeholder={t('searchNetworks')}
+            value={searchPattern}
+          />
+        </search>
       </Box>
 
       <Box>

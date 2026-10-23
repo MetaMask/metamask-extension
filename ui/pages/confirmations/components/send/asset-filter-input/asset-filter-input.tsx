@@ -18,19 +18,21 @@ export const AssetFilterInput = ({
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
-      <TextFieldSearch
-        autoFocus
-        className="w-full"
-        clearButtonOnClick={() => onChange('')}
-        inputProps={
-          {
-            'data-testid': 'asset-filter-search-input',
-          } as React.ComponentPropsWithoutRef<'input'>
-        }
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={placeholder ?? t('searchForAnAssetToSend')}
-        value={searchQuery}
-      />
+      <search>
+        <TextFieldSearch
+          autoFocus
+          className="w-full"
+          clearButtonOnClick={() => onChange('')}
+          inputProps={
+            {
+              'data-testid': 'asset-filter-search-input',
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder ?? t('searchForAnAssetToSend')}
+          value={searchQuery}
+        />
+      </search>
     </Box>
   );
 };

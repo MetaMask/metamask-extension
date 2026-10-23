@@ -224,14 +224,16 @@ export const MultichainEditAccountsPage = ({
         </Header>
       )}
       <Box paddingTop={1} paddingBottom={2} paddingHorizontal={4}>
-        <TextFieldSearch
-          className="w-full"
-          clearButtonOnClick={clearSearch}
-          data-testid="multichain-edit-account-list-search"
-          onChange={onSearchBarChange}
-          placeholder={t('searchYourAccounts')}
-          value={searchPattern}
-        />
+        <search>
+          <TextFieldSearch
+            className="w-full"
+            clearButtonOnClick={clearSearch}
+            data-testid="multichain-edit-account-list-search"
+            onChange={onSearchBarChange}
+            placeholder={t('searchYourAccounts')}
+            value={searchPattern}
+          />
+        </search>
       </Box>
       <ScrollContainer className="flex-1 overflow-y-auto">
         {siteMetadata && (

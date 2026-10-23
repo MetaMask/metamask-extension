@@ -16,18 +16,20 @@ export const RecipientFilterInput = ({
 
   return (
     <Box paddingInline={4} paddingBottom={4}>
-      <TextFieldSearch
-        className="w-full"
-        clearButtonOnClick={() => onChange('')}
-        inputProps={
-          {
-            'data-testid': 'recipient-filter-search-input',
-          } as React.ComponentPropsWithoutRef<'input'>
-        }
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={t('searchAnAcccountOrContact')}
-        value={searchQuery}
-      />
+      <search>
+        <TextFieldSearch
+          className="w-full"
+          clearButtonOnClick={() => onChange('')}
+          inputProps={
+            {
+              'data-testid': 'recipient-filter-search-input',
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={t('searchAnAcccountOrContact')}
+          value={searchQuery}
+        />
+      </search>
     </Box>
   );
 };

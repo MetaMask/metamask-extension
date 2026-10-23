@@ -50,26 +50,28 @@ export const PageHeaderWithSearch = ({
 
   if (isSearchOpen) {
     return (
-      <HeaderSearch
-        variant={HeaderSearchVariant.Inline}
-        className="w-full"
-        padding={3}
-        paddingHorizontal={4}
-        onClickCancelButton={() => {
-          onCloseSearch?.();
-          onSearchClear?.();
-        }}
-        textFieldSearchProps={{
-          value: searchValue,
-          placeholder: searchPlaceholder ?? t('search'),
-          onChangeText: onSearchChange,
-          onClickClearButton: onSearchClear,
-          autoFocus: true,
-          inputProps: {
-            'data-testid': 'page-header-search-input',
-          } as React.ComponentPropsWithoutRef<'input'>,
-        }}
-      />
+      <search>
+        <HeaderSearch
+          variant={HeaderSearchVariant.Inline}
+          className="w-full"
+          padding={3}
+          paddingHorizontal={4}
+          onClickCancelButton={() => {
+            onCloseSearch?.();
+            onSearchClear?.();
+          }}
+          textFieldSearchProps={{
+            value: searchValue,
+            placeholder: searchPlaceholder ?? t('search'),
+            onChangeText: onSearchChange,
+            onClickClearButton: onSearchClear,
+            autoFocus: true,
+            inputProps: {
+              'data-testid': 'page-header-search-input',
+            } as React.ComponentPropsWithoutRef<'input'>,
+          }}
+        />
+      </search>
     );
   }
 

@@ -209,14 +209,16 @@ export const AccountList = () => {
           paddingRight={4}
           paddingBottom={2}
         >
-          <TextFieldSearch
-            className="w-full"
-            clearButtonOnClick={clearSearch}
-            data-testid="multichain-account-list-search"
-            onChange={onSearchBarChange}
-            placeholder={t('searchYourAccounts')}
-            value={searchPattern}
-          />
+          <search>
+            <TextFieldSearch
+              className="w-full"
+              clearButtonOnClick={clearSearch}
+              data-testid="multichain-account-list-search"
+              onChange={onSearchBarChange}
+              placeholder={t('searchYourAccounts')}
+              value={searchPattern}
+            />
+          </search>
         </Box>
         <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
           {hasFilteredWallets ? (

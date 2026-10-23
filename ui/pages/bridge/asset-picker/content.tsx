@@ -158,19 +158,21 @@ export const BridgeAssetPickerContent = forwardRef<
       <>
         <div className="flex flex-col gap-4">
           <Box className="mx-4">
-            <TextFieldSearch
-              autoFocus
-              className="w-full"
-              clearButtonOnClick={() => setSearchQuery('')}
-              inputProps={
-                {
-                  'data-testid': 'bridge-asset-picker-search-input',
-                } as React.ComponentPropsWithoutRef<'input'>
-              }
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder={t('enterTokenNameOrAddress')}
-              value={searchQuery}
-            />
+            <search>
+              <TextFieldSearch
+                autoFocus
+                className="w-full"
+                clearButtonOnClick={() => setSearchQuery('')}
+                inputProps={
+                  {
+                    'data-testid': 'bridge-asset-picker-search-input',
+                  } as React.ComponentPropsWithoutRef<'input'>
+                }
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={t('enterTokenNameOrAddress')}
+                value={searchQuery}
+              />
+            </search>
           </Box>
           <ButtonBase
             onClick={() =>

@@ -45,23 +45,25 @@ export const SearchInput = ({
   );
 
   return (
-    <TextFieldSearch
-      autoFocus={autoFocus}
-      className="w-full"
-      clearButtonOnClick={onClear}
-      data-testid="search-input-container"
-      inputProps={
-        {
-          'data-testid': 'search-input',
-          onClick: onInputClick,
-          onKeyDown: handleKeyDown,
-        } as React.ComponentPropsWithoutRef<'input'>
-      }
-      onChange={(event) => onChange(event.target.value)}
-      placeholder={t('perpsSearchMarkets')}
-      size={TextFieldSize.Md}
-      value={value}
-    />
+    <search>
+      <TextFieldSearch
+        autoFocus={autoFocus}
+        className="w-full"
+        clearButtonOnClick={onClear}
+        data-testid="search-input-container"
+        inputProps={
+          {
+            'data-testid': 'search-input',
+            onClick: onInputClick,
+            onKeyDown: handleKeyDown,
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={t('perpsSearchMarkets')}
+        size={TextFieldSize.Md}
+        value={value}
+      />
+    </search>
   );
 };
 

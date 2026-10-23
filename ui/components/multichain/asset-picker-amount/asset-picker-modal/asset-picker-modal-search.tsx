@@ -43,23 +43,25 @@ export const Search = ({
       paddingBottom={2}
       {...props}
     >
-      <TextFieldSearch
-        autoFocus={autoFocus}
-        className="w-full"
-        clearButtonOnClick={() => onChange('')}
-        inputProps={
-          {
-            'data-testid': 'asset-picker-modal-search-input',
-          } as React.ComponentPropsWithoutRef<'input'>
-        }
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={
-          placeholder ??
-          t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
-        }
-        size={TextFieldSize.Lg}
-        value={searchQuery}
-      />
+      <search>
+        <TextFieldSearch
+          autoFocus={autoFocus}
+          className="w-full"
+          clearButtonOnClick={() => onChange('')}
+          inputProps={
+            {
+              'data-testid': 'asset-picker-modal-search-input',
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={
+            placeholder ??
+            t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
+          }
+          size={TextFieldSize.Lg}
+          value={searchQuery}
+        />
+      </search>
     </Box>
   );
 };
