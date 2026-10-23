@@ -1733,6 +1733,50 @@ describe('LegacyBackgroundApiService', () => {
           );
         });
       });
+
+      // @ts-expect-error 'each' function is not recognized by TypeScript types
+      it.each([
+        ['an empty', ''],
+        ['a missing', undefined],
+      ])(
+        'creates the account for a QR device that reports %s name',
+        async (_description: string, name: string | undefined) => {
+          await withService(async ({ rootMessenger }) => {
+            const getName = jest.fn().mockReturnValue(name);
+            registerWithKeyringV2(rootMessenger, {
+              entropySource: 'entropy-1',
+              hdPath: "m/44'/60'/0'/0",
+              getMode: jest.fn().mockReturnValue('account'),
+              getName,
+              createAccounts: jest
+                .fn()
+                .mockResolvedValue([{ address: '0x333' }]),
+            });
+
+            rootMessenger.registerActionHandler(
+              'AccountsController:listAccounts',
+              jest.fn().mockReturnValue([{ id: 'qr-3', address: '0x333' }]),
+            );
+            rootMessenger.registerActionHandler(
+              'AccountsController:getAccountByAddress',
+              jest.fn().mockReturnValue({ id: 'qr-3', address: '0x333' }),
+            );
+            rootMessenger.registerActionHandler(
+              'AccountsController:setSelectedAccount',
+              jest.fn(),
+            );
+
+            const result = await rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'QR Hardware',
+            );
+
+            expect(getName).toHaveBeenCalled();
+            expect(result.unlockedAccount).toStrictEqual('0x333');
+          });
+        },
+      );
     });
 
     describe('attemptLedgerTransportCreation', () => {

@@ -27,7 +27,7 @@ export const MFA_USED_FOR: MfaUsedFor[] = [
     key: 'money',
     icon: IconName.SecurityTick,
     label: 'mfaSettingsUsedForMoney',
-    methods: ['passkey', 'email_otp'],
+    methods: ['passkey', 'email_otp', 'totp'],
   },
 ];
 

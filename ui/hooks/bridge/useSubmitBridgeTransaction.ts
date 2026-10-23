@@ -3,6 +3,7 @@ import { useSelector, shallowEqual } from 'react-redux';
 import {
   getQuotesReceivedProperties,
   isCrossChain,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import type {
   InputPrimaryDenomination,
@@ -270,7 +271,7 @@ export default function useSubmitBridgeTransaction(
     try {
       await submitQuote(quoteResponse, options);
     } catch (e) {
-      captureException(e);
+      captureException(e, { tags: { feature: SwapFeatureTag.SWAP } });
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         // Only user rejection should set wasTxDeclined; timeouts/disconnects must not.
         dispatch(setWasTxDeclined(true));
