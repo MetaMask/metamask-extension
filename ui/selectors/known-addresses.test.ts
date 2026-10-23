@@ -30,6 +30,14 @@ function transaction(
   } as Transaction;
 }
 
+function chainTransactions(transactions: Transaction[]) {
+  return {
+    transactions,
+    next: null,
+    lastUpdated: 0,
+  };
+}
+
 function buildState(nonEvmTransactions: NonEvmTransactions = {}) {
   return {
     metamask: {
@@ -68,22 +76,14 @@ describe('selectKnownAddresses', () => {
     const known = selectKnownAddresses(
       buildState({
         'tron-account': {
-          'tron:728126428': {
-            transactions: [
-              transaction(TransactionType.Receive, tronSender, tronAccount),
-            ],
-          },
+          'tron:728126428': chainTransactions([
+            transaction(TransactionType.Receive, tronSender, tronAccount),
+          ]),
         },
         'stellar-account': {
-          'stellar:pubnet': {
-            transactions: [
-              transaction(
-                TransactionType.Receive,
-                stellarSender,
-                stellarAccount,
-              ),
-            ],
-          },
+          'stellar:pubnet': chainTransactions([
+            transaction(TransactionType.Receive, stellarSender, stellarAccount),
+          ]),
         },
       }),
     );
@@ -98,18 +98,14 @@ describe('selectKnownAddresses', () => {
     const known = selectKnownAddresses(
       buildState({
         'tron-account': {
-          'tron:728126428': {
-            transactions: [
-              transaction(TransactionType.Send, tronAccount, tronSender),
-            ],
-          },
+          'tron:728126428': chainTransactions([
+            transaction(TransactionType.Send, tronAccount, tronSender),
+          ]),
         },
         'stellar-account': {
-          'stellar:pubnet': {
-            transactions: [
-              transaction(TransactionType.Send, stellarAccount, stellarSender),
-            ],
-          },
+          'stellar:pubnet': chainTransactions([
+            transaction(TransactionType.Send, stellarAccount, stellarSender),
+          ]),
         },
       }),
     );

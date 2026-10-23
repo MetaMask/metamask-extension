@@ -125,7 +125,7 @@ describe('useAddressLabel', () => {
       { wrapper: createWrapper() },
     );
 
-    expect(result.current).toBe('');
+    expect(result.current.data).toBeUndefined();
     expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
   });
 
