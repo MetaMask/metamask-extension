@@ -5725,11 +5725,11 @@
   "mfaSettingsAdd": {
     "message": "Add"
   },
-  "mfaSettingsAuthenticatorAppAdded": {
-    "message": "Authenticator app added"
-  },
   "mfaSettingsAddedOn": {
     "message": "Added $1"
+  },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Authenticator app added"
   },
   "mfaSettingsEmailRemoved": {
     "message": "Email verification removed"
