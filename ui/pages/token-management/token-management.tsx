@@ -393,7 +393,7 @@ const getImportedTokensWithoutBalances = ({
 };
 
 export const TokenManagementPage = () => {
-  const id = useId();
+  const inputId = useId();
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -1699,7 +1699,7 @@ export const TokenManagementPage = () => {
 
       <search className="px-4 py-2">
         <TextFieldSearch
-          id={id}
+          id={inputId}
           className="w-full"
           clearButtonOnClick={handleSearchClear}
           inputProps={

@@ -81,7 +81,7 @@ export const MultichainEditAccountsPage = ({
   siteMetadata,
   onDisconnect,
 }: MultichainEditAccountsPageProps) => {
-  const id = useId();
+  const inputId = useId();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
@@ -225,7 +225,7 @@ export const MultichainEditAccountsPage = ({
       )}
       <search className="px-4 py-2">
         <TextFieldSearch
-          id={id}
+          id={inputId}
           className="w-full"
           clearButtonOnClick={clearSearch}
           data-testid="multichain-edit-account-list-search"
