@@ -138,7 +138,7 @@ export async function getMfaMoneyAccountEncryptionKey(
   }
 
   return hkdfSha256(
-    privateKeyBytes,
+    privateKeyBytes as Uint8Array<ArrayBuffer>,
     MFA_MONEY_ACCOUNT_ENCRYPTION_KEY_SALT,
     MFA_MONEY_ACCOUNT_ENCRYPTION_KEY_INFO,
     AES_256_KEY_LENGTH,
