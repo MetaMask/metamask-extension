@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React from 'react';
 import {
   Box,
   TextFieldSearch,
@@ -33,19 +33,20 @@ export const Search = ({
   placeholder?: JSX.Element | string | null;
   autoFocus?: boolean;
 }) => {
-  const id = useId();
   const t = useI18nContext();
 
   return (
     <search className="px-4 pt-4 pb-2" {...props}>
       <TextFieldSearch
-        id={id}
         autoFocus={autoFocus}
         className="w-full"
         clearButtonOnClick={() => onChange('')}
         inputProps={
           {
             'data-testid': 'asset-picker-modal-search-input',
+            'aria-label':
+              placeholder ??
+              t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress'),
           } as React.ComponentPropsWithoutRef<'input'>
         }
         onChange={(event) => onChange(event.target.value)}

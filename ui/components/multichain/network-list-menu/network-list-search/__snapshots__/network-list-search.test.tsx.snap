@@ -20,6 +20,7 @@ exports[`NetworkListSearch renders search list component 1`] = `
         />
       </svg>
       <input
+        aria-label="search"
         class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-2 pr-4 truncate [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
         placeholder="search"
         type="search"

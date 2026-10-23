@@ -2,7 +2,6 @@ import React, {
   useCallback,
   useDeferredValue,
   useEffect,
-  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -393,7 +392,6 @@ const getImportedTokensWithoutBalances = ({
 };
 
 export const TokenManagementPage = () => {
-  const inputId = useId();
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -1699,12 +1697,12 @@ export const TokenManagementPage = () => {
 
       <search className="px-4 py-2">
         <TextFieldSearch
-          id={inputId}
           className="w-full"
           clearButtonOnClick={handleSearchClear}
           inputProps={
             {
               'data-testid': 'token-management-search-input',
+              'aria-label': t('enterTokenNameOrAddressManageTokens'),
               spellCheck: false,
             } as React.ComponentPropsWithoutRef<'input'>
           }

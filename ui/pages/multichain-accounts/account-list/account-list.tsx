@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useStore } from 'react-redux';
 
@@ -60,7 +60,6 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 
 export const AccountList = () => {
-  const id = useId();
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -205,10 +204,14 @@ export const AccountList = () => {
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <search className="px-4 py-2">
           <TextFieldSearch
-            id={id}
             className="w-full"
             clearButtonOnClick={clearSearch}
             data-testid="multichain-account-list-search"
+            inputProps={
+              {
+                'aria-label': t('searchYourAccounts'),
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
             onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}
             value={searchPattern}

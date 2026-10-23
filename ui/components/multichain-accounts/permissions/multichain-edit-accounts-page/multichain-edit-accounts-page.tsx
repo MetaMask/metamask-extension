@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
@@ -81,7 +81,6 @@ export const MultichainEditAccountsPage = ({
   siteMetadata,
   onDisconnect,
 }: MultichainEditAccountsPageProps) => {
-  const inputId = useId();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
@@ -225,10 +224,14 @@ export const MultichainEditAccountsPage = ({
       )}
       <search className="px-4 py-2">
         <TextFieldSearch
-          id={inputId}
           className="w-full"
           clearButtonOnClick={clearSearch}
-          data-testid="multichain-edit-account-list-search"
+          inputProps={
+            {
+              'data-testid': 'multichain-edit-account-list-search',
+              'aria-label': t('searchYourAccounts'),
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
           onChange={onSearchBarChange}
           placeholder={t('searchYourAccounts')}
           value={searchPattern}

@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
@@ -152,7 +152,6 @@ export const ChainlistNetworkPicker = ({
   layout = 'page',
   maxHeight,
 }: ChainlistNetworkPickerProps) => {
-  const id = useId();
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -363,10 +362,14 @@ export const ChainlistNetworkPicker = ({
       {showSearchField ? (
         <search className="px-4 pb-4">
           <TextFieldSearch
-            id={id}
             className="w-full"
             clearButtonOnClick={() => setInternalSearchValue('')}
-            data-testid="networks-page-chainlist-search"
+            inputProps={
+              {
+                'data-testid': 'networks-page-chainlist-search',
+                'aria-label': t('searchNetworkNameOrChainId'),
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
             onChange={(event) => setInternalSearchValue(event.target.value)}
             placeholder={t('searchNetworkNameOrChainId')}
             value={searchValue}

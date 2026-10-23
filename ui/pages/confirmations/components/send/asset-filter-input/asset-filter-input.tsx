@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React from 'react';
 import { TextFieldSearch } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
@@ -13,19 +13,18 @@ export const AssetFilterInput = ({
   onChange,
   placeholder,
 }: AssetFilterInputProps) => {
-  const id = useId();
   const t = useI18nContext();
 
   return (
     <search className="px-4 py-2">
       <TextFieldSearch
-        id={id}
         autoFocus
         className="w-full"
         clearButtonOnClick={() => onChange('')}
         inputProps={
           {
             'data-testid': 'asset-filter-search-input',
+            'aria-label': placeholder ?? t('searchForAnAssetToSend'),
           } as React.ComponentPropsWithoutRef<'input'>
         }
         onChange={(event) => onChange(event.target.value)}
