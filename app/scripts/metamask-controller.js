@@ -372,6 +372,8 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
+import { RewardsMoneyDataServiceInit } from './messenger-client-init/rewards-money-data-service-init';
+import { RewardsMoneyControllerInit } from './messenger-client-init/rewards-money-controller-init';
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
@@ -635,6 +637,8 @@ export default class MetamaskController extends EventEmitter {
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
+      RewardsMoneyDataService: RewardsMoneyDataServiceInit,
+      RewardsMoneyController: RewardsMoneyControllerInit,
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
@@ -2644,10 +2648,6 @@ export default class MetamaskController extends EventEmitter {
       estimateRewardsPoints: this.rewardsController.estimatePoints.bind(
         this.rewardsController,
       ),
-      validateRewardsReferralCode:
-        this.rewardsController.validateReferralCode.bind(
-          this.rewardsController,
-        ),
       getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
         this.rewardsController,
       ),
