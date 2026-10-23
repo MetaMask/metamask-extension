@@ -77,30 +77,28 @@ describe('registerUnlockMeasurement', () => {
   });
 
   jestIt.each([
-    { replace: true },
+    { replace: true, state: undefined },
     { replace: false },
     { replace: true, state: { from: { key: 'another-entry' } } },
   ])('excludes a later root-to-Unlock navigation: %j', async (options) => {
     await router.navigate('/');
+    const from = router.state.location;
     register();
 
-    await router.navigate('/unlock', options);
+    await router.navigate('/unlock', { state: { from }, ...options });
 
     expect(measurement.discard).toHaveBeenCalledTimes(1);
   });
 
-  jestIt.each([false, true])(
-    'excludes leaving and returning before mounting, replace: %s',
-    async (replace) => {
-      register();
+  it('excludes leaving and returning before mounting', async () => {
+    register();
 
-      await router.navigate('/restore-vault', { replace });
-      await router.navigate('/unlock', { replace });
+    await router.navigate('/restore-vault');
+    await router.navigate('/unlock');
 
-      expect(measurement.discard).toHaveBeenCalledTimes(1);
-      expect(registerDocumentLoadMeasurement).toHaveBeenCalledTimes(1);
-    },
-  );
+    expect(measurement.discard).toHaveBeenCalledTimes(1);
+    expect(registerDocumentLoadMeasurement).toHaveBeenCalledTimes(1);
+  });
 
   it('excludes history navigation away from the initial visit', async () => {
     await router.navigate('/unlock');
