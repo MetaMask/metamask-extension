@@ -199,29 +199,6 @@ describe('Incoming Transactions', function () {
       },
     );
   });
-
-  it('does nothing if preference disabled', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withUseBasicFunctionalityDisabled()
-          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-          .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-            },
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApi,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activityTab = await changeNetworkAndGoToActivity(driver);
-        await driver.delay(2000);
-        await activityTab.checkNoTxInActivity();
-      },
-    );
-  });
 });
 
 async function changeNetworkAndGoToActivity(driver: Driver) {

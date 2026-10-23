@@ -81,6 +81,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
+        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAmountInActivity('-1 ETH');
         await activityTab.waitPendingTxToNotBeVisible();
@@ -154,6 +155,7 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
         const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
         await activityTab.checkTxAmountInActivity('-1 ETH');
         await activityTab.waitPendingTxToNotBeVisible();
 

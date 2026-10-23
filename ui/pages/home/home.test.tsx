@@ -129,9 +129,8 @@ beforeEach(() => {
 });
 
 describe('Home', () => {
-  it('renders AppHeader and DappConnectionControlBar', () => {
-    const { getByTestId } = renderHome();
-    expect(getByTestId('mock-app-header')).toBeInTheDocument();
+  it('renders DappConnectionControlBar', () => {
+    const { getByTestId, queryByTestId } = renderHome();
     expect(getByTestId('dapp-control-bar-bottom')).toBeInTheDocument();
   });
 

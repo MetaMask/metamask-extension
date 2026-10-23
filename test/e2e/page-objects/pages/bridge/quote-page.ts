@@ -540,17 +540,6 @@ class BridgeQuotePage {
   };
 
   /**
-   * Navigates away from the bridge page via the bottom nav bar home tab.
-   * Use this instead of `goBack` when the user is in the bottom nav AB test
-   * treatment, where the back button is removed on the swap/bridge page.
-   */
-  goBackViaBottomNavHome = async () => {
-    const homeTab = '[data-testid="bottom-nav-home"]';
-    await this.driver.waitForSelector(homeTab);
-    await this.driver.clickElement(homeTab);
-  };
-
-  /**
    * Opens an asset picker, giving the prepare page time to send its pending
    * quote parameter update first. Only needed by tests that assert on
    * `Input Changed` metrics events: when the network management feature flag is
