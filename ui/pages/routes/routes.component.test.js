@@ -5,7 +5,7 @@ import {
   matchRoutes,
   RouterProvider,
 } from 'react-router-dom';
-import { render as rtlRender, screen } from '@testing-library/react';
+import { render as rtlRender, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -21,10 +21,12 @@ import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../../../shared/lib/deep-links/common';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
+import { BuyDeepLinkEntry } from '../ramps/buy-deeplink-entry/buy-deeplink-entry';
 import Routes, {
   routeConfig,
   TokenManagementFeatureRoute,
@@ -262,6 +264,49 @@ describe('Routes Component', () => {
     ]);
     expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
     expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
+  });
+
+  it('keeps the buy deep-link entry route outside the basic functionality guard', () => {
+    const matches = matchRoutes(routeConfig, RAMPS_BUY_DEEP_LINK_ENTRY_PATH);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+  });
+
+  it('opens Portfolio with the deep link params when the ramps flag is off', async () => {
+    const openTab = jest.fn().mockResolvedValue(undefined);
+    const originalOpenTab = global.platform.openTab;
+    global.platform.openTab = openTab;
+
+    const path = `${RAMPS_BUY_DEEP_LINK_ENTRY_PATH}?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1`;
+    const store = configureMockStore(middlewares)({
+      ...mockSendState,
+      metamask: {
+        ...mockSendState.metamask,
+        useExternalServices: false,
+        remoteFeatureFlags: {
+          ...mockSendState.metamask.remoteFeatureFlags,
+          rampsEnabled: false,
+        },
+      },
+    });
+
+    try {
+      renderWithProvider(<BuyDeepLinkEntry />, store, path);
+
+      await waitFor(
+        () =>
+          expect(openTab).toHaveBeenCalledWith({
+            url: 'https://app.metamask.io/buy?address=0x6b175474e89094c44da98b954eedeac495271d0f&chainId=1',
+          }),
+        { timeout: 10000 },
+      );
+    } finally {
+      global.platform.openTab = originalOpenTab;
+    }
   });
 
   describe('render during send flow', () => {
