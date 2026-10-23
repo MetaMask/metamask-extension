@@ -4,15 +4,20 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { createDeferredPromise } from '@metamask/utils';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
+import { UnlockMeasurementContext } from '../unlock-performance';
 import { UnlockPasskeySection } from './unlock-passkey-section';
 
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
+
+const measurement = { reportReady: jest.fn(), discard: jest.fn() };
 
 jest.mock('../../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
@@ -99,6 +104,7 @@ function setMockPasskeyRecord(passkeyRecord: unknown) {
 describe('UnlockPasskeySection', () => {
   const baseProps = {
     logoSection: <div data-testid="logo-mock" />,
+    isUnlockReady: true,
     isPasskeyActive: true,
     passkeyAutoUnlockSuppressed: true,
     mustDeferPasskeyToBrowserTab: false,
@@ -338,6 +344,39 @@ describe('UnlockPasskeySection', () => {
         clientExtensionResults: {},
       });
       await Promise.resolve();
+    });
+  });
+
+  describe('useful screen readiness', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('waits for the troubleshooting modal to close after authentication finishes', async () => {
+      getEnvironmentTypeMock.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      const unlock = createDeferredPromise<void>();
+      mockUnlockWithPasskey.mockReturnValueOnce(unlock.promise);
+      const { getByTestId, getByRole } = renderWithProvider(
+        <UnlockMeasurementContext.Provider value={measurement}>
+          <UnlockPasskeySection {...baseProps} />
+        </UnlockMeasurementContext.Provider>,
+        mockStore,
+        '/unlock',
+      );
+      fireEvent.click(getByTestId('unlock-passkey-button'));
+      fireEvent.click(getByTestId('unlock-passkey-troubleshoot-button'));
+      await act(async () => unlock.resolve());
+
+      act(() => jest.advanceTimersByTime(48));
+      expect(measurement.reportReady).not.toHaveBeenCalled();
+
+      fireEvent.click(getByRole('button', { name: messages.close.message }));
+      act(() => jest.advanceTimersByTime(48));
+      expect(measurement.reportReady).toHaveBeenCalledTimes(1);
     });
   });
 

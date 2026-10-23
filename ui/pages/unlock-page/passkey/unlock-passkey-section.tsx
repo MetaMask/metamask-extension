@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -44,6 +45,8 @@ import {
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
+import { useAfterPaint } from '../../../hooks/useAfterPaint';
+import { UnlockMeasurementContext } from '../unlock-performance';
 
 export type PasskeyUnlockSuccessContext = {
   /**
@@ -55,6 +58,7 @@ export type PasskeyUnlockSuccessContext = {
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
+  isUnlockReady: boolean;
   isPasskeyActive: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
@@ -65,6 +69,7 @@ export type UnlockPasskeySectionProps = {
 
 export const UnlockPasskeySection = ({
   logoSection,
+  isUnlockReady,
   isPasskeyActive,
   passkeyAutoUnlockSuppressed,
   mustDeferPasskeyToBrowserTab,
@@ -79,10 +84,16 @@ export const UnlockPasskeySection = ({
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const isPasskeyMigrationEligible = useSelector(getIsPasskeyUserHandleBased);
   const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
+  const measurement = useContext(UnlockMeasurementContext);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
   const [showTroubleshootModal, setShowTroubleshootModal] = useState(false);
+
+  useAfterPaint(
+    isUnlockReady && !passkeyInProgress && !showTroubleshootModal,
+    measurement?.reportReady,
+  );
 
   const [mountAutoUnlockEligible] = useState(
     () =>
@@ -109,6 +120,12 @@ export const UnlockPasskeySection = ({
       }
       if (!isPasskeyActive) {
         return;
+      }
+
+      // Automatic authentication never offers an idle form before user input.
+      // Exclude the whole document, including cancellation/password fallback.
+      if (isAutoPrompt) {
+        measurement?.discard();
       }
 
       if (isMountedRef.current) {
@@ -222,6 +239,7 @@ export const UnlockPasskeySection = ({
       isPasswordInProgress,
       passkeyInProgress,
       isPasskeyActive,
+      measurement,
       onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,
