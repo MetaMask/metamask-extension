@@ -28,10 +28,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
-import {
-  AccountListDialog,
-  accountListDialogId,
-} from './account-list-dialog';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
@@ -51,6 +47,7 @@ import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
 import { useDispatch } from '../../../store/hooks';
 import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
+import { AccountListDialog, accountListDialogId } from './account-list-dialog';
 
 type AppHeaderUnlockedContentProps = {
   menuRef: React.RefObject<HTMLButtonElement>;

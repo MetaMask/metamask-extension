@@ -17,17 +17,17 @@ type AccountDialogScreen =
 const listScreen: AccountDialogScreen = { name: 'list' };
 
 type DialogScreens = {
-  AccountList: ComponentType<{
+  accountList: ComponentType<{
     onClose?: () => void;
     onShowDetails?: (accountGroupId: AccountGroupId) => void;
     onShowAddresses?: (accountGroupId: AccountGroupId) => void;
   }>;
-  MultichainAccountDetailsPage: ComponentType<{
+  multichainAccountDetailsPage: ComponentType<{
     accountGroupId?: AccountGroupId;
     onBack?: () => void;
     onShowAddresses?: (accountGroupId: AccountGroupId) => void;
   }>;
-  MultichainAccountAddressListPage: ComponentType<{
+  multichainAccountAddressListPage: ComponentType<{
     accountGroupId?: AccountGroupId;
     onBack?: () => void;
   }>;
@@ -69,21 +69,17 @@ export function AccountListDialog({
     let cancelled = false;
     Promise.all([
       import('../../../pages/multichain-accounts/account-list'),
-      import(
-        '../../../pages/multichain-accounts/multichain-account-details-page'
-      ),
-      import(
-        '../../../pages/multichain-accounts/multichain-account-address-list-page'
-      ),
+      import('../../../pages/multichain-accounts/multichain-account-details-page'),
+      import('../../../pages/multichain-accounts/multichain-account-address-list-page'),
     ]).then(([accountListModule, detailsModule, addressModule]) => {
       if (cancelled) {
         return;
       }
       setScreens({
-        AccountList: accountListModule.AccountList,
-        MultichainAccountDetailsPage:
+        accountList: accountListModule.AccountList,
+        multichainAccountDetailsPage:
           detailsModule.MultichainAccountDetailsPage,
-        MultichainAccountAddressListPage:
+        multichainAccountAddressListPage:
           addressModule.MultichainAccountAddressListPage,
       });
     });
@@ -113,9 +109,9 @@ export function AccountListDialog({
     setStack((current) => [...current, { name: 'addresses', accountGroupId }]);
   }, []);
 
-  const AccountListScreen = screens?.AccountList;
-  const DetailsScreen = screens?.MultichainAccountDetailsPage;
-  const AddressesScreen = screens?.MultichainAccountAddressListPage;
+  const AccountListScreen = screens?.accountList;
+  const DetailsScreen = screens?.multichainAccountDetailsPage;
+  const AddressesScreen = screens?.multichainAccountAddressListPage;
 
   return (
     <dialog
@@ -138,10 +134,7 @@ export function AccountListDialog({
         />
       ) : null}
       {isOpen && screen.name === 'addresses' && AddressesScreen ? (
-        <AddressesScreen
-          accountGroupId={screen.accountGroupId}
-          onBack={pop}
-        />
+        <AddressesScreen accountGroupId={screen.accountGroupId} onBack={pop} />
       ) : null}
     </dialog>
   );
