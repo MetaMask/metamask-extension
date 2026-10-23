@@ -1,0 +1,159 @@
+import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { MarketingMoment } from './marketing-moment';
+
+const ArtworkPlaceholder = ({ label }: { label: string }) => (
+  <Box
+    flexDirection={BoxFlexDirection.Column}
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Center}
+    gap={2}
+    className="size-full max-h-60 min-h-40 rounded-lg border border-muted bg-muted"
+  >
+    <Icon
+      name={IconName.Image}
+      size={IconSize.Xl}
+      color={IconColor.IconMuted}
+    />
+    <Text
+      variant={TextVariant.BodySm}
+      color={TextColor.TextMuted}
+      textAlign={TextAlign.Center}
+    >
+      {label}
+    </Text>
+  </Box>
+);
+
+const meta: Meta<typeof MarketingMoment> = {
+  title: 'Components/UI/MarketingMoment',
+  component: MarketingMoment,
+};
+
+export default meta;
+type Story = StoryObj<typeof MarketingMoment>;
+
+export const Actions: Story = {
+  render: () => (
+    <MarketingMoment
+      title="Perps are here"
+      description="Trade with leverage. The title uses Grotzec in supported languages."
+      primaryAction={{ label: 'Get started' }}
+      secondaryAction={{ label: 'Not now' }}
+    />
+  ),
+};
+
+export const Artwork: Story = {
+  render: () => (
+    <MarketingMoment
+      title="Perps are here"
+      description="Artwork sits in the flexible area between the copy and the buttons."
+      artwork={<ArtworkPlaceholder label="Artwork" />}
+      primaryAction={{ label: 'Get started' }}
+      secondaryAction={{ label: 'Not now' }}
+    />
+  ),
+};
+
+export const Background: Story = {
+  render: () => (
+    <MarketingMoment
+      background={<Box className="size-full bg-accent02-dark" />}
+      title="Spend and earn"
+      description="A full-bleed background sits behind the copy and actions."
+      titleProps={{ className: 'text-accent02-light' }}
+      descriptionProps={{ className: 'text-accent02-light' }}
+      primaryAction={{ label: 'Get started' }}
+      secondaryAction={{ label: 'Not now' }}
+    />
+  ),
+};
+
+export const WalletReady: Story = {
+  name: 'Wallet ready extension template',
+  render: () => (
+    <MarketingMoment
+      title="Your wallet is ready!"
+      artwork={<ArtworkPlaceholder label="Wallet ready artwork" />}
+      primaryAction={{ label: 'Open wallet' }}
+      secondaryAction={{ label: 'Manage default settings' }}
+    />
+  ),
+};
+
+export const TransactionShield: Story = {
+  name: 'Transaction Shield extension template',
+  render: () => (
+    <MarketingMoment
+      background={<Box className="size-full bg-accent03-dark" />}
+      title="Introducing Transaction Shield"
+      description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
+      titleProps={{ className: 'text-accent04-light' }}
+      descriptionProps={{ className: 'text-accent04-light' }}
+      artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
+      primaryAction={{ label: 'Start 14-day free trial' }}
+      secondaryAction={{ label: 'Learn more' }}
+    />
+  ),
+};
+
+export const Stablecoins: Story = {
+  name: 'Stablecoins extension template',
+  render: () => (
+    <MarketingMoment
+      title="Get 3% on stablecoins"
+      description="Convert your stablecoins to mUSD and earn up to a 3% annualized bonus that you can claim daily. Terms apply."
+      artwork={<ArtworkPlaceholder label="mUSD coin artwork" />}
+      primaryAction={{ label: 'Get started' }}
+      secondaryAction={{ label: 'Not now' }}
+    />
+  ),
+};
+
+export const ExtensionTemplates: Story = {
+  name: 'Extension templates',
+  render: () => (
+    <Box className="flex flex-wrap gap-4">
+      <MarketingMoment
+        title="Your wallet is ready!"
+        artwork={<ArtworkPlaceholder label="Wallet ready artwork" />}
+        primaryAction={{ label: 'Open wallet' }}
+        secondaryAction={{ label: 'Manage default settings' }}
+      />
+
+      <MarketingMoment
+        background={<Box className="size-full bg-accent03-dark" />}
+        title="Introducing Transaction Shield"
+        description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
+        titleProps={{ className: 'text-accent04-light' }}
+        descriptionProps={{ className: 'text-accent04-light' }}
+        artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
+        primaryAction={{ label: 'Start 14-day free trial' }}
+        secondaryAction={{ label: 'Learn more' }}
+      />
+
+      <MarketingMoment
+        title="Get 3% on stablecoins"
+        description="Convert your stablecoins to mUSD and earn up to a 3% annualized bonus that you can claim daily. Terms apply."
+        artwork={<ArtworkPlaceholder label="mUSD coin artwork" />}
+        primaryAction={{ label: 'Get started' }}
+        secondaryAction={{ label: 'Not now' }}
+      />
+    </Box>
+  ),
+};

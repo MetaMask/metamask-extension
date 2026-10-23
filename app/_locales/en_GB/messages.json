@@ -6468,7 +6468,7 @@
     "message": "Get started"
   },
   "musdEducationHeadline": {
-    "message": "GET $1% ON\nSTABLECOINS",
+    "message": "Get $1% on\nstablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {

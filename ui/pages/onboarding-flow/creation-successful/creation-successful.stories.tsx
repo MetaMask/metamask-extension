@@ -7,7 +7,7 @@ export default {
 
 export const DefaultStory = () => {
   return (
-    <div style={{ maxHeight: '2000px' }}>
+    <div style={{ height: '640px', width: '360px' }}>
       <CreationSuccessful />
     </div>
   );
