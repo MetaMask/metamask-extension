@@ -21,7 +21,13 @@ import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permis
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { useUsefulScreenReady } from '../../../../../hooks/useUsefulScreenReady';
 import Info from './info';
+
+jest.mock('../../../../../hooks/useUsefulScreenReady', () => ({
+  ...jest.requireActual('../../../../../hooks/useUsefulScreenReady'),
+  useUsefulScreenReady: jest.fn(),
+}));
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -183,6 +189,10 @@ describe('Info', () => {
     const state = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(useUsefulScreenReady).toHaveBeenLastCalledWith(
+      'confirmation',
+      false,
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -230,6 +240,7 @@ describe('Info', () => {
     const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(useUsefulScreenReady).toHaveBeenLastCalledWith('confirmation', true);
     expect(container).toMatchSnapshot();
   });
 
@@ -307,6 +318,10 @@ describe('Info', () => {
       const mockStore = configureMockStore([])(state);
       renderWithConfirmContextProvider(<Info />, mockStore);
 
+      expect(useUsefulScreenReady).toHaveBeenLastCalledWith(
+        'confirmation',
+        false,
+      );
       expect(
         screen.getByTestId('confirmation__info_skeleton'),
       ).toBeInTheDocument();
