@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "지원되는 네트워크에서 빠른 트랜잭션, 낮은 네트워크 수수료, 강화된 보안과 같은 혜택을 누려보세요."
   },
-  "enableSnap": {
-    "message": "활성화"
-  },
   "enableToken": {
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"

@@ -3940,9 +3940,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Unlock faster transactions, lower network fees, and added security on supported networks."
   },
-  "enableSnap": {
-    "message": "Enable"
-  },
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
