@@ -107,10 +107,8 @@
     "checkAndUpdateAllNftsOwnershipStatus",
     "checkAndUpdateSingleNftOwnershipStatus",
     "checkDelegationDisabled",
-    "createCancelTransaction",
     "createNewVaultAndGetSeedPhrase",
     "createNewVaultAndKeychain",
-    "createSpeedUpTransaction",
     "currencyRateStartPolling",
     "currencyRateStopPollingByPollingToken",
     "deFiStartPolling",
@@ -168,7 +166,6 @@
     "trackMetaMetricsPage",
     "unlockAndGetSeedPhrase",
     "updateEventFragment",
-    "updateTransaction",
     "updateViewedNotifications"
   ]
 }
