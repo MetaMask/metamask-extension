@@ -219,6 +219,16 @@ export function shouldShowPerpsOrderSubmissionToasts(
   return !hasPendingPerpsDeposit;
 }
 
+function createPerpsBackgroundError(
+  result: PerpsBackgroundResult,
+  fallbackMessage: string,
+): Error {
+  const error = new Error(result.error ?? fallbackMessage);
+  return result.errorCode
+    ? Object.assign(error, { code: result.errorCode })
+    : error;
+}
+
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
  *
@@ -2038,7 +2048,7 @@ const PerpsOrderEntryPage = () => {
         );
         if (!result.success) {
           surfaceControllerFailure(
-            new Error(result.error ?? 'Failed to close position'),
+            createPerpsBackgroundError(result, 'Failed to close position'),
           );
           return;
         }
@@ -2093,13 +2103,13 @@ const PerpsOrderEntryPage = () => {
               ? { description: tradeActionToastDescription }
               : {}),
           });
-          const result = await submitRequestToBackground<{
-            success: boolean;
-            error?: string;
-          }>('perpsPlaceOrder', [orderParams]);
+          const result = await submitRequestToBackground<PerpsBackgroundResult>(
+            'perpsPlaceOrder',
+            [orderParams],
+          );
           if (!result.success) {
             surfaceControllerFailure(
-              new Error(result.error ?? 'Failed to add to position'),
+              createPerpsBackgroundError(result, 'Failed to add to position'),
             );
             return;
           }
@@ -2152,7 +2162,7 @@ const PerpsOrderEntryPage = () => {
         );
         if (!result.success) {
           surfaceControllerFailure(
-            new Error(result.error ?? 'Failed to update TP/SL'),
+            createPerpsBackgroundError(result, 'Failed to update TP/SL'),
           );
           return;
         }
@@ -2224,7 +2234,7 @@ const PerpsOrderEntryPage = () => {
       );
       if (!result.success) {
         surfaceControllerFailure(
-          new Error(result.error ?? 'Failed to place order'),
+          createPerpsBackgroundError(result, 'Failed to place order'),
         );
         return;
       }
@@ -2287,7 +2297,7 @@ const PerpsOrderEntryPage = () => {
           const tpslMessage =
             tpslResult.error || 'Failed to attach TP/SL to position';
           const translatedTpslError = translatePerpsError(
-            new Error(tpslMessage),
+            createPerpsBackgroundError(tpslResult, tpslMessage),
             t as (key: string) => string,
           );
           replacePerpsToastByKey({
