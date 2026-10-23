@@ -29,6 +29,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock('../../hooks/useInAppBack', () => ({
+  useInAppBack: () => () => mockNavigate(-1),
+}));
+
 jest.mock('../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../shared/lib/environment-type'),
   getEnvironmentType: () => mockGetEnvironmentType(),
@@ -148,7 +152,7 @@ describe('Settings', () => {
       });
     });
 
-    it('navigates to home with the global menu drawer open when back is clicked at settings root', async () => {
+    it('navigates back when back is clicked at settings root', async () => {
       renderSettings(mockStore);
 
       const backButton = await screen.findByTestId('page-header-back-button');
@@ -156,13 +160,11 @@ describe('Settings', () => {
       fireEvent.click(backButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith(
-          `${DEFAULT_ROUTE}?drawerOpen=true`,
-        );
+        expect(mockNavigate).toHaveBeenCalledWith(-1);
       });
     });
 
-    it('navigates to home with the drawer open when back is clicked at settings root regardless of settings URL query', async () => {
+    it('navigates back when back is clicked at settings root regardless of settings URL query', async () => {
       mockPathname = `${SETTINGS_ROUTE}?drawerOpen=true`;
       renderSettings(mockStore);
 
@@ -171,9 +173,7 @@ describe('Settings', () => {
       fireEvent.click(backButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith(
-          `${DEFAULT_ROUTE}?drawerOpen=true`,
-        );
+        expect(mockNavigate).toHaveBeenCalledWith(-1);
       });
     });
 
@@ -186,9 +186,7 @@ describe('Settings', () => {
       fireEvent.click(backButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith(
-          PREFERENCES_AND_DISPLAY_ROUTE,
-        );
+        expect(mockNavigate).toHaveBeenCalledWith(-1);
       });
     });
 
@@ -201,7 +199,7 @@ describe('Settings', () => {
       fireEvent.click(backButton);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith(NOTIFICATIONS_SETTINGS_ROUTE);
+        expect(mockNavigate).toHaveBeenCalledWith(-1);
       });
     });
   });
