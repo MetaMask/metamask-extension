@@ -18,7 +18,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@trigger-ci-check-latest
         with:
           is-high-risk-environment: true
           persist-credentials: false

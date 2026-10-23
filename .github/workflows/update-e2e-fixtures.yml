@@ -112,7 +112,7 @@ jobs:
           PR_HEAD_SHA: ${{ steps.pr.outputs.COMMIT_SHA }}
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@trigger-ci-check-latest
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -146,7 +146,7 @@ jobs:
           ref: ${{ needs.prepare.outputs.BRANCH }}
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@trigger-ci-check-latest
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true

@@ -81,7 +81,7 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
+        uses: MetaMask/action-checkout-and-setup@trigger-ci-check-latest
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
