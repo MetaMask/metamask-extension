@@ -44,6 +44,7 @@ const eligibleState: WalletState = {
 
 function setup(initialState: WalletState = eligibleState) {
   let state = { ...initialState };
+  let decisionError: Error | undefined;
 
   const rootMessenger: RootMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
@@ -70,22 +71,26 @@ function setup(initialState: WalletState = eligibleState) {
           : undefined,
       }) as never,
   );
-  rootMessenger.registerActionHandler(
-    'KeyringController:getState',
-    () =>
-      ({
-        isUnlocked: state.isUnlocked,
-        keyrings: state.isUnlocked
-          ? [
-              {
-                type: KeyringTypes.hd,
-                accounts: [],
-                metadata: { id: 'primary' },
-              },
-            ]
-          : [],
-      }) as never,
-  );
+  rootMessenger.registerActionHandler('KeyringController:getState', () => {
+    if (decisionError) {
+      const error = decisionError;
+      decisionError = undefined;
+      throw error;
+    }
+
+    return {
+      isUnlocked: state.isUnlocked,
+      keyrings: state.isUnlocked
+        ? [
+            {
+              type: KeyringTypes.hd,
+              accounts: [],
+              metadata: { id: 'primary' },
+            },
+          ]
+        : [],
+    } as never;
+  });
 
   const messenger: BrazeServiceMessenger = new Messenger({
     namespace: 'BrazeService',
@@ -125,7 +130,11 @@ function setup(initialState: WalletState = eligibleState) {
     await flush();
   };
 
-  return { service, sendToOffscreen, update };
+  const failNextDecision = (error: Error) => {
+    decisionError = error;
+  };
+
+  return { service, sendToOffscreen, update, failNextDecision };
 }
 
 const syncMessage = (profileId: string | null) => ({
@@ -264,6 +273,25 @@ describe('BrazeService', () => {
       new Error('Braze user sync failed: SDK unavailable'),
     );
     expect(sendToOffscreen).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps syncing after a failed decision', async () => {
+    const { sendToOffscreen, update, failNextDecision } = setup({
+      ...eligibleState,
+      isUnlocked: false,
+    });
+    await flush();
+    const error = new Error('state unavailable');
+
+    failNextDecision(error);
+    await update({ isUnlocked: true });
+
+    expect(captureException).toHaveBeenCalledWith(error);
+    expect(sendToOffscreen).not.toHaveBeenCalled();
+
+    await update({});
+
+    expect(sendToOffscreen).toHaveBeenCalledWith(syncMessage('canonical-123'));
   });
 
   it('reports a missing offscreen document', async () => {

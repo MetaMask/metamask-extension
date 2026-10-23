@@ -108,6 +108,7 @@ export function createBrazeHost({
       throw error;
     });
     const sdk = await sdkPromise;
+
     if (
       latestProfileId === null &&
       !sdk.isInitialized() &&
@@ -122,29 +123,45 @@ export function createBrazeHost({
 /**
  * Whether a message was sent by this extension's service worker.
  *
+ * Offscreen documents only expose part of `chrome.runtime` (no `getManifest`,
+ * for example), so the sender is identified by its fields: the service worker
+ * has no tab and no document, while extension pages have a `documentId` and
+ * tabs also have `tab`.
+ *
  * @param sender - The message sender.
  * @returns True for the background service worker.
  */
 function isFromServiceWorker(sender: chrome.runtime.MessageSender): boolean {
-  const { background } =
-    chrome.runtime.getManifest() as chrome.runtime.ManifestV3;
   return (
     sender.id === chrome.runtime.id &&
-    sender.tab === undefined &&
-    Boolean(background?.service_worker) &&
-    sender.url === chrome.runtime.getURL(background?.service_worker ?? '')
+    sender.documentId === undefined &&
+    sender.tab === undefined
   );
 }
 
 /**
  * Listen for Braze user updates from the background. Does nothing in builds
  * without Braze configuration.
+ *
+ * Never throws, so a Braze failure cannot prevent the rest of the offscreen
+ * document (hardware wallets, Snaps) from initializing.
  */
 export default function initBraze(): void {
   if (!isBrazeConfigured()) {
     return;
   }
 
+  try {
+    registerBrazeHost();
+  } catch (error) {
+    console.error('Braze initialization failed:', error);
+  }
+}
+
+/**
+ * Register the offscreen listener that applies Braze user updates.
+ */
+function registerBrazeHost(): void {
   const syncBrazeUser = createBrazeHost();
 
   chrome.runtime.onMessage.addListener(

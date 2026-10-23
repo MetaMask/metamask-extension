@@ -42,11 +42,16 @@ document. MV2 (Firefox) builds do not include Braze.
 - Builds without `BRAZE_WEB_API_KEY` and `BRAZE_SDK_ENDPOINT`, and test builds,
   register neither the service nor the offscreen listener.
 
+Offscreen documents only expose part of `chrome.runtime` (for example,
+`getManifest` is not available), so the host identifies the background by the
+message sender's fields rather than by the manifest.
+
 ## LavaMoat policy
 
-`lavamoat/webpack/*/*/policy-override.json` denies capabilities Braze does not
-need for identity: push and Safari notifications, the real-time `EventSource`,
-Braze-hosted UI helpers, `open`, and action decoding. `crypto` is narrowed to
-`getRandomValues` and `location` to `location.href`. `localStorage` stays
-granted so the identity survives offscreen document restarts. `indexedDB` is
-not granted.
+Braze is only bundled in MV3 builds, so only `lavamoat/webpack/mv3/*/policy.json`
+and `policy-override.json` reference it. The overrides deny capabilities Braze
+does not need for identity: push and Safari notifications, the real-time
+`EventSource`, Braze-hosted UI helpers, `open`, and action decoding. `crypto` is
+narrowed to `getRandomValues` and `location` to `location.href`. `localStorage`
+stays granted so the identity survives offscreen document restarts.
+`indexedDB` is not granted.

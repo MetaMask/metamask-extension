@@ -150,14 +150,16 @@ export class BrazeService {
   }
 
   #sync(): void {
+    // The queue must never reject, otherwise later state changes would be
+    // dropped.
     this.#queue = this.#queue.then(async () => {
-      const desiredUser = this.#getDesiredUser();
-      if (desiredUser === undefined || desiredUser === this.#lastSentUser) {
-        return;
-      }
-      this.#lastSentUser = desiredUser;
-
       try {
+        const desiredUser = this.#getDesiredUser();
+        if (desiredUser === undefined || desiredUser === this.#lastSentUser) {
+          return;
+        }
+        this.#lastSentUser = desiredUser;
+
         await this.#offscreenReady;
         const response = await this.#sendToOffscreen({
           target: OffscreenCommunicationTarget.brazeOffscreen,

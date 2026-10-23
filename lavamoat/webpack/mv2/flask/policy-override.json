@@ -1,25 +1,5 @@
 {
   "resources": {
-    "@braze/web-sdk": {
-      "globals": {
-        "EventSource": false,
-        "Notification": false,
-        "ServiceWorkerRegistration": false,
-        "atob": false,
-        "btoa": false,
-        "crypto": false,
-        "crypto.getRandomValues": true,
-        "innerHeight": false,
-        "innerWidth": false,
-        "location": false,
-        "location.href": true,
-        "open": false,
-        "orientation": false,
-        "safari": false,
-        "screen.mozOrientation": false,
-        "screen.msOrientation": false
-      }
-    },
     "@ethersproject/wallet>@ethersproject/random": {
       "globals": {
         "crypto": true
