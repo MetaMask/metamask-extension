@@ -182,16 +182,20 @@ describe('Actions', () => {
         .stub()
         .resolves(mockSerializedSeedPhrase);
 
-      const messengerCallStub = sinon
-        .stub()
+      const messengerCallStub = sinon.stub();
+      messengerCallStub
         .withArgs(
           'LegacyBackgroundApiService:createSeedPhraseBackup',
           sinon.match.array,
         )
         .resolves();
       background.messengerCall = messengerCallStub;
+      messengerCallStub
+        .withArgs('LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase', [
+          'password',
+        ])
+        .callsFake(createNewVaultAndGetSeedPhraseStub);
       Object.assign(background, {
-        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -201,7 +205,7 @@ describe('Actions', () => {
 
       expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
       expect(
-        messengerCallStub.calledOnceWithExactly(
+        messengerCallStub.calledWithExactly(
           'LegacyBackgroundApiService:createSeedPhraseBackup',
           ['password', mockSerializedSeedPhrase.data, mockUlid],
         ),
@@ -600,7 +604,7 @@ describe('Actions', () => {
         .stub()
         .resolves(mockSerializedSeedPhrase);
       setBackgroundConnection({
-        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
+        messengerCall: createNewVaultAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -609,7 +613,10 @@ describe('Actions', () => {
       );
 
       expect(
-        createNewVaultAndGetSeedPhraseStub.calledOnceWith('password'),
+        createNewVaultAndGetSeedPhraseStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
+          ['password'],
+        ),
       ).toBe(true);
       expect(seedPhrase).toStrictEqual(mockSeedPhrase);
     });
@@ -630,7 +637,7 @@ describe('Actions', () => {
         .stub()
         .resolves(mockSerializedSeedPhrase);
       setBackgroundConnection({
-        unlockAndGetSeedPhrase: unlockAndGetSeedPhraseStub,
+        messengerCall: unlockAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -638,7 +645,12 @@ describe('Actions', () => {
         actions.unlockAndGetSeedPhrase('password'),
       );
 
-      expect(unlockAndGetSeedPhraseStub.calledOnceWith('password')).toBe(true);
+      expect(
+        unlockAndGetSeedPhraseStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
+          ['password'],
+        ),
+      ).toBe(true);
       expect(seedPhrase).toStrictEqual(mockSeedPhrase);
     });
   });
@@ -731,19 +743,29 @@ describe('Actions', () => {
       const getSeedPhraseStub = sinon
         .stub()
         .resolves(toSerializedSeedPhraseBuffer('test'));
+      messengerCallStub
+        .withArgs('LegacyBackgroundApiService:getSeedPhrase', [
+          undefined,
+          undefined,
+        ])
+        .callsFake(getSeedPhraseStub);
       setBackgroundConnection({
         messengerCall: messengerCallStub,
-        getSeedPhrase: getSeedPhraseStub,
       });
 
       await store.dispatch(actions.requestRevealSeedWords());
       expect(
-        messengerCallStub.calledOnceWithExactly(
+        messengerCallStub.calledWithExactly(
           'KeyringController:verifyPassword',
           [undefined],
         ),
       ).toBe(true);
-      expect(getSeedPhraseStub.calledOnceWith()).toBe(true);
+      expect(
+        getSeedPhraseStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:getSeedPhrase',
+          [undefined, undefined],
+        ),
+      ).toBe(true);
     });
 
     it('hides loading indicator and rethrows when callback in background errors', async () => {
@@ -754,9 +776,14 @@ describe('Actions', () => {
         .withArgs('KeyringController:verifyPassword', sinon.match.array)
         .resolves();
       const getSeedPhraseStub = sinon.stub().rejects(new Error('error'));
+      messengerCallStub
+        .withArgs('LegacyBackgroundApiService:getSeedPhrase', [
+          undefined,
+          undefined,
+        ])
+        .callsFake(getSeedPhraseStub);
       setBackgroundConnection({
         messengerCall: messengerCallStub,
-        getSeedPhrase: getSeedPhraseStub,
       });
 
       const expectedActions = [

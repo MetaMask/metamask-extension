@@ -452,9 +452,9 @@ export function decodeSeedPhraseFromBackground(
 }
 
 type SeedPhraseBackgroundMethod =
-  | 'createNewVaultAndGetSeedPhrase'
-  | 'unlockAndGetSeedPhrase'
-  | 'getSeedPhrase';
+  | 'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase'
+  | 'LegacyBackgroundApiService:unlockAndGetSeedPhrase'
+  | 'LegacyBackgroundApiService:getSeedPhrase';
 
 /**
  * Fetches and decodes a seed phrase from a background RPC method.
@@ -465,13 +465,9 @@ type SeedPhraseBackgroundMethod =
  */
 async function fetchSeedPhraseFromBackground(
   method: SeedPhraseBackgroundMethod,
-  args: unknown[],
+  args: [password: string, keyringId?: string],
 ): Promise<string> {
-  const encodedSeedPhrase =
-    await submitRequestToBackground<SeedPhraseBytesFromBackground>(
-      method,
-      args,
-    );
+  const encodedSeedPhrase = await submitRequestToBackground(method, args);
   return decodeSeedPhraseFromBackground(encodedSeedPhrase);
 }
 
@@ -490,7 +486,7 @@ export function createNewVaultAndSyncWithSocial(
   ) => {
     try {
       const seedPhrase = await fetchSeedPhraseFromBackground(
-        'createNewVaultAndGetSeedPhrase',
+        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
         [password],
       );
 
@@ -1221,7 +1217,7 @@ export function createNewVaultAndGetSeedPhrase(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const seedPhrase = await fetchSeedPhraseFromBackground(
-        'createNewVaultAndGetSeedPhrase',
+        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
         [password],
       );
 
@@ -1245,7 +1241,7 @@ export function unlockAndGetSeedPhrase(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const seedPhrase = await fetchSeedPhraseFromBackground(
-        'unlockAndGetSeedPhrase',
+        'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
         [password],
       );
       await forceUpdateMetamaskState(dispatch);
@@ -1295,7 +1291,10 @@ export async function verifyPassword(password: string): Promise<boolean> {
 }
 
 export async function getSeedPhrase(password: string, keyringId?: string) {
-  return fetchSeedPhraseFromBackground('getSeedPhrase', [password, keyringId]);
+  return fetchSeedPhraseFromBackground(
+    'LegacyBackgroundApiService:getSeedPhrase',
+    [password, keyringId],
+  );
 }
 
 export function requestRevealSeedWords(
