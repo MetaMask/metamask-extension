@@ -16,6 +16,7 @@ import { isMethodSupported } from '../../../hooks/identity/mfa/engine/planner';
 import { removeMfaCredential } from '../../../hooks/identity/mfa/removeMfaCredential';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaEmailDetails from './mfa-email-details';
+import MfaTotpDetails from './mfa-totp-details';
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -65,9 +66,17 @@ const email: EnrolledCredential = {
 };
 const passkey: EnrolledCredential = { type: 'passkey', status: 'active' };
 
-const renderDetails = (enrolledCredentials: EnrolledCredential[]) =>
+const authenticatorApp: EnrolledCredential = {
+  type: 'totp',
+  status: 'active',
+};
+
+const renderDetails = (
+  enrolledCredentials: EnrolledCredential[],
+  page: React.ReactElement = <MfaEmailDetails />,
+) =>
   renderWithProvider(
-    <MfaEmailDetails />,
+    page,
     configureMockStore([thunk])({
       ...mockState,
       metamask: { ...mockState.metamask, enrolledCredentials },
@@ -209,5 +218,59 @@ describe('MfaEmailDetails', () => {
     expect(
       screen.getByTestId(MfaSettingsTestIds.REMOVE_BUTTON),
     ).toBeInTheDocument();
+  });
+});
+
+describe('MfaTotpDetails', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockStartMfaFlow.mockResolvedValue({ credentials: [], token });
+    mockRefresh.mockResolvedValue([]);
+    mockRemove.mockResolvedValue();
+    jest.mocked(isMethodSupported).mockReturnValue(true);
+  });
+
+  it('describes the authenticator app without an app name', () => {
+    renderDetails([authenticatorApp], <MfaTotpDetails />);
+
+    expect(
+      screen.getByTestId(MfaSettingsTestIds.TOTP_DETAILS),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.mfaMethodTotp.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.mfaSettingsUsedForMoney.message),
+    ).toBeInTheDocument();
+  });
+
+  it('refuses to remove the last method', () => {
+    renderDetails([authenticatorApp], <MfaTotpDetails />);
+
+    fireEvent.click(screen.getByTestId(MfaSettingsTestIds.REMOVE_BUTTON));
+
+    expect(
+      screen.getByText(messages.mfaSettingsLastTotpTitle.message),
+    ).toBeInTheDocument();
+  });
+
+  it('removes the authenticator app after verifying with email', async () => {
+    renderDetails([email, authenticatorApp], <MfaTotpDetails />);
+
+    await confirmRemoval();
+
+    expect(mockStartMfaFlow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: expect.objectContaining({ verifyWith: ['email_otp'] }),
+        reason: { operation: 'settings.removeAuthenticatorApp' },
+      }),
+    );
+    expect(mockRemove).toHaveBeenCalledWith(authenticatorApp, token);
+    expect(toast.success).toHaveBeenCalledWith(
+      messages.mfaSettingsTotpRemoved.message,
+    );
+    expect(mockNavigate).toHaveBeenCalledWith(MFA_SETTINGS_ROUTE, {
+      replace: true,
+    });
   });
 });

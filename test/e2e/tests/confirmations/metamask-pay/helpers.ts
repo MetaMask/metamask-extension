@@ -259,7 +259,6 @@ export function getMoneyAccountDepositConfig({
         },
       },
     ],
-    ethConversionInUsd: ETH_USD_PRICE,
     // The Money Account upgrade pipeline (CHOMP association, delegations,
     // intents) runs in the background and is not mocked here; its retries log
     // step errors that are unrelated to the deposit under test.
