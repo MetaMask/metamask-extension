@@ -2587,17 +2587,6 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
       ),
 
-      // TransactionController
-
-      createCancelTransaction: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'TransactionController:stopTransaction',
-      ),
-      createSpeedUpTransaction: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'TransactionController:speedUpTransaction',
-      ),
-
       // permissions
 
       approvePermissionsRequest: this.controllerMessenger.call.bind(
