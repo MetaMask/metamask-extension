@@ -169,6 +169,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   // Order execution
   [PERPS_ERROR_CODES.ORDER_REJECTED]: 'perpsOrderRejected',
   [PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED]: 'perpsSlippageExceeded',
+  [PERPS_ERROR_CODES.PRICE_MOVED]: 'perpsSlippageExceeded',
   [PERPS_ERROR_CODES.RATE_LIMIT_EXCEEDED]: 'perpsRateLimitExceeded',
 
   // Network / service
