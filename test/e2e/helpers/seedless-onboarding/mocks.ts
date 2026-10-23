@@ -598,6 +598,15 @@ export class OAuthMockttpService {
           return this.onPostMintToken(options);
         }),
       await server
+        .forPost(AuthServer.PairSocialIdentifier)
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: { profile: { paired_identifier_ids: [] } },
+          };
+        }),
+      await server
         .forGet(ProfileSyncServer.OAuthInitiate)
         .always()
         .thenCallback((request) => {

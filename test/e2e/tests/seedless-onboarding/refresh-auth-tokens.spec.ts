@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import { decode, JwtPayload } from 'jsonwebtoken';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -33,7 +34,7 @@ async function getMockedRequests(
 }
 
 describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
-  it('renews an expired social-login auth token during onboarding', async function () {
+  it('renews an expired social-login auth token and uses it in later requests', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
@@ -77,6 +78,31 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         assert.ok(
           grants.includes('refresh_token'),
           'Expected wallet initialization to refresh the expired auth token',
+        );
+
+        // The first request that sends the social token after the refresh is
+        // the social identifier pairing, which must carry the refreshed one.
+        const getPairingRequests = async () =>
+          (await getMockedRequests(driver, mockedEndpoints)).filter((request) =>
+            request.url.includes(AuthServer.PairSocialIdentifier),
+          );
+        await driver.wait(
+          async () => (await getPairingRequests()).length > 0,
+          driver.timeout,
+          true,
+        );
+        const [pairingRequest] = await getPairingRequests();
+        const pairingBody = (await pairingRequest.body.getJson()) as {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          social_jwt?: string;
+        };
+        assert.ok(
+          pairingBody.social_jwt,
+          'Expected pairing to send social_jwt',
+        );
+        assert.strictEqual(
+          (decode(pairingBody.social_jwt) as JwtPayload).mode,
+          'refreshed',
         );
       },
     );
