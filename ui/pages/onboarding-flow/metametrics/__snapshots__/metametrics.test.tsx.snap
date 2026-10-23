@@ -112,7 +112,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
           <p
             class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            Product updates
+            Marketing updates
           </p>
         </span>
       </label>
@@ -253,7 +253,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
           <p
             class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            Product updates
+            Marketing updates
           </p>
         </span>
       </label>

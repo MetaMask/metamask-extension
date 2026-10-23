@@ -108,6 +108,7 @@ jest.mock('@metamask/perps-controller', () => ({
     TPSL_PROTECTION_LOST: 'TPSL_PROTECTION_LOST',
     ORDER_REJECTED: 'ORDER_REJECTED',
     SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
+    PRICE_MOVED: 'PRICE_MOVED',
     RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
@@ -256,6 +257,12 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
 
   it('maps SLIPPAGE_EXCEEDED to perpsSlippageExceeded', () => {
     expect(ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED]).toBe(
+      'perpsSlippageExceeded',
+    );
+  });
+
+  it('maps PRICE_MOVED to perpsSlippageExceeded', () => {
+    expect(ERROR_CODE_TO_I18N_KEY[PERPS_ERROR_CODES.PRICE_MOVED]).toBe(
       'perpsSlippageExceeded',
     );
   });

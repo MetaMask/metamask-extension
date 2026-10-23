@@ -12,7 +12,10 @@ import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
 import { isMfaKitEnabled } from '../../../hooks/identity/mfa/isMfaKitEnabled';
-import { MFA_SETTINGS_EMAIL_ROUTE } from '../../../helpers/constants/routes';
+import {
+  MFA_SETTINGS_EMAIL_ROUTE,
+  MFA_SETTINGS_TOTP_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaSettings from './mfa-settings';
 
@@ -162,6 +165,8 @@ describe('MfaSettings', () => {
     'Require email, no verification',
     'Enroll email',
     'Email and passkey (no passkey adapter)',
+    'Enroll authenticator app',
+    'Verify with authenticator app',
   ])('runs the "%s" preset and shows what it resolved with', async (label) => {
     renderSettings();
 
@@ -207,5 +212,34 @@ describe('MfaSettings', () => {
     expect(screen.getByTestId(MfaSettingsTestIds.QA_RESULT)).toHaveTextContent(
       'Enroll email: Rejected with unknown',
     );
+  });
+
+  it('offers to add an authenticator app', async () => {
+    renderSettings();
+
+    expect(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW)).toHaveTextContent(
+      messages.mfaSettingsAdd.message,
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW));
+    });
+    expect(mockStartMfaFlow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: { kind: 'enroll', method: 'totp' },
+        reason: { operation: 'settings.addAuthenticatorApp' },
+      }),
+    );
+  });
+
+  it('opens an authenticator app that is set up', async () => {
+    renderSettings([{ type: 'totp', status: 'active' }]);
+
+    expect(
+      screen.getByTestId(MfaSettingsTestIds.TOTP_ROW),
+    ).not.toHaveTextContent(messages.mfaSettingsAdd.message);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW));
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(MFA_SETTINGS_TOTP_ROUTE);
   });
 });

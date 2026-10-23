@@ -108,7 +108,7 @@ export const generateDefaultFixtureState = async (
     password: WALLET_PASSWORD,
     consentDecisionMade: true,
     optedIn: false,
-    dataCollectionForMarketing: true,
+    dataCollectionForMarketing: false,
     needNavigateToNewPage: false,
   });
 
