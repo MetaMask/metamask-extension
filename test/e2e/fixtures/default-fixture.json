@@ -1118,7 +1118,7 @@
         "assetsEnableNotificationsByDefaultV2": "feature is ON",
         "backendWebSocketConnection": "feature is ON",
         "coreExtensionUxCeux1096AbtestReferralUi": "treatment",
-        "coreExtensionUxCeux1141AbtestBottomNav": "control",
+        "coreExtensionUxCeux1141AbtestBottomNav": "treatment",
         "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
         "perpsTAT3382AbtestTabBadge": "control",
         "platformSplitStateGradualRollout": "feature is ON",
