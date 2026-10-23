@@ -20,14 +20,15 @@ import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
-  type EnvironmentType,
+  
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
-  MESSAGE_TYPE,
+  MESSAGE_TYPE
 } from '../../shared/constants/app';
+import type {EnvironmentType} from '../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
@@ -672,9 +673,9 @@ async function initialize(backup: Backup | null) {
     getState: initializedController.getState.bind(initializedController),
   })
     .on('navigate', async ({ url, parsed }) => {
-      // Don't track deep links that end in an external redirect: the
-      // extension does not handle the resulting navigation. A `/buy` link
-      // with the unified buy flow on resolves in-app and counts as used.
+      // Don't track deep links that end in an external redirect: the extension
+      // does not handle the resulting navigation. Links routed into the extension
+      // — including `/buy` — count as used.
       if (shouldTrackDeepLinkNavigation(parsed)) {
         trackEvent(createEvent({ signature: parsed.signature, url }));
       }

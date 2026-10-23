@@ -1,7 +1,8 @@
 import log from 'loglevel';
 import { NavigationOrigin, parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
-import { type Route, routes } from './routes';
+import {  routes } from './routes';
+import type {Route} from './routes';
 import { SIG_PARAM } from './common';
 
 const mockVerify = verify as jest.MockedFunction<typeof verify>;
@@ -73,7 +74,7 @@ describe('parse', () => {
       },
       signature: VALID,
     });
-    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams(), undefined);
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
   });
 
   it('returns a parsed deep link object with signature=invalid if signature is invalid', async () => {
@@ -160,24 +161,6 @@ describe('parse', () => {
     expect(mockVerify).not.toHaveBeenCalled();
   });
 
-  it('passes getIsRampsEnabled through to the route handler', async () => {
-    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
-    mockHandler.mockReturnValue({
-      path: 'destination-value',
-      query: new URLSearchParams(),
-    });
-    mockVerify.mockResolvedValue(VALID);
-
-    const getIsRampsEnabled = () => true;
-    await parse(new URL('https://example.com/test'), {
-      getIsRampsEnabled,
-    });
-
-    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams(), {
-      getIsRampsEnabled,
-    });
-  });
-
   it("removes the SIG_PARAMS_PARAM from the handler's query parameters", async () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
     mockVerify.mockResolvedValue(VALID);
@@ -185,7 +168,7 @@ describe('parse', () => {
     const urlStr1 = 'https://example.com/test?sig=bar&sig_params=';
     await parse(new URL(urlStr1));
     // `sig_params` should be removed from the handler's searchParams
-    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams(), undefined);
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
 
     const urlStr2 =
       'https://example.com/test?sig=bar&sig_params=value&value=123';
@@ -194,14 +177,13 @@ describe('parse', () => {
     // should remain because it is listed in `sig_params`
     expect(mockHandler).toHaveBeenCalledWith(
       new URLSearchParams([['value', '123']]),
-      undefined,
     );
 
     const urlStr3 = 'https://example.com/test?sig=bar&sig_params=&value=123';
     await parse(new URL(urlStr3));
     // `sig_params` should be removed from the handler's searchParams, `value`
     // should also be removed because it is not in `sig_params`
-    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams(), undefined);
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
 
     const urlStr4 =
       'https://example.com/test?sig=bar&sig_params=value&value=123&foo=bar';
@@ -211,7 +193,6 @@ describe('parse', () => {
     // because it is not listed in `sig_params`
     expect(mockHandler).toHaveBeenCalledWith(
       new URLSearchParams([['value', '123']]),
-      undefined,
     );
   });
 });
