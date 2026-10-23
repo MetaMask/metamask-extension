@@ -19,7 +19,7 @@ import {
   trxReceiveTx,
   trxSendTx,
 } from '../../tron/mocks/tron-tx-fixtures';
-import { mockEvmActivityApi } from './utils/mock-evm-activity-api';
+import { mockEvmActivityApi } from '../utils/mock-evm-activity-api';
 
 const BASE_TIMESTAMP = Date.now();
 
