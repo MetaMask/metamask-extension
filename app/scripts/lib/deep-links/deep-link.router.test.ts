@@ -1,10 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
-import {
-  RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
-  SIG_PARAM,
-} from '../../../../shared/lib/deep-links/common';
+import { SIG_PARAM } from '../../../../shared/lib/deep-links/common';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
@@ -514,102 +511,6 @@ describe('DeepLinkRouter', () => {
 
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
-      });
-    });
-
-    describe('unified buy routing (rampsEnabled)', () => {
-      const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
-      const BUY_URL = 'https://example.com/buy?address=0xabc&chainId=1';
-
-      const arrangeState = (remoteFeatureFlags: Record<string, unknown>) => {
-        getState.mockReturnValue({
-          preferences: { skipDeepLinkInterstitial: true },
-          remoteFeatureFlags,
-        } as unknown as ReturnType<MetaMaskController['getState']>);
-      };
-
-      const arrangeRequest = (url: string = BUY_URL) =>
-        onBeforeRequest?.({
-          tabId: 1,
-          url,
-        } as browser.WebRequest.OnBeforeRequestDetailsType);
-
-      it('passes the ramps flag getter into parse so /buy resolves its destination there', async () => {
-        parseMock.mockResolvedValue({
-          signature: 'valid',
-          route: { pathname: '/buy' },
-          destination: {
-            redirectTo: new URL('https://example.com/internal-route'),
-          },
-        } as ParsedDeepLink);
-
-        await arrangeRequest();
-
-        expect(parseMock).toHaveBeenCalledWith(expect.any(URL), {
-          getIsRampsEnabled: expect.any(Function),
-        });
-      });
-
-      it('redirects a flag-resolved /buy destination to the in-app entry page', async () => {
-        arrangeState({ rampsEnabled: true });
-        parseMock.mockResolvedValue({
-          signature: 'valid',
-          route: { pathname: '/buy' },
-          destination: {
-            path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
-            query: new URLSearchParams({ address: '0xabc', chainId: '1' }),
-          },
-        } as ParsedDeepLink);
-
-        await arrangeRequest();
-
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: `${EXTENSION_HOME}#${RAMPS_BUY_DEEP_LINK_ENTRY_PATH}?address=0xabc&chainId=1`,
-        });
-      });
-
-      it('still shows the interstitial for unsigned /buy links from untrusted origins when rampsEnabled is on', async () => {
-        arrangeState({ rampsEnabled: true });
-        parseMock.mockResolvedValue({
-          signature: 'missing',
-          route: { pathname: '/buy' },
-          destination: {
-            redirectTo: new URL(
-              'https://app.metamask.io/buy?address=0xabc&chainId=1',
-            ),
-          },
-        } as ParsedDeepLink);
-
-        await arrangeRequest();
-
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: `${EXTENSION_HOME}#link?u=%2Fbuy%3Faddress%3D0xabc%26chainId%3D1`,
-        });
-      });
-
-      it('does not build controller state for links other than /buy', async () => {
-        // The listener is non-blocking on MV3, so work before `redirectTab`
-        // must stay minimal: reading the rollout flag builds the full
-        // controller state. The getter passed into `parse` must stay lazy and
-        // only ever be invoked by the `/buy` handler — never for other links.
-        // The link is unsigned so the interstitial decision never reads state
-        // either.
-        getState.mockClear();
-        parseMock.mockResolvedValue({
-          signature: 'missing',
-          route: { pathname: '/sell' },
-          destination: {
-            redirectTo: new URL('https://example.com/sell-route'),
-          },
-        } as ParsedDeepLink);
-
-        await arrangeRequest('https://example.com/sell');
-
-        expect(getState).not.toHaveBeenCalled();
-        // The unsigned link still lands on the interstitial page.
-        expect(browser.tabs.update).toHaveBeenCalledWith(1, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fsell',
-        });
       });
     });
 

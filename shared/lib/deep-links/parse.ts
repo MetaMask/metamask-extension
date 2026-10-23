@@ -9,8 +9,9 @@
 
 import log from 'loglevel';
 import { routes } from './routes';
-import type { Destination, Route, RouteHandlerContext } from './routes/route';
-import { verify, type SignatureStatus } from './verify';
+import type { Destination, Route } from './routes/route';
+import { verify  } from './verify';
+import type {SignatureStatus} from './verify';
 import { canonicalize } from './canonicalize';
 import { SIG_PARAMS_PARAM } from './common';
 
@@ -48,7 +49,7 @@ type ParsedDeepLinkWithoutSignature = Omit<
   'signature'
 >;
 
-type ParseOptions = RouteHandlerContext & {
+type ParseOptions = {
   /**
    * The origin of the deep link, either EXTERNAL or INTERNAL.
    * EXTERNAL is used for links originating from outside the application.
@@ -82,7 +83,7 @@ export async function parse<
     // canonicalize does not remove sig_params, as it is needed for verification
     // but we do not want to pass it to the route handler, so we remove it
     canonicalUrl.searchParams.delete(SIG_PARAMS_PARAM);
-    destination = route.handler(canonicalUrl.searchParams, options);
+    destination = route.handler(canonicalUrl.searchParams);
   } catch (error) {
     // tab may have closed in the meantime, the searchParams may have
     // been rejected by the handler, etc.
