@@ -6,10 +6,8 @@
  * the clearinghouse state the server would send once that trigger has filled (UI cannot
  * run the real price-crossing matcher in E2E). Each test then pushes a `userFills`
  * snapshot and opens Perps Activity to assert the close-long trade row.
- * When `pushPositionClosed` is called, it records the closed account immediately and
- * delays its websocket pushes for 3200 ms. This is because `PerpsStreamManager` ignores
- * incoming position WS pushes for 3000 ms after optimistic TP/SL (`WEBSOCKET_BLOCK_MS`),
- * while an account refresh during that window must already see the closed position.
+ * A short delay before `pushPositionClosed` is required: `PerpsStreamManager` ignores
+ * incoming position WS pushes for 3000 ms after optimistic TP/SL (`WEBSOCKET_BLOCK_MS`).
  *
  * PREREQUISITE: PERPS_ENABLED=true in the extension build (.metamaskrc).
  */
@@ -55,11 +53,14 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
 
         await marketDetailPage.checkAutoCloseRowContains('3,500');
 
+        // PerpsStreamManager drops incoming `positions` WS updates for WEBSOCKET_BLOCK_MS (3000)
+        // after optimistic TP/SL; wait so `pushPositionClosed` is not ignored.
+        await driver.delay(3200);
+
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
         );
-        pushPositionClosed(perpsServer, { deliverAfterMs: 3200 });
-        await driver.delay(3200);
+        pushPositionClosed(perpsServer);
 
         await marketDetailPage.waitForTradeCtaButtons();
 
@@ -105,11 +106,13 @@ describe('Perps Take Profit / Stop Loss', function (this: Suite) {
 
         await marketDetailPage.checkAutoCloseRowContains('2,500');
 
+        // Same WEBSOCKET_BLOCK_MS window as optimistic TP/SL (see TP scenario above).
+        await driver.delay(3200);
+
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
         );
-        pushPositionClosed(perpsServer, { deliverAfterMs: 3200 });
-        await driver.delay(3200);
+        pushPositionClosed(perpsServer);
 
         await marketDetailPage.waitForTradeCtaButtons();
 
