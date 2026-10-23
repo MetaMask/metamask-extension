@@ -2553,13 +2553,6 @@ export default class MetamaskController extends EventEmitter {
         this.geolocationController,
       ),
 
-      // SeedlessOnboardingController
-
-      getIsSeedlessOnboardingUserAuthenticated:
-        this.seedlessOnboardingController.getIsUserAuthenticated.bind(
-          this.seedlessOnboardingController,
-        ),
-
       // GatorPermissionsController
 
       fetchAndUpdateGatorPermissions:
