@@ -8,8 +8,6 @@
  * snapshot and opens Perps Activity to assert the close-long trade row.
  * A short delay before `pushPositionClosed` is required: `PerpsStreamManager` ignores
  * incoming position WS pushes for 3000 ms after optimistic TP/SL (`WEBSOCKET_BLOCK_MS`).
- *
- * PREREQUISITE: PERPS_ENABLED=true in the extension build (.metamaskrc).
  */
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';

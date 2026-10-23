@@ -6,9 +6,6 @@
  * reversing direction, margin management, and (where a close or partial close
  * is simulated) Perps Activity shows the corresponding trade row after a `userFills` snapshot.
  *
- * PREREQUISITE: All tests require PERPS_ENABLED=true in the extension build.
- * Set PERPS_ENABLED=true in .metamaskrc (see .metamaskrc.dist) before running locally.
- *
  * Tests that require a pre-existing position (Close, Reverse, Add/Reduce Exposure,
  * Margin management) use perpsWebSocketSpecificMocks to inject position data via
  * the Hyperliquid user subscription. See mocks/websocketPositionMocks.ts.
@@ -432,7 +429,7 @@ describe('Perps Position Lifecycle', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests -- Requires PERPS_ENABLED=true in test build; see web-socket-connection.spec.ts
+  // eslint-disable-next-line mocha/no-skipped-tests -- See web-socket-connection.spec.ts
   it.skip('reverses a BTC short position to long', async function () {
     await withFixtures(
       {

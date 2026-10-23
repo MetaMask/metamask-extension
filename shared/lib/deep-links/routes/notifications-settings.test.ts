@@ -1,16 +1,7 @@
-import { getIsPerpsIncludedInBuild } from '../../environment';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../notifications-settings';
 import { notificationsSettings } from './notifications-settings';
 
-jest.mock('../../environment', () => ({
-  getIsPerpsIncludedInBuild: jest.fn(),
-}));
-
 describe('notificationsSettings', () => {
-  beforeEach(() => {
-    jest.mocked(getIsPerpsIncludedInBuild).mockReturnValue(true);
-  });
-
   it('registers the notifications settings deep-link path and title', () => {
     expect(notificationsSettings.pathname).toBe('/notifications-settings');
     expect(notificationsSettings.getTitle(new URLSearchParams())).toBe(
@@ -39,17 +30,6 @@ describe('notificationsSettings', () => {
       ).toStrictEqual({ path, query: new URLSearchParams() });
     });
   }
-
-  it('returns the notifications settings path for the Perps section when Perps is not included in the build', () => {
-    jest.mocked(getIsPerpsIncludedInBuild).mockReturnValue(false);
-
-    expect(
-      notificationsSettings.handler(new URLSearchParams({ section: 'perps' })),
-    ).toStrictEqual({
-      path: NOTIFICATIONS_SETTINGS_ROUTE,
-      query: new URLSearchParams(),
-    });
-  });
 
   for (const section of [
     'unknown',

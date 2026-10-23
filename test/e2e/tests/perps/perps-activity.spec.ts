@@ -9,9 +9,6 @@
  * Activity data is injected via `WS_WITH_ACTIVITY_DATA` (WebSocket mocks) combined with
  * `getPerpsConfigEligibleWithActivity` HTTP overrides for all four transaction types:
  * fills (trades), open orders, funding payments, and deposit ledger entries.
- *
- * PREREQUISITE: All tests require PERPS_ENABLED=true in the extension build.
- * Set PERPS_ENABLED=true in .metamaskrc (see .metamaskrc.dist) before running locally.
  */
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';

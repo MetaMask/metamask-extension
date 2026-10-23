@@ -5,9 +5,6 @@
  * can Long without the modal. (Withdraw from the balance dropdown does not open the
  * geo modal in the product today — only Add funds is gated — so there is no separate
  * Withdraw E2E without changing application code.)
- *
- * PREREQUISITE: PERPS_ENABLED=true in the extension build (.metamaskrc) so the
- * background PerpsController is included.
  */
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';

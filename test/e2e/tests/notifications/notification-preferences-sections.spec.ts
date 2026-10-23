@@ -42,9 +42,6 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
  * the authenticated user storage notification-preferences endpoint, so a single
  * section exercises the full persistence round-trip (PUT -> storage -> GET) for
  * every section. Per-section toggle-to-field wiring is covered by unit tests.
- *
- * PREREQUISITE: PERPS_ENABLED=true in the extension build so the perps
- * notification preference section is included (enabled by default in test builds).
  */
 describe('Notification Preferences Sections', function () {
   it('persists section in-app notification preferences to authenticated user storage', async function () {

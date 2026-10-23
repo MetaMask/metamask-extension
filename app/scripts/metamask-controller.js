@@ -170,7 +170,6 @@ import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multicha
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import { getIsPerpsIncludedInBuild } from '../../shared/lib/environment';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -582,9 +581,7 @@ export default class MetamaskController extends EventEmitter {
       ComplianceController: ComplianceControllerInit,
       RampsService: RampsServiceInit,
       RampsController: RampsControllerInit,
-      ...(getIsPerpsIncludedInBuild()
-        ? { PerpsController: PerpsControllerInit }
-        : {}),
+      PerpsController: PerpsControllerInit,
       PPOMController: PPOMControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       PhishingController: PhishingControllerInit,
@@ -1645,10 +1642,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Start perps eligibility monitoring only when basic functionality is on (no external calls when off)
-    if (
-      getIsPerpsIncludedInBuild() &&
-      this.preferencesController.state.useExternalServices
-    ) {
+    if (this.preferencesController.state.useExternalServices) {
       this.messengerClientApi
         .perpsStartEligibilityMonitoring?.()
         ?.catch((error) => {
@@ -1664,10 +1658,7 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
-    if (
-      getIsPerpsIncludedInBuild() &&
-      this.preferencesController.state.useExternalServices
-    ) {
+    if (this.preferencesController.state.useExternalServices) {
       this.messengerClientApi
         .perpsStartEligibilityMonitoring?.()
         ?.catch((error) => {
@@ -1681,26 +1672,23 @@ export default class MetamaskController extends EventEmitter {
 
   stopNetworkRequests() {
     this.tokenDetectionController.disable();
-    if (getIsPerpsIncludedInBuild()) {
-      this.messengerClientApi
-        .perpsStopEligibilityMonitoring?.()
-        ?.catch((error) => {
-          console.error(error);
-        });
-    }
+    this.messengerClientApi
+      .perpsStopEligibilityMonitoring?.()
+      ?.catch((error) => {
+        console.error(error);
+      });
     this.messengerClientApi.stopRampsLifecycle?.();
   }
 
   /**
    * Disconnect an active Perps session without affecting non-Perps users.
    *
-   * Perps is an optional feature, so guard on build inclusion, controller
-   * presence, and active connection state before calling into the controller.
+   * Guard on controller presence and active connection state before calling
+   * into the controller.
    */
   #disconnectPerpsIfActive() {
     try {
       if (
-        !getIsPerpsIncludedInBuild() ||
         !this.messengerClientsByName.PerpsController ||
         typeof this.messengerClientApi.perpsDisconnect !== 'function'
       ) {
@@ -1816,7 +1804,6 @@ export default class MetamaskController extends EventEmitter {
           this.#disconnectPerpsIfActive();
         }
         if (
-          getIsPerpsIncludedInBuild() &&
           prev !== curr &&
           this.messengerClientApi.perpsStartEligibilityMonitoring &&
           this.messengerClientApi.perpsStopEligibilityMonitoring
@@ -4770,7 +4757,6 @@ export default class MetamaskController extends EventEmitter {
               this.keyringController.state.isUnlocked &&
               this.onboardingController.state.completedOnboarding &&
               this.preferencesController.state.useExternalServices &&
-              getIsPerpsIncludedInBuild() &&
               isPerpsRemoteConfigSatisfied(flags.perpsEnabledVersion)
             );
           },

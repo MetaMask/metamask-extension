@@ -53,11 +53,6 @@ jest.mock('../../../hooks/bridge/useBridgeNavigation', () => ({
   }),
 }));
 
-jest.mock('../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment'),
-  getIsPerpsIncludedInBuild: jest.fn(() => true),
-}));
-
 const baseState = {
   metamask: {
     ...mockState.metamask,

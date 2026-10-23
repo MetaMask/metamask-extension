@@ -12,7 +12,6 @@ import {
 } from '@metamask/utils';
 import log from 'loglevel';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
-import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
 import { isPerpsRemoteConfigSatisfied } from '../../../../shared/lib/perps-feature-flags';
 import { getBooleanFeatureFlag } from '../../../../shared/lib/remote-feature-flag-utils';
 import {
@@ -216,12 +215,8 @@ export function hasAvailableMetaMaskPayBalance({
 function isPerpsExperienceAvailable(
   remoteFeatureFlagController?: RemoteFeatureFlagControllerLike,
 ): boolean {
-  return (
-    getIsPerpsIncludedInBuild() &&
-    isPerpsRemoteConfigSatisfied(
-      remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.perpsEnabledVersion,
-    )
+  return isPerpsRemoteConfigSatisfied(
+    remoteFeatureFlagController?.state?.remoteFeatureFlags?.perpsEnabledVersion,
   );
 }
 

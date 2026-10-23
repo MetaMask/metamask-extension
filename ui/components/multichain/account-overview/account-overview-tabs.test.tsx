@@ -72,8 +72,6 @@ beforeEach(() => {
 describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   const BADGE_TESTID = 'perps-tab-new-badge';
   const PERPS_TAB_TESTID = 'account-overview__perps-tab';
-  let originalPerpsEnabled: string | undefined;
-
   const renderTabs = ({
     variantFlag,
     perpsTabBadgeSeen = false,
@@ -114,12 +112,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     clearABTestExposureTrackingForTest();
-    originalPerpsEnabled = process.env.PERPS_ENABLED;
-    process.env.PERPS_ENABLED = 'true';
-  });
-
-  afterEach(() => {
-    process.env.PERPS_ENABLED = originalPerpsEnabled;
   });
 
   it('renders the Perps tab without a New badge in the control assignment', () => {

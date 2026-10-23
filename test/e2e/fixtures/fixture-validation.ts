@@ -111,7 +111,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.ProfileMetricsController.syncQueue',
   // non-EVM account IDs ARE NOT deterministic and each keyring has metadata (with source of randomness)
   'data.KeyringController.vault',
-  // PerpsController is conditionally included in build via PERPS_ENABLED env var
   'data.PerpsController',
   'data.RewardsController.rewardsAccounts.bip122:000000000019d6689c085ae165831e93:bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastFreshOptInStatusCheck',

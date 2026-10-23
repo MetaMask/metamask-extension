@@ -36,15 +36,6 @@ export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
 };
 
 /**
- * Compile-time gate (`PERPS_ENABLED`): this extension binary includes PerpsController and
- * related background paths. Distinct from remote `perpsEnabledVersion` rollout (see
- * `isPerpsRemoteConfigSatisfied` and `getIsPerpsExperienceAvailable`).
- */
-export const getIsPerpsIncludedInBuild = (): boolean => {
-  return process.env.PERPS_ENABLED?.toString() === 'true';
-};
-
-/**
  * The assets unified state is included in every build. This compatibility
  * helper remains while its callers are removed in the subsequent stack PR.
  */

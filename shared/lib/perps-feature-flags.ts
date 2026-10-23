@@ -15,7 +15,7 @@ const APP_VERSION = packageJson.version;
 
 /**
  * Remote rollout only: evaluates `perpsEnabledVersion` from LaunchDarkly (or overrides).
- * Does not consider compile-time `PERPS_ENABLED` — use `getIsPerpsExperienceAvailable` for that.
+ * Use `getIsPerpsExperienceAvailable` when the UI should follow that rollout.
  *
  * Supports simple boolean flags (backward compatible) and object flags with enabled/minimumVersion.
  *

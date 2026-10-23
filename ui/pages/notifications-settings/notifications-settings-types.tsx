@@ -10,7 +10,6 @@ import {
 } from '@metamask/design-system-react';
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsSelectItem } from '../settings/shared';
 import {
@@ -58,14 +57,12 @@ export const getNotificationsSettingsSectionConfigs = (
     },
   ];
 
-  if (getIsPerpsIncludedInBuild()) {
-    nextSections.push({
-      type: 'perps',
-      title: t('notificationsSettingsPerpsTitle'),
-      description: t('notificationsSettingsPerpsDescription'),
-      iconName: IconName.Candlestick,
-    });
-  }
+  nextSections.push({
+    type: 'perps',
+    title: t('notificationsSettingsPerpsTitle'),
+    description: t('notificationsSettingsPerpsDescription'),
+    iconName: IconName.Candlestick,
+  });
 
   nextSections.push({
     type: 'agenticCli',
