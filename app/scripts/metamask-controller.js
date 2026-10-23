@@ -2414,23 +2414,8 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
 
-      grantPermissionsIncremental:
-        this.permissionController.grantPermissionsIncremental.bind(
-          this.permissionController,
-        ),
-      grantPermissions: this.permissionController.grantPermissions.bind(
-        this.permissionController,
-      ),
-
       setParticipateInMetaMetrics,
       setDataCollectionForMarketing,
-
-      // primary keyring management
-
-      getSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:getSeedPhrase',
-      ),
 
       // subscription
 
@@ -2540,39 +2525,6 @@ export default class MetamaskController extends EventEmitter {
       checkDelegationDisabled: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:checkDelegationDisabled',
-      ),
-
-      // KeyringController
-
-      createNewVaultAndKeychain: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:createNewVaultAndKeychain',
-      ),
-      createNewVaultAndGetSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
-      ),
-      unlockAndGetSeedPhrase: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
-      ),
-
-      // permissions
-
-      approvePermissionsRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:acceptPermissionsRequest',
-      ),
-
-      // Snaps
-
-      handleSnapRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:handleRequest',
-      ),
-      disconnectOriginFromSnap: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:disconnectOrigin',
       ),
 
       // MetaMetrics
