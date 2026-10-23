@@ -54,37 +54,45 @@ function buildState(
 }
 
 describe('selectNonEvmTransactionsForActivity', () => {
+  const solanaAddress = '8FnX3xo2yYw3EUE6w3nQA4GfXGS9wpK6oj3veJpbFzLo';
+
   it('filters malicious non-EVM token transactions', () => {
     const maliciousTx = {
       id: 'bad-tx',
       chain: MultichainNetworks.SOLANA,
+      account: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+      type: TransactionType.Send,
       from: [
         {
+          address: solanaAddress,
           asset: {
             fungible: true,
             type: `${MultichainNetworks.SOLANA}/token:BadMint111`,
           },
         },
       ],
-      to: [],
+      to: [{ address: 'recipient-address', asset: null }],
     } as unknown as Transaction;
     const benignTx = {
       id: 'good-tx',
       chain: MultichainNetworks.SOLANA,
+      account: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+      type: TransactionType.Send,
       from: [
         {
+          address: solanaAddress,
           asset: {
             fungible: true,
             type: `${MultichainNetworks.SOLANA}/token:GoodMint222`,
           },
         },
       ],
-      to: [],
+      to: [{ address: 'recipient-address', asset: null }],
     } as unknown as Transaction;
 
     const state = buildState(
       {
-        [mockState.metamask.internalAccounts.selectedAccount]: {
+        [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
           [MultichainNetworks.SOLANA]: {
             transactions: [maliciousTx, benignTx],
             next: null,
@@ -102,7 +110,206 @@ describe('selectNonEvmTransactionsForActivity', () => {
       },
     ) as unknown as MetaMaskReduxState & MultichainAccountsState;
 
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        address: solanaAddress,
+      },
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+    state.metamask.enabledNetworkMap = {
+      solana: { [MultichainNetworks.SOLANA]: true },
+    };
+
     expect(selectNonEvmTransactionsForActivity(state)).toEqual([benignTx]);
+  });
+
+  it('filters incoming Stellar receive transactions', () => {
+    const receiveTx = {
+      id: 'stellar-receive',
+      chain: 'stellar:pubnet',
+      account: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+      type: TransactionType.Receive,
+      from: [{ address: 'other-address', asset: null }],
+      to: [{ address: solanaAddress, asset: null }],
+    } as unknown as Transaction;
+
+    const sendTx = {
+      id: 'stellar-send',
+      chain: 'stellar:pubnet',
+      account: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+      type: TransactionType.Send,
+      from: [{ address: solanaAddress, asset: null }],
+      to: [{ address: 'other-address', asset: null }],
+    } as unknown as Transaction;
+
+    const state = buildState({
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        'stellar:pubnet': {
+          transactions: [receiveTx, sendTx],
+          next: null,
+          lastUpdated: 0,
+        },
+      },
+    }) as unknown as MetaMaskReduxState & MultichainAccountsState;
+
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        address: solanaAddress,
+      },
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+    state.metamask.enabledNetworkMap = {
+      stellar: { 'stellar:pubnet': true },
+    };
+
+    expect(selectNonEvmTransactionsForActivity(state)).toEqual([sendTx]);
+  });
+
+  it('filters incoming Solana transfers without explicit receive type', () => {
+    const incomingTx = {
+      id: 'solana-incoming',
+      chain: MultichainNetworks.SOLANA,
+      account: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+      type: TransactionType.Send,
+      from: [{ address: 'sender-address', asset: null }],
+      to: [{ address: solanaAddress, asset: null }],
+    } as unknown as Transaction;
+
+    const outgoingTx = {
+      id: 'solana-outgoing',
+      chain: MultichainNetworks.SOLANA,
+      account: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+      type: TransactionType.Send,
+      from: [{ address: solanaAddress, asset: null }],
+      to: [{ address: 'recipient-address', asset: null }],
+    } as unknown as Transaction;
+
+    const state = buildState({
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        [MultichainNetworks.SOLANA]: {
+          transactions: [incomingTx, outgoingTx],
+          next: null,
+          lastUpdated: 0,
+        },
+      },
+    }) as unknown as MetaMaskReduxState & MultichainAccountsState;
+
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        address: solanaAddress,
+      },
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+
+    expect(selectNonEvmTransactionsForActivity(state)).toEqual([outgoingTx]);
+  });
+
+  it('does not filter BTC send with change back to self', () => {
+    const sendWithChangeTx = {
+      id: 'btc-send-with-change',
+      chain: 'bip122:000000000019d6689c085ae165831e93',
+      account: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+      type: TransactionType.Send,
+      from: [{ address: solanaAddress, asset: null }],
+      to: [
+        { address: 'recipient-address', asset: null },
+        { address: solanaAddress, asset: null },
+      ],
+    } as unknown as Transaction;
+
+    const state = buildState({
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        'bip122:000000000019d6689c085ae165831e93': {
+          transactions: [sendWithChangeTx],
+          next: null,
+          lastUpdated: 0,
+        },
+      },
+    }) as unknown as MetaMaskReduxState & MultichainAccountsState;
+
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        address: solanaAddress,
+      },
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+    state.metamask.enabledNetworkMap = {
+      bitcoin: { 'bip122:000000000019d6689c085ae165831e93': true },
+    };
+
+    expect(selectNonEvmTransactionsForActivity(state)).toEqual([
+      sendWithChangeTx,
+    ]);
+  });
+
+  it('does not filter swaps', () => {
+    const swapTx = {
+      id: 'swap-tx',
+      chain: MultichainNetworks.SOLANA,
+      account: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+      type: TransactionType.Swap,
+      from: [{ address: solanaAddress, asset: null }],
+      to: [{ address: solanaAddress, asset: null }],
+    } as unknown as Transaction;
+
+    const state = buildState({
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        [MultichainNetworks.SOLANA]: {
+          transactions: [swapTx],
+          next: null,
+          lastUpdated: 0,
+        },
+      },
+    }) as unknown as MetaMaskReduxState & MultichainAccountsState;
+
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        address: solanaAddress,
+      },
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+
+    expect(selectNonEvmTransactionsForActivity(state)).toEqual([swapTx]);
   });
 });
 

@@ -40,34 +40,6 @@ describe('BTC Account - Activity', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const sendAmount = '0.5';
 
-  it('Receive transaction is rendered with Received label and confirmed status', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: mockBtcActivityMocks,
-      },
-      async ({ driver }) => {
-        await login(driver);
-        const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
-        await homePage.checkPageIsLoaded();
-        await homePage.goToActivityList();
-
-        const activity = new ActivityTab(driver);
-        await activity.checkTransactionActivityByText('Received BTC');
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTxAction({
-          action: 'Received BTC',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
-        await activity.checkTransactionAmount(`${DEFAULT_BTC_BALANCE} BTC`);
-      },
-    );
-  });
-
   it('Transaction details show Title / Time / Status / TXID / From / To / Amount / View details', async function () {
     await withFixtures(
       {
@@ -106,29 +78,6 @@ describe('BTC Account - Activity', function (this: Suite) {
         await details.checkAddressInLog(DEFAULT_BTC_ADDRESS);
         await details.checkHashLinkPresent();
         await details.checkViewDetailsLink();
-      },
-    );
-  });
-
-  it('Current network filter shows only Bitcoin transactions', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: mockBtcActivityMocks,
-      },
-      async ({ driver }) => {
-        await login(driver);
-        const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
-        await homePage.checkPageIsLoaded();
-
-        await homePage.goToActivityList();
-        const activity = new ActivityTab(driver);
-        await activity.checkTransactionActivityByText('Received BTC');
-        await activity.checkConfirmedTxNumberDisplayedInActivity(1);
-        await activity.checkTransactionAmount(`${DEFAULT_BTC_BALANCE} BTC`);
       },
     );
   });

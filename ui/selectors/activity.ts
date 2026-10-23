@@ -10,6 +10,7 @@ import type { TransactionPayControllerState } from '@metamask/transaction-pay-co
 import {
   EthScope,
   isEvmAccountType,
+  TransactionType as KeyringTransactionType,
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
@@ -263,14 +264,38 @@ export const selectLocalTransactionsByHash = createSelector(
   },
 );
 
+function isIncomingNonEvmTransfer(
+  transaction: KeyringTransaction,
+  subjectAddress: string | undefined,
+): boolean {
+  if (!subjectAddress) {
+    return false;
+  }
+
+  if (transaction.type === KeyringTransactionType.Receive) {
+    return true;
+  }
+
+  const loweredSubject = subjectAddress.toLowerCase();
+  const hasFromMovement = transaction.from.some(
+    (movement) => movement.address?.toLowerCase() === loweredSubject,
+  );
+  const hasToMovement = transaction.to.some(
+    (movement) => movement.address?.toLowerCase() === loweredSubject,
+  );
+
+  return !hasFromMovement && hasToMovement;
+}
+
 export const selectNonEvmTransactionsForActivity = createSelector(
   [
     selectCurrentAccountNonEvmTransactions,
     (state: MetaMaskReduxState) =>
       (getTokenScanCache(state) as TokenScanCacheResults | undefined) ??
       (EMPTY_OBJECT as TokenScanCacheResults),
+    getInternalAccountsObject,
   ],
-  (nonEvmTransactions, tokenScanCache) => {
+  (nonEvmTransactions, tokenScanCache, internalAccountsById) => {
     const tokenScanKeys: MultichainTokenScanKey[] = [
       ...new Set(
         nonEvmTransactions.flatMap((transaction) =>
@@ -286,11 +311,17 @@ export const selectNonEvmTransactionsForActivity = createSelector(
       ),
     );
 
-    if (maliciousTokenKeys.size === 0) {
-      return nonEvmTransactions;
+    let filtered = nonEvmTransactions;
+
+    if (maliciousTokenKeys.size > 0) {
+      filtered = filterMaliciousTransactions(filtered, maliciousTokenKeys);
     }
 
-    return filterMaliciousTransactions(nonEvmTransactions, maliciousTokenKeys);
+    return filtered.filter((transaction) => {
+      const subjectAddress =
+        internalAccountsById?.[transaction.account]?.address;
+      return !isIncomingNonEvmTransfer(transaction, subjectAddress);
+    });
   },
 );
 

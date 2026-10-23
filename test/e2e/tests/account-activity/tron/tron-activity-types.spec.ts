@@ -121,10 +121,6 @@ describe('Tron - Activity types', function (this: Suite) {
         await sendDetails.checkAddressInLog(TRON_ACCOUNT_ADDRESS);
         await sendDetails.clickBackButton();
 
-        // Received
-        await activityTab.checkTransactionActivityByText('Received TRX');
-        await activityTab.checkTransactionAmount('+2.5 TRX');
-
         // Swapped
         await activityTab.checkTransactionActivityByText('Swapped');
         await activityTab.checkTransactionAmount('+2.5 USDT');
