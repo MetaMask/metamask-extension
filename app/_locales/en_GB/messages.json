@@ -3388,10 +3388,7 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We’ll collect data on how you interact with our marketing communications to personalize the updates and rewards we send you."
-  },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "We’ll collect data on how you interact with our marketing communications to personalize the updates and rewards we send you."
+    "message": "We’ll collect data on how you interact with our marketing communications to personalize the updates we send you."
   },
   "dataUnavailable": {
     "message": "data unavailable"

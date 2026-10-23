@@ -133,9 +133,6 @@ describe('DataCollectionToggleItem', () => {
     expect(
       screen.getByText(messages.dataCollectionForMarketingDescription.message),
     ).toBeInTheDocument();
-    expect(
-      messages.dataCollectionForMarketingDescriptionSocialLogin.message,
-    ).toBe(messages.dataCollectionForMarketingDescription.message);
   });
 
   it('renders toggle in enabled state', () => {

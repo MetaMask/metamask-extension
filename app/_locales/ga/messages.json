@@ -1295,9 +1295,6 @@
   "dataCollectionForMarketingDescription": {
     "message": "Úsáidfimid MetaMetrics chun foghlaim conas a idirghníomhaíonn tú lenár gcumarsáid mhargaíochta. Féadfaimid nuacht ábhartha (cosúil le gnéithe táirgí agus ábhair eile) a roinnt."
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "Faigh nuashonruithe táirgí, leideanna agus nuacht - lena n-áirítear trí ríomhphost. Féadfaimid d’idirghníomhaíochtaí a úsáid chun feabhas a chur ar a bhfuil á roinnt againn."
-  },
   "dataUnavailable": {
     "message": "sonraí ar fáil"
   },
