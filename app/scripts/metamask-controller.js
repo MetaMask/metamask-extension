@@ -2547,12 +2547,6 @@ export default class MetamaskController extends EventEmitter {
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
 
-      // GeolocationController
-
-      getGeolocation: this.geolocationController.getGeolocation.bind(
-        this.geolocationController,
-      ),
-
       // GatorPermissionsController
 
       fetchAndUpdateGatorPermissions:

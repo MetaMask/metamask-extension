@@ -125,7 +125,6 @@
     "gasFeeStartPolling",
     "gasFeeStopPollingByPollingToken",
     "getClaimDrafts",
-    "getGeolocation",
     "getNotificationsByType",
     "getSeedPhrase",
     "getUserProfileLineage",

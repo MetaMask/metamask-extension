@@ -83,7 +83,9 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
       }
 
       try {
-        const location = await submitRequestToBackground<string>(method);
+        const location = await (method === 'getGeolocation'
+          ? submitRequestToBackground('GeolocationController:getGeolocation')
+          : submitRequestToBackground<string>('refreshGeolocation'));
         const resolved = location === UNKNOWN_LOCATION ? null : location;
         if (shouldCommit()) {
           setUserCountry(resolved);
