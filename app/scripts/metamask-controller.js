@@ -2418,10 +2418,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
 
-      isPublicEndpointUrl: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:isPublicEndpointUrl',
-      ),
       grantPermissionsIncremental:
         this.permissionController.grantPermissionsIncremental.bind(
           this.permissionController,
@@ -2454,10 +2450,6 @@ export default class MetamaskController extends EventEmitter {
 
       rewardsGetPerpsDiscountForAccount:
         this.rewardsController.getPerpsDiscountForAccount.bind(
-          this.rewardsController,
-        ),
-      rewardsGetVipTierForAccount:
-        this.rewardsController.getVipTierForAccount.bind(
           this.rewardsController,
         ),
 
@@ -2669,10 +2661,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:getLocation`,
       ),
-      fetchQuotes: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        `${BRIDGE_CONTROLLER_NAME}:fetchQuotes`,
-      ),
       updateBatchSellTrades: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
@@ -2699,19 +2687,6 @@ export default class MetamaskController extends EventEmitter {
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
       updateEventFragment,
-
-      // These are background-owned buffered trace entry points. UI pages must
-      // call them through submitRequestToBackground; importing the methods
-      // directly in UI would create a separate queue for each page.
-
-      bufferedTrace: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SentryTracingService:bufferedTrace',
-      ),
-      bufferedEndTrace: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SentryTracingService:bufferedEndTrace',
-      ),
 
       // Notifications
 
@@ -2805,9 +2780,6 @@ export default class MetamaskController extends EventEmitter {
         authenticationController.getUserProfileLineage.bind(
           authenticationController,
         ),
-      getBearerToken: authenticationController.getBearerToken.bind(
-        authenticationController,
-      ),
       requestProfilePairing:
         authenticationController.requestProfilePairing.bind(
           authenticationController,
