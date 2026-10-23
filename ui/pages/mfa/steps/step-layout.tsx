@@ -13,6 +13,7 @@ import type {
   MfaFlowErrorCode,
   MfaFlowState,
   MfaFlowStep,
+  MfaMethod,
   MfaReason,
 } from '../../../hooks/identity/mfa/engine/types';
 import { getErrorMessageKey } from '../labels';
@@ -82,7 +83,7 @@ export const StepMessage = ({
   </Text>
 );
 
-/** The 2-step verification shield, above the title of the intro and picker. */
+/** The 2-step verification shield, above the picker's title. */
 export const MfaShield = () => (
   <img
     src="./images/mfa-shield.png"
@@ -94,8 +95,8 @@ export const MfaShield = () => (
 );
 
 /**
- * The step's title and description, centred under an image (the intro and
- * picker shield, the failure icon).
+ * The step's title and description, centred under an image (the picker
+ * shield, the failure icon).
  *
  * @param props - The header's props.
  * @param props.title - The title.
@@ -129,9 +130,17 @@ export const StepHeader = ({
   </Box>
 );
 
-export const StepError = ({ code }: { code: MfaFlowErrorCode }) => {
+export const StepError = ({
+  code,
+  method,
+}: {
+  code: MfaFlowErrorCode;
+  method?: MfaMethod;
+}) => {
   const t = useI18nContext();
-  return <StepMessage isError>{t(getErrorMessageKey(code))}</StepMessage>;
+  return (
+    <StepMessage isError>{t(getErrorMessageKey(code, method))}</StepMessage>
+  );
 };
 
 const StepLayout = ({

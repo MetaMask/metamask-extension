@@ -5,6 +5,7 @@ import { renderHook, act } from '@testing-library/react';
 import {
   type QuoteMetadata,
   type QuoteResponse,
+  SwapFeatureTag,
   mergeQuoteMetadata,
 } from '@metamask/bridge-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
@@ -471,7 +472,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       unmount();
 
       expect(didThrow).toBe(true);
-      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {
+        tags: { feature: SwapFeatureTag.SWAP },
+      });
       expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(result.current.isSubmitting).toBe(false);
       expect(store.getActions()).not.toContainEqual(
@@ -519,7 +522,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       });
       unmount();
 
-      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {
+        tags: { feature: SwapFeatureTag.SWAP },
+      });
       expect(store.getActions()).toContainEqual(
         expect.objectContaining({
           type: 'bridge/setWasTxDeclined',
@@ -714,7 +719,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       });
 
       expect(mockShowErrorModal).not.toHaveBeenCalled();
-      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {
+        tags: { feature: SwapFeatureTag.SWAP },
+      });
     });
 
     it('submits intent quotes via submitBridgeIntent', async () => {
@@ -910,7 +917,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       });
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
-      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {
+        tags: { feature: SwapFeatureTag.SWAP },
+      });
     });
 
     it('routes hardware-wallet intent quotes to hardware wallet signatures without submitting immediately', async () => {

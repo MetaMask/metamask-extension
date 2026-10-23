@@ -8,10 +8,6 @@ import type { MessengerClientInitFunction } from './types';
 /**
  * Initialize the GeolocationController.
  *
- * Geolocation is fetched on demand by consumers (e.g. PerpsController, the
- * `GeolocationController:getGeolocation` messenger action) so this init does
- * not trigger an eager fetch.
- *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state to hydrate from.
