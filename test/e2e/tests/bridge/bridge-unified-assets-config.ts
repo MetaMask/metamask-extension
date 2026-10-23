@@ -158,17 +158,14 @@ export function getBridgeMonadBaseAssetsControllerConfig() {
 }
 
 export const BRIDGE_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
 };
 
 export const BRIDGE_L2_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_L2_ETH_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: BRIDGE_L2_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
 };
 
 export const BRIDGE_MONAD_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_MONAD_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: {
     nativeBalance: String(BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN),
   },

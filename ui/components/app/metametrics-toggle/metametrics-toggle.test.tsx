@@ -76,10 +76,7 @@ const arrangeMocks = (stateOverrides: StateOverrides = {}) => {
 
   const { getByTestId } = render(
     <Provider store={store}>
-      <MetametricsToggle
-        dataCollectionForMarketing={false}
-        setDataCollectionForMarketing={() => Promise.resolve()}
-      />
+      <MetametricsToggle />
     </Provider>,
   );
 
