@@ -97,6 +97,7 @@ export const DestinationAccountPickerModal = ({
               : t('destinationAccountPickerSearchPlaceholderToMainnet')) ??
             undefined
           }
+          marginInline={4}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           backgroundColor={BackgroundColor.backgroundSubsection}
@@ -108,6 +109,7 @@ export const DestinationAccountPickerModal = ({
           }}
           style={{
             minHeight: 48,
+            marginBottom: 12,
             outline: 'none',
           }}
           startAccessory={<Icon name={IconName.Search} size={IconSize.Md} />}
