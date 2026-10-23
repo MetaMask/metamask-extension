@@ -1,4 +1,5 @@
 import React from 'react';
+import { it as jestIt } from '@jest/globals';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
@@ -181,7 +182,7 @@ describe('UnlockPage component (passkey UI)', () => {
       expect(measurement.reportReady).not.toHaveBeenCalled();
     });
 
-    it.each([false, true])(
+    jestIt.each([false, true])(
       'reports an idle form with passkeys enabled: %s',
       (isPasskeyActive) => {
         renderWithProvider(

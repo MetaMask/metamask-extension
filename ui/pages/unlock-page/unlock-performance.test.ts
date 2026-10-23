@@ -1,3 +1,4 @@
+import { it as jestIt } from '@jest/globals';
 import { createMemoryRouter } from 'react-router-dom';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { registerDocumentLoadMeasurement } from '../../helpers/utils/useful-screen-ready';
@@ -47,7 +48,7 @@ describe('registerUnlockMeasurement', () => {
     expect(measurement.discard).not.toHaveBeenCalled();
   });
 
-  it.each([{ isUnlocked: true }, { completedOnboarding: false }])(
+  jestIt.each([{ isUnlocked: true }, { completedOnboarding: false }])(
     'does not register for initial wallet state %j',
     (state) => {
       expect(register(state)).toBeUndefined();
@@ -75,7 +76,7 @@ describe('registerUnlockMeasurement', () => {
     expect(measurement.reportReady).toHaveBeenCalledTimes(1);
   });
 
-  it.each([
+  jestIt.each([
     { replace: true },
     { replace: false },
     { replace: true, state: { from: { key: 'another-entry' } } },
@@ -88,7 +89,7 @@ describe('registerUnlockMeasurement', () => {
     expect(measurement.discard).toHaveBeenCalledTimes(1);
   });
 
-  it.each([false, true])(
+  jestIt.each([false, true])(
     'excludes leaving and returning before mounting, replace: %s',
     async (replace) => {
       register();
