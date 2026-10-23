@@ -10954,9 +10954,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "@metamask/wallet@npm:19.0.0"
+"@metamask/wallet@npm:^19.1.0":
+  version: 19.1.0
+  resolution: "@metamask/wallet@npm:19.1.0"
   dependencies:
     "@metamask/accounts-controller": "npm:^40.1.0"
     "@metamask/address-book-controller": "npm:^8.0.0"
@@ -10985,7 +10985,7 @@ __metadata:
     "@metamask/subscription-controller": "npm:^15.0.0"
     "@metamask/transaction-controller": "npm:^72.2.1"
     "@metamask/utils": "npm:^12.0.0"
-  checksum: 10/533afd3b82017b4d1f8de12224d6cb2312091b5a723ffc9286efef0e75d640df14b854eebdc612152cdc2ccf5a8272570a9283c3816bdce083516502a536ba3d
+  checksum: 10/5b5647b3992c563eccac7249f93fb368174e04725dddd8267f28925dc19aec1cf898dd35049f09ccc201a852ae51be2183afef9bac843281614ee310f3273ad1
   languageName: node
   linkType: hard
 
@@ -36088,7 +36088,7 @@ __metadata:
     "@metamask/tron-wallet-snap": "npm:^4.2.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
-    "@metamask/wallet": "npm:^19.0.0"
+    "@metamask/wallet": "npm:^19.1.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
     "@mui/x-date-pickers": "npm:^7.29.4"

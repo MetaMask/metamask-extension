@@ -1,3 +1,4 @@
+import type { Json } from '@metamask/utils';
 import {
   AB_TEST_ANALYTICS_MAPPINGS,
   clearABTestAnalyticsMappings,
@@ -26,15 +27,16 @@ jest.mock('../../lib/segment/custom-segment-tracking', () => ({
 /**
  * Build analytics instance options with a real init messenger.
  *
+ * @param state - Persisted controller state passed through to the builder.
  * @returns The options bag returned by the builder.
  */
-function buildOptions() {
+function buildOptions(state: Record<string, Record<string, Json>> = {}) {
   const messenger = createMockMessenger();
   const initMessenger = getAnalyticsControllerInitMessenger(messenger);
 
   return getAnalyticsControllerInstanceOptions({
     initMessenger,
-    state: {},
+    state,
     platform: {} as never,
   });
 }
@@ -93,5 +95,16 @@ describe('getAnalyticsControllerInstanceOptions', () => {
 
     expect(countAfterFirstBuild).toBe(2);
     expect(countAfterSecondBuild).toBe(2);
+  });
+
+  it('generates analyticsId when persisted analyticsId is null', () => {
+    const options = buildOptions({
+      AnalyticsController: {
+        analyticsId: null,
+      },
+    });
+
+    expect(typeof options.analyticsId).toBe('string');
+    expect(options.analyticsId.length).toBeGreaterThan(0);
   });
 });
