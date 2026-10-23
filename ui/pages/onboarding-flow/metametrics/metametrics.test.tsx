@@ -277,6 +277,28 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
+  it('starts the marketing checkbox unchecked even when a consent is already stored, and saves false on continue', async () => {
+    store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+    });
+    const { getByTestId, getAllByRole } = renderWithProvider(
+      <OnboardingMetametrics />,
+      store,
+    );
+
+    expect(getAllByRole('checkbox')[1]).not.toBeChecked();
+
+    await clickElement(getByTestId('metametrics-i-agree'));
+
+    await waitFor(() => {
+      expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
+    });
+  });
+
   it('clicking the participate checkbox container toggles the participate checkbox', async () => {
     const { getByTestId, getAllByRole } = renderWithProvider(
       <OnboardingMetametrics />,

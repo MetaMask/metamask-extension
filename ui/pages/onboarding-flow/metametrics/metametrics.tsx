@@ -22,7 +22,6 @@ import {
   setPna25Acknowledged,
 } from '../../../store/actions';
 import {
-  getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
   getConsentDecisionMade,
@@ -115,20 +114,14 @@ export default function OnboardingMetametrics() {
 
   const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const [checkboxDraft, setCheckboxDraft] = useState({
     participateTouched: false,
-    marketingTouched: false,
     participateLocal: true,
     marketingLocal: false,
   });
-  const {
-    participateTouched,
-    marketingTouched,
-    participateLocal,
-    marketingLocal,
-  } = checkboxDraft;
+  const { participateTouched, participateLocal, marketingLocal } =
+    checkboxDraft;
 
   let isParticipateInMetaMetricsChecked = true;
   if (participateTouched) {
@@ -136,9 +129,9 @@ export default function OnboardingMetametrics() {
   } else if (consentDecisionMade) {
     isParticipateInMetaMetricsChecked = isOptedIn;
   }
-  const isDataCollectionForMarketingChecked = marketingTouched
-    ? marketingLocal
-    : Boolean(dataCollectionForMarketing);
+  // Always starts unchecked: the stored value is per install, so it can belong
+  // to a previous wallet. Matches mobile.
+  const isDataCollectionForMarketingChecked = marketingLocal;
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
@@ -212,7 +205,6 @@ export default function OnboardingMetametrics() {
   const handleMarketingChange = () => {
     setCheckboxDraft((prev) => ({
       ...prev,
-      marketingTouched: true,
       marketingLocal: !isDataCollectionForMarketingChecked,
     }));
   };
