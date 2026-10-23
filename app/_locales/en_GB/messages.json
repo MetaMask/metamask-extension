@@ -3388,7 +3388,7 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
+    "message": "We'll collect data on how you interact with our marketing communications, so we can share relevant news (like product features and other materials)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
@@ -3439,6 +3439,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "Open batch sell on mobile"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "Limit Orders are available on MetaMask mobile. Scan this code with your mobile device to use them."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Open Limit Orders on mobile"
   },
   "deepLinkQrPredictDescription": {
     "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
@@ -4645,7 +4651,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Continue to make sure:"
+    "message": "To continue make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Your $1 device is unlocked",
@@ -5584,6 +5590,9 @@
   "mfaErrorInvalidPasskey": {
     "message": "Your passkey couldn't be verified. Try again."
   },
+  "mfaErrorInvalidTotpCode": {
+    "message": "That code isn’t right. Check that your device’s time is set automatically, then enter the current code."
+  },
   "mfaErrorLimitReached": {
     "message": "You've reached the limit for this method."
   },
@@ -5598,6 +5607,15 @@
   },
   "mfaErrorTooManyAttempts": {
     "message": "Too many attempts. Request a new code."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "That took too long. Enter the current code from your app."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "An authenticator app is already set up for this account."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "Too many attempts. Wait for a new code in your app and try again."
   },
   "mfaErrorUnsupported": {
     "message": "This method isn't supported on this device."
@@ -5620,9 +5638,6 @@
   "mfaIntroEmailDescription": {
     "message": "Get a 6-digit code sent to your inbox"
   },
-  "mfaIntroListTitle": {
-    "message": "You’ll set up"
-  },
   "mfaIntroPasskeyDescription": {
     "message": "Confirm with your device or password manager"
   },
@@ -5632,14 +5647,26 @@
   "mfaIntroTitle": {
     "message": "Set up 2-step verification"
   },
+  "mfaIntroTotpDescription": {
+    "message": "Get a 6-digit code from an app like Google Authenticator"
+  },
+  "mfaIntroTotpDone": {
+    "message": "Set up in your authenticator app"
+  },
   "mfaMethodEmail": {
     "message": "Email"
   },
   "mfaMethodPasskey": {
     "message": "Passkey"
   },
+  "mfaMethodTotp": {
+    "message": "Authenticator app"
+  },
   "mfaOtpDescription": {
     "message": "We sent a 6-digit code to your email. Enter it below to verify your email."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "Open your authenticator app and enter the 6-digit code."
   },
   "mfaOtpDescriptionWithEmail": {
     "message": "We sent a 6-digit code to $1. Enter it below to verify your email.",
@@ -5661,6 +5688,12 @@
   "mfaOtpResent": {
     "message": "We sent you a new code."
   },
+  "mfaOtpRetry": {
+    "message": "Try again"
+  },
+  "mfaOtpRetryIn": {
+    "message": "Try again in $1s"
+  },
   "mfaOtpSendIn": {
     "message": "Sending a new code in $1s",
     "description": "$1 is a number of seconds"
@@ -5670,6 +5703,9 @@
   },
   "mfaOtpTitle": {
     "message": "Enter your verification code"
+  },
+  "mfaOtpVerify": {
+    "message": "Verify"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Create a passkey"
@@ -5689,6 +5725,9 @@
   "mfaPickerTitle": {
     "message": "Confirm with 2-step verification"
   },
+  "mfaPickerTotp": {
+    "message": "Use authenticator app"
+  },
   "mfaSettingsAdd": {
     "message": "Add"
   },
@@ -5703,6 +5742,12 @@
   },
   "mfaSettingsLastEmailTitle": {
     "message": "Email can’t be removed"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "This authenticator app is the only security method for this account. Add a second method before removing it."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "Authenticator app can’t be removed"
   },
   "mfaSettingsNotice": {
     "message": "These methods add protection to Money account transactions. They can’t recover your wallet."
@@ -5722,14 +5767,50 @@
   "mfaSettingsRemoveFailed": {
     "message": "Couldn’t remove this method. Try again later."
   },
+  "mfaSettingsRemoveTotp": {
+    "message": "Remove authenticator app"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "You’ll no longer be able to verify Money transactions with codes from your authenticator app."
+  },
   "mfaSettingsTitle": {
     "message": "2-step verification"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "Your other methods only work in the MetaMask mobile app. Remove your authenticator app from there."
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "Authenticator app can’t be removed here"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "Authenticator app removed"
   },
   "mfaSettingsUsedFor": {
     "message": "Used for"
   },
   "mfaSettingsUsedForMoney": {
     "message": "Verifying Money transactions"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Continue"
+  },
+  "mfaTotpSetupCopy": {
+    "message": "Copy setup key"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "Scan the QR code with your authenticator app, or enter the setup key. Then enter the 6-digit code it shows."
+  },
+  "mfaTotpSetupKey": {
+    "message": "Setup key"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "QR code to add MetaMask to your authenticator app"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "That took too long, so we made a new setup key. Remove the earlier MetaMask entry from your authenticator app, then add this one."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "Set up authenticator app"
   },
   "minimumReceivedExplanation": {
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
@@ -6575,6 +6656,9 @@
   "networkNameSolana": {
     "message": "Solana"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -7104,7 +7188,7 @@
     "message": "Gather basic usage data"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Product updates"
+    "message": "Marketing updates"
   },
   "onboardingMetametricsContinue": {
     "message": "Continue"
@@ -8145,6 +8229,13 @@
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
   },
+  "perpsIocCancel": {
+    "message": "Your order couldn't fill within your $1% slippage tolerance. Try a limit order or adjust your slippage.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage."
+  },
   "perpsKeepPositions": {
     "message": "Keep positions"
   },
@@ -8399,6 +8490,10 @@
   },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsPriceMoved": {
+    "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
   },
   "perpsProducts": {
     "message": "Products",

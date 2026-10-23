@@ -1160,6 +1160,14 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
+          assetsInfo: {
+            ...mockStore.metamask.assetsInfo,
+            [stellarXlmAssetId]: {
+              type: 'native',
+              decimals: 7,
+              symbol: 'XLM',
+            },
+          },
           assetsBalance,
           accountTree: {
             wallets: {
@@ -1249,7 +1257,6 @@ describe('AssetPage', () => {
               metadata: {
                 minimumReserveBalance: '25000000',
                 spendableBalance: '75000000',
-                decimal: 7,
               },
             },
           },

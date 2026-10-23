@@ -26,11 +26,16 @@ const { PERPS_WS_PORT } = require('./websocket/perps-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 const {
+  v6AccountsApiBalancesJson,
+} = require('./helpers/accounts-api-v6-balances');
+const {
   getProductionRemoteFlagApiResponse,
 } = require('./feature-flags/feature-flag-registry');
 const {
   setupSnapRegistryMocks,
 } = require('./mock-response-data/snaps/snap-registry-mocks');
+
+const DEFAULT_ETH_USD_PRICE = 3010;
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -701,18 +706,13 @@ function buildUnifiedEvmAccountsApiBalances(
  * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
- * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010.
  * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state). See UnifiedEvmAccountsApiBalances typedef in helpers.js.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
-  {
-    chainId,
-    ethConversionInUsd = 3010,
-    unifiedEvmAccountsApiBalances = {},
-  } = {},
+  { chainId, unifiedEvmAccountsApiBalances = {} } = {},
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
@@ -1596,7 +1596,7 @@ async function setupMocking(
         json: {
           'eip155:1/slip44:60': {
             id: 'ethereum',
-            price: ethConversionInUsd,
+            price: DEFAULT_ETH_USD_PRICE,
             marketCap: 382623505141,
             pricePercentChange1d: 0,
           },
@@ -1608,7 +1608,7 @@ async function setupMocking(
   // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
   const sepoliaSpotPrice = {
     id: 'ethereum',
-    price: ethConversionInUsd,
+    price: DEFAULT_ETH_USD_PRICE,
     marketCap: 382623505141,
     pricePercentChange1d: 0,
   };
@@ -1656,7 +1656,7 @@ async function setupMocking(
       json: {
         'eip155:1337/slip44:1': {
           id: 'ethereum',
-          price: ethConversionInUsd,
+          price: DEFAULT_ETH_USD_PRICE,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
@@ -1676,7 +1676,7 @@ async function setupMocking(
       json: {
         'eip155:143/slip44:268435779': {
           id: 'monad',
-          price: ethConversionInUsd,
+          price: DEFAULT_ETH_USD_PRICE,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
@@ -2230,13 +2230,21 @@ async function setupMocking(
   // when assetsUnifyState is enabled). Default: 25 ETH native per requested
   // chain for the default fixture account. Override via
   // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a
-  // custom fiat total. v6 rows include `object: 'token'` (core 15).
-  const respondWithUnifiedEvmAccountsApiBalances = (includeObjectField) => {
+  // custom fiat total. The v6 body checksums ERC-20 asset ids, honors
+  // includeAssetIds and excludeAssetIds, and sets unprocessedIncludeAssetIds.
+  const respondWithUnifiedEvmAccountsApiBalances = (useV6Contract) => {
     return (req) => {
       const balances = buildUnifiedEvmAccountsApiBalances(
         req,
         unifiedEvmAccountsApiBalances,
-      ).map((row) => (includeObjectField ? { ...row, object: 'token' } : row));
+      );
+
+      if (useV6Contract) {
+        return {
+          statusCode: 200,
+          json: v6AccountsApiBalancesJson(req.url, balances),
+        };
+      }
 
       return {
         statusCode: 200,
