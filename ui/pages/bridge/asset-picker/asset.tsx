@@ -31,7 +31,6 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
-import { ACCOUNT_TYPE_LABELS } from '../../../components/app/assets/constants';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Column, Row } from '../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -128,9 +127,6 @@ export const BridgeAsset = React.forwardRef(
                 {asset.symbol}
               </Text>
               <AssetSecurityBadge asset={asset} />
-              {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
-                <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
-              )}
               {tokenIsStock && (
                 <StockBadge isMarketClosed={!isTokenTradingOpen(asset)} />
               )}

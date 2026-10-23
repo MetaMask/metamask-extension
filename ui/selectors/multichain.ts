@@ -4,6 +4,7 @@ import type {
   MultichainBalancesControllerState,
   RatesControllerState,
 } from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -81,7 +82,10 @@ export type AssetsState = {
 };
 
 export type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
+  metamask: Partial<
+    Pick<MultichainAssetsRatesControllerState, 'conversionRates'>
+  > &
+    Partial<Pick<AssetsControllerState, 'assetsPrice'>>;
 };
 
 export type RatesState = {

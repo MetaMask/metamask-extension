@@ -348,7 +348,7 @@
     "ui/components/multichain/import-account/json.test.tsx": {
       "error: Warning: Component \"FileInput\" contains the": 1
     },
-    "ui/components/multichain/import-nfts-modal/import-nfts-modal.test.js": {
+    "ui/components/multichain/import-nfts-modal/import-nfts-form.test.tsx": {
       "error: Warning: React does not recognize": 1
     },
     "ui/components/multichain/network-list-menu/network-list-menu.test.tsx": {
@@ -499,7 +499,8 @@
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 663,
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1
+      "Reselect: Input stability warnings": 1,
+      "warn: A function memoized with weakMapMemoize": 1
     },
     "ui/pages/bridge/prepare/components/bridge-alert-banner-list.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -605,8 +606,7 @@
       "MetaMask: Background connection not initialized": 56
     },
     "ui/pages/confirmations/components/confirm/info/shared/transaction-data/transaction-data.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: Missing key props in lists": 1
+      "React: Act warnings (component updates not wrapped)": 1
     },
     "ui/pages/confirmations/components/confirm/info/shared/transaction-details/transaction-details.test.tsx": {
       "Reselect: Input stability warnings": 1

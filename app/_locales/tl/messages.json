@@ -1738,9 +1738,6 @@
     "message": "Inaprubahan sa $1 para sa $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Welcome sa Arc! Upang mapadali at ma-verify ang paggamit mo ng Arc chain, maaari naming ibahagi ang impormasyon sa team ng Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Abiso"
   },
@@ -1786,9 +1783,6 @@
   },
   "assets": {
     "message": "Mga Asset"
-  },
-  "assetsDescription": {
-    "message": "Mag-auto detect ng mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
   },
   "asterdexReferralSubtitle": {
     "message": "Makakuha ng 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
@@ -1847,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Bumalik sa ligtas"
+  },
+  "backToWallet": {
+    "message": "Bumalik sa wallet"
   },
   "backUpIncomplete": {
     "message": "Hindi nakumpleto ang pag-back up"
@@ -3303,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Koleksyon ng data para sa marketing"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "Gagamit kami ng MetaMetrics upang matutunan kung paano ka nakikipag-ugnayan sa aming komunikasyon sa marketing. Puwede kaming magbahagi ng mga nauugnay na balita (tulad ng mga feature ng produkto at iba pang materyales)."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Tumanggap ng mga update ng produkto, tip at balita - kabilang sa pamamagitan ng email. Maaari naming gamitin ang mga interaksyon mo para mapahusay ang mga ibinabahagi namin."
   },
@@ -4259,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "Saklaw ang MetaMask ang bayad sa network para sa transaksyong ito. Kabilang dito ang isang beses na pag-activate sa smart account."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Kailangan ng partikular na network na ito ang pagpapanatili ng reserba na $1 $2 sa iyong account.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 oras",
     "description": "$1 represents a number of hours"
@@ -4396,9 +4386,6 @@
   "generalCameraErrorTitle": {
     "message": "Mayroong nang mali...."
   },
-  "generalDescription": {
-    "message": "I-sync ang mga setting sa lahat ng device, pumili ng mga preference sa network, at i-track ang data ng token"
-  },
   "generateNewQrCode": {
     "message": "Gumawa ng bagong QR code"
   },
@@ -4514,6 +4501,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Magpatuloy"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "I-unlock ito at subukan ulit para magpatuloy",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Maaari lamang lagdaan ng $1 ang bersyon 4 (V4) na naka-type na datos. Humiling ang site na ito ng lumang uri ng lagda na hindi na sinusuportahan.",
@@ -5440,6 +5431,57 @@
   "metrics": {
     "message": "Metrics"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Magpatuloy"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Ilagay ang wastong email address."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Email address"
+  },
+  "mfaErrorCooldown": {
+    "message": "Masyado nang maraming kahilingan. Maghintay sandali at subukan muli."
+  },
+  "mfaErrorGeneric": {
+    "message": "Nagkaproblema. Subukan muli."
+  },
+  "mfaFailureClose": {
+    "message": "Isara"
+  },
+  "mfaFailureRetry": {
+    "message": "Subukang muli"
+  },
+  "mfaFailureTitle": {
+    "message": "Mayroong nang mali"
+  },
+  "mfaIntroContinue": {
+    "message": "Magsimula"
+  },
+  "mfaMethodEmail": {
+    "message": "Email"
+  },
+  "mfaOtpPaste": {
+    "message": "I-paste"
+  },
+  "mfaOtpResend": {
+    "message": "Ipadala muli ang code"
+  },
+  "mfaOtpRetry": {
+    "message": "Subukang muli"
+  },
+  "mfaOtpVerify": {
+    "message": "I-verify"
+  },
+  "mfaPickerOr": {
+    "message": "o"
+  },
+  "mfaSettingsAdd": {
+    "message": "Idagdag"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Magpatuloy"
+  },
   "minimumReceivedExplanation": {
     "message": "Ang pinakamababang halaga na iyong matatanggap kapag nagbago ang presyo habang pinoproseso ang iyong transaksyon, batay sa setting ng iyong slippage. Mula sa pagtatantiya ang mga liquidity provider, kaya psibleng mag-iba ang huling halaga."
   },
@@ -5615,9 +5657,6 @@
   "moneyBalanceLastKnown": {
     "message": "Huling kilalang balanse"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Subukang muli"
   },
@@ -5654,6 +5693,14 @@
   },
   "moneyEarnApyTitle": {
     "message": "Kumita ng hanggang $1 APY"
+  },
+  "moneyEarnBannerCta": {
+    "message": "Magdagdag ng $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Kumita gamit ang Money account mo",
+    "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
     "message": "Kumita sa crypto mo"
@@ -5809,6 +5856,10 @@
   },
   "moneySend": {
     "message": "Ipadala"
+  },
+  "moneyStartEarning": {
+    "message": "Simulang kumita",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Hindi nakapagdagdag ng mga pondo. Subukan ulit."
@@ -6243,9 +6294,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "Native SegWit ng Bitcoin"
   },
   "networkNameDefinition": {
     "message": "Ang pangalan ay nauugnay sa network na ito."
@@ -6749,9 +6797,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Magdagdag ng custom na IPFS Gateway"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Ang URL ng IPFS gateway ay wasto"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Kapag ginamit mo ang mga default na setting at configuration namin, ginagamit namin ang Infura bilang default na remote procedure call (RPC) provider namin para mag-alok ng pinakamaaasahan at pribadong access sa data ng Etheeum hangga’t kaya namin. Sa mga limitadong kaso, posibleng gumamit kami ng ibang RPC provider para maibigay ang pinakamagandang experience sa mga user namin. Puwede kang pumili ng sarili mong RPC, pero tandaan na matatanggap ng sinumang RPC ang IP address at Ethereum wallet mo para para makagawa ng mga transaksyon. Para matuto pa kung paano nangangasiwa ang Infura ng data para sa mga EVM account, basahin ang $1; para sa mga Solana account, $2."
   },
@@ -6790,7 +6835,7 @@
     "message": "Mangalap ng pangunahing data ng paggamit"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Mga update sa produkto"
+    "message": "Mga update sa marketing"
   },
   "onboardingMetametricsContinue": {
     "message": "Magpatuloy"
@@ -7478,6 +7523,9 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsAbout": {
+    "message": "Tungkol Dito"
+  },
   "perpsActivity": {
     "message": "Aktibidad"
   },
@@ -8080,6 +8128,9 @@
   "perpsRateLimitExceeded": {
     "message": "Masyado nang maraming kahilingan. Pakihintayin at subukang muli."
   },
+  "perpsReadMore": {
+    "message": "Magbasa pa"
+  },
   "perpsRecentActivity": {
     "message": "Kamakailang aktibidad"
   },
@@ -8126,6 +8177,18 @@
   "perpsSeeAll": {
     "message": "Tingnan lahat",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "makipag-ugnayan sa suporta",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Tingnan ang iyong mga opsyon sa Mga FAQ",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Nakakaranas kami ng outage",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Pansamantalang hindi available ang serbisyo. Pakisubukan muli mamaya."
@@ -9639,21 +9702,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nai-save ang bagong password"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Seguridad at pagkapribado"
-  },
-  "securityDescription": {
-    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account"
-  },
   "securityMessageLinkForNetworks": {
     "message": "mga panloloko sa network at panganib sa seguridad"
   },
   "securityProviderPoweredBy": {
     "message": "Pinapagana ng $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account at data"
   },
   "securitySocialLoginEnabled": {
     "message": "Pinagana"
@@ -12158,6 +12212,9 @@
   },
   "turnOn": {
     "message": "I-on"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "i-on ang basic functionality"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Nagkaroon ng error sa paglikha ng mga notipikasyon. Pakisubukan muli mamaya."

@@ -78,4 +78,6 @@ export const MANIFEST_RELEASE_CANDIDATE_KEY =
 
 export { ENVIRONMENT };
 
-export type BuildEnvironment = typeof ENVIRONMENT;
+export type BuildEnvironmentMap = typeof ENVIRONMENT;
+
+export type BuildEnvironment = BuildEnvironmentMap[keyof BuildEnvironmentMap];
