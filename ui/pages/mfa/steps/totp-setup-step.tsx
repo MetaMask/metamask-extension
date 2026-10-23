@@ -97,7 +97,6 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
         </Box>
         <ButtonBase
           className="h-auto w-full justify-start gap-3 rounded-2xl bg-muted p-4 text-left hover:bg-muted-hover active:bg-muted-pressed"
-          aria-label={t('mfaTotpSetupCopy')}
           onClick={() => copy(step.secret)}
           data-testid={MfaFlowTestIds.TOTP_COPY_KEY}
         >

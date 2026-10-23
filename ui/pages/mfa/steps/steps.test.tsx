@@ -746,6 +746,11 @@ describe('TotpSetupStep', () => {
       'JBSW Y3DP EHPK 3PXP',
     );
     expect(
+      screen.getByTestId(MfaFlowTestIds.TOTP_COPY_KEY),
+    ).toHaveAccessibleName(
+      `${messages.mfaTotpSetupKey.message} JBSW Y3DP EHPK 3PXP`,
+    );
+    expect(
       screen.getByText(messages.mfaTotpSetupManual.message),
     ).toBeInTheDocument();
     expect(
