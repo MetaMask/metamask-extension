@@ -136,7 +136,6 @@
     "grantPermissionsIncremental",
     "handleSnapRequest",
     "isNftOwner",
-    "isPublicEndpointUrl",
     "removeAndIgnoreNft",
     "removeNetwork",
     "removeNft",
