@@ -11,7 +11,9 @@ export const RAMPS_ORDER_CODE = 'mock-order-1';
 export const RAMPS_CALLBACK_BASE =
   'https://on-ramp-content.uat-api.cx.metamask.io/regions/fake-callback';
 
-const RAMPS_WIDGET_URL = 'http://provider-mock.test/widget';
+// Must be HTTPS: the Firefox E2E driver only proxies TLS traffic
+// (`network.proxy.ssl`), so an http:// mock host is never intercepted.
+const RAMPS_WIDGET_URL = 'https://provider-mock.test/widget';
 
 const country = {
   isoCode: 'US',
@@ -224,7 +226,7 @@ export async function mockRampsContract(
         orderId: null,
       }),
     await server
-      .forGet(/http:\/\/provider-mock\.test\/widget/u)
+      .forGet(/https:\/\/provider-mock\.test\/widget/u)
       .always()
       .thenCallback(() => ({
         statusCode: 200,
