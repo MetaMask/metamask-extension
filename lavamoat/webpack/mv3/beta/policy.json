@@ -3280,6 +3280,14 @@
         "eslint>fast-deep-equal": true
       }
     },
+    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/transaction-pay-controller>@metamask/controller-utils": true
+      }
+    },
     "@metamask/rate-limit-controller": {
       "globals": {
         "setTimeout": true
@@ -3695,7 +3703,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/ramps-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
         "@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -5576,11 +5584,6 @@
       },
       "packages": {
         "storybook>recast>tiny-invariant": true
-      }
-    },
-    "css-loader": {
-      "globals": {
-        "btoa": true
       }
     },
     "currency-formatter": {

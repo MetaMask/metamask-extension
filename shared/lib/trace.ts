@@ -1,4 +1,5 @@
 import type * as Sentry from '@sentry/browser';
+import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
@@ -61,6 +62,8 @@ export enum TraceName {
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  // Initial document navigation to the first screen's useful content.
+  UsefulScreenReady = 'Useful Screen Ready',
   RevealSeed = 'Reveal Seed',
   ImportSrp = 'Import Srp',
   AddAccount = 'Add Account',
@@ -174,6 +177,7 @@ export enum TraceOperation {
   AccountDiscover = 'account.discover',
   HomepagePerformance = 'homepage.performance',
   HomepageSectionPerformance = 'homepage.section.performance',
+  UiScreenPerformance = 'ui.screen.performance',
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
@@ -315,6 +319,11 @@ export type EndTraceRequest = {
    * Override the end time of the trace.
    */
   timestamp?: number;
+
+  /**
+   * Final status to record on the span.
+   */
+  status?: 'ok' | 'error';
 
   /**
    * Custom data to associate with the trace when ending it.
@@ -502,6 +511,12 @@ export function endTrace(request: EndTraceRequest): void {
     for (const [attrKey, attrValue] of Object.entries(request.data)) {
       span.setAttribute(attrKey, attrValue);
     }
+  }
+
+  if (request.status && pendingTrace.span) {
+    pendingTrace.span.setStatus({
+      code: request.status === 'ok' ? SPAN_STATUS_OK : SPAN_STATUS_ERROR,
+    });
   }
 
   const endTime = timestamp ?? getPerformanceTimestamp();
