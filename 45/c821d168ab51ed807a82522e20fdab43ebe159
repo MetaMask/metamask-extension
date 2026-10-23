@@ -1,0 +1,32 @@
+test/e2e/playwright/llm-workflow/metamask-provider.test.ts
+  s_310e676dab3104::t_7f49cc250712e5 1-4,60-62,124-131,134-175
+  s_310e676dab3104::t_51961bbb1a8b8b 132-133
+AGENTS.md
+  s_310e676dab3104::t_e9bdb6bd82099e 1024-1027
+test/e2e/playwright/llm-workflow/capabilities/integration.test.ts
+  s_310e676dab3104::t_99fdd4ec7ccaf6 113,119-121
+test/e2e/playwright/llm-workflow/metamask-provider.ts
+  s_310e676dab3104::t_06627aee70f88d 528-533
+  s_310e676dab3104::t_d7ca8d05585241 21
+  s_310e676dab3104::t_8c0105ebfae35b 40
+test/e2e/playwright/llm-workflow/daemon.ts
+  s_310e676dab3104::t_956749e2c16951 3
+test/e2e/playwright/llm-workflow/README.md
+  s_310e676dab3104::t_e9bdb6bd82099e 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "45c821d168ab51ed807a82522e20fdab43ebe159",
+  "prompts": {},
+  "sessions": {
+    "s_310e676dab3104": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e96bbe3f1ffe1GnavpWLJSTOJA",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
