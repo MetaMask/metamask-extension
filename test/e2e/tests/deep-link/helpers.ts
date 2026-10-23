@@ -381,7 +381,6 @@ export const mockRewardsApi = async (server: Mockttp): Promise<void> => {
 };
 
 export const REDIRECT_ROUTES = [
-  { route: '/buy', expectedUrl: `${BaseUrl.Portfolio}/buy` },
   { route: '/card-onboarding', expectedUrl: `${BaseUrl.MetaMask}/card` },
 ] as const;
 
