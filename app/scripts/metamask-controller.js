@@ -2393,7 +2393,6 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi() {
     const {
-      accountsController,
       appStateController,
       nftController,
       nftDetectionController,
@@ -2467,25 +2466,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.dismissSidePanelMigrationToast.bind(
           preferencesController,
         ),
-
-      // AccountsController
-
-      setAccountName:
-        accountsController.setAccountName.bind(accountsController),
-
-      // AccountTreeController
-
-      syncAccountTreeWithUserStorage: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'AccountTreeController:syncWithUserStorage',
-      ),
-
-      // MultichainAccountService
-
-      alignMultichainWallets: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MultichainAccountService:alignWallets',
-      ),
 
       // NftController
 
