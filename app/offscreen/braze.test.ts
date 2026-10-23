@@ -198,13 +198,6 @@ describe('initBraze', () => {
       value: {
         runtime: {
           id: extensionId,
-          getManifest: () => ({
-            background: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              service_worker: 'service-worker.js',
-            },
-          }),
-          getURL: (path: string) => `chrome-extension://${extensionId}/${path}`,
           onMessage: {
             addListener: jest.fn((callback) => {
               listener = callback;
@@ -233,6 +226,21 @@ describe('initBraze', () => {
     expect(chrome.runtime.onMessage.addListener).not.toHaveBeenCalled();
   });
 
+  it('does not throw when registration fails', () => {
+    jest
+      .mocked(chrome.runtime.onMessage.addListener)
+      .mockImplementationOnce(() => {
+        throw new Error('registration failed');
+      });
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    expect(() => initBraze()).not.toThrow();
+    expect(console.error).toHaveBeenCalledWith(
+      'Braze initialization failed:',
+      expect.any(Error),
+    );
+  });
+
   it('responds to the service worker', async () => {
     initBraze();
     const sendResponse = jest.fn();
@@ -251,7 +259,11 @@ describe('initBraze', () => {
   it.each([
     [
       'a UI document',
-      { id: extensionId, url: 'chrome-extension://extension-id/home.html' },
+      {
+        id: extensionId,
+        url: 'chrome-extension://extension-id/home.html',
+        documentId: 'document-id',
+      },
     ],
     [
       'a content script',
