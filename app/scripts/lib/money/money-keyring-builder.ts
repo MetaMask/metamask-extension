@@ -131,12 +131,7 @@ export async function getMoneyAccountPrivateKey(
 export async function getMfaMoneyAccountEncryptionKey(
   moneyAccountPrivateKey: string,
 ): Promise<Uint8Array> {
-  // `hexToBytes` returns a view over `ArrayBufferLike`, which includes
-  // `SharedArrayBuffer`. WebCrypto's `BufferSource` only accepts an
-  // `ArrayBuffer`, so copy into a fresh one.
-  const privateKeyBytes = new Uint8Array(
-    hexToBytes(add0x(moneyAccountPrivateKey)),
-  );
+  const privateKeyBytes = hexToBytes(add0x(moneyAccountPrivateKey));
 
   if (privateKeyBytes.length !== AES_256_KEY_LENGTH) {
     throw new Error('Money account private key must be a 32-byte hex string');
