@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -14,7 +14,6 @@ import {
 import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockSetDataCollectionForMarketing = jest.fn();
-const mockGetMarketingConsent = jest.fn().mockResolvedValue(true);
 const mockTrackAnalyticsEvent = jest.fn();
 
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -46,8 +45,6 @@ jest.mock('../../../store/actions', () => ({
     mockSetDataCollectionForMarketing(val);
     return { type: 'MOCK_ACTION' };
   },
-  setMarketingConsent: jest.fn().mockResolvedValue(undefined),
-  getMarketingConsent: () => mockGetMarketingConsent(),
 }));
 
 const backgroundConnectionMock = new Proxy(
@@ -91,6 +88,17 @@ describe('DataCollectionToggleItem', () => {
 
     expect(
       screen.getByText(messages.dataCollectionForMarketingDescription.message),
+    ).toBeInTheDocument();
+  });
+
+  it('preserves the social-login marketing description', () => {
+    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
+    renderWithProvider(<DataCollectionToggleItem />, createMockStore());
+
+    expect(
+      screen.getByText(
+        messages.dataCollectionForMarketingDescriptionSocialLogin.message,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -156,16 +164,5 @@ describe('DataCollectionToggleItem', () => {
         }),
       }),
     );
-  });
-
-  it('fetches remote marketing consent on mount when social login flow is active', async () => {
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
-    const mockStore = createMockStore();
-    renderWithProvider(<DataCollectionToggleItem />, mockStore);
-
-    await waitFor(() => {
-      expect(mockGetMarketingConsent).toHaveBeenCalled();
-    });
-    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
   });
 });
