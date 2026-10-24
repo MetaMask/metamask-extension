@@ -77,6 +77,9 @@ class ActivityTab extends HomePage {
     testId: `transaction-details-status-${status}`,
   });
 
+  private readonly transactionWithStatus = (status: string) =>
+    `[data-testid="activity-list-item"][data-tx-status="${status}"]`;
+
   /**
    * This function checks a swap or bridge transaction's details
    *
@@ -504,13 +507,64 @@ class ActivityTab extends HomePage {
    * @param status - The expected transaction status: 'confirmed' (on-chain),
    * 'cancelled', or 'pending'. 'pending' is only for snap networks (e.g. BTC)
    * where updates are slow; these transactions come from the snap.
+   * @param options - Optional wait configuration.
+   * @param options.timeout - Maximum time to wait in milliseconds.
    */
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
+    { timeout = 5000 }: { timeout?: number } = {},
   ) {
-    await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
-      timeout: 5000,
+    await this.driver.waitForSelector(this.transactionWithStatus(status), {
+      timeout,
     });
+  }
+
+  /**
+   * Waits for the activity row with the exact amount to reach the given status.
+   *
+   * @param expectedAmount - Exact primary-currency amount identifying the row.
+   * @param status - The expected transaction status.
+   * @param options - Optional wait configuration.
+   * @param options.timeout - Maximum time to wait in milliseconds.
+   */
+  async checkWaitForTransactionStatusByAmount(
+    expectedAmount: string,
+    status: 'confirmed' | 'cancelled' | 'pending',
+    { timeout = 5000 }: { timeout?: number } = {},
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const transactions = await this.driver.findElements(
+            this.completedTransactions,
+          );
+
+          for (const transaction of transactions) {
+            const amount = await this.driver.findNestedElement(
+              transaction,
+              this.transactionAmountsInActivity,
+            );
+            if ((await amount.getText()) === expectedAmount) {
+              return (
+                (await transaction.getAttribute('data-tx-status')) === status
+              );
+            }
+          }
+
+          return false;
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            error.name === 'StaleElementReferenceError'
+          ) {
+            return false;
+          }
+
+          throw error;
+        }
+      },
+      { interval: 100, timeout },
+    );
   }
 
   /**

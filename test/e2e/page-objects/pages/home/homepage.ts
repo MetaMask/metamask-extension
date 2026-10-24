@@ -653,6 +653,15 @@ class HomePage {
     await this.driver.clickElement(this.portfolioLink);
   }
 
+  /**
+   * Refreshes the home page and waits for it to load again.
+   */
+  async refreshPage(): Promise<void> {
+    console.log('Refreshing home page');
+    await this.driver.refresh();
+    await this.checkPageIsLoaded();
+  }
+
   async startBridgeFlow(): Promise<void> {
     await this.driver.clickElement(this.bridgeButton);
   }
