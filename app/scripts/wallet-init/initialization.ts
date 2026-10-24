@@ -10,6 +10,7 @@ import {
 } from '../../../shared/constants/network';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { getAnalyticsControllerInstanceOptions } from './instance-options/analytics-controller';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
@@ -21,6 +22,7 @@ import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
@@ -75,6 +77,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
 
   const wallet = new Wallet({
     instanceOptions: {
+      analyticsController: getAnalyticsControllerInstanceOptions({
+        initMessenger: getAnalyticsControllerInitMessenger(messenger),
+        state,
+        platform,
+      }),
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
