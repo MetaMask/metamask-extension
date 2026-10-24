@@ -158,6 +158,7 @@ describe('initializeWallet', () => {
         keyringController: 'keyring-options',
         networkController: {
           infuraProjectId: 'fake-infura-project-id',
+          getBlockTrackerOptions: expect.any(Function),
           failoverUrls: {
             '0x1': [],
             '0x10e6': [],
