@@ -1,11 +1,9 @@
 import { strict as assert } from 'assert';
-import { merge } from 'lodash';
 import { MockttpServer } from 'mockttp';
 import { isHexString } from '@metamask/utils';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
-  DEFAULT_FIXTURE_ACCOUNT,
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   WINDOW_TITLES,
@@ -30,9 +28,9 @@ import { SECURITY_ALERTS_PROD_API_BASE_URL } from '../../../tests/ppom/constants
 
 /**
  * Triple-node write tests (8545/8546/7777) need cached native balances for 8546
- * and 7777. default-fixture.json only seeds AccountTracker for 8545 (0x539), so
- * gas checks see 0 ETH on 0x53a/0x3e8 → "Insufficient funds" → flaky "Review
- * alert" confirm. Seeds AccountTracker + AssetsController (~25 ETH) and disables
+ * and 7777. default-fixture.json only seeds AssetsController for 8545
+ * (eip155:1337), so gas checks see 0 ETH on 0x53a/0x3e8 → "Insufficient funds"
+ * → flaky "Review alert" confirm. Seeds AssetsController (~25 ETH) and disables
  * security alerts to avoid Blockaid races. Account 2 included on 0x53a for the
  * address-matching test on eip155:1338.
  */
@@ -65,39 +63,12 @@ const EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER = {
 };
 
 /** ~25 ETH, same as default-fixture.json on 8545. */
-const DEFAULT_LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE = '0x15af1d78b58c40000';
-
-const EXTRA_LOCAL_ANVIL_ACCOUNT_TRACKER = {
-  accountsByChainId: {
-    '0x53a': {
-      [DEFAULT_FIXTURE_ACCOUNT]: {
-        balance: DEFAULT_LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE,
-        stakedBalance: '0x0',
-      },
-      [ACCOUNT_2]: {
-        balance: DEFAULT_LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE,
-        stakedBalance: '0x0',
-      },
-    },
-    '0x3e8': {
-      [DEFAULT_FIXTURE_ACCOUNT]: {
-        balance: DEFAULT_LOCAL_ANVIL_ACCOUNT_TRACKER_BALANCE,
-        stakedBalance: '0x0',
-      },
-    },
-  },
-};
-
 function buildTripleNodeWriteOperationsFixtures() {
   const fixture = new FixtureBuilderV2()
     .withNetworkControllerTripleNode()
     .withAssetsController(EXTRA_LOCAL_ANVIL_ASSETS_CONTROLLER)
     .withPreferencesController({ securityAlertsEnabled: false })
     .build();
-
-  merge(fixture.data, {
-    AccountTracker: EXTRA_LOCAL_ANVIL_ACCOUNT_TRACKER,
-  });
 
   return fixture;
 }
