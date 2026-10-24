@@ -1,15 +1,10 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import {
   getTrendingTokens,
   searchTokens,
   type TrendingAsset,
 } from '@metamask/assets-controllers';
-import type { CaipChainId } from '@metamask/utils';
 
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { getIsStellarSupportEnabled } from '../../selectors/multichain/feature-flags';
 import {
   DISCOVER_SEARCH_CHAIN_IDS,
   DISCOVER_SEARCH_GC_TIME_MS,
@@ -84,26 +79,6 @@ const dedupeByAssetId = (assets: TrendingAsset[]): TrendingAsset[] => {
 };
 
 /**
- * Chain IDs for Discover crypto trending / search, excluding blocked chains
- * when they are not live (e.g. Stellar support is not enabled).
- * Mirrors mobile's `useTrendingChainIds`.
- */
-const useDiscoverSearchChainIds = (): CaipChainId[] => {
-  const isStellarSupportEnabled = useSelector(getIsStellarSupportEnabled);
-
-  return useMemo((): CaipChainId[] => {
-    const blockList = new Set<CaipChainId>();
-    if (!isStellarSupportEnabled) {
-      blockList.add(MultichainNetworks.STELLAR);
-    }
-
-    return DISCOVER_SEARCH_CHAIN_IDS.filter(
-      (chainId) => !blockList.has(chainId),
-    );
-  }, [isStellarSupportEnabled]);
-};
-
-/**
  * Crypto Discover feed: trending when query is empty, market-data search otherwise.
  * @param options0
  * @param options0.query
@@ -115,7 +90,7 @@ export const useDiscoverCryptoSearch = ({
 }: UseDiscoverCryptoSearchOptions): UseDiscoverCryptoSearchResult => {
   const trimmedQuery = query.trim();
   const isSearch = trimmedQuery.length > 0;
-  const chainIds = useDiscoverSearchChainIds();
+  const chainIds = DISCOVER_SEARCH_CHAIN_IDS;
 
   const trendingQuery = useQuery<TrendingAsset[], Error>({
     queryKey: [
