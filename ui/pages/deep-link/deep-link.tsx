@@ -22,6 +22,7 @@ import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common'
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
+import { getIsRampsEnabled } from '../../selectors/ramps-feature-flags';
 import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
@@ -55,6 +56,7 @@ const { getExtensionURL } = globalThis.platform;
  * @param t - The translation function.
  * @param abortController
  * @param setPageNotFoundError - The function to call when the destination is missing.
+ * @param isRampsEnabled - Whether the ramps feature is enabled (`rampsEnabled`).
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -67,12 +69,15 @@ async function updateStateFromUrl(
   t: TranslateFunction,
   abortController: AbortController,
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
+  isRampsEnabled: boolean,
 ) {
   try {
     const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
     const url = new URL(fullUrlStr);
     setIsLoading(true);
-    const parsed = await parse(url);
+    const parsed = await parse(url, {
+      getIsRampsEnabled: () => isRampsEnabled,
+    });
     if (abortController.signal.aborted) {
       return;
     }
@@ -146,6 +151,7 @@ export const DeepLink = () => {
     (state: MetaMaskReduxState) =>
       getPreferences(state).skipDeepLinkInterstitial,
   );
+  const isRampsEnabled = useSelector(getIsRampsEnabled);
 
   const [description, setDescription] = useState<string | null>(null);
   const [pageNotFoundError, setPageNotFoundError] = useState<boolean>(false);
@@ -234,6 +240,7 @@ export const DeepLink = () => {
         t,
         abortController,
         setPageNotFoundError,
+        isRampsEnabled,
       );
     };
 
@@ -241,7 +248,7 @@ export const DeepLink = () => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError]);
+  }, [location.search, t, setPageNotFoundError, isRampsEnabled]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);

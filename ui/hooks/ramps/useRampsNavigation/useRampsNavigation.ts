@@ -17,14 +17,20 @@ import {
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
+  getRampsTokens,
+  setRampsUserRegion,
+} from '../../../store/controller-actions/ramps-controller';
+import {
   getIsRampsEnabled,
   getIsRampsServiceDisruptionActive,
 } from '../../../selectors/ramps-feature-flags';
 import { getIsRampRegionUnsupported } from '../../../selectors/ramps';
 import {
+  selectCountries,
   selectRampsOrders,
   selectProviders,
   selectTokens,
+  selectUserRegion,
 } from '../../../selectors/rampsController';
 import {
   selectIsBackupAndSyncEnabled,
@@ -36,7 +42,7 @@ import {
   hasEverConnectedToPortfolio,
   markPortfolioBuyMigrationAttempted,
 } from '../utils/portfolioConnection';
-import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
+import { resolveRampControllerToken } from '../utils/resolveRampControllerToken';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -90,9 +96,9 @@ function isCatalogEmpty(
   return providersEmpty || tokensEmpty;
 }
 
-// Finds `assetId` in the catalog, ignoring EVM address casing: callers build
-// asset ids from a checksummed address while the API returns a mix of
-// checksummed (USDC, USDT) and lowercase (mUSD) ids.
+// Finds `assetId` in the catalog, returning the catalog's own token: caller
+// ids may differ in address casing, and deep link intents use the
+// `slip44:.` native placeholder vs the catalog's `slip44:{coinType}`.
 function findCatalogToken(
   tokensData: TokensResponse | null,
   assetId: CaipAssetType,
@@ -101,10 +107,7 @@ function findCatalogToken(
     ...(tokensData?.topTokens ?? []),
     ...(tokensData?.allTokens ?? []),
   ];
-  return catalog.find(
-    (token) =>
-      normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
-  );
+  return resolveRampControllerToken(assetId, catalog);
 }
 
 // Pre-select the token before navigating to build-quote. Fail closed so a
@@ -124,7 +127,8 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
- * {@link RampIntent}. It runs the gate and either shows a blocking modal or
+ * {@link RampIntent} and an optional `{ replace }` (replace the history entry
+ * instead of pushing). It runs the gate and either shows a blocking modal or
  * opens the buy destination. Resolves to the destination when it proceeded and
  * `false` when a blocking modal was shown.
  */
@@ -139,18 +143,38 @@ export default function useRampsNavigation() {
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
   const rampsOrders = useSelector(selectRampsOrders);
+  const userRegion = useSelector(selectUserRegion);
+  const countries = useSelector(selectCountries);
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
   const portfolioMigrationRef = useRef<Promise<boolean> | null>(null);
 
   const goToBuy = useCallback(
-    async (intent?: RampIntent): Promise<RampsNavigationResult> => {
+    async (
+      intent?: RampIntent,
+      // `replace` swaps the history entry, so the deep-link entry page can't
+      // be navigated back to. `portfolioRedirectUrl` overrides the generic
+      // Portfolio buy URL used when the buy leaves the extension (the rollout
+      // gate off, or the one-time Portfolio order migration), so e.g. `/buy`
+      // deep-link params survive the redirect.
+      {
+        replace = false,
+        portfolioRedirectUrl,
+      }: { replace?: boolean; portfolioRedirectUrl?: string } = {},
+    ): Promise<RampsNavigationResult> => {
+      // Opens Portfolio: the deep link's own redirect URL when present (its
+      // params survive), the generic buy URL otherwise. `getBuyURI` accepts
+      // any hex chain id; the narrower `ChainId` param is just an over-tight
+      // annotation.
+      const openPortfolio = () =>
+        portfolioRedirectUrl
+          ? global.platform.openTab({ url: portfolioRedirectUrl })
+          : openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
-        // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
-        // just an over-tight annotation.
-        await openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+        await openPortfolio();
         return 'portfolio';
       }
 
@@ -169,9 +193,7 @@ export default function useRampsNavigation() {
             if (await hasAttemptedPortfolioBuyMigration()) {
               return false;
             }
-            await openBuyCryptoInPdapp(
-              intent?.chainId as ChainId | CaipChainId,
-            );
+            await openPortfolio();
             // Record the attempt only after Portfolio was opened so a failed
             // open does not permanently consume the one-time migration.
             await markPortfolioBuyMigrationAttempted();
@@ -210,7 +232,7 @@ export default function useRampsNavigation() {
         return false;
       }
 
-      // 4. Providers/tokens fetched but empty. `tokens.data === null` means
+      // 4. Providers/tokens fetched but empty. A null `tokens.data` means
       // providers/tokens haven't been fetched yet (fetched together by the
       // native flow), so fail open and skip this check entirely until then.
       // A fetch error also fails open (mobile parity) — an empty result only
@@ -225,17 +247,38 @@ export default function useRampsNavigation() {
       // 5. Route into the native buy flow.
       const assetId = intent?.assetId;
       if (!assetId) {
-        // No specific asset → token selection page.
-        navigate(RAMPS_TOKEN_SELECTION_ROUTE);
+        // No specific asset → token selection page (it loads the catalog).
+        navigate(RAMPS_TOKEN_SELECTION_ROUTE, { replace });
         return 'native';
       }
 
-      // Resolve against the catalog. Only block on a settled catalog that
-      // definitively lacks/unsupports the token — an unsettled catalog fails
-      // open (proceed with it selected, page re-resolves).
-      const catalogToken = findCatalogToken(tokens.data, assetId);
+      // `tokens` isn't persisted, and `setSelectedToken` requires both a
+      // fetched catalog and a region in controller state, so skip the fetch
+      // when no region is resolvable. Seed one via `setUserRegion` only when
+      // the countries list is loaded — it normalizes the geolocation into the
+      // controller's region code, and an unknown location fails the seeding.
+      let fetchedTokens: TokensResponse | null = null;
+      if (!tokens.data) {
+        const region =
+          userRegion?.regionCode ??
+          (countries.data?.length
+            ? (await setRampsUserRegion(location).catch(() => null))?.regionCode
+            : undefined);
+        if (region) {
+          fetchedTokens = await getRampsTokens(region, 'buy').catch(() => null);
+        }
+      }
+
+      // Resolve against the catalog. Block on one that definitively lacks or
+      // does not support the token — either the rendered catalog settled
+      // (checked above), or the catalog we just fetched. Otherwise fail open
+      // (proceed with it selected, page re-resolves).
+      const catalogToken = findCatalogToken(
+        fetchedTokens ?? tokens.data,
+        assetId,
+      );
       if (
-        catalogData &&
+        (catalogData || fetchedTokens) &&
         (!catalogToken || catalogToken.tokenSupported === false)
       ) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
@@ -254,6 +297,7 @@ export default function useRampsNavigation() {
       }
       navigate(RAMPS_BUILD_QUOTE_ROUTE, {
         state: { assetId: selectedAssetId },
+        replace,
       });
       return 'native';
     },
@@ -264,6 +308,8 @@ export default function useRampsNavigation() {
       providers,
       tokens,
       rampsOrders,
+      userRegion,
+      countries,
       everConnectedToPortfolio,
       isBackupAndSyncEnabled,
       isRampsSyncingEnabled,

@@ -91,6 +91,7 @@ import {
   MFA_FLOW_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
+import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../../../shared/lib/deep-links/common';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
 import { isMfaKitEnabled } from '../../hooks/identity/mfa';
 import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
@@ -244,6 +245,9 @@ const RampsTokenSelection = mmLazy(
 );
 const RampsPaymentMethod = mmLazy(
   () => import('../ramps/payment-method/index.ts'),
+);
+const BuyDeepLinkEntry = mmLazy(
+  () => import('../ramps/buy-deeplink-entry/index.ts'),
 );
 const RampsCompleteBuy = mmLazy(() => import('../ramps/complete-buy/index.ts'));
 const PermissionsPage = mmLazy(
@@ -647,6 +651,10 @@ export const routeConfig = [
               {
                 path: RAMPS_PAYMENT_METHOD_ROUTE,
                 element: <RampsPaymentMethod />,
+              },
+              {
+                path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
+                element: <BuyDeepLinkEntry />,
               },
             ],
           },

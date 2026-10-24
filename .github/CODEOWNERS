@@ -104,6 +104,7 @@ ui/selectors/rampsController/                         @MetaMask/money-movement
 ui/store/controller-actions/ramps-controller*         @MetaMask/money-movement
 app/scripts/messenger-client-init/ramps-*             @MetaMask/money-movement
 app/scripts/messenger-client-init/messengers/ramps-*  @MetaMask/money-movement
+shared/lib/deep-links/routes/buy*                      @MetaMask/money-movement
 test/e2e/tests/btc/mocks/ramps.ts                     @MetaMask/money-movement
 **/ramps/**                                           @MetaMask/money-movement
 

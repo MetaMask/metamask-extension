@@ -14,6 +14,7 @@ import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
+import { getIsRampsEnabled } from '../../../../shared/lib/selectors/ramps';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -176,7 +177,12 @@ export class DeepLinkRouter extends EventEmitter<{
     try {
       const url = new URL(urlStr);
 
-      const parsed = await parse(url);
+      const parsed = await parse(url, {
+        // Lazy so only `/buy` (the one route that reads the flag) pays for
+        // the controller-state read — see the MV3 note above.
+        getIsRampsEnabled: () =>
+          getIsRampsEnabled({ metamask: this.getState() }),
+      });
       if (parsed) {
         this.emit('navigate', { url, parsed });
 

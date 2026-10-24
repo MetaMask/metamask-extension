@@ -21,10 +21,12 @@ function toInternalHref(path: string, query: URLSearchParams): string {
  * content without explicit, documented approval from the MetaMask Extension
  * Security team.
  *
- * @param href
+ * @param href - The link href to resolve.
+ * @param isRampsEnabled - Whether the ramps feature is enabled; with it on, `/buy` resolves to the in-app entry route.
  */
 export async function resolveTrustedDeepLinkHref(
   href: string,
+  isRampsEnabled: boolean,
 ): Promise<string> {
   if (isInternalRouteHref(href)) {
     return href;
@@ -39,6 +41,7 @@ export async function resolveTrustedDeepLinkHref(
 
     const parsed = await parse(url, {
       navigationOrigin: NavigationOrigin.INTERNAL,
+      getIsRampsEnabled: () => isRampsEnabled,
     });
 
     if (!parsed) {
