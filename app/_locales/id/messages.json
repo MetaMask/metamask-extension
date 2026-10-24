@@ -4531,9 +4531,6 @@
     "message": "Perangkat $1 Anda telah dibuka",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletErrorRecoveryTitle": {
-    "message": "Lanjut untuk memastikan:"
-  },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Perangkat $1 Anda telah dibuka",
     "description": "$1 is the hardware wallet type"

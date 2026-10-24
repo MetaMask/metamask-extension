@@ -4531,9 +4531,6 @@
     "message": "$1デバイスのロックが解除されています",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletErrorRecoveryTitle": {
-    "message": "引き続き次のことを確認します:"
-  },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "$1デバイスのロックが解除されています",
     "description": "$1 is the hardware wallet type"

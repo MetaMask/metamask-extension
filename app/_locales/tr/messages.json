@@ -4531,9 +4531,6 @@
     "message": "$1 cihazınızın kilidi açıldı",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletErrorRecoveryTitle": {
-    "message": "Devam edin ve aşağıdakilerden emin olun:"
-  },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "$1 cihazınızın kilidi açıldı",
     "description": "$1 is the hardware wallet type"
