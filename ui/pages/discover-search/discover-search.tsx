@@ -882,6 +882,7 @@ export const DiscoverSearchPage = () => {
           inputProps={
             {
               'data-testid': 'discover-search-input',
+              'aria-label': t('searchTokens'),
               spellCheck: false,
             } as React.ComponentPropsWithoutRef<'input'>
           }

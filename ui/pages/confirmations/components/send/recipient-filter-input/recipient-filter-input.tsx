@@ -1,6 +1,5 @@
 import React from 'react';
 import { TextFieldSearch } from '@metamask/design-system-react';
-import { Box } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type RecipientFilterInputProps = {
@@ -15,19 +14,20 @@ export const RecipientFilterInput = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingInline={4} paddingBottom={4}>
+    <search className="p-4">
       <TextFieldSearch
         className="w-full"
         clearButtonOnClick={() => onChange('')}
         inputProps={
           {
             'data-testid': 'recipient-filter-search-input',
+            'aria-label': t('searchAnAcccountOrContact'),
           } as React.ComponentPropsWithoutRef<'input'>
         }
         onChange={(event) => onChange(event.target.value)}
         placeholder={t('searchAnAcccountOrContact')}
         value={searchQuery}
       />
-    </Box>
+    </search>
   );
 };

@@ -36,13 +36,7 @@ export const Search = ({
   const t = useI18nContext();
 
   return (
-    <Box
-      paddingTop={4}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingBottom={2}
-      {...props}
-    >
+    <search className="px-4 pt-4 pb-2" {...props}>
       <TextFieldSearch
         autoFocus={autoFocus}
         className="w-full"
@@ -50,6 +44,9 @@ export const Search = ({
         inputProps={
           {
             'data-testid': 'asset-picker-modal-search-input',
+            'aria-label':
+              placeholder ??
+              t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress'),
           } as React.ComponentPropsWithoutRef<'input'>
         }
         onChange={(event) => onChange(event.target.value)}
@@ -60,6 +57,6 @@ export const Search = ({
         size={TextFieldSize.Lg}
         value={searchQuery}
       />
-    </Box>
+    </search>
   );
 };

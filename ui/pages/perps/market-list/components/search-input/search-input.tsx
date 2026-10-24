@@ -53,6 +53,7 @@ export const SearchInput = ({
       inputProps={
         {
           'data-testid': 'search-input',
+          'aria-label': t('perpsSearchMarkets'),
           onClick: onInputClick,
           onKeyDown: handleKeyDown,
         } as React.ComponentPropsWithoutRef<'input'>
