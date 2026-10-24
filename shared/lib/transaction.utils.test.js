@@ -80,6 +80,21 @@ describe('Transaction.utils', function () {
       expect(result.args._spender).toBe(ADDRESS_MOCK);
       expect(result.args._addedValue.toString()).toBe(AMOUNT_MOCK.toString());
     });
+
+    it('prioritizes ERC-721 interface when standard is erc721', () => {
+      // transferFrom(ADDRESS_MOCK, ADDRESS_2_MOCK, tokenId: 42)
+      const data =
+        '0x23b872dd00000000000000000000000011111111111111111111111111111111111111110000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002a';
+      const erc721Result = parseStandardTokenTransactionData(data, 'erc721');
+      expect(erc721Result.name).toBe('transferFrom');
+      expect(erc721Result.args._tokenId.toString()).toBe('42');
+      expect(erc721Result.args._value).toBeUndefined();
+
+      const defaultResult = parseStandardTokenTransactionData(data);
+      expect(defaultResult.name).toBe('transferFrom');
+      expect(defaultResult.args._value.toString()).toBe('42');
+      expect(defaultResult.args._tokenId).toBeUndefined();
+    });
   });
 
   describe('isEIP1559Transaction', function () {

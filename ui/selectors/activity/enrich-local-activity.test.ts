@@ -7,6 +7,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
@@ -25,6 +26,15 @@ const MUSD_APPROVE_DATA =
 // transfer(recipient, 5 mUSD)
 const MUSD_TRANSFER_DATA =
   '0xa9059cbb000000000000000000000000222222222222222222222222222222222222222200000000000000000000000000000000000000000000000000000000004c4b40';
+// transferFrom(sender, recipient, tokenId: 42)
+const ERC721_TRANSFER_FROM_DATA =
+  '0x23b872dd00000000000000000000000011111111111111111111111111111111111111110000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002a';
+// safeTransferFrom(sender, recipient, tokenId: 42)
+const ERC721_SAFE_TRANSFER_FROM_DATA =
+  '0x42842e0e00000000000000000000000011111111111111111111111111111111111111110000000000000000000000002222222222222222222222222222222222222222000000000000000000000000000000000000000000000000000000000000002a';
+// safeTransferFrom(sender, recipient, id: 1, amount: 5, data: '')
+const ERC1155_SAFE_TRANSFER_FROM_DATA =
+  '0xf242432a000000000000000000000000111111111111111111111111111111111111111100000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000';
 
 function buildTokenTransferGroup(
   overrides: Partial<TransactionMeta> = {},
@@ -55,6 +65,61 @@ function buildTokenTransferGroup(
     transactions: [transaction],
     contractTokenMetadata: { symbol: 'DAI', decimals: 18 },
   };
+}
+
+type TokenAssetStandard = 'erc20' | 'erc721' | 'erc1155';
+
+function buildTokenTransferActivity(
+  standard: TokenAssetStandard,
+): ActivityListItem {
+  return {
+    type: 'send',
+    chainId: 'eip155:1',
+    status: 'success',
+    timestamp: 1,
+    data: {
+      from: '0x1111111111111111111111111111111111111111',
+      to: DAI_ADDRESS,
+      token: {
+        direction: 'out',
+        assetId: `eip155:1/${standard}:${DAI_ADDRESS}`,
+      },
+    },
+  } as ActivityListItem;
+}
+
+function expectTokenTransferActivity({
+  type,
+  data,
+  standard,
+  amount,
+}: {
+  type: TransactionType;
+  data: string;
+  standard: TokenAssetStandard;
+  amount: string;
+}) {
+  const group = buildTokenTransferGroup({
+    type,
+    txParams: {
+      from: '0x1111111111111111111111111111111111111111',
+      to: DAI_ADDRESS,
+      data,
+      value: '0x0',
+    },
+  });
+  const enriched = enrichLocalActivity(
+    buildTokenTransferActivity(standard),
+    group,
+  );
+
+  expect(enriched.data).toMatchObject({
+    to: RECIPIENT,
+    token: {
+      direction: 'out',
+      amount,
+    },
+  });
 }
 
 describe('enrichLocalActivity', () => {
@@ -113,6 +178,195 @@ describe('enrichLocalActivity', () => {
 
     expect(enriched.data).toMatchObject({
       token: { amount: '123', symbol: 'DAI', decimals: 18 },
+    });
+  });
+
+  it('enriches ERC-721 transferFrom with amount 1 and recipient from calldata', () => {
+    expectTokenTransferActivity({
+      type: TransactionType.tokenMethodTransferFrom,
+      data: ERC721_TRANSFER_FROM_DATA,
+      standard: 'erc721',
+      amount: '1',
+    });
+  });
+
+  it('enriches ERC-721 safeTransferFrom with amount 1 and recipient from calldata', () => {
+    expectTokenTransferActivity({
+      type: TransactionType.tokenMethodSafeTransferFrom,
+      data: ERC721_SAFE_TRANSFER_FROM_DATA,
+      standard: 'erc721',
+      amount: '1',
+    });
+  });
+
+  it('enriches ERC-1155 safeTransferFrom with parsed amount and recipient from calldata', () => {
+    expectTokenTransferActivity({
+      type: TransactionType.tokenMethodSafeTransferFrom,
+      data: ERC1155_SAFE_TRANSFER_FROM_DATA,
+      standard: 'erc1155',
+      amount: '5',
+    });
+  });
+
+  it('enriches ERC-721 transferFrom via simulation data when local assetId shows erc20', () => {
+    // Covers the primary bug: local mapper always emits /erc20: for contract
+    // addresses, but simulation data is authoritative and identifies the token
+    // as erc721. Amount must be '1', not the token ID '42'.
+    const group = {
+      ...buildTokenTransferGroup({
+        type: TransactionType.tokenMethodTransferFrom,
+        txParams: {
+          from: '0x1111111111111111111111111111111111111111',
+          to: DAI_ADDRESS,
+          data: ERC721_TRANSFER_FROM_DATA,
+          value: '0x0',
+        },
+        simulationData: {
+          tokenBalanceChanges: [
+            {
+              address: DAI_ADDRESS,
+              standard: 'erc721',
+              id: '0x2a',
+              difference: '0x1',
+              isDecrease: true,
+            },
+          ],
+        },
+      }),
+      contractTokenMetadata: undefined,
+    };
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: DAI_ADDRESS,
+        token: {
+          direction: 'out',
+          assetId: `eip155:1/erc20:${DAI_ADDRESS}`,
+        },
+      },
+    } as ActivityListItem;
+
+    const enriched = enrichLocalActivity(activity, group);
+    expect(enriched.data).toMatchObject({
+      to: RECIPIENT,
+      token: { amount: '1' },
+    });
+  });
+
+  it('enriches MetaMask-created pending ERC-721 transferFrom without simulation data', () => {
+    // MetaMask's send flow tags the transaction with origin: ORIGIN_METAMASK
+    // and type: tokenMethodTransferFrom (which is only used for ERC-721 in MM).
+    // This provides a positive standard signal even when simulation has not run,
+    // ensuring amount '1' is displayed instead of the token ID '42'.
+    const group = {
+      ...buildTokenTransferGroup({
+        type: TransactionType.tokenMethodTransferFrom,
+        origin: ORIGIN_METAMASK,
+        txParams: {
+          from: '0x1111111111111111111111111111111111111111',
+          to: DAI_ADDRESS,
+          data: ERC721_TRANSFER_FROM_DATA,
+          value: '0x0',
+        },
+      }),
+      contractTokenMetadata: undefined,
+    };
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: DAI_ADDRESS,
+        token: {
+          direction: 'out',
+          assetId: `eip155:1/erc20:${DAI_ADDRESS}`, // local mapper default
+        },
+      },
+    } as ActivityListItem;
+
+    const enriched = enrichLocalActivity(activity, group);
+    expect(enriched.data).toMatchObject({
+      to: RECIPIENT,
+      token: { amount: '1' },
+    });
+  });
+
+  it('defaults ambiguous dApp transferFrom calldata to ERC-20 decoding without a standard signal', () => {
+    // When a dApp initiates transferFrom on an unwatched ERC-20 with no simulation data,
+    // the origin is the dApp (not ORIGIN_METAMASK). The parser defaults to ERC-20
+    // and returns the third argument as _value. This ensures dApp ERC-20 transfers
+    // are not misclassified as NFTs.
+    const group = {
+      ...buildTokenTransferGroup({
+        type: TransactionType.tokenMethodTransferFrom,
+        origin: 'https://app.uniswap.org',
+        txParams: {
+          from: '0x1111111111111111111111111111111111111111',
+          to: DAI_ADDRESS,
+          data: ERC721_TRANSFER_FROM_DATA,
+          value: '0x0',
+        },
+      }),
+      contractTokenMetadata: undefined,
+    };
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: DAI_ADDRESS,
+        token: { direction: 'out' },
+      },
+    } as ActivityListItem;
+
+    const enriched = enrichLocalActivity(activity, group);
+    // ERC-20 decode returns _value = 42; must NOT be misclassified as '1'
+    expect(enriched.data).toMatchObject({ token: { amount: '42' } });
+  });
+
+  it('enriches ERC-721 safeTransferFrom via hasTokenId when no standard signal is available', () => {
+    // ERC-721 safeTransferFrom uses selector 0x42842e0e (distinct from ERC-20),
+    // so the parser always returns _tokenId. hasTokenId can safely detect NFT
+    // here even without simulation data, assetType, or /erc721: assetId.
+    const group = {
+      ...buildTokenTransferGroup({
+        type: TransactionType.tokenMethodSafeTransferFrom,
+        txParams: {
+          from: '0x1111111111111111111111111111111111111111',
+          to: DAI_ADDRESS,
+          data: ERC721_SAFE_TRANSFER_FROM_DATA,
+          value: '0x0',
+        },
+      }),
+      contractTokenMetadata: undefined,
+    };
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: DAI_ADDRESS,
+        token: {
+          direction: 'out',
+          assetId: `eip155:1/erc20:${DAI_ADDRESS}`, // local mapper always emits erc20
+        },
+      },
+    } as ActivityListItem;
+
+    const enriched = enrichLocalActivity(activity, group);
+    expect(enriched.data).toMatchObject({
+      to: RECIPIENT,
+      token: { amount: '1' },
     });
   });
 
