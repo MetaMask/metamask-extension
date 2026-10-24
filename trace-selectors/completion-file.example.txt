@@ -1,0 +1,7 @@
+# Completion file example
+# One file path per line (relative to repo root). These files are excluded from the trace report.
+# Use this to re-run the script and get a report of remaining files to migrate.
+#
+# Example (uncomment and add your migrated paths):
+# ui/components/app/alerts/unconnected-account-alert/unconnected-account-alert.js
+# ui/pages/confirmations/hooks/useCurrentConfirmation.ts
