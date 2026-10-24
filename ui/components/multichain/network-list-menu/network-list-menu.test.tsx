@@ -13,6 +13,7 @@ import {
   LINEA_SEPOLIA_DISPLAY_NAME,
   MONAD_DISPLAY_NAME,
   MONAD_TESTNET_DISPLAY_NAME,
+  BIGHIVE_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -269,6 +270,35 @@ describe('NetworkListMenu', () => {
   it('renders mainnet item', () => {
     const { getByText } = render();
     expect(getByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();
+  });
+
+  it('offers Bighive Mainnet in additional networks', () => {
+    const { getByText } = render({ includeCustomNetworks: false });
+
+    const additionalNetworksHeader = getByText(
+      messages.additionalNetworks.message,
+    );
+    const bighiveNetwork = getByText(BIGHIVE_DISPLAY_NAME);
+
+    expect(bighiveNetwork).toBeInTheDocument();
+    expect(
+      additionalNetworksHeader.compareDocumentPosition(bighiveNetwork),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
+  it('finds Bighive Mainnet when searching additional networks', async () => {
+    const { getByText, getByPlaceholderText, queryByText } = render({
+      includeCustomNetworks: false,
+    });
+
+    const searchBox = getByPlaceholderText(messages.search.message);
+    fireEvent.focus(searchBox);
+    fireEvent.change(searchBox, { target: { value: 'Bighive' } });
+
+    await waitFor(() => {
+      expect(getByText(BIGHIVE_DISPLAY_NAME)).toBeInTheDocument();
+      expect(queryByText('Avalanche')).not.toBeInTheDocument();
+    });
   });
 
   it('does not render the custom networks section when there are no custom networks', () => {
