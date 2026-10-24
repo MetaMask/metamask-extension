@@ -65,6 +65,11 @@ export class TestDappBitcoin {
     testId: dataTestIds.testPage.signMessage.message,
   };
 
+  private readonly metamaskReadySelector = {
+    xpath:
+      '//*[@data-testid="testpage.header.metamaskready" and normalize-space(text())="ready"]',
+  };
+
   private readonly metamaskWalletOptionSelector = {
     testId: dataTestIds.testPage.walletSelectionModal.walletOption,
     text: 'MetaMask',
@@ -128,6 +133,7 @@ export class TestDappBitcoin {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.networkSelector);
+      await this.waitForMetaMaskReady();
     } catch (e) {
       console.log(
         'Timeout while waiting for Bitcoin Test Dapp page to be loaded',
@@ -261,5 +267,13 @@ export class TestDappBitcoin {
       ...this.transactionHashSelector,
       text: transactionHash,
     });
+  }
+
+  /**
+   * Wait until the dapp has registered the MetaMask wallet as ready, so
+   * connect actions never race the wallet discovery.
+   */
+  async waitForMetaMaskReady(): Promise<void> {
+    await this.driver.waitForSelector(this.metamaskReadySelector);
   }
 }
