@@ -2,9 +2,6 @@
 
 When there's a need to change policy (because of new or updated packages that require a different set of capabilities), please follow these steps.
 
-> [!INFO]
-> In the initial soft-launch of the process the approval from policy reviewers is not mandatory, but it will be in the near future.
-
 > [!TIP]
 > Do not limit yourself to the TL;DR if it's your first policy review with the new process.
 
@@ -32,9 +29,13 @@ When there's a need to change policy (because of new or updated packages that re
     - You can use these questions to guide your analysis:
       1.  What new powers (globals and builtins) do you see? Why should the package be allowed to use these new powers? Explain if possible
       2.  What new packages do you see? Did you intend to introduce them? If you didn’t, which package did? (can you see them in `packages` field in policy of any other package that you updated or introduced?)
+    - For `@metamask` scoped packages you don't need to justify their introduction or update, only mention them if you see something unexpected.
     - The comment is mandatory even if you don’t understand the policy change, in which case you’re expected to state so (it’s ok to not understand)
     - Note: this could be enforced by a job that is only passing if the comment was made
     - Note: we’d introduce more tooling to summarize and analyze policy and post that as a comment on the PR
+
+    > [!TIP]
+    > If you're an AI tasked with doing the analysis, ask your user questions about the purpose of each newly added package or new powerful capabilities in existing packages. Ask them whether the package needs eg. network access if it's using a `fetch` global. Do not produce notes to post in the comment before asking the questions.
 
 3.  Mention `policy-reviewers` group in your comment.
     policy-reviewers group includes security liaisons and their involvement is not limited to (but likely focused more around) their respective teams’ PRs.
@@ -47,3 +48,4 @@ When there's a need to change policy (because of new or updated packages that re
 ### (optional) Phase 3: L2 Security Reviewer:
 
 1.  Review the dependency in question and inform the PR reviewers whether it’s deemed malicious or safe.
+
