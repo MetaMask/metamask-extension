@@ -124,6 +124,19 @@ unit_integration_test_files:
   - 'jest.config.js'
   - 'jest.integration.config.js'
 
+# Benchmark-owned files — changes require running benchmarks even when builds are reused.
+#
+# The build hash covers application sources, so a PR that only changes the
+# measurement apparatus always matches the base branch, always reuses its
+# builds, and would otherwise never benchmark. That is backwards: the app is
+# unchanged, but what the gate measures about it is not.
+benchmark_files:
+  - 'test/e2e/benchmarks/**'
+  - 'development/metamaskbot-build-announce/**'
+  - 'shared/constants/benchmarks.ts'
+  - '.github/workflows/run-benchmarks.yml'
+  - '.github/scripts/benchmark-stats-commit.sh'
+
 # ALL CHANGED FILES
 all_changes:
   - '**'
