@@ -41,7 +41,7 @@ describe('Test Snap manageState', function () {
         );
         await testSnaps.fillMessage('setStateKeyInput', 'baz');
         await testSnaps.fillMessage('dataStateInput', '"qux"');
-        await testSnaps.scrollAndClickButton('sendStateButton');
+        await testSnaps.clickButton('sendStateButton');
         await testSnaps.checkMessageResultSpan(
           'encryptedStateResultSpan',
           JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
@@ -54,7 +54,7 @@ describe('Test Snap manageState', function () {
 
         // Retrieve two state keys and validate
         await testSnaps.fillMessage('getStateInput', 'foo,baz');
-        await testSnaps.scrollAndClickButton('sendGetStateButton');
+        await testSnaps.clickButton('sendGetStateButton');
         await testSnaps.checkMessageResultSpan(
           'getStateResultSpan',
           JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
@@ -77,7 +77,7 @@ describe('Test Snap manageState', function () {
         );
         await testSnaps.fillMessage('setStateKeyUnencryptedInput', 'baz');
         await testSnaps.fillMessage('dataUnencryptedStateInput', '"qux"');
-        await testSnaps.scrollAndClickButton('sendUnencryptedStateButton');
+        await testSnaps.clickButton('sendUnencryptedStateButton');
         await testSnaps.checkMessageResultSpan(
           'unencryptedStateResultSpan',
           JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
@@ -91,7 +91,7 @@ describe('Test Snap manageState', function () {
         );
 
         await testSnaps.fillMessage('getUnencryptedStateInput', 'foo,baz');
-        await testSnaps.scrollAndClickButton('sendGetUnencryptedStateButton');
+        await testSnaps.clickButton('sendGetUnencryptedStateButton');
         await testSnaps.checkMessageResultSpan(
           'getStateUnencryptedResultSpan',
           JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
