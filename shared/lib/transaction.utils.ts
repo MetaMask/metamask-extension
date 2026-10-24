@@ -166,23 +166,52 @@ export function getMarketFeeFromEstimates(
   }
 }
 
+export type StandardTokenStandard = 'erc20' | 'erc721' | 'erc1155';
+
 /**
  * Attempts to decode transaction data using ABIs for three different token standards: ERC20, ERC721, ERC1155.
  * The data will decode correctly if the transaction is an interaction with a contract that matches one of these
  * contract standards
  *
  * @param data - encoded transaction data
+ * @param preferredStandard - Optional token standard ('erc20' | 'erc721' | 'erc1155').
+ *   When provided, the matching ABI interface is tried first so that shared
+ *   selectors (e.g. transferFrom, selector 0x23b872dd shared by ERC-20 and
+ *   ERC-721) are decoded with the correct field names (_tokenId vs _value).
  * @returns TransactionDescription | undefined
  */
-export function parseStandardTokenTransactionData(data: string) {
-  const interfaces = [
-    erc20Interface,
-    erc721Interface,
-    erc1155Interface,
+export function parseStandardTokenTransactionData(
+  data: string,
+  preferredStandard?: StandardTokenStandard | (string & {}),
+) {
+  const standardInterfaces = {
+    erc20: erc20Interface,
+    erc721: erc721Interface,
+    erc1155: erc1155Interface,
+  };
+
+  const fallbackInterfaces = [
     USDCInterface,
     permit2Interface,
     legacyApprovalInterface,
   ];
+
+  const normalized = preferredStandard?.toLowerCase().replaceAll('-', '');
+
+  const preferred =
+    normalized && normalized in standardInterfaces
+      ? standardInterfaces[normalized as keyof typeof standardInterfaces]
+      : undefined;
+
+  const interfaces = preferred
+    ? [
+        preferred,
+        ...Object.values(standardInterfaces).filter(
+          (tokenInterface) => tokenInterface !== preferred,
+        ),
+        ...fallbackInterfaces,
+      ]
+    : [...Object.values(standardInterfaces), ...fallbackInterfaces];
 
   for (const iface of interfaces) {
     try {

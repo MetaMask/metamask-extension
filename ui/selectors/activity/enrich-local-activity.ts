@@ -4,6 +4,7 @@ import {
   MUSD_TOKEN_ASSET_ID_BY_CHAIN,
 } from '@metamask/money-account-utils';
 import { TransactionType } from '@metamask/transaction-controller';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import type {
   ActivityListItem,
   FiatAmount,
@@ -38,7 +39,7 @@ function enrichTokenTransferActivity(
     return activity;
   }
 
-  const { type, txParams, transferInformation } =
+  const { type, txParams, transferInformation, origin } =
     transactionGroup.initialTransaction;
   const data = txParams?.data;
 
@@ -46,12 +47,67 @@ function enrichTokenTransferActivity(
     return activity;
   }
 
-  const transactionData = parseStandardTokenTransactionData(data);
+  const tokenContract =
+    transactionGroup.initialTransaction.transferInformation?.contractAddress ??
+    txParams?.to;
+  const simulationStandard =
+    tokenContract === undefined
+      ? undefined
+      : transactionGroup.initialTransaction.simulationData?.tokenBalanceChanges?.find(
+          (change) =>
+            change.address.toLowerCase() === tokenContract.toLowerCase(),
+        )?.standard;
+  // MetaMask's send flow exclusively uses tokenMethodTransferFrom for ERC-721
+  // sends (ERC-20 uses tokenMethodTransfer) and tags the transaction with
+  // origin: ORIGIN_METAMASK. This positive signal identifies wallet-created
+  // pending NFT sends even when simulation data is not yet available, while
+  // protecting external dApp ERC-20 transferFrom transactions.
+  const isMetaMaskErc721Send =
+    type === TransactionType.tokenMethodTransferFrom &&
+    origin === ORIGIN_METAMASK;
+  const preferredStandard =
+    simulationStandard ??
+    (isMetaMaskErc721Send ? 'erc721' : undefined) ??
+    activity.data.token?.assetType ??
+    // NOTE: The assetId check is only reliable for API-fetched historical txns.
+    // The local mapper (mapLocalTransaction) hardcodes 'erc20' in the CAIP
+    // asset type for all contract addresses, so this is always false for
+    // pending transactions.
+    (activity.data.token?.assetId?.includes('/erc721:') ? 'erc721' : undefined);
+
+  const transactionData = parseStandardTokenTransactionData(
+    data,
+    preferredStandard,
+  );
   const recipient = transactionData?.args?._to ?? transactionData?.args?.to;
+  const hasTokenId = Boolean(
+    transactionData?.args?._tokenId ??
+    transactionData?.args?.tokenId ??
+    transactionData?.args?.id ??
+    transactionData?.args?._id,
+  );
+  // isErc721 is true when we have a reliable standard signal, OR when the
+  // safeTransferFrom selector (unique to ERC-721/ERC-1155) decodes a token ID
+  // without an amount field. The hasTokenId branch is intentionally restricted
+  // to safeTransferFrom: the shared transferFrom selector (0x23b872dd) is
+  // ambiguous between ERC-20 and ERC-721, so hasTokenId alone cannot be used
+  // as proof there.
+  const isErc721 =
+    preferredStandard?.toLowerCase() === 'erc721' ||
+    (type === TransactionType.tokenMethodSafeTransferFrom &&
+      hasTokenId &&
+      transactionData?.args?.amount === undefined &&
+      transactionData?.args?._amount === undefined);
   const parsedAmount =
-    transactionData?.args?._value ?? transactionData?.args?.value;
+    transactionData?.args?._value ??
+    transactionData?.args?.value ??
+    transactionData?.args?.amount ??
+    transactionData?.args?._amount;
+
   let amount: string | undefined;
-  if (
+  if (isErc721) {
+    amount = '1';
+  } else if (
     transferInformation?.amount !== undefined &&
     transferInformation.amount !== null
   ) {
