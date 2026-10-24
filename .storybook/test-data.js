@@ -50,7 +50,6 @@ const state = {
       },
     },
     pinnedAccountList: [],
-    hiddenAccountList: [],
     tokensChainsCache: {
       [CHAIN_IDS.MAINNET]: {
         data: {

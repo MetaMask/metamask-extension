@@ -3323,10 +3323,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
       ),
-      updateHiddenAccountsList: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'AccountOrderController:updateHiddenAccountsList',
-      ),
       getPhishingResult: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:getPhishingResult',
