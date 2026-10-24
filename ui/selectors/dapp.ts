@@ -27,7 +27,13 @@ export const getDappActiveNetwork = createDeepEqualSelector(
     if (!orderedConnectedAccounts || orderedConnectedAccounts.length === 0) {
       return null;
     }
-    const selectedAccount = orderedConnectedAccounts[0];
+    // `domains` stores an EVM network client for the dapp. Connected accounts
+    // are ordered by lastSelected, so a multichain group can list a Tron or
+    // Stellar account before the EVM account that this network belongs to.
+    const selectedAccount =
+      orderedConnectedAccounts.find((account) =>
+        isEvmAccountType(account.type),
+      ) ?? orderedConnectedAccounts[0];
 
     // Check if account is EVM or non-EVM using existing helper
     const isEvmAccount = isEvmAccountType(selectedAccount.type);
