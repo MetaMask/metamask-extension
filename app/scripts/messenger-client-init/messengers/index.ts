@@ -83,10 +83,6 @@ import { getNetworkConnectionBannerControllerMessenger } from './network-connect
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
 import {
-  getTokensControllerInitMessenger,
-  getTokensControllerMessenger,
-} from './tokens-controller-messenger';
-import {
   getStaticAssetsControllerInitMessenger,
   getStaticAssetsControllerMessenger,
 } from './static-assets-controller-messenger';
@@ -251,11 +247,6 @@ export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,
 } from './static-assets-controller-messenger';
-export type { TokensControllerInitMessenger } from './tokens-controller-messenger';
-export {
-  getTokensControllerMessenger,
-  getTokensControllerInitMessenger,
-} from './tokens-controller-messenger';
 export type { TransactionPayControllerInitMessenger } from './transaction-pay-controller-messenger';
 export {
   getTransactionPayControllerMessenger,
@@ -546,10 +537,6 @@ export const MESSENGER_FACTORIES = {
   RampsController: {
     getMessenger: getRampsControllerMessenger,
     getInitMessenger: getRampsControllerInitMessenger,
-  },
-  TokensController: {
-    getMessenger: getTokensControllerMessenger,
-    getInitMessenger: getTokensControllerInitMessenger,
   },
   TransactionPayController: {
     getMessenger: getTransactionPayControllerMessenger,
