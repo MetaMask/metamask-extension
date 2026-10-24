@@ -1,11 +1,10 @@
 import React from 'react';
 import {
   Button,
-  ButtonVariant,
   ButtonSize,
+  ButtonVariant,
   IconName,
-} from '../../component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 
 export type NotificationDetailButtonProps = {
   /**
@@ -39,18 +38,25 @@ export const NotificationDetailButton = ({
   onClick,
 }: NotificationDetailButtonProps) => {
   return (
-    <>
-      <Button
-        href={href}
-        externalLink={Boolean(href) && isExternal}
-        variant={variant}
-        size={ButtonSize.Lg}
-        width={BlockSize.Full}
-        endIconName={isExternal ? IconName.Arrow2UpRight : undefined}
-        onClick={onClick}
-      >
-        {text}
-      </Button>
-    </>
+    <Button
+      asChild={Boolean(href)}
+      variant={variant}
+      size={ButtonSize.Lg}
+      isFullWidth
+      endIconName={isExternal ? IconName.Arrow2UpRight : undefined}
+      onClick={onClick}
+    >
+      {href ? (
+        <a
+          href={href}
+          target={isExternal ? '_blank' : undefined}
+          rel={isExternal ? 'noopener noreferrer' : undefined}
+        >
+          {text}
+        </a>
+      ) : (
+        text
+      )}
+    </Button>
   );
 };
