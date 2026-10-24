@@ -487,6 +487,11 @@ class HomePage {
     );
   }
 
+  async clickOnBuyButton(): Promise<void> {
+    await this.driver.waitForSelector(this.buySellButton);
+    await this.driver.clickElement(this.buySellButton);
+  }
+
   async clickOnReceiveButton(receiveButton: ReceiveButton): Promise<void> {
     const selector =
       receiveButton === 'default' ? this.singleActionButton : this.receiveOnRow;
