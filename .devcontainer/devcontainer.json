@@ -10,13 +10,23 @@
         "github.copilot-chat",
         "ms-azuretools.vscode-docker",
         "streetsidesoftware.code-spell-checker",
-        "DigitalBrainstem.javascript-ejs-support"
+        "DigitalBrainstem.javascript-ejs-support",
+        "redhat.vscode-yaml",
+        "ms-vscode.makefile-tools"
       ],
       "settings": {
         "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.rulers": [80, 120],
         "git.ignoreRebaseWarning": true,
         "git.rebaseWhenSync": true,
-        "gitlens.showWelcomeOnInstall": false
+        "gitlens.showWelcomeOnInstall": false,
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
       },
       "tasks": [
         {
@@ -29,7 +39,7 @@
     }
   },
 
-  "forwardPorts": [5901, 6080],
+  "forwardPorts": [5901, 6080, 8545],
 
   "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
 
@@ -45,16 +55,20 @@
     "6080": {
       "label": "noVNC web",
       "onAutoForward": "openPreview"
+    },
+    "8545": {
+      "label": "Ganache RPC",
+      "onAutoForward": "silent"
     }
   },
 
-  "postAttachCommand": "/usr/local/share/desktop-init.sh && git pull; yarn download-builds",
+  "postAttachCommand": "set -e && /usr/local/share/desktop-init.sh && git pull && yarn download-builds || echo '⚠️  Setup incomplete—run: yarn download-builds'",
 
-  // This is a working Infura key, but it's on the Free Plan and has very limited requests per second
-  // If you want to use your own INFURA_PROJECT_ID, follow the instructions in README.md
-  "postCreateCommand": "if [ -z \"$INFURA_PROJECT_ID\" ]; then echo 'INFURA_PROJECT_ID=3d110a0fce9e49b08d2ee584e19a05ba' > .metamaskrc; fi",
+  "postCreateCommand": "if [ ! -f .metamaskrc ]; then cp .metamaskrc.dist .metamaskrc 2>/dev/null || echo 'INFURA_PROJECT_ID=' > .metamaskrc; echo '⚠️  Please add your INFURA_PROJECT_ID to .metamaskrc'; fi",
 
-  "runArgs": ["--shm-size=1g"],
+  "runArgs": ["--shm-size=2g", "--cpus=4"],
 
-  "updateContentCommand": "sudo .devcontainer/install.sh && corepack enable && COREPACK_ENABLE_DOWNLOAD_PROMPT=0 yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts && echo 'export DISPLAY=:1' >> ~/.bashrc"
+  "updateContentCommand": "sudo .devcontainer/install.sh && corepack enable && COREPACK_ENABLE_DOWNLOAD_PROMPT=0 yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts && echo 'export DISPLAY=:1' >> /etc/environment",
+
+  "workspaceFolder": "/workspaces/metamask-extension"
 }
