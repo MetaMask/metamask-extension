@@ -171,6 +171,7 @@ import { getComplianceControllerMessenger } from './compliance-controller-messen
 import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
+import { getBrazeServiceMessenger } from './braze-service-messenger';
 import { getUserTraitsServiceMessenger } from './user-traits-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
@@ -342,6 +343,10 @@ export const MESSENGER_FACTORIES = {
   },
   AuthenticatedUserStorageService: {
     getMessenger: getAuthenticatedUserStorageServiceMessenger,
+    getInitMessenger: noop,
+  },
+  BrazeService: {
+    getMessenger: getBrazeServiceMessenger,
     getInitMessenger: noop,
   },
   BridgeController: {
