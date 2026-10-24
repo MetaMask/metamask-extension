@@ -52,6 +52,9 @@ class NotificationsSettingsPage {
 
   private readonly headerBackButton = '[data-testid="page-header-back-button"]';
 
+  private readonly marketingConsentSheetConfirm =
+    '[data-testid="marketing-consent-sheet-confirm"]';
+
   private readonly notificationsPerAccountSection =
     '[data-testid="notifications-settings-per-account"]';
 
@@ -295,6 +298,19 @@ class NotificationsSettingsPage {
     }
 
     await this.clickToggle(selector, `${toggleType} notifications toggle`);
+
+    // Enabling a marketing channel without marketing consent asks to opt in.
+    if (
+      toggleType === 'product' &&
+      (await this.driver.isElementPresentAndVisible(
+        this.marketingConsentSheetConfirm,
+        2000,
+      ))
+    ) {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.marketingConsentSheetConfirm,
+      );
+    }
   }
 
   async clickSectionInAppNotificationToggle(

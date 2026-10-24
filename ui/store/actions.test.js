@@ -4280,21 +4280,68 @@ describe('Actions', () => {
     });
   });
 
-  describe('#putNotificationPreferences', () => {
-    it('calls putNotificationPreferences in the background with the extension client type', async () => {
+  describe('#updateNotificationPreferences', () => {
+    it('saves the update through NotificationServicesController and returns the saved preferences', async () => {
       const store = mockStore();
       const preferences = createMockNotificationPreferences();
-      const putNotificationPreferencesStub = sinon.stub().resolves();
+      const update = { perps: { pushNotificationsEnabled: false } };
+      const messengerCall = sinon.stub().resolves(preferences);
 
-      setBackgroundConnection({
-        putNotificationPreferences: putNotificationPreferencesStub,
-      });
+      setBackgroundConnection({ messengerCall });
 
-      await store.dispatch(actions.putNotificationPreferences(preferences));
+      const saved = await store.dispatch(
+        actions.updateNotificationPreferences(update),
+      );
 
       expect(
-        putNotificationPreferencesStub.calledOnceWith(preferences, 'extension'),
+        messengerCall.calledOnceWith(
+          'NotificationServicesController:updateNotificationPreferences',
+          [update],
+        ),
       ).toBe(true);
+      expect(saved).toStrictEqual(preferences);
+    });
+  });
+
+  describe('#saveMarketingConsent', () => {
+    it('saves consent through MarketingConsentController and refreshes local state', async () => {
+      const store = mockStore();
+      const messengerCall = sinon.stub().resolves();
+      const getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection({ messengerCall, getStatePatches });
+
+      await store.dispatch(actions.saveMarketingConsent(true));
+
+      expect(
+        messengerCall.calledOnceWith(
+          'MarketingConsentController:setMarketingConsent',
+          [true],
+        ),
+      ).toBe(true);
+      expect(getStatePatches.calledOnce).toBe(true);
+    });
+
+    it('refreshes local state and rejects when AUS does not save the change', async () => {
+      const store = mockStore();
+      const messengerCall = sinon.stub().rejects(new Error('AUS error'));
+      const getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection({ messengerCall, getStatePatches });
+
+      await expect(
+        store.dispatch(actions.saveMarketingConsent(false)),
+      ).rejects.toThrow('AUS error');
+      expect(getStatePatches.calledOnce).toBe(true);
+    });
+
+    it('rejects with the save error when the refresh also fails', async () => {
+      const store = mockStore();
+      const messengerCall = sinon.stub().rejects(new Error('AUS error'));
+      const getStatePatches = sinon.stub().rejects(new Error('Refresh error'));
+      setBackgroundConnection({ messengerCall, getStatePatches });
+
+      await expect(
+        store.dispatch(actions.saveMarketingConsent(false)),
+      ).rejects.toThrow('AUS error');
     });
   });
 

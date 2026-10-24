@@ -17,6 +17,7 @@ import {
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
+import { saveMarketingConsent } from '../../../store/actions';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
 const mockTrackEvent = jest.fn();
@@ -93,6 +94,11 @@ jest.mock(
   }),
 );
 
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  saveMarketingConsent: jest.fn(() => () => Promise.resolve()),
+}));
+
 const mockStore = configureMockStore([thunk]);
 
 const createInternalAccount = ({
@@ -140,6 +146,8 @@ describe('NotificationSectionSubPage', () => {
       isUpdatingPreferences: false,
       error: null,
       refetchPreferences: mockRefetchPreferences,
+      ensurePreferences: jest.fn(),
+      markMarketingChannelsOff: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -158,6 +166,8 @@ describe('NotificationSectionSubPage', () => {
       isUpdatingPreferences: false,
       error: null,
       refetchPreferences: jest.fn(),
+      ensurePreferences: jest.fn(),
+      markMarketingChannelsOff: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -503,6 +513,8 @@ describe('NotificationSectionSubPage', () => {
       isUpdatingPreferences: false,
       error: null,
       refetchPreferences: jest.fn(),
+      ensurePreferences: jest.fn(),
+      markMarketingChannelsOff: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -622,6 +634,8 @@ describe('NotificationSectionSubPage', () => {
         isUpdatingPreferences: false,
         error: null,
         refetchPreferences: mockRefetchPreferences,
+        ensurePreferences: jest.fn(),
+        markMarketingChannelsOff: jest.fn(),
         updatePreference: jest.fn(),
         updatePreferencesSection: jest.fn(),
       });
@@ -833,6 +847,8 @@ describe('NotificationSectionSubPage', () => {
         isUpdatingPreferences: false,
         error: null,
         refetchPreferences: mockRefetchPreferences,
+        ensurePreferences: jest.fn(),
+        markMarketingChannelsOff: jest.fn(),
         updatePreference: jest.fn(),
         updatePreferencesSection: jest.fn(),
       });
@@ -907,15 +923,18 @@ describe('NotificationSectionSubPage', () => {
   /* eslint-enable @typescript-eslint/naming-convention */
 
   describe('section notification toggle wiring', () => {
-    const buildStore = () =>
+    const buildStore = (metamaskOverrides = {}) =>
       mockStore({
         metamask: {
           isNotificationServicesEnabled: true,
           isUpdatingMetamaskNotifications: false,
           isUpdatingMetamaskNotificationsAccount: [],
+          marketingConsentDecisionMade: true,
+          optedInToMarketing: false,
           subscriptionAccountsSeen: [],
           accountTree: { selectedAccountGroup: '', wallets: {} },
           internalAccounts: { selectedAccount: '', accounts: {} },
+          ...metamaskOverrides,
         },
       });
 
@@ -931,6 +950,8 @@ describe('NotificationSectionSubPage', () => {
         isUpdatingPreferences: false,
         error: null,
         refetchPreferences: jest.fn(),
+        ensurePreferences: jest.fn(),
+        markMarketingChannelsOff: jest.fn(),
         updatePreference,
         updatePreferencesSection: jest.fn(),
       });
@@ -992,6 +1013,255 @@ describe('NotificationSectionSubPage', () => {
           messages.notificationsSettingsWalletActivityDescription.message,
         ),
       ).not.toBeInTheDocument();
+    });
+
+    it('shows marketing consent before enabling a marketing channel when both channels are off', () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+
+      expect(screen.getByTestId('marketing-consent-sheet')).toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
+    it('shows marketing consent before enabling a marketing channel when the other channel is already on', () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: true,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+
+      expect(screen.getByTestId('marketing-consent-sheet')).toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
+    it('shows marketing consent before enabling a channel when consent is unset', () => {
+      const updatePreference = jest.fn();
+      const preferences = createMockNotificationPreferences({
+        marketing: {
+          pushNotificationsEnabled: false,
+          inAppNotificationsEnabled: false,
+        },
+      });
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        preferences,
+        hasNotificationPreferences: true,
+        isLoading: false,
+        isUpdatingPreferences: false,
+        error: null,
+        refetchPreferences: jest.fn(),
+        ensurePreferences: jest.fn(),
+        markMarketingChannelsOff: jest.fn(),
+        updatePreference,
+        updatePreferencesSection: jest.fn(),
+      });
+
+      renderWithProvider(
+        <NotificationSectionSubPage sectionType="marketing" />,
+        buildStore({ marketingConsentDecisionMade: false }),
+        NOTIFICATIONS_SETTINGS_SECTION_ROUTES.marketing,
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+
+      expect(screen.getByTestId('marketing-consent-sheet')).toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
+    ['marketing-consent-sheet-cancel', 'marketing-consent-sheet-close'].forEach(
+      (dismissTestId) => {
+        it(`dismisses marketing consent when ${dismissTestId} is clicked`, () => {
+          const updatePreference = renderSection(
+            'marketing',
+            createMockNotificationPreferences({
+              marketing: {
+                pushNotificationsEnabled: false,
+                inAppNotificationsEnabled: false,
+              },
+            }),
+          );
+
+          fireEvent.click(
+            screen.getByTestId('marketing-push-notifications-toggle-input'),
+          );
+          fireEvent.click(screen.getByTestId(dismissTestId));
+
+          expect(
+            screen.queryByTestId('marketing-consent-sheet'),
+          ).not.toBeInTheDocument();
+          expect(updatePreference).not.toHaveBeenCalled();
+        });
+      },
+    );
+
+    it('dismisses marketing consent when clicking outside the sheet', () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+      fireEvent.mouseDown(document.body);
+
+      expect(
+        screen.queryByTestId('marketing-consent-sheet'),
+      ).not.toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
+    describe('while marketing consent is submitting', () => {
+      const dismissals: [string, () => void][] = [
+        [
+          'the header close button is clicked',
+          () =>
+            fireEvent.click(
+              screen.getByTestId('marketing-consent-sheet-close'),
+            ),
+        ],
+        [
+          'Escape is pressed',
+          () => fireEvent.keyDown(document.body, { key: 'Escape' }),
+        ],
+        [
+          'clicking outside the sheet',
+          () => fireEvent.mouseDown(document.body),
+        ],
+      ];
+
+      // @ts-expect-error This function is missing from the Mocha type definitions
+      it.each(dismissals)(
+        'keeps the sheet open when %s',
+        async (_name: string, dismiss: () => void) => {
+          let resolveConsent: () => void = () => undefined;
+          jest.mocked(saveMarketingConsent).mockReturnValueOnce(() => {
+            return new Promise<void>((resolve) => {
+              resolveConsent = () => resolve();
+            });
+          });
+          const updatePreference = renderSection(
+            'marketing',
+            createMockNotificationPreferences({
+              marketing: {
+                pushNotificationsEnabled: false,
+                inAppNotificationsEnabled: false,
+              },
+            }),
+          );
+
+          fireEvent.click(
+            screen.getByTestId('marketing-push-notifications-toggle-input'),
+          );
+          fireEvent.click(
+            screen.getByTestId('marketing-consent-sheet-confirm'),
+          );
+          await waitFor(() => {
+            expect(
+              screen.getByTestId('marketing-consent-sheet-confirm'),
+            ).toBeDisabled();
+          });
+
+          dismiss();
+
+          expect(
+            screen.getByTestId('marketing-consent-sheet'),
+          ).toBeInTheDocument();
+
+          resolveConsent();
+          await waitFor(() => {
+            expect(updatePreference).toHaveBeenCalledWith(
+              'marketing',
+              'pushNotificationsEnabled',
+              true,
+            );
+          });
+        },
+      );
+    });
+
+    it('opts in to marketing and enables only the selected channel', async () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-in-app-notifications-toggle-input'),
+      );
+      fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
+
+      await waitFor(() => {
+        expect(saveMarketingConsent).toHaveBeenCalledWith(true);
+        expect(updatePreference).toHaveBeenCalledWith(
+          'marketing',
+          'inAppNotificationsEnabled',
+          true,
+        );
+      });
+    });
+
+    it('keeps the sheet open and permits retry when enabling the channel fails', async () => {
+      const updatePreference = renderSection(
+        'marketing',
+        createMockNotificationPreferences({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+      );
+      updatePreference
+        .mockRejectedValueOnce(new Error('Could not enable channel'))
+        .mockResolvedValue(undefined);
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+      fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(
+          'Could not enable channel',
+        );
+      });
+
+      fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
+      await waitFor(() => {
+        expect(updatePreference).toHaveBeenCalledTimes(2);
+        expect(
+          screen.queryByTestId('marketing-consent-sheet'),
+        ).not.toBeInTheDocument();
+      });
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions

@@ -39,6 +39,8 @@ const selectors = {
     'notifications-settings-allow-toggle-input',
   marketingSection: 'notifications-settings-section-marketing',
   marketingInAppToggleInput: 'marketing-in-app-notifications-toggle-input',
+  marketingConsentSheet: 'marketing-consent-sheet',
+  marketingConsentSheetConfirm: 'marketing-consent-sheet-confirm',
 };
 
 const clickElement = async (testId: string) => {
@@ -181,10 +183,25 @@ describe('Notifications Toggle', () => {
     await waitForElement(selectors.marketingInAppToggleInput);
     await clickElement(selectors.marketingInAppToggleInput);
 
+    // Marketing consent is off, so enabling a channel first requires
+    // opting in to marketing data collection via the consent sheet.
+    await waitForElement(selectors.marketingConsentSheet);
+    await clickElement(selectors.marketingConsentSheetConfirm);
+
     await waitFor(() => {
-      const putNotificationPreferencesCall =
+      const setMarketingConsentCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'putNotificationPreferences',
+          (call) =>
+            call[0] === 'messengerCall' &&
+            call[1]?.[0] === 'MarketingConsentController:setMarketingConsent',
+        );
+
+      const updateNotificationPreferencesCall =
+        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) =>
+            call[0] === 'messengerCall' &&
+            call[1]?.[0] ===
+              'NotificationServicesController:updateNotificationPreferences',
         );
 
       const fetchAndUpdateMetamaskNotificationsCall =
@@ -192,16 +209,17 @@ describe('Notifications Toggle', () => {
           (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
 
-      expect(putNotificationPreferencesCall?.[0]).toBe(
-        'putNotificationPreferences',
-      );
-      expect(putNotificationPreferencesCall?.[1]?.[0]).toMatchObject({
-        marketing: {
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: true,
-        },
-      });
-      expect(putNotificationPreferencesCall?.[1]?.[1]).toBe('extension');
+      expect(setMarketingConsentCall?.[1]).toStrictEqual([
+        'MarketingConsentController:setMarketingConsent',
+        [true],
+      ]);
+
+      // Only the changed field is sent; NotificationServicesController
+      // merges it over the stored preferences.
+      expect(updateNotificationPreferencesCall?.[1]).toStrictEqual([
+        'NotificationServicesController:updateNotificationPreferences',
+        [{ marketing: { inAppNotificationsEnabled: true } }],
+      ]);
 
       expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
         'fetchAndUpdateMetamaskNotifications',
