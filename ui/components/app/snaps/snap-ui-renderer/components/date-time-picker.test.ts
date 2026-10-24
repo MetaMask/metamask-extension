@@ -28,7 +28,7 @@ describe('SnapUIDateTimePicker', () => {
   });
 
   describe('snapshot', () => {
-    it('renders a date time picker', () => {
+    it('renders a date time picker', async () => {
       const { container } = renderInterface(
         Box({
           children: DateTimePicker({
@@ -36,6 +36,7 @@ describe('SnapUIDateTimePicker', () => {
           }),
         }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       expect(
         container.getElementsByClassName('snap-ui-renderer__date-time-picker'),
@@ -44,7 +45,7 @@ describe('SnapUIDateTimePicker', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('renders a date picker', () => {
+    it('renders a date picker', async () => {
       const { container } = renderInterface(
         Box({
           children: DateTimePicker({
@@ -53,6 +54,7 @@ describe('SnapUIDateTimePicker', () => {
           }),
         }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       expect(
         container.getElementsByClassName('snap-ui-renderer__date-time-picker'),
@@ -61,7 +63,7 @@ describe('SnapUIDateTimePicker', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('renders a time picker', () => {
+    it('renders a time picker', async () => {
       const { container } = renderInterface(
         Box({
           children: DateTimePicker({
@@ -70,6 +72,7 @@ describe('SnapUIDateTimePicker', () => {
           }),
         }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       expect(
         container.getElementsByClassName('snap-ui-renderer__date-time-picker'),
@@ -78,7 +81,7 @@ describe('SnapUIDateTimePicker', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('renders inside a field', () => {
+    it('renders inside a field', async () => {
       const { container, getByText } = renderInterface(
         Box({
           children: Field({
@@ -89,6 +92,7 @@ describe('SnapUIDateTimePicker', () => {
           }),
         }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       expect(getByText('Select date and time')).toBeInTheDocument();
       expect(
@@ -97,7 +101,7 @@ describe('SnapUIDateTimePicker', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('can show an error', () => {
+    it('can show an error', async () => {
       const { container, getByText } = renderInterface(
         Box({
           children: Field({
@@ -109,6 +113,7 @@ describe('SnapUIDateTimePicker', () => {
           }),
         }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       expect(getByText('Select date and time')).toBeInTheDocument();
       expect(getByText('This is an error')).toBeInTheDocument();
@@ -120,10 +125,11 @@ describe('SnapUIDateTimePicker', () => {
   });
 
   describe('functionality', () => {
-    it('open and click OK without interaction → today is committed and shown in input', () => {
+    it('open and click OK without interaction → today is committed and shown in input', async () => {
       renderInterface(
         Box({ children: DateTimePicker({ name: 'picker', type: 'date' }) }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       act(() => {
         fireEvent.click(screen.getByRole('textbox', { hidden: true }));
@@ -142,10 +148,11 @@ describe('SnapUIDateTimePicker', () => {
       );
     });
 
-    it('open, select a date, click OK → commits the selected date', () => {
+    it('open, select a date, click OK → commits the selected date', async () => {
       renderInterface(
         Box({ children: DateTimePicker({ name: 'picker', type: 'date' }) }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       act(() => {
         fireEvent.click(screen.getByRole('textbox', { hidden: true }));
@@ -166,10 +173,11 @@ describe('SnapUIDateTimePicker', () => {
       );
     });
 
-    it('open, cancel → no value is committed', () => {
+    it('open, cancel → no value is committed', async () => {
       renderInterface(
         Box({ children: DateTimePicker({ name: 'picker', type: 'datetime' }) }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       act(() => {
         fireEvent.click(screen.getByRole('textbox', { hidden: true }));
@@ -185,13 +193,14 @@ describe('SnapUIDateTimePicker', () => {
       );
     });
 
-    it('set value, open, clear → clears to null immediately', () => {
+    it('set value, open, clear → clears to null immediately', async () => {
       renderInterface(
         Box({
           children: DateTimePicker({ name: 'picker', type: 'datetime' }),
         }),
         { state: { picker: '2024-01-05T14:30:00.000Z' } },
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       act(() => {
         fireEvent.click(screen.getByRole('textbox', { hidden: true }));
@@ -207,19 +216,21 @@ describe('SnapUIDateTimePicker', () => {
       );
     });
 
-    it('set value → input shows formatted date', () => {
+    it('set value → input shows formatted date', async () => {
       renderInterface(
         Box({ children: DateTimePicker({ name: 'picker', type: 'date' }) }),
         { state: { picker: '2024-01-05T14:30:00.000Z' } },
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       expect(screen.getByRole('textbox')).toHaveValue('01/05/2024');
     });
 
-    it('draft resets after cancel — reopening the picker shows today highlighted', () => {
+    it('draft resets after cancel — reopening the picker shows today highlighted', async () => {
       renderInterface(
         Box({ children: DateTimePicker({ name: 'picker', type: 'date' }) }),
       );
+      await screen.findByRole('textbox', { hidden: true });
 
       // First open: select day 5 then cancel
       act(() => {
