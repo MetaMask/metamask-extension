@@ -174,6 +174,25 @@ describe('HardwareWalletErrorProvider', () => {
       });
     });
 
+    it('forwards a target device readiness check to the error modal', () => {
+      const store = mockStore(createMockState());
+      const { result } = renderHardwareWalletErrorHook(store);
+      const error = createHardwareWalletError(
+        ErrorCode.DeviceDisconnected,
+        HardwareWalletType.Ledger,
+        'Device not found',
+      );
+      const ensureDeviceReady = jest.fn();
+
+      act(() => {
+        result.current.showErrorModal(error, { ensureDeviceReady });
+      });
+
+      expect(mockShowModal).toHaveBeenCalledWith(
+        expect.objectContaining({ error, ensureDeviceReady }),
+      );
+    });
+
     it('opens the repair page with the wallet type query parameter', () => {
       const openExtensionInBrowser = jest.fn();
       globalThis.platform = { openExtensionInBrowser } as never;

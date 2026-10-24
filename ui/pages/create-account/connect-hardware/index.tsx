@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { upperFirst } from 'lodash';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
@@ -56,7 +56,10 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   toHardwareWalletError,
   HardwareWalletType,
+  useHardwareWalletError,
 } from '../../../contexts/hardware-wallets';
+import { createAdapterForHardwareWalletType } from '../../../contexts/hardware-wallets/adapters/factory';
+import { isInE2eTest } from '../../../../shared/lib/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useDispatch } from '../../../store/hooks';
@@ -94,6 +97,40 @@ const HD_PATHS: Record<string, { name: string; value: string }[]> = {
   oneKey: TREZOR_HD_PATHS,
 };
 
+// Devices with a connection state to verify before listing their accounts.
+const DEVICE_WALLET_TYPES: Partial<Record<string, HardwareWalletType>> = {
+  [HardwareDeviceNames.ledger]: HardwareWalletType.Ledger,
+  [HardwareDeviceNames.trezor]: HardwareWalletType.Trezor,
+};
+
+const noop = () => undefined;
+
+/**
+ * Checks that a hardware wallet of the given type is connected and ready,
+ * independently of the selected account.
+ *
+ * @param walletType - The hardware wallet type to check.
+ * @returns `null` when ready, otherwise the error explaining why not.
+ */
+async function getDeviceReadyError(walletType: HardwareWalletType) {
+  const adapter = createAdapterForHardwareWalletType(walletType, {
+    onDisconnect: noop,
+    onAwaitingConfirmation: noop,
+    onDeviceLocked: noop,
+    onAppNotOpen: noop,
+    onDeviceEvent: noop,
+  });
+  try {
+    await adapter.connect();
+    await adapter.ensureDeviceReady?.({ requireBlindSigning: false });
+    return null;
+  } catch (error) {
+    return toHardwareWalletError(error, walletType);
+  } finally {
+    adapter.destroy();
+  }
+}
+
 type HardwareAccount = {
   address: string;
   balance: string;
@@ -121,6 +158,7 @@ const ConnectHardwareForm = () => {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch: MetaMaskReduxDispatch = useDispatch();
   const navigate = useNavigate();
+  const { showErrorModal, dismissErrorModal } = useHardwareWalletError();
 
   // Selectors
   const chainId = useSelector(getCurrentChainId);
@@ -401,7 +439,7 @@ const ConnectHardwareForm = () => {
   ]);
 
   const connectToHardwareWallet = useCallback(
-    (nextDevice: string) => {
+    (nextDevice: string, loadHid = true) => {
       if (latestPendingDevice.current === nextDevice) {
         return;
       }
@@ -422,7 +460,7 @@ const ConnectHardwareForm = () => {
           .build(),
       );
 
-      getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
+      getPage(nextDevice, 0, defaultHdPaths[nextDevice], loadHid);
     },
     [
       createEventBuilder,
@@ -434,6 +472,86 @@ const ConnectHardwareForm = () => {
       trackEvent,
     ],
   );
+
+  // The accounts list links here with `?device=<name>` to add more accounts
+  // from an already connected device, skipping the device selection.
+  const [searchParams] = useSearchParams();
+  const requestedDevice = searchParams.get('device');
+  const hasConnectedRequestedDevice = useRef(false);
+  // The device may only become ready after a retry from the error modal, so
+  // connect with the latest callback rather than the one from the first render.
+  const latestConnectToHardwareWallet = useRef(connectToHardwareWallet);
+
+  const latestDismissErrorModal = useRef(dismissErrorModal);
+  const isMounted = useRef(false);
+  const hasShownDeviceErrorModal = useRef(false);
+
+  useEffect(() => {
+    latestConnectToHardwareWallet.current = connectToHardwareWallet;
+    latestDismissErrorModal.current = dismissErrorModal;
+  }, [connectToHardwareWallet, dismissErrorModal]);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+      // The modal is global, so don't leave it, and its retry, behind.
+      if (hasShownDeviceErrorModal.current) {
+        latestDismissErrorModal.current();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      hasConnectedRequestedDevice.current ||
+      !requestedDevice ||
+      !Object.values(HardwareDeviceNames).includes(
+        requestedDevice as HardwareDeviceNames,
+      )
+    ) {
+      return;
+    }
+    hasConnectedRequestedDevice.current = true;
+
+    // WebHID access was granted when the device was first connected, and
+    // requesting it again needs a user gesture this page may not have (e.g.
+    // when opened in a new tab). If access is missing, the device is reported
+    // as not connected, and picking the device from the device selection
+    // requests it again.
+    const connect = () => {
+      // Skip if the page closed, or the user picked a device themselves, while
+      // the check was running.
+      if (!isMounted.current || latestDevice.current) {
+        return;
+      }
+      latestConnectToHardwareWallet.current(requestedDevice, false);
+    };
+
+    const walletType = DEVICE_WALLET_TYPES[requestedDevice];
+    // E2E has no physical device to check.
+    if (!walletType || isInE2eTest()) {
+      connect();
+      return;
+    }
+
+    const connectIfReady = async () => {
+      const deviceError = await getDeviceReadyError(walletType);
+      if (!deviceError) {
+        connect();
+      }
+      return deviceError;
+    };
+
+    connectIfReady().then((deviceError) => {
+      if (deviceError && isMounted.current) {
+        hasShownDeviceErrorModal.current = true;
+        showErrorModal(deviceError, {
+          ensureDeviceReady: async () => (await connectIfReady()) === null,
+        });
+      }
+    });
+  }, [requestedDevice, showErrorModal]);
 
   const onPathChange = useCallback(
     (path: string) => {

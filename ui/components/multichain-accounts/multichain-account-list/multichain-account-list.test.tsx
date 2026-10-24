@@ -695,6 +695,41 @@ describe('MultichainAccountList', () => {
     expect(mockSetAccountGroupName).not.toHaveBeenCalled();
   });
 
+  describe('Add account button', () => {
+    it('renders an add account button for hardware wallets', () => {
+      renderComponent({ wallets: mockWalletsWithHardwareKeyring });
+
+      expect(
+        screen.getAllByTestId('add-multichain-account-button'),
+      ).toHaveLength(2);
+      expect(
+        screen.getByTestId('add-hardware-wallet-account-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not render an add account button for private key wallets', () => {
+      renderComponent({ wallets: mockWalletsWithPrivateKey });
+
+      expect(
+        screen.queryByTestId('add-hardware-wallet-account-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render add account buttons in search mode', () => {
+      renderComponent({
+        wallets: mockWalletsWithHardwareKeyring,
+        isInSearchMode: true,
+      });
+
+      expect(
+        screen.queryByTestId('add-multichain-account-button'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('add-hardware-wallet-account-button'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('Menu state management', () => {
     it('opens menu for specific account when menu button is clicked', async () => {
       renderComponent();

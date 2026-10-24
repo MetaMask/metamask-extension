@@ -65,6 +65,10 @@ import { getInternalAccountsObject } from '../../../selectors/accounts';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
+import {
+  DEVICE_KEYRING_MAP,
+  HardwareDeviceNames,
+} from '../../../../shared/constants/hardware-wallets';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
 import { AccountDeleteConfirmModal } from '../account-delete-confirm-modal';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
@@ -185,7 +189,19 @@ type ListItem =
       walletId: string;
       showWalletName: boolean;
     }
-  | { type: 'add-account'; key: string; walletId: string };
+  | {
+      type: 'add-account';
+      key: string;
+      walletId: string;
+      hardwareDevice?: HardwareDeviceNames;
+    };
+
+const KEYRING_TYPE_TO_HARDWARE_DEVICE = Object.fromEntries(
+  Object.entries(DEVICE_KEYRING_MAP).map(([device, keyringType]) => [
+    keyringType,
+    device as HardwareDeviceNames,
+  ]),
+) as Partial<Record<string, HardwareDeviceNames>>;
 
 export const MultichainAccountList = ({
   wallets,
@@ -694,6 +710,19 @@ export const MultichainAccountList = ({
         });
       }
 
+      const hardwareDevice =
+        walletData.type === AccountWalletType.Keyring
+          ? KEYRING_TYPE_TO_HARDWARE_DEVICE[walletData.metadata.keyring.type]
+          : undefined;
+      if (!isInSearchMode && hardwareDevice) {
+        accounts.push({
+          type: 'add-account',
+          key: `add-${walletId}`,
+          walletId,
+          hardwareDevice,
+        });
+      }
+
       // Keep the wallet listed even when all of its accounts are hidden (and so
       // omitted outside edit mode), otherwise it disappears with no way back.
       if (accounts.length > 0 || hasHiddenAccounts) {
@@ -794,6 +823,7 @@ export const MultichainAccountList = ({
             return (
               <AddMultichainAccount
                 walletId={item.walletId as AccountWalletId}
+                hardwareDevice={item.hardwareDevice}
               />
             );
           }
