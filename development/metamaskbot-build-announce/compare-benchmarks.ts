@@ -11,9 +11,12 @@
  * --current <path-to-benchmark-json-directory>
  *
  * Exit codes:
- * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
- * 1 — at least one allowlisted metric exceeded its fail threshold;
- * non-allowlisted breaches are degraded to warnings and do not block
+ * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold, and
+ * every benchmark carrying an allowlisted metric produced results
+ * 1 — at least one allowlisted metric exceeded its fail threshold, or a
+ * benchmark carrying an allowlisted metric produced no results at all;
+ * non-allowlisted breaches and non-allowlisted no-result benchmarks are
+ * degraded to warnings and do not block
  * 2 — usage error or fatal crash
  */
 
@@ -24,6 +27,7 @@ import { parseArgs } from 'util';
 import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type {
   ThresholdSeverity,
+  ThresholdConfig,
   ComparisonKey,
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
@@ -46,6 +50,66 @@ type LoadedBenchmark = {
   name: string;
   data: Record<string, BenchmarkResults>;
 };
+
+/**
+ * A benchmark entry that produced no percentiles — the run crashed, timed out,
+ * or exhausted its retries, so the artifact holds an `error` instead of
+ * statistics. Distinct from a threshold breach: there is no measurement to
+ * compare, which means the gate has no signal for whatever that benchmark
+ * covers.
+ */
+export type ErroredBenchmark = {
+  benchmarkName: string;
+  /** Artifact basename, e.g. `benchmark-chrome-webpack-startupPowerUserHome`. */
+  file: string;
+  /** `<browser>-<buildType>`, when derivable from the artifact name. */
+  source?: string;
+  /** Failure text carried in the artifact, when present. */
+  error?: string;
+  /**
+   * Whether this benchmark owns at least one metric in `GATED_METRICS`. Blocks
+   * only when it does — mirroring `applyGatingPolicy`, where a breach of a
+   * non-allowlisted metric is degraded to a warning rather than blocking.
+   */
+  gated: boolean;
+};
+
+export type ComparisonResult = {
+  comparisons: BenchmarkEntryComparison[];
+  errored: ErroredBenchmark[];
+  anyFailed: boolean;
+};
+
+/**
+ * Reads the failure text an errored benchmark artifact carries, if any.
+ *
+ * The benchmark runner writes `{ "<name>": { "error": "..." } }` in place of
+ * statistics, which does not fit `BenchmarkResults` — hence the narrowing.
+ *
+ * @param results - The benchmark entry payload.
+ */
+function readErrorText(results: BenchmarkResults): string | undefined {
+  const { error } = results as unknown as { error?: unknown };
+  return typeof error === 'string' ? error : undefined;
+}
+
+/**
+ * Reports whether a benchmark owns at least one allowlisted metric, i.e.
+ * whether the absence of its results removes a blocking signal.
+ *
+ * @param benchmarkName - Benchmark entry name, e.g. `onboardingNewWallet`.
+ * @param thresholdConfig - That benchmark's threshold config.
+ * @param gatedMetrics - The allowlist, as `<benchmarkName>.<metricId>` keys.
+ */
+function hasGatedMetric(
+  benchmarkName: string,
+  thresholdConfig: ThresholdConfig,
+  gatedMetrics: ReadonlySet<string>,
+): boolean {
+  return Object.keys(thresholdConfig).some((metricId) =>
+    gatedMetrics.has(`${benchmarkName}.${metricId}`),
+  );
+}
 
 /**
  * Loads all benchmark JSON files from a directory.
@@ -85,27 +149,45 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
 export function runComparison(
   benchmarks: LoadedBenchmark[],
   baseline: HistoricalBaselineReference,
-): { comparisons: BenchmarkEntryComparison[]; anyFailed: boolean } {
+): ComparisonResult {
   const comparisons: BenchmarkEntryComparison[] = [];
+  const errored: ErroredBenchmark[] = [];
   let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
     const parsed = parseArtifactName(name);
+    const source = parsed ? `${parsed.browser}-${parsed.buildType}` : undefined;
 
     for (const [entryName, results] of Object.entries(data)) {
-      if (!results.p75 || !results.p95) {
-        console.warn(
-          `Skipping "${entryName}" in "${name}": missing p75/p95 (benchmark likely failed).`,
-        );
-        continue;
-      }
-
       const baseThresholdConfig = THRESHOLD_REGISTRY[entryName];
 
       if (!baseThresholdConfig) {
         console.warn(
           `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
         );
+        continue;
+      }
+
+      // No percentiles means the benchmark never produced a measurement.
+      // Treated as a missing signal rather than a skip: if the benchmark owns
+      // an allowlisted metric, the gate can no longer vouch for it, so it
+      // blocks instead of passing on absent evidence.
+      if (!results.p75 || !results.p95) {
+        const gated = hasGatedMetric(
+          entryName,
+          baseThresholdConfig,
+          GATED_METRICS,
+        );
+        errored.push({
+          benchmarkName: entryName,
+          file: name,
+          source,
+          error: readErrorText(results),
+          gated,
+        });
+        if (gated) {
+          anyFailed = true;
+        }
         continue;
       }
 
@@ -131,8 +213,8 @@ export function runComparison(
         results,
       );
 
-      if (parsed) {
-        comparison.source = `${parsed.browser}-${parsed.buildType}`;
+      if (source) {
+        comparison.source = source;
       }
 
       comparisons.push(comparison);
@@ -143,7 +225,7 @@ export function runComparison(
     }
   }
 
-  return { comparisons, anyFailed };
+  return { comparisons, errored, anyFailed };
 }
 
 function violationIcon(severity: ThresholdSeverity): string {
@@ -301,20 +383,26 @@ function formatName(comparison: BenchmarkEntryComparison): string {
   return `${comparison.benchmarkName}${source}`;
 }
 
+function formatErroredName(entry: ErroredBenchmark): string {
+  const source = entry.source ? ` [${entry.source}]` : '';
+  return `${entry.benchmarkName}${source}`;
+}
+
 /**
  * Prints a human-readable report of the comparison results.
  *
- * Output groups entries by severity (FAIL → WARN → PASS) and includes
- * browser/buildType source labels for disambiguation.
+ * Output groups entries by severity (ERROR → FAIL → WARN → PASS) and includes
+ * browser/buildType source labels for disambiguation. ERROR covers benchmarks
+ * that produced no measurement at all, which is reported ahead of threshold
+ * breaches because a missing benchmark leaves the gate blind rather than
+ * merely over budget.
  *
  * @param result - Comparison results.
  * @param result.comparisons
+ * @param result.errored
  * @param result.anyFailed
  */
-export function printReport(result: {
-  comparisons: BenchmarkEntryComparison[];
-  anyFailed: boolean;
-}): void {
+export function printReport(result: ComparisonResult): void {
   console.log('\n═══════════════════════════════════════');
   console.log('  Performance Benchmark Quality Gate');
   console.log('═══════════════════════════════════════');
@@ -342,6 +430,23 @@ export function printReport(result: {
       ) &&
       !w.lines.some((l) => l.hasIssue),
   );
+
+  // Show benchmarks that produced no measurement, blocking ones first.
+  const erroredOrdered = [
+    ...result.errored.filter((e) => e.gated),
+    ...result.errored.filter((e) => !e.gated),
+  ];
+  for (const entry of erroredOrdered) {
+    const label = entry.gated ? 'ERROR' : 'ERROR (non-gated)';
+    console.log(`\n${label}  ${formatErroredName(entry)}`);
+    console.log(`      ⛔ no results — ${entry.error ?? 'benchmark failed'}`);
+    console.log(
+      entry.gated
+        ? `      This benchmark owns a gated metric, so the gate cannot vouch for it.`
+        : `      No gated metric on this benchmark — reported, not blocking.`,
+    );
+    console.log(`      Artifact: ${entry.file}.json`);
+  }
 
   // Show failed entries with details
   for (const { comparison, lines } of failed) {
@@ -380,19 +485,27 @@ export function printReport(result: {
 
   const failCount = failed.length;
   const warnCount = warned.length;
+  const erroredCount = result.errored.length;
+  const blockingErroredCount = result.errored.filter((e) => e.gated).length;
 
   console.log('\n───────────────────────────────────────');
   console.log(
-    `Total: ${result.comparisons.length} benchmarks | ${failCount} failed | ${warnCount} warnings`,
+    `Total: ${result.comparisons.length} benchmarks | ${failCount} failed | ${warnCount} warnings | ${erroredCount} no results`,
   );
 
-  if (result.anyFailed) {
-    console.log(
-      '\nRESULT: FAIL — at least one benchmark exceeds constant fail limit',
-    );
-  } else {
+  if (!result.anyFailed) {
     console.log('\nRESULT: PASS — all benchmarks within constant limits');
+    return;
   }
+
+  const reasons = [];
+  if (failCount > 0) {
+    reasons.push('at least one benchmark exceeds constant fail limit');
+  }
+  if (blockingErroredCount > 0) {
+    reasons.push('a benchmark carrying a gated metric produced no results');
+  }
+  console.log(`\nRESULT: FAIL — ${reasons.join('; ')}`);
 }
 
 async function main(): Promise<void> {
