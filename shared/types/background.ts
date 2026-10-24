@@ -83,6 +83,7 @@ export type ControllerStatePropertiesEnumerated = {
   customAssets: AssetsControllerState['customAssets'];
   assetPreferences: AssetsControllerState['assetPreferences'];
   selectedCurrency: AssetsControllerState['selectedCurrency'];
+  assetsLoadingStatus?: AssetsControllerState['assetsLoadingStatus'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -141,6 +142,7 @@ export type ControllerStatePropertiesEnumerated = {
   lastPerpsDepositEntryPoint: AppStateControllerState['lastPerpsDepositEntryPoint'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
+  moneyEarnBannerDismissedTokenKeys: AppStateControllerState['moneyEarnBannerDismissedTokenKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];

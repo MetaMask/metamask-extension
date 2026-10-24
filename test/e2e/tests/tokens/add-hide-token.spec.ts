@@ -18,6 +18,11 @@ import WebSocketRegistry from '../../websocket/registry';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 
 function mockCommonApis(mockServer: Mockttp) {
+  const supportedNetworks = {
+    fullSupport: ['eip155:1', 'eip155:1337'],
+    partialSupport: [],
+  };
+
   return Promise.all([
     mockServer
       .forGet(
@@ -38,12 +43,13 @@ function mockCommonApis(mockServer: Mockttp) {
         partialSupport: [],
       }),
     mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+      .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
       .always()
-      .thenJson(200, {
-        fullSupport: ['eip155:1', 'eip155:1337'],
-        partialSupport: [],
-      }),
+      .thenJson(200, supportedNetworks),
+    mockServer
+      .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, supportedNetworks),
     mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
       .always()

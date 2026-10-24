@@ -51,6 +51,7 @@ describe('trackVaultCorruptionEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);

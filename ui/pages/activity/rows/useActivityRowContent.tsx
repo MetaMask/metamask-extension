@@ -143,7 +143,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const sourceSymbol = sourceToken?.symbol ?? '';
         const destinationSymbol = destinationToken?.symbol;
         const hasDestination = Boolean(destinationSymbol);
+        const isIncompleteZeroAmountSwap =
+          !hasDestination && sourceToken?.amount === '0';
         const primaryToken = hasDestination ? destinationToken : sourceToken;
+        let secondaryAmount: ReactNode;
+        if (isIncompleteZeroAmountSwap) {
+          secondaryAmount = undefined;
+        } else if (hasDestination) {
+          secondaryAmount = formatTokenAmount(sourceToken);
+        } else {
+          secondaryAmount = formatAsFiat(sourceToken);
+        }
         const titleKey = hasDestination
           ? labelKeys.title.key
           : `activity_swapIncomplete_${activity.status}_title`;
@@ -158,11 +168,13 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : [sourceToken?.assetId],
           title: hasDestination ? t(titleKey) : t(titleKey, [sourceSymbol]),
           subtitle,
-          primaryAmount: formatTokenAmount(primaryToken),
-          primaryDirection: primaryToken?.direction,
-          secondaryAmount: hasDestination
-            ? formatTokenAmount(sourceToken)
-            : formatAsFiat(sourceToken),
+          primaryAmount: isIncompleteZeroAmountSwap
+            ? undefined
+            : formatTokenAmount(primaryToken),
+          primaryDirection: isIncompleteZeroAmountSwap
+            ? undefined
+            : primaryToken?.direction,
+          secondaryAmount,
         };
       }
       // Token in title; source and destination in subtitle; token being wrapped in avatar

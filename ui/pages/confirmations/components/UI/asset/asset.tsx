@@ -1,10 +1,10 @@
 import React, { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box as DSBox,
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
   AvatarToken,
@@ -29,9 +29,8 @@ import {
   NFT_STANDARDS,
 } from '../../../types/send';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
-import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
-import { AccountTypeLabel } from '../account-type-label';
+import { getUseCurrencyRateCheck } from '../../../../../selectors';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { SecurityBadge } from '../../../../../components/app/security-trust/security-trust-inline-badge';
 
@@ -166,7 +165,7 @@ const TokenAsset = ({
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
-  const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const assetImage = chainId
     ? getAvatarTokenSrc({
@@ -261,11 +260,6 @@ const TokenAsset = ({
           </DSBox>
           <SecurityBadge value={safetyResult} />
           {tag ? <DSBox className="shrink-0">{tag}</DSBox> : null}
-          {typeLabel ? (
-            <DSBox className="shrink-0" style={dimmedStyle}>
-              <AccountTypeLabel label={typeLabel} />
-            </DSBox>
-          ) : null}
         </DSBox>
         <Text
           variant={TextVariant.bodySmMedium}
@@ -294,12 +288,14 @@ const TokenAsset = ({
           className="shrink-0"
           style={dimmedStyle}
         >
-          <Text variant={TextVariant.bodyMdMedium}>
-            {formatCurrencyWithMinThreshold(
-              fiat?.balance ?? 0,
-              fiat?.currency || '',
-            )}
-          </Text>
+          {useCurrencyRateCheck && (
+            <Text variant={TextVariant.bodyMdMedium}>
+              {formatCurrencyWithMinThreshold(
+                fiat?.balance ?? 0,
+                fiat?.currency || '',
+              )}
+            </Text>
+          )}
           <Text
             variant={TextVariant.bodySmMedium}
             color={TextColor.textAlternative}

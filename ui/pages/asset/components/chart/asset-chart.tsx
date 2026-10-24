@@ -11,7 +11,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import classnames from 'clsx';
-import { brandColor } from '@metamask/design-tokens';
 import { Hex } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
@@ -21,7 +20,6 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
   TextColor,
@@ -49,23 +47,12 @@ Chart.register(
   CrosshairPlugin,
 );
 
-const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
+const initialChartOptions: ChartOptions<'line'> = {
   normalized: true,
   parsing: false,
   aspectRatio: 2.6,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
-  fill: true,
-  backgroundColor: ({ chart }) => {
-    const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    gradient.addColorStop(0, `${chart.options.borderColor}60`);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    gradient.addColorStop(1, `${chart.options.borderColor}00`);
-    return gradient;
-  },
   elements: {
     line: { borderWidth: 1.5 },
     point: { pointStyle: false },
@@ -144,8 +131,6 @@ const AssetChart = ({
   currency: string;
 }) => {
   const t = useI18nContext();
-  const theme = useTheme();
-
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     TIME_RANGES[0],
   );
@@ -190,7 +175,10 @@ const AssetChart = ({
 
   const options = {
     ...initialChartOptions,
-    borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
+    borderColor: ({ chart }) =>
+      getComputedStyle(chart.canvas)
+        .getPropertyValue('--color-success-default')
+        .trim(),
     transitions: {
       active: { animation },
       default: { animation },
@@ -269,7 +257,7 @@ const AssetChart = ({
             >
               <Line
                 ref={chartRef}
-                data={{ datasets: [{ data: prices }] }}
+                data={{ datasets: [{ data: prices, fill: false }] }}
                 options={options}
                 // Update the price display on chart hover
                 onMouseMove={(event) => {

@@ -57,6 +57,7 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsOrderBookEnabled,
+  getIsPerpsServiceInterruptionBannerEnabled,
   getIsPerpsSlippageConfigEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -327,6 +328,9 @@ const PerpsOrderEntryPage = () => {
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const isSlippageConfigEnabled = useSelector(getIsPerpsSlippageConfigEnabled);
   const isOrderBookEnabled = useSelector(getIsPerpsOrderBookEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -489,6 +493,8 @@ const PerpsOrderEntryPage = () => {
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
       ...tradingScreenDefaults,
     },
     resetKey: decodedSymbol,
@@ -1066,6 +1072,23 @@ const PerpsOrderEntryPage = () => {
   //    same orderType).
   // 2. Order submission tracking — passed as hlFeeRate on all order types
   //    (new / modify / close).
+  let feeNotional: number | undefined;
+  try {
+    feeNotional = getPerpsNotionalUsd(
+      orderMode === 'close' && position
+        ? {
+            size: position.size,
+            price: currentPrice,
+            closePercent: orderFormState?.closePercent,
+          }
+        : { usdAmount: orderFormState?.amount ?? '0' },
+    );
+  } catch (notionalError) {
+    if (!(notionalError instanceof RangeError)) {
+      throw notionalError;
+    }
+    // Invalid live values cannot provide a fee estimate or a submit amount.
+  }
   const {
     feeRate: currentFeeRate,
     undiscountedFeeRate: currentUndiscountedFeeRate,
@@ -1076,17 +1099,7 @@ const PerpsOrderEntryPage = () => {
   } = usePerpsOrderFees({
     symbol: decodedSymbol ?? '',
     orderType,
-    amount: String(
-      getPerpsNotionalUsd(
-        orderMode === 'close' && position
-          ? {
-              size: position.size,
-              price: currentPrice,
-              closePercent: orderFormState?.closePercent,
-            }
-          : { usdAmount: orderFormState?.amount ?? '0' },
-      ),
-    ),
+    amount: feeNotional?.toString(),
   });
 
   const originalEstimatedFees = useMemo(() => {
@@ -1389,6 +1402,7 @@ const PerpsOrderEntryPage = () => {
 
   const isSubmitDisabled =
     !selectedAddress ||
+    feeNotional === undefined ||
     (orderMode === 'new' && isLoadingAccount) ||
     isDepositLoading ||
     isOrderPending ||

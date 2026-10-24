@@ -105,16 +105,12 @@ export function buildErrorContent(
     // Locked device errors
     case ErrorCode.AuthenticationDeviceLocked:
       return {
-        variant: HardwareWalletErrorContentVariant.Recovery,
+        variant: HardwareWalletErrorContentVariant.Description,
         icon: IconName.Lock,
         iconColor: IconColor.IconDefault,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
         showRepairLink,
-        recoveryInstructions: addRecoveryInstruction(
-          [t('hardwareWalletErrorRecoveryUnlock1', [t(walletType)])],
-          walletType === HardwareWalletType.Ledger,
-          t('hardwareWalletErrorRecoveryUnlock2'),
-        ),
+        description: t('hardwareWalletErrorDeviceLockedDescription'),
       };
 
     // Device state - Wrong app

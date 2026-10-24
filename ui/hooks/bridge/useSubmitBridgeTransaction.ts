@@ -37,7 +37,8 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
-import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
+import { useHardwareWalletError } from '../../contexts/hardware-wallets/HardwareWalletErrorProvider';
+import { isInE2eTest } from '../../../shared/lib/environment';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
@@ -85,8 +86,9 @@ export default function useSubmitBridgeTransaction(
   const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
-  const { ensureDeviceReady } = useHardwareWalletActions();
+  const { ensureDeviceReadyOrError } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
+  const { showErrorModal } = useHardwareWalletError();
   const inE2e = isInE2eTest();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -223,9 +225,15 @@ export default function useSubmitBridgeTransaction(
         isHardwareWalletAccount &&
         connectionState.status !== ConnectionStatus.Ready
       ) {
-        const isDeviceReady = await ensureDeviceReady();
-        if (!isDeviceReady) {
-          throw new Error('Hardware wallet device is not ready');
+        // Device preflight: a failure here must surface the error modal even
+        // on bridge/quote pages, where auto-shown modals are route-gated off.
+        // Manual showErrorModal calls bypass that gate; the provider still
+        // filters user rejections itself.
+        const deviceError = await ensureDeviceReadyOrError();
+        if (deviceError) {
+          showErrorModal(deviceError);
+          setIsSubmitting(false);
+          return;
         }
       }
 

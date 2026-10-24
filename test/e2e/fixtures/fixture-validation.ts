@@ -121,6 +121,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RewardsController.rewardsAccounts.solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3.lastFreshOptInStatusCheck',
+  // ConfigRegistryController.lastFetched is a Date.now() timestamp written on
+  // every successful poll, so its value never matches between runs.
+  'data.ConfigRegistryController.lastFetched',
 ];
 
 /**

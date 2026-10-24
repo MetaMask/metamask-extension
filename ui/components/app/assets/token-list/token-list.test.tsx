@@ -34,7 +34,12 @@ import {
   selectAccountGroupBalanceForEmptyState,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
+import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
 import TokenList from './token-list';
+
+jest.mock('../../../../hooks/money/useMoneyTokenListCta', () => ({
+  useMoneyTokenListCta: jest.fn(),
+}));
 
 jest.mock('../../../../hooks/useAnalytics', () => {
   const mockTrackEvent = jest.fn();
@@ -241,6 +246,22 @@ describe('TokenList', () => {
         typeof getSelectedMultichainNetworkConfiguration
       >);
     jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(true);
+  });
+
+  it('resolves the Money CTA once for the displayed tokens in order', () => {
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'USDC', fiatBalance: 25 }),
+          createAsset({ symbol: 'DUST', fiatBalance: 0.5 }),
+        ]),
+      );
+
+    render();
+
+    const tokens = jest.mocked(useMoneyTokenListCta).mock.lastCall?.[0];
+    expect(tokens?.map(({ symbol }) => symbol)).toStrictEqual(['USDC']);
   });
 
   it('collapses non-native tokens with fiat balance below one dollar', () => {

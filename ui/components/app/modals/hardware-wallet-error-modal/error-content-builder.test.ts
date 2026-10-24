@@ -33,6 +33,33 @@ describe('buildErrorContent', () => {
     expect(t).toHaveBeenCalledWith('hardwareWalletErrorRecoveryUnlock2');
   });
 
+  it('shows a single unlock description for AuthenticationDeviceLocked', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Ledger) {
+        return 'Ledger';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = createHardwareWalletError(
+      ErrorCode.AuthenticationDeviceLocked,
+      HardwareWalletType.Ledger,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      title: 'hardwareWalletErrorTitleDeviceLocked:Ledger',
+      description: 'hardwareWalletErrorDeviceLockedDescription',
+      showRepairLink: false,
+    });
+    expect(t).toHaveBeenCalledWith(
+      'hardwareWalletErrorDeviceLockedDescription',
+    );
+  });
+
   it('shows an acknowledge-only description for DeviceStateOnlyV4Supported', () => {
     const t = jest.fn((key: string, substitutions?: string[]) => {
       if (key === HardwareWalletType.Ledger) {
