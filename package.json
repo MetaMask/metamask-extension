@@ -368,7 +368,8 @@
     "@opentelemetry/instrumentation-tedious@npm:0.30.0": "0.40.0",
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
-    "@metamask/utils": "^12.0.0"
+    "@metamask/utils": "^12.0.0",
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@12.0.0-preview-64cf2e401"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
