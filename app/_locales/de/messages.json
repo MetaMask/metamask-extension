@@ -4527,9 +4527,6 @@
     "message": "Ihr $1 ist freigeschaltet",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletErrorRecoveryTitle": {
-    "message": "Fahren Sie fort, um Folgendes sicherzustellen:"
-  },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Ihr $1 ist freigeschaltet",
     "description": "$1 is the hardware wallet type"

@@ -4527,9 +4527,6 @@
     "message": "Na-unlock ang iyong $1 na device",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletErrorRecoveryTitle": {
-    "message": "Patuloy na tiyaking:"
-  },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Na-unlock ang iyong $1 na device",
     "description": "$1 is the hardware wallet type"

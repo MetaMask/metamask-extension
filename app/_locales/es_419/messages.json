@@ -4531,9 +4531,6 @@
     "message": "Tu dispositivo de $1 está desbloqueado",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletErrorRecoveryTitle": {
-    "message": "Sigue asegurándote de que:"
-  },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Tu dispositivo de $1 está desbloqueado",
     "description": "$1 is the hardware wallet type"
