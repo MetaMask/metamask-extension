@@ -29,6 +29,7 @@ jest.mock(
           onClick={onClose}
         />
       ) : null,
+    useOpenSupport: (showConsentModal: () => void) => showConsentModal,
   }),
 );
 
