@@ -7,7 +7,6 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
-import { useSelector } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import log from 'loglevel';
 import {
@@ -25,8 +24,6 @@ import {
   setUserHasTurnedOffNotificationsOnce,
   updateNotificationSubscriptionExpiration,
 } from '../../contexts/metamask-notifications/notification-storage-keys';
-import { getDataCollectionForMarketing } from '../../selectors/metametrics';
-import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useDispatch } from '../../store/hooks';
 
 /**
@@ -170,31 +167,20 @@ export function useEnableNotifications(): {
   error: string | null;
 } {
   const dispatch = useDispatch();
-  const hasMarketingConsent = Boolean(
-    useSelector(getDataCollectionForMarketing),
-  );
-  const isFeatureAnnouncementsEnabled =
-    useSelector(selectIsFeatureAnnouncementsEnabled) ?? true;
-
   const [error, setError] = useSafeState<string | null>(null);
 
   const enableNotifications = useCallback(async () => {
     setError(null);
 
     try {
-      await dispatch(
-        enableMetamaskNotifications({
-          hasMarketingConsent,
-          productAnnouncementEnabled: isFeatureAnnouncementsEnabled,
-        }),
-      );
+      await dispatch(enableMetamaskNotifications());
       await updateNotificationSubscriptionExpiration();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
       throw e;
     }
-  }, [dispatch, hasMarketingConsent, isFeatureAnnouncementsEnabled, setError]);
+  }, [dispatch, setError]);
 
   return {
     enableNotifications,

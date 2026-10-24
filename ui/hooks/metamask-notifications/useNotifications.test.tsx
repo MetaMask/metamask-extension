@@ -35,9 +35,6 @@ describe('useNotifications', () => {
       metamask: {
         isMetamaskNotificationsEnabled: false,
         isBackupAndSyncEnabled: false,
-        isFeatureAnnouncementsEnabled: false,
-        optedInToMarketing: true,
-        marketingConsentDecisionMade: true,
         internalAccounts: {
           accounts: [
             {
@@ -94,7 +91,7 @@ describe('useNotifications', () => {
     expect(actions.disableMetamaskNotifications).toHaveBeenCalled();
   });
 
-  it('should enable notifications with AUS marketing initialization options', async () => {
+  it('enables notifications without marketing options', async () => {
     const { result } = renderHook(() => useEnableNotifications(), {
       wrapper: ({ children }: React.PropsWithChildren) => (
         <Provider store={store}>{children}</Provider>
@@ -105,10 +102,7 @@ describe('useNotifications', () => {
       await result.current.enableNotifications();
     });
 
-    expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith({
-      hasMarketingConsent: true,
-      productAnnouncementEnabled: false,
-    });
+    expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith();
   });
 
   it('applies fetched notification list data after listNotifications resolves', async () => {

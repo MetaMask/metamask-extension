@@ -48,6 +48,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * Test notification settings persistence across sessions.
      * This specifically tests the scenario where accounts syncing is not on (i.e on Firefox or when user has not enabled this feature)
      *
+     * Both sessions onboard with marketing consent on: with it off, the
+     * consent sync turns product notifications off.
+     *
      * Part 1: Initial Configuration
      * - Complete onboarding
      * - Adds some accounts
@@ -79,7 +82,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
+          await completeOnboardFlowIdentity(driver, {
+            dataCollectionForMarketing: true,
+          });
           await addAccounts({
             driver,
             count: 1,
@@ -95,11 +100,10 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           );
           await notificationsSettingsPage.assertMainNotificationSettingsTogglesState(
             driver,
-            { marketingInAppExpectedState: 'disabled' },
           );
 
           // Update preferences for persistence check:
-          // disable account 2 and toggle marketing in-app notifications.
+          // disable account 2 and marketing in-app notifications.
           await notificationsSettingsPage.clickNotificationToggle({
             address: notificationsMockAccounts[1].a,
             toggleType: 'address',
@@ -121,7 +125,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await completeOnboardFlowIdentity(driver);
+          await completeOnboardFlowIdentity(driver, {
+            dataCollectionForMarketing: true,
+          });
           await addAccounts({
             driver,
             count: 1,
@@ -137,6 +143,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           );
           await notificationsSettingsPage.assertMainNotificationSettingsTogglesState(
             driver,
+            { marketingInAppExpectedState: 'disabled' },
           );
 
           // Assert Notification Account Settings have persisted
