@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
@@ -46,10 +46,13 @@ export const getHexChainId = (chainId: string | number) =>
 
 export const ChainlistSourceBanner = ({
   description,
+  learnMoreTabIndex,
   onLearnMoreMouseDown,
   testId,
 }: {
   description: (learnMore: React.ReactNode) => React.ReactNode;
+  /** Removes the learn-more link from the tab order inside a suggestion list. */
+  learnMoreTabIndex?: number;
   onLearnMoreMouseDown?: (event: React.MouseEvent) => void;
   testId: string;
 }) => {
@@ -69,6 +72,7 @@ export const ChainlistSourceBanner = ({
               }}
               onMouseDown={onLearnMoreMouseDown}
               size={TextButtonSize.BodySm}
+              tabIndex={learnMoreTabIndex}
             >
               {t('chainlistLearnHowToStaySafe')}
             </TextButton>,
@@ -140,6 +144,13 @@ type ChainlistNetworkPickerProps = {
   layout?: 'page' | 'dropdown';
   /** Pixel height available below the field the dropdown is anchored to. */
   maxHeight?: number;
+  /**
+   * Id of the text field this dropdown suggests for. Arrow keys move the
+   * highlight while focus stays in that field.
+   */
+  comboboxInputId?: string;
+  /** Closes the suggestion list, for example when Escape is pressed. */
+  onDismiss?: () => void;
 };
 
 export const ChainlistNetworkPicker = ({
@@ -151,6 +162,8 @@ export const ChainlistNetworkPicker = ({
   searchValue: searchValueProp = '',
   layout = 'page',
   maxHeight,
+  comboboxInputId,
+  onDismiss,
 }: ChainlistNetworkPickerProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -278,9 +291,179 @@ export const ChainlistNetworkPicker = ({
     [chainlistNetworks.length],
   );
 
+  const isDropdown = layout === 'dropdown';
+  const listboxId = useId();
+  const suggestions = useMemo(() => {
+    if (!isDropdown) {
+      return [];
+    }
+    if (showNoSearchResults) {
+      return onUseTypedName ? [{ type: 'typed-name' as const }] : [];
+    }
+    return [
+      ...visibleChainlistNetworks.map((network) => ({
+        type: 'network' as const,
+        network,
+      })),
+      ...defaultTestnets.map((network) => ({
+        type: 'testnet' as const,
+        network,
+      })),
+    ];
+  }, [
+    defaultTestnets,
+    isDropdown,
+    onUseTypedName,
+    showNoSearchResults,
+    visibleChainlistNetworks,
+  ]);
+  const suggestionKey = suggestions
+    .map((suggestion) =>
+      suggestion.type === 'typed-name'
+        ? 'typed-name'
+        : `${suggestion.type}:${suggestion.network.chainId}`,
+    )
+    .join('|');
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [prevSuggestionKey, setPrevSuggestionKey] = useState(suggestionKey);
+  if (suggestionKey !== prevSuggestionKey) {
+    setPrevSuggestionKey(suggestionKey);
+    setActiveIndex(-1);
+  }
+
+  const selectSuggestion = useCallback(
+    (index: number) => {
+      const suggestion = suggestions[index];
+      if (!suggestion) {
+        return;
+      }
+      if (suggestion.type === 'typed-name') {
+        onUseTypedName?.(searchValue.trim());
+        return;
+      }
+      if (suggestion.type === 'testnet') {
+        handleDefaultTestnetClick(suggestion.network);
+        return;
+      }
+      onSelect(suggestion.network, searchValue.trim() || undefined);
+    },
+    [
+      handleDefaultTestnetClick,
+      onSelect,
+      onUseTypedName,
+      searchValue,
+      suggestions,
+    ],
+  );
+
+  useEffect(() => {
+    if (!isDropdown || !comboboxInputId) {
+      return undefined;
+    }
+
+    const input = document.getElementById(comboboxInputId);
+    if (!(input instanceof HTMLInputElement)) {
+      return undefined;
+    }
+
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-expanded', 'true');
+    input.setAttribute('aria-controls', listboxId);
+    if (activeIndex >= 0) {
+      input.setAttribute(
+        'aria-activedescendant',
+        `${listboxId}-option-${activeIndex}`,
+      );
+    } else {
+      input.removeAttribute('aria-activedescendant');
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        setActiveIndex((index) =>
+          suggestions.length === 0
+            ? -1
+            : Math.min(index + 1, suggestions.length - 1),
+        );
+        return;
+      }
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        setActiveIndex((index) => {
+          if (suggestions.length === 0) {
+            return -1;
+          }
+          if (index < 0) {
+            return suggestions.length - 1;
+          }
+          return Math.max(index - 1, -1);
+        });
+        return;
+      }
+      if (event.key === 'Enter') {
+        if (activeIndex < 0) {
+          return;
+        }
+        event.preventDefault();
+        selectSuggestion(activeIndex);
+        return;
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onDismiss?.();
+        return;
+      }
+      // Tab skips the suggestions, so close the list and let focus move on.
+      if (event.key === 'Tab') {
+        onDismiss?.();
+      }
+    };
+
+    input.addEventListener('keydown', handleKeyDown);
+    return () => {
+      input.removeEventListener('keydown', handleKeyDown);
+      input.removeAttribute('role');
+      input.removeAttribute('aria-autocomplete');
+      input.removeAttribute('aria-expanded');
+      input.removeAttribute('aria-controls');
+      input.removeAttribute('aria-activedescendant');
+    };
+  }, [
+    activeIndex,
+    comboboxInputId,
+    isDropdown,
+    listboxId,
+    onDismiss,
+    selectSuggestion,
+    suggestions.length,
+  ]);
+
+  useEffect(() => {
+    if (activeIndex < 0) {
+      return;
+    }
+    document
+      .getElementById(`${listboxId}-option-${activeIndex}`)
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [activeIndex, listboxId]);
+
+  const suggestionProps = (index: number) =>
+    isDropdown
+      ? {
+          id: `${listboxId}-option-${index}`,
+          role: 'option' as const,
+          'aria-selected': activeIndex === index,
+          tabIndex: -1 as const,
+          onMouseEnter: () => setActiveIndex(index),
+        }
+      : undefined;
+
   const renderChainlistNetwork = (
     network: ChainlistNetwork,
     onClick: () => void,
+    suggestionIndex?: number,
   ) => {
     const chainId = getHexChainId(network.chainId);
     const isExistingNetwork = existingNetworkChainIds.has(chainId);
@@ -289,13 +472,20 @@ export const ChainlistNetworkPicker = ({
       CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
         chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
       ];
+    const isActive =
+      suggestionIndex !== undefined && activeIndex === suggestionIndex;
 
     return (
       <button
-        className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
+        className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed${
+          isActive ? ' bg-primary-muted' : ''
+        }`}
         data-testid="networks-page-chainlist-network"
         key={`${network.chainId}-${network.name}`}
         type="button"
+        {...(suggestionIndex === undefined
+          ? undefined
+          : suggestionProps(suggestionIndex))}
         onClick={onClick}
       >
         {networkImageUrl ? (
@@ -347,18 +537,13 @@ export const ChainlistNetworkPicker = ({
     );
   };
 
-  const isDropdown = layout === 'dropdown';
-
-  return (
-    <Box
-      className={
-        isDropdown
-          ? 'flex w-full flex-col overflow-y-auto bg-background-default'
-          : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default'
-      }
-      onScroll={isDropdown ? handleChainlistScroll : undefined}
-      style={isDropdown && maxHeight !== undefined ? { maxHeight } : undefined}
-    >
+  const pickerClassName = isDropdown
+    ? 'flex w-full flex-col overflow-y-auto bg-background-default'
+    : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default';
+  const pickerStyle =
+    isDropdown && maxHeight !== undefined ? { maxHeight } : undefined;
+  const picker = (
+    <>
       {showSearchField ? (
         <Box className="px-4 pb-4">
           <TextFieldSearch
@@ -374,7 +559,9 @@ export const ChainlistNetworkPicker = ({
       <Box
         className={isDropdown ? undefined : 'min-h-0 flex-1 overflow-y-auto'}
         data-testid="networks-page-chainlist-network-list"
+        id={isDropdown ? listboxId : undefined}
         onScroll={isDropdown ? undefined : handleChainlistScroll}
+        role={isDropdown ? 'listbox' : undefined}
       >
         {isDropdown && showNoSearchResults ? (
           <Box data-testid="networks-page-chainlist-no-matches">
@@ -387,9 +574,12 @@ export const ChainlistNetworkPicker = ({
             </Text>
             {onUseTypedName ? (
               <button
-                className="flex w-full flex-col border-t border-border-muted px-4 py-3 text-left hover:bg-hover"
+                className={`flex w-full flex-col border-t border-border-muted px-4 py-3 text-left hover:bg-hover${
+                  isDropdown && activeIndex === 0 ? ' bg-primary-muted' : ''
+                }`}
                 data-testid="networks-page-chainlist-use-typed-name"
                 type="button"
+                {...suggestionProps(0)}
                 onClick={() => onUseTypedName(searchValue.trim())}
               >
                 <Text
@@ -415,15 +605,18 @@ export const ChainlistNetworkPicker = ({
                 description={(learnMore) =>
                   t('chainlistNetworkDataSourceBanner', [learnMore])
                 }
+                learnMoreTabIndex={isDropdown ? -1 : undefined}
                 testId="networks-page-chainlist-source-banner"
               />
             </Box>
             {showNoSearchResults ? (
               <NoSearchResult dataTestId="networks-page-chainlist-no-results" />
             ) : null}
-            {visibleChainlistNetworks.map((network) =>
-              renderChainlistNetwork(network, () =>
-                onSelect(network, searchValue.trim() || undefined),
+            {visibleChainlistNetworks.map((network, index) =>
+              renderChainlistNetwork(
+                network,
+                () => onSelect(network, searchValue.trim() || undefined),
+                isDropdown ? index : undefined,
               ),
             )}
             {defaultTestnets.length > 0 && !isDropdown ? (
@@ -445,14 +638,32 @@ export const ChainlistNetworkPicker = ({
                 />
               </Box>
             ) : null}
-            {defaultTestnets.map((network) =>
-              renderChainlistNetwork(network, () =>
-                handleDefaultTestnetClick(network),
+            {defaultTestnets.map((network, index) =>
+              renderChainlistNetwork(
+                network,
+                () => handleDefaultTestnetClick(network),
+                isDropdown
+                  ? visibleChainlistNetworks.length + index
+                  : undefined,
               ),
             )}
           </>
         )}
       </Box>
-    </Box>
+    </>
   );
+
+  if (isDropdown) {
+    return (
+      <Box
+        className={pickerClassName}
+        onScroll={handleChainlistScroll}
+        style={pickerStyle}
+      >
+        {picker}
+      </Box>
+    );
+  }
+
+  return <Box className={pickerClassName}>{picker}</Box>;
 };
