@@ -82,6 +82,14 @@ $font-path: './fonts';
   font-style: italic;
 }
 
+/* Hero: Grotzec Cond. Only the Bold cut exists, and lighter weights fall back to it. */
+@font-face {
+  font-family: 'Grotzec Cond';
+  font-style: normal;
+  font-weight: 600;
+  src: url('#{$font-path}/GrotzecCond/GrotzecCond-Bold.woff2') format('woff2');
+}
+
 @font-face {
   font-family: 'MMSans';
   src: url('#{$font-path}/MMSans/MM_Sans-Variable.woff2') format('woff2');
