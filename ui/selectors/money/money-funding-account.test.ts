@@ -12,7 +12,10 @@ import {
   AccountWalletType,
   type AccountGroupId,
 } from '@metamask/account-api';
-import { selectMoneyFundingAccount } from './money-funding-account';
+import {
+  selectMoneyFundingAccount,
+  selectMoneyWithdrawalRecipient,
+} from './money-funding-account';
 
 const HD_ADDRESS = '0x1111111111111111111111111111111111111111';
 const HD_2_ADDRESS = '0x2222222222222222222222222222222222222222';
@@ -268,5 +271,88 @@ describe('selectMoneyFundingAccount', () => {
 
       expect(selectMoneyFundingAccount(state, true)).toBe(HD_ACCOUNT);
     });
+  });
+});
+
+describe('selectMoneyWithdrawalRecipient', () => {
+  const HARDWARE_KEYRING_TYPES = [
+    KeyringTypes.ledger,
+    KeyringTypes.trezor,
+    KeyringTypes.lattice,
+    KeyringTypes.qr,
+    KeyringTypes.oneKey,
+  ];
+
+  for (const keyringType of HARDWARE_KEYRING_TYPES) {
+    it(`returns a selected ${keyringType} account`, () => {
+      const hardwareAccount = account({
+        id: 'hardware',
+        address: LEDGER_ADDRESS,
+        keyringType,
+      });
+      const state = buildState(
+        [HD_ACCOUNT, hardwareAccount],
+        hardwareAccount.id,
+      );
+
+      expect(selectMoneyWithdrawalRecipient(state)).toBe(hardwareAccount);
+    });
+  }
+
+  it("returns the group's hardware EVM account when a non-EVM account in it is selected", () => {
+    const state = buildState(
+      [HD_ACCOUNT, LEDGER_ACCOUNT, SOL_ACCOUNT],
+      SOL_ACCOUNT.id,
+      {
+        selectedAccountGroup: GROUP_2_ID,
+        byId: {
+          [GROUP_1_ID]: [HD_ACCOUNT],
+          [GROUP_2_ID]: [LEDGER_ACCOUNT, SOL_ACCOUNT],
+        },
+      },
+    );
+
+    expect(selectMoneyWithdrawalRecipient(state)).toBe(LEDGER_ACCOUNT);
+  });
+
+  it('returns a selected HD account', () => {
+    const state = buildState([LEDGER_ACCOUNT, HD_ACCOUNT], HD_ACCOUNT.id);
+
+    expect(selectMoneyWithdrawalRecipient(state)).toBe(HD_ACCOUNT);
+  });
+
+  it('returns a selected imported account', () => {
+    const state = buildState(
+      [HD_ACCOUNT, IMPORTED_ACCOUNT],
+      IMPORTED_ACCOUNT.id,
+    );
+
+    expect(selectMoneyWithdrawalRecipient(state)).toBe(IMPORTED_ACCOUNT);
+  });
+
+  it('returns a selected Snap EVM account', () => {
+    const snapAccount = account({
+      id: 'snap-evm',
+      address: HD_2_ADDRESS,
+      keyringType: KeyringTypes.snap,
+    });
+    const state = buildState([HD_ACCOUNT, snapAccount], snapAccount.id);
+
+    expect(selectMoneyWithdrawalRecipient(state)).toBe(snapAccount);
+  });
+
+  it('falls back to the first EVM account, hardware included, when the selected account is non-EVM', () => {
+    const state = buildState(
+      [BTC_ACCOUNT, LEDGER_ACCOUNT, HD_ACCOUNT],
+      BTC_ACCOUNT.id,
+    );
+
+    expect(selectMoneyWithdrawalRecipient(state)).toBe(LEDGER_ACCOUNT);
+  });
+
+  it('returns undefined when there is no EVM account', () => {
+    const state = buildState([BTC_ACCOUNT, SOL_ACCOUNT], BTC_ACCOUNT.id);
+
+    expect(selectMoneyWithdrawalRecipient(state)).toBeUndefined();
   });
 });

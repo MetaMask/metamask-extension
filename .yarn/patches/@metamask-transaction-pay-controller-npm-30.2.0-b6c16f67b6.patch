@@ -1,0 +1,136 @@
+diff --git a/dist/TransactionPayController.js b/dist/TransactionPayController.js
+index 12fd754e5b50a43a6c4ca47d5c47c50498748c35..100d31fb13d08af0bb1c95f7addb029543193ca9 100644
+--- a/dist/TransactionPayController.js
++++ b/dist/TransactionPayController.js
+@@ -79,6 +79,7 @@ export class TransactionPayController extends BaseController {
+             const config = {
+                 accountOverride: transactionData.accountOverride,
+                 atomic: transactionData.atomic,
++                isAccountOverrideRecipientOnly: transactionData.isAccountOverrideRecipientOnly,
+                 isHyperliquidSource: transactionData.isHyperliquidSource,
+                 isMaxAmount: transactionData.isMaxAmount,
+                 isPolymarketDepositWallet: transactionData.isPolymarketDepositWallet,
+@@ -223,6 +224,7 @@ export class TransactionPayController extends BaseController {
+             const originalIsMaxAmount = current?.isMaxAmount;
+             const originalIsPostQuote = current?.isPostQuote;
+             const originalAccountOverride = current?.accountOverride;
++            const originalIsAccountOverrideRecipientOnly = current?.isAccountOverrideRecipientOnly;
+             const originalFiatPaymentAmount = current?.fiatPayment?.amountFiat;
+             const originalFiatPaymentMethodId = current?.fiatPayment?.selectedPaymentMethodId;
+             if (!current) {
+@@ -241,7 +243,9 @@ export class TransactionPayController extends BaseController {
+             const isTokensUpdated = current.tokens !== originalTokens;
+             const isIsMaxUpdated = current.isMaxAmount !== originalIsMaxAmount;
+             const isPostQuoteUpdated = current.isPostQuote !== originalIsPostQuote;
+-            const isAccountOverrideUpdated = current.accountOverride !== originalAccountOverride;
++            const isAccountOverrideUpdated = current.accountOverride !== originalAccountOverride ||
++                current.isAccountOverrideRecipientOnly !==
++                    originalIsAccountOverrideRecipientOnly;
+             const isFiatAmountUpdated = current.fiatPayment?.amountFiat !== originalFiatPaymentAmount;
+             const isFiatPaymentMethodUpdated = current.fiatPayment?.selectedPaymentMethodId !==
+                 originalFiatPaymentMethodId;
+diff --git a/dist/types.d.ts b/dist/types.d.ts
+index 2c6214a07991ebb3dc09f566c19db4fd5730fcd1..8a4a1f5f77d001fac1668f4ef231c1bc8297e343 100644
+--- a/dist/types.d.ts
++++ b/dist/types.d.ts
+@@ -43,6 +43,13 @@ export type TransactionConfig = {
+      * subsidized, and subsidized non-atomic quotes are upgraded to atomic.
+      */
+     atomic?: boolean;
++    /**
++     * Whether `accountOverride` only receives the output of a post-quote
++     * transaction. When true, quotes are requested and submitted from the
++     * transaction's own `from`, so the override account never signs. Use this
++     * when the override account cannot sign, such as a hardware wallet.
++     */
++    isAccountOverrideRecipientOnly?: boolean;
+     /**
+      * Whether the source of funds is HyperLiquid (HyperCore).
+      * When true, the Relay strategy uses the HyperLiquid 2-step withdrawal
+@@ -203,6 +210,11 @@ export type TransactionData = {
+     atomic?: boolean;
+     /** Fiat payment method state. */
+     fiatPayment?: TransactionFiatPayment;
++    /**
++     * Whether `accountOverride` only receives the post-quote output.
++     * See {@link TransactionConfig.isAccountOverrideRecipientOnly}.
++     */
++    isAccountOverrideRecipientOnly?: boolean;
+     /** Whether quotes are currently being retrieved. */
+     isLoading: boolean;
+     /** Whether the user has selected the maximum amount. */
+diff --git a/dist/utils/quotes.js b/dist/utils/quotes.js
+index 9c9f5a540e3f4bb0d9f760275a2dcc6b649f1b6b..8ab902c51af2992ccdccf077091b250dfaf7a086 100644
+--- a/dist/utils/quotes.js
++++ b/dist/utils/quotes.js
+@@ -33,8 +33,10 @@ export async function updateQuotes(request) {
+         return false;
+     }
+     log('Updating quotes', { transactionId });
+-    const { accountOverride, atomic, fiatPayment, isHyperliquidSource, isMaxAmount, isPolymarketDepositWallet, isPostQuote, isQuoteRequired, paymentOverride, paymentToken: originalPaymentToken, refundTo, sourceAmounts, tokens, } = transactionData;
++    const { accountOverride, atomic, fiatPayment, isAccountOverrideRecipientOnly, isHyperliquidSource, isMaxAmount, isPolymarketDepositWallet, isPostQuote, isQuoteRequired, paymentOverride, paymentToken: originalPaymentToken, refundTo, sourceAmounts, tokens, } = transactionData;
+     const from = accountOverride ?? transaction.txParams.from;
++    const recipient = isPostQuote && isAccountOverrideRecipientOnly ? accountOverride : undefined;
++    const quoteFrom = recipient ? transaction.txParams.from : from;
+     const controller = abortPreviousAndCreateController(transactionId);
+     const { signal } = controller;
+     updateTransactionData(transactionId, (data) => {
+@@ -62,20 +64,21 @@ export async function updateQuotes(request) {
+         const latestSourceAmounts = getSourceAmounts(messenger, transactionId) ?? sourceAmounts;
+         const requests = buildQuoteRequests({
+             atomic,
+-            from,
++            from: quoteFrom,
+             isHyperliquidSource,
+             isMaxAmount: isMaxAmount ?? false,
+             isPolymarketDepositWallet,
+             isPostQuote,
+             paymentOverride,
+             paymentToken,
++            recipient,
+             refundTo,
+             sourceAmounts: latestSourceAmounts,
+             tokens,
+             transactionId,
+         });
+-        const supports7702 = accountSupports7702(messenger, from);
+-        const { batchTransactions, error, quotes } = await getQuotes(transaction, from, requests, paymentToken, isQuoteRequired ?? false, supports7702, getStrategies, messenger, fiatPayment?.selectedPaymentMethodId, signal);
++        const supports7702 = accountSupports7702(messenger, quoteFrom);
++        const { batchTransactions, error, quotes } = await getQuotes(transaction, quoteFrom, requests, paymentToken, isQuoteRequired ?? false, supports7702, getStrategies, messenger, fiatPayment?.selectedPaymentMethodId, signal);
+         if (signal.aborted) {
+             log('Quote request aborted before persisting results', { transactionId });
+             return false;
+@@ -265,7 +268,7 @@ function getSourceAmounts(messenger, transactionId) {
+  * @param request.transactionId - ID of the transaction.
+  * @returns Array of quote requests.
+  */
+-function buildQuoteRequests({ atomic, from, isHyperliquidSource, isMaxAmount, isPolymarketDepositWallet, isPostQuote, paymentOverride, paymentToken, refundTo, sourceAmounts, tokens, transactionId, }) {
++function buildQuoteRequests({ atomic, from, isHyperliquidSource, isMaxAmount, isPolymarketDepositWallet, isPostQuote, paymentOverride, paymentToken, recipient, refundTo, sourceAmounts, tokens, transactionId, }) {
+     if (!paymentToken) {
+         return [];
+     }
+@@ -278,6 +281,7 @@ function buildQuoteRequests({ atomic, from, isHyperliquidSource, isMaxAmount, is
+             isMaxAmount,
+             isPolymarketDepositWallet,
+             paymentOverride,
++            recipient,
+             refundTo,
+             sourceAmounts,
+             transactionId,
+@@ -324,7 +328,7 @@ function buildQuoteRequests({ atomic, from, isHyperliquidSource, isMaxAmount, is
+  * @param request.transactionId - ID of the transaction.
+  * @returns Array of quote requests for post-quote flow.
+  */
+-function buildPostQuoteRequests({ atomic, destinationToken, from, isHyperliquidSource, isMaxAmount, isPolymarketDepositWallet, paymentOverride, refundTo, sourceAmounts, transactionId, }) {
++function buildPostQuoteRequests({ atomic, destinationToken, from, isHyperliquidSource, isMaxAmount, isPolymarketDepositWallet, paymentOverride, recipient, refundTo, sourceAmounts, transactionId, }) {
+     // Find the source amount where targetTokenAddress matches the destination token
+     const sourceAmount = sourceAmounts?.find((amount) => amount.targetTokenAddress.toLowerCase() ===
+         destinationToken.address.toLowerCase());
+@@ -345,6 +349,7 @@ function buildPostQuoteRequests({ atomic, destinationToken, from, isHyperliquidS
+         isPolymarketDepositWallet,
+         isPostQuote: true,
+         paymentOverride,
++        ...(recipient ? { recipient } : {}),
+         refundTo,
+         sourceBalanceRaw: sourceAmount.sourceBalanceRaw,
+         sourceChainId: sourceAmount.sourceChainId,

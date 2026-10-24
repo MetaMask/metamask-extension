@@ -133,6 +133,25 @@ function getWithdrawLabel(
   };
 }
 
+/**
+ * A quoted withdrawal to a hardware or QR recipient transfers the mUSD to the
+ * money account itself and Pay delivers the output, so that transfer does not
+ * name the destination.
+ *
+ * @param transactionMeta - The withdrawal transaction.
+ * @returns The recipient, or `undefined` when the transfer stays on the money account.
+ */
+function getWithdrawRecipient(
+  transactionMeta: TransactionMeta | undefined,
+): string | undefined {
+  const { recipient } = getMoneyAccountWithdrawTransferDetails(transactionMeta);
+  const from = transactionMeta?.txParams?.from;
+  if (recipient && from && recipient.toLowerCase() === from.toLowerCase()) {
+    return undefined;
+  }
+  return recipient;
+}
+
 function useWithdrawDestination(
   recipient: string | undefined,
 ): string | undefined {
@@ -187,9 +206,7 @@ export function useMoneyAccountToastLabel(
     !isDeposit &&
     Boolean(transactionMeta && isMoneyWithdrawTx(transactionMeta));
   const destination = useWithdrawDestination(
-    isWithdraw
-      ? getMoneyAccountWithdrawTransferDetails(transactionMeta).recipient
-      : undefined,
+    isWithdraw ? getWithdrawRecipient(transactionMeta) : undefined,
   );
 
   if (!transactionMeta) {
