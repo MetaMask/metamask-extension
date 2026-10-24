@@ -799,7 +799,7 @@
     "jest-canvas-mock": "^2.3.1",
     "jest-clean-console-reporter": "^0.3.0",
     "jest-environment-jsdom": "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch",
-    "jest-fixed-jsdom": "^0.0.9",
+    "jest-fixed-jsdom": "^0.0.11",
     "jest-preview": "^0.3.1",
     "jsdom": "^16.7.0",
     "json-schema-to-ts": "^3.0.1",
