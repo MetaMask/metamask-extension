@@ -840,16 +840,16 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/eth-snap-keyring": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
-        "@metamask/accounts-controller>@metamask/keyring-controller": true,
-        "@metamask/keyring-sdk": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/accounts-controller>@metamask/keyring-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/accounts-controller>ethereum-cryptography": true,
-        "lodash": true,
-        "uuid": true
+        "ethereum-cryptography": true,
+        "@metamask/assets-controller>lodash-es": true,
+        "@metamask/accounts-controller>uuid": true
       }
     },
     "@metamask/wallet>@metamask/address-book-controller": {
@@ -1665,7 +1665,7 @@
     "@metamask/delegation-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/delegation-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/utils": true
       }
     },
@@ -1914,6 +1914,12 @@
         "async-mutex": true
       }
     },
+    "@metamask/eth-money-mpc-keyring": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/eth-money-mpc-keyring>@metamask/keyring-sdk": true
+      }
+    },
     "@metamask/eth-qr-keyring": {
       "globals": {
         "Buffer.concat": true,
@@ -1991,6 +1997,28 @@
         "@metamask/utils": true,
         "async-mutex": true,
         "@metamask/eth-snap-keyring>uuid": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "console.info": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
+        "@metamask/accounts-controller>@metamask/keyring-sdk": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -2261,91 +2289,6 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/accounts-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
-    "@metamask/delegation-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
-    "@metamask/money-account-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
-    "@metamask/money-account-upgrade-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2353,6 +2296,14 @@
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/keyring-snap-client": true,
+        "@metamask/keyring-utils": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
@@ -2379,6 +2330,11 @@
         "@metamask/keyring-sdk>uuid": true
       }
     },
+    "@metamask/accounts-controller>@metamask/keyring-sdk": {
+      "packages": {
+        "@metamask/accounts-controller>@metamask/keyring-sdk>uuid": true
+      }
+    },
     "@metamask/eth-money-keyring>@metamask/keyring-sdk": {
       "packages": {
         "@ethereumjs/tx": true,
@@ -2391,6 +2347,18 @@
         "@metamask/eth-money-keyring>@metamask/keyring-sdk>uuid": true
       }
     },
+    "@metamask/eth-money-mpc-keyring>@metamask/keyring-sdk": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/eth-money-mpc-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
+        "@metamask/eth-money-mpc-keyring>@metamask/keyring-sdk>uuid": true
+      }
+    },
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2400,6 +2368,11 @@
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
+      "packages": {
+        "@metamask/superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
       "packages": {
         "@metamask/superstruct": true
       }
@@ -2529,7 +2502,7 @@
         "@metamask/base-controller": true,
         "@metamask/money-account-controller>@metamask/eth-money-keyring": true,
         "@metamask/keyring-api": true,
-        "@metamask/money-account-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/utils": true,
         "async-mutex": true
       }
@@ -2542,7 +2515,7 @@
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
         "@metamask/money-account-upgrade-controller>@metamask/delegation-deployments": true,
-        "@metamask/money-account-upgrade-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/money-account-utils": true,
         "@metamask/utils": true
       }
@@ -3212,7 +3185,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/signature-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@metamask/signature-controller>@metamask/logging-controller": true,
         "@metamask/utils": true,
         "buffer": true,
@@ -3896,11 +3869,6 @@
         "crypto": true
       }
     },
-    "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
@@ -3933,6 +3901,11 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/eth-money-mpc-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "@open-rpc/schema-utils-js": {
@@ -5524,16 +5497,6 @@
         "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/accounts-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true,
-        "module": true
-      },
-      "packages": {
-        "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
     "@metamask/eth-hd-keyring>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
@@ -5592,6 +5555,16 @@
       },
       "packages": {
         "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-money-mpc-keyring>@metamask/keyring-sdk>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true,
+        "module": true
+      },
+      "packages": {
+        "@metamask/eth-money-mpc-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
@@ -7763,6 +7736,11 @@
         "msCrypto": true
       }
     },
+    "@metamask/accounts-controller>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@metamask/analytics-controller>uuid": {
       "globals": {
         "crypto": true
@@ -7803,6 +7781,11 @@
         "crypto": true
       }
     },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@metamask/transaction-controller>@metamask/gas-fee-controller>uuid": {
       "globals": {
         "crypto": true,
@@ -7814,7 +7797,17 @@
         "crypto": true
       }
     },
+    "@metamask/accounts-controller>@metamask/keyring-sdk>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@metamask/eth-money-keyring>@metamask/keyring-sdk>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/eth-money-mpc-keyring>@metamask/keyring-sdk>uuid": {
       "globals": {
         "crypto": true
       }

@@ -382,6 +382,16 @@ env:
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
   # (device pairing via QR code scan and verification code).
   - QR_SYNC_ENABLED: false
+  # Build-time gate: when true, the MPC money keyring builder is registered
+  # with the KeyringController. Fenced while the feature is unreleased — no
+  # released build can yet hold an MPC money keyring in its vault; once one
+  # can, the registration must become unconditional.
+  - MM_MONEY_MPC_KEYRING_ENABLED: false
+  # Optional: static hex address (all-lowercase or EIP-55 checksummed;
+  # normalized to lowercase) served by the MPC money keyring stub through
+  # `getAccounts`, so the keyring wiring can be verified without the MPC
+  # stack. Unset by default: the stub serves no accounts.
+  - MM_MONEY_MPC_ADDRESS: null
   # Local/QA only: inject curated Money Home activity rows so the list UI
   # can be reviewed without live deposits/withdraws. Remote flag
   # moneyActivityMockDataEnabled takes precedence when it is a boolean.
