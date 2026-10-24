@@ -47,6 +47,10 @@ type AdvancedChartIframeProps = {
   onReady?: () => void;
   /** Real-time candle update from useOHLCVRealtime hook */
   realtimeBar?: OHLCVRealtimeBar;
+  /** Ambient color overrides — mirrors mobile's AdvancedChart props */
+  lineColorOverride?: string;
+  successColorOverride?: string;
+  errorColorOverride?: string;
 };
 
 const AdvancedChartIframe = forwardRef<
@@ -64,6 +68,9 @@ const AdvancedChartIframe = forwardRef<
       onError,
       onReady,
       realtimeBar,
+      lineColorOverride,
+      successColorOverride,
+      errorColorOverride,
     },
     ref,
   ) => {
@@ -139,6 +146,36 @@ const AdvancedChartIframe = forwardRef<
         postToChart({ type: 'SET_CHART_TYPE', payload: { type: chartType } });
       }
     }, [chartType, chartReady, postToChart]);
+
+    // Send ambient theme color overrides to the chart engine.
+    // Mirrors mobile's SET_THEME_COLORS postMessage in AdvancedChart.tsx.
+    // Fires when chart is ready and whenever color props change (e.g. new
+    // OHLCV data changes the price direction from up → down).
+    useEffect(() => {
+      if (!chartReady) {
+        return;
+      }
+      if (!lineColorOverride && !successColorOverride && !errorColorOverride) {
+        return;
+      }
+      postToChart({
+        type: 'SET_THEME_COLORS',
+        payload: {
+          lineColor: lineColorOverride,
+          successColor: successColorOverride,
+          errorColor: errorColorOverride,
+          currentPriceColor: lineColorOverride,
+          volumeSuccessColor: successColorOverride,
+          volumeErrorColor: errorColorOverride,
+        },
+      });
+    }, [
+      lineColorOverride,
+      successColorOverride,
+      errorColorOverride,
+      chartReady,
+      postToChart,
+    ]);
 
     // Studies are candlestick-only: the selection stays in preferences but
     // nothing is drawn on a line chart. Gating here rather than in the parent
