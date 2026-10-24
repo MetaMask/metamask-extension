@@ -21,7 +21,7 @@ export type MarketingConsentSheetProps = {
   isOpen: boolean;
   isSubmitting: boolean;
   title: string;
-  description: string;
+  paragraphs: React.ReactNode[];
   confirmLabel: string;
   testId: string;
   error?: string | null;
@@ -33,7 +33,7 @@ export function MarketingConsentSheet({
   isOpen,
   isSubmitting,
   title,
-  description,
+  paragraphs,
   confirmLabel,
   testId,
   error,
@@ -84,7 +84,11 @@ export function MarketingConsentSheet({
         </ModalHeader>
         <ModalBody className="px-4 pb-4">
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            <Text color={TextColor.TextAlternative}>{description}</Text>
+            {paragraphs.map((paragraph, index) => (
+              <Text key={index} color={TextColor.TextAlternative}>
+                {paragraph}
+              </Text>
+            ))}
             {error ? (
               <Box role="alert">
                 <Text color={TextColor.ErrorDefault}>{error}</Text>

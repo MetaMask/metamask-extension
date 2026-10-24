@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "मार्केटिंग के लिए डेटा संग्रह"
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "उत्पाद अपडेट, सुझाव और समाचार प्राप्त करें - ईमेल के माध्यम से भी। हम आपके इंटरैक्शन का उपयोग साझा की जाने वाली जानकारी को बेहतर बनाने के लिए कर सकते हैं।"
-  },
   "dataUnavailable": {
     "message": "डेटा अनुपलब्ध है"
   },

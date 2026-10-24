@@ -3388,10 +3388,7 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll collect data on how you interact with our marketing communications, so we can share relevant news (like product features and other materials)."
-  },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
+    "message": "We’ll collect data on how you interact with our marketing communications to personalize the updates we send you."
   },
   "dataUnavailable": {
     "message": "data unavailable"
@@ -5466,10 +5463,10 @@
     "message": "Turn off"
   },
   "marketingConsentOptOutSheetDescription": {
-    "message": "Turning off Marketing updates also turns off Updates and rewards notifications, since they rely on this data."
+    "message": "We’ll stop collecting data on how you interact with our marketing communications. You’ll also stop receiving updates and rewards notifications."
   },
   "marketingConsentOptOutSheetTitle": {
-    "message": "Data collection"
+    "message": "Turn off personalized updates"
   },
   "maskicons": {
     "message": "Polycons"
@@ -7057,13 +7054,17 @@
     "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."
   },
   "notificationsSettingsMarketingConsentSheetDescription": {
-    "message": "Turning on Updates and rewards requires enabling Marketing updates, so we can send you more relevant product news and rewards."
+    "message": "To send you relevant updates and rewards, we’ll collect data on how you interact with our marketing communications."
   },
   "notificationsSettingsMarketingConsentSheetOptIn": {
-    "message": "Opt in"
+    "message": "Turn on"
   },
   "notificationsSettingsMarketingConsentSheetTitle": {
-    "message": "Data collection"
+    "message": "Get personalized marketing updates"
+  },
+  "notificationsSettingsMarketingConsentSheetTurnOffHint": {
+    "message": "You can turn this off anytime in $1 > $2.",
+    "description": "$1 is the bolded word \"Settings\" and $2 is the bolded \"Security and privacy\" settings tab name, forming the navigation path to the setting."
   },
   "notificationsSettingsMarketingDescription": {
     "message": "Product updates, feature announcements, and new releases"
@@ -7144,7 +7145,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "In addition to $1, we'd like to use data to understand how you interact with marketing communications.",
+    "message": "In addition to $1, we'd like to use data (like information from cookies) to learn how you interact with our marketing communications.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -7197,22 +7198,22 @@
     "message": "We’ll collect basic product usage data. We may associate this information with on-chain data."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+    "message": "We’ll collect data to learn how you interact with our marketing communications. We may use this data to share relevant news (like product updates)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Gather basic usage data"
+    "message": "Basic usage data"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Marketing updates"
+    "message": "Marketing data"
   },
   "onboardingMetametricsContinue": {
     "message": "Continue"
   },
   "onboardingMetametricsDescription": {
-    "message": "We’d like to request these permissions. You can opt out or delete your usage data at any time."
+    "message": "We’d like to request these permissions. You can opt out or delete your usage data anytime."
   },
   "onboardingMetametricsTitle": {
-    "message": "Help improve MetaMask"
+    "message": "Help us improve MetaMask"
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",

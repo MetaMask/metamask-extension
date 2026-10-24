@@ -6,7 +6,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import type { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
-import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   MetaMetricsEventName,
@@ -38,16 +37,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
       trackEvent: mockTrackAnalyticsEvent,
       createEventBuilder,
     }),
-  };
-});
-
-jest.mock('../../../selectors/first-time-flow', () => {
-  const actual = jest.requireActual<
-    typeof import('../../../selectors/first-time-flow')
-  >('../../../selectors/first-time-flow');
-  return {
-    ...actual,
-    getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
   };
 });
 
@@ -113,7 +102,6 @@ describe('DataCollectionToggleItem', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
     mockMarketingPreferences = {
       pushNotificationsEnabled: false,
       inAppNotificationsEnabled: false,
@@ -138,23 +126,12 @@ describe('DataCollectionToggleItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders description', () => {
+  it('renders the shared marketing description', () => {
     const mockStore = createMockStore();
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     expect(
       screen.getByText(messages.dataCollectionForMarketingDescription.message),
-    ).toBeInTheDocument();
-  });
-
-  it('preserves the social-login marketing description', () => {
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
-    renderWithProvider(<DataCollectionToggleItem />, createMockStore());
-
-    expect(
-      screen.getByText(
-        messages.dataCollectionForMarketingDescriptionSocialLogin.message,
-      ),
     ).toBeInTheDocument();
   });
 

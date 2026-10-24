@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Сбор данных для маркетинга"
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "Получайте обновления, советы и новости о продуктах, в том числе по эл. почте. Мы можем использовать ваши сообщения для улучшения того, чем мы делимся."
-  },
   "dataUnavailable": {
     "message": "данные недоступны"
   },

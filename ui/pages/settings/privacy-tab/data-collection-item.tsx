@@ -6,7 +6,6 @@ import {
   getOptedIn,
 } from '../../../selectors/metametrics';
 import { getUseExternalServices } from '../../../selectors';
-import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setDataCollectionForMarketing } from '../../../store/actions';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
@@ -29,7 +28,6 @@ export const DataCollectionToggleItem = () => {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const isOptedIn = useSelector(getOptedIn);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const trackPreference = useCallback(
     (enabled: boolean) => {
@@ -66,11 +64,7 @@ export const DataCollectionToggleItem = () => {
     <>
       <SettingsToggleItem
         title={t(PRIVACY_ITEMS['data-collection'])}
-        description={t(
-          isSocialLoginFlow
-            ? 'dataCollectionForMarketingDescriptionSocialLogin'
-            : 'dataCollectionForMarketingDescription',
-        )}
+        description={t('dataCollectionForMarketingDescription')}
         value={dataCollectionForMarketing === true}
         onToggle={handleToggle}
         dataTestId="data-collection-for-marketing-input"
@@ -80,7 +74,7 @@ export const DataCollectionToggleItem = () => {
       <MarketingConsentSheet
         {...sheetProps}
         title={t('marketingConsentOptOutSheetTitle')}
-        description={t('marketingConsentOptOutSheetDescription')}
+        paragraphs={[t('marketingConsentOptOutSheetDescription')]}
         confirmLabel={t('marketingConsentOptOutSheetConfirm')}
         testId="marketing-consent-opt-out-sheet"
       />
