@@ -10767,9 +10767,9 @@ __metadata:
   linkType: hard
 
 "@metamask/test-dapp-multichain@npm:^0.17.0":
-  version: 0.17.0
-  resolution: "@metamask/test-dapp-multichain@npm:0.17.0"
-  checksum: 10/78fee6d09e1a384e3f4545255db09e88a35affcf4324784208fa808a8479888b2fb5f71e57162408dd2487d92748d1fdd385e129f61ad00316879452c83e94a4
+  version: 0.17.1
+  resolution: "@metamask/test-dapp-multichain@npm:0.17.1"
+  checksum: 10/cea3c0f813fe04128401704ddd096a335cd391c428de99b37a6db0f0a5e8b5ed63a3a41a6897814f1b9f544b30f859c5501a56cebac9bf97c5800d5fe8c950d5
   languageName: node
   linkType: hard
 
