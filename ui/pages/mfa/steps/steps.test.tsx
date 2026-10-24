@@ -1,7 +1,6 @@
 import React from 'react';
 import { it } from '@jest/globals';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import browser from 'webextension-polyfill';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -20,10 +19,6 @@ import IntroStep from './intro-step';
 import PasskeyStep from './passkey-step';
 import PickerStep from './picker-step';
 import TotpSetupStep from './totp-setup-step';
-
-jest.mock('webextension-polyfill', () => ({
-  permissions: { request: jest.fn() },
-}));
 
 const mockCopy = jest.fn();
 const mockUseCopyToClipboard = jest.fn();
@@ -476,82 +471,6 @@ describe('CodeStep', () => {
     });
   });
 
-  it('pastes a copied code and submits it', async () => {
-    jest.mocked(browser.permissions.request).mockResolvedValue(true);
-    Object.assign(navigator, {
-      clipboard: { readText: jest.fn().mockResolvedValue('Code: 123456') },
-    });
-    const { onAction } = renderCode(otp(true));
-
-    fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
-
-    await waitFor(() =>
-      expect(onAction).toHaveBeenCalledWith({
-        type: 'submitCode',
-        code: '123456',
-      }),
-    );
-  });
-
-  it('pastes once the page has focus again after the permission prompt', async () => {
-    jest.mocked(browser.permissions.request).mockResolvedValue(true);
-    const readText = jest
-      .fn()
-      .mockRejectedValueOnce(new Error('Document is not focused'))
-      .mockResolvedValue('123456');
-    Object.assign(navigator, { clipboard: { readText } });
-    const hasFocus = jest.spyOn(document, 'hasFocus').mockReturnValue(false);
-    const { onAction } = renderCode(otp(true));
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
-    });
-    expect(onAction).not.toHaveBeenCalled();
-    hasFocus.mockReturnValue(true);
-    await act(async () => {
-      window.dispatchEvent(new Event('focus'));
-    });
-
-    expect(readText).toHaveBeenCalledTimes(2);
-    expect(onAction).toHaveBeenCalledWith({
-      type: 'submitCode',
-      code: '123456',
-    });
-  });
-
-  it('gives up on a paste when the page does not get focus back', async () => {
-    jest.mocked(browser.permissions.request).mockResolvedValue(true);
-    const readText = jest
-      .fn()
-      .mockRejectedValue(new Error('Document is not focused'));
-    Object.assign(navigator, { clipboard: { readText } });
-    jest.spyOn(document, 'hasFocus').mockReturnValue(false);
-    const removeListener = jest.spyOn(window, 'removeEventListener');
-    const { onAction } = renderCode(otp(true));
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
-    });
-    await act(async () => {
-      jest.advanceTimersByTime(5_000);
-    });
-
-    expect(readText).toHaveBeenCalledTimes(1);
-    expect(removeListener).toHaveBeenCalledWith('focus', expect.any(Function));
-    expect(onAction).not.toHaveBeenCalled();
-  });
-
-  it('pastes nothing without the clipboard permission', async () => {
-    jest.mocked(browser.permissions.request).mockResolvedValue(false);
-    const { onAction } = renderCode(otp(true));
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
-    });
-
-    expect(onAction).not.toHaveBeenCalled();
-  });
-
   it('offers a new code once the one on screen expired', () => {
     const { onAction } = renderCode(otp(true), { error: 'flow_expired' });
 
@@ -670,7 +589,7 @@ describe('CodeStep', () => {
       screen.getByText(messages.mfaOtpDescriptionTotp.message),
     ).toBeInTheDocument();
     expect(screen.queryByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeNull();
-    expect(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeDisabled();
+    expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
 
     fireEvent.change(screen.getByTestId(MfaFlowTestIds.CODE_INPUT), {
       target: { value: '123456' },
@@ -826,9 +745,20 @@ describe('TotpSetupStep', () => {
     expect(screen.getByTestId(MfaFlowTestIds.TOTP_SETUP_KEY)).toHaveTextContent(
       'JBSW Y3DP EHPK 3PXP',
     );
+    expect(
+      screen.getByTestId(MfaFlowTestIds.TOTP_COPY_KEY),
+    ).toHaveAccessibleName(
+      `${messages.mfaTotpSetupKey.message} JBSW Y3DP EHPK 3PXP`,
+    );
+    expect(
+      screen.getByText(messages.mfaTotpSetupManual.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.mfaTotpSetupDescription.message),
+    ).not.toHaveTextContent('Then enter the 6-digit code it shows.');
   });
 
-  it('copies the setup key as sensitive data', () => {
+  it('copies the setup key as sensitive data when the key section is clicked', () => {
     renderSetup();
 
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.TOTP_COPY_KEY));
