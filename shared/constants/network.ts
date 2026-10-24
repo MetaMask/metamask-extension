@@ -192,6 +192,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
   HYPE: '0x3e7',
+  TURKCHAIN: '0x77f',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -223,6 +224,7 @@ export const AVALANCHE_DISPLAY_NAME = 'Avalanche';
 export const ARBITRUM_DISPLAY_NAME = 'Arbitrum';
 export const BNB_DISPLAY_NAME = 'BNB Chain';
 export const OPTIMISM_DISPLAY_NAME = 'OP';
+export const TURKCHAIN_DISPLAY_NAME = 'Turkchain';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
@@ -366,6 +368,7 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'ETH',
+  TURKCHAIN: 'TURK',
   CRONOS: 'CRO',
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
@@ -506,6 +509,8 @@ export const AETH_TOKEN_IMAGE_URL = './images/arbitrum.svg';
 export const FTM_TOKEN_IMAGE_URL = './images/fantom-opera.svg';
 export const HARMONY_ONE_TOKEN_IMAGE_URL = './images/harmony-one.svg';
 export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
+export const TURKCHAIN_NATIVE_TOKEN_IMAGE_URL = './images/turkchain.png';
+export const TURKCHAIN_NETWORK_IMAGE_URL = './images/turkchain.png';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_NETWORK_IMAGE_URL = './images/gnosis.svg';
@@ -795,6 +800,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_DISPLAY_NAME,
   [CHAIN_IDS.POLYGON]: POLYGON_DISPLAY_NAME,
   [CHAIN_IDS.SCROLL]: SCROLL_DISPLAY_NAME,
+  [CHAIN_IDS.TURKCHAIN]: TURKCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
@@ -862,6 +868,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.MAINNET]: CHAINLIST_CURRENCY_SYMBOLS_MAP.ETH,
   [CHAINLIST_CHAIN_IDS_MAP.OPBNB]: CHAINLIST_CURRENCY_SYMBOLS_MAP.OPBNB,
   [CHAINLIST_CHAIN_IDS_MAP.OPTIMISM]: CHAINLIST_CURRENCY_SYMBOLS_MAP.OPTIMISM,
+  [CHAINLIST_CHAIN_IDS_MAP.TURKCHAIN]: CHAINLIST_CURRENCY_SYMBOLS_MAP.TURKCHAIN,
   [CHAINLIST_CHAIN_IDS_MAP.POLYGON]: CHAINLIST_CURRENCY_SYMBOLS_MAP.POL,
   [CHAINLIST_CHAIN_IDS_MAP.ZKSYNC_ERA]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ZKSYNC_ERA,
@@ -1088,6 +1095,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.TURKCHAIN]: TURKCHAIN_NETWORK_IMAGE_URL,
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_NETWORK_IMAGE_URL,
@@ -1247,6 +1255,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.POLYGON]: POL_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CHAIN_IDS.OPTIMISM]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.TURKCHAIN]: TURKCHAIN_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
@@ -1408,6 +1417,10 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-sepolia-optimistic`,
   },
+    [CHAIN_IDS.TURKCHAIN]: {
+    domain: 'turkscan.com',
+    subdomain: defaultEtherscanSubdomainPrefix,
+  },
   [CHAIN_IDS.POLYGON]: {
     domain: 'polygonscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
@@ -1549,6 +1562,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://optimistic.etherscan.io/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.TURKCHAIN,
+    name: 'Turkchain Mainnet',
+    nativeCurrency: 'TURK',
+    rpcEndpoints: [
+      {
+        url: 'https://rpc.turkscan.com',
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://turkscan.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {
