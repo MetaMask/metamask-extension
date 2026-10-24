@@ -212,6 +212,8 @@ function publishHook({
         controllerMessenger: messenger,
         isSmartTransaction,
         featureFlags,
+        getAccountHardwareType: (address) =>
+          keyringTypeForAddress(messenger, address),
       });
 
       if (result?.getFeesError) {
@@ -309,6 +311,8 @@ function publishBatchHook({
       isSmartTransaction,
       featureFlags,
       transactionMeta,
+      getAccountHardwareType: (address) =>
+        keyringTypeForAddress(messenger, address),
     });
 
     if (result) {
@@ -336,6 +340,32 @@ function publishBatchHook({
 
     return result;
   };
+}
+
+async function keyringTypeForAddress(
+  messenger: TransactionControllerInitMessenger,
+  address?: string,
+): Promise<string | undefined> {
+  if (!address) {
+    return undefined;
+  }
+  try {
+    const keyring = await messenger.call(
+      'KeyringController:getKeyringForAccount',
+      address,
+    );
+    if (
+      keyring &&
+      typeof keyring === 'object' &&
+      'type' in keyring &&
+      typeof keyring.type === 'string'
+    ) {
+      return keyring.type;
+    }
+    return undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function getKeyringController(messenger: TransactionControllerInitMessenger) {
