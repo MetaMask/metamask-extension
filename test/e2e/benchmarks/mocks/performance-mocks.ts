@@ -93,6 +93,31 @@ function delayedResponse<TResponse>(
   };
 }
 
+const QUOTE_RESPONSE_DELAY_MS = 2000;
+
+/**
+ * Extra delay on the mocked quote responses, for a known-answer check of the
+ * swap trace spans: `swapQuoteFetch` covers the quote request, so it should
+ * grow by exactly this much, and `swapViewLoaded` ends before the request is
+ * made, so it should not move. Set `BENCHMARK_KNOWN_ANSWER_QUOTE_DELAY_MS`
+ * only for that check; unset, the mocks behave as before.
+ *
+ * @returns The extra delay in milliseconds.
+ */
+function getKnownAnswerQuoteDelayMs(): number {
+  const raw = process.env.BENCHMARK_KNOWN_ANSWER_QUOTE_DELAY_MS;
+  if (raw === undefined || raw === '') {
+    return 0;
+  }
+  const delayMs = Number(raw);
+  if (!Number.isInteger(delayMs) || delayMs < 0) {
+    throw new Error(
+      `BENCHMARK_KNOWN_ANSWER_QUOTE_DELAY_MS must be a non-negative integer, got "${raw}"`,
+    );
+  }
+  return delayMs;
+}
+
 function delayedCallback<TResponse>(
   delayMs: number,
   callback: (req: { url: string }) => TResponse,
@@ -1217,15 +1242,18 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedCallback(2000, (req) => {
-          const isSolana = req.url.includes('srcChainId=1151111081099710');
-          const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
-          return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'text/event-stream' },
-            body: buildSseResponseBody([quote]),
-          };
-        }),
+        delayedCallback(
+          QUOTE_RESPONSE_DELAY_MS + getKnownAnswerQuoteDelayMs(),
+          (req) => {
+            const isSolana = req.url.includes('srcChainId=1151111081099710');
+            const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
+            return {
+              statusCode: 200,
+              headers: { 'Content-Type': 'text/event-stream' },
+              body: buildSseResponseBody([quote]),
+            };
+          },
+        ),
       ),
   );
 
@@ -1235,11 +1263,14 @@ export async function mockBenchmarkEndpoints(
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
-        delayedCallback(2000, (req) => {
-          const isSolana = req.url.includes('srcChainId=1151111081099710');
-          const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
-          return { statusCode: 200, json: [quote] };
-        }),
+        delayedCallback(
+          QUOTE_RESPONSE_DELAY_MS + getKnownAnswerQuoteDelayMs(),
+          (req) => {
+            const isSolana = req.url.includes('srcChainId=1151111081099710');
+            const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
+            return { statusCode: 200, json: [quote] };
+          },
+        ),
       ),
   );
 
