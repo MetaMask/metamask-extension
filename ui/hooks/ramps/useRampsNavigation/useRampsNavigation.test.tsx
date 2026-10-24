@@ -606,6 +606,127 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
+  it('intent with a native assetId matches the catalog native asset on the same chain', async () => {
+    // Token page builds Base ETH as `eip155:8453/slip44:60` (ETH's SLIP-44
+    // coin type), but the catalog lists it as `eip155:8453/slip44:8453` (Base's
+    // own SLIP-44 entry). So the catalog id is the one to pre-select.
+    const catalogAssetId = 'eip155:8453/slip44:8453';
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:8453/slip44:60',
+    });
+
+    expect(opened).toBe('native');
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      catalogAssetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: catalogAssetId },
+    });
+    expect(getModalName()).toBeNull();
+  });
+
+  it('intent with a native assetId does not match a non-native catalog token on the same chain → shows RAMPS_UNSUPPORTED', async () => {
+    // Base USDC shares the chain but is an ERC-20, not Base's native asset.
+    const catalogAssetId =
+      'eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:8453/slip44:60',
+    });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('intent with a native assetId does not match a native catalog token on another chain → shows RAMPS_UNSUPPORTED', async () => {
+    // Ethereum ETH is native too, but on a different chain than Base ETH.
+    const catalogAssetId = 'eip155:1/slip44:60';
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:8453/slip44:60',
+    });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('intent with a native assetId matching a catalog native flagged tokenSupported:false → shows RAMPS_UNSUPPORTED', async () => {
+    // The native fallback finds the token, but `tokenSupported: false`
+    // still blocks it.
+    const catalogAssetId = 'eip155:8453/slip44:8453';
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              { assetId: catalogAssetId, tokenSupported: false } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:8453/slip44:60',
+    });
+
+    expect(opened).toBe(false);
+    expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
   it('intent with affected-network assetId matches a catalog token with checksum casing', async () => {
     const catalogAssetId = 'eip155:59144/erc20:0xAbC';
     const { result } = run(
