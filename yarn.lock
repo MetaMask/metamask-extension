@@ -9595,19 +9595,19 @@ __metadata:
   linkType: hard
 
 "@metamask/network-connection-banner-controller@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/network-connection-banner-controller@npm:0.2.0"
+  version: 0.2.1
+  resolution: "@metamask/network-connection-banner-controller@npm:0.2.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/client-controller": "npm:^1.0.1"
     "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/network-controller": "npm:^35.0.1"
-    "@metamask/network-enablement-controller": "npm:^6.0.3"
+    "@metamask/network-controller": "npm:^36.0.0"
+    "@metamask/network-enablement-controller": "npm:^6.0.5"
     "@metamask/utils": "npm:^11.11.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/1175b4a8aa5eb8c423cd3e19a5c5a070c4071c23278b096c59f7861a66ac4a45bc3ea40204883c133609e9aaedaa6413331869686655c240420fc115828e6d7f
+  checksum: 10/82d63879429ea1c1de8e81487221e25df43b292cc51cec3e7b882dcbaea82502ba9137cad8709da73cf0d52b44586fbfadd893dd676e984ee6bc21d9885b9126
   languageName: node
   linkType: hard
 
@@ -9642,7 +9642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^6.0.0, @metamask/network-enablement-controller@npm:^6.0.3":
+"@metamask/network-enablement-controller@npm:^6.0.0, @metamask/network-enablement-controller@npm:^6.0.5":
   version: 6.0.5
   resolution: "@metamask/network-enablement-controller@npm:6.0.5"
   dependencies:
