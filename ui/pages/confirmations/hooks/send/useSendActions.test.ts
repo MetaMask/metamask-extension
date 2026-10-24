@@ -394,7 +394,10 @@ describe('useSendQueryParams', () => {
     await waitFor(() => {
       // Should clear error for user rejection
       expect(mockUpdateNonEVMSubmitError).toHaveBeenCalledWith(undefined);
-      expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${DEFAULT_ROUTE}?tab=activity`,
+        { replace: true },
+      );
     });
 
     // User rejection is classified, not dropped, so the attempt stays countable
