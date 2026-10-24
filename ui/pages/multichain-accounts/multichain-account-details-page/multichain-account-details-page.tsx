@@ -63,15 +63,24 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useDispatch } from '../../../store/hooks';
 
-export const MultichainAccountDetailsPage = () => {
+export const MultichainAccountDetailsPage = ({
+  accountGroupId: accountGroupIdProp,
+  onBack,
+  onShowAddresses,
+}: {
+  accountGroupId?: AccountGroupId;
+  onBack?: () => void;
+  onShowAddresses?: (accountGroupId: AccountGroupId) => void;
+} = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [searchParams] = useSearchParams();
 
-  const accountGroupId = (searchParams.get('accountGroupId') ??
-    '') as AccountGroupId;
+  const accountGroupId =
+    accountGroupIdProp ??
+    ((searchParams.get('accountGroupId') ?? '') as AccountGroupId);
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
@@ -116,6 +125,10 @@ export const MultichainAccountDetailsPage = () => {
       name: TraceName.ShowAccountAddressList,
       op: TraceOperation.AccountUi,
     });
+    if (onShowAddresses) {
+      onShowAddresses(accountGroupId);
+      return;
+    }
     navigate(
       `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`,
     );
@@ -197,7 +210,13 @@ export const MultichainAccountDetailsPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(PREVIOUS_ROUTE)}
+            onClick={() => {
+              if (onBack) {
+                onBack();
+                return;
+              }
+              navigate(PREVIOUS_ROUTE);
+            }}
             data-testid="back-button"
           />
         }

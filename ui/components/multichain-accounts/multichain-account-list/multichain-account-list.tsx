@@ -98,6 +98,9 @@ export type MultichainAccountListProps = {
    * @default false
    */
   isEditMode?: boolean;
+  onAccountSelected?: () => void;
+  onShowDetails?: (accountGroupId: AccountGroupId) => void;
+  onShowAddresses?: (accountGroupId: AccountGroupId) => void;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
@@ -197,6 +200,9 @@ export const MultichainAccountList = ({
   showConnectionStatus = false,
   showDefaultAddress = false,
   isEditMode = false,
+  onAccountSelected,
+  onShowDetails,
+  onShowAddresses,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox && !isEditMode;
 
@@ -426,12 +432,16 @@ export const MultichainAccountList = ({
 
       startTransition(() => {
         dispatch(setSelectedMultichainAccount(accountGroupId));
+        if (onAccountSelected) {
+          return;
+        }
         if (isFreshTab) {
           navigate(DEFAULT_ROUTE, { replace: true });
         } else {
           transitionBack(() => navigate(PREVIOUS_ROUTE));
         }
       });
+      onAccountSelected?.();
     },
     [
       trackEvent,
@@ -439,6 +449,7 @@ export const MultichainAccountList = ({
       hdEntropyIndex,
       defaultHomeActiveTabName,
       dispatch,
+      onAccountSelected,
       location.key,
       location.state,
       navigate,
@@ -585,6 +596,8 @@ export const MultichainAccountList = ({
                   handleAccountRenameAction={handleAccountRenameAction}
                   isOpen={openMenuAccountId === groupId}
                   onToggle={() => handleMenuToggle(groupId as AccountGroupId)}
+                  onShowDetails={onShowDetails}
+                  onShowAddresses={onShowAddresses}
                 />
               ) : undefined
             }
@@ -607,6 +620,8 @@ export const MultichainAccountList = ({
       handleAccountRenameAction,
       openMenuAccountId,
       handleMenuToggle,
+      onShowDetails,
+      onShowAddresses,
       showDefaultAddress,
       isEditMode,
       internalAccountsById,
