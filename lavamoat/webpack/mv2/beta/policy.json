@@ -925,7 +925,6 @@
         "URL": true,
         "URLSearchParams": true,
         "clearInterval": true,
-        "clearTimeout": true,
         "console.error": true,
         "console.log": true,
         "console.warn": true,
@@ -955,7 +954,6 @@
         "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
-        "@metamask/assets-controllers>immer": true,
         "@metamask/assets-controller>lodash-es": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/assets-controllers>reselect": true,
@@ -5983,11 +5981,6 @@
       },
       "packages": {
         "eth-ens-namehash>idna-uts46-hx>punycode": true
-      }
-    },
-    "@metamask/assets-controllers>immer": {
-      "globals": {
-        "Iterator": true
       }
     },
     "@metamask/base-controller>immer": {
