@@ -247,9 +247,12 @@ jobs:
             tsconfig.json
             development/metamaskbot-build-announce
             shared/constants/benchmarks.ts
+            shared/lib/string-utils.ts
+            test/e2e/benchmarks/utils/constants.ts
             test/e2e/benchmarks/utils/gated-metrics.ts
-            test/e2e/benchmarks/utils/thresholds.ts
+            test/e2e/benchmarks/utils/presets.ts
             test/e2e/benchmarks/utils/statistics.ts
+            test/e2e/benchmarks/utils/thresholds.ts
           sparse-checkout-cone-mode: false
 
       - name: Setup Node.js
@@ -311,7 +314,7 @@ jobs:
             steps.download-benchmarks.outcome == 'success' &&
             steps.skip-check.outputs.skip != 'true'
           }}
-        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/
+        run: ./node_modules/.bin/tsx development/metamaskbot-build-announce/compare-benchmarks.ts --current ./benchmark-results/ --require-complete
         shell: bash
 
   # Pushes benchmark results to extension_benchmark_stats (performance_data.json) for
