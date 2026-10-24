@@ -10,6 +10,7 @@ import {
 } from '../../../shared/constants/network';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { getAnalyticsControllerInstanceOptions } from './instance-options/analytics-controller';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
@@ -21,6 +22,7 @@ import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
@@ -36,6 +38,11 @@ import {
 import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
 import { getPermissionControllerInstanceOptions } from './instance-options/permission-controller';
 import { getPermissionControllerInitMessenger } from './messengers/permission-controller-messenger';
+import { getNetworkEnablementControllerInitMessenger } from './messengers/network-enablement-controller-messenger';
+import {
+  setupNetworkEnablementControllerListeners,
+  withNetworkEnablementControllerTestState,
+} from './network-enablement-controller';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -75,6 +82,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
 
   const wallet = new Wallet({
     instanceOptions: {
+      analyticsController: getAnalyticsControllerInstanceOptions({
+        initMessenger: getAnalyticsControllerInitMessenger(messenger),
+        state,
+        platform,
+      }),
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
@@ -119,7 +131,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
       }),
     },
     messenger,
-    state,
+    state: withNetworkEnablementControllerTestState(state),
   });
 
   // Fixture-less test builds (like `yarn build:test:dev`) have no persisted
@@ -163,6 +175,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
         | AuthenticationControllerState['srpSessionData']
         | undefined,
     },
+  });
+
+  setupNetworkEnablementControllerListeners({
+    controller: wallet.getInstance('NetworkEnablementController'),
+    messenger: getNetworkEnablementControllerInitMessenger(messenger),
   });
 
   wallet.init().catch((error) => console.error(error));

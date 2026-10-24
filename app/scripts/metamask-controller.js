@@ -339,7 +339,6 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
@@ -354,7 +353,6 @@ import { BridgeControllerInit } from './messenger-client-init/bridge-controller-
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
 import { AppStateControllerInit } from './messenger-client-init/app-state-controller-init';
-import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
@@ -389,6 +387,7 @@ import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
+import { initializeNetworkEnablementController } from './wallet-init/network-enablement-controller';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
@@ -553,12 +552,11 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: PermissionLogControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
-      // GeolocationController must init before AnalyticsController, which
-      // resolves geolocation during its own init via
-      // GeolocationController:getGeolocationData.
+      // GeolocationController should init early so AnalyticsController (owned
+      // by the wallet) can resolve geolocation via
+      // GeolocationController:getGeolocationData when enrichment is enabled.
       GeolocationApiService: GeolocationApiServiceInit,
       GeolocationController: GeolocationControllerInit,
-      AnalyticsController: AnalyticsControllerInit,
       SentryTracingService: SentryTracingServiceInit,
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -598,10 +596,9 @@ export default class MetamaskController extends EventEmitter {
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
-      // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
-      // because TokenRatesController depends on NetworkEnablementController:getState during construction.
+      // TokenRatesController reads NetworkEnablementController:getState during construction.
+      // NetworkEnablementController is owned by the wallet, so it is already registered here.
       MultichainNetworkController: MultichainNetworkControllerInit,
-      NetworkEnablementController: NetworkEnablementControllerInit,
       TokenRatesController: TokenRatesControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
@@ -661,6 +658,11 @@ export default class MetamaskController extends EventEmitter {
     this.controllerPersistedState = controllerPersistedState;
     this.messengerClientsByName = messengerClientsByName;
 
+    initializeNetworkEnablementController({
+      controller: this.wallet.getInstance('NetworkEnablementController'),
+      state: initState,
+    });
+
     this.rampsController = messengerClientsByName.RampsController;
 
     // Backwards compatibility for existing references
@@ -692,7 +694,7 @@ export default class MetamaskController extends EventEmitter {
     );
     this.appStateController = messengerClientsByName.AppStateController;
     this.networkController = this.wallet.getInstance('NetworkController');
-    this.analyticsController = messengerClientsByName.AnalyticsController;
+    this.analyticsController = this.wallet.getInstance('AnalyticsController');
     this.userTraitsService = messengerClientsByName.UserTraitsService;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
@@ -772,8 +774,9 @@ export default class MetamaskController extends EventEmitter {
       'SubscriptionController',
     );
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
-    this.networkEnablementController =
-      messengerClientsByName.NetworkEnablementController;
+    this.networkEnablementController = this.wallet.getInstance(
+      'NetworkEnablementController',
+    );
     this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
       messengerClientsByName.GatorPermissionsController;

@@ -1,9 +1,5 @@
 import { noop } from 'lodash';
 import {
-  getAnalyticsControllerInitMessenger,
-  getAnalyticsControllerMessenger,
-} from './analytics-controller-messenger';
-import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
 } from './ppom-controller-messenger';
@@ -45,7 +41,6 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
-  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
@@ -53,7 +48,6 @@ import {
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
-  getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
 } from './assets';
@@ -219,7 +213,6 @@ export {
   getEncryptionPublicKeyControllerInitMessenger,
 } from './encryption-public-key-controller-messenger';
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type { NameControllerInitMessenger } from './name-controller-messenger';
@@ -327,10 +320,6 @@ export const MESSENGER_FACTORIES = {
   AppStateController: {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
-  },
-  AnalyticsController: {
-    getMessenger: getAnalyticsControllerMessenger,
-    getInitMessenger: getAnalyticsControllerInitMessenger,
   },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,
@@ -647,10 +636,6 @@ export const MESSENGER_FACTORIES = {
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  NetworkEnablementController: {
-    getMessenger: getNetworkEnablementControllerMessenger,
-    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,
