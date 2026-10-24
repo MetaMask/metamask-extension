@@ -17,7 +17,7 @@ import {
   getOptedIn,
 } from '../selectors';
 import { trackAnalyticsEvent } from '../store/actions';
-import { useSegmentContext } from './useSegmentContext';
+import { useGetSegmentContext } from './useSegmentContext';
 
 type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
   environmentType: string;
@@ -31,7 +31,7 @@ type UseAnalyticsResult = {
 };
 
 export function useAnalytics(): UseAnalyticsResult {
-  const context = useSegmentContext();
+  const getSegmentContext = useGetSegmentContext();
   const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const analyticsId = useSelector(getAnalyticsId);
@@ -45,7 +45,7 @@ export function useAnalytics(): UseAnalyticsResult {
       const options: UIAnalyticsTrackEventOptions = {
         ...built.options,
         environmentType: getEnvironmentType(),
-        ...context,
+        ...getSegmentContext(),
       };
 
       if (
@@ -56,7 +56,7 @@ export function useAnalytics(): UseAnalyticsResult {
         await trackAnalyticsEvent(built, options).catch(() => undefined);
       }
     },
-    [canMaybeTrackLater, canTrackImmediately, context],
+    [canMaybeTrackLater, canTrackImmediately, getSegmentContext],
   );
 
   return useMemo(
