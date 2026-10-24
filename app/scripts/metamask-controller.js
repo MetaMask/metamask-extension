@@ -391,6 +391,9 @@ import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
+// MMPay dApp PoC
+import { addMmPayDappTransaction } from './lib/mmpay-dapp/create-mmpay-transaction';
+import { ensureNetworkClient } from './lib/mmpay-dapp/ensure-network';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5139,6 +5142,17 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  // MMPay dApp PoC
+  getMmPayDeps() {
+    return {
+      messenger: this.controllerMessenger,
+      securityAlertsEnabled:
+        this.preferencesController.state?.securityAlertsEnabled ?? false,
+      ensureNetwork: (chainId) =>
+        ensureNetworkClient(this.controllerMessenger, chainId),
+    };
+  }
+
   /**
    * A method for creating an ethereum provider that is safely restricted for the requesting subject.
    *
@@ -5456,6 +5470,16 @@ export default class MetamaskController extends EventEmitter {
 
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
+        // MMPay dApp PoC
+        mmPayAddDappTransaction: (params, req) =>
+          addMmPayDappTransaction(
+            {
+              ...this.getMmPayDeps(),
+              from: this.getPermittedAccounts(origin)[0],
+              dappRequest: req,
+            },
+            params,
+          ),
         getCaip25PermissionFromLegacyPermissionsForOrigin: (
           requestedPermissions,
         ) => getCaip25PermissionFromLegacyPermissions(requestedPermissions),
