@@ -403,6 +403,25 @@ describe('NetworkListMenu', () => {
     );
   });
 
+  it('narrows down search results by native currency symbol', async () => {
+    const { queryByText, getByPlaceholderText } = render();
+
+    expect(queryByText('Chain 5')).toBeInTheDocument();
+    expect(queryByText(BNB_DISPLAY_NAME)).toBeInTheDocument();
+
+    const searchBox = getByPlaceholderText(messages.search.message);
+    fireEvent.focus(searchBox);
+    fireEvent.change(searchBox, { target: { value: 'BNB' } });
+
+    await waitFor(
+      () => {
+        expect(queryByText(BNB_DISPLAY_NAME)).toBeInTheDocument();
+        expect(queryByText('Chain 5')).not.toBeInTheDocument();
+      },
+      { timeout: 10000 },
+    );
+  });
+
   it('enables the "Add a custom network" button when MetaMask is locked', () => {
     const { queryByText } = render({ isUnlocked: false });
     expect(queryByText(messages.addACustomNetwork.message)).toBeEnabled();
