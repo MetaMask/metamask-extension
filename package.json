@@ -188,6 +188,7 @@
     "yauzl@npm:3.2.0": "^3.2.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
+    "glob-watcher/chokidar": "^3.6.0",
     "napi-postinstall": "npm:npm-empty-package@1.0.0",
     "@grpc/grpc-js@npm:~1.9.0": "^1.14.5",
     "@tanstack/query-core": "5.103.2",
