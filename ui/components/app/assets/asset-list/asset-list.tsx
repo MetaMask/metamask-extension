@@ -8,11 +8,13 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
+import { useFullScreenDesign } from '../../../../hooks/useFullScreenDesign';
 import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
+import { TokenTable } from '../token-table/token-table';
 import AssetListControlBar from './asset-list-control-bar';
 
 export type AssetListProps = {
@@ -33,6 +35,7 @@ const TokenListContainer = React.memo(
   }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'>) => {
     const { trackEvent, createEventBuilder } = useAnalytics();
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
+    const isFullScreenDesign = useFullScreenDesign();
 
     const onTokenClick = useCallback(
       (chainId: string, tokenAddress: string, assetId?: CaipAssetType) => {
@@ -58,7 +61,11 @@ const TokenListContainer = React.memo(
       ],
     );
 
-    return <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />;
+    return isFullScreenDesign ? (
+      <TokenTable onTokenClick={onTokenClick} safeChains={safeChains} />
+    ) : (
+      <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />
+    );
   },
 );
 

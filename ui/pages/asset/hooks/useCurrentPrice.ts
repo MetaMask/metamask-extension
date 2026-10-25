@@ -44,7 +44,7 @@ type SpotPriceEntry = NonNullable<V3SpotPricesResponse[string]> &
  * @param asset - The asset to get the cached price of
  * @returns The cached price of the asset, or undefined if it is not in state.
  */
-const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
+export const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
   const isEvm = isEvmChainId(asset.chainId);
   const evmMarketData = useSelector(getMarketData);
   const evmCurrencyRates = useSelector(getCurrencyRates);

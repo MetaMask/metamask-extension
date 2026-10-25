@@ -1,4 +1,8 @@
 {
+  "24hChange": {
+    "message": "24h change",
+    "description": "Title for the 24 hour change of the token price"
+  },
   "CSS_loadingTakingTooLongActionText": {
     "message": "Relaunch MetaMask if the problem persists.",
     "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
