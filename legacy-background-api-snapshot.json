@@ -420,8 +420,6 @@
     "toggleExternalServices",
     "tokenDetectionStartPolling",
     "tokenDetectionStopPollingByPollingToken",
-    "tokenRatesStartPolling",
-    "tokenRatesStopPollingByPollingToken",
     "trackAnalyticsEvent",
     "trackAnalyticsPage",
     "trackMetaMetricsPage",
