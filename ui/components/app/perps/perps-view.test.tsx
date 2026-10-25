@@ -255,6 +255,7 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    document.documentElement.classList.remove('dark');
     Object.defineProperty(document, 'visibilityState', {
       configurable: true,
       value: 'visible',
@@ -353,18 +354,24 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('perps-view-title')).toBeInTheDocument();
     });
 
-    it('shows the debug banner above open positions when ETH is open', () => {
-      renderWithProvider(<PerpsView />, mockStore);
+    it('shows the white debug banner above open positions in both themes', () => {
+      for (const theme of ['light', 'dark'] as const) {
+        document.documentElement.classList.toggle('dark', theme === 'dark');
 
-      const banner = screen.getByTestId('perps-eth-position-debug-banner');
-      const positions = screen.getByTestId('perps-positions-section');
+        const { unmount } = renderWithProvider(<PerpsView />, mockStore);
 
-      expect(banner).toHaveTextContent('ADR58 POC: ETH POSITION DETECTED');
-      expect(banner).toHaveClass('bg-error-default');
-      expect(banner.querySelector('.text-default')).toBeInTheDocument();
-      expect(banner.compareDocumentPosition(positions)).toBe(
-        Node.DOCUMENT_POSITION_FOLLOWING,
-      );
+        const banner = screen.getByTestId('perps-eth-position-debug-banner');
+        const positions = screen.getByTestId('perps-positions-section');
+        const bannerText = screen.getByText('ADR58 POC: ETH POSITION DETECTED');
+
+        expect(banner).toHaveTextContent('ADR58 POC: ETH POSITION DETECTED');
+        expect(banner).toHaveClass('bg-error-default');
+        expect(bannerText).toHaveClass('!text-white');
+        expect(banner.compareDocumentPosition(positions)).toBe(
+          Node.DOCUMENT_POSITION_FOLLOWING,
+        );
+        unmount();
+      }
     });
 
     it('hides the debug banner when no ETH position is open', () => {
