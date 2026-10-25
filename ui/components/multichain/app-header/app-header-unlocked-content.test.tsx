@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { SUPPORT_LINK } from '#shared/lib/ui-utils';
 import { openWindow } from '#ui/helpers/utils/window';
+import { useFullScreenDesign } from '#ui/hooks/useFullScreenDesign';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -16,6 +17,10 @@ jest.mock('../../../../shared/lib/trace', () => {
     endTrace: jest.fn(),
   };
 });
+
+jest.mock('#ui/hooks/useFullScreenDesign');
+
+const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 
 const mockNavigate = jest.fn();
 
@@ -232,6 +237,105 @@ describe('Global menu', () => {
       await waitFor(() => {
         expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
       });
+    });
+  });
+});
+
+describe('Fullscreen design', () => {
+  const stateWithSearchEnabled = {
+    ...mockDefaultState,
+    metamask: {
+      ...mockDefaultState.metamask,
+      remoteFeatureFlags: { extensionUXSearch: true },
+    },
+  };
+
+  const renderHeader = () => {
+    const store = configureStore(stateWithSearchEnabled);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    return renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
+      store,
+    );
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    mockUseFullScreenDesign.mockReset();
+  });
+
+  describe('when the fullscreen design is off', () => {
+    beforeEach(() => {
+      mockUseFullScreenDesign.mockReturnValue(false);
+    });
+
+    it('renders the account picker button and the search icon button', () => {
+      renderHeader();
+
+      expect(screen.getByTestId('account-menu-icon')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('app-header-account-name'),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('discover-search-button').tagName).toBe(
+        'BUTTON',
+      );
+    });
+  });
+
+  describe('when the fullscreen design is on', () => {
+    beforeEach(() => {
+      mockUseFullScreenDesign.mockReturnValue(true);
+    });
+
+    it('renders the account name as plain text instead of the account picker', () => {
+      renderHeader();
+
+      expect(screen.getByTestId('app-header-account-name')).toHaveTextContent(
+        'Account 1',
+      );
+      expect(screen.queryByTestId('account-menu-icon')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('app-header-account-name').closest('button'),
+      ).toBe(null);
+    });
+
+    it('renders an open search field instead of the search icon button', () => {
+      renderHeader();
+
+      const searchInput = screen.getByTestId('discover-search-button');
+      expect(searchInput.tagName).toBe('INPUT');
+      expect(searchInput).toHaveAttribute('readonly');
+      expect(searchInput).toHaveAttribute(
+        'placeholder',
+        messages.searchTokens.message,
+      );
+    });
+
+    it('opens the discover search page when the search field is clicked', () => {
+      renderHeader();
+
+      fireEvent.click(screen.getByTestId('discover-search-button'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/discover-search',
+        expect.anything(),
+      );
+    });
+
+    it('opens the discover search page when Enter is pressed in the search field', () => {
+      renderHeader();
+
+      fireEvent.keyDown(screen.getByTestId('discover-search-button'), {
+        key: 'Enter',
+      });
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/discover-search',
+        expect.anything(),
+      );
     });
   });
 });

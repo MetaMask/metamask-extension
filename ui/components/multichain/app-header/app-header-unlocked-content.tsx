@@ -19,6 +19,7 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
+import { useFullScreenDesign } from '#ui/hooks/useFullScreenDesign';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
@@ -48,6 +49,8 @@ import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
 import { useDispatch } from '../../../store/hooks';
 import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
+import { AccountName } from './account-name';
+import { DiscoverSearchBar } from './discover-search-bar';
 
 type AppHeaderUnlockedContentProps = {
   menuRef: React.RefObject<HTMLButtonElement>;
@@ -62,6 +65,7 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const showNavbar = useBottomNavBar();
+  const isFullScreenDesign = useFullScreenDesign();
   const [searchParams, setSearchParams] = useSearchParams();
   const disableAccountPicker = Boolean(
     matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname) ||
@@ -140,38 +144,42 @@ export const AppHeaderUnlockedContent = ({
           alignItems={BoxAlignItems.Start}
           className="min-w-0"
         >
-          <AccountPicker
-            address={''} // No address shown in multichain mode
-            name={accountName}
-            showAvatarAccount={false}
-            onClick={() => {
-              trace({
-                name: TraceName.ShowAccountList,
-                op: TraceOperation.AccountUi,
-              });
-              transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
-              trackEvent(
-                createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
-                  .addCategory(MetaMetricsEventCategory.Navigation)
-                  .addProperties({
-                    location: 'Home',
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    pinned_count: accountListStats.pinnedCount,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    hidden_count: accountListStats.hiddenCount,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    total_accounts: accountListStats.totalAccounts,
-                  })
-                  .build(),
-              );
-            }}
-            disabled={disableAccountPicker}
-            paddingLeft={2}
-            paddingRight={2}
-          />
+          {isFullScreenDesign ? (
+            <AccountName name={accountName} />
+          ) : (
+            <AccountPicker
+              address={''} // No address shown in multichain mode
+              name={accountName}
+              showAvatarAccount={false}
+              onClick={() => {
+                trace({
+                  name: TraceName.ShowAccountList,
+                  op: TraceOperation.AccountUi,
+                });
+                transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
+                trackEvent(
+                  createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
+                    .addCategory(MetaMetricsEventCategory.Navigation)
+                    .addProperties({
+                      location: 'Home',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      pinned_count: accountListStats.pinnedCount,
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      hidden_count: accountListStats.hiddenCount,
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      total_accounts: accountListStats.totalAccounts,
+                    })
+                    .build(),
+                );
+              }}
+              disabled={disableAccountPicker}
+              paddingLeft={2}
+              paddingRight={2}
+            />
+          )}
         </Box>
         {selectedMultichainAccountId && (
           <Box
@@ -198,6 +206,7 @@ export const AppHeaderUnlockedContent = ({
     );
   }, [
     accountName,
+    isFullScreenDesign,
     disableAccountPicker,
     selectedMultichainAccountId,
     navigate,
@@ -219,7 +228,7 @@ export const AppHeaderUnlockedContent = ({
       <Box
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.End}
-        className="ml-auto"
+        className={isFullScreenDesign ? 'ml-auto min-w-0 flex-1' : 'ml-auto'}
       >
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -227,7 +236,10 @@ export const AppHeaderUnlockedContent = ({
           className="w-full"
           gap={2}
         >
-          {isDiscoverSearchEnabled && (
+          {isDiscoverSearchEnabled && isFullScreenDesign && (
+            <DiscoverSearchBar onOpen={handleOpenDiscoverSearch} />
+          )}
+          {isDiscoverSearchEnabled && !isFullScreenDesign && (
             <ButtonIcon
               iconName={IconName.Search}
               data-testid="discover-search-button"
