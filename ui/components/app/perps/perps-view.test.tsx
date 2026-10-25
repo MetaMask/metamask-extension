@@ -353,6 +353,35 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('perps-view-title')).toBeInTheDocument();
     });
 
+    it('shows the debug banner above open positions when ETH is open', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      const banner = screen.getByTestId('perps-eth-position-debug-banner');
+      const positions = screen.getByTestId('perps-positions-section');
+
+      expect(banner).toHaveTextContent('ADR58 POC: ETH POSITION DETECTED');
+      expect(banner).toHaveClass('bg-error-default');
+      expect(banner.querySelector('.text-default')).toBeInTheDocument();
+      expect(banner.compareDocumentPosition(positions)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    });
+
+    it('hides the debug banner when no ETH position is open', () => {
+      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+        positions: mocks.mockPositions.filter(
+          (position) => position.symbol !== 'ETH',
+        ),
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-eth-position-debug-banner'),
+      ).not.toBeInTheDocument();
+    });
+
     it('shows positions section when mock positions exist', () => {
       // Default mocks have positions
       expect(mocks.mockPositions.length).toBeGreaterThan(0);

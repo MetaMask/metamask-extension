@@ -508,6 +508,21 @@ export const PerpsView = () => {
         />
       </Box>
 
+      {positions.some((position) => position.symbol === 'ETH') ? (
+        <Box
+          className="bg-error-default px-4 py-2"
+          data-testid="perps-eth-position-debug-banner"
+        >
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextDefault}
+            fontWeight={FontWeight.Bold}
+          >
+            ADR58 POC: ETH POSITION DETECTED
+          </Text>
+        </Box>
+      ) : null}
+
       {/* Positions + Orders sections */}
       {batchActionError ? (
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
