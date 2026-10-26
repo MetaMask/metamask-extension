@@ -66,7 +66,7 @@ describe('getTransactionPayControllerInitMessenger', () => {
           'AccountsController:getSelectedAccount',
           'NetworkController:getNetworkClientById',
           'TransactionController:getState',
-          'TransactionController:updateTransaction',
+          'TransactionController:updateTransactionMetadata',
         ]),
       }),
     );

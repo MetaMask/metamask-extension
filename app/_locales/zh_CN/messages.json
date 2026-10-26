@@ -1738,9 +1738,6 @@
     "message": "于 $1 批准用于 $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "欢迎使用 Arc！为方便并验证您对 Arc 链的使用，我们可能会与 Arc 团队共享信息。"
-  },
   "arcUsageNoticeTitle": {
     "message": "通知"
   },
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "返回以确保安全"
+  },
+  "backToWallet": {
+    "message": "返回钱包"
   },
   "backUpIncomplete": {
     "message": "备份未完成"
@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "用于营销目的的数据收集"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "我们将使用 MetaMetrics 来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点和其他内容）。"
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "获取产品更新、提示和新闻（包括电子邮件推送）。我们可能会利用您的互动信息来优化我们分享的内容。"
   },
@@ -4256,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask 将承担本次交易的网络费用，其中包括一次性智能账户激活。"
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "此特定网络要求您的账户中保留 $1 $2 的储备金。",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 小时",
     "description": "$1 represents a number of hours"
@@ -4508,6 +4501,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "继续"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "解锁并重试以继续",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "您的 $1 只能签署版本 4（V4）类型的数据。该网站请求的旧签名类型不受支持",
@@ -5207,9 +5204,6 @@
   "loading": {
     "message": "正在加载..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "请在Snap上完成交易。"
-  },
   "loadingTokenList": {
     "message": "正在加载代币列表"
   },
@@ -5434,6 +5428,57 @@
   "metrics": {
     "message": "指标"
   },
+  "mfaEmailEntryContinue": {
+    "message": "继续"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "请输入有效的电子邮箱地址."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "电子邮件地址"
+  },
+  "mfaErrorCooldown": {
+    "message": "请求过多。请稍候再试。"
+  },
+  "mfaErrorGeneric": {
+    "message": "出现问题，请重试。"
+  },
+  "mfaFailureClose": {
+    "message": "关闭"
+  },
+  "mfaFailureRetry": {
+    "message": "请重试"
+  },
+  "mfaFailureTitle": {
+    "message": "出错了"
+  },
+  "mfaIntroContinue": {
+    "message": "开始"
+  },
+  "mfaMethodEmail": {
+    "message": "电子邮件"
+  },
+  "mfaOtpPaste": {
+    "message": "粘贴"
+  },
+  "mfaOtpResend": {
+    "message": "重新发送验证码"
+  },
+  "mfaOtpRetry": {
+    "message": "请重试"
+  },
+  "mfaOtpVerify": {
+    "message": "验证"
+  },
+  "mfaPickerOr": {
+    "message": "或"
+  },
+  "mfaSettingsAdd": {
+    "message": "添加"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "继续"
+  },
   "minimumReceivedExplanation": {
     "message": "若交易处理期间价格发生波动，根据您设置的滑点容差范围，此为您至少可获得的代币数量。该估算值由流动性提供商提供，因此实际兑换数量可能有所差异。"
   },
@@ -5646,6 +5691,14 @@
   "moneyEarnApyTitle": {
     "message": "赚取最高 $1 年化收益率"
   },
+  "moneyEarnBannerCta": {
+    "message": "添加 $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "通过您的 Money Account 赚取收益",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "用您的加密货币赚取收益"
   },
@@ -5800,6 +5853,10 @@
   },
   "moneySend": {
     "message": "发送"
+  },
+  "moneyStartEarning": {
+    "message": "开始赚取",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "无法存入资金。请重试。"
@@ -6775,7 +6832,7 @@
     "message": "收集基本使用数据"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "产品更新"
+    "message": "营销更新"
   },
   "onboardingMetametricsContinue": {
     "message": "继续"
@@ -7463,6 +7520,9 @@
   "perps24hVolume": {
     "message": "24小时交易量"
   },
+  "perpsAbout": {
+    "message": "关于"
+  },
   "perpsActivity": {
     "message": "活动"
   },
@@ -8071,6 +8131,9 @@
   "perpsRateLimitExceeded": {
     "message": "请求次数过多。请稍等片刻，然后重试。"
   },
+  "perpsReadMore": {
+    "message": "了解更多"
+  },
   "perpsRecentActivity": {
     "message": "最近活动"
   },
@@ -8117,6 +8180,18 @@
   "perpsSeeAll": {
     "message": "查看全部",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "联系支持部门",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "在常见问题解答中查看您的选项",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "我们遇到了服务中断",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "服务暂时不可用。请稍后再试。"
@@ -12140,6 +12215,9 @@
   },
   "turnOn": {
     "message": "开启"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "开启基本功能"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "创建通知时出错了。请稍后再试。"

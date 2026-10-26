@@ -1,8 +1,8 @@
 diff --git a/dist/purify.cjs.js b/dist/purify.cjs.js
-index 16b5653cd32434cd9211447c0867b808e40d8ffd..a84ffde011ac3edb3865432edfe3bce178927d37 100644
+index 1dca627f6491690f4a7aa2df365502fb073fe699..4f7d03c03258465a818d53b9f531a9825789682b 100644
 --- a/dist/purify.cjs.js
 +++ b/dist/purify.cjs.js
-@@ -2326,7 +2326,7 @@ function createDOMPurify() {
+@@ -2408,7 +2408,7 @@ function createDOMPurify() {
  		let currentNode = null;
  		let returnNode = null;
  		IS_EMPTY_INPUT = !dirty;
@@ -11,9 +11,9 @@ index 16b5653cd32434cd9211447c0867b808e40d8ffd..a84ffde011ac3edb3865432edfe3bce1
  		if (typeof dirty !== "string" && !_isNode(dirty)) {
  			dirty = stringifyValue(dirty);
  			if (typeof dirty !== "string") throw typeErrorCreate("dirty is not a string, aborting");
-@@ -2361,7 +2361,7 @@ function createDOMPurify() {
- 				throw error;
- 			}
+@@ -2441,7 +2441,7 @@ function createDOMPurify() {
+ 			inPlaceNodes = _collectLiveNodes(dirty);
+ 			IN_PLACE_VISITED = setCreate();
  		} else if (_isNode(dirty)) {
 -			body = _initDocument("<!---->");
 +			body = _initDocument("<!" + "--" + "-->");
@@ -21,10 +21,10 @@ index 16b5653cd32434cd9211447c0867b808e40d8ffd..a84ffde011ac3edb3865432edfe3bce1
  			if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === "BODY") body = importedNode;
  			else if (importedNode.nodeName === "HTML") body = importedNode;
 diff --git a/dist/purify.es.mjs b/dist/purify.es.mjs
-index 5b666ff5c08dd16acb48daca25fa74695e056607..f03f3ac16a9247311c2f911c14c87a2ec2130fea 100644
+index c7174af3b3cf80b96179d3a7156c9014d57f1e28..ed32981764fbe725454430a50144ca7cdb81c81d 100644
 --- a/dist/purify.es.mjs
 +++ b/dist/purify.es.mjs
-@@ -2325,7 +2325,7 @@ function createDOMPurify() {
+@@ -2407,7 +2407,7 @@ function createDOMPurify() {
  		let currentNode = null;
  		let returnNode = null;
  		IS_EMPTY_INPUT = !dirty;
@@ -33,9 +33,9 @@ index 5b666ff5c08dd16acb48daca25fa74695e056607..f03f3ac16a9247311c2f911c14c87a2e
  		if (typeof dirty !== "string" && !_isNode(dirty)) {
  			dirty = stringifyValue(dirty);
  			if (typeof dirty !== "string") throw typeErrorCreate("dirty is not a string, aborting");
-@@ -2360,7 +2360,7 @@ function createDOMPurify() {
- 				throw error;
- 			}
+@@ -2440,7 +2440,7 @@ function createDOMPurify() {
+ 			inPlaceNodes = _collectLiveNodes(dirty);
+ 			IN_PLACE_VISITED = setCreate();
  		} else if (_isNode(dirty)) {
 -			body = _initDocument("<!---->");
 +			body = _initDocument("<!" + "--" + "-->");
@@ -43,10 +43,10 @@ index 5b666ff5c08dd16acb48daca25fa74695e056607..f03f3ac16a9247311c2f911c14c87a2e
  			if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === "BODY") body = importedNode;
  			else if (importedNode.nodeName === "HTML") body = importedNode;
 diff --git a/dist/purify.js b/dist/purify.js
-index 5f6dfbcd44a2a0439379f009b214c5933b4afcfc..b02e0376e3f60c06d5107ff34c3f03618746f3c6 100644
+index 911e5aa66fb067478a0a3cfbe7d22223b5f8164d..b3d2492440a856e114e7db3682d51f4dbfb1bfcd 100644
 --- a/dist/purify.js
 +++ b/dist/purify.js
-@@ -2329,7 +2329,7 @@
+@@ -2411,7 +2411,7 @@
  			let currentNode = null;
  			let returnNode = null;
  			IS_EMPTY_INPUT = !dirty;
@@ -55,9 +55,9 @@ index 5f6dfbcd44a2a0439379f009b214c5933b4afcfc..b02e0376e3f60c06d5107ff34c3f0361
  			if (typeof dirty !== "string" && !_isNode(dirty)) {
  				dirty = stringifyValue(dirty);
  				if (typeof dirty !== "string") throw typeErrorCreate("dirty is not a string, aborting");
-@@ -2364,7 +2364,7 @@
- 					throw error;
- 				}
+@@ -2444,7 +2444,7 @@
+ 				inPlaceNodes = _collectLiveNodes(dirty);
+ 				IN_PLACE_VISITED = setCreate();
  			} else if (_isNode(dirty)) {
 -				body = _initDocument("<!---->");
 +				body = _initDocument("<!" + "--" + "-->");
