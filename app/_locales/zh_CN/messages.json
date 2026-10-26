@@ -5204,9 +5204,6 @@
   "loading": {
     "message": "正在加载..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "请在Snap上完成交易。"
-  },
   "loadingTokenList": {
     "message": "正在加载代币列表"
   },

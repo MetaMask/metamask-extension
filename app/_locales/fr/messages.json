@@ -5204,9 +5204,6 @@
   "loading": {
     "message": "Chargement…"
   },
-  "loadingScreenSnapMessage": {
-    "message": "Veuillez conclure la transaction sur le snap."
-  },
   "loadingTokenList": {
     "message": "Chargement de la liste des jetons"
   },
