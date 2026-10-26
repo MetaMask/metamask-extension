@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.55.0]
 
+### Uncategorized
+
+- Enabled bottom navbar (#47321)
+
 ### Added
 
 - Added a link to supported passkey providers when passkey setup fails because the provider is unsupported (#47275)
@@ -18,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed bump @metamask/stellar-wallet-snap to ^1.3.0 (#47224)
 - Made marketing data collection independent of MetaMetrics and corrected the default marketing opt-in for social login users in the US (#47039)
 - Disconnected the backend WebSocket when Basic functionality is turned off (#47068)
 - Displayed the Money header while content loads and aligned its spacing with other pages (#47202)
@@ -36,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed Perps order and close failures to clearly explain slippage-related rejections (#47264)
+- Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions (#47233)
 - Fixed the token list loading state to show skeleton rows until assets load (#47248)
 - Kept default test networks visible in Chainlist when Show test networks is off and enabled the setting when one is opened (#47213)
 - Fixed Money balances and earnings remaining visible when privacy mode is enabled (#47139)
