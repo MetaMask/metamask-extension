@@ -10,6 +10,7 @@ import {
   ButtonIcon,
   ButtonSize,
   ButtonVariant,
+  FontFamily,
   FontWeight,
   Icon,
   IconColor,
@@ -254,8 +255,8 @@ export function MoneyTransactionDetailsPage() {
             size="xl"
           />
           <SensitiveText
-            variant={TextVariant.DisplayMd}
-            fontWeight={FontWeight.Medium}
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
             color={
               hero.isSuccessColor
                 ? TextColor.SuccessDefault
