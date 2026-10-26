@@ -120,12 +120,12 @@ describe('registerDocumentLoadMeasurement', () => {
     },
   );
 
-  jestIt.each([
+  jestIt.each<['visibilitychange' | 'pagehide', boolean]>([
     ['visibilitychange', true],
     ['visibilitychange', false],
     ['pagehide', true],
     ['pagehide', false],
-  ] as const)(
+  ])(
     'excludes %s events, before registration: %s',
     (event, beforeRegistration) => {
       mockReadiness.trackUsefulScreenVisibility();
