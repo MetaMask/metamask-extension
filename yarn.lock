@@ -9818,6 +9818,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/perps-controller@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/perps-controller@npm:21.0.0"
+  dependencies:
+    "@metamask/abi-utils": "npm:^2.0.4"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.0"
+    "@nktkas/hyperliquid": "npm:^0.33.3"
+    bignumber.js: "npm:^9.1.2"
+    reselect: "npm:^5.3.0"
+    uuid: "npm:^11.1.1"
+  checksum: 10/535b307a13ed2fc2c1102c5568e6c84ca4622cf9a2f74ece27d7c6867250cca7d8cdbeb0f7eb763c8fbd948080cafd930f3ea3359b2557818eef8b86f5b623cc
+  languageName: node
+  linkType: hard
+
 "@metamask/phishing-controller@npm:^18.2.1":
   version: 18.2.1
   resolution: "@metamask/phishing-controller@npm:18.2.1"
@@ -10897,6 +10915,24 @@ __metadata:
     immer: "npm:^11.1.18"
     lodash-es: "npm:^4.18.1"
   checksum: 10/61afc540a734a21ded42978e2d12b5ca7cb29cfabebf00bbe2d7eea895e246b0bd2dddc9d422ab782f2607a5e09b9bd076a0e7f81d36b82a9bc1254ae15351d2
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-pay-middleware@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/transaction-pay-middleware@npm:1.0.0"
+  dependencies:
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^37.1.1"
+    "@metamask/perps-controller": "npm:^21.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/transaction-controller": "npm:^72.2.1"
+    "@metamask/utils": "npm:^12.0.0"
+    bignumber.js: "npm:^9.1.2"
+  checksum: 10/4ed864f54fc73e155143f15e0d0e3af0fc92eac95627ea174cef6587b550b063a90a073144f376db5b2a77841e405c32fe38fd6de8999d77026db5cecf4554f5
   languageName: node
   linkType: hard
 
@@ -35615,6 +35651,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.6.0"
     "@metamask/transaction-controller": "npm:^72.2.1"
     "@metamask/transaction-pay-controller": "npm:^30.2.0"
+    "@metamask/transaction-pay-middleware": "npm:^1.0.0"
     "@metamask/tron-wallet-snap": "npm:^4.2.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
