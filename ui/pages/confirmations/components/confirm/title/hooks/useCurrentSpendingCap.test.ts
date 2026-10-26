@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { CONTRACT_INTERACTION_SENDER_ADDRESS } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
@@ -6,7 +7,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../../test/
 import { useCurrentSpendingCap } from './useCurrentSpendingCap';
 
 describe('useCurrentSpendingCap', () => {
-  it('returns the correct spending cap', () => {
+  it('returns the correct spending cap', async () => {
     const transactionMeta = genUnapprovedApproveConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
     }) as TransactionMeta;
@@ -16,6 +17,8 @@ describe('useCurrentSpendingCap', () => {
       mockState,
     );
 
-    expect(result.current.customSpendingCap).toMatchInlineSnapshot(`"#1"`);
+    await waitFor(() => {
+      expect(result.current.customSpendingCap).toMatchInlineSnapshot(`"#1"`);
+    });
   });
 });

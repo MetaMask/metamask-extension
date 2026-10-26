@@ -8,7 +8,9 @@ import {
   BoxJustifyContent,
   FontWeight,
   Icon,
+  IconColor,
   IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -128,12 +130,21 @@ const FeatureToggle = ({
     <Box
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}
-      alignItems={BoxAlignItems.Start}
+      alignItems={BoxAlignItems.Center}
       marginBottom={4}
       id={`backup-and-sync-features-toggles-${section.id}`}
     >
-      <Box flexDirection={BoxFlexDirection.Row} gap={4}>
-        <Icon name={section.iconName} />
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={4}
+      >
+        <Icon
+          name={section.iconName}
+          size={IconSize.Md}
+          color={IconColor.IconAlternative}
+          className="shrink-0"
+        />
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t(section.titleI18NKey)}
         </Text>

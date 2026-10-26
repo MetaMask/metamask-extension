@@ -5,6 +5,10 @@ import {
   startPasskeyAuthentication,
   startPasskeyRegistration,
 } from '../../../shared/lib/passkey';
+import {
+  PASSKEY_STAGES,
+  type PasskeyStage,
+} from '../../../shared/constants/passkey';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useMessenger } from '../useMessenger';
 import {
@@ -19,11 +23,9 @@ type PasskeyEnrollmentMessenger = RouteMessenger<
   never
 >;
 
-type PasskeyEnrollmentStage = 'register' | 'verify' | 'enroll';
-
 type EnrollWithPasskeyParams = {
   password?: string;
-  onStageChange?: (stage: PasskeyEnrollmentStage) => void;
+  onStageChange?: (stage: PasskeyStage) => void;
 };
 
 export function usePasskeyEnrollment() {
@@ -38,7 +40,7 @@ export function usePasskeyEnrollment() {
 
   const enrollWithPasskey = useCallback(
     async ({ password, onStageChange }: EnrollWithPasskeyParams = {}) => {
-      onStageChange?.('register');
+      onStageChange?.(PASSKEY_STAGES.REGISTER);
       const prfSupported = await isPasskeyPRFSupported();
       const registrationOptions = await messenger.call(
         'PasskeyController:generateRegistrationOptions',
@@ -47,7 +49,7 @@ export function usePasskeyEnrollment() {
       const registrationResponse =
         await startPasskeyRegistration(registrationOptions);
 
-      onStageChange?.('verify');
+      onStageChange?.(PASSKEY_STAGES.VERIFY);
       const authenticationOptions = await messenger.call(
         'PasskeyController:generatePostRegistrationAuthenticationOptions',
         { registrationResponse },
@@ -60,7 +62,7 @@ export function usePasskeyEnrollment() {
         throw new PasskeyPRFRequiredError();
       }
 
-      onStageChange?.('enroll');
+      onStageChange?.(PASSKEY_STAGES.ENROLL);
       await messenger.call('PasskeyController:protectVaultKeyWithPasskey', {
         registrationResponse,
         authenticationResponse,

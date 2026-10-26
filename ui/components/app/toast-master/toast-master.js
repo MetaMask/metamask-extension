@@ -1,7 +1,10 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import {
+  CRYPTO_PAYMENT_METHOD_ERRORS,
+  PRODUCT_TYPES,
+} from '@metamask/subscription-controller';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -51,6 +54,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateClickedTypeEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
@@ -232,6 +236,11 @@ function ShieldPausedToast() {
     shieldSubscription &&
     isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
     Boolean(shieldSubscription.paymentMethod.crypto.error);
+  const isInsufficientFundsCrypto =
+    shieldSubscription &&
+    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
+    shieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
 
   // default text to unexpected error case
   let descriptionText = 'shieldPaymentPausedDescriptionUnexpectedError';
@@ -248,6 +257,11 @@ function ShieldPausedToast() {
   const trackShieldErrorStateClickedEvent = (actionClicked) => {
     const { cryptoPaymentChain, cryptoPaymentCurrency } =
       getSubscriptionPaymentData(shieldSubscription);
+    const type =
+      isInsufficientFundsCrypto || isCryptoPaymentWithError
+        ? ShieldErrorStateClickedTypeEnum.AddFunds
+        : ShieldErrorStateClickedTypeEnum.UpdateCard;
+
     // capture error state clicked event
     captureShieldErrorStateClickedEvent({
       subscriptionStatus: shieldSubscription.status,
@@ -259,6 +273,7 @@ function ShieldPausedToast() {
       actionClicked,
       location: ShieldErrorStateLocationEnum.Homepage,
       view: ShieldErrorStateViewEnum.Toast,
+      type,
     });
   };
 
@@ -347,7 +362,7 @@ function StorageErrorToast() {
   const navigate = useNavigate();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const [isDismissed, setIsDismissed] = useState(false);
-  const [hasTrackedView, setHasTrackedView] = useState(false);
+  const hasTrackedViewRef = useRef(false);
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
@@ -365,15 +380,15 @@ function StorageErrorToast() {
 
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
-    if (shouldShow && !hasTrackedView) {
+    if (shouldShow && !hasTrackedViewRef.current) {
       trackEvent(
         createEventBuilder(MetaMetricsEventName.StorageErrorToastViewed)
           .addCategory(MetaMetricsEventCategory.Error)
           .build(),
       );
-      setHasTrackedView(true);
+      hasTrackedViewRef.current = true;
     }
-  }, [shouldShow, hasTrackedView, trackEvent, createEventBuilder]);
+  }, [shouldShow, trackEvent, createEventBuilder]);
 
   const handleRevealSrpClick = () => {
     trackEvent(

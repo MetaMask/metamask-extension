@@ -1,8 +1,7 @@
+import { it as jestIt } from '@jest/globals';
+
 import type * as Verify from './verify';
 
-jest.mock('./canonicalize', () => ({
-  canonicalize: jest.fn((_: URL) => 'canonicalized-url'),
-}));
 jest.mock('./helpers', () => ({
   getKeyData: jest.fn(() => new Uint8Array([1, 2, 3])),
   sigToBytes: jest.fn((_: string) => new Uint8Array([4, 5, 6])),
@@ -63,6 +62,132 @@ describe('verify', () => {
     expect(result).toBe(INVALID);
     expect(mockImportKey).toHaveBeenCalled();
     expect(mockVerify).toHaveBeenCalled();
+  });
+
+  it('validates a .com link signed for the legacy .io origin without a second attempt', async () => {
+    mockVerify.mockResolvedValueOnce(true);
+
+    const result = await verify(
+      new URL('https://link.metamask.com/path?sig=abc'),
+    );
+
+    expect(result).toBe(VALID);
+    expect(mockVerify).toHaveBeenCalledTimes(1);
+    expect(new TextDecoder().decode(mockVerify.mock.calls[0][3])).toBe(
+      'https://link.metamask.io/path',
+    );
+  });
+
+  it('validates a .com link signed for its own origin after trying .io', async () => {
+    mockVerify.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+
+    const result = await verify(
+      new URL('https://link.metamask.com/path?sig=abc'),
+    );
+
+    expect(result).toBe(VALID);
+    expect(mockVerify).toHaveBeenCalledTimes(2);
+    expect(
+      mockVerify.mock.calls.map((call) => new TextDecoder().decode(call[3])),
+    ).toStrictEqual([
+      'https://link.metamask.io/path',
+      'https://link.metamask.com/path',
+    ]);
+  });
+
+  it('preserves the canonical signed query when trying another host', async () => {
+    mockVerify.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+
+    const result = await verify(
+      new URL(
+        'https://link.metamask.com/path?z=3&sig=abc&sig_params=a,z&a=1&other=unsigned',
+      ),
+    );
+
+    expect(result).toBe(VALID);
+    expect(
+      mockVerify.mock.calls.map((call) => new TextDecoder().decode(call[3])),
+    ).toStrictEqual([
+      'https://link.metamask.io/path?a=1&sig_params=a%2Cz&z=3',
+      'https://link.metamask.com/path?a=1&sig_params=a%2Cz&z=3',
+    ]);
+  });
+
+  jestIt.each([
+    ['https://link.metamask.com/path?sig=abc', 2],
+    ['https://link.metamask.com.evil.tld/path?sig=abc', 1],
+    ['https://link.metamask.io/path?sig=abc', 2],
+  ])('rejects %s after %i verification attempts', async (url, attempts) => {
+    const result = await verify(new URL(url));
+
+    expect(result).toBe(INVALID);
+    expect(mockVerify).toHaveBeenCalledTimes(attempts);
+  });
+
+  jestIt.each([
+    'http://link.metamask.io/path?sig=abc',
+    'https://link.metamask.io:8443/path?sig=abc',
+  ])('does not try another signing host for %s', async (url) => {
+    const result = await verify(new URL(url));
+
+    expect(result).toBe(INVALID);
+    expect(mockVerify).toHaveBeenCalledTimes(1);
+  });
+
+  it('validates a .io link signed for the .com origin after trying .io', async () => {
+    mockVerify.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+
+    const result = await verify(
+      new URL('https://link.metamask.io/path?sig=abc'),
+    );
+
+    expect(result).toBe(VALID);
+    expect(
+      mockVerify.mock.calls.map((call) => new TextDecoder().decode(call[3])),
+    ).toStrictEqual([
+      'https://link.metamask.io/path',
+      'https://link.metamask.com/path',
+    ]);
+  });
+
+  it('validates a .io link signed for the .io origin without a second attempt', async () => {
+    mockVerify.mockResolvedValueOnce(true);
+
+    const result = await verify(
+      new URL('https://link.metamask.io/path?sig=abc'),
+    );
+
+    expect(result).toBe(VALID);
+    expect(mockVerify).toHaveBeenCalledTimes(1);
+    expect(new TextDecoder().decode(mockVerify.mock.calls[0][3])).toBe(
+      'https://link.metamask.io/path',
+    );
+  });
+
+  it('checks every configured signing host for an allowed link', async () => {
+    const { DEEP_LINK_HOSTS } = await import('./common');
+    DEEP_LINK_HOSTS.push('link.metamask.test');
+    mockVerify
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(true);
+
+    try {
+      const result = await verify(
+        new URL('https://link.metamask.io/path?sig=abc'),
+      );
+
+      expect(result).toBe(VALID);
+      expect(
+        mockVerify.mock.calls.map((call) => new TextDecoder().decode(call[3])),
+      ).toStrictEqual([
+        'https://link.metamask.io/path',
+        'https://link.metamask.com/path',
+        'https://link.metamask.test/path',
+      ]);
+    } finally {
+      DEEP_LINK_HOSTS.pop();
+    }
   });
 
   it('caches tools after first call', async () => {

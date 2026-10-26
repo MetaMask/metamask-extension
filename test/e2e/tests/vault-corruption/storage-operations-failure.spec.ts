@@ -14,7 +14,7 @@ import {
   simpleReloadScript,
 } from '../../page-objects/flows/vault-corruption.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import VaultRecoveryPage from '../../page-objects/pages/vault/recovery-page';
+import CriticalErrorPage from '../../page-objects/pages/vault/critical-error-page';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 /**
@@ -93,8 +93,11 @@ describe('Storage Operations Failure Recovery', function () {
           );
 
           // Phase 2: Start recovery
-          const vaultRecoveryPage = new VaultRecoveryPage(driver);
-          await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+          const criticalErrorPage = new CriticalErrorPage(driver);
+          await criticalErrorPage.clickRepairButton({
+            confirm: true,
+            expectsExtensionReload: false,
+          });
 
           // Phase 3: Complete vault recovery onboarding
           await completeVaultRecoveryOnboardingFlow({
@@ -127,7 +130,7 @@ describe('Storage Operations Failure Recovery', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,

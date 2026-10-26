@@ -34,6 +34,7 @@ import {
 } from './shared';
 import {
   clearToastPhase,
+  setApprovedOrSignedToastPhase,
   shouldShowPendingToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
@@ -197,6 +198,13 @@ export function useTransactionEventToasts(): void {
         transactionId: id,
         to: getDetailsRoute(chainId, hash),
       };
+
+      if (
+        status === TransactionStatus.approved ||
+        status === TransactionStatus.signed
+      ) {
+        setApprovedOrSignedToastPhase(id);
+      }
 
       if (isPendingToastStatus(transactionMeta, status)) {
         if (shouldShowPendingToast(id)) {

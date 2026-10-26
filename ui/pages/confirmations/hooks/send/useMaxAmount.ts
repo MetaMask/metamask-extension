@@ -1,128 +1,34 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
 import { useCallback } from 'react';
-import type { MetaMaskReduxState } from '../../../../store/store';
-import { useAppSelector } from '../../../../store/hooks';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
-import { getGasFeeEstimatesByChainId } from '../../../../ducks/metamask/metamask';
-import { useAsyncResult } from '../../../../hooks/useAsync';
 import { Asset } from '../../types/send';
-import { getLayer1GasFees, toTokenMinimalUnit } from '../../utils/send';
+import { toTokenMinimalUnit } from '../../utils/send';
 import { useSendContext } from '../../context/send';
-import { useIsNetworkGasSponsored } from '../../../../hooks/useIsNetworkGasSponsored';
 import { useBalance } from './useBalance';
-import { useSendType } from './useSendType';
 
-const NATIVE_TRANSFER_GAS_LIMIT = 21000;
-const GWEI_TO_WEI_CONVERSION_RATE = 1e9;
+/**
+ * Returns the Max amount for the selected asset.
+ *
+ * Max is the full balance. For native EVM sends, the gas fee is subtracted on
+ * the confirmation by `useMaxValueRefresher`, using the gas estimated by
+ * `TransactionController`.
+ */
+export const useMaxAmount = () => {
+  const { asset } = useSendContext();
+  const { rawBalanceNumeric } = useBalance();
 
-export type GasFeeEstimatesType = {
-  medium: {
-    suggestedMaxFeePerGas: number;
-  };
-};
-
-export const getEstimatedTotalGas = (
-  layer1GasFees: Hex,
-  gasFeeEstimates?: GasFeeEstimatesType,
-) => {
-  if (!gasFeeEstimates) {
-    return new Numeric('0', 10);
-  }
-  const { medium: { suggestedMaxFeePerGas } = { suggestedMaxFeePerGas: 0 } } =
-    gasFeeEstimates;
-  const totalGas = new Numeric(
-    suggestedMaxFeePerGas * NATIVE_TRANSFER_GAS_LIMIT,
-    10,
+  const getMaxAmount = useCallback(
+    () => getMaxAmountFn(asset, rawBalanceNumeric),
+    [asset, rawBalanceNumeric],
   );
-  const conversionrate = new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10);
-  return totalGas.times(conversionrate).add(new Numeric(layer1GasFees, 16));
+
+  return { getMaxAmount };
 };
 
-type GetMaxAmountArgs = {
-  asset?: Asset;
-  layer1GasFees: Hex;
-  isEvmNativeSendType?: boolean;
-  gasFeeEstimates?: GasFeeEstimatesType;
-  rawBalanceNumeric: Numeric;
-  isNetworkGasSponsored: boolean;
-};
-
-const getMaxAmountFn = ({
-  asset,
-  layer1GasFees,
-  gasFeeEstimates,
-  isEvmNativeSendType,
-  rawBalanceNumeric,
-  isNetworkGasSponsored,
-}: GetMaxAmountArgs) => {
-  if (!asset) {
+function getMaxAmountFn(asset: Asset | undefined, rawBalanceNumeric: Numeric) {
+  if (!asset || rawBalanceNumeric.isZero() || rawBalanceNumeric.isNegative()) {
     return '0';
   }
 
-  let estimatedTotalGas = new Numeric('0', 10);
-
-  if (isEvmNativeSendType && !isNetworkGasSponsored) {
-    estimatedTotalGas = getEstimatedTotalGas(layer1GasFees, gasFeeEstimates);
-  }
-
-  const balance = rawBalanceNumeric.minus(estimatedTotalGas);
-
-  return balance.isZero() || balance.isNegative()
-    ? '0'
-    : toTokenMinimalUnit(balance.toString(), asset.decimals, 10);
-};
-
-export const useMaxAmount = () => {
-  const { asset, chainId, from, value } = useSendContext();
-  const { isEvmSendType, isEvmNativeSendType } = useSendType();
-  const { rawBalanceNumeric } = useBalance();
-  const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
-
-  const gasFeeEstimates = useAppSelector((state) => {
-    if (chainId && isEvmSendType) {
-      return (
-        getGasFeeEstimatesByChainId as (
-          s: MetaMaskReduxState,
-          id: Hex,
-        ) => GasFeeEstimatesType | undefined
-      )(state, chainId as Hex);
-    }
-    return undefined;
-  });
-
-  const { value: layer1GasFees } = useAsyncResult(async () => {
-    if (!isEvmNativeSendType || asset?.chainId === CHAIN_IDS.MAINNET || !from) {
-      return '0x0';
-    }
-    return await getLayer1GasFees({
-      asset: asset as Asset,
-      chainId: chainId as Hex,
-      from: from as Hex,
-      value: (value ?? '0') as string,
-    });
-  }, [asset, chainId, from, value]);
-
-  const getMaxAmount = useCallback(() => {
-    return getMaxAmountFn({
-      asset,
-      gasFeeEstimates,
-      isEvmNativeSendType,
-      layer1GasFees: layer1GasFees ?? '0x0',
-      rawBalanceNumeric,
-      isNetworkGasSponsored,
-    });
-  }, [
-    asset,
-    gasFeeEstimates,
-    isEvmNativeSendType,
-    layer1GasFees,
-    rawBalanceNumeric,
-    isNetworkGasSponsored,
-  ]);
-
-  return {
-    getMaxAmount,
-  };
-};
+  return toTokenMinimalUnit(rawBalanceNumeric.toString(), asset.decimals, 10);
+}

@@ -1,7 +1,7 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import {
-  type Breadcrumb,
+import type {
+  Breadcrumb,
   ErrorEvent as SentryErrorEvent,
   Event as SentryEvent,
   TransactionEvent,
@@ -45,6 +45,7 @@ export const sentryDataCollection: SentryClientOptions['dataCollection'] = {
   genAI: { inputs: false, outputs: false },
   graphQL: { document: false, variables: false },
   httpBodies: [],
+  mcp: { inputs: false, outputs: false },
   httpHeaders: {
     request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
     response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
@@ -216,6 +217,8 @@ function getClientOptions(): SentryClientOptions {
     environment,
     integrations: [
       Sentry.dedupeIntegration(),
+      // Keep v10's session cadence across in-document navigation.
+      Sentry.browserSessionIntegration({ lifecycle: 'route' }),
       Sentry.extraErrorDataIntegration(),
       Sentry.browserTracingIntegration({
         // Creates ui.long-animation-frame spans (falls back to ui.long-task).
@@ -223,6 +226,8 @@ function getClientOptions(): SentryClientOptions {
         enableLongAnimationFrame: true,
         shouldCreateSpanForRequest,
       }),
+      // v11 separates performance.mark/measure spans from browser tracing.
+      Sentry.userTimingIntegration(),
       metaMetricsIntegration({
         getAnalyticsState,
         log,

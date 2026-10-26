@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { largeDelayMs } from '../../../helpers';
 
 /**
  * Multichain account details: name, address, export, remove, and navigation.
@@ -131,10 +130,10 @@ class AccountDetailsPage {
   async cancelAccountRemoval(): Promise<void> {
     console.log('Cancel account removal');
     await this.driver.clickElement(this.removeAccountButton);
-    await this.driver.delay(largeDelayMs);
     await this.driver.waitForSelector(this.removeAccountModalHeader);
-    await this.driver.clickElement(this.removeAccountCancelButton);
-    await this.driver.delay(largeDelayMs);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.removeAccountCancelButton,
+    );
   }
 
   /**
@@ -189,7 +188,6 @@ class AccountDetailsPage {
   async clickAddressNavigationButton(): Promise<void> {
     console.log('Click on the address navigation button');
     await this.driver.clickElement(this.accountNavigationButton);
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -197,8 +195,9 @@ class AccountDetailsPage {
    */
   async clickConfirmAccountNameButton(): Promise<void> {
     console.log('Click confirm account name button');
-    await this.driver.clickElement(this.confirmAccountNameButton);
-    await this.driver.delay(largeDelayMs);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmAccountNameButton,
+    );
   }
 
   /**
@@ -207,7 +206,6 @@ class AccountDetailsPage {
   async clickCopyAddressButton(): Promise<void> {
     console.log('Click on the copy address button');
     await this.driver.clickElement(this.copyAddressButton);
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -226,7 +224,6 @@ class AccountDetailsPage {
     console.log('Click on the private key row');
     const privateKeyRow = await this.driver.findElement(this.privateKeyRow);
     await privateKeyRow.click();
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -238,7 +235,7 @@ class AccountDetailsPage {
       this.removeAccountButton,
     );
     await removeAccountButton.click();
-    await this.driver.delay(largeDelayMs);
+    await this.driver.waitForSelector(this.removeAccountModalHeader);
   }
 
   /**
@@ -246,11 +243,9 @@ class AccountDetailsPage {
    */
   async clickRemoveAccountConfirmButton(): Promise<void> {
     console.log('Click on the remove account confirm button');
-    const removeAccountConfirmButton = await this.driver.findElement(
+    await this.driver.clickElementAndWaitToDisappear(
       this.removeAccountConfirmButton,
     );
-    await removeAccountConfirmButton.click();
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -264,7 +259,6 @@ class AccountDetailsPage {
   async clickSecretRecoveryPhraseRow(): Promise<void> {
     console.log('Click on the Secret Recovery Phrase row');
     await this.driver.clickElement(this.secretRecoveryPhraseRow);
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -273,7 +267,6 @@ class AccountDetailsPage {
   async clickViewOnEtherscanButton(): Promise<void> {
     console.log('Click on the view on etherscan button');
     await this.driver.clickElement(this.viewOnEtherscanButton);
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -282,7 +275,6 @@ class AccountDetailsPage {
   async clickWalletRow(): Promise<void> {
     console.log('Click on the wallet row');
     await this.driver.clickElement(this.walletNavigationButton);
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -293,10 +285,11 @@ class AccountDetailsPage {
   async editAccountName(newName: string): Promise<void> {
     console.log(`Edit account name to: ${newName}`);
     await this.driver.clickElement(this.editAccountNameButton);
-    await this.driver.delay(largeDelayMs);
+    await this.driver.waitForSelector(this.accountNameInput);
     await this.driver.fill(this.accountNameInput, newName);
-    await this.driver.clickElement(this.confirmAccountNameButton);
-    await this.driver.delay(largeDelayMs);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmAccountNameButton,
+    );
   }
 
   /**
@@ -307,7 +300,6 @@ class AccountDetailsPage {
   async fillAccountNameInput(newName: string): Promise<void> {
     console.log(`Fill account name input with: ${newName}`);
     await this.driver.fill(this.accountNameInput, newName);
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -359,7 +351,7 @@ class AccountDetailsPage {
   async navigateBack(): Promise<void> {
     console.log('Navigate back from account details');
     await this.driver.clickElement(this.backButton);
-    await this.driver.delay(largeDelayMs);
+    await this.driver.assertElementNotPresent(this.parentSelector);
   }
 
   /**
@@ -368,7 +360,7 @@ class AccountDetailsPage {
   async navigateToQrCode(): Promise<void> {
     console.log('Navigate to QR code view');
     await this.driver.clickElement(this.accountNavigationButton);
-    await this.driver.delay(largeDelayMs);
+    await this.driver.waitForSelector(this.qrCodeImage);
   }
 
   /**
@@ -377,7 +369,6 @@ class AccountDetailsPage {
   async navigateToWalletDetails(): Promise<void> {
     console.log('Navigate to wallet details');
     await this.driver.clickElement(this.walletNavigationButton);
-    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -386,10 +377,10 @@ class AccountDetailsPage {
   async removeAccount(): Promise<void> {
     console.log('Remove account');
     await this.driver.clickElement(this.removeAccountButton);
-    await this.driver.delay(largeDelayMs);
     await this.driver.waitForSelector(this.removeAccountModalHeader);
-    await this.driver.clickElement(this.removeAccountConfirmButton);
-    await this.driver.delay(largeDelayMs);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.removeAccountConfirmButton,
+    );
   }
 
   /**

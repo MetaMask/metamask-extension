@@ -119,6 +119,15 @@ const mockAllTokens: RampsToken[] = [
     iconUrl: 'https://example.com/usdc.png',
     tokenSupported: true,
   },
+  ...Array.from({ length: 60 }, (_, index) => ({
+    assetId: `eip155:1/erc20:0x${(index + 1).toString().padStart(40, '0')}`,
+    chainId: 'eip155:1',
+    name: `Extra Token ${index + 1}`,
+    symbol: `EXT${index + 1}`,
+    decimals: 18,
+    iconUrl: '',
+    tokenSupported: true,
+  })),
   {
     assetId: 'eip155:137/erc20:0x0000000000000000000000000000000000000001',
     chainId: 'eip155:137',
@@ -129,6 +138,19 @@ const mockAllTokens: RampsToken[] = [
     tokenSupported: true,
   },
 ];
+
+function setScrollMetrics(
+  element: HTMLElement,
+  metrics: {
+    scrollTop?: number;
+    clientHeight?: number;
+    scrollHeight?: number;
+  },
+) {
+  Object.entries(metrics).forEach(([key, value]) => {
+    Object.defineProperty(element, key, { value, configurable: true });
+  });
+}
 
 jest.mock('../../../hooks/ramps/useRampsController', () => ({
   useRampsController: jest.fn(),
@@ -191,22 +213,133 @@ describe('RampsTokenSelectionScreen', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('expands to all enabled-network tokens and selects a token', () => {
+  it('reveals the first page of additional tokens when scrolled near the bottom', () => {
     renderWithProvider(
       <RampsTokenSelectionScreen />,
       createStore(),
       '/ramps/token-selection',
     );
 
-    fireEvent.click(screen.getByTestId('ramps-show-all-tokens'));
+    expect(screen.getByTestId('token-count')).toHaveTextContent('1');
 
-    expect(screen.getByTestId('token-count')).toHaveTextContent('2');
+    const scrollContainer = screen.getByTestId(
+      'ramps-token-selection-scroll-container',
+    );
+    setScrollMetrics(scrollContainer, {
+      scrollTop: 4300,
+      clientHeight: 700,
+      scrollHeight: 5000,
+    });
+    fireEvent.scroll(scrollContainer);
+
+    expect(screen.getByTestId('token-count')).toHaveTextContent('51');
+  });
+
+  it('reveals all remaining tokens across successive scrolls and selects a token', () => {
+    renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    const scrollContainer = screen.getByTestId(
+      'ramps-token-selection-scroll-container',
+    );
+    setScrollMetrics(scrollContainer, {
+      scrollTop: 4300,
+      clientHeight: 700,
+      scrollHeight: 5000,
+    });
+
+    fireEvent.scroll(scrollContainer);
+    expect(screen.getByTestId('token-count')).toHaveTextContent('51');
+
+    fireEvent.scroll(scrollContainer);
+    expect(screen.getByTestId('token-count')).toHaveTextContent('62');
+
+    fireEvent.scroll(scrollContainer);
+    expect(screen.getByTestId('token-count')).toHaveTextContent('62');
+
     fireEvent.click(screen.getByTestId('mapped-token-eip155:1/slip44:60'));
 
     expect(mockGoToBuy).toHaveBeenCalledWith({
       assetId: 'eip155:1/slip44:60',
       chainId: '0x1',
     });
+  });
+
+  it('does not reveal additional tokens when the scroll position is far from the bottom', () => {
+    renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    const scrollContainer = screen.getByTestId(
+      'ramps-token-selection-scroll-container',
+    );
+    setScrollMetrics(scrollContainer, {
+      scrollTop: 0,
+      clientHeight: 700,
+      scrollHeight: 5000,
+    });
+
+    fireEvent.scroll(scrollContainer);
+
+    expect(screen.getByTestId('token-count')).toHaveTextContent('1');
+  });
+
+  it('does not reveal additional tokens while searching', () => {
+    renderWithProvider(
+      <RampsTokenSelectionScreen />,
+      createStore(),
+      '/ramps/token-selection',
+    );
+
+    act(() => {
+      mockOnSearchQueryChangeRef.current?.('USDC');
+    });
+    expect(screen.getByTestId('token-count')).toHaveTextContent('62');
+
+    const scrollContainer = screen.getByTestId(
+      'ramps-token-selection-scroll-container',
+    );
+    setScrollMetrics(scrollContainer, {
+      scrollTop: 4300,
+      clientHeight: 700,
+      scrollHeight: 5000,
+    });
+    fireEvent.scroll(scrollContainer);
+
+    expect(screen.getByTestId('token-count')).toHaveTextContent('62');
+  });
+
+  it('reveals all tokens on mount when the initial list cannot scroll', () => {
+    // The screen keeps revealing pages while the list is too short to scroll,
+    // otherwise extra tokens would be unreachable (no scrollbar, no button).
+    Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+      get: () => 300,
+      configurable: true,
+    });
+    Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+      get: () => 300,
+      configurable: true,
+    });
+
+    try {
+      renderWithProvider(
+        <RampsTokenSelectionScreen />,
+        createStore(),
+        '/ramps/token-selection',
+      );
+
+      expect(screen.getByTestId('token-count')).toHaveTextContent('62');
+    } finally {
+      delete (HTMLElement.prototype as unknown as Record<string, unknown>)
+        .scrollHeight;
+      delete (HTMLElement.prototype as unknown as Record<string, unknown>)
+        .clientHeight;
+    }
   });
 
   it('expands to all tokens when searching', () => {
@@ -220,13 +353,13 @@ describe('RampsTokenSelectionScreen', () => {
       mockOnSearchQueryChangeRef.current?.('USDC');
     });
 
-    expect(screen.getByTestId('token-count')).toHaveTextContent('2');
+    expect(screen.getByTestId('token-count')).toHaveTextContent('62');
     expect(screen.getByTestId('empty-state-message')).toHaveTextContent(
       messages.noTokensMatchSearch.message,
     );
   });
 
-  it('expands to all tokens when a network filter is active', () => {
+  it('shows all enabled-network tokens when a network filter is active', () => {
     renderWithProvider(
       <RampsTokenSelectionScreen />,
       createStore(),
@@ -242,7 +375,7 @@ describe('RampsTokenSelectionScreen', () => {
 
     fireEvent.click(screen.getByTestId('apply-network-filter'));
 
-    expect(screen.getByTestId('token-count')).toHaveTextContent('2');
+    expect(screen.getByTestId('token-count')).toHaveTextContent('62');
     expect(
       screen.getByTestId(
         'mapped-token-eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -251,7 +384,6 @@ describe('RampsTokenSelectionScreen', () => {
     expect(screen.getByTestId('empty-state-message')).toHaveTextContent(
       messages.noTokensMatchingYourFilters.message,
     );
-    expect(screen.queryByTestId('ramps-show-all-tokens')).toBeNull();
   });
 
   it('shows the region-unavailable info button for unsupported tokens', () => {

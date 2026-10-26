@@ -32,6 +32,16 @@ app/offscreen/offscreen.ts       @MetaMask/core-platform
 # make all such communication opt IN versus opt OUT.
 privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
+# The legacy-background-api-snapshot.json file lists the members that the legacy
+# background APIs (MetamaskController.getApi and LegacyBackgroundApiService) are
+# allowed to have. This API is frozen, and the legacy-background-api.ts script
+# checks that it remains so (using the snapshot for comparison). It also allows
+# for regenerating the snapshot in case the API needs to be expanded, but that
+# step requires approval from the Core Platform team.
+development/legacy-background-api/        @MetaMask/core-platform
+development/legacy-background-api.ts      @MetaMask/core-platform
+development/legacy-background-api.test.ts @MetaMask/core-platform
+legacy-background-api-snapshot.json       @MetaMask/core-platform
 
 # A machine-generated file that tracks circular dependencies in the codebase.
 # It is updated using yarn circular-deps:update
@@ -77,6 +87,7 @@ app/scripts/lib/offscreen-bridge                    @MetaMask/accounts-engineers
 ui/pages/create-account                             @MetaMask/accounts-engineers
 **/multichain-accounts/**                           @MetaMask/accounts-engineers
 **/identity/**                                      @MetaMask/accounts-engineers
+ui/pages/mfa                                        @MetaMask/accounts-engineers
 **/hardware-wallets/**                              @MetaMask/accounts-engineers
 
 # Swaps-Bridge team to own code for the swaps folder
@@ -150,6 +161,7 @@ ui/pages/details                                               @MetaMask/core-ex
 ui/pages/details/templates/ramps/                              @MetaMask/money-movement
 ui/pages/permissions-connect/                                  @MetaMask/core-extension-ux
 ui/pages/settings                                              @MetaMask/core-extension-ux
+ui/pages/settings/mfa-settings                                 @MetaMask/accounts-engineers
 ui/components/multichain/                                      @MetaMask/core-extension-ux
 ui/pages/settings/notifications-tab/**                         @MetaMask/core-extension-ux @MetaMask/engagement
 ui/components/multichain/notification*/**                      @MetaMask/core-extension-ux @MetaMask/engagement

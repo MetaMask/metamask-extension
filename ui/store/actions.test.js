@@ -6,6 +6,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { stringToBytes } from '@metamask/utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -21,20 +22,26 @@ import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
+import { TraceName, TraceOperation } from '../../shared/lib/trace';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import { createMockNotificationPreferences } from '../hooks/metamask-notifications/mocks';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+import { listenForHardwareSigningCompletion } from './hardware-wallet-signing';
 
 const toSerializedSeedPhraseBuffer = (seedPhrase) => ({
   type: 'Buffer',
@@ -53,6 +60,11 @@ jest.mock(
     }),
   }),
 );
+
+jest.mock('./hardware-wallet-signing', () => ({
+  ...jest.requireActual('./hardware-wallet-signing'),
+  listenForHardwareSigningCompletion: jest.fn(),
+}));
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -913,6 +925,132 @@ describe('Actions', () => {
     });
   });
 
+  describe('#updateAndApproveTx QR account', () => {
+    const qrAccountAddress = '0xQrAddress';
+    const qrAccountId = 'b3f1a0c2-7d4e-4f6a-9b8c-1d2e3f4a5b6c';
+    const txMeta = {
+      id: 'tx-1',
+      txParams: { from: qrAccountAddress, to: '0xTo', value: '0x0' },
+    };
+
+    const getQrAccountState = () => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        internalAccounts: {
+          ...defaultState.metamask.internalAccounts,
+          accounts: {
+            ...defaultState.metamask.internalAccounts.accounts,
+            [qrAccountId]: {
+              address: qrAccountAddress,
+              id: qrAccountId,
+              metadata: {
+                name: 'Keystone',
+                keyring: { type: 'QR Hardware Wallet Device' },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+          },
+        },
+        accountIdByAddress: {
+          ...defaultState.metamask.accountIdByAddress,
+          [qrAccountAddress]: qrAccountId,
+        },
+      },
+    });
+
+    const getLoadingActionTypes = (store) =>
+      store
+        .getActions()
+        .map(({ type }) => type)
+        .filter(
+          (type) =>
+            type === 'SHOW_LOADING_INDICATION' ||
+            type === 'HIDE_LOADING_INDICATION',
+        );
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('does not show the loading indicator for a hardware wallet when dontShowLoadingIndicator is true', async () => {
+      const store = mockStore(getQrAccountState());
+      const approveHardwareWalletTransaction = sinon.stub().resolves();
+
+      background.getApi.returns({
+        approveHardwareWalletTransaction,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.updateAndApproveTx(txMeta, true, ''));
+
+      expect(approveHardwareWalletTransaction.callCount).toStrictEqual(1);
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+
+    it('shows the loading indicator for a hardware wallet when dontShowLoadingIndicator is false', async () => {
+      const store = mockStore(getQrAccountState());
+
+      background.getApi.returns({
+        approveHardwareWalletTransaction: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.updateAndApproveTx(
+          txMeta,
+          false,
+          'Confirm with your hardware wallet',
+        ),
+      );
+
+      expect(store.getActions()).toContainEqual({
+        type: 'SHOW_LOADING_INDICATION',
+        payload: 'Confirm with your hardware wallet',
+      });
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'SHOW_LOADING_INDICATION',
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+
+    it('does not show the loading indicator for a software account when dontShowLoadingIndicator is true', async () => {
+      const store = mockStore();
+      const resolvePendingApproval = sinon.stub().resolves();
+      const approveHardwareWalletTransaction = sinon.stub().resolves();
+
+      background.getApi.returns({
+        resolvePendingApproval,
+        approveHardwareWalletTransaction,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.updateAndApproveTx(
+          {
+            ...txMeta,
+            txParams: { ...txMeta.txParams, from: '0xFirstAddress' },
+          },
+          true,
+          '',
+        ),
+      );
+
+      expect(resolvePendingApproval.callCount).toStrictEqual(1);
+      expect(approveHardwareWalletTransaction.callCount).toStrictEqual(0);
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+  });
+
   describe('#getLedgerAppConfiguration', () => {
     afterEach(() => {
       sinon.restore();
@@ -1203,6 +1341,67 @@ describe('Actions', () => {
 
       expect(mockRequestDevice.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    // Added for coverage requirement.
+    it('skips the WebHID device picker during E2E test runs', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const originalInTest = process.env.IN_TEST;
+      const originalJestWorkerId = process.env.JEST_WORKER_ID;
+      process.env.IN_TEST = 'true';
+      process.env.JEST_WORKER_ID = 'undefined';
+
+      const mockRequestDevice = sinon.stub();
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      try {
+        const connectHardware = background.connectHardware.resolves([
+          { address: '0xLedgerAddress' },
+        ]);
+
+        setBackgroundConnection(background);
+
+        const accounts = await store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            0,
+            `m/44'/60'/0'/0`,
+            true,
+            translateHardwareMessage,
+          ),
+        );
+
+        // E2E runs bypass the picker entirely and proceed to the background.
+        expect(mockRequestDevice.callCount).toStrictEqual(0);
+        expect(connectHardware.callCount).toStrictEqual(1);
+        expect(accounts).toStrictEqual([{ address: '0xLedgerAddress' }]);
+      } finally {
+        if (originalInTest === undefined) {
+          delete process.env.IN_TEST;
+        } else {
+          process.env.IN_TEST = originalInTest;
+        }
+        if (originalJestWorkerId === undefined) {
+          delete process.env.JEST_WORKER_ID;
+        } else {
+          process.env.JEST_WORKER_ID = originalJestWorkerId;
+        }
+      }
     });
 
     it('translates Trezor Suite Desktop missing errors during connect', async () => {
@@ -1529,6 +1728,91 @@ describe('Actions', () => {
       expect(background.setAddSnapAccountEnabled.getCall(1).args).toStrictEqual(
         [false],
       );
+    });
+  });
+
+  describe('#updateAndApproveTx hardware wallet signing', () => {
+    const LEDGER_ADDRESS = '0x2222222222222222222222222222222222222222';
+    const txMeta = {
+      id: 'pay-tx',
+      chainId: CHAIN_IDS.MAINNET,
+      status: TransactionStatus.unapproved,
+      txParams: { from: LEDGER_ADDRESS },
+    };
+
+    function createLedgerStore(transactionData = {}) {
+      return mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          internalAccounts: {
+            ...defaultState.metamask.internalAccounts,
+            accounts: {
+              ...defaultState.metamask.internalAccounts.accounts,
+              'ledger-account': {
+                address: LEDGER_ADDRESS,
+                id: 'ledger-account',
+                metadata: { keyring: { type: KeyringTypes.ledger } },
+              },
+            },
+          },
+          accountIdByAddress: {
+            ...defaultState.metamask.accountIdByAddress,
+            [LEDGER_ADDRESS]: 'ledger-account',
+          },
+          transactionData,
+        },
+      });
+    }
+
+    beforeEach(() => {
+      background.getApi.returns({
+        approveHardwareWalletTransaction: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+      jest
+        .mocked(listenForHardwareSigningCompletion)
+        .mockReset()
+        .mockResolvedValue(async () => undefined);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('hides the loading indication once a hardware wallet signs the Pay funding transactions', async () => {
+      const store = createLedgerStore({ [txMeta.id]: { quotes: [{}, {}] } });
+
+      await store.dispatch(
+        actions.updateAndApproveTx(txMeta, false, 'Confirm on device'),
+      );
+
+      expect(listenForHardwareSigningCompletion).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transactionId: 'pay-tx',
+          expectedQuoteCount: 2,
+        }),
+      );
+
+      const [{ onComplete }] = jest.mocked(listenForHardwareSigningCompletion)
+        .mock.calls[0];
+      store.clearActions();
+      onComplete();
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('does not wait for funding signatures when the transaction has no Pay quotes', async () => {
+      const store = createLedgerStore();
+
+      await store.dispatch(
+        actions.updateAndApproveTx(txMeta, false, 'Confirm on device'),
+      );
+
+      expect(listenForHardwareSigningCompletion).not.toHaveBeenCalled();
     });
   });
 
@@ -3272,6 +3556,187 @@ describe('Actions', () => {
       await expect(
         store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6', 'mainnet')),
       ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#startOAuthLogin', () => {
+    const oauthLoginResult = {
+      authConnection: AuthConnection.Google,
+    };
+    const parentTraceContext = {
+      _name: TraceName.OnboardingSocialLoginAttempt,
+    };
+
+    const buildState = ({
+      firstTimeFlowType = FirstTimeFlowType.create,
+      completedOnboarding = false,
+    } = {}) => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        firstTimeFlowType,
+        completedOnboarding,
+      },
+    });
+
+    function stubBackground({ authenticateError } = {}) {
+      const startOAuthLoginStub = sinon.stub().resolves(oauthLoginResult);
+      const preloadToprfNodeDetailsStub = sinon.stub().resolves();
+      const authenticateStub = authenticateError
+        ? sinon.stub().rejects(authenticateError)
+        : sinon.stub().resolves({ isNewUser: true });
+
+      background.getApi.returns({
+        startOAuthLogin: startOAuthLoginStub,
+        preloadToprfNodeDetails: preloadToprfNodeDetailsStub,
+        authenticate: authenticateStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      return {
+        startOAuthLoginStub,
+        preloadToprfNodeDetailsStub,
+        authenticateStub,
+      };
+    }
+
+    afterEach(() => {
+      sinon.restore();
+      jest.restoreAllMocks();
+    });
+
+    it('authenticates with the parent trace and rehydration tags', async () => {
+      const store = mockStore(
+        buildState({
+          firstTimeFlowType: FirstTimeFlowType.socialImport,
+          completedOnboarding: false,
+        }),
+      );
+      const {
+        startOAuthLoginStub,
+        preloadToprfNodeDetailsStub,
+        authenticateStub,
+      } = stubBackground();
+      const bufferedTrace = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const traceTags = {
+        provider: AuthConnection.Google,
+        is_rehydration: 'true',
+      };
+
+      const isNewUser = await store.dispatch(
+        actions.startOAuthLogin(
+          AuthConnection.Google,
+          bufferedTrace,
+          bufferedEndTrace,
+          undefined,
+          parentTraceContext,
+        ),
+      );
+
+      expect(isNewUser).toBe(true);
+      expect(
+        startOAuthLoginStub.calledOnceWith(
+          AuthConnection.Google,
+          parentTraceContext,
+        ),
+      ).toBe(true);
+      expect(preloadToprfNodeDetailsStub.calledOnce).toBe(true);
+      expect(authenticateStub.calledOnceWith(oauthLoginResult)).toBe(true);
+      expect(bufferedTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        op: TraceOperation.OnboardingSecurityOp,
+        tags: traceTags,
+        parentContext: parentTraceContext,
+      });
+      expect(bufferedEndTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        data: { success: true },
+      });
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.SHOW_LOADING, payload: undefined },
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('omits the parent trace when none is supplied', async () => {
+      const store = mockStore(buildState());
+      const { startOAuthLoginStub } = stubBackground();
+      const bufferedTrace = jest.fn();
+
+      await store.dispatch(
+        actions.startOAuthLogin(AuthConnection.Apple, bufferedTrace),
+      );
+
+      expect(startOAuthLoginStub.calledOnceWith(AuthConnection.Apple)).toBe(
+        true,
+      );
+      expect(bufferedTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        op: TraceOperation.OnboardingSecurityOp,
+        tags: {
+          provider: AuthConnection.Apple,
+          is_rehydration: 'false',
+        },
+        parentContext: undefined,
+      });
+    });
+
+    it('tracks a seedless authentication failure and ends both traces', async () => {
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      const store = mockStore({});
+      const authenticateError = new Error('seedless auth failed');
+      const { authenticateStub } = stubBackground({ authenticateError });
+      const bufferedTrace = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const trackEvent = jest.fn().mockResolvedValue(undefined);
+      const traceTags = {
+        provider: AuthConnection.Google,
+        is_rehydration: 'unknown',
+      };
+
+      await expect(
+        store.dispatch(
+          actions.startOAuthLogin(
+            AuthConnection.Google,
+            bufferedTrace,
+            bufferedEndTrace,
+            trackEvent,
+            parentTraceContext,
+          ),
+        ),
+      ).rejects.toThrow('seedless auth failed');
+
+      expect(authenticateStub.calledOnce).toBe(true);
+      expect(trackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.SocialLoginFailed,
+        category: MetaMetricsEventCategory.Onboarding,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Default}_${AuthConnection.Google}`,
+          is_rehydration: 'unknown',
+          failure_type: 'error',
+          error_category: 'seedless_auth',
+        },
+      });
+      expect(bufferedTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        op: TraceOperation.OnboardingSecurityOp,
+        tags: traceTags,
+        parentContext: parentTraceContext,
+      });
+      expect(bufferedTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
+        op: TraceOperation.OnboardingError,
+        tags: traceTags,
+        parentContext: parentTraceContext,
+      });
+      expect(bufferedEndTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
+      });
+      expect(bufferedEndTrace).toHaveBeenCalledWith({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        data: { success: false },
+      });
     });
   });
 

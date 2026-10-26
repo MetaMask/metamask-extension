@@ -57,7 +57,7 @@ import {
 } from '../../../../../selectors/multichain/networks';
 import {
   getOrderedNetworksList,
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
   getUseExternalServices,
 } from '../../../../../selectors';
 import {
@@ -356,7 +356,7 @@ const HomeNetworkFilterModalContent = ({
   );
   const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
   const useExternalServices = useSelector(getUseExternalServices);
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );

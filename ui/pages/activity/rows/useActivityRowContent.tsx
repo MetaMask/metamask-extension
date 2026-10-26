@@ -2,17 +2,20 @@ import React, { type ReactNode } from 'react';
 import cn from 'clsx';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { ReadableAddressLabel } from '#ui/components/app/transaction/readable-address-label';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
 import { getLabelKeys } from '../../../../shared/lib/activity/label-keys';
+import {
+  applyDisplaySign,
+  getDisplaySignPrefix,
+} from '../../../../shared/lib/activity/fiat';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
-import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
-import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
@@ -29,7 +32,7 @@ import { useFormatTokenAmount } from './useFormatTokenAmount';
 
 type ActivityContent = {
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode;
   primaryAmount?: ReactNode;
   primaryDirection?: TokenAmount['direction'];
   secondaryAmount?: ReactNode;
@@ -37,8 +40,8 @@ type ActivityContent = {
 };
 
 /**
- * Shared presentation for MM Pay product-balance rows (perps and money
- * account): signed fiat amount, token avatar, and optional incoming direction.
+ * Shared presentation for MM Pay product-balance rows (perps): signed fiat
+ * amount, token avatar, and optional incoming direction.
  *
  * @param options - Row formatting options.
  * @param options.currency - Fiat currency code used for formatting.
@@ -108,7 +111,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId } = getChainDisplay(activity.chainId);
   const formatAsFiat = useFormatAsFiat(chainId);
-  const formatDisplayName = useGetDisplayName();
   const labelKeys = getLabelKeys({
     type: activity.type,
     status: activity.status,
@@ -125,9 +127,14 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          subtitle: t(labelKeys.description.key, [
-            formatDisplayName(address) || t('unknown'),
-          ]),
+          subtitle: (
+            <ReadableAddressLabel
+              labelKey={labelKeys.description.key}
+              address={address}
+              chainId={activity.chainId}
+              fallback={t('unknown')}
+            />
+          ),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),
@@ -139,7 +146,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const sourceSymbol = sourceToken?.symbol ?? '';
         const destinationSymbol = destinationToken?.symbol;
         const hasDestination = Boolean(destinationSymbol);
+        const isIncompleteZeroAmountSwap =
+          !hasDestination && sourceToken?.amount === '0';
         const primaryToken = hasDestination ? destinationToken : sourceToken;
+        let secondaryAmount: ReactNode;
+        if (isIncompleteZeroAmountSwap) {
+          secondaryAmount = undefined;
+        } else if (hasDestination) {
+          secondaryAmount = formatTokenAmount(sourceToken);
+        } else {
+          secondaryAmount = formatAsFiat(sourceToken);
+        }
         const titleKey = hasDestination
           ? labelKeys.title.key
           : `activity_swapIncomplete_${activity.status}_title`;
@@ -154,11 +171,13 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : [sourceToken?.assetId],
           title: hasDestination ? t(titleKey) : t(titleKey, [sourceSymbol]),
           subtitle,
-          primaryAmount: formatTokenAmount(primaryToken),
-          primaryDirection: primaryToken?.direction,
-          secondaryAmount: hasDestination
-            ? formatTokenAmount(sourceToken)
-            : formatAsFiat(sourceToken),
+          primaryAmount: isIncompleteZeroAmountSwap
+            ? undefined
+            : formatTokenAmount(primaryToken),
+          primaryDirection: isIncompleteZeroAmountSwap
+            ? undefined
+            : primaryToken?.direction,
+          secondaryAmount,
         };
       }
       // Token in title; source and destination in subtitle; token being wrapped in avatar
@@ -298,21 +317,37 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           token,
         });
       }
-      // Render the money-account balance change as fiat, consistent with other MM Pay rows.
+      // Rendered like a send/receive row with the money account as the
+      // counterparty, matching mobile. mUSD is pegged 1:1 to USD, so the
+      // pegged fiat amount stands in when no market rate is available. Until
+      // the batch commits to an mUSD amount only MM Pay's quoted fiat is
+      // known, so that becomes the primary amount rather than "0 mUSD".
       case 'moneyAccountDeposit':
       case 'moneyAccountWithdraw': {
         const { fiat, token } = activity.data;
+        const fiatAmount = fiat ? Number(fiat.amount) : undefined;
+        const peggedFiat =
+          token && fiatAmount !== undefined && Number.isFinite(fiatAmount)
+            ? applyDisplaySign(
+                formatCurrencyWithMinThreshold(
+                  token.direction === 'out' ? -fiatAmount : fiatAmount,
+                  MONEY_ACCOUNT_FIAT_CURRENCY,
+                ),
+                getDisplaySignPrefix(token.direction, { showPlus: true }),
+              )
+            : undefined;
+        const hasTokenAmount = Boolean(token?.amount);
 
-        return buildMmPayProductBalanceContent({
-          currency: MONEY_ACCOUNT_FIAT_CURRENCY,
-          fiat,
-          formatCurrencyWithMinThreshold,
-          isIncoming: activity.type === 'moneyAccountDeposit',
-          isWithdraw: activity.type === 'moneyAccountWithdraw',
+        return {
+          avatarTokens: [token?.assetId],
+          title: t(labelKeys.title.key, [token?.symbol ?? '']),
           subtitle: t(labelKeys.description.key),
-          title: t(labelKeys.title.key),
-          token,
-        });
+          primaryAmount: hasTokenAmount ? formatTokenAmount(token) : peggedFiat,
+          primaryDirection: token?.direction,
+          secondaryAmount: hasTokenAmount
+            ? (formatAsFiat(token) ?? peggedFiat)
+            : undefined,
+        };
       }
       case 'nftBuy':
       case 'nftSell': {
@@ -343,9 +378,14 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
-          subtitle: t(labelKeys.description.key, [
-            shortenAddress(to) || 'Contract',
-          ]),
+          subtitle: (
+            <ReadableAddressLabel
+              labelKey={labelKeys.description.key}
+              address={to}
+              chainId={activity.chainId}
+              fallback={t('contract')}
+            />
+          ),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),

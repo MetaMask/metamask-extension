@@ -10,6 +10,7 @@ import {
   calculateMoneyProjectedEarnings,
   convertMoneyFiatToUsd,
   filterMoneyDepositTokens,
+  getMoneyDepositFiatAmountUsd,
   isNoFeeMoneyDepositToken,
   parseMoneySubsidizedRoutes,
 } from './money-deposit-token-utils';
@@ -41,6 +42,49 @@ describe('convertMoneyFiatToUsd', () => {
 
   it('returns undefined when rates are unavailable', () => {
     expect(convertMoneyFiatToUsd(100, undefined, 1)).toBeUndefined();
+  });
+});
+
+describe('getMoneyDepositFiatAmountUsd', () => {
+  const options = {
+    blockedTokens: { chainIds: [], tokens: [] },
+    minBalance: 0.01,
+    currentCurrency: 'usd',
+    currencyRates: {},
+    networkConfigurations: {},
+  };
+
+  it('returns the USD value of an eligible asset', () => {
+    expect(getMoneyDepositFiatAmountUsd(createAsset(), options)).toBe(10);
+  });
+
+  it('returns undefined for a non-EVM asset', () => {
+    expect(
+      getMoneyDepositFiatAmountUsd(
+        createAsset({
+          accountType: 'solana:data-account' as KeyringAccountType,
+        }),
+        options,
+      ),
+    ).toBeUndefined();
+  });
+
+  it('returns undefined for a blocked chain', () => {
+    expect(
+      getMoneyDepositFiatAmountUsd(createAsset(), {
+        ...options,
+        blockedTokens: { chainIds: [CHAIN_IDS.MAINNET], tokens: [] },
+      }),
+    ).toBeUndefined();
+  });
+
+  it('returns undefined below the minimum balance', () => {
+    expect(
+      getMoneyDepositFiatAmountUsd(createAsset(), {
+        ...options,
+        minBalance: 50,
+      }),
+    ).toBeUndefined();
   });
 });
 
@@ -175,10 +219,9 @@ describe('parseMoneySubsidizedRoutes', () => {
 
 describe('isNoFeeMoneyDepositToken', () => {
   it('recognizes a subsidized route targeting Monad mUSD', () => {
-    const token: { address: Hex; chainId: Hex; symbol: string } = {
+    const token: { address: Hex; chainId: Hex } = {
       address: '0x0000000000000000000000000000000000000001',
       chainId: CHAIN_IDS.MAINNET,
-      symbol: 'TOKEN',
     };
     const routes = parseMoneySubsidizedRoutes({
       chains: { ethereum: CHAIN_IDS.MAINNET, monad: CHAIN_IDS.MONAD },
@@ -195,7 +238,6 @@ describe('isNoFeeMoneyDepositToken', () => {
         {
           address: MUSD_TOKEN_ADDRESS,
           chainId: CHAIN_IDS.MONAD,
-          symbol: 'mUSD',
         },
         [],
       ),
@@ -203,10 +245,9 @@ describe('isNoFeeMoneyDepositToken', () => {
   });
 
   it('rejects a route targeting another chain', () => {
-    const token: { address: Hex; chainId: Hex; symbol: string } = {
+    const token: { address: Hex; chainId: Hex } = {
       address: '0x0000000000000000000000000000000000000001',
       chainId: CHAIN_IDS.MAINNET,
-      symbol: 'TOKEN',
     };
     const routes = parseMoneySubsidizedRoutes({
       chains: { ethereum: CHAIN_IDS.MAINNET },
@@ -217,33 +258,7 @@ describe('isNoFeeMoneyDepositToken', () => {
     expect(isNoFeeMoneyDepositToken(token, routes)).toBe(false);
   });
 
-  it('optimistically recognizes stablecoins without route configuration', () => {
-    expect(
-      isNoFeeMoneyDepositToken(
-        {
-          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-          chainId: CHAIN_IDS.MAINNET,
-          symbol: 'USDC',
-        },
-        [],
-      ),
-    ).toBe(true);
-  });
-
-  it('does not optimistically recognize non-stable assets', () => {
-    expect(
-      isNoFeeMoneyDepositToken(
-        {
-          address: '0x0000000000000000000000000000000000000001',
-          chainId: CHAIN_IDS.MAINNET,
-          symbol: 'ETH',
-        },
-        [],
-      ),
-    ).toBe(false);
-  });
-
-  it('optimistically recognizes stablecoins missing from served routes', () => {
+  it('rejects a stablecoin without a route into Monad mUSD', () => {
     const routes = parseMoneySubsidizedRoutes({
       chains: { ethereum: CHAIN_IDS.MAINNET, monad: CHAIN_IDS.MONAD },
       tokens: {
@@ -258,10 +273,9 @@ describe('isNoFeeMoneyDepositToken', () => {
         {
           address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
           chainId: CHAIN_IDS.MAINNET,
-          symbol: 'USDC',
         },
         routes,
       ),
-    ).toBe(true);
+    ).toBe(false);
   });
 });

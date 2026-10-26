@@ -58,7 +58,7 @@ const useAnalyticEventCallback = (props: {
 
   const analyticsEvent = useCallback(() => {
     trackEvent(
-      createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+      createEventBuilder(MetaMetricsEventName.NotificationDetailItemClicked)
         .addCategory(MetaMetricsEventCategory.NotificationInteraction)
         .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -14,10 +14,6 @@ METAMASK_SHIELD_ENABLED='false'
 ; main and experimental builds have this enabled by default; beta and flask do not.
 PERPS_ENABLED='true'
 
-; Set to `true` to enable AssetsController unified state population.
-; When false, AssetsController is still instantiated but state remains empty.
-ASSETS_UNIFIED_STATE_ENABLED='false'
-
 ; Set this to `true` to enable Passkey/Biometrics unlock for SRP wallets
 PASSKEY_ENABLED='false'
 

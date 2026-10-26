@@ -97,7 +97,8 @@ describe('Notifications List', () => {
           ...mockedState,
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -280,7 +281,8 @@ describe('Notifications List', () => {
           ...mockedState,
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });

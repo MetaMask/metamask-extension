@@ -8,8 +8,11 @@ import { getManifestFlags } from '../manifestFlags';
 import {
   BROWSER_SHUTTING_DOWN_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
+  INACCESSIBLE_DATABASE_ERROR,
   MISSING_VAULT_ERROR,
 } from '../../constants/errors';
+import { StateCorruptionErrorType } from '../../constants/critical-error';
+import { StartupPhase } from '../telemetry/startup-phase';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -25,6 +28,7 @@ const WRITE_RETRY_DELAY_MS =
 
 const mockStoreSet = jest.fn();
 const mockStoreSetKeyValues = jest.fn();
+const mockStoreGetBytesInUseByKey = jest.fn();
 const mockStoreGet = jest.fn();
 const mockStoreReset = jest.fn();
 
@@ -33,6 +37,7 @@ jest.mock('./extension-store', () => {
     return {
       set: mockStoreSet,
       setKeyValues: mockStoreSetKeyValues,
+      getBytesInUseByKey: mockStoreGetBytesInUseByKey,
       get: mockStoreGet,
       reset: mockStoreReset,
     };
@@ -616,9 +621,24 @@ describe('PersistenceManager', () => {
         },
       });
 
-      await expect(manager.get({ validateVault: true })).rejects.toThrow(
-        MISSING_VAULT_ERROR,
-      );
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: MISSING_VAULT_ERROR,
+        corruptionType: StateCorruptionErrorType.MissingVaultInDatabase,
+      });
+    });
+
+    it('does throw when validating state fails but has a backup', async () => {
+      mockStoreGet.mockRejectedValueOnce(new Error('storage failed'));
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: INACCESSIBLE_DATABASE_ERROR,
+        corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+      });
     });
 
     describe('when the browser is shutting down', () => {
@@ -686,9 +706,12 @@ describe('PersistenceManager', () => {
           KeyringController: { vault: 'vault' },
         });
 
-        await expect(manager.get({ validateVault: true })).rejects.toThrow(
-          MISSING_VAULT_ERROR,
-        );
+        await expect(
+          manager.get({ validateVault: true }),
+        ).rejects.toMatchObject({
+          message: INACCESSIBLE_DATABASE_ERROR,
+          corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+        });
       });
     });
   });
@@ -709,7 +732,6 @@ describe('PersistenceManager', () => {
         AppMetadataController: {
           currentAppVersion: '13.34.0',
         },
-        MetaMetricsController: {},
         AnalyticsController: {
           analyticsId: '0xabc123',
           optedIn: true,
@@ -727,7 +749,6 @@ describe('PersistenceManager', () => {
         AppMetadataController: {
           currentAppVersion: '13.34.0',
         },
-        MetaMetricsController: {},
         AnalyticsController: {
           analyticsId: '0xabc123',
           optedIn: true,
@@ -806,59 +827,212 @@ describe('PersistenceManager', () => {
       expect(passedMap.get('BarController')).toBeUndefined();
     });
 
-    it('reports sampled write size, frequency, controllers, and idle status without state values', async () => {
+    it('reports the ambient emitting context and activity snapshot on write events', async () => {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'chrome-extension://abc/popup.html' } },
+        configurable: true,
+      });
+      try {
+        manager = new PersistenceManager({
+          getPersistenceWriteSampleRate: () => 1,
+          localStore: new ExtensionStore(),
+          random: () => 0,
+        });
+        manager.setCurrentActivityProvider(() => ({
+          fullscreenCount: 1,
+          notificationIsOpen: false,
+          popupCount: 2,
+          sidePanelCount: 3,
+          startupPhase: StartupPhase.SettingUpController,
+        }));
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', { foo: 'bar' });
+        const listener = jest.fn();
+        manager.on('splitStateWrite', listener);
+
+        await manager.persist();
+
+        expect(listener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            environmentType: 'popup',
+            currentActivity: {
+              fullscreenCount: 1,
+              notificationIsOpen: false,
+              popupCount: 2,
+              sidePanelCount: 3,
+              startupPhase: StartupPhase.SettingUpController,
+            },
+          }),
+        );
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
+    });
+
+    it('reports an empty activity when no provider is configured', async () => {
       manager = new PersistenceManager({
-        getIsIdle: () => true,
         getPersistenceWriteSampleRate: () => 1,
         localStore: new ExtensionStore(),
         random: () => 0,
       });
       manager.setMetadata({ version: 10, storageKind: 'split' });
-      manager.update('FooController', {
-        privateValue: 'controller state value',
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currentActivity: {},
+        }),
+      );
+    });
+
+    it('reports the unavailable snapshot and still emits when the provider throws', async () => {
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
       });
-      manager.update('FooController', {
-        privateValue: 'latest controller state value',
+      manager.setCurrentActivityProvider(() => {
+        throw new Error('provider failed');
       });
-      manager.update('BarController', { enabled: true });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
       const listener = jest.fn();
       manager.on('splitStateWrite', listener);
 
       await manager.persist();
 
       expect(listener).toHaveBeenCalledTimes(1);
-      const [event] = listener.mock.calls[0];
-      expect(event).toStrictEqual({
-        bytesByController: {
-          BarController: new TextEncoder().encode(
-            JSON.stringify({ enabled: true }),
-          ).byteLength,
-          FooController: new TextEncoder().encode(
-            JSON.stringify({
-              privateValue: 'latest controller state value',
-            }),
-          ).byteLength,
-        },
-        coalescedUpdates: 3,
-        controllerKeys: ['BarController', 'FooController'],
-        idleStatus: 'idle',
-        measurementDurationMs: expect.any(Number),
-        sampleRate: 1,
-        totalBytes: new TextEncoder().encode(
-          JSON.stringify({
-            BarController: { enabled: true },
-            FooController: {
-              privateValue: 'latest controller state value',
-            },
-          }),
-        ).byteLength,
-        writeDurationMs: expect.any(Number),
-      });
-      expect(Object.keys(event.bytesByController)).toStrictEqual(
-        event.controllerKeys,
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currentActivity: {},
+          totalBytes: expect.any(Number),
+          writeDurationMs: expect.any(Number),
+        }),
       );
-      expect(JSON.stringify(event)).not.toContain(
-        'latest controller state value',
+    });
+
+    it('reports sampled write size, frequency, controllers, and idle status without state values', async () => {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
+      Object.defineProperty(globalThis, 'self', {
+        value: { location: { href: 'chrome-extension://abc/popup.html' } },
+        configurable: true,
+      });
+      try {
+        manager = new PersistenceManager({
+          getIsIdle: () => true,
+          getPersistenceWriteSampleRate: () => 1,
+          localStore: new ExtensionStore(),
+          random: () => 0,
+        });
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', {
+          privateValue: 'controller state value',
+        });
+        manager.update('FooController', {
+          privateValue: 'latest controller state value',
+        });
+        manager.update('BarController', { enabled: true });
+        const listener = jest.fn();
+        manager.on('splitStateWrite', listener);
+
+        await manager.persist();
+
+        expect(listener).toHaveBeenCalledTimes(1);
+        const [event] = listener.mock.calls[0];
+        const fooControllerLength = JSON.stringify({
+          privateValue: 'latest controller state value',
+        }).length;
+        const barControllerLength = JSON.stringify({ enabled: true }).length;
+        expect(event).toStrictEqual({
+          currentActivity: {},
+          bytesByController: new Map([
+            ['BarController', barControllerLength],
+            ['FooController', fooControllerLength],
+          ]),
+          coalescedUpdates: 3,
+          environmentType: 'popup',
+          idleStatus: 'idle',
+          measurementDurationMs: expect.any(Number),
+          sampleRate: 1,
+          sizeMeasurementSource: 'json_string_length_estimate',
+          totalBytes: barControllerLength + fooControllerLength,
+          writeDurationMs: expect.any(Number),
+        });
+        expect(JSON.stringify(event)).not.toContain(
+          'latest controller state value',
+        );
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
+    });
+
+    it('uses exact storage byte measurements when available', async () => {
+      mockStoreGetBytesInUseByKey.mockResolvedValue(
+        new Map([
+          ['BarController', 11],
+          ['FooController', 29],
+        ]),
+      );
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      manager.update('BarController', { bar: 'baz' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(mockStoreGetBytesInUseByKey).toHaveBeenCalledWith([
+        'FooController',
+        'BarController',
+      ]);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bytesByController: new Map([
+            ['FooController', 29],
+            ['BarController', 11],
+          ]),
+          sizeMeasurementSource: 'storage_get_bytes_in_use',
+          totalBytes: 40,
+        }),
+      );
+    });
+
+    it('falls back to string length estimates when getBytesInUseByKey returns an empty Map', async () => {
+      mockStoreGetBytesInUseByKey.mockResolvedValue(new Map());
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sizeMeasurementSource: 'json_string_length_estimate',
+        }),
       );
     });
 
@@ -872,12 +1046,40 @@ describe('PersistenceManager', () => {
       await manager.persist();
 
       expect(listener).not.toHaveBeenCalled();
+      expect(mockStoreGetBytesInUseByKey).not.toHaveBeenCalled();
       expect(stringifySpy).not.toHaveBeenCalledWith(
         expect.objectContaining({
           FooController: expect.anything(),
         }),
       );
       stringifySpy.mockRestore();
+    });
+
+    it('falls back to string length estimates when exact storage byte measurement fails', async () => {
+      mockStoreGetBytesInUseByKey.mockRejectedValue(
+        new Error('getBytesInUse failed'),
+      );
+      manager = new PersistenceManager({
+        getPersistenceWriteSampleRate: () => 1,
+        localStore: new ExtensionStore(),
+        random: () => 0,
+      });
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      const listener = jest.fn();
+      manager.on('splitStateWrite', listener);
+
+      await manager.persist();
+
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bytesByController: new Map([
+            ['FooController', JSON.stringify({ foo: 'bar' }).length],
+          ]),
+          sizeMeasurementSource: 'json_string_length_estimate',
+          totalBytes: JSON.stringify({ foo: 'bar' }).length,
+        }),
+      );
     });
 
     it('reports unknown idle status when no idle source is configured', async () => {

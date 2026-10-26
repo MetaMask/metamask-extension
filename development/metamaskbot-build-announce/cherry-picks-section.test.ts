@@ -234,6 +234,7 @@ describe('cherry-picks-section', () => {
 
       expect(section).toContain('<a id="whats-in-this-rc"></a>');
       expect(section).toContain('<a id="cherry-picks"></a>');
+      expect(section).toContain("<strong>🍒 What's in this RC</strong>");
       expect(section).toContain('No cherry-picks or changelog commits found.');
     });
 
@@ -321,6 +322,7 @@ describe('cherry-picks-section', () => {
 
       expect(section).toContain('<a id="whats-in-this-rc"></a>');
       expect(section).toContain('<a id="cherry-picks"></a>');
+      expect(section).toContain("<strong>🍒 What's in this RC</strong>");
       expect(section).toContain('git failed for &lt;tag&gt; &amp; branch');
     });
   });

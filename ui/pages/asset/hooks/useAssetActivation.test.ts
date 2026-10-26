@@ -100,6 +100,17 @@ describe('useAssetActivation', () => {
             },
           }
         : {},
+      assetsInfo: includeAssetInState
+        ? {
+            [PUBNET_USDC_ASSET]: {
+              type: 'asset',
+              symbol: 'USDC',
+              name: 'USD Coin',
+              decimals: 7,
+              image: '',
+            },
+          }
+        : {},
       assetsBalance:
         includeAssetInState &&
         (balanceAmount !== undefined || trustlineLimit !== undefined)
@@ -110,18 +121,6 @@ describe('useAssetActivation', () => {
                   ...(trustlineLimit === undefined
                     ? {}
                     : { metadata: { limit: trustlineLimit } }),
-                },
-              },
-            }
-          : {},
-      balances:
-        includeAssetInState &&
-        (balanceAmount !== undefined || trustlineLimit !== undefined)
-          ? {
-              [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
-                [PUBNET_USDC_ASSET]: {
-                  amount: balanceAmount ?? '0',
-                  unit: 'USDC',
                 },
               },
             }

@@ -3,6 +3,9 @@ import {
   type AnalyticsControllerMessenger,
   type AnalyticsControllerState,
 } from '@metamask/analytics-controller';
+import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import { CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/chain-value-order';
+import { PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { generateMetaMetricsId } from '../../../shared/lib/generate-metametrics-id';
 import {
   configureAnalytics,
@@ -62,6 +65,8 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
     isGeolocationEnabled: true,
     isEventFragmentsEnabled: true,
   });
+  registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
+  registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
   controller.init();
 
   configureAnalytics({

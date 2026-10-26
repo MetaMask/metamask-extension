@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import { it } from '@jest/globals';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
@@ -248,30 +249,37 @@ describe('PerpsFillTag', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('does not render Liquidated badge when liquidation object is missing', () => {
-    const store = createMockStore();
-    const transaction = createMockTransaction(FillType.Liquidation, {
-      fill: {
-        shortTitle: 'Closed long',
-        amount: '-$100',
-        amountNumber: -100,
-        isPositive: false,
-        size: '1.5',
-        entryPrice: '2000',
-        points: '0',
-        pnl: '-100',
-        fee: '1',
-        action: 'Closed',
-        feeToken: 'USDC',
-        fillType: FillType.Liquidation,
-      },
-    });
+  it.each([
+    ['liquidation object', undefined],
+    ['liquidated user', { markPx: '1800', method: 'market' }],
+  ])(
+    'does not render Liquidated badge when %s is missing',
+    (_label, liquidation) => {
+      const store = createMockStore();
+      const transaction = createMockTransaction(FillType.Liquidation, {
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '-$100',
+          amountNumber: -100,
+          isPositive: false,
+          size: '1.5',
+          entryPrice: '2000',
+          points: '0',
+          pnl: '-100',
+          fee: '1',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.Liquidation,
+          liquidation,
+        },
+      });
 
-    const { container } = renderWithProvider(
-      <PerpsFillTag transaction={transaction} />,
-      store,
-    );
+      const { container } = renderWithProvider(
+        <PerpsFillTag transaction={transaction} />,
+        store,
+      );
 
-    expect(container.firstChild).toBeNull();
-  });
+      expect(container.firstChild).toBeNull();
+    },
+  );
 });

@@ -23,7 +23,7 @@ import {
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
-import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
+import { MOCK_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 
 describe('Change wallet password', function () {
   const OLD_PASSWORD = WALLET_PASSWORD;
@@ -113,7 +113,7 @@ describe('Change wallet password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withPasskeyController({ passkeyRecord: DUMMY_PASSKEY_RECORD })
+          .withPasskeyController({ passkeyRecord: MOCK_PASSKEY_RECORD })
           .build(),
         title: this.test?.fullTitle(),
         virtualAuthenticator: true,

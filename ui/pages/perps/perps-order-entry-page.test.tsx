@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import type {
   AccountState,
   CandleData,
@@ -21,7 +22,14 @@ import thunk from 'redux-thunk';
 
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
-import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
+import {
+  PERPS_MIN_MARKET_ORDER_USD,
+  PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC,
+} from '../../components/app/perps/constants';
+import {
+  confirmUnfundedDepositFunnel,
+  markUnfundedDepositFunnel,
+} from '../../components/app/perps/utils/unfunded-deposit-funnel';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -42,6 +50,9 @@ import type { UsePerpsMaxSlippageReturn } from '../../hooks/perps/usePerpsMaxSli
 import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
+
+/** The account `test/data/mock-state.json` has selected. */
+const MOCK_SELECTED_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 const mockAnalyticsTrackEvent = jest.fn();
 
@@ -96,6 +107,12 @@ const enterAmount = (value: string) => {
     'input',
   ) as HTMLInputElement;
   fireEvent.change(amountInput, { target: { value } });
+};
+
+const enterLimitPrice = (value: string) => {
+  const limitContainer = screen.getByTestId('limit-price-input');
+  const limitInput = limitContainer.querySelector('input') as HTMLInputElement;
+  fireEvent.change(limitInput, { target: { value } });
 };
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -154,6 +171,7 @@ jest.mock('@metamask/perps-controller', () => ({
     TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
     ORDER_REJECTED: 'ORDER_REJECTED',
     SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
+    PRICE_MOVED: 'PRICE_MOVED',
     RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
     SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
     NETWORK_ERROR: 'NETWORK_ERROR',
@@ -169,15 +187,19 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
   usePerpsMarketInfo: () => mockUsePerpsMarketInfo(),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
   ...jest.requireActual('../../hooks/perps/usePerpsOrderFees'),
-  usePerpsOrderFees: () => ({
-    // combined = protocol + discounted builder; hl_fee_rate must report only
-    // the protocol part.
-    feeRate: 0.00145,
-    protocolFeeRate: 0.00045,
-    isLoading: false,
-  }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return {
+      // combined = protocol + discounted builder; hl_fee_rate must report only
+      // the protocol part.
+      feeRate: 0.00145,
+      protocolFeeRate: 0.00045,
+      isLoading: false,
+    };
+  },
 }));
 
 const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
@@ -463,6 +485,7 @@ describe('PerpsOrderEntryPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    sessionStorage.clear();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     const { isNearLiquidationPrice: realIsNearLiquidation } =
       jest.requireActual(
@@ -524,6 +547,26 @@ describe('PerpsOrderEntryPage', () => {
       maxSlippageSource: 'default',
       setMaxSlippage: jest.fn(),
       isLoading: false,
+    });
+  });
+
+  it('passes the edited USD notional to the page fee quote', () => {
+    renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+    const input = screen
+      .getByTestId('amount-input-field')
+      .querySelector('input') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: '100' } });
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'ETH',
+      orderType: 'market',
+      amount: '100',
+    });
+    mockUsePerpsOrderFees.mockClear();
+    fireEvent.change(input, { target: { value: '1000' } });
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'ETH',
+      orderType: 'market',
+      amount: '1000',
     });
   });
 
@@ -1108,6 +1151,89 @@ describe('PerpsOrderEntryPage', () => {
       expect(submitButton).toBeDisabled();
       expect(submitButton).toHaveTextContent(
         tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('disables submit when a limit order amount is below the $10 minimum', () => {
+      mockSearchParams.set('orderType', 'limit');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount('5');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('disables submit when a limit order has no amount', () => {
+      mockSearchParams.set('orderType', 'limit');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount('');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('enables submit when a limit order amount meets the $10 minimum', () => {
+      mockSearchParams.set('orderType', 'limit');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount(`${PERPS_MIN_MARKET_ORDER_USD}`);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(tEn('perpsOpenLong', ['ETH']));
+    });
+
+    it('disables submit when a modify limit order amount is below the $10 minimum', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockSearchParams.set('orderType', 'limit');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount('5');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('keeps submit enabled for a modify limit order with no amount (TP/SL-only update)', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockSearchParams.set('orderType', 'limit');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount('');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        messages.perpsModifyPosition.message,
       );
     });
   });
@@ -1879,6 +2005,46 @@ describe('PerpsOrderEntryPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('replaces a mis-cased symbol with the market symbol so submits use it', () => {
+      mockUseParams.mockReturnValue({ symbol: 'eth' });
+      mockSearchParams.set('mode', 'close');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(mockNavigateComponent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: { pathname: '/perps/trade/ETH', search: 'mode=close' },
+          replace: true,
+        }),
+      );
+      expect(
+        screen.queryByTestId('submit-order-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('replaces a mis-cased HIP-3 symbol with the encoded market symbol', () => {
+      mockUseParams.mockReturnValue({ symbol: 'XYZ%3Atsla' });
+      mockSearchParams.set('mode', 'modify');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(mockNavigateComponent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: { pathname: '/perps/trade/xyz%3ATSLA', search: 'mode=modify' },
+          replace: true,
+        }),
+      );
+    });
+
+    it('does not redirect when the symbol already matches the market', () => {
+      mockSearchParams.set('mode', 'close');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(mockNavigateComponent).not.toHaveBeenCalled();
+      expect(screen.getByTestId('submit-order-button')).toBeInTheDocument();
+    });
+
     it('shows market not found when symbol does not match any market', () => {
       mockUseParams.mockReturnValue({ symbol: 'NONEXISTENT' });
       const store = mockStore(createMockState());
@@ -1981,7 +2147,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
-    it('disables submit button and shows add funds label when balance is zero', () => {
+    it('enables submit button and shows add funds to trade when balance is zero', async () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
@@ -1993,14 +2159,82 @@ describe('PerpsOrderEntryPage', () => {
       });
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+      mockAnalyticsTrackEvent.mockClear();
 
       const submitButton = screen.getByTestId('submit-order-button');
 
-      expect(submitButton).toBeDisabled();
-      expect(submitButton).toHaveTextContent(messages.addFunds.message);
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.getByTestId('perps-unfunded-add-funds-hint'),
+      ).toHaveTextContent(
+        tEn('perpsAddFundsHint', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+            [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
+              PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+            [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+              PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+            [PERPS_EVENT_PROPERTY.DEPOSIT_CLICK_OUTCOME]:
+              PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.DEPOSIT,
+          }),
+        }),
+      );
+      const depositClick = mockAnalyticsTrackEvent.mock.calls.find(
+        ([event]) => event.name === MetaMetricsEventName.PerpsUiInteraction,
+      );
+      expect(depositClick?.[0].properties).not.toHaveProperty('button_type');
     });
 
-    it('disables submit button when user is not eligible and balance is zero', () => {
+    it('enables add funds to trade when tradeable balance is dust below the unfunded threshold', async () => {
+      expect(PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC).toBeGreaterThan(0.009);
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          spendableBalance: '0.009',
+          withdrawableBalance: '0.009',
+          totalBalance: '0.009',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.getByTestId('perps-unfunded-add-funds-hint'),
+      ).toHaveTextContent(
+        tEn('perpsAddFundsHint', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+    });
+
+    it('opens geo-block modal when user is not eligible and balance is zero', async () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
       mockLiveAccount.mockReturnValue({
         account: {
@@ -2015,7 +2249,54 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       const submitButton = screen.getByTestId('submit-order-button');
-      expect(submitButton).toBeDisabled();
+      expect(submitButton).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
+      // The geo-blocked click is itself a funnel drop-off, so it must be
+      // tracked rather than returning before any event is emitted.
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+            [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+              PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+            [PERPS_EVENT_PROPERTY.DEPOSIT_CLICK_OUTCOME]:
+              PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.GEO_BLOCK_MODAL,
+          }),
+        }),
+      );
+    });
+
+    it('does not treat an unparseable balance as unfunded', async () => {
+      // An unreadable balance is an unknown balance, not a zero one. Prompting
+      // a funded trader to deposit collateral they already hold is worse than
+      // falling through to normal trade validation.
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          spendableBalance: 'not-a-number',
+          withdrawableBalance: 'not-a-number',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('submit-order-button')).not.toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.queryByTestId('perps-unfunded-add-funds-hint'),
+      ).not.toBeInTheDocument();
     });
 
     it('gates the amount input add funds action when compliance blocks the selected wallet', async () => {
@@ -2034,6 +2315,43 @@ describe('PerpsOrderEntryPage', () => {
 
       await waitFor(() => expect(mockComplianceGate).toHaveBeenCalled());
       expect(mockTriggerDeposit).not.toHaveBeenCalled();
+    });
+
+    (
+      [
+        ['unfunded', '0', false],
+        ['funded', mockAccountState.withdrawableBalance, true],
+      ] as const
+    ).forEach(([label, balance, hasPerpBalance]) => {
+      it(`tracks the ${label} amount-input add funds click`, async () => {
+        mockLiveAccount.mockReturnValue({
+          account: {
+            ...mockAccountState,
+            spendableBalance: balance,
+            withdrawableBalance: balance,
+          },
+          isInitialLoading: false,
+        });
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+        mockAnalyticsTrackEvent.mockClear();
+
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+        });
+
+        expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+        expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: MetaMetricsEventName.PerpsUiInteraction,
+            properties: expect.objectContaining({
+              [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+                PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+              [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+            }),
+          }),
+        );
+      });
     });
 
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
@@ -2061,7 +2379,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
 
-    it('disables submit while account state is still loading for a new order', () => {
+    it('does not show the labeled row Add funds control while account state is still loading at zero balance', async () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
@@ -2074,7 +2392,63 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      const addFunds = screen.getByTestId('amount-input-add-funds');
+      expect(addFunds).toHaveAttribute('aria-label', messages.addFunds.message);
+      expect(addFunds).not.toHaveTextContent(messages.addFunds.message);
+
+      await act(async () => {
+        fireEvent.click(addFunds);
+      });
+
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+    });
+
+    it('does not show add funds to trade while account state is still loading at zero balance', () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          spendableBalance: '0',
+          withdrawableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).not.toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.queryByTestId('perps-unfunded-add-funds-hint'),
+      ).not.toBeInTheDocument();
+    });
+
+    (
+      [
+        ['close', 'Close position'],
+        ['modify', 'Modify Position'],
+      ] as const
+    ).forEach(([mode, label]) => {
+      it(`keeps ${mode} submit enabled while the account stream is still loading`, () => {
+        mockSearchParams.set('mode', mode);
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        mockLiveAccount.mockReturnValue({
+          account: null,
+          isInitialLoading: true,
+        });
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        const submitButton = screen.getByTestId('submit-order-button');
+        expect(submitButton).not.toBeDisabled();
+        expect(submitButton).toHaveTextContent(label);
+      });
     });
 
     it('disables submit when selected account address is missing', async () => {
@@ -2568,6 +2942,26 @@ describe('PerpsOrderEntryPage', () => {
       ];
     };
 
+    it('tracks the trading screen view once across a mis-cased symbol redirect', () => {
+      mockUseParams.mockReturnValue({ symbol: 'eth' });
+      const store = mockStore(createMockState());
+      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      mockUseParams.mockReturnValue({ symbol: 'ETH' });
+      rerender(<PerpsOrderEntryPage />);
+
+      const tradingScreenViews = mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsScreenViewed &&
+          arg?.properties?.[PERPS_EVENT_PROPERTY.SCREEN_TYPE] ===
+            PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
+      );
+      expect(tradingScreenViews).toHaveLength(1);
+      expect(
+        tradingScreenViews[0][0].properties[PERPS_EVENT_PROPERTY.ASSET],
+      ).toBe('ETH');
+    });
+
     it('includes saved-order defaults on the trading screen view', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -2921,11 +3315,9 @@ describe('PerpsOrderEntryPage', () => {
       await waitFor(() => expect(consideredCalls()).toHaveLength(1), {
         timeout: 2000,
       });
-      // These three moved here when the client trade event was removed: the
-      // controller's TrackingData has no slippage fields. Coverage is partial by
-      // construction — see the note in report.md. Exact values, not shapes: the
-      // mocks fix maxSlippageBps at 300 and estimatedSlippageBps at 50, so a
-      // regression in the bps->pct conversion or the source mapping fails here.
+      // Exact values, not shapes: the mocks fix maxSlippageBps at 300 and
+      // estimatedSlippageBps at 50, so a regression in the bps->pct conversion
+      // or the source mapping fails here.
       expect(consideredCalls()[0][0].properties).toEqual(
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: 3,
@@ -3076,6 +3468,27 @@ describe('PerpsOrderEntryPage', () => {
         <PerpsOrderEntryPage />,
         mockStore(createMockState()),
       );
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(
+        mockAnalyticsTrackEvent.mock.calls.some(
+          ([arg]) => arg?.properties?.action === 'abandon_order',
+        ),
+      ).toBe(false);
+    });
+
+    it('does not report abandonment when a mis-cased symbol redirects', async () => {
+      // The redirect render never shows the order form.
+      mockUseParams.mockReturnValue({ symbol: 'eth' });
+
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+      expect(mockNavigateComponent).toHaveBeenCalled();
       unmount();
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
@@ -3298,6 +3711,9 @@ describe('PerpsOrderEntryPage', () => {
             orderType: 'market',
             trackingData: expect.objectContaining({
               hlFeeRate: 0.00045,
+              maxSlippageBps: 300,
+              maxSlippageSource: PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+              estimatedSlippageBps: 50,
               // No existing position -> create_position; the controller only
               // emits the tx `action` when trackingData.tradeAction is set.
               tradeAction: PERPS_EVENT_VALUE.ACTION.CREATE_POSITION,
@@ -3322,6 +3738,31 @@ describe('PerpsOrderEntryPage', () => {
         expect.objectContaining({
           key: 'perpsToastOrderSubmitted',
           autoHideTime: 3000,
+        }),
+      );
+    });
+
+    it('tracks trade_submitted_after_deposit after a successful order when the unfunded funnel is active', async () => {
+      markUnfundedDepositFunnel(MOCK_SELECTED_ADDRESS);
+      confirmUnfundedDepositFunnel(MOCK_SELECTED_ADDRESS);
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.TRADE_SUBMITTED_AFTER_DEPOSIT,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          }),
         }),
       );
     });
@@ -3386,6 +3827,142 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
+    it('uses the structured error code when the order price moved', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'Price moved too much',
+            errorCode: 'PRICE_MOVED',
+            errorDetails: {
+              code: 'PRICE_MOVED',
+              priceDeltaBps: 336,
+              maxSlippageBps: 300,
+              expectedPrice: 788.71,
+              currentPrice: 815.22,
+            },
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsPriceMoved', ['3.36', '3']),
+      });
+    });
+
+    it('explains IOC cancellation using the submitted tolerance', async () => {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'IOC_CANCEL',
+            errorCode: 'IOC_CANCEL',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['3']),
+      });
+    });
+
+    it('uses the default tolerance when slippage configuration is disabled', async () => {
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 500,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.resolve({
+            success: false,
+            error: 'IOC_CANCEL',
+            errorCode: 'IOC_CANCEL',
+          });
+        }
+        return Promise.resolve({ success: true });
+      });
+      const state = createMockState();
+      state.metamask.remoteFeatureFlags.perpsSlippageConfig2 = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      enterAmount('1000');
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            maxSlippageBps: 300,
+            trackingData: expect.objectContaining({
+              maxSlippageBps: 300,
+              maxSlippageSource: 'default',
+            }),
+          }),
+        ],
+      );
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['3']),
+      });
+    });
+
+    it('explains a thrown IOC cancellation using the submitted tolerance', async () => {
+      mockUsePerpsMaxSlippage.mockReturnValue({
+        maxSlippageBps: 500,
+        maxSlippageSource: 'user_configured',
+        setMaxSlippage: jest.fn(),
+        isLoading: false,
+      });
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsPlaceOrder') {
+          return Promise.reject(
+            Object.assign(new Error('IOC_CANCEL'), { code: 'IOC_CANCEL' }),
+          );
+        }
+        return Promise.resolve({ success: true });
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      enterAmount('1000');
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastOrderFailed',
+        description: tEn('perpsIocCancel', ['5']),
+      });
+    });
+
     it('shows order failure toast when controller throws', async () => {
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
         if (method === 'perpsPlaceOrder') {
@@ -3413,6 +3990,46 @@ describe('PerpsOrderEntryPage', () => {
         description: 'A network error occurred. Please try again.',
       });
     });
+
+    it.each(['', '   ', '.', '2 ETH', 'Infinity'])(
+      'renders close mode with malformed live size %p and restores submission after recovery',
+      async (size) => {
+        mockSearchParams.set('mode', 'close');
+        mockLivePositions.mockReturnValue({
+          positions: [{ ...mockPositions[0], size }],
+          isInitialLoading: false,
+        });
+        const store = mockStore(createMockState());
+        const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        const submit = screen.getByTestId('submit-order-button');
+        expect(submit).toBeDisabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: undefined,
+        });
+        await act(async () => fireEvent.click(submit));
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsClosePosition',
+          expect.anything(),
+        );
+
+        mockUsePerpsOrderFees.mockClear();
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        rerender(<PerpsOrderEntryPage />);
+
+        expect(submit).toBeEnabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: String(Math.abs(Number(mockPositions[0].size)) * 3025.5),
+        });
+      },
+    );
 
     it('calls closePosition when in close mode', async () => {
       mockSearchParams.set('mode', 'close');

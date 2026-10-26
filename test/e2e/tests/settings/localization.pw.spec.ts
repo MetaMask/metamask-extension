@@ -103,9 +103,6 @@ pwTest.describe('Localization', () => {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withCurrencyController({
-              currentCurrency: 'php',
-            })
             .withAssetsController({
               selectedCurrency: 'php',
             })

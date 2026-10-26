@@ -43,8 +43,8 @@ export type TabsProps<TKey extends string = string> = Omit<
   onTabClick?: (tabKey: TKey) => void;
   /** Tab components to render */
   children: React.ReactNode;
-  /** Additional content to render between tabs and content */
-  subHeader?: React.ReactNode;
+  /** Props for the tab list wrapper */
+  tabListWrapperProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** Props to pass to the tab list container */
   tabListProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** Props to pass to the tab content container */

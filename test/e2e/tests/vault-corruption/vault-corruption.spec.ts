@@ -13,14 +13,18 @@ import {
   getFirstAddress,
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
-import VaultRecoveryPage from '../../page-objects/pages/vault/recovery-page';
+import CriticalErrorPage from '../../page-objects/pages/vault/critical-error-page';
 import { pausePersistence, readStorage } from '../state-persistence/helpers';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
 
-  const WAIT_FOR_SENTRY_MS = 10000;
+  // The missing-vault Sentry event is sent asynchronously: captureException runs
+  // in the background, then the metaMetricsIntegration's async opt-in resolution
+  // (which reads persisted/backup state) must complete before the event is
+  // transmitted. Under CI load this can take a while, so we allow a generous wait.
+  const WAIT_FOR_SENTRY_MS = 30000;
 
   /**
    * Script template to simulate a broken database.
@@ -127,8 +131,11 @@ describe('Vault Corruption', function () {
           storageBeforeRecovery.AnalyticsController;
 
         // start recovery
-        const vaultRecoveryPage = new VaultRecoveryPage(driver);
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // onboard again
         await completeVaultRecoveryOnboardingFlow({
@@ -252,8 +259,11 @@ describe('Vault Corruption', function () {
         );
 
         // start reset
-        const vaultRecoveryPage = new VaultRecoveryPage(driver);
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // Now onboard again, like a first-time user :-(
         await completeCreateNewWalletOnboardingFlow({
@@ -291,12 +301,12 @@ describe('Vault Corruption', function () {
           breakPrimaryDatabaseOnlyScript,
         );
 
-        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+        const criticalErrorPage = new CriticalErrorPage(driver);
 
         // click recover but dismiss the prompt
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
+        await criticalErrorPage.clickRepairButton({ confirm: false });
         // make sure the button can be clicked yet again; dismiss again
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
+        await criticalErrorPage.clickRepairButton({ confirm: false });
 
         // reload to make sure the UI is still in the same Vault Corrupted state
         await driver.navigate(PAGES.HOME, {
@@ -304,10 +314,13 @@ describe('Vault Corruption', function () {
         });
 
         // make sure the button can be clicked yet again; dismiss the prompt
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
+        await criticalErrorPage.clickRepairButton({ confirm: false });
         // actually recover the vault this time just to make sure
         // it all still works after dismissing the prompt previously
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // verify that the UI has completed recovery this time
         await completeVaultRecoveryOnboardingFlow({
@@ -340,8 +353,11 @@ describe('Vault Corruption', function () {
         );
 
         // start recovery
-        const vaultRecoveryPage = new VaultRecoveryPage(driver);
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // onboard again
         await completeVaultRecoveryOnboardingFlow({

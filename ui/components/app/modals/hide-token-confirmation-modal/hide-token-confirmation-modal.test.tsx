@@ -16,14 +16,13 @@ type MockToken = {
 };
 
 const mockUseNavigate = jest.fn();
-const mockHideModal = jest.fn().mockReturnValue({ type: 'HIDE_MODAL' });
+const mockOnClose = jest.fn();
 const mockHideAsset = jest
   .fn()
   .mockReturnValue(jest.fn().mockResolvedValue(undefined));
 
 jest.mock('../../../../store/actions.ts', () => ({
   ...jest.requireActual('../../../../store/actions.ts'),
-  hideModal: (...args: unknown[]) => mockHideModal(...args),
   hideAsset: (...args: unknown[]) => mockHideAsset(...args),
 }));
 
@@ -35,71 +34,64 @@ describe('Hide Token Confirmation Modal', () => {
     chainId: '0x5',
   };
 
-  const createMockStore = (
+  const createMockStore = () => configureMockStore([thunk])(mockState);
+
+  const renderModal = (
     token: MockToken = tokenState,
     navigate = mockUseNavigate,
-  ) => {
-    return configureMockStore([thunk])({
-      ...mockState,
-      appState: {
-        ...mockState.appState,
-        modal: {
-          modalState: {
-            props: {
-              navigate,
-              token,
-            },
-          },
-        },
-      },
-    });
-  };
+  ) =>
+    renderWithProvider(
+      <HideTokenConfirmationModal
+        token={token}
+        isOpen
+        onClose={mockOnClose}
+        navigate={navigate}
+      />,
+      createMockStore(),
+    );
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('matches snapshot', () => {
-    const { container } = renderWithProvider(
-      <HideTokenConfirmationModal />,
-      createMockStore(),
-    );
+    const { baseElement } = renderModal();
 
-    expect(container).toMatchSnapshot();
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('hides the modal when cancel button is clicked', () => {
-    const { getByTestId } = renderWithProvider(
-      <HideTokenConfirmationModal />,
-      createMockStore(),
-    );
+    const { getByTestId } = renderModal();
 
     const cancelButton = getByTestId('hide-token-confirmation__cancel');
     fireEvent.click(cancelButton);
 
-    expect(mockHideModal).toHaveBeenCalledTimes(1);
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
     expect(mockHideAsset).not.toHaveBeenCalled();
     expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('hides token with address and chainId and navigates to default route', async () => {
-    const { getByTestId } = renderWithProvider(
-      <HideTokenConfirmationModal />,
-      createMockStore(),
+    let resolveHideAsset: () => void = () => undefined;
+    const hideAssetPromise = new Promise<void>((resolve) => {
+      resolveHideAsset = resolve;
+    });
+    mockHideAsset.mockReturnValueOnce(
+      jest.fn().mockReturnValue(hideAssetPromise),
     );
+    const { getByTestId } = renderModal();
 
     const hideButton = getByTestId('hide-token-confirmation__hide');
     fireEvent.click(hideButton);
 
+    expect(mockHideAsset).toHaveBeenCalledWith(
+      'eip155:5/erc20:0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4',
+    );
+    expect(mockOnClose).toHaveBeenCalled();
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-    await waitFor(() => {
-      expect(mockHideAsset).toHaveBeenCalledWith(
-        'eip155:5/erc20:0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4',
-      );
-    });
-    await waitFor(() => {
-      expect(mockHideModal).toHaveBeenCalled();
-    });
+
+    resolveHideAsset();
+    await hideAssetPromise;
   });
 
   it('hides token when assetId is provided', async () => {
@@ -111,20 +103,17 @@ describe('Hide Token Confirmation Modal', () => {
       image: '',
     };
 
-    const { getByTestId } = renderWithProvider(
-      <HideTokenConfirmationModal />,
-      createMockStore(nonEvmToken),
-    );
+    const { getByTestId } = renderModal(nonEvmToken);
 
     const hideButton = getByTestId('hide-token-confirmation__hide');
     fireEvent.click(hideButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     await waitFor(() => {
       expect(mockHideAsset).toHaveBeenCalledWith(nonEvmToken.assetId);
     });
     await waitFor(() => {
-      expect(mockHideModal).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 
@@ -136,22 +125,21 @@ describe('Hide Token Confirmation Modal', () => {
       jest.fn().mockRejectedValue(new Error('Failed to hide asset')),
     );
 
-    const { getByTestId } = renderWithProvider(
-      <HideTokenConfirmationModal />,
-      createMockStore(),
-    );
+    const { getByTestId } = renderModal();
 
     const hideButton = getByTestId('hide-token-confirmation__hide');
     fireEvent.click(hideButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     await waitFor(() => {
-      expect(mockHideModal).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Error hiding asset:',
-      expect.any(Error),
-    );
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error hiding asset:',
+        expect.any(Error),
+      );
+    });
     consoleErrorSpy.mockRestore();
   });
 
@@ -161,18 +149,15 @@ describe('Hide Token Confirmation Modal', () => {
       symbol: 'INV',
     };
 
-    const { getByTestId } = renderWithProvider(
-      <HideTokenConfirmationModal />,
-      createMockStore(invalidToken),
-    );
+    const { getByTestId } = renderModal(invalidToken);
 
     const hideButton = getByTestId('hide-token-confirmation__hide');
     fireEvent.click(hideButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     expect(mockHideAsset).not.toHaveBeenCalled();
     await waitFor(() => {
-      expect(mockHideModal).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 });
