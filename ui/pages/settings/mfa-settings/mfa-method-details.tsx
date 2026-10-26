@@ -33,7 +33,6 @@ import { transitionBack } from '../../../components/ui/transition';
 import { toast } from '../../../components/ui/toast/toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMfa } from '../../../hooks/identity/mfa';
-import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { isMethodSupported } from '../../../hooks/identity/mfa/engine/planner';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
@@ -156,16 +155,14 @@ const MfaMethodDetails = ({ method }: { method: MfaDetailsMethod }) => {
     setModal(undefined);
     setIsRemoving(true);
     try {
-      const { token } = await verifyOrEnroll({
+      const reason = { operation: copy.operation };
+      await verifyOrEnroll({
         methods: verifyWith,
         verifyWith,
         maxSessionAgeMs: ENROLLMENT_MAX_SESSION_AGE_MS,
-        reason: { operation: copy.operation },
+        reason,
       });
-      await removeMfaCredential(credential, token);
-      await extensionMfaControllerAdapter
-        .refreshEnrolledCredentials()
-        .catch(() => undefined);
+      await removeMfaCredential(credential, reason);
       toast.success(t(copy.removed));
       transitionBack(() => navigate(MFA_SETTINGS_ROUTE, { replace: true }));
     } catch (error) {

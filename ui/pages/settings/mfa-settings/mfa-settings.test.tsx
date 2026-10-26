@@ -72,7 +72,13 @@ describe('MfaSettings', () => {
   it('hides email and keeps the authenticator app for social login users', () => {
     mockGetIsSocialLoginFlow.mockReturnValue(true);
     renderSettings([
-      { type: 'email_otp', status: 'active', email: 'a@b.co', verified: true },
+      {
+        id: 'email_otp',
+        type: 'email_otp',
+        status: 'active',
+        email: 'a@b.co',
+        verified: true,
+      },
     ]);
 
     expect(screen.queryByTestId(MfaSettingsTestIds.EMAIL_ROW)).toBeNull();
@@ -115,6 +121,7 @@ describe('MfaSettings', () => {
   it('offers to add an email whose setup is not finished', () => {
     renderSettings([
       {
+        id: 'email_otp',
         type: 'email_otp',
         status: 'pending',
         email: 'a@b.co',
@@ -129,7 +136,13 @@ describe('MfaSettings', () => {
 
   it('opens an active email', async () => {
     renderSettings([
-      { type: 'email_otp', status: 'active', email: 'a@b.co', verified: true },
+      {
+        id: 'email_otp',
+        type: 'email_otp',
+        status: 'active',
+        email: 'a@b.co',
+        verified: true,
+      },
     ]);
 
     expect(
@@ -250,7 +263,7 @@ describe('MfaSettings', () => {
   });
 
   it('opens an authenticator app that is set up', async () => {
-    renderSettings([{ type: 'totp', status: 'active' }]);
+    renderSettings([{ id: 'totp', type: 'totp', status: 'active' }]);
 
     expect(
       screen.getByTestId(MfaSettingsTestIds.TOTP_ROW),

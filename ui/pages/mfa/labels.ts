@@ -16,6 +16,7 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   invalid_attestation: 'mfaErrorInvalidPasskey',
   passkey_ceremony_cancelled: 'mfaErrorPasskeyCancelled',
   credential_already_enrolled: 'mfaErrorEmailTaken',
+  email_claimed: 'mfaErrorEmailTaken',
   otp_resend_cooldown: 'mfaErrorCooldown',
   rate_limited: 'mfaErrorCooldown',
   max_passkeys_reached: 'mfaErrorLimitReached',
