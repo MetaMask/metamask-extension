@@ -847,9 +847,8 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokenRatesControllerState,
-  'marketData'
+) as unknown as MigratingControllerStateSelector<
+  TokenRatesControllerState['marketData']
 >;
 
 export const getMultichainAssetsRatesControllerConversionRates =

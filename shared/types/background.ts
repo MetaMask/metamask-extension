@@ -7,7 +7,6 @@ import type {
   TokenBalancesControllerState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
   MultichainBalancesControllerState,
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
@@ -317,7 +316,6 @@ export type ControllerStatePropertiesEnumerated = {
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
-  marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
@@ -404,7 +402,6 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   Pick<TokenBalancesControllerState, 'tokenBalances'> &
   TokensControllerState &
   TokenListState &
-  Pick<TokenRatesControllerState, 'marketData'> &
   TransactionControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
