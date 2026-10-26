@@ -10631,10 +10631,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/solana-wallet-snap@npm:7.1.0"
-  checksum: 10/2a48bdb0a41e553bbee86109d87f1522c6147a5e5ee915de08b88abae9825abfb979077c95567490a743c087e4c1b828ea8568ba0a840dd6c2b82ef4bea1cfe2
+"@metamask/solana-wallet-snap@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@metamask/solana-wallet-snap@npm:7.2.0"
+  checksum: 10/dde7895f40ac0e29490336c60b14479129c25471341127dc784c4f40b92959fa3714024730524802f614f36d637e4a63c8ff7d97b25eed96ec6c7cf164602db7
   languageName: node
   linkType: hard
 
@@ -10936,10 +10936,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "@metamask/tron-wallet-snap@npm:4.2.0"
-  checksum: 10/cad7b1b0797d6a31dd82c2a608b047c02c4661c5ed0cfbd880f71537507e5bc197457453b314a1d9fd82611d5958a6b6a098ec882c5d04a7780c1738c2302792
+"@metamask/tron-wallet-snap@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "@metamask/tron-wallet-snap@npm:4.3.0"
+  checksum: 10/e2c332fe66bdbd7e02d34c375ac335d7d2a847184700e9fbb673b1b1fd325222196d95a215b4f6360fdb423c8d626394a393442fb4b86c90baa8ec61b74f1c84
   languageName: node
   linkType: hard
 
@@ -35636,7 +35636,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^12.1.0"
     "@metamask/snaps-utils": "npm:^12.6.1"
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
-    "@metamask/solana-wallet-snap": "npm:^7.1.0"
+    "@metamask/solana-wallet-snap": "npm:^7.2.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
     "@metamask/stellar-wallet-snap": "npm:^1.3.0"
     "@metamask/storage-service": "npm:^1.0.0"
@@ -35652,7 +35652,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^72.2.1"
     "@metamask/transaction-pay-controller": "npm:^30.2.0"
     "@metamask/transaction-pay-middleware": "npm:^1.0.0"
-    "@metamask/tron-wallet-snap": "npm:^4.2.0"
+    "@metamask/tron-wallet-snap": "npm:^4.3.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
     "@metamask/wallet": "npm:^18.0.0"
