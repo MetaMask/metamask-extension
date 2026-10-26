@@ -7,7 +7,11 @@
  */
 
 import { type Hex } from '@metamask/utils';
-import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
+import {
+  type NetworkConfiguration,
+  NetworkStatus,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { MockttpServer } from 'mockttp';
 import {
   CHAIN_IDS,
@@ -107,7 +111,10 @@ const NATIVE_ACCOUNT_BALANCE = {
  * @param clientId - Network client id for the localhost RPC endpoint.
  * @param chainId - Hex or decimal-string chain id stored on the configuration.
  */
-function inkNetworkConfiguration(clientId: string, chainId: Hex) {
+function inkNetworkConfiguration(
+  clientId: string,
+  chainId: Hex,
+): NetworkConfiguration {
   return {
     blockExplorerUrls: ['https://explorer.inkonchain.com'],
     chainId,
