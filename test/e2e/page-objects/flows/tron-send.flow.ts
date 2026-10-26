@@ -4,7 +4,6 @@ import { TxToastNotification } from '../components/tx-toast-notification';
 import SnapTransactionConfirmation from '../pages/confirmations/snap-transaction-confirmation';
 import ActivityTab from '../pages/home/activity-tab';
 import HomePage from '../pages/home/homepage';
-import NonEvmHomepage from '../pages/home/non-evm-homepage';
 import TokensTab from '../pages/home/tokens-tab';
 import SendPage from '../pages/send/send-page';
 import { TRON_CHAIN_ID } from '../../tests/tron/mocks/common-tron';
@@ -32,20 +31,20 @@ export async function landOnTronSendScreen({
   await waitUntilAccountTreeSyncIdle(driver);
   await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
-  const home = new NonEvmHomepage(driver);
-  await home.checkPageIsLoaded();
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
   const tokensTab = new TokensTab(driver);
   await tokensTab.checkTokenNameVisible('Tron', {
     timeout: TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
   });
   if (expectedNativeBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(
+    await tokensTab.checkExpectedTokenBalanceIsDisplayed(
       expectedNativeBalance,
       'TRX',
     );
   }
   if (expectedTokenBalance) {
-    await home.checkExpectedTokenBalanceIsDisplayed(
+    await tokensTab.checkExpectedTokenBalanceIsDisplayed(
       expectedTokenBalance,
       symbol,
     );
