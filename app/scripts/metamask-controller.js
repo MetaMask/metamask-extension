@@ -3095,9 +3095,6 @@ export default class MetamaskController extends EventEmitter {
       getGeolocation: this.geolocationController.getGeolocation.bind(
         this.geolocationController,
       ),
-      refreshGeolocation: this.geolocationController.refreshGeolocation.bind(
-        this.geolocationController,
-      ),
 
       // SeedlessOnboardingController
       preloadToprfNodeDetails:
