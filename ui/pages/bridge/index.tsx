@@ -1,23 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
   ButtonIconSize,
-  FontWeight,
   IconName,
-  Text,
-  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 import {
-  PREPARE_SWAP_ROUTE,
-  PREPARE_SWAP_ASSETS_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  PREPARE_SWAP_ASSETS_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
+import { endTrace, TraceName } from '../../../shared/lib/trace';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -30,28 +30,86 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import { useBottomNavBar } from '../../hooks/useBottomNavBar';
+import { resetBridgeController } from '../../ducks/bridge/actions';
 import { getFromChain } from '../../ducks/bridge/selectors';
-import { useBridgeNavigation } from '../../hooks/bridge/useBridgeNavigation';
+import {
+  startSwapViewLoadTrace,
+  useBridgeNavigation,
+} from '../../hooks/bridge/useBridgeNavigation';
 import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
+import { useDispatch } from '../../store/hooks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
-import BridgeAssetPickerPage from './prepare/bridge-asset-picker-page';
+import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';
+import { swapQuoteFetchTrace } from './utils/swap-quote-fetch-trace';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
   useBridging();
 
-  const { navigateToDefaultRoute } = useBridgeNavigation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { key: locationKey, state: locationState } = useLocation();
+  const {
+    navigateToDefaultRoute,
+    search,
+    swapViewTraceId,
+    swapViewPrefilledAmount,
+  } = useBridgeNavigation();
+  const hasNoInAppHistory =
+    locationKey === 'default' ||
+    (locationState as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
+  const [swapViewTrace] = useState(() => {
+    if (swapViewTraceId) {
+      return {
+        id: swapViewTraceId,
+        prefilledAmount: Boolean(swapViewPrefilledAmount),
+      };
+    }
+
+    const searchParams = new URLSearchParams(search);
+    return {
+      id: startSwapViewLoadTrace({
+        token: null,
+        search: searchParams,
+        entryPoint: 'deeplink',
+      }),
+      prefilledAmount: Boolean(searchParams.get(BridgeQueryParams.Amount)),
+    };
+  });
+  const isSwapFlowMountedRef = useRef(false);
+
+  useEffect(() => {
+    isSwapFlowMountedRef.current = true;
+
+    return () => {
+      isSwapFlowMountedRef.current = false;
+      // Defer cancellation so React StrictMode's setup/cleanup/setup probe is
+      // not mistaken for the user leaving the page.
+      queueMicrotask(() => {
+        if (isSwapFlowMountedRef.current) {
+          return;
+        }
+
+        endTrace({
+          name: TraceName.SwapViewLoaded,
+          id: swapViewTrace.id,
+          timestamp: Date.now(),
+          data: { result: 'cancelled' },
+        });
+        swapQuoteFetchTrace.finish('cancelled');
+      });
+    };
+  }, [swapViewTrace.id]);
   // Pre-fill the src chain balances, slippage and other quote params before rendering the bridge page
   // This also resets any search query parameters and navigation states
   usePrefillFromSearchQuery();
@@ -89,29 +147,36 @@ const CrossChainSwap = () => {
       clearAllBridgeCacheItems();
     };
   }, [fetchTokens]);
-
-  const showBottomBar = useBottomNavBar();
-
   const handleBack = () => {
-    transitionBack(() => navigateToDefaultRoute());
+    transitionBack(() => {
+      // Direct open or deep link: leave Swap for Home, or Transaction Shield.
+      if (hasNoInAppHistory) {
+        navigateToDefaultRoute();
+        return;
+      }
+
+      // Opened from another page: reset Swap and return to that page.
+      dispatch(resetBridgeController()).catch(() => undefined);
+      navigate(PREVIOUS_ROUTE);
+    });
   };
 
-  const swapHeader = showBottomBar ? (
-    <div className="flex items-center justify-between p-4 gap-4">
-      <Text variant={DsTextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-        {t('swap')}
-      </Text>
-      <ButtonIcon
-        iconName={IconName.Setting}
-        size={ButtonIconSize.Md}
-        ariaLabel={t('settings')}
-        data-testid="bridge__header-settings-button"
-        onClick={() => {
-          setIsSettingsModalOpen(true);
+  const prepareBody = (
+    <>
+      <BridgeTransactionSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => {
+          setIsSettingsModalOpen(false);
         }}
       />
-    </div>
-  ) : (
+      <PrepareBridgePage
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        swapViewTrace={swapViewTrace}
+      />
+    </>
+  );
+
+  const swapHeader = (
     <Header
       textProps={{ variant: TextVariant.headingSm }}
       startAccessory={
@@ -154,17 +219,7 @@ const CrossChainSwap = () => {
         element={
           <Page className="bridge__container">
             {swapHeader}
-            <Content padding={0}>
-              <BridgeTransactionSettingsModal
-                isOpen={isSettingsModalOpen}
-                onClose={() => {
-                  setIsSettingsModalOpen(false);
-                }}
-              />
-              <PrepareBridgePage
-                onOpenSettings={() => setIsSettingsModalOpen(true)}
-              />
-            </Content>
+            <Content padding={0}>{prepareBody}</Content>
           </Page>
         }
       />

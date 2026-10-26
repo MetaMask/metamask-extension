@@ -25,7 +25,9 @@ const TRON_PROVIDER_BASE_URLS = [
   'https://tron-mainnet\\.infura\\.io/v3/[^/]+',
   'https://api\\.trongrid\\.io',
   'https://api\\.shasta\\.trongrid\\.io',
+  'https://shasta\\.api\\.trongrid\\.io',
   'https://nile\\.trongrid\\.io',
+  'https://nile\\.api\\.trongrid\\.io',
 ];
 
 function tronProviderUrl(path: string): RegExp {

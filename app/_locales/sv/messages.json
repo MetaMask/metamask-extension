@@ -81,9 +81,6 @@
   "back": {
     "message": "Bakåt"
   },
-  "backupApprovalInfo": {
-    "message": "Den hemliga koden krävs för att komma åt din plånbok ifall du tappar bort din enhet, glömmer ditt lösenord, behöver installera om MetaMask eller om du vill komma åt din plånbok på en annan enhet."
-  },
   "backupApprovalNotice": {
     "message": "Säkerhetskopiera din hemliga återställningskod för att se till att din plånbok och dina tillgångar är säkra."
   },
@@ -220,9 +217,6 @@
   },
   "gasLimit": {
     "message": "Gasgräns"
-  },
-  "gasLimitTooLow": {
-    "message": "Gasgräns måste vara minst 21 000"
   },
   "gasUsed": {
     "message": "Gas använd"
@@ -405,9 +399,6 @@
   "privateKey": {
     "message": "Privat nyckel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Varning: Avslöja aldrig denna nyckel. Med dina privata nycklar kan vem som helst stjäla tillgångarna på ditt konto."
   },
   "privateNetwork": {
     "message": "Privat nätverk"

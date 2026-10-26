@@ -1,5 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Add suggested token(s) confirmation dialog (`wallet_watchAsset` / suggested tokens).
+ *
+ * Screen: notification/dialog window opened when a dapp suggests one or more
+ * tokens to add to the wallet.
+ * Owns: suggested token list items, token-count wait, and the "Add token"
+ * confirm control that closes the window.
+ * Boundaries: stops at this suggested-token confirmation. Asset list / token
+ * details after add belong to home/asset page objects. Redesigned token
+ * confirmation helpers may also live under `pages/confirmations/`.
+ * Related: `pages/confirmations/add-token-confirmations.ts`, token watch-asset
+ * specs.
+ *
+ * @see ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.js
+ */
 class AddTokensModal {
   private addTokenButton = { text: 'Add token', tag: 'button' };
 

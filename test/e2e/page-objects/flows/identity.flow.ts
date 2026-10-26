@@ -1,4 +1,4 @@
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
 import PrivacySettings from '../pages/settings/privacy-settings';
 import SettingsPage from '../pages/settings/settings-page';
@@ -11,6 +11,7 @@ import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
 } from './onboarding.flow';
+import { waitUntilAccountTreeSyncIdle } from './add-account.flow';
 
 export const completeOnboardFlowIdentity = async (
   driver: Driver,
@@ -29,6 +30,7 @@ export const completeOnboardFlowIdentity = async (
   const header = new HeaderNavbar(driver);
   await header.checkPageIsLoaded();
   await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+  await waitUntilAccountTreeSyncIdle(driver);
   return { homePage, header };
 };
 

@@ -221,7 +221,7 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     expect(result.current).toBe(2000);
   });
 
-  it('serves the cached discount synchronously on a fresh mount (no extra background call)', async () => {
+  it('serves the cached discount on a fresh mount after TTL check (no extra background call)', async () => {
     setDiscountResponse(3000);
 
     // First mount: populates the cache.
@@ -233,8 +233,8 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
     });
     first.unmount();
 
-    // Second mount with the same address: should hit the cache and not call
-    // the background again.
+    // Second mount with the same address: effect confirms TTL then reapplies
+    // the module cache without calling the background again.
     const second = renderHook(() =>
       usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
     );
@@ -247,6 +247,41 @@ describe('usePerpsMetamaskFeeDiscountBips', () => {
       (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
     );
     expect(discountCalls).toHaveLength(1);
+  });
+
+  it('does not apply an expired cached discount while the refresh is in flight', async () => {
+    const nowSpy = jest.spyOn(Date, 'now');
+    const start = 1_000_000;
+    nowSpy.mockReturnValue(start);
+    setDiscountResponse(3000);
+
+    const first = renderHook(() =>
+      usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
+    );
+    await waitFor(() => {
+      expect(first.result.current).toBe(3000);
+    });
+    first.unmount();
+
+    // Past FEE_DISCOUNT_CACHE_TTL_MS (5 minutes). Remount with a hanging fetch.
+    nowSpy.mockReturnValue(start + 1000 * 60 * 5 + 1);
+    mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
+
+    const second = renderHook(() =>
+      usePerpsMetamaskFeeDiscountBips(ORIGINAL_METAMASK_FEE_BIPS),
+    );
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    // Expired entry must not be shown — stay undefined until refresh resolves.
+    expect(second.result.current).toBeUndefined();
+    const discountCalls = mockSubmitRequestToBackground.mock.calls.filter(
+      (call) => call[0] === 'rewardsGetPerpsDiscountForAccount',
+    );
+    expect(discountCalls).toHaveLength(2);
+
+    nowSpy.mockRestore();
   });
 
   it('refetches when the chain changes for the same address (cache is keyed by CAIP account id)', async () => {

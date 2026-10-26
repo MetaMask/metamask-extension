@@ -88,7 +88,11 @@ describe('useNavigateOnQrScanComplete', () => {
       () => {
         expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
           replace: true,
-          state: { stayOnHomePage: true },
+          state: {
+            stayOnHomePage: true,
+            token: null,
+            bridgeState: null,
+          },
         });
       },
       { timeout: 3000 },
@@ -122,9 +126,15 @@ describe('useNavigateOnQrScanComplete', () => {
     });
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+      {
+        pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+        search: '',
+      },
       {
         replace: true,
+        state: {
+          token: undefined,
+        },
       },
     );
   });

@@ -8,6 +8,14 @@ import {
   TrxScope,
   XlmScope,
 } from '@metamask/keyring-api';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
   getFeaturedEvmNetworks,
@@ -23,10 +31,8 @@ import {
 import {
   AlignItems,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -36,17 +42,7 @@ import {
   hideModal,
   setActiveNetwork,
 } from '../../../../../store/actions';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  IconSize,
-  SuccessPill,
-  Text,
-} from '../../../../component-library';
+import { Box, SuccessPill, Text } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
 import { useAdditionalNetworkHandlers } from '../../hooks/useAdditionalNetworkHandlers';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
@@ -101,7 +97,6 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
         name={network.name}
         size={AvatarNetworkSize.Md}
         src={networkImageUrl}
-        borderRadius={BorderRadius.LG}
       />
       <Box
         display={Display.Flex}
@@ -118,10 +113,8 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
       </Box>
       <ButtonIcon
         size={ButtonIconSize.Sm}
-        color={IconColor.iconDefault}
         iconName={IconName.Add}
-        padding={0}
-        marginLeft={'auto'}
+        className="ml-auto"
         ariaLabel={t('addNetwork')}
         onClick={() => handleAdditionalNetworkClick(network)}
       />
@@ -143,7 +136,8 @@ const DefaultNetworks = memo(() => {
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
 
   // Use the shared network change handlers hook
-  const { handleNetworkChange } = useNetworkChangeHandlers();
+  const { handleNetworkChange, isPending, startTransition } =
+    useNetworkChangeHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
@@ -274,11 +268,10 @@ const DefaultNetworks = memo(() => {
 
     dispatch(setEnabledAllPopularNetworks());
     dispatch(hideModal());
-    // deferring execution to keep select all unblocked
-    setTimeout(() => {
+    startTransition(() => {
       dispatch(setActiveNetwork(finalNetworkClientId));
-    }, 0);
-  }, [dispatch, evmNetworks, orderedNetworks]);
+    });
+  }, [dispatch, evmNetworks, orderedNetworks, startTransition]);
 
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
@@ -376,6 +369,9 @@ const DefaultNetworks = memo(() => {
           onDiscoverClick={onDiscoverClick}
           onRpcEndpointClick={onRpcSelect}
           selected={isSelected}
+          // Last-remaining stays clickable so the modal can still close; the
+          // switch itself is no-op'd in handleNetworkChangeCallback.
+          disabled={isPending && !isLastRemainingNetwork}
         />
       );
     });
@@ -396,6 +392,7 @@ const DefaultNetworks = memo(() => {
     enabledChainIds,
     useExternalServices,
     selectedNonEvmChainId,
+    isPending,
   ]);
 
   // Memoize the additional network list items

@@ -6,7 +6,7 @@ import {
   completeImportSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 
 describe('Reset Wallet - ', function () {
@@ -36,10 +36,13 @@ describe('Reset Wallet - ', function () {
         // Reset wallet via forgot password -> "I don't know my Recovery Phrase"
         await loginPage.resetWalletFromForgotPassword();
 
-        // Complete onboarding again with SRP create
+        // Complete onboarding again with SRP create.
+        // `resetWalletFromForgotPassword` resolves as soon as the modal closes, but the background `resetWallet` RPC is still in flight.
+        // So we just wait for the onboarding welcome page to appear naturally once the background reset completes, instead of navigating.
         await completeCreateNewWalletOnboardingFlow({
           driver,
           skipSRPBackup: true,
+          needNavigateToNewPage: false,
         });
 
         await homePage.checkPageIsLoaded();
@@ -74,8 +77,11 @@ describe('Reset Wallet - ', function () {
         // Reset wallet via forgot password -> "I don't know my Recovery Phrase"
         await loginPage.resetWalletFromForgotPassword();
 
-        // Complete onboarding again by importing SRP
-        await completeImportSRPOnboardingFlow({ driver });
+        // Complete onboarding again by importing SRP.
+        await completeImportSRPOnboardingFlow({
+          driver,
+          needNavigateToNewPage: false,
+        });
 
         await homePage.headerNavbar.checkPageIsLoaded();
       },

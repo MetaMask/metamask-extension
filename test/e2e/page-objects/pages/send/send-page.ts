@@ -1,5 +1,21 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Multichain send flow: asset, recipient, amount, and continue.
+ *
+ * Screen: `#/send` / `#/send/:page?`.
+ * Owns: recipient and amount inputs, network/token pickers, Max, validation
+ * and fee errors, hex data, alert acknowledge, and continue-enabled checks.
+ * Boundaries: the send form through Continue. Confirmation / review screens
+ * (including Bitcoin snap review) belong to confirmation or
+ * `BitcoinReviewTxPage`.
+ * Related: `BitcoinReviewTxPage`, `flows/send-transaction.flow.ts`,
+ * `flows/bitcoin-send.flow.ts`.
+ *
+ * @see ui/pages/confirmations/send/send.tsx
+ * @see ui/pages/confirmations/send/send-inner.tsx
+ * @see test/e2e/page-objects/flows/send-transaction.flow.ts
+ */
 class SendPage {
   private readonly amountBalance = { testId: 'send-amount-balance' };
 
@@ -78,6 +94,10 @@ class SendPage {
 
   private readonly sendAlertAcknowledgeButton =
     '[data-testid="send-alert-modal-acknowledge-button"]';
+
+  private readonly sendPage = {
+    testId: 'parent-selector-send-page',
+  };
 
   private readonly solanaNetwork = {
     text: 'Solana',
@@ -233,6 +253,7 @@ class SendPage {
       await this.driver.waitForMultipleSelectors([
         this.header,
         this.networkPicker,
+        this.sendPage,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for send page to be loaded', e);

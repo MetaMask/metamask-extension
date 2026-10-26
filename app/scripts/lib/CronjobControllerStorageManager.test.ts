@@ -58,6 +58,16 @@ describe('CronjobControllerStorageManager', () => {
 
       expect(data).toStrictEqual({ mockKey: 'mockData' });
     });
+
+    it('returns null when no controller state is stored', async () => {
+      mockedBrowser.storage.local.get.mockResolvedValueOnce({});
+      const manager = new CronjobControllerStorageManager();
+      await manager.init();
+
+      const data = manager.getInitialState();
+
+      expect(data).toBeNull();
+    });
   });
 
   describe('set', () => {

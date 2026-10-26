@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useState,
   useEffect,
+  useLayoutEffect,
   useRef,
 } from 'react';
 import type { Json } from '@metamask/utils';
@@ -29,10 +30,13 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  Skeleton,
 } from '@metamask/design-system-react';
 import {
   ORDER_SLIPPAGE_CONFIG,
+  PERPS_CONSTANTS,
   PERFORMANCE_CONFIG,
+  TRADING_DEFAULTS,
   type ClosePositionParams,
   type OrderType,
   type OrderParams,
@@ -46,36 +50,57 @@ import {
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
+  type PerpsButtonLocation,
+  type PerpsDepositClickOutcome,
 } from '../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsOrderBookEnabled,
+  getIsPerpsServiceInterruptionBannerEnabled,
   getIsPerpsSlippageConfigEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_ORDER_ENTRY_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
+  usePerpsLiveOrders,
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import {
+  type PerpsState,
   selectPerpsDepositPending,
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
+  selectOrderBookPosition,
+  selectOrderBookExpanded,
+  selectChartExpanded,
+  selectPerpsPendingTradeConfiguration,
+  selectPerpsSelectedOrderType,
+  selectPerpsVisibleCandleCount,
 } from '../../selectors/perps-controller';
 import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
+import {
+  PerpsCandlestickChart,
+  type PerpsCandlestickChartRef,
+} from '../../components/app/perps/perps-candlestick-chart';
+import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
+import { PerpsExpandableChartPanel } from '../../components/app/perps/perps-chart-content/perps-expandable-chart-panel';
+import { buildPerpsChartPriceLines } from '../../components/app/perps/perps-chart-content/build-perps-chart-price-lines';
 import {
   usePerpsEligibility,
   usePerpsEstimatedSlippage,
@@ -86,9 +111,17 @@ import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { usePerpsAbandonOrderTracking } from '../../hooks/perps/usePerpsAbandonOrderTracking';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
-import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
+import { getPerpsNotionalUsd } from '../../hooks/perps/perps-fee-utils';
+import {
+  getTradeableBalance,
+  getTradeableBalanceRaw,
+} from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
-import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
+import {
+  isSlippageFailure,
+  translatePerpsError,
+  type PerpsErrorInput,
+} from '../../components/app/perps/utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
 import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-config';
@@ -107,29 +140,35 @@ import {
   willFlipPosition,
   getPositionDirection,
 } from '../../components/app/perps/utils';
+import { derivePositionTpslPricesFromOrders } from '../../components/app/perps/utils/orderUtils';
 import { derivePerpsTradeAction } from '../../components/app/perps/utils/deriveTradeAction';
 import {
   parsePerpsDisplayPrice,
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import {
-  isLimitPriceUnfavorable as checkLimitPriceUnfavorable,
-  isNearLiquidationPrice as checkNearLiquidationPrice,
-} from '../../components/app/perps/order-entry/limit-price-warnings';
+import { isNearLiquidationPrice as checkNearLiquidationPrice } from '../../components/app/perps/order-entry/limit-price-warnings';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
   isStopLossSafeFromLiquidation,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
+import {
+  PERPS_MIN_MARKET_ORDER_USD,
+  PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC,
+} from '../../components/app/perps/constants';
+import {
+  consumeUnfundedDepositFunnel,
+  markUnfundedDepositFunnel,
+} from '../../components/app/perps/utils/unfunded-deposit-funnel';
 import {
   OrderEntry,
   OrderEntryHeader,
   DirectionTabs,
   OrderSummary,
   type OrderDirection,
+  type OrderFormDraft,
   type OrderFormState,
   type OrderMode,
   type OrderCalculations,
@@ -150,6 +189,7 @@ import {
   ORDER_BOOK_FORM_MIN_WIDTH_PX,
   clampOrderBookWidthPct,
   computeOrderBookWidthPct,
+  computeOrderBookWidthPctFromLeft,
   getOrderBookMaxWidthPct,
 } from '../../components/app/perps/order-book';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
@@ -181,6 +221,19 @@ export function shouldShowPerpsOrderSubmissionToasts(
   hasPendingPerpsDeposit: boolean,
 ) {
   return !hasPendingPerpsDeposit;
+}
+
+function createPerpsBackgroundError(
+  result: PerpsBackgroundResult,
+  fallbackMessage: string,
+  maxSlippageBps?: number,
+): PerpsErrorInput {
+  return {
+    error: result.error ?? fallbackMessage,
+    errorCode: result.errorCode,
+    errorDetails: result.errorDetails,
+    maxSlippageBps,
+  };
 }
 
 /**
@@ -244,10 +297,11 @@ function formStateToOrderParams(
 const FULL_CLOSE_PERCENT = 100;
 
 /** Leverage ceiling assumed when the market is unknown or not yet loaded. */
-const DEFAULT_MAX_LEVERAGE = 50;
-
-/** Leverage the form seeds when the user has no saved configuration. */
-const DEFAULT_LEVERAGE = 3;
+const DEFAULT_MAX_LEVERAGE = PERPS_CONSTANTS.DefaultMaxLeverage;
+const ORDER_ENTRY_CHART_HEIGHT = 250;
+const ORDER_ENTRY_CHART_STYLE = { height: ORDER_ENTRY_CHART_HEIGHT };
+// Clears the fixed CTA's padded height plus breathing room from scroll content.
+const FIXED_CTA_CLEARANCE_PX = 96;
 
 /**
  * How long the order form must be idle before PERPS_TRANSACTION_CONSIDERED is
@@ -274,6 +328,7 @@ function buildClosePositionParams(
     symbol: formState.asset,
     orderType: 'market',
     currentPrice,
+    maxSlippageBps: ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps,
     ...(closePercent >= FULL_CLOSE_PERCENT ? {} : { size: closeSize }),
   };
 }
@@ -284,11 +339,16 @@ function buildClosePositionParams(
  */
 const PerpsOrderEntryPage = () => {
   const t = useI18nContext();
+  const theme = useTheme();
+  const isDark = theme === 'dark';
   const { formatNumber } = useFormatters();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const isSlippageConfigEnabled = useSelector(getIsPerpsSlippageConfigEnabled);
   const isOrderBookEnabled = useSelector(getIsPerpsOrderBookEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -299,7 +359,12 @@ const PerpsOrderEntryPage = () => {
   const { buildTrackingData, buildTpslTrackingData, setFlowAttribution } =
     usePerpsAttribution();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
-  const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);
+  const persistedOrderBookExpanded = useSelector(selectOrderBookExpanded);
+  const [isOrderBookOpen, setIsOrderBookOpen] = useState(
+    persistedOrderBookExpanded,
+  );
+  const persistedChartExpanded = useSelector(selectChartExpanded);
+  const [isChartOpen, setIsChartOpen] = useState(persistedChartExpanded);
   const [orderBookWidthPct, setOrderBookWidthPct] = useState(
     ORDER_BOOK_DEFAULT_WIDTH_PCT,
   );
@@ -314,9 +379,10 @@ const PerpsOrderEntryPage = () => {
   // after the markets-loading skeleton — a plain useRef + [] effect would
   // see null on the cold-load first commit and never retry.
   const [bodyEl, setBodyEl] = useState<HTMLDivElement | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
-  trackRef.current = track;
   // Last size input method the user used (keypad/percentage/max), attributed on
   // PERPS_TRANSACTION_CONSIDERED. Defaults to 'default' until the
   // user interacts with a size control.
@@ -328,8 +394,15 @@ const PerpsOrderEntryPage = () => {
   // Abandon-order tracking: latest form snapshot, a stable reader for it, and
   // the commit flag that suppresses the event once an order is submitted.
   const latestAbandonPropsRef = useRef<Record<string, Json>>({});
-  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const getAbandonProperties = useCallback(
+    () => latestAbandonPropsRef.current,
+    [],
+  );
   const hasSubmittedOrderRef = useRef(false);
+  const latestOrderFormStateRef = useRef<{
+    symbol: string;
+    formState: OrderFormState;
+  } | null>(null);
   // Read by the considered-event effect, which is declared above `currentPrice`
   // and must not re-arm its debounce when the price ticks.
   const currentPriceRef = useRef(0);
@@ -337,9 +410,16 @@ const PerpsOrderEntryPage = () => {
   // re-arming its debounce whenever the estimate recomputes.
   const slippageTradePropertiesRef = useRef<Record<string, Json>>({});
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
+
+  useLayoutEffect(() => {
+    trackRef.current = track;
+  }, [track]);
+
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
+  const orderBookPosition = useSelector(selectOrderBookPosition);
+  const isOrderBookOnLeft = orderBookPosition === 'left';
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
   const { formatPercentWithMinThreshold } = useFormatters();
@@ -349,6 +429,7 @@ const PerpsOrderEntryPage = () => {
   const vipTier = useVipTier();
 
   const { positions: allPositions } = usePerpsLivePositions();
+  const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
@@ -359,6 +440,15 @@ const PerpsOrderEntryPage = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+  const persistedSelectedOrderType = useSelector(selectPerpsSelectedOrderType);
+  const persistedVisibleCandleCount = useSelector(
+    selectPerpsVisibleCandleCount,
+  );
+  const pendingTradeConfiguration = useSelector((state: PerpsState) =>
+    decodedSymbol
+      ? selectPerpsPendingTradeConfiguration(state, decodedSymbol)
+      : undefined,
+  );
 
   // Computed before the screen-view tracking below so the trading event can be
   // gated on the market existing (an unknown symbol renders the error state).
@@ -390,7 +480,7 @@ const PerpsOrderEntryPage = () => {
     const marketMaxLeverage = market
       ? parseInt(market.maxLeverage.replace('x', ''), 10)
       : DEFAULT_MAX_LEVERAGE;
-    const savedLeverage = config?.leverage ?? DEFAULT_LEVERAGE;
+    const savedLeverage = config?.leverage ?? TRADING_DEFAULTS.leverage;
     return {
       [PERPS_EVENT_PROPERTY.SAVED_ORDER]: Boolean(pending),
       [PERPS_EVENT_PROPERTY.DEFAULT_LEVERAGE]: Math.min(
@@ -409,17 +499,20 @@ const PerpsOrderEntryPage = () => {
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     // Gate on `market` so an unknown symbol emits only the error screen view
-    // below (not both trading and error for one rendered error screen).
+    // below (not both trading and error for one rendered error screen), and on
+    // the exact symbol so a mis-cased route that redirects emits it only once.
     conditions:
       !marketsLoading &&
       Boolean(decodedSymbol) &&
       account !== null &&
-      Boolean(market),
+      market?.symbol === decodedSymbol,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]: PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
       ...tradingScreenDefaults,
     },
     resetKey: decodedSymbol,
@@ -431,10 +524,27 @@ const PerpsOrderEntryPage = () => {
     });
   }, [setFlowAttribution]);
 
-  // Same candle stream as market detail (default 5m) so header price matches chart line.
-  const { candleData } = usePerpsLiveCandles({
+  const { perpsSelectedCandlePeriod: persistedCandlePeriod } =
+    useSelector(getPreferences);
+  const resolvedPersistedPeriod =
+    persistedCandlePeriod &&
+    Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
+      ? (persistedCandlePeriod as CandlePeriod)
+      : CandlePeriod.FiveMinutes;
+  const [localPeriodOverride, setLocalPeriodOverride] =
+    useState<CandlePeriod | null>(null);
+  const selectedPeriod = localPeriodOverride ?? resolvedPersistedPeriod;
+  const chartRef = useRef<PerpsCandlestickChartRef>(null);
+
+  // Same candle stream as market detail so header price matches the chart line.
+  const {
+    candleData,
+    isInitialLoading: isCandleLoading,
+    error: candleError,
+    fetchMoreHistory,
+  } = usePerpsLiveCandles({
     symbol: decodedSymbol ?? '',
-    interval: CandlePeriod.FiveMinutes,
+    interval: selectedPeriod,
     duration: TimeDuration.YearToDate,
     throttleMs: 1000,
   });
@@ -442,23 +552,98 @@ const PerpsOrderEntryPage = () => {
   const directionParam = searchParams.get('direction');
   const modeParam = searchParams.get('mode');
   const orderTypeParam = searchParams.get('orderType');
+  const explicitOrderType =
+    orderTypeParam === 'market' || orderTypeParam === 'limit'
+      ? orderTypeParam
+      : undefined;
+  const routeDirection: OrderDirection =
+    directionParam === 'short' ? 'short' : 'long';
+  const [orderMode] = useState<OrderMode>(
+    modeParam === 'modify' || modeParam === 'close' ? modeParam : 'new',
+  );
+  const [ignoredDraftSymbol, setIgnoredDraftSymbol] = useState<string | null>(
+    null,
+  );
+  const [pendingDraftSnapshot, setPendingDraftSnapshot] = useState({
+    symbol: decodedSymbol,
+    configuration: pendingTradeConfiguration,
+  });
+  if (pendingDraftSnapshot.symbol !== decodedSymbol) {
+    setPendingDraftSnapshot({
+      symbol: decodedSymbol,
+      configuration: pendingTradeConfiguration,
+    });
+  } else if (!pendingDraftSnapshot.configuration && pendingTradeConfiguration) {
+    // Capture a late-hydrated draft once. Do not follow later TTL expiry while
+    // this screen is still mounted — the 30s window starts on leave, not while
+    // the trader is still editing.
+    setPendingDraftSnapshot({
+      symbol: decodedSymbol,
+      configuration: pendingTradeConfiguration,
+    });
+  }
+  const initialPendingTradeConfiguration =
+    pendingDraftSnapshot.symbol === decodedSymbol
+      ? pendingDraftSnapshot.configuration
+      : pendingTradeConfiguration;
+  const isPendingDraftCompatible =
+    orderMode === 'new' &&
+    ignoredDraftSymbol !== decodedSymbol &&
+    (!initialPendingTradeConfiguration?.direction ||
+      initialPendingTradeConfiguration.direction === routeDirection);
+  const restoredOrderDraft = useMemo<OrderFormDraft | undefined>(() => {
+    if (!isPendingDraftCompatible || !initialPendingTradeConfiguration) {
+      return undefined;
+    }
+    let restoredOrderType = persistedSelectedOrderType;
+    if (
+      initialPendingTradeConfiguration.orderType === 'market' ||
+      initialPendingTradeConfiguration.orderType === 'limit'
+    ) {
+      restoredOrderType = initialPendingTradeConfiguration.orderType;
+    }
+    return {
+      amount: initialPendingTradeConfiguration.amount,
+      leverage: initialPendingTradeConfiguration.leverage,
+      takeProfitPrice: initialPendingTradeConfiguration.takeProfitPrice,
+      stopLossPrice: initialPendingTradeConfiguration.stopLossPrice,
+      limitPrice: initialPendingTradeConfiguration.limitPrice,
+      type: explicitOrderType ?? restoredOrderType,
+      direction: routeDirection,
+    };
+  }, [
+    explicitOrderType,
+    isPendingDraftCompatible,
+    initialPendingTradeConfiguration,
+    persistedSelectedOrderType,
+    routeDirection,
+  ]);
 
-  const [orderDirection, setOrderDirection] = useState<OrderDirection>(
-    (directionParam === 'short' ? 'short' : 'long') as OrderDirection,
-  );
+  const [orderDirection, setOrderDirection] =
+    useState<OrderDirection>(routeDirection);
+  const resolvedInitialOrderType =
+    explicitOrderType ?? restoredOrderDraft?.type ?? persistedSelectedOrderType;
   const [orderType, setOrderType] = useState<OrderType>(
-    (orderTypeParam === 'limit' ? 'limit' : 'market') as OrderType,
+    resolvedInitialOrderType,
   );
+  const [appliedInitialOrderType, setAppliedInitialOrderType] =
+    useState<OrderType>(resolvedInitialOrderType);
+  const [hasUserPickedOrderType, setHasUserPickedOrderType] = useState(false);
+  if (
+    !hasUserPickedOrderType &&
+    resolvedInitialOrderType !== appliedInitialOrderType
+  ) {
+    // Controller state hydrates after the first render, so a saved Limit
+    // preference or a late draft arrives with the toggle already initialized.
+    // Adopt it; once the trader picks a type that choice is pinned.
+    setAppliedInitialOrderType(resolvedInitialOrderType);
+    setOrderType(resolvedInitialOrderType);
+  }
   // One-shot limit-price prefill from tapping an order-book price row. A fresh
   // object per tap lets the form re-apply the same price after a manual edit.
   const [limitPricePrefill, setLimitPricePrefill] = useState<{
     price: string;
   } | null>(null);
-  const [orderMode] = useState<OrderMode>(
-    (modeParam === 'modify' || modeParam === 'close'
-      ? modeParam
-      : 'new') as OrderMode,
-  );
   const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(
     null,
   );
@@ -467,52 +652,81 @@ const PerpsOrderEntryPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSlippageModalOpen, setIsSlippageModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (
+      !decodedSymbol ||
+      !initialPendingTradeConfiguration?.direction ||
+      initialPendingTradeConfiguration.direction === routeDirection
+    ) {
+      return;
+    }
+    submitRequestToBackground('perpsClearPendingTradeConfiguration', [
+      decodedSymbol,
+    ]).catch(() => {
+      // A mismatched draft is ignored locally even if best-effort cleanup fails.
+    });
+  }, [
+    decodedSymbol,
+    initialPendingTradeConfiguration?.direction,
+    routeDirection,
+  ]);
+
+  useEffect(
+    () => () => {
+      const latestFormSnapshot = latestOrderFormStateRef.current;
+      if (
+        orderMode !== 'new' ||
+        !decodedSymbol ||
+        latestFormSnapshot?.symbol !== decodedSymbol ||
+        hasSubmittedOrderRef.current
+      ) {
+        return;
+      }
+      const { formState: latestFormState } = latestFormSnapshot;
+      const { autoCloseEnabled } = latestFormState;
+      submitRequestToBackground('perpsSavePendingTradeConfiguration', [
+        decodedSymbol,
+        {
+          amount: latestFormState.amount,
+          leverage: latestFormState.leverage,
+          // Restoration derives Auto-close from these prices, so omit them
+          // when the trader disabled Auto-close or the next visit would
+          // re-enable exits they turned off.
+          takeProfitPrice: autoCloseEnabled
+            ? latestFormState.takeProfitPrice || undefined
+            : undefined,
+          stopLossPrice: autoCloseEnabled
+            ? latestFormState.stopLossPrice || undefined
+            : undefined,
+          limitPrice:
+            latestFormState.type === 'limit'
+              ? latestFormState.limitPrice || undefined
+              : undefined,
+          orderType: latestFormState.type,
+          direction: latestFormState.direction,
+        },
+      ]).catch(() => {
+        // Draft persistence is best-effort and must not block navigation.
+      });
+    },
+    [decodedSymbol, orderMode],
+  );
+
   const {
     maxSlippageBps,
     maxSlippageSource,
     setMaxSlippage,
     isLoading: isMaxSlippageLoading,
   } = usePerpsMaxSlippage();
+  const submittedMaxSlippageBps = isSlippageConfigEnabled
+    ? maxSlippageBps
+    : ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps;
+  const submittedMaxSlippageSource = isSlippageConfigEnabled
+    ? maxSlippageSource
+    : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT;
 
   const isOrderPending = isSubmitting;
-
-  // Dynamic fee rate matching the user-selected order type. Used for both:
-  // 1. Reverse-engineering the original (pre-discount) fee from
-  //    orderCalculations.estimatedFees (which OrderEntry computes with the
-  //    same orderType).
-  // 2. Order submission tracking — passed as hlFeeRate on all order types
-  //    (new / modify / close).
-  const {
-    feeRate: currentFeeRate,
-    undiscountedFeeRate: currentUndiscountedFeeRate,
-    protocolFeeRate,
-    metamaskFeeRate,
-    originalMetamaskFeeRate,
-    metamaskFeeRateDiscountPercentage,
-  } = usePerpsOrderFees({
-    symbol: decodedSymbol ?? '',
-    orderType,
-  });
-
-  const originalEstimatedFees = useMemo(() => {
-    if (
-      orderCalculations?.estimatedFees === null ||
-      orderCalculations?.estimatedFees === undefined ||
-      currentFeeRate === undefined ||
-      currentFeeRate === 0 ||
-      currentUndiscountedFeeRate === undefined
-    ) {
-      return null;
-    }
-    return (
-      orderCalculations.estimatedFees *
-      (currentUndiscountedFeeRate / currentFeeRate)
-    );
-  }, [
-    orderCalculations?.estimatedFees,
-    currentFeeRate,
-    currentUndiscountedFeeRate,
-  ]);
 
   const protocolFeeLabel =
     activeProvider === 'hyperliquid'
@@ -528,7 +742,7 @@ const PerpsOrderEntryPage = () => {
     return !cleaned || Number.isNaN(parsed) || parsed <= 0;
   }, [orderType, orderFormState]);
 
-  const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
+  const { market: marketInfo } = usePerpsMarketInfo(decodedSymbol ?? '');
 
   // Market-not-found renders a displayed error state (see the `!market` branch
   // below); emit the error screen view for that funnel state.
@@ -722,21 +936,36 @@ const PerpsOrderEntryPage = () => {
     orderDirection,
   ]);
   usePerpsAbandonOrderTracking({
-    getAbandonProperties: getAbandonProperties.current,
+    getAbandonProperties,
     hasCommittedRef: hasSubmittedOrderRef,
     // Only once the order form actually renders. The component returns early
     // for the feature-disabled, still-loading and market-not-found paths, and
     // leaving one of those screens is not an abandoned order — it also keeps
-    // market-loading time out of `time_on_screen_ms`.
-    active: Boolean(isPerpsExperienceAvailable && !marketsLoading && market),
+    // market-loading time out of `time_on_screen_ms`. A mis-cased route
+    // redirects before the form renders, so gate on the exact symbol too.
+    active: Boolean(
+      isPerpsExperienceAvailable &&
+      !marketsLoading &&
+      market &&
+      market.symbol === decodedSymbol,
+    ),
   });
 
   const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
     undefined,
   );
+  const livePriceStreamKey =
+    decodedSymbol && selectedAddress
+      ? `${decodedSymbol}:${selectedAddress}`
+      : null;
+  const [prevLivePriceStreamKey, setPrevLivePriceStreamKey] =
+    useState(livePriceStreamKey);
+  if (livePriceStreamKey !== prevLivePriceStreamKey) {
+    setPrevLivePriceStreamKey(livePriceStreamKey);
+    setLivePrice(undefined);
+  }
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
-      setLivePrice(undefined);
       return undefined;
     }
     // Activate background price stream for this symbol
@@ -771,9 +1000,18 @@ const PerpsOrderEntryPage = () => {
   const [topOfBook, setTopOfBook] = useState<{
     midPrice: number;
   } | null>(null);
+  const topOfBookStreamKey =
+    decodedSymbol && selectedAddress
+      ? `${decodedSymbol}:${selectedAddress}`
+      : null;
+  const [prevTopOfBookStreamKey, setPrevTopOfBookStreamKey] =
+    useState(topOfBookStreamKey);
+  if (topOfBookStreamKey !== prevTopOfBookStreamKey) {
+    setPrevTopOfBookStreamKey(topOfBookStreamKey);
+    setTopOfBook(null);
+  }
   useEffect(() => {
     if (!decodedSymbol || !selectedAddress) {
-      setTopOfBook(null);
       return undefined;
     }
     // Activate background orderBook stream for this symbol
@@ -831,8 +1069,134 @@ const PerpsOrderEntryPage = () => {
     return lastCandle?.close ? Number.parseFloat(lastCandle.close) : 0;
   }, [candleData]);
 
-  const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
-  currentPriceRef.current = currentPrice;
+  const liveStreamPrice = Number.parseFloat(livePrice?.price ?? '');
+  let currentPrice = marketPrice;
+  if (chartCurrentPrice > 0) {
+    currentPrice = chartCurrentPrice;
+  }
+  if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
+    currentPrice = liveStreamPrice;
+  }
+
+  useLayoutEffect(() => {
+    currentPriceRef.current = currentPrice;
+  }, [currentPrice]);
+
+  const marketOrders = useMemo(
+    () => allOrders.filter((order) => order.symbol === decodedSymbol),
+    [allOrders, decodedSymbol],
+  );
+  const derivedPositionTpsl = useMemo(
+    () => derivePositionTpslPricesFromOrders(marketOrders, position),
+    [marketOrders, position],
+  );
+  // Dynamic fee rate matching the user-selected order type. Used for both:
+  // 1. Reverse-engineering the original (pre-discount) fee from
+  //    orderCalculations.estimatedFees (which OrderEntry computes with the
+  //    same orderType).
+  // 2. Order submission tracking — passed as hlFeeRate on all order types
+  //    (new / modify / close).
+  let feeNotional: number | undefined;
+  try {
+    feeNotional = getPerpsNotionalUsd(
+      orderMode === 'close' && position
+        ? {
+            size: position.size,
+            price: currentPrice,
+            closePercent: orderFormState?.closePercent,
+          }
+        : { usdAmount: orderFormState?.amount ?? '0' },
+    );
+  } catch (notionalError) {
+    if (!(notionalError instanceof RangeError)) {
+      throw notionalError;
+    }
+    // Invalid live values cannot provide a fee estimate or a submit amount.
+  }
+  const {
+    feeRate: currentFeeRate,
+    undiscountedFeeRate: currentUndiscountedFeeRate,
+    protocolFeeRate,
+    metamaskFeeRate,
+    originalMetamaskFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: decodedSymbol ?? '',
+    orderType,
+    amount: feeNotional?.toString(),
+  });
+
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      orderCalculations?.estimatedFees === null ||
+      orderCalculations?.estimatedFees === undefined ||
+      currentFeeRate === undefined ||
+      currentFeeRate === 0 ||
+      currentUndiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return (
+      orderCalculations.estimatedFees *
+      (currentUndiscountedFeeRate / currentFeeRate)
+    );
+  }, [
+    orderCalculations?.estimatedFees,
+    currentFeeRate,
+    currentUndiscountedFeeRate,
+  ]);
+
+  const effectiveTakeProfitPrice =
+    position?.takeProfitPrice ?? derivedPositionTpsl.takeProfitPrice;
+  const effectiveStopLossPrice =
+    position?.stopLossPrice ?? derivedPositionTpsl.stopLossPrice;
+
+  const chartPriceLines = useMemo(
+    () =>
+      buildPerpsChartPriceLines({
+        chartCurrentPrice: currentPrice,
+        isDark,
+        position: position
+          ? {
+              entryPrice: position.entryPrice,
+              takeProfitPrice: effectiveTakeProfitPrice,
+              stopLossPrice: effectiveStopLossPrice,
+              liquidationPrice: position.liquidationPrice,
+            }
+          : null,
+      }),
+    [
+      currentPrice,
+      effectiveStopLossPrice,
+      effectiveTakeProfitPrice,
+      isDark,
+      position,
+    ],
+  );
+
+  const handlePeriodChange = useCallback(
+    (period: CandlePeriod) => {
+      setLocalPeriodOverride(period);
+      submitRequestToBackground('setPreference', [
+        'perpsSelectedCandlePeriod',
+        period,
+      ]).catch(() => {
+        // Preference save is best-effort; chart still updates via local state.
+      });
+      if (chartRef.current) {
+        chartRef.current.applyZoom(persistedVisibleCandleCount, true);
+      }
+    },
+    [persistedVisibleCandleCount],
+  );
+
+  const handleVisibleCandleCountChange = useCallback((count: number) => {
+    submitRequestToBackground('perpsSetVisibleCandleCount', [count]).catch(
+      () => {
+        // The chart remains interactive if preference persistence fails.
+      },
+    );
+  }, []);
 
   // Oracle mark price from HyperLiquid's activeAssetCtx feed (oraclePx).
   // This is the price the exchange uses for actual margin assessment and liquidation
@@ -850,20 +1214,20 @@ const PerpsOrderEntryPage = () => {
   // funded by spot USDC are recognized as tradeable. Withdraw screens still
   // read `account.spendableBalance` directly.
   const availableBalance = Number.parseFloat(getTradeableBalance(account));
+  // A missing or unparseable balance field is an unknown balance, not a zero
+  // one: enabling the deposit CTA there would prompt a funded trader to deposit
+  // collateral they already hold. Only a balance we actually read counts, so
+  // this reads the raw field rather than the `'0'`-defaulted one.
+  const rawTradeableBalance = getTradeableBalanceRaw(account);
+  const hasKnownBalance =
+    rawTradeableBalance !== undefined &&
+    Number.isFinite(Number.parseFloat(rawTradeableBalance));
   const hasNoAvailableBalance =
-    orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
+    orderMode === 'new' &&
+    !isLoadingAccount &&
+    hasKnownBalance &&
+    availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC;
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
-
-  const isLimitPriceUnfavorable = useMemo(() => {
-    if (orderType !== 'limit' || !orderFormState) {
-      return false;
-    }
-    return checkLimitPriceUnfavorable(
-      orderFormState.limitPrice ?? '',
-      currentPrice,
-      orderDirection,
-    );
-  }, [orderType, orderFormState, orderDirection, currentPrice]);
 
   const isNearLiquidation = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -949,13 +1313,14 @@ const PerpsOrderEntryPage = () => {
     return marginRequired > availableBalance;
   }, [orderFormState, orderMode, availableBalance]);
 
-  // For new market orders and modify-with-amount paths, require an amount
-  // meeting the $10 market-order minimum so submit stays disabled (and the
+  // For new market and limit orders and modify-with-amount paths, require an
+  // amount meeting the $10 order minimum so submit stays disabled (and the
   // button advertises the minimum) while the user has not entered a valid
-  // size. Modify with empty amount is the TP/SL-only update path and is
-  // intentionally exempt — it does not call perpsPlaceOrder.
+  // size. The controller rejects smaller orders of either type with
+  // ORDER_SIZE_MIN. Modify with empty amount is the TP/SL-only update path and
+  // is intentionally exempt — it does not call perpsPlaceOrder.
   const isBelowMinOrderSize = useMemo(() => {
-    if (!orderFormState || orderType !== 'market') {
+    if (!orderFormState) {
       return false;
     }
     if (orderMode !== 'new' && orderMode !== 'modify') {
@@ -967,7 +1332,7 @@ const PerpsOrderEntryPage = () => {
     }
     const amount = Number.parseFloat(rawAmount) || 0;
     return amount < PERPS_MIN_MARKET_ORDER_USD;
-  }, [orderFormState, orderMode, orderType]);
+  }, [orderFormState, orderMode]);
 
   const orderUsdAmount = useMemo(() => {
     if (!orderFormState) {
@@ -1054,19 +1419,21 @@ const PerpsOrderEntryPage = () => {
     }),
     [estimatedSlippagePct, maxSlippageBps, maxSlippageSource],
   );
-  slippageTradePropertiesRef.current = slippageTradeProperties;
+
+  useLayoutEffect(() => {
+    slippageTradePropertiesRef.current = slippageTradeProperties;
+  }, [slippageTradeProperties]);
 
   const isSubmitDisabled =
     !selectedAddress ||
+    feeNotional === undefined ||
+    (orderMode === 'new' && isLoadingAccount) ||
     isDepositLoading ||
     isOrderPending ||
-    (orderMode === 'new' && isLoadingAccount) ||
-    hasNoAvailableBalance ||
-    (isMarketOrderWithAmount &&
-      (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
     (isPrimaryTradeAction &&
-      (isLimitPriceInvalid ||
-        isLimitPriceUnfavorable ||
+      ((isMarketOrderWithAmount &&
+        (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
+        isLimitPriceInvalid ||
         isNearLiquidation ||
         hasInvalidTPSL ||
         isInsufficientFunds ||
@@ -1088,7 +1455,7 @@ const PerpsOrderEntryPage = () => {
     }
     const env = isTestnet ? 'testnet' : 'mainnet';
     const config = tradeConfigurations[env]?.[decodedSymbol];
-    const saved = config?.leverage ?? DEFAULT_LEVERAGE;
+    const saved = config?.leverage ?? TRADING_DEFAULTS.leverage;
     return Math.min(saved, maxLeverage);
   }, [decodedSymbol, orderMode, maxLeverage, tradeConfigurations, isTestnet]);
 
@@ -1106,14 +1473,8 @@ const PerpsOrderEntryPage = () => {
   }, [position]);
 
   const displayPrice = useMemo(() => {
-    if (chartCurrentPrice > 0) {
-      return formatPerpsFiat(chartCurrentPrice, {
-        ranges: PRICE_RANGES_UNIVERSAL,
-      });
-    }
-    const liveStreamPrice = Number.parseFloat(livePrice?.price ?? '');
-    if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
-      return formatPerpsFiat(liveStreamPrice, {
+    if (currentPrice > 0) {
+      return formatPerpsFiat(currentPrice, {
         ranges: PRICE_RANGES_UNIVERSAL,
       });
     }
@@ -1128,7 +1489,7 @@ const PerpsOrderEntryPage = () => {
       }
     }
     return '$0.00';
-  }, [market?.price, livePrice?.price, chartCurrentPrice]);
+  }, [currentPrice, market]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange = formatSignedChangePercent(
@@ -1254,16 +1615,17 @@ const PerpsOrderEntryPage = () => {
   }, [formatPercentWithMinThreshold, orderMode, position, t]);
 
   const getCloseFailureToastConfig = useCallback(
-    (translatedError?: string) => {
+    (translatedError?: string, shouldExplainFailure = false) => {
       const closePercent = orderFormState?.closePercent ?? FULL_CLOSE_PERCENT;
       const isPartialClose = closePercent < FULL_CLOSE_PERCENT;
 
       if (isPartialClose) {
         return {
           key: PERPS_TOAST_KEYS.PARTIAL_CLOSE_FAILED,
-          // Match mobile toast copy for partial-close failures; detailed errors
-          // are shown separately in the page-level submit error.
-          description: t('perpsToastPositionStillActive'),
+          description:
+            shouldExplainFailure && translatedError
+              ? translatedError
+              : t('perpsToastPositionStillActive'),
         };
       }
 
@@ -1275,10 +1637,19 @@ const PerpsOrderEntryPage = () => {
     [orderFormState?.closePercent, t],
   );
 
-  const handleFormStateChange = useCallback((formState: OrderFormState) => {
-    setSubmitError(null);
-    setOrderFormState(formState);
-  }, []);
+  const handleFormStateChange = useCallback(
+    (formState: OrderFormState) => {
+      if (decodedSymbol) {
+        latestOrderFormStateRef.current = {
+          symbol: decodedSymbol,
+          formState,
+        };
+      }
+      setSubmitError(null);
+      setOrderFormState(formState);
+    },
+    [decodedSymbol],
+  );
 
   // Records the size input method and that the user has edited the size, used to
   // gate + attribute PERPS_TRANSACTION_CONSIDERED.
@@ -1304,9 +1675,40 @@ const PerpsOrderEntryPage = () => {
             ? PERPS_EVENT_VALUE.DIRECTION.LONG
             : PERPS_EVENT_VALUE.DIRECTION.SHORT,
       });
+      if (decodedSymbol) {
+        setIgnoredDraftSymbol(decodedSymbol);
+        submitRequestToBackground('perpsClearPendingTradeConfiguration', [
+          decodedSymbol,
+        ]).catch(() => {
+          // The local reset still takes effect if best-effort cleanup fails.
+        });
+      }
       setOrderDirection(direction);
     },
-    [track],
+    [decodedSymbol, track],
+  );
+
+  const handleOrderTypeChange = useCallback((type: OrderType) => {
+    setHasUserPickedOrderType(true);
+    setOrderType(type);
+    submitRequestToBackground('perpsSetSelectedOrderType', [type]).catch(() => {
+      // The local order type still updates if persistence fails.
+    });
+  }, []);
+
+  const handleLeverageChange = useCallback(
+    (leverage: number) => {
+      if (!decodedSymbol) {
+        return;
+      }
+      submitRequestToBackground('perpsSaveTradeConfiguration', [
+        decodedSymbol,
+        leverage,
+      ]).catch(() => {
+        // The form remains usable if preference persistence fails.
+      });
+    },
+    [decodedSymbol],
   );
 
   // Draggable divider between the order form and the order book panel. Width is
@@ -1340,7 +1742,13 @@ const PerpsOrderEntryPage = () => {
       // dragging (ResizeObserver also refreshes this on container resize).
       setOrderBookMaxWidthPct(getOrderBookMaxWidthPct(rect.width));
       setOrderBookWidthPct(
-        computeOrderBookWidthPct(rect.right, rect.width, moveEvent.clientX),
+        isOrderBookOnLeft
+          ? computeOrderBookWidthPctFromLeft(
+              rect.left,
+              rect.width,
+              moveEvent.clientX,
+            )
+          : computeOrderBookWidthPct(rect.right, rect.width, moveEvent.clientX),
       );
     };
     const handleUp = () => setIsResizingOrderBook(false);
@@ -1350,7 +1758,7 @@ const PerpsOrderEntryPage = () => {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseup', handleUp);
     };
-  }, [isResizingOrderBook, bodyEl]);
+  }, [isResizingOrderBook, bodyEl, isOrderBookOnLeft]);
 
   // Re-clamp the stored width when the body resizes (popup resize / expand to
   // fullscreen). Without this, a width set on a wide body would exceed the
@@ -1373,8 +1781,34 @@ const PerpsOrderEntryPage = () => {
     return () => observer.disconnect();
   }, [bodyEl]);
 
-  // Keyboard resizing for the divider: arrows nudge the split, Home/End jump to
-  // the bounds. The order book is right-aligned, so ArrowLeft widens it.
+  useEffect(() => {
+    if (!isChartOpen || !bodyEl || typeof ResizeObserver === 'undefined') {
+      return undefined;
+    }
+    const form = formRef.current;
+    const cta = ctaRef.current;
+    if (!form || !cta) {
+      return undefined;
+    }
+    const updateBounds = () => {
+      const { left, width } = form.getBoundingClientRect();
+      cta.style.left = `${left}px`;
+      cta.style.width = `${width}px`;
+    };
+    updateBounds();
+    const observer = new ResizeObserver(updateBounds);
+    observer.observe(form);
+    window.addEventListener('resize', updateBounds);
+    bodyEl.addEventListener('scroll', updateBounds);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateBounds);
+      bodyEl.removeEventListener('scroll', updateBounds);
+      cta.style.removeProperty('left');
+      cta.style.removeProperty('width');
+    };
+  }, [bodyEl, isChartOpen, isOrderBookOnLeft]);
+
   const handleOrderBookResizeKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       const containerWidth = bodyEl?.getBoundingClientRect().width;
@@ -1385,7 +1819,9 @@ const PerpsOrderEntryPage = () => {
           event.preventDefault();
           setOrderBookWidthPct((width) =>
             clampOrderBookWidthPct(
-              width + ORDER_BOOK_RESIZE_STEP_PCT,
+              isOrderBookOnLeft
+                ? width - ORDER_BOOK_RESIZE_STEP_PCT
+                : width + ORDER_BOOK_RESIZE_STEP_PCT,
               containerWidth,
             ),
           );
@@ -1394,7 +1830,9 @@ const PerpsOrderEntryPage = () => {
           event.preventDefault();
           setOrderBookWidthPct((width) =>
             clampOrderBookWidthPct(
-              width - ORDER_BOOK_RESIZE_STEP_PCT,
+              isOrderBookOnLeft
+                ? width + ORDER_BOOK_RESIZE_STEP_PCT
+                : width - ORDER_BOOK_RESIZE_STEP_PCT,
               containerWidth,
             ),
           );
@@ -1411,12 +1849,17 @@ const PerpsOrderEntryPage = () => {
           break;
       }
     },
-    [bodyEl],
+    [bodyEl, isOrderBookOnLeft],
   );
 
   const handleToggleOrderBook = useCallback(() => {
     const next = !isOrderBookOpen;
     setIsOrderBookOpen(next);
+    submitRequestToBackground('perpsSetProLayoutPreferences', [
+      { orderBookExpanded: next },
+    ]).catch((error) =>
+      console.error('Failed to persist order book open state', error),
+    );
     // Tracking is a side effect and must run outside the state updater (updaters
     // must be pure and may be invoked more than once). Specific open/close values
     // keep dark-launch open-rate measurable (generic TAP cannot).
@@ -1430,12 +1873,33 @@ const PerpsOrderEntryPage = () => {
     });
   }, [isOrderBookOpen, track, decodedSymbol]);
 
+  const handleToggleChart = useCallback(() => {
+    const next = !isChartOpen;
+    setIsChartOpen(next);
+    submitRequestToBackground('perpsSetProLayoutPreferences', [
+      { chartExpanded: next },
+    ]).catch((error) =>
+      console.error('Failed to persist chart open state', error),
+    );
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]: next
+        ? PERPS_EVENT_VALUE.INTERACTION_TYPE.CHART_OPENED
+        : PERPS_EVENT_VALUE.INTERACTION_TYPE.CHART_CLOSED,
+      ...(decodedSymbol && {
+        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+      }),
+    });
+  }, [isChartOpen, track, decodedSymbol]);
+
   // Tapping an order-book price turns the order into a limit order prefilled
   // with that price. Switching the type is a no-op when already on limit.
-  const handleOrderBookPriceSelect = useCallback((price: string) => {
-    setOrderType('limit');
-    setLimitPricePrefill({ price });
-  }, []);
+  const handleOrderBookPriceSelect = useCallback(
+    (price: string) => {
+      handleOrderTypeChange('limit');
+      setLimitPricePrefill({ price });
+    },
+    [handleOrderTypeChange],
+  );
 
   const handleOrderSubmit = useCallback(async () => {
     if (!isEligible) {
@@ -1541,14 +2005,19 @@ const PerpsOrderEntryPage = () => {
       );
       const translatedError = translatePerpsError(
         error,
-        t as (key: string) => string,
+        t as (key: string, substitutions?: string[]) => string,
       );
       if (orderMode === 'close') {
+        const shouldExplainFailure =
+          orderFormState.type === 'market' && isSlippageFailure(error);
         if (isPartialClose) {
           setSubmitError(translatedError ?? t('somethingWentWrong'));
         }
         replacePerpsToastByKey(
-          getCloseFailureToastConfig(translatedError ?? undefined),
+          getCloseFailureToastConfig(
+            translatedError ?? undefined,
+            shouldExplainFailure,
+          ),
         );
         return;
       }
@@ -1562,6 +2031,49 @@ const PerpsOrderEntryPage = () => {
         key: failedToastKey,
         description: failedToastDescription,
       });
+    };
+
+    // Modify (add size) and new orders attach the same tracking payload.
+    const buildSubmittedOrderParams = (): OrderParams => {
+      const orderParams = formStateToOrderParams(
+        orderFormState,
+        currentPrice,
+        orderMode,
+        position?.size,
+        submittedMaxSlippageBps,
+      );
+      orderParams.trackingData = buildTrackingData({
+        totalFee: orderCalculations?.estimatedFees ?? 0,
+        marketPrice: currentPrice,
+        vipTier,
+        vipDiscount: metamaskFeeRateDiscountPercentage,
+        hlFeeRate: protocolFeeRate,
+        tradeAction: derivePerpsTradeAction(
+          position ? getPositionDirection(position.size) : null,
+          orderFormState.direction,
+          position
+            ? {
+                orderSize: Number.parseFloat(
+                  orderParams.size.replaceAll(',', ''),
+                ),
+                positionSize: Number.parseFloat(
+                  position.size.replaceAll(',', ''),
+                ),
+              }
+            : undefined,
+        ),
+        ...(orderFormState.type === 'market'
+          ? {
+              maxSlippageBps: orderParams.maxSlippageBps,
+              maxSlippageSource: submittedMaxSlippageSource,
+              estimatedSlippageBps:
+                typeof estimatedSlippageBps === 'number'
+                  ? estimatedSlippageBps
+                  : undefined,
+            }
+          : {}),
+      });
+      return orderParams;
     };
 
     try {
@@ -1585,6 +2097,8 @@ const PerpsOrderEntryPage = () => {
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
           hlFeeRate: protocolFeeRate,
+          maxSlippageBps: closeParams.maxSlippageBps,
+          maxSlippageSource: PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
         });
         const result = await submitRequestToBackground<PerpsBackgroundResult>(
           'perpsClosePosition',
@@ -1592,7 +2106,11 @@ const PerpsOrderEntryPage = () => {
         );
         if (!result.success) {
           surfaceControllerFailure(
-            new Error(result.error ?? 'Failed to close position'),
+            createPerpsBackgroundError(
+              result,
+              'Failed to close position',
+              closeParams.maxSlippageBps,
+            ),
           );
           return;
         }
@@ -1612,34 +2130,7 @@ const PerpsOrderEntryPage = () => {
           Number.parseFloat(orderFormState.amount.replaceAll(',', '')) || 0;
 
         if (marginAmount > 0) {
-          const orderParams = formStateToOrderParams(
-            orderFormState,
-            currentPrice,
-            orderMode,
-            position?.size,
-            isSlippageConfigEnabled ? maxSlippageBps : undefined,
-          );
-          orderParams.trackingData = buildTrackingData({
-            totalFee: orderCalculations?.estimatedFees ?? 0,
-            marketPrice: currentPrice,
-            vipTier,
-            vipDiscount: metamaskFeeRateDiscountPercentage,
-            hlFeeRate: protocolFeeRate,
-            tradeAction: derivePerpsTradeAction(
-              position ? getPositionDirection(position.size) : null,
-              orderFormState.direction,
-              position
-                ? {
-                    orderSize: Number.parseFloat(
-                      orderParams.size.replaceAll(',', ''),
-                    ),
-                    positionSize: Number.parseFloat(
-                      position.size.replaceAll(',', ''),
-                    ),
-                  }
-                : undefined,
-            ),
-          });
+          const orderParams = buildSubmittedOrderParams();
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.SUBMIT_IN_PROGRESS,
@@ -1647,13 +2138,17 @@ const PerpsOrderEntryPage = () => {
               ? { description: tradeActionToastDescription }
               : {}),
           });
-          const result = await submitRequestToBackground<{
-            success: boolean;
-            error?: string;
-          }>('perpsPlaceOrder', [orderParams]);
+          const result = await submitRequestToBackground<PerpsBackgroundResult>(
+            'perpsPlaceOrder',
+            [orderParams],
+          );
           if (!result.success) {
             surfaceControllerFailure(
-              new Error(result.error ?? 'Failed to add to position'),
+              createPerpsBackgroundError(
+                result,
+                'Failed to add to position',
+                orderParams.maxSlippageBps,
+              ),
             );
             return;
           }
@@ -1706,7 +2201,7 @@ const PerpsOrderEntryPage = () => {
         );
         if (!result.success) {
           surfaceControllerFailure(
-            new Error(result.error ?? 'Failed to update TP/SL'),
+            createPerpsBackgroundError(result, 'Failed to update TP/SL'),
           );
           return;
         }
@@ -1717,34 +2212,7 @@ const PerpsOrderEntryPage = () => {
         return;
       }
 
-      const orderParams = formStateToOrderParams(
-        orderFormState,
-        currentPrice,
-        orderMode,
-        position?.size,
-        isSlippageConfigEnabled ? maxSlippageBps : undefined,
-      );
-      orderParams.trackingData = buildTrackingData({
-        totalFee: orderCalculations?.estimatedFees ?? 0,
-        marketPrice: currentPrice,
-        vipTier,
-        vipDiscount: metamaskFeeRateDiscountPercentage,
-        hlFeeRate: protocolFeeRate,
-        tradeAction: derivePerpsTradeAction(
-          position ? getPositionDirection(position.size) : null,
-          orderFormState.direction,
-          position
-            ? {
-                orderSize: Number.parseFloat(
-                  orderParams.size.replaceAll(',', ''),
-                ),
-                positionSize: Number.parseFloat(
-                  position.size.replaceAll(',', ''),
-                ),
-              }
-            : undefined,
-        ),
-      });
+      const orderParams = buildSubmittedOrderParams();
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
       // market-detail useEffect races with the ORDER_SUBMITTED replace below
@@ -1778,9 +2246,30 @@ const PerpsOrderEntryPage = () => {
       );
       if (!result.success) {
         surfaceControllerFailure(
-          new Error(result.error ?? 'Failed to place order'),
+          createPerpsBackgroundError(
+            result,
+            'Failed to place order',
+            orderParams.maxSlippageBps,
+          ),
         );
         return;
+      }
+      if (orderMode === 'new') {
+        submitRequestToBackground('perpsClearPendingTradeConfiguration', [
+          orderFormState.asset,
+        ]).catch(() => {
+          // placeOrder already clears the controller draft; this is defensive.
+        });
+      }
+      if (consumeUnfundedDepositFunnel(selectedAddress)) {
+        track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.TRADE_SUBMITTED_AFTER_DEPOSIT,
+          [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          ...(decodedSymbol
+            ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
+            : {}),
+        });
       }
       if (shouldHandleTpslSeparately) {
         const { takeProfitPrice: cleanTp, stopLossPrice: cleanSl } =
@@ -1823,8 +2312,8 @@ const PerpsOrderEntryPage = () => {
           const tpslMessage =
             tpslResult.error || 'Failed to attach TP/SL to position';
           const translatedTpslError = translatePerpsError(
-            new Error(tpslMessage),
-            t as (key: string) => string,
+            createPerpsBackgroundError(tpslResult, tpslMessage),
+            t as (key: string, substitutions?: string[]) => string,
           );
           replacePerpsToastByKey({
             key: PERPS_TOAST_KEYS.UPDATE_FAILED,
@@ -1880,7 +2369,17 @@ const PerpsOrderEntryPage = () => {
         [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
         [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: rawErrorMessage,
       });
-      surfaceControllerFailure(error);
+      const failure =
+        error instanceof Error ? error : new Error(rawErrorMessage);
+      if (orderFormState.type === 'market') {
+        Object.assign(failure, {
+          maxSlippageBps:
+            orderMode === 'close'
+              ? ORDER_SLIPPAGE_CONFIG.DefaultMarketSlippageBps
+              : submittedMaxSlippageBps,
+        });
+      }
+      surfaceControllerFailure(failure);
     } finally {
       setIsSubmitting(false);
     }
@@ -1891,6 +2390,7 @@ const PerpsOrderEntryPage = () => {
     orderCalculations,
     position,
     selectedAddress,
+    decodedSymbol,
     currentPrice,
     getTradeActionToastDescription,
     getClosePartialToastDescription,
@@ -1911,7 +2411,8 @@ const PerpsOrderEntryPage = () => {
     estimatedSlippageBps,
     maxSlippageBps,
     maxSlippageSource,
-    isSlippageConfigEnabled,
+    submittedMaxSlippageBps,
+    submittedMaxSlippageSource,
     positionSizeAbs,
     buildTrackingData,
     buildTpslTrackingData,
@@ -1920,10 +2421,49 @@ const PerpsOrderEntryPage = () => {
     isEstimatedSlippageReady,
   ]);
 
+  /**
+   * Emits the Add funds click. Called before the eligibility branch so a
+   * geo-blocked click still lands in the funnel — that dismissal is the
+   * drop-off this instrumentation exists to measure.
+   */
+  const trackDepositCta = useCallback(
+    ({
+      buttonLocation,
+      isFunded,
+      outcome,
+    }: {
+      buttonLocation: PerpsButtonLocation;
+      isFunded: boolean;
+      outcome: PerpsDepositClickOutcome;
+    }) => {
+      if (!isFunded && selectedAddress) {
+        markUnfundedDepositFunnel(selectedAddress);
+      }
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: isFunded,
+        [PERPS_EVENT_PROPERTY.DEPOSIT_CLICK_OUTCOME]: outcome,
+        ...(decodedSymbol
+          ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
+          : {}),
+      });
+    },
+    [decodedSymbol, selectedAddress, track],
+  );
+
   const handlePrimaryAction = useCallback(async () => {
     await gate(async () => {
       if (hasNoAvailableBalance) {
         if (!isEligible) {
+          trackDepositCta({
+            buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+            isFunded: false,
+            outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.GEO_BLOCK_MODAL,
+          });
           setIsGeoBlockModalOpen(true);
           return;
         }
@@ -1931,6 +2471,11 @@ const PerpsOrderEntryPage = () => {
           return;
         }
 
+        trackDepositCta({
+          buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
+          isFunded: false,
+          outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.DEPOSIT,
+        });
         await triggerDeposit();
         return;
       }
@@ -1944,12 +2489,21 @@ const PerpsOrderEntryPage = () => {
     isDepositLoading,
     isEligible,
     selectedAddress,
+    trackDepositCta,
     triggerDeposit,
   ]);
 
   const handleAddFunds = useCallback(async () => {
     await gate(async () => {
+      if (isLoadingAccount) {
+        return;
+      }
       if (!isEligible) {
+        trackDepositCta({
+          buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+          isFunded: !hasNoAvailableBalance,
+          outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.GEO_BLOCK_MODAL,
+        });
         setIsGeoBlockModalOpen(true);
         return;
       }
@@ -1957,9 +2511,24 @@ const PerpsOrderEntryPage = () => {
         return;
       }
 
+      trackDepositCta({
+        buttonLocation: PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+        isFunded: !hasNoAvailableBalance,
+        outcome: PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME.DEPOSIT,
+      });
+
       await triggerDeposit();
     });
-  }, [gate, isDepositLoading, isEligible, selectedAddress, triggerDeposit]);
+  }, [
+    gate,
+    hasNoAvailableBalance,
+    isLoadingAccount,
+    isDepositLoading,
+    isEligible,
+    selectedAddress,
+    trackDepositCta,
+    triggerDeposit,
+  ]);
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -2014,11 +2583,27 @@ const PerpsOrderEntryPage = () => {
     );
   }
 
+  // The market and position lookups above are case-insensitive, but the
+  // controller resolves positions by exact symbol. Canonicalize a mis-cased
+  // route (deeplink or typed URL) so close and TP/SL submits don't fail with
+  // POSITION_NOT_FOUND for an open position.
+  if (market.symbol !== decodedSymbol) {
+    return (
+      <Navigate
+        to={{
+          pathname: `${PERPS_ORDER_ENTRY_ROUTE}/${encodeURIComponent(market.symbol)}`,
+          search: searchParams.toString(),
+        }}
+        replace
+      />
+    );
+  }
+
   const displayName = getDisplaySymbol(market.symbol);
   const isLong = orderDirection === 'long';
   const submitButtonText = (() => {
     if (hasNoAvailableBalance) {
-      return t('addFunds');
+      return t('perpsAddFundsToTrade');
     }
 
     switch (orderMode) {
@@ -2044,11 +2629,272 @@ const PerpsOrderEntryPage = () => {
     }
   }
 
-  return (
+  // The keys are structural: they let React move these panes when the layout
+  // preference flips instead of remounting them and discarding a part-filled
+  // order form.
+  const formPane = (
     <form
-      className="main-container asset__container relative overflow-hidden"
-      data-testid="perps-order-entry-page"
+      ref={formRef}
+      key="form"
+      style={{
+        minWidth: isOrderBookOpen ? ORDER_BOOK_FORM_MIN_WIDTH_PX : undefined,
+      }}
+      className={twMerge(
+        'flex flex-col flex-1 min-w-0',
+        isChartOpen ? 'min-h-full' : 'h-full overflow-hidden',
+      )}
       onSubmit={handleFormSubmit}
+    >
+      {/* Scrollable form */}
+      <Box
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+        style={{
+          paddingBottom: isChartOpen ? FIXED_CTA_CLEARANCE_PX : undefined,
+        }}
+        flexDirection={BoxFlexDirection.Column}
+        gap={4}
+        data-testid="perps-order-form-content"
+        className={twMerge(
+          'overflow-x-hidden',
+          !isChartOpen && 'flex-1 overflow-y-auto',
+          isOrderPending && 'pointer-events-none opacity-50',
+        )}
+      >
+        {orderMode === 'new' && (
+          <DirectionTabs
+            direction={orderDirection}
+            onDirectionChange={handleDirectionChange}
+          />
+        )}
+        <OrderEntry
+          asset={decodedSymbol}
+          currentPrice={currentPrice}
+          markPrice={oraclePrice}
+          maxLeverage={maxLeverage}
+          availableBalance={availableBalance}
+          initialDirection={orderDirection}
+          showSubmitButton={false}
+          showOrderSummary={false}
+          onFormStateChange={handleFormStateChange}
+          onInputMethodChange={handleInputMethodChange}
+          onCalculationsChange={handleCalculationsChange}
+          mode={orderMode}
+          orderType={orderType}
+          existingPosition={existingPositionForOrder}
+          midPrice={topOfBook?.midPrice}
+          onOrderTypeChange={handleOrderTypeChange}
+          onAddFunds={handleAddFunds}
+          isLoadingAccount={isLoadingAccount}
+          hasNoAvailableBalance={hasNoAvailableBalance}
+          initialLeverage={initialLeverage}
+          initialDraft={restoredOrderDraft}
+          onLeverageChange={handleLeverageChange}
+          autoFocusUsd={orderMode !== 'close'}
+          autoFocusLimitPrice={orderMode !== 'close'}
+          sizeDecimals={marketInfo?.szDecimals}
+          limitPricePrefill={limitPricePrefill ?? undefined}
+        />
+        {orderCalculations && (
+          <OrderSummary
+            marginRequired={orderCalculations.marginRequired}
+            estimatedFees={orderCalculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
+            liquidationPrice={orderCalculations.liquidationPrice}
+            metamaskFeeRateDiscountPercentage={
+              metamaskFeeRateDiscountPercentage
+            }
+            metamaskFeeRate={metamaskFeeRate}
+            originalMetamaskFeeRate={originalMetamaskFeeRate}
+            protocolFeeRate={protocolFeeRate}
+            protocolFeeLabel={protocolFeeLabel}
+            showSlippageRow={
+              isSlippageConfigEnabled &&
+              orderType === 'market' &&
+              orderMode !== 'close'
+            }
+            slippageDisplay={slippageDisplay}
+            exceedsMaxSlippage={exceedsMaxSlippage}
+            isSlippageRowDisabled={isMaxSlippageLoading}
+            onSlippageClick={() => {
+              if (isMaxSlippageLoading) {
+                return;
+              }
+              setIsSlippageModalOpen(true);
+              track(MetaMetricsEventName.PerpsUiInteraction, {
+                [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+                  PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_OPENED,
+                [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+                [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]:
+                  bpsToPercent(maxSlippageBps),
+                [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
+                  maxSlippageSource === 'user_configured'
+                    ? PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED
+                    : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
+              });
+            }}
+          />
+        )}
+        {submitError && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.ErrorDefault}
+            data-testid="perps-order-submit-error"
+          >
+            {submitError}
+          </Text>
+        )}
+      </Box>
+
+      <Box
+        ref={ctaRef}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+        paddingTop={3}
+        className={twMerge(
+          'bottom-0 z-10 bg-background-default',
+          isChartOpen ? 'fixed left-0 w-full' : 'sticky shrink-0',
+        )}
+      >
+        {hasNoAvailableBalance && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid="perps-unfunded-add-funds-hint"
+          >
+            {t('perpsAddFundsHint', [`$${PERPS_MIN_MARKET_ORDER_USD}`])}
+          </Text>
+        )}
+        <Button
+          type="submit"
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          disabled={isSubmitDisabled}
+          className={twMerge(
+            'w-full',
+            isSubmitDisabled && 'opacity-70 cursor-not-allowed',
+          )}
+          data-testid="submit-order-button"
+        >
+          {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
+        </Button>
+      </Box>
+    </form>
+  );
+
+  // Draggable divider: resize the order book / form split.
+  const resizeDivider =
+    isOrderBookEnabled && isOrderBookOpen ? (
+      <div
+        key="divider"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label={t('perpsOrderBookResize')}
+        aria-valuenow={Math.round(orderBookWidthPct)}
+        aria-valuemin={ORDER_BOOK_MIN_WIDTH_PCT}
+        aria-valuemax={Math.round(orderBookMaxWidthPct)}
+        tabIndex={0}
+        onMouseDown={handleOrderBookResizeStart}
+        onKeyDown={handleOrderBookResizeKeyDown}
+        className="w-0.5 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
+        data-testid="perps-order-book-resize-handle"
+      />
+    ) : null;
+
+  // Order book: slides in from whichever side `orderBookPosition` pins it to,
+  // resizable via the divider. It is unmounted while collapsed so its focusable
+  // controls never sit in a zero-width, hidden panel.
+  const orderBookPane = isOrderBookEnabled ? (
+    <Box
+      key="order-book"
+      flexDirection={BoxFlexDirection.Column}
+      style={{
+        width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%',
+        // Floor the width while open, and use a transitionable 0 (not
+        // `undefined`/`auto`) while closed: CSS cannot interpolate
+        // `auto -> <floor>`, so an `undefined` closed value made the panel
+        // snap to full width on open instead of animating. Animating
+        // min-width between 0 and the floor keeps open and close symmetric.
+        minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : 0,
+      }}
+      className={twMerge(
+        'shrink-0 overflow-hidden',
+        isChartOpen ? 'self-stretch' : 'h-full',
+        !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
+      )}
+    >
+      {isOrderBookOpen && (
+        <PerpsOrderBook
+          key={decodedSymbol}
+          symbol={decodedSymbol}
+          isOpen={isOrderBookOpen}
+          marketPrice={currentPrice}
+          szDecimals={marketInfo?.szDecimals}
+          onSelectPrice={handleOrderBookPriceSelect}
+        />
+      )}
+    </Box>
+  ) : null;
+
+  const bodyPanes = isOrderBookOnLeft
+    ? [orderBookPane, resizeDivider, formPane]
+    : [formPane, resizeDivider, orderBookPane];
+
+  let chartContent: React.ReactNode;
+  if (isCandleLoading && !candleData) {
+    chartContent = (
+      <Skeleton
+        className="w-full rounded-lg"
+        style={ORDER_ENTRY_CHART_STYLE}
+        data-testid="perps-order-entry-chart-loading"
+      />
+    );
+  } else if (candleError && !candleData) {
+    chartContent = (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        className="w-full rounded-lg bg-muted"
+        style={ORDER_ENTRY_CHART_STYLE}
+        gap={2}
+        data-testid="perps-order-entry-chart-error"
+      >
+        <Icon
+          name={IconName.Warning}
+          size={IconSize.Lg}
+          color={IconColor.IconAlternative}
+        />
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {t('perpsChartLoadError')}
+        </Text>
+      </Box>
+    );
+  } else {
+    chartContent = (
+      <PerpsCandlestickChart
+        ref={chartRef}
+        height={ORDER_ENTRY_CHART_HEIGHT}
+        selectedPeriod={selectedPeriod}
+        candleData={candleData}
+        currentPrice={currentPrice}
+        priceLines={chartPriceLines}
+        onNeedMoreHistory={fetchMoreHistory}
+        initialVisibleCandleCount={persistedVisibleCandleCount}
+        onVisibleCandleCountChange={handleVisibleCandleCountChange}
+      />
+    );
+  }
+
+  return (
+    <div
+      className={twMerge(
+        'main-container asset__container relative',
+        isChartOpen ? 'overflow-y-auto' : 'overflow-hidden',
+      )}
+      data-testid="parent-selector-perps-order-entry"
     >
       <OrderEntryHeader
         displayName={displayName}
@@ -2056,211 +2902,80 @@ const PerpsOrderEntryPage = () => {
         displayChange={displayChange}
         onBack={() => handleBackClick()}
         rightAccessory={
-          isOrderBookEnabled ? (
+          <>
+            {isOrderBookEnabled ? (
+              <button
+                type="button"
+                data-testid="perps-order-book-toggle"
+                onClick={handleToggleOrderBook}
+                aria-label={t('perpsOrderBook')}
+                aria-pressed={isOrderBookOpen}
+                className={twMerge(
+                  'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg border border-transparent bg-transparent',
+                  isOrderBookOpen && 'bg-muted border-primary-default',
+                )}
+              >
+                <Icon
+                  name={IconName.Book}
+                  size={IconSize.Lg}
+                  className={
+                    isOrderBookOpen ? 'text-default' : 'text-alternative'
+                  }
+                />
+              </button>
+            ) : null}
             <button
               type="button"
-              data-testid="perps-order-book-toggle"
-              onClick={handleToggleOrderBook}
-              aria-label={t('perpsOrderBook')}
-              aria-pressed={isOrderBookOpen}
+              data-testid="perps-order-entry-chart-toggle"
+              onClick={handleToggleChart}
+              aria-label={
+                isChartOpen ? t('perpsCollapseChart') : t('perpsExpandChart')
+              }
+              aria-expanded={isChartOpen}
+              aria-controls="perps-order-entry-chart"
               className={twMerge(
                 'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg border border-transparent bg-transparent',
-                isOrderBookOpen && 'bg-muted border-primary-default',
+                isChartOpen && 'bg-muted border-primary-default',
               )}
             >
               <Icon
-                name={IconName.Book}
+                name={IconName.Candlestick}
                 size={IconSize.Lg}
-                className={
-                  isOrderBookOpen ? 'text-default' : 'text-alternative'
-                }
+                className={isChartOpen ? 'text-default' : 'text-alternative'}
               />
             </button>
-          ) : undefined
+          </>
         }
       />
 
-      {/* Body: form content (left) + sliding order book (right). Scrolls
-          horizontally as a fallback when a narrow popup cannot fit both
-          pixel-floored panes. */}
+      <PerpsExpandableChartPanel
+        isExpanded={isChartOpen}
+        id="perps-order-entry-chart"
+        label={t('perpsChart')}
+      >
+        <PerpsCandlePeriodSelector
+          selectedPeriod={selectedPeriod}
+          onPeriodChange={handlePeriodChange}
+        />
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
+          {chartContent}
+        </Box>
+      </PerpsExpandableChartPanel>
+
+      {/* Body: form content + sliding order book, ordered by
+          `orderBookPosition`. Scrolls horizontally as a fallback when a narrow
+          popup cannot fit both pixel-floored panes, so the panes must lay out
+          left-to-right (a reversed container would push the overflow past the
+          inline-start edge, where it cannot be scrolled to). */}
       <div
         ref={setBodyEl}
-        className="flex flex-row flex-1 min-h-0 w-full overflow-x-auto"
+        data-testid="perps-order-body"
+        className={twMerge(
+          'flex flex-row w-full overflow-x-auto',
+          isChartOpen ? 'min-h-full shrink-0' : 'flex-1 min-h-0',
+        )}
       >
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          style={{
-            minWidth: isOrderBookOpen
-              ? ORDER_BOOK_FORM_MIN_WIDTH_PX
-              : undefined,
-          }}
-          className="flex-1 min-w-0 h-full overflow-hidden"
-        >
-          {/* Scrollable form */}
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            flexDirection={BoxFlexDirection.Column}
-            gap={4}
-            className={twMerge(
-              'flex-1 overflow-y-auto overflow-x-hidden',
-              isOrderPending && 'pointer-events-none opacity-50',
-            )}
-          >
-            {orderMode === 'new' && (
-              <DirectionTabs
-                direction={orderDirection}
-                onDirectionChange={handleDirectionChange}
-              />
-            )}
-            <OrderEntry
-              asset={decodedSymbol}
-              currentPrice={currentPrice}
-              markPrice={oraclePrice}
-              maxLeverage={maxLeverage}
-              availableBalance={availableBalance}
-              initialDirection={orderDirection}
-              showSubmitButton={false}
-              showOrderSummary={false}
-              onFormStateChange={handleFormStateChange}
-              onInputMethodChange={handleInputMethodChange}
-              onCalculationsChange={handleCalculationsChange}
-              mode={orderMode}
-              orderType={orderType}
-              existingPosition={existingPositionForOrder}
-              midPrice={topOfBook?.midPrice}
-              onOrderTypeChange={setOrderType}
-              onAddFunds={handleAddFunds}
-              initialLeverage={initialLeverage}
-              autoFocusUsd={orderMode !== 'close'}
-              autoFocusLimitPrice={orderMode !== 'close'}
-              sizeDecimals={marketInfo?.szDecimals}
-              limitPricePrefill={limitPricePrefill ?? undefined}
-            />
-          </Box>
-
-          {/* Sticky bottom: summary + button */}
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={3}
-            flexDirection={BoxFlexDirection.Column}
-            gap={4}
-            className="shrink-0"
-          >
-            {orderCalculations && (
-              <OrderSummary
-                marginRequired={orderCalculations.marginRequired}
-                estimatedFees={orderCalculations.estimatedFees}
-                originalEstimatedFees={originalEstimatedFees}
-                liquidationPrice={orderCalculations.liquidationPrice}
-                metamaskFeeRateDiscountPercentage={
-                  metamaskFeeRateDiscountPercentage
-                }
-                metamaskFeeRate={metamaskFeeRate}
-                originalMetamaskFeeRate={originalMetamaskFeeRate}
-                protocolFeeRate={protocolFeeRate}
-                protocolFeeLabel={protocolFeeLabel}
-                showSlippageRow={
-                  isSlippageConfigEnabled &&
-                  orderType === 'market' &&
-                  orderMode !== 'close'
-                }
-                slippageDisplay={slippageDisplay}
-                exceedsMaxSlippage={exceedsMaxSlippage}
-                isSlippageRowDisabled={isMaxSlippageLoading}
-                onSlippageClick={() => {
-                  if (isMaxSlippageLoading) {
-                    return;
-                  }
-                  setIsSlippageModalOpen(true);
-                  track(MetaMetricsEventName.PerpsUiInteraction, {
-                    [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-                      PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_OPENED,
-                    [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
-                    [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]:
-                      bpsToPercent(maxSlippageBps),
-                    [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]:
-                      maxSlippageSource === 'user_configured'
-                        ? PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.USER_CONFIGURED
-                        : PERPS_EVENT_VALUE.MAX_SLIPPAGE_SOURCE.DEFAULT,
-                  });
-                }}
-              />
-            )}
-            {submitError && (
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.ErrorDefault}
-                data-testid="perps-order-submit-error"
-              >
-                {submitError}
-              </Text>
-            )}
-            <Button
-              type="submit"
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              disabled={isSubmitDisabled}
-              className={twMerge(
-                'w-full',
-                isSubmitDisabled && 'opacity-70 cursor-not-allowed',
-              )}
-              data-testid="submit-order-button"
-            >
-              {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
-            </Button>
-          </Box>
-        </Box>
-        {/* Draggable divider: resize the order book / form split. */}
-        {isOrderBookEnabled && isOrderBookOpen && (
-          <div
-            role="separator"
-            aria-orientation="vertical"
-            aria-label={t('perpsOrderBookResize')}
-            aria-valuenow={Math.round(orderBookWidthPct)}
-            aria-valuemin={ORDER_BOOK_MIN_WIDTH_PCT}
-            aria-valuemax={Math.round(orderBookMaxWidthPct)}
-            tabIndex={0}
-            onMouseDown={handleOrderBookResizeStart}
-            onKeyDown={handleOrderBookResizeKeyDown}
-            className="w-0.5 shrink-0 cursor-col-resize bg-muted hover:bg-primary-default active:bg-primary-default"
-            data-testid="perps-order-book-resize-handle"
-          />
-        )}
-        {/* Order book: slides in from the right, resizable via the divider. It
-            is unmounted while collapsed so its focusable controls never sit in
-            a zero-width, hidden panel. */}
-        {isOrderBookEnabled && (
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            style={{
-              width: isOrderBookOpen ? `${orderBookWidthPct}%` : '0%',
-              // Floor the width while open, and use a transitionable 0 (not
-              // `undefined`/`auto`) while closed: CSS cannot interpolate
-              // `auto -> <floor>`, so an `undefined` closed value made the panel
-              // snap to full width on open instead of animating. Animating
-              // min-width between 0 and the floor keeps open and close symmetric.
-              minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : 0,
-            }}
-            className={twMerge(
-              'shrink-0 h-full overflow-hidden',
-              !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
-            )}
-          >
-            {isOrderBookOpen && (
-              <PerpsOrderBook
-                symbol={decodedSymbol}
-                isOpen={isOrderBookOpen}
-                marketPrice={currentPrice}
-                szDecimals={marketInfo?.szDecimals}
-                onSelectPrice={handleOrderBookPriceSelect}
-              />
-            )}
-          </Box>
-        )}
+        {bodyPanes}
       </div>
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
@@ -2300,7 +3015,7 @@ const PerpsOrderEntryPage = () => {
           }
         />
       )}
-    </form>
+    </div>
   );
 };
 

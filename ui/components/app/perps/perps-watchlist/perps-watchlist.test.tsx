@@ -5,7 +5,10 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { mockCryptoMarkets } from '../mocks';
-import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { PerpsWatchlist } from './perps-watchlist';
 
 const mockNavigate = jest.fn();
@@ -28,6 +31,40 @@ const mockStore = configureStore({
 describe('PerpsWatchlist', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+  });
+
+  describe('header navigation', () => {
+    const renderWatchlist = () =>
+      renderWithProvider(
+        <PerpsWatchlist markets={mockCryptoMarkets.slice(0, 2)} />,
+        mockStore,
+      );
+
+    it('navigates to the market list with the watchlist filter pre-selected', () => {
+      renderWatchlist();
+
+      fireEvent.click(screen.getByTestId('perps-watchlist-header'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${PERPS_MARKET_LIST_ROUTE}?filter=watchlist`,
+      );
+    });
+
+    it('renders the header as a button', () => {
+      renderWatchlist();
+
+      expect(screen.getByTestId('perps-watchlist-header').tagName).toBe(
+        'BUTTON',
+      );
+    });
+
+    it('matches the other Perps section headers', () => {
+      renderWatchlist();
+
+      expect(
+        screen.getByRole('button', { name: messages.perpsWatchlist.message }),
+      ).toBeInTheDocument();
+    });
   });
 
   it('renders the watchlist section', () => {

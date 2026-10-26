@@ -1,14 +1,14 @@
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  SWAP_PATH,
 } from '../../../helpers/constants/routes';
 
 export type ActiveBottomNavTabs = {
   isHome: boolean;
   isPerps: boolean;
-  isSwaps: boolean;
+  isMoney: boolean;
   isActivity: boolean;
 };
 
@@ -23,14 +23,14 @@ export const getActiveBottomNavTabs = (
   return {
     isHome: pathname === DEFAULT_ROUTE,
     isPerps: pathname === PERPS_HOME_PAGE_ROUTE,
-    isSwaps: pathname === SWAP_PATH,
+    isMoney: pathname === MONEY_HOME_ROUTE,
     isActivity: pathname === ACTIVITY_ROUTE,
   };
 };
 
 /**
  * Returns true when the pathname corresponds to one of the bottom nav
- * bar tabs (Home, Activity, Perps, Swaps).
+ * bar tabs (Home, Activity, Perps, Money).
  *
  * @param pathname - The current location pathname.
  */

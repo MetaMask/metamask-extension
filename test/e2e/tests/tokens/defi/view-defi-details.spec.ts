@@ -1,7 +1,7 @@
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import DeFiDetailsPage from '../../../page-objects/pages/defi-details-page';
+import DeFiDetailsPage from '../../../page-objects/pages/asset/defi-details-page';
 import DeFiTab from '../../../page-objects/pages/home/defi-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
@@ -43,23 +43,19 @@ describe('View DeFi details', function () {
         await defiTab.defiTabCells.checkTokenName('UniswapV2');
         await defiTab.defiTabCells.checkTokenMarketValue('$4.24');
 
-        // click detils page for AaveV3
         await defiTab.clickIntoAaveV3DetailsPage();
         const defiDetailsTab = new DeFiDetailsPage(driver);
-        await defiDetailsTab.checkSuppliedHeadingIsDisplayed();
+        await defiDetailsTab.checkDetailsSectionIsDisplayed();
 
-        // Check totoal value and protocol name in AaveV3
         await defiDetailsTab.checkDeFiProtocolNameIsDisplayed('Aave V3');
         await defiDetailsTab.checkDefiDetailsTotalValueIsDisplayed('$14.74');
 
-        // check first underlying position in AaveV3
         await defiDetailsTab.checkTokenName('Tether USD');
-        await defiDetailsTab.checkTokenBalanceWithName('0.300 Tether USD');
+        await defiDetailsTab.checkTokenBalanceWithName('0.300 USDT');
         await defiDetailsTab.checkTokenMarketValue('$0.30');
 
-        // check second underlying position in AaveV3
         await defiDetailsTab.checkTokenName('Wrapped Ether');
-        await defiDetailsTab.checkTokenBalanceWithName('0.00903 Wrapped Ether');
+        await defiDetailsTab.checkTokenBalanceWithName('0.00903 WETH');
         await defiDetailsTab.checkTokenMarketValue('$14.44');
 
         // click back button

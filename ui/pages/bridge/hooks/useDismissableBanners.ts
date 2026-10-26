@@ -1,37 +1,43 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { type BridgeAlert } from '../prepare/types';
 
 export const useDismissableAlerts = (tokenAlerts: BridgeAlert[]) => {
-  // Track the visibility of each alert
-  const [alertVisibility, setAlertVisibility] = useState<{
-    [key: string]: boolean;
-  }>({});
-  // Reset the alert visibility when new alerts are found
-  useEffect(
-    () =>
-      setAlertVisibility(
-        tokenAlerts.reduce(
-          (acc, { id, isDismissable }) => {
-            if (!isDismissable) {
-              return acc;
-            }
-            acc[id] = true;
-            return acc;
-          },
-          {} as { [key: string]: boolean },
-        ),
-      ),
-    [tokenAlerts],
+  // Only store dismissals; visibility is derived so alert-set changes do not
+  // require render-time setState. Compare by ids — `bannerAlerts` is often a
+  // new array each render.
+  const tokenAlertsKey = tokenAlerts.map((alert) => alert.id).join('|');
+  const [dismissedIds, setDismissedIds] = useState<ReadonlySet<string>>(
+    () => new Set<string>(),
   );
+  const [dismissedForKey, setDismissedForKey] = useState(tokenAlertsKey);
+
+  const alertVisibility = useMemo(() => {
+    const activeDismissedIds =
+      dismissedForKey === tokenAlertsKey ? dismissedIds : new Set<string>();
+    return tokenAlerts.reduce(
+      (acc, { id, isDismissable }) => {
+        if (!isDismissable) {
+          return acc;
+        }
+        acc[id] = !activeDismissedIds.has(id);
+        return acc;
+      },
+      {} as { [key: string]: boolean },
+    );
+  }, [tokenAlerts, tokenAlertsKey, dismissedForKey, dismissedIds]);
 
   const dismissAlert = useCallback(
-    (id: string) =>
-      setAlertVisibility((prev) => {
-        const visibility = { ...prev };
-        visibility[id] = false;
-        return visibility;
-      }),
-    [],
+    (id: string) => {
+      setDismissedForKey(tokenAlertsKey);
+      setDismissedIds((prev) => {
+        const base =
+          dismissedForKey === tokenAlertsKey ? prev : new Set<string>();
+        const next = new Set<string>(base);
+        next.add(id);
+        return next;
+      });
+    },
+    [tokenAlertsKey, dismissedForKey],
   );
 
   return {

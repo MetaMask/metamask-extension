@@ -6,12 +6,12 @@ import {
   GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
+  MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
 import { parseCaipChainId } from '@metamask/utils';
-import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { MetaMetricsSwapsEventSource as ExtendedMetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getBip44DefaultPairsConfig,
@@ -66,7 +66,9 @@ const useBridging = () => {
    */
   const openBridgeExperience = useCallback(
     (
-      location: MetaMetricsSwapsEventSource,
+      location:
+        | MetaMetricsSwapsEventSource
+        | ExtendedMetaMetricsSwapsEventSource,
       sourceToken?: {
         symbol: string;
         address: string;
@@ -77,11 +79,8 @@ const useBridging = () => {
       destTokenAssetId?: string,
     ) => {
       !bridgeState && dispatch(resetInputFields());
-      trace({
-        name: TraceName.SwapViewLoaded,
-        startTime: Date.now(),
-      });
-      dispatch(setBridgeLocation(location));
+      // TODO: pick the correct location type
+      dispatch(setBridgeLocation(location as MetaMetricsSwapsEventSource));
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
           location: location as never,
@@ -158,6 +157,7 @@ const useBridging = () => {
         token: tokenToUse,
         search,
         isEntrypoint: true,
+        entryPoint: location,
       });
     },
     [

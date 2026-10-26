@@ -1,15 +1,28 @@
 /* eslint-disable @typescript-eslint/naming-convention, camelcase */
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/transaction/enforced-simulations';
 import {
   selectBlockedPayTokens,
+  selectDepositLimits,
+  selectDefaultPaySelectedSection,
+  selectEnableMoneyAccountTransactions,
   selectEnforcedSimulationsSlippage,
   selectIsEnforcedSimulationsEnabled,
   selectIsMetaMaskPayDappsEnabled,
+  selectIsMoneyAccountTransactionEnabled,
   selectIsPayAmountPrefillEnabled,
   selectIsPayHardwareEnabled,
   selectMinimumRequiredTokenBalance,
+  selectPayHardwareConfig,
   selectPayQuoteConfig,
   selectPreferredPayToken,
+  selectPreferredPayTokens,
+  selectRelayAtomicMaxEnabled,
+  selectRelayFixedSpread,
+  selectStablecoins,
 } from './feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -63,16 +76,31 @@ type PayPrefilledAmountConfig = {
   enabled?: boolean;
 };
 
+type RelayAtomicMaxEnabledConfig = {
+  default?: boolean;
+  transactionTypes?: Record<string, boolean>;
+};
+
 type PayExtendedFlag = {
+  depositLimit?: Record<string, number>;
   prefilledAmount?: {
     default?: PayPrefilledAmountConfig;
     overrides?: Record<string, PayPrefilledAmountConfig>;
     musdConversion?: PayPrefilledAmountConfig;
   };
+  enableMoneyAccountTransactions?: Record<string, boolean>;
+  defaultPaySelectedSection?: Record<string, string>;
+  payStrategies?: {
+    relay?: {
+      atomicMaxEnabled?: RelayAtomicMaxEnabledConfig;
+    };
+  };
 };
 
 type HardwareWalletFlag = {
   enabled?: boolean;
+  default?: { enabled?: boolean };
+  overrides?: Record<string, { enabled?: boolean }>;
 };
 
 type MockState = {
@@ -146,6 +174,76 @@ const getMockPayExtendedState = (
       }),
     },
   },
+});
+
+describe('selectRelayAtomicMaxEnabled', () => {
+  const getState = (atomicMaxEnabled?: RelayAtomicMaxEnabledConfig) =>
+    getMockPayExtendedState({
+      payStrategies: { relay: { atomicMaxEnabled } },
+    });
+
+  const depositTransaction = {
+    type: TransactionType.moneyAccountDeposit,
+  } as TransactionMeta;
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each([
+    [undefined, false],
+    [{}, false],
+    [{ default: true }, true],
+    [{ default: false }, false],
+    [
+      {
+        default: true,
+        transactionTypes: { [TransactionType.moneyAccountDeposit]: false },
+      },
+      false,
+    ],
+    [
+      { transactionTypes: { [TransactionType.moneyAccountDeposit]: true } },
+      true,
+    ],
+    [{ transactionTypes: { [TransactionType.perpsDeposit]: true } }, false],
+  ])(
+    'resolves %j to %s',
+    (
+      atomicMaxEnabled: RelayAtomicMaxEnabledConfig | undefined,
+      expected: boolean,
+    ) => {
+      expect(
+        selectRelayAtomicMaxEnabled(
+          getState(atomicMaxEnabled),
+          depositTransaction,
+        ),
+      ).toBe(expected);
+    },
+  );
+
+  it('matches a deposit nested inside a batch', () => {
+    const state = getState({
+      transactionTypes: { [TransactionType.moneyAccountDeposit]: true },
+    });
+
+    expect(
+      selectRelayAtomicMaxEnabled(state, {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      } as TransactionMeta),
+    ).toBe(true);
+  });
+
+  it('uses the default without a transaction', () => {
+    expect(selectRelayAtomicMaxEnabled(getState({ default: true }))).toBe(true);
+  });
+
+  it('defaults to false when the pay-extended flag is absent', () => {
+    expect(
+      selectRelayAtomicMaxEnabled(
+        getMockPayExtendedState(),
+        depositTransaction,
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('Confirmations Pay Feature Flags', () => {
@@ -250,6 +348,55 @@ describe('Confirmations Pay Feature Flags', () => {
         enabled: false,
         tokens: undefined,
       });
+    });
+  });
+
+  describe('selectPreferredPayTokens', () => {
+    it('returns all transaction override tokens from the resolved config', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          default: {},
+          overrides: {
+            perpsWithdraw: [
+              {
+                address: '0x1111111111111111111111111111111111111111',
+                chainId: '0x1',
+                name: 'mUSD',
+              },
+              {
+                address: '0x2222222222222222222222222222222222222222',
+                chainId: '0xa4b1',
+                name: 'USDC',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(selectPreferredPayTokens(state, 'perpsWithdraw')).toStrictEqual([
+        {
+          address: '0x1111111111111111111111111111111111111111',
+          chainId: '0x1',
+          name: 'mUSD',
+        },
+        {
+          address: '0x2222222222222222222222222222222222222222',
+          chainId: '0xa4b1',
+          name: 'USDC',
+        },
+      ]);
+    });
+
+    it('returns an empty array when no preferred tokens are configured', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          default: {},
+        },
+      });
+
+      expect(selectPreferredPayTokens(state, 'perpsWithdraw')).toStrictEqual(
+        [],
+      );
     });
   });
 
@@ -402,6 +549,46 @@ describe('Confirmations Pay Feature Flags', () => {
     });
   });
 
+  describe('selectDepositLimits', () => {
+    it('returns the default empty map when the flag is absent', () => {
+      const state = getMockPayExtendedState();
+
+      expect(selectDepositLimits(state)).toStrictEqual({});
+    });
+
+    it('returns the default empty map when depositLimit is absent', () => {
+      const state = getMockPayExtendedState({});
+
+      expect(selectDepositLimits(state)).toStrictEqual({});
+    });
+
+    it('returns deposit limits from the feature flag', () => {
+      const state = getMockPayExtendedState({
+        depositLimit: {
+          moneyAccountDeposit: 100000,
+        },
+      });
+
+      expect(selectDepositLimits(state)).toStrictEqual({
+        moneyAccountDeposit: 100000,
+      });
+    });
+
+    it('returns multiple deposit type limits', () => {
+      const state = getMockPayExtendedState({
+        depositLimit: {
+          moneyAccountDeposit: 100000,
+          perpsDeposit: 25000,
+        },
+      });
+
+      expect(selectDepositLimits(state)).toStrictEqual({
+        moneyAccountDeposit: 100000,
+        perpsDeposit: 25000,
+      });
+    });
+  });
+
   describe('selectIsPayAmountPrefillEnabled', () => {
     it('returns true when the transaction override is enabled', () => {
       const state = getMockPayExtendedState({
@@ -469,6 +656,99 @@ describe('Confirmations Pay Feature Flags', () => {
     });
   });
 
+  describe('selectEnableMoneyAccountTransactions', () => {
+    it('returns the map from the flag', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: {
+          perpsDeposit: true,
+          predictDeposit: false,
+        },
+      });
+
+      expect(selectEnableMoneyAccountTransactions(state)).toStrictEqual({
+        perpsDeposit: true,
+        predictDeposit: false,
+      });
+    });
+
+    it('defaults to an empty map when the flag is absent', () => {
+      const state = getMockPayExtendedState();
+      expect(selectEnableMoneyAccountTransactions(state)).toStrictEqual({});
+    });
+  });
+
+  describe('selectIsMoneyAccountTransactionEnabled', () => {
+    it('returns true when the transaction type is enabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsDeposit: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(true);
+    });
+
+    it('returns true when perpsWithdraw is enabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsWithdraw: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsWithdraw'),
+      ).toBe(true);
+    });
+
+    it('returns false when the transaction type is disabled', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { perpsDeposit: false },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
+    });
+
+    it('returns false when the transaction type is absent', () => {
+      const state = getMockPayExtendedState({
+        enableMoneyAccountTransactions: { predictDeposit: true },
+      });
+
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
+    });
+
+    it('returns false when the flag map is missing', () => {
+      const state = getMockPayExtendedState();
+      expect(
+        selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
+      ).toBe(false);
+    });
+  });
+
+  describe('selectDefaultPaySelectedSection', () => {
+    it('returns the map from the flag', () => {
+      const state = getMockPayExtendedState({
+        defaultPaySelectedSection: {
+          perpsWithdraw: 'money-account',
+          perpsDeposit: 'money-account',
+          predictWithdraw: 'crypto',
+        },
+      });
+
+      expect(selectDefaultPaySelectedSection(state)).toStrictEqual({
+        perpsWithdraw: 'money-account',
+        perpsDeposit: 'money-account',
+        predictWithdraw: 'crypto',
+      });
+    });
+
+    it('defaults to an empty map when the flag is absent', () => {
+      const state = getMockPayExtendedState();
+      expect(selectDefaultPaySelectedSection(state)).toStrictEqual({});
+    });
+  });
+
   describe('selectIsPayHardwareEnabled', () => {
     const getMockPayHardwareState = (
       confirmations_pay_hardware?: HardwareWalletFlag,
@@ -482,29 +762,91 @@ describe('Confirmations Pay Feature Flags', () => {
       },
     });
 
-    it('returns true when enabled is true', () => {
+    it('returns true for mUSD conversion when enabled is true', () => {
       const state = getMockPayHardwareState({ enabled: true });
-      expect(selectIsPayHardwareEnabled(state)).toBe(true);
+      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(true);
     });
 
-    it('returns false when enabled is false', () => {
-      const state = getMockPayHardwareState({ enabled: false });
+    it('applies the legacy flat enabled value only to mUSD conversion', () => {
+      const state = getMockPayHardwareState({ enabled: true });
+      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(true);
+      expect(selectIsPayHardwareEnabled(state, 'moneyAccountDeposit')).toBe(
+        false,
+      );
       expect(selectIsPayHardwareEnabled(state)).toBe(false);
     });
 
-    it('defaults to false when confirmations_pay_hardware is not set', () => {
-      const state = getMockPayHardwareState();
+    it('resolves a per-type override over the default', () => {
+      const state = getMockPayHardwareState({
+        default: { enabled: false },
+        overrides: { moneyAccountDeposit: { enabled: true } },
+      });
+      expect(selectIsPayHardwareEnabled(state, 'moneyAccountDeposit')).toBe(
+        true,
+      );
+      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(false);
       expect(selectIsPayHardwareEnabled(state)).toBe(false);
     });
+  });
 
-    it('defaults to false when confirmations_pay_hardware is an empty object', () => {
-      const state = getMockPayHardwareState({});
-      expect(selectIsPayHardwareEnabled(state)).toBe(false);
+  describe('selectPayHardwareConfig', () => {
+    const getMockPayHardwareState = (
+      confirmations_pay_hardware?: HardwareWalletFlag,
+    ): MockState => ({
+      metamask: {
+        remoteFeatureFlags: {
+          ...(confirmations_pay_hardware !== undefined && {
+            confirmations_pay_hardware,
+          }),
+        },
+      },
     });
 
-    it('defaults to false when remoteFeatureFlags is empty', () => {
+    it('returns the default when the type has no override', () => {
+      const state = getMockPayHardwareState({
+        default: { enabled: true },
+        overrides: { moneyAccountDeposit: { enabled: false } },
+      });
+      expect(selectPayHardwareConfig(state, 'musdConversion')).toStrictEqual({
+        enabled: true,
+      });
+    });
+  });
+
+  describe('selectRelayFixedSpread', () => {
+    const ETH_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const ETH_MUSD = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+
+    it('returns parsed routes from confirmations_relay_fixed_spread', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            /* eslint-disable @typescript-eslint/naming-convention -- remote flag payload shape */
+            confirmations_relay_fixed_spread: {
+              chains: { eth: '0x1' },
+              tokens: { eth_usdc: ETH_USDC, musd: ETH_MUSD },
+              routes: [['eth', 'eth_usdc', 'eth', 'musd']],
+            },
+            /* eslint-enable @typescript-eslint/naming-convention */
+          },
+        },
+      };
+
+      expect(selectRelayFixedSpread(state)).toEqual({
+        routes: [
+          {
+            sourceChain: '0x1',
+            sourceToken: ETH_USDC,
+            targetChain: '0x1',
+            targetToken: ETH_MUSD,
+          },
+        ],
+      });
+    });
+
+    it('returns empty routes when the flag is unset', () => {
       const state: MockState = { metamask: { remoteFeatureFlags: {} } };
-      expect(selectIsPayHardwareEnabled(state)).toBe(false);
+      expect(selectRelayFixedSpread(state)).toEqual({ routes: [] });
     });
   });
 });
@@ -550,6 +892,123 @@ describe('Confirmations Enforced Simulations Feature Flags', () => {
       expect(selectEnforcedSimulationsSlippage(state)).toBe(
         DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE,
       );
+    });
+  });
+
+  describe('selectStablecoins', () => {
+    const getMockStablecoinsState = (stableTokens?: unknown) =>
+      ({
+        metamask: {
+          remoteFeatureFlags: {
+            ...(stableTokens !== undefined && { stableTokens }),
+          },
+        },
+      }) as unknown as MockState;
+
+    it('returns the addresses from the flag, keyed by chain ID', () => {
+      const state = getMockStablecoinsState({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+
+      expect(selectStablecoins(state)).toStrictEqual({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+    });
+
+    it('lowercases chain IDs and addresses from the flag', () => {
+      const state = getMockStablecoinsState({
+        '0xA4B1': ['0xAF88D065E77C8CC2239327C5EDB3A432268E5831'],
+      });
+
+      expect(selectStablecoins(state)).toStrictEqual({
+        '0xa4b1': ['0xaf88d065e77c8cc2239327c5edb3a432268e5831'],
+      });
+    });
+
+    it('replaces the defaults rather than merging with them', () => {
+      const state = getMockStablecoinsState({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+
+      // Arbitrum is in the defaults but absent from the flag.
+      expect(selectStablecoins(state)['0xa4b1']).toBeUndefined();
+    });
+
+    it('drops chain entries whose value is not an array', () => {
+      const state = getMockStablecoinsState({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+        '0x89': 'not-an-array',
+      });
+
+      expect(selectStablecoins(state)).toStrictEqual({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+    });
+
+    it('drops non-string addresses within a chain entry', () => {
+      const state = getMockStablecoinsState({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', 42, null],
+      });
+
+      expect(selectStablecoins(state)).toStrictEqual({
+        '0x1': ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      });
+    });
+
+    it('falls back to the defaults when the flag is not set', () => {
+      const result = selectStablecoins(getMockStablecoinsState());
+
+      expect(result['0x1']).toContain(
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      );
+      expect(result['0xa4b1']).toContain(
+        '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+      );
+    });
+
+    it('falls back to the defaults when the flag is an array', () => {
+      const result = selectStablecoins(getMockStablecoinsState([]));
+
+      expect(result['0x1']).toContain(
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      );
+    });
+
+    // The extension distribution currently serves `{ enabled: false }`, which
+    // carries no address arrays. Treating it as an empty map would silently
+    // disable the peg and leave stablecoins mispriced.
+    it('falls back to the defaults when the flag has no address arrays', () => {
+      const result = selectStablecoins(
+        getMockStablecoinsState({ enabled: false }),
+      );
+
+      expect(result['0x1']).toContain(
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      );
+    });
+
+    it('includes MUSD and pUSD in the defaults', () => {
+      const result = selectStablecoins(getMockStablecoinsState());
+
+      expect(result['0x1']).toContain(
+        '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      );
+      expect(result['0xe708']).toContain(
+        '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      );
+      expect(result['0x89']).toContain(
+        '0xc011a7e12a19f7b1f670d46f03b03f3342e82dfb',
+      );
+    });
+
+    it('returns only lowercase addresses in the defaults', () => {
+      const result = selectStablecoins(getMockStablecoinsState());
+
+      Object.values(result)
+        .flat()
+        .forEach((address) => {
+          expect(address).toBe(address.toLowerCase());
+        });
     });
   });
 });

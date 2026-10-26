@@ -29,6 +29,23 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
+
 setBackgroundConnection({
   // @ts-expect-error - setSlippage is valid
   setSlippage,
@@ -126,7 +143,7 @@ describe('BridgeTransactionSettingsModal', () => {
       isWebUsbAvailable: false,
     });
     mockUseHardwareWalletActions.mockReturnValue({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
@@ -160,6 +177,10 @@ describe('BridgeTransactionSettingsModal', () => {
 
     // Click and blur Custom button
     await interactWithCustomInput(getByTestId, () => {
+      expect(getByTestId(TX_MODAL.customInput)).toHaveAttribute(
+        'inputmode',
+        'decimal',
+      );
       expect(baseElement.childNodes[2]).toMatchSnapshot();
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
@@ -314,20 +335,24 @@ describe('BridgeTransactionSettingsModal', () => {
     ) => {
       // @ts-expect-error - each is a valid test function
       it.each([
-        ['1234', '1234'],
-        ['12.34', '12.34'],
-        ['fas23.43', '23.43'],
-        ['fas23 ,43', '2343'],
-        ['!23', '23'],
-        ['23.4.3', '23.43'],
-        ['23.4a,3', '23.43'],
-        ['0.', '0.'],
-        ['0.1', '0.1'],
-        ['.0', '.0'],
-        ['.05', '.05'],
+        ['1234', '1234', '100'],
+        ['12.34', '12.34', '12.34'],
+        ['fas23.43', '23.43', '23.43'],
+        ['fas23 ,43', '2343', '100'],
+        ['!23', '23', '23'],
+        ['23.4.3', '23.43', '23.43'],
+        ['23.4a,3', '23.43', '23.43'],
+        ['0.', '0.', '0'],
+        ['0.1', '0.1', '0.1'],
+        ['.0', '.0', '0'],
+        ['.05', '.05', '0.05'],
       ])(
         `should enable submit button: %s`,
-        async (value: string, expectedDisplayValue: string) => {
+        async (
+          value: string,
+          expectedDisplayValue: string,
+          expectedSlippage: string,
+        ) => {
           const initialSlippage = undefined;
           const { getByTestId, store } = renderModal(initialSlippage);
 
@@ -340,10 +365,18 @@ describe('BridgeTransactionSettingsModal', () => {
               expectedDisplayValue,
             );
           });
+          if (Number(expectedDisplayValue) > 100) {
+            expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent(
+              '100%',
+            );
+            expect(
+              screen.getByText(messages.swapSlippageCappedDescription.message),
+            ).toBeInTheDocument();
+          }
 
           await submitUpdate(getByTestId);
           expect(store.getState().bridge.slippage).toBe(
-            Number(expectedDisplayValue),
+            Number(expectedSlippage),
           );
         },
       );

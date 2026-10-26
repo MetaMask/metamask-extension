@@ -1,4 +1,14 @@
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { Wallet } from '@metamask/wallet';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { isObject } from '@metamask/utils';
+import { isInE2eTest } from '../../../shared/lib/environment';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  LOCALHOST_DISPLAY_NAME,
+} from '../../../shared/constants/network';
+import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
@@ -6,10 +16,7 @@ import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-c
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
 import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
-import {
-  getNetworkControllerInstanceOptions,
-  setupRpcEndpointMetrics,
-} from './instance-options/network-controller';
+import { getNetworkControllerInstanceOptions } from './instance-options/network-controller';
 import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
@@ -20,6 +27,15 @@ import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controlle
 import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
+import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
+import {
+  getShieldApiServiceInstanceOptions,
+  getShieldControllerInstanceOptions,
+} from './instance-options/shield-controller';
+import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
+import { getPermissionControllerInstanceOptions } from './instance-options/permission-controller';
+import { getPermissionControllerInitMessenger } from './messengers/permission-controller-messenger';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -43,16 +59,27 @@ export function initializeWallet(request: InitializeWalletRequest) {
     platform,
   } = request;
 
+  const permissionControllerInitMessenger =
+    getPermissionControllerInitMessenger(messenger);
   const transactionControllerInitMessenger =
     getTransactionControllerInitMessenger(messenger);
   const seedlessOnboardingControllerInitMessenger =
     getSeedlessOnboardingControllerInitMessenger(messenger);
+
+  // TC event listeners must be set up before the wallet is initialized.
+  // So that the TC can emit events to the wallet's messenger during initialization.
+  setupTransactionControllerListeners({
+    getTransactionMetricsRequest,
+    messenger: transactionControllerInitMessenger,
+  });
 
   const wallet = new Wallet({
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
+      claimsService: getClaimsServiceInstanceOptions(),
+      configRegistryApiService: getConfigRegistryApiServiceInstanceOptions(),
       connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
       }),
@@ -68,13 +95,22 @@ export function initializeWallet(request: InitializeWalletRequest) {
         messenger,
         platform,
       }),
+      permissionController: getPermissionControllerInstanceOptions(
+        permissionControllerInitMessenger,
+      ),
       seedlessOnboardingController:
         getSeedlessOnboardingControllerInstanceOptions({
           initMessenger: seedlessOnboardingControllerInitMessenger,
         }),
+      shieldApiService: getShieldApiServiceInstanceOptions(),
+      shieldController: getShieldControllerInstanceOptions(),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
+      selectedNetworkController: {
+        domainProxyMap: new WeakRefObjectMap(),
+      },
       storageService: getStorageServiceInstanceOptions(),
+      subscriptionService: getSubscriptionServiceInstanceOptions(),
       transactionController: getTransactionControllerInstanceOptions({
         initMessenger: transactionControllerInitMessenger,
         getFlatState,
@@ -85,6 +121,28 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     state,
   });
+
+  // Fixture-less test builds (like `yarn build:test:dev`) have no persisted
+  // networks, so they would otherwise come up with Arc selected. Fixtures that
+  // define networks (e.g. onboarding) are left untouched.
+  if (
+    isInE2eTest() &&
+    !isObject(state.NetworkController?.networkConfigurationsByChainId)
+  ) {
+    wallet.getInstance('NetworkController').addNetwork({
+      blockExplorerUrls: [],
+      chainId: CHAIN_IDS.LOCALHOST,
+      defaultRpcEndpointIndex: 0,
+      name: LOCALHOST_DISPLAY_NAME,
+      nativeCurrency: CURRENCY_SYMBOLS.ETH,
+      rpcEndpoints: [
+        {
+          type: RpcEndpointType.Custom,
+          url: 'http://localhost:8545',
+        },
+      ],
+    });
+  }
 
   // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
   // and the external-services preference, seeded from the same persisted state
@@ -100,12 +158,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
       useExternalServices:
         state.PreferencesController?.useExternalServices !== false,
     },
-  });
-
-  setupRpcEndpointMetrics(infuraProjectId, messenger);
-  setupTransactionControllerListeners({
-    getTransactionMetricsRequest,
-    messenger: transactionControllerInitMessenger,
+    authenticationState: {
+      srpSessionData: state.AuthenticationController?.srpSessionData as
+        | AuthenticationControllerState['srpSessionData']
+        | undefined,
+    },
   });
 
   wallet.init().catch((error) => console.error(error));

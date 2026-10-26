@@ -96,6 +96,7 @@ describe('TokensControllerInit', () => {
       chainId: '0x1',
       provider: MOCK_PROVIDER,
       tokenListService: expect.any(Object),
+      isDeprecated: expect.any(Function),
     });
   });
 });

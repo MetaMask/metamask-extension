@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { useMusdBalance, useMusdCtaVisibility } from '../../../../hooks/musd';
+import { useMusdCtaVisibility } from '../../../../hooks/musd';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getSafeNativeCurrencySymbol,
@@ -19,12 +19,10 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { ClaimBonusBadge, MusdConvertLink, useMerklRewards } from '../../musd';
-import { getBonusAmountRange } from '../../musd/merkl-bonus-analytics';
-import type {
-  MerklClaimBonusAnalyticsLocation,
-  MusdConvertLinkEntryPoint,
-} from '../../musd/musd-events';
+import { MusdConvertLink } from '../../musd';
+import { MoneyTokenListCta } from '../../money/money-token-list-cta';
+import type { MoneyTokenListCta as MoneyTokenListCtaConfig } from '../../../../hooks/money/useMoneyTokenListCta';
+import type { MusdConvertLinkEntryPoint } from '../../musd/musd-events';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
@@ -39,8 +37,6 @@ import {
 } from './cells';
 
 export type TokenCellMusdOptions = {
-  /** When set, enables Merkl fetch/badge for this cell. */
-  merklClaimBonus?: { location: MerklClaimBonusAnalyticsLocation };
   /** When set, enables footer convert link (subject to `useMusdCtaVisibility` / balance rules). */
   convert?: { entryPoint: MusdConvertLinkEntryPoint };
 };
@@ -51,8 +47,12 @@ export type TokenCellProps = {
   onClick?: () => void;
   fixCurrencyToUSD?: boolean;
   safeChains?: SafeChain[];
-  /** Merkl claim bonus and/or mUSD convert surfaces; parent must pass explicit analytics locations. */
+  /** mUSD convert surface; parent must pass an explicit analytics entry point. */
   musd?: TokenCellMusdOptions;
+  /** Money deposit CTA; takes priority over the mUSD convert link. */
+  moneyCta?: MoneyTokenListCtaConfig;
+  /** Replaces the price change, after any CTA. */
+  priceChangeOverride?: React.ReactNode;
 };
 
 export default function TokenCell({
@@ -62,6 +62,8 @@ export default function TokenCell({
   fixCurrencyToUSD = false,
   safeChains,
   musd,
+  moneyCta,
+  priceChangeOverride,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,44 +75,29 @@ export default function TokenCell({
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const showMerklBadge = Boolean(musd?.merklClaimBonus);
-
-  // Check whether there are rewards available for the user
-  const {
-    hasClaimableReward,
-    isEligible,
-    hasClaimedBefore,
-    claimableRewardDisplay,
-    refetch: refetchMerklRewards,
-  } = useMerklRewards({
-    tokenAddress: token.address,
-    chainId: token.chainId as Hex,
-    showMerklBadge,
-  });
-
   const { shouldShowTokenListItemCta } = useMusdCtaVisibility();
-  const { hasMusdBalance } = useMusdBalance();
 
   const showMusdCta = useMemo(() => {
     if (!musd?.convert || !token.address || !token.chainId) {
       return false;
     }
-    return shouldShowTokenListItemCta(
-      {
-        address: token.address as Hex,
-        chainId: token.chainId as Hex,
-        symbol: token.symbol,
-      },
-      { hasMusdBalance },
-    );
+    return shouldShowTokenListItemCta({
+      address: token.address as Hex,
+      chainId: token.chainId as Hex,
+      symbol: token.symbol,
+    });
   }, [
     musd?.convert,
     token.address,
     token.chainId,
     token.symbol,
     shouldShowTokenListItemCta,
-    hasMusdBalance,
   ]);
+
+  const showMoneyCta = useMemo(
+    () => Boolean(moneyCta?.shouldShow(token)),
+    [moneyCta, token],
+  );
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
@@ -125,16 +112,14 @@ export default function TokenCell({
     [token, tokenDisplayInfo],
   );
 
-  const merklBonusAmountRange = useMemo(
-    () => getBonusAmountRange(claimableRewardDisplay ?? '< 0.01'),
-    [claimableRewardDisplay],
-  );
-
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };
 
   const renderFooterLeft = () => {
+    if (showMoneyCta && moneyCta) {
+      return <MoneyTokenListCta cta={moneyCta} token={token} />;
+    }
     if (showMusdCta && musd?.convert) {
       return (
         <MusdConvertLink
@@ -145,21 +130,9 @@ export default function TokenCell({
         />
       );
     }
-    if (musd?.merklClaimBonus && isEligible && hasClaimableReward) {
-      return (
-        <ClaimBonusBadge
-          tokenAddress={token.address as string}
-          chainId={token.chainId as Hex}
-          label={t('merklRewardsClaimBonus')}
-          refetchRewards={refetchMerklRewards}
-          analyticsLocation={musd.merklClaimBonus.location}
-          assetSymbol={token.symbol}
-          bonusAmountRange={merklBonusAmountRange}
-          hasClaimedBefore={hasClaimedBefore}
-        />
-      );
-    }
-    return <TokenCellPercentChange token={displayToken} />;
+    return (
+      priceChangeOverride ?? <TokenCellPercentChange token={displayToken} />
+    );
   };
 
   if (!token.chainId) {

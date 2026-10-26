@@ -38,13 +38,14 @@ jest.mock('webextension-polyfill', () => {
       create: jest.fn(),
       update: jest.fn(),
       getLastFocused: jest.fn(),
+      remove: jest.fn(),
     },
   };
 });
 
 describe('Notification Manager', () => {
   let notificationManager: NotificationManager,
-    setCurrentPopupIdSpy: (a: number) => void,
+    setCurrentPopupIdSpy: (a: number | undefined) => void,
     focusWindowSpy: () => void,
     currentPopupId: number | undefined;
 
@@ -95,6 +96,44 @@ describe('Notification Manager', () => {
       type: 'popup',
       url: 'notification.html',
       width: 400,
+    });
+  });
+
+  describe('closePopup', () => {
+    it('should close the popup and mark as automatically closed', async () => {
+      const newPopupWindow = generateMockWindow();
+      setCurrentPopupIdSpy = jest.fn();
+      browser.windows.getAll.mockReturnValue([]);
+      browser.windows.create.mockReturnValue(newPopupWindow);
+      browser.windows.remove.mockResolvedValue(undefined);
+
+      // First create a popup
+      await notificationManager.showPopup(setCurrentPopupIdSpy, undefined);
+
+      // Then close it
+      await notificationManager.closePopup();
+
+      expect(browser.windows.remove).toHaveBeenCalledWith(newPopupWindow.id);
+    });
+
+    it('should do nothing if no popup is open', async () => {
+      browser.windows.remove.mockClear();
+      await notificationManager.closePopup();
+      expect(browser.windows.remove).not.toHaveBeenCalled();
+    });
+
+    it('should handle errors gracefully if window is already closed', async () => {
+      const newPopupWindow = generateMockWindow();
+      setCurrentPopupIdSpy = jest.fn();
+      browser.windows.getAll.mockReturnValue([]);
+      browser.windows.create.mockReturnValue(newPopupWindow);
+      browser.windows.remove.mockRejectedValue(new Error('Window not found'));
+
+      // First create a popup
+      await notificationManager.showPopup(setCurrentPopupIdSpy, undefined);
+
+      // Closing should not throw
+      await expect(notificationManager.closePopup()).resolves.toBeUndefined();
     });
   });
 });

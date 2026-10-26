@@ -1,5 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Encryption public key request confirmation
+ * (`eth_getEncryptionPublicKey`).
+ *
+ * Screen: `#/confirm-transaction/:id/encryption-public-key` (legacy page, not
+ * redesigned `#/confirmation`).
+ * Owns: request title, account balance, and Provide / Cancel actions.
+ * Boundaries: decrypting a message is `DecryptMessageConfirmation`. This
+ * object only covers sharing the encryption public key.
+ * Related: `DecryptMessageConfirmation`.
+ *
+ * @see ui/pages/confirm-encryption-public-key/confirm-encryption-public-key.component.js
+ */
 class GetEncryptionKeyConfirmation {
   private readonly accountBalanceValue =
     '.request-encryption-public-key__balance-value';
@@ -14,6 +27,10 @@ class GetEncryptionKeyConfirmation {
   private readonly getEncryptionKeyConfirmationTitle = {
     text: 'Request encryption public key',
     css: '.request-encryption-public-key__header__text',
+  };
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-get-encryption-key-confirmation',
   };
 
   private readonly provideEncryptionKeyButton = {
@@ -44,6 +61,7 @@ class GetEncryptionKeyConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.getEncryptionKeyConfirmationTitle,
         this.provideEncryptionKeyButton,
       ]);

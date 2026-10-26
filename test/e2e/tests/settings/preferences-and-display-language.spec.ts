@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';

@@ -2,6 +2,28 @@ import { Driver } from '../../../webdriver/driver';
 import { tEn } from '../../../../lib/i18n-helpers';
 import { THIRD_PARTY_APIS_ROUTE } from '../../../../../ui/helpers/constants/routes';
 
+/**
+ * Privacy tab plus Security and password helpers used by many settings tests.
+ *
+ * Screen: `#/settings/privacy` (and `#/settings/privacy/third-party-apis`) via
+ * `SettingsPage.goToPrivacySettings`; also `#/settings/security-and-password`
+ * (SRP, passkeys, change-password entry) via
+ * `SettingsPage.goToSecurityAndPasswordSettings` /
+ * `flows/settings.flow.ts` `navigateToSecurityAndPassword`.
+ * Owns: MetaMetrics / marketing / basic privacy toggles, IPFS/ENS/network
+ * checks, Blockaid, export data and state logs, third-party APIs navigation,
+ * SRP reveal quiz/list, passkey register/turn-off entry, and opening change
+ * password.
+ * Boundaries: not the Settings hub. The change-password form itself belongs to
+ * `ChangePasswordPage`. Onboarding privacy defaults belong to
+ * `OnboardingPrivacySettingsPage`.
+ * Related: `SettingsPage`, `ChangePasswordPage`, `flows/settings.flow.ts`.
+ *
+ * @see ui/pages/settings/privacy-tab/privacy-tab.tsx
+ * @see ui/pages/settings/privacy-tab/third-party-apis-sub-page.tsx
+ * @see ui/pages/settings/security-and-password-tab/security-and-password-tab.tsx
+ * @see ui/pages/settings/security-and-password-tab/manage-wallet-recovery-sub-page.tsx
+ */
 class PrivacySettings {
   private readonly autodetectNftToggleButton =
     '[data-testid="use-nft-detection"] .toggle-button > div';
@@ -11,6 +33,17 @@ class PrivacySettings {
 
   private readonly backToSrpListButton =
     '[data-testid="reveal-recovery-phrase-back-button"]';
+
+  private readonly basicConfigurationCheckbox = {
+    testId: 'basic-configuration-checkbox',
+  };
+
+  private readonly basicConfigurationModalToggleButton = {
+    testId: 'basic-configuration-modal-toggle-button',
+  };
+
+  private readonly basicFunctionalityToggle =
+    'label.toggle-button:has([data-testid="basic-functionality-toggle"])';
 
   private readonly blockaidAlertsToggle =
     '[data-testid="securityAlert"] .toggle-button';
@@ -26,8 +59,8 @@ class PrivacySettings {
   private readonly confirmDeleteMetaMetricsDataButton =
     '[data-testid="clear-metametrics-data"]';
 
-  private readonly copiedSrpExclamation =
-    '[data-testid="reveal-seed-copy-success-toast-banner-base"]';
+  private readonly copiedSrpWarning =
+    '[data-testid="sensitive-clipboard-warning"]';
 
   private readonly copySrpButton = '[data-testid="reveal-seed-copy-button"]';
 
@@ -173,6 +206,10 @@ class PrivacySettings {
     text: `Secret Recovery Phrase ${srpIndex.toString()}`,
   });
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   /** Security alerts (Blockaid) live under Transactions in Settings, not Privacy. */
   private readonly settingsTransactionsTab =
     '[data-testid="settings-tab-item-transactions"]';
@@ -241,12 +278,15 @@ class PrivacySettings {
   async checkDisplayedSrpCanBeCopied(): Promise<void> {
     console.log('Check displayed SRP on privacy settings page can be copied');
     await this.driver.clickElement(this.copySrpButton);
-    await this.driver.waitForSelector(this.copiedSrpExclamation);
+    await this.driver.waitForSelector(this.copiedSrpWarning);
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.privacySettingsLoadedMarker);
+      await this.driver.waitForMultipleSelectors([
+        this.privacySettingsLoadedMarker,
+        this.settingsPage,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Privacy & Security Settings page to be loaded',
@@ -489,6 +529,18 @@ class PrivacySettings {
       'Toggle auto detect tokens in Security and Privacy settings page',
     );
     await this.driver.clickElement(this.autoDetectToken);
+  }
+
+  async toggleBasicFunctionality(): Promise<void> {
+    console.log('Toggle basic functionality on privacy settings page');
+    await this.driver.clickElement(this.basicFunctionalityToggle);
+  }
+
+  async toggleBasicFunctionalityOff(): Promise<void> {
+    console.log('Toggle basic functionality off on privacy settings page');
+    await this.toggleBasicFunctionality();
+    await this.driver.clickElement(this.basicConfigurationCheckbox);
+    await this.driver.clickElement(this.basicConfigurationModalToggleButton);
   }
 
   async toggleBlockaidAlerts(): Promise<void> {

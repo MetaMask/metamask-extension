@@ -1,4 +1,4 @@
-import { strict as assert } from 'assert';
+import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -36,6 +36,11 @@ class AddEditRpcUrlPage {
 
   private readonly driver: Driver;
 
+  private readonly errorMessageFailedToFetchChainId = {
+    text: 'Could not fetch chain ID. Is your RPC URL correct?',
+    tag: 'p',
+  };
+
   private readonly errorMessageInvalidUrl = {
     text: 'URLs require the appropriate HTTP/HTTPS prefix.',
     tag: 'p',
@@ -43,6 +48,16 @@ class AddEditRpcUrlPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Leave the RPC URL field. Format errors are shown after blur, not while
+   * the user is still typing.
+   */
+  async blurAddRpcUrlInput(): Promise<void> {
+    console.log('Blur the RPC URL input on the RPC URL page');
+    const rpcUrlInput = await this.driver.findElement(this.addRpcUrlInput);
+    await rpcUrlInput.sendKeys(Key.TAB);
   }
 
   /**
@@ -58,8 +73,14 @@ class AddEditRpcUrlPage {
         shouldBeEnabled ? 'enabled' : 'disabled'
       }`,
     );
-    const addRpcUrlButton = await this.driver.findElement(this.addRpcUrlButton);
-    assert.equal(await addRpcUrlButton.isEnabled(), shouldBeEnabled);
+    await this.driver.waitForSelector(this.addRpcUrlButton, {
+      state: shouldBeEnabled ? 'enabled' : 'disabled',
+    });
+  }
+
+  async checkErrorMessageFailedToFetchChainIdIsDisplayed(): Promise<void> {
+    console.log('Check that failed chain ID fetch error message is displayed');
+    await this.driver.waitForSelector(this.errorMessageFailedToFetchChainId);
   }
 
   async checkErrorMessageInvalidUrlIsDisplayed(): Promise<void> {

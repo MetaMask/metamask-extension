@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from '../../store/store';
 import NotificationDetails from './notification-details';

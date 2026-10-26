@@ -13,6 +13,9 @@ import {
   DEVELOPER_OPTIONS_ROUTE,
   DEVELOPER_TOOLS_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
+  MFA_SETTINGS_ROUTE,
+  MFA_SETTINGS_EMAIL_ROUTE,
+  MFA_SETTINGS_TOTP_ROUTE,
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
@@ -42,8 +45,19 @@ import {
   getIsQrSyncEnabled,
   getIsPerpsIncludedInBuild,
 } from '../../../shared/lib/environment';
+import type {
+  UIMessengerActions,
+  UIMessengerEvents,
+} from '../../messengers/ui-messenger';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
+import { isMfaKitEnabled } from '../../hooks/identity/mfa/isMfaKitEnabled';
+import {
+  PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES,
+  PASSKEY_REGISTRATION_ROUTE_CAPABILITIES,
+  PASSKEY_SECURITY_ROUTE_CAPABILITIES,
+  PASSKEY_TURN_OFF_ROUTE_CAPABILITIES,
+} from './security-and-password-tab/messenger';
 
 /**
  * Route definition for a Settings page.
@@ -57,8 +71,15 @@ export type SettingsRouteMeta = {
   component?: ComponentType<React.PropsWithChildren<unknown>>;
   /** If true, this route appears as a tab in the TabBar */
   isTab?: boolean;
+  /** Index routes render into their parent's Outlet at their parent's URL (like a default child route). */
+  index?: boolean;
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
+  /** Background messenger capabilities delegated only while this route is mounted. */
+  messengerCapabilities?: {
+    actions?: UIMessengerActions['type'][];
+    events?: UIMessengerEvents['type'][];
+  };
   /**
    * If true, the route's component is mounted by the top-level app router
    * (outside `SettingsLayout`) rather than by the nested Settings router.
@@ -124,6 +145,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
     isTab: true,
     iconName: IconName.Customize,
+    index: true,
   },
   [THEME_ROUTE]: {
     labelKey: 'theme',
@@ -201,6 +223,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(() => import('./security-and-password-tab/index.ts')),
     isTab: true,
     iconName: IconName.SecurityKey,
+    messengerCapabilities: PASSKEY_SECURITY_ROUTE_CAPABILITIES,
   },
   [AUTO_LOCK_ROUTE]: {
     labelKey: 'autoLock',
@@ -209,6 +232,29 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
       () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
     ),
   },
+  ...(isMfaKitEnabled()
+    ? {
+        [MFA_SETTINGS_ROUTE]: {
+          labelKey: 'mfaSettingsTitle',
+          parentPath: SECURITY_AND_PASSWORD_ROUTE,
+          component: mmLazy(() => import('./mfa-settings/mfa-settings.tsx')),
+        },
+        [MFA_SETTINGS_EMAIL_ROUTE]: {
+          labelKey: 'mfaMethodEmail',
+          parentPath: MFA_SETTINGS_ROUTE,
+          component: mmLazy(
+            () => import('./mfa-settings/mfa-email-details.tsx'),
+          ),
+        },
+        [MFA_SETTINGS_TOTP_ROUTE]: {
+          labelKey: 'mfaMethodTotp',
+          parentPath: MFA_SETTINGS_ROUTE,
+          component: mmLazy(
+            () => import('./mfa-settings/mfa-totp-details.tsx'),
+          ),
+        },
+      }
+    : {}),
   [MANAGE_WALLET_RECOVERY_ROUTE]: {
     labelKey: 'manageWalletRecovery',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
@@ -223,6 +269,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/password-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES,
   },
   [SECURITY_REGISTER_PASSKEY_ROUTE]: {
     labelKey: 'setUpPasskey',
@@ -230,6 +277,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_REGISTRATION_ROUTE_CAPABILITIES,
   },
   [SECURITY_TURN_OFF_PASSKEY_ROUTE]: {
     labelKey: 'turnOffPasskey',
@@ -237,6 +285,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./security-and-password-tab/passkey-turn-off-sub-page.tsx'),
     ),
+    messengerCapabilities: PASSKEY_TURN_OFF_ROUTE_CAPABILITIES,
   },
 
   // --- Privacy tab ---
@@ -453,6 +502,7 @@ export const SETTINGS_TABS = Object.entries(SETTINGS_ROUTES)
     labelKey: meta.labelKey,
     iconName: meta.iconName,
     component: meta.component,
+    index: meta.index,
   }));
 
 /**
@@ -468,4 +518,6 @@ export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
   .map(([path, meta]) => ({
     path,
     component: meta.component,
+    messengerCapabilities: meta.messengerCapabilities,
+    index: meta.index,
   }));

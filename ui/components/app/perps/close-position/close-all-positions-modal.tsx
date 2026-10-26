@@ -34,10 +34,11 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { usePerpsMetamaskFeeDiscountBips } from '../../../../hooks/perps/usePerpsMetamaskFeeDiscountBips';
+import { ORIGINAL_METAMASK_FEE_BIPS } from '../../../../hooks/perps/usePerpsOrderFees';
 import {
-  BASIS_POINTS_DIVISOR,
-  ORIGINAL_METAMASK_FEE_BIPS,
-} from '../../../../hooks/perps/usePerpsOrderFees';
+  applyPerpsFallbackDiscount,
+  getPerpsNotionalUsd,
+} from '../../../../hooks/perps/perps-fee-utils';
 import type { Position } from '../types';
 
 export type CloseAllPositionsModalProps = {
@@ -87,35 +88,60 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   const symbolNotionalPairs = useMemo(() => {
     const map = new Map<string, number>();
     for (const pos of positions) {
-      const notional = Math.abs(Number.parseFloat(pos.positionValue) || 0);
+      let notional: number;
+      try {
+        notional = getPerpsNotionalUsd({
+          usdAmount: pos.positionValue,
+          allowEmpty: false,
+        });
+      } catch (error) {
+        if (error instanceof RangeError) {
+          return undefined;
+        }
+        throw error;
+      }
       map.set(pos.symbol, (map.get(pos.symbol) ?? 0) + notional);
     }
     return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
   }, [positions]);
 
   const symbolNotionalKey = useMemo(
-    () => JSON.stringify(symbolNotionalPairs),
+    () => JSON.stringify(symbolNotionalPairs ?? []),
     [symbolNotionalPairs],
   );
+  const hasInvalidNotional = symbolNotionalPairs === undefined;
 
   const [rawProtocolFees, setRawProtocolFees] = useState(0);
   const [rawMetamaskFees, setRawMetamaskFees] = useState(0);
-  const [isLoadingFees, setIsLoadingFees] = useState(positions.length > 0);
+  const [fallbackMetamaskFees, setFallbackMetamaskFees] = useState(0);
+  const [isLoadingFees, setIsLoadingFees] = useState(
+    !hasInvalidNotional && positions.length > 0,
+  );
   const feeRequestId = useRef(0);
+  const feeFetchKey = isOpen ? symbolNotionalKey : '';
+  const [prevFeeFetchKey, setPrevFeeFetchKey] = useState(feeFetchKey);
+
+  if (feeFetchKey !== prevFeeFetchKey) {
+    setPrevFeeFetchKey(feeFetchKey);
+    if (isOpen) {
+      const entries: [string, number][] = JSON.parse(symbolNotionalKey);
+      setRawProtocolFees(0);
+      setRawMetamaskFees(0);
+      setFallbackMetamaskFees(0);
+      setIsLoadingFees(entries.length > 0);
+    }
+  }
 
   const metamaskFeeDiscountBips = usePerpsMetamaskFeeDiscountBips(
     ORIGINAL_METAMASK_FEE_BIPS,
   );
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen || hasInvalidNotional) {
       return undefined;
     }
 
     let cancelled = false;
-
-    setRawProtocolFees(0);
-    setRawMetamaskFees(0);
 
     const entries: [string, number][] = JSON.parse(symbolNotionalKey);
 
@@ -123,30 +149,42 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     const currentId = feeRequestId.current;
 
     if (entries.length === 0) {
-      setIsLoadingFees(false);
       return undefined;
     }
 
-    setIsLoadingFees(true);
+    // closeAll resolves one builder discount against the whole batch, while
+    // each symbol retains its own protocol rate and fee contribution.
+    const totalNotional = entries.reduce(
+      (sum, [, notional]) => sum + notional,
+      0,
+    );
 
     Promise.all(
       entries.map(([symbol, notional]) =>
         submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
-          { orderType: 'market' as const, isMaker: false, symbol },
+          {
+            orderType: 'market' as const,
+            isMaker: false,
+            symbol,
+            amount: String(totalNotional),
+          },
         ])
           .then((result) => ({
             protocolFee:
               notional *
               (result?.protocolFeeRate ??
                 PERPS_FALLBACK_FEE_RATES.protocolFeeRate),
-            metamaskFee:
-              notional *
-              (result?.metamaskFeeRate ??
-                PERPS_FALLBACK_FEE_RATES.metamaskFeeRate),
+            metamaskFee: notional * (result?.metamaskFeeRate ?? 0),
+            fallbackMetamaskFee:
+              result?.metamaskFeeRate === undefined
+                ? notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate
+                : 0,
           }))
           .catch(() => ({
             protocolFee: notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
-            metamaskFee: notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
+            metamaskFee: 0,
+            fallbackMetamaskFee:
+              notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
           })),
       ),
     )
@@ -157,6 +195,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
           );
           setRawMetamaskFees(
             perSymbolFees.reduce((sum, f) => sum + f.metamaskFee, 0),
+          );
+          setFallbackMetamaskFees(
+            perSymbolFees.reduce((sum, f) => sum + f.fallbackMetamaskFee, 0),
           );
           setIsLoadingFees(false);
         }
@@ -170,15 +211,21 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [isOpen, symbolNotionalKey]);
+  }, [isOpen, symbolNotionalKey, hasInvalidNotional]);
 
   const estimatedFees = useMemo(() => {
-    const discountFactor =
-      metamaskFeeDiscountBips !== undefined && metamaskFeeDiscountBips > 0
-        ? 1 - metamaskFeeDiscountBips / BASIS_POINTS_DIVISOR
-        : 1;
-    return rawProtocolFees + rawMetamaskFees * discountFactor;
-  }, [rawProtocolFees, rawMetamaskFees, metamaskFeeDiscountBips]);
+    // Controller rates are resolved; discount only local fallback estimates.
+    return (
+      rawProtocolFees +
+      rawMetamaskFees +
+      applyPerpsFallbackDiscount(fallbackMetamaskFees, metamaskFeeDiscountBips)
+    );
+  }, [
+    rawProtocolFees,
+    rawMetamaskFees,
+    fallbackMetamaskFees,
+    metamaskFeeDiscountBips,
+  ]);
 
   const roundedMargin = useMemo(
     () => Math.round(totalMargin * 100) / 100,
@@ -199,7 +246,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     [roundedMargin, roundedFees],
   );
 
-  const isSubmitDisabled = isSubmitting || positions.length === 0;
+  const isSubmitDisabled =
+    isSubmitting || positions.length === 0 || hasInvalidNotional;
+  const shouldShowFeePlaceholder = isLoadingFees || hasInvalidNotional;
 
   return (
     <Modal
@@ -299,7 +348,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-fees-value"
                 >
-                  {isLoadingFees ? '--' : `-${formatFiat(roundedFees)}`}
+                  {shouldShowFeePlaceholder
+                    ? '--'
+                    : `-${formatFiat(roundedFees)}`}
                 </Text>
               </Box>
 
@@ -321,7 +372,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-receive-value"
                 >
-                  {isLoadingFees
+                  {shouldShowFeePlaceholder
                     ? '--'
                     : formatFiat(Math.max(youWillReceive, 0))}
                 </Text>

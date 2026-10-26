@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { screen } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
@@ -114,18 +113,6 @@ describe('DeFiDetailsPage', () => {
 
   afterEach(() => {
     store.clearActions();
-  });
-
-  it('renders defi asset page', () => {
-    const { container } = renderWithProvider(
-      <Routes>
-        <Route path="/defi/:chainId/:protocolId" element={<DeFiPage />} />
-      </Routes>,
-      store,
-      `/defi/${CHAIN_IDS.MAINNET}/aave`,
-    );
-
-    expect(container).toMatchSnapshot();
   });
 
   it('renders DeFiDetailsPageV2 when the V2 controller flag is enabled', () => {

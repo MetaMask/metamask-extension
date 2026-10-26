@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 
 const meta: Meta<typeof QRHardwareWalletImporter> = {

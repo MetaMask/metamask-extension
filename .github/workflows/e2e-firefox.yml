@@ -24,7 +24,8 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
+      # Keep all shards running for complete failure and artifact reporting.
+      fail-fast: false
       matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-webpack'] }}
     with:
       test-suite-name: test-e2e-firefox-webpack
@@ -38,7 +39,8 @@ jobs:
   test-e2e-firefox-flask-webpack:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
+      # Keep all shards running for complete failure and artifact reporting.
+      fail-fast: false
       matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-flask-webpack'] }}
     with:
       test-suite-name: test-e2e-firefox-flask-webpack
@@ -65,7 +67,8 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
+      # Keep all shards running for complete failure and artifact reporting.
+      fail-fast: false
       matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-firefox-playwright'] }}
     with:
       test-suite-name: test-e2e-firefox-playwright

@@ -15,7 +15,6 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { MenuItem } from '../../ui/menu';
-import { transitionForward } from '../../ui/transition';
 import { preserveDrawerOpen } from '../global-menu-drawer/global-menu-drawer';
 import { GlobalMenuListProps, isRouteItem } from './global-menu-list.types';
 
@@ -77,16 +76,13 @@ export const GlobalMenuList = ({
   const navigate = useNavigate();
 
   return (
-    <Box
-      className={`global-menu-list ${className}`}
-      flexDirection={BoxFlexDirection.Column}
-    >
+    <nav className={`global-menu-list ${className}`}>
       {sections.map((section, sectionIndex) => (
         <Box key={section.id} flexDirection={BoxFlexDirection.Column}>
           {/* Section Separator - Show before section if it's not the first section */}
           {sectionIndex > 0 && !section.hideDividerAbove && (
             <Box className="w-full px-2 py-2">
-              <Box className="w-full border-t border-muted" />
+              <hr className="m-0 w-full border-0 border-t border-muted" />
             </Box>
           )}
 
@@ -135,11 +131,9 @@ export const GlobalMenuList = ({
                   event.preventDefault();
                   item.onClick?.();
                   preserveDrawerOpen();
-                  transitionForward(() =>
-                    navigate(item.to, {
-                      state: routeState,
-                    }),
-                  );
+                  navigate(item.to, {
+                    state: routeState,
+                  });
                 }}
                 disabled={item.disabled}
                 showInfoDot={item.showInfoDot}
@@ -155,6 +149,6 @@ export const GlobalMenuList = ({
           })}
         </Box>
       ))}
-    </Box>
+    </nav>
   );
 };

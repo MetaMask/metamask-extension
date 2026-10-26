@@ -13,7 +13,10 @@ import HardwareWalletSignatures from './hardware-wallet-signatures';
  */
 export default function HardwareWalletSignaturesPage() {
   return (
-    <Page className="hardware-wallet-signatures-page">
+    <Page
+      className="hardware-wallet-signatures-page"
+      data-testid="parent-selector-hardware-wallet-signatures-page"
+    >
       <Content padding={0}>
         <HardwareWalletSignatures />
       </Content>

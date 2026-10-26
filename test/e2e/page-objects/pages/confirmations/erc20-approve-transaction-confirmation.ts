@@ -2,6 +2,23 @@ import { tEn } from '../../../../lib/i18n-helpers';
 import { RawLocator } from '../../common';
 import TransactionConfirmation from './transaction-confirmation';
 
+/**
+ * ERC-20 approve / spending-cap confirmation on the redesigned confirm
+ * screen.
+ *
+ * Screen: `#/confirmation` for approve / revoke-approve transaction types.
+ * Owns: spending-cap title/sections, edit/custom spending-cap controls,
+ * estimated-changes / simulation rows, and spender/request-from/method
+ * advanced sections.
+ * Boundaries: inherits gas/simulations chrome from
+ * `TransactionConfirmation`. Set-approval-for-all NFT approvals are
+ * `SetApprovalForAllTransactionConfirmation`. Gas overlays remain
+ * `GasFeeModal` / `GasFeeTokenModal`.
+ * Related: `TransactionConfirmation`, `SetApprovalForAllTransactionConfirmation`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/approve/approve.tsx
+ * @see ui/pages/confirmations/components/confirm/info/approve/edit-spending-cap-modal/edit-spending-cap-modal.tsx
+ */
 class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
   private readonly customSpendingCapInput: RawLocator =
     '[data-testid="custom-spending-cap-input"]';
@@ -10,45 +27,40 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     '[data-testid="edit-spending-cap-icon"]';
 
   private readonly estimatedChangesSection = {
-    css: 'p',
-    text: tEn('simulationDetailsTitle'),
+    testId: 'confirmation__simulation_section',
   };
 
   private readonly interactingWithSection = {
-    css: 'p',
-    text: tEn('interactingWith'),
+    testId: 'transaction-details-recipient-row',
   };
 
   private readonly methodSection = {
-    css: 'p',
-    text: tEn('methodData'),
+    testId: 'transaction-details-method-data-row',
   };
 
   private readonly nftTokenValue: RawLocator =
     '[data-testid="simulation-token-value"]';
 
   private readonly requestFromSection = {
-    css: 'p',
-    text: tEn('requestFrom'),
+    testId: 'transaction-details-origin-row',
   };
 
   private readonly revokeTitle = {
-    css: 'h2',
+    testId: 'confirm-title-text',
     text: tEn('confirmTitleRevokeApproveTransaction'),
   };
 
   private readonly spenderSection = {
-    css: 'p',
-    text: tEn('spender'),
+    testId: 'confirmation__approve-spender',
   };
 
   private readonly spendingCapPermissionDescription = {
-    css: 'p',
+    testId: 'confirm-title-description',
     text: tEn('confirmTitleDescERC20ApproveTransaction'),
   };
 
   private readonly spendingCapRequestTitle = {
-    css: 'h2',
+    testId: 'confirm-title-text',
     text: tEn('confirmTitlePermitTokens'),
   };
 

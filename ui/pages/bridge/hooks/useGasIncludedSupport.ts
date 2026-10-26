@@ -34,8 +34,12 @@ export const useGasIncludedSupport = () => {
 
   const isBridge = isCrossChain(fromToken?.chainId, toChain?.chainId);
 
-  // Fetch sentinel flags for src chain; cancel in-flight work on chain change
-  const [networkFlags, setNetworkFlags] = useState<NetworkFlags | undefined>();
+  // Fetch sentinel flags for src chain; cancel in-flight work on chain change.
+  // Cache is keyed by chain so a stale response is ignored without render-time reset.
+  const [networkFlagsCache, setNetworkFlagsCache] = useState<{
+    hexChainId: string | undefined;
+    flags: NetworkFlags | undefined;
+  }>({ hexChainId, flags: undefined });
 
   useEffect(() => {
     let isCancelled = false;
@@ -43,7 +47,7 @@ export const useGasIncludedSupport = () => {
     const fetchNetworkFlags = async () => {
       if (!hexChainId) {
         if (!isCancelled) {
-          setNetworkFlags(undefined);
+          setNetworkFlagsCache({ hexChainId, flags: undefined });
         }
         return;
       }
@@ -51,22 +55,26 @@ export const useGasIncludedSupport = () => {
       try {
         const flags = await getSentinelNetworkFlags(hexChainId);
         if (!isCancelled) {
-          setNetworkFlags(flags);
+          setNetworkFlagsCache({ hexChainId, flags });
         }
       } catch {
         if (!isCancelled) {
-          setNetworkFlags(undefined);
+          setNetworkFlagsCache({ hexChainId, flags: undefined });
         }
       }
     };
 
-    setNetworkFlags(undefined);
     fetchNetworkFlags();
 
     return () => {
       isCancelled = true;
     };
   }, [hexChainId]);
+
+  const networkFlags =
+    networkFlagsCache.hexChainId === hexChainId
+      ? networkFlagsCache.flags
+      : undefined;
 
   // If native EVM and simulationIncludeFees are supported, gasless request params pretty much get ignored
   // This means the backend can always return a gasIncluded quote
@@ -113,8 +121,8 @@ export const useGasIncludedSupport = () => {
 
   return {
     nativeGasIncluded,
-    /** True if STX and sendBundle are available, or if gasIncluded7702 is true */
-    gasIncluded: gasIncluded || gasIncluded7702,
+    /** True if fees can be included through simulation, STX/sendBundle, or 7702 */
+    gasIncluded: Boolean(nativeGasIncluded) || gasIncluded || gasIncluded7702,
     /** True if 7702 is enabled AND sendBundle is not supported */
     gasIncluded7702,
   };

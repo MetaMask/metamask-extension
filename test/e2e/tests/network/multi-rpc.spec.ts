@@ -21,8 +21,11 @@ import {
   importSRPOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
+import { getMockAssetsPrice } from '../tokens/utils/mocks';
+
+const MOCK_ETH_PRICE = 1700;
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
@@ -46,7 +49,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               'eip155:1/slip44:60': {
                 id: 'ethereum',
-                price: 1700,
+                price: MOCK_ETH_PRICE,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
@@ -131,6 +134,9 @@ describe('MultiRpc:', function (this: Suite) {
               '0x1': true,
             },
           })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
@@ -188,7 +194,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               'eip155:1/slip44:60': {
                 id: 'ethereum',
-                price: 1700,
+                price: MOCK_ETH_PRICE,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
@@ -325,7 +331,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               'eip155:1/slip44:60': {
                 id: 'ethereum',
-                price: 1700,
+                price: MOCK_ETH_PRICE,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
@@ -449,7 +455,7 @@ describe('MultiRpc:', function (this: Suite) {
             json: {
               'eip155:1/slip44:60': {
                 id: 'ethereum',
-                price: 1700,
+                price: MOCK_ETH_PRICE,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
               },
@@ -515,6 +521,9 @@ describe('MultiRpc:', function (this: Suite) {
             },
             selectedNetworkClientId: 'networkConfigurationId',
           })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
@@ -529,7 +538,7 @@ describe('MultiRpc:', function (this: Suite) {
           driver,
         );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
-        await onboardingPrivacySettingsPage.navigateToGeneralSettings();
+        await onboardingPrivacySettingsPage.navigateToNetworksSettings();
 
         // open edit network modal during onboarding and select the second rpc
         await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');
