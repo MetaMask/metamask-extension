@@ -242,8 +242,7 @@ const ShieldEntryModal = ({
           }}
         />
         <MarketingMoment
-          className="bg-transparent"
-          reserveCloseButtonSpace
+          className="pt-12 px-4"
           title={
             modalType === MODAL_TYPE.A
               ? t('shieldEntryModalTitleA')

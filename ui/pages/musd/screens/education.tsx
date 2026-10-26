@@ -303,6 +303,7 @@ const MusdEducationScreen = () => {
         />
       </Box>
       <MarketingMoment
+        className="pt-12"
         title={t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
         titleProps={{
           style: { whiteSpace: 'pre-line' },

@@ -52,8 +52,8 @@ export type MarketingMomentProps = {
    */
   artwork?: ReactNode;
   /**
-   * Props spread onto the box that sizes `artwork`. Defaults to centered with
-   * horizontal padding. `className` is merged onto the box layout classes.
+   * Props spread onto the box that sizes `artwork`. Defaults to centered.
+   * `className` is merged onto the box layout classes.
    */
   artworkWrapperProps?: Omit<BoxProps, 'children'>;
   /**
@@ -64,16 +64,6 @@ export type MarketingMomentProps = {
    * Dismiss action, rendered as a tertiary button.
    */
   secondaryAction?: MarketingMomentAction;
-  /**
-   * Optional full-bleed page background, such as a brand color. The root is
-   * transparent when this is set.
-   */
-  background?: ReactNode;
-  /**
-   * Offsets the title below a corner close button. Turn this off when a header
-   * already occupies that space.
-   */
-  reserveCloseButtonSpace?: boolean;
   /**
    * Additional classes for the root. Merged after the layout classes.
    */

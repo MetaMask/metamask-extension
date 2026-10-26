@@ -132,17 +132,4 @@ describe('MarketingMoment', () => {
       screen.queryByTestId('marketing-moment-secondary-button'),
     ).not.toBeInTheDocument();
   });
-
-  it('renders a page background when provided', () => {
-    renderMoment({
-      background: <div data-testid="marketing-moment-background" />,
-    });
-
-    expect(
-      screen.getByTestId('marketing-moment-background'),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('marketing-moment')).toHaveClass(
-      'bg-transparent',
-    );
-  });
 });

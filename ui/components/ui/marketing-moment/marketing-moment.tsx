@@ -13,7 +13,7 @@ import {
   TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
-import { MarketingMomentTitle } from './marketing-moment-title';
+import { MarketingMomentTitle } from '../marketing-moment-title';
 import type {
   MarketingMomentAction,
   MarketingMomentProps,
@@ -33,8 +33,6 @@ import type {
  * @param props.artworkWrapperProps
  * @param props.primaryAction
  * @param props.secondaryAction
- * @param props.background
- * @param props.reserveCloseButtonSpace
  * @param props.className
  * @param props.'data-testid'
  */
@@ -48,8 +46,6 @@ export const MarketingMoment = ({
   artworkWrapperProps,
   primaryAction,
   secondaryAction,
-  background,
-  reserveCloseButtonSpace = true,
   className,
   'data-testid': dataTestId,
 }: MarketingMomentProps) => {
@@ -111,20 +107,11 @@ export const MarketingMoment = ({
       data-testid={dataTestId}
       flexDirection={BoxFlexDirection.Column}
       className={twMerge(
-        'relative h-full min-h-0 w-full flex-1 overflow-y-auto',
-        background ? 'bg-transparent' : 'bg-default',
+        'h-full min-h-0 w-full flex-1 overflow-y-auto',
         className,
       )}
     >
-      {background ? (
-        <Box className="pointer-events-none absolute inset-0">{background}</Box>
-      ) : null}
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        gap={4}
-        paddingHorizontal={6}
-        className={reserveCloseButtonSpace ? 'mt-12 shrink-0' : 'shrink-0'}
-      >
+      <Box flexDirection={BoxFlexDirection.Column} gap={4} className="shrink-0">
         {renderTitle()}
         {renderDescription()}
         {children}
@@ -135,7 +122,6 @@ export const MarketingMoment = ({
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Center}
-          paddingHorizontal={6}
           {...artworkBoxProps}
           className={twMerge('w-full flex-1 overflow-hidden', artworkClassName)}
         >
@@ -149,7 +135,6 @@ export const MarketingMoment = ({
         <Box
           flexDirection={BoxFlexDirection.Column}
           gap={2}
-          paddingHorizontal={4}
           paddingBottom={4}
           className="shrink-0"
         >

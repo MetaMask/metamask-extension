@@ -72,15 +72,16 @@ export const Artwork: Story = {
 
 export const Background: Story = {
   render: () => (
-    <MarketingMoment
-      background={<Box className="size-full bg-accent02-dark" />}
-      title="Spend and earn"
-      description="A full-bleed background sits behind the copy and actions."
-      titleProps={{ className: 'text-accent02-light' }}
-      descriptionProps={{ className: 'text-accent02-light' }}
-      primaryAction={{ label: 'Get started' }}
-      secondaryAction={{ label: 'Not now' }}
-    />
+    <Box className="h-full bg-accent02-dark">
+      <MarketingMoment
+        title="Spend and earn"
+        description="A full-bleed background sits behind the copy and actions."
+        titleProps={{ className: 'text-accent02-light' }}
+        descriptionProps={{ className: 'text-accent02-light' }}
+        primaryAction={{ label: 'Get started' }}
+        secondaryAction={{ label: 'Not now' }}
+      />
+    </Box>
   ),
 };
 
@@ -99,16 +100,17 @@ export const WalletReady: Story = {
 export const TransactionShield: Story = {
   name: 'Transaction Shield extension template',
   render: () => (
-    <MarketingMoment
-      background={<Box className="size-full bg-accent03-dark" />}
-      title="Introducing Transaction Shield"
-      description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
-      titleProps={{ className: 'text-accent04-light' }}
-      descriptionProps={{ className: 'text-accent04-light' }}
-      artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
-      primaryAction={{ label: 'Start 14-day free trial' }}
-      secondaryAction={{ label: 'Learn more' }}
-    />
+    <Box className="h-full bg-accent03-dark">
+      <MarketingMoment
+        title="Introducing Transaction Shield"
+        description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
+        titleProps={{ className: 'text-accent04-light' }}
+        descriptionProps={{ className: 'text-accent04-light' }}
+        artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
+        primaryAction={{ label: 'Start 14-day free trial' }}
+        secondaryAction={{ label: 'Learn more' }}
+      />
+    </Box>
   ),
 };
 
@@ -136,16 +138,17 @@ export const ExtensionTemplates: Story = {
         secondaryAction={{ label: 'Manage default settings' }}
       />
 
-      <MarketingMoment
-        background={<Box className="size-full bg-accent03-dark" />}
-        title="Introducing Transaction Shield"
-        description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
-        titleProps={{ className: 'text-accent04-light' }}
-        descriptionProps={{ className: 'text-accent04-light' }}
-        artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
-        primaryAction={{ label: 'Start 14-day free trial' }}
-        secondaryAction={{ label: 'Learn more' }}
-      />
+      <Box className="bg-accent03-dark">
+        <MarketingMoment
+          title="Introducing Transaction Shield"
+          description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
+          titleProps={{ className: 'text-accent04-light' }}
+          descriptionProps={{ className: 'text-accent04-light' }}
+          artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
+          primaryAction={{ label: 'Start 14-day free trial' }}
+          secondaryAction={{ label: 'Learn more' }}
+        />
+      </Box>
 
       <MarketingMoment
         title="Get 3% on stablecoins"
