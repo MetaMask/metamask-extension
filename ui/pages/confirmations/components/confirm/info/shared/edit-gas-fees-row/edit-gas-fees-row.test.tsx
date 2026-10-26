@@ -1,4 +1,5 @@
 import React from 'react';
+import { act, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
@@ -20,6 +21,7 @@ import { EditGasFeesRow } from './edit-gas-fees-row';
 
 jest.mock('../../../../../hooks/gas/useEstimationFailed');
 jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../../../../../hooks/usePolling', () => jest.fn());
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -210,6 +212,86 @@ describe('<EditGasFeesRow />', () => {
 
       expect(queryByText(messages.unavailable.message)).toBeNull();
       expect(getByTestId('paid-by-meta-mask')).toBeInTheDocument();
+    });
+  });
+
+  describe('sponsor', () => {
+    const UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK = {
+      ...GAS_FEE_TOKEN_MOCK,
+      sponsor: 'Uniswap',
+    };
+
+    const METAMASK_SPONSORED_GAS_FEE_TOKEN_MOCK = {
+      ...GAS_FEE_TOKEN_MOCK,
+      sponsor: 'MetaMask',
+    };
+
+    it('renders the sponsor name and tooltip when gas fee is sponsored by a third party', () => {
+      const { container, getByTestId } = render({
+        gasFeeTokens: [UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        isGaslessSupported: true,
+      });
+
+      expect(getByTestId('paid-by-meta-mask')).toHaveTextContent(
+        'Paid by Uniswap',
+      );
+      expect(
+        container.querySelector(
+          `[data-original-title="${messages.gasSponsorshipSponsorTooltip.message.replace(
+            '$1',
+            'Uniswap',
+          )}"]`,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('passes the sponsor to the gas sponsorship modal', async () => {
+      const { getAllByText, getByTestId } = render({
+        gasFeeTokens: [UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        isGaslessSupported: true,
+      });
+
+      await act(async () => {
+        fireEvent.click(getByTestId('paid-by-meta-mask'));
+      });
+
+      expect(getAllByText('Paid by Uniswap')).toHaveLength(2);
+    });
+
+    it('renders "Paid by MetaMask" and the MetaMask tooltip when the sponsor is MetaMask', () => {
+      const { container, getByTestId } = render({
+        gasFeeTokens: [METAMASK_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        isGaslessSupported: true,
+      });
+
+      expect(getByTestId('paid-by-meta-mask')).toHaveTextContent(
+        messages.paidByMetaMask.message,
+      );
+      expect(
+        container.querySelector(
+          `[data-original-title="${messages.gasSponsorshipOptOutTooltip.message}"]`,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it('renders "Paid by MetaMask" when gas fee tokens have no sponsor', () => {
+      const { getByTestId } = render({
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        isGaslessSupported: true,
+      });
+
+      expect(getByTestId('paid-by-meta-mask')).toHaveTextContent(
+        messages.paidByMetaMask.message,
+      );
+    });
+
+    it('does not render the sponsor when gas fee is not sponsored', () => {
+      const { queryByText } = render({
+        gasFeeTokens: [UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        isGaslessSupported: false,
+      });
+
+      expect(queryByText('Paid by Uniswap')).toBeNull();
     });
   });
 

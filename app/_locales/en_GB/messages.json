@@ -4356,6 +4356,10 @@
     "message": "This network requires keeping at least $1 $2 in your account after the transaction. Smart accounts cannot go below this reserve.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 covers the network fee for this transaction. This includes a one-time smart account activation.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1 hrs",
     "description": "$1 represents a number of hours"
@@ -7303,6 +7307,10 @@
   },
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
+  },
+  "paidBySponsor": {
+    "message": "Paid by $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "Paid with"
