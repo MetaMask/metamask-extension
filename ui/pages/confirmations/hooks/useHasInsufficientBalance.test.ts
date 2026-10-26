@@ -169,7 +169,7 @@ describe('useHasInsufficientBalance', () => {
     });
     expect(result.hasInsufficientBalance).toBe(true);
     expect(result.isNativeBalanceKnown).toBe(true);
-    expect(result.nativeCurrency).toBe('pathUSD');
+    expect(result.nativeCurrency).toBe('OUSD');
   });
 
   it('always return true for Tempo Testnet if `excludeNativeTokenForFee` is true', () => {
@@ -190,7 +190,7 @@ describe('useHasInsufficientBalance', () => {
     });
     expect(result.hasInsufficientBalance).toBe(false);
     expect(result.isNativeBalanceKnown).toBe(true);
-    expect(result.nativeCurrency).toBe('pathUSD');
+    expect(result.nativeCurrency).toBe('OUSD');
   });
 
   it('always return false for Tempo Testnet if `excludeNativeTokenForFee` is unset', () => {
