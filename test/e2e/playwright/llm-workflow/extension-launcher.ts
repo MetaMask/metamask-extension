@@ -60,6 +60,7 @@ type ResolvedOptions = {
   manifestFlags?: Partial<ManifestFlags>;
   selfOnboarding: boolean;
   srp?: string;
+  password?: string;
 };
 
 export function buildChromiumLaunchArgs(
@@ -125,6 +126,7 @@ export class MetaMaskExtensionLauncher {
       manifestFlags: options.manifestFlags,
       selfOnboarding: options.selfOnboarding === true,
       srp: options.srp,
+      password: options.password,
     };
     this.userDataDir = '';
 
@@ -273,26 +275,31 @@ export class MetaMaskExtensionLauncher {
       if (this.options.selfOnboarding) {
         let phrase = this.options.srp ?? '';
         this.options.srp = undefined;
+        let password = this.options.password ?? DEFAULT_PASSWORD;
+        this.options.password = undefined;
         try {
           await runSelfOnboarding(
             getE2EDriver(this.extensionPage as Page),
             phrase,
-            DEFAULT_PASSWORD,
+            password,
           );
+          phrase = '';
+          const driver = withTimeout(
+            getE2EDriver(this.extensionPage as Page),
+            UI_READY_TIMEOUT_MS,
+          );
+          // Reloading lets the UI route to unlock or the completion page from
+          // the real wallet state; Done never navigates the tab when it opens
+          // the side panel, so home is loaded again afterwards.
+          await this.navigateToHome();
+          await finishOnboarding(driver, password);
+          password = '';
+          await this.navigateToHome();
+          await new HomePage(driver).checkPageIsLoaded();
         } finally {
           phrase = '';
+          password = '';
         }
-        const driver = withTimeout(
-          getE2EDriver(this.extensionPage as Page),
-          UI_READY_TIMEOUT_MS,
-        );
-        // Reloading lets the UI route to unlock or the completion page from
-        // the real wallet state; Done never navigates the tab when it opens
-        // the side panel, so home is loaded again afterwards.
-        await this.navigateToHome();
-        await finishOnboarding(driver, DEFAULT_PASSWORD);
-        await this.navigateToHome();
-        await new HomePage(driver).checkPageIsLoaded();
       }
 
       return {
