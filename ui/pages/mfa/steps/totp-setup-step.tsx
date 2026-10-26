@@ -17,8 +17,10 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useTheme } from '../../../hooks/useTheme';
 import { MfaFlowTestIds } from '../test-ids';
 import StepLayout, { type StepProps } from './step-layout';
 
@@ -43,6 +45,7 @@ const formatSetupKey = (secret: string) =>
  */
 const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
   const t = useI18nContext();
+  const theme = useTheme();
   const [isCopied, copy] = useCopyToClipboard({ sensitive: true });
 
   return (
@@ -73,13 +76,15 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
         {/* The QR code needs a light background to scan in dark mode. */}
         <Box
           alignItems={BoxAlignItems.Center}
-          className="self-center overflow-hidden rounded-2xl bg-white"
+          className={`self-center overflow-hidden rounded-2xl p-4 ${
+            theme === ThemeType.light ? 'bg-muted' : 'bg-white'
+          }`}
         >
           <img
             src={step.qrCode}
             alt={t('mfaTotpSetupQrAlt')}
-            width={200}
-            height={200}
+            width={184}
+            height={184}
             data-testid={MfaFlowTestIds.TOTP_QR_IMAGE}
           />
         </Box>
