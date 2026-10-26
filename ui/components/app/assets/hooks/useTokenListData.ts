@@ -40,6 +40,7 @@ import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
+  selectUnavailableBalancesForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -47,6 +48,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
+import { buildUnavailableBalancePlaceholderTokens } from '../util/unavailableBalancePlaceholders';
 import { isMusdToken } from '../../musd/constants';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
@@ -143,6 +145,10 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
     getAllEnabledNetworksForAllNamespaces,
   );
 
+  const unavailableBalances = useSelector(
+    selectUnavailableBalancesForSelectedAccountGroup,
+  );
+
   const sortedFilteredTokens = useMemo(() => {
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
@@ -178,7 +184,7 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
             (!isEvm && asset.chainId === currentNetwork.chainId),
         );
 
-    return finalAccountAssets.map((asset) => {
+    const tokens = finalAccountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -191,6 +197,17 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
 
       return token;
     });
+
+    const placeholders = buildUnavailableBalancePlaceholderTokens({
+      unavailableChainIds: unavailableBalances.chainIds,
+      tokens,
+      isChainShown: (chainId) =>
+        allEnabledNetworksForAllNamespaces.includes(chainId) &&
+        (useExternalServices ||
+          (!isEvm && chainId === currentNetwork.chainId)),
+    });
+
+    return placeholders.length > 0 ? [...tokens, ...placeholders] : tokens;
   }, [
     isEvm,
     currentNetwork.chainId,
@@ -199,6 +216,7 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
     allEnabledNetworksForAllNamespaces,
     deferredShouldHideZeroBalanceTokens,
     useExternalServices,
+    unavailableBalances,
   ]);
 
   // Skeletons stand in for the native gas token and mUSD that render before

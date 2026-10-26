@@ -7,6 +7,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
+  getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
   getShowFiatInTestnets,
@@ -23,6 +24,7 @@ import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelec
 import {
   AccountGroupBalance,
   AccountGroupBalanceProps,
+  useAccountGroupBalanceUnavailability,
 } from './account-group-balance';
 
 const mockStore = configureMockStore()(mockState);
@@ -54,6 +56,7 @@ describe('AccountGroupBalance', () => {
     privacyMode?: boolean;
     isAssetsLoading?: boolean;
     unavailableBalances?: { accountIds: string[]; chainIds: string[] };
+    allEnabledNetworks?: string[];
   };
 
   const arrange = ({
@@ -65,7 +68,12 @@ describe('AccountGroupBalance', () => {
     privacyMode = false,
     isAssetsLoading = false,
     unavailableBalances = { accountIds: [], chainIds: [] },
+    allEnabledNetworks = Object.keys(enabledNetworksByNamespace),
   }: ArrangeOptions = {}) => {
+    jest
+      .mocked(getAllEnabledNetworksForAllNamespaces)
+      .mockReturnValue(allEnabledNetworks);
+
     jest
       .mocked(selectUnavailableBalancesForSelectedAccountGroup)
       .mockReturnValue(unavailableBalances);
@@ -388,6 +396,61 @@ describe('AccountGroupBalance', () => {
       ).toBeInTheDocument();
     });
 
+    it('keeps the known part of the "All networks" total after visiting the failing network (v3)', () => {
+      // Back on "All networks" after the Bitcoin view: the last selected
+      // network (chainId) is still Bitcoin, and its namespace only has it.
+      arrange({
+        selectedGroupBalance: {
+          ...createMockBalance(),
+          totalBalanceInUserCurrency: 8.99,
+        },
+        enabledNetworksByNamespace: { [BITCOIN_CHAIN_ID]: true },
+        allEnabledNetworks: [
+          MAINNET_CHAIN_ID,
+          SOLANA_CHAIN_ID,
+          BITCOIN_CHAIN_ID,
+        ],
+        unavailableBalances: {
+          accountIds: ['btc-account'],
+          chainIds: [BITCOIN_CHAIN_ID],
+        },
+      });
+      const { getByTestId, getByText, queryByTestId } = renderComponent({
+        chainId: BITCOIN_CHAIN_ID as CaipChainId,
+      });
+
+      expect(getByText('$8.99')).toBeInTheDocument();
+      expect(
+        getByTestId('account-group-balance-partially-unavailable'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('account-group-balance-unavailable'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('still replaces the total in the single-network view of the failing network, even with a known amount', () => {
+      arrange({
+        selectedGroupBalance: {
+          ...createMockBalance(),
+          totalBalanceInUserCurrency: 24.11,
+        },
+        enabledNetworksByNamespace: { [BITCOIN_CHAIN_ID]: true },
+        allEnabledNetworks: [BITCOIN_CHAIN_ID],
+        unavailableBalances: {
+          accountIds: ['btc-account'],
+          chainIds: [BITCOIN_CHAIN_ID],
+        },
+      });
+      const { getByTestId, queryByText } = renderComponent({
+        chainId: BITCOIN_CHAIN_ID as CaipChainId,
+      });
+
+      expect(
+        getByTestId('account-group-balance-unavailable'),
+      ).toBeInTheDocument();
+      expect(queryByText('$24.11')).not.toBeInTheDocument();
+    });
+
     it('renders no unavailable notice when every balance loaded', () => {
       arrange({ selectedGroupBalance: createMockBalance() });
       const { queryByTestId } = renderComponent();
@@ -398,6 +461,87 @@ describe('AccountGroupBalance', () => {
       expect(
         queryByTestId('account-group-balance-unavailable'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('useAccountGroupBalanceUnavailability (v4: header change row)', () => {
+    const BITCOIN_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
+    // The selectors are module mocks: a probe component reads the hook
+    // through the same provider as the component tests.
+    const UnavailabilityProbe = ({
+      chainId,
+    }: {
+      chainId: CaipChainId | Hex;
+    }) => (
+      <pre data-testid="unavailability">
+        {JSON.stringify(useAccountGroupBalanceUnavailability(chainId))}
+      </pre>
+    );
+    const renderUnavailabilityHook = (chainId: CaipChainId | Hex) =>
+      JSON.parse(
+        renderWithProvider(
+          <UnavailabilityProbe chainId={chainId} />,
+          mockStore,
+        ).getByTestId('unavailability').textContent ?? '{}',
+      );
+
+    it('reports the total as replaced in the single-network view of the failing network', () => {
+      arrange({
+        selectedGroupBalance: {
+          ...createMockBalance(),
+          totalBalanceInUserCurrency: 24.11,
+        },
+        enabledNetworksByNamespace: { [BITCOIN_CHAIN_ID]: true },
+        allEnabledNetworks: [BITCOIN_CHAIN_ID],
+        unavailableBalances: {
+          accountIds: ['btc-account'],
+          chainIds: [BITCOIN_CHAIN_ID],
+        },
+      });
+
+      expect(
+        renderUnavailabilityHook(BITCOIN_CHAIN_ID as CaipChainId),
+      ).toStrictEqual({
+        unavailableAccountIds: ['btc-account'],
+        hasUnavailableBalances: true,
+        replaceTotalWithUnavailable: true,
+      });
+    });
+
+    it('does not report the "All networks" total with a known part as replaced', () => {
+      arrange({
+        selectedGroupBalance: {
+          ...createMockBalance(),
+          totalBalanceInUserCurrency: 8.99,
+        },
+        enabledNetworksByNamespace: { [BITCOIN_CHAIN_ID]: true },
+        allEnabledNetworks: [
+          MAINNET_CHAIN_ID,
+          SOLANA_CHAIN_ID,
+          BITCOIN_CHAIN_ID,
+        ],
+        unavailableBalances: {
+          accountIds: ['btc-account'],
+          chainIds: [BITCOIN_CHAIN_ID],
+        },
+      });
+
+      expect(
+        renderUnavailabilityHook(BITCOIN_CHAIN_ID as CaipChainId)
+          .replaceTotalWithUnavailable,
+      ).toBe(false);
+    });
+
+    it('does not report anything when every balance is available', () => {
+      arrange({ allEnabledNetworks: [BITCOIN_CHAIN_ID] });
+
+      expect(
+        renderUnavailabilityHook(BITCOIN_CHAIN_ID as CaipChainId),
+      ).toStrictEqual({
+        unavailableAccountIds: [],
+        hasUnavailableBalances: false,
+        replaceTotalWithUnavailable: false,
+      });
     });
   });
 });
