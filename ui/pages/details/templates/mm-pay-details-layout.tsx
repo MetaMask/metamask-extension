@@ -79,7 +79,11 @@ export function MmPayDetailsLayout({
           data-testid="transaction-details-hero"
         >
           <ActivityAvatar tokens={avatarTokens} />
-          <Text variant="heading-lg" color={heroTextColor}>
+          <Text
+            variant="amount-display-lg"
+            fontFamily="hero"
+            color={heroTextColor}
+          >
             {heroAmount}
           </Text>
         </div>
