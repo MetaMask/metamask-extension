@@ -210,7 +210,6 @@ const AcceptInviteSheetContent = ({
         refusalReason &&
         (interactionType === 'declined' || interactionType === 'dismissed')
       ) {
-
         properties.refusal_reason = refusalReason;
       }
       trackEvent(
@@ -362,7 +361,9 @@ const AcceptInviteSheetContent = ({
               />
               {fieldError ? (
                 <HelpText severity={HelpTextSeverity.Danger} asChild>
-                  <span id={MONEY_REFERRAL_CODE_ERROR_ID}>{fieldError}</span>
+                  <span id={MONEY_REFERRAL_CODE_ERROR_ID} role="alert">
+                    {fieldError}
+                  </span>
                 </HelpText>
               ) : null}
             </Box>

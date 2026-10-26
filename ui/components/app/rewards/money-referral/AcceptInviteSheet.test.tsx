@@ -235,6 +235,7 @@ describe('AcceptInviteSheet', () => {
     );
     const error = document.getElementById('money-referral-code-error');
     expect(error).toHaveTextContent('Invalid referral code');
+    expect(error).toHaveAttribute('role', 'alert');
     expect(input).toHaveAttribute(
       'aria-describedby',
       'money-referral-code-error',
@@ -390,6 +391,7 @@ describe('AcceptInviteSheet', () => {
         messages.rewardsMoneyReferralTooManyTries.message,
       );
       expect(rateLimitError).toHaveAttribute('id', 'money-referral-code-error');
+      expect(rateLimitError).toHaveAttribute('role', 'alert');
       expect(view.getByTestId('money-referral-code-input')).toHaveAttribute(
         'aria-describedby',
         'money-referral-code-error',
