@@ -22,9 +22,11 @@ import { MfaFlowTestIds } from './test-ids';
 import MfaFlowHost from './mfa-flow-host';
 
 const mockNavigate = jest.fn();
+let mockLocation: { key: string; state: unknown };
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+  useLocation: () => mockLocation,
 }));
 
 const activeEmail: EnrolledCredential = {
@@ -120,6 +122,7 @@ const getInput = (testId: string) => {
 describe('MfaFlowHost', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocation = { key: 'default', state: null };
   });
 
   afterEach(async () => {
@@ -239,6 +242,12 @@ describe('MfaFlowHost', () => {
   });
 
   it('shows back and close actions on setup pages and closes the flow', async () => {
+    mockLocation = {
+      key: 'mfa',
+      state: {
+        returnTo: '/settings/security-and-password/verification-methods',
+      },
+    };
     const { outcome } = await start(
       { kind: 'enroll', method: 'email_otp' },
       createController(),
@@ -251,6 +260,35 @@ describe('MfaFlowHost', () => {
     });
 
     expect(await outcome).toEqual({ ok: false, code: 'flow_cancelled' });
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
+  });
+
+  it('closes back to the page that started the flow outside Settings', async () => {
+    mockLocation = { key: 'mfa', state: { returnTo: '/swaps?from=eth' } };
+    const { outcome } = await start(
+      { kind: 'enroll', method: 'email_otp' },
+      createController(),
+    );
+    renderHost();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.CLOSE_BUTTON));
+    });
+
+    expect(await outcome).toEqual({ ok: false, code: 'flow_cancelled' });
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
+  });
+
+  it('closes to the home page when there is no page to go back to', async () => {
+    mockLocation = { key: 'default', state: { returnTo: '/swaps' } };
+    await start({ kind: 'enroll', method: 'email_otp' }, createController());
+    renderHost();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.CLOSE_BUTTON));
+    });
+
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
   });
 

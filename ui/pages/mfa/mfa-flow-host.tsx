@@ -9,10 +9,11 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import Spinner from '../../components/ui/spinner';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE, SETTINGS_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useActiveMfaFlow } from '../../hooks/identity/mfa/engine/useActiveMfaFlow';
 import { MfaFlowTestIds } from './test-ids';
+import type { MfaFlowRouteState } from './types';
 import IntroStep from './steps/intro-step';
 import PickerStep from './steps/picker-step';
 import EmailEntryStep from './steps/email-entry-step';
@@ -23,7 +24,9 @@ import FailureStep from './steps/failure-step';
 
 /**
  * Full-page view that renders the running MFA flow. Leaving it cancels the
- * flow; it goes back once the flow settles.
+ * flow; it goes back once the flow settles. Closing goes back to the page that
+ * started the flow, or home when that page is in Settings, matching how
+ * Settings pages close.
  */
 const MfaFlowHost = () => {
   const t = useI18nContext();
@@ -80,7 +83,12 @@ const MfaFlowHost = () => {
     cancel();
   };
   const close = () => {
-    closeToHome.current = true;
+    const { returnTo } = (location.state ?? {}) as MfaFlowRouteState;
+    closeToHome.current =
+      returnTo === undefined ||
+      returnTo === SETTINGS_ROUTE ||
+      returnTo.startsWith(`${SETTINGS_ROUTE}/`) ||
+      returnTo.startsWith(`${SETTINGS_ROUTE}?`);
     cancel();
   };
   const key = 'purpose' in step ? `${step.name}-${step.purpose}` : step.name;
