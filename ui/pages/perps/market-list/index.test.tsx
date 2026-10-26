@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics event properties use snake_case */
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
@@ -14,6 +20,16 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { MarketListView } from '.';
+
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest
+    .fn()
+    .mockImplementation((method: string) =>
+      Promise.resolve(
+        method === 'perpsGetLifecycleContext' ? 'cold_process' : undefined,
+      ),
+    ),
+}));
 
 const mockNavigate = jest.fn();
 
@@ -64,6 +80,7 @@ describe('MarketListView', () => {
     jest.clearAllMocks();
     // Default mock returns loaded state with markets
     mockUsePerpsLiveMarketListData.mockReturnValue({
+      areMarketsLive: jest.fn().mockReturnValue(false),
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
       cryptoMarkets: mockCryptoMarkets,
       hip3Markets: mockHip3Markets,
@@ -80,6 +97,14 @@ describe('MarketListView', () => {
       expect(
         screen.getByTestId('parent-selector-perps-market-list'),
       ).toBeInTheDocument();
+    });
+
+    it('fills the remaining layout height so the outage banner does not overflow it', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const root = screen.getByTestId('parent-selector-perps-market-list');
+      expect(root).toHaveClass('flex-1', 'min-h-0');
+      expect(root).not.toHaveClass('h-full');
     });
 
     it('reveals the search input from the header icon', () => {
@@ -116,6 +141,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        areMarketsLive: jest.fn().mockReturnValue(false),
       });
 
       renderWithProvider(<MarketListView />, mockStore);
@@ -161,6 +187,7 @@ describe('MarketListView', () => {
     it('renders live price and change values from the list hook', async () => {
       const [firstMarket] = mockCryptoMarkets;
       mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
         markets: [
           {
             ...firstMarket,
@@ -190,6 +217,7 @@ describe('MarketListView', () => {
     it('shows loading skeletons initially', () => {
       // Override mock to return loading state
       mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
         markets: [],
         cryptoMarkets: [],
         hip3Markets: [],
@@ -317,6 +345,9 @@ describe('MarketListView', () => {
         ).toBeInTheDocument();
       });
       expect(
+        screen.getByTestId('market-list-categories-pill-memecoin'),
+      ).toBeInTheDocument();
+      expect(
         screen.getByTestId('market-list-categories-pill-stock'),
       ).toBeInTheDocument();
       // `all` is expressed as no selection, never as its own pill.
@@ -326,6 +357,7 @@ describe('MarketListView', () => {
     });
 
     const filterLabelCases: [filter: string, expectedLabel: string][] = [
+      ['memecoin', messages.perpsFilterMemecoins.message],
       ['pre-ipo', messages.perpsFilterPreIpo.message],
       ['index', messages.perpsFilterIndex.message],
       ['etf', messages.perpsFilterEtf.message],
@@ -362,6 +394,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        areMarketsLive: jest.fn().mockReturnValue(false),
       });
 
       renderWithProvider(
@@ -534,6 +567,7 @@ describe('MarketListView', () => {
     priceChangeSortCases.forEach(([queryDirection, expectedOrder]) => {
       it(`ranks the list by ${queryDirection} price change from the query params`, async () => {
         mockUsePerpsLiveMarketListData.mockReturnValue({
+          areMarketsLive: jest.fn().mockReturnValue(false),
           markets: [
             {
               ...mockCryptoMarkets[0],
@@ -635,6 +669,73 @@ describe('MarketListView', () => {
         ).not.toBeInTheDocument();
       });
     });
+
+    it('shows only tagged main-DEX markets on Memecoins and still lists them under Crypto', async () => {
+      const dogeMarket = {
+        ...mockCryptoMarkets[0],
+        symbol: 'DOGE',
+        name: 'Dogecoin',
+        tags: ['memecoin'],
+      };
+      const taggedHip3StockMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:FAKE',
+        name: 'Fake',
+        tags: ['memecoin'],
+      };
+      const taggedHip3CryptoMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:PEPE',
+        name: 'PEPE',
+        marketType: 'crypto' as const,
+        tags: ['memecoin'],
+      };
+
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
+        markets: [
+          mockCryptoMarkets[0],
+          dogeMarket,
+          taggedHip3StockMarket,
+          taggedHip3CryptoMarket,
+        ],
+        cryptoMarkets: [mockCryptoMarkets[0], dogeMarket],
+        hip3Markets: [taggedHip3StockMarket, taggedHip3CryptoMarket],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(
+        screen.getByTestId('market-list-categories-pill-memecoin'),
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-DOGE')).toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+      expect(
+        screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('market-list-categories-pill-crypto'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-DOGE')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+      });
+      expect(
+        screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('sort functionality', () => {
@@ -647,6 +748,169 @@ describe('MarketListView', () => {
       await waitFor(() => {
         expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('row order under live updates', () => {
+    const marketWithChange = (symbol: string, change24hPercent: string) => ({
+      ...mockCryptoMarkets[0],
+      symbol,
+      name: symbol,
+      change24hPercent,
+    });
+
+    const streamMarkets = (
+      markets: ReturnType<typeof marketWithChange>[],
+      isLive = true,
+    ): void => {
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(true),
+        markets,
+        cryptoMarkets: markets,
+        hip3Markets: [],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+        isLive,
+      });
+    };
+
+    const renderedSymbols = (): string[] =>
+      screen
+        .getAllByTestId(/^market-row-(?!ticker-)/u)
+        .map((row) =>
+          (row.getAttribute('data-testid') ?? '').replace('market-row-', ''),
+        );
+
+    const sortByPriceChange = async (): Promise<void> => {
+      fireEvent.click(screen.getByTestId('sort-dropdown-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByTestId('sort-field-option-priceChange'));
+      fireEvent.click(screen.getByTestId('sort-modal-apply'));
+    };
+
+    it('keeps rows in place when a price tick changes the ranked field', async () => {
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+
+      // AAA now ranks first on the sorted field. A re-sort on every tick is
+      // what moved rows out from under the reader.
+      streamMarkets([
+        marketWithChange('AAA', '+9.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      rerender(<MarketListView />);
+
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+    });
+
+    it('updates the values shown on a row without moving it', async () => {
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('BBB', '+2.00%'),
+      ]);
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+
+      streamMarkets([
+        marketWithChange('AAA', '+9.00%'),
+        marketWithChange('BBB', '+2.00%'),
+      ]);
+      rerender(<MarketListView />);
+
+      expect(renderedSymbols()).toStrictEqual(['BBB', 'AAA']);
+      expect(
+        within(screen.getByTestId('market-row-AAA')).getAllByText('+9.00%')
+          .length,
+      ).toBeGreaterThan(0);
+    });
+
+    it('re-ranks on the ticked values when the user changes the sort', async () => {
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+
+      streamMarkets([
+        marketWithChange('AAA', '+9.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      rerender(<MarketListView />);
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+
+      // Pressing the already-sorted field reverses the direction, which is the
+      // user asking for a fresh ranking — it has to rank on the ticked values,
+      // not on the ones the frozen order was built from.
+      await sortByPriceChange();
+
+      expect(renderedSymbols()).toStrictEqual(['BBB', 'CCC', 'AAA']);
+    });
+
+    it('re-ranks when the set of markets changes', async () => {
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'AAA']);
+
+      // A newly listed market has to be ranked, not appended.
+      streamMarkets([
+        marketWithChange('AAA', '+1.00%'),
+        marketWithChange('BBB', '+2.00%'),
+        marketWithChange('CCC', '+3.00%'),
+      ]);
+      rerender(<MarketListView />);
+
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+    });
+
+    it('re-ranks on the first live tick instead of staying on the REST snapshot', async () => {
+      // REST-seeded values before the price stream has delivered anything live.
+      streamMarkets(
+        [
+          marketWithChange('AAA', '+1.00%'),
+          marketWithChange('BBB', '+2.00%'),
+          marketWithChange('CCC', '+3.00%'),
+        ],
+        false,
+      );
+      const { rerender } = renderWithProvider(<MarketListView />, mockStore);
+
+      await sortByPriceChange();
+      expect(renderedSymbols()).toStrictEqual(['CCC', 'BBB', 'AAA']);
+
+      // First live tick: same symbol set, but AAA is now the biggest mover. A
+      // ranking that stays frozen on the REST snapshot would keep AAA last.
+      streamMarkets(
+        [
+          marketWithChange('AAA', '+9.00%'),
+          marketWithChange('BBB', '+2.00%'),
+          marketWithChange('CCC', '+3.00%'),
+        ],
+        true,
+      );
+      rerender(<MarketListView />);
+
+      expect(renderedSymbols()).toStrictEqual(['AAA', 'CCC', 'BBB']);
     });
   });
 
@@ -684,6 +948,13 @@ describe('MarketListView', () => {
         expect.objectContaining({
           interaction_type: 'filter_applied',
           filter_category: 'crypto',
+        }),
+      );
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'button_clicked',
+          button_clicked: 'crypto',
         }),
       );
     });

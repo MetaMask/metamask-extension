@@ -24,25 +24,50 @@ export const BRIDGE_ETH_USD_SPOT_PRICE =
 export const BRIDGE_L2_ETH_USD_SPOT_PRICE =
   BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_L2_TOTAL_ETH_BALANCE_HUMAN;
 
-export const BRIDGE_MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
-      usdConversionRate: BRIDGE_ETH_USD_SPOT_PRICE,
-    },
+export const BRIDGE_SOLANA_USD_SPOT_PRICE = 112.87;
+
+/**
+ * Non-native USD spot prices served by the price API mock. Assets missing here
+ * have no price, which is what makes the bridge UI fall back to showing a
+ * quote's Total cost as a native network fee instead of a fiat amount.
+ */
+export const BRIDGE_MOCK_TOKEN_SPOT_PRICES: Record<
+  string,
+  { id: string; price: number }
+> = {
+  'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
+    id: 'dai',
+    price: 1.0,
+  },
+  'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
+    id: 'dai',
+    price: 1.0,
+  },
+  'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': {
+    id: 'musd',
+    price: 0.9999,
   },
 };
 
-export const BRIDGE_L2_MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: BRIDGE_L2_ETH_USD_SPOT_PRICE,
-      usdConversionRate: BRIDGE_L2_ETH_USD_SPOT_PRICE,
-    },
-  },
-};
+/**
+ * Resolves the USD spot price the price API mock serves for an asset, or
+ * `undefined` when the asset is unpriced.
+ *
+ * @param assetId - CAIP-19 asset id.
+ * @param ethUsdSpotPrice - Native ETH price for the fixture set in use.
+ */
+export function getBridgeMockUsdSpotPrice(
+  assetId: string,
+  ethUsdSpotPrice: number = BRIDGE_ETH_USD_SPOT_PRICE,
+): number | undefined {
+  if (assetId.endsWith('/slip44:60') || assetId.endsWith('/slip44:1')) {
+    return ethUsdSpotPrice;
+  }
+  if (assetId.startsWith('solana:')) {
+    return BRIDGE_SOLANA_USD_SPOT_PRICE;
+  }
+  return BRIDGE_MOCK_TOKEN_SPOT_PRICES[assetId.toLowerCase()]?.price;
+}
 
 /** Native MON (Monad) + Base ETH balances for Monad→Base bridge E2E. */
 export const BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN = 25;
@@ -52,21 +77,6 @@ export const BRIDGE_MONAD_TOTAL_NATIVE_BALANCE_HUMAN =
 
 export const BRIDGE_MONAD_USD_SPOT_PRICE =
   BRIDGE_EXPECTED_FIAT_BALANCE_USD / BRIDGE_MONAD_TOTAL_NATIVE_BALANCE_HUMAN;
-
-export const BRIDGE_MONAD_MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    MON: {
-      conversionDate: 1665507609.0,
-      conversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
-      usdConversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
-    },
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
-      usdConversionRate: BRIDGE_MONAD_USD_SPOT_PRICE,
-    },
-  },
-};
 
 /** Monad native CAIP-19 (slip44:268435779, not ETH slip44:60). */
 export const MONAD_NATIVE_ASSET_ID = 'eip155:143/slip44:268435779';
@@ -148,17 +158,14 @@ export function getBridgeMonadBaseAssetsControllerConfig() {
 }
 
 export const BRIDGE_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_ETH_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: BRIDGE_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
 };
 
 export const BRIDGE_L2_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_L2_ETH_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: BRIDGE_L2_UNIFIED_EVM_ACCOUNTS_API_BALANCES,
 };
 
 export const BRIDGE_MONAD_WITH_FIXTURES_OPTIONS = {
-  ethConversionInUsd: BRIDGE_MONAD_USD_SPOT_PRICE,
   unifiedEvmAccountsApiBalances: {
     nativeBalance: String(BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN),
   },

@@ -18,5 +18,6 @@ exports[`getRampsControllerApi exposes ramps background methods 1`] = `
   "setRampsUserRegion",
   "syncRampsOrdersWithUserStorage",
   "watchRampsCheckoutTab",
+  "watchRampsProviderOrderTab",
 ]
 `;

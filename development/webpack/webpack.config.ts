@@ -16,12 +16,13 @@ import {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import postcss, { type AcceptedPlugin } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
-import { loadBuildTypesConfig } from '../lib/build-type';
+import { loadBuildTypesConfig } from '../lib/build-type.js';
 import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,
@@ -68,6 +69,30 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
+
+// Keep widget.css outside HtmlBundler. Its CSS @import is not resolved
+// correctly there, which leaves design-token variables undefined in dist
+// builds. This transform preserves the previous working bundle behavior.
+async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
+  const tokens = readFileSync(
+    join(nodeModules, '@metamask/design-tokens/dist/styles.css'),
+    'utf8',
+  );
+  const source = content
+    .toString()
+    .replace(
+      /@import\s+['"]@metamask\/design-tokens\/styles\.css['"];?\s*/u,
+      '',
+    );
+  const cssPlugins: AcceptedPlugin[] = [
+    tailwindcss() as unknown as AcceptedPlugin,
+    autoprefixer({
+      overrideBrowserslist: browsersListQuery,
+    }) as unknown as AcceptedPlugin,
+  ];
+  const result = await postcss(cssPlugins).process(source, { from });
+  return `${tokens}\n${result.css}`;
+}
 
 // #region cache
 const cache = args.cache
@@ -203,6 +228,13 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // TODO: find alternative way to handle cashtag widget styles
+      {
+        from: join(context, 'scripts/cashtag/widget/widget.css'),
+        to: 'scripts/cashtag/widget/widget.css',
+        transform: async (content, absoluteFrom) =>
+          buildCashtagWidgetCss(content, absoluteFrom),
+      },
       // TODO: automatically bundle build-type specific images
       ...(args.type === 'flask'
         ? [
@@ -256,7 +288,7 @@ if (args.lavamoat) {
     lavamoatPlugin,
     lavamoatUnsafeLayerPlugin,
   } = require('./utils/plugins/LavamoatPlugin');
-  plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
+  plugins.push(lavamoatPlugin(args, manifestPlugin), lavamoatUnsafeLayerPlugin);
 }
 if (args.progress) {
   const { ProgressPlugin } = require('webpack');
@@ -291,13 +323,14 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
-const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+// SWC enables TSX from the filename. Default to plain TypeScript for .mts.
+const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 
 const swcReactRefreshConfig = { ...swcConfig, refresh: true };
-const reactRefreshTsxLoader = getSwcLoader(
+const reactRefreshTsLoader = getSwcLoader(
   'typescript',
-  true,
+  false,
   safeVariables,
   swcReactRefreshConfig,
 );
@@ -308,7 +341,17 @@ const reactRefreshJsxLoader = getSwcLoader(
   swcReactRefreshConfig,
 );
 
-const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+// Inline public flags in .js/.mjs dependencies: IN_TEST controls E2E polling,
+// and NODE_ENV removes runtime reads before policy generation.
+const npmEnvs = {
+  // TODO: Remove vendor IN_TEST inlining once the Core changes are released and
+  // adopted in Extension (explicit test polling and gas-estimation mocks):
+  // https://github.com/MetaMask/core/pull/10831
+  // https://github.com/MetaMask/metamask-extension/pull/47090
+  IN_TEST: safeVariables.IN_TEST,
+  NODE_ENV: safeVariables.NODE_ENV,
+};
+const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
 const isChunkableInitial = (chunk: Chunk) =>
@@ -438,19 +481,19 @@ const config = {
             {
               test: TYPESCRIPT_FILE_RE,
               include: UI_DIR_RE,
-              use: reactRefreshTsxLoader,
+              use: reactRefreshTsLoader,
             },
             {
               test: TYPESCRIPT_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
-              use: tsxLoader,
+              use: tsLoader,
             },
           ]
         : [
             {
               test: TYPESCRIPT_FILE_RE,
               exclude: NODE_MODULES_RE,
-              use: tsxLoader,
+              use: tsLoader,
             },
           ]),
       // own javascript, and own javascript with jsx

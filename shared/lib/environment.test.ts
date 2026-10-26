@@ -2,13 +2,63 @@ import { ENVIRONMENT } from '../constants/build';
 import {
   getIsPerpsIncludedInBuild,
   getIsPasskeyFeatureEnabled,
-  getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
   getIsBasicFunctionalityConsolidationEnabledInBuild,
+  isInE2eTest,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
+
+describe('isInE2eTest', () => {
+  let originalInTest: string | undefined;
+  let originalJestWorkerId: string | undefined;
+
+  beforeAll(() => {
+    originalInTest = process.env.IN_TEST;
+    originalJestWorkerId = process.env.JEST_WORKER_ID;
+  });
+
+  afterAll(() => {
+    if (originalInTest === undefined) {
+      delete process.env.IN_TEST;
+    } else {
+      process.env.IN_TEST = originalInTest;
+    }
+
+    if (originalJestWorkerId === undefined) {
+      delete process.env.JEST_WORKER_ID;
+    } else {
+      process.env.JEST_WORKER_ID = originalJestWorkerId;
+    }
+  });
+
+  (
+    [
+      ['test extension build', 'undefined', true],
+      ['test build without a worker ID', undefined, false],
+      ['Jest worker', '1', false],
+    ] as const
+  ).forEach(([_description, jestWorkerId, expected]) => {
+    it(`returns ${expected} for ${_description}`, () => {
+      process.env.IN_TEST = 'true';
+      if (jestWorkerId === undefined) {
+        delete process.env.JEST_WORKER_ID;
+      } else {
+        process.env.JEST_WORKER_ID = jestWorkerId;
+      }
+
+      expect(isInE2eTest()).toBe(expected);
+    });
+  });
+
+  it('returns false outside a test build', () => {
+    delete process.env.IN_TEST;
+    process.env.JEST_WORKER_ID = 'undefined';
+
+    expect(isInE2eTest()).toBe(false);
+  });
+});
 
 describe('isProduction', () => {
   let originalMetaMaskEnvironment: string | undefined;
@@ -78,33 +128,6 @@ describe('isGatorPermissionsRevocationFeatureEnabled', () => {
   it('should return false when GATOR_PERMISSIONS_REVOCATION_ENABLED is undefined', () => {
     delete process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED;
     expect(isGatorPermissionsRevocationFeatureEnabled()).toBe(false);
-  });
-});
-
-describe('getIsAssetsUnifiedStateIncludedInBuild', () => {
-  let originalValue: string | undefined;
-
-  beforeAll(() => {
-    originalValue = process.env.ASSETS_UNIFIED_STATE_ENABLED;
-  });
-
-  afterAll(() => {
-    process.env.ASSETS_UNIFIED_STATE_ENABLED = originalValue;
-  });
-
-  it('returns true when ASSETS_UNIFIED_STATE_ENABLED is "true"', () => {
-    process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(true);
-  });
-
-  it('returns false when ASSETS_UNIFIED_STATE_ENABLED is "false"', () => {
-    process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(false);
-  });
-
-  it('returns false when ASSETS_UNIFIED_STATE_ENABLED is undefined', () => {
-    delete process.env.ASSETS_UNIFIED_STATE_ENABLED;
-    expect(getIsAssetsUnifiedStateIncludedInBuild()).toBe(false);
   });
 });
 

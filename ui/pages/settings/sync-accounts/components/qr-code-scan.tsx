@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import qrCode from 'qrcode-generator';
 import {
   Box,
@@ -44,11 +38,13 @@ type QrCodeScanProps = {
 const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
   const t = useI18nContext();
   const qrPayload = useSelector(selectQrSyncQrPayload);
-  const lastQrPayloadRef = useRef<string | null>(null);
-  if (qrPayload) {
-    lastQrPayloadRef.current = qrPayload;
+  const [lastQrPayload, setLastQrPayload] = useState<string | null>(null);
+
+  if (qrPayload && qrPayload !== lastQrPayload) {
+    setLastQrPayload(qrPayload);
   }
-  const displayedPayload = qrPayload ?? lastQrPayloadRef.current;
+
+  const displayedPayload = qrPayload ?? lastQrPayload;
   const qrDataUrl = useMemo(() => {
     if (!displayedPayload) {
       return null;
@@ -59,7 +55,7 @@ const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
     return qrImage.createDataURL(QR_CODE_CELL_SIZE, QR_CODE_MARGIN);
   }, [displayedPayload]);
   const [secondsLeft, setSecondsLeft] = useState(
-    MWP_SESSION_REQUEST_EXPIRY_SECONDS,
+    () => MWP_SESSION_REQUEST_EXPIRY_SECONDS,
   );
   const isExpired = secondsLeft <= 0;
   const shouldDimQr = isExpired;

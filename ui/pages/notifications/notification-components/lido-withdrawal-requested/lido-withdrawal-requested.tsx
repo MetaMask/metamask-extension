@@ -14,18 +14,17 @@ import {
   NotificationDetailInfo,
   NotificationDetailBlockExplorerButton,
   NotificationDetailCopyButton,
-  NotificationDetailTitle,
   NotificationDetailAddress,
 } from '../../../../components/multichain';
 import {
   createTextItems,
   getAmount,
-  formatIsoDateString,
   getUsdAmount,
   getNativeCurrencyLogoByChainId,
 } from '../../../../helpers/utils/notification.util';
 import { t } from '../../../../../shared/lib/translate';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 import { BadgeWrapperPosition } from '../../../../components/component-library';
 
@@ -37,28 +36,13 @@ const isLidoWithdrawalRequestedNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED,
 ]);
 
-const getTitle = () => {
-  const items = createTextItems(
-    [t('notificationItemUnStakingRequested') ?? ''],
-    TextVariant.bodySm,
-  );
+const getTitle = (n: LidoWithdrawalRequestedNotification) => {
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: LidoWithdrawalRequestedNotification) => {
-  const amount = getAmount(
-    n.payload.data.stake_in.amount,
-    n.payload.data.stake_in.decimals,
-    {
-      shouldEllipse: true,
-    },
-  );
-  const description =
-    t(
-      'notificationItemLidoWithdrawalRequestedMessage',
-      `${amount} ${n.payload.data.stake_in.symbol}`,
-    ) ?? '';
-  const items = createTextItems([description], TextVariant.bodyMd);
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
@@ -78,7 +62,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
               position: BadgeWrapperPosition.bottomRight,
             },
           }}
-          title={getTitle()}
+          title={getTitle(notification)}
           description={getDescription(notification)}
           createdAt={new Date(notification.createdAt)}
           amount={`${getAmount(
@@ -91,14 +75,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       );
     },
     details: {
-      title: ({ notification }) => {
-        return (
-          <NotificationDetailTitle
-            title={t('notificationItemUnStakingRequested') ?? ''}
-            date={formatIsoDateString(notification.createdAt)}
-          />
-        );
-      },
+      title: OnChainNotificationDetailsTitle,
       body: {
         type: NotificationComponentType.OnChainBody,
         Account: ({ notification }) => {

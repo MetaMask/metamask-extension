@@ -16,6 +16,25 @@ export const BFT_CHILD_PREFERENCES = [
 ] as const;
 
 /**
+ * The subset of {@link BFT_CHILD_PREFERENCES} that
+ * `PreferencesController.toggleExternalServices` owns. When enabling, callers
+ * can pass the current values so they are applied in the same write instead of
+ * being overwritten and later restored.
+ */
+export const EXTERNAL_SERVICES_OWNED_PREFERENCES = [
+  'useTokenDetection',
+  'useCurrencyRateCheck',
+  'usePhishDetect',
+  'useAddressBarEnsResolution',
+  'openSeaEnabled',
+  'useNftDetection',
+  'useSafeChainsListValidation',
+] as const satisfies readonly (typeof BFT_CHILD_PREFERENCES)[number][];
+
+export type ExternalServicesOwnedPreference =
+  (typeof EXTERNAL_SERVICES_OWNED_PREFERENCES)[number];
+
+/**
  * If more than this many BFT child prefs are enabled, consolidation lands
  * Basic Functionality on (majority of {@link BFT_CHILD_PREFERENCES}).
  */
@@ -30,6 +49,11 @@ export type BasicFunctionalityPreferenceState = {
 export type BasicFunctionalityConsolidationPlan = {
   landingState: boolean;
   notification: BasicFunctionalityMigrationNotification;
+  /**
+   * True when Basic Functionality and all child prefs already match (all-on or
+   * all-off). Aligned wallets are not on `Basic Functionality Migrated`.
+   */
+  isConsistent: boolean;
 };
 
 /**
@@ -39,18 +63,22 @@ export type BasicFunctionalityConsolidationPlan = {
  * @param params - Social-login signals from onboarding state.
  * @param params.firstTimeFlowType - Onboarding first-time flow type.
  * @param params.authConnection - Seedless social login provider, if any.
+ * @param params.hasLinkedSocialLoginProfile
  */
 export function isBasicFunctionalitySocialLoginUser({
   firstTimeFlowType,
   authConnection,
+  hasLinkedSocialLoginProfile,
 }: {
   firstTimeFlowType?: string;
   authConnection?: string;
+  hasLinkedSocialLoginProfile?: boolean;
 }): boolean {
   return (
     firstTimeFlowType === FirstTimeFlowType.socialCreate ||
     firstTimeFlowType === FirstTimeFlowType.socialImport ||
-    Boolean(authConnection)
+    Boolean(authConnection) ||
+    hasLinkedSocialLoginProfile === true
   );
 }
 
@@ -93,5 +121,40 @@ export function getBasicFunctionalityConsolidationPlan(
     notification = 'toast';
   }
 
-  return { landingState, notification };
+  return { landingState, notification, isConsistent };
+}
+
+/**
+ * Whether to start the one-time consolidation write for an unmarked wallet.
+ *
+ * The remote flag is the kill switch for users who can still fetch LaunchDarkly
+ * (Basic Functionality on). BF-off users cannot fetch remote flags, so the
+ * build flag hardcodes their consolidation and notice path in this release.
+ *
+ * @param params - Consolidation start inputs.
+ * @param params.isRemoteFlagEnabled - Cached/live `extensionBasicFunctionalityToggle`.
+ * @param params.isBuildFlagEnabled - Compile-time `BFT_CONSOLIDATION_ENABLED`.
+ * @param params.useExternalServices - Current Basic Functionality state.
+ * @param params.hasConsolidationMarker - Whether the wallet is already marked.
+ */
+export function shouldStartBasicFunctionalityConsolidation({
+  isRemoteFlagEnabled,
+  isBuildFlagEnabled,
+  useExternalServices,
+  hasConsolidationMarker,
+}: {
+  isRemoteFlagEnabled: boolean;
+  isBuildFlagEnabled: boolean;
+  useExternalServices: boolean;
+  hasConsolidationMarker: boolean;
+}): boolean {
+  if (hasConsolidationMarker) {
+    return false;
+  }
+
+  if (isRemoteFlagEnabled) {
+    return true;
+  }
+
+  return isBuildFlagEnabled && useExternalServices === false;
 }

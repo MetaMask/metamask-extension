@@ -106,7 +106,7 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.togglePrivacySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
@@ -213,7 +213,7 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.toggleAssetsSettings();
+        await onboardingPrivacySettingsPage.togglePrivacySettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();

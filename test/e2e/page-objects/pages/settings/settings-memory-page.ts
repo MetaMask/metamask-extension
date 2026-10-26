@@ -10,7 +10,7 @@ type MemoryProbe = {
   settle: (done: () => void) => void;
 };
 
-type ProbeWindow = Window & { settingsMemoryProbe: MemoryProbe };
+type ProbeWindow = typeof window & { settingsMemoryProbe: MemoryProbe };
 
 /** Observes Settings DOM collection without retaining Selenium element handles. */
 export default class SettingsMemoryPage {
@@ -47,7 +47,11 @@ export default class SettingsMemoryPage {
       (window as ProbeWindow).settingsMemoryProbe.settle(done);
     });
     // Separate protocol calls end the jobs that create/dereference WeakRefs.
-    const chrome = this.driver.driver as ChromeDriver;
+    const chrome = this.driver.driver;
+    assert.ok(
+      chrome instanceof ChromeDriver,
+      'This memory test requires Chrome',
+    );
     await chrome.sendDevToolsCommand('HeapProfiler.collectGarbage', {});
     await chrome.sendDevToolsCommand('HeapProfiler.collectGarbage', {});
     const retained = await this.driver.executeScript(() =>
@@ -74,7 +78,11 @@ export default class SettingsMemoryPage {
   }
 
   async installProbe(): Promise<void> {
-    const chrome = this.driver.driver as ChromeDriver;
+    const chrome = this.driver.driver;
+    assert.ok(
+      chrome instanceof ChromeDriver,
+      'This memory test requires Chrome',
+    );
     // Capture WeakRef before LavaMoat scuttles globals. Expose only the probe's
     // methods as a read-only property, without changing Snow or app listeners.
     await chrome.sendDevToolsCommand('Page.addScriptToEvaluateOnNewDocument', {

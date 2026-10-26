@@ -1,4 +1,5 @@
 import type * as Sentry from '@sentry/browser';
+import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger, hasProperty, isObject } from '@metamask/utils';
 import type {
@@ -6,6 +7,10 @@ import type {
   TraceRequest as ControllerTraceRequest,
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
+import type {
+  SwapTraceRequest,
+  SwapRelatedTraceName,
+} from '@metamask/bridge-controller';
 import { sentryLogger } from './sentry';
 
 /**
@@ -14,6 +19,9 @@ import { sentryLogger } from './sentry';
 export enum TraceName {
   AccountList = 'Account List',
   AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
+  HomepageReady = 'Homepage Ready',
+  // Homepage Section Performance
+  HomepageSectionTimeToContent = 'Homepage Section Time To Content',
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
   AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
@@ -22,6 +30,11 @@ export enum TraceName {
   BackgroundConnect = 'Background Connect',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
+  BridgeTransactionApprovalCompleted = 'Bridge Transaction Approval Completed',
+  BridgeTransactionCompleted = 'Bridge Transaction Completed',
+  SwapOperationCompleted = 'Swap Operation Completed',
+  SwapTransactionApprovalCompleted = 'Swap Transaction Approval Completed',
+  SwapTransactionCompleted = 'Swap Transaction Completed',
   ConnectPage = 'Connect Page',
   CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
@@ -43,10 +56,14 @@ export enum TraceName {
   SetupStore = 'Setup Store',
   Signature = 'Signature',
   SwapQuoteFetch = 'Swap Quote Fetch',
+  SwapTokenSearch = 'Swap Token Search',
+  SwapPopularTokensFetch = 'Swap Popular Tokens Fetch',
   SwapQuotesFetched = 'Swap Quotes Fetched',
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  // Initial document navigation to the first screen's useful content.
+  UsefulScreenReady = 'Useful Screen Ready',
   RevealSeed = 'Reveal Seed',
   ImportSrp = 'Import Srp',
   AddAccount = 'Add Account',
@@ -69,11 +86,15 @@ export enum TraceName {
   OnboardingSocialLoginAttempt = 'Onboarding - Social Login Attempt',
   OnboardingPasswordSetupAttempt = 'Onboarding - Password Setup Attempt',
   OnboardingPasswordLoginAttempt = 'Onboarding - Password Login Attempt',
+  OnboardingSRPAccountCreationTime = 'Onboarding SRP Account Creation Time',
+  OnboardingSRPAccountImportTime = 'Onboarding SRP Account Import Time',
   OnboardingResetPassword = 'Onboarding - Reset Password',
   OnboardingCreateKeyAndBackupSrp = 'Onboarding - Create Key and Backup SRP',
   OnboardingAddSrp = 'Onboarding - Add SRP',
   OnboardingFetchSrps = 'Onboarding - Fetch SRPs',
   OnboardingOAuthProviderLogin = 'Onboarding - OAuth Provider Login',
+  OnboardingOAuthProviderLaunch = 'Onboarding - OAuth Provider Launch',
+  OnboardingOAuthProviderInteraction = 'Onboarding - OAuth Provider Interaction',
   OnboardingOAuthBYOAServerGetAuthTokens = 'Onboarding - OAuth BYOA Server Get Auth Tokens',
   OnboardingOAuthSeedlessAuthenticate = 'Onboarding - OAuth Seedless Authenticate',
   OnboardingResetPasswordError = 'Onboarding - Reset Password Error',
@@ -95,6 +116,51 @@ export enum TraceName {
   MusdConversionQuote = 'mUSD Conversion Quote',
   MusdConversionConfirm = 'mUSD Conversion Confirm',
   BatchSellModal = 'Batch Sell Modal',
+  StatePersist = 'State Persist',
+  // Perps
+  PerpsOpenPosition = 'Perps Open Position',
+  PerpsClosePosition = 'Perps Close Position',
+  PerpsDeposit = 'Perps Deposit',
+  PerpsWithdraw = 'Perps Withdraw',
+  PerpsPlaceOrder = 'Perps Place Order',
+  PerpsEditOrder = 'Perps Edit Order',
+  PerpsCancelOrder = 'Perps Cancel Order',
+  PerpsUpdateTPSL = 'Perps Update TP/SL',
+  PerpsUpdateMargin = 'Perps Update Margin',
+  PerpsFlipPosition = 'Perps Flip Position',
+  PerpsMarketDataUpdate = 'Perps Market Data Update',
+  PerpsOrderView = 'Perps Order View',
+  PerpsTabView = 'Perps Tab View',
+  PerpsMarketListView = 'Perps Market List View',
+  PerpsPositionDetailsView = 'Perps Position Details View',
+  PerpsAdjustMarginView = 'Perps Adjust Margin View',
+  PerpsOrderDetailsView = 'Perps Order Details View',
+  PerpsOrderBookView = 'Perps Order Book View',
+  PerpsFlipPositionSheet = 'Perps Flip Position Sheet',
+  PerpsTransactionsView = 'Perps Transactions View',
+  PerpsOrderFillsFetch = 'Perps Order Fills Fetch',
+  PerpsOrdersFetch = 'Perps Orders Fetch',
+  PerpsFundingFetch = 'Perps Funding Fetch',
+  PerpsGetPositions = 'Perps Get Positions',
+  PerpsGetAccountState = 'Perps Get Account State',
+  PerpsGetHistoricalPortfolio = 'Perps Get Historical Portfolio',
+  PerpsGetMarkets = 'Perps Get Markets',
+  PerpsGetMarketDataWithPrices = 'Perps Get Market Data With Prices',
+  PerpsFetchHistoricalCandles = 'Perps Fetch Historical Candles',
+  PerpsWebSocketConnected = 'Perps WebSocket Connected',
+  PerpsWebSocketDisconnected = 'Perps WebSocket Disconnected',
+  PerpsWebSocketFirstPositions = 'Perps WebSocket First Positions',
+  PerpsWebSocketFirstOrders = 'Perps WebSocket First Orders',
+  PerpsWebSocketFirstAccount = 'Perps WebSocket First Account',
+  PerpsDataLakeReport = 'Perps Data Lake Report',
+  PerpsRewardsAPICall = 'Perps Rewards API Call',
+  PerpsClosePositionView = 'Perps Close Position View',
+  PerpsWithdrawView = 'Perps Withdraw View',
+  PerpsConnectionEstablishment = 'Perps Connection Establishment',
+  PerpsAccountSwitchReconnection = 'Perps Account Switch Reconnection',
+  PerpsMarketDataPreload = 'Perps Market Data Preload',
+  PerpsUserDataPreload = 'Perps User Data Preload',
+  PerpsEntryToLiveMarketList = 'Perps Entry To Live Market List',
 }
 
 /**
@@ -109,18 +175,47 @@ export enum TraceOperation {
   AccountCreate = 'account.create',
   AccountUi = 'account.ui',
   AccountDiscover = 'account.discover',
+  HomepagePerformance = 'homepage.performance',
+  HomepageSectionPerformance = 'homepage.section.performance',
+  UiScreenPerformance = 'ui.screen.performance',
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
+  StateWrite = 'state.write',
+  BridgeScreenPerformance = 'bridge.screen.performance',
+  BridgeDataFetch = 'bridge.data_fetch',
+  // Perps
+  PerpsOperation = 'perps.operation',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
+export const ONBOARDING_MACHINE_TIME_ATTRIBUTE = 'onboarding.machine.ms';
+
+/**
+ * Machine-time spans summed into the overall onboarding journey. These spans
+ * represent application work and deliberately exclude user interaction such
+ * as password/SRP entry and external OAuth provider login.
+ *
+ * OnboardingCreateKeyAndBackupSrp is excluded because it is nested inside
+ * OnboardingSRPAccountCreationTime and summing both would double-count it.
+ */
+const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
+  TraceName.OnboardingSRPAccountCreationTime,
+  TraceName.OnboardingSRPAccountImportTime,
+  TraceName.OnboardingOAuthProviderLaunch,
+  TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+  TraceName.OnboardingOAuthSeedlessAuthenticate,
+  TraceName.OnboardingFetchSrps,
+  TraceName.OnboardingAddSrp,
+  TraceName.OnboardingResetPassword,
+]);
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
+let onboardingMachineTimeByKey = new Map<string, number>();
 
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
@@ -137,6 +232,8 @@ type PendingTrace = {
  * A context object to associate traces with each other and generate nested traces.
  */
 export type TraceContext = unknown;
+
+export type TraceValue = string | number | boolean;
 
 /**
  * Serialized trace context for cross-boundary propagation.
@@ -224,18 +321,70 @@ export type EndTraceRequest = {
   timestamp?: number;
 
   /**
+   * Final status to record on the span.
+   */
+  status?: 'ok' | 'error';
+
+  /**
    * Custom data to associate with the trace when ending it.
    * These will be set as attributes on the span.
    */
   data?: Record<string, number | string | boolean>;
 };
 
-export function trace<ResultType>(
-  request: TraceRequest,
+/**
+ * Return the active span for a pending manual trace.
+ *
+ * This is useful when a child trace is started after navigation or another
+ * async boundary and the parent must be resolved from the local trace registry
+ * instead of being threaded through route parameters.
+ * @param request
+ */
+export function getTraceContext(
+  request: Pick<TraceRequest, 'name' | 'id'>,
+): TraceContext {
+  return tracesByKey.get(getTraceKey(request))?.span;
+}
+
+/**
+ * Attach attributes to an active trace without requiring callers to retain the
+ * raw Sentry span. Missing or non-Sentry contexts are intentionally ignored.
+ * @param context
+ * @param attributes
+ */
+export function annotateTrace(
+  context: TraceContext,
+  attributes: Record<string, TraceValue>,
+): void {
+  if (!isValidSentrySpan(context)) {
+    return;
+  }
+
+  for (const [key, value] of Object.entries(attributes)) {
+    context.setAttribute(key, value);
+  }
+}
+
+type GenericTraceName = TraceRequest['name'];
+
+/**
+ * Overloads the {@link TraceRequest} type for swap-related trace names.
+ * The {@link SwapTraceRequest} type defines required properties for swap-related traces
+ */
+type TraceRequestFor<TName extends GenericTraceName> = [TName] extends [
+  SwapRelatedTraceName<TraceName>,
+]
+  ? Omit<SwapTraceRequest<TName>, 'op'> & { op?: TraceOperation }
+  : Omit<TraceRequest, 'name'> & { name: TName };
+
+export function trace<ResultType, TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
   fn: TraceCallback<ResultType>,
 ): ResultType;
 
-export function trace(request: TraceRequest): TraceContext;
+export function trace<TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
+): TraceContext;
 
 /**
  * Create a Sentry transaction to analyse the duration of a code flow.
@@ -258,6 +407,69 @@ export function trace<T>(
   }
 
   return traceCallback(request, fn);
+}
+
+function sumOnboardingMachineTime(): number {
+  let total = 0;
+
+  for (const duration of onboardingMachineTimeByKey.values()) {
+    total += duration;
+  }
+
+  return total;
+}
+
+function recordOnboardingMachineTime(
+  request: Pick<TraceRequest, 'name' | 'id'>,
+  duration: number,
+): void {
+  onboardingMachineTimeByKey.set(getTraceKey(request), Math.max(duration, 0));
+}
+
+function addOnboardingMachineTime(
+  request: EndTraceRequest,
+  duration: number,
+): void {
+  if (
+    !MACHINE_TIME_TRACE_NAMES.has(request.name) ||
+    request.data?.success === false ||
+    !Number.isFinite(duration)
+  ) {
+    return;
+  }
+
+  recordOnboardingMachineTime(request, duration);
+}
+
+function addOpenOnboardingMachineTime(
+  request: EndTraceRequest,
+  journeyEndTime: number,
+): void {
+  if (request.data?.success === false) {
+    return;
+  }
+
+  for (const pendingTrace of tracesByKey.values()) {
+    if (!MACHINE_TIME_TRACE_NAMES.has(pendingTrace.request.name as TraceName)) {
+      continue;
+    }
+
+    const duration = journeyEndTime - pendingTrace.startTime;
+    if (Number.isFinite(duration)) {
+      recordOnboardingMachineTime(pendingTrace.request, duration);
+    }
+  }
+}
+
+function finalizeOnboardingMachineTime(span?: Span | null): void {
+  if (span && typeof span.setAttribute === 'function') {
+    span.setAttribute(
+      ONBOARDING_MACHINE_TIME_ATTRIBUTE,
+      Math.round(sumOnboardingMachineTime()),
+    );
+  }
+
+  onboardingMachineTimeByKey = new Map();
 }
 
 /**
@@ -301,14 +513,27 @@ export function endTrace(request: EndTraceRequest): void {
     }
   }
 
-  pendingTrace.end(timestamp);
+  if (request.status && pendingTrace.span) {
+    pendingTrace.span.setStatus({
+      code: request.status === 'ok' ? SPAN_STATUS_OK : SPAN_STATUS_ERROR,
+    });
+  }
+
+  const endTime = timestamp ?? getPerformanceTimestamp();
+
+  if (name === TraceName.OnboardingJourneyOverall) {
+    addOpenOnboardingMachineTime(request, endTime);
+    finalizeOnboardingMachineTime(pendingTrace.span);
+  }
+
+  pendingTrace.end(endTime);
 
   tracesByKey.delete(key);
 
   const { request: pendingRequest, startTime } = pendingTrace;
-  const endTime = timestamp ?? getPerformanceTimestamp();
 
   logTrace(pendingRequest, startTime, endTime);
+  addOnboardingMachineTime(request, endTime - startTime);
 }
 
 /**
@@ -438,6 +663,10 @@ function startTrace(request: TraceRequest): TraceContext {
   const startTime = requestStartTime ?? getPerformanceTimestamp();
   const id = getTraceId(request);
 
+  if (name === TraceName.OnboardingJourneyOverall) {
+    onboardingMachineTimeByKey = new Map();
+  }
+
   const callback = (span: Sentry.Span | null) => {
     const end = (timestamp?: number) => {
       span?.end(timestamp);
@@ -456,7 +685,7 @@ function startTrace(request: TraceRequest): TraceContext {
     return span;
   };
 
-  return startSpan(request, (spanOptions) =>
+  return startSpan({ ...request, startTime }, (spanOptions) =>
     sentryStartSpanManual(spanOptions, callback),
   );
 }
@@ -531,8 +760,8 @@ function startSpan<T>(
   let parentSpan = resolveParentSpan(parentContext);
 
   // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
-  // when no explicit parent is provided. Must capture before withIsolationScope
-  // severs the active span context chain.
+  // when no explicit parent is provided. Must capture before withScope
+  // forks the scope.
   // forceTransaction preserves transaction-level visibility for monitoring while
   // linking to the auto-instrumentation hierarchy.
   let forceTransaction: boolean | undefined;
@@ -558,14 +787,14 @@ function startSpan<T>(
   if (!parentSpan && hasDistributedTraceIds(parentContext)) {
     const sentryTrace = `${parentContext._traceId}-${parentContext._spanId}-1`;
     return sentryContinueTrace(sentryTrace, () =>
-      sentryWithIsolationScope((scope: Sentry.Scope) => {
+      sentryWithScope((scope: Sentry.Scope) => {
         initScope(scope, request);
         return callback({ ...spanOptions, parentSpan: undefined });
       }),
     );
   }
 
-  return sentryWithIsolationScope((scope: Sentry.Scope) => {
+  return sentryWithScope((scope: Sentry.Scope) => {
     initScope(scope, request);
     return callback(spanOptions);
   });
@@ -711,6 +940,29 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
     return callback(scope);
   }
 
+  return actual(callback);
+}
+
+/**
+ * Run the callback in a forked current scope, so tags set on it reach this
+ * trace's own events only. The browser SDK's `withIsolationScope` hands the
+ * callback the existing isolation scope rather than a fork, so a tag set there
+ * stays on every later event in the process.
+ *
+ * @param callback - Receives the forked scope.
+ * @returns The callback's return value.
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryWithScope<T>(callback: (scope: Sentry.Scope) => T): T {
+  const actual = globalThis.sentry?.withScope;
+
+  if (!actual) {
+    const scope = {
+      // eslint-disable-next-line no-empty-function
+      setTag: () => {},
+    } as unknown as Sentry.Scope;
+    return callback(scope);
+  }
   return actual(callback);
 }
 

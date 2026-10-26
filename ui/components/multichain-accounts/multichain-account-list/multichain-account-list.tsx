@@ -14,7 +14,7 @@ import {
   AccountWalletType,
 } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
@@ -41,7 +41,11 @@ import {
   setAccountGroupPinned,
   setSelectedMultichainAccount,
 } from '../../../store/actions';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
+import { transitionBack } from '../../ui/transition';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -198,6 +202,7 @@ export const MultichainAccountList = ({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isPending, startTransition] = useTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const disconnectAccountGroup = useDisconnectAccountGroup();
@@ -414,9 +419,18 @@ export const MultichainAccountList = ({
       });
 
       // Defer expensive Home/Routes re-renders so the account list shell stays responsive.
+      const isFreshTab =
+        location.key === 'default' ||
+        (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
+          true;
+
       startTransition(() => {
         dispatch(setSelectedMultichainAccount(accountGroupId));
-        navigate(DEFAULT_ROUTE);
+        if (isFreshTab) {
+          navigate(DEFAULT_ROUTE, { replace: true });
+        } else {
+          transitionBack(() => navigate(PREVIOUS_ROUTE));
+        }
       });
     },
     [
@@ -425,6 +439,8 @@ export const MultichainAccountList = ({
       hdEntropyIndex,
       defaultHomeActiveTabName,
       dispatch,
+      location.key,
+      location.state,
       navigate,
       startTransition,
     ],

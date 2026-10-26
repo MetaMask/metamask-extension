@@ -50,7 +50,6 @@ import {
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -102,6 +101,12 @@ export type CustomAmountInfoProps = {
    * flows sharing this component keep the plain amount input.
    */
   displayPercentageButtons?: boolean;
+  /**
+   * When true, the flow opts into the Max (100%) shortcut in place of 90%.
+   * Max is still withheld for a native pay token outside withdraw, so a gas
+   * reserve remains. Mirrors mobile `CustomAmountInfo` `hasMax`.
+   */
+  hasMax?: boolean;
   hidePayTokenAmount?: boolean;
   overrideBottomContent?: (hasAmount: boolean) => ReactNode;
   overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
@@ -124,6 +129,7 @@ export const CustomAmountInfo = React.memo(
     disablePercentageButtons,
     displayAccountRow,
     displayPercentageButtons,
+    hasMax,
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
@@ -184,6 +190,9 @@ export const CustomAmountInfo = React.memo(
     // Show amount skeleton while deposit prefill recomputes (e.g. token or
     // account change) so the field does not briefly flash "0", and while a
     // quote the displayed amount comes from is still loading.
+    // `isDepositPrefillLoading` is already false once prefill settles as
+    // skipped (no funded pay token), so an unfundable deposit shows $0 and a
+    // usable keypad instead of an indefinite skeleton.
     const showAmountLoader =
       (isDepositPrefillLoading && !hasAccountNoFunds) ||
       isQuoteDerivedAmountLoading;
@@ -199,15 +208,13 @@ export const CustomAmountInfo = React.memo(
         pendingFiatAmount: showAmountLoader ? undefined : amountFiat,
       });
 
-    const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
-    const { isNoFeeToken } = usePayWithNoFeeToken();
-    const isNoFeePayToken = Boolean(
-      payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
-    );
-    // Withdraw always offers Max. Deposit shows Max only for fixed-spread
-    // ("No fee") tokens; other deposit tokens and native deposit tokens keep
-    // 90% so a gas/fee buffer remains.
-    const showMax = isWithdraw || (isNoFeePayToken && !isNativePayToken);
+    const { isNative: isNativePayToken } = useTransactionPayToken();
+    // Withdraw always offers Max: in post-quote mode the picker token is the
+    // destination, so the native gas reserve below does not apply.
+    // Otherwise Max needs the flow to opt in (`hasMax`) and a non-native pay
+    // token — spending a whole native balance would leave nothing for gas, so
+    // those keep 90%. Matches mobile `custom-amount-info`.
+    const showMax = isWithdraw || (Boolean(hasMax) && !isNativePayToken);
 
     const handleAmountChange = useCallback(
       (value: string) => {

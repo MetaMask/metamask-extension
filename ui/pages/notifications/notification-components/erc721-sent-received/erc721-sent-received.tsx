@@ -9,10 +9,8 @@ import {
   type NotificationComponent,
 } from '../types/notifications/notifications';
 
-import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   createTextItems,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
   getNetworkDetailsFromNotifPayload,
 } from '../../../../helpers/utils/notification.util';
@@ -25,12 +23,12 @@ import {
   NotificationDetailAsset,
   NotificationDetailNetworkFee,
   NotificationDetailBlockExplorerButton,
-  NotificationDetailTitle,
   NotificationDetailNft,
   NotificationDetailCollection,
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -44,24 +42,14 @@ const isERC721Notification = isOfTypeNodeGuard([
 ]);
 
 const isSent = (n: ERC721Notification) => n.type === TRIGGER_TYPES.ERC721_SENT;
-const title = (n: ERC721Notification) =>
-  isSent(n)
-    ? t('notificationItemNFTSentTo')
-    : t('notificationItemNFTReceivedFrom');
 
 const getTitle = (n: ERC721Notification) => {
-  const address = shortenAddress(
-    isSent(n) ? n.payload.data.to : n.payload.data.from,
-  );
-  const items = createTextItems([title(n) ?? '', address], TextVariant.bodySm);
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: ERC721Notification) => {
-  const items = createTextItems(
-    [n.payload.data.nft.collection.name],
-    TextVariant.bodyMd,
-  );
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
@@ -91,18 +79,7 @@ export const components: NotificationComponent<ERC721Notification> = {
     );
   },
   details: {
-    title: ({ notification }) => {
-      return (
-        <NotificationDetailTitle
-          title={`${
-            isSent(notification)
-              ? t('notificationItemSent')
-              : t('notificationItemReceived')
-          } NFT`}
-          date={formatIsoDateString(notification.createdAt)}
-        />
-      );
-    },
+    title: OnChainNotificationDetailsTitle,
     body: {
       type: NotificationComponentType.OnChainBody,
       Image: ({ notification }) => {

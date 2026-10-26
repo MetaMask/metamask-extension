@@ -183,9 +183,9 @@ export function getMoneyAccountFiatAmount(
  * Maps money-account deposit and withdraw batches to their dedicated
  * activity kinds. `mapLocalTransaction` only reads the top-level type, so
  * these EIP-7702 batches arrive as `contractInteraction`; the meaningful
- * type sits on a nested transaction. Rendered like the other MM Pay rows
- * (perps): a signed fiat amount and token avatar without a counterparty
- * address, mirroring mobile's money activity rows.
+ * type sits on a nested transaction. The token direction is from the
+ * selected account's perspective: a deposit moves mUSD out to the money
+ * account, a withdrawal brings it back in, mirroring mobile's activity rows.
  *
  * @param activity - Activity item from `mapLocalTransaction`.
  * @param transactionGroup - Source local transaction group.
@@ -217,7 +217,7 @@ function enrichMoneyAccountActivity(
     ...(amount ? { amount } : {}),
     ...(assetId ? { assetId } : {}),
     decimals: MUSD_DECIMALS,
-    direction: isDeposit ? 'in' : 'out',
+    direction: isDeposit ? 'out' : 'in',
     symbol: MUSD_TOKEN.symbol,
   };
   const fiat = toMusdFiat(amount, transaction);

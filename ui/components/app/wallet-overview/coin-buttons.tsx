@@ -16,9 +16,10 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import {
-  BridgeAsset,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  SwapFeatureTag,
+  type BridgeAsset,
 } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -89,25 +90,11 @@ import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import { PerpsTradeButtons } from '../perps/perps-trade-buttons';
 import { useBalanceAwareSwapDefaults } from '../../../pages/asset/hooks/useBalanceAwareSwapDefaults';
-import {
-  ARC_ERC20_USDC_BRIDGE_ASSET,
-  ARC_HEX_CHAIN_ID,
-} from '../assets/enablement/arc';
-
-/**
- * Allows to manually set the default Swap token when clicking on the Swap CTA from
- * native token page. If unset, `getNativeAssetForChainId` of bridge-controller is used.
- */
-const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
-  // On Arc, we want to Bridge/Swap the ERC20 flavor of USDC, not the native one.
-  [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
-};
 
 export function getSwapNativeTokenWithOverridesForChain(
   chainId: string | number,
 ): BridgeAsset {
-  const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[String(chainId)];
-  return override ?? getNativeAssetForChainId(chainId);
+  return getNativeAssetForChainId(chainId);
 }
 
 type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
@@ -369,7 +356,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
+  const { goToBuy } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -447,16 +434,14 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
-    const opened = await goToBuy({
+    const destination = await goToBuy({
       assetId: buyAssetId,
       chainId: getChainId(),
     });
-    if (!opened) {
+    if (!destination) {
       return;
     }
-    // Only the Portfolio paths open a browser tab; when goToBuy navigates
-    // in-app the "tab opened" toast would be misleading.
-    if (opensBuyInPortfolioTab) {
+    if (destination === 'portfolio') {
       showBuyTabOpenedToast(
         t('buyTabOpenedToastText'),
         t('buyTabOpenedToastDescription'),
@@ -481,7 +466,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, opensBuyInPortfolioTab]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url
@@ -550,7 +535,10 @@ const CoinButtons = ({
   }, [selectedAccountGroup, navigate, trackEvent, trackingLocation, chainId]);
 
   const handleBatchSellOnClick = useCallback(() => {
-    trace({ name: TraceName.BatchSellModal });
+    trace({
+      name: TraceName.BatchSellModal,
+      tags: { feature: SwapFeatureTag.BATCH_SELL },
+    });
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBatchSellButtonClicked)
         .addCategory(MetaMetricsEventCategory.Navigation)

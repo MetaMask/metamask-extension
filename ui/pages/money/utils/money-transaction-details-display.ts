@@ -11,6 +11,7 @@ import { shortenString } from '../../../helpers/utils/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
+import type { AccountsApiActivity } from '../types/money-activity';
 import {
   classifyMoneyActivity,
   getMoneyActivityStatus,
@@ -53,6 +54,26 @@ export function getMoneyTransactionDetailsHeroAmount(
 
   return {
     amount: `${isIncoming ? '+' : '-'}${formatted}`,
+    isSuccessColor: isIncoming,
+  };
+}
+
+/**
+ * Formats the details-page hero amount for an Accounts API settlement.
+ *
+ * @param activity - Parsed Accounts API card, cashback, or refund.
+ * @returns Formatted fiat amount and whether to use the success color.
+ */
+export function getMoneyApiActivityDetailsHeroAmount(
+  activity: AccountsApiActivity,
+): MoneyTransactionDetailsHeroAmount {
+  const isIncoming = activity.kind === 'cashback' || activity.kind === 'refund';
+  const amount = new BigNumber(activity.amount).dividedBy(
+    new BigNumber(10).pow(activity.token.decimals),
+  );
+
+  return {
+    amount: `${isIncoming ? '+' : '-'}${moneyFormatUsd(amount)}`,
     isSuccessColor: isIncoming,
   };
 }
@@ -160,6 +181,48 @@ export function getMoneyActivityErrorMessage(
     return undefined;
   }
   return message;
+}
+
+export type MoneyActivityTransactionHash = {
+  hash: Hex;
+  chainId: Hex;
+};
+
+/**
+ * Resolves the on-chain hash to show for a Money activity transaction.
+ *
+ * MetaMask Pay same-chain Relay deposits skip status polling and publish a
+ * `0x0` placeholder as the parent's hash; the real hash belongs to the
+ * required source transaction Pay submitted, or to the Relay source hash.
+ *
+ * @param tx - The transaction to present.
+ * @param requiredTransaction - Last required transaction submitted for `tx`.
+ * @returns The hash and the chain it was mined on, or undefined when unknown.
+ */
+export function getMoneyActivityTransactionHash(
+  tx: TransactionMeta,
+  requiredTransaction?: TransactionMeta,
+): MoneyActivityTransactionHash | undefined {
+  if (tx.hash && isValidTransactionHash(tx.hash)) {
+    return { hash: tx.hash as Hex, chainId: tx.chainId };
+  }
+
+  if (
+    requiredTransaction?.hash &&
+    isValidTransactionHash(requiredTransaction.hash)
+  ) {
+    return {
+      hash: requiredTransaction.hash as Hex,
+      chainId: requiredTransaction.chainId,
+    };
+  }
+
+  const sourceHash = tx.metamaskPay?.sourceHash;
+  if (sourceHash && isValidTransactionHash(sourceHash)) {
+    return { hash: sourceHash, chainId: tx.metamaskPay?.chainId ?? tx.chainId };
+  }
+
+  return undefined;
 }
 
 /**

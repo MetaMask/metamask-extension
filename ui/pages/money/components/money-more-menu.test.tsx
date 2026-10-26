@@ -2,6 +2,7 @@ import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MONEY_HOW_IT_WORKS_ROUTE } from '../../../helpers/constants/routes';
 import { MONEY_LANDING_URL } from '../constants/urls';
 import {
   MONEY_URLS,
@@ -30,6 +31,12 @@ jest.mock(
       ) : null,
   }),
 );
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 const mockMoneyAnalytics = createMoneyAnalyticsMock();
 jest.mock('../../../hooks/money/useMoneyAnalytics', () => ({
@@ -90,7 +97,7 @@ describe('MoneyMoreMenu', () => {
     await openMenu();
 
     expect(screen.getByTestId('money-more-menu')).toBeInTheDocument();
-    expect(screen.getByTestId('money-more-menu-how-it-works')).toBeDisabled();
+    expect(screen.getByTestId('money-more-menu-how-it-works')).toBeEnabled();
     expect(
       screen.getByTestId('money-more-menu-how-it-works'),
     ).toHaveTextContent(messages.moneyHowItWorks.message);
@@ -103,6 +110,20 @@ describe('MoneyMoreMenu', () => {
     expect(
       screen.getByTestId('money-more-menu-contact-support'),
     ).toHaveTextContent(messages.moneyContactSupport.message);
+  });
+
+  it('navigates to the how it works page and closes when how it works is clicked', async () => {
+    renderWithLocalization(<MoneyMoreMenu />);
+
+    await openMenu();
+    fireEvent.click(screen.getByTestId('money-more-menu-how-it-works'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOW_IT_WORKS_ROUTE);
+    expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+      componentName: MoneyComponentName.MoreSheetHowItWorks,
+      redirectTarget: MoneyScreenName.MoneyHowItWorks,
+    });
   });
 
   it('opens the money landing page and closes when benefits is clicked', async () => {

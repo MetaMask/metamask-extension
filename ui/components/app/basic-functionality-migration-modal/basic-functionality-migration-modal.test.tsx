@@ -7,12 +7,30 @@ import {
   en as messages,
   renderWithProvider,
 } from '../../../../test/lib/render-helpers-navigate';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { hideMigrationModal } from '../../../store/actions';
 import { BasicFunctionalityMigrationModal } from './basic-functionality-migration-modal';
 import {
   BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK,
   BASIC_FUNCTIONALITY_MIGRATION_PRIVACY_NOTICE_LINK,
+  BASIC_FUNCTIONALITY_SOCIAL_PRIVACY_NOTICE_NAME,
+  BasicFunctionalitySocialPrivacyNoticeAction,
 } from './constants';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -83,6 +101,20 @@ describe('BasicFunctionalityMigrationModal', () => {
     );
   });
 
+  it('tracks viewed when the privacy notice is shown', () => {
+    renderComponent();
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NoticeUpdateDisplayed,
+        properties: expect.objectContaining({
+          name: BASIC_FUNCTIONALITY_SOCIAL_PRIVACY_NOTICE_NAME,
+          action: BasicFunctionalitySocialPrivacyNoticeAction.Viewed,
+        }),
+      }),
+    );
+  });
+
   it('does not render when the notification is not modal', () => {
     const { queryByTestId } = renderComponent({ notification: null });
 
@@ -102,12 +134,21 @@ describe('BasicFunctionalityMigrationModal', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('dismisses when Accept and close is clicked', () => {
+  it('dismisses when Continue is clicked', () => {
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('basic-functionality-migration-modal-accept'));
 
     expect(hideMigrationModal).toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NoticeUpdateDisplayed,
+        properties: expect.objectContaining({
+          name: BASIC_FUNCTIONALITY_SOCIAL_PRIVACY_NOTICE_NAME,
+          action: BasicFunctionalitySocialPrivacyNoticeAction.AcceptAndClose,
+        }),
+      }),
+    );
   });
 
   it('does not dismiss on Escape', () => {

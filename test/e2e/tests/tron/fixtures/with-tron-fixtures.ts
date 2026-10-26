@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import type { ManifestFlags } from '../../../../../shared/lib/manifestFlags';
 import { withFixtures } from '../../../helpers';
 import {
   TronLocalNodeOptions,
@@ -17,10 +18,17 @@ import {
   TRON_RECIPIENT_ADDRESS,
   SUN_PER_TRX,
   mockAccountsApiV2WithTron,
+  mockBridgeGetTronTokens,
+  mockBroadTransaction,
   mockExchangeRates,
   mockFiatExchangeRates,
   mockTronFeatureFlags,
+  mockTronGetBlock,
+  mockTronGetBlockByNum,
+  mockTronGetAccountResource,
+  mockTronGetNowBlock,
   mockTronGetReward,
+  mockTronPriceSupportedNetworks,
 } from '../mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
 
@@ -82,7 +90,15 @@ export type WithTronFixturesOptions = Omit<
     localNodes: unknown[];
   }) => Promise<void> | void;
   fixtures?: unknown;
+  ignoredConsoleErrors?: string[];
   includeAnvil?: boolean;
+  /**
+   * When false, no local Tron node is started; all blockchain-data endpoints
+   * are served as static mocks. Only suitable for read-only (no signing or
+   * broadcast) flows.
+   */
+  localNode?: boolean;
+  manifestFlags?: ManifestFlags;
   testSpecificMock?: (
     mockServer: Mockttp,
     context: { localNodes: unknown[] },
@@ -127,6 +143,15 @@ export function buildTronNodeOptions(
   };
 }
 
+/**
+ * Temporary unblock for Snap RPC noise that masked assertion results during
+ * background-page console capture. Remove once the Snap stops emitting these.
+ */
+const DEFAULT_TRON_IGNORED_CONSOLE_ERRORS = [
+  'getSubscriptions',
+  'Unexpected end of JSON input',
+];
+
 export async function withTronFixtures(
   options: WithTronFixturesOptions,
   testSuite: WithFixturesTestSuite,
@@ -135,7 +160,9 @@ export async function withTronFixtures(
     afterLocalNodesStart,
     accounts,
     includeAnvil = true,
+    localNode = true,
     testSpecificMock,
+    ignoredConsoleErrors,
     ...withFixtureOptions
   } = options;
   const nodeOptions = buildTronNodeOptions(accounts);
@@ -149,19 +176,19 @@ export async function withTronFixtures(
   await withFixtures(
     {
       ...withFixtureOptions,
+      ignoredConsoleErrors: [
+        ...DEFAULT_TRON_IGNORED_CONSOLE_ERRORS,
+        ...(ignoredConsoleErrors ?? []),
+      ],
       localNodeOptions: [
         ...(includeAnvil ? ['anvil'] : []),
-        {
-          type: 'tron',
-          options: startupNodeOptions,
-        },
+        ...(localNode ? [{ type: 'tron', options: startupNodeOptions }] : []),
       ],
       afterLocalNodesStart: async (context: { localNodes: unknown[] }) => {
         capturedLocalNodes = context.localNodes;
-        tronSeeder = await seedTronSmartContracts(
-          context.localNodes,
-          trc20Balances,
-        );
+        tronSeeder = localNode
+          ? await seedTronSmartContracts(context.localNodes, trc20Balances)
+          : undefined;
         await afterLocalNodesStart?.(context);
       },
       testSpecificMock: async (mockServer: Mockttp) => {
@@ -216,9 +243,6 @@ async function mockTronFixtureApis(
   const tronNode = localNodes.find(
     (node): node is TronNode => node instanceof TronNode,
   );
-  if (!tronNode) {
-    throw new Error('Tron local node was not started');
-  }
 
   const accountByAddress = new Map(
     accounts.map((account) => [account.address, account]),
@@ -228,13 +252,9 @@ async function mockTronFixtureApis(
     accounts,
   );
 
-  const allAddresses = [
-    ...accounts.map((a) => a.address),
-    TRON_RECIPIENT_ADDRESS,
-  ].filter((v, i, arr) => arr.indexOf(v) === i);
-
   return [
-    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTronPriceSupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockAccountsApiV2WithTron(mockServer),
     await mockTronFixtureAccountsApiV5(mockServer, accounts, tronNode),
     await mockTronFeatureFlags(mockServer),
@@ -242,17 +262,77 @@ async function mockTronFixtureApis(
     await mockFiatExchangeRates(mockServer),
     await mockTronFixtureSpotPrices(mockServer, accounts, tronNode),
     await mockTronFixtureAssets(mockServer, accounts, tronNode),
+    // Empty catch-all bodies made `fetchPopularTokens` throw
+    // 'Unexpected end of JSON input' during the Tron network switch.
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockTronGetReward(mockServer),
-    // NOTE: do not register static getblock/getnowblock/getblockbynum or
-    // broadcasttransaction mocks here. mockttp serves the first matching
-    // `.always()` rule, so a static block mock makes the snap sign against a
-    // stale ref block and java-tron rejects the broadcast with TAPOS_ERROR.
-    // `proxyTronBlockchainCalls` proxies those endpoints to the local node and
-    // replays successful broadcasts as confirmed history.
+    // NOTE: in local-node mode, do not register static getblock/getnowblock/
+    // getblockbynum or broadcasttransaction mocks. mockttp serves the first
+    // matching `.always()` rule, so a static block mock makes the snap sign
+    // against a stale ref block and java-tron rejects the broadcast with
+    // TAPOS_ERROR. `proxyTronBlockchainCalls` proxies those endpoints to the
+    // local node and replays successful broadcasts as confirmed history.
     ...fixtureHistoryEndpoints,
-    ...(await proxyTronBlockchainCalls(mockServer, tronNode, allAddresses)),
+    ...(tronNode
+      ? await proxyTronBlockchainCalls(
+          mockServer,
+          tronNode,
+          [...accounts.map((a) => a.address), TRON_RECIPIENT_ADDRESS].filter(
+            (v, i, arr) => arr.indexOf(v) === i,
+          ),
+        )
+      : await mockStaticTronBlockchainCalls(mockServer)),
     await mockWildcardTronAccountApis(mockServer, tronNode, accountByAddress),
   ];
+}
+
+/**
+ * Static blockchain-data mocks for nodeless (read-only) flows. Coverage mirrors
+ * the proven nodeless bundle in `mockTronApis`; endpoint responses are
+ * account-agnostic.
+ * @param mockServer
+ */
+async function mockStaticTronBlockchainCalls(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockTronGetBlock(mockServer),
+    await mockTronGetNowBlock(mockServer),
+    await mockTronGetBlockByNum(mockServer),
+    await mockTronGetAccountResource(mockServer),
+    // No signing/broadcast is expected in read-only flows; a static success
+    // keeps any stray broadcast from erroring the UI.
+    await mockBroadTransaction(mockServer),
+  ];
+}
+
+function buildStaticTronGridAccountResponse(account: TronFixtureAccount) {
+  const assets = account.assets ?? [];
+  const trc10Assets = assets.filter((asset) => asset.type === 'trc10');
+  const trc20Assets = assets.filter((asset) => asset.type === 'trc20');
+
+  return {
+    data: [
+      {
+        address: account.address,
+        balance: assets.find((asset) => asset.type === 'native')?.balance ?? 0,
+        assetV2: trc10Assets.map((asset) => ({
+          key: asset.tokenId,
+          value: Number(asset.balance),
+        })),
+        free_asset_net_usageV2: trc10Assets.map((asset) => ({
+          key: asset.tokenId,
+          value: 0,
+        })),
+        frozenV2: [],
+        trc20: trc20Assets.map((asset) => ({
+          [asset.address]: asset.balance,
+        })),
+      },
+    ],
+    success: true,
+    meta: { at: Date.now(), page_size: 1 },
+  };
 }
 
 async function mockFixtureTransactionHistory(
@@ -289,7 +369,7 @@ async function mockFixtureTransactionHistory(
 
 async function mockWildcardTronAccountApis(
   mockServer: Mockttp,
-  tronNode: TronNode,
+  tronNode: TronNode | undefined,
   accountByAddress: Map<string, TronFixtureAccount>,
 ): Promise<MockedEndpoint> {
   return mockServer
@@ -311,7 +391,9 @@ async function mockWildcardTronAccountApis(
       if (account) {
         return {
           statusCode: 200,
-          json: await tronNode.getTronGridAccountResponse(address),
+          json: tronNode
+            ? await tronNode.getTronGridAccountResponse(address)
+            : buildStaticTronGridAccountResponse(account),
         };
       }
 
@@ -332,7 +414,7 @@ function formatFixtureBalanceForAccountsApi(asset: TronFixtureAsset): string {
 
 function buildFixtureTokenMetadata(
   accounts: TronFixtureAccount[],
-  tronNode: TronNode,
+  tronNode: TronNode | undefined,
 ) {
   const nativeTrx = {
     assetId: `${TRON_CHAIN_ID}/slip44:195`,
@@ -358,8 +440,12 @@ function buildFixtureTokenMetadata(
 async function mockTronFixtureAccountsApiV5(
   mockServer: Mockttp,
   accounts: TronFixtureAccount[],
-  tronNode: TronNode,
+  tronNode: TronNode | undefined,
 ): Promise<MockedEndpoint> {
+  // NOTE: mockttp rule-priority gotcha — a plain (non-`.always()`) custom
+  // endpoint registered before the Tron defaults wins exactly one request and
+  // then falls through to this default. Custom overrides of these endpoints
+  // must use `.always()`.
   const balances = accounts.flatMap((account) => {
     const assetBalances = (account.assets ?? []).map((asset) => ({
       accountId: `${TRON_CHAIN_ID}:${account.address}`,
@@ -375,20 +461,33 @@ async function mockTronFixtureAccountsApiV5(
       /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
     )
     .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        count: balances.length,
-        unprocessedNetworks: [],
-        balances,
-      },
-    }));
+    .thenCallback((request) => {
+      // Honor the requested `accountIds` (multi-value, comma-split) so each
+      // account only receives its own balances.
+      const requestedAccountIds = new Set(
+        new URL(request.url).searchParams
+          .getAll('accountIds')
+          .flatMap((accountIds) => accountIds.split(',')),
+      );
+      const requestedBalances = balances.filter(
+        ({ accountId }) =>
+          requestedAccountIds.size === 0 || requestedAccountIds.has(accountId),
+      );
+      return {
+        statusCode: 200,
+        json: {
+          count: requestedBalances.length,
+          unprocessedNetworks: [],
+          balances: requestedBalances,
+        },
+      };
+    });
 }
 
 async function mockTronFixtureAssets(
   mockServer: Mockttp,
   accounts: TronFixtureAccount[],
-  tronNode: TronNode,
+  tronNode: TronNode | undefined,
 ): Promise<MockedEndpoint> {
   const knownAssets = buildFixtureTokenMetadata(accounts, tronNode);
 
@@ -416,7 +515,7 @@ async function mockTronFixtureAssets(
 async function mockTronFixtureSpotPrices(
   mockServer: Mockttp,
   accounts: TronFixtureAccount[],
-  tronNode: TronNode,
+  tronNode: TronNode | undefined,
 ): Promise<MockedEndpoint> {
   const pricesByAssetId = Object.fromEntries([
     ['tron:3448148188/slip44:195', null],
@@ -475,17 +574,17 @@ function createTransactionsResponse(transactions: unknown[] | undefined) {
   };
 }
 
-function getAssetId(asset: TronFixtureAsset, tronNode: TronNode): string {
+function getAssetId(asset: TronFixtureAsset, tronNode?: TronNode): string {
   if (asset.type === 'native') {
     return `${TRON_CHAIN_ID}/slip44:195`;
   }
 
   if (asset.type === 'trc10') {
-    const token = tronNode.trc10Tokens[asset.symbol as TronTrc10Symbol];
+    const token = tronNode?.trc10Tokens[asset.symbol as TronTrc10Symbol];
     return `${TRON_CHAIN_ID}/trc10:${token?.tokenId ?? asset.tokenId}`;
   }
 
-  const token = tronNode.trc20Tokens[asset.symbol as TronTrc20Symbol];
+  const token = tronNode?.trc20Tokens[asset.symbol as TronTrc20Symbol];
   return `${TRON_CHAIN_ID}/trc20:${token?.address ?? asset.address}`;
 }
 

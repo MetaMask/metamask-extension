@@ -2,9 +2,10 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
+import { selectTransactionPaymentTokenByTransactionId } from '../../../../selectors/transactionPayController';
 import {
   selectDefaultPaySelectedSection,
-  selectEnableMoneyAccountTransactions,
+  selectIsMoneyAccountTransactionEnabled,
 } from '../../selectors/feature-flags';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
@@ -14,6 +15,16 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 jest.mock('../transactions/useTransactionMetadataRequest');
+jest.mock('../../../../selectors/money-account', () => ({
+  selectPrimaryMoneyAccount: jest.fn(),
+}));
+jest.mock('../../../../selectors/transactionPayController', () => ({
+  selectTransactionPaymentTokenByTransactionId: jest.fn(),
+}));
+jest.mock('../../selectors/feature-flags', () => ({
+  selectDefaultPaySelectedSection: jest.fn(),
+  selectIsMoneyAccountTransactionEnabled: jest.fn(),
+}));
 
 const MONEY_ACCOUNT_ADDRESS = '0xc4ff9e84b5754570812d891ade0bad3952bb5946';
 
@@ -23,43 +34,43 @@ const MONEY_ACCOUNT_FLAG = {
   predictWithdraw: 'money-account',
 };
 
-const ENABLED_MONEY_ACCOUNT_TRANSACTIONS = {
-  perpsDeposit: true,
-  perpsWithdraw: true,
-  predictDeposit: true,
-  predictWithdraw: true,
-};
-
 describe('useIsMoneyAccountFlagDefault', () => {
   const useSelectorMock = jest.mocked(useSelector);
   const useTransactionMetadataRequestOptionalMock = jest.mocked(
     useTransactionMetadataRequestOptional,
   );
+  const selectPrimaryMoneyAccountMock = jest.mocked(selectPrimaryMoneyAccount);
+  const selectTransactionPaymentTokenByTransactionIdMock = jest.mocked(
+    selectTransactionPaymentTokenByTransactionId,
+  );
+  const selectDefaultPaySelectedSectionMock = jest.mocked(
+    selectDefaultPaySelectedSection,
+  );
+  const selectIsMoneyAccountTransactionEnabledMock = jest.mocked(
+    selectIsMoneyAccountTransactionEnabled,
+  );
 
   function mockSelectors({
     moneyAccount = { address: MONEY_ACCOUNT_ADDRESS },
     defaultPaySelectedSection = {} as Record<string, string>,
-    enableMoneyAccountTransactions = ENABLED_MONEY_ACCOUNT_TRANSACTIONS,
+    isMoneyAccountPayEnabled = true,
     payToken = undefined,
   }: {
     moneyAccount?: { address: string } | null;
     defaultPaySelectedSection?: Record<string, string>;
-    enableMoneyAccountTransactions?: Record<string, boolean>;
+    isMoneyAccountPayEnabled?: boolean;
     payToken?: { address: string; chainId: string } | undefined;
   } = {}) {
-    useSelectorMock.mockImplementation((selector: unknown) => {
-      if (selector === selectPrimaryMoneyAccount) {
-        return moneyAccount;
-      }
-      if (selector === selectDefaultPaySelectedSection) {
-        return defaultPaySelectedSection;
-      }
-      if (selector === selectEnableMoneyAccountTransactions) {
-        return enableMoneyAccountTransactions;
-      }
-      // The pay-token read is the only inline-arrow selector in the hook.
-      return payToken;
-    });
+    selectPrimaryMoneyAccountMock.mockReturnValue(moneyAccount as never);
+    selectDefaultPaySelectedSectionMock.mockReturnValue(
+      defaultPaySelectedSection,
+    );
+    selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(
+      isMoneyAccountPayEnabled,
+    );
+    selectTransactionPaymentTokenByTransactionIdMock.mockReturnValue(
+      payToken as never,
+    );
   }
 
   function mockConfirmation(type?: TransactionType) {
@@ -70,6 +81,11 @@ describe('useIsMoneyAccountFlagDefault', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    // Every read in the hook resolves through the mocked selectors above, so
+    // the state they are called with is irrelevant.
+    useSelectorMock.mockImplementation(
+      (selector: (state: unknown) => unknown) => selector({}),
+    );
     mockSelectors();
     mockConfirmation(TransactionType.perpsWithdraw);
   });
@@ -97,7 +113,7 @@ describe('useIsMoneyAccountFlagDefault', () => {
 
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([TransactionType.perpsDeposit, TransactionType.predictDeposit])(
-    'returns true for %s when the sibling withdraw key is money-account',
+    'returns false for %s when only the sibling withdraw key is money-account',
     (type: TransactionType) => {
       mockConfirmation(type);
       mockSelectors({
@@ -108,9 +124,19 @@ describe('useIsMoneyAccountFlagDefault', () => {
       });
 
       const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
-      expect(result.current).toBe(true);
+      expect(result.current).toBe(false);
     },
   );
+
+  it('returns false for perpsDeposit when only the default key is money-account', () => {
+    mockConfirmation(TransactionType.perpsDeposit);
+    mockSelectors({
+      defaultPaySelectedSection: { default: 'money-account' },
+    });
+
+    const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
+    expect(result.current).toBe(false);
+  });
 
   it('returns false for perpsDeposit when the type is explicitly mapped to crypto', () => {
     mockConfirmation(TransactionType.perpsDeposit);
@@ -155,16 +181,6 @@ describe('useIsMoneyAccountFlagDefault', () => {
     expect(result.current).toBe(false);
   });
 
-  it('returns true for perpsDeposit when only the default key is money-account', () => {
-    mockConfirmation(TransactionType.perpsDeposit);
-    mockSelectors({
-      defaultPaySelectedSection: { default: 'money-account' },
-    });
-
-    const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
-    expect(result.current).toBe(true);
-  });
-
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     TransactionType.simpleSend,
@@ -198,34 +214,22 @@ describe('useIsMoneyAccountFlagDefault', () => {
     mockConfirmation(TransactionType.perpsDeposit);
     mockSelectors({
       defaultPaySelectedSection: MONEY_ACCOUNT_FLAG,
-      enableMoneyAccountTransactions: { perpsWithdraw: true },
+      isMoneyAccountPayEnabled: false,
     });
 
     const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
     expect(result.current).toBe(false);
   });
 
-  it('returns false when enableMoneyAccountTransactions is empty', () => {
-    mockSelectors({
-      defaultPaySelectedSection: MONEY_ACCOUNT_FLAG,
-      enableMoneyAccountTransactions: {},
-    });
+  it('checks Money Account availability against the confirmation type', () => {
+    mockConfirmation(TransactionType.perpsWithdraw);
+    mockSelectors({ defaultPaySelectedSection: MONEY_ACCOUNT_FLAG });
 
-    const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
-    expect(result.current).toBe(false);
-  });
+    renderHook(() => useIsMoneyAccountFlagDefault());
 
-  it('returns false when Money Account pay is explicitly disabled for the type', () => {
-    mockConfirmation(TransactionType.perpsDeposit);
-    mockSelectors({
-      defaultPaySelectedSection: MONEY_ACCOUNT_FLAG,
-      enableMoneyAccountTransactions: {
-        ...ENABLED_MONEY_ACCOUNT_TRANSACTIONS,
-        perpsDeposit: false,
-      },
-    });
-
-    const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
-    expect(result.current).toBe(false);
+    expect(selectIsMoneyAccountTransactionEnabledMock).toHaveBeenCalledWith(
+      expect.anything(),
+      TransactionType.perpsWithdraw,
+    );
   });
 });

@@ -19,8 +19,9 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import BigNumber from 'bignumber.js';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { useFormatters } from '../../../hooks/useFormatters';
+import { moneyFormatUsd } from '../../../helpers/money/format';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
 import { calculateMoneyProjectedEarnings } from '../../../hooks/money/money-deposit-token-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -43,18 +44,15 @@ export function MoneyPotentialEarningsTokenRow({
   isAddDisabled = false,
 }: MoneyPotentialEarningsTokenRowProps) {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const projectedEarnings = calculateMoneyProjectedEarnings(
     token.moneyFiatAmountUsd,
     apyDecimal,
   );
-  const formattedBalance = formatCurrencyWithMinThreshold(
-    token.moneyFiatAmountUsd,
-    'USD',
+  const formattedBalance = moneyFormatUsd(
+    new BigNumber(token.moneyFiatAmountUsd.toString()),
   );
-  const formattedProjection = formatCurrencyWithMinThreshold(
-    projectedEarnings,
-    'USD',
+  const formattedProjection = moneyFormatUsd(
+    new BigNumber(projectedEarnings.toString()),
   );
   const networkImage = token.networkImage ?? getImageForChainId(token.chainId);
 

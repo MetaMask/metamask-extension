@@ -1,10 +1,52 @@
 import { createSelector } from 'reselect';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
-import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
+import {
+  BFT_CHILD_PREFERENCES,
+  EXTERNAL_SERVICES_OWNED_PREFERENCES,
+  type ExternalServicesOwnedPreference,
+} from '../../../shared/lib/basic-functionality-consolidation';
 import { isBasicFunctionalityConsistent } from '../../../shared/lib/basic-functionality-consolidation-gate';
+import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../shared/lib/environment';
+import type { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSocialLoginFlow } from '../first-time-flow';
 
 export { BFT_CHILD_PREFERENCES };
+
+/**
+ * Gets the current value of every preference that
+ * `PreferencesController.toggleExternalServices` overwrites. Returns a new
+ * object each call, so read it with `shallowEqual`.
+ *
+ * @param state - The MetaMask state object.
+ * @param state.metamask - The flattened background state slice.
+ */
+export const getExternalServicesOwnedPreferences = (state: {
+  metamask: Record<string, unknown>;
+}): Record<ExternalServicesOwnedPreference, boolean> =>
+  Object.fromEntries(
+    EXTERNAL_SERVICES_OWNED_PREFERENCES.map((preference) => [
+      preference,
+      Boolean(state.metamask[preference]),
+    ]),
+  ) as Record<ExternalServicesOwnedPreference, boolean>;
+
+/**
+ * Gets whether Basic Functionality is forced on during onboarding: it is on
+ * and the user can't turn it off. Applies to social login wallets once the
+ * consolidated experience is in the build; onboarding completion saves it as
+ * on.
+ *
+ * @param state - The MetaMask state object.
+ * @param state.metamask - The flattened background state slice.
+ * @param state.metamask.firstTimeFlowType - The onboarding flow type.
+ */
+export const getIsBasicFunctionalityForcedOnDuringOnboarding = (state: {
+  metamask: { firstTimeFlowType?: FirstTimeFlowType | null };
+}): boolean =>
+  getIsBasicFunctionalityConsolidationEnabledInBuild() &&
+  getIsSocialLoginFlow(state);
 
 /**
  * Gets whether the Basic Functionality consolidation rollout is enabled.
@@ -45,19 +87,17 @@ const getIsBasicFunctionalityMigrationNotificationDismissed = (state: {
   );
 
 export const getShouldShowBasicFunctionalityMigrationModal = createSelector(
-  getIsBasicFunctionalityToggleEnabled,
   getBasicFunctionalityMigrationNotification,
   getIsBasicFunctionalityMigrationNotificationDismissed,
-  (isToggleEnabled, notification, isDismissed) =>
-    isToggleEnabled && notification === 'modal' && !isDismissed,
+  (notification, isDismissed) => notification === 'modal' && !isDismissed,
 );
 
 export const getShouldShowBasicFunctionalityMigrationToast = createSelector(
-  getIsBasicFunctionalityToggleEnabled,
   getBasicFunctionalityMigrationNotification,
   getIsBasicFunctionalityMigrationNotificationDismissed,
-  (isToggleEnabled, notification, isDismissed) =>
-    isToggleEnabled && notification === 'toast' && !isDismissed,
+  getIsUnlocked,
+  (notification, isDismissed, isUnlocked) =>
+    notification === 'toast' && !isDismissed && isUnlocked,
 );
 
 /**

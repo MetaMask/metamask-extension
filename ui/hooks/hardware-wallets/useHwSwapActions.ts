@@ -90,111 +90,124 @@ export function useHwSwapActions({
    * Retries the hardware wallet signing flow after a rejection, failure, or
    * device disconnection. Cancels the current batch, resets the state machine,
    * and re-submits the bridge transaction.
+   *
+   * @param options - Optional retry configuration.
+   * @param options.skipConnectionCheck - Skips the `connectionState.status`
+   * retryable check. Set this when the caller already confirmed readiness via
+   * a live check (e.g. `ensureDeviceReady()`) — `connectionState` may lag a
+   * tick behind, causing a stale no-op after `cancelCurrentBatch()` has
+   * already discarded the original approval.
    */
-  const handleRetry = useCallback(async () => {
-    if (isRetryInFlightRef.current) {
-      return;
-    }
-
-    isRetryInFlightRef.current = true;
-    // Suppress reject/fail from the cancelled batch only — cleared before
-    // resubmit so the new attempt can update the signature state machine.
-    isRetryingRef.current = true;
-    hasRetriedRef.current = true;
-    setHasRetried(true);
-    setIsRetrying(true);
-
-    try {
-      // Invalidate the in-flight attempt so abort events during cancel are ignored.
-      retryGenerationRef.current += 1;
-      onRetryGenerationBump?.();
-
-      await cancelCurrentBatch();
-
-      const canRetry = RETRYABLE_CONNECTION_STATUSES.has(
-        connectionState.status,
-      );
-
-      if (!canRetry) {
+  const handleRetry = useCallback(
+    async (options?: { skipConnectionCheck?: boolean }) => {
+      if (isRetryInFlightRef.current) {
         return;
       }
 
-      // Fresh generation for the resubmit (skips anything tracked during cancel).
-      retryGenerationRef.current += 1;
-      onRetryGenerationBump?.();
-      resetConnectionError();
-      if (isStxEnabled) {
-        dispatchSignatureEvent({
-          type: HardwareWalletSignatureEvent.Reset,
-          needsTwoConfirmations,
-        });
-      } else {
-        let savedStep: HardwareWalletSignatureStatus | undefined;
-        if (signatureState.status === HardwareWalletSignatureStatus.Rejected) {
-          savedStep = signatureState.rejectedSignature;
-        } else if (
-          signatureState.status === HardwareWalletSignatureStatus.Failed
-        ) {
-          savedStep = signatureState.failedSignature;
-        } else if (
-          signatureState.status === HardwareWalletSignatureStatus.Disconnected
-        ) {
-          savedStep = signatureState.disconnectedSignature;
+      isRetryInFlightRef.current = true;
+      // Suppress reject/fail from the cancelled batch only — cleared before
+      // resubmit so the new attempt can update the signature state machine.
+      isRetryingRef.current = true;
+      hasRetriedRef.current = true;
+      setHasRetried(true);
+      setIsRetrying(true);
+
+      try {
+        // Invalidate the in-flight attempt so abort events during cancel are ignored.
+        retryGenerationRef.current += 1;
+        onRetryGenerationBump?.();
+
+        await cancelCurrentBatch();
+
+        const canRetry =
+          options?.skipConnectionCheck ||
+          RETRYABLE_CONNECTION_STATUSES.has(connectionState.status);
+
+        if (!canRetry) {
+          return;
         }
 
-        // Resume at the final step when retrying from a terminal state that
-        // interrupted there, OR when already awaiting the final signature
-        // (stuck "Resend transaction" path). Resetting would rewind the UI to
-        // the approval step while firstSignatureDone still skips approval.
-        const shouldResumeFinalSignature =
-          savedStep === HardwareWalletSignatureStatus.AwaitingFinalSignature ||
-          signatureState.status ===
-            HardwareWalletSignatureStatus.AwaitingFinalSignature;
-
-        if (shouldResumeFinalSignature) {
-          dispatchSignatureEvent({
-            type: HardwareWalletSignatureEvent.Retry,
-          });
-        } else {
+        // Fresh generation for the resubmit (skips anything tracked during cancel).
+        retryGenerationRef.current += 1;
+        onRetryGenerationBump?.();
+        resetConnectionError();
+        if (isStxEnabled) {
           dispatchSignatureEvent({
             type: HardwareWalletSignatureEvent.Reset,
             needsTwoConfirmations,
           });
+        } else {
+          let savedStep: HardwareWalletSignatureStatus | undefined;
+          if (
+            signatureState.status === HardwareWalletSignatureStatus.Rejected
+          ) {
+            savedStep = signatureState.rejectedSignature;
+          } else if (
+            signatureState.status === HardwareWalletSignatureStatus.Failed
+          ) {
+            savedStep = signatureState.failedSignature;
+          } else if (
+            signatureState.status === HardwareWalletSignatureStatus.Disconnected
+          ) {
+            savedStep = signatureState.disconnectedSignature;
+          }
+
+          // Resume at the final step when retrying from a terminal state that
+          // interrupted there, OR when already awaiting the final signature
+          // (stuck "Resend transaction" path). Resetting would rewind the UI to
+          // the approval step while firstSignatureDone still skips approval.
+          const shouldResumeFinalSignature =
+            savedStep ===
+              HardwareWalletSignatureStatus.AwaitingFinalSignature ||
+            signatureState.status ===
+              HardwareWalletSignatureStatus.AwaitingFinalSignature;
+
+          if (shouldResumeFinalSignature) {
+            dispatchSignatureEvent({
+              type: HardwareWalletSignatureEvent.Retry,
+            });
+          } else {
+            dispatchSignatureEvent({
+              type: HardwareWalletSignatureEvent.Reset,
+              needsTwoConfirmations,
+            });
+          }
         }
+        // Allow the new submission's reject/fail to reach the state machine via
+        // `isRetryingRef`. Stale rejects from the aborted batch that settle after
+        // this clear are ignored by the submission catch handlers when their
+        // captured `retryGenerationRef` no longer matches (bumped above).
+        // `retrySubmission` swallows the rethrown error after that dispatch.
+        isRetryingRef.current = false;
+        if (isSendBundleFlow) {
+          hasStartedSendBundleSubmission.current = true;
+          await retrySendBundleSubmission();
+        } else {
+          await retrySubmission();
+        }
+      } finally {
+        isRetryingRef.current = false;
+        isRetryInFlightRef.current = false;
+        setIsRetrying(false);
       }
-      // Allow the new submission's reject/fail to reach the state machine via
-      // `isRetryingRef`. Stale rejects from the aborted batch that settle after
-      // this clear are ignored by the submission catch handlers when their
-      // captured `retryGenerationRef` no longer matches (bumped above).
-      // `retrySubmission` swallows the rethrown error after that dispatch.
-      isRetryingRef.current = false;
-      if (isSendBundleFlow) {
-        hasStartedSendBundleSubmission.current = true;
-        await retrySendBundleSubmission();
-      } else {
-        await retrySubmission();
-      }
-    } finally {
-      isRetryingRef.current = false;
-      isRetryInFlightRef.current = false;
-      setIsRetrying(false);
-    }
-  }, [
-    cancelCurrentBatch,
-    connectionState.status,
-    dispatchSignatureEvent,
-    hasStartedSendBundleSubmission,
-    isRetryingRef,
-    isSendBundleFlow,
-    isStxEnabled,
-    needsTwoConfirmations,
-    resetConnectionError,
-    retryGenerationRef,
-    onRetryGenerationBump,
-    retrySendBundleSubmission,
-    retrySubmission,
-    signatureState,
-  ]);
+    },
+    [
+      cancelCurrentBatch,
+      connectionState.status,
+      dispatchSignatureEvent,
+      hasStartedSendBundleSubmission,
+      isRetryingRef,
+      isSendBundleFlow,
+      isStxEnabled,
+      needsTwoConfirmations,
+      resetConnectionError,
+      retryGenerationRef,
+      onRetryGenerationBump,
+      retrySendBundleSubmission,
+      retrySubmission,
+      signatureState,
+    ],
+  );
 
   /**
    * Cancels the hardware wallet signing flow. Aborts the current batch, stops

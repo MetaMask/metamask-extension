@@ -43,6 +43,12 @@ export type AssetProps = {
    * Optional tag renderers shown next to token names (e.g. "No fee").
    */
   tagRenderers?: TokenTagRenderer[];
+  /**
+   * Optional row-end accessory renderers (e.g. ramps' unavailable-token info
+   * button), vertically centered against the full row like the balance
+   * column.
+   */
+  endRenderers?: TokenTagRenderer[];
 };
 
 type AssetPickerViewProps = Omit<
@@ -66,6 +72,7 @@ const AssetPickerView = ({
   onSearchQueryChange,
   onSelectedChainIdChange,
   tagRenderers,
+  endRenderers,
 }: AssetPickerViewProps) => {
   const [selectedChainId, setSelectedChainId] = useState<string | null>(null);
   const {
@@ -168,6 +175,7 @@ const AssetPickerView = ({
         emptyStateMessage={emptyStateMessage}
         disableMetrics={disableMetrics}
         tagRenderers={tagRenderers}
+        endRenderers={endRenderers}
       />
     </Box>
   );

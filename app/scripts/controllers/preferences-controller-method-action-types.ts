@@ -45,16 +45,40 @@ export type PreferencesControllerSetUseSafeChainsListValidationAction = {
   handler: PreferencesController['setUseSafeChainsListValidation'];
 };
 
+/**
+ * Turns Basic Functionality on or off along with the preferences it owns.
+ *
+ * The owned preferences are listed in
+ * {@link EXTERNAL_SERVICES_OWNED_PREFERENCES}. When enabling, optional
+ * `ownedPreferences` values are applied in the same state update so callers
+ * such as onboarding completion never overwrite a choice and then restore it.
+ *
+ * @param useExternalServices - Whether external services should be enabled.
+ * @param ownedPreferences - Optional per-preference values to apply when
+ * enabling. Missing keys default to `true`. Ignored when disabling.
+ */
 export type PreferencesControllerToggleExternalServicesAction = {
   type: `PreferencesController:toggleExternalServices`;
   handler: PreferencesController['toggleExternalServices'];
 };
 
 /**
+ * Turns Basic Functionality and every child preference on or off in one
+ * state update, then syncs TokenDetection / GasFee / Shield controllers.
+ *
+ * @param useBasicFunctionality - Whether Basic Functionality should be on.
+ */
+export type PreferencesControllerToggleBasicFunctionalityAction = {
+  type: `PreferencesController:toggleBasicFunctionality`;
+  handler: PreferencesController['toggleBasicFunctionality'];
+};
+
+/**
  * One-time Basic Functionality consolidation when the remote FF turns on.
  * Aligns child preferences, marks the user as consolidated, and schedules
- * the modal/toast notice when needed, then syncs external-service
- * controllers.
+ * the modal/toast notice when needed, then syncs external-service controllers.
+ * Also repairs previously consolidated social-login wallets that still have
+ * Basic Functionality disabled.
  */
 export type PreferencesControllerConsolidateBasicFunctionalityAction = {
   type: `PreferencesController:consolidateBasicFunctionality`;
@@ -412,6 +436,7 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerSetUseMultiAccountBalanceCheckerAction
   | PreferencesControllerSetUseSafeChainsListValidationAction
   | PreferencesControllerToggleExternalServicesAction
+  | PreferencesControllerToggleBasicFunctionalityAction
   | PreferencesControllerConsolidateBasicFunctionalityAction
   | PreferencesControllerSetUseTokenDetectionAction
   | PreferencesControllerSetUseNftDetectionAction

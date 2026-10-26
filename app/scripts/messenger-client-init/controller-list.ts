@@ -21,14 +21,10 @@ import {
   DeFiPositionsController,
   DeFiPositionsControllerV2,
   MultichainAssetsController,
-  MultichainAssetsRatesController,
-  MultichainBalancesController,
   NftController,
   NftDetectionController,
   RatesController,
-  TokenBalancesController,
   TokenDetectionController,
-  TokenListController,
   TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
@@ -121,7 +117,6 @@ import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
-import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
@@ -139,6 +134,7 @@ import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
 import { DataDeletionService } from '../services/data-deletion-service';
 import { UserTraitsService } from '../services/user-traits-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
+import { SentryTracingService } from '../services/sentry/sentry-tracing-service';
 
 /**
  * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
@@ -181,7 +177,6 @@ export type MessengerClient =
   | KeyringController
   | LegacyBackgroundApiService
   | LoggingController
-  | MetaMetricsController
   | MetaMetricsDataDeletionController
   | MoneyAccountApiDataService
   | MoneyAccountAvailabilityService
@@ -189,8 +184,6 @@ export type MessengerClient =
   | MoneyAccountController
   | MoneyAccountUpgradeController
   | MultichainAssetsController
-  | MultichainAssetsRatesController
-  | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
   | MultichainRoutingService
@@ -220,6 +213,7 @@ export type MessengerClient =
   | RewardsController
   | RewardsDataService
   | SeedlessOnboardingController<EncryptionKey>
+  | SentryTracingService
   | SelectedNetworkController
   | SentinelApiService
   | ShieldController
@@ -233,9 +227,7 @@ export type MessengerClient =
   | SnapsNameProvider
   | SubjectMetadataController
   | ShieldSubscriptionService
-  | TokenBalancesController
   | TokenDetectionController
-  | TokenListController
   | TokensController
   | TransactionController
   | TransactionPayController
@@ -298,11 +290,8 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   GeolocationController['state'] &
   KeyringController['state'] &
   LoggingController['state'] &
-  MetaMetricsController['state'] &
   MetaMetricsDataDeletionController['state'] &
   MultichainAssetsController['state'] &
-  MultichainAssetsRatesController['state'] &
-  MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
   NameController['state'] &
@@ -334,9 +323,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   SnapInterfaceController['state'] &
   SnapRegistryController['state'] &
   SubscriptionController['state'] &
-  TokenBalancesController['state'] &
   TokenDetectionController['state'] &
-  TokenListController['state'] &
   TokensController['state'] &
   StaticAssetsController['state'] &
   TransactionController['state'] &

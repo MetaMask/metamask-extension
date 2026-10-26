@@ -8,6 +8,11 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { PerpsDepositToast } from './perps-deposit-toast';
@@ -17,8 +22,14 @@ const mockToastError = jest.fn();
 const mockToastLoading = jest.fn();
 const mockToastSuccess = jest.fn();
 
+const mockTrack = jest.fn();
+
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
+}));
+
+jest.mock('../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
 jest.mock('../../ui/toast/toast', () => ({
@@ -54,6 +65,8 @@ describe('PerpsDepositToast', () => {
   beforeEach(() => {
     submitRequestToBackgroundMock.mockResolvedValue(undefined);
     jest.clearAllMocks();
+    localStorage.clear();
+    sessionStorage.clear();
     jest.useRealTimers();
   });
 
@@ -228,6 +241,52 @@ describe('PerpsDepositToast', () => {
         duration: 5000,
       },
     );
+    // The property is always emitted so a funded deposit is distinguishable
+    // from an older client that reported nothing.
+    expect(mockTrack).toHaveBeenCalledWith(
+      MetaMetricsEventName.PerpsUiInteraction,
+      {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_CONFIRMED,
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+      },
+    );
+  });
+
+  it('emits deposit_confirmed once when the toast remounts for the same deposit', () => {
+    // Unmounting (e.g. auto-lock) cancels the timeout that clears the result,
+    // so a remount re-runs the effect for the same success and must not re-emit.
+    const state = {
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    };
+
+    const first = renderWithProvider(
+      <PerpsDepositToast />,
+      configureStore(state),
+    );
+    first.unmount();
+    renderWithProvider(<PerpsDepositToast />, configureStore(state));
+
+    const confirmedEmits = mockTrack.mock.calls.filter(
+      ([, properties]) =>
+        properties?.[PERPS_EVENT_PROPERTY.INTERACTION_TYPE] ===
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_CONFIRMED,
+    );
+    expect(confirmedEmits).toHaveLength(1);
   });
 
   it('renders success toast when the deposit transaction is no longer active', () => {

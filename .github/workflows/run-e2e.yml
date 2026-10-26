@@ -63,7 +63,6 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # This is to support tests that set manifestFlags.testing.infuraProjectId, such as power-user.spec.ts
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-      ASSETS_UNIFIED_STATE_ENABLED: 'true'
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       # Enable colors in CI for enhanced test reporter output
       FORCE_COLOR: '1'
@@ -92,7 +91,7 @@ jobs:
           skip-allow-scripts: true
 
       - name: Install anvil with retry
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           timeout_minutes: 1
           max_attempts: 4
@@ -149,8 +148,8 @@ jobs:
         with:
           browsers: ${{ inputs.playwright-browsers }}
 
-      - name: Pin geckodriver 0.36.0 (Firefox only)
-        if: ${{ contains(inputs.test-command, 'firefox') }}
+      - name: Pin geckodriver 0.36.0 (Firefox Selenium only)
+        if: ${{ contains(inputs.test-command, 'firefox') && inputs.playwright-browsers == '' }}
         run: .github/scripts/pin-geckodriver.sh
 
       - name: Run E2E tests

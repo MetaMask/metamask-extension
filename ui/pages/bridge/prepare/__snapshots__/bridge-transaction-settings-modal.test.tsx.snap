@@ -21,7 +21,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
     >
       <section
         aria-modal="true"
-        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--rounded-lg mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
+        class="mm-box rounded-[32px] mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
         role="dialog"
       >
         <header
@@ -112,6 +112,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
                 class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                 data-testid="bridge__tx-settings-modal-custom-input"
                 focused="true"
+                inputmode="decimal"
                 type="text"
                 value=""
               />
@@ -169,7 +170,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
     >
       <section
         aria-modal="true"
-        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--rounded-lg mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
+        class="mm-box rounded-[32px] mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
         role="dialog"
       >
         <header

@@ -46,7 +46,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     consentDecisionMade: true,
     eventFragments: false,
     eventQueue: false,
+    marketingCampaignCookieId: true,
+    marketingConsentDecisionMade: false,
     optedIn: true,
+    optedInToMarketing: false,
     preConsentEventQueue: false,
   },
   AnnouncementController: {
@@ -115,16 +118,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
-  MultichainBalancesController: {
-    balances: false,
-  },
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
     allIgnoredAssets: false,
-  },
-  MultichainAssetsRatesController: {
-    assetsRates: false,
   },
   BridgeController: {
     assetExchangeRates: false,
@@ -211,11 +208,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isUpdatingMetamaskNotifications: false,
     isUpdatingMetamaskNotificationsAccount: false,
   },
-  MetaMetricsController: {
-    tracesBeforeMetricsOptIn: false,
-    dataCollectionForMarketing: false,
-    marketingCampaignCookieId: true,
-  },
   MetaMetricsDataDeletionController: {
     metaMetricsDataDeletionId: true,
     metaMetricsDataDeletionTimestamp: true,
@@ -239,6 +231,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     completedOnboarding: true,
     firstTimeFlowType: true,
     hasSeenOnboardingCompletionPage: true,
+    onboardingJourneyEnded: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
@@ -373,14 +366,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   // TokenDetectionController has no public controller state.
   TokenDetectionController: {},
-  TokenListController: {
-    tokensChainsCache: {
-      [AllProperties]: false,
-    },
-  },
-  TokenBalancesController: {
-    tokenBalances: false,
-  },
   TokenRatesController: {
     marketData: false,
   },

@@ -221,9 +221,6 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasLimitTooLow": {
-    "message": "Had gas mestilah sekurang-kurangnya 21000"
-  },
   "gasUsed": {
     "message": "Gas Digunakan"
   },
@@ -398,9 +395,6 @@
   "privateKey": {
     "message": "Kekunci Persendirian",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Amaran: Jangan sekali-kali dedahkan kunci ini. Sesiapa sahaja dengan kunci persendirian anda boleh mencuri sebarang aset yang tersimpan di dalam akaun anda."
   },
   "privateNetwork": {
     "message": "Rangkaian Persendirian"

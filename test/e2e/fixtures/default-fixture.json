@@ -173,13 +173,22 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
-      "optedIn": false
+      "eventsConfig": {
+        "events": {},
+        "schemaVersion": "0",
+        "timestamp": 0,
+        "version": "0"
+      },
+      "marketingCampaignCookieId": null,
+      "marketingConsentDecisionMade": true,
+      "optedIn": false,
+      "optedInToMarketing": false
     },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 226,
+      "currentMigrationVersion": 233,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -195,9 +204,11 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": true,
@@ -317,29 +328,48 @@
         }
       },
       "assetsPrice": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+          "allTimeHigh": 126080,
+          "allTimeLow": 67.81,
+          "assetPriceType": "fungible",
+          "circulatingSupply": 19975290,
+          "id": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+          "lastUpdated": 1776106420000,
+          "marketCap": 1836592437357,
+          "price": 106763,
+          "pricePercentChange14d": 4.795747124043681,
+          "pricePercentChange1d": 1.6980683447716627,
+          "pricePercentChange1h": -0.09840133404969334,
+          "pricePercentChange1y": -1.0484081200296924,
+          "pricePercentChange200d": -14.088182161660676,
+          "pricePercentChange30d": 2.1388997840239408,
+          "pricePercentChange7d": -1.6285705945180806,
+          "totalVolume": 45216146754,
+          "usdPrice": 106763
+        },
         "eip155:1/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:1337/slip44:1": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:42161/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:59144/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         }
       },
       "customAssets": {},
@@ -367,11 +397,18 @@
     },
     "ConfigRegistryController": {
       "configs": {
+        "eventsConfig": {
+          "events": {},
+          "schemaVersion": "0",
+          "timestamp": 0,
+          "version": "0"
+        },
         "networks": {}
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
-      "version": null
+      "version": "0"
     },
     "CurrencyController": {
       "currencyRates": {
@@ -403,11 +440,6 @@
     "LoggingController": {
       "logs": {}
     },
-    "MetaMetricsController": {
-      "dataCollectionForMarketing": false,
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": []
-    },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
@@ -438,43 +470,6 @@
               "symbol": "SOL"
             }
           ]
-        }
-      }
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": {
-        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
-          "conversionTime": 1776106420,
-          "currency": "swift:0/iso4217:USD",
-          "expirationTime": 1776106480,
-          "marketData": {
-            "allTimeHigh": "126080",
-            "allTimeLow": "67.81",
-            "circulatingSupply": "19975290",
-            "fungible": true,
-            "marketCap": "1836592437357",
-            "pricePercentChange": {
-              "P14D": 4.795747124043681,
-              "P1D": 1.6980683447716627,
-              "P1Y": -1.0484081200296924,
-              "P200D": -14.088182161660676,
-              "P30D": 2.1388997840239408,
-              "P7D": -1.6285705945180806,
-              "PT1H": -0.09840133404969334
-            },
-            "totalVolume": "45216146754"
-          },
-          "rate": "106763"
-        }
-      }
-    },
-    "MultichainBalancesController": {
-      "balances": {
-        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
-          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
-            "amount": "0",
-            "unit": "SOL"
-          }
         }
       }
     },
@@ -955,6 +950,7 @@
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
       "hasSeenOnboardingCompletionPage": true,
+      "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1036,8 +1032,9 @@
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
+        "hasLinkedSocialLoginProfile": false,
         "hideZeroBalanceTokens": false,
-        "isBasicFunctionalityConsolidatedEnabled": false,
+        "isBasicFunctionalityConsolidatedEnabled": true,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1090,7 +1087,7 @@
       "initialDelayEndTimestamp": 1770282498299,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
-      "reportedAccounts": [],
+      "reportedAccounts": ["0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"],
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1182,6 +1179,13 @@
           "perpsFeeDiscount": null,
           "subscriptionId": null
         },
+        "stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K": {
+          "account": "stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K",
+          "lastFreshOptInStatusCheck": 1780567256841,
+          "lastPerpsDiscountRateFetched": null,
+          "perpsFeeDiscount": null,
+          "subscriptionId": null
+        },
         "tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
           "account": "tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
           "lastFreshOptInStatusCheck": 1780567256841,
@@ -1256,9 +1260,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
     "TokenRatesController": {
       "marketData": {
         "0x539": {}
@@ -1289,6 +1290,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 226
+    "version": 233
   }
 }

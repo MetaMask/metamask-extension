@@ -26,6 +26,7 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { showBuyTabOpenedToast } from '../../../helpers/utils/show-buy-tab-opened-toast';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
@@ -144,14 +145,20 @@ const TokenButtons = ({
 
   const handleBuyAndSellOnClick = useCallback(async () => {
     const runBuy = async () => {
-      const opened = await goToBuy({
+      const destination = await goToBuy({
         assetId: toAssetId(token.address, token.chainId),
         chainId: token.chainId,
       });
       // The ramps gate can block the buy and show its own modal; don't report a
       // buy click in that case.
-      if (!opened) {
+      if (!destination) {
         return;
+      }
+      if (destination === 'portfolio') {
+        showBuyTabOpenedToast(
+          t('buyTabOpenedToastText'),
+          t('buyTabOpenedToastDescription'),
+        );
       }
       trackEvent(
         createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
@@ -185,6 +192,7 @@ const TokenButtons = ({
     trackEvent,
     createEventBuilder,
     goToBuy,
+    t,
   ]);
 
   const handleSendOnClick = useCallback(async () => {

@@ -169,6 +169,36 @@ describe('transaction-pay utils', () => {
       expect(getTokenAddress(transactionMeta)).toBe(TOKEN_ADDRESS_MOCK);
     });
 
+    it('returns the required asset for a deposit batch targeting the vault', () => {
+      const transactionMeta = {
+        txParams: {
+          to: TOKEN_ADDRESS_2_MOCK,
+        },
+        nestedTransactions: [
+          { to: TOKEN_ADDRESS_MOCK },
+          { to: TOKEN_ADDRESS_2_MOCK },
+        ],
+        requiredAssets: [{ address: TOKEN_ADDRESS_MOCK }],
+      } as unknown as TransactionMeta;
+
+      expect(getTokenAddress(transactionMeta)).toBe(TOKEN_ADDRESS_MOCK);
+    });
+
+    it('prefers token transfer data over the required asset', () => {
+      const transactionMeta = {
+        txParams: {
+          data: '0x12345678',
+          to: TOKEN_ADDRESS_2_MOCK,
+        },
+        nestedTransactions: [
+          { data: TOKEN_TRANSFER_DATA_MOCK, to: TOKEN_ADDRESS_MOCK },
+        ],
+        requiredAssets: [{ address: TOKEN_ADDRESS_2_MOCK }],
+      } as unknown as TransactionMeta;
+
+      expect(getTokenAddress(transactionMeta)).toBe(TOKEN_ADDRESS_MOCK);
+    });
+
     it('returns undefined when transactionMeta is undefined', () => {
       expect(getTokenAddress(undefined)).toBeUndefined();
     });

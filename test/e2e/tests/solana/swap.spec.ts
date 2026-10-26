@@ -78,18 +78,18 @@ async function mockAccountsApiV2WithSolana(mockServer: Mockttp) {
     .always()
     .thenJson(200, {
       fullSupport: [
-        1,
-        137,
-        56,
-        59144,
-        8453,
-        10,
-        42161,
-        534352,
-        1337,
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+        'eip155:1337',
         SOLANA_CHAIN_ID,
       ],
-      partialSupport: { balances: [42220, 43114] },
+      partialSupport: ['eip155:42220', 'eip155:43114'],
     });
 }
 
@@ -251,7 +251,7 @@ async function mockSwapNoQuotes(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }
@@ -285,7 +285,7 @@ async function mockSwapSOLtoUSDCFailed(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }
@@ -320,7 +320,7 @@ async function mockSwapSOLtoUSDC(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }
@@ -576,7 +576,8 @@ describe('Swap on Solana', function () {
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
-        await activityTab.checkTxAmountInActivity('+0.1669 USDC', 1);
+        await activityTab.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkTransactionAmount('+0.1669 USDC');
       },
     );
   });
@@ -623,8 +624,8 @@ describe('Swap on Solana', function () {
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkTxAmountInActivity('+0.005904 SOL', 1);
         await activityTab.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkTransactionAmount('+0.005904 SOL');
         await activityTab.checkTransactionActivityByText('Swapped');
       },
     );

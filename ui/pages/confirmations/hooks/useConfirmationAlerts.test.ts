@@ -1,4 +1,7 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import {
@@ -7,6 +10,7 @@ import {
 } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../test/data/mock-state.json';
+import type { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../components/app/confirm/info/row/constants';
 import * as Actions from '../../../store/actions';
@@ -75,6 +79,21 @@ async function renderAlertsHook(state: Record<string, unknown>) {
   return renderResult;
 }
 
+async function getGasLimitAlerts(gas: string) {
+  const baseConfirmation =
+    genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+  const confirmation = {
+    ...baseConfirmation,
+    txParams: { ...baseConfirmation.txParams, gas },
+  } as TransactionMeta;
+
+  const { result } = await renderAlertsHook(
+    getMockConfirmStateForTransaction(confirmation),
+  );
+
+  return (result.current as Alert[]).filter(({ key }) => key === 'gasTooLow');
+}
+
 describe('useConfirmationAlerts', () => {
   beforeEach(() => {
     useNoPayTokenQuotesAlertMock.mockReturnValue([]);
@@ -93,6 +112,18 @@ describe('useConfirmationAlerts', () => {
   it('returns empty array if no alerts', async () => {
     const { result } = await renderAlertsHook(mockState);
     expect(result.current).toEqual([]);
+  });
+
+  it('adds a gas limit alert below the EIP-2780 minimum', async () => {
+    expect(await getGasLimitAlerts('0x2edf')).toHaveLength(1);
+  });
+
+  it('does not add a gas limit alert at the EIP-2780 minimum', async () => {
+    expect(await getGasLimitAlerts('0x2ee0')).toHaveLength(0);
+  });
+
+  it('does not add a gas limit alert for a legacy gas limit', async () => {
+    expect(await getGasLimitAlerts('0x5208')).toHaveLength(0);
   });
 
   it('strips row field associations for MM Pay transactions', async () => {

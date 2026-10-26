@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import classnames from 'clsx';
@@ -22,7 +22,7 @@ const Menu = ({
   popperOptions,
 }) => {
   const [popperElement, setPopperElement] = useState(null);
-  const popoverContainerElement = useRef(
+  const [popoverContainerElement] = useState(() =>
     document.getElementById('popover-content'),
   );
 
@@ -53,7 +53,7 @@ const Menu = ({
         {children}
       </div>
     </>,
-    popoverContainerElement.current,
+    popoverContainerElement,
   );
 };
 

@@ -148,7 +148,7 @@ export const Toast = ({
                 variant: DsTextVariant.BodySm,
               }}
               onClick={onActionClick}
-              className="mt-2 rounded-lg"
+              className="mt-2"
             >
               {actionText}
             </Button>

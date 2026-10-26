@@ -21,7 +21,6 @@ import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useT
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
-import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import {
   CustomAmountInfo,
@@ -39,7 +38,6 @@ jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
-jest.mock('../../../hooks/pay/usePayWithNoFeeToken');
 jest.mock('../../../hooks/alerts/transactions/useAccountNoFundsAlert');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({
@@ -113,6 +111,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   isDepositPrefillEnabled: false,
   isDepositPrefillLoading: false,
   isDepositPrefilled: false,
+  isDepositPrefillSkipped: false,
   isInputChanged: false,
   isQuoteDerivedAmountLoading: false,
   updatePendingAmount: jest.fn(),
@@ -167,7 +166,7 @@ function render(
     hasQuotes?: boolean;
     hasPositiveRequiredAmount?: boolean;
     isNativePayToken?: boolean;
-    isNoFeePayToken?: boolean;
+    hasMax?: boolean;
     totals?: TransactionPayTotals;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
@@ -193,7 +192,7 @@ function render(
     hasQuotes = false,
     hasPositiveRequiredAmount = true,
     isNativePayToken = false,
-    isNoFeePayToken = false,
+    hasMax = false,
     totals,
     sourceAmounts = [],
     requiredTokens = [],
@@ -298,10 +297,6 @@ function render(
       payToken: MOCK_AVAILABLE_TOKEN as never,
       setPayToken: jest.fn(),
     });
-  jest.mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken).mockReturnValue({
-    isNoFeeToken: () => isNoFeePayToken,
-    renderNoFeeTag: () => null,
-  });
   jest
     .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
     .mockReturnValue(withdraw);
@@ -315,6 +310,7 @@ function render(
       disablePay={disablePay}
       disablePercentageButtons={disablePercentageButtons}
       displayPercentageButtons={displayPercentageButtons}
+      hasMax={hasMax}
       hidePayTokenAmount={hidePayTokenAmount}
     />,
     mockStore(state),
@@ -344,6 +340,25 @@ describe('CustomAmountInfo', () => {
 
     expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
     expect(queryByTestId('custom-amount')).not.toBeInTheDocument();
+  });
+
+  it('shows $0 instead of the amount skeleton when deposit prefill is skipped', () => {
+    // A money-account deposit with no funded pay token can never commit a
+    // prefill, so the field must settle at $0 with a usable keypad rather than
+    // sitting behind the skeleton forever.
+    const { getByTestId, queryByTestId } = render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '0',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: false,
+        isDepositPrefilled: false,
+        isDepositPrefillSkipped: true,
+      },
+    });
+
+    expect(getByTestId('custom-amount')).toHaveTextContent('0');
+    expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
   });
 
   it('does not show amount skeleton for deposit prefill loading when account has no funds', () => {
@@ -645,18 +660,18 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('percentage-button-100')).not.toBeInTheDocument();
     });
 
-    it('replaces 90% with Max for no-fee (fixed-spread) tokens', () => {
+    it('replaces 90% with Max for any non-native token when the flow opts in', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: true,
+        hasMax: true,
       });
 
       expect(getByTestId('percentage-button-100')).toHaveTextContent('Max');
       expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
     });
 
-    it('keeps 90% for tokens that are not no-fee', () => {
+    it('keeps 90% when the flow does not opt into Max', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: false,
+        hasMax: false,
       });
 
       expect(getByTestId('percentage-button-90')).toBeInTheDocument();
@@ -665,7 +680,7 @@ describe('CustomAmountInfo', () => {
 
     it('always shows Max on withdraw, irrespective of the selected token', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: false,
+        hasMax: false,
         withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
       });
 
@@ -675,7 +690,7 @@ describe('CustomAmountInfo', () => {
 
     it('always shows Max on withdraw when the pay token is native', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: false,
+        hasMax: false,
         isNativePayToken: true,
         withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
       });
@@ -684,9 +699,9 @@ describe('CustomAmountInfo', () => {
       expect(queryByTestId('percentage-button-90')).not.toBeInTheDocument();
     });
 
-    it('keeps 90% when the no-fee token is native', () => {
+    it('keeps 90% when the pay token is native, so gas stays funded', () => {
       const { getByTestId, queryByTestId } = renderMoneyAccount({
-        isNoFeePayToken: true,
+        hasMax: true,
         isNativePayToken: true,
       });
 
@@ -1085,12 +1100,6 @@ describe('CustomAmountInfo', () => {
           isNative: false,
           payToken: undefined,
           setPayToken: jest.fn(),
-        });
-      jest
-        .mocked(usePayWithNoFeeTokenModule.usePayWithNoFeeToken)
-        .mockReturnValue({
-          isNoFeeToken: () => false,
-          renderNoFeeTag: () => null,
         });
       jest
         .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)

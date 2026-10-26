@@ -7,6 +7,7 @@ import {
   isBatchTransaction,
   hasTransactionType,
   getPostQuoteWithdrawTransactionType,
+  getTransactionPayingAccount,
   getTransactionType,
   isPostQuoteWithdrawTransaction,
   isPerpsWithdrawTransaction,
@@ -302,5 +303,34 @@ describe('Transactions utils', () => {
     it('returns false when transactionMeta is undefined', () => {
       expect(isPostQuoteWithdrawTransaction(undefined)).toBe(false);
     });
+  });
+
+  describe('getTransactionPayingAccount', () => {
+    const FROM = '0x1234567890123456789012345678901234567890';
+    const OVERRIDE = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+
+    const CASES = [
+      ['the override', TransactionType.contractInteraction, OVERRIDE, OVERRIDE],
+      ['from without an override', TransactionType.simpleSend, undefined, FROM],
+      [
+        'from for post-quote withdraws',
+        TransactionType.perpsWithdraw,
+        OVERRIDE,
+        FROM,
+      ],
+    ] as const;
+
+    for (const [label, type, override, expected] of CASES) {
+      it(`returns ${label}`, () => {
+        const transactionMeta = { type, txParams: { from: FROM } };
+
+        expect(
+          getTransactionPayingAccount(
+            transactionMeta as TransactionMeta,
+            override,
+          ),
+        ).toBe(expected);
+      });
+    }
   });
 });

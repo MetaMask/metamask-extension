@@ -2,11 +2,8 @@ import { it } from '@jest/globals';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
-  MONEY_ACTIVITY_ROUTE,
   MONEY_HOME_ROUTE,
-  getMoneyTransactionDetailsRoute,
   PERPS_HOME_PAGE_ROUTE,
-  SWAP_PATH,
 } from '../../../helpers/constants/routes';
 import {
   getActiveBottomNavTabs,
@@ -19,7 +16,6 @@ describe('getActiveBottomNavTabs', () => {
       isHome: true,
       isPerps: false,
       isMoney: false,
-      isSwaps: false,
       isActivity: false,
     });
   });
@@ -29,17 +25,6 @@ describe('getActiveBottomNavTabs', () => {
       isHome: false,
       isPerps: true,
       isMoney: false,
-      isSwaps: false,
-      isActivity: false,
-    });
-  });
-
-  it('marks isSwaps active on the swap path', () => {
-    expect(getActiveBottomNavTabs(SWAP_PATH)).toStrictEqual({
-      isHome: false,
-      isPerps: false,
-      isMoney: false,
-      isSwaps: true,
       isActivity: false,
     });
   });
@@ -49,7 +34,6 @@ describe('getActiveBottomNavTabs', () => {
       isHome: false,
       isPerps: false,
       isMoney: false,
-      isSwaps: false,
       isActivity: true,
     });
   });
@@ -59,31 +43,6 @@ describe('getActiveBottomNavTabs', () => {
       isHome: false,
       isPerps: false,
       isMoney: true,
-      isSwaps: false,
-      isActivity: false,
-    });
-  });
-
-  it('marks isMoney active on the Money activity route', () => {
-    expect(getActiveBottomNavTabs(MONEY_ACTIVITY_ROUTE)).toStrictEqual({
-      isHome: false,
-      isPerps: false,
-      isMoney: true,
-      isSwaps: false,
-      isActivity: false,
-    });
-  });
-
-  it('marks isMoney active on the Money transaction details route', () => {
-    expect(
-      getActiveBottomNavTabs(
-        getMoneyTransactionDetailsRoute('money-tx-deposited'),
-      ),
-    ).toStrictEqual({
-      isHome: false,
-      isPerps: false,
-      isMoney: true,
-      isSwaps: false,
       isActivity: false,
     });
   });
@@ -93,7 +52,6 @@ describe('getActiveBottomNavTabs', () => {
       isHome: false,
       isPerps: false,
       isMoney: false,
-      isSwaps: false,
       isActivity: false,
     });
   });
@@ -104,12 +62,6 @@ describe('isBottomNavRoute', () => {
     ['default route', DEFAULT_ROUTE],
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
     ['Money home route', MONEY_HOME_ROUTE],
-    ['Money activity route', MONEY_ACTIVITY_ROUTE],
-    [
-      'Money transaction details route',
-      getMoneyTransactionDetailsRoute('money-tx-deposited'),
-    ],
-    ['swap path', SWAP_PATH],
     ['activity route', ACTIVITY_ROUTE],
   ])('returns true for the %s', (_label, route) => {
     expect(isBottomNavRoute(route)).toBe(true);

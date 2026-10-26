@@ -89,3 +89,16 @@ export function isAccountsApiMoneyActivityItem(
 ): item is AccountsApiMoneyActivityItem {
   return item.kind === 'accountsApi';
 }
+
+const ACCOUNTS_API_ACTIVITY_ID_PREFIX = /^(?:card|cashback|refund):/u;
+
+/**
+ * Whether a details-route id is an Accounts API activity id
+ * (`card:…`, `cashback:…`, or `refund:…`).
+ *
+ * @param id - Route `transactionId` param.
+ * @returns True when the id is kind-qualified Accounts API activity.
+ */
+export function isAccountsApiActivityId(id: string | undefined): id is string {
+  return typeof id === 'string' && ACCOUNTS_API_ACTIVITY_ID_PREFIX.test(id);
+}
