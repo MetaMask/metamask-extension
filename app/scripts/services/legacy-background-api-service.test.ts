@@ -4651,6 +4651,17 @@ describe('LegacyBackgroundApiService', () => {
           'AppStateController:setPasskeyAutoUnlockSuppressed',
           true,
         );
+        const suppressTrueIndex = callSpy.mock.calls.findIndex(
+          ([actionName, suppressed]) =>
+            actionName ===
+              'AppStateController:setPasskeyAutoUnlockSuppressed' &&
+            suppressed === true,
+        );
+        const keyringLockIndex = callSpy.mock.calls.findIndex(
+          ([actionName]) => actionName === 'KeyringController:setLocked',
+        );
+        expect(suppressTrueIndex).toBeGreaterThanOrEqual(0);
+        expect(suppressTrueIndex).toBeLessThan(keyringLockIndex);
         expect(callSpy).not.toHaveBeenCalledWith(
           'SeedlessOnboardingController:setLocked',
         );
@@ -4755,6 +4766,10 @@ describe('LegacyBackgroundApiService', () => {
           'KeyringController:setLocked',
           jest.fn().mockRejectedValue(error),
         );
+        rootMessenger.registerActionHandler(
+          'AppStateController:setPasskeyAutoUnlockSuppressed',
+          jest.fn(),
+        );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
 
@@ -4762,9 +4777,15 @@ describe('LegacyBackgroundApiService', () => {
           rootMessenger.call('LegacyBackgroundApiService:setLocked'),
         ).rejects.toThrow(error);
 
-        expect(callSpy).not.toHaveBeenCalledWith(
+        // Suppression is armed before the lock attempt, then cleared because
+        // the keyring never locked.
+        expect(callSpy).toHaveBeenCalledWith(
           'AppStateController:setPasskeyAutoUnlockSuppressed',
           true,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AppStateController:setPasskeyAutoUnlockSuppressed',
+          false,
         );
       });
     });

@@ -1,8 +1,8 @@
 /**
  * After a manual lock, auto passkey unlock is suppressed for this duration (cross-surface)
- * so the user is not immediately prompted again when opening the wallet.
+ * so a slow unlock screen cannot start a passkey ceremony before the user chooses how to unlock.
  */
-export const PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS = 1_000;
+export const PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS = 5_000;
 
 /**
  * Stages emitted during passkey enrollment and replacement.

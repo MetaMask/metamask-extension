@@ -2616,11 +2616,24 @@ export class LegacyBackgroundApiService {
         releaseLock = await this.#seedlessOperationMutex.acquire();
       }
 
+      // The unlock screen reads this flag once on mount. Set it before the
+      // keyring locks so the screen cannot start a passkey ceremony in the gap.
+      let keyringLocked = false;
       try {
+        if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
+          clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+        }
+        this.#messenger.call(
+          'AppStateController:setPasskeyAutoUnlockSuppressed',
+          true,
+        );
+
         if (isSocialLoginFlow) {
           await this.#messenger.call('SeedlessOnboardingController:setLocked');
         }
         await this.#messenger.call('KeyringController:setLocked');
+        keyringLocked = true;
 
         // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
         this.#messenger.call('SubscriptionController:stopAllPolling');
@@ -2634,27 +2647,32 @@ export class LegacyBackgroundApiService {
         if (isSignedIn) {
           this.#messenger.call('AuthenticationController:performSignOut');
         }
-
-        // After lock, suppress auto passkey unlock briefly (cross-surface), then clear.
-        if (this.#passkeyAutoUnlockSuppressedResetTimeoutId !== null) {
-          clearTimeout(this.#passkeyAutoUnlockSuppressedResetTimeoutId);
-          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
-        }
-        this.#messenger.call(
-          'AppStateController:setPasskeyAutoUnlockSuppressed',
-          true,
-        );
-        this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
-          this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+      } catch (error) {
+        // The keyring is still unlocked, so do not leave auto-unlock suppressed.
+        if (!keyringLocked) {
           this.#messenger.call(
             'AppStateController:setPasskeyAutoUnlockSuppressed',
             false,
           );
-        }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
-      } catch (error) {
+        }
         log.error('Error setting locked state', error);
         throw error;
       } finally {
+        // Start the window only after lock and sign-out. If a later step throws
+        // once the keyring is locked, still schedule the reset so the flag cannot stick.
+        if (
+          keyringLocked &&
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId === null
+        ) {
+          this.#passkeyAutoUnlockSuppressedResetTimeoutId = setTimeout(() => {
+            this.#passkeyAutoUnlockSuppressedResetTimeoutId = null;
+            this.#messenger.call(
+              'AppStateController:setPasskeyAutoUnlockSuppressed',
+              false,
+            );
+          }, PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS);
+        }
+
         if (releaseLock) {
           releaseLock();
         }
