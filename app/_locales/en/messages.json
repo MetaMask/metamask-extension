@@ -5797,9 +5797,6 @@
   "mfaTotpSetupCopied": {
     "message": "Setup key copied"
   },
-  "mfaTotpSetupCopy": {
-    "message": "Copy setup key"
-  },
   "mfaTotpSetupDescription": {
     "message": "Scan the QR code with your authenticator app, or enter the setup key."
   },

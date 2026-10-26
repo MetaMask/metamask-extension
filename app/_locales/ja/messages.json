@@ -5462,17 +5462,11 @@
   "mfaMethodEmail": {
     "message": "メールアドレス"
   },
-  "mfaOtpPaste": {
-    "message": "貼り付け"
-  },
   "mfaOtpResend": {
     "message": "コードを再送する"
   },
   "mfaOtpRetry": {
     "message": "もう一度お試しください"
-  },
-  "mfaOtpVerify": {
-    "message": "検証"
   },
   "mfaPickerOr": {
     "message": "または"
