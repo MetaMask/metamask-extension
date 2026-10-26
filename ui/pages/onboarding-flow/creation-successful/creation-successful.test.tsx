@@ -86,7 +86,7 @@ jest.mock('../../../../shared/lib/environment', () => ({
     mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
 }));
 
-// Mock messenger actions to prevent "Background connection not initialized" warnings.
+// Mock background connection to prevent "Background connection not initialized" warnings
 const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
 const mockSetIsBackupAndSyncFeatureEnabled = jest
   .fn()
@@ -96,22 +96,21 @@ const mockSetPreference = jest.fn().mockResolvedValue(undefined);
 const mockSetUseMultiAccountBalanceChecker = jest
   .fn()
   .mockResolvedValue(undefined);
-const messengerCallMock = jest.fn(
-  (actionType: string, args: unknown[] = []) => {
-    switch (actionType) {
-      case 'AppStateController:removeDeferredDeepLink':
-        return mockRemoveDeferredDeepLink(...args);
-      case 'UserStorageController:setIsBackupAndSyncFeatureEnabled':
-        return mockSetIsBackupAndSyncFeatureEnabled(...args);
-      case 'LegacyBackgroundApiService:toggleExternalServices':
-        return mockToggleExternalServices(...args);
-      case 'PreferencesController:setPreference':
-        return mockSetPreference(...args);
-      case 'PreferencesController:setUseMultiAccountBalanceChecker':
-        return mockSetUseMultiAccountBalanceChecker(...args);
-      default:
-        return Promise.resolve(undefined);
-    }
+const backgroundConnectionMock = new Proxy(
+  {
+    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
+    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
+    toggleExternalServices: mockToggleExternalServices,
+    setPreference: mockSetPreference,
+    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
+  },
+  {
+    get: (target, prop) => {
+      if (prop in target) {
+        return target[prop as keyof typeof target];
+      }
+      return jest.fn().mockResolvedValue(undefined);
+    },
   },
 );
 
@@ -157,10 +156,7 @@ describe('Wallet Ready Page', () => {
     );
     mockUseNavigate.mockClear();
     mockTrackEvent.mockClear();
-    setBackgroundConnection({
-      getStatePatches: jest.fn().mockResolvedValue([]),
-      messengerCall: messengerCallMock,
-    } as never);
+    setBackgroundConnection(backgroundConnectionMock as never);
   });
 
   it('should render the wallet ready content if the seed phrase is backed up', () => {
