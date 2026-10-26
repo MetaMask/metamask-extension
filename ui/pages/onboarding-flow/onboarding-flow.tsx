@@ -84,7 +84,7 @@ import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import { useDispatch } from '../../store/hooks';
 import { useOnboardingTrace } from '../../contexts/onboarding-trace';
 import { ONBOARDING_UNLOCK_ROUTE_CAPABILITIES } from './unlock-messenger';
-import { ONBOARDING_TRACE_ROUTE_CAPABILITIES } from './messenger';
+import { ONBOARDING_ROUTE_CAPABILITIES } from './messenger';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -595,7 +595,7 @@ export default function OnboardingFlow() {
   return (
     <RouteMessengerProvider
       path={ONBOARDING_ROUTE}
-      capabilities={ONBOARDING_TRACE_ROUTE_CAPABILITIES}
+      capabilities={ONBOARDING_ROUTE_CAPABILITIES}
     >
       <OnboardingTraceProvider>
         <OnboardingFlowContent />
