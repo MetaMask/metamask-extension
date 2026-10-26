@@ -5208,9 +5208,6 @@
   "loading": {
     "message": "로딩 중..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Snap에서 트랜잭션을 완료하세요."
-  },
   "loadingTokenList": {
     "message": "토큰 목록 불러오는 중"
   },
