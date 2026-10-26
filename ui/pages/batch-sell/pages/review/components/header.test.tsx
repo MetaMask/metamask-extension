@@ -114,7 +114,7 @@ describe('Header', () => {
       expect(screen.getByText('12345')).toBeInTheDocument();
     });
 
-    it('uses DisplayMd variant for long formatted values (> 10 chars)', () => {
+    it('renders long formatted values (> 10 chars) in the Hero amount display', () => {
       render(
         <Header
           {...baseProps}
@@ -123,7 +123,9 @@ describe('Header', () => {
         />,
       );
 
-      expect(screen.getByText(/1,234,567,890/u)).toBeInTheDocument();
+      const total = screen.getByText(/1,234,567,890/u);
+      expect(total).toBeInTheDocument();
+      expect(total).toHaveClass('font-hero', 'text-s-amount-display-lg');
     });
   });
 
