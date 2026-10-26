@@ -110,7 +110,7 @@ async function requestEthereumAccountsImplementation(
     return end();
   }
 
-  let ethAccounts = getAccounts(origin);
+  let ethAccounts = getAccounts();
   if (ethAccounts.length > 0) {
     // We wait for the extension to unlock in this case only, because permission
     // requests are handled when the extension is unlocked, regardless of the
@@ -137,7 +137,7 @@ async function requestEthereumAccountsImplementation(
 
   // We cannot derive ethAccounts directly from the CAIP-25 permission
   // because the accounts will not be in order of lastSelected
-  ethAccounts = getAccounts(origin);
+  ethAccounts = getAccounts();
 
   // first time connection to dapp will lead to no log in the permissionHistory
   // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
