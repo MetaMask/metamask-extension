@@ -57,6 +57,8 @@ eligible. The scheduling hook has no dependency on telemetry or routing.
   Hidden documents and page close permanently exclude sampling. Where supported,
   buffered `visibility-state` entries also exclude documents hidden before the
   UI bundle ran. Otherwise, visibility before script execution is unknown.
+  Chrome appears to start most side panel loads hidden, so side panel coverage
+  on Chrome may be low.
 - Common tags are `screen`, `ui.navigation=document`, `ui.readiness_version=1`,
   and `ui.background_initialized_before_navigation`. Integrations supply any
   additional initial-state metadata. Compare timings within matching cohorts.
