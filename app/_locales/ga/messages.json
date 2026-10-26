@@ -2515,9 +2515,6 @@
   "loading": {
     "message": "Ag lódáil..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Comhlánaigh an t-idirbheart ar an Snap le do thoil."
-  },
   "loadingTokenList": {
     "message": "Ag lódáil liosta comharthaí"
   },

@@ -5201,9 +5201,6 @@
   "loading": {
     "message": "Nilo-load..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Mangyaring kumpletuhin ang transaksyon sa Snap."
-  },
   "loadingTokenList": {
     "message": "Nilo-load ang listahan ng token"
   },

@@ -5205,9 +5205,6 @@
   "loading": {
     "message": "Yükleniyor..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Lütfen işlemi Snap üzerinde tamamlayın."
-  },
   "loadingTokenList": {
     "message": "Token listesi yükleniyor"
   },

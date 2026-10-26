@@ -175,8 +175,17 @@
     "subscriptionsStartPolling",
     "subscriptionsStopPolling",
     "syncAccountTreeWithUserStorage",
+<<<<<<< HEAD
     "tokenBalancesStartPolling",
     "tokenBalancesStopPollingByPollingToken",
+=======
+    "syncContactsWithUserStorage",
+    "syncPasswordAndUnlockWallet",
+    "syncSeedPhrases",
+    "throwTestError",
+    "toggleBasicFunctionality",
+    "toggleExternalServices",
+>>>>>>> main
     "tokenDetectionStartPolling",
     "tokenDetectionStopPollingByPollingToken",
     "tokenRatesStartPolling",
@@ -186,6 +195,11 @@
     "trackMetaMetricsPage",
     "trackUnifiedSwapBridgeEvent",
     "unlockAndGetSeedPhrase",
+<<<<<<< HEAD
+=======
+    "unlockHardwareWalletAccount",
+    "updateAccountsList",
+>>>>>>> main
     "updateBatchSellTrades",
     "updateBridgeQuoteRequestParams",
     "updateEventFragment",

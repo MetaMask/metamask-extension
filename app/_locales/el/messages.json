@@ -5201,9 +5201,6 @@
   "loading": {
     "message": "Φόρτωση..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Ολοκληρώστε τη συναλλαγή στο Snap."
-  },
   "loadingTokenList": {
     "message": "Φόρτωση της λίστας των tokens"
   },

@@ -5201,9 +5201,6 @@
   "loading": {
     "message": "लोड हो रहा है..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
-  },
   "loadingTokenList": {
     "message": "टोकन लिस्ट लोड हो रहा है"
   },

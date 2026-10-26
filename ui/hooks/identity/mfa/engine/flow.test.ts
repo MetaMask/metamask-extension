@@ -230,6 +230,24 @@ describe('createMfaFlow', () => {
     });
   });
 
+  it('keeps a failed email enrollment on the email screen', async () => {
+    const fake = createFakeController([]);
+    fake.controller.beginCredentialEnrollment.mockRejectedValueOnce(
+      new MfaError('server_error', 'down'),
+    );
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+
+    await act(flow, { type: 'continue' });
+    await act(flow, { type: 'submitEmail', email: 'new@b.co' });
+
+    expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(1);
+    expect(flow.getState()).toMatchObject({
+      step: { name: 'emailEntry' },
+      error: 'server_error',
+      busy: false,
+    });
+  });
+
   it('verifies with email when the enrollment opened no session', async () => {
     const fake = createFakeController([]);
     fake.controller.completeCredentialEnrollment.mockImplementationOnce(

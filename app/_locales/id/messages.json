@@ -5205,9 +5205,6 @@
   "loading": {
     "message": "Memuat..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Selesaikan transaksi di Snap."
-  },
   "loadingTokenList": {
     "message": "Memuat daftar token"
   },

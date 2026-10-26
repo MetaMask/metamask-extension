@@ -5201,9 +5201,6 @@
   "loading": {
     "message": "Загрузка..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Завершите транзакцию в Snap."
-  },
   "loadingTokenList": {
     "message": "Загружается список токенов"
   },
