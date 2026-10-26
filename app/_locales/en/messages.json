@@ -4651,7 +4651,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Continue to make sure:"
+    "message": "To continue make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Your $1 device is unlocked",
@@ -5326,9 +5326,6 @@
   },
   "loading": {
     "message": "Loading..."
-  },
-  "loadingScreenSnapMessage": {
-    "message": "Please complete the transaction on the Snap."
   },
   "loadingTokenList": {
     "message": "Loading token list"
@@ -6655,6 +6652,9 @@
   },
   "networkNameSolana": {
     "message": "Solana"
+  },
+  "networkNameStellar": {
+    "message": "Stellar"
   },
   "networkNameTron": {
     "message": "Tron"
@@ -8226,6 +8226,13 @@
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
   },
+  "perpsIocCancel": {
+    "message": "Your order couldn't fill within your $1% slippage tolerance. Try a limit order or adjust your slippage.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage."
+  },
   "perpsKeepPositions": {
     "message": "Keep positions"
   },
@@ -8480,6 +8487,10 @@
   },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsPriceMoved": {
+    "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
   },
   "perpsProducts": {
     "message": "Products",

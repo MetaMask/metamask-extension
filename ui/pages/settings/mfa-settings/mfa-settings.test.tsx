@@ -40,6 +40,13 @@ jest.mock('../../../hooks/identity/mfa/isMfaKitEnabled', () => ({
   isMfaKitEnabled: jest.fn(),
 }));
 
+const mockGetIsSocialLoginFlow = jest.fn();
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getIsSocialLoginFlow: (...args: unknown[]) =>
+    mockGetIsSocialLoginFlow(...args),
+}));
+
 const mockStartMfaFlow = jest.mocked(startMfaFlow);
 const mockAdapter = jest.mocked(extensionMfaControllerAdapter);
 
@@ -59,6 +66,17 @@ describe('MfaSettings', () => {
     mockAdapter.clearVerificationSession.mockResolvedValue(undefined);
     mockStartMfaFlow.mockResolvedValue({ credentials: [] });
     jest.mocked(isMfaKitEnabled).mockReturnValue(true);
+    mockGetIsSocialLoginFlow.mockReturnValue(false);
+  });
+
+  it('hides email and keeps the authenticator app for social login users', () => {
+    mockGetIsSocialLoginFlow.mockReturnValue(true);
+    renderSettings([
+      { type: 'email_otp', status: 'active', email: 'a@b.co', verified: true },
+    ]);
+
+    expect(screen.queryByTestId(MfaSettingsTestIds.EMAIL_ROW)).toBeNull();
+    expect(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW)).toBeInTheDocument();
   });
 
   it('refreshes the methods and offers to add email', async () => {

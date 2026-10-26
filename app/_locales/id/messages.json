@@ -1738,9 +1738,6 @@
     "message": "Disetujui pada $1 untuk $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Selamat datang di Arc! Untuk memfasilitasi dan memverifikasi penggunaan Anda atas Arc chain, kami dapat membagikan informasi kepada tim Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Pemberitahuan"
   },
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Kembali ke keamanan"
+  },
+  "backToWallet": {
+    "message": "Kembali ke dompet"
   },
   "backUpIncomplete": {
     "message": "Pencadangan tidak selesai"
@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Pengumpulan data untuk pemasaran"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "Kami akan menggunakan MetaMetrics untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk dan materi lainnya)."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Dapatkan pembaruan produk, kiat, dan berita - termasuk melalui email. Kami dapat menggunakan interaksi Anda untuk meningkatkan konten yang kami bagikan."
   },
@@ -4256,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask menanggung biaya jaringan untuk transaksi ini. Ini termasuk aktivasi akun cerdas satu kali."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Jaringan khusus ini mengharuskan Anda untuk mempertahankan saldo cadangan sebesar $1 $2 di akun Anda.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 jam",
     "description": "$1 represents a number of hours"
@@ -4512,6 +4505,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Lanjutkan"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Buka dan coba lagi untuk melanjutkan",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "$1 Anda hanya dapat menandatangani data bertipe versi 4 (V4). Situs ini meminta jenis tanda tangan versi lama yang tidak didukung",
@@ -5211,9 +5208,6 @@
   "loading": {
     "message": "Memuat..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Selesaikan transaksi di Snap."
-  },
   "loadingTokenList": {
     "message": "Memuat daftar token"
   },
@@ -5438,6 +5432,57 @@
   "metrics": {
     "message": "Metrik"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Lanjutkan"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Masukkan alamat email yang valid."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Alamat email"
+  },
+  "mfaErrorCooldown": {
+    "message": "Terlalu banyak permintaan. Tunggu sebentar dan coba lagi."
+  },
+  "mfaErrorGeneric": {
+    "message": "Terjadi kesalahan. Coba lagi."
+  },
+  "mfaFailureClose": {
+    "message": "Tutup"
+  },
+  "mfaFailureRetry": {
+    "message": "Coba lagi"
+  },
+  "mfaFailureTitle": {
+    "message": "Terjadi kesalahan"
+  },
+  "mfaIntroContinue": {
+    "message": "Mulai"
+  },
+  "mfaMethodEmail": {
+    "message": "Email"
+  },
+  "mfaOtpPaste": {
+    "message": "Tempel"
+  },
+  "mfaOtpResend": {
+    "message": "Kirim ulang kode"
+  },
+  "mfaOtpRetry": {
+    "message": "Coba lagi"
+  },
+  "mfaOtpVerify": {
+    "message": "Verifikasikan"
+  },
+  "mfaPickerOr": {
+    "message": "atau"
+  },
+  "mfaSettingsAdd": {
+    "message": "Tambah"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Lanjutkan"
+  },
   "minimumReceivedExplanation": {
     "message": "Nilai minimum yang akan Anda dapatkan jika harga berubah selama proses transaksi, berdasarkan pengaturan selip. Estimasi ini berasal dari penyedia likuiditas, sehingga jumlah akhirnya dapat berbeda."
   },
@@ -5650,6 +5695,14 @@
   "moneyEarnApyTitle": {
     "message": "Dapatkan hingga $1 APY"
   },
+  "moneyEarnBannerCta": {
+    "message": "Tambahkan $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Dapatkan penghasilan dengan Money account",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "Raih pendapatan dari kripto"
   },
@@ -5804,6 +5857,10 @@
   },
   "moneySend": {
     "message": "Kirim"
+  },
+  "moneyStartEarning": {
+    "message": "Mulai menghasilkan",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Tidak dapat menambahkan dana. Coba lagi."
@@ -6779,7 +6836,7 @@
     "message": "Kumpulkan data penggunaan dasar"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Pembaruan produk"
+    "message": "Pembaruan pemasaran"
   },
   "onboardingMetametricsContinue": {
     "message": "Lanjutkan"
@@ -7467,6 +7524,9 @@
   "perps24hVolume": {
     "message": "Volume 24 jam"
   },
+  "perpsAbout": {
+    "message": "Tentang"
+  },
   "perpsActivity": {
     "message": "Aktivitas"
   },
@@ -8069,6 +8129,9 @@
   "perpsRateLimitExceeded": {
     "message": "Terlalu banyak permintaan. Mohon tunggu dan coba lagi."
   },
+  "perpsReadMore": {
+    "message": "Baca selengkapnya"
+  },
   "perpsRecentActivity": {
     "message": "Aktivitas terbaru"
   },
@@ -8115,6 +8178,18 @@
   "perpsSeeAll": {
     "message": "Lihat semua",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "hubungi dukungan",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Lihat pilihan Anda di bagian Pertanyaan Umum",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Kami sedang mengalami gangguan",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Layanan tidak tersedia untuk sementara waktu. Coba lagi nanti."
@@ -12142,6 +12217,9 @@
   },
   "turnOn": {
     "message": "Aktifkan"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "aktifkan fungsionalitas dasar"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Terjadi kesalahan saat membuat notifikasi. Coba lagi nanti."
