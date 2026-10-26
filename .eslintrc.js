@@ -589,6 +589,7 @@ module.exports = defineConfig([
       'app/scripts/controllers/account-tracker-controller.test.ts',
       'app/scripts/lib/**/*.test.js',
       'app/scripts/metamask-controller.test.js',
+      'app/scripts/metamask-controller.retry-snap-balances.test.js',
       'app/scripts/migrations/*.test.js',
       'app/scripts/platforms/*.test.js',
       'development/**/*.test.js',
