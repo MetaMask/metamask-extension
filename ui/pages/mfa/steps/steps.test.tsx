@@ -22,10 +22,11 @@ import TotpSetupStep from './totp-setup-step';
 
 const mockCopy = jest.fn();
 const mockUseCopyToClipboard = jest.fn();
+let mockIsCopied = false;
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: (...args: unknown[]) => {
     mockUseCopyToClipboard(...args);
-    return [false, mockCopy];
+    return [mockIsCopied, mockCopy];
   },
 }));
 
@@ -752,6 +753,10 @@ describe('FailureStep', () => {
 });
 
 describe('TotpSetupStep', () => {
+  beforeEach(() => {
+    mockIsCopied = false;
+  });
+
   const setup = (
     isRestart = false,
   ): Extract<MfaFlowStep, { name: 'totpSetup' }> => ({
@@ -808,6 +813,20 @@ describe('TotpSetupStep', () => {
 
     expect(mockUseCopyToClipboard).toHaveBeenCalledWith({ sensitive: true });
     expect(mockCopy).toHaveBeenCalledWith('JBSWY3DPEHPK3PXP');
+  });
+
+  it('announces when the setup key is copied', () => {
+    mockIsCopied = true;
+    renderSetup();
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      messages.mfaTotpSetupCopied.message,
+    );
+    expect(
+      screen.getByTestId(MfaFlowTestIds.TOTP_COPY_KEY),
+    ).toHaveAccessibleName(
+      `${messages.mfaTotpSetupKey.message} JBSW Y3DP EHPK 3PXP`,
+    );
   });
 
   it('warns that an earlier setup key stopped working', () => {

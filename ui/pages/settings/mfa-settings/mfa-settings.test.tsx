@@ -102,7 +102,9 @@ describe('MfaSettings', () => {
         platform: 'extension',
       }),
     );
-    expect(toast.success).not.toHaveBeenCalled();
+    expect(toast.success).toHaveBeenCalledWith(
+      messages.mfaSettingsEmailVerified.message,
+    );
   });
 
   it('ignores clicks while email is being set up', async () => {

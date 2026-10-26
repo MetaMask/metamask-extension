@@ -5582,7 +5582,7 @@
     "message": "Something went wrong. Try again."
   },
   "mfaErrorInvalidCode": {
-    "message": "That code isn’t right. Check it and try again."
+    "message": "This code isn’t correct. Try again"
   },
   "mfaErrorInvalidPasskey": {
     "message": "Your passkey couldn't be verified. Try again."
@@ -5734,6 +5734,9 @@
   "mfaSettingsEmailRemoved": {
     "message": "Email verification removed"
   },
+  "mfaSettingsEmailVerified": {
+    "message": "Email verified"
+  },
   "mfaSettingsLastEmailDescription": {
     "message": "This email is the only security method for this account. Add a second method before removing it."
   },
@@ -5793,6 +5796,9 @@
   },
   "mfaTotpSetupCopy": {
     "message": "Copy setup key"
+  },
+  "mfaTotpSetupCopied": {
+    "message": "Setup key copied"
   },
   "mfaTotpSetupDescription": {
     "message": "Scan the QR code with your authenticator app, or enter the setup key."

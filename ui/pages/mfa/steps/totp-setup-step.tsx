@@ -123,8 +123,14 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
           <Icon
             name={isCopied ? IconName.CopySuccess : IconName.Copy}
             color={isCopied ? IconColor.SuccessDefault : undefined}
+            aria-hidden
           />
         </ButtonBase>
+        <Text asChild variant={TextVariant.BodySm}>
+          <span className="sr-only" role="status">
+            {isCopied ? t('mfaTotpSetupCopied') : null}
+          </span>
+        </Text>
       </Box>
     </StepLayout>
   );
