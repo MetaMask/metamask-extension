@@ -21,6 +21,7 @@ import { BalanceUnavailable } from '../balance-unavailable';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SensitiveText } from '../../../component-library';
 import {
+  getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
   getShowFiatInTestnets,
@@ -42,6 +43,66 @@ export type AccountGroupBalanceProps = {
   handleSensitiveToggle: () => void;
   balance: string;
   chainId: CaipChainId | Hex;
+};
+
+/**
+ * Whether the account group total is replaced with "Balance unavailable" for
+ * the given (last selected) network, and which accounts are unavailable.
+ * Shared by the total and the header's change row, which must not show a
+ * "+0.00 (+0.00%)" change for an unavailable total.
+ *
+ * @param chainId - The last selected network.
+ * @returns The unavailable accounts and whether the total is replaced.
+ */
+export const useAccountGroupBalanceUnavailability = (
+  chainId: CaipChainId | Hex,
+) => {
+  // Every enabled network across namespaces: more than one means the
+  // "All networks" view, whatever network was viewed last.
+  const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+  const selectedGroupBalance = useSelector(
+    selectUnifiedBalanceBySelectedAccountGroup,
+  );
+  const fallbackCurrency = useSelector(getCurrentCurrency);
+  const unavailableBalances = useSelector(
+    selectUnavailableBalancesForSelectedAccountGroup,
+  );
+  const caipChainId = useMemo(
+    () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),
+    [chainId],
+  );
+  const isEvm = useMemo(() => isEvmChainId(chainId), [chainId]);
+
+  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
+  const currency = selectedGroupBalance
+    ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
+    : undefined;
+  const totalIsUnresolved = isZeroAmount(total) || currency === undefined;
+
+  // Snap (non-EVM) balances that could not be fetched: never show a stale or
+  // placeholder 0 as if it were confirmed.
+  const unavailableAccountIds = unavailableBalances?.accountIds ?? [];
+  const hasUnavailableBalances = unavailableAccountIds.length > 0;
+  // `chainId` is the last selected network, which stays a non-EVM chain after
+  // visiting its single-network view and going back to "All networks". Only a
+  // single-network view of the failing chain replaces the total; the "All
+  // networks" total keeps its known part, flagged as partial.
+  const isSingleNetworkView = (allEnabledNetworks?.length ?? 0) <= 1;
+  const isViewedChainUnavailable =
+    hasUnavailableBalances &&
+    isSingleNetworkView &&
+    (unavailableBalances?.chainIds ?? []).includes(caipChainId);
+  // Replace the total when the viewed (non-EVM) network is the one failing, or
+  // when nothing else contributes to it; otherwise flag it as partial.
+  const replaceTotalWithUnavailable =
+    hasUnavailableBalances &&
+    (isViewedChainUnavailable || (!isEvm && totalIsUnresolved));
+
+  return {
+    unavailableAccountIds,
+    hasUnavailableBalances,
+    replaceTotalWithUnavailable,
+  };
 };
 
 export const AccountGroupBalance = ({
@@ -66,10 +127,6 @@ export const AccountGroupBalance = ({
   const isAssetsLoading = useSelector(
     selectIsAssetsLoadingForSelectedAccountGroup,
   );
-  const unavailableBalances = useSelector(
-    selectUnavailableBalancesForSelectedAccountGroup,
-  );
-
   const caipChainId = useMemo(
     () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),
     [chainId],
@@ -176,18 +233,11 @@ export const AccountGroupBalance = ({
 
   const totalIsUnresolved = isZeroAmount(total) || currency === undefined;
 
-  // Snap (non-EVM) balances that could not be fetched: never show a stale or
-  // placeholder 0 as if it were confirmed.
-  const unavailableAccountIds = unavailableBalances?.accountIds ?? [];
-  const hasUnavailableBalances = unavailableAccountIds.length > 0;
-  const isViewedChainUnavailable =
-    hasUnavailableBalances &&
-    (unavailableBalances?.chainIds ?? []).includes(caipChainId);
-  // Replace the total when the viewed (non-EVM) network is the one failing, or
-  // when nothing else contributes to it; otherwise flag it as partial.
-  const replaceTotalWithUnavailable =
-    hasUnavailableBalances &&
-    (isViewedChainUnavailable || (!isEvm && totalIsUnresolved));
+  const {
+    unavailableAccountIds,
+    hasUnavailableBalances,
+    replaceTotalWithUnavailable,
+  } = useAccountGroupBalanceUnavailability(chainId);
 
   if (replaceTotalWithUnavailable) {
     return (

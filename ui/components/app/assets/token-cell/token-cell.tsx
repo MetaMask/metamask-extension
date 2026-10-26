@@ -188,7 +188,7 @@ export default function TokenCell({
               accountIds={unavailableBalances?.accountIds ?? []}
               size="sm"
               hideText
-              data-testid="token-cell-balance-unavailable-retry"
+              data-testid="token-cell-balance-unavailable-footer"
             />
           ) : (
             <TokenCellPrimaryDisplay

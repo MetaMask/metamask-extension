@@ -32,6 +32,7 @@ import { getIsSecurityTrustTdpEnabled } from '../../../../selectors/multichain/f
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectUnavailableBalancesForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
@@ -126,6 +127,7 @@ jest.mock('../../../../selectors/multichain/feature-flags', () => ({
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
+  selectUnavailableBalancesForSelectedAccountGroup: jest.fn(),
 }));
 
 jest.mock('#ui/hooks/token-asset/useTokenAssetSecurityResults', () => ({
@@ -246,6 +248,9 @@ describe('TokenList', () => {
         typeof getSelectedMultichainNetworkConfiguration
       >);
     jest.mocked(selectAccountGroupBalanceForEmptyState).mockReturnValue(true);
+    jest
+      .mocked(selectUnavailableBalancesForSelectedAccountGroup)
+      .mockReturnValue({ accountIds: [], chainIds: [] });
   });
 
   it('resolves the Money CTA once for the displayed tokens in order', () => {
@@ -632,6 +637,110 @@ describe('TokenList', () => {
 
     expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
       assetIds: ['eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+    });
+  });
+  describe('balance unavailable placeholder rows', () => {
+    const BTC_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
+    const BTC_ASSET_ID = `${BTC_CHAIN_ID}/slip44:0`;
+
+    const createBtcAsset = (balance: string): Asset =>
+      ({
+        accountType: 'bip122:p2wpkh',
+        accountId: 'btc-account',
+        assetId: BTC_ASSET_ID,
+        balance,
+        chainId: BTC_CHAIN_ID,
+        decimals: 8,
+        fiat: undefined,
+        image: '',
+        isNative: true,
+        name: 'Bitcoin',
+        symbol: 'BTC',
+      }) as unknown as Asset;
+
+    beforeEach(() => {
+      jest
+        .mocked(getAllEnabledNetworksForAllNamespaces)
+        .mockReturnValue([CHAIN_ID, BTC_CHAIN_ID] as ReturnType<
+          typeof getAllEnabledNetworksForAllNamespaces
+        >);
+      jest
+        .mocked(selectUnavailableBalancesForSelectedAccountGroup)
+        .mockReturnValue({
+          accountIds: ['btc-account'],
+          chainIds: [BTC_CHAIN_ID],
+        });
+    });
+
+    it('adds a native row for an unavailable chain that has no asset', () => {
+      jest
+        .mocked(getAssetsBySelectedAccountGroup)
+        .mockReturnValue(
+          createAccountGroupAssets([
+            createAsset({ symbol: 'ETH', fiatBalance: 25, isNative: true }),
+          ]),
+        );
+
+      render();
+
+      expect(screen.getByTestId('token-cell-ETH')).toBeInTheDocument();
+      expect(screen.getByTestId('token-cell-BTC')).toHaveTextContent('Bitcoin');
+      const tokens = jest.mocked(useMoneyTokenListCta).mock.lastCall?.[0];
+      expect(tokens?.map(({ symbol }) => symbol)).toStrictEqual(['ETH', 'BTC']);
+      const btcRow = tokens?.find(({ symbol }) => symbol === 'BTC');
+      expect(btcRow).toMatchObject({
+        chainId: BTC_CHAIN_ID,
+        address: BTC_ASSET_ID,
+        isNative: true,
+        balance: undefined,
+        tokenFiatAmount: null,
+      });
+    });
+
+    it('does not duplicate the row when the chain already has its native asset', () => {
+      jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue({
+        ...createAccountGroupAssets([
+          createAsset({ symbol: 'ETH', fiatBalance: 25, isNative: true }),
+        ]),
+        [BTC_CHAIN_ID]: [createBtcAsset('0')],
+      });
+
+      render();
+
+      expect(screen.getAllByTestId('token-cell-BTC')).toHaveLength(1);
+    });
+
+    it('adds the row when the placeholder 0 balance is hidden by "hide zero balance tokens"', () => {
+      jest.mocked(getShouldHideZeroBalanceTokens).mockReturnValue(true);
+      jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue({
+        ...createAccountGroupAssets([
+          createAsset({ symbol: 'ETH', fiatBalance: 25, isNative: true }),
+        ]),
+        [BTC_CHAIN_ID]: [createBtcAsset('0')],
+      });
+
+      render();
+
+      expect(screen.getAllByTestId('token-cell-BTC')).toHaveLength(1);
+    });
+
+    it('does not add a row for a disabled network', () => {
+      jest
+        .mocked(getAllEnabledNetworksForAllNamespaces)
+        .mockReturnValue([CHAIN_ID] as ReturnType<
+          typeof getAllEnabledNetworksForAllNamespaces
+        >);
+      jest
+        .mocked(getAssetsBySelectedAccountGroup)
+        .mockReturnValue(
+          createAccountGroupAssets([
+            createAsset({ symbol: 'ETH', fiatBalance: 25, isNative: true }),
+          ]),
+        );
+
+      render();
+
+      expect(screen.queryByTestId('token-cell-BTC')).toBeNull();
     });
   });
 });
