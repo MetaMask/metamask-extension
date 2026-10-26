@@ -1,29 +1,33 @@
-import React from "react";
-import configureMockStore from "redux-mock-store";
-import thunk from "redux-thunk";
-import { act, fireEvent } from "@testing-library/react";
-import { renderWithProvider } from "../../../test/lib/render-helpers-navigate";
-import { enLocale as messages } from "../../../test/lib/i18n-helpers";
-import { createBridgeMockStore } from "../../../test/data/bridge/mock-bridge-store";
-import { DEFAULT_ROUTE, PREPARE_SWAP_ROUTE, PREVIOUS_ROUTE } from "../../helpers/constants/routes";
-import { setBackgroundConnection } from "../../store/background-connection";
+import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { act, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import {
+  DEFAULT_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
-} from "../../contexts/hardware-wallets";
-import * as bridgeActions from "../../ducks/bridge/actions";
-import CrossChainSwap from ".";
+} from '../../contexts/hardware-wallets';
+import * as bridgeActions from '../../ducks/bridge/actions';
+import CrossChainSwap from '.';
 
-const mockResetBridgeStore = jest.spyOn(bridgeActions, "resetInputFields");
+const mockResetBridgeStore = jest.spyOn(bridgeActions, 'resetInputFields');
 const mockResetBridgeState = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
 const middleware = [thunk];
 
-jest.mock("../../contexts/hardware-wallets", () => ({
-  ...jest.requireActual("../../contexts/hardware-wallets"),
+jest.mock('../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../contexts/hardware-wallets'),
   useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
@@ -31,24 +35,29 @@ jest.mock("../../contexts/hardware-wallets", () => ({
 
 const mockShowErrorModal = jest.fn();
 
-jest.mock("../../contexts/hardware-wallets/HardwareWalletErrorProvider", () => ({
-  ...jest.requireActual("../../contexts/hardware-wallets/HardwareWalletErrorProvider"),
-  useHardwareWalletError: () => ({
-    showErrorModal: mockShowErrorModal,
-    dismissErrorModal: jest.fn(),
-    isErrorModalVisible: false,
-    setErrorModalSuppressed: jest.fn(),
+jest.mock(
+  '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
   }),
-}));
+);
 
-jest.mock("../../hooks/bridge/usePopularTokens", () => ({
+jest.mock('../../hooks/bridge/usePopularTokens', () => ({
   usePopularTokens: jest.fn().mockReturnValue({
     popularTokensList: [],
     isLoading: false,
   }),
 }));
 
-jest.mock("../../hooks/bridge/useTokenSearchResults", () => ({
+jest.mock('../../hooks/bridge/useTokenSearchResults', () => ({
   useTokenSearchResults: jest.fn().mockReturnValue({
     searchResults: [],
     isSearchResultsLoading: false,
@@ -57,10 +66,10 @@ jest.mock("../../hooks/bridge/useTokenSearchResults", () => ({
 
 const messengerCallMock = jest.fn((actionType: string) => {
   switch (actionType) {
-    case "NetworkController:getNetworkConfigurationByNetworkClientId":
-      return Promise.resolve({ chainId: "0x1" });
-    case "LegacyBackgroundApiService:isRelaySupported":
-    case "LegacyBackgroundApiService:isSendBundleSupported":
+    case 'NetworkController:getNetworkConfigurationByNetworkClientId':
+      return Promise.resolve({ chainId: '0x1' });
+    case 'LegacyBackgroundApiService:isRelaySupported':
+    case 'LegacyBackgroundApiService:isSendBundleSupported':
       return Promise.resolve(true);
     default:
       return Promise.resolve(undefined);
@@ -75,7 +84,7 @@ setBackgroundConnection({
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
-  gasFeeStartPolling: jest.fn().mockResolvedValue("pollingToken"),
+  gasFeeStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
   trackUnifiedSwapBridgeEvent: jest.fn(),
   selectSrcNetwork: jest.fn(),
@@ -84,10 +93,10 @@ setBackgroundConnection({
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
-const mockBridgePreparePath = "/cross-chain/swaps/prepare-bridge-page";
-jest.mock("react-router-dom", () => {
+const mockBridgePreparePath = '/cross-chain/swaps/prepare-bridge-page';
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual("react-router-dom"),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => mockUseLocation(),
   };
@@ -95,13 +104,13 @@ jest.mock("react-router-dom", () => {
 
 const directOpenLocation = {
   pathname: mockBridgePreparePath,
-  search: "",
-  hash: "",
+  search: '',
+  hash: '',
   state: null,
-  key: "default",
+  key: 'default',
 };
 
-describe("Bridge", () => {
+describe('Bridge', () => {
   beforeEach(() => {
     mockUseNavigate.mockReset();
     mockResetBridgeState.mockClear();
@@ -109,7 +118,8 @@ describe("Bridge", () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: false,
       walletType: null,
-      hardwareConnectionPermissionState: HardwareConnectionPermissionState.Unknown,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
       isWebHidAvailable: false,
       isWebUsbAvailable: false,
     });
@@ -121,7 +131,7 @@ describe("Bridge", () => {
     });
   });
 
-  it("renders the component with initial props", async () => {
+  it('renders the component with initial props', async () => {
     const bridgeMockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -129,7 +139,7 @@ describe("Bridge", () => {
           refreshRate: 5000,
           maxRefreshCount: 5,
           chains: {
-            "1": {
+            '1': {
               isActiveSrc: true,
               isActiveDest: true,
             },
@@ -156,7 +166,7 @@ describe("Bridge", () => {
     expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
   });
 
-  it("resets the bridge store and state when the Back button is clicked", async () => {
+  it('resets the bridge store and state when the Back button is clicked', async () => {
     const bridgeMockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -164,7 +174,7 @@ describe("Bridge", () => {
           refreshRate: 5000,
           maxRefreshCount: 5,
           chains: {
-            "1": {
+            '1': {
               isActiveSrc: true,
               isActiveDest: true,
             },
@@ -185,7 +195,7 @@ describe("Bridge", () => {
       PREPARE_SWAP_ROUTE,
     );
 
-    const backButton = getByRole("button", { name: messages.back.message });
+    const backButton = getByRole('button', { name: messages.back.message });
     await act(async () => {
       fireEvent.click(backButton);
     });
@@ -200,10 +210,10 @@ describe("Bridge", () => {
     });
   });
 
-  it("returns to the previous page when Swap was opened in-app", async () => {
+  it('returns to the previous page when Swap was opened in-app', async () => {
     mockUseLocation.mockReturnValue({
       ...directOpenLocation,
-      key: "token-details",
+      key: 'token-details',
     });
 
     const bridgeMockStore = createBridgeMockStore({
@@ -213,7 +223,7 @@ describe("Bridge", () => {
           refreshRate: 5000,
           maxRefreshCount: 5,
           chains: {
-            "1": {
+            '1': {
               isActiveSrc: true,
               isActiveDest: true,
             },
@@ -234,7 +244,7 @@ describe("Bridge", () => {
       PREPARE_SWAP_ROUTE,
     );
 
-    const backButton = getByRole("button", { name: messages.back.message });
+    const backButton = getByRole('button', { name: messages.back.message });
     await act(async () => {
       fireEvent.click(backButton);
     });
