@@ -125,7 +125,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'Sourcify',
   },
-  'PreferencesController:setPreference': {},
+  setPreference: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -360,7 +360,7 @@ describe('Contract Interaction Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('PreferencesController:setPreference', [
+      ).toHaveBeenCalledWith('setPreference', [
         'showConfirmationAdvancedDetails',
         true,
       ]);
