@@ -97,15 +97,9 @@ describe('Setup Sentry', () => {
         await client.flush(2000);
 
         expect(events).toHaveLength(1);
-        expect(events[0].exception?.values).toStrictEqual([
-          expect.objectContaining({
-            type: 'TypeError',
-            value: 'inner failure **',
-          }),
-          expect.objectContaining({
-            type: 'Error',
-            value: 'outer failure **',
-          }),
+        expect(events[0].exception?.values).toMatchObject([
+          { type: 'TypeError', value: 'inner failure **' },
+          { type: 'Error', value: 'outer failure **' },
         ]);
       } finally {
         await client.close();
