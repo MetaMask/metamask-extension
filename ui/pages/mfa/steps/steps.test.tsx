@@ -638,8 +638,10 @@ describe('CodeStep', () => {
       rerender(ui(props.step, { ...props.state, busy: true }, onAction));
 
       expect(
-        screen.getByTestId(MfaFlowTestIds.VERIFYING_INDICATOR),
-      ).toHaveAccessibleName(messages.mfaOtpVerifying.message);
+        screen.getByRole('status', {
+          name: messages.mfaOtpVerifying.message,
+        }),
+      ).toHaveAttribute('data-testid', MfaFlowTestIds.VERIFYING_INDICATOR);
       expect(screen.getByText('6')).toBeInTheDocument();
     },
   );

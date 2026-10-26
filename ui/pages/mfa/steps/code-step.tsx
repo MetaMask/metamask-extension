@@ -230,7 +230,7 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             justifyContent={BoxJustifyContent.Center}
             gap={2}
             paddingTop={2}
-            role="progressbar"
+            role="status"
             aria-label={t('mfaOtpVerifying')}
             data-testid={MfaFlowTestIds.VERIFYING_INDICATOR}
           >
