@@ -49,6 +49,7 @@ function render({
   nativeFee = '0.001 ETH',
   estimationFailed = false,
   isGaslessSupported = false,
+  isSponsorshipOptedOut = false,
   showFiatInTestnets = false,
   transactionType,
 }: {
@@ -61,6 +62,7 @@ function render({
   nativeFee?: string;
   estimationFailed?: boolean;
   isGaslessSupported?: boolean;
+  isSponsorshipOptedOut?: boolean;
   showFiatInTestnets?: boolean;
   transactionType?: TransactionType;
 } = {}) {
@@ -86,6 +88,7 @@ function render({
     metamask: {
       preferences: {
         showFiatInTestnets,
+        gasSponsorshipOptOutByChainId: { [chainId]: isSponsorshipOptedOut },
       },
     },
   });
@@ -292,6 +295,21 @@ describe('<EditGasFeesRow />', () => {
       });
 
       expect(queryByText('Paid by Uniswap')).toBeNull();
+    });
+
+    it('does not render the sponsor when the user opted out of sponsorship', () => {
+      const { container, queryByTestId } = render({
+        gasFeeTokens: [UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        isGaslessSupported: true,
+        isSponsorshipOptedOut: true,
+      });
+
+      expect(queryByTestId('paid-by-meta-mask')).toBeNull();
+      expect(
+        container.querySelector(
+          `[data-original-title="${messages.estimatedFeeTooltip.message}"]`,
+        ),
+      ).toBeInTheDocument();
     });
   });
 
