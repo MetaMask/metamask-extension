@@ -94,14 +94,14 @@ describe('buildMpcMoneyKeyringV2Builder', () => {
   it('createAccounts returns the existing account served by the stub, without running the MPC setup', async () => {
     process.env.MM_MONEY_MPC_ADDRESS = STATIC_ADDRESS;
     const legacyKeyring = new MpcMoneyKeyring();
-    const initSpy = jest.spyOn(legacyKeyring, 'init');
+    const setupSpy = jest.spyOn(legacyKeyring, 'setup');
     const wrapper = new MpcMoneyKeyringV2({ legacyKeyring });
 
     await expect(
-      wrapper.createAccounts({ type: 'custom', mode: 'create' }),
+      wrapper.createAccounts({ type: 'custom' }),
     ).resolves.toHaveLength(1);
 
-    expect(initSpy).not.toHaveBeenCalled();
+    expect(setupSpy).not.toHaveBeenCalled();
   });
 
   it('deleting accounts is not supported', async () => {

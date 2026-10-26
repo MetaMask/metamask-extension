@@ -1,4 +1,3 @@
-import type { MpcMoneyKeyringSetupMode } from '@metamask/eth-money-mpc-keyring';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import type { Keyring } from '@metamask/keyring-utils';
 import { isValidHexAddress, type Hex, type Json } from '@metamask/utils';
@@ -15,7 +14,7 @@ const MPC_MONEY_KEYRING_TYPE = KeyringTypes.mpcMoney;
  * the same keyring type and satisfies the same V1 contract that the
  * package's V2 adapter (`@metamask/eth-money-mpc-keyring/v2`) wraps, so the
  * real V1 keyring can replace it later without vault migration: it takes no
- * options, keeps no state, `addAccounts` and `init` are noops, and every
+ * options, keeps no state, `addAccounts` and `setup` are noops, and every
  * method that requires the underlying MPC stack throws a `Not implemented`
  * error. Like the real keyring, it supports message signing only — no
  * transaction signing.
@@ -48,14 +47,13 @@ export class MpcMoneyKeyring implements Keyring {
   }
 
   /**
-   * Run key generation or import.
+   * Run key generation or import. The mode (create or import) is inferred
+   * from the backend by the real keyring.
    *
-   * The V2 adapter invokes this during account creation; the stub keeps it a
-   * noop because `getAccounts` already serves the static address.
-   *
-   * @param _mode - The MPC setup mode.
+   * The V2 adapter may invoke this during account creation; the stub keeps it
+   * a noop because `getAccounts` already serves the static address.
    */
-  async init(_mode?: MpcMoneyKeyringSetupMode): Promise<void> {
+  async setup(): Promise<void> {
     // Stub: no MPC setup runs.
   }
 

@@ -172,7 +172,8 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": {
-      "moneyAccounts": {}
+      "moneyAccounts": {},
+      "defaultMoneyAccountId": null
     },
     "MoneyAccountUpgradeController": {
       "upgradedAccounts": {}

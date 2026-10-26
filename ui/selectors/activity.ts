@@ -41,6 +41,7 @@ import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
 } from '../ducks/bridge-status/selectors';
+import { isMnemonicMoneyAccount } from '../../shared/lib/money/money-accounts';
 import { getInternalAccountsObject } from './accounts';
 import {
   getInternalAccountBySelectedAccountGroupAndCaip,
@@ -90,7 +91,12 @@ function isSelectedGroupOwnedByMoneyAccountEntropy(
   selectedAccountGroup: string | null | undefined,
   primaryMoneyAccount: PrimaryMoneyAccount | undefined,
 ): boolean {
-  const entropyId = primaryMoneyAccount?.options?.entropy?.id;
+  // MPC-backed money accounts have no entropy source ID, so no account group
+  // is ever owned by their entropy.
+  const entropyId =
+    primaryMoneyAccount && isMnemonicMoneyAccount(primaryMoneyAccount)
+      ? primaryMoneyAccount.options.entropy.id
+      : undefined;
   if (!selectedAccountGroup || !entropyId) {
     return false;
   }

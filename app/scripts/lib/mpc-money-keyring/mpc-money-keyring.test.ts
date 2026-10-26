@@ -82,11 +82,10 @@ describe('MpcMoneyKeyring (stub)', () => {
     ).resolves.toBeUndefined();
   });
 
-  it('init is a noop', async () => {
+  it('setup is a noop', async () => {
     const keyring = new MpcMoneyKeyring();
 
-    await expect(keyring.init()).resolves.toBeUndefined();
-    await expect(keyring.init('create')).resolves.toBeUndefined();
+    await expect(keyring.setup()).resolves.toBeUndefined();
   });
 
   it('key share methods are not implemented', async () => {

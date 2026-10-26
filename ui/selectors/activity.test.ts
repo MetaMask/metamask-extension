@@ -339,7 +339,10 @@ describe('selectLocalTransactions', () => {
         transactions?: TransactionMeta[];
         moneyAccounts?: Record<
           string,
-          { address: string; options: { entropy: { id: string } } }
+          {
+            address: string;
+            options: { entropy: { type: 'mnemonic'; id: string } };
+          }
         >;
       };
     };
@@ -348,7 +351,9 @@ describe('selectLocalTransactions', () => {
     state.metamask.moneyAccounts = {
       'money-account-1': {
         address: MONEY_ACCOUNT_ADDRESS,
-        options: { entropy: { id: PRIMARY_HD_KEYRING_ID } },
+        options: {
+          entropy: { type: 'mnemonic', id: PRIMARY_HD_KEYRING_ID },
+        },
       },
     };
 

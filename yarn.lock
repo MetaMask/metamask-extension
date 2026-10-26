@@ -7205,14 +7205,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-api@npm:^2.0.0, @metamask/account-api@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/account-api@npm:2.1.0"
+"@metamask/account-api@npm:^2.0.0, @metamask/account-api@npm:^2.1.0, @metamask/account-api@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@metamask/account-api@npm:2.2.0"
   dependencies:
-    "@metamask/keyring-api": "npm:^24.1.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
     "@metamask/keyring-utils": "npm:^5.0.0"
     uuid: "npm:^9.0.1"
-  checksum: 10/9d29ce444a0e828b38a63f099aa577f74d48d0cc6f1f6ff29d25656657947b94526cd6947c052744e0ca493e813df12369040cb70038aebcb0a2d27b97816d55
+  checksum: 10/3fbc4fd55c6b9aadb53bb7a8cdd9f2f9850b3f7a9e4024bb5e00c706dad20529fedf5a98f7e8365d431f5e1664203d0db1d148fa405b3b24523d02bfc84f981a
   languageName: node
   linkType: hard
 
@@ -8325,41 +8325,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-hd-keyring@npm:^14.1.1":
-  version: 14.1.1
-  resolution: "@metamask/eth-hd-keyring@npm:14.1.1"
+"@metamask/eth-hd-keyring@npm:^15.0.0, @metamask/eth-hd-keyring@npm:^15.0.1":
+  version: 15.0.1
+  resolution: "@metamask/eth-hd-keyring@npm:15.0.1"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/eth-sig-util": "npm:^9.0.0"
     "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-sdk": "npm:^2.0.2"
-    "@metamask/keyring-utils": "npm:^3.2.0"
-    "@metamask/scure-bip39": "npm:^2.1.1"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.11.0"
-    ethereum-cryptography: "npm:^2.2.1"
-  checksum: 10/f711742682a77990310272013523595822e29bfb61980828d1460ab8af888d7c344bb50f04d2611d801d63438e31532d3d66698c595b4fd3ad512b02056b7234
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-hd-keyring@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@metamask/eth-hd-keyring@npm:15.0.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/keyring-api": "npm:^24.0.0"
-    "@metamask/keyring-sdk": "npm:^3.0.0"
+    "@metamask/keyring-api": "npm:^24.2.0"
+    "@metamask/keyring-sdk": "npm:^4.0.0"
     "@metamask/keyring-utils": "npm:^5.0.0"
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     ethereum-cryptography: "npm:^2.2.1"
-  checksum: 10/35bceeb450460104f996e73032cae584247461a792e733ed290cc3bd387434f86fd94e2b8f8dac792933987628d3a6febdcc0c93d9e5c349a4d9b3b0cd7d0167
+  checksum: 10/6a3e23bd5452a515bffee463132aaaf2329218036356d7dd9bb2a04beb7150d15e5dc25f68307121c919852c8296da0d5e63d2907909c18c488c33c842846934
   languageName: node
   linkType: hard
 
@@ -8480,38 +8461,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-money-keyring@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/eth-money-keyring@npm:3.0.0"
+"@metamask/eth-money-keyring@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@metamask/eth-money-keyring@npm:4.0.2"
   dependencies:
-    "@metamask/eth-hd-keyring": "npm:^14.1.1"
-    "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-sdk": "npm:^2.1.1"
-    "@metamask/keyring-utils": "npm:^3.3.1"
-    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/eth-hd-keyring": "npm:^15.0.1"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/keyring-sdk": "npm:^4.0.0"
+    "@metamask/keyring-utils": "npm:^5.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/2d14c0581ea0df3b19372fc292ccfffbc25119057317f813335bb581c49e8cb34f46389c5013be25e8cf039d4a230dbdc72949766bb474941d5da0d8611172df
+  checksum: 10/fe5c7b8173f5dd4c375f594409fcaa356c3ec8d588b92e55f3bef5c25d8817064437664b7c486ecfff4a18999fc9df54976ade131ed51401a088c5d629754af9
   languageName: node
   linkType: hard
 
-"@metamask/eth-money-keyring@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "@metamask/eth-money-keyring@npm:2.0.4"
-  dependencies:
-    "@metamask/eth-hd-keyring": "npm:^14.1.1"
-    "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-utils": "npm:^3.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    async-mutex: "npm:^0.5.0"
-  checksum: 10/2e3941355be1750c433cf8106235df1b0785becc47c0c87dfabbe7ed43006fa5d303bca70a1d5a308c0d0b281b75468440ab5c8883d70e12fa3923a5ccba3dd1
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-money-mpc-keyring@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/eth-money-mpc-keyring@npm:0.1.0"
+"@metamask/eth-money-mpc-keyring@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/eth-money-mpc-keyring@npm:0.2.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/account-api": "npm:^2.2.0"
     "@metamask/cryptography": "npm:^1.1.2"
     "@metamask/eth-sig-util": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^24.3.0"
@@ -8520,9 +8489,10 @@ __metadata:
     "@metamask/mfa-wallet-cl24": "npm:^0.1.0"
     "@metamask/mfa-wallet-dkls23": "npm:^0.1.0"
     "@metamask/mfa-wallet-network": "npm:^0.1.0"
+    "@metamask/money-account-mfa-whitelist": "npm:^0.1.0"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/9fb45255a3a80c39b959a51f68fc292b704d2f9296aaa5f45a94a9c4fa829bf729802c2972d7c9ae4f0735dc560d4745a2867268f551e6df59bf4ba72513655c
+  checksum: 10/8a5e838f29b2b272f4df035013d2bb648dc1e4274648cb57cab9db1336a81d2fba4cd4e0a58e267bd40104fa17eeb12a7fbf734b882d08b9a13e119c948c1968
   languageName: node
   linkType: hard
 
@@ -9080,24 +9050,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-sdk@npm:^2.0.2, @metamask/keyring-sdk@npm:^2.1.1":
-  version: 2.2.0
-  resolution: "@metamask/keyring-sdk@npm:2.2.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-api": "npm:^23.2.0"
-    "@metamask/keyring-utils": "npm:^3.3.1"
-    "@metamask/scure-bip39": "npm:^2.1.1"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.11.0"
-    async-mutex: "npm:^0.5.0"
-    ethereum-cryptography: "npm:^2.2.1"
-    uuid: "npm:^9.0.1"
-  checksum: 10/5cb7f2496f0fc95e85eb97932b69da9c02c232e2310b5f390bfc7c56996bf8516d15db54260e68288f6d6f5604bfacc19b4b82b9b28b7f794a3ab5ee9a1f10d1
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-sdk@npm:^3.0.0, @metamask/keyring-sdk@npm:^3.1.0":
   version: 3.1.0
   resolution: "@metamask/keyring-sdk@npm:3.1.0"
@@ -9208,18 +9160,6 @@ __metadata:
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
   checksum: 10/9072791320108218875bdbcc7823a4ab4d8c29675deab3163373d31a997ae6fc23995a74ffa085e06534d14b72c2edb5e7192d371cd1ef69ac7fae70fa50d8d0
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^3.2.0, @metamask/keyring-utils@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "@metamask/keyring-utils@npm:3.3.1"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.11.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/d0917b2f634d9eb2f563827739fca00c1675ee90674ec49b2b68afcb604aee843d6c5be5d79e9780fa22d29f71fc876f40b2d3d0ed4cab7f5948937ddd276691
   languageName: node
   linkType: hard
 
@@ -9462,18 +9402,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-controller@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "@metamask/money-account-controller@npm:0.3.3"
+"@metamask/money-account-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/money-account-controller@npm:3.0.0"
   dependencies:
-    "@metamask/accounts-controller": "npm:^39.0.1"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/eth-money-keyring": "npm:^2.0.4"
-    "@metamask/keyring-api": "npm:^23.1.0"
-    "@metamask/keyring-controller": "npm:^27.0.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    async-mutex: "npm:^0.5.0"
-  checksum: 10/f7128bd41e37a9a7fc17de110b1256aaade4af5ab0d45cb561044946136e0b57b76fbbe2059d38dad7599db776dc304c2f6db0587323afceb18bac2658004b63
+    "@metamask/accounts-controller": "npm:^40.1.0"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/eth-money-keyring": "npm:^4.0.2"
+    "@metamask/eth-money-mpc-keyring": "npm:^0.2.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/keyring-controller": "npm:^28.2.0"
+    "@metamask/messenger": "npm:^3.0.0"
+  checksum: 10/8a598076299d4bb59cfe4dee8b14dba0d4d76258a6d04d5634289d99354cb74a04c57168dda281dc0437f1f975d7b50de5a8b1e1a416381aa8cee943620f4b45
+  languageName: node
+  linkType: hard
+
+"@metamask/money-account-mfa-whitelist@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/money-account-mfa-whitelist@npm:0.1.0"
+  dependencies:
+    "@metamask/abi-utils": "npm:^2.0.4"
+    "@metamask/delegation-core": "npm:^2.2.1"
+    "@metamask/utils": "npm:^12.0.0"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/73cbe3e723b0aff74b649b693fd95fd81da053f930ab882fc92a889d73faf876808bf84732ff989a23589f1495c1ab90da38084028b3ebd9d271e467a90e23cb
   languageName: node
   linkType: hard
 
@@ -36093,8 +36045,8 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^26.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^13.1.0"
-    "@metamask/eth-money-keyring": "npm:3.0.0"
-    "@metamask/eth-money-mpc-keyring": "npm:^0.1.0"
+    "@metamask/eth-money-keyring": "npm:^4.0.2"
+    "@metamask/eth-money-mpc-keyring": "npm:^0.2.0"
     "@metamask/eth-qr-keyring": "npm:^3.0.0"
     "@metamask/eth-sig-util": "npm:^9.0.0"
     "@metamask/eth-snap-keyring": "npm:^24.0.0"
@@ -36130,7 +36082,7 @@ __metadata:
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
     "@metamask/money-account-api-data-service": "npm:^2.1.0"
     "@metamask/money-account-balance-service": "npm:^3.1.2"
-    "@metamask/money-account-controller": "npm:^0.3.3"
+    "@metamask/money-account-controller": "npm:^3.0.0"
     "@metamask/money-account-upgrade-controller": "npm:^4.0.0"
     "@metamask/money-account-utils": "npm:^1.2.0"
     "@metamask/multichain-account-service": "npm:^14.1.0"
