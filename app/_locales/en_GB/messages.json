@@ -5698,6 +5698,9 @@
   "mfaOtpTitle": {
     "message": "Enter your verification code"
   },
+  "mfaOtpVerifying": {
+    "message": "Verifying code"
+  },
   "mfaPasskeyTitleSetup": {
     "message": "Create a passkey"
   },

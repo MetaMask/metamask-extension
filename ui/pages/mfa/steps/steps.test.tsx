@@ -617,6 +617,32 @@ describe('CodeStep', () => {
     });
   });
 
+  it.each([
+    ['email', otp(true)],
+    ['authenticator app', totpCode()],
+  ])(
+    'keeps every %s digit visible with a loading indicator while verifying',
+    (_method, step) => {
+      const onAction = jest.fn();
+      const props = buildState(step);
+      const { rerender } = render(ui(props.step, props.state, onAction));
+
+      fireEvent.change(screen.getByTestId(MfaFlowTestIds.CODE_INPUT), {
+        target: { value: '123456' },
+      });
+      expect(
+        screen.queryByTestId(MfaFlowTestIds.VERIFYING_INDICATOR),
+      ).toBeNull();
+
+      rerender(ui(props.step, { ...props.state, busy: true }, onAction));
+
+      expect(
+        screen.getByTestId(MfaFlowTestIds.VERIFYING_INDICATOR),
+      ).toHaveAccessibleName(messages.mfaOtpVerifying.message);
+      expect(screen.getByText('6')).toBeInTheDocument();
+    },
+  );
+
   it.each<[MfaFlowErrorCode, string]>([
     ['flow_expired', messages.mfaErrorTotpExpired.message],
     ['invalid_code', messages.mfaErrorInvalidTotpCode.message],

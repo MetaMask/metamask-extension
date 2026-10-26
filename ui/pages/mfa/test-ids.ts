@@ -8,6 +8,7 @@ export const MfaFlowTestIds = {
   EMAIL_INPUT: 'mfa-flow-email-input',
   CODE_INPUT: 'mfa-flow-code-input',
   RESEND_BUTTON: 'mfa-flow-resend-button',
+  VERIFYING_INDICATOR: 'mfa-flow-verifying-indicator',
   PICKER_OPTION: 'mfa-flow-picker-option',
   INTRO_METHOD: 'mfa-flow-intro-method',
   TOTP_SETUP_KEY: 'mfa-flow-totp-setup-key',

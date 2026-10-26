@@ -1,10 +1,15 @@
 import React, { useEffect, useReducer, useRef, useState } from 'react';
 import {
   Box,
+  BoxAlignItems,
   BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -58,6 +63,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   // resent.
   const isTotp = step.method === 'totp';
   const isCoolingDown = secondsLeft > 0;
+  // Every OTP method uses this shared screen, so future phone/SMS codes get
+  // the same progress state as email and authenticator app codes.
+  const isVerifying = busy && codeSent && code.length === CODE_LENGTH;
 
   const [clearedFor, setClearedFor] = useState({ error, codeResent });
   if (clearedFor.error !== error || clearedFor.codeResent !== codeResent) {
@@ -215,6 +223,26 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             data-testid={MfaFlowTestIds.CODE_INPUT}
           />
         </Box>
+        {isVerifying ? (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            gap={2}
+            paddingTop={2}
+            role="progressbar"
+            aria-label={t('mfaOtpVerifying')}
+            data-testid={MfaFlowTestIds.VERIFYING_INDICATOR}
+          >
+            <Icon
+              name={IconName.Loading}
+              size={IconSize.Sm}
+              className="animate-spin"
+              aria-hidden
+            />
+            <Text variant={TextVariant.BodySm}>{t('mfaOtpVerifying')}</Text>
+          </Box>
+        ) : null}
         {showError && error ? (
           <StepError code={error} method={step.method} />
         ) : null}
