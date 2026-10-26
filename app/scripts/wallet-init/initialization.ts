@@ -30,6 +30,7 @@ import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getGeolocationApiServiceInstanceOptions } from './instance-options/geolocation-api-service';
 import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
 import {
   getShieldApiServiceInstanceOptions,
@@ -93,6 +94,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
       gasFeeController: getGasFeeControllerInstanceOptions({
         initMessenger: getGasFeeControllerInitMessenger(messenger),
       }),
+      geolocationApiService: getGeolocationApiServiceInstanceOptions(),
       keyringController: getKeyringControllerInstanceOptions({
         encryptor,
         messenger,

@@ -3546,6 +3546,7 @@
         "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/wallet>@metamask/controller-utils": true,
         "@metamask/wallet>@metamask/gas-fee-controller": true,
+        "@metamask/geolocation-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
         "@metamask/messenger": true,

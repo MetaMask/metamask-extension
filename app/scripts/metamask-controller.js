@@ -295,8 +295,6 @@ import {
   TokenRatesControllerInit,
 } from './messenger-client-init/assets';
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
-import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
-import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
 import { ComplianceServiceInit } from './messenger-client-init/compliance-service-init';
 import { ComplianceControllerInit } from './messenger-client-init/compliance-controller-init';
 import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
@@ -554,11 +552,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: PermissionLogControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
-      // GeolocationController should init early so AnalyticsController (owned
-      // by the wallet) can resolve geolocation via
-      // GeolocationController:getGeolocationData when enrichment is enabled.
-      GeolocationApiService: GeolocationApiServiceInit,
-      GeolocationController: GeolocationControllerInit,
       SentryTracingService: SentryTracingServiceInit,
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -801,7 +794,9 @@ export default class MetamaskController extends EventEmitter {
       accountsController: this.accountsController,
       networkController: this.networkController,
     });
-    this.geolocationController = messengerClientsByName.GeolocationController;
+    this.geolocationController = this.wallet.getInstance(
+      'GeolocationController',
+    );
     this.moneyAccountUpgradeController =
       messengerClientsByName.MoneyAccountUpgradeController;
 
@@ -1358,6 +1353,7 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       AnalyticsController: this.analyticsController,
+      GeolocationController: this.geolocationController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
@@ -1421,6 +1417,7 @@ export default class MetamaskController extends EventEmitter {
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
         AnalyticsController: this.analyticsController,
+        GeolocationController: this.geolocationController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
@@ -3096,6 +3093,9 @@ export default class MetamaskController extends EventEmitter {
         this.oauthService,
       ),
       getGeolocation: this.geolocationController.getGeolocation.bind(
+        this.geolocationController,
+      ),
+      refreshGeolocation: this.geolocationController.refreshGeolocation.bind(
         this.geolocationController,
       ),
 

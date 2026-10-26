@@ -23,6 +23,7 @@ import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controlle
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getGeolocationApiServiceInstanceOptions } from './instance-options/geolocation-api-service';
 import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
 import {
   getShieldApiServiceInstanceOptions,
@@ -58,6 +59,11 @@ jest.mock('./instance-options/connectivity-controller', () => ({
 }));
 jest.mock('./instance-options/claims-service', () => ({
   getClaimsServiceInstanceOptions: jest.fn(() => 'claims-options'),
+}));
+jest.mock('./instance-options/geolocation-api-service', () => ({
+  getGeolocationApiServiceInstanceOptions: jest.fn(
+    () => 'geolocation-api-service-options',
+  ),
 }));
 jest.mock('./instance-options/config-registry-api-service', () => ({
   getConfigRegistryApiServiceInstanceOptions: jest.fn(
@@ -166,6 +172,7 @@ describe('initializeWallet', () => {
         configRegistryApiService: 'config-registry-api-service-options',
         connectivityController: 'connectivity-options',
         gasFeeController: 'gas-fee-controller-options',
+        geolocationApiService: 'geolocation-api-service-options',
         keyringController: 'keyring-options',
         networkController: {
           infuraProjectId: 'fake-infura-project-id',
@@ -277,6 +284,7 @@ describe('initializeWallet', () => {
       showApprovalRequest,
     });
     expect(getClaimsServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getGeolocationApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getConfigRegistryApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
