@@ -106,5 +106,25 @@ describe('TransactionSettings', () => {
     fireEvent.change(input, { target: { value: 5 } });
     fireEvent.click(document);
     expect(input).toHaveAttribute('value', '5');
+    expect(input).toHaveAttribute('inputmode', 'decimal');
+  });
+
+  it('caps custom slippage at 100 on blur and displays feedback', () => {
+    const { getByTestId, getByText } = renderWithProvider(
+      <TransactionSettings {...createProps()} />,
+      store,
+    );
+    fireEvent.click(getByTestId('button-group__button2'));
+    const input = getByTestId('transaction-settings-custom-slippage');
+
+    fireEvent.change(input, { target: { value: '101' } });
+    expect(input).toHaveValue('101');
+
+    fireEvent.blur(input);
+
+    expect(getByText('100')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapSlippageCappedDescription.message),
+    ).toBeInTheDocument();
   });
 });

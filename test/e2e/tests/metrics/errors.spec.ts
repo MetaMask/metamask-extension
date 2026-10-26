@@ -11,7 +11,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_ANALYTICS_ID } from '../../constants';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
@@ -297,7 +297,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: null,
                 consentDecisionMade: true,
                 optedIn: false,
@@ -370,7 +370,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -447,7 +447,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -532,7 +532,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -634,7 +634,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -724,7 +724,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -808,7 +808,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -915,7 +915,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -989,7 +989,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -1063,7 +1063,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1152,7 +1152,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1254,7 +1254,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1338,7 +1338,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1467,6 +1467,7 @@ describe('Sentry errors', function () {
       accountsAssets: false,
       assetsMetadata: false,
       allIgnoredAssets: false,
+      tokenBalances: false,
       assetsRates: false,
       smartTransactionsState: {
         fees: {
@@ -1488,7 +1489,8 @@ describe('Sentry errors', function () {
       // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
       rewardsSubscriptionTokens: false,
       storageWriteErrorType: true,
-      // AnalyticsController keeps the queue out of UI state.
+      // AnalyticsController keeps the queue and fragments out of UI state.
+      eventFragments: false,
       eventQueue: false,
       preConsentEventQueue: false,
       // Optional property on AppStateController; only set after a user

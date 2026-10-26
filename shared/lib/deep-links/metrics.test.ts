@@ -3,7 +3,30 @@ import {
   MetaMetricsEventName,
 } from '../../constants/metametrics';
 import { MISSING, VALID, INVALID } from './verify';
-import { createEvent } from './metrics';
+import { createEvent, shouldTrackDeepLinkNavigation } from './metrics';
+
+describe('shouldTrackDeepLinkNavigation', () => {
+  it('returns false for an external redirect destination', () => {
+    const result = shouldTrackDeepLinkNavigation({
+      destination: {
+        redirectTo: new URL('https://portfolio.metamask.io/buy'),
+      },
+    });
+
+    expect(result).toBe(false);
+  });
+
+  it('returns true for an extension route destination', () => {
+    const result = shouldTrackDeepLinkNavigation({
+      destination: {
+        path: '/perps',
+        query: new URLSearchParams(),
+      },
+    });
+
+    expect(result).toBe(true);
+  });
+});
 
 describe('createEvent', () => {
   describe('basic functionality', () => {
@@ -102,6 +125,21 @@ describe('createEvent', () => {
       expect(result.properties.utm_medium).toBe('email');
       expect(result.properties.utm_source).toBe('newsletter');
       expect(result.properties.utm_term).toBe('crypto-wallet');
+    });
+
+    it('should handle referral as a standard attribution property', () => {
+      const url = new URL(
+        'https://example.com/test?referral=ABC123&customParam=secret-value',
+      );
+      const signature = MISSING;
+
+      const result = createEvent({ signature, url });
+
+      expect(result.properties.referral).toBe('ABC123');
+      expect(result.sensitiveProperties).toStrictEqual({
+        customParam: 'secret-value',
+      });
+      expect(result.sensitiveProperties).not.toHaveProperty('referral');
     });
 
     it('should handle non-UTM parameters as sensitive', () => {

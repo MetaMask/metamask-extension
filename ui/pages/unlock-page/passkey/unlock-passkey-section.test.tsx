@@ -191,6 +191,49 @@ describe('UnlockPasskeySection', () => {
     );
   });
 
+  it('passes legacy passkey migration eligibility after successful unlock', async () => {
+    setMockPasskeyRecord({
+      keyDerivation: { method: 'userHandle' },
+    });
+    const onUnlockSuccess = jest.fn().mockResolvedValue(undefined);
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPasskeySection {...baseProps} onUnlockSuccess={onUnlockSuccess} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(onUnlockSuccess).toHaveBeenCalledWith({
+        isPasskeyMigrationEligible: true,
+      });
+    });
+  });
+
+  it('uses the unlock hook result when migration eligibility is capped', async () => {
+    setMockPasskeyRecord({
+      keyDerivation: { method: 'userHandle' },
+    });
+    mockUnlockWithPasskey.mockResolvedValue(false);
+    const onUnlockSuccess = jest.fn().mockResolvedValue(undefined);
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPasskeySection {...baseProps} onUnlockSuccess={onUnlockSuccess} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(onUnlockSuccess).toHaveBeenCalledWith({
+        isPasskeyMigrationEligible: false,
+      });
+    });
+  });
+
   it('does not throw when unmounted while passkey authentication is pending', async () => {
     let resolveCeremony: (value: unknown) => void;
     const ceremonyPromise = new Promise((resolve) => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { trace, endTrace } from '../../../../shared/lib/trace';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -22,6 +23,12 @@ import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 import type { PerpsTransaction } from './types';
+
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
 
 const mockNavigate = jest.fn();
 
@@ -93,8 +100,15 @@ jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
 }));
 
 jest.mock('../../../store/background-connection', () => ({
-  submitRequestToBackground: (...args: unknown[]) =>
-    mockSubmitRequestToBackground(...args),
+  submitRequestToBackground: (method: string, ...args: unknown[]) => {
+    if (method === 'perpsGetLifecycleContext') {
+      return Promise.resolve('cold_process');
+    }
+    if (method === 'perpsMarkForegroundSettled') {
+      return Promise.resolve(undefined);
+    }
+    return mockSubmitRequestToBackground(method, ...args);
+  },
 }));
 
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -150,6 +164,7 @@ jest.mock('../../../hooks/perps/stream', () => {
 
 jest.mock('./hooks/usePerpsTabExploreData', () => ({
   usePerpsTabExploreData: jest.fn(() => ({
+    allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
     exploreMarkets: [
       ...mocks.mockCryptoMarkets,
       ...mocks.mockHip3Markets,
@@ -157,6 +172,7 @@ jest.mock('./hooks/usePerpsTabExploreData', () => ({
     watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
       ['BTC', 'ETH'].includes(market.symbol),
     ),
+    watchlistCount: 2,
     isInitialLoading: false,
   })),
 }));
@@ -239,6 +255,10 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      value: 'visible',
+    });
     mockExposeCancelAllOrders = false;
     mockUsePerpsBottomNavSource.mockReturnValue(undefined);
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
@@ -259,10 +279,13 @@ describe('PerpsView', () => {
       isInitialLoading: false,
     });
     jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      isLive: true,
+      allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       exploreMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
         ['BTC', 'ETH'].includes(market.symbol),
       ),
+      watchlistCount: 2,
       isInitialLoading: false,
     });
     mockGetPerpsStreamManager.mockReturnValue({
@@ -276,16 +299,58 @@ describe('PerpsView', () => {
   });
 
   describe('with default mock data (positions and orders)', () => {
+    it('waits for pending orders before completing the Mobile Home trace', async () => {
+      jest
+        .mocked(streamHooks.usePerpsLiveOrders)
+        .mockReturnValue({ orders: [], isInitialLoading: true });
+      const store = configureStore(mockState);
+      const { rerender } = renderWithProvider(<PerpsView />, store);
+      expect(endTrace).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Perps Entry To Live Market List',
+          data: expect.objectContaining({ success: true }),
+        }),
+      );
+
+      jest
+        .mocked(streamHooks.usePerpsLiveOrders)
+        .mockReturnValue({ orders: mocks.mockOrders, isInitialLoading: false });
+      rerender(<PerpsView />);
+
+      await waitFor(() => {
+        expect(trace).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Perps Entry To Live Market List',
+            op: 'perps.operation',
+          }),
+        );
+        expect(endTrace).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Perps Entry To Live Market List',
+            data: { success: true, variant: 'order' },
+          }),
+        );
+      });
+    });
+
     it('renders the perps tab view', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-tab'),
+      ).toBeInTheDocument();
     });
 
-    it('renders the balance dropdown', () => {
+    it('renders the balance actions header', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-balance-dropdown')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-balance-actions')).toBeInTheDocument();
+    });
+
+    it('renders the Perps title above the balance actions', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-view-title')).toBeInTheDocument();
     });
 
     it('shows positions section when mock positions exist', () => {
@@ -314,6 +379,12 @@ describe('PerpsView', () => {
       ).toBeInTheDocument();
     });
 
+    it('shows the top movers section', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-top-movers')).toBeInTheDocument();
+    });
+
     it('renders position cards for each position', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
@@ -321,7 +392,16 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('position-card-ETH')).toBeInTheDocument();
     });
 
-    it('renders single-position summary RoE from the same position value as the card', () => {
+    it('renders the aggregate Unrealized P&L subtitle under the Your positions header', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(screen.getByTestId('perps-positions-pnl')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-positions-pnl').textContent).toContain(
+        'Unrealized P&L',
+      );
+    });
+
+    it('renders single-position summary RoE from the same position value as the card, under the Your positions header', () => {
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: [
           {
@@ -343,15 +423,15 @@ describe('PerpsView', () => {
 
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(
-        screen.getByTestId('perps-balance-dropdown-pnl'),
-      ).toHaveTextContent('42.00%');
+      expect(screen.getByTestId('perps-positions-roe-value')).toHaveTextContent(
+        '42.00%',
+      );
       expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
         '42.00%',
       );
     });
 
-    it('keeps multi-position summary RoE on the account aggregate', () => {
+    it('keeps multi-position summary RoE on the account aggregate, under the Your positions header', () => {
       jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
         positions: [
           {
@@ -375,9 +455,9 @@ describe('PerpsView', () => {
 
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(
-        screen.getByTestId('perps-balance-dropdown-pnl'),
-      ).toHaveTextContent('1.00%');
+      expect(screen.getByTestId('perps-positions-roe-value')).toHaveTextContent(
+        '1.00%',
+      );
     });
 
     it('renders order cards for each order', () => {
@@ -565,7 +645,7 @@ describe('PerpsView', () => {
       expect(ordersSection).toBeInTheDocument();
 
       // Positions should come before orders in the DOM
-      const view = screen.getByTestId('perps-view');
+      const view = screen.getByTestId('parent-selector-perps-tab');
       const children = view.querySelectorAll('[data-testid]');
       const childTestIds = Array.from(children).map((child) =>
         child.getAttribute('data-testid'),
@@ -949,14 +1029,55 @@ describe('PerpsView', () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
       renderWithProvider(<PerpsView />, mockStore);
 
-      expect(screen.getByTestId('perps-view')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-tab'),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('loading tree', () => {
+    const mockLoading = (watchlistCount: number) => {
+      jest.mocked(usePerpsTabExploreData).mockReturnValue({
+        allMarkets: [],
+        exploreMarkets: [],
+        watchlistMarkets: [],
+        watchlistCount,
+        isInitialLoading: true,
+        isLive: true,
+      });
+    };
+
+    it('reserves a row per starred market so Products does not jump', () => {
+      mockLoading(2);
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      // Positions, orders, the watchlist reservation and recent activity: the
+      // watchlist slot is what keeps Products where it lands once loaded.
+      expect(screen.getAllByTestId('perps-section-skeleton')).toHaveLength(4);
+      expect(
+        screen.getByTestId('perps-products-categories-skeleton'),
+      ).toBeInTheDocument();
+    });
+
+    it('reserves nothing for a user with an empty watchlist', () => {
+      mockLoading(0);
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      // No watchlist section will appear on load, so reserving a slot for it
+      // would itself be the layout jump.
+      expect(screen.getAllByTestId('perps-section-skeleton')).toHaveLength(3);
     });
   });
 
   it('passes tab explore and watchlist markets from the tab hook', () => {
     jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      isLive: true,
+      allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       exploreMarkets: [mocks.mockCryptoMarkets[0]],
       watchlistMarkets: [mocks.mockCryptoMarkets[1]],
+      watchlistCount: 1,
       isInitialLoading: false,
     });
 

@@ -4,12 +4,12 @@ import {
   SubscriptionControllerGetCryptoApproveTransactionParamsAction,
   SubscriptionControllerGetPricingAction,
   SubscriptionControllerGetSubscriptionsAction,
-  SubscriptionControllerStartShieldSubscriptionWithCardAction,
+  SubscriptionControllerStartSubscriptionWithCardAction,
   SubscriptionControllerUpdatePaymentMethodAction,
   SubscriptionControllerSubmitSponsorshipIntentsAction,
   SubscriptionControllerGetStateAction,
   SubscriptionControllerLinkRewardsAction,
-  SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
+  SubscriptionControllerSubmitSubscriptionCryptoApprovalAction,
   SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
@@ -29,6 +29,7 @@ import {
   AppStateControllerSetShieldSubscriptionErrorAction,
 } from '../../controllers/app-state-controller-method-action-types';
 import {
+  RewardsControllerGetActualSubscriptionIdAction,
   RewardsControllerGetHasAccountOptedInAction,
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
@@ -50,7 +51,7 @@ export type ServiceName = typeof SERVICE_NAME;
 
 type AllowedActions =
   | SubscriptionControllerGetPricingAction
-  | SubscriptionControllerStartShieldSubscriptionWithCardAction
+  | SubscriptionControllerStartSubscriptionWithCardAction
   | SubscriptionControllerUpdatePaymentMethodAction
   | SubscriptionControllerGetSubscriptionsAction
   | SubscriptionControllerGetCryptoApproveTransactionParamsAction
@@ -58,7 +59,7 @@ type AllowedActions =
   | SubscriptionControllerSubmitSponsorshipIntentsAction
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerLinkRewardsAction
-  | SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction
+  | SubscriptionControllerSubmitSubscriptionCryptoApprovalAction
   | SubscriptionControllerClearLastSelectedPaymentMethodAction
   | TransactionControllerGetTransactionsAction
   | PreferencesControllerGetStateAction
@@ -73,6 +74,7 @@ type AllowedActions =
   | AppStateControllerSetShieldSubscriptionErrorAction
   | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
   // Rewards Integration
+  | RewardsControllerGetActualSubscriptionIdAction // For metrics, to get the rewards subscription ID
   | RewardsControllerGetSeasonStatusAction // For rewards, to get the season status for claiming points with the shield subscription
   | RewardsControllerGetSeasonMetadataAction // For rewards, to check if the season is active and can claim points
   | RewardsControllerGetHasAccountOptedInAction; // For rewards, to check if the account has opted in to rewards

@@ -54,7 +54,10 @@ describe('Trezor Hardware', function (this: Suite) {
         await testDappPage.clickERC20WatchAssetButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-        await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await watchAssetConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -107,7 +110,10 @@ describe('Trezor Hardware', function (this: Suite) {
         await testDappPage.clickERC20WatchAssetButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-        await watchAssetConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await watchAssetConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Transfer token
@@ -170,7 +176,10 @@ describe('Trezor Hardware', function (this: Suite) {
         await testDappPage.clickApproveTokens();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const txConfirmation = new TransactionConfirmation(driver);
-        await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await txConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -228,7 +237,10 @@ describe('Trezor Hardware', function (this: Suite) {
         await testDappPage.clickERC20IncreaseAllowanceButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const txConfirmation = new TransactionConfirmation(driver);
-        await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await txConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

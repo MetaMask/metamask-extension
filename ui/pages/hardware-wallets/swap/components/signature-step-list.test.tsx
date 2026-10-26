@@ -145,18 +145,22 @@ describe('SignatureStepList', () => {
       <SignatureStepList
         {...BASE_PROPS}
         needsTwoConfirmations
-        firstStepDescription="Spender: 0xabcde...12345"
+        firstStepDescription={{
+          token: 'Token: 0x12345...67890',
+          spender: 'Spender: 0xabcde...12345',
+        }}
       />,
     );
 
     expect(getByText('Spender: 0xabcde...12345')).toBeDefined();
+    expect(getByText('Token: 0x12345...67890')).toBeDefined();
   });
 
   it('renders finalStepDescription when provided', () => {
     const { getByText } = render(
       <SignatureStepList
         {...BASE_PROPS}
-        finalStepDescription="To: 0xfedcb...98765"
+        finalStepDescription={{ to: 'To: 0xfedcb...98765' }}
       />,
     );
 

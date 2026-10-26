@@ -8,7 +8,7 @@ import {
   IconName,
 } from '../../../../component-library';
 
-type CopyCallback = (text: string) => void;
+type CopyCallback = (text: string) => Promise<boolean>;
 
 export const CopyIcon = ({
   copyText,
@@ -23,13 +23,13 @@ export const CopyIcon = ({
 }) => {
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses,
   // but it could always be used for something else in the future, and we need to be careful
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const handleClick = useCallback(
     async (event: React.MouseEvent) => {
       if (isStopPropagationEnabled) {
         event.stopPropagation();
       }
-      (handleCopy as CopyCallback)(copyText);
+      await (handleCopy as CopyCallback)(copyText);
     },
     [copyText, handleCopy, isStopPropagationEnabled],
   );

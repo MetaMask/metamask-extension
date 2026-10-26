@@ -106,7 +106,17 @@ export function createProviderWrapper(
     createMockMetaMetricsContext(getMockTrackEvent);
 
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
+    defaultOptions: {
+      queries: {
+        retry: false,
+        // The real UI query client (`createUIQueryClient`) always has a
+        // default queryFn routing data-service query keys to the background
+        // messenger. Without one here, react-query v5 logs a console error for
+        // every mounted data-service query — even a disabled one. The stub
+        // never resolves, keeping any enabled query in its loading state.
+        queryFn: () => new Promise(() => undefined),
+      },
+    },
   });
 
   const MemoryRouter = createMemoryRouterWrapper({

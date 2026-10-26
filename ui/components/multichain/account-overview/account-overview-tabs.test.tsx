@@ -9,7 +9,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
 import { setPerpsTabBadgeSeen } from '../../../store/actions';
 import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
@@ -34,10 +33,6 @@ jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
   detectNfts: jest.fn(() => ({ type: 'MOCK_DETECT_NFTS' })),
   setPerpsTabBadgeSeen: jest.fn(() => () => Promise.resolve()),
-}));
-
-jest.mock('../../../hooks/useTokenBalances', () => ({
-  useTokenBalances: jest.fn(),
 }));
 
 jest.mock('../../app/assets/asset-list', () => ({
@@ -72,7 +67,6 @@ jest.mock('../../app/perps/perps-tab', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
-  (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
 });
 
 describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
@@ -84,13 +78,11 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     variantFlag,
     perpsTabBadgeSeen = false,
     perpsAvailable = true,
-    showTokens = true,
     route,
   }: {
     variantFlag?: { name: string };
     perpsTabBadgeSeen?: boolean;
     perpsAvailable?: boolean;
-    showTokens?: boolean;
     route?: string;
   }) => {
     const store = configureStore({
@@ -111,9 +103,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
 
     return renderWithProvider(
       <AccountOverviewTabs
-        showTokens={showTokens}
-        showNfts={false}
-        showActivity={false}
         setBasicFunctionalityModalOpen={jest.fn()}
         onSupportLinkClick={jest.fn()}
       />,
@@ -127,7 +116,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     clearABTestExposureTrackingForTest();
     originalPerpsEnabled = process.env.PERPS_ENABLED;
     process.env.PERPS_ENABLED = 'true';
-    (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
   });
 
   afterEach(() => {
@@ -180,19 +168,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     renderTabs({ variantFlag: { name: 'control' }, route: '/?tab=perps' });
 
     expect(setPerpsTabBadgeSeen).not.toHaveBeenCalled();
-  });
-
-  it('persists the dismissal when Perps is the clamped active tab (active tab hidden)', () => {
-    // Tokens is hidden but activeTabKey points at the now-hidden Tokens tab, so
-    // Tabs clamps the rendered active tab to the first one (Perps). The badge
-    // must still be marked seen even though no tab click occurs.
-    renderTabs({
-      variantFlag: { name: 'treatment' },
-      showTokens: false,
-      route: '/?tab=tokens',
-    });
-
-    expect(setPerpsTabBadgeSeen).toHaveBeenCalledWith(true);
   });
 
   it('does not mark the badge seen while Perps is unavailable, even when it is the active tab', () => {
@@ -286,42 +261,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     expect(mockTrackEvent).not.toHaveBeenCalledWith(
       expect.objectContaining({
         name: MetaMetricsEventName.ExperimentViewed,
-      }),
-    );
-  });
-});
-
-describe('AccountOverviewTabs - TokenBalancesPoller', () => {
-  it('polls token balances for the enabled EVM chain IDs', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.POLYGON]: true,
-          },
-        },
-      },
-    });
-
-    renderWithProvider(
-      <AccountOverviewTabs
-        showTokens={true}
-        showNfts={false}
-        showActivity={false}
-        setBasicFunctionalityModalOpen={jest.fn()}
-        onSupportLinkClick={jest.fn()}
-      />,
-      store,
-    );
-
-    expect(useTokenBalances).toHaveBeenCalledWith(
-      expect.objectContaining({
-        chainIds: expect.arrayContaining([
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.POLYGON,
-        ]),
       }),
     );
   });

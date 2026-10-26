@@ -72,6 +72,7 @@ export function SwapAgainButton({
         token: null,
         search: searchParams,
         isEntrypoint: true,
+        entryPoint: MetaMetricsSwapsEventSource.ActivityDetails,
       });
     });
   }, [

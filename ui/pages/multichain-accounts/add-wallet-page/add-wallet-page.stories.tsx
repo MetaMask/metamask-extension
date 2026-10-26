@@ -1,4 +1,4 @@
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { AddWalletPage } from './add-wallet-page';
 
 const meta: Meta<typeof AddWalletPage> = {

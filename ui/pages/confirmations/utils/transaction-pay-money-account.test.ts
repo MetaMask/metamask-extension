@@ -34,13 +34,14 @@ describe('money account payment override helpers', () => {
       });
     });
 
-    it('sets MoneyAccount override without refundTo for withdraw flows', () => {
+    it('sets MoneyAccount override without refundTo and with atomic false for withdraw flows', () => {
       applyMoneyAccountOverride('tx-2', moneyAddress, {
         id: 'tx-2',
         type: TransactionType.perpsWithdraw,
       } as never);
 
       expect(setPaymentOverrideMock).toHaveBeenCalledWith('tx-2', {
+        atomic: false,
         paymentOverride: PaymentOverride.MoneyAccount,
       });
     });

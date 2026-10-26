@@ -26,7 +26,7 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
     (href: string, isExternal: boolean) => {
       // Analytics
       trackEvent(
-        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+        createEventBuilder(MetaMetricsEventName.NotificationDetailItemClicked)
           .addCategory(MetaMetricsEventCategory.NotificationInteraction)
           .addProperties({
             /* eslint-disable @typescript-eslint/naming-convention */

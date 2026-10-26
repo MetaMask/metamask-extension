@@ -46,6 +46,10 @@ class ConnectAccountConfirmation {
     text: origin,
   });
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-connect-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -71,6 +75,7 @@ class ConnectAccountConfirmation {
     origin = '127.0.0.1',
   }: { origin?: string } = {}): Promise<void> {
     await this.driver.waitForMultipleSelectors([
+      this.parentSelector,
       this.connectAccountConfirmationTitle,
       this.confirmConnectButton,
       this.originHeader(origin),

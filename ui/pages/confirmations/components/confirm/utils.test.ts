@@ -7,10 +7,61 @@ import {
   PERSONAL_SIGN_SENDER_ADDRESS,
   unapprovedPersonalSignMsg,
 } from '../../../../../test/data/confirmations/personal_sign';
+import {
+  permitSignatureMsg,
+  permitSignatureMsgWithUnsignedFields,
+} from '../../../../../test/data/confirmations/typed_sign';
 import { SignatureRequestType } from '../../types/confirm';
-import { getConfirmationSender } from './utils';
+import { DAI_CONTRACT_ADDRESS } from './info/shared/constants';
+import { getConfirmationSender, getIsRevokeDAIPermit } from './utils';
 
 describe('confirm - utils', () => {
+  describe('getIsRevokeDAIPermit()', () => {
+    const getDAIPermit = (
+      includeAllowedInSchema: boolean,
+      includeVerifyingContractInSchema = true,
+    ): SignatureRequestType => {
+      const data = JSON.parse(permitSignatureMsg.msgParams?.data as string);
+      data.domain.verifyingContract = DAI_CONTRACT_ADDRESS;
+      data.message.allowed = false;
+
+      if (includeAllowedInSchema) {
+        data.types.Permit.push({ name: 'allowed', type: 'bool' });
+      }
+      if (!includeVerifyingContractInSchema) {
+        data.types.EIP712Domain = data.types.EIP712Domain.filter(
+          ({ name }: { name: string }) => name !== 'verifyingContract',
+        );
+      }
+
+      return {
+        ...permitSignatureMsg,
+        msgParams: {
+          ...permitSignatureMsg.msgParams,
+          data: JSON.stringify(data),
+        },
+      } as SignatureRequestType;
+    };
+
+    it('detects a schema-declared DAI revocation', () => {
+      expect(getIsRevokeDAIPermit(getDAIPermit(true))).toBe(true);
+    });
+
+    it('ignores an unsigned allowed field for DAI', () => {
+      expect(getIsRevokeDAIPermit(getDAIPermit(false))).toBe(false);
+    });
+
+    it('ignores an unsigned DAI verifying contract', () => {
+      expect(getIsRevokeDAIPermit(getDAIPermit(true, false))).toBe(false);
+    });
+
+    it('ignores allowed false for non-DAI permits', () => {
+      expect(getIsRevokeDAIPermit(permitSignatureMsgWithUnsignedFields)).toBe(
+        false,
+      );
+    });
+  });
+
   describe('getConfirmationSender()', () => {
     test("returns the sender address from a signature if it's passed", () => {
       const testCurrentConfirmation =

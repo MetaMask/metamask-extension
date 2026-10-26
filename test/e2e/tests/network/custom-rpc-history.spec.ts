@@ -8,7 +8,7 @@ import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-ur
 import Homepage from '../../page-objects/pages/home/homepage';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { login } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 
 describe('Custom RPC history', function (this: Suite) {
   it(`creates first custom RPC entry`, async function () {

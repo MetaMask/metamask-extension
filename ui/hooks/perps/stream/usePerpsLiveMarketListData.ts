@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { formatPerpsFiatUniversal } from '../../../components/app/perps/utils/formatPerpsDisplayPrice';
 import {
   usePerpsLiveMarketData,
@@ -19,6 +20,10 @@ export type UsePerpsLiveMarketListDataReturn = Pick<
   'cryptoMarkets' | 'hip3Markets' | 'isInitialLoading' | 'error' | 'refresh'
 > & {
   markets: PerpsMarketData[];
+  /** Both snapshots used during this render came from the live session. */
+  isLive: boolean;
+  /** Check the exact rendered rows against their live metadata and prices. */
+  areMarketsLive: (renderedMarkets: readonly PerpsMarketData[]) => boolean;
 };
 
 export function usePerpsLiveMarketListData(
@@ -50,7 +55,7 @@ export function usePerpsLiveMarketListData(
     [marketSymbols],
   );
 
-  const { prices } = usePerpsLivePrices({
+  const { prices, isLive: pricesLive } = usePerpsLivePrices({
     symbols: marketSymbols,
     activateStream,
     includeMarketData: false,
@@ -94,6 +99,27 @@ export function usePerpsLiveMarketListData(
     () => new Map(liveMarkets.map((market) => [market.symbol, market])),
     [liveMarkets],
   );
+  const metadataMap = useMemo(
+    () => new Map(markets.map((market) => [market.symbol, market])),
+    [markets],
+  );
+  const areMarketsLive = useCallback(
+    (renderedMarkets: readonly PerpsMarketData[]): boolean =>
+      pricesLive &&
+      renderedMarkets.length > 0 &&
+      renderedMarkets.every((market) => {
+        const metadata = metadataMap.get(market.symbol);
+        const price = Number(prices[market.symbol]?.price);
+        return (
+          liveMarketMap.get(market.symbol) === market &&
+          Number.isFinite(price) &&
+          price > 0 &&
+          metadata !== undefined &&
+          getPerpsStreamManager().hasLiveMarketData([metadata])
+        );
+      }),
+    [liveMarketMap, metadataMap, prices, pricesLive],
+  );
   const liveCryptoMarkets = useMemo(
     () =>
       cryptoMarkets.map((market) => liveMarketMap.get(market.symbol) ?? market),
@@ -107,6 +133,8 @@ export function usePerpsLiveMarketListData(
 
   return {
     markets: liveMarkets,
+    isLive: pricesLive && getPerpsStreamManager().hasLiveMarketData(markets),
+    areMarketsLive,
     cryptoMarkets: liveCryptoMarkets,
     hip3Markets: liveHip3Markets,
     isInitialLoading,

@@ -61,7 +61,8 @@ describe('Permit Confirmation', () => {
           analyticsId: 'test-metametrics-id',
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -163,6 +164,42 @@ describe('Permit Confirmation', () => {
         screen.getByText('This site wants permission to spend your tokens.'),
       ).toBeInTheDocument();
     });
+  });
+
+  it('ignores unsigned fields and displays the signed unlimited ERC-20 permit', async () => {
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+
+    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
+      account.address,
+      'PermitUnsignedFields',
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    expect(await screen.findByText('Spending cap request')).toBeInTheDocument();
+    expect(
+      screen.getByText('This site wants permission to spend your tokens.'),
+    ).toBeInTheDocument();
+
+    const simulationSection = await screen.findByTestId(
+      'confirmation__simulation_section',
+    );
+    expect(simulationSection).toHaveTextContent(
+      "You're giving the spender permission to spend this many tokens from your account.",
+    );
+    expect(simulationSection).toHaveTextContent('Spending cap');
+    expect(simulationSection).toHaveTextContent('Unlimited');
+    expect(simulationSection).not.toHaveTextContent('Revoke');
+    expect(simulationSection).not.toHaveTextContent(
+      "You're removing someone's permission to spend tokens from your account.",
+    );
+    expect(simulationSection).not.toHaveTextContent('#0');
+    expect(screen.queryByText('Remove permission')).not.toBeInTheDocument();
   });
 
   it('displays the simulation section', async () => {

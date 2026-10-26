@@ -31,13 +31,16 @@ export default class ChangePasswordPage {
   private readonly newPasswordInput = '[data-testid="change-password-input"]';
 
   private readonly passwordChangedWarning = {
-    text: 'Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password.',
-    css: 'p',
+    testId: 'change-password-warning-modal',
   };
 
   private readonly passwordTerms = '[data-testid="change-password-terms"]';
 
   private readonly saveButton = '[data-testid="change-password-button"]';
+
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
 
   private readonly verifyCurrentPasswordButton =
     '[data-testid="verify-current-password-button"]';
@@ -59,7 +62,10 @@ export default class ChangePasswordPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check change password page is loaded');
-    await this.driver.waitForSelector(this.currentPasswordInput);
+    await this.driver.waitForMultipleSelectors([
+      this.currentPasswordInput,
+      this.settingsPage,
+    ]);
   }
 
   async checkPasswordChangedWarning(): Promise<void> {

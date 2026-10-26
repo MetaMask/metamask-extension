@@ -2,11 +2,17 @@ import type { Hex } from '@metamask/utils';
 import { useQuery } from '@metamask/react-data-query';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MoneyAccountApiDataServiceQueryKeys } from '../../../shared/lib/money/query-keys';
+import { reportMoneyQueryErrorOnce } from '../../helpers/money/report-money-error';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 import { useMoneyAccountInterest } from './useMoneyAccountInterest';
 
 jest.mock('@metamask/react-data-query', () => ({
   useQuery: jest.fn(),
+}));
+
+jest.mock('../../helpers/money/report-money-error', () => ({
+  ...jest.requireActual('../../helpers/money/report-money-error'),
+  reportMoneyQueryErrorOnce: jest.fn(),
 }));
 
 jest.mock('./useMoneyAccountInfo', () => ({
@@ -15,6 +21,7 @@ jest.mock('./useMoneyAccountInfo', () => ({
 
 const mockUseQuery = jest.mocked(useQuery);
 const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
+const mockReportMoneyQueryErrorOnce = jest.mocked(reportMoneyQueryErrorOnce);
 
 const MONEY_ADDRESS: Hex = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B';
 const VAULT_ADDRESS: Hex = '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae';
@@ -115,5 +122,61 @@ describe('useMoneyAccountInterest', () => {
 
     expect(mockUseQuery.mock.calls[0][0].enabled).toBe(false);
     expect(mockUseQuery.mock.calls[1][0].enabled).toBe(false);
+  });
+
+  it('forwards a 30-day interest fetch failure to Sentry', () => {
+    const last30Error = new Error('30d down');
+    mockUseQuery
+      .mockReturnValueOnce({ isError: true, error: last30Error } as never)
+      .mockReturnValueOnce({ isError: false } as never);
+
+    renderHookWithProvider(() => useMoneyAccountInterest(), buildState());
+
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledTimes(1);
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+      'interest:30d',
+      '[Money Account] Interest fetch failed',
+      last30Error,
+      { window: '30d', errorName: 'Error' },
+    );
+  });
+
+  it('reports a lifetime earnings failure under its own Sentry feature tag', () => {
+    const sinceInceptionError = Object.assign(
+      new Error('Money Account API interest request failed'),
+      {
+        data: {
+          cause: {
+            name: 'MoneyAccountApiHttpError',
+            httpStatus: 502,
+            responseBody: '<html>Bad Gateway</html>',
+            responseHeaders: { 'x-amzn-trace-id': 'Root=1-abc' },
+          },
+        },
+      },
+    );
+    mockUseQuery
+      .mockReturnValueOnce({ isError: false } as never)
+      .mockReturnValueOnce({
+        isError: true,
+        error: sinceInceptionError,
+      } as never);
+
+    renderHookWithProvider(() => useMoneyAccountInterest(), buildState());
+
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledTimes(1);
+    expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+      'interest:since_inception',
+      '[Money Account] Lifetime earnings fetch failed',
+      sinceInceptionError,
+      {
+        window: 'since_inception',
+        errorName: 'MoneyAccountApiHttpError',
+        httpStatus: 502,
+        responseBody: '<html>Bad Gateway</html>',
+        responseHeaders: { 'x-amzn-trace-id': 'Root=1-abc' },
+      },
+      { feature: 'money-lifetime-earnings', httpStatus: '502' },
+    );
   });
 });

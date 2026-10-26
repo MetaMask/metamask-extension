@@ -34,6 +34,13 @@ jest.mock('../../../store/actions.ts', () => ({
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
+const mockEndJourney = jest.fn();
+
+jest.mock('../../../contexts/onboarding-trace', () => ({
+  useOnboardingTrace: () => ({
+    endJourney: mockEndJourney,
+  }),
+}));
 
 jest.mock('react-router-dom', () => {
   return {
@@ -165,6 +172,7 @@ describe('Confirm Recovery Phrase Component', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
       replace: true,
     });
+    expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
   });
 
   it('should go to Onboarding Completion page as a next step in firefox', async () => {
@@ -189,6 +197,7 @@ describe('Confirm Recovery Phrase Component', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE, {
       replace: true,
     });
+    expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
   });
 
   it('onClose should navigate to reveal srp list route', () => {

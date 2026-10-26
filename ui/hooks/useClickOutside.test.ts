@@ -76,6 +76,26 @@ describe('useOnClickOutside', () => {
 
       expect(onClickOutside).not.toHaveBeenCalled();
     });
+
+    it('invokes the latest onClickOutside after the callback changes', () => {
+      const first = jest.fn();
+      const second = jest.fn();
+      const { rerender } = renderHook(
+        ({ onClickOutside }) =>
+          useOnClickOutside({
+            containerRef,
+            onClickOutside,
+            active: true,
+          }),
+        { initialProps: { onClickOutside: first } },
+      );
+
+      rerender({ onClickOutside: second });
+      mouseDown(outside);
+
+      expect(first).not.toHaveBeenCalled();
+      expect(second).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('when active is false', () => {

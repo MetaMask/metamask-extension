@@ -11,12 +11,10 @@ import { useAnalytics } from '../useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import {
   rewardsOptIn,
   rewardsLinkAccountsToSubscriptionCandidate,
-  updateMetaMetricsTraits,
   linkRewardToShieldSubscription,
 } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
@@ -136,19 +134,6 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
               .addProperties(metricsProps)
               .build(),
           );
-
-          // Update user traits
-          try {
-            await updateMetaMetricsTraits({
-              [MetaMetricsUserTrait.HasRewardsOptedIn]: 'on',
-              ...(referralCode && {
-                [MetaMetricsUserTrait.RewardsReferred]: true,
-                [MetaMetricsUserTrait.RewardsReferralCodeUsed]: referralCode,
-              }),
-            });
-          } catch {
-            // Silently fail - traits update should not block opt-in
-          }
 
           // Link the reward to the shield subscription if opt in from the shield subscription
           if (options?.rewardPoints && options?.shieldSubscriptionId) {

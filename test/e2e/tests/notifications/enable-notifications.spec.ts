@@ -2,15 +2,17 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
-import { Driver } from '../../webdriver/driver';
 import {
   enableNotificationsThroughGlobalMenu,
   enableNotificationsThroughSettingsPage,
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import {
+  addAccounts,
+  waitUntilAccountTreeSyncIdle,
+} from '../../page-objects/flows/add-account.flow';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
@@ -62,7 +64,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * → General notifications: requires manual re-enable
      * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted in AUS from Part 1)
+     * → Second account: disabled (persisted via the Trigger API from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
       // server that persists trigger settings.
@@ -77,7 +79,16 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await onboardAndAddAccount(driver);
+          await completeOnboardFlowIdentity(driver);
+          await addAccounts({
+            driver,
+            count: 1,
+            onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+            onAfterAdd: ({ label }) =>
+              new AccountListPage(driver).checkAccountDisplayedInAccountList(
+                label,
+              ),
+          });
           await enableNotificationsThroughGlobalMenu(driver);
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
@@ -110,7 +121,16 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await onboardAndAddAccount(driver);
+          await completeOnboardFlowIdentity(driver);
+          await addAccounts({
+            driver,
+            count: 1,
+            onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+            onAfterAdd: ({ label }) =>
+              new AccountListPage(driver).checkAccountDisplayedInAccountList(
+                label,
+              ),
+          });
           await enableNotificationsThroughSettingsPage(driver);
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
@@ -136,17 +156,5 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
         },
       );
     });
-    async function onboardAndAddAccount(driver: Driver) {
-      await completeOnboardFlowIdentity(driver);
-
-      const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.checkPageIsLoaded();
-      await headerNavbar.openAccountMenu();
-
-      const accountListPage = new AccountListPage(driver);
-      await accountListPage.addMultichainAccount();
-      await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
-      await accountListPage.closeMultichainAccountsPage();
-    }
   });
 });

@@ -7,7 +7,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  usePureBlack,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -89,12 +88,9 @@ export const GlobalMenuDrawer = ({
   'data-testid': dataTestId,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
   const isLargeDrawer = isFullscreen || isSidepanel;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -160,10 +156,10 @@ export const GlobalMenuDrawer = ({
 
   const panel = (
     <Box
-      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack && isLargeDrawer ? ' border-l border-muted' : ''}`}
+      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isLargeDrawer ? ' border-l border-alternative' : ''}`}
       backgroundColor={
-        isPureBlack && isLargeDrawer
-          ? BoxBackgroundColor.BackgroundAlternative
+        isLargeDrawer
+          ? BoxBackgroundColor.BackgroundElevated1
           : BoxBackgroundColor.BackgroundDefault
       }
     >

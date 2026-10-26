@@ -1,4 +1,10 @@
-import { selectIsSignedIn, selectSessionData } from './authentication';
+import {
+  selectEnrolledCredentials,
+  selectIsSignedIn,
+  selectNeedsProfilePairing,
+  selectNeedsSocialPairing,
+  selectSessionData,
+} from './authentication';
 
 describe('Authentication Selectors', () => {
   const mockState = {
@@ -43,5 +49,44 @@ describe('Authentication Selectors', () => {
     expect(selectSessionData(mockState)).toEqual(
       mockState.metamask.srpSessionData.entropySourceId1,
     );
+  });
+
+  it('selectNeedsProfilePairing returns the persisted value when present', () => {
+    expect(
+      selectNeedsProfilePairing({
+        metamask: { ...mockState.metamask, needsProfilePairing: false },
+      }),
+    ).toBe(false);
+  });
+
+  it('selectNeedsProfilePairing defaults to true when the field is absent', () => {
+    expect(selectNeedsProfilePairing(mockState)).toBe(true);
+  });
+
+  it('selectNeedsSocialPairing returns the persisted value when present', () => {
+    expect(
+      selectNeedsSocialPairing({
+        metamask: { ...mockState.metamask, needsSocialPairing: false },
+      }),
+    ).toBe(false);
+  });
+
+  it('selectNeedsSocialPairing defaults to true when the field is absent', () => {
+    expect(selectNeedsSocialPairing(mockState)).toBe(true);
+  });
+
+  it('selectEnrolledCredentials returns the persisted credentials', () => {
+    const enrolledCredentials = [
+      { type: 'email_otp' as const, status: 'active' as const, verified: true },
+    ];
+    expect(
+      selectEnrolledCredentials({
+        metamask: { ...mockState.metamask, enrolledCredentials },
+      }),
+    ).toStrictEqual(enrolledCredentials);
+  });
+
+  it('selectEnrolledCredentials defaults to an empty list before the first fetch', () => {
+    expect(selectEnrolledCredentials(mockState)).toStrictEqual([]);
   });
 });

@@ -110,7 +110,7 @@ async function importTokensTestMock(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceApiSupportedNetworks(mockServer),
     // Tokens API – supported networks
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     // Token Search API – /tokens/search
     await mockTokenSearch(mockServer),
     // Tokens API – /v3/assets
@@ -243,7 +243,7 @@ async function mockTokens(mockServer: Mockttp) {
               address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
               symbol: 'CHANGE',
               decimals: 18,
-              name: 'Changex',
+              name: 'ChangeX',
               iconUrl: '',
               type: 'erc20',
               aggregators: [],
@@ -397,7 +397,7 @@ async function mockAssetsV3(mockServer: Mockttp) {
         },
         '0x7051faed0775f664a0286af4f75ef5ed74e02754': {
           assetId: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
-          name: 'Changex',
+          name: 'ChangeX',
           symbol: 'CHANGE',
           decimals: 18,
         },
@@ -432,7 +432,11 @@ async function mockAssetsV3(mockServer: Mockttp) {
 
       const results = Object.entries(assetMap)
         .filter(([key]) => assetIds.includes(key))
-        .map(([, value]) => value);
+        .map(([, value]) =>
+          value.assetId.includes('/erc20:')
+            ? { ...value, occurrences: 100 }
+            : value,
+        );
 
       return { statusCode: 200, json: results };
     });
@@ -449,42 +453,6 @@ describe('Import flow', function () {
               [CHAIN_IDS.MAINNET]: true,
               [CHAIN_IDS.LINEA_MAINNET]: true,
               [CHAIN_IDS.BASE]: true,
-            },
-          })
-          .withTokenListController({
-            tokensChainsCache: {
-              '0x1': {
-                timestamp: Date.now(),
-                data: {
-                  '0xc4c2614e694cf534d407ee49f8e44d125e4681c4': {
-                    name: 'Chain Games',
-                    symbol: 'CHAIN',
-                    address: '0xc4c2614e694cf534d407ee49f8e44d125e4681c4',
-                    decimals: 18,
-                    occurrences: 1,
-                    aggregators: [],
-                    iconUrl: '',
-                  },
-                  '0x7051faed0775f664a0286af4f75ef5ed74e02754': {
-                    name: 'ChangeX',
-                    symbol: 'CHANGE',
-                    address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
-                    decimals: 18,
-                    occurrences: 6,
-                    aggregators: [],
-                    iconUrl: '',
-                  },
-                  '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
-                    name: 'Chai',
-                    symbol: 'CHAI',
-                    address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
-                    decimals: 18,
-                    occurrences: 1,
-                    aggregators: [],
-                    iconUrl: '',
-                  },
-                },
-              },
             },
           })
           .withAssetsController({
@@ -592,40 +560,6 @@ describe('Import flow', function () {
               [CHAIN_IDS.POLYGON]: true,
               [CHAIN_IDS.LINEA_MAINNET]: true,
               [CHAIN_IDS.BASE]: true,
-            },
-          })
-          .withTokenListController({
-            tokensChainsCache: {
-              '0x1': {
-                timestamp: Date.now(),
-                data: {
-                  '0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267': {
-                    name: 'Entropy',
-                    aggregators: ['Lifi', 'Coinmarketcap', 'Rango'],
-                    address: '0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267',
-                    decimals: 18,
-                    iconUrl:
-                      'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267.png',
-                    occurrences: 1,
-                    symbol: 'ERP',
-                  },
-                },
-              },
-              '0x89': {
-                timestamp: Date.now(),
-                data: {
-                  '0xc2132D05D31c914a87C6611C10748AEb04B58e8F': {
-                    name: 'USDT',
-                    aggregators: ['Lifi', 'Coinmarketcap', 'Rango'],
-                    address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
-                    decimals: 6,
-                    iconUrl:
-                      'https://static.cx.metamask.io/api/v1/tokenIcons/137/0xc2132D05D31c914a87C6611C10748AEb04B58e8F.png',
-                    occurrences: 3,
-                    symbol: 'USDT',
-                  },
-                },
-              },
             },
           })
           .withAssetsController({

@@ -1,6 +1,13 @@
 import React from 'react';
-import { AccountGroupId } from '@metamask/account-api';
-import { fireEvent, act, within, screen } from '@testing-library/react';
+import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import {
+  fireEvent,
+  act,
+  within,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
@@ -79,6 +86,11 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+const mockDisconnectAccountGroup = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../hooks/useDisconnectAccountGroup', () => ({
+  useDisconnectAccountGroup: () => mockDisconnectAccountGroup,
+}));
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
@@ -96,7 +108,7 @@ const mockSetAccountGroupHidden = jest.requireMock(
 ).setAccountGroupHidden;
 
 describe('MultichainAccountMenu', () => {
-  const renderComponent = (
+  const renderComponent = async (
     props: MultichainAccountMenuProps = {
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
@@ -106,15 +118,22 @@ describe('MultichainAccountMenu', () => {
     state = mockState,
   ) => {
     const store = configureStore(state);
-    return renderWithProvider(<MultichainAccountMenu {...props} />, store);
+    const view = renderWithProvider(
+      <MultichainAccountMenu {...props} />,
+      store,
+    );
+    await waitFor(() => {
+      expect(document.querySelector(menuButtonSelector)).toBeInTheDocument();
+    });
+    return view;
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders the menu button and popover is initially closed', () => {
-    renderComponent();
+  it('renders the menu button and popover is initially closed', async () => {
+    await renderComponent();
 
     const menuButton = document.querySelector(menuButtonSelector);
 
@@ -126,8 +145,8 @@ describe('MultichainAccountMenu', () => {
     expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
   });
 
-  it('renders with controlled props - closed state', () => {
-    renderComponent({
+  it('renders with controlled props - closed state', async () => {
+    await renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
       isOpen: false,
@@ -138,8 +157,8 @@ describe('MultichainAccountMenu', () => {
     expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
   });
 
-  it('renders with controlled props - open state', () => {
-    renderComponent({
+  it('renders with controlled props - open state', async () => {
+    await renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
       isOpen: true,
@@ -152,7 +171,7 @@ describe('MultichainAccountMenu', () => {
 
   it('calls onToggle when menu button is clicked with controlled props', async () => {
     const mockOnToggle = jest.fn();
-    renderComponent({
+    await renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
       isOpen: false,
@@ -171,8 +190,8 @@ describe('MultichainAccountMenu', () => {
     expect(mockOnToggle).toHaveBeenCalledTimes(1);
   });
 
-  it('shows 5 menu items when menu is open (details, rename, addresses, pin, hide)', () => {
-    renderComponent({
+  it('shows 5 menu items when menu is open (details, rename, addresses, pin, hide)', async () => {
+    await renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
       isOpen: true,
@@ -186,8 +205,52 @@ describe('MultichainAccountMenu', () => {
     expect(menuItems.length).toBe(5);
   });
 
-  it('adds the remove option to menu when isRemovable is true', () => {
-    renderComponent({
+  it('omits the hide option for an imported private key account', async () => {
+    const accountGroupId = 'keyring:simple/0';
+    const stateWithPrivateKeyAccount = {
+      metamask: {
+        accountTree: {
+          wallets: {
+            'keyring:simple': {
+              type: AccountWalletType.Keyring,
+              metadata: {
+                name: 'Imported',
+                keyring: { type: KeyringTypes.simple },
+              },
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Imported Account',
+                    pinned: false,
+                    hidden: false,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as unknown as typeof mockState;
+
+    await renderComponent(
+      {
+        accountGroupId: accountGroupId as AccountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithPrivateKeyAccount,
+    );
+
+    expect(document.querySelectorAll(menuItemSelector)).toHaveLength(4);
+    expect(
+      screen.queryByTestId('multichain-account-menu-item-hideAccount'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('adds the remove option to menu when isRemovable is true', async () => {
+    await renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: true,
       isOpen: true,
@@ -203,7 +266,7 @@ describe('MultichainAccountMenu', () => {
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
-    renderComponent({
+    await renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
       isOpen: true,
@@ -230,7 +293,7 @@ describe('MultichainAccountMenu', () => {
     const mockOnToggle = jest.fn();
     const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
-    renderComponent({
+    await renderComponent({
       accountGroupId,
       isRemovable: false,
       isOpen: true,
@@ -258,7 +321,7 @@ describe('MultichainAccountMenu', () => {
     const mockOnToggle = jest.fn();
     const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
-    renderComponent({
+    await renderComponent({
       accountGroupId,
       isRemovable: false,
       isOpen: true,
@@ -289,7 +352,7 @@ describe('MultichainAccountMenu', () => {
     const mockOnToggle = jest.fn();
     const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
-    renderComponent({
+    await renderComponent({
       accountGroupId,
       isRemovable: false,
       isOpen: true,
@@ -314,6 +377,67 @@ describe('MultichainAccountMenu', () => {
       true,
     );
     expect(mockOnToggle).toHaveBeenCalled();
+  });
+
+  it('disconnects the account from dapps when clicking the hide option', async () => {
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+    await renderComponent({
+      accountGroupId,
+      isRemovable: false,
+      isOpen: true,
+      onToggle: jest.fn(),
+    });
+
+    const hideOption = document.querySelectorAll(menuItemSelector)[4];
+    fireEvent.click(hideOption);
+
+    expect(mockDisconnectAccountGroup).toHaveBeenCalledWith(accountGroupId);
+  });
+
+  it('leaves dapp connections alone when revealing a hidden account', async () => {
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+    const stateWithHiddenAccount = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        accountTree: {
+          wallets: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Test Account',
+                    pinned: false,
+                    hidden: true,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    await renderComponent(
+      {
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithHiddenAccount,
+    );
+
+    const revealOption = document.querySelectorAll(menuItemSelector)[4];
+    fireEvent.click(revealOption);
+
+    expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
+      accountGroupId,
+      false,
+    );
+    expect(mockDisconnectAccountGroup).not.toHaveBeenCalled();
   });
 
   it('unpins account before hiding when clicking hide on a pinned account', async () => {
@@ -353,7 +477,7 @@ describe('MultichainAccountMenu', () => {
       },
     };
 
-    renderComponent(
+    await renderComponent(
       {
         accountGroupId,
         isRemovable: false,
@@ -421,7 +545,7 @@ describe('MultichainAccountMenu', () => {
       },
     };
 
-    renderComponent(
+    await renderComponent(
       {
         accountGroupId,
         isRemovable: false,
@@ -456,7 +580,7 @@ describe('MultichainAccountMenu', () => {
     const mockOnToggle = jest.fn();
     const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
-    renderComponent({
+    await renderComponent({
       accountGroupId,
       isRemovable: false,
       isOpen: true,
@@ -488,7 +612,7 @@ describe('MultichainAccountMenu', () => {
     const mockOnToggle = jest.fn();
     const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
-    renderComponent({
+    await renderComponent({
       accountGroupId,
       isRemovable: false,
       isOpen: true,
@@ -526,15 +650,17 @@ describe('MultichainAccountMenu', () => {
 
     it('calls trace ShowAccountAddressList when clicking Addresses', async () => {
       const store = configureStore(mockDefaultState);
-      renderWithProvider(
-        <MultichainAccountMenu
-          accountGroupId={groupId}
-          isRemovable={false}
-          isOpen
-          onToggle={() => undefined}
-        />,
-        store,
-      );
+      await act(async () => {
+        renderWithProvider(
+          <MultichainAccountMenu
+            accountGroupId={groupId}
+            isRemovable={false}
+            isOpen
+            onToggle={() => undefined}
+          />,
+          store,
+        );
+      });
 
       const popover = document.querySelector(
         '.multichain-account-cell-popover-menu',

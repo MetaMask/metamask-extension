@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { veryLargeDelayMs } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 
 /**
  * Snap install / connect / update confirmation dialog window.
@@ -229,6 +230,7 @@ class SnapInstall {
    */
   async waitForAddToMetaMaskInstallHeader(): Promise<void> {
     try {
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
       await this.driver.waitForSelector(this.addToMetaMaskHeader);
     } catch (error) {
       const original = error instanceof Error ? error.message : String(error);
