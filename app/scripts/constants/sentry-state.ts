@@ -366,9 +366,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   // TokenDetectionController has no public controller state.
   TokenDetectionController: {},
-  TokenBalancesController: {
-    tokenBalances: false,
-  },
   TokenRatesController: {
     marketData: false,
   },

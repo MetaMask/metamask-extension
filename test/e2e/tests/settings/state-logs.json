@@ -1253,7 +1253,6 @@
     "throttledOrigins": {},
     "timeoutMinutes": "number",
     "timezone": "string",
-    "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {
       "data": "null",

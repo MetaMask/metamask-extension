@@ -3,7 +3,9 @@ import { Driver } from '../../../webdriver/driver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { openActivityTransactionDetails } from '../../../page-objects/flows/activity.flow';
 import { login } from '../../../page-objects/flows/login.flow';
-import { openTronActivityList } from '../../../page-objects/flows/tron-activity.flow';
+import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
+import NonEvmHomepage from '../../../page-objects/pages/home/non-evm-homepage';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
 import {
   TRON_ACCOUNT_ADDRESS,
@@ -46,7 +48,13 @@ describe('Tron - Activity status', function (this: Suite) {
           validateBalance: false,
           waitForNonEvmAccounts: false,
         });
-        const activityTab = await openTronActivityList(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPageIsLoaded();
 
         await activityTab.checkTransactionActivityByText('Sending TRX');
         await activityTab.checkTransactionAmount('-1 TRX');
