@@ -5,6 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import type {
   MfaFlowErrorCode,
   MfaFlowState,
@@ -23,11 +24,15 @@ import TotpSetupStep from './totp-setup-step';
 const mockCopy = jest.fn();
 const mockUseCopyToClipboard = jest.fn();
 let mockIsCopied = false;
+let mockTheme: ThemeType;
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: (...args: unknown[]) => {
     mockUseCopyToClipboard(...args);
     return [mockIsCopied, mockCopy];
   },
+}));
+jest.mock('../../../hooks/useTheme', () => ({
+  useTheme: () => mockTheme,
 }));
 
 const reason = { operation: 'test' };
@@ -757,6 +762,7 @@ describe('FailureStep', () => {
 describe('TotpSetupStep', () => {
   beforeEach(() => {
     mockIsCopied = false;
+    mockTheme = ThemeType.light;
   });
 
   const setup = (
@@ -788,10 +794,13 @@ describe('TotpSetupStep', () => {
   it('shows the QR code and the setup key in groups', () => {
     renderSetup();
 
-    expect(screen.getByTestId(MfaFlowTestIds.TOTP_QR_IMAGE)).toHaveAttribute(
-      'src',
-      'data:image/png;base64,QR',
-    );
+    const qrCode = screen.getByTestId(MfaFlowTestIds.TOTP_QR_IMAGE);
+    expect(qrCode).toHaveAttribute('src', 'data:image/png;base64,QR');
+    expect(qrCode).toHaveAttribute('width', '184');
+    expect(qrCode).toHaveAttribute('height', '184');
+    expect(qrCode).toHaveClass('mix-blend-multiply');
+    expect(qrCode.parentElement).toHaveClass('bg-muted');
+    expect(qrCode.parentElement).not.toHaveClass('p-4');
     expect(screen.getByTestId(MfaFlowTestIds.TOTP_SETUP_KEY)).toHaveTextContent(
       'JBSW Y3DP EHPK 3PXP',
     );
@@ -806,6 +815,16 @@ describe('TotpSetupStep', () => {
     expect(
       screen.getByText(messages.mfaTotpSetupDescription.message),
     ).not.toHaveTextContent('Then enter the 6-digit code it shows.');
+  });
+
+  it('keeps the QR card white without blending in dark mode', () => {
+    mockTheme = ThemeType.dark;
+    renderSetup();
+
+    const qrCode = screen.getByTestId(MfaFlowTestIds.TOTP_QR_IMAGE);
+    expect(qrCode).not.toHaveClass('mix-blend-multiply');
+    expect(qrCode.parentElement).toHaveClass('bg-white');
+    expect(qrCode.parentElement).not.toHaveClass('p-4');
   });
 
   it('copies the setup key as sensitive data when the key section is clicked', () => {

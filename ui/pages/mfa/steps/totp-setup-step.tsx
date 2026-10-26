@@ -76,7 +76,7 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
         {/* The QR code needs a light background to scan in dark mode. */}
         <Box
           alignItems={BoxAlignItems.Center}
-          className={`self-center overflow-hidden rounded-2xl p-4 ${
+          className={`self-center overflow-hidden rounded-2xl ${
             theme === ThemeType.light ? 'bg-muted' : 'bg-white'
           }`}
         >
@@ -85,6 +85,9 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
             alt={t('mfaTotpSetupQrAlt')}
             width={184}
             height={184}
+            className={
+              theme === ThemeType.light ? 'mix-blend-multiply' : undefined
+            }
             data-testid={MfaFlowTestIds.TOTP_QR_IMAGE}
           />
         </Box>
