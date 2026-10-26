@@ -14,6 +14,7 @@ import {
   initializeCookieHandlerSteam,
   isDetectedCookieMarketingSite,
 } from './streams/cookie-handler-stream';
+import { initCashtag } from './cashtag/contentscript';
 
 const start = () => {
   if (isDetectedPhishingSite) {
@@ -24,6 +25,8 @@ const start = () => {
   if (isDetectedCookieMarketingSite) {
     initializeCookieHandlerSteam();
   }
+
+  initCashtag();
 
   if (shouldInjectProvider()) {
     initStreams();

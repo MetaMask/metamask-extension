@@ -375,6 +375,7 @@ describe('CriticalStartupErrorHandler', () => {
             error,
             criticalErrorType: CriticalErrorType.InaccessibleDatabase,
             currentLocale: 'en',
+            theme: 'light',
             repairAction: CriticalErrorRepairAction.Recover,
           },
         },
@@ -387,6 +388,7 @@ describe('CriticalStartupErrorHandler', () => {
         error,
         {
           currentLocale: 'en',
+          theme: 'light',
           port,
           criticalErrorType: CriticalErrorType.InaccessibleDatabase,
           repairActionFromBackground: CriticalErrorRepairAction.Recover,
@@ -408,6 +410,7 @@ describe('CriticalStartupErrorHandler', () => {
           params: {
             error: { message: 'startup error', name: 'Error', stack: '' },
             currentLocale: 'en',
+            theme: 'dark',
           },
         },
       });
@@ -419,6 +422,7 @@ describe('CriticalStartupErrorHandler', () => {
         { message: 'startup error', name: 'Error', stack: '' },
         {
           currentLocale: 'en',
+          theme: 'dark',
           port,
           criticalErrorType: CriticalErrorType.GeneralStartupError,
           backgroundCaptureAttempted: true,

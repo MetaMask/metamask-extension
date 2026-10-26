@@ -21,17 +21,10 @@ import {
   isPersistedMoneyBalanceUsable,
   selectLastKnownMoneyBalance,
 } from '../../ducks/money-balance/selectors';
-import { selectMoneyVaultApyRemoteConfig } from '../../selectors/money/money-account-feature-flags';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
+import { useMoneyVaultApy } from './useMoneyVaultApy';
 
 const DEFAULT_REFETCH_INTERVAL = 30 * 1000; // 30 seconds
-const FIVE_MINUTES_MS = 5 * 60 * 1000;
-
-/** Percentage points per unit of a decimal rate. */
-const PERCENT = 100;
-
-/** Decimal places the APY percentage is presented to. */
-const APY_PERCENT_DP = 1;
 
 export type UseMoneyAccountBalanceResult = {
   moneyBalanceQuery: UseQueryResult<CanonicalMoneyAccountBalanceResponse>;
@@ -81,9 +74,6 @@ export function useMoneyAccountBalance({
   const moneyAccountAddress = primaryMoneyAccount?.address;
 
   const lastKnownBalance = useSelector(selectLastKnownMoneyBalance);
-  const { vaultApyFallback, vaultApyOverride } = useSelector(
-    selectMoneyVaultApyRemoteConfig,
-  );
 
   const hasAddress = Boolean(moneyAccountAddress);
 
@@ -99,11 +89,8 @@ export function useMoneyAccountBalance({
     refetchInterval,
   });
 
-  const vaultApyQuery = useQuery<NormalizedVaultApyResponse>({
-    queryKey: [MoneyAccountBalanceServiceQueryKeys.GET_VAULT_APY],
-    enabled: enabled && hasAddress,
-    refetchInterval: FIVE_MINUTES_MS,
-  });
+  const { vaultApyQuery, apyDecimal, apyPercent, apyPercentFormatted } =
+    useMoneyVaultApy({ enabled: enabled && hasAddress });
 
   /**
    * True while the balance query is loading with no cached data (even if stale).
@@ -129,19 +116,6 @@ export function useMoneyAccountBalance({
       { query: 'fetchBalanceWithFallback' },
     );
   }, [moneyBalanceQuery.error, moneyBalanceQuery.isError]);
-
-  useEffect(() => {
-    if (!vaultApyQuery.isError) {
-      clearReportedMoneyQueryError('getVaultApy');
-      return;
-    }
-    reportMoneyQueryErrorOnce(
-      'getVaultApy',
-      '[Money Account] Vault APY fetch failed',
-      vaultApyQuery.error,
-      { query: 'getVaultApy' },
-    );
-  }, [vaultApyQuery.error, vaultApyQuery.isError]);
 
   const refetchBalance = useCallback(
     () =>
@@ -239,30 +213,6 @@ export function useMoneyAccountBalance({
   )
     ? lastKnownBalance.value
     : undefined;
-
-  const serviceApy = vaultApyQuery.data?.apy;
-
-  // Override always wins when set; otherwise use the live service value, then
-  // the configured fallback so projected earnings remain available on load.
-  const apyDecimal = vaultApyOverride ?? serviceApy ?? vaultApyFallback;
-
-  const apyPercent =
-    apyDecimal === undefined
-      ? undefined
-      : // `.toString()` because `bignumber.js@4` throws on a *number* argument
-        // with more than 15 significant digits, and live service APYs carry
-        // full float precision (e.g. 0.06632893279913232). Strings are exempt.
-        new BigNumber(apyDecimal.toString())
-          .times(PERCENT)
-          // `round(dp, rm)`, not mobile's `dp(dp, rm)`: in `bignumber.js@4`
-          // `decimalPlaces`/`dp` is a getter that ignores both arguments and
-          // returns the decimal-place *count* — it would silently yield a
-          // nonsense percentage rather than failing.
-          .round(APY_PERCENT_DP, BigNumber.ROUND_HALF_UP)
-          .toNumber();
-
-  const apyPercentFormatted =
-    apyPercent === undefined ? undefined : `${apyPercent}%`;
 
   return {
     moneyBalanceQuery,

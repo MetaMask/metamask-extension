@@ -21,8 +21,8 @@ export const PerpsBalanceActionsSkeleton = () => {
 
       {/* Action Buttons Skeleton */}
       <Box flexDirection={BoxFlexDirection.Row} gap={3} marginTop={4}>
-        <Skeleton className="h-12 flex-1 rounded-lg" />
-        <Skeleton className="h-12 flex-1 rounded-lg" />
+        <Skeleton className="h-12 flex-1 rounded-full" />
+        <Skeleton className="h-12 flex-1 rounded-full" />
       </Box>
     </Box>
   );

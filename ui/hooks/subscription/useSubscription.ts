@@ -217,8 +217,11 @@ export const useCancelSubscription = (subscription?: Subscription) => {
       }
 
       const subscriptionId = subscription.id;
-      const cancelAtPeriodEnd =
-        cancelType === CANCEL_TYPES.ALLOWED_AT_PERIOD_END;
+      // Missing cancelType defaults to period-end cancellation, matching the
+      // cancel modal's default copy. cancelType is optional since
+      // subscription-controller@10 (required again in the type here only
+      // because the UI compiles against v8).
+      const cancelAtPeriodEnd = cancelType !== CANCEL_TYPES.ALLOWED_IMMEDIATE;
 
       await dispatch(cancelSubscription({ subscriptionId, cancelAtPeriodEnd }));
       trackMembershipCancelledEvent('succeeded');
@@ -237,7 +240,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
     useSubscriptionMetrics();
 
   const trackSubscriptionUncancelRequestEvent = useCallback(
-    (status: 'completed' | 'failed', errorMessage?: string) => {
+    (status: 'succeeded' | 'failed', error?: string) => {
       if (!subscription) {
         return;
       }
@@ -251,8 +254,8 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
         billingInterval: subscription.interval,
         cryptoPaymentChain,
         cryptoPaymentCurrency,
-        requestStatus: status,
-        errorMessage,
+        status,
+        error,
       });
     },
     [captureShieldSubscriptionRestartRequestEvent, subscription],
@@ -265,7 +268,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
         return;
       }
       await dispatch(unCancelSubscription({ subscriptionId }));
-      trackSubscriptionUncancelRequestEvent('completed');
+      trackSubscriptionUncancelRequestEvent('succeeded');
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';

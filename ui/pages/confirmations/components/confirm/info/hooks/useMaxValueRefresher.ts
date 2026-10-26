@@ -108,8 +108,11 @@ export const useMaxValueRefresher = () => {
       return;
     }
 
+    // Keep the transaction type so a send to a contract recipient remains a
+    // simple send rather than becoming a contract interaction.
     dispatch(
       updateEditableParams(transactionMeta.id, {
+        updateType: false,
         value: remainingBalance.toPrefixedHexString(),
       }),
     );

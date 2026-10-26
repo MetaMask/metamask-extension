@@ -108,9 +108,10 @@ class BridgeQuotePage {
 
   private quoteOption = '.bridge-quote-option';
 
-  private quotesModal = '.quotes-modal';
+  private quotesModal = '[data-testid="quotes-modal"]';
 
-  private quotesModalBackButton = '.quotes-modal [aria-label="Back"]';
+  private quotesModalBackButton =
+    '[data-testid="quotes-modal"] [aria-label="Back"]';
 
   private quotesModalTitle = {
     css: this.quotesModal,
@@ -238,6 +239,13 @@ class BridgeQuotePage {
     console.log('Network fee is displayed');
   }
 
+  async checkExpectedNetworkFeeIsNotDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.networkFees, {
+      waitAtLeastGuard: 1000,
+    });
+    console.log('Network fee is not displayed');
+  }
+
   async checkGasIncludedIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.gasIncludedIndicator);
@@ -259,13 +267,11 @@ class BridgeQuotePage {
   }
 
   async checkInsufficientFundsButtonIsDisplayed(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.insufficientFundsButton);
-    } catch (e) {
-      console.log(`Expected button "Insufficient funds" is not present`);
-      throw e;
-    }
-    console.log('The button "Insufficient funds" is displayed');
+    await this.driver.waitForSelector(this.insufficientFundsButton);
+    await this.driver.waitForSelector(this.submitButton, {
+      state: 'disabled',
+    });
+    console.log('The disabled button "Insufficient funds" is displayed');
   }
 
   async checkMoreETHneededIsDisplayed(): Promise<void> {
@@ -520,7 +526,9 @@ class BridgeQuotePage {
     }
 
     // QTY
-    await this.driver.fill(this.sourceAmount, quote.amount);
+    // This controlled input filters keyboard events. Paste through its
+    // dedicated handler so decimal values update bridge state reliably.
+    await this.driver.pasteIntoField(this.sourceAmount, quote.amount);
     await this.driver.assertElementNotPresent(this.fetchingQuotesLabel, {
       waitAtLeastGuard: 500,
     });
@@ -655,11 +663,22 @@ class BridgeQuotePage {
   async selectDestToken(token: string): Promise<void> {
     await this.driver.waitForSelector(this.destinationAssetPickerButton);
     await this.driver.clickElement(this.destinationAssetPickerButton);
-    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    await this.driver.clickElementAndWaitToDisappear({
+    await this.driver.waitForSelector(this.assetPrickerSearchInput);
+    const tokenSelector = {
       text: token,
       css: this.tokenButton,
+    };
+    const tokenIsVisible = await this.driver.isElementPresentAndVisible(
+      tokenSelector,
+      1000,
+    );
+    if (!tokenIsVisible) {
+      await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
+    }
+    await this.driver.waitForElementToStopMoving({
+      ...tokenSelector,
     });
+    await this.driver.clickElementAndWaitToDisappear(tokenSelector);
   }
 
   async selectNetwork(network: string): Promise<void> {

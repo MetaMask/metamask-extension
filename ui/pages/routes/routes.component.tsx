@@ -13,7 +13,6 @@ import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
@@ -64,6 +63,7 @@ import {
   TOKEN_MANAGEMENT_ROUTE,
   DISCOVER_SEARCH_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
+  IMPORT_NFTS_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_DETAILS_ROUTE,
@@ -88,9 +88,12 @@ import {
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
   SYNC_ACCOUNTS_ROUTE,
+  MFA_FLOW_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
+import { isMfaKitEnabled } from '../../hooks/identity/mfa';
+import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -103,7 +106,6 @@ import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
-  hideImportNftsModal,
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
@@ -157,6 +159,7 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
+import { ALLOWED_CAPABILITIES as ASSET_ROUTE_ALLOWED_CAPABILITIES } from '../asset/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
 import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
@@ -181,6 +184,7 @@ const RevealSeedConfirmation = mmLazy(
 );
 const Settings = mmLazy(() => import('../settings/index.ts'));
 const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
+const MfaFlowHost = mmLazy(() => import('../mfa/mfa-flow-host.tsx'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
@@ -189,6 +193,7 @@ const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
 const CustomTokenImportPage = mmLazy(
   () => import('../custom-token-import/index.ts'),
 );
+const ImportNftsPage = mmLazy(() => import('../import-nfts/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -258,6 +263,9 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
+export const PageNotFound = mmLazy(
+  () => import('../../components/app/page-not-found/page-not-found.tsx'),
+);
 const BasicFunctionalityOff = mmLazy(
   () =>
     import('../basic-functionality-required/basic-functionality-required.tsx'),
@@ -337,6 +345,10 @@ export const CustomTokenImportFeatureRoute = () => {
   return <CustomTokenImportPage />;
 };
 
+export const ImportNftsFeatureRoute = () => {
+  return <ImportNftsPage />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -407,16 +419,12 @@ export const routeConfig = [
         ),
       },
       {
-        path: DISCOVER_SEARCH_ROUTE,
-        element: (
-          <GlobalMenuRouteTransition>
-            <DiscoverSearchFeatureRoute />
-          </GlobalMenuRouteTransition>
-        ),
-      },
-      {
         path: CUSTOM_TOKEN_IMPORT_ROUTE,
         element: <CustomTokenImportFeatureRoute />,
+      },
+      {
+        path: IMPORT_NFTS_ROUTE,
+        element: <ImportNftsFeatureRoute />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
@@ -431,6 +439,14 @@ export const routeConfig = [
             {
               path: SYNC_ACCOUNTS_ROUTE,
               element: <SyncAccounts />,
+            },
+          ]
+        : []),
+      ...(isMfaKitEnabled()
+        ? [
+            {
+              path: MFA_FLOW_ROUTE,
+              element: <MfaFlowHost />,
             },
           ]
         : []),
@@ -486,10 +502,11 @@ export const routeConfig = [
         path: ASSET_SECURITY_TRUST_ROUTE,
         element: <SecurityTrustPage />,
       },
-      {
+      createRouteWithMessenger({
         path: ASSET_DETAILS_ROUTE,
+        capabilities: ASSET_ROUTE_ALLOWED_CAPABILITIES,
         element: <Asset />,
-      },
+      }),
       {
         path: PERMISSIONS,
         element: (
@@ -567,6 +584,14 @@ export const routeConfig = [
       {
         element: <RequireBasicFunctionality />,
         children: [
+          {
+            path: DISCOVER_SEARCH_ROUTE,
+            element: (
+              <GlobalMenuRouteTransition>
+                <DiscoverSearchFeatureRoute />
+              </GlobalMenuRouteTransition>
+            ),
+          },
           {
             path: '/notifications/settings',
             element: <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />,
@@ -722,6 +747,12 @@ export const routeConfig = [
       },
     ],
   },
+  // Unmatched hashes stay in the address bar so route metrics still see them,
+  // and render the missing-page screen instead of the crash page.
+  {
+    path: '*',
+    element: <PageNotFound />,
+  },
 ];
 
 export default function Routes() {
@@ -761,9 +792,6 @@ export default function Routes() {
   );
   const isDeprecatedNetworkModalOpen = useAppSelector(
     (state) => state.appState.deprecatedNetworkModalOpen,
-  );
-  const isImportNftsModalOpen = useAppSelector(
-    (state) => state.appState.importNftsModal.open,
   );
   const isIpfsModalOpen = useAppSelector(
     (state) => state.appState.showIpfsModalOpen,
@@ -906,16 +934,13 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
+      {isUnlocked && isMfaKitEnabled() ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}
       <Alert visible={alertOpen} msg={alertMessage} />
 
       <NetworkConfirmationPopover />
-      {isImportNftsModalOpen ? (
-        <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
-      ) : null}
-
       {isIpfsModalOpen ? (
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}

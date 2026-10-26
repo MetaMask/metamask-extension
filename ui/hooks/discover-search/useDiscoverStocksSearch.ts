@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { fetchRwas, type TrendingAsset } from '@metamask/assets-controllers';
+import {
+  fetchRwas,
+  type RwaToken,
+  type TokenSecurityData,
+  type TrendingAsset,
+} from '@metamask/assets-controllers';
 
 import {
   DISCOVER_SEARCH_GC_TIME_MS,
@@ -34,9 +39,11 @@ type StocksSearchPage = {
   };
 };
 
-const normalizeRwaToken = (
-  token: Awaited<ReturnType<typeof fetchRwas>>['data'][number],
-): TrendingAsset => ({
+type RwaTokenWithSecurityData = RwaToken & {
+  securityData?: TokenSecurityData;
+};
+
+const normalizeRwaToken = (token: RwaTokenWithSecurityData): TrendingAsset => ({
   assetId: token.assetId,
   symbol: token.symbol,
   name: token.name,
@@ -46,6 +53,7 @@ const normalizeRwaToken = (
   marketCap: token.rwaData.marketCap,
   priceChangePct: { h24: token.rwaData.priceChange },
   rwaData: token.rwaData as unknown as TrendingAsset['rwaData'],
+  securityData: token.securityData,
 });
 
 /**
@@ -83,6 +91,7 @@ export const useDiscoverStocksSearch = ({
         sortBy: 'price_change_desc',
         limit: DISCOVER_SEARCH_PAGE_SIZE,
         after: pageParam,
+        includeTokenSecurityData: true,
       });
 
       const data = response.data.map(normalizeRwaToken);

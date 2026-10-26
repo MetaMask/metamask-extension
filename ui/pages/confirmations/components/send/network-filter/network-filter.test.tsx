@@ -243,7 +243,11 @@ describe('NetworkFilter', () => {
     );
 
     expect(getByTestId('send-network-filter-toggle')).toBeInTheDocument();
-    expect(getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
+    expect(
+      getByText(
+        `${messages.network.message}: ${messages.networkNameEthereum.message}`,
+      ),
+    ).toBeInTheDocument();
     expect(getByTestId('icon-filter')).toBeInTheDocument();
   });
 
@@ -403,7 +407,9 @@ describe('NetworkFilter', () => {
         />,
       );
 
-      expect(getByText('Custom Catalog Network')).toBeInTheDocument();
+      expect(
+        getByText(`${messages.network.message}: Custom Catalog Network`),
+      ).toBeInTheDocument();
 
       fireEvent.click(getByTestId('send-network-filter-toggle'));
 
@@ -432,7 +438,9 @@ describe('NetworkFilter', () => {
       );
 
       expect(
-        getByText(messages.networkNameEthereum.message),
+        getByText(
+          `${messages.network.message}: ${messages.networkNameEthereum.message}`,
+        ),
       ).toBeInTheDocument();
       expect(queryByText('Token Supplied Name')).not.toBeInTheDocument();
     });

@@ -30,6 +30,7 @@
     "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "consentDecisionMade": true,
     "eventQueue": "object",
+    "eventsConfig": "object",
     "marketingCampaignCookieId": null,
     "marketingConsentDecisionMade": "boolean",
     "optedIn": true,
@@ -63,6 +64,7 @@
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
+    "moneyEarnBannerDismissedTokenKeys": "object",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -138,8 +140,9 @@
   "ConfigRegistryController": {
     "configs": "object",
     "etag": null,
+    "eventsConfigEtag": null,
     "lastFetched": null,
-    "version": null
+    "version": "0"
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
@@ -176,7 +179,6 @@
     "vault": "string"
   },
   "LoggingController": { "logs": "object" },
-  "MetaMetricsController": "object",
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
@@ -192,11 +194,6 @@
     "allIgnoredAssets": "object",
     "assetsMetadata": "object"
   },
-  "MultichainAssetsRatesController": {
-    "conversionRates": "object",
-    "historicalPrices": "object"
-  },
-  "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "cryptocurrencies": ["btc", "sol"],
@@ -252,6 +249,7 @@
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
     "hasSeenOnboardingCompletionPage": true,
+    "onboardingJourneyEnded": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
@@ -411,8 +409,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": { "tokensChainsCache": {} },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},

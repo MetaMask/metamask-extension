@@ -19,10 +19,20 @@ import { LedgerDmkBridgeHandler } from './ledger-dmk-handler';
 
 // Mock the transport factory (virtual: ESM-only package has no CJS export for Jest)
 const mockListenToAvailableDevices = jest.fn();
-const mockWebHidTransportFactory: jest.Mock = jest.fn(() => ({
-  listenToAvailableDevices: mockListenToAvailableDevices,
-  startDiscovering: jest.fn(),
-}));
+// Transports created by the factory, in creation order. `destroy()` mirrors
+// `WebHidTransport.destroy()`, which aborts the `navigator.hid` listeners the
+// transport registers in its constructor.
+type MockTransport = { destroy: jest.Mock };
+let mockTransports: MockTransport[] = [];
+const mockWebHidTransportFactory: jest.Mock = jest.fn(() => {
+  const transport = {
+    listenToAvailableDevices: mockListenToAvailableDevices,
+    startDiscovering: jest.fn(),
+    destroy: jest.fn(),
+  };
+  mockTransports.push(transport);
+  return transport;
+});
 jest.mock(
   '@ledgerhq/device-transport-kit-web-hid',
   () => ({
@@ -45,18 +55,31 @@ const mockBridgeConnect = jest.fn();
 const mockBridgeStartDiscovering = jest.fn();
 let mockOnSessionStateChangeSubject = new Subject<{ connected: boolean }>();
 
-const createMockBridge = () => ({
-  destroy: mockBridgeDestroy,
-  getAppNameAndVersion: mockBridgeGetAppNameAndVersion,
-  getAppConfiguration: mockBridgeGetAppConfiguration,
-  getPublicKey: mockBridgeGetPublicKey,
-  deviceSignTransaction: mockBridgeDeviceSignTransaction,
-  deviceSignMessage: mockBridgeDeviceSignMessage,
-  deviceSignTypedData: mockBridgeDeviceSignTypedData,
-  connect: mockBridgeConnect,
-  startDiscovering: mockBridgeStartDiscovering,
-  onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
-});
+/**
+ * Builds a mock bridge, invoking the injected transport factory the way the
+ * real `LedgerDmkBridge` does via `DeviceManagementKitBuilder.addTransport()`.
+ * The handler relies on that call to capture the transport for teardown.
+ *
+ * @param opts - The constructor options the handler passed to the bridge.
+ * @param opts.transportFactory - The wrapped WebHID transport factory.
+ */
+const createMockBridge = (opts?: {
+  transportFactory?: (deps?: unknown) => unknown;
+}) => {
+  opts?.transportFactory?.({});
+  return {
+    destroy: mockBridgeDestroy,
+    getAppNameAndVersion: mockBridgeGetAppNameAndVersion,
+    getAppConfiguration: mockBridgeGetAppConfiguration,
+    getPublicKey: mockBridgeGetPublicKey,
+    deviceSignTransaction: mockBridgeDeviceSignTransaction,
+    deviceSignMessage: mockBridgeDeviceSignMessage,
+    deviceSignTypedData: mockBridgeDeviceSignTypedData,
+    connect: mockBridgeConnect,
+    startDiscovering: mockBridgeStartDiscovering,
+    onSessionStateChange: mockOnSessionStateChangeSubject.asObservable(),
+  };
+};
 
 jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
   LedgerDmkBridge: jest.fn(),
@@ -117,7 +140,21 @@ describe('LedgerDmkBridgeHandler', () => {
       { vendorId: Number(LEDGER_USB_VENDOR_ID) },
     ]);
     mockOnSessionStateChangeSubject = new Subject();
-    (LedgerDmkBridge as jest.Mock).mockImplementation(() => createMockBridge());
+    mockTransports = [];
+    // `clearAllMocks()` clears calls but not implementations, and the Jest
+    // config only sets `restoreMocks` (which covers spies, not `jest.fn()`).
+    // Reset explicitly so a persistent `mockImplementation` in one test cannot
+    // leak into the next.
+    mockBridgeDestroy.mockReset();
+    (LedgerDmkBridge as jest.Mock).mockImplementation((opts) =>
+      createMockBridge(opts),
+    );
+    // Default to a permitted Ledger device so the cached-bridge liveness
+    // check in ensureBridge() (see the stale-bridge tests below) keeps the
+    // bridge cached in existing tests; individual tests override as needed.
+    mockHidGetDevices.mockResolvedValue([
+      { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+    ]);
     mockListenToAvailableDevices.mockReturnValue(
       of([{ name: 'MockLedgerDevice' }]),
     );
@@ -232,7 +269,7 @@ describe('LedgerDmkBridgeHandler', () => {
       expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
     });
 
-    it('wraps non-Error discovery failures as HardwareWalletError without JSON.stringify', async () => {
+    it('wraps non-Error discovery failures as HardwareWalletError with a JSON-stringified message', async () => {
       mockBridgeStartDiscovering.mockReturnValue(
         throwError(() => ({ nested: { circular: true } })),
       );
@@ -242,7 +279,7 @@ describe('LedgerDmkBridgeHandler', () => {
       ).rejects.toMatchObject({
         name: 'HardwareWalletError',
         code: ErrorCode.Unknown,
-        message: '[object Object]',
+        message: JSON.stringify({ nested: { circular: true } }),
       });
     });
 
@@ -1017,6 +1054,515 @@ describe('LedgerDmkBridgeHandler', () => {
 
       consoleErrorSpy.mockRestore();
       consoleLogSpy.mockRestore();
+    });
+
+    it('does not let a discarded in-flight bridge overwrite the live permitted-device snapshot', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const consoleLogSpy = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+
+      const deviceA = { vendorId: Number(LEDGER_USB_VENDOR_ID) };
+      const deviceB = { vendorId: Number(LEDGER_USB_VENDOR_ID) };
+      const deviceStale = { vendorId: Number(LEDGER_USB_VENDOR_ID) };
+      mockHidGetDevices.mockResolvedValue([deviceA]);
+
+      // Start construction A, paused at connect().
+      let resolveFirstConnect: ((sessionId: string) => void) | undefined;
+      mockBridgeConnect.mockImplementationOnce(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveFirstConnect = resolve;
+          }),
+      );
+      const firstAction = handler.handleAction(LedgerAction.makeApp);
+      firstAction.catch(() => undefined);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveFirstConnect).toBeDefined();
+
+      // Retire construction A mid-flight.
+      handler.forceReset();
+
+      // Construction B completes and becomes the live bridge, snapshotting deviceB.
+      mockHidGetDevices.mockResolvedValue([deviceB]);
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+
+      // Finish discarded construction A while a *different* device set is
+      // permitted. Its snapshot must not be published over bridge B's.
+      mockHidGetDevices.mockResolvedValue([deviceStale]);
+      resolveFirstConnect?.('orphan-session-id');
+      await expect(firstAction).rejects.toMatchObject({
+        code: ErrorCode.DeviceInvalidSession,
+      });
+
+      // Bridge B is still healthy: its device is permitted, so the liveness
+      // check must reuse it rather than tear it down against deviceStale.
+      mockHidGetDevices.mockResolvedValue([deviceB]);
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(2);
+      // Only the orphaned construction A was destroyed.
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+
+      consoleErrorSpy.mockRestore();
+      consoleLogSpy.mockRestore();
+    });
+  });
+
+  describe('stale bridge / permission revocation', () => {
+    let handler: LedgerDmkBridgeHandler;
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      handler = new LedgerDmkBridgeHandler();
+      // Liveness-check failures are logged; silence for deterministic output.
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+    });
+
+    afterEach(async () => {
+      consoleErrorSpy.mockRestore();
+      await handler.destroy();
+    });
+
+    it('reuses the cached bridge when a permitted Ledger device is still present', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+      await handler.handleAction(LedgerAction.makeApp);
+
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(1);
+      expect(mockBridgeDestroy).not.toHaveBeenCalled();
+    });
+
+    it('tears down and rebuilds the bridge when the WebHID permission grant is revoked', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+      expect(mockBridgeDestroy).not.toHaveBeenCalled();
+
+      // Simulate the user revoking the WebHID permission grant (e.g. via
+      // chrome://settings): the device disappears from getDevices() without
+      // any native disconnect event firing.
+      mockHidGetDevices.mockResolvedValue([]);
+
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // The stale bridge was torn down and a fresh one constructed.
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(2);
+    });
+
+    it('tears down and rebuilds the bridge when permission is revoked then re-granted', async () => {
+      const deviceA = { vendorId: Number(LEDGER_USB_VENDOR_ID) };
+      mockHidGetDevices.mockResolvedValue([deviceA]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+      expect(mockBridgeDestroy).not.toHaveBeenCalled();
+
+      // Re-grant returns a new HIDDevice with the same vendor ID.
+      const deviceB = { vendorId: Number(LEDGER_USB_VENDOR_ID) };
+      mockHidGetDevices.mockResolvedValue([deviceB]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // The bridge must be rebuilt for the new device.
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not tear down a replacement bridge when a stale liveness result resolves false', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      // Cache bridge A.
+      await handler.handleAction(LedgerAction.makeApp);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+
+      // Pause the liveness check while replacing bridge A.
+      let resolveGetDevices!: (devices: { vendorId: number }[]) => void;
+      mockHidGetDevices.mockImplementationOnce(
+        () =>
+          new Promise<{ vendorId: number }[]>((resolve) => {
+            resolveGetDevices = resolve;
+          }),
+      );
+
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      // One call captures bridge A; the second is the pending check.
+      expect(mockHidGetDevices).toHaveBeenCalledTimes(2);
+      expect(resolveGetDevices).toBeDefined();
+
+      // Replace bridge A with bridge B.
+      mockOnSessionStateChangeSubject.next({ connected: false });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+
+      const action2Promise = handler.handleAction(LedgerAction.makeApp);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+
+      // Bridge A's stale result must not destroy bridge B.
+      resolveGetDevices?.([]);
+
+      await expect(actionPromise).resolves.toBe(true);
+      await expect(action2Promise).resolves.toBe(true);
+
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(2);
+      // Only bridge A was destroyed.
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('rebuilds immediately on permission revocation even if the stale bridge hangs on destroy()', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+
+      // A permission-revoked WebHID device is the case most likely to hang
+      // on close (its `destroy()` can stall until the transport's own read
+      // timeout). Simulate that by never resolving the first bridge's
+      // destroy() call.
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      // Simulate the user revoking the WebHID permission grant.
+      mockHidGetDevices.mockResolvedValue([]);
+      mockBridgeConnect.mockResolvedValueOnce('rebuilt-session-id');
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      // ensureBridge() must not await the hung destroy() — it should clear
+      // the stale bridge synchronously and reconstruct right away instead of
+      // stalling until destroy() (or its underlying read timeout) settles.
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(2);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(2);
+
+      resolveDestroy?.();
+    });
+
+    it('keeps the cached bridge when the liveness check throws (fail open)', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+
+      mockHidGetDevices.mockRejectedValue(new Error('getDevices blew up'));
+
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // Inconclusive check → cached bridge must survive untouched.
+      expect(mockBridgeDestroy).not.toHaveBeenCalled();
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+      expect(mockBridgeConnect).toHaveBeenCalledTimes(1);
+      expect(mockBridgeGetAppNameAndVersion).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not run the liveness check before any bridge is cached', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // One call captures devices. A liveness check would add another.
+      expect(mockHidGetDevices).toHaveBeenCalledTimes(1);
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // `bridge.destroy()` only calls `dmk.disconnect({ sessionId })`, and
+  // `dmk.close()` only closes device sessions. Neither destroys the transport,
+  // but `WebHidTransport` registers `navigator.hid` connect/disconnect
+  // listeners in its constructor that only `transport.destroy()` aborts. Every
+  // bridge rebuild therefore leaks a listener pair — and an orphaned
+  // transport's disconnect handler calls `close()` on the event's HIDDevice,
+  // which can be the *live* bridge's device — unless the handler destroys the
+  // transport itself.
+  describe('transport teardown', () => {
+    let handler: LedgerDmkBridgeHandler;
+    let consoleErrorSpy: jest.SpyInstance;
+
+    /**
+     * Builds a cached bridge via a first action.
+     */
+    async function connectBridge(): Promise<void> {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await handler.handleAction(LedgerAction.makeApp);
+    }
+
+    beforeEach(() => {
+      handler = new LedgerDmkBridgeHandler();
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('captures the transport the bridge creates', async () => {
+      await connectBridge();
+
+      expect(mockTransports).toHaveLength(1);
+      expect(mockTransports[0].destroy).not.toHaveBeenCalled();
+
+      await handler.destroy();
+    });
+
+    it('destroys the transport when the handler is destroyed', async () => {
+      await connectBridge();
+
+      await handler.destroy();
+
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('destroys the transport when the device disconnects', async () => {
+      await connectBridge();
+
+      mockOnSessionStateChangeSubject.next({ connected: false });
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('destroys the stale transport when the WebHID permission grant is revoked', async () => {
+      await connectBridge();
+
+      mockHidGetDevices.mockResolvedValue([]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // Stale transport destroyed; the replacement is left alive.
+      expect(mockTransports).toHaveLength(2);
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+      expect(mockTransports[1].destroy).not.toHaveBeenCalled();
+
+      await handler.destroy();
+    });
+
+    it('destroys the stale transport synchronously even if the bridge hangs on destroy()', async () => {
+      await connectBridge();
+
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        async () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      mockHidGetDevices.mockResolvedValue([]);
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await handler.handleAction(LedgerAction.makeApp);
+
+      // The HID listeners must be gone even though destroy() never settled.
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+
+      resolveDestroy?.();
+      await handler.destroy();
+    });
+
+    it('destroys the transport on forceReset', async () => {
+      await connectBridge();
+
+      handler.forceReset();
+
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('destroys the transport when construction fails', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      mockBridgeConnect.mockRejectedValueOnce(new Error('connect failed'));
+
+      await expect(
+        handler.handleAction(LedgerAction.makeApp),
+      ).rejects.toThrow();
+
+      // A failed construction must not leave an orphaned transport listening.
+      expect(mockTransports).toHaveLength(1);
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+    });
+
+    // The in-flight transport is not yet stored on `#bridgeTransport`, so
+    // `#clearBridgeState()` cannot abort it. If `destroyTransport` waited on
+    // `bridge.destroy()` — which hangs against a permission-revoked device —
+    // the transport's `navigator.hid` listeners would leak for the lifetime
+    // of the offscreen document.
+    it('destroys the transport without awaiting bridge.destroy() when construction fails', async () => {
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+      mockBridgeConnect.mockRejectedValueOnce(new Error('connect failed'));
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        async () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
+      actionPromise.catch(() => undefined);
+
+      // Let construction reach its failure path and hang on bridge.destroy().
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveDestroy).toBeDefined();
+
+      // Listeners must already be gone even though destroy() never settled.
+      expect(mockTransports).toHaveLength(1);
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+
+      resolveDestroy?.();
+      await expect(actionPromise).rejects.toThrow();
+    });
+
+    it('destroys the transport without awaiting bridge.destroy() when an in-flight bridge is discarded', async () => {
+      const consoleLogSpy = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
+
+      let resolveConnect: ((sessionId: string) => void) | undefined;
+      mockBridgeConnect.mockImplementationOnce(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveConnect = resolve;
+          }),
+      );
+
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
+      actionPromise.catch(() => undefined);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveConnect).toBeDefined();
+
+      // Retire the handler so the in-flight construction is orphaned.
+      await handler.destroy();
+
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        async () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      resolveConnect?.('orphan-session-id');
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(resolveDestroy).toBeDefined();
+
+      // The orphaned transport must be destroyed even though the orphaned
+      // bridge's destroy() is still hanging.
+      expect(mockTransports).toHaveLength(1);
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+
+      resolveDestroy?.();
+      await expect(actionPromise).rejects.toMatchObject({
+        code: ErrorCode.DeviceInvalidSession,
+      });
+      consoleLogSpy.mockRestore();
+    });
+
+    it('does not destroy the transport twice across repeated teardown', async () => {
+      await connectBridge();
+
+      await handler.destroy();
+      await handler.destroy();
+      handler.forceReset();
+
+      expect(mockTransports[0].destroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('swallows transport destroy failures', async () => {
+      await connectBridge();
+      mockTransports[0].destroy.mockImplementationOnce(() => {
+        throw new Error('destroy blew up');
+      });
+
+      await expect(handler.destroy()).resolves.toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[LedgerDMK] Error destroying transport',
+        expect.any(Error),
+      );
     });
   });
 });

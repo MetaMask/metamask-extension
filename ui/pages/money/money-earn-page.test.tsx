@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
@@ -12,10 +12,10 @@ import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
 import type { MoneyDepositToken } from '../../hooks/money/money-deposit-token-utils';
 import {
-  MoneyButtonIntent,
-  MoneyButtonType,
   MoneyComponentName,
   MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
 } from './constants/money-events';
 import { MoneyEarnPage } from './money-earn-page';
 
@@ -150,10 +150,11 @@ describe('MoneyEarnPage', () => {
     ).toHaveLength(6);
     expect(screen.getByText('Token 6')).toBeInTheDocument();
     expect(mockUseMoneyAddDepositToken).toHaveBeenCalledWith({
-      screenName: MoneyScreenName.MoneyEarnOnCrypto,
+      screenName: MoneyScreenName.MoneyPotentialEarnings,
+      tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
     });
     expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
-      screenName: MoneyScreenName.MoneyEarnOnCrypto,
+      screenName: MoneyScreenName.MoneyPotentialEarnings,
     });
   });
 
@@ -188,19 +189,45 @@ describe('MoneyEarnPage', () => {
     expect(mockHandleAddToken).toHaveBeenCalledWith(tokens[2], 2, 6);
   });
 
-  it('initiates a deposit without preferred token when Convert your crypto is clicked', () => {
+  it('adds the first eligible token when Convert your crypto is clicked', () => {
     renderWithLocalization(<MoneyEarnPage />);
 
     fireEvent.click(screen.getByTestId('money-earn-convert-cta'));
 
-    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith();
-    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.AddMoney,
-      componentName: MoneyComponentName.PotentialEarningsSectionFooter,
+    expect(mockHandleAddToken).toHaveBeenCalledTimes(1);
+    expect(mockHandleAddToken).toHaveBeenCalledWith(tokens[0], 0, 6, {
+      componentName: MoneyComponentName.ConvertCryptoButton,
       labelKey: 'moneyConvertYourCrypto',
-      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+  });
+
+  it('disables Convert your crypto when no token is eligible', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [createToken(1, { moneyFiatAmountUsd: 0 })],
+      isNoFeeToken: () => false,
+    });
+
+    renderWithLocalization(<MoneyEarnPage />);
+
+    const convertButton = screen.getByTestId('money-earn-convert-cta');
+    expect(convertButton).toBeDisabled();
+    fireEvent.click(convertButton);
+    expect(mockHandleAddToken).not.toHaveBeenCalled();
+  });
+
+  it('tracks the projected earnings tooltip from the view header', async () => {
+    renderWithLocalization(<MoneyEarnPage />);
+
+    await act(async () => {
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-potential-earnings-projection-trigger'),
+      );
+    });
+
+    expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.PotentialEarningsViewHeader,
     });
   });
 });

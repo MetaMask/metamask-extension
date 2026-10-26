@@ -65,6 +65,7 @@ import {
   getAnalyticsId,
   getConsentDecisionMade,
   getOptedIn,
+  getPrivacyMode,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
@@ -93,6 +94,15 @@ import { isNativeAsset, type Asset } from '../types/asset';
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import { useMusdCtaVisibility } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
+import { MoneyEarnBanner } from '../../../components/app/money/money-earn-banner';
+import {
+  MoneyAssetOverviewBalanceApy,
+  MoneyAssetOverviewBalanceCta,
+  MoneyAssetOverviewBalanceCtaSkeleton,
+  MoneyAssetOverviewBalanceDescription,
+  MoneyAssetOverviewBalanceDescriptionSkeleton,
+} from '../../../components/app/money/money-asset-overview-balance-cta';
+import { useMoneyAssetOverviewBalanceCta } from '../../../hooks/money/use-money-asset-overview-ctas';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
@@ -244,7 +254,7 @@ const AssetPage = ({
     return '';
   }, [shouldShowContractAddress, isEvm, tokenAddress, address]);
 
-  const { currentPrice } = useCurrentPrice(asset);
+  const { currentPrice, marketData } = useCurrentPrice(asset);
 
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
@@ -322,7 +332,11 @@ const AssetPage = ({
     },
   };
 
-  const resolvedAssetId = (bip44Asset?.assetId ?? assetId) as CaipAssetType;
+  // Prefer the route/computed CAIP id so Stellar activation and spendable-balance
+  // lookups still work when the asset is not yet in the account group (empty assetId).
+  const resolvedAssetId = (caipAssetId ||
+    bip44Asset?.assetId ||
+    assetId) as CaipAssetType;
 
   const isAssetInactive = useSelector((state) =>
     getIsAssetRequireActivate(state, {
@@ -371,6 +385,7 @@ const AssetPage = ({
       rwaData,
     ],
   );
+  const privacyMode = useSelector(getPrivacyMode);
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
@@ -413,6 +428,11 @@ const AssetPage = ({
       isMusdFlowEnabled,
     [type, isEvm, asset, isMusdFlowEnabled],
   );
+  const isYourBalanceSectionShown = !isMusdAssetPage && !showSpendableBalance;
+  const moneyBalanceCta = useMoneyAssetOverviewBalanceCta(tokenWithFiatAmount, {
+    enabled: isYourBalanceSectionShown,
+  });
+  const moneyBalanceDisplay = moneyBalanceCta.display;
 
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
   const handleOpenMarketClosedModal = useCallback(() => {
@@ -514,12 +534,16 @@ const AssetPage = ({
             />
           ) : null}
         </MaybePerpsViewStreamBoundary>
+        <MoneyEarnBanner
+          key={`${chainId}:${address}`}
+          token={tokenWithFiatAmount}
+        />
         <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
           {showTronResources && (
             <Box>
               <TronDailyResources
                 account={selectedAccount}
-                chainId={chainId}
+                chainId={caipChainId}
                 t={t}
               />
               <Box
@@ -552,7 +576,7 @@ const AssetPage = ({
               fiatValue={showFiat ? tokenFiatAmount : null}
             />
           ) : null}
-          {!isMusdAssetPage && !showSpendableBalance ? (
+          {isYourBalanceSectionShown ? (
             <>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -560,13 +584,42 @@ const AssetPage = ({
               >
                 {t('yourBalance')}
               </Text>
+              {moneyBalanceDisplay ? (
+                <MoneyAssetOverviewBalanceDescription
+                  tokenSymbol={symbol}
+                  apyPercent={moneyBalanceDisplay.apyPercent}
+                  projectedEarnings={
+                    moneyBalanceDisplay.projectedEarningsFormatted
+                  }
+                  privacyMode={privacyMode}
+                  onTooltipOpen={moneyBalanceCta.onProjectionTooltipOpen}
+                />
+              ) : null}
+              {moneyBalanceCta.isLoading ? (
+                <MoneyAssetOverviewBalanceDescriptionSkeleton />
+              ) : null}
               {[AssetType.token, AssetType.native].includes(type) && (
                 <TokenCell
                   key={`${symbol}-${address}`}
                   token={tokenWithFiatAmount as TokenWithFiatAmount}
                   safeChains={safeChains}
+                  priceChangeOverride={
+                    moneyBalanceDisplay ? (
+                      <MoneyAssetOverviewBalanceApy
+                        apy={moneyBalanceDisplay.apyPercentFormatted}
+                      />
+                    ) : undefined
+                  }
                 />
               )}
+              {moneyBalanceDisplay ? (
+                <MoneyAssetOverviewBalanceCta
+                  onStartEarning={moneyBalanceCta.onStartEarning}
+                />
+              ) : null}
+              {moneyBalanceCta.isLoading ? (
+                <MoneyAssetOverviewBalanceCtaSkeleton />
+              ) : null}
             </>
           ) : null}
           {/* mUSD Conversion CTA - shows for eligible stablecoins */}
@@ -698,7 +751,11 @@ const AssetPage = ({
                 </Box>
               </Box>
             )}
-            <AssetMarketDetails asset={updatedAsset} address={address} />
+            <AssetMarketDetails
+              asset={updatedAsset}
+              address={address}
+              fallbackMarketData={marketData}
+            />
             <Box className="asset-page__divider" />
             <Box marginBottom={4}>
               <Text

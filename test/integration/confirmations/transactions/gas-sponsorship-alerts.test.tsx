@@ -198,7 +198,7 @@ describe('Gas sponsorship confirmation alerts', () => {
     expect(await screen.findByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('does not display the reserve-balance warning when the transaction is sponsored', async () => {
+  it('displays the reserve-balance warning when a sponsored transaction has a simulation violation', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -213,9 +213,7 @@ describe('Gas sponsorship confirmation alerts', () => {
       backgroundConnection: backgroundConnectionMocked,
     });
 
-    expect(
-      await screen.findByTestId('confirm-footer-button'),
-    ).toBeInTheDocument();
-    expect(screen.queryByTestId('inline-alert')).not.toBeInTheDocument();
+    expect(await screen.findByTestId('inline-alert')).toBeInTheDocument();
+    expect(await screen.findByTestId('confirm-footer-button')).toBeDisabled();
   });
 });

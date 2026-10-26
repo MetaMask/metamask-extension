@@ -44,7 +44,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly advancedGasFeeEdit: RawLocator =
     '[data-testid="advanced-gas-fee-edit"]';
 
-  private readonly advancedGasSet: RawLocator = { tag: 'p', text: 'Advanced' };
+  private readonly advancedGasSet: RawLocator = {
+    testId: 'gas-fee-details-speed',
+  };
 
   private readonly alertBanner: RawLocator =
     '[data-testid="confirm-banner-alert"]';

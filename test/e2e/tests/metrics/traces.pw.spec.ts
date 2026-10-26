@@ -43,7 +43,7 @@ pwTest.describe('Traces', () => {
       {
         driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             consentDecisionMade: true,
             optedIn: true,
           })
@@ -68,7 +68,7 @@ pwTest.describe('Traces', () => {
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               consentDecisionMade: true,
               optedIn: false,
             })
@@ -96,7 +96,7 @@ pwTest.describe('Traces', () => {
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               consentDecisionMade: true,
               optedIn: true,
             })
@@ -122,7 +122,7 @@ pwTest.describe('Traces', () => {
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               consentDecisionMade: true,
               optedIn: false,
             })

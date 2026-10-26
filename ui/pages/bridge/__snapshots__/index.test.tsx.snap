@@ -98,7 +98,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                 style="padding: 8px 11px 8px 8px; min-width: fit-content;"
               >
                 <div
-                  class="flex items-center gap-2"
+                  class="flex items-center gap-1"
                 >
                   <div
                     class="relative inline-flex self-start"
@@ -133,7 +133,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                     </div>
                   </div>
                   <label
-                    class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                    class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                   >
                     ETH
                   </label>
@@ -212,7 +212,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                   style="padding: 8px 11px 8px 8px; min-width: fit-content;"
                 >
                   <div
-                    class="flex items-center gap-2"
+                    class="flex items-center gap-1"
                   >
                     <div
                       class="relative inline-flex self-start"
@@ -247,7 +247,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       </div>
                     </div>
                     <label
-                      class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                      class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                     >
                       mUSD
                     </label>

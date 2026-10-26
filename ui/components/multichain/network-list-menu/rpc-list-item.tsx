@@ -73,7 +73,7 @@ const RpcListItem = ({
     >
       <Box>
         <Text
-          as="button"
+          as="span"
           padding={0}
           width={BlockSize.Full}
           color={name ? TextColor.textDefault : TextColor.textAlternative}

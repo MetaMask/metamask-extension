@@ -37,7 +37,7 @@ pwTest.describe('App Opened metric', () => {
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -64,7 +64,7 @@ pwTest.describe('App Opened metric', () => {
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: false,
@@ -90,7 +90,7 @@ pwTest.describe('App Opened metric', () => {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

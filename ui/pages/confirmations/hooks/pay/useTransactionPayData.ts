@@ -74,12 +74,19 @@ export function useTransactionPayIsPostQuote() {
 }
 
 export function useIsTransactionPayQuotePending() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, isAmountPending } =
+    useConfirmContext<TransactionMeta>();
   const isLoading = useIsTransactionPayLoading();
   const isPostQuote = useTransactionPayIsPostQuote();
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+
+  // The previous quote stays executable until the typed amount is committed.
+  // Keep quote rows loading so they do not show that amount and then correct it.
+  if (isAmountPending) {
+    return true;
+  }
 
   if (isPostQuoteWithdrawTransaction(currentConfirmation)) {
     if (isPerpsWithdrawTransaction(currentConfirmation)) {

@@ -17,6 +17,9 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useInAppBack } from '../../hooks/useInAppBack';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../hooks/useTrackOnce';
+import { MoneyScreenName } from './constants/money-events';
 import { MoneyFaqItem } from './components/money-faq-item';
 import { MoneySectionDivider } from './components/money-section-divider';
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
@@ -168,8 +171,9 @@ const MoneyHowItWorksContent = ({
 
       <div className="flex flex-col gap-3 px-4 py-5">
         <Text
-          variant={TextVariant.HeadingMd}
+          variant={TextVariant.HeadingSm}
           fontWeight={FontWeight.Bold}
+          color={TextColor.TextAlternative}
           data-testid="money-how-it-works-disclosures-title"
         >
           {t('moneyHowItWorksDisclosuresTitle')}
@@ -199,6 +203,14 @@ export function MoneyHowItWorksPage() {
     enabled: availability.isAvailable,
   });
   const apyDisplay = apyPercentFormatted ?? APY_FALLBACK;
+  const { trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHowItWorks,
+  });
+
+  useTrackOnce(
+    !isAvailabilityLoading && availability.isAvailable,
+    trackScreenViewed,
+  );
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);

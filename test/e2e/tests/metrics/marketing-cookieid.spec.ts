@@ -48,7 +48,7 @@ describe('Marketing cookieId', function (this: Suite) {
           customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -95,7 +95,7 @@ describe('Marketing cookieId', function (this: Suite) {
           customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -181,7 +181,7 @@ describe('Marketing cookieId', function (this: Suite) {
           customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

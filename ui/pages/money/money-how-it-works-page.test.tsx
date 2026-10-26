@@ -7,6 +7,9 @@ import {
   MONEY_HOME_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
+import { MoneyScreenName } from './constants/money-events';
 import { MoneyHowItWorksPage } from './money-how-it-works-page';
 
 const mockUseMoneyAccountAvailability = jest.fn();
@@ -31,10 +34,17 @@ jest.mock('../../hooks/money/useMoneyAccountBalance', () => ({
   useMoneyAccountBalance: () => mockUseMoneyAccountBalance(),
 }));
 
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+
 describe('MoneyHowItWorksPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseLocation.mockReturnValue({ key: 'ci9s3nlq' });
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
         isAvailable: true,
@@ -45,6 +55,26 @@ describe('MoneyHowItWorksPage', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyPercentFormatted: '4.2%',
     });
+  });
+
+  it('tracks the screen view once Money Account is available', () => {
+    renderWithLocalization(<MoneyHowItWorksPage />);
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyHowItWorks,
+    });
+    expect(mockMoneyAnalytics.trackScreenViewed).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not track the screen view while availability is resolving', () => {
+    mockUseMoneyAccountAvailability.mockReturnValue({
+      availability: { isAvailable: false },
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHowItWorksPage />);
+
+    expect(mockMoneyAnalytics.trackScreenViewed).not.toHaveBeenCalled();
   });
 
   it('redirects home when Money Account is unavailable', () => {

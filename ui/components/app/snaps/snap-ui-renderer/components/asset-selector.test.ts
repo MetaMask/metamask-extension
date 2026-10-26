@@ -1,107 +1,96 @@
+import { SolAccountType, SolScope } from '@metamask/keyring-api';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import { AssetSelector, Box, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
 
 describe('SnapUIAssetSelector', () => {
+  const solNativeAssetId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105';
+  const solUsdcAssetId =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+  const accountId = '8c33fc18-6c52-44b1-b8fa-550b934a05ef';
+
   const mockInternalAccount = {
+    selectedAccount: accountId,
     accounts: {
-      '8c33fc18-6c52-44b1-b8fa-550b934a05ef': {
+      [accountId]: {
         address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-        id: '8c33fc18-6c52-44b1-b8fa-550b934a05ef',
-        name: 'Solana Account',
-        keyring: {
-          type: 'Snap Keyring',
-        },
-      },
-    },
-  };
-
-  const mockBalances = {
-    '8c33fc18-6c52-44b1-b8fa-550b934a05ef': {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
-        amount: '1',
-        unit: 'SOL',
-      },
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-        {
-          amount: '2',
-          unit: 'USDC',
-        },
-    },
-  };
-
-  const mockAccountsAssets = {
-    ['8c33fc18-6c52-44b1-b8fa-550b934a05ef' as const]: [
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105' as const,
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' as const,
-    ],
-  };
-
-  const mockAssetsMetadata = {
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
-      fungible: true as const,
-      iconUrl:
-        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
-      name: 'Solana',
-      symbol: 'SOL',
-      units: [
-        {
-          decimals: 9,
-          name: 'Solana',
-          symbol: 'SOL',
-        },
-      ],
-    },
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-      {
-        fungible: true as const,
-        iconUrl:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-        name: 'USDC',
-        symbol: 'USDC',
-        units: [
-          {
-            decimals: 9,
-            name: 'USDC',
-            symbol: 'USDC',
+        id: accountId,
+        type: SolAccountType.DataAccount,
+        scopes: [SolScope.Mainnet],
+        methods: [],
+        options: {},
+        metadata: {
+          name: 'Solana Account',
+          keyring: {
+            type: 'Snap Keyring',
           },
-        ],
+        },
       },
+    },
   };
 
-  const mockConversionRates = {
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
-      conversionTime: 1745405595549,
-      currency: 'swift:0/iso4217:USD',
-      expirationTime: 1745409195549,
-      rate: '151.36',
-    },
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-      {
-        conversionTime: 1745405595549,
-        currency: 'swift:0/iso4217:USD',
-        expirationTime: 1745409195549,
-        rate: '1.00',
+  const mockAssetsBalance = {
+    [accountId]: {
+      [solNativeAssetId]: {
+        amount: '1',
       },
+      [solUsdcAssetId]: {
+        amount: '2',
+      },
+    },
+  };
+
+  const mockAssetsInfo: AssetsControllerState['assetsInfo'] = {
+    [solNativeAssetId]: {
+      type: 'native',
+      decimals: 9,
+      symbol: 'SOL',
+      name: 'Solana',
+      image:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+    },
+    [solUsdcAssetId]: {
+      type: 'token',
+      decimals: 9,
+      symbol: 'USDC',
+      name: 'USDC',
+      image:
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+    },
+  };
+
+  const mockAssetsPrice: AssetsControllerState['assetsPrice'] = {
+    [solNativeAssetId]: {
+      assetPriceType: 'fungible',
+      price: 151.36,
+      usdPrice: 151.36,
+      lastUpdated: 1745405595549,
+    },
+    [solUsdcAssetId]: {
+      assetPriceType: 'fungible',
+      price: 1,
+      usdPrice: 1,
+      lastUpdated: 1745405595549,
+    },
   };
 
   const mockState = {
     metamask: {
       internalAccounts: mockInternalAccount,
       accountIdByAddress: {
-        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv':
-          '8c33fc18-6c52-44b1-b8fa-550b934a05ef',
+        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv': accountId,
       },
-      balances: mockBalances,
-      accountsAssets: mockAccountsAssets,
-      assetsMetadata: mockAssetsMetadata,
-      conversionRates: mockConversionRates,
+      selectedCurrency: 'usd' as const,
+      assetsBalance: mockAssetsBalance,
+      assetsInfo: mockAssetsInfo,
+      assetsPrice: mockAssetsPrice,
     },
   };
 
   const mockInterfaceState = {
     'asset-selector': {
-      asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+      asset: solNativeAssetId,
       name: 'Solana',
       symbol: 'SOL',
     },

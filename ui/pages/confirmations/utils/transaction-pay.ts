@@ -141,6 +141,15 @@ export function getTokenAddress(
     return nestedCall.to;
   }
 
+  // Money Account deposit batches target the vault in `txParams.to` and keep
+  // the approve/deposit calls in `nestedTransactions`, so the parent `to` is
+  // never the destination token. Fall back to the required asset (mUSD)
+  // before the parent address. Matches mobile.
+  const requiredAssetAddress = transactionMeta?.requiredAssets?.[0]?.address;
+  if (requiredAssetAddress) {
+    return requiredAssetAddress;
+  }
+
   return transactionMeta?.txParams?.to as Hex;
 }
 

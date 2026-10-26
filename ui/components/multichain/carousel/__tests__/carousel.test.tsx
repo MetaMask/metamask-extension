@@ -240,9 +240,12 @@ describe('Carousel', () => {
       expected: { navigate: '/?openNetworkSelector=true' },
     },
     {
-      testName: 'deep link subdomain that resolves to an internal route',
-      linkUrl: 'https://links.link.metamask.io/home?openNetworkSelector=true',
-      expected: { navigate: '/?openNetworkSelector=true' },
+      testName: 'deep link subdomain that remains an external URL',
+      linkUrl: 'https://invalid.link.metamask.io/home?openNetworkSelector=true',
+      expected: {
+        openTab:
+          'https://invalid.link.metamask.io/home?openNetworkSelector=true',
+      },
     },
     {
       testName: 'deep link that resolves to a redirect URL',
