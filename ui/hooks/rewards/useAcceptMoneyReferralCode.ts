@@ -113,6 +113,17 @@ type UseAcceptMoneyReferralCodeResult = {
   /** True while a 429 `Retry-After` is still running. Accept stays disabled. */
   isAcceptCoolingDown: boolean;
   errorMessage: string;
+  /**
+   * Stable reason for the refusal currently on the sheet. Null while idle,
+   * after a clear, or once Accept starts again.
+   */
+  refusalReason: ReferralRefusalReason | null;
+  /**
+   * Clears the field error and {@link refusalReason}. Call when the typed
+   * code changes so a previous refusal does not outlive the code that caused
+   * it. A 429 wait is left in place.
+   */
+  clearError: () => void;
   accept: (code: string) => Promise<AcceptMoneyReferralCodeResult>;
 };
 
@@ -136,6 +147,8 @@ export function useAcceptMoneyReferralCode({
   const [isAccepting, setIsAccepting] = useState(false);
   const [isAcceptCoolingDown, setIsAcceptCoolingDown] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [refusalReason, setRefusalReason] =
+    useState<ReferralRefusalReason | null>(null);
   const isAcceptCoolingDownRef = useRef(false);
   const acceptCooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -164,11 +177,13 @@ export function useAcceptMoneyReferralCode({
   const noteRefusal = useCallback(
     (error: unknown): ReferralRefusalReason => {
       const failure = readRewardsMoneyHttpFailure(error);
+      const reason = getRegisterRefereeRefusalReason(error);
       setErrorMessage(getRegisterRefereeErrorMessage(error, t as Translate));
+      setRefusalReason(reason);
       if (failure.status === 429 && failure.retryAfterSeconds !== undefined) {
         startAcceptCooldown(failure.retryAfterSeconds);
       }
-      return getRegisterRefereeRefusalReason(error);
+      return reason;
     },
     [startAcceptCooldown, t],
   );
@@ -179,6 +194,7 @@ export function useAcceptMoneyReferralCode({
         return { accepted: false };
       }
       setErrorMessage('');
+      setRefusalReason(null);
       let validationError: string;
       try {
         validationError = await validateCode(code);
@@ -190,6 +206,7 @@ export function useAcceptMoneyReferralCode({
         validationError !== MONEY_REFERRAL_CODE_UNKNOWN_ERROR
       ) {
         setErrorMessage(validationError);
+        setRefusalReason('invalid_code');
         return { accepted: false, refusalReason: 'invalid_code' };
       }
 
@@ -210,5 +227,17 @@ export function useAcceptMoneyReferralCode({
     [fetchReferralMe, messenger, noteRefusal, onAccepted, validateCode],
   );
 
-  return { isAccepting, isAcceptCoolingDown, errorMessage, accept };
+  const clearError = useCallback(() => {
+    setErrorMessage('');
+    setRefusalReason(null);
+  }, []);
+
+  return {
+    isAccepting,
+    isAcceptCoolingDown,
+    errorMessage,
+    refusalReason,
+    clearError,
+    accept,
+  };
 }

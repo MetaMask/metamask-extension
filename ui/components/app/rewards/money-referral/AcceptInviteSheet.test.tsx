@@ -155,6 +155,11 @@ function trackedTypes(): string[] {
   );
 }
 
+function lastTrackedProperties(): Record<string, unknown> {
+  const call = mockTrackEvent.mock.calls.at(-1);
+  return call?.[0].properties ?? {};
+}
+
 function renderSheet({
   initialCode = 'ab12',
   geoLocation = 'GB',
@@ -340,6 +345,7 @@ describe('AcceptInviteSheet', () => {
       await user.click(view.getByTestId('money-referral-decline'));
     });
     expect(trackedTypes()).toEqual(['viewed', 'declined']);
+    expect(lastTrackedProperties()).not.toHaveProperty('refusal_reason');
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
@@ -356,6 +362,7 @@ describe('AcceptInviteSheet', () => {
       );
     });
     expect(trackedTypes()).toEqual(['viewed', 'dismissed']);
+    expect(lastTrackedProperties()).not.toHaveProperty('refusal_reason');
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
@@ -428,6 +435,72 @@ describe('AcceptInviteSheet', () => {
       await user.click(view.getByTestId('money-referral-decline'));
     });
     expect(trackedTypes()).toEqual(['viewed', 'refused', 'declined']);
+    expect(lastTrackedProperties()).toMatchObject({
+      /* eslint-disable @typescript-eslint/naming-convention -- analytics properties */
+      interaction_type: 'declined',
+      refusal_reason: 'already_referred',
+      referral_code: 'AB12CD',
+      /* eslint-enable @typescript-eslint/naming-convention */
+    });
+  });
+
+  it('omits refusal_reason after the code is edited', async () => {
+    const user = userEvent.setup();
+    mockRegister.mockRejectedValueOnce({
+      data: { status: 409, bodyText: 'already referred' },
+    });
+    const view = renderSheet({ initialCode: 'AB12CD' });
+
+    await act(async () => {
+      await user.click(view.getByTestId('money-referral-accept'));
+    });
+    expect(
+      view.getByText('rewardsMoneyReferralAlreadyReferred'),
+    ).toBeInTheDocument();
+
+    await act(async () => {
+      await user.clear(view.getByRole('textbox'));
+      await user.type(view.getByRole('textbox'), 'NEWCODE');
+    });
+
+    expect(
+      view.queryByText('rewardsMoneyReferralAlreadyReferred'),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      await user.click(view.getByTestId('money-referral-decline'));
+    });
+    expect(lastTrackedProperties()).toMatchObject({
+      /* eslint-disable @typescript-eslint/naming-convention -- analytics properties */
+      interaction_type: 'declined',
+      referral_code: 'NEWCODE',
+      /* eslint-enable @typescript-eslint/naming-convention */
+    });
+    expect(lastTrackedProperties()).not.toHaveProperty('refusal_reason');
+  });
+
+  it('records a later accept without the earlier refusal_reason', async () => {
+    const user = userEvent.setup();
+    mockRegister
+      .mockRejectedValueOnce({
+        data: { status: 409, bodyText: 'already referred' },
+      })
+      .mockResolvedValueOnce(undefined);
+    const view = renderSheet({ initialCode: 'AB12CD' });
+
+    await act(async () => {
+      await user.click(view.getByTestId('money-referral-accept'));
+    });
+    await act(async () => {
+      await user.click(view.getByTestId('money-referral-accept'));
+    });
+
+    expect(lastTrackedProperties()).toMatchObject({
+      /* eslint-disable @typescript-eslint/naming-convention -- analytics property */
+      interaction_type: 'accepted',
+      /* eslint-enable @typescript-eslint/naming-convention */
+    });
+    expect(lastTrackedProperties()).not.toHaveProperty('refusal_reason');
   });
 
   it('tracks accepted only after register succeeds and opens the activated modal', async () => {

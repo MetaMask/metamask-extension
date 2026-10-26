@@ -140,12 +140,18 @@ const AcceptInviteSheetContent = ({
     setShowActivated(true);
   }, []);
 
-  const { isAccepting, isAcceptCoolingDown, errorMessage, accept } =
-    useAcceptMoneyReferralCode({
-      validateCode,
-      fetchReferralMe,
-      onAccepted: handleAccepted,
-    });
+  const {
+    isAccepting,
+    isAcceptCoolingDown,
+    errorMessage,
+    refusalReason,
+    clearError,
+    accept,
+  } = useAcceptMoneyReferralCode({
+    validateCode,
+    fetchReferralMe,
+    onAccepted: handleAccepted,
+  });
 
   const eligibleInvite =
     referralMe !== null && canAcceptMoneyReferralInvite(referralMe);
@@ -193,13 +199,34 @@ const AcceptInviteSheetContent = ({
       if (!hasTrackedViewRef.current) {
         return;
       }
-      trackInteraction(interactionType);
+      const properties: Record<string, string> = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+        interaction_type: interactionType,
+      };
+      if (code) {
+        properties.referral_code = code;
+      }
+      if (
+        refusalReason &&
+        (interactionType === 'declined' || interactionType === 'dismissed')
+      ) {
+
+        properties.refusal_reason = refusalReason;
+      }
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.RewardsMoneyReferralOfferInteracted,
+        )
+          .addCategory(MetaMetricsEventCategory.Rewards)
+          .addProperties(properties)
+          .build(),
+      ).catch(() => undefined);
     },
-    [trackInteraction],
+    [code, createEventBuilder, refusalReason, trackEvent],
   );
 
   const trackRefused = useCallback(
-    (refusalReason: ReferralRefusalReason) => {
+    (reason: ReferralRefusalReason) => {
       if (!hasTrackedViewRef.current) {
         return;
       }
@@ -207,7 +234,7 @@ const AcceptInviteSheetContent = ({
         // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
         interaction_type: 'refused',
         // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
-        refusal_reason: refusalReason,
+        refusal_reason: reason,
       };
       if (code) {
         properties.referral_code = code;
@@ -324,6 +351,7 @@ const AcceptInviteSheetContent = ({
                 className="h-14 w-full"
                 onChange={(event) => {
                   setCode(normalizeMoneyReferralCode(event.target.value));
+                  clearError();
                 }}
                 inputProps={{
                   ...referralCodeInputProps,
