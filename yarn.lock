@@ -32834,12 +32834,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-fixed-jsdom@npm:^0.0.9":
-  version: 0.0.9
-  resolution: "jest-fixed-jsdom@npm:0.0.9"
+"jest-fixed-jsdom@npm:^0.0.11":
+  version: 0.0.11
+  resolution: "jest-fixed-jsdom@npm:0.0.11"
   peerDependencies:
     jest-environment-jsdom: ">=28.0.0"
-  checksum: 10/c0c1502c81de2c628f728d4c8cff1d66adf7dba3933d72198905bd395b95d393cc535d36469076e03c32f8f0c2200bffcc61065de0a4e5d6f83cfccad0da95cb
+  checksum: 10/211ff25bb73cbf40152119029b3fc46f805bc8a1ef21cac3ac2f37ea80b64d5bdfaf7597d23cf67f9532a7676fbfec0f717102ccb1a39879ab17335612e20500
   languageName: node
   linkType: hard
 
@@ -35833,7 +35833,7 @@ __metadata:
     jest-canvas-mock: "npm:^2.3.1"
     jest-clean-console-reporter: "npm:^0.3.0"
     jest-environment-jsdom: "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch"
-    jest-fixed-jsdom: "npm:^0.0.9"
+    jest-fixed-jsdom: "npm:^0.0.11"
     jest-junit: "npm:^14.0.1"
     jest-preview: "npm:^0.3.1"
     jsdom: "npm:^16.7.0"
