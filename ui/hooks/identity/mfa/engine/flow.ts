@@ -565,17 +565,18 @@ export const createMfaFlow = ({
 
   const submitEmailAddress = async (email: string) => {
     current = { method: 'email_otp', purpose: 'setup', email };
-    show(
-      {
+    // Stay on email entry until a code is sent. Opening the code screen
+    // first tells the user a code went out when enrollment still failed.
+    await run(async () => {
+      await beginCodeChallenge();
+      show({
         name: 'otp',
         purpose: 'setup',
         method: 'email_otp',
         email,
-        codeSent: false,
-      },
-      { busy: true },
-    );
-    await run(beginCodeChallenge);
+        codeSent: true,
+      });
+    });
   };
 
   const submitCode = async (code: string) => {

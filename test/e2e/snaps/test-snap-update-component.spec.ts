@@ -10,7 +10,6 @@ import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import SnapListPage from '../page-objects/pages/snaps/list-page';
 import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { Driver } from '../webdriver/driver';
 
@@ -36,18 +35,14 @@ describe('Test Snap update via snaps component', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const snapListPage = new SnapListPage(driver);
         const snapInstall = new SnapInstall(driver);
 
         await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
           withExtraScreen: true,
+          expectedMessage: 'Reconnect to Update Snap',
         });
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
-          'Reconnect to Update Snap',
-        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

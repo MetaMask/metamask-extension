@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -19,6 +20,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../../components/ui/transition';
 import { toast } from '../../../components/ui/toast/toast';
+import { getIsSocialLoginFlow } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isMfaKitEnabled, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
@@ -52,11 +54,14 @@ const ROWS: {
 /**
  * The profile's verification methods: "Add" sets one up, the chevron opens
  * one that is set up. Passkeys are mobile only, so they do not show here.
+ * Email is hidden for social login users: their login email is not a real
+ * second factor.
  */
 const MfaSettings = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { credentials, enroll } = useMfa();
+  const isSocialLogin = useSelector(getIsSocialLoginFlow);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const activeTypes = new Set(
     credentials
@@ -69,6 +74,10 @@ const MfaSettings = () => {
       .refreshEnrolledCredentials()
       .catch(() => undefined);
   }, []);
+
+  const rows = ROWS.filter(
+    ({ method }) => !(isSocialLogin && method === 'email_otp'),
+  );
 
   const open = ({ method, route, operation }: (typeof ROWS)[number]) => {
     if (activeTypes.has(method)) {
@@ -98,7 +107,7 @@ const MfaSettings = () => {
       >
         {t('mfaSettingsNotice')}
       </Text>
-      {ROWS.map((row) => (
+      {rows.map((row) => (
         <Box
           key={row.method}
           asChild

@@ -1,5 +1,5 @@
 import { Driver } from '../webdriver/driver';
-import { TestSnaps, spanLocator } from '../page-objects/pages/test-snaps';
+import { spanLocator } from '../page-objects/pages/test-snaps';
 import TestDapp from '../page-objects/pages/test-dapp';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
@@ -28,18 +28,16 @@ describe('Test Snap Signature Insights', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const testSnaps = new TestSnaps(driver);
         const testDapp = new TestDapp(driver);
         const snapInstall = new SnapInstall(driver);
 
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectSignatureInsightsButton',
-          { url: DAPP_ONE_URL },
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectSignatureInsightsButton',
-          'Reconnect to Signature Insights Snap',
+          {
+            url: DAPP_ONE_URL,
+            expectedMessage: 'Reconnect to Signature Insights Snap',
+          },
         );
 
         await driver.openNewPage(DAPP_URL);

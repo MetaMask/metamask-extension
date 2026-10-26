@@ -325,6 +325,23 @@ describe('EmailEntryStep', () => {
     expect(onAction).not.toHaveBeenCalled();
   });
 
+  it('shows an enrollment failure under the email field', () => {
+    render(
+      <EmailEntryStep
+        {...buildState(
+          { name: 'emailEntry', prefillEmail: 'a@b.co' },
+          { error: 'server_error' },
+        )}
+        reason={reason}
+        onAction={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      messages.mfaErrorGeneric.message,
+    );
+  });
+
   it('accepts dots inside the local part', () => {
     const onAction = jest.fn();
     render(
