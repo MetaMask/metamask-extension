@@ -1,5 +1,4 @@
 import {
-  GasFeeToken,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -58,8 +57,10 @@ export const EditGasFeesRow = ({
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  // TODO: Use `TransactionMeta` once the transaction controller is released with `gasFeeSponsor`.
+  const { currentConfirmation: transactionMeta } = useConfirmContext<
+    TransactionMeta & { gasFeeSponsor?: string }
+  >();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const showAdvancedDetails = useSelector(
@@ -67,18 +68,14 @@ export const EditGasFeesRow = ({
   );
   const {
     chainId,
-    gasFeeTokens,
+    gasFeeSponsor,
     isGasFeeSponsored: doesSentinelAllowSponsorship,
     simulationData,
     type: transactionType,
   } = transactionMeta;
 
-  // TODO: Remove the cast once the transaction controller is released with `GasFeeToken.sponsor`.
-  const sponsorName = (
-    gasFeeTokens as (GasFeeToken & { sponsor?: string })[] | undefined
-  )?.[0]?.sponsor;
   // A MetaMask sponsor keeps the existing copy and icon.
-  const sponsor = sponsorName === 'MetaMask' ? undefined : sponsorName;
+  const sponsor = gasFeeSponsor === 'MetaMask' ? undefined : gasFeeSponsor;
 
   const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();

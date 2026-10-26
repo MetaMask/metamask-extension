@@ -48,6 +48,7 @@ function render({
   fiatFee = '$1',
   nativeFee = '0.001 ETH',
   estimationFailed = false,
+  gasFeeSponsor,
   isGaslessSupported = false,
   isSponsorshipOptedOut = false,
   showFiatInTestnets = false,
@@ -61,6 +62,7 @@ function render({
   fiatFee?: string;
   nativeFee?: string;
   estimationFailed?: boolean;
+  gasFeeSponsor?: string;
   isGaslessSupported?: boolean;
   isSponsorshipOptedOut?: boolean;
   showFiatInTestnets?: boolean;
@@ -73,12 +75,15 @@ function render({
     pending: false,
   });
 
-  const confirmation = genUnapprovedContractInteractionConfirmation({
-    chainId,
-    gasFeeTokens,
-    selectedGasFeeToken,
-    isGasFeeSponsored: isGaslessSupported,
-  });
+  const confirmation = {
+    ...genUnapprovedContractInteractionConfirmation({
+      chainId,
+      gasFeeTokens,
+      selectedGasFeeToken,
+      isGasFeeSponsored: isGaslessSupported,
+    }),
+    gasFeeSponsor,
+  };
 
   if (transactionType) {
     confirmation.type = transactionType;
@@ -219,19 +224,10 @@ describe('<EditGasFeesRow />', () => {
   });
 
   describe('sponsor', () => {
-    const UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK = {
-      ...GAS_FEE_TOKEN_MOCK,
-      sponsor: 'Uniswap',
-    };
-
-    const METAMASK_SPONSORED_GAS_FEE_TOKEN_MOCK = {
-      ...GAS_FEE_TOKEN_MOCK,
-      sponsor: 'MetaMask',
-    };
-
     it('renders the sponsor name and tooltip when gas fee is sponsored by a third party', () => {
       const { container, getByTestId } = render({
-        gasFeeTokens: [UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        gasFeeSponsor: 'Uniswap',
+        gasFeeTokens: [],
         isGaslessSupported: true,
       });
 
@@ -250,7 +246,7 @@ describe('<EditGasFeesRow />', () => {
 
     it('passes the sponsor to the gas sponsorship modal', async () => {
       const { getAllByText, getByTestId } = render({
-        gasFeeTokens: [UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        gasFeeSponsor: 'Uniswap',
         isGaslessSupported: true,
       });
 
@@ -263,7 +259,7 @@ describe('<EditGasFeesRow />', () => {
 
     it('renders "Paid by MetaMask" and the MetaMask tooltip when the sponsor is MetaMask', () => {
       const { container, getByTestId } = render({
-        gasFeeTokens: [METAMASK_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        gasFeeSponsor: 'MetaMask',
         isGaslessSupported: true,
       });
 
@@ -277,9 +273,14 @@ describe('<EditGasFeesRow />', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders "Paid by MetaMask" when gas fee tokens have no sponsor', () => {
+    it('renders "Paid by MetaMask" when the transaction has no sponsor, ignoring the gas fee token sponsor', () => {
+      const sponsoredGasFeeToken = {
+        ...GAS_FEE_TOKEN_MOCK,
+        sponsor: 'Uniswap',
+      };
+
       const { getByTestId } = render({
-        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        gasFeeTokens: [sponsoredGasFeeToken],
         isGaslessSupported: true,
       });
 
@@ -290,7 +291,7 @@ describe('<EditGasFeesRow />', () => {
 
     it('does not render the sponsor when gas fee is not sponsored', () => {
       const { queryByText } = render({
-        gasFeeTokens: [UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        gasFeeSponsor: 'Uniswap',
         isGaslessSupported: false,
       });
 
@@ -299,7 +300,7 @@ describe('<EditGasFeesRow />', () => {
 
     it('does not render the sponsor when the user opted out of sponsorship', () => {
       const { container, queryByTestId } = render({
-        gasFeeTokens: [UNISWAP_SPONSORED_GAS_FEE_TOKEN_MOCK],
+        gasFeeSponsor: 'Uniswap',
         isGaslessSupported: true,
         isSponsorshipOptedOut: true,
       });
