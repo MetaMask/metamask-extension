@@ -174,6 +174,95 @@ describe('getAccountTrackerControllerAccountsByChainId', () => {
     });
   });
 
+  it('keeps a decimal-string AccountTracker balance next to the hex balance', () => {
+    const decimalChainId = '57073';
+    const decimalBalance = '0x15af1d78b58c40000';
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        accountsByChainId: {
+          [decimalChainId]: {
+            [mockAccountAddressChecksummed]: {
+              balance: decimalBalance,
+            },
+          },
+        },
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '1' },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    };
+
+    const result = getAccountTrackerControllerAccountsByChainId(
+      state,
+    ) as Record<string, Record<string, { balance?: string }>>;
+
+    expect(
+      result['0x1']?.[mockAccountAddressChecksummed]?.balance,
+    ).toBeDefined();
+    expect(
+      result[decimalChainId]?.[mockAccountAddressChecksummed]?.balance,
+    ).toBe(decimalBalance);
+  });
+
+  it('exposes a decimal chain id when that network configuration key exists', () => {
+    const inkAssetId = 'eip155:57073/slip44:60';
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        accountsByChainId: {},
+        networkConfigurationsByChainId: {
+          '57073': { nativeCurrency: 'ETH' },
+        },
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          [inkAssetId]: { type: 'native', decimals: 18 },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '1' },
+            [inkAssetId]: { amount: '25' },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    };
+
+    const result = getAccountTrackerControllerAccountsByChainId(
+      state,
+    ) as Record<string, Record<string, { balance?: string }>>;
+
+    expect(result['1']).toBeUndefined();
+    expect(result['0xdef1']?.[mockAccountAddressChecksummed]?.balance).toBe(
+      '0x15af1d78b58c40000',
+    );
+    expect(result['57073']?.[mockAccountAddressChecksummed]?.balance).toBe(
+      '0x15af1d78b58c40000',
+    );
+  });
+
   describe('edge cases', () => {
     it('handles multiple chains for the same EVM account', () => {
       const state = {

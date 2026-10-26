@@ -290,6 +290,21 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  /**
+   * Merges persisted GasFeeController state. Native Max reads
+   * `gasFeeEstimatesByChainId` and does not wait for a gas poll, so estimates
+   * for the send's chain id must already be present.
+   *
+   * @param data - Subset of GasFeeController state to deep-merge.
+   */
+  withGasFeeController(data: Record<string, unknown>): this {
+    merge(
+      this.fixture.data.GasFeeController,
+      data as Partial<FixtureType['data']['GasFeeController']>,
+    );
+    return this;
+  }
+
   withKeyringController(data: Partial<KeyringControllerState>): this {
     merge(this.fixture.data.KeyringController, data);
     return this;

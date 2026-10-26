@@ -3,6 +3,7 @@ import {
   type CaipAssetType,
   Hex,
   bigIntToHex,
+  isStrictHexString,
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
@@ -130,6 +131,11 @@ export const getAccountTrackerControllerAccountsByChainId =
       (state: {
         metamask: Pick<AccountsControllerState, 'internalAccounts'>;
       }) => state.metamask?.internalAccounts?.accounts ?? {},
+      (state: {
+        metamask: {
+          networkConfigurationsByChainId?: Record<string, unknown>;
+        };
+      }) => state.metamask?.networkConfigurationsByChainId ?? {},
     ],
     (
       isAssetsUnifyStateEnabled,
@@ -137,6 +143,7 @@ export const getAccountTrackerControllerAccountsByChainId =
       assetsBalance,
       assetsInfo,
       internalAccountsById,
+      networkConfigurationsByChainId,
     ) => {
       if (!isAssetsUnifyStateEnabled) {
         return accountsByChainId;
@@ -178,7 +185,36 @@ export const getAccountTrackerControllerAccountsByChainId =
             // TODO: Use raw value from state when available
             balance: parseBalanceWithDecimals(amount, metadata.decimals),
           };
+
+          // A network stored under the decimal CAIP reference (for example
+          // "57073" rather than "0xdef1") is the send-list chain id. Account
+          // balances are otherwise keyed only by hex once assets-unify is on.
+          const decimalChainId = parsedChain.reference;
+          if (
+            decimalChainId !== hexChainId &&
+            !isStrictHexString(decimalChainId) &&
+            networkConfigurationsByChainId[decimalChainId]
+          ) {
+            result[decimalChainId as Hex] ??= {};
+            result[decimalChainId as Hex][checksummedAddress] =
+              result[hexChainId][checksummedAddress];
+          }
         }
+      }
+
+      // Keep a decimal-string AccountTracker entry when one is still present.
+      // Assets-unify clears that controller, so the network-configuration path
+      // above is what the send list uses in that case.
+      for (const [chainId, chainAccounts] of Object.entries(
+        accountsByChainId,
+      )) {
+        if (isStrictHexString(chainId) || !chainAccounts) {
+          continue;
+        }
+        result[chainId as Hex] = {
+          ...result[chainId as Hex],
+          ...chainAccounts,
+        };
       }
 
       return result;

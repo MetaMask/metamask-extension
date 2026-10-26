@@ -177,10 +177,32 @@ export const toNormalizedCaipAssetId = (
 };
 
 /**
- * Returns the image url for a caip-formatted asset
+ * Decimal chain ids such as "57073" are base-10. `toAssetId` only accepts hex
+ * or CAIP chain ids and throws on the decimal form.
+ *
+ * @param chainId - Chain id from an asset row or network configuration.
+ * @returns A hex or CAIP chain id `toAssetId` can accept.
+ */
+function toChainIdForAssetImage(
+  chainId: CaipChainId | Hex | string,
+): CaipChainId | Hex {
+  if (
+    !isCaipChainId(chainId) &&
+    !isStrictHexString(chainId) &&
+    /^\d+$/u.test(chainId)
+  ) {
+    return numberToHex(Number(chainId));
+  }
+
+  return chainId as CaipChainId | Hex;
+}
+
+/**
+ * Returns the image url for a caip-formatted asset.
+ * Decimal-string chain ids are parsed as base-10 before lookup.
  *
  * @param assetId - The hex address or caip-formatted asset id
- * @param chainId - The chainId in caip or hex format
+ * @param chainId - The chainId in caip, hex, or decimal-string format
  * @returns The image url for the asset
  */
 export const getAssetImageUrl = (
@@ -188,21 +210,34 @@ export const getAssetImageUrl = (
   chainId: CaipChainId | Hex,
 ) => {
   try {
+    const chainIdForLookup = toChainIdForAssetImage(chainId);
     // SLIP-44 references are coin types, not addresses: `toAssetId` would
     // rebuild them as `erc20:0x<coinType>` for chains outside the bridge map
     const assetIdInCaip = isNativeCaipAssetId(assetId as CaipAssetType)
       ? (assetId as CaipAssetType)
-      : toAssetId(assetId, chainId);
+      : toAssetId(assetId, chainIdForLookup);
     if (!assetIdInCaip) {
       return undefined;
     }
     const normalizedAssetId = (
-      isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
+      isNonEvmChainId(chainIdForLookup)
+        ? assetIdInCaip
+        : assetIdInCaip.toLowerCase()
     ).replaceAll(':', '/');
     return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
       normalizedAssetId
     }.png`;
   } catch (error) {
+    // Decimal chain ids are a valid send-list form. Image lookup can miss
+    // them without reporting a console error.
+    if (
+      typeof chainId === 'string' &&
+      !isCaipChainId(chainId) &&
+      !isStrictHexString(chainId)
+    ) {
+      return undefined;
+    }
+
     log.error('Failed to get asset image URL', {
       error: error instanceof Error ? error.message : String(error),
       assetId,

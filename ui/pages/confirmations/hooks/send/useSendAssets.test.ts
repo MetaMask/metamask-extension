@@ -189,6 +189,41 @@ describe('useSendAssets', () => {
     expect(result.current.nfts[0].chainId).toBe('0x1');
   });
 
+  it('keeps a decimal-string chain id for an enabled EVM network', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getAllMultichainNetworkConfigurations) {
+        return {
+          ...mockMultichainNetworkConfigurations,
+          'eip155:57073': {
+            chainId: 'eip155:57073',
+            name: 'Ink',
+            isEvm: true,
+          },
+        };
+      }
+      return undefined;
+    });
+
+    mockUseSendTokens.mockReturnValue([
+      {
+        id: 'ink-native',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        chainId: '57073',
+      } as Asset,
+      { id: 'other', name: 'Other', chainId: '99999' } as Asset,
+    ]);
+    mockUseSendNfts.mockReturnValue([]);
+
+    const { result } = renderHookWithProvider(
+      () => useSendAssets(),
+      mockStateWithExternalServices,
+    );
+
+    expect(result.current.tokens).toHaveLength(1);
+    expect(result.current.tokens[0]?.chainId).toBe('57073');
+  });
+
   it('filters out NFTs with undefined chainId', () => {
     const mockTokens: Asset[] = [
       { id: 'token1', name: 'Token 1', chainId: '0x1' } as Asset,

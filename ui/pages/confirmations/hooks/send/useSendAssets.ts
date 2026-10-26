@@ -1,7 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import type { CaipChainId, Hex } from '@metamask/utils';
+import {
+  isCaipChainId,
+  isStrictHexString,
+  numberToHex,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { type Asset } from '../../types/send';
 import { getUseExternalServices } from '../../../../selectors';
 import { getAllMultichainNetworkConfigurations } from '../../../../selectors/multichain/networks';
@@ -40,10 +46,14 @@ export const useSendAssets = (
       if (availableChainIds.includes(chainId)) {
         return true;
       }
-      // For EVM chains, convert Hex to CAIP format and check
+      // For EVM chains, convert to CAIP format and check. Decimal strings
+      // such as "57073" are base-10 chain ids; `toEvmCaipChainId` parses
+      // unprefixed input as hex and would miss the real network.
       if (isEvmChainId(chainId as CaipChainId | Hex)) {
-        const caipChainId = toEvmCaipChainId(chainId as Hex);
-        return availableChainIds.includes(caipChainId);
+        const caipChainId = toCaipChainIdForSendAsset(chainId);
+        return (
+          caipChainId !== undefined && availableChainIds.includes(caipChainId)
+        );
       }
       return false;
     },
@@ -87,3 +97,26 @@ export const useSendAssets = (
     };
   }, [tokens, nfts, useExternalServices, isChainIdAvailable]);
 };
+
+/**
+ * Maps a send-asset chain id to the CAIP id used by network configuration.
+ * Hex ids stay hex. Decimal strings are parsed as base-10 before conversion.
+ *
+ * @param chainId - Hex, CAIP, or decimal-string chain id from the asset list.
+ * @returns The CAIP chain id, or undefined when the value is not an EVM id.
+ */
+function toCaipChainIdForSendAsset(chainId: string): CaipChainId | undefined {
+  if (isCaipChainId(chainId)) {
+    return chainId;
+  }
+
+  if (isStrictHexString(chainId)) {
+    return toEvmCaipChainId(chainId);
+  }
+
+  if (!/^\d+$/u.test(chainId)) {
+    return undefined;
+  }
+
+  return toEvmCaipChainId(numberToHex(Number(chainId)));
+}

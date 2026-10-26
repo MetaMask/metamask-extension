@@ -269,6 +269,12 @@ class ActivityTab extends HomePage {
     });
   }
 
+  async checkNoPendingTransactions(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.pendingTransactionItems, {
+      waitAtLeastGuard: 1000,
+    });
+  }
+
   async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
   }
