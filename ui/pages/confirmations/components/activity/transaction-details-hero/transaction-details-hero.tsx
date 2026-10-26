@@ -2,11 +2,11 @@ import React, { useMemo } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { MUSD_DECIMALS, MUSD_TOKEN } from '@metamask/money-account-utils';
 import { BigNumber } from 'bignumber.js';
-import { Text, Box } from '../../../../../components/component-library';
+import { FontFamily, Text, TextVariant } from '@metamask/design-system-react';
+import { Box } from '../../../../../components/component-library';
 import {
   Display,
   AlignItems,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
@@ -72,7 +72,9 @@ export function TransactionDetailsHero() {
       paddingBottom={4}
       data-testid="transaction-details-hero"
     >
-      <Text variant={TextVariant.displayMd}>{formattedAmount}</Text>
+      <Text variant={TextVariant.AmountDisplayLg} fontFamily={FontFamily.Hero}>
+        {formattedAmount}
+      </Text>
     </Box>
   );
 }

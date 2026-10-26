@@ -23,11 +23,11 @@ exports[`NativeTransferInfo renders correctly 1`] = `
         <div
           class="pb-1"
         >
-          <h2
-            class="text-inherit text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
+          <span
+            class="text-inherit text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
           >
             0 ETH
-          </h2>
+          </span>
         </div>
       </div>
       <div

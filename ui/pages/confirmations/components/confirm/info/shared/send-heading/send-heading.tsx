@@ -1,7 +1,13 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Skeleton } from '@metamask/design-system-react';
+import {
+  FontFamily,
+  Skeleton,
+  Text as DsText,
+  TextColor as DsTextColor,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import {
   AvatarToken,
@@ -64,7 +70,7 @@ const SendHeading = () => {
 
   const TokenValueSkeleton = (
     <Box display={Display.InlineFlex} alignItems={AlignItems.center} gap={2}>
-      <Skeleton width={40} height={32} />
+      <Skeleton width={40} height={56} />
       {tokenSymbol}
     </Box>
   );
@@ -75,22 +81,24 @@ const SendHeading = () => {
 
   const TokenValue =
     pending || displayTransferValue === decodedTransferValue ? (
-      <Text
-        variant={TextVariant.headingLg}
-        color={TextColor.inherit}
-        paddingBottom={1}
+      <DsText
+        variant={DsTextVariant.AmountDisplayLg}
+        fontFamily={FontFamily.Hero}
+        color={DsTextColor.Inherit}
+        className="block pb-1"
       >
         {TokenValueContent}
-      </Text>
+      </DsText>
     ) : (
       <Tooltip title={decodedTransferValue} position="right">
-        <Text
-          variant={TextVariant.headingLg}
-          color={TextColor.inherit}
-          paddingBottom={1}
+        <DsText
+          variant={DsTextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
+          color={DsTextColor.Inherit}
+          className="block pb-1"
         >
           {TokenValueContent}
-        </Text>
+        </DsText>
       </Tooltip>
     );
 
