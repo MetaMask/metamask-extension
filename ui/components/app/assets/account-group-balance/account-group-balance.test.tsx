@@ -16,6 +16,7 @@ import { getPreferences } from '../../../../../shared/lib/selectors/preferences'
 import {
   getMultichainNativeTokenBalance,
   selectIsAssetsLoadingForSelectedAccountGroup,
+  selectUnavailableBalancesForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
@@ -52,6 +53,7 @@ describe('AccountGroupBalance', () => {
     showFiatInTestnets?: boolean;
     privacyMode?: boolean;
     isAssetsLoading?: boolean;
+    unavailableBalances?: { accountIds: string[]; chainIds: string[] };
   };
 
   const arrange = ({
@@ -62,7 +64,12 @@ describe('AccountGroupBalance', () => {
     showFiatInTestnets = false,
     privacyMode = false,
     isAssetsLoading = false,
+    unavailableBalances = { accountIds: [], chainIds: [] },
   }: ArrangeOptions = {}) => {
+    jest
+      .mocked(selectUnavailableBalancesForSelectedAccountGroup)
+      .mockReturnValue(unavailableBalances);
+
     jest
       .mocked(selectUnifiedBalanceBySelectedAccountGroup)
       .mockReturnValue(selectedGroupBalance);
@@ -334,5 +341,63 @@ describe('AccountGroupBalance', () => {
     // even if useMultichainSelector returns something unrelated it should not
     // appear in the rendered output.
     useMultichainSelectorSpy.mockReturnValue('UNEXPECTED');
+  });
+
+  describe('balance unavailable', () => {
+    const BITCOIN_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
+
+    it('replaces the balance when the viewed non-EVM network failed to load', () => {
+      arrange({
+        selectedGroupBalance: {
+          ...createMockBalance(),
+          totalBalanceInUserCurrency: 0,
+        },
+        enabledNetworksByNamespace: { [BITCOIN_CHAIN_ID]: true },
+        unavailableBalances: {
+          accountIds: ['btc-account'],
+          chainIds: [BITCOIN_CHAIN_ID],
+        },
+      });
+      const { getByTestId, getByText, queryByText } = renderComponent({
+        chainId: BITCOIN_CHAIN_ID as CaipChainId,
+      });
+
+      expect(
+        getByTestId('account-group-balance-unavailable'),
+      ).toBeInTheDocument();
+      expect(getByText('Balance unavailable')).toBeInTheDocument();
+      expect(getByText('Retry')).toBeInTheDocument();
+      expect(queryByText('$0.00')).not.toBeInTheDocument();
+    });
+
+    it('keeps the total but flags it when another network failed to load', () => {
+      arrange({
+        selectedGroupBalance: createMockBalance(),
+        unavailableBalances: {
+          accountIds: ['btc-account'],
+          chainIds: [BITCOIN_CHAIN_ID],
+        },
+      });
+      const { getByTestId, getByText } = renderComponent({
+        chainId: MAINNET_CHAIN_ID,
+      });
+
+      expect(getByText('$123.45')).toBeInTheDocument();
+      expect(
+        getByTestId('account-group-balance-partially-unavailable'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders no unavailable notice when every balance loaded', () => {
+      arrange({ selectedGroupBalance: createMockBalance() });
+      const { queryByTestId } = renderComponent();
+
+      expect(
+        queryByTestId('account-group-balance-partially-unavailable'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('account-group-balance-unavailable'),
+      ).not.toBeInTheDocument();
+    });
   });
 });

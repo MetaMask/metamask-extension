@@ -48,6 +48,10 @@ import {
   getAsset,
   getFungibleAssetForRoute,
   getAssetsBySelectedAccountGroupWithTronSpecialAssets,
+  getAssetsBalanceErrors,
+  getUnavailableBalancesForAccounts,
+  selectUnavailableBalancesForSelectedAccountGroup,
+  selectIsBalanceUnavailable,
 } from './assets';
 
 /**
@@ -2352,5 +2356,160 @@ describe('getAsset', () => {
         currency: 'USD',
       },
     });
+  });
+});
+
+describe('balance unavailable selectors', () => {
+  const BTC = 'bip122:000000000019d6689c085ae165831e93';
+  const BTC_TESTNET = 'bip122:000000000933ea01ad0ee984209779ba';
+  const XLM = 'stellar:pubnet';
+  const ERROR = {
+    status: 'unavailable' as const,
+    error: 'the account has not been synchronized yet',
+    attempts: 1,
+    failedAt: 0,
+    nextRetryAt: 30_000,
+  };
+
+  const createState = (
+    assetsBalanceErrors?: Record<string, Record<string, typeof ERROR>>,
+    enabledNetworkMap: Record<string, Record<string, boolean>> = {
+      eip155: { '0x1': true },
+      bip122: { [BTC]: true },
+      stellar: { [XLM]: true },
+    },
+  ) =>
+    ({
+      metamask: {
+        assetsBalanceErrors,
+        enabledNetworkMap,
+        selectedAccountGroup: 'entropy:wallet1/group1',
+        accountTree: {
+          wallets: {
+            'entropy:wallet1': {
+              id: 'entropy:wallet1',
+              groups: {
+                'entropy:wallet1/group1': {
+                  id: 'entropy:wallet1/group1',
+                  accounts: ['evm-account', 'btc-account', 'xlm-account'],
+                },
+              },
+            },
+          },
+        },
+      },
+    }) as unknown as Parameters<
+      typeof selectUnavailableBalancesForSelectedAccountGroup
+    >[0];
+
+  it('getAssetsBalanceErrors returns the AssetsController errors', () => {
+    const errors = { 'btc-account': { [BTC]: ERROR } };
+    expect(
+      getAssetsBalanceErrors({
+        metamask: { assetsBalanceErrors: errors },
+      } as never),
+    ).toBe(errors);
+    expect(getAssetsBalanceErrors({ metamask: {} } as never)).toBeUndefined();
+  });
+
+  it('getUnavailableBalancesForAccounts collects only the given accounts', () => {
+    const errors = {
+      'btc-account': { [BTC]: ERROR },
+      'other-account': { [XLM]: ERROR },
+    };
+    expect(
+      getUnavailableBalancesForAccounts(errors as never, ['btc-account']),
+    ).toStrictEqual({ accountIds: ['btc-account'], chainIds: [BTC] });
+    expect(
+      getUnavailableBalancesForAccounts(undefined, ['btc-account']),
+    ).toStrictEqual({
+      accountIds: [],
+      chainIds: [],
+    });
+  });
+
+  it('returns the unavailable accounts and chains of the selected group', () => {
+    const state = createState({
+      'btc-account': { [BTC]: ERROR },
+      'xlm-account': { [XLM]: ERROR },
+      'not-in-group': { [BTC]: ERROR },
+    });
+    expect(
+      selectUnavailableBalancesForSelectedAccountGroup(state),
+    ).toStrictEqual({
+      accountIds: ['btc-account', 'xlm-account'],
+      chainIds: [BTC, XLM],
+    });
+  });
+
+  it('ignores chains that are disabled in the enabled network map', () => {
+    const state = createState({ 'btc-account': { [BTC_TESTNET]: ERROR } });
+    expect(
+      selectUnavailableBalancesForSelectedAccountGroup(state),
+    ).toStrictEqual({ accountIds: [], chainIds: [] });
+  });
+
+  it('keeps chains whose namespace is not in the enabled network map', () => {
+    const state = createState(
+      { 'btc-account': { [BTC]: ERROR } },
+      { eip155: { '0x1': true } },
+    );
+    expect(
+      selectUnavailableBalancesForSelectedAccountGroup(state),
+    ).toStrictEqual({ accountIds: ['btc-account'], chainIds: [BTC] });
+  });
+
+  it('returns empty when there are no errors', () => {
+    expect(
+      selectUnavailableBalancesForSelectedAccountGroup(createState()),
+    ).toStrictEqual({ accountIds: [], chainIds: [] });
+  });
+
+  it('flags a synced account whose stale balance is still cached by the legacy MultichainBalancesController, until the error clears (v6)', () => {
+    const STALE_ERROR = {
+      ...ERROR,
+      error:
+        'Account balance unavailable: synchronization has been failing since the last successful sync',
+      attempts: 0,
+    };
+    // The legacy controller keeps the last balance it fetched (it only logs
+    // getAccountBalances failures): the unavailable flag comes from the
+    // AssetsController errors, independently of that cached value.
+    const legacyBalances = {
+      balances: {
+        'btc-account': {
+          [`${BTC}/slip44:0`]: { amount: '0.5', unit: 'BTC' },
+        },
+      },
+    };
+    const stale = createState({ 'btc-account': { [BTC]: STALE_ERROR } });
+    const staleState = {
+      ...stale,
+      metamask: { ...stale.metamask, ...legacyBalances },
+    } as typeof stale;
+    expect(selectIsBalanceUnavailable(staleState, 'btc-account', BTC)).toBe(
+      true,
+    );
+    expect(
+      selectUnavailableBalancesForSelectedAccountGroup(staleState),
+    ).toStrictEqual({ accountIds: ['btc-account'], chainIds: [BTC] });
+
+    // Next successful sync: the snap pushes balances, the AssetsController
+    // clears the error, and the cached balance is shown again.
+    const recovered = createState({});
+    const recoveredState = {
+      ...recovered,
+      metamask: { ...recovered.metamask, ...legacyBalances },
+    } as typeof recovered;
+    expect(selectIsBalanceUnavailable(recoveredState, 'btc-account', BTC)).toBe(
+      false,
+    );
+  });
+
+  it('selectIsBalanceUnavailable checks one account and chain', () => {
+    const state = createState({ 'btc-account': { [BTC]: ERROR } });
+    expect(selectIsBalanceUnavailable(state, 'btc-account', BTC)).toBe(true);
+    expect(selectIsBalanceUnavailable(state, 'btc-account', XLM)).toBe(false);
+    expect(selectIsBalanceUnavailable(state, undefined, BTC)).toBe(false);
   });
 });

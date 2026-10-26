@@ -1444,6 +1444,147 @@ export const selectIsAssetsLoadingForSelectedAccountGroup = createSelector(
 );
 
 /**
+ * Per-account, per-chain snap balance fetch failures from AssetsController
+ * state (non-persisted). An entry means the balance shown for that account and
+ * chain is a last-known value or a placeholder `0`, not a confirmed balance.
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Balance fetch errors keyed by account id then chain id.
+ */
+export function getAssetsBalanceErrors(state: {
+  metamask?: Pick<AssetsControllerState, 'assetsBalanceErrors'>;
+}): AssetsControllerState['assetsBalanceErrors'] {
+  return state.metamask?.assetsBalanceErrors;
+}
+
+export type UnavailableBalances = {
+  /** Accounts with at least one chain whose balance is unavailable. */
+  accountIds: string[];
+  /** Chains (CAIP-2) whose balance is unavailable for at least one account. */
+  chainIds: string[];
+};
+
+const EMPTY_UNAVAILABLE_BALANCES: UnavailableBalances = {
+  accountIds: [],
+  chainIds: [],
+};
+
+/**
+ * Whether a CAIP-2 chain is enabled. A namespace that the enabled network map
+ * does not know about counts as enabled, so a missing entry never hides an
+ * unavailable balance.
+ *
+ * @param enabledNetworkMap - Enabled networks keyed by namespace.
+ * @param chainId - CAIP-2 chain id.
+ * @returns True when the chain is enabled or its namespace is not tracked.
+ */
+function isChainEnabledForBalanceErrors(
+  enabledNetworkMap: Record<string, Record<string, boolean>> | undefined,
+  chainId: string,
+): boolean {
+  const [namespace] = chainId.split(':');
+  const namespaceMap = enabledNetworkMap?.[namespace];
+  if (!namespaceMap || Object.keys(namespaceMap).length === 0) {
+    return true;
+  }
+  return Boolean(namespaceMap[chainId]);
+}
+
+/**
+ * Collects the accounts and chains whose balances are unavailable.
+ *
+ * @param balanceErrors - AssetsController `assetsBalanceErrors`.
+ * @param accountIds - Accounts to consider.
+ * @param enabledNetworkMap - Optional enabled network map to filter chains.
+ * @returns Unavailable accounts and chains (empty when none).
+ */
+export function getUnavailableBalancesForAccounts(
+  balanceErrors: AssetsControllerState['assetsBalanceErrors'],
+  accountIds: string[],
+  enabledNetworkMap?: Record<string, Record<string, boolean>>,
+): UnavailableBalances {
+  if (!balanceErrors) {
+    return EMPTY_UNAVAILABLE_BALANCES;
+  }
+  const unavailableAccounts = new Set<string>();
+  const unavailableChains = new Set<string>();
+  for (const accountId of accountIds) {
+    const accountErrors = balanceErrors[accountId];
+    if (!accountErrors) {
+      continue;
+    }
+    for (const [chainId, error] of Object.entries(accountErrors)) {
+      if (
+        error?.status === 'unavailable' &&
+        isChainEnabledForBalanceErrors(enabledNetworkMap, chainId)
+      ) {
+        unavailableAccounts.add(accountId);
+        unavailableChains.add(chainId);
+      }
+    }
+  }
+  if (unavailableAccounts.size === 0) {
+    return EMPTY_UNAVAILABLE_BALANCES;
+  }
+  return {
+    accountIds: [...unavailableAccounts],
+    chainIds: [...unavailableChains],
+  };
+}
+
+/**
+ * Accounts and chains of the selected account group whose (non-EVM) balance
+ * could not be fetched, restricted to enabled networks. Used to show
+ * "Balance unavailable" instead of a misleading total or `0`.
+ */
+export const selectUnavailableBalancesForSelectedAccountGroup =
+  createDeepEqualSelector(
+    [
+      getAssetsBalanceErrors,
+      selectAccountTreeStateForBalances,
+      getEnabledNetworks,
+    ],
+    (
+      balanceErrors,
+      accountTreeState,
+      enabledNetworkMap,
+    ): UnavailableBalances => {
+      const groupId = accountTreeState?.selectedAccountGroup;
+      if (!balanceErrors || !groupId) {
+        return EMPTY_UNAVAILABLE_BALANCES;
+      }
+      return getUnavailableBalancesForAccounts(
+        balanceErrors,
+        getAccountIdsForGroup(accountTreeState, groupId),
+        enabledNetworkMap as Record<string, Record<string, boolean>>,
+      );
+    },
+  );
+
+/**
+ * Whether the balance of one account on one chain is unavailable.
+ *
+ * @param state - Redux state object.
+ * @param accountId - Account id (optional, returns false when missing).
+ * @param chainId - CAIP-2 chain id (optional, returns false when missing).
+ * @returns True when the last balance fetch for that account and chain failed.
+ */
+export function selectIsBalanceUnavailable(
+  state: { metamask?: Pick<AssetsControllerState, 'assetsBalanceErrors'> },
+  accountId?: string,
+  chainId?: string,
+): boolean {
+  if (!accountId || !chainId) {
+    return false;
+  }
+  return (
+    getAssetsBalanceErrors(state)?.[accountId]?.[chainId as CaipChainId]
+      ?.status === 'unavailable'
+  );
+}
+
+/**
  * Selects the selected account group's balance entry from the aggregated
  * balances output, returning a minimal fallback when not present.
  *

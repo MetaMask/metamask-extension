@@ -1968,6 +1968,16 @@
   "balanceOutdated": {
     "message": "Balance may be outdated"
   },
+  "balanceUnavailable": {
+    "message": "Balance unavailable"
+  },
+  "balanceUnavailableDescription": {
+    "message": "We couldn't load the latest balance for $1. The amount shown may be out of date.",
+    "description": "$1 is the list of affected networks (for example, Bitcoin)"
+  },
+  "balanceUnavailableRetry": {
+    "message": "Retry"
+  },
   "baseFee": {
     "message": "Base fee"
   },

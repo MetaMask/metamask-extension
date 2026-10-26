@@ -3626,6 +3626,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       removeCustomAsset: (accountId, assetId) =>
         this.assetsController.removeCustomAsset(accountId, assetId),
+      retrySnapBalances: (accountIds) => this.retrySnapBalances(accountIds),
       // Authentication Controller
       performSignIn: authenticationController.performSignIn.bind(
         authenticationController,
@@ -3816,6 +3817,32 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
   // VAULT / KEYRING RELATED METHODS
   //=============================================================================
+
+  /**
+   * Retry balance fetches for snap (non-EVM) accounts whose last fetch failed
+   * (the UI shows "Balance unavailable" for them). Retries both the
+   * AssetsController snap data source (clears `assetsBalanceErrors` on success)
+   * and the legacy MultichainBalancesController, so the retry works whether or
+   * not the unified assets state is enabled. Failures are logged, not thrown:
+   * a failed retry keeps (or re-creates) the unavailable status.
+   *
+   * @param {string[]} accountIds - The accounts to retry.
+   * @returns {Promise<void>}
+   */
+  async retrySnapBalances(accountIds) {
+    const ids = Array.isArray(accountIds) ? accountIds : [];
+    const results = await Promise.allSettled([
+      this.assetsController?.retrySnapBalances?.(ids),
+      ...ids.map((accountId) =>
+        this.multichainBalancesController?.updateBalance(accountId),
+      ),
+    ]);
+    results.forEach((result) => {
+      if (result.status === 'rejected') {
+        log.warn('retrySnapBalances: retry failed', result.reason);
+      }
+    });
+  }
 
   /**
    * Get an account balance from the AccountTrackerController or request it directly from the network.

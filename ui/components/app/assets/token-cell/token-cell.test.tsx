@@ -27,6 +27,7 @@ import { getProviderConfig } from '../../../../../shared/lib/selectors/networks'
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
+import { selectUnavailableBalancesForSelectedAccountGroup } from '../../../../selectors/assets';
 import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
@@ -178,8 +179,15 @@ describe('Token Cell', () => {
     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
   });
   let mockAnyEnabledNetworksAreAvailable = true;
+  let mockUnavailableBalances: { accountIds: string[]; chainIds: string[] } = {
+    accountIds: [],
+    chainIds: [],
+  };
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
+    if (selector === selectUnavailableBalancesForSelectedAccountGroup) {
+      return mockUnavailableBalances;
+    }
     if (selector === getPreferences) {
       return { privacyMode: false };
     }
@@ -244,6 +252,73 @@ describe('Token Cell', () => {
 
   beforeEach(() => {
     mockAnyEnabledNetworksAreAvailable = true;
+    mockUnavailableBalances = { accountIds: [], chainIds: [] };
+  });
+
+  describe('balance unavailable', () => {
+    const BITCOIN_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
+    const btcToken = {
+      ...propToken,
+      address: `${BITCOIN_CHAIN_ID}/slip44:0`,
+      symbol: 'BTC',
+      chainId: BITCOIN_CHAIN_ID,
+      balance: '0',
+      string: '0',
+      tokenFiatAmount: 0,
+      decimals: 8,
+      isNative: true,
+    } as unknown as TokenWithFiatAmount;
+
+    it('shows "Balance unavailable" and Retry instead of the amount for a failed non-EVM chain', () => {
+      mockUnavailableBalances = {
+        accountIds: ['btc-account'],
+        chainIds: [BITCOIN_CHAIN_ID],
+      };
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <TokenCell token={btcToken} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      expect(
+        getByTestId('token-cell-balance-unavailable-text'),
+      ).toHaveTextContent('Balance unavailable');
+      expect(
+        getByTestId('token-cell-balance-unavailable-retry-retry'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('multichain-token-list-item-value'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the amount for a non-EVM chain that loaded', () => {
+      mockUnavailableBalances = {
+        accountIds: ['sol-account'],
+        chainIds: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      };
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell token={btcToken} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      expect(
+        queryByTestId('token-cell-balance-unavailable'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('multichain-token-list-item-value'),
+      ).toBeInTheDocument();
+    });
+
+    it('never flags EVM tokens', () => {
+      mockUnavailableBalances = { accountIds: ['x'], chainIds: ['0x1'] };
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell {...(props as unknown as TokenCellProps)} />,
+        mockStore,
+      );
+
+      expect(
+        queryByTestId('token-cell-balance-unavailable'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('calls onClick when clicked', () => {

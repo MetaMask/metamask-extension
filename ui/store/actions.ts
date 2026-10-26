@@ -2204,7 +2204,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-          new Date(notification.readDate) < expirationTime,
+            new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -7583,6 +7583,18 @@ export async function decodeTransactionData({
       contractAddress,
       chainId,
     },
+  ]);
+}
+
+/**
+ * Retry fetching balances for snap (non-EVM) accounts whose last balance
+ * fetch failed ("Balance unavailable").
+ *
+ * @param accountIds - The accounts to retry.
+ */
+export async function retrySnapBalances(accountIds: string[]): Promise<void> {
+  return await submitRequestToBackground<void>('retrySnapBalances', [
+    accountIds,
   ]);
 }
 
