@@ -44,7 +44,10 @@ import {
 } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 
-import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
+import {
+  AccountGroupBalance,
+  useAccountGroupBalanceUnavailability,
+} from '../assets/account-group-balance/account-group-balance';
 import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';
 
 import {
@@ -258,6 +261,10 @@ export const CoinOverview = ({
 
   const period = '1d';
   const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay(period);
+  // When the total shows "Balance unavailable", a "+0.00 (+0.00%)" change
+  // under it would read as a confirmed balance: show only the trailing link.
+  const { replaceTotalWithUnavailable: isBalanceUnavailable } =
+    useAccountGroupBalanceUnavailability(chainId);
 
   useRewardsModal();
 
@@ -444,6 +451,17 @@ export const CoinOverview = ({
         </ButtonLink>
       );
     };
+
+    if (isBalanceUnavailable) {
+      return (
+        <Box
+          className="wallet-overview__currency-wrapper"
+          data-testid="coin-overview-balance-change-unavailable"
+        >
+          {renderPercentageAndAmountChangeTrail()}
+        </Box>
+      );
+    }
 
     return (
       <Box className="wallet-overview__currency-wrapper">

@@ -28,6 +28,7 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { selectUnavailableBalancesForSelectedAccountGroup } from '../../../../selectors/assets';
+import { buildUnavailableBalancePlaceholderTokens } from '../util/unavailableBalancePlaceholders';
 import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
@@ -274,7 +275,7 @@ describe('Token Cell', () => {
         accountIds: ['btc-account'],
         chainIds: [BITCOIN_CHAIN_ID],
       };
-      const { getByTestId, queryByTestId } = renderWithProvider(
+      const { container, getByTestId, queryByTestId } = renderWithProvider(
         <TokenCell token={btcToken} onClick={jest.fn()} />,
         mockStore,
       );
@@ -282,8 +283,12 @@ describe('Token Cell', () => {
       expect(
         getByTestId('token-cell-balance-unavailable-text'),
       ).toHaveTextContent('Balance unavailable');
+      // The footer Retry link has a single "-retry" suffix.
       expect(
-        getByTestId('token-cell-balance-unavailable-retry-retry'),
+        container.querySelector('[data-testid$="-retry-retry"]'),
+      ).toBeNull();
+      expect(
+        getByTestId('token-cell-balance-unavailable-footer-retry'),
       ).toBeInTheDocument();
       expect(
         queryByTestId('multichain-token-list-item-value'),
@@ -306,6 +311,32 @@ describe('Token Cell', () => {
       expect(
         queryByTestId('multichain-token-list-item-value'),
       ).toBeInTheDocument();
+    });
+
+    it('renders an "All networks" placeholder row (no balance) as unavailable', () => {
+      mockUnavailableBalances = {
+        accountIds: ['btc-account'],
+        chainIds: [BITCOIN_CHAIN_ID],
+      };
+      const [placeholder] = buildUnavailableBalancePlaceholderTokens({
+        unavailableChainIds: [BITCOIN_CHAIN_ID],
+        tokens: [],
+        isChainShown: () => true,
+      });
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <TokenCell token={placeholder} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      expect(
+        getByTestId('token-cell-balance-unavailable-text'),
+      ).toHaveTextContent('Balance unavailable');
+      expect(
+        getByTestId('token-cell-balance-unavailable-footer-retry'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('multichain-token-list-item-value'),
+      ).not.toBeInTheDocument();
     });
 
     it('never flags EVM tokens', () => {

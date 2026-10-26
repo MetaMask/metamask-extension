@@ -59,6 +59,7 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
+  selectUnavailableBalancesForSelectedAccountGroup,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -67,6 +68,7 @@ import {
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
+import { buildUnavailableBalancePlaceholderTokens } from '../util/unavailableBalancePlaceholders';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -199,6 +201,11 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getAllEnabledNetworksForAllNamespaces,
   );
 
+  // Chains whose (snap) balance could not be fetched for the selected group.
+  const unavailableBalances = useSelector(
+    selectUnavailableBalancesForSelectedAccountGroup,
+  );
+
   const sortedFilteredTokens = useMemo(() => {
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
@@ -234,7 +241,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             (!isEvm && asset.chainId === currentNetwork.chainId),
         );
 
-    return finalAccountAssets.map((asset) => {
+    const tokens = finalAccountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -247,6 +254,19 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
       return token;
     });
+
+    // A chain whose balance was never fetched has no asset at all, so it would
+    // only show up as a badge next to the total: add a native-asset row that
+    // renders "Balance unavailable" (with Retry) for it.
+    const placeholders = buildUnavailableBalancePlaceholderTokens({
+      unavailableChainIds: unavailableBalances.chainIds,
+      tokens,
+      isChainShown: (chainId) =>
+        allEnabledNetworksForAllNamespaces.includes(chainId) &&
+        (useExternalServices || (!isEvm && chainId === currentNetwork.chainId)),
+    });
+
+    return placeholders.length > 0 ? [...tokens, ...placeholders] : tokens;
   }, [
     isEvm,
     currentNetwork.chainId,
@@ -255,6 +275,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     allEnabledNetworksForAllNamespaces,
     deferredShouldHideZeroBalanceTokens,
     useExternalServices,
+    unavailableBalances,
   ]);
 
   useCoordinatedTrace({
