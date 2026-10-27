@@ -1,4 +1,5 @@
-{ "name": "metamask-crx",
+{
+  "name": "metamask-crx",
   "version": "13.56.0",
   "private": true,
   "imports": {
