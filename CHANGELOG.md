@@ -80,9 +80,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the Money balance card so its summary opens the Money page and removed the mUSD label (#46901)
 - Updated delegation deployment support for Ark (#46777)
 - Improved Money account styling and prevented sidebar tooltips from being clipped (#47026)
-- Updated preinstalled Stellar wallet support (#47080, #47084)
+- Updated preinstalled Stellar wallet support (#47080, #47084, #47224)
 - Updated Perps and Predict deposits to prefill half of the selected token balance (#46892)
 - Aligned the Money menu with the main menu when a scrollbar is visible (#47071)
+- Enabled the bottom navigation bar for all users so Money pages are no longer a dead end when the feature flag is unavailable (#47322)
 
 ### Removed
 
@@ -115,6 +116,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed failed-transaction toasts not appearing when transactions failed before submission (#46872)
 - Fixed the internal error dialog to follow the selected theme (#46890)
 - Fixed misleading insufficient network fee alerts on Monad when the 10 MON reserve balance requirement was the cause (#46049)
+- Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions (#47233)
+- Fixed Flask builds staying on the loading screen when Perps was left out of the build (#47173)
+
+### Security
+
+- Patched fast-uri, body-parser, undici, serialize-javascript, and zod to resolve security advisories (#47358, #47363)
 
 ## [13.53.0]
 
