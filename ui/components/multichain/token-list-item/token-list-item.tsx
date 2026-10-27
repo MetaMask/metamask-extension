@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
-import { type KeyringAccountType } from '@metamask/keyring-api';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -65,7 +64,6 @@ import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
-import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { TokenWithFiatAmount } from '../../app/assets/types';
 import { useDispatch } from '../../../store/hooks';
 import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
@@ -115,7 +113,6 @@ type TokenListItemProps = {
   privacyMode?: boolean;
   nativeCurrencySymbol?: string;
   isDestinationToken?: boolean;
-  accountType?: KeyringAccountType;
   rwaData?: TokenWithFiatAmount['rwaData'];
   /**
    * Pre-fetched market data from parent. When provided, avoids a per-row
@@ -151,7 +148,6 @@ export const TokenListItemComponent = ({
   isTitleHidden = false,
   address = null,
   showPercentage = false,
-  accountType,
   privacyMode = false,
   nativeCurrencySymbol,
   isDestinationToken = false,
@@ -386,9 +382,6 @@ export const TokenListItemComponent = ({
                     <StakeableLink chainId={chainId} symbol={tokenSymbol} />
                   )}
                 </Text>
-              )}
-              {accountType && ACCOUNT_TYPE_LABELS[accountType] && (
-                <Tag>{ACCOUNT_TYPE_LABELS[accountType]}</Tag>
               )}
               {isRWAToken ? (
                 <StockBadge isMarketClosed={!isTokenTradingOpen(rwaToken)} />

@@ -1,0 +1,43 @@
+diff --git a/dist/utils/token.js b/dist/utils/token.js
+index 7ee1f82378e2ea87a99425f2fd1d402fa2decc8e..dd8818a4a49a497be3f837002821abaab181382a 100644
+--- a/dist/utils/token.js
++++ b/dist/utils/token.js
+@@ -316,7 +316,9 @@ function getControllerAssetId(assetsInfo, chainId, tokenAddress) {
+         return cached;
+     }
+     const assetId = resolveControllerAssetId(assetsInfo, chainId, tokenAddress);
+-    if (assetId) {
++    // Only cache checksummed (mixed-case) keys, so a lowercase duplicate seen
++    // before the canonical entry is indexed cannot stick for the session.
++    if (assetId && assetId !== assetId.toLowerCase()) {
+         assetIds.set(cacheKey, assetId);
+     }
+     return assetId;
+@@ -356,15 +358,22 @@ function resolveControllerAssetId(assetsInfo, chainId, tokenAddress) {
+         return undefined;
+     }
+     const derivedAssetId = `${chainPrefix}erc20:${tokenAddress}`;
+-    if (assetsInfo[derivedAssetId]) {
++    const target = derivedAssetId.toLowerCase();
++    // Mixed-case input is already checksummed, so an exact hit is canonical.
++    if (derivedAssetId !== target && assetsInfo[derivedAssetId]) {
+         return derivedAssetId;
+     }
+-    const target = derivedAssetId.toLowerCase();
++    // Prefer the checksummed (mixed-case) key over a lowercase duplicate.
++    let lowercaseMatch;
+     for (const key of Object.keys(assetsInfo)) {
+-        if (key.toLowerCase() === target) {
++        if (key.toLowerCase() !== target) {
++            continue;
++        }
++        if (key !== target) {
+             return key;
+         }
++        lowercaseMatch = key;
+     }
+-    return undefined;
++    return lowercaseMatch;
+ }
+ //# sourceMappingURL=token.js.map
+\ No newline at end of file

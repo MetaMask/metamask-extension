@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 230,
+      "currentMigrationVersion": 233,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -75,6 +75,7 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
@@ -130,9 +131,11 @@
     },
     "ConfigRegistryController": {
       "configs": {
-        "networks": {}
+        "networks": {},
+        "eventsConfig": null
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
       "version": null
     },
@@ -2251,6 +2254,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 230
+    "version": 233
   }
 }

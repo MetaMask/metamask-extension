@@ -19,12 +19,18 @@ import { trackSplitStateWrite } from './state-write-metrics';
 const platform = new ExtensionPlatform();
 
 function createLocalStore() {
+  const testingFlags = getManifestFlags().testing;
+
+  // Test builds set IN_TEST. LLM workflow builds instead set fixtureServerPort
+  // in the manifest. Use fixture state in either case, unless forceExtensionStore
+  // explicitly opts out.
   const useFixtureStore =
-    process.env.IN_TEST &&
-    getManifestFlags().testing?.forceExtensionStore !== true;
+    (process.env.IN_TEST || testingFlags?.fixtureServerPort !== undefined) &&
+    testingFlags?.forceExtensionStore !== true;
   if (!useFixtureStore) {
     return new ExtensionStore();
   }
+
   // Use globalThis.self (not window) so this works in both the UI and the background/service worker, where window is undefined.
   const locationHref = globalThis.self?.location?.href;
   if (!locationHref) {

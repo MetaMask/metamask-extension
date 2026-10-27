@@ -234,7 +234,7 @@ describe('Token List via StorageService', function () {
               return { statusCode: 200, json: response };
             }),
           // Tokens API – supported networks
-          await mockTokensV2SupportedNetworks(mockServer),
+          ...(await mockTokensV2SupportedNetworks(mockServer)),
           // Tokens API – /v3/assets (ETH mainnet + MSCL + mUSD)
           await mockServer
             .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)

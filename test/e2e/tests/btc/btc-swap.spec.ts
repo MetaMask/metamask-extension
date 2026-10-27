@@ -33,7 +33,7 @@ async function buildBtcSwapBaseMocks(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }

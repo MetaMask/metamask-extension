@@ -3,6 +3,7 @@ import type { Messenger } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
 import {
   endTrace,
+  getPerformanceTimestamp,
   trace,
   type EndTraceRequest,
   type TraceRequest,
@@ -86,7 +87,7 @@ export class SentryTracingService {
       request: {
         ...requestWithoutParent,
         ...(isSerializedParentContext(parentContext) && { parentContext }),
-        startTime: request.startTime ?? Date.now(),
+        startTime: request.startTime ?? getPerformanceTimestamp(),
       },
     });
   }
@@ -107,7 +108,7 @@ export class SentryTracingService {
       type: 'end',
       request: {
         ...request,
-        timestamp: request.timestamp ?? Date.now(),
+        timestamp: request.timestamp ?? getPerformanceTimestamp(),
       },
     });
   }

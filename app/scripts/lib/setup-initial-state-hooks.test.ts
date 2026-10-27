@@ -15,6 +15,9 @@ const mockPersistenceOn = jest.fn();
 const mockTrackEarlySegmentEvent = jest.fn();
 const mockTrackSplitStateWrite = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
+let mockManifestFlags: { testing: { fixtureServerPort?: number } } = {
+  testing: {},
+};
 
 jest.mock('../platforms/extension', () => {
   return jest.fn().mockImplementation(() => ({
@@ -23,7 +26,7 @@ jest.mock('../platforms/extension', () => {
 });
 
 jest.mock('../../../shared/lib/manifestFlags', () => ({
-  getManifestFlags: () => ({ testing: {} }),
+  getManifestFlags: () => mockManifestFlags,
 }));
 
 jest.mock('../constants/sentry-state', () => ({
@@ -95,10 +98,14 @@ function setSelfHref(href: string): void {
 
 describe('setup-initial-state-hooks', () => {
   const originalSelf = globalThis.self;
+  const originalInTest = process.env.IN_TEST;
 
   beforeEach(() => {
     jest.resetModules();
+    jest.clearAllMocks();
+    process.env.IN_TEST = 'true';
     mockMostRecentRetrievedState = null;
+    mockManifestFlags = { testing: {} };
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
     mockTrackEarlySegmentEvent.mockClear();
@@ -112,6 +119,14 @@ describe('setup-initial-state-hooks', () => {
       writable: true,
       configurable: true,
     });
+  });
+
+  afterAll(() => {
+    if (originalInTest === undefined) {
+      delete process.env.IN_TEST;
+    } else {
+      process.env.IN_TEST = originalInTest;
+    }
   });
 
   describe('isBackgroundContext (via module behavior)', () => {
@@ -185,6 +200,43 @@ describe('setup-initial-state-hooks', () => {
       await expect(importFresh()).rejects.toThrow(
         'globalThis.self?.location?.href is not defined',
       );
+    });
+  });
+
+  describe('store selection', () => {
+    it('uses the fixture store when the LLM fixture server is configured', async () => {
+      process.env.IN_TEST = '';
+      mockManifestFlags = { testing: { fixtureServerPort: 3000 } };
+      setSelfHref('chrome-extension://abc123/home.html');
+
+      const { FixtureExtensionStore } = jest.requireMock(
+        '../../../shared/lib/stores/fixture-extension-store',
+      );
+      const ExtensionStore = jest.requireMock(
+        '../../../shared/lib/stores/extension-store',
+      );
+
+      await importFresh();
+
+      expect(FixtureExtensionStore).toHaveBeenCalledWith({ initialize: false });
+      expect(ExtensionStore).not.toHaveBeenCalled();
+    });
+
+    it('uses the extension store without a test build or fixture server', async () => {
+      process.env.IN_TEST = '';
+      setSelfHref('chrome-extension://abc123/home.html');
+
+      const { FixtureExtensionStore } = jest.requireMock(
+        '../../../shared/lib/stores/fixture-extension-store',
+      );
+      const ExtensionStore = jest.requireMock(
+        '../../../shared/lib/stores/extension-store',
+      );
+
+      await importFresh();
+
+      expect(FixtureExtensionStore).not.toHaveBeenCalled();
+      expect(ExtensionStore).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -869,6 +869,7 @@ describe('AppStateController', () => {
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -959,6 +960,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1043,6 +1045,7 @@ describe('AppStateController', () => {
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1125,6 +1128,7 @@ describe('AppStateController', () => {
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1161,6 +1165,20 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('addMoneyEarnBannerDismissedTokenKey', () => {
+    it('adds each token key once', async () => {
+      await withController(async ({ controller }) => {
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+        controller.addMoneyEarnBannerDismissedTokenKey('0xe708:0xdef');
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+
+        expect(
+          controller.state.moneyEarnBannerDismissedTokenKeys,
+        ).toStrictEqual(['0x1:0xabc', '0xe708:0xdef']);
+      });
     });
   });
 

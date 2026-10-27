@@ -10,18 +10,21 @@ import AccountListPage from '../pages/accounts/list-page';
  * @param options.driver - The webdriver instance.
  * @param options.createdAccountLabel - Expected label of the newly created account. Defaults to 'Account 2'.
  * @param options.switchToAccount - Account label to switch to after creation.
+ * @param options.expectedBalance - Balance expected on the homepage before opening the account menu. Defaults to '25'.
  */
 export const addAccount = async ({
   driver,
   createdAccountLabel = 'Account 2',
   switchToAccount,
+  expectedBalance = '25',
 }: {
   driver: Driver;
   createdAccountLabel?: string;
   switchToAccount?: string;
+  expectedBalance?: string;
 }): Promise<void> => {
   const homepage = new HomePage(driver);
-  await homepage.checkExpectedBalanceIsDisplayed();
+  await homepage.checkExpectedBalanceIsDisplayed(expectedBalance);
   await homepage.headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);

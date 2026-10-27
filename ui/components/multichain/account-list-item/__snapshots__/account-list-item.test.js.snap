@@ -211,20 +211,6 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             </div>
           </div>
         </div>
-        <div
-          class="flex-row flex"
-        >
-          <div
-            class="flex-row items-center bg-muted inline-flex gap-0.5 self-start rounded-md pl-1.5 pr-1.5"
-            data-testid="account-list-item-tag-b7893c59-e376-4cc0-93ad-05ddaab574a6-Native SegWit"
-          >
-            <p
-              class="text-alternative text-s-body-xs leading-s-body-xs tracking-s-body-xs md:text-l-body-xs md:leading-l-body-xs md:tracking-l-body-xs font-medium font-default"
-            >
-              Native SegWit
-            </p>
-          </div>
-        </div>
       </div>
     </div>
     <div
