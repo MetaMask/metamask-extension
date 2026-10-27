@@ -679,6 +679,7 @@
     "@metamask/test-snaps": "^3.6.0",
     "@noble/ciphers": "^1.3.0",
     "@noble/curves": "^1.9.2",
+    "@octokit/graphql-schema": "^15.26.1",
     "@octokit/rest": "^22.0.1",
     "@open-rpc/meta-schema": "^1.14.6",
     "@open-rpc/mock-server": "^1.7.5",
