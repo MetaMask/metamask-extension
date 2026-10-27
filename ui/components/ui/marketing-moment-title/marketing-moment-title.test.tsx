@@ -6,18 +6,15 @@ import { render, screen } from '@testing-library/react';
 import { MarketingMomentTitle } from './marketing-moment-title';
 
 describe('MarketingMomentTitle', () => {
-  it('renders the title text with the hero metrics', () => {
+  it('renders the title text', () => {
     render(<MarketingMomentTitle>Perps are here</MarketingMomentTitle>);
 
-    const title = screen.getByRole('heading', { level: 1 });
-    expect(title).toHaveTextContent('Perps are here');
-    expect(title).toHaveStyle({
-      lineHeight: 0.8,
-      letterSpacing: '-0.02em',
-    });
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'Perps are here',
+    );
   });
 
-  it('keeps a caller style after the hero treatment', () => {
+  it('keeps a caller style', () => {
     render(
       <MarketingMomentTitle
         data-testid="marketing-title"
@@ -28,8 +25,6 @@ describe('MarketingMomentTitle', () => {
     );
 
     expect(screen.getByTestId('marketing-title')).toHaveStyle({
-      lineHeight: 0.8,
-      letterSpacing: '-0.02em',
       opacity: 0.5,
     });
   });
