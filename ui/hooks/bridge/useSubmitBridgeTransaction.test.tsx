@@ -785,7 +785,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         await result.current.submitBridgeTransaction(quoteWithMetadata);
       });
 
-      expect(submitTxSpy.mock.calls[0][6]).toStrictEqual([
+      expect(submitTxSpy.mock.calls[0][0].activeAbTests).toStrictEqual([
         createActiveABTestAssignment(CHAIN_VALUE_ORDER_AB_KEY, 'treatment'),
       ]);
     });
