@@ -1720,11 +1720,11 @@ Performance Checks (React Components):
 
 ## Cursor Cloud specific instructions
 
-This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
+This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. The environment install script reads Node from `.nvmrc` and Yarn from `packageManager`, installs that toolchain with nvm and Corepack, runs `yarn install --immutable`, installs Playwright browsers, and creates `.metamaskrc` from `.metamaskrc.dist` when it is missing. The extension checkout in this multi-repo environment is `/agent/repos/metamask-extension`. Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
 
 ### Node version gotcha (important)
 
-- The repo requires Node `>=24.13` (`.nvmrc` → `v24.13`), but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 24 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v24.13.1/bin:$PATH"` before the command. `corepack enable` must run under Node 24 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
+- The repo requires the Node version pinned in `.nvmrc` (`engines.node` is `>=24.22.1`). The base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH`. The install script prepends `~/.nvm/versions/node/v<version>/bin` at the end of `~/.bashrc`, so login shells resolve `node` and `yarn` to that toolchain. If a command still runs Node 22, run `nvm use` from the repo root or prefix `PATH="$HOME/.nvm/versions/node/$(tr -d '[:space:]' < .nvmrc)/bin:$PATH"` (`.nvmrc` includes the leading `v`). Corepack must run under that Node so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
 
 ### Running / building the extension
 
@@ -1734,7 +1734,7 @@ This section captures non-obvious, durable caveats for running this repo inside 
 
 ### Visual / interactive verification (`mm` CLI)
 
-- The `mm` CLI (`node_modules/.bin/mm`, from `@metamask/client-mcp-core`) drives the extension via Playwright and is the fastest way to click through onboarding/unlock/send flows. It requires **Playwright's Chromium**, which is not part of `yarn install`: run `yarn playwright install chromium` once (cached under `~/.cache/ms-playwright`) before `mm launch`. It also needs an X display — one is available at `DISPLAY=:1` (set `export DISPLAY=:1`).
+- The `mm` CLI (`node_modules/.bin/mm`, from `@metamask/client-mcp-core`) drives the extension via Playwright and is the fastest way to click through onboarding/unlock/send flows. The environment install script installs Playwright's browsers under `~/.cache/ms-playwright`. If that cache is missing, run `yarn playwright install chromium` before `mm launch`. It also needs an X display — one is available at `DISPLAY=:1` (set `export DISPLAY=:1`).
 - Launch against the existing dev build with `mm launch --context prod --extension-path dist/chrome --state onboarding`, then use `mm describe-screen` / `mm click --testid <id>` / `mm type`. During create-wallet, the on-home **Terms of Use** dialog's Agree button stays disabled until you click `terms-of-use-scroll-button` (repeatedly) to scroll the terms to the bottom. Always finish with `mm cleanup`. See `test/e2e/playwright/llm-workflow/README.md`.
 
 ### E2E tests
