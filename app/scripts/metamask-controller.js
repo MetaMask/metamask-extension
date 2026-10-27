@@ -623,10 +623,9 @@ export default class MetamaskController extends EventEmitter {
       MultichainAccountService: MultichainAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
-      // The Braze SDK runs in the offscreen document, so Braze is MV3-only.
-      ...(isManifestV3 && isBrazeConfigured()
-        ? { BrazeService: BrazeServiceInit }
-        : {}),
+      // The Braze SDK runs in the offscreen document on MV3 and in the
+      // background page on MV2.
+      ...(isBrazeConfigured() ? { BrazeService: BrazeServiceInit } : {}),
       UserStorageController: UserStorageControllerInit,
       AuthenticatedUserStorageService: AuthenticatedUserStorageServiceInit,
       NotificationServicesController: NotificationServicesControllerInit,

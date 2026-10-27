@@ -9,10 +9,6 @@ import type {
   AuthenticationControllerStateChangeEvent,
 } from '@metamask/profile-sync-controller/auth';
 import {
-  BrazeAction,
-  OffscreenCommunicationTarget,
-} from '../../../shared/constants/offscreen-communication';
-import {
   getDesiredBrazeUser,
   getPrimaryCanonicalProfileId,
 } from '../../../shared/lib/braze';
@@ -46,46 +42,29 @@ export type BrazeServiceMessenger = Messenger<
   AllowedEvents
 >;
 
-export type BrazeSyncUserMessage = {
-  target: OffscreenCommunicationTarget.brazeOffscreen;
-  action: BrazeAction.syncUser;
-  profileId: string | null;
-};
-
-export type BrazeSyncUserResponse =
-  | { success: true }
-  | { success: false; error: string };
-
-type SendToOffscreen = (
-  message: BrazeSyncUserMessage,
-) => Promise<BrazeSyncUserResponse | undefined>;
-
-const sendToOffscreenDocument: SendToOffscreen = (message) =>
-  chrome.runtime.sendMessage(message);
+export type SyncBrazeUser = (profileId: string | null) => Promise<void>;
 
 /**
- * Keeps the Braze SDK in the offscreen document identified with the user's
- * canonical profile ID.
+ * Keeps the Braze SDK identified with the user's canonical profile ID.
  *
  * The background owns every gate (onboarding, Basic Functionality, Profile
- * Sync sign-in, lock state) and sends the desired user to the offscreen
- * document whenever it changes. The offscreen document only applies it.
+ * Sync sign-in, lock state) and applies the desired user whenever it changes
+ * through a platform-specific `syncUser`: the offscreen document on MV3, and
+ * the background page itself on MV2.
  */
 export class BrazeService {
   readonly name: typeof SERVICE_NAME = SERVICE_NAME;
 
   readonly #messenger: BrazeServiceMessenger;
 
-  readonly #offscreenReady: Promise<void>;
-
-  readonly #sendToOffscreen: SendToOffscreen;
+  readonly #syncUser: SyncBrazeUser;
 
   /**
-   * The user last sent to the offscreen document in this background lifetime.
-   * A failed send is not retried until the desired user changes, so a missing
-   * offscreen document does not cause a send on every state change.
+   * The user last applied in this background lifetime. A failed sync is not
+   * retried until the desired user changes, so a missing host or offscreen
+   * document does not cause a sync on every state change.
    */
-  #lastSentUser: string | null | undefined;
+  #lastSyncedUser: string | null | undefined;
 
   #queue: Promise<void> = Promise.resolve();
 
@@ -94,23 +73,18 @@ export class BrazeService {
    *
    * @param options - Options.
    * @param options.messenger - The service messenger.
-   * @param options.offscreenReady - Resolves when the offscreen document can
-   * receive messages.
-   * @param options.sendToOffscreen - Sends a message to the offscreen
-   * document. Defaults to `chrome.runtime.sendMessage`.
+   * @param options.syncUser - Applies the desired user. The offscreen document
+   * target on MV3, or the background Braze host on MV2.
    */
   constructor({
     messenger,
-    offscreenReady,
-    sendToOffscreen = sendToOffscreenDocument,
+    syncUser,
   }: {
     messenger: BrazeServiceMessenger;
-    offscreenReady: Promise<void>;
-    sendToOffscreen?: SendToOffscreen;
+    syncUser: SyncBrazeUser;
   }) {
     this.#messenger = messenger;
-    this.#offscreenReady = offscreenReady;
-    this.#sendToOffscreen = sendToOffscreen;
+    this.#syncUser = syncUser;
 
     const sync = () => this.#sync();
     this.#messenger.subscribe('AuthenticationController:stateChange', sync);
@@ -118,8 +92,7 @@ export class BrazeService {
     this.#messenger.subscribe('OnboardingController:stateChange', sync);
     this.#messenger.subscribe('PreferencesController:stateChange', sync);
 
-    // Re-apply after a service worker restart; the offscreen document is
-    // recreated with it.
+    // Re-apply after a background restart; the host is recreated with it.
     this.#sync();
   }
 
@@ -155,22 +128,12 @@ export class BrazeService {
     this.#queue = this.#queue.then(async () => {
       try {
         const desiredUser = this.#getDesiredUser();
-        if (desiredUser === undefined || desiredUser === this.#lastSentUser) {
+        if (desiredUser === undefined || desiredUser === this.#lastSyncedUser) {
           return;
         }
-        this.#lastSentUser = desiredUser;
+        this.#lastSyncedUser = desiredUser;
 
-        await this.#offscreenReady;
-        const response = await this.#sendToOffscreen({
-          target: OffscreenCommunicationTarget.brazeOffscreen,
-          action: BrazeAction.syncUser,
-          profileId: desiredUser,
-        });
-        if (!response?.success) {
-          throw new Error(
-            `Braze user sync failed: ${response?.error ?? 'no response from the offscreen document'}`,
-          );
-        }
+        await this.#syncUser(desiredUser);
       } catch (error) {
         captureException(error);
       }

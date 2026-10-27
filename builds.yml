@@ -283,7 +283,7 @@ env:
 
   - SEGMENT_HOST: null
   - SENTRY_DSN: null
-  # Braze Web SDK (MV3 offscreen document only; never the service worker)
+  # Braze Web SDK (offscreen document on MV3, background page on MV2)
   - BRAZE_WEB_API_KEY: null
   - BRAZE_SDK_ENDPOINT: null
   - SENTRY_DSN_DEV: null
