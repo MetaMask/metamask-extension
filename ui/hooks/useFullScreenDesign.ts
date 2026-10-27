@@ -31,13 +31,6 @@ function useMediaQueryMatches(query: string): boolean {
   return useSyncExternalStore(subscribe, getSnapshot);
 }
 
-/**
- * Returns whether the fullscreen design should be used. This is the case when
- * the `extensionUxFullscreenRedesign` remote feature flag is enabled and the
- * viewport is at least `FULL_SCREEN_DESIGN_MIN_WIDTH` pixels wide.
- *
- * @returns True if the fullscreen design should be used, false otherwise.
- */
 export function useFullScreenDesign(): boolean {
   const isFlagEnabled = useSelector(getIsFullscreenRedesignEnabled);
   const isWideViewport = useMediaQueryMatches(FULL_SCREEN_DESIGN_MEDIA_QUERY);
