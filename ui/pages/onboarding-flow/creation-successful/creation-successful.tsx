@@ -14,7 +14,10 @@ import {
   BoxAlignItems,
   TextButton,
 } from '@metamask/design-system-react';
-import { MarketingMoment } from '../../../components/ui/marketing-moment';
+import {
+  MarketingMoment,
+  type MarketingMomentAction,
+} from '../../../components/ui/marketing-moment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
@@ -185,18 +188,22 @@ export default function CreationSuccessful() {
         data-testid="parent-selector-onboarding-complete"
         title={t('yourWalletIsReady')}
         artwork={<WalletReadyAnimation />}
-        primaryAction={{
-          label: doneButtonLabel,
-          onClick: onDone,
-          isDisabled: openWalletDisabled,
-          'data-testid': 'onboarding-complete-done',
-        }}
-        secondaryAction={{
-          label: t('manageDefaultSettings'),
-          onClick: () => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE),
-          isDisabled: openWalletDisabled,
-          'data-testid': 'manage-default-settings',
-        }}
+        primaryAction={
+          {
+            label: doneButtonLabel,
+            onClick: onDone,
+            isDisabled: openWalletDisabled,
+            'data-testid': 'onboarding-complete-done',
+          } as MarketingMomentAction
+        }
+        secondaryAction={
+          {
+            label: t('manageDefaultSettings'),
+            onClick: () => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE),
+            isDisabled: openWalletDisabled,
+            'data-testid': 'manage-default-settings',
+          } as MarketingMomentAction
+        }
       />
     );
   }

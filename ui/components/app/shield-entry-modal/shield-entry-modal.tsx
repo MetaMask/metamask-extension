@@ -13,7 +13,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import log from 'loglevel';
-import { MarketingMoment } from '../../ui/marketing-moment';
+import {
+  MarketingMoment,
+  type MarketingMomentAction,
+} from '../../ui/marketing-moment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -270,18 +273,22 @@ const ShieldEntryModal = ({
               canvasClassName="shield-entry-modal-shield-illustration__canvas"
             />
           }
-          primaryAction={{
-            label: t('shieldEntryModalGetStarted'),
-            onClick: handleOnGetStarted,
-            isDisabled: actionLoading,
-            'data-testid': 'shield-entry-modal-get-started-button',
-          }}
-          secondaryAction={{
-            label: t('learnMoreUpperCase'),
-            onClick: handleOnLearnMoreClick,
-            isDisabled: actionLoading,
-            'data-testid': 'shield-entry-modal-learn-more-button',
-          }}
+          primaryAction={
+            {
+              label: t('shieldEntryModalGetStarted'),
+              onClick: handleOnGetStarted,
+              isDisabled: actionLoading,
+              'data-testid': 'shield-entry-modal-get-started-button',
+            } as MarketingMomentAction
+          }
+          secondaryAction={
+            {
+              label: t('learnMoreUpperCase'),
+              onClick: handleOnLearnMoreClick,
+              isDisabled: actionLoading,
+              'data-testid': 'shield-entry-modal-learn-more-button',
+            } as MarketingMomentAction
+          }
         />
       </ModalContent>
     </Modal>

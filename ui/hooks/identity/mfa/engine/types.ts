@@ -97,6 +97,8 @@ export type MfaFlowErrorCode = MfaErrorCode | MfaKitErrorCode;
 export interface MfaReason {
   /** Sent to the controller (trace tags). */
   operation: string;
+  /** Mobile presentation for full-screen steps. Defaults to a modal. */
+  presentation?: 'card' | 'modal';
   /**
    * Already-translated line shown when the flow sets up missing methods,
    * replacing the generic one. UI only.
@@ -254,7 +256,8 @@ export type MfaFlowAction =
   | { type: 'resend' }
   | { type: 'retry' }
   | { type: 'dismiss' }
-  | { type: 'cancel' };
+  | { type: 'cancel' }
+  | { type: 'back' };
 
 export interface MfaFlowResult {
   credentials: EnrolledCredential[];

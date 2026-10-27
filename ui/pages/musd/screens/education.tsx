@@ -23,7 +23,10 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
-import { MarketingMoment } from '../../../components/ui/marketing-moment';
+import {
+  MarketingMoment,
+  type MarketingMomentAction,
+} from '../../../components/ui/marketing-moment';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -357,18 +360,22 @@ const MusdEducationScreen = () => {
             style={{ maxWidth: '100%', height: 'auto' }}
           />
         }
-        primaryAction={{
-          label: primaryButtonLabel,
-          onClick: handleContinue,
-          isDisabled: isLoading,
-          'data-testid': 'musd-education-continue-button',
-        }}
-        secondaryAction={{
-          label: secondaryButtonLabel,
-          onClick: handleSkip,
-          className: 'text-default',
-          'data-testid': 'musd-education-not-now-button',
-        }}
+        primaryAction={
+          {
+            label: primaryButtonLabel,
+            onClick: handleContinue,
+            isDisabled: isLoading,
+            'data-testid': 'musd-education-continue-button',
+          } as MarketingMomentAction
+        }
+        secondaryAction={
+          {
+            label: secondaryButtonLabel,
+            onClick: handleSkip,
+            className: 'text-default',
+            'data-testid': 'musd-education-not-now-button',
+          } as MarketingMomentAction
+        }
       />
     </Box>
   );

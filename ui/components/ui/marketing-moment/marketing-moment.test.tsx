@@ -3,41 +3,30 @@
  */
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import configureMockStore from 'redux-mock-store';
 import { MarketingMoment } from './marketing-moment';
 import type { MarketingMomentProps } from './marketing-moment.types';
-
-const mockStore = configureMockStore()({
-  localeMessages: { currentLocale: 'en' },
-  metamask: { currentLocale: 'en' },
-});
 
 const onPrimaryClick = jest.fn();
 const onSecondaryClick = jest.fn();
 
 const renderMoment = (props: Partial<MarketingMomentProps> = {}) =>
   render(
-    <Provider store={mockStore}>
-      <MarketingMoment
-        data-testid="marketing-moment"
-        title="Perps are here"
-        titleProps={{ 'data-testid': 'marketing-moment-title' }}
-        description="Long or short with up to 40x leverage."
-        descriptionProps={{ 'data-testid': 'marketing-moment-description' }}
-        primaryAction={{
-          label: 'Get started',
-          onClick: onPrimaryClick,
-          'data-testid': 'marketing-moment-primary-button',
-        }}
-        secondaryAction={{
-          label: 'Not now',
-          onClick: onSecondaryClick,
-          'data-testid': 'marketing-moment-secondary-button',
-        }}
-        {...props}
-      />
-    </Provider>,
+    <MarketingMoment
+      data-testid="marketing-moment"
+      title="Perps are here"
+      titleProps={{ 'data-testid': 'marketing-moment-title' }}
+      description="Long or short with up to 40x leverage."
+      descriptionProps={{ 'data-testid': 'marketing-moment-description' }}
+      primaryAction={{
+        label: 'Get started',
+        onClick: onPrimaryClick,
+      }}
+      secondaryAction={{
+        label: 'Not now',
+        onClick: onSecondaryClick,
+      }}
+      {...props}
+    />,
   );
 
 describe('MarketingMoment', () => {
@@ -84,17 +73,17 @@ describe('MarketingMoment', () => {
   it('renders artwork in a box that accepts props', () => {
     renderMoment({
       artwork: <div data-testid="marketing-moment-artwork" />,
-      artworkWrapperProps: { 'data-testid': 'artwork-wrapper' },
+      artworkWrapperProps: { id: 'artwork-wrapper' },
     });
 
-    expect(screen.getByTestId('artwork-wrapper')).toBeInTheDocument();
+    expect(document.getElementById('artwork-wrapper')).toBeInTheDocument();
     expect(screen.getByTestId('marketing-moment-artwork')).toBeInTheDocument();
   });
 
   it('calls the primary action when clicked', () => {
     renderMoment();
 
-    fireEvent.click(screen.getByTestId('marketing-moment-primary-button'));
+    fireEvent.click(screen.getAllByRole('button')[0]);
 
     expect(onPrimaryClick).toHaveBeenCalledTimes(1);
   });
@@ -102,7 +91,7 @@ describe('MarketingMoment', () => {
   it('calls the dismiss action when clicked', () => {
     renderMoment();
 
-    fireEvent.click(screen.getByTestId('marketing-moment-secondary-button'));
+    fireEvent.click(screen.getAllByRole('button')[1]);
 
     expect(onSecondaryClick).toHaveBeenCalledTimes(1);
   });
@@ -122,11 +111,6 @@ describe('MarketingMoment', () => {
     expect(
       screen.queryByTestId('marketing-moment-description'),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('marketing-moment-primary-button'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('marketing-moment-secondary-button'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 });
