@@ -135,7 +135,7 @@ MM_MONEY_MPC_KEYRING_ENABLED='false'
 ; normalized to lowercase) served by the MPC money keyring stub through
 ; `getAccounts`, so the keyring wiring can be verified without the MPC stack.
 ; Unset by default: the stub serves no accounts.
-;MM_MONEY_MPC_ADDRESS='0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B'
+;MM_MONEY_MPC_ADDRESS='0x0000000000000000000000000000000000000000'
 
 ; Set this to `true` to force enforced simulations to apply whenever a
 ; transaction has balance changes, bypassing the trust signal check.
