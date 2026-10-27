@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "在支持的网络上，解锁更快的交易速度、更低的网络费用及增强的安全性。"
   },
-  "enableSnap": {
-    "message": "启用"
-  },
   "enableToken": {
     "message": "启用 $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5458,17 +5455,11 @@
   "mfaMethodEmail": {
     "message": "电子邮件"
   },
-  "mfaOtpPaste": {
-    "message": "粘贴"
-  },
   "mfaOtpResend": {
     "message": "重新发送验证码"
   },
   "mfaOtpRetry": {
     "message": "请重试"
-  },
-  "mfaOtpVerify": {
-    "message": "验证"
   },
   "mfaPickerOr": {
     "message": "或"

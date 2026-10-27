@@ -8,7 +8,7 @@ import {
   switchToNetworkFromNetworkSelect,
 } from '../../../page-objects/flows/network.flow';
 import ActivityTab from '../../../page-objects/pages/home/activity-tab';
-import NonEvmHomepage from '../../../page-objects/pages/home/non-evm-homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
 import {
   TRON_ACCOUNT_ADDRESS,
@@ -97,7 +97,7 @@ describe('Tron - Activity types', function (this: Suite) {
         });
         await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
@@ -190,7 +190,7 @@ describe('Tron - Activity types', function (this: Suite) {
         });
         await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
-        const homePage = new NonEvmHomepage(driver);
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
