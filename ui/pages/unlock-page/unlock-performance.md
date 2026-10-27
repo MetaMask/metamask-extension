@@ -22,6 +22,6 @@ for every outcome, including failure, cancellation, and password fallback.
 The existing `AppUnlocked` event measures authentication duration. Manual passkey
 authentication and its troubleshooting modal temporarily suppress readiness.
 
-The shared [measurement API](../../../docs/useful-screen-ready.md) owns document
-visibility, elapsed time, and reporting. Unlock owns registration, navigation,
+The shared [measurement API](../../../docs/useful-screen-ready.md) owns elapsed
+time, page-close exclusion, and reporting. Unlock owns registration, navigation,
 and its readiness decisions. The initial rollout instruments only this page.

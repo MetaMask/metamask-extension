@@ -40,6 +40,7 @@ useAfterPaint(isContentReady, measurement?.reportReady);
 
 `useAfterPaint` schedules a callback after a ready commit and two animation frames.
 This allows a paint opportunity; it does not measure actual pixel presentation.
+Browsers can defer animation frames while a document is hidden.
 It cancels pending work when readiness becomes false, the callback changes, or the
 component unmounts. Becoming ready again can schedule a new callback.
 
@@ -53,10 +54,10 @@ eligible. The scheduling hook has no dependency on telemetry or routing.
 - At most one sample per document. Discarded loads produce no successful sample
   or incomplete span. A span is created and immediately ended when readiness is
   reported, backdated to document navigation.
-- Visibility and page-close tracking starts before background initialization.
-  Hidden documents and page close permanently exclude sampling. Where supported,
-  buffered `visibility-state` entries also exclude documents hidden before the
-  UI bundle ran. Otherwise, visibility before script execution is unknown.
+- Page-close tracking starts before background initialization and permanently
+  excludes closed documents.
+- Document visibility does not affect eligibility, including Chrome side panels
+  that start hidden. Elapsed time includes time spent hidden.
 - Common tags are `screen`, `ui.navigation=document`, `ui.readiness_version=1`,
   and `ui.background_initialized_before_navigation`. Integrations supply any
   additional initial-state metadata. Compare timings within matching cohorts.
@@ -67,5 +68,5 @@ eligible. The scheduling hook has no dependency on telemetry or routing.
 
 Collect a production baseline before optimizations. Live Sentry ingestion and
 dashboard availability must be verified after deployment. This metric covers
-completed foreground loads, not abandonment or failure rates; asynchronous
+completed document loads, not abandonment or failure rates; asynchronous
 enrichment can update content after readiness.
