@@ -102,7 +102,8 @@ describe('Send ETH - Max Amount', function () {
         });
         const activityTab = new ActivityTab(driver);
         await activityTab.goToActivityList();
-        await activityTab.checkSentEthTransaction('-24.99945808');
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-24.99945808 ETH');
       },
     );
   });
@@ -155,7 +156,8 @@ describe('Send ETH - Max Amount', function () {
 
           const activityTab = new ActivityTab(driver);
           await activityTab.goToActivityList();
-          await activityTab.checkSentEthTransaction('-24.997');
+          await activityTab.checkTxAction({ action: 'Sent ETH' });
+          await activityTab.checkTxAmountInActivity('-24.997 ETH');
         },
       );
     });
@@ -204,7 +206,8 @@ describe('Send ETH - Max Amount', function () {
 
           const activityTab = new ActivityTab(driver);
           await activityTab.goToActivityList();
-          await activityTab.checkSentEthTransaction('-24.9996');
+          await activityTab.checkTxAction({ action: 'Sent ETH' });
+          await activityTab.checkTxAmountInActivity('-24.9996 ETH');
         },
       );
     });
@@ -282,7 +285,8 @@ describe('Send ETH - Max Amount', function () {
         });
         const activityTab = new ActivityTab(driver);
         await activityTab.goToActivityList();
-        await activityTab.checkSentEthTransaction('-24.9989');
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-24.9989 ETH');
       },
     );
   });
@@ -326,7 +330,8 @@ describe('Send ETH - Max Amount', function () {
 
         const activityTab = new ActivityTab(driver);
         await activityTab.goToActivityList();
-        await activityTab.checkSentEthTransaction('-10');
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-10 ETH');
       },
     );
   });

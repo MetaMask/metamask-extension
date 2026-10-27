@@ -24,6 +24,7 @@ import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
 import {
   openDappAndSwitchChain,
   openPopupWithActiveTabOrigin,
@@ -248,25 +249,35 @@ describe('Request-queue UI changes', function () {
         await driver.waitForWindowWithTitleToBePresent(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        const homePage = new HomePage(driver);
         const activityTab = new ActivityTab(driver);
         await activityTab.goToActivityList();
-        await activityTab.checkSentEthTransaction('-0');
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-0 ETH');
 
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
           await switchToNetworkFromNetworkSelect(driver, 'Localhost 7777');
-          await activityTab.checkBalanceAndActivity('25');
+          await homePage.goToHomePage();
+          await homePage.checkExpectedBalanceIsDisplayed('25');
+          await homePage.goToActivityList();
+          await activityTab.checkTxAction({ action: 'Sent ETH' });
         }
 
         // Validate second network, where transaction was rejected
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
-        await activityTab.checkBalanceAndActivity('25', 0);
+        await homePage.goToHomePage();
+        await homePage.checkExpectedBalanceIsDisplayed('25');
+        await homePage.goToActivityList();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(0);
 
         // Validate first network, where transaction was confirmed
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
-        await activityTab.checkBalanceAndActivity('25');
-        await activityTab.goToActivityList();
-        await activityTab.checkSentEthTransaction('-0');
+        await homePage.goToHomePage();
+        await homePage.checkExpectedBalanceIsDisplayed('25');
+        await homePage.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-0 ETH');
       },
     );
   });
