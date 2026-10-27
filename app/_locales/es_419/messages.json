@@ -5462,17 +5462,11 @@
   "mfaMethodEmail": {
     "message": "Correo electrónico"
   },
-  "mfaOtpPaste": {
-    "message": "Pegar"
-  },
   "mfaOtpResend": {
     "message": "Reenviar código"
   },
   "mfaOtpRetry": {
     "message": "Inténtalo de nuevo"
-  },
-  "mfaOtpVerify": {
-    "message": "Verificar"
   },
   "mfaPickerOr": {
     "message": "o"
