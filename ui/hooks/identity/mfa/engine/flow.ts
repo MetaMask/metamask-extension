@@ -446,7 +446,8 @@ export const createMfaFlow = ({
 
   /**
    * Shows an error the user can fix on the same step. An email linked to
-   * another account goes back to email entry.
+   * another account goes back to email entry, and its spent challenge is
+   * dropped so continuing sends a new code.
    *
    * @param code - The error's code.
    */
@@ -456,6 +457,7 @@ export const createMfaFlow = ({
       current?.method === 'email_otp' &&
       current.purpose === 'setup'
     ) {
+      current = { ...current, flowId: undefined };
       show(
         { name: 'emailEntry', prefillEmail: current.email },
         { error: code },
