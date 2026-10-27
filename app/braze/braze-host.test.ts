@@ -86,22 +86,16 @@ describe('createBrazeHost', () => {
     expect(loadSdk).not.toHaveBeenCalled();
   });
 
-  it('loads the SDK to wipe data persisted by a previous host', async () => {
-    localStorage.setItem('ab.storage.userId.test-key', '{"v":"canonical-123"}');
+  it('loads the SDK to wipe data after identifying', async () => {
     const sdk = createSdk();
     const syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });
+    await syncBrazeUser('canonical-123');
 
-    try {
-      await syncBrazeUser(null);
-    } finally {
-      localStorage.clear();
-    }
+    await syncBrazeUser(null);
 
-    expect(sdk.initialize).toHaveBeenCalled();
     expect(sdk.wipeData).toHaveBeenCalled();
     expect(sdk.destroy).toHaveBeenCalled();
-    expect(sdk.changeUser).not.toHaveBeenCalled();
-    expect(sdk.requestImmediateDataFlush).not.toHaveBeenCalled();
+    expect(sdk.changeUser).toHaveBeenCalledTimes(1);
   });
 
   it('wipes data before destroying the SDK', async () => {

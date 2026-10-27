@@ -9,8 +9,25 @@ jest.mock('@braze/web-sdk', () =>
 
 const sdk = braze as unknown as BrazeSdk;
 const send = () => jest.mocked(window.XMLHttpRequest.prototype.send);
-const brazeStorageKeys = () =>
-  Object.keys(localStorage).filter((key) => key.startsWith('ab.'));
+const queuedEvents = () =>
+  send().mock.calls.flatMap(
+    ([body]) => JSON.parse(String(body)).events ?? [],
+  ) as { name: string }[];
+
+/**
+ * Emulate the LavaMoat policy: the SDK is not granted `localStorage`, so the
+ * global is undefined and the SDK falls back to its in-memory store.
+ */
+const denyLocalStorage = () => {
+  Object.defineProperty(window, 'localStorage', {
+    configurable: true,
+    value: undefined,
+  });
+};
+
+const restoreLocalStorage = () => {
+  delete (window as { localStorage?: Storage }).localStorage;
+};
 
 describe('Braze SDK lifecycle in the host', () => {
   const originalEnv = process.env;
@@ -34,8 +51,10 @@ describe('Braze SDK lifecycle in the host', () => {
     jest
       .spyOn(document, 'hidden', 'get')
       .mockImplementation(() => documentHidden);
-    // LavaMoat does not grant the SDK `indexedDB`; remove Jest's fake one.
+    // LavaMoat does not grant the SDK `indexedDB` or `localStorage`; remove
+    // Jest's fakes so these tests run under the same conditions.
     delete (window as { indexedDB?: IDBFactory }).indexedDB;
+    denyLocalStorage();
     // Network I/O is blocked at the browser boundary.
     jest
       .spyOn(window.XMLHttpRequest.prototype, 'send')
@@ -53,7 +72,7 @@ describe('Braze SDK lifecycle in the host', () => {
   afterEach(() => {
     braze.wipeData();
     braze.destroy();
-    localStorage.clear();
+    restoreLocalStorage();
     jest.useRealTimers();
     process.env = originalEnv;
     window.indexedDB = indexedDB;
@@ -64,13 +83,20 @@ describe('Braze SDK lifecycle in the host', () => {
     await jest.advanceTimersByTimeAsync(0);
 
     expect(braze.getUser()?.getUserId()).toBe('canonical-123');
-    expect(
-      send().mock.calls.some(([body]) =>
-        JSON.parse(String(body)).events?.some(
-          (event: { name: string }) => event.name === 'ss',
-        ),
-      ),
-    ).toBe(true);
+    expect(queuedEvents().map(({ name }) => name)).toContain('ss');
+  });
+
+  it('does not report the screen resolution', async () => {
+    await syncBrazeUser('canonical-123');
+    await jest.advanceTimersByTimeAsync(0);
+
+    const device = send()
+      .mock.calls.map(([body]) => JSON.parse(String(body)).device)
+      .find(Boolean);
+
+    expect(device).toBeDefined();
+    expect(device).not.toHaveProperty('resolution');
+    expect(device).toHaveProperty('user_agent');
   });
 
   it('flushes identity from a hidden document', async () => {
@@ -80,13 +106,7 @@ describe('Braze SDK lifecycle in the host', () => {
     await jest.advanceTimersByTimeAsync(0);
 
     expect(braze.getUser()?.getUserId()).toBe('canonical-123');
-    expect(
-      send().mock.calls.some(([body]) =>
-        JSON.parse(String(body)).events?.some(
-          (event: { name: string }) => event.name === 'ss',
-        ),
-      ),
-    ).toBe(true);
+    expect(queuedEvents().map(({ name }) => name)).toContain('ss');
   });
 
   it('does not send anything when the same user is synced again', async () => {
@@ -122,25 +142,22 @@ describe('Braze SDK lifecycle in the host', () => {
     expect(braze.getUser()?.getUserId()).toBe('canonical-123');
   });
 
-  it('wipes data persisted by a previous host without sending requests', async () => {
+  it('does not load the SDK to clear after a restart', async () => {
     await syncBrazeUser('canonical-123');
     await jest.advanceTimersByTimeAsync(0);
-    // Background restart (MV3 service worker / MV2 page reload): the host and
-    // SDK go away, storage stays, and the Braze session expires.
+    // Background restart (MV3 service worker / MV2 page reload): the in-memory
+    // store goes away with the host, so there is nothing left to wipe.
     braze.destroy();
-    await jest.advanceTimersByTimeAsync(2 * 60 * 60 * 1000);
-    expect(brazeStorageKeys()).not.toHaveLength(0);
     send().mockClear();
 
     await createBrazeHost({ loadSdk: async () => sdk })(null);
     await jest.advanceTimersByTimeAsync(60_000);
 
     expect(braze.isInitialized()).toBe(false);
-    expect(brazeStorageKeys()).toStrictEqual([]);
     expect(send()).not.toHaveBeenCalled();
   });
 
-  it('keeps the persisted user across a new host (background restart)', async () => {
+  it('starts a new session when a new host identifies the same user', async () => {
     await syncBrazeUser('canonical-123');
     await jest.advanceTimersByTimeAsync(0);
     braze.destroy();
@@ -150,12 +167,8 @@ describe('Braze SDK lifecycle in the host', () => {
     await jest.advanceTimersByTimeAsync(0);
 
     expect(braze.getUser()?.getUserId()).toBe('canonical-123');
-    expect(
-      send().mock.calls.some(([body]) =>
-        JSON.parse(String(body)).events?.some(
-          (event: { name: string }) => event.name === 'ss',
-        ),
-      ),
-    ).toBe(false);
+    // Nothing survives a restart without a storage grant, so the new host
+    // opens a new Braze session. The background re-identifies the user.
+    expect(queuedEvents().map(({ name }) => name)).toContain('ss');
   });
 });
