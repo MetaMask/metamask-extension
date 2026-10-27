@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "Mga Asset"
   },
-  "assetsDescription": {
-    "message": "Mag-auto detect ng mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
-  },
   "asterdexReferralSubtitle": {
     "message": "Makakuha ng 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Bumalik sa ligtas"
+  },
+  "backToWallet": {
+    "message": "Bumalik sa wallet"
   },
   "backUpIncomplete": {
     "message": "Hindi nakumpleto ang pag-back up"
@@ -4386,9 +4386,6 @@
   "generalCameraErrorTitle": {
     "message": "Mayroong nang mali...."
   },
-  "generalDescription": {
-    "message": "I-sync ang mga setting sa lahat ng device, pumili ng mga preference sa network, at i-track ang data ng token"
-  },
   "generateNewQrCode": {
     "message": "Gumawa ng bagong QR code"
   },
@@ -5470,8 +5467,20 @@
   "mfaOtpResend": {
     "message": "Ipadala muli ang code"
   },
+  "mfaOtpRetry": {
+    "message": "Subukang muli"
+  },
+  "mfaOtpVerify": {
+    "message": "I-verify"
+  },
   "mfaPickerOr": {
     "message": "o"
+  },
+  "mfaSettingsAdd": {
+    "message": "Idagdag"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Magpatuloy"
   },
   "minimumReceivedExplanation": {
     "message": "Ang pinakamababang halaga na iyong matatanggap kapag nagbago ang presyo habang pinoproseso ang iyong transaksyon, batay sa setting ng iyong slippage. Mula sa pagtatantiya ang mga liquidity provider, kaya psibleng mag-iba ang huling halaga."
@@ -6787,9 +6796,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Magdagdag ng custom na IPFS Gateway"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Ang URL ng IPFS gateway ay wasto"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Kapag ginamit mo ang mga default na setting at configuration namin, ginagamit namin ang Infura bilang default na remote procedure call (RPC) provider namin para mag-alok ng pinakamaaasahan at pribadong access sa data ng Etheeum hangga’t kaya namin. Sa mga limitadong kaso, posibleng gumamit kami ng ibang RPC provider para maibigay ang pinakamagandang experience sa mga user namin. Puwede kang pumili ng sarili mong RPC, pero tandaan na matatanggap ng sinumang RPC ang IP address at Ethereum wallet mo para para makagawa ng mga transaksyon. Para matuto pa kung paano nangangasiwa ang Infura ng data para sa mga EVM account, basahin ang $1; para sa mga Solana account, $2."
@@ -9696,21 +9702,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nai-save ang bagong password"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Seguridad at pagkapribado"
-  },
-  "securityDescription": {
-    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account"
-  },
   "securityMessageLinkForNetworks": {
     "message": "mga panloloko sa network at panganib sa seguridad"
   },
   "securityProviderPoweredBy": {
     "message": "Pinapagana ng $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account at data"
   },
   "securitySocialLoginEnabled": {
     "message": "Pinagana"

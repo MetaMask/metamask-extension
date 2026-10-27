@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "Ativos"
   },
-  "assetsDescription": {
-    "message": "Detecte automaticamente tokens em sua carteira, exiba NFTs e receba atualizações de saldo de contas em lote"
-  },
   "asterdexReferralSubtitle": {
     "message": "Receba 4% de reembolso em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Voltar para a segurança"
+  },
+  "backToWallet": {
+    "message": "Voltar à carteira"
   },
   "backUpIncomplete": {
     "message": "Backup incompleto"
@@ -4386,9 +4386,6 @@
   "generalCameraErrorTitle": {
     "message": "Ocorreu algum erro...."
   },
-  "generalDescription": {
-    "message": "Sincronize as configurações entre dispositivos, selecione as preferências de rede e rastreie dados de tokens"
-  },
   "generateNewQrCode": {
     "message": "Gerar novo código QR"
   },
@@ -5470,8 +5467,20 @@
   "mfaOtpResend": {
     "message": "Reenviar código"
   },
+  "mfaOtpRetry": {
+    "message": "Tentar novamente"
+  },
+  "mfaOtpVerify": {
+    "message": "Verificar"
+  },
   "mfaPickerOr": {
     "message": "ou"
+  },
+  "mfaSettingsAdd": {
+    "message": "Adicionar"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Continuar"
   },
   "minimumReceivedExplanation": {
     "message": "O valor mínimo que você receberá se o preço mudar enquanto sua transação é processada, com base em sua configuração de slippage. A estimativa é fornecida pelos provedores de liquidez, portanto o valor final pode ser diferente."
@@ -6787,9 +6796,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Adicionar gateway IPFS personalizado"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "O URL do gateway IPFS é válido"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Quando você utiliza nossas configurações e definições padrão, utilizamos a Infura como nosso provedor padrão de chamada de procedimento remoto (RPC) para oferecer o acesso mais confiável e privado possível aos dados Ethereum. Em alguns casos, podemos utilizar outros provedores de RPC para proporcionar a melhor experiência possível aos nossos usuários. Você pode escolher sua própria RPC, mas lembre-se de que qualquer uma delas receberá seu endereço IP e sua carteira Ethereum para realizar transações. Para saber mais sobre como a Infura trata os dados de contas EVM, leia a nossa $1; para contas Solana, $2."
@@ -9696,21 +9702,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nova senha salva"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Segurança e privacidade"
-  },
-  "securityDescription": {
-    "message": "Reduza suas chances de ingressar em redes perigosas e proteja suas contas"
-  },
   "securityMessageLinkForNetworks": {
     "message": "golpes de rede e riscos de segurança"
   },
   "securityProviderPoweredBy": {
     "message": "Com tecnologia da $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Reduza suas chances de ingressar em redes perigosas e proteja suas contas e dados"
   },
   "securitySocialLoginEnabled": {
     "message": "Ativado"

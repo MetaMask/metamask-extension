@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "자산"
   },
-  "assetsDescription": {
-    "message": "지갑에서 토큰을 자동으로 감지하고, NFT를 표시하며, 계정 잔액을 일괄 업데이트하세요."
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask 추천인 코드를 사용하여 거래하면 4%를 돌려받을 수 있습니다.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "안전성으로 돌아가기"
+  },
+  "backToWallet": {
+    "message": "지갑으로 돌아가기"
   },
   "backUpIncomplete": {
     "message": "백업 미완료"
@@ -4390,9 +4390,6 @@
   "generalCameraErrorTitle": {
     "message": "문제가 발생했습니다...."
   },
-  "generalDescription": {
-    "message": "여러 기기의 설정을 동기화하고, 네트워크 환경을 선택하며, 토큰 데이터를 추적하세요"
-  },
   "generateNewQrCode": {
     "message": "새 QR 코드 생성"
   },
@@ -5474,8 +5471,20 @@
   "mfaOtpResend": {
     "message": "코드 다시 보내기"
   },
+  "mfaOtpRetry": {
+    "message": "다시 시도"
+  },
+  "mfaOtpVerify": {
+    "message": "인증"
+  },
   "mfaPickerOr": {
     "message": "또는"
+  },
+  "mfaSettingsAdd": {
+    "message": "추가"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "계속"
   },
   "minimumReceivedExplanation": {
     "message": "슬리피지 설정에 따라 거래가 처리되는 동안 가격이 변동하는 경우 받을 수 있는 최소 금액입니다. 이 예상치는 유동성 공급자로부터 제공되며 최종 금액은 다를 수 있습니다."
@@ -6791,9 +6800,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "사용자 지정 IPFS 게이트웨이 추가"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "PFS 게이트웨이 URL이 유효합니다"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1의 내용을, Solana 계정에 대한 정보는 $2의 내용을 참고하세요."
@@ -9704,21 +9710,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "새 비밀번호 저장 완료"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "보안 & 개인정보 보호"
-  },
-  "securityDescription": {
-    "message": "안전하지 않은 네트워크에 가입할 가능성을 줄이고 계정을 보호하세요"
-  },
   "securityMessageLinkForNetworks": {
     "message": "네트워크 사기 및 보안 위험"
   },
   "securityProviderPoweredBy": {
     "message": "$1 제공",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "안전하지 않은 네트워크에 참여할 가능성을 낮춰 계정과 데이터를 보호합니다"
   },
   "securitySocialLoginEnabled": {
     "message": "활성화됨"

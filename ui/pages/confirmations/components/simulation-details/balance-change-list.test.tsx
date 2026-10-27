@@ -1,5 +1,5 @@
-import React from 'react';
-import { render } from '@testing-library/react';
+import React, { useState } from 'react';
+import { render, screen } from '@testing-library/react';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChangeRow } from './balance-change-row';
 import { TotalFiatDisplay } from './fiat-display';
@@ -107,6 +107,82 @@ describe('BalanceChangeList', () => {
         }),
         {},
       );
+    });
+  });
+
+  describe('when balance changes update', () => {
+    const tokenA = {
+      asset: { chainId: '0x1', standard: 'ERC20', address: '0xaaa' },
+      fiatAmount: 100,
+    } as unknown as BalanceChange;
+    const tokenB = {
+      asset: { chainId: '0x1', standard: 'ERC20', address: '0xbbb' },
+      fiatAmount: 50,
+    } as unknown as BalanceChange;
+    const tokenC = {
+      asset: { chainId: '0x1', standard: 'ERC20', address: '0xccc' },
+      fiatAmount: 500,
+    } as unknown as BalanceChange;
+
+    beforeEach(() => {
+      // Renders the address seen at mount next to the current one, so a row
+      // that React reused for a different asset shows a mismatch.
+      jest.mocked(BalanceChangeRow).mockImplementation(({ balanceChange }) => {
+        const [mountedAddress] = useState(balanceChange.asset.address);
+        return (
+          <div data-testid="balance-change-row">
+            {`${mountedAddress}:${balanceChange.asset.address}`}
+          </div>
+        );
+      });
+    });
+
+    afterEach(() => {
+      jest.mocked(BalanceChangeRow).mockImplementation(() => <></>);
+    });
+
+    const getRowTexts = () =>
+      screen.getAllByTestId('balance-change-row').map((row) => row.textContent);
+
+    it('keeps each row with its asset when the sort order changes', () => {
+      const { rerender } = render(
+        <BalanceChangeList
+          heading={HEADING_MOCK}
+          balanceChanges={[tokenA, tokenB]}
+        />,
+      );
+      expect(getRowTexts()).toStrictEqual(['0xaaa:0xaaa', '0xbbb:0xbbb']);
+
+      rerender(
+        <BalanceChangeList
+          heading={HEADING_MOCK}
+          balanceChanges={[tokenA, { ...tokenB, fiatAmount: 200 }]}
+        />,
+      );
+
+      expect(getRowTexts()).toStrictEqual(['0xbbb:0xbbb', '0xaaa:0xaaa']);
+    });
+
+    it('keeps each row with its asset when a balance change is inserted', () => {
+      const { rerender } = render(
+        <BalanceChangeList
+          heading={HEADING_MOCK}
+          balanceChanges={[tokenA, tokenB]}
+        />,
+      );
+
+      rerender(
+        <BalanceChangeList
+          heading={HEADING_MOCK}
+          balanceChanges={[tokenA, tokenB, tokenC]}
+        />,
+      );
+
+      expect(getRowTexts()).toStrictEqual([
+        '0xccc:0xccc',
+        '0xaaa:0xaaa',
+        '0xbbb:0xbbb',
+      ]);
     });
   });
 

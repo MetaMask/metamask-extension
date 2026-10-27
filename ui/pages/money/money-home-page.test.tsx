@@ -559,6 +559,32 @@ describe('MoneyHomePage', () => {
     ).toBeDisabled();
   });
 
+  it('hides the balance and earnings when privacy mode is on', () => {
+    mockGetPrivacyMode.mockReturnValue(true);
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercent: 4.2,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-balance')).not.toHaveTextContent(
+      '$3,475.45',
+    );
+    expect(
+      screen.getByTestId('money-earnings-monthly-value'),
+    ).not.toHaveTextContent('+$12.34');
+    expect(
+      screen.getByTestId('money-earnings-lifetime-value'),
+    ).not.toHaveTextContent('+$56.78');
+  });
+
   it('renders the filled-state composition for a funded Money account', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyDecimal: 0.042,

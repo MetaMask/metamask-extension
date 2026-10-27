@@ -368,6 +368,13 @@ export class MetaMaskSessionManager implements ISessionManager {
     const environment = this.workflowContext?.config?.environment ?? 'e2e';
     const isProdMode = environment === 'prod';
 
+    const launchRequest = input as SessionLaunchInput & {
+      selfOnboarding?: boolean;
+      srp?: string;
+    };
+    const secretRecoveryPhrase = launchRequest.srp;
+    launchRequest.srp = undefined;
+
     const { extensionPath } = input;
 
     // In prod mode, reject fixture-related options (no fixtures available)
@@ -442,6 +449,8 @@ export class MetaMaskSessionManager implements ISessionManager {
         stateMode,
         slowMo: input.slowMo ?? 0,
         extensionPath,
+        selfOnboarding: launchRequest.selfOnboarding === true,
+        srp: secretRecoveryPhrase,
         manifestFlags: resolvedFixturePort
           ? {
               testing: {

@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "アセット"
   },
-  "assetsDescription": {
-    "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引額の4%が返ってきます。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "安全な場所に戻る"
+  },
+  "backToWallet": {
+    "message": "ウォレットに戻る"
   },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
@@ -4390,9 +4390,6 @@
   "generalCameraErrorTitle": {
     "message": "問題が発生しました...."
   },
-  "generalDescription": {
-    "message": "デバイス間で設定を同期して、ネットワーク設定を選択し、トークンデータを追跡します"
-  },
   "generateNewQrCode": {
     "message": "新しいQRコードを生成"
   },
@@ -5474,8 +5471,20 @@
   "mfaOtpResend": {
     "message": "コードを再送する"
   },
+  "mfaOtpRetry": {
+    "message": "もう一度お試しください"
+  },
+  "mfaOtpVerify": {
+    "message": "検証"
+  },
   "mfaPickerOr": {
     "message": "または"
+  },
+  "mfaSettingsAdd": {
+    "message": "追加"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "続行"
   },
   "minimumReceivedExplanation": {
     "message": "トランザクションの処理中に価格が変動した場合に、お客様のスリッページ設定に基づいて受け取る最低額です。これは流動性プロバイダーから提供される見積もりであり、最終的な金額は異なる場合があります。"
@@ -6791,9 +6800,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "カスタムIPFSゲートウェイを追加"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFSゲートウェイのURLが有効です"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "デフォルトの設定と構成を使用する場合、当社はInfuraをデフォルトの遠隔手続き呼び出し (RPC) プロバイダーとして使用し、イーサリアムデータへの可能な限り最も信頼性が高くプライベートなアクセスを提供します。まれに、ユーザーに最も優れたエクスペリエンスを提供するために、他のRPCプロバイダーが使用される場合もあります。ユーザーが自らRPCを選択することもできますが、どのRPCもトランザクションを実行するために、ユーザーのIPアドレスとイーサリアムウォレットを取得する点にご注意ください。InfuraによるEVMアカウントのデータの取り扱いに関する詳細は、$1をご覧ください。Solanaアカウントの場合は、$2。"
@@ -9700,21 +9706,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "新しいパスワードを保存しました"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "セキュリティとプライバシー"
-  },
-  "securityDescription": {
-    "message": "安全ではないネットワークに参加してしまう可能性を減らし、アカウントを守ります"
-  },
   "securityMessageLinkForNetworks": {
     "message": "ネットワーク詐欺とセキュリティのリスク"
   },
   "securityProviderPoweredBy": {
     "message": "データソース: $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "安全ではないネットワークに参加する可能性を減らし、アカウントとデータを保護します"
   },
   "securitySocialLoginEnabled": {
     "message": "有効"

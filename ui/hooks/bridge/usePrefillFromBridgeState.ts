@@ -72,8 +72,8 @@ export const usePrefillFromBridgeState = () => {
         }
       }
 
-      // Clear location state after using it to prevent infinite re-renders
-      resetLocationState();
+      // Replace this entry so clearing state does not add another Back step.
+      resetLocationState(undefined, { replace: true });
     } else if (shouldRestoreInputsFromQuote) {
       dispatch(restoreQuoteRequestFromState(activeQuote));
     }

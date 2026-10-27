@@ -49,7 +49,7 @@ export const sigToBytes = Object.hasOwn(Uint8Array, 'fromBase64')
       // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64#browser_compatibility
       return Uint8Array.fromBase64(sig, {
         alphabet: 'base64url',
-      }) as Uint8Array;
+      }) as Uint8Array<ArrayBuffer>;
     }
   : // old browsers
     function sigToBytes(sig: string) {
@@ -85,7 +85,7 @@ export const sigToBytes = Object.hasOwn(Uint8Array, 'fromBase64')
  */
 export const base64ToUint8Array = hasProperty(Uint8Array, 'fromBase64')
   ? // modern browsers
-    (Uint8Array.fromBase64 as (base64: string) => Uint8Array)
+    (Uint8Array.fromBase64 as (base64: string) => Uint8Array<ArrayBuffer>)
   : function base64ToUint8Array(base64: string) {
       // old browsers
       const binaryString = atob(base64);
