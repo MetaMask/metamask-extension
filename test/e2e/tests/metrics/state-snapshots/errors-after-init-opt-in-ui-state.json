@@ -172,7 +172,6 @@
     "hasPlacedFirstOrder": "object",
     "hasSeenOnboardingCompletionPage": true,
     "hasShownMultichainAccountsIntroModal": "boolean",
-    "hiddenAccountList": "object",
     "hip3ConfigVersion": "number",
     "ignoredNfts": "object",
     "initialDelayEndTimestamp": "number",
