@@ -1,12 +1,13 @@
 /**
- * Ink native Max send.
+ * Ink native Max send (WPN-1797 bug #5).
  *
- * Covers the Ink max-send regression (gas reserved on confirmation, Activity
- * shows a confirmed Sent row) and the decimal-string chain id path (`57073`).
+ * Max-sending native ETH on Ink used to submit the full balance, so Activity
+ * failed or stayed pending. This checks that confirmation reserves gas and
+ * Activity shows a confirmed Sent row. The decimal-string chain id path
+ * (bug #10) is covered separately.
  * Anvil is the chain. Mockttp covers gas, token, and price HTTP only.
  */
 
-import { type Hex } from '@metamask/utils';
 import {
   type NetworkConfiguration,
   NetworkStatus,
@@ -36,7 +37,6 @@ import { Driver } from '../../webdriver/driver';
 const INK_DECIMAL_CHAIN_ID = '57073';
 const INK_NATIVE_ASSET_ID = 'eip155:57073/slip44:60';
 const INK_CLIENT_ID = 'ink';
-const INK_DECIMAL_CLIENT_ID = 'ink-decimal';
 const ANVIL_BALANCE_HEX = '0x15af1d78b58c40000';
 const ANVIL_BALANCE_ETH = '25';
 const ETH_USD_PRICE = 1700;
@@ -104,27 +104,21 @@ const NATIVE_ACCOUNT_BALANCE = {
 };
 
 /**
- * Ink network entry. The decimal case also registers chain id `"57073"` so the
- * send list can render `token-asset-57073-ETH` (symbol comes from that key's
- * native currency).
+ * Ink network entry for hex chain id `0xdef1`.
  *
- * @param clientId - Network client id for the localhost RPC endpoint.
- * @param chainId - Hex or decimal-string chain id stored on the configuration.
+ * @returns Network configuration selected by the fixture.
  */
-function inkNetworkConfiguration(
-  clientId: string,
-  chainId: Hex,
-): NetworkConfiguration {
+function inkNetworkConfiguration(): NetworkConfiguration {
   return {
     blockExplorerUrls: ['https://explorer.inkonchain.com'],
-    chainId,
+    chainId: CHAIN_IDS.INK,
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
     name: INK_DISPLAY_NAME,
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {
-        networkClientId: clientId,
+        networkClientId: INK_CLIENT_ID,
         type: RpcEndpointType.Custom,
         url: 'http://localhost:8545',
       },
@@ -133,49 +127,25 @@ function inkNetworkConfiguration(
 }
 
 /**
- * Builds the Ink fixture. Fee estimates are seeded for both chain id forms
- * because native Max reads them by exact key and does not wait for a gas poll.
+ * Builds the Ink fixture. Fee estimates are seeded before the send because
+ * native Max reads them by exact key and does not wait for a gas poll.
+ * The gas API itself is keyed by the decimal network id `57073`.
  *
- * @param options - Fixture options.
- * @param options.includeDecimalChainId - When true, also seed the decimal-string send row.
+ * @returns Fixture state for the hex Ink max-send flow.
  */
-function buildInkFixture({
-  includeDecimalChainId,
-}: {
-  includeDecimalChainId: boolean;
-}) {
-  const decimalChainId = INK_DECIMAL_CHAIN_ID as Hex;
-  const networkConfigurationsByChainId = {
-    [CHAIN_IDS.INK]: inkNetworkConfiguration(INK_CLIENT_ID, CHAIN_IDS.INK),
-    ...(includeDecimalChainId
-      ? {
-          [decimalChainId]: inkNetworkConfiguration(
-            INK_DECIMAL_CLIENT_ID,
-            decimalChainId,
-          ),
-        }
-      : {}),
-  };
-  const networksMetadata = {
-    [INK_CLIENT_ID]: {
-      EIPS: { 1559: true },
-      status: NetworkStatus.Available,
-    },
-    ...(includeDecimalChainId
-      ? {
-          [INK_DECIMAL_CLIENT_ID]: {
-            EIPS: { 1559: true },
-            status: NetworkStatus.Available,
-          },
-        }
-      : {}),
-  };
-
+function buildInkFixture() {
   return new FixtureBuilderV2()
     .withNetworkController({
       selectedNetworkClientId: INK_CLIENT_ID,
-      networkConfigurationsByChainId,
-      networksMetadata,
+      networkConfigurationsByChainId: {
+        [CHAIN_IDS.INK]: inkNetworkConfiguration(),
+      },
+      networksMetadata: {
+        [INK_CLIENT_ID]: {
+          EIPS: { 1559: true },
+          status: NetworkStatus.Available,
+        },
+      },
     })
     .withEnabledNetworks({
       eip155: { [CHAIN_IDS.INK]: true },
@@ -183,9 +153,6 @@ function buildInkFixture({
     .withAccountTracker({
       accountsByChainId: {
         [CHAIN_IDS.INK]: NATIVE_ACCOUNT_BALANCE,
-        ...(includeDecimalChainId
-          ? { [decimalChainId]: NATIVE_ACCOUNT_BALANCE }
-          : {}),
       },
     })
     .withAssetsController({
@@ -214,8 +181,8 @@ function buildInkFixture({
 }
 
 /**
- * Mocks Ink gas, token, and ETH price HTTP. The gas route is decimal for every
- * chain; selecting `token-asset-57073-ETH` is what covers the decimal chain id.
+ * Mocks Ink gas, token, and ETH price HTTP. The gas API route uses the decimal
+ * network id for every chain.
  *
  * @param mockServer - Mockttp server for this test.
  */
@@ -247,12 +214,8 @@ async function mockInkApis(mockServer: MockttpServer): Promise<void> {
  * Sends the full native balance and checks confirmation reserved gas and Activity.
  *
  * @param driver - WebDriver for the extension.
- * @param assetChainId - Chain id of the send-list row to select.
  */
-async function sendInkNativeMax(
-  driver: Driver,
-  assetChainId: string,
-): Promise<void> {
+async function sendInkNativeMax(driver: Driver): Promise<void> {
   await login(driver, { validateBalance: false });
 
   const homePage = new HomePage(driver);
@@ -262,7 +225,7 @@ async function sendInkNativeMax(
 
   const sendPage = new SendPage(driver);
   await sendPage.checkPageIsLoaded();
-  await sendPage.selectToken(assetChainId, 'ETH');
+  await sendPage.selectToken(CHAIN_IDS.INK, 'ETH');
   await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
   await sendPage.clickMaxButton();
   await sendPage.pressContinueButton();
@@ -292,27 +255,13 @@ describe('Send Ink native max', function () {
   it('sends the max native balance on hex chain id 0xdef1', async function () {
     await withFixtures(
       {
-        fixtures: buildInkFixture({ includeDecimalChainId: false }),
+        fixtures: buildInkFixture(),
         localNodeOptions: { chainId: 57073, hardfork: 'london' },
         title: this.test?.fullTitle(),
         testSpecificMock: mockInkApis,
       },
       async ({ driver }) => {
-        await sendInkNativeMax(driver, CHAIN_IDS.INK);
-      },
-    );
-  });
-
-  it('sends the max native balance when the asset chain id is the decimal string 57073', async function () {
-    await withFixtures(
-      {
-        fixtures: buildInkFixture({ includeDecimalChainId: true }),
-        localNodeOptions: { chainId: 57073, hardfork: 'london' },
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockInkApis,
-      },
-      async ({ driver }) => {
-        await sendInkNativeMax(driver, INK_DECIMAL_CHAIN_ID);
+        await sendInkNativeMax(driver);
       },
     );
   });

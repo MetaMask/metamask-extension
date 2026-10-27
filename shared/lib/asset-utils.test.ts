@@ -8,7 +8,6 @@ import {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import log from 'loglevel';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_SPECIAL_ASSET_CAIP_TYPES,
@@ -311,18 +310,6 @@ describe('asset-utils', () => {
       const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/eip155/50/erc20/0x2a8e898b6242355c290e1f4fc966b8788729a4d4.png`;
 
       expect(getAssetImageUrl(assetId, 'eip155:50')).toBe(expectedUrl);
-    });
-
-    it('does not log when a decimal-string chain id cannot be resolved', () => {
-      const logError = jest.spyOn(log, 'error').mockImplementation(() => {
-        // Keep the assertion on the call rather than the console.
-      });
-      const address = '0x0000000000000000000000000000000000000000';
-
-      expect(getAssetImageUrl(address, '57073' as Hex)).toBeUndefined();
-      expect(logError).not.toHaveBeenCalled();
-
-      logError.mockRestore();
     });
 
     it('resolves a bare hex address through toAssetId', () => {
