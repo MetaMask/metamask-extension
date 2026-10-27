@@ -27,7 +27,6 @@ import {
 } from '../../helpers/constants/routes';
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
-import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
@@ -223,10 +222,8 @@ const makeWrapper = (
   );
 };
 
-const originalSubmitBridgeTx = bridgeStatusActions.submitBridgeTx;
-const originalSubmitBridgeIntent = bridgeStatusActions.submitBridgeIntent;
-const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
-const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
+const submitTxSpy = jest.fn().mockResolvedValue(undefined);
+const submitIntentSpy = jest.fn().mockResolvedValue(undefined);
 const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
@@ -236,8 +233,8 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      submitTxSpy.mockImplementation(originalSubmitBridgeTx);
-      submitIntentSpy.mockImplementation(originalSubmitBridgeIntent);
+      submitTxSpy.mockResolvedValue(undefined);
+      submitIntentSpy.mockResolvedValue(undefined);
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(null);
       captureExceptionSpy.mockReturnValue(undefined);
