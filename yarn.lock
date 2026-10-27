@@ -10356,12 +10356,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/skills@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/skills@npm:0.1.0"
+"@metamask/skills@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@metamask/skills@npm:0.3.1"
   bin:
     metamask-skills: bin/metamask-skills.mjs
-  checksum: 10/e8c0fc1387c3d3706d0f2a49ef61ecba2a320e68c0bc00eb40077defc9fbf407c8830b20f10e31acc1481c6a2d7541c7f1c5294b62b0d3e6d0df3d6cfd533ce9
+  checksum: 10/c15c1065ce12c6aecb224bb027f4673fd7a6e1ed68c2f29a9ca6588e0e87339ef3183c50f12c99b2e960b0ba93c4b23c50ed8b1bd65c6b10d16707391f335648
   languageName: node
   linkType: hard
 
@@ -35615,7 +35615,7 @@ __metadata:
     "@metamask/sentinel-api-service": "npm:^2.1.0"
     "@metamask/shield-controller": "npm:^6.0.1"
     "@metamask/signature-controller": "npm:^39.2.6"
-    "@metamask/skills": "npm:^0.1.0"
+    "@metamask/skills": "npm:^0.3.1"
     "@metamask/smart-transactions-controller": "npm:^27.1.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-account-service": "npm:^4.0.0"
