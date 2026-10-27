@@ -1,3 +1,7 @@
+import {
+  readChangedAndFilterE2eChangedFiles,
+  shouldE2eQualityGateBeSkipped,
+} from '../../test/e2e/changedFilesUtil.js';
 import { extractTestResults } from './extract-test-results.mts';
 import {
   E2E_QUALITY_GATE_FAILURE_ANNOTATION_TITLE,
@@ -6,10 +10,6 @@ import {
   escapeWorkflowCommandProperty,
   getE2eQualityGateFailurePaths,
 } from './shared/e2e-quality-gate.mts';
-import {
-  readChangedAndFilterE2eChangedFiles,
-  shouldE2eQualityGateBeSkipped,
-} from '../../test/e2e/changedFilesUtil.js';
 
 async function main(): Promise<void> {
   if (shouldE2eQualityGateBeSkipped()) {
