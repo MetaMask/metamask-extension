@@ -13,11 +13,12 @@ import {
 } from './marketing-moment-title.utils';
 
 /**
- * 80% line height and -2% tracking. The md: classes keep those metrics when
- * the variant switches to its large-screen leading and tracking.
+ * Size from the title's container, not the viewport. DisplayLg's `md:` size
+ * is 60px, which overflows a ~400px dialog when the window is wide. 9.5cqw
+ * matches the size that fits the longest hero word, and the cap is the large
+ * display size once the container is actually wide enough.
  */
-const HERO_TITLE_CLASSNAME =
-  'text-balance leading-[0.8] tracking-[-0.02em] md:leading-[0.8] md:tracking-[-0.02em]';
+const HERO_TITLE_FONT_SIZE = 'clamp(1.75rem, 9.5cqw, 3.75rem)';
 
 /**
  * Active locale. Message locale wins. The preferences locale covers Storybook,
@@ -41,11 +42,13 @@ function useMarketingMomentLocale(): string {
  * @param props - Design-system text props. `variant` selects the hero size.
  * @param props.variant
  * @param props.className
+ * @param props.style
  * @param props.children
  */
 export const MarketingMomentTitle = ({
   variant = TextVariant.DisplayLg,
   className,
+  style,
   children,
   ...props
 }: TextProps) => {
@@ -56,17 +59,26 @@ export const MarketingMomentTitle = ({
   );
 
   return (
-    <Text
-      {...props}
-      variant={presentation.variant}
-      fontFamily={presentation.fontFamily}
-      fontWeight={presentation.fontWeight}
-      className={twMerge(
-        supportsGrotzec ? HERO_TITLE_CLASSNAME : undefined,
-        className,
-      )}
-    >
-      {children}
-    </Text>
+    <div className="w-full min-w-0" style={{ containerType: 'inline-size' }}>
+      <Text
+        {...props}
+        variant={presentation.variant}
+        fontFamily={presentation.fontFamily}
+        fontWeight={presentation.fontWeight}
+        className={twMerge(
+          'w-full min-w-0 max-w-full break-words text-balance',
+          className,
+        )}
+        style={{
+          ...(supportsGrotzec
+            ? { lineHeight: 0.8, letterSpacing: '-0.02em' }
+            : undefined),
+          ...style,
+          fontSize: HERO_TITLE_FONT_SIZE,
+        }}
+      >
+        {children}
+      </Text>
+    </div>
   );
 };

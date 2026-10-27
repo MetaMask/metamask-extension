@@ -20,9 +20,11 @@ describe('MarketingMomentTitle', () => {
   it('renders the title text', () => {
     renderTitle(<MarketingMomentTitle>Perps are here</MarketingMomentTitle>);
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Perps are here',
-    );
+    const title = screen.getByRole('heading', { level: 1 });
+    expect(title).toHaveTextContent('Perps are here');
+    expect(title).toHaveStyle({
+      fontSize: 'clamp(1.75rem, 9.5cqw, 3.75rem)',
+    });
   });
 
   it('keeps a caller style', () => {
