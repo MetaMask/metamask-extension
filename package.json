@@ -638,6 +638,7 @@
     "@babel/preset-typescript": "^7.25.9",
     "@babel/register": "^7.25.9",
     "@babel/types": "7.29.8",
+    "@eslint/config-helpers": "^0.7.0",
     "@google/genai": "^1.0.0",
     "@jest/globals": "^29.7.0",
     "@lavamoat/allow-scripts": "^5.0.1",
