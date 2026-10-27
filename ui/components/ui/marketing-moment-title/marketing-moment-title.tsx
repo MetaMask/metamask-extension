@@ -27,10 +27,12 @@ export const MarketingMomentTitle = ({
     {...props}
     variant={variant}
     fontFamily={FontFamily.Hero}
-    // 80% line height and -2% tracking. These replace the variant's leading
-    // and tracking classes. The hero font stack falls back when a language is
-    // not covered by Grotzec.
-    className={twMerge('leading-[0.8] tracking-[-0.02em]', className)}
+    // 80% line height and -2% tracking. The md: classes keep those metrics
+    // when the variant switches to its large-screen leading and tracking.
+    className={twMerge(
+      'leading-[0.8] tracking-[-0.02em] md:leading-[0.8] md:tracking-[-0.02em]',
+      className,
+    )}
   >
     {children}
   </Text>
