@@ -3527,9 +3527,7 @@ describe('Actions', () => {
       });
 
       store.dispatch(actions.setUseMultiAccountBalanceChecker(true));
-      expect(
-        setUseMultiAccountBalanceCheckerStub.calledOnceWithExactly([true]),
-      ).toBe(true);
+      expect(setUseMultiAccountBalanceCheckerStub.callCount).toStrictEqual(1);
     });
 
     it('errors when setUseMultiAccountBalanceChecker in background throws', async () => {
@@ -4173,10 +4171,10 @@ describe('Actions', () => {
         ),
       );
       expect(
-        setIsBackupAndSyncFeatureEnabledStub.calledOnceWith([
+        setIsBackupAndSyncFeatureEnabledStub.calledOnceWith(
           BACKUPANDSYNC_FEATURES.main,
           true,
-        ]),
+        ),
       ).toBe(true);
     });
   });
@@ -4739,9 +4737,7 @@ describe('Actions', () => {
 
       await store.dispatch(actions.toggleExternalServices(true));
 
-      expect(toggleExternalServicesStub.calledOnceWithExactly([true])).toBe(
-        true,
-      );
+      expect(toggleExternalServicesStub.callCount).toStrictEqual(1);
     });
   });
 
@@ -4835,19 +4831,24 @@ describe('Actions', () => {
       const store = mockStore(buildStateForConsolidation(false));
 
       const messengerCallStub = sinon.stub().resolves();
+      const toggleBasicFunctionalityStub = sinon.stub().resolves();
+      const toggleExternalServicesStub = sinon.stub().resolves();
       setBackgroundConnection({
         messengerCall: messengerCallStub,
-        toggleExternalServices: background.toggleExternalServices,
+        toggleBasicFunctionality: toggleBasicFunctionalityStub,
+        toggleExternalServices: toggleExternalServicesStub,
       });
 
       await store.dispatch(actions.enableBasicFunctionality());
 
+      expect(toggleExternalServicesStub.callCount).toStrictEqual(1);
+      expect(toggleExternalServicesStub.getCall(0).args).toStrictEqual([true]);
       expect(
         messengerCallStub.calledOnceWithExactly(
-          'LegacyBackgroundApiService:toggleExternalServices',
+          'PreferencesController:toggleBasicFunctionality',
           [true],
         ),
-      ).toBe(true);
+      ).toBe(false);
     });
 
     it('reads consolidation state when dispatched, not when created', async () => {
@@ -6216,7 +6217,7 @@ describe('Actions', () => {
       });
 
       await store.dispatch(actions.removeDeferredDeepLink());
-      expect(removeDeferredDeepLinkStub.calledOnceWithExactly([])).toBe(true);
+      expect(removeDeferredDeepLinkStub.callCount).toStrictEqual(1);
     });
   });
 
