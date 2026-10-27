@@ -73,7 +73,7 @@ const TokenAsset = ({
 
   const name = tokenData?.name || tokenDataFromChain?.name || symbol;
 
-  const iconUrl = getAssetImageUrl(address, chainId);
+  const iconUrl = getAssetImageUrl(address, chainId) || '';
 
   const aggregators = tokenData?.aggregators;
 
