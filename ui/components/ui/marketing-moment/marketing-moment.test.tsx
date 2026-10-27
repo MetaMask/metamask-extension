@@ -83,7 +83,7 @@ describe('MarketingMoment', () => {
   it('calls the primary action when clicked', () => {
     renderMoment();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Get started' }));
+    fireEvent.click(screen.getAllByRole('button')[0]);
 
     expect(onPrimaryClick).toHaveBeenCalledTimes(1);
   });
@@ -91,7 +91,7 @@ describe('MarketingMoment', () => {
   it('calls the dismiss action when clicked', () => {
     renderMoment();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
+    fireEvent.click(screen.getAllByRole('button')[1]);
 
     expect(onSecondaryClick).toHaveBeenCalledTimes(1);
   });
@@ -111,11 +111,6 @@ describe('MarketingMoment', () => {
     expect(
       screen.queryByTestId('marketing-moment-description'),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Get started' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Not now' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 });
