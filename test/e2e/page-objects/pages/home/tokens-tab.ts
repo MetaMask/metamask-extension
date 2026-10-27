@@ -29,7 +29,7 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
  * Network filter control-bar chrome belongs to `NetworkFilter` /
  * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
  * outside this object.
- * Related: `HomePage` (`goToTokensTab`), `NonEvmHomepage`, `NetworkFilter`,
+ * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
  * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
  *
  * @see ui/components/app/assets/asset-list/asset-list.tsx

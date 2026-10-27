@@ -13,8 +13,6 @@ import {
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-    tokenBalancesStopPollingByPollingToken: jest.fn(),
     setTokenNetworkFilter: jest.fn(),
     updateSlides: jest.fn(),
     removeSlide: jest.fn(),
@@ -79,9 +77,7 @@ const render = (
 
 describe('AccountOverviewEth', () => {
   beforeEach(() => {
-    setBackgroundConnection({
-      tokenBalancesStartPolling: jest.fn(),
-    } as never);
+    setBackgroundConnection({} as never);
   });
 
   it('shows the token, nft, and defi tabs', () => {

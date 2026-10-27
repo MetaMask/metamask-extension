@@ -1738,9 +1738,6 @@
     "message": "$1に$2に対して承認済み",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Arcへようこそ！当社はArcチェーンのご利用を促進、確認するために、Arcチームと情報を共有する場合があります。"
-  },
   "arcUsageNoticeTitle": {
     "message": "お知らせ"
   },
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "安全な場所に戻る"
+  },
+  "backToWallet": {
+    "message": "ウォレットに戻る"
   },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "マーケティング目的のデータ収集"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "当社はMetaMetricsを使用して、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握します。また、関連ニュースをお伝えする場合もあります (製品の機能、その他資料など)。"
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "製品の最新情報やヒント、ニュースをメールでお届けします。最適な情報をお届けするため、お客様のやり取りに関するデータを利用する場合があります。"
   },
@@ -4256,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMaskは、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。"
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "このネットワークは、アカウントに$1 $2の準備金を必要とします。",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1時間",
     "description": "$1 represents a number of hours"
@@ -4512,6 +4505,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "続行"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "続行するには、ロックを解除してもう一度お試しください",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "ご使用の$1は、バージョン4 (V4) タイプのデータしか署名できません。このサイトから、サポートされていない古い署名タイプが要求されました。",
@@ -5211,9 +5208,6 @@
   "loading": {
     "message": "読み込み中..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Snapでトランザクションを完了させてください。"
-  },
   "loadingTokenList": {
     "message": "トークンリストをロードしています"
   },
@@ -5438,6 +5432,51 @@
   "metrics": {
     "message": "メトリクス"
   },
+  "mfaEmailEntryContinue": {
+    "message": "続行"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "有効なメールアドレスを入力してください."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "メールアドレス"
+  },
+  "mfaErrorCooldown": {
+    "message": "リクエストが多すぎます。少し時間をおいて、もう一度お試しください。"
+  },
+  "mfaErrorGeneric": {
+    "message": "問題が発生しました。もう一度お試しください。"
+  },
+  "mfaFailureClose": {
+    "message": "閉じる"
+  },
+  "mfaFailureRetry": {
+    "message": "もう一度お試しください"
+  },
+  "mfaFailureTitle": {
+    "message": "問題が発生しました"
+  },
+  "mfaIntroContinue": {
+    "message": "開始"
+  },
+  "mfaMethodEmail": {
+    "message": "メールアドレス"
+  },
+  "mfaOtpResend": {
+    "message": "コードを再送する"
+  },
+  "mfaOtpRetry": {
+    "message": "もう一度お試しください"
+  },
+  "mfaPickerOr": {
+    "message": "または"
+  },
+  "mfaSettingsAdd": {
+    "message": "追加"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "続行"
+  },
   "minimumReceivedExplanation": {
     "message": "トランザクションの処理中に価格が変動した場合に、お客様のスリッページ設定に基づいて受け取る最低額です。これは流動性プロバイダーから提供される見積もりであり、最終的な金額は異なる場合があります。"
   },
@@ -5650,6 +5689,14 @@
   "moneyEarnApyTitle": {
     "message": "最大$1のAPYを獲得"
   },
+  "moneyEarnBannerCta": {
+    "message": "$1の追加",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Money Accountで収益化",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "仮想通貨を収益化"
   },
@@ -5804,6 +5851,10 @@
   },
   "moneySend": {
     "message": "送金"
+  },
+  "moneyStartEarning": {
+    "message": "収益化を開始",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "資金を追加できません。もう一度お試しください。"
@@ -6779,7 +6830,7 @@
     "message": "基本的な使用状況データの収集"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "製品の最新情報"
+    "message": "マーケティング関連の最新情報"
   },
   "onboardingMetametricsContinue": {
     "message": "続行"
@@ -7467,6 +7518,9 @@
   "perps24hVolume": {
     "message": "24時間の取引高"
   },
+  "perpsAbout": {
+    "message": "基本情報"
+  },
   "perpsActivity": {
     "message": "アクティビティ"
   },
@@ -8069,6 +8123,9 @@
   "perpsRateLimitExceeded": {
     "message": "リクエストが多すぎます。時間をおいて、もう一度お試しください。"
   },
+  "perpsReadMore": {
+    "message": "続きを表示"
+  },
   "perpsRecentActivity": {
     "message": "最近のアクティビティ"
   },
@@ -8115,6 +8172,18 @@
   "perpsSeeAll": {
     "message": "すべて表示",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "サポートにお問い合わせ",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "よくある質問 (FAQ)でオプションをご確認ください",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "障害が発生しています",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "現在サービスが一時的にご利用いただけません。後ほどもう一度お試しください。"
@@ -12138,6 +12207,9 @@
   },
   "turnOn": {
     "message": "オンにする"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "基本機能をオンにする"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "通知の作成中にエラーが発生しました。後でもう一度お試しください。"

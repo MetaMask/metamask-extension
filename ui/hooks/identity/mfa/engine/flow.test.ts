@@ -19,18 +19,28 @@ import type {
 const NOW = 1_800_000_000_000;
 
 const providerEmail: EnrolledCredential = {
+  id: 'email_otp',
   type: 'email_otp',
   status: 'active',
   verified: true,
 };
 const activeEmail: EnrolledCredential = {
+  id: 'email_otp',
   type: 'email_otp',
   status: 'active',
   email: 'a@b.co',
   verified: true,
 };
-const passkey: EnrolledCredential = { type: 'passkey', status: 'active' };
-const authenticatorApp: EnrolledCredential = { type: 'totp', status: 'active' };
+const passkey: EnrolledCredential = {
+  id: 'passkey',
+  type: 'passkey',
+  status: 'active',
+};
+const authenticatorApp: EnrolledCredential = {
+  id: 'totp',
+  type: 'totp',
+  status: 'active',
+};
 const TOTP_SETUP = {
   secret: 'JBSWY3DPEHPK3PXP',
   qrCode: 'data:image/png;base64,QR',
@@ -227,6 +237,24 @@ describe('createMfaFlow', () => {
     expect(await outcome).toMatchObject({
       ok: true,
       value: { token: buildToken('email_otp') },
+    });
+  });
+
+  it('keeps a failed email enrollment on the email screen', async () => {
+    const fake = createFakeController([]);
+    fake.controller.beginCredentialEnrollment.mockRejectedValueOnce(
+      new MfaError('server_error', 'down'),
+    );
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+
+    await act(flow, { type: 'continue' });
+    await act(flow, { type: 'submitEmail', email: 'new@b.co' });
+
+    expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(1);
+    expect(flow.getState()).toMatchObject({
+      step: { name: 'emailEntry' },
+      error: 'server_error',
+      busy: false,
     });
   });
 
@@ -543,6 +571,22 @@ describe('createMfaFlow', () => {
       expect(flow.getState()).toMatchObject({
         step: { name: 'emailEntry', prefillEmail: 'taken@b.co' },
         error: 'credential_already_enrolled',
+      });
+    });
+
+    it('keeps email entry when another profile uses the address', async () => {
+      const fake = createFakeController([]);
+      fake.controller.beginCredentialEnrollment.mockRejectedValueOnce(
+        new MfaError('email_claimed', 'claimed'),
+      );
+      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+
+      await act(flow, { type: 'continue' });
+      await act(flow, { type: 'submitEmail', email: 'claimed@b.co' });
+      expect(flow.getState()).toMatchObject({
+        step: { name: 'emailEntry' },
+        error: 'email_claimed',
+        busy: false,
       });
     });
 
@@ -1005,6 +1049,18 @@ describe('createMfaFlow', () => {
         codeSent: true,
       });
 
+      await act(flow, { type: 'back' });
+      expect(flow.getState().step).toStrictEqual({
+        name: 'totpSetup',
+        ...TOTP_SETUP,
+        secret: `${TOTP_SETUP.secret}1`,
+        isRestart: false,
+      });
+      expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(
+        1,
+      );
+
+      await act(flow, { type: 'continue' });
       await act(flow, { type: 'submitCode', code: '123456' });
       expect(fake.controller.completeCredentialEnrollment).toHaveBeenCalledWith(
         {

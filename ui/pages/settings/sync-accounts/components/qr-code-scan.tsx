@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
+import { ENVIRONMENT } from '../../../../../shared/constants/build';
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 
 const MWP_SESSION_REQUEST_EXPIRY_SECONDS =
@@ -164,6 +165,21 @@ const QrCodeScan = ({ onRestart }: QrCodeScanProps) => {
             <Skeleton width={QR_CODE_SIZE} height={QR_CODE_SIZE} />
           )}
         </Box>
+        {process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT &&
+        qrPayload ? (
+          <Text
+            variant={TextVariant.BodyXs}
+            color={TextColor.TextAlternative}
+            className="w-full text-center"
+            style={{
+              maxWidth: QR_CODE_SIZE,
+              overflowWrap: 'anywhere',
+            }}
+            data-testid="qr-sync-qr-payload"
+          >
+            {qrPayload}
+          </Text>
+        ) : null}
         {statusContent}
       </Box>
     </Box>
