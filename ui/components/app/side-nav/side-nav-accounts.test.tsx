@@ -92,6 +92,86 @@ describe('SideNavAccounts', () => {
     });
   });
 
+  describe('search', () => {
+    const searchButtonName = messages.searchYourAccounts.message;
+    const searchInputTestId = 'side-nav-accounts-search-input';
+
+    it('does not show the search field until the search button is clicked', () => {
+      renderSideNavAccounts();
+
+      expect(screen.queryByTestId(searchInputTestId)).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: searchButtonName }),
+      ).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('opens a focused search field when the search button is clicked', () => {
+      renderSideNavAccounts();
+
+      fireEvent.click(screen.getByRole('button', { name: searchButtonName }));
+
+      const input = screen.getByTestId(searchInputTestId);
+      expect(input).toHaveFocus();
+      expect(input).toHaveAttribute(
+        'placeholder',
+        messages.searchYourAccounts.message,
+      );
+      expect(
+        screen.getByRole('button', { name: searchButtonName }),
+      ).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('filters the account list by the search query', () => {
+      renderSideNavAccounts();
+      fireEvent.click(screen.getByRole('button', { name: searchButtonName }));
+
+      fireEvent.change(screen.getByTestId(searchInputTestId), {
+        target: { value: 'Account 2' },
+      });
+
+      expect(screen.getByText('Account 2')).toBeInTheDocument();
+      expect(screen.queryByText('Account 1')).not.toBeInTheDocument();
+    });
+
+    it('shows a message when no account matches the search query', () => {
+      renderSideNavAccounts();
+      fireEvent.click(screen.getByRole('button', { name: searchButtonName }));
+
+      fireEvent.change(screen.getByTestId(searchInputTestId), {
+        target: { value: 'no such account' },
+      });
+
+      expect(
+        screen.getByTestId('side-nav-accounts-no-results'),
+      ).toHaveTextContent(messages.noAccountsFound.message);
+    });
+
+    it('closes the search and restores the full list when the search button is clicked again', () => {
+      renderSideNavAccounts();
+      fireEvent.click(screen.getByRole('button', { name: searchButtonName }));
+      fireEvent.change(screen.getByTestId(searchInputTestId), {
+        target: { value: 'Account 2' },
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: searchButtonName }));
+
+      expect(screen.queryByTestId(searchInputTestId)).not.toBeInTheDocument();
+      expect(screen.getByText('Account 1')).toBeInTheDocument();
+      expect(screen.getByText('Account 2')).toBeInTheDocument();
+    });
+
+    it('closes the search when Escape is pressed in the search field', () => {
+      renderSideNavAccounts();
+      fireEvent.click(screen.getByRole('button', { name: searchButtonName }));
+
+      fireEvent.keyDown(screen.getByTestId(searchInputTestId), {
+        key: 'Escape',
+      });
+
+      expect(screen.queryByTestId(searchInputTestId)).not.toBeInTheDocument();
+    });
+  });
+
   it('navigates to the choose wallet type page when the add button is clicked', () => {
     renderSideNavAccounts();
 

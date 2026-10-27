@@ -1,16 +1,19 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon,
   ButtonIconSize,
+  ButtonIconVariant,
   FontWeight,
   IconName,
   Text,
   TextColor,
+  TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
 import { MultichainAccountList } from '../../multichain-accounts/multichain-account-list';
+import { useAccountListSearch } from '../../multichain-accounts/hooks/useAccountListSearch';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
@@ -25,7 +28,7 @@ import {
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 
-// The "Accounts" section of the side navigation: a header with manage/add
+// The "Accounts" section of the side navigation: a header with search/manage/add
 // actions above the account list, which scrolls independently of the page.
 export const SideNavAccounts = () => {
   const t = useI18nContext();
@@ -41,6 +44,32 @@ export const SideNavAccounts = () => {
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
     [wallets],
+  );
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const {
+    searchPattern,
+    onSearchBarChange,
+    clearSearch,
+    filteredWallets,
+    hasFilteredWallets,
+    isInSearchMode,
+  } = useAccountListSearch(wallets);
+
+  const handleSearchToggle = useCallback(() => {
+    if (isSearchOpen) {
+      clearSearch();
+    }
+    setIsSearchOpen((isOpen) => !isOpen);
+  }, [clearSearch, isSearchOpen]);
+
+  const handleSearchKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Escape') {
+        handleSearchToggle();
+      }
+    },
+    [handleSearchToggle],
   );
 
   const handleManageClick = useCallback(() => {
@@ -66,6 +95,14 @@ export const SideNavAccounts = () => {
         </Text>
         <div className="flex items-center gap-1">
           <ButtonIcon
+            iconName={IconName.Search}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('searchYourAccounts')}
+            aria-pressed={isSearchOpen}
+            onClick={handleSearchToggle}
+            data-testid="side-nav-accounts-search-button"
+          />
+          <ButtonIcon
             iconName={IconName.Setting}
             size={ButtonIconSize.Sm}
             ariaLabel={t('manageAccounts')}
@@ -82,14 +119,45 @@ export const SideNavAccounts = () => {
           />
         </div>
       </div>
+      {isSearchOpen && (
+        <div className="px-4 pb-2">
+          <TextFieldSearch
+            autoFocus
+            className="w-full"
+            clearButtonOnClick={clearSearch}
+            onChange={onSearchBarChange}
+            placeholder={t('searchYourAccounts')}
+            value={searchPattern}
+            inputProps={
+              {
+                'data-testid': 'side-nav-accounts-search-input',
+                onKeyDown: handleSearchKeyDown,
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
+          />
+        </div>
+      )}
       <ScrollContainer className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-        <MultichainAccountList
-          wallets={wallets}
-          selectedAccountGroups={[selectedAccountGroup]}
-          displayWalletHeader={hasMultipleWallets}
-          showDefaultAddress={showDefaultAddress}
-          shouldNavigateOnSelect={false}
-        />
+        {hasFilteredWallets ? (
+          <MultichainAccountList
+            wallets={filteredWallets}
+            selectedAccountGroups={[selectedAccountGroup]}
+            isInSearchMode={isInSearchMode}
+            displayWalletHeader={hasMultipleWallets}
+            showDefaultAddress={showDefaultAddress}
+            shouldNavigateOnSelect={false}
+          />
+        ) : (
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
+            className="p-4 text-center"
+            data-testid="side-nav-accounts-no-results"
+          >
+            {t('noAccountsFound')}
+          </Text>
+        )}
       </ScrollContainer>
     </section>
   );
