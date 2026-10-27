@@ -43,6 +43,7 @@ import {
 } from '../../../shared/constants/batch-sell';
 import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import { isStockRWAToken } from '../../pages/bridge/hooks/useRWAToken';
+import { EMPTY_OBJECT } from '../../selectors/shared';
 import { BatchSellAsset } from './types';
 
 /**
@@ -273,7 +274,7 @@ export const getAvailableBatchSellReceiveAssetsForNetwork = createSelector(
             }
           >;
         }
-      ).tokensChainsCache ?? {},
+      ).tokensChainsCache ?? EMPTY_OBJECT,
   ],
   (stablecoinAssetIds, assetsByAssetId, tokensChainsCache): BridgeToken[] =>
     stablecoinAssetIds

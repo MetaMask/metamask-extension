@@ -1738,9 +1738,6 @@
     "message": "$2 관련하여 $1에 승인됨",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Arc에 오신 것을 환영합니다! Arc 체인의 원활한 이용과 이용 내역 확인을 위해 Arc 팀과 정보를 공유할 수 있습니다."
-  },
   "arcUsageNoticeTitle": {
     "message": "알림"
   },
@@ -1786,9 +1783,6 @@
   },
   "assets": {
     "message": "자산"
-  },
-  "assetsDescription": {
-    "message": "지갑에서 토큰을 자동으로 감지하고, NFT를 표시하며, 계정 잔액을 일괄 업데이트하세요."
   },
   "asterdexReferralSubtitle": {
     "message": "MetaMask 추천인 코드를 사용하여 거래하면 4%를 돌려받을 수 있습니다.",
@@ -1847,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "안전성으로 돌아가기"
+  },
+  "backToWallet": {
+    "message": "지갑으로 돌아가기"
   },
   "backUpIncomplete": {
     "message": "백업 미완료"
@@ -3303,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "마케팅 목적의 데이터 수집"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "MetaMetrics를 사용하여 사용자가 마케팅 커뮤니케이션과 어떻게 상호 작용하는지 파악할 것입니다. 관련 뉴스(예: 제품 기능 및 기타 자료)를 공유할 수 있습니다."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "이메일 등을 통해 제품 업데이트, 팁, 뉴스를 받아보세요. 당사는 알림 내용을 개선하기 위해 상호작용을 사용할 수 있습니다."
   },
@@ -4259,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask는 스마트 계정을 활성화하는 1회성 비용과 이 거래의 네트워크 수수료를 부담합니다."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "이 특정 네트워크는 계정에 최소 $1 $2의 잔액을 유지해야 합니다.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 시간",
     "description": "$1 represents a number of hours"
@@ -4400,9 +4390,6 @@
   "generalCameraErrorTitle": {
     "message": "문제가 발생했습니다...."
   },
-  "generalDescription": {
-    "message": "여러 기기의 설정을 동기화하고, 네트워크 환경을 선택하며, 토큰 데이터를 추적하세요"
-  },
   "generateNewQrCode": {
     "message": "새 QR 코드 생성"
   },
@@ -4518,6 +4505,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "계속"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "계속하려면 잠금을 해제한 후 다시 시도하세요",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "$1에서는 버전 4(V4) 형식의 유형화된 데이터만 서명할 수 있습니다. 이 사이트가 요청한 이전 서명 방식은 지원되지 않습니다",
@@ -5217,9 +5208,6 @@
   "loading": {
     "message": "로딩 중..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Snap에서 트랜잭션을 완료하세요."
-  },
   "loadingTokenList": {
     "message": "토큰 목록 불러오는 중"
   },
@@ -5444,6 +5432,51 @@
   "metrics": {
     "message": "메트릭"
   },
+  "mfaEmailEntryContinue": {
+    "message": "계속"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "유효한 이메일 주소를 입력하세요."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "이메일 주소"
+  },
+  "mfaErrorCooldown": {
+    "message": "요청이 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요."
+  },
+  "mfaErrorGeneric": {
+    "message": "문제가 발생했습니다. 다시 시도해 주세요."
+  },
+  "mfaFailureClose": {
+    "message": "닫기"
+  },
+  "mfaFailureRetry": {
+    "message": "다시 시도"
+  },
+  "mfaFailureTitle": {
+    "message": "문제가 발생했습니다"
+  },
+  "mfaIntroContinue": {
+    "message": "시작하기"
+  },
+  "mfaMethodEmail": {
+    "message": "이메일"
+  },
+  "mfaOtpResend": {
+    "message": "코드 다시 보내기"
+  },
+  "mfaOtpRetry": {
+    "message": "다시 시도"
+  },
+  "mfaPickerOr": {
+    "message": "또는"
+  },
+  "mfaSettingsAdd": {
+    "message": "추가"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "계속"
+  },
   "minimumReceivedExplanation": {
     "message": "슬리피지 설정에 따라 거래가 처리되는 동안 가격이 변동하는 경우 받을 수 있는 최소 금액입니다. 이 예상치는 유동성 공급자로부터 제공되며 최종 금액은 다를 수 있습니다."
   },
@@ -5656,6 +5689,14 @@
   "moneyEarnApyTitle": {
     "message": "최대 $1 APY 수익 적립"
   },
+  "moneyEarnBannerCta": {
+    "message": "$1 추가",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Money account로 수익 창출",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "암호화폐로 수익 얻기"
   },
@@ -5810,6 +5851,10 @@
   },
   "moneySend": {
     "message": "전송"
+  },
+  "moneyStartEarning": {
+    "message": "수익 창출 시작",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "자금을 추가할 수 없습니다. 다시 시도하세요."
@@ -6244,9 +6289,6 @@
   },
   "networkNameBitcoin": {
     "message": "비트코인"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "비트코인 네이티브 세그윗"
   },
   "networkNameDefinition": {
     "message": "이 네트워크와 연결된 이름입니다."
@@ -6750,9 +6792,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "사용자 지정 IPFS 게이트웨이 추가"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "PFS 게이트웨이 URL이 유효합니다"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1의 내용을, Solana 계정에 대한 정보는 $2의 내용을 참고하세요."
   },
@@ -6791,7 +6830,7 @@
     "message": "기본 사용 데이터 수집"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "제품 업데이트"
+    "message": "마케팅 업데이트"
   },
   "onboardingMetametricsContinue": {
     "message": "계속"
@@ -7479,6 +7518,9 @@
   "perps24hVolume": {
     "message": "24시간 거래량"
   },
+  "perpsAbout": {
+    "message": "정보"
+  },
   "perpsActivity": {
     "message": "활동"
   },
@@ -8081,6 +8123,9 @@
   "perpsRateLimitExceeded": {
     "message": "요청이 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요."
   },
+  "perpsReadMore": {
+    "message": "자세히 보기"
+  },
   "perpsRecentActivity": {
     "message": "최근 활동"
   },
@@ -8127,6 +8172,18 @@
   "perpsSeeAll": {
     "message": "모두 보기",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "지원팀에 연락하여",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "FAQ에서 이용 가능한 옵션을 확인하세요",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "서비스 장애가 발생했습니다",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
@@ -9644,21 +9701,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "새 비밀번호 저장 완료"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "보안 & 개인정보 보호"
-  },
-  "securityDescription": {
-    "message": "안전하지 않은 네트워크에 가입할 가능성을 줄이고 계정을 보호하세요"
-  },
   "securityMessageLinkForNetworks": {
     "message": "네트워크 사기 및 보안 위험"
   },
   "securityProviderPoweredBy": {
     "message": "$1 제공",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "안전하지 않은 네트워크에 참여할 가능성을 낮춰 계정과 데이터를 보호합니다"
   },
   "securitySocialLoginEnabled": {
     "message": "활성화됨"
@@ -12163,6 +12211,9 @@
   },
   "turnOn": {
     "message": "켜기"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "기본 기능 켜기"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "알림을 생성하는 동안 오류가 발생했습니다. 나중에 다시 시도해 주세요."

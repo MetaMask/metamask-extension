@@ -658,6 +658,54 @@ describe('AssetsControllerInit', () => {
       expect(await getBearerToken()).toBeUndefined();
     });
 
+    it('getBearerToken returns undefined without signing in before onboarding completes', async () => {
+      const requestMock = getInitRequestMock({ completedOnboarding: false });
+
+      jest.isolateModules(() => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+        const freshModule = require('./assets-controller-init') as any;
+        freshModule.AssetsControllerInit(requestMock);
+      });
+
+      const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
+      if (!callArgs) {
+        throw new Error('Expected createApiPlatformClient to have been called');
+      }
+      const { getBearerToken } = callArgs[0];
+      if (!getBearerToken) {
+        throw new Error('Expected getBearerToken to be defined');
+      }
+      expect(await getBearerToken()).toBeUndefined();
+      expect(requestMock.initMessenger.call).not.toHaveBeenCalledWith(
+        'AuthenticationController:getBearerToken',
+      );
+    });
+
+    it('getBearerToken returns undefined without signing in when basic functionality is off', async () => {
+      const { requestMock } = buildSubscribeTestSetup({
+        useExternalServices: false,
+      });
+
+      jest.isolateModules(() => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
+        const freshModule = require('./assets-controller-init') as any;
+        freshModule.AssetsControllerInit(requestMock);
+      });
+
+      const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
+      if (!callArgs) {
+        throw new Error('Expected createApiPlatformClient to have been called');
+      }
+      const { getBearerToken } = callArgs[0];
+      if (!getBearerToken) {
+        throw new Error('Expected getBearerToken to be defined');
+      }
+      expect(await getBearerToken()).toBeUndefined();
+      expect(requestMock.initMessenger.call).not.toHaveBeenCalledWith(
+        'AuthenticationController:getBearerToken',
+      );
+    });
+
     it('getBearerToken returns undefined when backend auth is disabled', async () => {
       process.env.MM_BACKEND_DISABLE_AUTH = 'true';
 

@@ -76,9 +76,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   // because controllers are constructed from the fixture state at boot, but there is
   // nothing to validate against.
   'data.CurrencyController',
-  'data.MultichainAssetsRatesController',
   'data.MultichainAssetsController',
-  'data.MultichainBalancesController',
   'data.TokenRatesController',
   'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
@@ -87,7 +85,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
-  'data.TokenBalancesController',
+  'data.MetaMetricsController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.

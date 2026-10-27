@@ -1738,9 +1738,6 @@
     "message": "$2 için $1 üzerinde onaylandı",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Arc'a hoş geldiniz! Arc zincirini kullanımınızı kolaylaştırmak ve doğrulamak amacıyla Arc ekibi ile bilgi paylaşabiliriz."
-  },
   "arcUsageNoticeTitle": {
     "message": "Uyarı"
   },
@@ -1786,9 +1783,6 @@
   },
   "assets": {
     "message": "Varlıklar"
-  },
-  "assetsDescription": {
-    "message": "Cüzdanınızdaki tokenlar otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
   },
   "asterdexReferralSubtitle": {
     "message": "MetaMask referans kodu ile işlemlerde %4'e varan iade alın.",
@@ -1847,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Güvenliğe geri dön"
+  },
+  "backToWallet": {
+    "message": "Cüzdana geri dön"
   },
   "backUpIncomplete": {
     "message": "Yedekleme tamamlanmadı"
@@ -3303,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Pazarlama amacıyla veri toplama"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "MetaMetrics'i, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri ve diğer materyaller gibi) paylaşabiliriz."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "E-posta yoluyla dahil olmak üzere ürün güncellemeleri, ipuçları ve haberleri alın. Etkileşimlerinizi yaptığımız paylaşımları iyileştirmek için kullanabiliriz."
   },
@@ -4259,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask bu işlem için ağ ücretini karşılamaktadır. Buna tek seferlik akıllı hesap aktivasyonu da dahildir."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Bu ağ için hesabınızda $1 $2 rezerv bulunmalıdır.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 sa.",
     "description": "$1 represents a number of hours"
@@ -4400,9 +4390,6 @@
   "generalCameraErrorTitle": {
     "message": "Bir şeyler ters gitti...."
   },
-  "generalDescription": {
-    "message": "Cihazlar genelindeki ayarları senkronize edin, ağ tercihlerini seçin ve token verilerini takip edin"
-  },
   "generateNewQrCode": {
     "message": "Yeni bir QR kodu oluştur"
   },
@@ -4518,6 +4505,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Devam Et"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Devam etmek için kilidini açın ve tekrar deneyin",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "$1 yalnızca sürüm 4 (V4) türündeki verileri imzalayabilir. Bu site desteklenmeyen eski bir imza türü talep etti",
@@ -5217,9 +5208,6 @@
   "loading": {
     "message": "Yükleniyor..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Lütfen işlemi Snap üzerinde tamamlayın."
-  },
   "loadingTokenList": {
     "message": "Token listesi yükleniyor"
   },
@@ -5444,6 +5432,51 @@
   "metrics": {
     "message": "Metrikler"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Devam Et"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Geçerli bir e-posta adresi girin."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "E-posta adresi"
+  },
+  "mfaErrorCooldown": {
+    "message": "Çok fazla istek. Biraz bekleyin ve tekrar deneyin."
+  },
+  "mfaErrorGeneric": {
+    "message": "Bir şeyler ters gitti. Tekrar deneyin."
+  },
+  "mfaFailureClose": {
+    "message": "Kapat"
+  },
+  "mfaFailureRetry": {
+    "message": "Tekrar deneyin"
+  },
+  "mfaFailureTitle": {
+    "message": "Bir şeyler ters gitti"
+  },
+  "mfaIntroContinue": {
+    "message": "Başla"
+  },
+  "mfaMethodEmail": {
+    "message": "E-posta"
+  },
+  "mfaOtpResend": {
+    "message": "Kodu tekrar gönder"
+  },
+  "mfaOtpRetry": {
+    "message": "Tekrar deneyin"
+  },
+  "mfaPickerOr": {
+    "message": "veya"
+  },
+  "mfaSettingsAdd": {
+    "message": "Ekle"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Devam Et"
+  },
   "minimumReceivedExplanation": {
     "message": "Kayma ayarlarınıza göre işleminiz gerçekleştirilirken fiyat değişirse alacağınız minimum tutar. Bu tahmin likidite sağlayıcılarından alınır, yani nihai tutar değişiklik gösterebilir."
   },
@@ -5656,6 +5689,14 @@
   "moneyEarnApyTitle": {
     "message": "$1 APY'ye varan kazanç elde edin"
   },
+  "moneyEarnBannerCta": {
+    "message": "$1 ekle",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Money account hesabınızla kazanın",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "Kriptonuzdan kazanç sağlayın"
   },
@@ -5810,6 +5851,10 @@
   },
   "moneySend": {
     "message": "Gönder"
+  },
+  "moneyStartEarning": {
+    "message": "Kazanmaya başla",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Fon eklenemiyor. Tekrar deneyin."
@@ -6244,9 +6289,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "Bitcoin Native SegWit"
   },
   "networkNameDefinition": {
     "message": "Bu ağ ile ilişkilendirilmiş ad."
@@ -6750,9 +6792,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Özel IPFS Ağ Geçidi Ekle"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFS ağ geçidi URL adresi geçerli"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Varsayılan ayarlarınızı ve yapılandırmalarınızı kullandığımızda, Ethereum verilerine mümkün olan en güvenilir ve gizli erişimi sunmak amacıyla varsayılan uzak yordam çağrısı (RPC) sağlayıcısı olarak Infura'yı kullanırız. Sınırlı durumlarda, kullanıcılarımıza en iyi deneyimi sağlamak amacıyla başka RPC sağlayıcıları kullanabiliriz. Kendi RPC'nizi seçebilirsiniz ancak her RPC'nin işlem yapmak için IP adresinize ve Ethereum cüzdanınıza ulaşacağını unutmayın. Infura'nın, EVM hesapları için verileri nasıl kullandığı hakkında bilgi edinmek için $1 bölümümüzü; Solana hesapları için ise $2 bölümümüzü okuyun."
   },
@@ -6791,7 +6830,7 @@
     "message": "Temel kullanım verilerini topla"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Ürün güncellemeleri"
+    "message": "Pazarlama güncellemeleri"
   },
   "onboardingMetametricsContinue": {
     "message": "Devam et"
@@ -7479,6 +7518,9 @@
   "perps24hVolume": {
     "message": "Son 24 saatin Hacmi"
   },
+  "perpsAbout": {
+    "message": "Hakkında"
+  },
   "perpsActivity": {
     "message": "Aktivite"
   },
@@ -8087,6 +8129,9 @@
   "perpsRateLimitExceeded": {
     "message": "Çok sayıda talepte bulunuldu. Lütfen bekleyip tekrar deneyin."
   },
+  "perpsReadMore": {
+    "message": "Daha fazlasını oku"
+  },
   "perpsRecentActivity": {
     "message": "Son etkinlik"
   },
@@ -8133,6 +8178,18 @@
   "perpsSeeAll": {
     "message": "Tümünü gör",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "destek bölümü ile iletişime geçerek",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Seçeneklerinizi SSS bölümünde görebilirsiniz",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Bir kesinti yaşıyoruz",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Hizmet geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin."
@@ -9650,21 +9707,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Yeni şifre kaydedildi"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Güvenlik ve gizlilik"
-  },
-  "securityDescription": {
-    "message": "Güvensiz ağlara katılma şansınızı azaltın ve hesaplarınızı koruyun"
-  },
   "securityMessageLinkForNetworks": {
     "message": "ağ dolandırıcılıkları ve güvenlik riskleri"
   },
   "securityProviderPoweredBy": {
     "message": "$1 hizmetidir",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Güvensiz ağlara katılma şansınızı azaltın ve hesaplarınızı ve verilerinizi koruyun"
   },
   "securitySocialLoginEnabled": {
     "message": "Etkinleştirildi"
@@ -12169,6 +12217,9 @@
   },
   "turnOn": {
     "message": "Aç"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "temel işlevselliği aç"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Bildirimler oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin."

@@ -138,6 +138,18 @@ export function useTransactionCustomAmount({
   const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
     null,
   );
+  // Quote updates recreate `updateTokenAmount`. Reading these from refs lets
+  // the debounce keep a typed amount instead of cancelling it when that
+  // identity changes mid-keystroke.
+  const updateTokenAmountRef = useRef(updateTokenAmountCallback);
+  const disableUpdateRef = useRef(disableUpdate);
+  const transactionIdRef = useRef(transactionId);
+
+  useEffect(() => {
+    updateTokenAmountRef.current = updateTokenAmountCallback;
+    disableUpdateRef.current = disableUpdate;
+    transactionIdRef.current = transactionId;
+  }, [disableUpdate, transactionId, updateTokenAmountCallback]);
   const hasPrefilledMaxRef = useRef(false);
   const userEditedRef = useRef(false);
   // Full-precision human amount from payToken.balanceRaw for money-account
@@ -177,26 +189,27 @@ export function useTransactionCustomAmount({
   const [hasAppliedDepositPrefill, setHasAppliedDepositPrefill] =
     useState(false);
 
-  // Create and update debounced function
+  // Create and update debounced function. Recreate only when the confirmation
+  // changes so a pending amount is not written onto a different transaction.
+  // `updateTokenAmount` identity is intentionally excluded: a quote landing
+  // while the user is still inside the debounce window recreates it, and
+  // cancelling here drops the typed amount so the fee rows stay pending.
   useEffect(() => {
-    // Cancel any existing debounced calls
-    debounceRef.current?.cancel();
-
-    // Create new debounced function
     const debouncedFn = debounce((value: string) => {
       setAmountHumanDebounced(value);
       // Same as mobile: a zero transfer must not update tx data or request
       // quotes. TransactionPayController skips zero required amounts, but
       // writing 0 still kicks the quote pipeline.
-      if (disableUpdate || isZeroHumanAmount(value)) {
+      if (disableUpdateRef.current || isZeroHumanAmount(value)) {
         return;
       }
 
-      updateTokenAmountCallback(value);
+      updateTokenAmountRef.current(value);
       // Emitted only after the debounce actually triggers a quote refresh
       // via updateEditableParams -> TransactionPayController:stateChange.
-      if (transactionId) {
-        upsertTransactionUIMetricsFragment(transactionId, {
+      const id = transactionIdRef.current;
+      if (id) {
+        upsertTransactionUIMetricsFragment(id, {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_quote_requested: true,
@@ -205,14 +218,12 @@ export function useTransactionCustomAmount({
       }
     }, DEBOUNCE_DELAY);
 
-    // Store in ref
     debounceRef.current = debouncedFn;
 
-    // Cleanup: cancel on unmount or when dependencies change
     return () => {
       debouncedFn.cancel();
     };
-  }, [disableUpdate, transactionId, updateTokenAmountCallback]);
+  }, [transactionId]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
   const isInputBased = totals?.isInputBased === true;
@@ -488,11 +499,13 @@ export function useTransactionCustomAmount({
       percentage: number,
       { isPrefill = false }: { isPrefill?: boolean } = {},
     ) => {
-      const isDepositMax =
-        percentage === 100 && isMoneyAccountDeposit && isNoFeePayToken;
+      const isDepositMax = percentage === 100 && isMoneyAccountDeposit;
 
       // Hold Max until the override-account fetch completes, matching prefill.
       // Applying now would send a stale `balanceRaw` while TPC uses live raw.
+      // Applies to every deposit pay token, not just no-fee ones: `setIsMax`
+      // records the source balance for all of them, so a stale raw is wrong
+      // regardless of whether the amount itself comes from the raw path.
       if (isDepositMax && isAccountTokensLoading) {
         pendingDepositMaxRef.current = { isPrefill };
         if (!isPrefill) {

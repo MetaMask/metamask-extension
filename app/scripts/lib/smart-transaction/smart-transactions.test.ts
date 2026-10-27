@@ -253,11 +253,37 @@ describe('submitSmartTransactionHook', () => {
       jest
         .spyOn(request.smartTransactionsController, 'getFees')
         .mockImplementation(() => {
-          throw new Error('Backend call to /getFees failed');
+          throw Object.assign(new Error('Backend call to /getFees failed'), {
+            data: {
+              error: 'BACKEND_CALL_FAILED',
+              details: 'Call failure details',
+            },
+          });
         });
       const result = await submitSmartTransactionHook(request);
       expect(request.smartTransactionsController.getFees).toHaveBeenCalled();
-      expect(result).toEqual({ transactionHash: undefined });
+      expect(result).toEqual({
+        transactionHash: undefined,
+        getFeesError: 'BACKEND_CALL_FAILED',
+      });
+    });
+  });
+
+  it('falls back to regular transaction submit if /getFees throws a string error', async () => {
+    await withRequest(async ({ request }) => {
+      jest
+        .spyOn(request.smartTransactionsController, 'getFees')
+        .mockImplementation(() => {
+          throw Object.assign(new Error('Backend call to /getFees failed'), {
+            data: 'BACKEND_CALL_FAILED',
+          });
+        });
+      const result = await submitSmartTransactionHook(request);
+      expect(request.smartTransactionsController.getFees).toHaveBeenCalled();
+      expect(result).toEqual({
+        transactionHash: undefined,
+        getFeesError: 'Backend call to /getFees failed',
+      });
     });
   });
 
