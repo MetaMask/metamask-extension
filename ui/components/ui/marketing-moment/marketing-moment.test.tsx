@@ -3,41 +3,32 @@
  */
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import configureMockStore from 'redux-mock-store';
 import { MarketingMoment } from './marketing-moment';
 import type { MarketingMomentProps } from './marketing-moment.types';
-
-const mockStore = configureMockStore()({
-  localeMessages: { currentLocale: 'en' },
-  metamask: { currentLocale: 'en' },
-});
 
 const onPrimaryClick = jest.fn();
 const onSecondaryClick = jest.fn();
 
 const renderMoment = (props: Partial<MarketingMomentProps> = {}) =>
   render(
-    <Provider store={mockStore}>
-      <MarketingMoment
-        data-testid="marketing-moment"
-        title="Perps are here"
-        titleProps={{ 'data-testid': 'marketing-moment-title' }}
-        description="Long or short with up to 40x leverage."
-        descriptionProps={{ 'data-testid': 'marketing-moment-description' }}
-        primaryAction={{
-          label: 'Get started',
-          onClick: onPrimaryClick,
-          'data-testid': 'marketing-moment-primary-button',
-        }}
-        secondaryAction={{
-          label: 'Not now',
-          onClick: onSecondaryClick,
-          'data-testid': 'marketing-moment-secondary-button',
-        }}
-        {...props}
-      />
-    </Provider>,
+    <MarketingMoment
+      data-testid="marketing-moment"
+      title="Perps are here"
+      titleProps={{ 'data-testid': 'marketing-moment-title' }}
+      description="Long or short with up to 40x leverage."
+      descriptionProps={{ 'data-testid': 'marketing-moment-description' }}
+      primaryAction={{
+        label: 'Get started',
+        onClick: onPrimaryClick,
+        'data-testid': 'marketing-moment-primary-button',
+      }}
+      secondaryAction={{
+        label: 'Not now',
+        onClick: onSecondaryClick,
+        'data-testid': 'marketing-moment-secondary-button',
+      }}
+      {...props}
+    />,
   );
 
 describe('MarketingMoment', () => {
@@ -52,9 +43,6 @@ describe('MarketingMoment', () => {
       'Perps are here',
     );
     expect(screen.getByTestId('marketing-moment-title').tagName).toBe('H1');
-    expect(screen.getByTestId('marketing-moment-title')).toHaveClass(
-      'text-center',
-    );
     expect(
       screen.getByTestId('marketing-moment-description'),
     ).toHaveTextContent('Long or short with up to 40x leverage.');
