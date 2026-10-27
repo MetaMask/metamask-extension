@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "I-unlock ang mas mabilis na transaksyon, mas mababang bayad sa network, at dagdag na seguridad sa mga suportadong network."
   },
-  "enableSnap": {
-    "message": "I-enable"
-  },
   "enableToken": {
     "message": "paganahin ang $1",
     "description": "$1 is a token symbol, e.g. ETH"

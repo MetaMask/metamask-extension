@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "तेज़ ट्रांसेक्शन, कम नेटवर्क फीस, और सपोर्टेड नेटवर्क पर अतिरिक्त सुरक्षा अनलॉक करें।"
   },
-  "enableSnap": {
-    "message": "चालू करें"
-  },
   "enableToken": {
     "message": "$1 इनेबल करें",
     "description": "$1 is a token symbol, e.g. ETH"
