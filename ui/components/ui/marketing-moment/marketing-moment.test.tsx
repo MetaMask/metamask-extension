@@ -20,12 +20,10 @@ const renderMoment = (props: Partial<MarketingMomentProps> = {}) =>
       primaryAction={{
         label: 'Get started',
         onClick: onPrimaryClick,
-        'data-testid': 'marketing-moment-primary-button',
       }}
       secondaryAction={{
         label: 'Not now',
         onClick: onSecondaryClick,
-        'data-testid': 'marketing-moment-secondary-button',
       }}
       {...props}
     />,
@@ -75,17 +73,17 @@ describe('MarketingMoment', () => {
   it('renders artwork in a box that accepts props', () => {
     renderMoment({
       artwork: <div data-testid="marketing-moment-artwork" />,
-      artworkWrapperProps: { 'data-testid': 'artwork-wrapper' },
+      artworkWrapperProps: { id: 'artwork-wrapper' },
     });
 
-    expect(screen.getByTestId('artwork-wrapper')).toBeInTheDocument();
+    expect(document.getElementById('artwork-wrapper')).toBeInTheDocument();
     expect(screen.getByTestId('marketing-moment-artwork')).toBeInTheDocument();
   });
 
   it('calls the primary action when clicked', () => {
     renderMoment();
 
-    fireEvent.click(screen.getByTestId('marketing-moment-primary-button'));
+    fireEvent.click(screen.getByRole('button', { name: 'Get started' }));
 
     expect(onPrimaryClick).toHaveBeenCalledTimes(1);
   });
@@ -93,7 +91,7 @@ describe('MarketingMoment', () => {
   it('calls the dismiss action when clicked', () => {
     renderMoment();
 
-    fireEvent.click(screen.getByTestId('marketing-moment-secondary-button'));
+    fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
 
     expect(onSecondaryClick).toHaveBeenCalledTimes(1);
   });
@@ -114,10 +112,10 @@ describe('MarketingMoment', () => {
       screen.queryByTestId('marketing-moment-description'),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByTestId('marketing-moment-primary-button'),
+      screen.queryByRole('button', { name: 'Get started' }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByTestId('marketing-moment-secondary-button'),
+      screen.queryByRole('button', { name: 'Not now' }),
     ).not.toBeInTheDocument();
   });
 });

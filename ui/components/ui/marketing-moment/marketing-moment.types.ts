@@ -11,7 +11,7 @@ import type {
  */
 export type MarketingMomentAction = Omit<
   ButtonProps,
-  'variant' | 'children'
+  'variant' | 'children' | 'ref'
 > & {
   /**
    * Button label. Callers pass already-localized copy.
@@ -53,9 +53,9 @@ export type MarketingMomentProps = {
   artwork?: ReactNode;
   /**
    * Props spread onto the box that sizes `artwork`. Defaults to centered.
-   * `className` is merged onto the box layout classes.
+   * `className` is merged onto the box layout classes. `ref` stays on `Box`.
    */
-  artworkWrapperProps?: Omit<BoxProps, 'children'>;
+  artworkWrapperProps?: Omit<BoxProps, 'children' | 'ref'>;
   /**
    * Recommended action.
    */

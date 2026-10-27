@@ -18,7 +18,7 @@ import {
  * @param props.children
  */
 export const MarketingMomentTitle = ({
-  variant = TextVariant.DisplayXl,
+  variant = TextVariant.DisplayLg,
   className,
   children,
   ...props
