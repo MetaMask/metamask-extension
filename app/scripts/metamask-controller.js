@@ -169,6 +169,7 @@ import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import { getIsPerpsIncludedInBuild } from '../../shared/lib/environment';
+import { isBrazeConfigured } from '../../shared/lib/braze';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -381,6 +382,7 @@ import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metri
 import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ownership-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
+import { BrazeServiceInit } from './messenger-client-init/braze-service-init';
 import { UserTraitsServiceInit } from './messenger-client-init/user-traits-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { SentryTracingServiceInit } from './messenger-client-init/sentry-tracing-service-init';
@@ -621,6 +623,9 @@ export default class MetamaskController extends EventEmitter {
       MultichainAccountService: MultichainAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
+      // The Braze SDK runs in the offscreen document on MV3 and in the
+      // background page on MV2.
+      ...(isBrazeConfigured() ? { BrazeService: BrazeServiceInit } : {}),
       UserStorageController: UserStorageControllerInit,
       AuthenticatedUserStorageService: AuthenticatedUserStorageServiceInit,
       NotificationServicesController: NotificationServicesControllerInit,
