@@ -126,7 +126,7 @@ export enum LedgerAction {
 }
 
 /**
- * Defines actions intended to be sent to the Braze host in the offscreen
+ * Defines actions intended to be sent to the Braze host in the MV3 offscreen
  * document.
  */
 export enum BrazeAction {
@@ -138,6 +138,16 @@ export enum BrazeAction {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   syncUser = 'braze-sync-user',
 }
+
+export type BrazeSyncUserMessage = {
+  target: OffscreenCommunicationTarget.brazeOffscreen;
+  action: BrazeAction.syncUser;
+  profileId: string | null;
+};
+
+export type BrazeSyncUserResponse =
+  | { success: true }
+  | { success: false; error: string };
 
 /**
  * Selects which Ledger handler implementation the offscreen document should

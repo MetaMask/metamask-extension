@@ -1,6 +1,12 @@
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 
 /**
+ * Applies the desired Braze user. Implemented by the platform-specific host
+ * adapter: the offscreen client on MV3, or the direct host on MV2.
+ */
+export type SyncBrazeUser = (profileId: string | null) => Promise<void>;
+
+/**
  * Whether this build has the configuration required to activate Braze.
  * Test builds never activate Braze.
  *

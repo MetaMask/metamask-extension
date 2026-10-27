@@ -2,11 +2,9 @@ import { it } from '@jest/globals';
 import {
   BrazeAction,
   OffscreenCommunicationTarget,
-} from '../../shared/constants/offscreen-communication';
-import {
-  createOffscreenBrazeClient,
   type BrazeSyncUserMessage,
-} from './braze-client';
+} from '../../shared/constants/offscreen-communication';
+import { createOffscreenBrazeClient } from './braze-client';
 
 const message = (profileId: string | null): BrazeSyncUserMessage => ({
   target: OffscreenCommunicationTarget.brazeOffscreen,

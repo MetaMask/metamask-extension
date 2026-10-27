@@ -125,8 +125,8 @@ describe('Braze SDK lifecycle in the host', () => {
   it('wipes data persisted by a previous host without sending requests', async () => {
     await syncBrazeUser('canonical-123');
     await jest.advanceTimersByTimeAsync(0);
-    // Service worker restart: the host and SDK go away, storage stays, and the
-    // Braze session expires.
+    // Background restart (MV3 service worker / MV2 page reload): the host and
+    // SDK go away, storage stays, and the Braze session expires.
     braze.destroy();
     await jest.advanceTimersByTimeAsync(2 * 60 * 60 * 1000);
     expect(brazeStorageKeys()).not.toHaveLength(0);

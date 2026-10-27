@@ -11,6 +11,7 @@ import type {
 import {
   getDesiredBrazeUser,
   getPrimaryCanonicalProfileId,
+  type SyncBrazeUser,
 } from '../../../shared/lib/braze';
 import { captureException } from '../../../shared/lib/sentry';
 import type {
@@ -42,8 +43,6 @@ export type BrazeServiceMessenger = Messenger<
   AllowedEvents
 >;
 
-export type SyncBrazeUser = (profileId: string | null) => Promise<void>;
-
 /**
  * Keeps the Braze SDK identified with the user's canonical profile ID.
  *
@@ -60,9 +59,8 @@ export class BrazeService {
   readonly #syncUser: SyncBrazeUser;
 
   /**
-   * The user last applied in this background lifetime. A failed sync is not
-   * retried until the desired user changes, so a missing host or offscreen
-   * document does not cause a sync on every state change.
+   * The user last applied in this background lifetime. A failed sync is
+   * retried on the next state change.
    */
   #lastSyncedUser: string | null | undefined;
 
@@ -73,8 +71,8 @@ export class BrazeService {
    *
    * @param options - Options.
    * @param options.messenger - The service messenger.
-   * @param options.syncUser - Applies the desired user. The offscreen document
-   * target on MV3, or the background Braze host on MV2.
+   * @param options.syncUser - Sends the user to the offscreen document on MV3,
+   * or calls the in-process host on MV2.
    */
   constructor({
     messenger,
@@ -135,6 +133,10 @@ export class BrazeService {
 
         await this.#syncUser(desiredUser);
       } catch (error) {
+        // A failed sync must be retried on the next state change; otherwise a
+        // missing offscreen document or a failed SDK load leaves Braze
+        // unidentified for the rest of the background lifetime.
+        this.#lastSyncedUser = undefined;
         captureException(error);
       }
     });

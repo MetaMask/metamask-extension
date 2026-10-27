@@ -20,7 +20,7 @@ jest.mock('../../offscreen/braze-client', () => ({
   createOffscreenBrazeClient: (...args: unknown[]) =>
     mockCreateOffscreenBrazeClient(...args),
 }));
-jest.mock('../../offscreen/braze-host', () => ({
+jest.mock('../../braze/braze-host', () => ({
   createBrazeHost: (...args: unknown[]) => mockCreateBrazeHost(...args),
 }));
 
