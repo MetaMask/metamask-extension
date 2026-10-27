@@ -1023,6 +1023,18 @@ describe('createMfaFlow', () => {
         codeSent: true,
       });
 
+      await act(flow, { type: 'back' });
+      expect(flow.getState().step).toStrictEqual({
+        name: 'totpSetup',
+        ...TOTP_SETUP,
+        secret: `${TOTP_SETUP.secret}1`,
+        isRestart: false,
+      });
+      expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(
+        1,
+      );
+
+      await act(flow, { type: 'continue' });
       await act(flow, { type: 'submitCode', code: '123456' });
       expect(fake.controller.completeCredentialEnrollment).toHaveBeenCalledWith(
         {

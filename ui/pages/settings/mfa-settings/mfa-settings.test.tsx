@@ -16,6 +16,7 @@ import {
   MFA_SETTINGS_EMAIL_ROUTE,
   MFA_SETTINGS_TOTP_ROUTE,
 } from '../../../helpers/constants/routes';
+import { toast } from '../../../components/ui/toast/toast';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaSettings from './mfa-settings';
 
@@ -27,6 +28,10 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../../hooks/identity/mfa/engine/activeFlow', () => ({
   startMfaFlow: jest.fn(),
+}));
+
+jest.mock('../../../components/ui/toast/toast', () => ({
+  toast: { success: jest.fn() },
 }));
 
 jest.mock('../../../hooks/identity/mfa/bindings', () => ({
@@ -96,6 +101,9 @@ describe('MfaSettings', () => {
         reason: { operation: 'settings.addEmail' },
         platform: 'extension',
       }),
+    );
+    expect(toast.success).toHaveBeenCalledWith(
+      messages.mfaSettingsEmailVerified.message,
     );
   });
 
@@ -246,6 +254,9 @@ describe('MfaSettings', () => {
         request: { kind: 'enroll', method: 'totp' },
         reason: { operation: 'settings.addAuthenticatorApp' },
       }),
+    );
+    expect(toast.success).toHaveBeenCalledWith(
+      messages.mfaSettingsAuthenticatorAppAdded.message,
     );
   });
 

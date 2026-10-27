@@ -5458,17 +5458,11 @@
   "mfaMethodEmail": {
     "message": "Adresse e-mail"
   },
-  "mfaOtpPaste": {
-    "message": "Coller"
-  },
   "mfaOtpResend": {
     "message": "Renvoyer le code"
   },
   "mfaOtpRetry": {
     "message": "Réessayer"
-  },
-  "mfaOtpVerify": {
-    "message": "Vérifier"
   },
   "mfaPickerOr": {
     "message": "ou"

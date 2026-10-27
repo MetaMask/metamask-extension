@@ -5462,17 +5462,11 @@
   "mfaMethodEmail": {
     "message": "Email"
   },
-  "mfaOtpPaste": {
-    "message": "Dán"
-  },
   "mfaOtpResend": {
     "message": "Gửi lại mã"
   },
   "mfaOtpRetry": {
     "message": "Thử lại"
-  },
-  "mfaOtpVerify": {
-    "message": "Xác minh"
   },
   "mfaPickerOr": {
     "message": "hoặc"
