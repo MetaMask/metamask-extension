@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import {
   FontFamily,
   FontWeight,
@@ -73,7 +74,7 @@ describe('getMarketingMomentTitlePresentation', () => {
     [TextVariant.HeadingLg, TextVariant.HeadingLg],
     [TextVariant.HeadingMd, TextVariant.HeadingMd],
     [TextVariant.HeadingSm, TextVariant.HeadingSm],
-  ] as const)(
+  ])(
     'steps %s to %s when Grotzec is not supported',
     (variant, unsupportedVariant) => {
       expect(getMarketingMomentTitlePresentation(false, variant)).toEqual({
