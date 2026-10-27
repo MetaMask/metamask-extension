@@ -534,6 +534,39 @@ class BridgeQuotePage {
     });
   };
 
+  /**
+   * Waits until the source amount input holds a stable non-empty value.
+   * Use this after Max, which writes the balance asynchronously.
+   *
+   * @returns The source amount input value.
+   */
+  async getSourceAmount(): Promise<string> {
+    console.log('Reading swap source amount');
+    let stableValue = '';
+    let stableReads = 0;
+    await this.driver.waitUntil(
+      async () => {
+        const input = await this.driver.findElement(this.sourceAmount);
+        const value = await input.getAttribute('value');
+        if (!value) {
+          stableValue = '';
+          stableReads = 0;
+          return false;
+        }
+        if (value === stableValue) {
+          stableReads += 1;
+        } else {
+          stableValue = value;
+          stableReads = 1;
+        }
+        return stableReads >= 2;
+      },
+      { interval: 200, timeout: 15000 },
+    );
+    console.log(`Swap source amount is ${stableValue}`);
+    return stableValue;
+  }
+
   goBack = async () => {
     await this.driver.waitForSelector(this.backButton);
     await this.driver.clickElement(this.backButton);
@@ -696,6 +729,23 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.sourceAssetPickerButton);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     await this.selectAssetFromPicker(token);
+  }
+
+  /**
+   * Selects the source token when it is not already selected.
+   * Re-selecting the current token clears the balance and hides Max.
+   *
+   * @param token - Token symbol, such as ETH or MON.
+   */
+  async selectSrcTokenIfNeeded(token: string): Promise<void> {
+    const sourceButton = await this.driver.findElement(
+      this.sourceAssetPickerButton,
+    );
+    const label = await sourceButton.getText();
+    if (label.includes(token)) {
+      return;
+    }
+    await this.selectSrcToken(token);
   }
 
   async setCustomSlippage(value: string): Promise<void> {
