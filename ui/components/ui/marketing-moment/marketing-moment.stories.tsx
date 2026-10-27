@@ -42,27 +42,23 @@ const ArtworkPlaceholder = ({ label }: { label: string }) => (
 const meta: Meta<typeof MarketingMoment> = {
   title: 'Components/UI/MarketingMoment',
   component: MarketingMoment,
+  decorators: [
+    (Story) => (
+      <div className="h-screen w-full">
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
 type Story = StoryObj<typeof MarketingMoment>;
 
-export const Actions: Story = {
+export const Default: Story = {
   render: () => (
     <MarketingMoment
       title="Perps are here"
       description="Trade with leverage. The title uses the hero face."
-      primaryAction={{ label: 'Get started' }}
-      secondaryAction={{ label: 'Not now' }}
-    />
-  ),
-};
-
-export const Artwork: Story = {
-  render: () => (
-    <MarketingMoment
-      title="Perps are here"
-      description="Artwork sits in the flexible area between the copy and the buttons."
       artwork={<ArtworkPlaceholder label="Artwork" />}
       primaryAction={{ label: 'Get started' }}
       secondaryAction={{ label: 'Not now' }}
@@ -70,67 +66,9 @@ export const Artwork: Story = {
   ),
 };
 
-export const Background: Story = {
+export const Examples: Story = {
   render: () => (
-    <Box className="h-full bg-accent02-dark">
-      <MarketingMoment
-        title="Spend and earn"
-        description="A full-bleed background sits behind the copy and actions."
-        titleProps={{ className: 'text-accent02-light' }}
-        descriptionProps={{ className: 'text-accent02-light' }}
-        primaryAction={{ label: 'Get started' }}
-        secondaryAction={{ label: 'Not now' }}
-      />
-    </Box>
-  ),
-};
-
-export const WalletReady: Story = {
-  name: 'Wallet ready extension template',
-  render: () => (
-    <MarketingMoment
-      title="Your wallet is ready!"
-      artwork={<ArtworkPlaceholder label="Wallet ready artwork" />}
-      primaryAction={{ label: 'Open wallet' }}
-      secondaryAction={{ label: 'Manage default settings' }}
-    />
-  ),
-};
-
-export const TransactionShield: Story = {
-  name: 'Transaction Shield extension template',
-  render: () => (
-    <Box className="h-full bg-accent03-dark">
-      <MarketingMoment
-        title="Introducing Transaction Shield"
-        description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
-        titleProps={{ className: 'text-accent04-light' }}
-        descriptionProps={{ className: 'text-accent04-light' }}
-        artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
-        primaryAction={{ label: 'Start 14-day free trial' }}
-        secondaryAction={{ label: 'Learn more' }}
-      />
-    </Box>
-  ),
-};
-
-export const Stablecoins: Story = {
-  name: 'Stablecoins extension template',
-  render: () => (
-    <MarketingMoment
-      title="Get 3% on stablecoins"
-      description="Convert your stablecoins to mUSD and earn up to a 3% annualized bonus that you can claim daily. Terms apply."
-      artwork={<ArtworkPlaceholder label="mUSD coin artwork" />}
-      primaryAction={{ label: 'Get started' }}
-      secondaryAction={{ label: 'Not now' }}
-    />
-  ),
-};
-
-export const ExtensionTemplates: Story = {
-  name: 'Extension templates',
-  render: () => (
-    <Box className="flex flex-wrap gap-4">
+    <Box className="grid h-full w-full auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-3">
       <MarketingMoment
         title="Your wallet is ready!"
         artwork={<ArtworkPlaceholder label="Wallet ready artwork" />}
@@ -138,17 +76,13 @@ export const ExtensionTemplates: Story = {
         secondaryAction={{ label: 'Manage default settings' }}
       />
 
-      <Box className="bg-accent03-dark">
-        <MarketingMoment
-          title="Introducing Transaction Shield"
-          description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
-          titleProps={{ className: 'text-accent04-light' }}
-          descriptionProps={{ className: 'text-accent04-light' }}
-          artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
-          primaryAction={{ label: 'Start 14-day free trial' }}
-          secondaryAction={{ label: 'Learn more' }}
-        />
-      </Box>
+      <MarketingMoment
+        title="Introducing Transaction Shield"
+        description="Transact with added confidence with up to $10,000 in protection and 24/7 priority support."
+        artwork={<ArtworkPlaceholder label="Transaction Shield artwork" />}
+        primaryAction={{ label: 'Start 14-day free trial' }}
+        secondaryAction={{ label: 'Learn more' }}
+      />
 
       <MarketingMoment
         title="Get 3% on stablecoins"

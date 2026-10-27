@@ -127,9 +127,7 @@ export const MarketingMoment = ({
         >
           {artwork}
         </Box>
-      ) : (
-        <Box className="flex-1" />
-      )}
+      ) : null}
 
       {primaryAction || secondaryAction ? (
         <Box
