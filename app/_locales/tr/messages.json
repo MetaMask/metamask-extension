@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Desteklenen ağlarda daha hızlı işlemler, daha düşük ağ ücretleri ve daha fazla güvenlik."
   },
-  "enableSnap": {
-    "message": "Etkinleştir"
-  },
   "enableToken": {
     "message": "şunu etkinleştir: $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5462,17 +5459,11 @@
   "mfaMethodEmail": {
     "message": "E-posta"
   },
-  "mfaOtpPaste": {
-    "message": "Yapıştır"
-  },
   "mfaOtpResend": {
     "message": "Kodu tekrar gönder"
   },
   "mfaOtpRetry": {
     "message": "Tekrar deneyin"
-  },
-  "mfaOtpVerify": {
-    "message": "Doğrula"
   },
   "mfaPickerOr": {
     "message": "veya"
