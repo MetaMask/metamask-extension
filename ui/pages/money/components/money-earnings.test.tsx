@@ -28,6 +28,31 @@ describe('MoneyEarnings', () => {
     );
   });
 
+  it('hides the earnings and their sign colour when privacy mode is on', () => {
+    renderWithLocalization(
+      <MoneyEarnings
+        monthlyEarnings="+$1.23"
+        lifetimeEarnings="+$4.56"
+        isMonthlyLoading={false}
+        isLifetimeLoading={false}
+        privacyMode
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-earnings-monthly-value'),
+    ).not.toHaveTextContent('+$1.23');
+    expect(screen.getByTestId('money-earnings-monthly-value')).not.toHaveClass(
+      'text-success-default',
+    );
+    expect(
+      screen.getByTestId('money-earnings-lifetime-value'),
+    ).not.toHaveTextContent('+$4.56');
+    expect(screen.getByTestId('money-earnings-lifetime-value')).not.toHaveClass(
+      'text-success-default',
+    );
+  });
+
   it('renders skeletons during the initial load', () => {
     renderWithLocalization(
       <MoneyEarnings

@@ -1738,9 +1738,6 @@
     "message": "$1 पर $2 के लिए एप्रूव किया गया",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Arc में आपका स्वागत है! Arc चेन के आपके उपयोग को सुगम बनाने और सत्यापित करने के लिए, हम Arc टीम के साथ आपकी जानकारी साझा कर सकते हैं।"
-  },
   "arcUsageNoticeTitle": {
     "message": "नोटिस"
   },
@@ -1786,9 +1783,6 @@
   },
   "assets": {
     "message": "परिसंपत्तियां"
-  },
-  "assetsDescription": {
-    "message": "अपने वॉलेट में टोकन ऑटोडिटेक्ट करें, NFT प्रदर्शित करें, और बैच अकाउंट बैलेंस संबंधी अपडेट प्राप्त करें"
   },
   "asterdexReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% वापस पाएं।",
@@ -1847,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "सुरक्षा पर वापस जाएं"
+  },
+  "backToWallet": {
+    "message": "वॉलेट पर वापस जाएँ"
   },
   "backUpIncomplete": {
     "message": "बैकअप अधूरा है"
@@ -3303,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "मार्केटिंग के लिए डेटा संग्रह"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं, यह जानने के लिए हम MetaMetrics का उपयोग करेंगे। हम प्रासंगिक समाचार (जैसे प्रॉडक्ट फीचर्स और अन्य सामग्री) साझा कर सकते हैं।"
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "उत्पाद अपडेट, सुझाव और समाचार प्राप्त करें - ईमेल के माध्यम से भी। हम आपके इंटरैक्शन का उपयोग साझा की जाने वाली जानकारी को बेहतर बनाने के लिए कर सकते हैं।"
   },
@@ -4259,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask इस ट्रांसेक्शन के लिए नेटवर्क फ़ीस कवर करता है। इसमें एक बार का स्मार्ट अकाउंट एक्टिवेशन शामिल है।"
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "इस खास नेटवर्क को आपके अकाउंट में $1 $2 का रिज़र्व बनाए रखना ज़रूरी है।",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
     "description": "$1 represents a number of hours"
@@ -4396,9 +4386,6 @@
   "generalCameraErrorTitle": {
     "message": "कुछ गलत हो गया..."
   },
-  "generalDescription": {
-    "message": "सभी डिवाइसों में सेटिंग्स सिंक करें, नेटवर्क प्राथमिकताएं चुनें और टोकन डेटा ट्रैक करें"
-  },
   "generateNewQrCode": {
     "message": "नया QR कोड जेनरेट करें"
   },
@@ -4514,6 +4501,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "जारी रखें"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "इसे अनलॉक करें और जारी रखने के लिए फिर से प्रयास करें",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "आपका $1 केवल वर्ज़न 4 (V4) टाइप्ड डेटा साइन कर सकता है। इस साइट ने पुराने सिग्नेचर प्रकार का अनुरोध किया है, जो सपोर्टेड नहीं है",
@@ -5213,9 +5204,6 @@
   "loading": {
     "message": "लोड हो रहा है..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
-  },
   "loadingTokenList": {
     "message": "टोकन लिस्ट लोड हो रहा है"
   },
@@ -5440,6 +5428,48 @@
   "metrics": {
     "message": "मेट्रिक्स"
   },
+  "mfaEmailEntryContinue": {
+    "message": "जारी रखें"
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "मेल पता"
+  },
+  "mfaErrorCooldown": {
+    "message": "बहुत ज़्यादा रिक्वेस्ट हैं। थोड़ा इंतज़ार करें और फिर से कोशिश करें।"
+  },
+  "mfaErrorGeneric": {
+    "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
+  },
+  "mfaFailureClose": {
+    "message": "बंद करें"
+  },
+  "mfaFailureRetry": {
+    "message": "फिर से प्रयास करें"
+  },
+  "mfaFailureTitle": {
+    "message": "कुछ गलत हो गया"
+  },
+  "mfaIntroContinue": {
+    "message": "शुरू करें"
+  },
+  "mfaMethodEmail": {
+    "message": "ईमेल"
+  },
+  "mfaOtpResend": {
+    "message": "कोड फिर से भेजें"
+  },
+  "mfaOtpRetry": {
+    "message": "फिर से प्रयास करें"
+  },
+  "mfaPickerOr": {
+    "message": "या"
+  },
+  "mfaSettingsAdd": {
+    "message": "जोड़ें"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "जारी रखें"
+  },
   "minimumReceivedExplanation": {
     "message": "यदि आपके ट्रांसेक्शन के दौरान प्राइस बदलती है, तो न्यूनतम राशि जो आपको मिलेगी, वह आपके स्लिपेज (slippage) सेटिंग पर आधारित होगी। यह अनुमान लिक्विडिटी प्रोवाइडर्स से लिया गया है, इसलिए अंतिम राशि अलग हो सकती है।"
   },
@@ -5652,6 +5682,14 @@
   "moneyEarnApyTitle": {
     "message": "$1 APY तक कमाएं"
   },
+  "moneyEarnBannerCta": {
+    "message": "$1 जोड़ें",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "अपने Money Account से कमाएं",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "अपने क्रिप्टो पर कमाएं"
   },
@@ -5806,6 +5844,10 @@
   },
   "moneySend": {
     "message": "भेजें"
+  },
+  "moneyStartEarning": {
+    "message": "कमाना शुरू करें",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "फंड्स जोड़ने में असमर्थ। फिर से प्रयास करें।"
@@ -6743,9 +6785,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "कस्टम IPFS गेटवे जोड़ें"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFS गेटवे URL मान्य है"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "जब आप हमारी डिफॉल्ट सेटिंग्स और कॉन्फ़िगरेशन का उपयोग करते हैं, तो हम Ethereum डेटा तक सबसे विश्वसनीय और निजी पहुँच प्रदान करने के लिए Infura को अपने डिफॉल्ट रिमोट प्रोसीजर कॉल (RPC) प्रदाता के रूप में उपयोग करते हैं। सीमित मामलों में, हम अपने उपयोगकर्ताओं को सर्वश्रेष्ठ अनुभव प्रदान करने के लिए अन्य RPC प्रदाताओं का उपयोग कर सकते हैं। आप अपना खुद का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC ट्रांसेक्शन करने के लिए आपका आईपी एड्रेस और Ethereum वॉलेट प्राप्त करेगा। EVM एकाउंट्स के लिए Infura डेटा को कैसे संभालता है, इसके बारे में अधिक जानने के लिए, हमारी $1 पढ़ें; Solana एकाउंट्स, $2 के लिए।"
   },
@@ -6784,7 +6823,7 @@
     "message": "मूलभूत उपयोग संबंधी डेटा एकत्र करें"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "उत्पाद अपडेट"
+    "message": "मार्केटिंग अपडेट्स"
   },
   "onboardingMetametricsContinue": {
     "message": "जारी रखें"
@@ -7472,6 +7511,9 @@
   "perps24hVolume": {
     "message": "24 घंटे का वॉल्यूम"
   },
+  "perpsAbout": {
+    "message": "बारे में"
+  },
   "perpsActivity": {
     "message": "एक्टिविटी"
   },
@@ -8074,6 +8116,9 @@
   "perpsRateLimitExceeded": {
     "message": "बहुत ज़्यादा रिक्वेस्ट हैं। कृपया इंतज़ार करें और फिर से कोशिश करें।"
   },
+  "perpsReadMore": {
+    "message": "और पढ़ें"
+  },
   "perpsRecentActivity": {
     "message": "हालिया गतिविधि"
   },
@@ -8120,6 +8165,18 @@
   "perpsSeeAll": {
     "message": "सभी को देखें",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "सपोर्ट से संपर्क करें",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "FAQs में अपने विकल्प देखें",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "हम सेवा बाधा का सामना कर रहे हैं",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "सेवा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से कोशिश करें।"
@@ -9633,21 +9690,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "नया पासवर्ड सेव किया गया"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "सुरक्षा और गोपनीयता"
-  },
-  "securityDescription": {
-    "message": "असुरक्षित नेटवर्क में शामिल होने की संभावना कम करें और अपने एकाउंट्स की सुरक्षा करें"
-  },
   "securityMessageLinkForNetworks": {
     "message": "नेटवर्क संबंधी स्कैम और सुरक्षा जोखिम"
   },
   "securityProviderPoweredBy": {
     "message": "$1 द्वारा पावर्ड",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "असुरक्षित नेटवर्क में शामिल होने की संभावना कम करें और अपने एकाउंट्स और डेटा की सुरक्षा करें"
   },
   "securitySocialLoginEnabled": {
     "message": "चालू किया गया"
@@ -12152,6 +12200,9 @@
   },
   "turnOn": {
     "message": "चालू करें"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "बेसिक फंक्शनलिटी को चालू करें"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "नोटिफिकेशंस बनाने में गड़बड़ी हुई। कृपया बाद में फिर से प्रयास करें।"

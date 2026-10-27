@@ -1,15 +1,14 @@
-import {
-  ApprovalType,
-  toChecksumHexAddress,
-  toHex,
-} from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   GasFeeToken,
   TransactionMeta,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import {
+  buildNativeEvmBalancePatch,
+  getMockConfirmState,
+} from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
@@ -92,8 +91,6 @@ function buildState({
   chainId?: string;
   remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
-  const accountAddress = transaction?.txParams?.from as string;
-
   let pendingApprovals = {};
   if (currentConfirmation) {
     pendingApprovals = {
@@ -104,18 +101,17 @@ function buildState({
     };
   }
 
+  const resolvedChainId = chainId ?? '0x5';
+
   return getMockConfirmState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
-      accountsByChainId: {
-        [chainId ?? '0x5']: {
-          [toChecksumHexAddress(accountAddress)]: {
-            balance: toHex(balance ?? 0),
-          },
-        },
-      },
+      ...buildNativeEvmBalancePatch({
+        hexChainId: resolvedChainId,
+        amountWei: balance ?? 0,
+      }),
       transactions: transaction ? [transaction] : [],
     },
   });
@@ -226,7 +222,7 @@ describe('useInsufficientBalanceAlerts', () => {
         chainId: '0x1079',
         excludeNativeTokenForFee: true,
         gasFeeTokens: [],
-        selectedGasFeeToken: '0x20c0000000000000000000000000000000000000',
+        selectedGasFeeToken: '0x20c0000000000000000000006a37da5c996874be',
       }),
       id: TRANSACTION_ID_MOCK,
       txParams: {
@@ -254,14 +250,14 @@ describe('useInsufficientBalanceAlerts', () => {
         actions: [
           {
             key: 'buy',
-            label: 'Buy pathUSD',
+            label: 'Buy OUSD',
           },
         ],
         field: 'estimatedFee',
         isBlocking: true,
         key: 'insufficientBalance',
         message:
-          'You do not have enough pathUSD in your account to pay for network fees.',
+          'You do not have enough OUSD in your account to pay for network fees.',
         reason: 'Insufficient funds',
         severity: 'danger',
       },

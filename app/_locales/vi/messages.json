@@ -1738,9 +1738,6 @@
     "message": "Đã phê duyệt vào $1 cho $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Chào mừng đến với Arc! Để hỗ trợ và xác minh việc bạn sử dụng chuỗi Arc, chúng tôi có thể chia sẻ thông tin với đội ngũ Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Thông báo"
   },
@@ -1786,9 +1783,6 @@
   },
   "assets": {
     "message": "Tài sản"
-  },
-  "assetsDescription": {
-    "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
   },
   "asterdexReferralSubtitle": {
     "message": "Được hoàn 4% khi giao dịch với mã giới thiệu MetaMask.",
@@ -1847,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Quay lại mục an toàn"
+  },
+  "backToWallet": {
+    "message": "Quay lại ví"
   },
   "backUpIncomplete": {
     "message": "Sao lưu chưa hoàn tất"
@@ -3303,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Thu thập dữ liệu cho mục đích tiếp thị"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "Chúng tôi sẽ sử dụng MetaMetrics để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm và các tài liệu khác)."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Nhận thông tin cập nhật về sản phẩm, lời khuyên và tin tức - bao gồm qua email. Chúng tôi có thể sử dụng cách tương tác của bạn để cải thiện nội dung chia sẻ."
   },
@@ -4259,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask sẽ thanh toán phí mạng cho giao dịch này. Phí này bao gồm một lần kích hoạt tài khoản thông minh."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Mạng cụ thể này yêu cầu duy trì số dư dự trữ $1 $2 trong tài khoản của bạn.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 giờ",
     "description": "$1 represents a number of hours"
@@ -4400,9 +4390,6 @@
   "generalCameraErrorTitle": {
     "message": "Đã xảy ra sự cố..."
   },
-  "generalDescription": {
-    "message": "Đồng bộ chế độ cài đặt trên các thiết bị, chọn mạng ưa thích và theo dõi dữ liệu token"
-  },
   "generateNewQrCode": {
     "message": "Tạo mã QR mới"
   },
@@ -4518,6 +4505,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Tiếp tục"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Vui lòng mở khóa và thử lại để tiếp tục",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "$1 của bạn chỉ có thể ký dữ liệu có kiểu phiên bản 4 (V4). Trang web này đã yêu cầu loại chữ ký cũ hơn và không được hỗ trợ",
@@ -5217,9 +5208,6 @@
   "loading": {
     "message": "Đang tải..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Vui lòng hoàn tất giao dịch trên Snap."
-  },
   "loadingTokenList": {
     "message": "Đang tải danh sách token"
   },
@@ -5444,6 +5432,51 @@
   "metrics": {
     "message": "Chỉ số"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Tiếp tục"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Nhập địa chỉ email hợp lệ."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Địa chỉ email"
+  },
+  "mfaErrorCooldown": {
+    "message": "Có quá nhiều yêu cầu. Hãy đợi một chút rồi thử lại."
+  },
+  "mfaErrorGeneric": {
+    "message": "Đã xảy ra lỗi. Hãy thử lại."
+  },
+  "mfaFailureClose": {
+    "message": "Đóng"
+  },
+  "mfaFailureRetry": {
+    "message": "Thử lại"
+  },
+  "mfaFailureTitle": {
+    "message": "Đã xảy ra sự cố"
+  },
+  "mfaIntroContinue": {
+    "message": "Bắt đầu"
+  },
+  "mfaMethodEmail": {
+    "message": "Email"
+  },
+  "mfaOtpResend": {
+    "message": "Gửi lại mã"
+  },
+  "mfaOtpRetry": {
+    "message": "Thử lại"
+  },
+  "mfaPickerOr": {
+    "message": "hoặc"
+  },
+  "mfaSettingsAdd": {
+    "message": "Thêm"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Tiếp tục"
+  },
   "minimumReceivedExplanation": {
     "message": "Số lượng tối thiểu bạn sẽ nhận được nếu giá thay đổi trong quá trình giao dịch, dựa trên chế độ cài đặt trượt giá của bạn. Ước tính này đến từ các nhà cung cấp thanh khoản, nên số lượng cuối cùng có thể khác."
   },
@@ -5656,6 +5689,14 @@
   "moneyEarnApyTitle": {
     "message": "Sinh lời với APY lên đến $1"
   },
+  "moneyEarnBannerCta": {
+    "message": "Thêm $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Tăng lợi nhuận với Money Account của bạn",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "Kiếm lợi nhuận từ tiền mã hóa của bạn"
   },
@@ -5810,6 +5851,10 @@
   },
   "moneySend": {
     "message": "Gửi"
+  },
+  "moneyStartEarning": {
+    "message": "Bắt đầu kiếm tiền",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Không thể nạp tiền. Vui lòng thử lại."
@@ -6747,9 +6792,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Thêm Cổng IPFS tùy chỉnh"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL cổng IPFS hợp lệ"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Khi bạn sử dụng các chế độ cài đặt và cấu hình mặc định của chúng tôi, chúng tôi sử dụng Infura làm nhà cung cấp gọi hàm từ xa (RPC) mặc định để cung cấp quyền truy cập dữ liệu Ethereum đáng tin cậy và riêng tư nhất có thể. Trong một số trường hợp giới hạn, chúng tôi có thể sử dụng các nhà cung cấp RPC khác nhằm mang đến trải nghiệm tốt nhất cho người dùng. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ nhận được địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Để tìm hiểu thêm về cách Infura xử lý dữ liệu đối với các tài khoản EVM, hãy đọc $1, và đối với các tài khoản Solana, hãy đọc $2."
   },
@@ -6788,7 +6830,7 @@
     "message": "Thu thập dữ liệu sử dụng cơ bản"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Cập nhật sản phẩm"
+    "message": "Cập nhật hoạt động tiếp thị"
   },
   "onboardingMetametricsContinue": {
     "message": "Tiếp tục"
@@ -7476,6 +7518,9 @@
   "perps24hVolume": {
     "message": "Khối lượng 24 giờ"
   },
+  "perpsAbout": {
+    "message": "Giới thiệu"
+  },
   "perpsActivity": {
     "message": "Hoạt động"
   },
@@ -8084,6 +8129,9 @@
   "perpsRateLimitExceeded": {
     "message": "Quá nhiều yêu cầu. Vui lòng chờ và thử lại."
   },
+  "perpsReadMore": {
+    "message": "Đọc thêm"
+  },
   "perpsRecentActivity": {
     "message": "Hoạt động gần đây"
   },
@@ -8130,6 +8178,18 @@
   "perpsSeeAll": {
     "message": "Xem tất cả",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "liên hệ bộ phận hỗ trợ",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Xem các tùy chọn của bạn trong phần Câu hỏi thường gặp",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Chúng tôi đang gặp sự cố ngừng hoạt động",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Dịch vụ tạm thời không khả dụng. Vui lòng thử lại sau."
@@ -9647,21 +9707,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Mật khẩu mới đã được lưu"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Bảo mật & Quyền riêng tư"
-  },
-  "securityDescription": {
-    "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản của bạn"
-  },
   "securityMessageLinkForNetworks": {
     "message": "lừa đảo mạng và rủi ro bảo mật"
   },
   "securityProviderPoweredBy": {
     "message": "Được cung cấp bởi $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản cũng như dữ liệu của bạn"
   },
   "securitySocialLoginEnabled": {
     "message": "Đã bật"
@@ -12166,6 +12217,9 @@
   },
   "turnOn": {
     "message": "Bật"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "bật chức năng cơ bản"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Đã xảy ra lỗi khi tạo thông báo. Vui lòng thử lại sau."
