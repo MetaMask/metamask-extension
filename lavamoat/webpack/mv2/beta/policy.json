@@ -1351,6 +1351,24 @@
         "@metamask/assets-controller>lodash-es": true
       }
     },
+    "@metamask/geolocation-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
     "@metamask/money-account-api-data-service>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -2174,7 +2192,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
+        "@metamask/geolocation-controller>@metamask/controller-utils": true
       }
     },
     "@metamask/jazzicon": {
@@ -3577,6 +3595,7 @@
       "packages": {
         "@metamask/accounts-controller": true,
         "@metamask/wallet>@metamask/address-book-controller": true,
+        "@metamask/analytics-controller": true,
         "@metamask/wallet>@metamask/approval-controller": true,
         "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
@@ -3586,6 +3605,7 @@
         "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/wallet>@metamask/controller-utils": true,
         "@metamask/wallet>@metamask/gas-fee-controller": true,
+        "@metamask/geolocation-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
         "@metamask/messenger": true,
