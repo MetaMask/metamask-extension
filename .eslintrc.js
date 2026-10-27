@@ -5,7 +5,6 @@ const eslintConfig = require('@metamask/eslint-config').default;
 const typescriptConfig = require('@metamask/eslint-config-typescript').default;
 const mochaConfig = require('@metamask/eslint-config-mocha').default;
 const jestConfig = require('@metamask/eslint-config-jest').default;
-const ts = require('typescript');
 const babelParser = require('@babel/eslint-parser');
 const reactPackageJson = require('react/package.json');
 const reactPlugin = require('eslint-plugin-react');
@@ -13,7 +12,6 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
-
 const {
   architecturalZones,
   buildSystemZones,
@@ -24,10 +22,6 @@ const nodeConfigs = require('./.eslintrc.node');
 const typescriptCompatConfig = require('./.eslintrc.typescript-compat');
 
 const reactVersion = reactPackageJson.version;
-const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
-const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
-const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
-
 const gitignorePath = path.resolve(__dirname, '.gitignore');
 
 module.exports = defineConfig([
@@ -151,7 +145,13 @@ module.exports = defineConfig([
    * TypeScript files
    */
   {
-    files: tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
+    files: ['**/*.{cts,mts,ts,tsx}'],
+    ignores: [
+      // Stories currently excluded from tsconfig due to type errors.
+      // Ignore TypeScript lint rules for these until types are fixed.
+      '**/*.stories.tsx',
+      '**/*.stories.ts',
+    ],
     languageOptions: {
       parserOptions: {
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
