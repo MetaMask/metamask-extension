@@ -4142,10 +4142,10 @@ export function setPreference(
   return async (dispatch: MetaMaskReduxDispatch) => {
     showLoading && dispatch(showLoadingIndication());
     try {
-      return await submitRequestToBackground('setPreference', [
-        preference,
-        value,
-      ]);
+      return await submitRequestToBackground(
+        'PreferencesController:setPreference',
+        [preference, value],
+      );
     } finally {
       showLoading && dispatch(hideLoadingIndication());
     }
@@ -4640,9 +4640,10 @@ export function setUseMultiAccountBalanceChecker(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseMultiAccountBalanceChecker`);
     try {
-      await submitRequestToBackground('setUseMultiAccountBalanceChecker', [
-        val,
-      ]);
+      await submitRequestToBackground(
+        'PreferencesController:setUseMultiAccountBalanceChecker',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
@@ -4850,7 +4851,7 @@ export function toggleExternalServices(
     log.debug(`background.toggleExternalServices`);
     try {
       await submitRequestToBackground(
-        'toggleExternalServices',
+        'LegacyBackgroundApiService:toggleExternalServices',
         ownedPreferences ? [val, ownedPreferences] : [val],
       );
       await forceUpdateMetamaskState(dispatch);
@@ -7294,10 +7295,10 @@ export function setIsBackupAndSyncFeatureEnabled(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('setIsBackupAndSyncFeatureEnabled', [
-        feature,
-        enabled,
-      ]);
+      await submitRequestToBackground(
+        'UserStorageController:setIsBackupAndSyncFeatureEnabled',
+        [feature, enabled],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -8184,7 +8185,9 @@ export function removeDeferredDeepLink(): ThunkAction<
   return async () => {
     log.debug(`background.removeDeferredDeepLink`);
     try {
-      await submitRequestToBackground('removeDeferredDeepLink');
+      await submitRequestToBackground(
+        'AppStateController:removeDeferredDeepLink',
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }

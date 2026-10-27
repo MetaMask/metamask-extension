@@ -3521,25 +3521,26 @@ describe('Actions', () => {
 
     it('calls setUseMultiAccountBalanceChecker in background', () => {
       const store = mockStore();
-      const setUseMultiAccountBalanceCheckerStub = sinon.stub().resolves();
+      const messengerCallStub = sinon.stub().resolves();
       setBackgroundConnection({
-        setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
+        messengerCall: messengerCallStub,
       });
 
       store.dispatch(actions.setUseMultiAccountBalanceChecker(true));
       expect(
-        setUseMultiAccountBalanceCheckerStub.calledOnceWithExactly([true]),
+        messengerCallStub.calledOnceWithExactly(
+          'PreferencesController:setUseMultiAccountBalanceChecker',
+          [true],
+        ),
       ).toBe(true);
     });
 
     it('errors when setUseMultiAccountBalanceChecker in background throws', async () => {
       const store = mockStore();
-      const setUseMultiAccountBalanceCheckerStub = sinon
-        .stub()
-        .rejects(new Error('error'));
+      const messengerCallStub = sinon.stub().rejects(new Error('error'));
 
       setBackgroundConnection({
-        setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
+        messengerCall: messengerCallStub,
       });
 
       const expectedActions = [
@@ -4158,13 +4159,13 @@ describe('Actions', () => {
     it('calls setIsBackupAndSyncFeatureEnabled in the background', async () => {
       const store = mockStore();
 
-      const setIsBackupAndSyncFeatureEnabledStub = sinon
-        .stub()
-        .withArgs([BACKUPANDSYNC_FEATURES.main, true])
+      background.messengerCall
+        .withArgs(
+          'UserStorageController:setIsBackupAndSyncFeatureEnabled',
+          sinon.match.array,
+        )
         .resolves();
-      setBackgroundConnection({
-        setIsBackupAndSyncFeatureEnabled: setIsBackupAndSyncFeatureEnabledStub,
-      });
+      setBackgroundConnection(background);
 
       await store.dispatch(
         actions.setIsBackupAndSyncFeatureEnabled(
@@ -4173,10 +4174,10 @@ describe('Actions', () => {
         ),
       );
       expect(
-        setIsBackupAndSyncFeatureEnabledStub.calledOnceWith([
-          BACKUPANDSYNC_FEATURES.main,
-          true,
-        ]),
+        background.messengerCall.calledOnceWith(
+          'UserStorageController:setIsBackupAndSyncFeatureEnabled',
+          [BACKUPANDSYNC_FEATURES.main, true],
+        ),
       ).toBe(true);
     });
   });
@@ -4729,19 +4730,20 @@ describe('Actions', () => {
   describe('#toggleExternalServices', () => {
     it('calls toggleExternalServices', async () => {
       const store = mockStore();
-      const toggleExternalServicesStub = sinon
+      const messengerCallStub = sinon
         .stub()
-        .withArgs([true])
+        .withArgs('LegacyBackgroundApiService:toggleExternalServices', [true])
         .resolves();
-      setBackgroundConnection({
-        toggleExternalServices: toggleExternalServicesStub,
-      });
+      setBackgroundConnection({ messengerCall: messengerCallStub });
 
       await store.dispatch(actions.toggleExternalServices(true));
 
-      expect(toggleExternalServicesStub.calledOnceWithExactly([true])).toBe(
-        true,
-      );
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          [true],
+        ),
+      ).toBe(true);
     });
   });
 
@@ -6210,13 +6212,16 @@ describe('Actions', () => {
     it('calls removeDeferredDeepLink in the background', async () => {
       const store = mockStore();
 
-      const removeDeferredDeepLinkStub = sinon.stub().resolves();
-      setBackgroundConnection({
-        removeDeferredDeepLink: removeDeferredDeepLinkStub,
-      });
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({ messengerCall: messengerCallStub });
 
       await store.dispatch(actions.removeDeferredDeepLink());
-      expect(removeDeferredDeepLinkStub.calledOnceWithExactly([])).toBe(true);
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'AppStateController:removeDeferredDeepLink',
+          [],
+        ),
+      ).toBe(true);
     });
   });
 
