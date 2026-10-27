@@ -7,6 +7,7 @@ import {
   isNonEvmChainId,
   assetIdsMatch,
   MetaMetricsSwapsEventSource,
+  SwapFeatureTag,
 } from '@metamask/bridge-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
@@ -222,6 +223,7 @@ export const setFromToken = (token: TokenPayload) => {
           // this is a configuration bug that must be fixed in FEATURED_RPCS.
           captureException(
             new BridgeMissingNetworkConfigError(chainId, maybeHexChainId),
+            { tags: { feature: SwapFeatureTag.SWAP } },
           );
           return;
         }

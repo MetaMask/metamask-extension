@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import type { QuoteResponse } from '@metamask/bridge-controller';
+import {
+  SwapFeatureTag,
+  type QuoteResponse,
+} from '@metamask/bridge-controller';
 import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import {
@@ -66,7 +69,9 @@ export default function useBatchSellSubmitQuotes({
         }),
       );
     } catch (e) {
-      captureException(e);
+      captureException(e, {
+        tags: { feature: SwapFeatureTag.BATCH_SELL },
+      });
     } finally {
       setIsSubmitting(false);
     }

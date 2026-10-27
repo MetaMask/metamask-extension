@@ -1,4 +1,5 @@
 import type * as Sentry from '@sentry/browser';
+import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import {
   annotateTrace,
   endTrace,
@@ -12,6 +13,7 @@ import {
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
   startNewTrace: jest.fn(),
+  withScope: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
   setMeasurement: jest.fn(),
@@ -25,6 +27,7 @@ const {
   startSpanManual,
   withIsolationScope,
   startNewTrace,
+  withScope,
   getActiveSpan,
   continueTrace,
 } = global.sentry as typeof Sentry;
@@ -52,6 +55,7 @@ describe('Trace', () => {
   const startSpanManualMock = jest.mocked(startSpanManual);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
   const startNewTraceMock = jest.mocked(startNewTrace);
+  const withScopeMock = jest.mocked(withScope);
   const setMeasurementMock = jest.mocked(setMeasurement);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
   const continueTraceMock = jest.mocked(continueTrace);
@@ -65,6 +69,7 @@ describe('Trace', () => {
       startSpanManual: startSpanManualMock,
       withIsolationScope: withIsolationScopeMock,
       startNewTrace: startNewTraceMock,
+      withScope: withScopeMock,
       setMeasurement: setMeasurementMock,
       getActiveSpan: getActiveSpanMock,
       continueTrace: continueTraceMock,
@@ -88,6 +93,9 @@ describe('Trace', () => {
     withIsolationScopeMock.mockImplementation((fn: any) =>
       fn({ setTag: setTagMock }),
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    withScopeMock.mockImplementation((fn: any) => fn({ setTag: setTagMock }));
   });
 
   describe('trace', () => {
@@ -153,7 +161,7 @@ describe('Trace', () => {
         () => true,
       );
 
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
 
       expect(startSpanMock).toHaveBeenCalledTimes(1);
       expect(startSpanMock).toHaveBeenCalledWith(
@@ -183,7 +191,7 @@ describe('Trace', () => {
         parentContext: PARENT_CONTEXT_MOCK,
       });
 
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
 
       expect(startSpanManualMock).toHaveBeenCalledTimes(1);
       expect(startSpanManualMock).toHaveBeenCalledWith(
@@ -214,7 +222,7 @@ describe('Trace', () => {
         startTime: 123,
       });
 
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
 
       expect(startSpanManualMock).toHaveBeenCalledTimes(1);
       expect(startSpanManualMock).toHaveBeenCalledWith(
@@ -377,6 +385,34 @@ describe('Trace', () => {
 
       expect(spanEndMock).toHaveBeenCalledTimes(1);
     });
+
+    for (const [status, code] of [
+      ['ok', SPAN_STATUS_OK],
+      ['error', SPAN_STATUS_ERROR],
+    ] as const) {
+      it(`sets the Sentry span status to ${status} before ending it`, () => {
+        const spanEndMock = jest.fn();
+        const setStatusMock = jest.fn();
+        const spanMock = {
+          end: spanEndMock,
+          setStatus: setStatusMock,
+        } as unknown as Sentry.Span;
+
+        startSpanManualMock.mockImplementationOnce((_, fn) =>
+          fn(spanMock, () => {
+            // Intentionally empty
+          }),
+        );
+
+        trace({ name: NAME_MOCK, id: ID_MOCK });
+        endTrace({ name: NAME_MOCK, id: ID_MOCK, status });
+
+        expect(setStatusMock).toHaveBeenCalledWith({ code });
+        expect(setStatusMock.mock.invocationCallOrder[0]).toBeLessThan(
+          spanEndMock.mock.invocationCallOrder[0],
+        );
+      });
+    }
 
     it('ends Sentry span matching name and default ID', () => {
       const spanEndMock = jest.fn();
@@ -701,18 +737,18 @@ describe('Trace', () => {
 
       // startNewTrace resets the propagation-context trace id, so the op roots
       // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
-      // withIsolationScope alone would clone the same trace id — severing the
-      // parent span but leaving the op in the mega-trace (grouped by trace id).
+      // withScope alone would clone the same trace id — severing the parent
+      // span but leaving the op in the mega-trace (grouped by trace id).
       expect(startNewTraceMock).toHaveBeenCalledTimes(1);
       expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
     });
 
     it('does not start a new trace when root is not set', () => {
       trace({ name: NAME_MOCK }, () => true);
 
       expect(startNewTraceMock).not.toHaveBeenCalled();
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -912,6 +948,49 @@ describe('Trace', () => {
       endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 50_000 });
 
       expectMachineTime(journey, 0);
+    });
+
+    it('includes OAuth launch time but excludes provider wait', () => {
+      expect.assertions(1);
+      const journey = createSpanMock();
+      queueSpans([
+        journey,
+        createSpanMock(),
+        createSpanMock(),
+        createSpanMock(),
+      ]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingOAuthProviderLaunch,
+        startTime: 1_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderLaunch,
+        timestamp: 2_500,
+        data: { success: true },
+      });
+      trace({
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        startTime: 2_500,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        timestamp: 40_000,
+        data: { success: true },
+      });
+      trace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        startTime: 40_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        timestamp: 80_000,
+        data: { success: true },
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 90_000 });
+
+      expectMachineTime(journey, 1_500);
     });
 
     it('counts open machine spans at successful journey end', () => {

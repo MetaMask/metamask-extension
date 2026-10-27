@@ -194,11 +194,6 @@
     "allIgnoredAssets": "object",
     "assetsMetadata": "object"
   },
-  "MultichainAssetsRatesController": {
-    "conversionRates": "object",
-    "historicalPrices": "object"
-  },
-  "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "cryptocurrencies": ["btc", "sol"],
@@ -254,6 +249,7 @@
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
     "hasSeenOnboardingCompletionPage": true,
+    "onboardingJourneyEnded": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },
@@ -413,8 +409,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenBalancesController": { "tokenBalances": "object" },
-  "TokenListController": { "tokensChainsCache": {} },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},

@@ -1,5 +1,4 @@
 import { Driver } from '../webdriver/driver';
-import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { login } from '../page-objects/flows/login.flow';
@@ -25,19 +24,16 @@ describe('Test Snap Lifecycle Hooks', function () {
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
 
-        const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
 
         // Open a new tab and navigate to test snaps page and click life cycle hooks
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectLifeCycleButton',
-          { withExtraScreen: true },
-        );
-        // Check installation success
-        await testSnaps.checkInstallationComplete(
-          'connectLifeCycleButton',
-          'Reconnect to Lifecycle Hooks Snap',
+          {
+            withExtraScreen: true,
+            expectedMessage: 'Reconnect to Lifecycle Hooks Snap',
+          },
         );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         // Validate the message result in the dialog

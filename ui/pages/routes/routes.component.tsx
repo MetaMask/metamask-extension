@@ -263,6 +263,9 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
+export const PageNotFound = mmLazy(
+  () => import('../../components/app/page-not-found/page-not-found.tsx'),
+);
 const BasicFunctionalityOff = mmLazy(
   () =>
     import('../basic-functionality-required/basic-functionality-required.tsx'),
@@ -743,6 +746,12 @@ export const routeConfig = [
         ],
       },
     ],
+  },
+  // Unmatched hashes stay in the address bar so route metrics still see them,
+  // and render the missing-page screen instead of the crash page.
+  {
+    path: '*',
+    element: <PageNotFound />,
   },
 ];
 

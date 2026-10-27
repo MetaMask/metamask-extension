@@ -1,11 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { toChecksumHexAddress, toHex } from '@metamask/controller-utils';
+import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
+  buildNativeEvmBalancePatch,
   getMockConfirmState,
   getMockConfirmStateForTransaction,
 } from '../../../../../../test/data/confirmations/helper';
@@ -53,7 +54,10 @@ const RESERVE_ALERT = {
   showArrow: false,
 };
 
-function buildMonadNetworkState(extraMetamask: Record<string, unknown> = {}) {
+function buildMonadNetworkState(
+  balanceWei: string = toHex(100n * 10n ** 18n),
+  extraMetamask: Record<string, unknown> = {},
+) {
   return {
     metamask: {
       networkConfigurationsByChainId: {
@@ -73,14 +77,11 @@ function buildMonadNetworkState(extraMetamask: Record<string, unknown> = {}) {
           blockExplorerUrls: [],
         },
       },
-      accountsByChainId: {
-        [CHAIN_IDS.MONAD]: {
-          [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-            // 100 MON — enough that proactive value check does not fire by default
-            balance: toHex(100n * 10n ** 18n),
-          },
-        },
-      },
+      // Default 100 MON — enough that proactive value check does not fire
+      ...buildNativeEvmBalancePatch({
+        hexChainId: CHAIN_IDS.MONAD,
+        amountWei: balanceWei,
+      }),
       ...extraMetamask,
     },
   };
@@ -183,15 +184,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
             value: VALUE_6_MON,
           },
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_15_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_15_MON),
       ),
     );
     expect(alerts).toEqual([RESERVE_ALERT]);
@@ -211,15 +204,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
             value: VALUE_6_MON,
           },
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_15_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_15_MON),
       ),
     );
     expect(alerts).toEqual([]);
@@ -237,15 +222,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
             value: '0x0',
           },
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_7_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_7_MON),
       ),
     );
     expect(alerts).toEqual([]);
@@ -259,15 +236,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
           delegationAddress: DELEGATION_ADDRESS,
           isGasFeeSponsored: true,
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_7_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_7_MON),
       ),
     );
     expect(alerts).toEqual([]);
@@ -285,15 +254,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
             tokenBalanceChanges: [],
           },
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_15_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_15_MON),
       ),
     );
     expect(alerts).toEqual([RESERVE_ALERT]);

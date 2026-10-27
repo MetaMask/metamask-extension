@@ -5,6 +5,7 @@ import type { MfaMethod } from '../../hooks/identity/mfa/engine/types';
 const METHOD_KEYS: Record<MfaMethod, string> = {
   email_otp: 'mfaMethodEmail',
   passkey: 'mfaMethodPasskey',
+  totp: 'mfaMethodTotp',
 };
 
 const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
@@ -23,6 +24,18 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   authentication_required: 'mfaErrorSignedOut',
   passkey_unsupported: 'mfaErrorUnsupported',
   flow_in_progress: 'mfaErrorFlowInProgress',
+  totp_already_enrolled: 'mfaErrorTotpTaken',
+};
+
+/**
+ * Wording for authenticator app codes, which the app shows rather than an
+ * email: a new code is in the app, not requested.
+ */
+const TOTP_ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
+  invalid_code: 'mfaErrorInvalidTotpCode',
+  flow_expired: 'mfaErrorTotpExpired',
+  invalid_flow: 'mfaErrorTotpExpired',
+  too_many_attempts: 'mfaErrorTotpTooManyAttempts',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -33,11 +46,16 @@ export const getMethodLabelKey = (method: MfaMethod): string =>
  * The message key for errors that have their own, rather than the generic one.
  *
  * @param code - The error's code.
+ * @param method - The method the error is about, when its wording differs.
  * @returns The key, or `undefined` for the generic case.
  */
 export const getSpecificErrorMessageKey = (
   code: MfaFlowErrorCode,
-): string | undefined => ERROR_KEYS[code];
+  method?: MfaMethod,
+): string | undefined =>
+  (method === 'totp' ? TOTP_ERROR_KEYS[code] : undefined) ?? ERROR_KEYS[code];
 
-export const getErrorMessageKey = (code: MfaFlowErrorCode): string =>
-  getSpecificErrorMessageKey(code) ?? 'mfaErrorGeneric';
+export const getErrorMessageKey = (
+  code: MfaFlowErrorCode,
+  method?: MfaMethod,
+): string => getSpecificErrorMessageKey(code, method) ?? 'mfaErrorGeneric';
