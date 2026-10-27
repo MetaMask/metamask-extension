@@ -8,25 +8,21 @@ import {
   SubscriptionUserEvent,
 } from '@metamask/subscription-controller';
 import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  FontFamily,
+  BoxJustifyContent,
   FontWeight,
-  Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import classnames from 'clsx';
 import log from 'loglevel';
+import {
+  MarketingMoment,
+  type MarketingMomentAction,
+} from '../../ui/marketing-moment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  ModalFooter,
-  ModalBody,
 } from '../../component-library';
 import {
   setShowShieldEntryModalOnce,
@@ -46,12 +42,6 @@ import {
   ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
 } from '../../../../shared/constants/subscriptions';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {
@@ -235,11 +225,12 @@ const ShieldEntryModal = ({
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
-          className: 'shield-entry-modal__dialog',
+          className: 'shield-entry-modal__dialog relative min-h-[36rem]',
         }}
         className="shield-entry-modal__content"
       >
         <ModalHeader
+          className="absolute top-0 right-0 z-10"
           onClose={() => {
             if (actionLoading) {
               return;
@@ -253,66 +244,52 @@ const ShieldEntryModal = ({
             className: 'absolute top-2 right-2',
           }}
         />
-        <ModalBody
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          flexDirection={FlexDirection.Column}
-          paddingTop={4}
-          height={BlockSize.Full}
-        >
-          <Text
-            fontFamily={FontFamily.Hero}
-            fontWeight={FontWeight.Regular}
-            className="shield-entry-modal__title text-center text-accent04-light mb-3"
-          >
-            {modalType === MODAL_TYPE.A
+        <MarketingMoment
+          className="pt-12 px-4"
+          title={
+            modalType === MODAL_TYPE.A
               ? t('shieldEntryModalTitleA')
-              : t('shieldEntryModalTitleB')}
-          </Text>
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            className="text-center text-accent04-light"
-          >
-            {modalType === MODAL_TYPE.A
+              : t('shieldEntryModalTitleB')
+          }
+          titleProps={{ className: 'text-accent04-light' }}
+          description={
+            modalType === MODAL_TYPE.A
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
-              : t('shieldEntryModalSubtitleB', ['$10,000'])}
-          </Text>
-          <Box
-            className={classnames(
-              'flex-1 flex justify-center',
-              isPopup ? 'items-end' : 'items-center',
-            )}
-          >
+              : t('shieldEntryModalSubtitleB', ['$10,000'])
+          }
+          descriptionProps={{
+            variant: TextVariant.BodyMd,
+            fontWeight: FontWeight.Medium,
+            className: 'text-accent04-light',
+          }}
+          artworkWrapperProps={{
+            justifyContent: isPopup
+              ? BoxJustifyContent.End
+              : BoxJustifyContent.Center,
+          }}
+          artwork={
             <ShieldIllustrationAnimation
               containerClassName="shield-entry-modal-shield-illustration__container"
               canvasClassName="shield-entry-modal-shield-illustration__canvas"
             />
-          </Box>
-        </ModalBody>
-        <ModalFooter
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          paddingTop={0}
-          className="shield-entry-modal__footer"
-        >
-          <Button
-            data-testid="shield-entry-modal-get-started-button"
-            size={ButtonSize.Lg}
-            onClick={handleOnGetStarted}
-            className="w-full mb-2"
-          >
-            {t('shieldEntryModalGetStarted')}
-          </Button>
-          <Button
-            variant={ButtonVariant.Secondary}
-            className="w-full mb-2"
-            size={ButtonSize.Lg}
-            onClick={handleOnLearnMoreClick}
-          >
-            {t('learnMoreUpperCase')}
-          </Button>
-        </ModalFooter>
+          }
+          primaryAction={
+            {
+              label: t('shieldEntryModalGetStarted'),
+              onClick: handleOnGetStarted,
+              isDisabled: actionLoading,
+              'data-testid': 'shield-entry-modal-get-started-button',
+            } as MarketingMomentAction
+          }
+          secondaryAction={
+            {
+              label: t('learnMoreUpperCase'),
+              onClick: handleOnLearnMoreClick,
+              isDisabled: actionLoading,
+              'data-testid': 'shield-entry-modal-learn-more-button',
+            } as MarketingMomentAction
+          }
+        />
       </ModalContent>
     </Modal>
   );

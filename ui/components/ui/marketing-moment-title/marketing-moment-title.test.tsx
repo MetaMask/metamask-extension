@@ -9,9 +9,10 @@ describe('MarketingMomentTitle', () => {
   it('renders the title text', () => {
     render(<MarketingMomentTitle>Perps are here</MarketingMomentTitle>);
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Perps are here',
-    );
+    const title = screen.getByRole('heading', { level: 1 });
+
+    expect(title).toHaveTextContent('Perps are here');
+    expect(title).toHaveClass('[font-size-adjust:from-font]');
   });
 
   it('keeps a caller style', () => {
