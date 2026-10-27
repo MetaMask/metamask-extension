@@ -10471,9 +10471,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^22.0.0":
-  version: 22.0.0
-  resolution: "@metamask/snaps-controllers@npm:22.0.0"
+"@metamask/snaps-controllers@npm:^22.0.1":
+  version: 22.0.1
+  resolution: "@metamask/snaps-controllers@npm:22.0.1"
   dependencies:
     "@metamask/analytics-controller": "npm:^1.2.1"
     "@metamask/approval-controller": "npm:^9.0.2"
@@ -10507,17 +10507,17 @@ __metadata:
     semver: "npm:^7.5.4"
     tar-stream: "npm:^3.1.7"
   peerDependencies:
-    "@metamask/snaps-execution-environments": ^11.3.2
+    "@metamask/snaps-execution-environments": ^11.3.3
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/9d080b75db121cf47e54b72f812f0fe679d3e1b04ed045d123045801ea7c43810790a7f16fbf6802de65527694602497e30df5e0fcc38e3c672ede507edb1288
+  checksum: 10/357451dca8cdde6f4be421ea316b4eb06fa6a4ef44bbb623c0f53f8d7cc83b1c58990411190c566a3440d0c8ce57bd22bb9a4dc2952d01ff75cb1077f975d322
   languageName: node
   linkType: hard
 
-"@metamask/snaps-execution-environments@npm:^11.3.2":
-  version: 11.3.2
-  resolution: "@metamask/snaps-execution-environments@npm:11.3.2"
+"@metamask/snaps-execution-environments@npm:^11.3.3":
+  version: 11.3.3
+  resolution: "@metamask/snaps-execution-environments@npm:11.3.3"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.5.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
@@ -10529,7 +10529,7 @@ __metadata:
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^12.0.0"
     readable-stream: "npm:^3.6.2"
-  checksum: 10/d668aa06c2e5463316539fd07e7f70b50329366aa5a889cf9831bf84a3bb2d6955969014b7c3b0645b5f97788f7246983775966d0c7c9b1ee1f4d9f5d6faedeb
+  checksum: 10/b4a5df9d03e90f50fddecb86a257c1d342ea7a522cf1b4c38ecf31bb6ef763a0c5347ddb49aeb9430890ead815cc4e4dbcd2c8f92e784945e874f733a76b69a2
   languageName: node
   linkType: hard
 
@@ -35620,8 +35620,8 @@ __metadata:
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-account-service": "npm:^4.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
-    "@metamask/snaps-controllers": "npm:^22.0.0"
-    "@metamask/snaps-execution-environments": "npm:^11.3.2"
+    "@metamask/snaps-controllers": "npm:^22.0.1"
+    "@metamask/snaps-execution-environments": "npm:^11.3.3"
     "@metamask/snaps-registry": "npm:^4.0.0"
     "@metamask/snaps-rpc-methods": "npm:^17.2.0"
     "@metamask/snaps-sdk": "npm:^12.1.0"
