@@ -62,12 +62,7 @@ export async function updateMoneyAccountWithdrawAmount(
       return false;
     }
 
-    commitTransactionPayUpdates(
-      messenger,
-      transactionId,
-      updates,
-      'Money Account withdraw: update amount',
-    );
+    commitTransactionPayUpdates(messenger, transactionId, updates);
 
     const committed = getTransactionMeta(messenger, transactionId);
     const transactionData = committed?.txParams?.data as Hex | undefined;
