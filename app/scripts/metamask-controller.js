@@ -1146,6 +1146,9 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.delegate({
       messenger: walletPayMessenger,
       actions: [
+        'AccountTreeController:setSelectedAccountGroupByAccountId',
+        'AccountsController:getAccountByAddress',
+        'AccountsController:getSelectedAccount',
         'NetworkController:findNetworkClientIdByChainId',
         'PerpsController:getState',
         'PerpsController:refreshEligibility',
