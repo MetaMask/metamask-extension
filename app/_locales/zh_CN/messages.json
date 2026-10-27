@@ -5204,9 +5204,6 @@
   "loading": {
     "message": "正在加载..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "请在Snap上完成交易。"
-  },
   "loadingTokenList": {
     "message": "正在加载代币列表"
   },
@@ -5461,17 +5458,11 @@
   "mfaMethodEmail": {
     "message": "电子邮件"
   },
-  "mfaOtpPaste": {
-    "message": "粘贴"
-  },
   "mfaOtpResend": {
     "message": "重新发送验证码"
   },
   "mfaOtpRetry": {
     "message": "请重试"
-  },
-  "mfaOtpVerify": {
-    "message": "验证"
   },
   "mfaPickerOr": {
     "message": "或"

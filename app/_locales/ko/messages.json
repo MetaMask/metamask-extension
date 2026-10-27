@@ -5208,9 +5208,6 @@
   "loading": {
     "message": "로딩 중..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Snap에서 트랜잭션을 완료하세요."
-  },
   "loadingTokenList": {
     "message": "토큰 목록 불러오는 중"
   },
@@ -5465,17 +5462,11 @@
   "mfaMethodEmail": {
     "message": "이메일"
   },
-  "mfaOtpPaste": {
-    "message": "붙여넣기"
-  },
   "mfaOtpResend": {
     "message": "코드 다시 보내기"
   },
   "mfaOtpRetry": {
     "message": "다시 시도"
-  },
-  "mfaOtpVerify": {
-    "message": "인증"
   },
   "mfaPickerOr": {
     "message": "또는"
