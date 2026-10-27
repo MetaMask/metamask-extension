@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useToastLabel } from './useToastLabel';
@@ -57,6 +58,16 @@ function addPerpsWithdrawItem(
     data: {},
     ...overrides,
   } as ActivityListItem);
+}
+
+function addPerpsAddFundsItem(id: string) {
+  mockItems.set(id, {
+    type: 'perpsAddFunds',
+    chainId: 'eip155:42161',
+    status: 'pending',
+    timestamp: 0,
+    data: {},
+  } as unknown as ActivityListItem);
 }
 
 describe('useToastLabel', () => {
@@ -188,4 +199,31 @@ describe('useToastLabel', () => {
       description: 'perpsWithdrawPostQuoteToastErrorDescription',
     });
   });
+
+  it.each([
+    [
+      'pending',
+      'perpsDepositToastPendingTitle',
+      'perpsDepositToastPendingDescription',
+    ],
+    [
+      'success',
+      'perpsDepositToastSuccessTitle',
+      'perpsDepositToastSuccessDescription',
+    ],
+    [
+      'failed',
+      'perpsDepositToastErrorTitle',
+      'perpsDepositToastErrorDescription',
+    ],
+  ] as const)(
+    'returns %s perps deposit toast content',
+    (status, title, description) => {
+      addPerpsAddFundsItem('tx-1');
+
+      const { result } = renderHook(() => useToastLabel(status, 'tx-1'));
+
+      expect(result.current).toStrictEqual({ title, description });
+    },
+  );
 });
