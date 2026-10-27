@@ -10652,10 +10652,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@metamask/stellar-wallet-snap@npm:1.3.0"
-  checksum: 10/054bec7881a1be8cd361e794335a9101e520e109efdba33e6dd7afbc298bcca76de0f78563f707f4eab5941221dff6be608d617377a8d7cc757a74fc78fd17a6
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@2.0.0-preview-0e4ffe6":
+  version: 2.0.0-preview-0e4ffe6
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:2.0.0-preview-0e4ffe6"
+  checksum: 10/7f11f7e3d04012e71fe50071cedd2504e0dc714f8e7e99971f17d903b89ca7bd1a0d825121880627fda559205bc44f0690fd9bd3ab6605e8f615d78d36a68a3d
   languageName: node
   linkType: hard
 
