@@ -1,6 +1,7 @@
 import { it } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ToastStatus } from './shared';
 import { useToastLabel } from './useToastLabel';
 
 const mockT = jest.fn((key: string, args?: string[]) =>
@@ -200,7 +201,7 @@ describe('useToastLabel', () => {
     });
   });
 
-  it.each([
+  it.each<[ToastStatus, string, string]>([
     [
       'pending',
       'perpsDepositToastPendingTitle',
@@ -216,14 +217,11 @@ describe('useToastLabel', () => {
       'perpsDepositToastErrorTitle',
       'perpsDepositToastErrorDescription',
     ],
-  ] as const)(
-    'returns %s perps deposit toast content',
-    (status, title, description) => {
-      addPerpsAddFundsItem('tx-1');
+  ])('returns %s perps deposit toast content', (status, title, description) => {
+    addPerpsAddFundsItem('tx-1');
 
-      const { result } = renderHook(() => useToastLabel(status, 'tx-1'));
+    const { result } = renderHook(() => useToastLabel(status, 'tx-1'));
 
-      expect(result.current).toStrictEqual({ title, description });
-    },
-  );
+    expect(result.current).toStrictEqual({ title, description });
+  });
 });
