@@ -533,7 +533,7 @@ class ActivityTab extends HomePage {
   async clickConfirmedTransaction(): Promise<void> {
     console.log('Clicking on confirmed transaction');
     const toastNotification = new TxToastNotification(this.driver);
-    await toastNotification.waitForConfirmedToastToDisappear();
+    await toastNotification.dismissConfirmedToastIfPresent();
     await this.driver.clickElement(this.confirmedTransactions);
   }
 

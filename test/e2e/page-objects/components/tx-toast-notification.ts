@@ -42,8 +42,16 @@ export class TxToastNotification {
     await this.driver.clickElementSafe(this.closeButton);
   }
 
-  async waitForConfirmedToastToDisappear(): Promise<void> {
-    console.log('Wait for the transaction confirmed toast to disappear');
+  async dismissConfirmedToastIfPresent(): Promise<void> {
+    console.log('Dismiss the transaction confirmed toast when it is open');
+    const toastOpen = await this.driver.isElementPresentAndVisible(
+      this.transactionConfirmedToast,
+      1000,
+    );
+    if (!toastOpen) {
+      return;
+    }
+    await this.driver.clickElement(this.closeButton);
     await this.driver.assertElementNotPresent(this.transactionConfirmedToast);
   }
 
