@@ -9,7 +9,10 @@ import {
   type BridgeAppState,
   getFromBalances,
 } from '../../ducks/bridge/selectors';
-import { resolveMinimumBalanceToKeep } from '../../pages/bridge/utils/minimum-reserve';
+import {
+  resolveGasCheckMinimumBalance,
+  resolveMinimumBalanceToKeep,
+} from '../../pages/bridge/utils/minimum-reserve';
 
 /**
  * Builds a callback that computes the `hasSufficientGasForQuote` analytics value
@@ -45,7 +48,10 @@ export const useHasSufficientGasForQuoteForMetrics = () => {
         hasSufficientGasForQuote({
           balances,
           quote: quote?.quote,
-          minimumBalance: minimumBalanceToKeep,
+          minimumBalance: resolveGasCheckMinimumBalance(
+            quote,
+            minimumBalanceToKeep,
+          ),
           ignoreGasLessFlags: true,
         }) ?? null
       );

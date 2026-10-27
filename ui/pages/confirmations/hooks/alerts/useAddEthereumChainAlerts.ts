@@ -13,6 +13,7 @@ import {
 } from '../../../../../shared/lib/rpc.utils';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { EMPTY_ARRAY } from '../../../../selectors/shared';
+import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const ROUTEMESH_RPC_ORIGIN = 'https://lb.routeme.sh';
 
@@ -51,6 +52,24 @@ export function useAddEthereumChainAlerts() {
     const validate = async () => {
       const nextAlerts: Alert[] = [];
       const { requestData } = pendingApproval;
+
+      if (!requestData) {
+        setAlerts(nextAlerts);
+        return;
+      }
+
+      if (requestData.rpcUrl && !isValidASCIIURL(requestData.rpcUrl)) {
+        nextAlerts.push({
+          key: 'rpcUrlIdnHomograph',
+          message: t('networkUrlErrorWarning', [
+            toPunycodeURL(requestData.rpcUrl) ?? '',
+          ]),
+          severity: Severity.Warning,
+          field: RowAlertKey.RpcUrl,
+          inlineAlertText: '',
+          showArrow: false,
+        });
+      }
 
       // Only proceed with safe chains validation if we have a matched chain
       if (!matchedChain) {

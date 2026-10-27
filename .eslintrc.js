@@ -277,6 +277,7 @@ module.exports = defineConfig([
       '@typescript-eslint/await-thenable': 'off',
       '@typescript-eslint/consistent-type-exports': 'off',
       '@typescript-eslint/consistent-type-imports': 'off',
+      'import-x/consistent-type-specifier-style': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/no-duplicate-type-constituents': 'off',
@@ -863,17 +864,6 @@ module.exports = defineConfig([
     },
     rules: {
       'page-object/member-order': 'error',
-    },
-  },
-  /**
-   * Generated messenger action types.
-   */
-  {
-    files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
-    rules: {
-      // Keep generated messenger action type formatting stable while the
-      // repository transitions from eslint-plugin-prettier to oxfmt.
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },
   /**

@@ -60,12 +60,9 @@ import {
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
-  detectTokens,
   refreshAssetsForSelectedAccount,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
-  showImportNftsModal,
-  updateBalancesFoAccounts,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
@@ -76,9 +73,9 @@ import {
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   ASSETS_ROUTE,
+  IMPORT_NFTS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
-import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import {
   getInternalAccountsFromGroupById,
@@ -133,7 +130,6 @@ const AssetListControlBar = ({
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
   const isEvmOnlySelectedAccountGroup = useSelector(
     (state: MetaMaskReduxState) => {
@@ -343,28 +339,18 @@ const AssetListControlBar = ({
   }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {
-    dispatch(showImportNftsModal({}));
+    navigate(IMPORT_NFTS_ROUTE);
     closePopover();
   };
 
   const handleRefresh = () => {
-    if (isAssetsUnifyStateEnabled) {
-      if (selectedInternalAccount) {
-        dispatch(
-          refreshAssetsForSelectedAccount([selectedInternalAccount], {
-            chainIds: selectedCaipChainIds,
-            assetTypes: ['token', 'price', 'metadata'],
-          }),
-        );
-      }
-    } else {
+    if (selectedInternalAccount) {
       dispatch(
-        updateBalancesFoAccounts(
-          Object.keys(enabledNetworksByNamespace),
-          false,
-        ),
+        refreshAssetsForSelectedAccount([selectedInternalAccount], {
+          chainIds: selectedCaipChainIds,
+          assetTypes: ['token', 'price', 'metadata'],
+        }),
       );
-      dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     }
     closePopover();
   };

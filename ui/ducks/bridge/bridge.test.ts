@@ -10,12 +10,14 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import * as cacheUtils from '../../pages/bridge/utils/cache';
 import * as storeActions from '../../store/actions';
 import * as sentry from '../../../shared/lib/sentry';
+import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import bridgeReducer, { bridgeSlice, initialState } from './bridge';
 import { BridgeMissingNetworkConfigError } from './errors';
 import {
   setFromToken,
   setFromTokenInputValue,
   setToToken,
+  setToTokenSecurityData,
   updateQuoteRequestParams,
   setWasTxDeclined,
   setSlippage,
@@ -53,8 +55,7 @@ describe('Ducks - Bridge', () => {
   describe('setFromToken', () => {
     beforeEach(() => {
       setBackgroundConnection({
-        setActiveNetwork: jest.fn(),
-        setEnabledAllPopularNetworks: jest.fn(),
+        messengerCall: jest.fn(),
         getStatePatches: jest.fn(),
       } as never);
     });
@@ -211,6 +212,94 @@ describe('Ducks - Bridge', () => {
         iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
       });
+    });
+  });
+
+  describe('setToTokenSecurityData', () => {
+    const toToken = {
+      assetId: 'eip155:56/erc20:0x0cf8e180350253271f4b917ccfb0accc4862f262',
+      symbol: 'BAD',
+      name: 'Bad Token',
+      decimals: 18,
+      chainId: 'eip155:56',
+    };
+    const maliciousSecurityData = {
+      type: BridgeAssetSecurityDataType.MALICIOUS,
+      metadata: { features: [] },
+    };
+
+    it('backfills security data on the matching toToken', () => {
+      const state = { ...initialState, toToken } as never;
+
+      const newState = bridgeReducer(
+        state,
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          isVerified: false,
+          securityData: maliciousSecurityData,
+        } as never),
+      );
+
+      expect(newState.toToken?.securityData).toStrictEqual(
+        maliciousSecurityData,
+      );
+      expect(newState.toToken?.isVerified).toBe(false);
+    });
+
+    it('backfills a toToken whose security data has no type', () => {
+      const state = {
+        ...initialState,
+        toToken: { ...toToken, securityData: {} },
+      } as never;
+
+      const newState = bridgeReducer(
+        state,
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          securityData: maliciousSecurityData,
+        } as never),
+      );
+
+      expect(newState.toToken?.securityData).toStrictEqual(
+        maliciousSecurityData,
+      );
+    });
+
+    it('ignores data for a different asset', () => {
+      const state = { ...initialState, toToken } as never;
+
+      const newState = bridgeReducer(
+        state,
+        setToTokenSecurityData({
+          assetId: 'eip155:56/erc20:0x0000000000000000000000000000000000000001',
+          securityData: maliciousSecurityData,
+        } as never),
+      );
+
+      expect(newState.toToken?.securityData).toBeUndefined();
+    });
+
+    it('does not overwrite existing security data', () => {
+      const existingSecurityData = {
+        type: BridgeAssetSecurityDataType.VERIFIED,
+        metadata: { features: [] },
+      };
+      const state = {
+        ...initialState,
+        toToken: { ...toToken, securityData: existingSecurityData },
+      } as never;
+
+      const newState = bridgeReducer(
+        state,
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          securityData: maliciousSecurityData,
+        } as never),
+      );
+
+      expect(newState.toToken?.securityData).toStrictEqual(
+        existingSecurityData,
+      );
     });
   });
 

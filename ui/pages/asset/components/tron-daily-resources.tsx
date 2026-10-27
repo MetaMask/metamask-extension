@@ -1,6 +1,8 @@
 import React from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
@@ -15,12 +17,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import type { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useFreshTronAssets } from '../hooks/useFreshTronAssets';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
 
 type TronDailyResourcesProps = {
   account: InternalAccount;
-  chainId: string;
+  chainId: CaipChainId;
   t: ReturnType<typeof useI18nContext>;
 };
 
@@ -28,6 +32,9 @@ type ResourceCircleProps = {
   resource: TronResource;
   iconName: IconName;
 };
+
+const ENERGY_PER_TRC20_TRANSFER_BASELINE = 65000;
+const BANDWIDTH_PER_TRX_TRANSFER_BASELINE = 280;
 
 const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
   const percentage = Math.min(resource.percentage, 100);
@@ -183,11 +190,8 @@ export const TronDailyResources = ({
   chainId,
   t,
 }: TronDailyResourcesProps) => {
-  const { energy, bandwidth } = useTronResources(account, chainId);
-
-  // Constants for resource calculations
-  const ENERGY_PER_TRC20_TRANSFER_BASELINE = 65000;
-  const BANDWIDTH_PER_TRX_TRANSFER_BASELINE = 280;
+  useFreshTronAssets(account, chainId);
+  const { energy, bandwidth, dataState } = useTronResources(account, chainId);
 
   // Calculate how many transfers can be covered
   const usdtTransfersCovered = Math.floor(
@@ -211,6 +215,7 @@ export const TronDailyResources = ({
       paddingTop={1}
       paddingBottom={3}
       data-testid="tron-daily-resources"
+      aria-busy={dataState === 'loading' || undefined}
     >
       <Box
         className="flex"
@@ -225,48 +230,68 @@ export const TronDailyResources = ({
         >
           {t('tronDailyResources')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          data-testid="tron-daily-resources-description"
-        >
-          {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
-        </Text>
+        {dataState === 'available' && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid="tron-daily-resources-description"
+          >
+            {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
+          </Text>
+        )}
       </Box>
 
-      <ResourceRow
-        resource={energy}
-        iconName={IconName.Flash}
-        label={t('tronEnergy')}
-        description={
-          usdtTransfersCovered === 1
-            ? t('tronEnergyCoverageDescriptionSingular')
-            : t('tronEnergyCoverageDescriptionPlural', [
-                usdtTransfersCovered.toString(),
-              ])
-        }
-        currentValue={formatValue(energy.current)}
-        maxValue={formatValue(energy.max)}
-        testId="tron-daily-resources-energy"
-        descriptionTestId="tron-daily-resources-energy-description"
-      />
+      {dataState === 'loading' && (
+        <output className="sr-only">{t('tronDailyResourcesLoading')}</output>
+      )}
 
-      <ResourceRow
-        resource={bandwidth}
-        iconName={IconName.Connect}
-        label={t('tronBandwidth')}
-        description={
-          trxTransfersCovered === 1
-            ? t('tronBandwidthCoverageDescriptionSingular')
-            : t('tronBandwidthCoverageDescriptionPlural', [
-                trxTransfersCovered.toString(),
-              ])
-        }
-        currentValue={formatValue(bandwidth.current)}
-        maxValue={formatValue(bandwidth.max)}
-        testId="tron-daily-resources-bandwidth"
-        descriptionTestId="tron-daily-resources-bandwidth-description"
-      />
+      {dataState === 'unavailable' ? (
+        <BannerAlert
+          severity={BannerAlertSeverity.Warning}
+          title={t('tronDailyResourcesUnavailableTitle')}
+          description={t('tronDailyResourcesUnavailableDescription')}
+          marginTop={3}
+          data-testid="tron-daily-resources-error-banner"
+        />
+      ) : (
+        dataState === 'available' && (
+          <>
+            <ResourceRow
+              resource={energy}
+              iconName={IconName.Flash}
+              label={t('tronEnergy')}
+              description={
+                usdtTransfersCovered === 1
+                  ? t('tronEnergyCoverageDescriptionSingular')
+                  : t('tronEnergyCoverageDescriptionPlural', [
+                      usdtTransfersCovered.toString(),
+                    ])
+              }
+              currentValue={formatValue(energy.current)}
+              maxValue={formatValue(energy.max)}
+              testId="tron-daily-resources-energy"
+              descriptionTestId="tron-daily-resources-energy-description"
+            />
+
+            <ResourceRow
+              resource={bandwidth}
+              iconName={IconName.Connect}
+              label={t('tronBandwidth')}
+              description={
+                trxTransfersCovered === 1
+                  ? t('tronBandwidthCoverageDescriptionSingular')
+                  : t('tronBandwidthCoverageDescriptionPlural', [
+                      trxTransfersCovered.toString(),
+                    ])
+              }
+              currentValue={formatValue(bandwidth.current)}
+              maxValue={formatValue(bandwidth.max)}
+              testId="tron-daily-resources-bandwidth"
+              descriptionTestId="tron-daily-resources-bandwidth-description"
+            />
+          </>
+        )
+      )}
     </Box>
   );
 };

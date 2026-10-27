@@ -31,12 +31,14 @@ import {
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
+  MetaMetricsAccountHiddenLocation,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
+import { useTrackAccountHidden } from '../hooks/useTrackAccountHidden';
 import { useDispatch } from '../../../store/hooks';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -61,6 +63,7 @@ export const MultichainAccountMenu = ({
   const accountTree = useSelector(getAccountTree);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const disconnectAccountGroup = useDisconnectAccountGroup();
+  const trackAccountHidden = useTrackAccountHidden();
 
   // Get the wallet holding the account group, both for the group's pinned and
   // hidden state and to know which actions the account supports
@@ -197,16 +200,10 @@ export const MultichainAccountMenu = ({
 
       await dispatch(setAccountGroupHidden(accountGroupId, newHiddenState));
 
-      // Track the Account Hidden event
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.AccountHidden)
-          .addCategory(MetaMetricsEventCategory.Accounts)
-          .addProperties({
-            hidden: newHiddenState,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hidden_count_after: countAccountsByStatus('hidden', newHiddenState),
-          })
-          .build(),
+      trackAccountHidden(
+        accountGroupId,
+        newHiddenState,
+        MetaMetricsAccountHiddenLocation.AccountMenu,
       );
 
       onToggle?.();
@@ -273,6 +270,7 @@ export const MultichainAccountMenu = ({
     disconnectAccountGroup,
     onToggle,
     trackEvent,
+    trackAccountHidden,
     countAccountsByStatus,
   ]);
 

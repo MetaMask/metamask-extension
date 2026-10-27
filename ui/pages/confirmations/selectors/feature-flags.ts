@@ -1,6 +1,11 @@
 import { createSelector } from 'reselect';
 import type { Hex } from '@metamask/utils';
 import {
+  hasTransactionType,
+  type TransactionMeta,
+  type TransactionType,
+} from '@metamask/transaction-controller';
+import {
   getEnforcedSimulationsSlippage,
   getIsEnforcedSimulationsEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
@@ -166,8 +171,15 @@ type RawPayTokensFlag = {
   minimumRequiredTokenBalance?: number;
 };
 
-type HardwareWalletConfig = {
+export type PayHardwareConfig = {
   enabled?: boolean;
+};
+
+type RawPayHardwareFlag = {
+  /** Legacy flat shape; applies to mUSD conversion only. */
+  enabled?: boolean;
+  default?: PayHardwareConfig;
+  overrides?: Record<string, PayHardwareConfig>;
 };
 
 const selectConfirmationsPayDappsFlag = createSelector(
@@ -217,7 +229,7 @@ const selectPayHardwareFlag = createSelector(
   (flags) =>
     (
       flags as unknown as {
-        confirmations_pay_hardware?: HardwareWalletConfig;
+        confirmations_pay_hardware?: RawPayHardwareFlag;
       }
     ).confirmations_pay_hardware,
   /* eslint-enable @typescript-eslint/naming-convention */
@@ -350,14 +362,69 @@ export const selectEnforcedSimulationsSlippage = createSelector(
     getEnforcedSimulationsSlippage({ remoteFeatureFlags }),
 );
 
+/**
+ * The only transaction type the legacy flat `{ enabled }` value has ever
+ * gated. Other types need `default` or `overrides`, so serving the flat value
+ * never enables them.
+ */
+const LEGACY_PAY_HARDWARE_TRANSACTION_TYPE = 'musdConversion';
+
+/**
+ * Resolves whether hardware wallets may pay for a transaction type from
+ * `confirmations_pay_hardware`. Supports the per-type `default` / `overrides`
+ * shape used by the other confirmations pay flags; the legacy flat
+ * `{ enabled }` value applies to mUSD conversion only.
+ *
+ * @param _state
+ * @param transactionType
+ */
+export const selectPayHardwareConfig = createSelector(
+  [
+    selectPayHardwareFlag,
+    (_state, transactionType?: string) => transactionType,
+  ],
+  (flag, transactionType): PayHardwareConfig => {
+    const override = transactionType
+      ? flag?.overrides?.[transactionType]
+      : undefined;
+    const legacyEnabled =
+      transactionType === LEGACY_PAY_HARDWARE_TRANSACTION_TYPE
+        ? flag?.enabled
+        : undefined;
+
+    return {
+      enabled:
+        override?.enabled ?? flag?.default?.enabled ?? legacyEnabled ?? false,
+    };
+  },
+);
+
+/**
+ * @param _state
+ * @param transactionType - Pay transaction type; omit for the default.
+ */
 export const selectIsPayHardwareEnabled = createSelector(
-  selectPayHardwareFlag,
-  (flag): boolean => flag?.enabled ?? false,
+  [selectPayHardwareConfig],
+  (config): boolean => config.enabled === true,
 );
 
 type PayExtendedFlag = {
   enableMoneyAccountTransactions?: Record<string, boolean>;
   defaultPaySelectedSection?: Record<string, string>;
+  payStrategies?: {
+    relay?: {
+      atomicMaxEnabled?: RelayAtomicMaxEnabledConfig;
+    };
+  };
+};
+
+/**
+ * Mirrors the Core `atomicMaxEnabled` gate: `transactionTypes` is a
+ * type-to-boolean map, **not** an array. An array silently disables the gate.
+ */
+type RelayAtomicMaxEnabledConfig = {
+  default?: boolean;
+  transactionTypes?: Partial<Record<TransactionType, boolean>>;
 };
 
 const selectPayExtendedFlag = createSelector(
@@ -404,6 +471,39 @@ export const selectIsMoneyAccountTransactionEnabled = createSelector(
 export const selectDefaultPaySelectedSection = createSelector(
   selectPayExtendedFlag,
   (flag): Record<string, string> => flag?.defaultPaySelectedSection ?? {},
+);
+
+const selectRelayAtomicMaxEnabledConfig = createSelector(
+  selectPayExtendedFlag,
+  (flag): RelayAtomicMaxEnabledConfig | undefined =>
+    flag?.payStrategies?.relay?.atomicMaxEnabled,
+);
+
+/**
+ * Whether Core may quote a Money Account deposit Max atomically, from
+ * `confirmations_pay_extended.payStrategies.relay.atomicMaxEnabled`. A matching
+ * transaction type (including nested batch types) wins over `default`; an
+ * absent gate is `false`.
+ *
+ * @param _state
+ * @param transactionMeta
+ */
+export const selectRelayAtomicMaxEnabled = createSelector(
+  [
+    selectRelayAtomicMaxEnabledConfig,
+    (_state, transactionMeta?: TransactionMeta) => transactionMeta,
+  ],
+  (config, transactionMeta): boolean => {
+    for (const [type, enabled] of Object.entries(
+      config?.transactionTypes ?? {},
+    )) {
+      if (hasTransactionType(transactionMeta, [type as TransactionType])) {
+        return enabled;
+      }
+    }
+
+    return config?.default ?? false;
+  },
 );
 
 /**

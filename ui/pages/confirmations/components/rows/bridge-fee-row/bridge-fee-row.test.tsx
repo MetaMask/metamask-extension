@@ -347,7 +347,7 @@ describe('BridgeFeeRow', () => {
       );
     });
 
-    it('labels the network fee as Paid by MetaMask when only target gas remains and is sponsored', async () => {
+    it('shows a zero network fee in the tooltip when every network leg is sponsored', async () => {
       useSponsoredNetworkFeeFlagsMock.mockReturnValue({
         isSourceNetworkSponsored: true,
         isTargetNetworkSponsored: true,
@@ -375,7 +375,10 @@ describe('BridgeFeeRow', () => {
         content.includes(`${messages.networkFee.message}:`),
       );
       expect(tooltip.textContent).toContain(
-        `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+        `${messages.networkFee.message}: $0.00`,
+      );
+      expect(tooltip.textContent).not.toContain(
+        messages.paidByMetaMask.message,
       );
     });
   });

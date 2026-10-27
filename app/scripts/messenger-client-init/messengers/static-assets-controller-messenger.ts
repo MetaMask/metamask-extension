@@ -29,8 +29,6 @@ export function getStaticAssetsControllerMessenger(
     messenger: controllerMessenger,
     actions: [
       'NetworkController:findNetworkClientIdByChainId',
-      'TokensController:getState',
-      'TokensController:addTokens',
       'AssetsController:getState',
       'AssetsController:addCustomAsset',
     ],

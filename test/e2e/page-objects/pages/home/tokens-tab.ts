@@ -29,7 +29,7 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
  * Network filter control-bar chrome belongs to `NetworkFilter` /
  * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
  * outside this object.
- * Related: `HomePage` (`goToTokensTab`), `NonEvmHomepage`, `NetworkFilter`,
+ * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
  * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
  *
  * @see ui/components/app/assets/asset-list/asset-list.tsx
@@ -83,9 +83,8 @@ class TokensTab extends HomePage {
   private readonly hideTokenConfirmationButton =
     '[data-testid="hide-token-confirmation__hide"]';
 
-  private readonly hideTokenConfirmationModalTitle = {
-    text: 'Hide token',
-    css: '.hide-token-confirmation__title',
+  private readonly hideTokenConfirmationModal = {
+    testId: 'hide-token-confirmation-modal',
   };
 
   private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
@@ -813,7 +812,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
-    await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
+    await this.driver.waitForSelector(this.hideTokenConfirmationModal);
     await this.driver.clickElementAndWaitToDisappear(
       this.hideTokenConfirmationButton,
     );

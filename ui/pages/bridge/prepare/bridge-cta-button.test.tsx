@@ -60,6 +60,24 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
+
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
+
 jest.mock(
   '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked',
 );
@@ -74,7 +92,7 @@ const baseHardwareWalletConfig = {
 
 setBackgroundConnection({
   submitTx: jest.fn(),
-  setEnabledAllPopularNetworks: jest.fn(),
+  messengerCall: jest.fn(),
   getStatePatches: jest.fn(),
   getLocation: jest.fn().mockResolvedValue('Main View'),
   resetState: () => mockResetState(),
@@ -87,7 +105,7 @@ describe('BridgeCTAButton', () => {
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },

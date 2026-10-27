@@ -1,9 +1,21 @@
-type ToastPhase = 'pending' | 'terminal';
+type ToastPhase = 'approvedOrSigned' | 'pending' | 'terminal';
 
 const toastPhaseById = new Map<string, ToastPhase>();
 
+export function setApprovedOrSignedToastPhase(id: string) {
+  if (toastPhaseById.has(id)) {
+    return;
+  }
+
+  toastPhaseById.set(id, 'approvedOrSigned');
+}
+
 export function shouldShowPendingToast(id: string) {
-  if (toastPhaseById.get(id) !== undefined) {
+  const phase = toastPhaseById.get(id);
+  const isApprovedOrSignedOrUndefined =
+    phase === 'approvedOrSigned' || phase === undefined;
+
+  if (!isApprovedOrSignedOrUndefined) {
     return false;
   }
 
@@ -12,18 +24,11 @@ export function shouldShowPendingToast(id: string) {
 }
 
 export function shouldShowTerminalToast(id: string) {
-  if (toastPhaseById.get(id) !== 'pending') {
-    return false;
-  }
+  const phase = toastPhaseById.get(id);
+  const isApprovedOrSignedOrPending =
+    phase === 'approvedOrSigned' || phase === 'pending';
 
-  toastPhaseById.set(id, 'terminal');
-  return true;
-}
-
-// Failed toasts may fire with no prior pending toast (publish/RPC failure
-// never reaches `submitted`).
-export function shouldShowFailedToast(id: string) {
-  if (toastPhaseById.get(id) === 'terminal') {
+  if (!isApprovedOrSignedOrPending) {
     return false;
   }
 

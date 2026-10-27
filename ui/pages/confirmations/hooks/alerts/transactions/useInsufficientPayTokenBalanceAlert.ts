@@ -19,6 +19,9 @@ import {
   MoneyAccountFlow,
 } from '../../../../../../shared/lib/money/money-account-flow';
 import { useConfirmContext } from '../../../context/confirm';
+import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
+import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
+import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
 import { useIsFundingAccountBalanceSettling } from '../../pay/useIsFundingAccountBalanceSettling';
@@ -82,8 +85,25 @@ export function useInsufficientPayTokenBalanceAlert({
   );
   const ticker = nativeTokenInfo?.symbol ?? 'ETH';
 
+  // Source-network gas is paid by the funding account. Post-quote withdraws
+  // keep the selected-account lookup: their gas runs on the tx chain and the
+  // override is only the recipient.
+  const payingAccount = useTransactionPayingAccount();
+  const payingInternalAccount = useSelector((state) =>
+    payingAccount
+      ? getInternalAccountByAddress(state, payingAccount)
+      : undefined,
+  );
+  const isHardwarePayer = payingInternalAccount
+    ? isHardwareAccount(payingInternalAccount)
+    : false;
+
   const nativeTokenAddress = getNativeTokenAddress(sourceChainId);
-  const nativeToken = useTokenWithBalance(nativeTokenAddress, sourceChainId);
+  const nativeToken = useTokenWithBalance(
+    nativeTokenAddress,
+    sourceChainId,
+    isPostQuote ? undefined : payingAccount,
+  );
 
   // For post-quote, `payToken` is the destination so its native-ness has
   // no bearing on source gas — force false so the source-network check
@@ -312,12 +332,17 @@ export function useInsufficientPayTokenBalanceAlert({
   //     still wrong.
   // Genuine shortfalls remain covered: deposits by the pay-token balance
   // checks above, withdrawals by `useInsufficientMoneyAccountBalanceAlert`.
+  //
+  // Exception: a hardware payer funds a deposit with plain (non-7702)
+  // transactions signed on-device, so it pays source-network gas itself and
+  // parent sponsorship does not cover it. Keep the check for that payer.
   const isMoneyAccountTransaction = Boolean(
     getMoneyAccountFlow(currentConfirmation),
   );
+  const isHardwareFundedMoneyDeposit = isMoneyAccountDeposit && isHardwarePayer;
   const isInsufficientForSourceNetwork = useMemo(
     () =>
-      !isMoneyAccountTransaction &&
+      (!isMoneyAccountTransaction || isHardwareFundedMoneyDeposit) &&
       !isMoneyPaymentOverride &&
       (payToken || isPostQuote) &&
       !isPayTokenNative &&
@@ -325,6 +350,7 @@ export function useInsufficientPayTokenBalanceAlert({
       !isSourceGasFeeToken &&
       totalSourceNetworkFeeRaw.gt(nativeBalanceRaw),
     [
+      isHardwareFundedMoneyDeposit,
       isMoneyAccountTransaction,
       isMoneyPaymentOverride,
       isPayTokenNative,

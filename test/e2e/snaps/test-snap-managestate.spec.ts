@@ -25,16 +25,18 @@ describe('Test Snap manageState', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
-        await openTestSnapClickButtonAndInstall(driver, 'connectstateButton');
-        await testSnaps.checkInstallationComplete(
-          'connectstateButton',
-          'Reconnect to State Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectstateButton', {
+          expectedMessage: 'Reconnect to State Snap',
+        });
 
         // Enter data and click set, then validate results
         await testSnaps.fillMessage('setStateKeyInput', 'foo');
         await testSnaps.fillMessage('dataStateInput', '"bar"');
         await testSnaps.scrollAndClickButton('sendStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'encryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar' }, null, 2),
+        );
         await testSnaps.fillMessage('setStateKeyInput', 'baz');
         await testSnaps.fillMessage('dataStateInput', '"qux"');
         await testSnaps.scrollAndClickButton('sendStateButton');
@@ -67,6 +69,10 @@ describe('Test Snap manageState', function () {
         await testSnaps.fillMessage('setStateKeyUnencryptedInput', 'foo');
         await testSnaps.fillMessage('dataUnencryptedStateInput', '"bar"');
         await testSnaps.scrollAndClickButton('sendUnencryptedStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'unencryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar' }, null, 2),
+        );
         await testSnaps.fillMessage('setStateKeyUnencryptedInput', 'baz');
         await testSnaps.fillMessage('dataUnencryptedStateInput', '"qux"');
         await testSnaps.scrollAndClickButton('sendUnencryptedStateButton');
@@ -118,10 +124,7 @@ describe('Test Snap manageState', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectManageStateButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectManageStateButton',
-          'Reconnect to Legacy State Snap',
+          { expectedMessage: 'Reconnect to Legacy State Snap' },
         );
 
         // enter data, click send manage state and validate results

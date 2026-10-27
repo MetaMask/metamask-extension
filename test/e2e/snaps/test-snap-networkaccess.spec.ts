@@ -42,11 +42,8 @@ describe('Test Snap networkAccess', function () {
           'connectNetworkAccessButton',
           {
             url: TEST_SNAPS_WEBSITE_URL,
+            expectedMessage: 'Reconnect to Network Access Snap',
           },
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectNetworkAccessButton',
-          'Reconnect to Network Access Snap',
         );
 
         // click on alert dialog and validate the message

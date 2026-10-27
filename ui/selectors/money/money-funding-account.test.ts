@@ -234,4 +234,39 @@ describe('selectMoneyFundingAccount', () => {
   it('returns undefined when there are no accounts', () => {
     expect(selectMoneyFundingAccount(buildState([], ''))).toBeUndefined();
   });
+
+  describe('when hardware funding is allowed', () => {
+    it('returns the selected hardware account', () => {
+      const state = buildState([LEDGER_ACCOUNT, HD_ACCOUNT], LEDGER_ACCOUNT.id);
+
+      expect(selectMoneyFundingAccount(state, true)).toBe(LEDGER_ACCOUNT);
+    });
+
+    it("returns the group's hardware EVM account when a non-EVM account in it is selected", () => {
+      const state = buildState(
+        [HD_ACCOUNT, LEDGER_ACCOUNT, SOL_ACCOUNT],
+        SOL_ACCOUNT.id,
+        {
+          selectedAccountGroup: GROUP_2_ID,
+          byId: {
+            [GROUP_1_ID]: [HD_ACCOUNT],
+            [GROUP_2_ID]: [LEDGER_ACCOUNT, SOL_ACCOUNT],
+          },
+        },
+      );
+
+      expect(selectMoneyFundingAccount(state, true)).toBe(LEDGER_ACCOUNT);
+    });
+
+    it('still skips a selected QR hardware account', () => {
+      const qrAccount = account({
+        id: 'qr',
+        address: HD_2_ADDRESS,
+        keyringType: KeyringTypes.qr,
+      });
+      const state = buildState([qrAccount, HD_ACCOUNT], qrAccount.id);
+
+      expect(selectMoneyFundingAccount(state, true)).toBe(HD_ACCOUNT);
+    });
+  });
 });

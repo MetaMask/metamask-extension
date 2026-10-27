@@ -27,19 +27,6 @@ import { getMockAssetsPrice } from '../tokens/utils/mocks';
 
 const MOCK_ETH_PRICE = 1700;
 
-// The onboarding fixture seeds a zero ETH conversion rate, and the
-// exchange-rates request does not fire in these flows, so the homepage balance
-// would stay a loading skeleton without this.
-const MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    ETH: {
-      conversionDate: Date.now(),
-      conversionRate: MOCK_ETH_PRICE,
-      usdConversionRate: MOCK_ETH_PRICE,
-    },
-  },
-};
-
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
@@ -147,7 +134,6 @@ describe('MultiRpc:', function (this: Suite) {
               '0x1': true,
             },
           })
-          .withCurrencyController(MOCK_CURRENCY_RATES)
           .withAssetsController({
             assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
           })
@@ -535,7 +521,6 @@ describe('MultiRpc:', function (this: Suite) {
             },
             selectedNetworkClientId: 'networkConfigurationId',
           })
-          .withCurrencyController(MOCK_CURRENCY_RATES)
           .withAssetsController({
             assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
           })
@@ -553,7 +538,7 @@ describe('MultiRpc:', function (this: Suite) {
           driver,
         );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
-        await onboardingPrivacySettingsPage.navigateToGeneralSettings();
+        await onboardingPrivacySettingsPage.navigateToNetworksSettings();
 
         // open edit network modal during onboarding and select the second rpc
         await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');
