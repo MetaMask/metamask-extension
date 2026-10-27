@@ -3090,12 +3090,6 @@ export default class MetamaskController extends EventEmitter {
       startOAuthLogin: this.oauthService.startOAuthLogin.bind(
         this.oauthService,
       ),
-      setMarketingConsent: this.oauthService.setMarketingConsent.bind(
-        this.oauthService,
-      ),
-      getMarketingConsent: this.oauthService.getMarketingConsent.bind(
-        this.oauthService,
-      ),
       getGeolocation: this.geolocationController.getGeolocation.bind(
         this.geolocationController,
       ),
