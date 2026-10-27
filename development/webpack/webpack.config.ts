@@ -37,10 +37,6 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getSwcLoader } from './utils/loaders/getSwcLoader';
 import { getVariables } from './utils/config';
-import {
-  TAILWIND_MD_MIN_WIDTH_ENV,
-  getTailwindMdMinWidth,
-} from './utils/tailwind-breakpoint';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
@@ -69,12 +65,6 @@ const browsersListPath = join(root, '.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
   getVariables(args, buildTypes);
-// Single source of truth for the fullscreen `md` media query. Inlined like
-// other build env vars so the UI bundle does not include Tailwind.
-const tailwindMdMinWidth = String(getTailwindMdMinWidth());
-variables.set(TAILWIND_MD_MIN_WIDTH_ENV, tailwindMdMinWidth);
-safeVariables[TAILWIND_MD_MIN_WIDTH_ENV] = JSON.stringify(tailwindMdMinWidth);
-buildEnvVarDeclarations.add(TAILWIND_MD_MIN_WIDTH_ENV);
 const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']

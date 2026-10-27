@@ -76,7 +76,6 @@ module.exports = {
     'jest-canvas-mock',
     '<rootDir>/test/setup.js',
     '<rootDir>/test/env.js',
-    '<rootDir>/test/setup-tailwind-md-breakpoint.ts',
   ],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
