@@ -18,6 +18,7 @@ jobs:
   refresh-changelog:
     name: Update changelog
     runs-on: ubuntu-latest
+    environment: release-ci
     permissions:
       contents: write
       id-token: write
