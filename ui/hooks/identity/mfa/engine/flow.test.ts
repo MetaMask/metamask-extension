@@ -230,6 +230,24 @@ describe('createMfaFlow', () => {
     });
   });
 
+  it('keeps a failed email enrollment on the email screen', async () => {
+    const fake = createFakeController([]);
+    fake.controller.beginCredentialEnrollment.mockRejectedValueOnce(
+      new MfaError('server_error', 'down'),
+    );
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+
+    await act(flow, { type: 'continue' });
+    await act(flow, { type: 'submitEmail', email: 'new@b.co' });
+
+    expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(1);
+    expect(flow.getState()).toMatchObject({
+      step: { name: 'emailEntry' },
+      error: 'server_error',
+      busy: false,
+    });
+  });
+
   it('verifies with email when the enrollment opened no session', async () => {
     const fake = createFakeController([]);
     fake.controller.completeCredentialEnrollment.mockImplementationOnce(
@@ -1005,6 +1023,18 @@ describe('createMfaFlow', () => {
         codeSent: true,
       });
 
+      await act(flow, { type: 'back' });
+      expect(flow.getState().step).toStrictEqual({
+        name: 'totpSetup',
+        ...TOTP_SETUP,
+        secret: `${TOTP_SETUP.secret}1`,
+        isRestart: false,
+      });
+      expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(
+        1,
+      );
+
+      await act(flow, { type: 'continue' });
       await act(flow, { type: 'submitCode', code: '123456' });
       expect(fake.controller.completeCredentialEnrollment).toHaveBeenCalledWith(
         {

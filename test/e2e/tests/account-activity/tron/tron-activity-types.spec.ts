@@ -3,9 +3,12 @@ import { Driver } from '../../../webdriver/driver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { openActivityTransactionDetails } from '../../../page-objects/flows/activity.flow';
 import { login } from '../../../page-objects/flows/login.flow';
-import { openTronActivityList } from '../../../page-objects/flows/tron-activity.flow';
-import { selectAllNetworksFromNetworkSelect } from '../../../page-objects/flows/network.flow';
-import { selectTronNetwork } from '../../../page-objects/flows/tron-network.flow';
+import {
+  selectAllNetworksFromNetworkSelect,
+  switchToNetworkFromNetworkSelect,
+} from '../../../page-objects/flows/network.flow';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
 import {
   TRON_ACCOUNT_ADDRESS,
@@ -92,7 +95,13 @@ describe('Tron - Activity types', function (this: Suite) {
           validateBalance: false,
           waitForNonEvmAccounts: false,
         });
-        const activityTab = await openTronActivityList(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPageIsLoaded();
 
         // Approved spending cap
         await activityTab.checkTransactionActivityByText(
@@ -179,7 +188,13 @@ describe('Tron - Activity types', function (this: Suite) {
           validateBalance: false,
           waitForNonEvmAccounts: false,
         });
-        const activityTab = await openTronActivityList(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPageIsLoaded();
 
         await activityTab.checkTransactionActivityByText('Sent TRX');
         await activityTab.checkTransactionActivityNotPresentByText('Sent ETH');
@@ -189,7 +204,7 @@ describe('Tron - Activity types', function (this: Suite) {
         await activityTab.checkTransactionAmount('-1 ETH');
 
         // Restore the Tron-only filter so the EVM send is hidden again.
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
         await activityTab.checkTransactionActivityNotPresentByText('Sent ETH');
       },
     );

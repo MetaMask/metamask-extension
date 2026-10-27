@@ -5455,17 +5455,11 @@
   "mfaMethodEmail": {
     "message": "ईमेल"
   },
-  "mfaOtpPaste": {
-    "message": "पेस्ट करें"
-  },
   "mfaOtpResend": {
     "message": "कोड फिर से भेजें"
   },
   "mfaOtpRetry": {
     "message": "फिर से प्रयास करें"
-  },
-  "mfaOtpVerify": {
-    "message": "सत्यापित करें"
   },
   "mfaPickerOr": {
     "message": "या"
