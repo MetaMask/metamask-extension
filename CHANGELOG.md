@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed Perps order and close failures to clearly explain slippage-related rejections (#47264)
+- Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions (#47233)
 - Fixed the token list loading state to show skeleton rows until assets load (#47248)
 - Kept default test networks visible in Chainlist when Show test networks is off and enabled the setting when one is opened (#47213)
 - Fixed Money balances and earnings remaining visible when privacy mode is enabled (#47139)
@@ -54,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed missing native-token icons for sends in Activity on networks not supported by Bridge. (#47145)
 - Fixed transaction nonce reuse when the network transaction count lagged behind a confirmed transaction. (#47085)
 - Fixed Money deposits confirming the previous Max amount when Add funds was pressed before the typed amount finished updating. (#47018)
+- Fixed Money routes becoming a dead end when the bottom navbar was unavailable (#47321)
 
 ### Security
 
