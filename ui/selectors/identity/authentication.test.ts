@@ -77,7 +77,12 @@ describe('Authentication Selectors', () => {
 
   it('selectEnrolledCredentials returns the persisted credentials', () => {
     const enrolledCredentials = [
-      { type: 'email_otp' as const, status: 'active' as const, verified: true },
+      {
+        id: 'email_otp',
+        type: 'email_otp' as const,
+        status: 'active' as const,
+        verified: true,
+      },
     ];
     expect(
       selectEnrolledCredentials({
