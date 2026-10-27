@@ -26,13 +26,8 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { login } from '../../page-objects/flows/login.flow';
+import { sendNativeMaxAndCheckConfirmedActivity } from '../../page-objects/flows/send-transaction.flow';
 import { mockEthPrices } from '../tokens/utils/mocks';
-import HomePage from '../../page-objects/pages/home/homepage';
-import SendPage from '../../page-objects/pages/send/send-page';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import { Driver } from '../../webdriver/driver';
 
 const INK_DECIMAL_CHAIN_ID = '57073';
 const INK_NATIVE_ASSET_ID = 'eip155:57073/slip44:60';
@@ -210,47 +205,6 @@ async function mockInkApis(mockServer: MockttpServer): Promise<void> {
   await mockEthPrices(mockServer, ETH_USD_PRICE, [CHAIN_IDS.INK]);
 }
 
-/**
- * Sends the full native balance and checks confirmation reserved gas and Activity.
- *
- * @param driver - WebDriver for the extension.
- */
-async function sendInkNativeMax(driver: Driver): Promise<void> {
-  await login(driver, { validateBalance: false });
-
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  await homePage.checkSendButtonIsClickable();
-  await homePage.startSendFlow();
-
-  const sendPage = new SendPage(driver);
-  await sendPage.checkPageIsLoaded();
-  await sendPage.selectToken(CHAIN_IDS.INK, 'ETH');
-  await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
-  await sendPage.clickMaxButton();
-  await sendPage.pressContinueButton();
-
-  const transactionConfirmation = new TransactionConfirmation(driver);
-  await transactionConfirmation.checkPageIsLoaded();
-  await transactionConfirmation.checkNativeMaxAmountBelowBalance(
-    ANVIL_BALANCE_ETH,
-  );
-  await transactionConfirmation.clickScrollToBottomButton();
-  await transactionConfirmation.clickFooterButton({
-    button: 'confirm',
-    waitUntil: 'disappear',
-  });
-
-  await homePage.checkPageIsLoaded();
-  await homePage.goToActivityList();
-
-  const activityTab = new ActivityTab(driver);
-  await activityTab.checkTransactionActivityByText('Sent');
-  await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
-  await activityTab.checkNoFailedTransactions();
-  await activityTab.checkNoPendingTransactions();
-}
-
 describe('Send Ink native max', function () {
   it('sends the max native balance on hex chain id 0xdef1', async function () {
     await withFixtures(
@@ -261,7 +215,12 @@ describe('Send Ink native max', function () {
         testSpecificMock: mockInkApis,
       },
       async ({ driver }) => {
-        await sendInkNativeMax(driver);
+        await sendNativeMaxAndCheckConfirmedActivity({
+          driver,
+          chainId: CHAIN_IDS.INK,
+          recipientAddress: RECIPIENT_ADDRESS,
+          availableBalance: ANVIL_BALANCE_ETH,
+        });
       },
     );
   });
