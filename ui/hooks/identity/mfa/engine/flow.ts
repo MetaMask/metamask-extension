@@ -59,6 +59,7 @@ export const createMfaFlow = ({
   /** The step that already used its one silent recovery. */
   let recoveredStep: string | undefined;
   let current: CurrentStep | undefined;
+  let totpSetupStep: Extract<MfaFlowStep, { name: 'totpSetup' }> | undefined;
   let lastOperation: (() => Promise<void>) | undefined;
   let state: MfaFlowState = {
     step: { name: 'idle' },
@@ -262,13 +263,14 @@ export const createMfaFlow = ({
     }
     // Only a setup that started becomes the current step.
     current = { method: 'totp', purpose: 'setup', flowId: challenge.flowId };
-    show({
+    totpSetupStep = {
       name: 'totpSetup',
       secret: challenge.secret,
       qrCode: challenge.qrCode,
       setupUri: challenge.setupUri,
       isRestart,
-    });
+    };
+    show(totpSetupStep);
   };
 
   const startVerification = async (
@@ -563,17 +565,18 @@ export const createMfaFlow = ({
 
   const submitEmailAddress = async (email: string) => {
     current = { method: 'email_otp', purpose: 'setup', email };
-    show(
-      {
+    // Stay on email entry until a code is sent. Opening the code screen
+    // first tells the user a code went out when enrollment still failed.
+    await run(async () => {
+      await beginCodeChallenge();
+      show({
         name: 'otp',
         purpose: 'setup',
         method: 'email_otp',
         email,
-        codeSent: false,
-      },
-      { busy: true },
-    );
-    await run(beginCodeChallenge);
+        codeSent: true,
+      });
+    });
   };
 
   const submitCode = async (code: string) => {
@@ -627,6 +630,16 @@ export const createMfaFlow = ({
     switch (action.type) {
       case 'continue':
         await continueStep(step);
+        return;
+      case 'back':
+        if (
+          step.name === 'otp' &&
+          step.method === 'totp' &&
+          step.purpose === 'setup' &&
+          totpSetupStep
+        ) {
+          show(totpSetupStep);
+        }
         return;
       case 'choose':
         if (step.name === 'picker' && step.options.includes(action.method)) {
