@@ -44,6 +44,7 @@ import type {
   UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
+import { beginAbSession, endAbSession, isAbPilotEnabled } from './ab-pilot';
 
 /**
  * Promote web vitals aggregated stats into a TimerStatistics array.
@@ -162,8 +163,13 @@ export async function runBenchmarkWithIterations(
   let failedRuns = 0;
 
   for (let i = 0; i < iterations; i++) {
+    beginAbSession(i);
     const result = await runWithRetries(benchmarkFn, retries);
     allResults.push(result);
+    endAbSession(i, {
+      success: result.success,
+      timers: Object.fromEntries(result.timers.map((t) => [t.id, t.value])),
+    });
 
     if (result.success) {
       successfulRuns += 1;
@@ -456,10 +462,12 @@ export async function runPageLoadBenchmark(
 
   for (let i = 0; i < browserLoads; i += 1) {
     console.log('Starting browser load', i + 1, 'of', browserLoads);
+    beginAbSession(i);
     const { metrics, title, persona, webVitalsRuns } = await retry(
       { retries },
       () => measurePageFn(pageName, pageLoads),
     );
+    endAbSession(i, { success: true, pageLoads: metrics.length });
     runResults = runResults.concat(metrics);
     if (webVitalsRuns) {
       const indexed = webVitalsRuns.map((wv: WebVitalsMetrics, j: number) => ({
@@ -474,7 +482,8 @@ export async function runPageLoadBenchmark(
 
   // Discard the first WARMUP_RUNS browser-load sessions before computing stats.
   // Each session contributes exactly pageLoads metric objects to runResults.
-  const warmupSize = WARMUP_RUNS * pageLoads;
+  // The A/B pilot keeps every session; its analysis decides what to drop.
+  const warmupSize = isAbPilotEnabled() ? 0 : WARMUP_RUNS * pageLoads;
   const measuredResults = runResults.slice(warmupSize);
   // Web vitals entries are sparse (collection can fail silently), so filter by
   // iteration index rather than slicing by position to avoid off-by-N errors.

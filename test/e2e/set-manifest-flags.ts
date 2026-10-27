@@ -10,6 +10,12 @@ if (process.env.SELENIUM_BROWSER === undefined) {
 
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
+// The A/B pilot loads each build from its own directory and selects it per
+// browser session through this variable, so flags must go to that directory.
+function getActiveFolder(): string {
+  return process.env.BENCHMARK_EXTENSION_DIR || folder;
+}
+
 type ManifestType = {
   _flags?: ManifestFlags;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -20,7 +26,7 @@ type ManifestType = {
    */
   key?: string;
 };
-let manifest: ManifestType;
+const manifests = new Map<string, ManifestType>();
 
 function parseIntOrUndefined(value: string | undefined): number | undefined {
   return value ? parseInt(value, 10) : undefined;
@@ -50,7 +56,8 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
     }
   }
 
-  readManifest();
+  const activeFolder = getActiveFolder();
+  const manifest = readManifest(activeFolder);
 
   manifest._flags = flags;
 
@@ -67,21 +74,22 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
   }
 
   fs.writeFileSync(
-    `${folder}/manifest.json`,
+    `${activeFolder}/manifest.json`,
     JSON.stringify(manifest, null, 2),
   );
 }
 
 export function getManifestVersion(): number {
-  readManifest();
-
-  return parseInt(manifest.manifest_version, 10);
+  return parseInt(readManifest(getActiveFolder()).manifest_version, 10);
 }
 
-function readManifest() {
+function readManifest(manifestFolder: string): ManifestType {
+  let manifest = manifests.get(manifestFolder);
   if (!manifest) {
     manifest = JSON.parse(
-      fs.readFileSync(`${folder}/manifest.json`).toString(),
-    );
+      fs.readFileSync(`${manifestFolder}/manifest.json`).toString(),
+    ) as ManifestType;
+    manifests.set(manifestFolder, manifest);
   }
+  return manifest;
 }

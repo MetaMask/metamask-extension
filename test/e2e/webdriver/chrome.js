@@ -6,6 +6,7 @@ const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 const { isHeadless } = require('../../helpers/env');
 const { PINNED_CHROME_VERSION } = require('./pinned-browsers');
+const { getExtensionDir } = require('./extension-dir');
 
 /**
  * Determine the appropriate proxy server value to use
@@ -52,7 +53,7 @@ class ChromeDriver {
         `load-extension=${process.cwd()}/dist/chrome,${process.cwd()}/dist/chrome2`,
       );
     } else {
-      args.push(`load-extension=${process.cwd()}/dist/chrome`);
+      args.push(`load-extension=${getExtensionDir('chrome')}`);
     }
 
     // When "responsive" is enabled, open dev tools to force a smaller viewport
@@ -126,7 +127,9 @@ class ChromeDriver {
     try {
       // When the manifest has a `key`, the extension ID is deterministic and can
       // be computed locally — skipping the chrome://extensions round-trip (~880ms).
-      let extensionId = ChromeDriver._computeExtensionId('dist/chrome');
+      let extensionId = ChromeDriver._computeExtensionId(
+        getExtensionDir('chrome'),
+      );
       if (!extensionId) {
         const chromeDriver = new ChromeDriver(driver);
         extensionId = await chromeDriver.getExtensionIdByName('MetaMask');

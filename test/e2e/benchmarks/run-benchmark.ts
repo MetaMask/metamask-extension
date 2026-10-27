@@ -38,6 +38,7 @@ import {
   markBenchmarkWindowStart,
 } from './utils/host-provenance';
 import { captureSourceProvenance } from './utils/source-provenance';
+import { getAbPilotRecord, resetAbPilot } from './utils/ab-pilot';
 import { THRESHOLD_REGISTRY } from './utils/thresholds';
 import {
   validateResultThresholds,
@@ -207,6 +208,7 @@ async function runBenchmarkFile(
   let violations: ThresholdViolation[];
 
   markBenchmarkWindowStart();
+  resetAbPilot();
 
   if (supportsIterations(filePath) && options.iterations > 0) {
     const testTitle = benchmark.testTitle || fileName;
@@ -248,10 +250,13 @@ async function runBenchmarkFile(
 
   logThresholdResult(violations);
 
+  const abPilot = getAbPilotRecord();
+
   return {
     ...result,
     host: captureHostProvenance(),
     source: captureSourceProvenance(),
+    ...(abPilot && { abPilot }),
   };
 }
 

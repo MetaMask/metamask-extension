@@ -1,0 +1,133 @@
+name: Pilot A/B benchmarks
+
+# TEMPORARY (1/1): same-machine two-build pilot. Runs only on trigger-ci-pilot*
+# branches, which main.yml ignores. Each job runs two copies of one donor build
+# that differ only in a manifest marker, alternating them between browser
+# sessions. Results are uploaded as artifacts only: no Sentry, no gates.
+# Remove this file and the main.yml branch exclusion when the pilot is done.
+#
+# Shards per browser: branch ending in -smoke gives 1, -s<N> gives N, anything
+# else gives 50. The journey leg runs half as many shards (minimum 1).
+
+on:
+  push:
+    branches:
+      - 'trigger-ci-pilot*'
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  # Donor run whose build artifacts both pilot builds are copied from.
+  BENCHMARK_BUILDS_FROM_RUN: '39498044798'
+  BENCHMARK_AB_PILOT: '1'
+  # Session order; a random per-job flip swaps which build goes first.
+  BENCHMARK_AB_SEQUENCE: ABBABAABAB
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Build the shard matrix
+        id: matrix
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          if [[ "$BRANCH_NAME" =~ -smoke$ ]]; then
+            shards=1
+          elif [[ "$BRANCH_NAME" =~ -s([0-9]+)$ ]]; then
+            shards="${BASH_REMATCH[1]}"
+          else
+            shards=50
+          fi
+          if (( shards < 1 || shards > 100 )); then
+            echo "::error::Shards per browser must be 1 to 100, got $shards"
+            exit 1
+          fi
+          journey=$(( shards / 2 ))
+          (( journey < 1 )) && journey=1
+          matrix=$(jq -nc --argjson s "$shards" --argjson j "$journey" '
+            {include: [
+              ("chrome", "firefox") as $browser
+              | ({pageType: "startupStandardHome", n: $s},
+                 {pageType: "userJourneyOnboardingImport", n: $j}) as $leg
+              | range(1; $leg.n + 1) as $shard
+              | {browser: $browser, pageType: $leg.pageType, shard: $shard}
+            ]}')
+          echo "Shards per browser: $shards (journey $journey)"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  pilot:
+    needs: plan
+    name: ${{ matrix.browser }}-${{ matrix.pageType }}-${{ matrix.shard }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    env:
+      SELENIUM_BROWSER: ${{ matrix.browser }}
+      SELENIUM_HEADLESS: true
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      BRANCH: ${{ github.ref_name }}
+      HEAD_COMMIT_HASH: ${{ github.sha }}
+      GITHUB_REF_NAME: ${{ github.ref_name }}
+      BENCHMARK_RUNNER_LABEL: ubuntu-26.04
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download donor build artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-webpack
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.BENCHMARK_BUILDS_FROM_RUN }}
+
+      - name: Pin geckodriver 0.36.0 (Firefox only)
+        if: ${{ matrix.browser == 'firefox' }}
+        run: .github/scripts/pin-geckodriver.sh
+
+      - name: Prepare the A and B builds
+        run: >-
+          yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts
+          --browser ${{ matrix.browser }}
+          --source dist/${{ matrix.browser }}
+          --out test-artifacts/benchmarks/ab-builds-${{ matrix.browser }}-${{ matrix.pageType }}-s${{ matrix.shard }}.json
+
+      - name: Choose which build goes first
+        run: echo "BENCHMARK_AB_FLIP=$((RANDOM % 2))" >> "$GITHUB_ENV"
+
+      - name: Run the A/B benchmark
+        timeout-minutes: 25
+        run: >-
+          yarn test:e2e:benchmark
+          --preset ${{ matrix.pageType }}
+          ${{ matrix.pageType == 'startupStandardHome' && '--browserLoads 10 --pageLoads 10' || '--iterations 10' }}
+          --retries 2
+          --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-${{ matrix.pageType }}-s${{ matrix.shard }}.json
+
+      - name: Upload pilot result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: pilot-${{ matrix.browser }}-${{ matrix.pageType }}-s${{ matrix.shard }}
+          path: test-artifacts/benchmarks/*.json
+          retention-days: 7
+          if-no-files-found: ignore
