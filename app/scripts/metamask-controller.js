@@ -296,8 +296,6 @@ import {
   TokenRatesControllerInit,
 } from './messenger-client-init/assets';
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
-import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
-import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
 import { ComplianceServiceInit } from './messenger-client-init/compliance-service-init';
 import { ComplianceControllerInit } from './messenger-client-init/compliance-controller-init';
 import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
@@ -341,7 +339,6 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
@@ -555,12 +552,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: PermissionLogControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
-      // GeolocationController must init before AnalyticsController, which
-      // resolves geolocation during its own init via
-      // GeolocationController:getGeolocationData.
-      GeolocationApiService: GeolocationApiServiceInit,
-      GeolocationController: GeolocationControllerInit,
-      AnalyticsController: AnalyticsControllerInit,
       SentryTracingService: SentryTracingServiceInit,
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
@@ -694,7 +685,7 @@ export default class MetamaskController extends EventEmitter {
     );
     this.appStateController = messengerClientsByName.AppStateController;
     this.networkController = this.wallet.getInstance('NetworkController');
-    this.analyticsController = messengerClientsByName.AnalyticsController;
+    this.analyticsController = this.wallet.getInstance('AnalyticsController');
     this.userTraitsService = messengerClientsByName.UserTraitsService;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
@@ -800,7 +791,9 @@ export default class MetamaskController extends EventEmitter {
       accountsController: this.accountsController,
       networkController: this.networkController,
     });
-    this.geolocationController = messengerClientsByName.GeolocationController;
+    this.geolocationController = this.wallet.getInstance(
+      'GeolocationController',
+    );
     this.moneyAccountUpgradeController =
       messengerClientsByName.MoneyAccountUpgradeController;
 
@@ -1386,6 +1379,7 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       AnalyticsController: this.analyticsController,
+      GeolocationController: this.geolocationController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
@@ -1448,6 +1442,7 @@ export default class MetamaskController extends EventEmitter {
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
         AnalyticsController: this.analyticsController,
+        GeolocationController: this.geolocationController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
