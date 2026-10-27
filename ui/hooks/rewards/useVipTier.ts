@@ -14,7 +14,7 @@ import { useAppSelector } from '../../store/hooks';
 
 /**
  * Derives the selected account's CAIP-10 ID and fetches its VIP tier from the
- * background's `rewardsGetVipTierForAccount` handler.
+ * background's `RewardsController:getVipTierForAccount` action.
  *
  * Gated by the `vipProgramEnabled` remote feature flag — returns `null`
  * immediately and skips the background lookup when the flag is off.
@@ -61,15 +61,20 @@ function useVipTierAccountId() {
 }
 
 function useRewardsVipTierQuery(
-  accountId: string | null,
+  accountId: CaipAccountId | null,
   subscriptionId: string | null,
 ) {
   return useQuery({
     queryKey: ['rewardsVipTier', accountId, subscriptionId],
     queryFn: async () => {
-      const tier = await submitRequestToBackground<number | null>(
-        'rewardsGetVipTierForAccount',
-        [String(accountId)],
+      // TypeScript doesn't know that we effectively filtered out `null` below
+      if (accountId === null) {
+        return null;
+      }
+
+      const tier = await submitRequestToBackground(
+        'RewardsController:getVipTierForAccount',
+        [accountId],
       );
       return tier ?? null;
     },

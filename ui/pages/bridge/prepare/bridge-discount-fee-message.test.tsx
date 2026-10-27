@@ -13,14 +13,19 @@ import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import { BridgeDiscountFeeMessage } from './bridge-discount-fee-message';
 
 const mockGetVipTierForAccount = jest.fn();
-setBackgroundConnection({
-  rewardsGetVipTierForAccount: async (...args: unknown[]) =>
-    mockGetVipTierForAccount(...args),
-} as never);
+
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn((action: string, args: unknown[]) => {
+    if (action === 'RewardsController:getVipTierForAccount') {
+      return mockGetVipTierForAccount(...args);
+    }
+
+    throw new Error(`Unexpected background action: ${action}`);
+  }),
+}));
 
 const createDiscountedQuotes = (
   discountType?: string | null,

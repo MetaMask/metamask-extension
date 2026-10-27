@@ -3,14 +3,19 @@ import { screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import { RewardsVipBadge } from './RewardsVipBadge';
 
 const mockGetVipTierForAccount = jest.fn();
-setBackgroundConnection({
-  rewardsGetVipTierForAccount: async (...args: unknown[]) =>
-    mockGetVipTierForAccount(...args),
-} as never);
+
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn((action: string, args: unknown[]) => {
+    if (action === 'RewardsController:getVipTierForAccount') {
+      return mockGetVipTierForAccount(...args);
+    }
+
+    throw new Error(`Unexpected background action: ${action}`);
+  }),
+}));
 
 const vipEnabledStore = () => {
   const store = createBridgeMockStore();

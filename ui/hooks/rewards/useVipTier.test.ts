@@ -1,13 +1,18 @@
 import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { setBackgroundConnection } from '../../store/background-connection';
 import { useVipTier } from './useVipTier';
 
 const mockGetVipTierForAccount = jest.fn();
-setBackgroundConnection({
-  rewardsGetVipTierForAccount: async (...args: unknown[]) =>
-    mockGetVipTierForAccount(...args),
-} as never);
+
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn((action: string, args: unknown[]) => {
+    if (action === 'RewardsController:getVipTierForAccount') {
+      return mockGetVipTierForAccount(...args);
+    }
+
+    throw new Error(`Unexpected background action: ${action}`);
+  }),
+}));
 
 const stateWithAccount = {
   metamask: {
