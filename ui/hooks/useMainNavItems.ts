@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IconName } from '@metamask/design-system-react';
-import { getActiveNavItems } from '../helpers/utils/main-nav';
 import { transitionForward } from '../components/ui/transition';
 import { ScreenViewedEntryPoint } from '../../shared/constants/metametrics';
 import {
@@ -52,7 +51,10 @@ export function useMainNavItems(): MainNavItem[] {
     componentName: MoneyComponentName.HomeTab,
   });
 
-  const { isHome, isPerps, isMoney, isActivity } = getActiveNavItems(pathname);
+  const isHome = pathname === DEFAULT_ROUTE;
+  const isPerps = pathname === PERPS_HOME_PAGE_ROUTE;
+  const isMoney = pathname === MONEY_HOME_ROUTE;
+  const isActivity = pathname === ACTIVITY_ROUTE;
 
   const handleHomeClick = useCallback(() => {
     transitionForward(() =>

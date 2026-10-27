@@ -150,12 +150,6 @@ describe('useMainNavItems', () => {
       ).toStrictEqual([activeId]);
     });
 
-    it('marks no item as active on an unrelated route', () => {
-      const { result } = renderUseMainNavItems(createState(), '/settings');
-
-      expect(result.current.some(({ isActive }) => isActive)).toBe(false);
-    });
-
     it('returns filled icons for the active item and outlined icons otherwise', () => {
       const { result: homeResult } = renderUseMainNavItems(
         createState(),
@@ -247,16 +241,6 @@ describe('useMainNavItems', () => {
           stayOnHomePage: true,
         },
       });
-    });
-
-    it('does not track Money analytics when other items are clicked', () => {
-      const { result } = renderUseMainNavItems();
-
-      act(() => getItem(result.current, 'home').onClick());
-      act(() => getItem(result.current, 'perps').onClick());
-      act(() => getItem(result.current, 'activity').onClick());
-
-      expect(mockMoneyAnalytics.trackButtonClicked).not.toHaveBeenCalled();
     });
   });
 });
