@@ -9998,9 +9998,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^35.0.0":
-  version: 35.0.0
-  resolution: "@metamask/profile-sync-controller@npm:35.0.0"
+"@metamask/profile-sync-controller@npm:^36.0.0":
+  version: 36.0.0
+  resolution: "@metamask/profile-sync-controller@npm:36.0.0"
   dependencies:
     "@metamask/address-book-controller": "npm:^8.0.0"
     "@metamask/base-controller": "npm:^10.1.0"
@@ -10020,7 +10020,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/04a9224637f718667e75e3efb37da086f9193462e0b0ba9a2b5a8d89d9e62685c5eceed3ba7271e026f6695bc7f116a9c918c20175cd271aa174679fdc0c93dc
+  checksum: 10/c21e240c1d109e1c03261af74f5b09fdf43924135e19479f89474e11ebc00e4fb7ecef53745c59e3f42645ef7d7cf84be7816b0415d4efbe7370357572229bcf
   languageName: node
   linkType: hard
 
@@ -35601,7 +35601,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.8.1"
     "@metamask/profile-metrics-controller": "npm:^5.1.0"
-    "@metamask/profile-sync-controller": "npm:^35.0.0"
+    "@metamask/profile-sync-controller": "npm:^36.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/ramps-controller": "npm:^26.0.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
