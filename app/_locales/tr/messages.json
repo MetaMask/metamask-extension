@@ -5462,17 +5462,11 @@
   "mfaMethodEmail": {
     "message": "E-posta"
   },
-  "mfaOtpPaste": {
-    "message": "Yapıştır"
-  },
   "mfaOtpResend": {
     "message": "Kodu tekrar gönder"
   },
   "mfaOtpRetry": {
     "message": "Tekrar deneyin"
-  },
-  "mfaOtpVerify": {
-    "message": "Doğrula"
   },
   "mfaPickerOr": {
     "message": "veya"

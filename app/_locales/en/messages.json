@@ -5586,13 +5586,13 @@
     "message": "Something went wrong. Try again."
   },
   "mfaErrorInvalidCode": {
-    "message": "That code isn’t right. Check it and try again."
+    "message": "This code isn’t correct. Try again"
   },
   "mfaErrorInvalidPasskey": {
     "message": "Your passkey couldn't be verified. Try again."
   },
   "mfaErrorInvalidTotpCode": {
-    "message": "That code isn’t right. Check that your device’s time is set automatically, then enter the current code."
+    "message": "This code isn’t correct. Try again"
   },
   "mfaErrorLimitReached": {
     "message": "You've reached the limit for this method."
@@ -5676,9 +5676,6 @@
   "mfaOtpGetNewCode": {
     "message": "Get new code"
   },
-  "mfaOtpPaste": {
-    "message": "Paste"
-  },
   "mfaOtpResend": {
     "message": "Resend code"
   },
@@ -5705,8 +5702,8 @@
   "mfaOtpTitle": {
     "message": "Enter your verification code"
   },
-  "mfaOtpVerify": {
-    "message": "Verify"
+  "mfaOtpVerifying": {
+    "message": "Verifying code"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Create a passkey"
@@ -5735,8 +5732,14 @@
   "mfaSettingsAddedOn": {
     "message": "Added $1"
   },
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Authenticator app added"
+  },
   "mfaSettingsEmailRemoved": {
     "message": "Email verification removed"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "Email verified"
   },
   "mfaSettingsLastEmailDescription": {
     "message": "This email is the only security method for this account. Add a second method before removing it."
@@ -5795,14 +5798,17 @@
   "mfaTotpSetupContinue": {
     "message": "Continue"
   },
-  "mfaTotpSetupCopy": {
-    "message": "Copy setup key"
+  "mfaTotpSetupCopied": {
+    "message": "Setup key copied"
   },
   "mfaTotpSetupDescription": {
-    "message": "Scan the QR code with your authenticator app, or enter the setup key. Then enter the 6-digit code it shows."
+    "message": "Scan the QR code with your authenticator app, or enter the setup key."
   },
   "mfaTotpSetupKey": {
     "message": "Setup key"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Or enter manually"
   },
   "mfaTotpSetupQrAlt": {
     "message": "QR code to add MetaMask to your authenticator app"

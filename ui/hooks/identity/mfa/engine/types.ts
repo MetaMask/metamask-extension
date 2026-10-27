@@ -248,6 +248,7 @@ export interface MfaFlowState {
 
 export type MfaFlowAction =
   | { type: 'continue' }
+  | { type: 'back' }
   | { type: 'choose'; method: MfaMethod }
   | { type: 'submitEmail'; email: string }
   | { type: 'submitCode'; code: string }
