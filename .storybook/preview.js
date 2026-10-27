@@ -7,6 +7,9 @@ import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
+// Wallet-ready styles are not in the global sheet. Import them here, outside
+// the circular-deps scan, because index.scss `@use`s the Sass "design-system" load path.
+import '../ui/pages/onboarding-flow/creation-successful/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
 import { I18nProvider } from './i18n';
