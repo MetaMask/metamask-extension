@@ -5919,6 +5919,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/byte-utils@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/byte-utils@npm:0.1.0"
+  dependencies:
+    "@metamask/type-utils": "npm:^0.1.0"
+    "@scure/base": "npm:^1.2.6"
+  checksum: 10/f1d68301efa701f72dca8856dd10066d53151c8e9187998d398b33265e963ef55b70443752282e2986c4389914bf94e7694fb2f657855198bf14be218f2c5292
+  languageName: node
+  linkType: hard
+
 "@metamask/chain-agnostic-permission@npm:^1.6.2":
   version: 1.6.2
   resolution: "@metamask/chain-agnostic-permission@npm:1.6.2"
@@ -6417,6 +6427,16 @@ __metadata:
   version: 1.2.0
   resolution: "@metamask/ens-resolver-snap@npm:1.2.0"
   checksum: 10/abe07b3eaac4fa4daf5cf24041467183cc3d65975c77e80045e0eeb92c5bc78cd4c47c3980a35d33ed33dea92545ed3df5d7de387ee4bd7062848ccad30fd3db
+  languageName: node
+  linkType: hard
+
+"@metamask/error-utils@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/error-utils@npm:0.1.0"
+  dependencies:
+    "@metamask/type-utils": "npm:^0.1.0"
+    pony-cause: "npm:^2.1.11"
+  checksum: 10/b28bd00751714c8afab4b71d0fd94e96b476a2cea412434e4f7bd03882823d2aadcb822ff45fcaf7382d962b718034ff353f6237e30bf009fbfec81037d9f9db
   languageName: node
   linkType: hard
 
@@ -7202,27 +7222,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@28.1.0-preview-11d253c58":
-  version: 28.1.0-preview-11d253c58
-  resolution: "@metamask-previews/keyring-controller@npm:28.1.0-preview-11d253c58"
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@28.2.0-preview-4a8d4a2":
+  version: 28.2.0-preview-4a8d4a2
+  resolution: "@metamask-previews/keyring-controller@npm:28.2.0-preview-4a8d4a2"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/eth-hd-keyring": "npm:^15.0.0"
     "@metamask/eth-sig-util": "npm:^9.0.0"
     "@metamask/eth-simple-keyring": "npm:^13.0.0"
-    "@metamask/keyring-api": "npm:^24.0.0"
-    "@metamask/keyring-internal-api": "npm:^12.0.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/keyring-internal-api": "npm:^12.1.2"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     async-mutex: "npm:^0.5.0"
-    ethereumjs-wallet: "npm:^1.0.1"
-    immer: "npm:^9.0.21"
-    lodash-es: "npm:^4.17.21"
-    ulid: "npm:^2.3.0"
-  checksum: 10/0214142d8945d56e5f5e0b2e87c4f4c634bc1626fa31c28a26002a8816c0c49ef10e56580ab30849df40398f17bf8864319d9618b068a0fb95a8c89631bc8f60
+    ethereumjs-wallet: "npm:^1.0.2"
+    immer: "npm:^11.1.18"
+    lodash-es: "npm:^4.18.1"
+    ulid: "npm:^2.4.0"
+  checksum: 10/d24a6e98fbd011b38c186cce33d9840f2a0320d260aaade70cacc95f1a1e212174dcba14be8fcd58dc81a3061f111df64b5064d12399c953823a00587910ee5e
   languageName: node
   linkType: hard
 
@@ -7905,6 +7925,17 @@ __metadata:
     "@metamask/utils": "npm:^11.12.0"
     reselect: "npm:^5.1.1"
   checksum: 10/ed69d4edd3c2c3b504ca423ccbe12d47523385c1c325a4c9d987e836f28ca29dae34ce50abcd4b882cadbe9e8d7f8cbda9668e682c1b0c725c9632db15da3bab
+  languageName: node
+  linkType: hard
+
+"@metamask/node-utils@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/node-utils@npm:0.1.0"
+  dependencies:
+    "@metamask/error-utils": "npm:^0.1.0"
+    "@metamask/type-utils": "npm:^0.1.0"
+    uuid: "npm:^11.1.1"
+  checksum: 10/b68ec02cb9f62b5c1db3a02a25f9eca9e233e4f7402cf2f2ccbfe1f14c648a93adc2c220cb201202f0d9f7216f93790b47ac6e7f37a8523d387da789c06165dc
   languageName: node
   linkType: hard
 
@@ -9273,6 +9304,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/type-utils@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/type-utils@npm:0.1.0"
+  checksum: 10/8aa4a4ff3ed253ad93e3733fa1704c5bc4fb43b0e49c84d5e825a90cafae4d65232637037db440f5b89e1348113ca7b1bba7a6ddf3c85da2ba962e6911c2b2d7
+  languageName: node
+  linkType: hard
+
 "@metamask/user-operation-controller@npm:^41.2.5":
   version: 41.2.5
   resolution: "@metamask/user-operation-controller@npm:41.2.5"
@@ -9339,23 +9377,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/utils@npm:12.0.0"
+"@metamask/utils@npm:^12.0.0, @metamask/utils@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "@metamask/utils@npm:12.0.1"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
+    "@metamask/byte-utils": "npm:^0.1.0"
+    "@metamask/error-utils": "npm:^0.1.0"
+    "@metamask/node-utils": "npm:^0.1.0"
     "@metamask/scure-bip39": "npm:^2.1.1"
     "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/type-utils": "npm:^0.1.0"
     "@noble/hashes": "npm:^1.8.0"
-    "@scure/base": "npm:^1.2.6"
     "@types/debug": "npm:^4.1.7"
-    "@types/lodash": "npm:^4.17.20"
-    debug: "npm:^4.3.4"
-    lodash: "npm:^4.17.21"
-    pony-cause: "npm:^2.1.10"
-    semver: "npm:^7.6.3"
-    uuid: "npm:^9.0.1"
-  checksum: 10/3a2c592283b081ac627262d903bbac84d7ce81896c86e5839ffee4c5cbc48b161cc1599c4b57f74bcc576d8b27bb517ced4c9e4e7b31e69e3113873acfde5f03
+    "@types/lodash": "npm:^4.17.27"
+    debug: "npm:^4.4.3"
+    lodash: "npm:^4.18.1"
+    semver: "npm:^7.8.5"
+  checksum: 10/8ec32327f680b7d3354f1f854fa01731e5113b95695f4f5ada2bab9ec9d5424f9664e17e28328efa58f173d6d82002cc97f6cc8ad6f77c024908078fce42f9d2
   languageName: node
   linkType: hard
 
@@ -16161,10 +16200,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.162, @types/lodash@npm:^4.17.20":
-  version: 4.17.20
-  resolution: "@types/lodash@npm:4.17.20"
-  checksum: 10/8cd8ad3bd78d2e06a93ae8d6c9907981d5673655fec7cb274a4d9a59549aab5bb5b3017361280773b8990ddfccf363e14d1b37c97af8a9fe363de677f9a61524
+"@types/lodash@npm:^4.14.162, @types/lodash@npm:^4.17.20, @types/lodash@npm:^4.17.27":
+  version: 4.17.27
+  resolution: "@types/lodash@npm:4.17.27"
+  checksum: 10/ae02ef86268664e5a024fd1a7d907b676fe7cd9b58b52bdddc7c42c7ffb3d05e869f6bd13e3e6cbb4001cac1d072f5e2a6e5deed2ef7dc62d7853fc735a077be
   languageName: node
   linkType: hard
 
@@ -24875,7 +24914,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-wallet@npm:^1.0.1":
+"ethereumjs-wallet@npm:^1.0.2":
   version: 1.0.2
   resolution: "ethereumjs-wallet@npm:1.0.2"
   dependencies:
@@ -28169,6 +28208,13 @@ __metadata:
   version: 3.0.6
   resolution: "immediate@npm:3.0.6"
   checksum: 10/f9b3486477555997657f70318cc8d3416159f208bec4cca3ff3442fd266bc23f50f0c9bd8547e1371a6b5e82b821ec9a7044a4f7b944798b25aa3cc6d5e63e62
+  languageName: node
+  linkType: hard
+
+"immer@npm:^11.1.18":
+  version: 11.2.9
+  resolution: "immer@npm:11.2.9"
+  checksum: 10/0ca23e2469152cacb36c1adc8e2fc3e6ab24c85f95b03b3d59c96cf9aff419c806be98825394a7ba40d713f6d4349b57705e633bc057c602b429917b3cdcc7de
   languageName: node
   linkType: hard
 
@@ -35134,10 +35180,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pony-cause@npm:^2.1.10":
-  version: 2.1.10
-  resolution: "pony-cause@npm:2.1.10"
-  checksum: 10/906563565030996d0c40ba79a584e2f298391931acc59c98510f9fd583d72cd9e9c58b0fb5a25bbae19daf16840f94cb9c1ee72c7ed5ef249ecba147cee40495
+"pony-cause@npm:^2.1.10, pony-cause@npm:^2.1.11":
+  version: 2.1.11
+  resolution: "pony-cause@npm:2.1.11"
+  checksum: 10/ed7d0bb6e3e69f753080bf736b71f40e6ae4c13ec0c8c473ff73345345c088819966fdd68a62ad7482d464bf41176cf9421f5f63715d1a4532005eedc099db55
   languageName: node
   linkType: hard
 
@@ -41140,12 +41186,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ulid@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "ulid@npm:2.3.0"
+"ulid@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "ulid@npm:2.4.0"
   bin:
-    ulid: ./bin/cli.js
-  checksum: 10/11d7dd35072b863effb1249f66fb03070142a625610f00e5afd99af7e909b5de9cc7ebca6ede621a6bb1b7479b2489d6f064db6742b55c14bff6496ac60f290f
+    ulid: bin/cli.js
+  checksum: 10/409ad0a703ea9f25d2a35cf790b767030a2c7b5ca0df6acb73669628156ab63bb97925a3fd7aaaf0b2384d39bd3ed2f7cd2c2de9f1171df6bc79b8c097865d92
   languageName: node
   linkType: hard
 

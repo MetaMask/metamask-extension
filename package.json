@@ -345,7 +345,7 @@
     "@metamask/profile-sync-controller": "^33.0.0",
     "@metamask/account-tree-controller": "^11.0.0",
     "@metamask/ramps-controller": "^22.0.0",
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@28.1.0-preview-11d253c58"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@28.2.0-preview-4a8d4a2"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
