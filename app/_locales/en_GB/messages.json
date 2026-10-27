@@ -1796,7 +1796,7 @@
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
   "arcUsageNoticeDescription": {
-    "message": "Welcome to Arc! To facilitate and verify your usage of Arc chain, we may share information with Arc team."
+    "message": "Welcome to Arc! To facilitate and verify your usage of Arc chain, we may share information with the Arc team."
   },
   "arcUsageNoticeTitle": {
     "message": "Notice"
@@ -1843,9 +1843,6 @@
   },
   "assets": {
     "message": "Assets"
-  },
-  "assetsDescription": {
-    "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
   "asterdexReferralSubtitle": {
     "message": "Get 4% back on trades with a MetaMask referral code.",
@@ -1904,6 +1901,9 @@
   },
   "backToSafety": {
     "message": "Back to safety"
+  },
+  "backToWallet": {
+    "message": "Back to wallet"
   },
   "backUpIncomplete": {
     "message": "Back up incomplete"
@@ -2002,6 +2002,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "Basic functionality is on"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "We've updated our settings"
@@ -3385,7 +3388,7 @@
     "message": "Data collection for marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials)."
+    "message": "We'll collect data on how you interact with our marketing communications, so we can share relevant news (like product features and other materials)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
@@ -3436,6 +3439,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "Open batch sell on mobile"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "Limit Orders are available on MetaMask mobile. Scan this code with your mobile device to use them."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Open Limit Orders on mobile"
   },
   "deepLinkQrPredictDescription": {
     "message": "To access MetaMask Prediction Markets, scan the QR code with your mobile device."
@@ -4500,9 +4509,6 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
-  "generalDescription": {
-    "message": "Sync settings across devices, select network preferences, and track token data"
-  },
   "generateNewQrCode": {
     "message": "Generate new QR code"
   },
@@ -4645,7 +4651,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Continue to make sure:"
+    "message": "To continue make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Your $1 device is unlocked",
@@ -5321,9 +5327,6 @@
   "loading": {
     "message": "Loading..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Please complete the transaction on the Snap."
-  },
   "loadingTokenList": {
     "message": "Loading token list"
   },
@@ -5552,7 +5555,7 @@
     "message": "Continue"
   },
   "mfaEmailEntryDescription": {
-    "message": "We'll send a verification code to this address."
+    "message": "We’ll use your email to verify your account and send you occasional account updates."
   },
   "mfaEmailEntryInvalid": {
     "message": "Enter a valid email address."
@@ -5561,7 +5564,10 @@
     "message": "Email address"
   },
   "mfaEmailEntryTitle": {
-    "message": "Enter your email"
+    "message": "Verify your email"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Your verification code expired, get a new code."
   },
   "mfaErrorCooldown": {
     "message": "Too many requests. Wait a moment and try again."
@@ -5576,10 +5582,13 @@
     "message": "Something went wrong. Try again."
   },
   "mfaErrorInvalidCode": {
-    "message": "That code is incorrect. Try again."
+    "message": "This code isn’t correct. Try again"
   },
   "mfaErrorInvalidPasskey": {
     "message": "Your passkey couldn't be verified. Try again."
+  },
+  "mfaErrorInvalidTotpCode": {
+    "message": "This code isn’t correct. Try again"
   },
   "mfaErrorLimitReached": {
     "message": "You've reached the limit for this method."
@@ -5595,6 +5604,15 @@
   },
   "mfaErrorTooManyAttempts": {
     "message": "Too many attempts. Request a new code."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "That took too long. Enter the current code from your app."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "An authenticator app is already set up for this account."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "Too many attempts. Wait for a new code in your app and try again."
   },
   "mfaErrorUnsupported": {
     "message": "This method isn't supported on this device."
@@ -5612,13 +5630,25 @@
     "message": "Get started"
   },
   "mfaIntroDescription": {
-    "message": "We’ll set up a few ways to confirm it’s you. You’ll use them to approve important actions, and if you lose access to one, you can use another."
+    "message": "We’ll set up a few ways to confirm it’s you. If you lose access to one method, you can use another."
   },
-  "mfaIntroListTitle": {
-    "message": "You’ll set up"
+  "mfaIntroEmailDescription": {
+    "message": "Get a 6-digit code sent to your inbox"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Confirm with your device or password manager"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Saved to this device"
   },
   "mfaIntroTitle": {
     "message": "Set up 2-step verification"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Get a 6-digit code from an app like Google Authenticator"
+  },
+  "mfaIntroTotpDone": {
+    "message": "Set up in your authenticator app"
   },
   "mfaMethodEmail": {
     "message": "Email"
@@ -5626,12 +5656,21 @@
   "mfaMethodPasskey": {
     "message": "Passkey"
   },
+  "mfaMethodTotp": {
+    "message": "Authenticator app"
+  },
   "mfaOtpDescription": {
-    "message": "We sent a 6-digit code to your email."
+    "message": "We sent a 6-digit code to your email. Enter it below to verify your email."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "Open your authenticator app and enter the 6-digit code."
   },
   "mfaOtpDescriptionWithEmail": {
-    "message": "We sent a 6-digit code to $1.",
+    "message": "We sent a 6-digit code to $1. Enter it below to verify your email.",
     "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Get new code"
   },
   "mfaOtpResend": {
     "message": "Resend code"
@@ -5643,6 +5682,12 @@
   "mfaOtpResent": {
     "message": "We sent you a new code."
   },
+  "mfaOtpRetry": {
+    "message": "Try again"
+  },
+  "mfaOtpRetryIn": {
+    "message": "Try again in $1s"
+  },
   "mfaOtpSendIn": {
     "message": "Sending a new code in $1s",
     "description": "$1 is a number of seconds"
@@ -5650,17 +5695,11 @@
   "mfaOtpSending": {
     "message": "Sending code..."
   },
-  "mfaOtpSubmit": {
-    "message": "Verify"
-  },
   "mfaOtpTitle": {
-    "message": "Enter the code"
+    "message": "Enter your verification code"
   },
-  "mfaPasskeyContinue": {
-    "message": "Continue"
-  },
-  "mfaPasskeyDescription": {
-    "message": "Your device will ask you to confirm."
+  "mfaOtpVerifying": {
+    "message": "Verifying code"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Create a passkey"
@@ -5668,32 +5707,113 @@
   "mfaPasskeyTitleVerify": {
     "message": "Use your passkey"
   },
+  "mfaPickerEmailOtp": {
+    "message": "Get a verification code"
+  },
+  "mfaPickerOr": {
+    "message": "or"
+  },
+  "mfaPickerPasskey": {
+    "message": "Verify with Passkey"
+  },
   "mfaPickerTitle": {
     "message": "Confirm with 2-step verification"
   },
-  "mfaSettingsDescription": {
-    "message": "Used to confirm it's you before sensitive actions."
+  "mfaPickerTotp": {
+    "message": "Use authenticator app"
   },
-  "mfaSettingsEmailLinked": {
-    "message": "Linked to your sign-in"
+  "mfaSettingsAdd": {
+    "message": "Add"
   },
-  "mfaSettingsEmailPending": {
-    "message": "Setup not finished"
+  "mfaSettingsAddedOn": {
+    "message": "Added $1"
   },
-  "mfaSettingsFinishSetup": {
-    "message": "Finish setup"
+  "mfaSettingsAuthenticatorAppAdded": {
+    "message": "Authenticator app added"
   },
-  "mfaSettingsSetUp": {
-    "message": "Set up"
+  "mfaSettingsEmailRemoved": {
+    "message": "Email verification removed"
+  },
+  "mfaSettingsEmailVerified": {
+    "message": "Email verified"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "This email is the only security method for this account. Add a second method before removing it."
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "Email can’t be removed"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "This authenticator app is the only security method for this account. Add a second method before removing it."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "Authenticator app can’t be removed"
+  },
+  "mfaSettingsNotice": {
+    "message": "These methods add protection to Money account transactions. They can’t recover your wallet."
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "Your other methods only work in the MetaMask mobile app. Remove your email from there."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "Email can’t be removed here"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "Remove email"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "You’ll no longer be able to log in or verify transactions by receiving a code via email."
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "Couldn’t remove this method. Try again later."
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "Remove authenticator app"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "You’ll no longer be able to verify Money transactions with codes from your authenticator app."
   },
   "mfaSettingsTitle": {
-    "message": "Verification methods"
+    "message": "2-step verification"
   },
-  "mfaSuccessDone": {
-    "message": "Done"
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "Your other methods only work in the MetaMask mobile app. Remove your authenticator app from there."
   },
-  "mfaSuccessTitle": {
-    "message": "You're all set"
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "Authenticator app can’t be removed here"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "Authenticator app removed"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "Used for"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Verifying Money transactions"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Continue"
+  },
+  "mfaTotpSetupCopied": {
+    "message": "Setup key copied"
+  },
+  "mfaTotpSetupDescription": {
+    "message": "Scan the QR code with your authenticator app, or enter the setup key."
+  },
+  "mfaTotpSetupKey": {
+    "message": "Setup key"
+  },
+  "mfaTotpSetupManual": {
+    "message": "Or enter manually"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "QR code to add MetaMask to your authenticator app"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "That took too long, so we made a new setup key. Remove the earlier MetaMask entry from your authenticator app, then add this one."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "Set up authenticator app"
   },
   "minimumReceivedExplanation": {
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
@@ -5904,8 +6024,28 @@
   "moneyConvertYourCrypto": {
     "message": "Convert your crypto"
   },
+  "moneyEarnApy": {
+    "message": "Earn $1 APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Add your $1 to your Money account and earn up to $2 in one year.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
+  },
+  "moneyEarnBannerCta": {
+    "message": "Add $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Add $1 to your Money account—no lockups or minimums.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Earn with your Money account",
+    "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
     "message": "Earn on your crypto"
@@ -6065,6 +6205,10 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyStartEarning": {
+    "message": "Start earning",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Unable to add funds. Try again."
@@ -6515,6 +6659,9 @@
   "networkNameSolana": {
     "message": "Solana"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -6579,6 +6726,10 @@
   },
   "newCustomTokenAdded": {
     "message": "“$1” was successfully added!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "To use OpenSea to see your NFTs, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Assets"
@@ -7002,9 +7153,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Add custom IPFS Gateway"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFS gateway URL is valid"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1; for Solana accounts, $2."
   },
@@ -7043,7 +7191,7 @@
     "message": "Gather basic usage data"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Product updates"
+    "message": "Marketing updates"
   },
   "onboardingMetametricsContinue": {
     "message": "Continue"
@@ -8084,6 +8232,13 @@
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
   },
+  "perpsIocCancel": {
+    "message": "Your order couldn't fill within your $1% slippage tolerance. Try a limit order or adjust your slippage.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Your order couldn't fill within your slippage tolerance. Try a limit order or adjust your slippage."
+  },
   "perpsKeepPositions": {
     "message": "Keep positions"
   },
@@ -8338,6 +8493,10 @@
   },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsPriceMoved": {
+    "message": "The price moved $1%, exceeding your $2% slippage tolerance. Review the updated price and try again.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
   },
   "perpsProducts": {
     "message": "Products",
@@ -9932,21 +10091,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Security & privacy"
-  },
-  "securityDescription": {
-    "message": "Reduce your chances of joining unsafe networks and protect your accounts"
-  },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
   },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Reduce your chances of joining unsafe networks and protect your accounts and data"
   },
   "securitySocialLoginEnabled": {
     "message": "Enabled"
@@ -12393,6 +12543,18 @@
     "message": "This is your daily allowance based on your staked TRX. You get $1 bandwidth for free daily.",
     "description": "$1 is the maximum bandwidth value"
   },
+  "tronDailyResourcesLoading": {
+    "message": "Loading daily resource usage…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "Your energy and bandwidth information is temporarily unavailable. It will update automatically.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "Couldn't load resources",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
   "tronEnergy": {
     "message": "Energy"
   },
@@ -12451,6 +12613,9 @@
   },
   "turnOn": {
     "message": "Turn on"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "turn on basic functionality"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "There was an error in creating the notifications. Please try again later."

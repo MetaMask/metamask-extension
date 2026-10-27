@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.53.0]
+
+### Added
+
+- Added Chainlist network suggestions when adding a network (#46859)
+- Added Chainlist RPC URL suggestions when adding or editing a network (#46869)
+- Added support for a feature-flagged ticker widget on X (#45741)
+
+### Changed
+
+- Updated delegation deployment data for Ark (#46777)
+
+### Fixed
+
+- Fixed sending with a QR hardware wallet staying on the loading screen, so the QR code could not be scanned (#47088)
+- Fixed Bitcoin transactions that were built with no network fee when the fee estimate was below 1 sat/vB (#47062)
+- Fixed Stellar transactions that were marked successful when the network asked to try again later (#47084)
+- Fixed newly listed Stellar tokens not appearing until the hourly asset sync (#47084)
+- Fixed Stellar token sends that failed to retry after a sequence-number error (#47084)
+- Showed the latest Stellar network fee on confirmation when the fee rose after the transaction was built (#47084)
+- Replaced Blockaid description text on Stellar security alerts with generic security-alert copy (#47084)
+- Showed the basic functionality page instead of Discover search when basic functionality is turned off (#46874)
+- Fixed Arc USDC balances and asset details in the Swap asset picker (#46840)
+- Fixed payment provider tags appearing at the row edge instead of beside the provider name (#46942)
+- Prevented Perps limit orders below $10 from being submitted and failing (#46868)
+- Fixed Ledger connections after WebHID permission was revoked (#46662)
+- Fixed the MetaMask side panel remaining on the add-wallet screen after connecting a hardware wallet in the expanded tab (#46763)
+- Fixed Perps market list rows reordering while live prices updated (#46638)
+
+### Security
+
+- Restricted deep-link handling to exact configured hosts instead of their subdomains (#46748)
+- Added warnings for homograph RPC hostnames in add-network confirmations (#46900)
+- Fixed signature verification for deep links signed with configured MetaMask domains (#46755)
+
 ## [13.52.0]
 
 ### Added
@@ -70,7 +105,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added deep linking to the Money home page (#46589)
 - Added an “Add funds to trade” option on the Perps order screen for accounts with no balance (#45986)
 - Added XDC Network to the Additional networks list when enabled (#46543)
-- Refreshed Tron energy, bandwidth and staking information on the TRX token details page so it shows up-to-date values when the page is opened and after Tron transactions are confirmed (#46795)
 
 ### Changed
 
@@ -3445,7 +3479,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.53.0...HEAD
+[13.53.0]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...v13.53.0
 [13.52.0]: https://github.com/MetaMask/metamask-extension/compare/v13.51.0...v13.52.0
 [13.51.0]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...v13.51.0
 [13.50.0]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...v13.50.0

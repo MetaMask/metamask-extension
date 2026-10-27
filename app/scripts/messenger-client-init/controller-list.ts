@@ -21,14 +21,10 @@ import {
   DeFiPositionsController,
   DeFiPositionsControllerV2,
   MultichainAssetsController,
-  MultichainAssetsRatesController,
-  MultichainBalancesController,
   NftController,
   NftDetectionController,
   RatesController,
-  TokenBalancesController,
   TokenDetectionController,
-  TokenListController,
   TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
@@ -188,8 +184,6 @@ export type MessengerClient =
   | MoneyAccountController
   | MoneyAccountUpgradeController
   | MultichainAssetsController
-  | MultichainAssetsRatesController
-  | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
   | MultichainRoutingService
@@ -233,9 +227,7 @@ export type MessengerClient =
   | SnapsNameProvider
   | SubjectMetadataController
   | ShieldSubscriptionService
-  | TokenBalancesController
   | TokenDetectionController
-  | TokenListController
   | TokensController
   | TransactionController
   | TransactionPayController
@@ -300,8 +292,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   LoggingController['state'] &
   MetaMetricsDataDeletionController['state'] &
   MultichainAssetsController['state'] &
-  MultichainAssetsRatesController['state'] &
-  MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
   NameController['state'] &
@@ -333,9 +323,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   SnapInterfaceController['state'] &
   SnapRegistryController['state'] &
   SubscriptionController['state'] &
-  TokenBalancesController['state'] &
   TokenDetectionController['state'] &
-  TokenListController['state'] &
   TokensController['state'] &
   StaticAssetsController['state'] &
   TransactionController['state'] &

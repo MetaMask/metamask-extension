@@ -8,26 +8,19 @@ import {
   Text,
   TextVariant,
   TextColor,
-  IconColor,
   Box,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
-  FontWeight,
   TextButton,
-  Icon,
-  IconName,
-  IconSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   DEFAULT_ROUTE,
-  SECURITY_AND_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getIsInitialized,
-  getIsPrimarySeedPhraseBackedUp,
   getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
@@ -40,7 +33,6 @@ import WalletReadyAnimation from './wallet-ready-animation';
 export default function CreationSuccessful() {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
   const isSidePanelEnabled = useSidePanelEnabled();
   const isInitialized = useSelector(getIsInitialized);
   const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
@@ -53,9 +45,8 @@ export default function CreationSuccessful() {
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
-  const { isFromReminder, isFromSettingsSecurity } =
-    useOnboardingSearchParams();
-  const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
+  const { isFromReminder } = useOnboardingSearchParams();
+  const isFromSettingsSRPBackup = Boolean(isFromReminder);
 
   // Guard: redirect if wallet is not properly set up.
   // Prevents users from skipping onboarding steps by navigating directly to the completion route.
@@ -128,48 +119,9 @@ export default function CreationSuccessful() {
     );
   }, []);
 
-  const renderSettingsActions = useMemo(() => {
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Start}
-        justifyContent={BoxJustifyContent.Start}
-        className="creation-successful__settings-actions"
-        gap={4}
-      >
-        <Button
-          variant={ButtonVariant.Secondary}
-          data-testid="manage-default-settings"
-          className="w-full flex justify-between items-center"
-          onClick={() =>
-            navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
-          }
-        >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Center}
-            alignItems={BoxAlignItems.Center}
-          >
-            <Icon name={IconName.Setting} size={IconSize.Md} className="mr-3" />
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {t('manageDefaultSettings')}
-            </Text>
-          </Box>
-          <Icon
-            name={IconName.ArrowRight}
-            color={IconColor.IconAlternative}
-            size={IconSize.Sm}
-          />
-        </Button>
-      </Box>
-    );
-  }, [navigate, t]);
-
   const onDone = useCallback(async () => {
     if (isFromReminder) {
-      navigate(
-        isFromSettingsSecurity ? SECURITY_AND_PASSWORD_ROUTE : DEFAULT_ROUTE,
-      );
+      navigate(DEFAULT_ROUTE);
       return;
     }
 
@@ -183,10 +135,16 @@ export default function CreationSuccessful() {
   }, [
     completeOnboardingFromCompletionPage,
     isFromReminder,
-    isFromSettingsSecurity,
     isResetWalletInProgress,
     navigate,
   ]);
+
+  let doneButtonLabel = t('done');
+  if (isFromSettingsSRPBackup) {
+    doneButtonLabel = t('backToWallet');
+  } else if (isSidePanelEnabled) {
+    doneButtonLabel = t('openWallet');
+  }
 
   const renderDoneButton = () => {
     return (
@@ -201,9 +159,11 @@ export default function CreationSuccessful() {
           size={ButtonSize.Lg}
           className="w-full"
           onClick={onDone}
-          disabled={isSidePanelEnabled && isSidePanelOpen}
+          disabled={
+            !isFromSettingsSRPBackup && isSidePanelEnabled && isSidePanelOpen
+          }
         >
-          {isSidePanelEnabled ? t('openWallet') : t('done')}
+          {doneButtonLabel}
         </Button>
       </Box>
     );
@@ -262,7 +222,6 @@ export default function CreationSuccessful() {
               ])}
             </Text>
           </Box>
-          {renderSettingsActions}
         </Box>
       )}
       {!isFromSettingsSRPBackup && <WalletReadyAnimation />}

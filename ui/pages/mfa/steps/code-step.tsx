@@ -1,16 +1,21 @@
 import React, { useEffect, useReducer, useRef, useState } from 'react';
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Text,
-  TextButton,
-  TextColor,
-  TextField,
   TextVariant,
 } from '@metamask/design-system-react';
+import { getErrorHandling } from '../../../hooks/identity/mfa/engine/errors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { MfaFlowTestIds } from '../test-ids';
 import StepLayout, {
   StepError,
@@ -20,6 +25,17 @@ import StepLayout, {
 } from './step-layout';
 
 const CODE_LENGTH = 6;
+const CELLS = Array.from({ length: CODE_LENGTH }, (_, index) => index);
+
+/**
+ * Keeps the digits of typed or pasted text, up to a full code.
+ *
+ * @param text - What was typed or pasted.
+ * @returns The code's digits.
+ */
+const getCodeDigits = (text: string) =>
+  text.replace(/\D/gu, '').slice(0, CODE_LENGTH);
+
 const COOLDOWN_CODES = new Set(['otp_resend_cooldown', 'rate_limited']);
 
 // The clock is state, as the React Compiler caches what render computes:
@@ -38,11 +54,18 @@ const useSecondsUntil = (at?: number) => {
 const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   const t = useI18nContext();
   const [code, setCode] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const secondsLeft = useSecondsUntil(state.resendAvailableAt);
   const { busy, error, codeResent, resendAvailableAt } = state;
   const { codeSent } = step;
+  // Authenticator app codes are on the user's app, so nothing is sent or
+  // resent.
+  const isTotp = step.method === 'totp';
   const isCoolingDown = secondsLeft > 0;
+  // Every OTP method uses this shared screen, so future phone/SMS codes get
+  // the same progress state as email and authenticator app codes.
+  const isVerifying = busy && codeSent && code.length === CODE_LENGTH;
 
   const [clearedFor, setClearedFor] = useState({ error, codeResent });
   if (clearedFor.error !== error || clearedFor.codeResent !== codeResent) {
@@ -58,12 +81,18 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     }
   }, [error, codeResent]);
 
-  // The first code of a flow can hit the cooldown left by the previous one.
+  // The first email code of a flow can hit the cooldown left by the previous
+  // one.
   useEffect(() => {
-    if (!codeSent && resendAvailableAt !== undefined && secondsLeft === 0) {
+    if (
+      !isTotp &&
+      !codeSent &&
+      resendAvailableAt !== undefined &&
+      secondsLeft === 0
+    ) {
       onAction({ type: 'resend' });
     }
-  }, [codeSent, resendAvailableAt, secondsLeft, onAction]);
+  }, [isTotp, codeSent, resendAvailableAt, secondsLeft, onAction]);
 
   useEffect(() => {
     if (codeSent) {
@@ -71,91 +100,156 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     }
   }, [codeSent]);
 
-  const submit = (value: string) =>
-    onAction({ type: 'submitCode', code: value });
+  // Submits a complete code once it was sent, so digits typed or pasted while
+  // it was still sending are not left on screen.
+  useEffect(() => {
+    if (codeSent && code.length === CODE_LENGTH) {
+      onAction({ type: 'submitCode', code });
+    }
+  }, [codeSent, code, onAction]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (text: string) => {
     if (busy && codeSent) {
       return;
     }
-    const digits = event.target.value.replace(/\D/gu, '').slice(0, CODE_LENGTH);
-    setCode(digits);
-    if (codeSent && digits.length === CODE_LENGTH) {
-      submit(digits);
-    }
+    setCode(getCodeDigits(text));
   };
 
-  const renderResend = () => {
-    if (isCoolingDown || (busy && !codeSent)) {
-      let label = t('mfaOtpSending');
-      if (isCoolingDown) {
-        label = t(codeSent ? 'mfaOtpResendIn' : 'mfaOtpSendIn', [
-          String(secondsLeft),
-        ]);
-      }
-      return (
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {label}
-        </Text>
-      );
+  // An email cooldown with a wait time shows as the countdown on the resend
+  // button, also once it ended. Authenticator app errors always show.
+  const showError =
+    error !== undefined &&
+    (isTotp || !(resendAvailableAt !== undefined && COOLDOWN_CODES.has(error)));
+  // The code on screen can no longer be used: the main action is a new one.
+  const needsNewCode =
+    showError && error !== undefined && getErrorHandling(error) === 'restart';
+
+  const getResendLabel = () => {
+    if (isCoolingDown) {
+      return t(codeSent ? 'mfaOtpResendIn' : 'mfaOtpSendIn', [
+        String(secondsLeft),
+      ]);
     }
-    return (
-      <TextButton
+    return t(busy && !codeSent ? 'mfaOtpSending' : 'mfaOtpResend');
+  };
+  const canResend = !isCoolingDown && !busy;
+
+  const getDescription = () => {
+    if (isTotp) {
+      return t('mfaOtpDescriptionTotp');
+    }
+    return step.email
+      ? t('mfaOtpDescriptionWithEmail', [maskEmail(step.email)])
+      : t('mfaOtpDescription');
+  };
+
+  const renderTotpFooter = () =>
+    !codeSent && !busy ? (
+      // The verification failed to start: start it again, after any cooldown.
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Lg}
+        isFullWidth
+        isDisabled={isCoolingDown}
         onClick={() => onAction({ type: 'resend' })}
         data-testid={MfaFlowTestIds.RESEND_BUTTON}
       >
-        {t('mfaOtpResend')}
-      </TextButton>
-    );
-  };
-
-  // A cooldown with a wait time shows as the countdown, also once it ended.
-  const showError =
-    error !== undefined &&
-    !(resendAvailableAt !== undefined && COOLDOWN_CODES.has(error));
+        {isCoolingDown
+          ? t('mfaOtpRetryIn', [String(secondsLeft)])
+          : t('mfaOtpRetry')}
+      </Button>
+    ) : null;
 
   return (
     <StepLayout
       title={t('mfaOtpTitle')}
-      description={
-        step.email
-          ? t('mfaOtpDescriptionWithEmail', [step.email])
-          : t('mfaOtpDescription')
-      }
+      description={getDescription()}
       footer={
-        <Button
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          isFullWidth
-          isLoading={busy && codeSent}
-          isDisabled={!codeSent || code.length !== CODE_LENGTH}
-          onClick={() => submit(code)}
-          data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
-        >
-          {t('mfaOtpSubmit')}
-        </Button>
+        isTotp ? (
+          renderTotpFooter()
+        ) : (
+          <Button
+            variant={
+              canResend ? ButtonVariant.Primary : ButtonVariant.Secondary
+            }
+            size={ButtonSize.Lg}
+            isFullWidth
+            // No submit button: this shows the code being checked.
+            isLoading={busy && codeSent}
+            isDisabled={!canResend}
+            onClick={() => onAction({ type: 'resend' })}
+            data-testid={MfaFlowTestIds.RESEND_BUTTON}
+          >
+            {needsNewCode ? t('mfaOtpGetNewCode') : getResendLabel()}
+          </Button>
+        )
       }
     >
-      <TextField
-        inputRef={inputRef}
-        value={code}
-        onChange={handleChange}
-        isError={showError}
-        maxLength={CODE_LENGTH}
-        inputProps={{
-          ...INPUT_A11Y_PROPS,
-          autoComplete: 'one-time-code',
-          inputMode: 'numeric',
-          spellCheck: false,
-          autoCorrect: 'off',
-        }}
-        data-testid={MfaFlowTestIds.CODE_INPUT}
-      />
-      {showError && error ? <StepError code={error} /> : null}
-      {codeResent && !error ? (
-        <StepMessage>{t('mfaOtpResent')}</StepMessage>
-      ) : null}
-      <Box>{renderResend()}</Box>
+      <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingTop={2}>
+        {/* One input for typing, pasting and one-time-code autofill, over
+            the six boxes that show the code. */}
+        <Box className="relative">
+          {/* The input below is what assistive tech reads. */}
+          <Box flexDirection={BoxFlexDirection.Row} gap={2} aria-hidden="true">
+            {CELLS.map((index) => (
+              <Box
+                key={index}
+                className={`flex-1 h-14 flex items-center justify-center rounded-xl border-[1.5px] bg-muted ${
+                  isFocused && index === Math.min(code.length, CODE_LENGTH - 1)
+                    ? 'border-primary-default'
+                    : 'border-muted'
+                }`}
+              >
+                <Text variant={TextVariant.HeadingMd} className="text-[22px]">
+                  {code[index] ?? ''}
+                </Text>
+              </Box>
+            ))}
+          </Box>
+          <input
+            ref={inputRef}
+            value={code}
+            onChange={(event) => handleChange(event.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            maxLength={CODE_LENGTH}
+            autoComplete="one-time-code"
+            inputMode="numeric"
+            spellCheck={false}
+            autoCorrect="off"
+            aria-invalid={showError}
+            {...INPUT_A11Y_PROPS}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-text"
+            data-testid={MfaFlowTestIds.CODE_INPUT}
+          />
+        </Box>
+        {isVerifying ? (
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            gap={2}
+            paddingTop={2}
+            role="status"
+            aria-label={t('mfaOtpVerifying')}
+            data-testid={MfaFlowTestIds.VERIFYING_INDICATOR}
+          >
+            <Icon
+              name={IconName.Loading}
+              size={IconSize.Sm}
+              className="animate-spin"
+              aria-hidden
+            />
+            <Text variant={TextVariant.BodySm}>{t('mfaOtpVerifying')}</Text>
+          </Box>
+        ) : null}
+        {showError && error ? (
+          <StepError code={error} method={step.method} />
+        ) : null}
+        {codeResent && !error ? (
+          <StepMessage>{t('mfaOtpResent')}</StepMessage>
+        ) : null}
+      </Box>
     </StepLayout>
   );
 };

@@ -47,6 +47,9 @@ class BridgeQuotePage {
     testId: `bridge-asset-info-icon-${assetId}`,
   });
 
+  private readonly assetLoadingSkeleton =
+    '[data-testid="bridge-asset-loading-skeleton"]';
+
   public assetPrickerSearchInput =
     '[data-testid="bridge-asset-picker-search-input"]';
 
@@ -108,9 +111,10 @@ class BridgeQuotePage {
 
   private quoteOption = '.bridge-quote-option';
 
-  private quotesModal = '.quotes-modal';
+  private quotesModal = '[data-testid="quotes-modal"]';
 
-  private quotesModalBackButton = '.quotes-modal [aria-label="Back"]';
+  private quotesModalBackButton =
+    '[data-testid="quotes-modal"] [aria-label="Back"]';
 
   private quotesModalTitle = {
     css: this.quotesModal,
@@ -145,6 +149,11 @@ class BridgeQuotePage {
   private switchTokensButton = '[data-testid="switch-tokens"]';
 
   public tokenButton = '[data-testid^="bridge-asset--"]';
+
+  private readonly tokenButtonByText = (token: string) => ({
+    text: token,
+    css: this.tokenButton,
+  });
 
   private tokenWarningAlert =
     '[data-testid="bridge-banner-alerts"] > [data-testid^="bridge-"]';
@@ -238,6 +247,13 @@ class BridgeQuotePage {
     console.log('Network fee is displayed');
   }
 
+  async checkExpectedNetworkFeeIsNotDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.networkFees, {
+      waitAtLeastGuard: 1000,
+    });
+    console.log('Network fee is not displayed');
+  }
+
   async checkGasIncludedIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.gasIncludedIndicator);
@@ -259,13 +275,11 @@ class BridgeQuotePage {
   }
 
   async checkInsufficientFundsButtonIsDisplayed(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.insufficientFundsButton);
-    } catch (e) {
-      console.log(`Expected button "Insufficient funds" is not present`);
-      throw e;
-    }
-    console.log('The button "Insufficient funds" is displayed');
+    await this.driver.waitForSelector(this.insufficientFundsButton);
+    await this.driver.waitForSelector(this.submitButton, {
+      state: 'disabled',
+    });
+    console.log('The disabled button "Insufficient funds" is displayed');
   }
 
   async checkMoreETHneededIsDisplayed(): Promise<void> {
@@ -507,20 +521,14 @@ class BridgeQuotePage {
           this.assetPrickerSearchInput,
           quote.tokenTo,
         );
-        // Wait for search results to load before clicking
-        await this.driver.waitForElementToStopMoving({
-          text: quote.tokenTo,
-          css: this.tokenButton,
-        });
-        await this.driver.clickElementAndWaitToDisappear({
-          text: quote.tokenTo,
-          css: this.tokenButton,
-        });
+        await this.selectAssetFromPicker(quote.tokenTo);
       }
     }
 
     // QTY
-    await this.driver.fill(this.sourceAmount, quote.amount);
+    // This controlled input filters keyboard events. Paste through its
+    // dedicated handler so decimal values update bridge state reliably.
+    await this.driver.pasteIntoField(this.sourceAmount, quote.amount);
     await this.driver.assertElementNotPresent(this.fetchingQuotesLabel, {
       waitAtLeastGuard: 500,
     });
@@ -646,20 +654,36 @@ class BridgeQuotePage {
     await this.driver.clickElement(assetPicker);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
     console.log(`Filled search input with ${token}`);
-    await this.driver.clickElementAndWaitToDisappear({
-      css: this.tokenButton,
-      text: token,
-    });
+    await this.selectAssetFromPicker(token);
   };
+
+  /**
+   * Clicks a token row in the open asset picker and waits until the picker closes.
+   *
+   * @param token - Token symbol shown on the row.
+   */
+  private async selectAssetFromPicker(token: string): Promise<void> {
+    const tokenSelector = this.tokenButtonByText(token);
+    await this.driver.waitForSelector(tokenSelector);
+    await this.driver.assertElementNotPresent(this.assetLoadingSkeleton, {
+      waitAtLeastGuard: QUOTE_PARAMS_DEBOUNCE_MS,
+    });
+    await this.driver.clickElement(tokenSelector);
+    await this.driver.assertElementNotPresent(this.assetPrickerSearchInput);
+  }
 
   async selectDestToken(token: string): Promise<void> {
     await this.driver.waitForSelector(this.destinationAssetPickerButton);
     await this.driver.clickElement(this.destinationAssetPickerButton);
-    await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    await this.driver.clickElementAndWaitToDisappear({
-      text: token,
-      css: this.tokenButton,
-    });
+    await this.driver.waitForSelector(this.assetPrickerSearchInput);
+    const tokenIsVisible = await this.driver.isElementPresentAndVisible(
+      this.tokenButtonByText(token),
+      1000,
+    );
+    if (!tokenIsVisible) {
+      await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
+    }
+    await this.selectAssetFromPicker(token);
   }
 
   async selectNetwork(network: string): Promise<void> {
@@ -671,10 +695,7 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.sourceAssetPickerButton);
     await this.driver.clickElement(this.sourceAssetPickerButton);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    await this.driver.clickElementAndWaitToDisappear({
-      text: token,
-      css: this.tokenButton,
-    });
+    await this.selectAssetFromPicker(token);
   }
 
   async setCustomSlippage(value: string): Promise<void> {

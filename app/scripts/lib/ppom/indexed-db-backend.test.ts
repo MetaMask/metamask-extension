@@ -23,7 +23,7 @@ describe('IndexedDBPPOMStorage', () => {
     const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     await indexDBBackend.write(
       { name: 'fake_name', chainId: '5' },
-      enc.encode('fake_data'),
+      enc.encode('fake_data').buffer,
       '000000000000000000000000',
     );
     const file = await indexDBBackend.read(
@@ -38,7 +38,7 @@ describe('IndexedDBPPOMStorage', () => {
     await expect(async () => {
       await indexDBBackend.write(
         { name: 'fake_name', chainId: '5' },
-        enc.encode('fake_data'),
+        enc.encode('fake_data').buffer,
         'XXX',
       );
     }).rejects.toThrow('Checksum mismatch');
@@ -49,7 +49,7 @@ describe('IndexedDBPPOMStorage', () => {
     await expect(async () => {
       await indexDBBackend.write(
         { name: 'fake_name', chainId: '5' },
-        enc.encode('fake_data'),
+        enc.encode('fake_data').buffer,
         '000000000000000000000000',
       );
       await indexDBBackend.read({ name: 'fake_name', chainId: '5' }, 'XXX');
@@ -60,7 +60,7 @@ describe('IndexedDBPPOMStorage', () => {
     const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     await indexDBBackend.write(
       { name: 'fake_name', chainId: '5' },
-      enc.encode('fake_data'),
+      enc.encode('fake_data').buffer,
       '000000000000000000000000',
     );
     await indexDBBackend.delete({ name: 'fake_name', chainId: '5' });
@@ -79,12 +79,12 @@ describe('IndexedDBPPOMStorage', () => {
     const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     await indexDBBackend.write(
       keys[0],
-      enc.encode('fake_data_1'),
+      enc.encode('fake_data_1').buffer,
       '000000000000000000000000',
     );
     await indexDBBackend.write(
       keys[1],
-      enc.encode('fake_data_2'),
+      enc.encode('fake_data_2').buffer,
       '000000000000000000000000',
     );
     const result = await indexDBBackend.dir();

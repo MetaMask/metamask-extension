@@ -22,6 +22,7 @@ import type {
   TransactionControllerInitMessengerActions,
   TransactionControllerInitMessengerEvents,
 } from './messengers/transaction-controller-messenger';
+import { PermissionControllerInitMessengerActions } from './messengers/permission-controller-messenger';
 
 /**
  * The root messenger `initializeWallet` expects: the wallet defaults plus the
@@ -38,7 +39,8 @@ export type WalletInitMessenger = RootMessenger<
   | DefaultActions
   | OnboardingControllerGetStateAction
   | SeedlessOnboardingControllerInitMessengerActions
-  | TransactionControllerInitMessengerActions,
+  | TransactionControllerInitMessengerActions
+  | PermissionControllerInitMessengerActions,
   | DefaultEvents
   | AuthenticationControllerStateChangeEvent
   | OnboardingControllerStateChangeEvent

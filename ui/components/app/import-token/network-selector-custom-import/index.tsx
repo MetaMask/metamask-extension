@@ -29,7 +29,7 @@ export const NetworkSelectorCustomImport = ({
     <ButtonBase
       type="button"
       aria-label={ariaLabel}
-      className="h-12 w-full justify-between rounded-xl border border-muted bg-muted px-4 font-normal text-left hover:bg-muted active:scale-100"
+      className="h-12 w-full justify-between gap-x-2 rounded-xl border border-muted bg-muted px-4 font-normal text-left hover:bg-muted active:scale-100"
       onClick={onSelectNetwork}
       data-testid={buttonDataTestId}
       startAccessory={
@@ -39,7 +39,7 @@ export const NetworkSelectorCustomImport = ({
             name={title}
             src={networkImageUrl}
             size={AvatarNetworkSize.Xs}
-            className="shrink-0 rounded-md"
+            className="flex shrink-0 rounded-md"
           />
         ) : undefined
       }

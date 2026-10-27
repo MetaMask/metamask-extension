@@ -114,6 +114,22 @@ Consider: Wallet Operations, Transaction Signing, Token Management, Network Mana
 
 **EXCLUDE**: Build system, config files, linting, CI/CD, documentation, Storybook, Changelog.
 
+## Settings UI — do not invent removed toggles
+
+Basic Functionality consolidation is the current settings UI. These are no longer separate toggles:
+
+- Autodetect NFTs
+- Autodetect tokens
+- Display NFT media
+
+They follow the single **Basic functionality** toggle at Settings → Security & privacy. Turning it off turns those preferences off together. Turning it on turns them on together. Social-login wallets cannot turn Basic functionality off.
+
+On upgrade, consolidation rewrites every child preference to that landing state. Turning only NFT auto-detect off on an older build does not keep NFT detection off if Basic functionality lands on.
+
+Never write a step that says "turn off NFT auto-detection", "toggle NFT auto-detect", "toggle token auto-detection", or "toggle Display NFT media". To exercise detection off, turn Basic functionality off. To exercise detection on, turn Basic functionality on.
+
+When Basic functionality is off, the NFTs tab shows an off-state and a control that opens Privacy settings. It does not show an Autodetect NFTs toggle or an "enable auto-detect" CTA. Do not write an import/detection scenario whose setup is flipping that removed toggle.
+
 ## Output Format
 
 Return a JSON object with this exact structure:

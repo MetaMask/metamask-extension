@@ -1738,9 +1738,6 @@
     "message": "Aprovada em $1 para $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Boas-vindas à Arc! Para facilitar e verificar seu uso da rede Arc, podemos ter que compartilhar informações com a equipe da Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Aviso"
   },
@@ -1786,9 +1783,6 @@
   },
   "assets": {
     "message": "Ativos"
-  },
-  "assetsDescription": {
-    "message": "Detecte automaticamente tokens em sua carteira, exiba NFTs e receba atualizações de saldo de contas em lote"
   },
   "asterdexReferralSubtitle": {
     "message": "Receba 4% de reembolso em negociações com um código de indicação da MetaMask.",
@@ -1847,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Voltar para a segurança"
+  },
+  "backToWallet": {
+    "message": "Voltar à carteira"
   },
   "backUpIncomplete": {
     "message": "Backup incompleto"
@@ -3303,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Coleta de dados para marketing"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "Usaremos o MetaMetrics para saber como você interage com nossas comunicações de marketing. Poderemos compartilhar novidades relevantes (como recursos de produtos e outros materiais)."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Receba atualizações de produtos, dicas e novidades, inclusive por e-mail. Podemos usar suas interações para aprimorar o que compartilharmos."
   },
@@ -4259,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "A MetaMask cobre a taxa de rede desta transação. Isso inclui a ativação única da conta inteligente."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Esta rede específica requer que você mantenha uma reserva de $1 a $2 em sua conta.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 h",
     "description": "$1 represents a number of hours"
@@ -4396,9 +4386,6 @@
   "generalCameraErrorTitle": {
     "message": "Ocorreu algum erro...."
   },
-  "generalDescription": {
-    "message": "Sincronize as configurações entre dispositivos, selecione as preferências de rede e rastreie dados de tokens"
-  },
   "generateNewQrCode": {
     "message": "Gerar novo código QR"
   },
@@ -4514,6 +4501,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Continuar"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Desbloqueie-o e tente novamente para continuar",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Seu $1 só pode assinar dados digitados na versão 4 (V4). Este site solicitou um tipo de assinatura mais antigo, que não é suportado.",
@@ -5213,9 +5204,6 @@
   "loading": {
     "message": "Carregando..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Por favor, conclua a transação no Snap."
-  },
   "loadingTokenList": {
     "message": "Carregando lista de tokens"
   },
@@ -5440,6 +5428,51 @@
   "metrics": {
     "message": "Métricas"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Continuar"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Insira um endereço de e-mail válido."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Endereço de e-mail"
+  },
+  "mfaErrorCooldown": {
+    "message": "Excesso de solicitações. Aguarde um pouco e tente novamente."
+  },
+  "mfaErrorGeneric": {
+    "message": "Algo deu errado. Tente de novo."
+  },
+  "mfaFailureClose": {
+    "message": "Fechar"
+  },
+  "mfaFailureRetry": {
+    "message": "Tentar novamente"
+  },
+  "mfaFailureTitle": {
+    "message": "Ocorreu algum erro"
+  },
+  "mfaIntroContinue": {
+    "message": "Começar"
+  },
+  "mfaMethodEmail": {
+    "message": "E-mail"
+  },
+  "mfaOtpResend": {
+    "message": "Reenviar código"
+  },
+  "mfaOtpRetry": {
+    "message": "Tentar novamente"
+  },
+  "mfaPickerOr": {
+    "message": "ou"
+  },
+  "mfaSettingsAdd": {
+    "message": "Adicionar"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Continuar"
+  },
   "minimumReceivedExplanation": {
     "message": "O valor mínimo que você receberá se o preço mudar enquanto sua transação é processada, com base em sua configuração de slippage. A estimativa é fornecida pelos provedores de liquidez, portanto o valor final pode ser diferente."
   },
@@ -5652,6 +5685,14 @@
   "moneyEarnApyTitle": {
     "message": "Ganhe até $1 de APY"
   },
+  "moneyEarnBannerCta": {
+    "message": "Adicionar $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Ganhe com sua conta Money",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "Ganhe com suas criptomoedas"
   },
@@ -5806,6 +5847,10 @@
   },
   "moneySend": {
     "message": "Enviar"
+  },
+  "moneyStartEarning": {
+    "message": "Comece a ganhar",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Não foi possível adicionar fundos. Tente novamente."
@@ -6743,9 +6788,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Adicionar gateway IPFS personalizado"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "O URL do gateway IPFS é válido"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Quando você utiliza nossas configurações e definições padrão, utilizamos a Infura como nosso provedor padrão de chamada de procedimento remoto (RPC) para oferecer o acesso mais confiável e privado possível aos dados Ethereum. Em alguns casos, podemos utilizar outros provedores de RPC para proporcionar a melhor experiência possível aos nossos usuários. Você pode escolher sua própria RPC, mas lembre-se de que qualquer uma delas receberá seu endereço IP e sua carteira Ethereum para realizar transações. Para saber mais sobre como a Infura trata os dados de contas EVM, leia a nossa $1; para contas Solana, $2."
   },
@@ -6784,7 +6826,7 @@
     "message": "Coletar dados básicos de uso"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Atualizações de produtos"
+    "message": "Atualizações de marketing"
   },
   "onboardingMetametricsContinue": {
     "message": "Continuar"
@@ -7472,6 +7514,9 @@
   "perps24hVolume": {
     "message": "Volume em 24 horas"
   },
+  "perpsAbout": {
+    "message": "Sobre"
+  },
   "perpsActivity": {
     "message": "Atividade"
   },
@@ -8074,6 +8119,9 @@
   "perpsRateLimitExceeded": {
     "message": "Excesso de solicitações. Aguarde e tente novamente."
   },
+  "perpsReadMore": {
+    "message": "Saiba mais"
+  },
   "perpsRecentActivity": {
     "message": "Atividade recente"
   },
@@ -8120,6 +8168,18 @@
   "perpsSeeAll": {
     "message": "Ver tudo",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "entre em contato com o suporte",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Consulte suas opções nas Perguntas frequentes (FAQs).",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Estamos tendo um apagão",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Serviço temporariamente indisponível. Tente novamente mais tarde."
@@ -9633,21 +9693,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nova senha salva"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Segurança e privacidade"
-  },
-  "securityDescription": {
-    "message": "Reduza suas chances de ingressar em redes perigosas e proteja suas contas"
-  },
   "securityMessageLinkForNetworks": {
     "message": "golpes de rede e riscos de segurança"
   },
   "securityProviderPoweredBy": {
     "message": "Com tecnologia da $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Reduza suas chances de ingressar em redes perigosas e proteja suas contas e dados"
   },
   "securitySocialLoginEnabled": {
     "message": "Ativado"
@@ -12152,6 +12203,9 @@
   },
   "turnOn": {
     "message": "Ativar"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "ativar funcionalidade básica"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Ocorreu um erro ao criar as notificações. Tente novamente mais tarde."

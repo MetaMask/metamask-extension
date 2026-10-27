@@ -89,6 +89,7 @@ describe('MoneyAccountWithdrawInfo', () => {
         disablePercentageButtons: false,
         displayAccountRow: true,
         displayPercentageButtons: true,
+        hasMax: true,
         hidePayTokenAmount: true,
         preferredToken: {
           address: MUSD_TOKEN_ADDRESS,
