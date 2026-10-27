@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "I-unlock ang mas mabilis na transaksyon, mas mababang bayad sa network, at dagdag na seguridad sa mga suportadong network."
   },
-  "enableSnap": {
-    "message": "I-enable"
-  },
   "enableToken": {
     "message": "paganahin ang $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5204,9 +5201,6 @@
   "loading": {
     "message": "Nilo-load..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Mangyaring kumpletuhin ang transaksyon sa Snap."
-  },
   "loadingTokenList": {
     "message": "Nilo-load ang listahan ng token"
   },
@@ -5461,17 +5455,11 @@
   "mfaMethodEmail": {
     "message": "Email"
   },
-  "mfaOtpPaste": {
-    "message": "I-paste"
-  },
   "mfaOtpResend": {
     "message": "Ipadala muli ang code"
   },
   "mfaOtpRetry": {
     "message": "Subukang muli"
-  },
-  "mfaOtpVerify": {
-    "message": "I-verify"
   },
   "mfaPickerOr": {
     "message": "o"

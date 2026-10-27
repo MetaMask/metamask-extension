@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "対応ネットワーク上で、より高速なトランザクション、お得なネットワーク手数料、強化されたセキュリティをご利用いただけます。"
   },
-  "enableSnap": {
-    "message": "有効にする"
-  },
   "enableToken": {
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5208,9 +5205,6 @@
   "loading": {
     "message": "読み込み中..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Snapでトランザクションを完了させてください。"
-  },
   "loadingTokenList": {
     "message": "トークンリストをロードしています"
   },
@@ -5465,17 +5459,11 @@
   "mfaMethodEmail": {
     "message": "メールアドレス"
   },
-  "mfaOtpPaste": {
-    "message": "貼り付け"
-  },
   "mfaOtpResend": {
     "message": "コードを再送する"
   },
   "mfaOtpRetry": {
     "message": "もう一度お試しください"
-  },
-  "mfaOtpVerify": {
-    "message": "検証"
   },
   "mfaPickerOr": {
     "message": "または"

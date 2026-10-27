@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Разблокируйте более быстрые транзакции, более низкие комиссии сети и дополнительную безопасность в поддерживаемых сетях."
   },
-  "enableSnap": {
-    "message": "Включить"
-  },
   "enableToken": {
     "message": "активирует для $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5204,9 +5201,6 @@
   "loading": {
     "message": "Загрузка..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Завершите транзакцию в Snap."
-  },
   "loadingTokenList": {
     "message": "Загружается список токенов"
   },
@@ -5461,17 +5455,11 @@
   "mfaMethodEmail": {
     "message": "Эл. почта"
   },
-  "mfaOtpPaste": {
-    "message": "Вставить"
-  },
   "mfaOtpResend": {
     "message": "Повторно отправить код"
   },
   "mfaOtpRetry": {
     "message": "Повторить попытку"
-  },
-  "mfaOtpVerify": {
-    "message": "Проверить"
   },
   "mfaPickerOr": {
     "message": "или"

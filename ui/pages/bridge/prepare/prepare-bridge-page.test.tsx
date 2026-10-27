@@ -79,6 +79,7 @@ setBackgroundConnection({
   resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
   updateBridgeQuoteRequestParams: async () => jest.fn(),
+  messengerCall: jest.fn(),
   setInputPrimaryDenomination: async () => undefined,
   trackUnifiedSwapBridgeEvent: async () => undefined,
 } as never);
@@ -506,6 +507,7 @@ describe('PrepareBridgePage', () => {
       resetState: jest.fn().mockResolvedValue(undefined),
       getStatePatches: jest.fn().mockResolvedValue([]),
       updateBridgeQuoteRequestParams,
+      messengerCall: jest.fn(),
       trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
     } as never);
 
@@ -666,6 +668,7 @@ describe('PrepareBridgePage', () => {
         resetState: jest.fn(),
         getStatePatches: jest.fn().mockResolvedValue([]),
         updateBridgeQuoteRequestParams: jest.fn().mockResolvedValue(undefined),
+        messengerCall: jest.fn(),
         trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
       } as never);
     });
@@ -809,8 +812,7 @@ describe('PrepareBridgePage', () => {
       getStatePatches: jest.fn(),
       updateBridgeQuoteRequestParams: jest.fn(),
       trackUnifiedSwapBridgeEvent: jest.fn(),
-      setEnabledAllPopularNetworks: jest.fn(),
-      setActiveNetwork: jest.fn(),
+      messengerCall: jest.fn(),
     } as never;
 
     beforeEach(() => {

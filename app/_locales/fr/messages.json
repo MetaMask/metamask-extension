@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Bénéficiez de transactions plus rapides, de frais de réseau réduits et d’une sécurité renforcée sur les réseaux pris en charge."
   },
-  "enableSnap": {
-    "message": "Activer"
-  },
   "enableToken": {
     "message": "activer $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5204,9 +5201,6 @@
   "loading": {
     "message": "Chargement…"
   },
-  "loadingScreenSnapMessage": {
-    "message": "Veuillez conclure la transaction sur le snap."
-  },
   "loadingTokenList": {
     "message": "Chargement de la liste des jetons"
   },
@@ -5461,17 +5455,11 @@
   "mfaMethodEmail": {
     "message": "Adresse e-mail"
   },
-  "mfaOtpPaste": {
-    "message": "Coller"
-  },
   "mfaOtpResend": {
     "message": "Renvoyer le code"
   },
   "mfaOtpRetry": {
     "message": "Réessayer"
-  },
-  "mfaOtpVerify": {
-    "message": "Vérifier"
   },
   "mfaPickerOr": {
     "message": "ou"

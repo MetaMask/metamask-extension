@@ -25,11 +25,9 @@ describe('Test Snap manageState', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
-        await openTestSnapClickButtonAndInstall(driver, 'connectstateButton');
-        await testSnaps.checkInstallationComplete(
-          'connectstateButton',
-          'Reconnect to State Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectstateButton', {
+          expectedMessage: 'Reconnect to State Snap',
+        });
 
         // Enter data and click set, then validate results
         await testSnaps.fillMessage('setStateKeyInput', 'foo');
@@ -126,10 +124,7 @@ describe('Test Snap manageState', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectManageStateButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectManageStateButton',
-          'Reconnect to Legacy State Snap',
+          { expectedMessage: 'Reconnect to Legacy State Snap' },
         );
 
         // enter data, click send manage state and validate results
