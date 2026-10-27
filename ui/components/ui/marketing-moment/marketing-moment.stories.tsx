@@ -42,13 +42,6 @@ const ArtworkPlaceholder = ({ label }: { label: string }) => (
 const meta: Meta<typeof MarketingMoment> = {
   title: 'Components/UI/MarketingMoment',
   component: MarketingMoment,
-  decorators: [
-    (Story) => (
-      <div className="h-screen w-full">
-        <Story />
-      </div>
-    ),
-  ],
 };
 
 export default meta;
