@@ -2,6 +2,7 @@
 // node is missing the navigator.locks API so we polyfill it for the tests
 import 'navigator.locks';
 import log from 'loglevel';
+import { it as jestIt } from '@jest/globals';
 
 import { captureException, captureMessage } from '../sentry';
 import { getManifestFlags } from '../manifestFlags';
@@ -44,6 +45,7 @@ jest.mock('./extension-store', () => {
   });
 });
 jest.mock('loglevel', () => ({
+  debug: jest.fn(),
   error: jest.fn(),
   info: jest.fn(),
 }));
@@ -53,6 +55,11 @@ jest.mock('../sentry', () => ({
 }));
 jest.mock('../manifestFlags', () => ({
   getManifestFlags: jest.fn(() => ({})),
+}));
+jest.mock('./utils/run-tracked-task', () => ({
+  runTrackedTask: jest.fn((_taskName: string, task: () => Promise<unknown>) =>
+    task(),
+  ),
 }));
 jest.mock('../trace', () => ({
   trace: jest.fn(),
@@ -105,6 +112,10 @@ describe('PersistenceManager', () => {
   beforeEach(() => {
     process.env.IN_TEST = 'true';
     jest.clearAllMocks();
+    mockStoreSet.mockReset();
+    mockStoreSetKeyValues.mockReset();
+    mockStoreGet.mockReset();
+    mockStoreReset.mockReset();
     mockedGetManifestFlags.mockReturnValue({});
     manager = new PersistenceManager({
       getPersistenceWriteSampleRate: () => 0,
@@ -113,6 +124,7 @@ describe('PersistenceManager', () => {
   });
 
   afterEach(() => {
+    jest.restoreAllMocks();
     jest.useRealTimers();
   });
 
@@ -148,6 +160,134 @@ describe('PersistenceManager', () => {
     });
   });
 
+  jestIt.each(['set', 'persist'] as const)(
+    'tracks primary recovery in %s even when the backup write fails',
+    async (operation) => {
+      manager.storageKind = operation === 'set' ? 'data' : 'split';
+      manager.setMetadata({ version: 17 });
+      await manager.open();
+      jest.useFakeTimers();
+
+      const primaryError = new Error('primary write error');
+      const backupError = new Error('backup write error');
+      const primaryWrite =
+        operation === 'set' ? mockStoreSet : mockStoreSetKeyValues;
+      const backupWrite = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValue(backupError);
+      const write = async () => {
+        const keyringState = { vault: 'encrypted-vault' };
+        if (operation === 'set') {
+          return manager.set({
+            KeyringController: keyringState,
+          } as unknown as MetaMaskStateType);
+        }
+        manager.update('KeyringController', keyringState);
+        return manager.persist();
+      };
+
+      primaryWrite.mockRejectedValue(primaryError);
+      const firstWrite = write();
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      expect(await firstWrite).toStrictEqual([false, primaryError]);
+      expect(backupWrite).not.toHaveBeenCalled();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      primaryWrite.mockResolvedValue(undefined);
+      const secondWrite = write();
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      expect(await secondWrite).toStrictEqual([false, backupError]);
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': 'primary-write-recovered',
+            'persistence.failed_operation': operation,
+            'persistence.successful_operation': operation,
+          },
+          fingerprint: [
+            'persistence-event',
+            'primary-write-recovered',
+            operation,
+          ],
+        },
+      );
+      expect(mockedCaptureException).toHaveBeenCalledWith(backupError, {
+        tags: { 'persistence.error': `${operation}-backup-failed` },
+        fingerprint: ['persistence-error', `${operation}-backup-failed`],
+      });
+
+      primaryWrite.mockRejectedValue(primaryError);
+      const thirdWrite = write();
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      expect(await thirdWrite).toStrictEqual([false, primaryError]);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(3);
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  jestIt.each(['primary', 'backup'] as const)(
+    'deduplicates %s failures across set and persist until migration recovers',
+    async (target) => {
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 17 });
+      await manager.open();
+      jest.useFakeTimers();
+
+      const state = {
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType;
+      const error = new Error(`${target} write error`);
+      const backupWrite = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockResolvedValue(undefined);
+      const failingWrite = target === 'primary' ? mockStoreSet : backupWrite;
+      failingWrite.mockRejectedValue(error);
+
+      const failedWrite = manager.set(state);
+      await jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS);
+      expect(await failedWrite).toStrictEqual([false, error]);
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      if (target === 'primary') {
+        mockStoreSetKeyValues.mockRejectedValue(error);
+      }
+      const failedMigration = manager.migrateToSplitState(state);
+      await Promise.all([
+        expect(failedMigration).rejects.toBe(error),
+        jest.advanceTimersByTimeAsync(WRITE_RETRY_DELAY_MS),
+      ]);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+
+      jest.useRealTimers();
+      failingWrite.mockResolvedValue(undefined);
+      mockStoreSetKeyValues.mockResolvedValue(undefined);
+      manager.update('KeyringController', state.KeyringController);
+      expect(await manager.persist()).toStrictEqual([true, undefined]);
+
+      const recovery = `${target}-write-recovered`;
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': recovery,
+            'persistence.failed_operation': 'set',
+            'persistence.successful_operation': 'persist',
+          },
+          fingerprint: ['persistence-event', recovery, 'set'],
+        },
+      );
+
+      manager.update('KeyringController', state.KeyringController);
+      await manager.persist();
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+    },
+  );
+
   describe('set', () => {
     beforeEach(() => {
       manager.storageKind = 'data';
@@ -179,7 +319,7 @@ describe('PersistenceManager', () => {
     });
 
     it('retries store.set once before reporting success', async () => {
-      prepareForWriteRetry();
+      jest.useFakeTimers();
       manager.setMetadata({ version: 10 });
 
       const error = new Error('store.set error');
@@ -213,7 +353,7 @@ describe('PersistenceManager', () => {
     });
 
     it('recovers after a simulated one-time storage failure', async () => {
-      prepareForWriteRetry();
+      jest.useFakeTimers();
       manager.setMetadata({ version: 10 });
       mockedGetManifestFlags.mockReturnValue({
         testing: { simulateStorageSetFailure: 'once' },
@@ -282,8 +422,12 @@ describe('PersistenceManager', () => {
         'Data persistence recovered after temporary failure',
         {
           level: 'info',
-          tags: { 'persistence.event': 'set-recovered' },
-          fingerprint: ['persistence-event', 'set-recovered'],
+          tags: {
+            'persistence.event': 'primary-write-recovered',
+            'persistence.failed_operation': 'set',
+            'persistence.successful_operation': 'set',
+          },
+          fingerprint: ['persistence-event', 'primary-write-recovered', 'set'],
         },
       );
       expect(writeRetryRecoveredListener).not.toHaveBeenCalled();
@@ -493,8 +637,12 @@ describe('PersistenceManager', () => {
         'Data persistence recovered after temporary failure',
         {
           level: 'info',
-          tags: { 'persistence.event': 'set-recovered' },
-          fingerprint: ['persistence-event', 'set-recovered'],
+          tags: {
+            'persistence.event': 'primary-write-recovered',
+            'persistence.failed_operation': 'set',
+            'persistence.successful_operation': 'set',
+          },
+          fingerprint: ['persistence-event', 'primary-write-recovered', 'set'],
         },
       );
     });
@@ -507,6 +655,57 @@ describe('PersistenceManager', () => {
       await manager.set({ appState: { working: true } });
 
       expect(mockedCaptureMessage).not.toHaveBeenCalled();
+    });
+
+    it('only tracks backup recovery after a backup write succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+
+      const error = new Error('backup set error');
+      const backupSetSpy = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValue(error);
+
+      const [firstResult, firstError] = await manager.set({
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType);
+
+      expect(firstResult).toBe(false);
+      expect(firstError).toBe(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'set-backup-failed' },
+        fingerprint: ['persistence-error', 'set-backup-failed'],
+      });
+
+      backupSetSpy.mockResolvedValue(undefined);
+
+      const [secondResult, secondError] = await manager.set({
+        appState: { working: true },
+      });
+
+      expect(secondResult).toBe(true);
+      expect(secondError).toBeUndefined();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      const [thirdResult, thirdError] = await manager.set({
+        KeyringController: { vault: 'encrypted-vault' },
+      } as unknown as MetaMaskStateType);
+
+      expect(thirdResult).toBe(true);
+      expect(thirdError).toBeUndefined();
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': 'backup-write-recovered',
+            'persistence.failed_operation': 'set',
+            'persistence.successful_operation': 'set',
+          },
+          fingerprint: ['persistence-event', 'backup-write-recovered', 'set'],
+        },
+      );
+      expect(backupSetSpy).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -1223,8 +1422,16 @@ describe('PersistenceManager', () => {
         'Data persistence recovered after temporary failure',
         {
           level: 'info',
-          tags: { 'persistence.event': 'persist-recovered' },
-          fingerprint: ['persistence-event', 'persist-recovered'],
+          tags: {
+            'persistence.event': 'primary-write-recovered',
+            'persistence.failed_operation': 'persist',
+            'persistence.successful_operation': 'persist',
+          },
+          fingerprint: [
+            'persistence-event',
+            'primary-write-recovered',
+            'persist',
+          ],
         },
       );
       expect(writeRetryRecoveredListener).not.toHaveBeenCalled();
@@ -1486,6 +1693,58 @@ describe('PersistenceManager', () => {
       await thirdPersistPromise;
 
       expect(mockedCaptureException).toHaveBeenCalledTimes(2);
+    });
+
+    it('only tracks backup recovery after a backup write succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+
+      const error = new Error('backup set error');
+      const backupSetSpy = jest
+        .spyOn(IndexedDBStore.prototype, 'set')
+        .mockRejectedValue(error);
+
+      const [firstResult, firstError] = await manager.persist();
+
+      expect(firstResult).toBe(false);
+      expect(firstError).toBe(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'persist-backup-failed' },
+        fingerprint: ['persistence-error', 'persist-backup-failed'],
+      });
+
+      backupSetSpy.mockResolvedValue(undefined);
+
+      manager.update('FooController', { foo: 'bar' });
+      const [secondResult, secondError] = await manager.persist();
+
+      expect(secondResult).toBe(true);
+      expect(secondError).toBeUndefined();
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      manager.update('KeyringController', { vault: 'encrypted-vault' });
+      const [thirdResult, thirdError] = await manager.persist();
+
+      expect(thirdResult).toBe(true);
+      expect(thirdError).toBeUndefined();
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: {
+            'persistence.event': 'backup-write-recovered',
+            'persistence.failed_operation': 'persist',
+            'persistence.successful_operation': 'persist',
+          },
+          fingerprint: [
+            'persistence-event',
+            'backup-write-recovered',
+            'persist',
+          ],
+        },
+      );
+      expect(backupSetSpy).toHaveBeenCalledTimes(3);
     });
   });
 

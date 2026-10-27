@@ -19,6 +19,7 @@ import {
   MFA_SETTINGS_TOTP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../../components/ui/transition';
+import { toast } from '../../../components/ui/toast/toast';
 import { getIsSocialLoginFlow } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isMfaKitEnabled, useMfa } from '../../../hooks/identity/mfa';
@@ -32,6 +33,7 @@ const ROWS: {
   label: string;
   route: string;
   operation: string;
+  successMessage: string;
   testId: string;
 }[] = [
   {
@@ -39,6 +41,7 @@ const ROWS: {
     label: 'mfaMethodEmail',
     route: MFA_SETTINGS_EMAIL_ROUTE,
     operation: 'settings.addEmail',
+    successMessage: 'mfaSettingsEmailVerified',
     testId: MfaSettingsTestIds.EMAIL_ROW,
   },
   {
@@ -46,6 +49,7 @@ const ROWS: {
     label: 'mfaMethodTotp',
     route: MFA_SETTINGS_TOTP_ROUTE,
     operation: 'settings.addAuthenticatorApp',
+    successMessage: 'mfaSettingsAuthenticatorAppAdded',
     testId: MfaSettingsTestIds.TOTP_ROW,
   },
 ];
@@ -78,13 +82,19 @@ const MfaSettings = () => {
     ({ method }) => !(isSocialLogin && method === 'email_otp'),
   );
 
-  const open = ({ method, route, operation }: (typeof ROWS)[number]) => {
+  const open = ({
+    method,
+    route,
+    operation,
+    successMessage,
+  }: (typeof ROWS)[number]) => {
     if (activeTypes.has(method)) {
       transitionForward(() => navigate(route));
       return;
     }
     setIsEnrolling(true);
     enroll({ method, reason: { operation } })
+      .then(() => toast.success(t(successMessage)))
       .catch(() => undefined)
       .finally(() => setIsEnrolling(false));
   };
