@@ -30,7 +30,7 @@ export const MarketingMomentTitle = ({
     // 80% line height and -2% tracking. The md: classes keep those metrics
     // when the variant switches to its large-screen leading and tracking.
     className={twMerge(
-      'leading-[0.8] tracking-[-0.02em] md:leading-[0.8] md:tracking-[-0.02em]',
+      'text-balance leading-[0.8] tracking-[-0.02em] md:leading-[0.8] md:tracking-[-0.02em]',
       className,
     )}
   >
