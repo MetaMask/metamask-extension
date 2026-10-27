@@ -33,7 +33,7 @@ export const REINSTALL_METAMASK_RECOVERY_LINK =
   'https://support.metamask.io/configure/wallet/how-to-restore-your-metamask-wallet-from-secret-recovery-phrase/?utm_source=extension';
 
 export const SHIELD_TERMS_OF_USE_URL =
-  'https://metamask.io/metamask-transaction-shield-limited-supplemental-terms-of-use';
+  'https://metamask.com/metamask-transaction-shield-limited-supplemental-terms-of-use';
 
 export const TESTNET_ETH_SCAMS_LEARN_MORE_LINK =
   'https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension';
