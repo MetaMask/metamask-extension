@@ -4,6 +4,7 @@ import {
   getUser,
   initialize,
   isInitialized,
+  requestImmediateDataFlush,
   wipeData,
 } from '@braze/web-sdk';
 
@@ -17,6 +18,7 @@ export const brazeSdk = {
   getUser,
   initialize,
   isInitialized,
+  requestImmediateDataFlush,
   wipeData,
 };
 

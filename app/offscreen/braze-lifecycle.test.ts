@@ -1,6 +1,6 @@
 import * as braze from '@braze/web-sdk';
 import type { BrazeSdk } from './braze-sdk';
-import { createBrazeHost } from './braze';
+import { createBrazeHost } from './braze-host';
 
 // Bypass the global SDK stub: these tests exercise the real SDK lifecycle.
 jest.mock('@braze/web-sdk', () =>
@@ -12,9 +12,10 @@ const send = () => jest.mocked(window.XMLHttpRequest.prototype.send);
 const brazeStorageKeys = () =>
   Object.keys(localStorage).filter((key) => key.startsWith('ab.'));
 
-describe('Braze SDK lifecycle in the offscreen host', () => {
+describe('Braze SDK lifecycle in the host', () => {
   const originalEnv = process.env;
   const { indexedDB } = window;
+  let documentHidden = false;
   let syncBrazeUser: ReturnType<typeof createBrazeHost>;
 
   beforeEach(() => {
@@ -27,9 +28,12 @@ describe('Braze SDK lifecycle in the offscreen host', () => {
     delete process.env.IN_TEST;
     delete process.env.METAMASK_DEBUG;
     jest.spyOn(console, 'warn').mockImplementation(() => undefined);
-    // Chrome reports offscreen documents as visible, so the SDK's periodic
-    // flush runs there.
-    jest.spyOn(document, 'hidden', 'get').mockReturnValue(false);
+    // Chrome reports offscreen documents as visible. MV2 background pages can
+    // be hidden; individual tests override this.
+    documentHidden = false;
+    jest
+      .spyOn(document, 'hidden', 'get')
+      .mockImplementation(() => documentHidden);
     // LavaMoat does not grant the SDK `indexedDB`; remove Jest's fake one.
     delete (window as { indexedDB?: IDBFactory }).indexedDB;
     // Network I/O is blocked at the browser boundary.
@@ -56,6 +60,22 @@ describe('Braze SDK lifecycle in the offscreen host', () => {
   });
 
   it('identifies the canonical profile ID and starts a session', async () => {
+    await syncBrazeUser('canonical-123');
+    await jest.advanceTimersByTimeAsync(0);
+
+    expect(braze.getUser()?.getUserId()).toBe('canonical-123');
+    expect(
+      send().mock.calls.some(([body]) =>
+        JSON.parse(String(body)).events?.some(
+          (event: { name: string }) => event.name === 'ss',
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  it('flushes identity from a hidden document', async () => {
+    documentHidden = true;
+
     await syncBrazeUser('canonical-123');
     await jest.advanceTimersByTimeAsync(0);
 
@@ -102,11 +122,11 @@ describe('Braze SDK lifecycle in the offscreen host', () => {
     expect(braze.getUser()?.getUserId()).toBe('canonical-123');
   });
 
-  it('wipes data persisted by a previous offscreen document without sending requests', async () => {
+  it('wipes data persisted by a previous host without sending requests', async () => {
     await syncBrazeUser('canonical-123');
     await jest.advanceTimersByTimeAsync(0);
-    // Service worker restart: the document and SDK go away, storage stays,
-    // and the Braze session expires.
+    // Service worker restart: the host and SDK go away, storage stays, and the
+    // Braze session expires.
     braze.destroy();
     await jest.advanceTimersByTimeAsync(2 * 60 * 60 * 1000);
     expect(brazeStorageKeys()).not.toHaveLength(0);
@@ -120,7 +140,7 @@ describe('Braze SDK lifecycle in the offscreen host', () => {
     expect(send()).not.toHaveBeenCalled();
   });
 
-  it('keeps the persisted user across a new host (service worker restart)', async () => {
+  it('keeps the persisted user across a new host (background restart)', async () => {
     await syncBrazeUser('canonical-123');
     await jest.advanceTimersByTimeAsync(0);
     braze.destroy();
