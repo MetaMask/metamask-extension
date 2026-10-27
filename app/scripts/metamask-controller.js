@@ -2762,7 +2762,6 @@ export default class MetamaskController extends EventEmitter {
       restoreUserData: backup.restoreUserData.bind(backup),
 
       // NftDetectionController
-
       detectNfts: nftDetectionController.detectNfts.bind(
         nftDetectionController,
       ),

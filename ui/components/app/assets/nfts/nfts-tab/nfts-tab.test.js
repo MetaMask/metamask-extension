@@ -262,13 +262,14 @@ describe('NFT Items', () => {
     checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
-    setPreference: setPreferenceStub,
     messengerCall: (actionType, args = []) => {
       switch (actionType) {
         case 'PreferencesController:setUseNftDetection':
           return setUseNftDetectionStub(...args);
         case 'PreferencesController:setOpenSeaEnabled':
           return setDisplayNftMediaStub(...args);
+        case 'PreferencesController:setPreference':
+          return setPreferenceStub(...args);
         default:
           throw new Error(`Unknown action type '${actionType}'`);
       }
