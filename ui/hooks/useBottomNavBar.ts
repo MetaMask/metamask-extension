@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-import { isBottomNavRoute } from '../components/app/bottom-nav-bar/bottom-nav-bar.utils';
+import { isMainNavRoute } from '../helpers/utils/main-nav';
 
 /**
  * Returns whether the bottom nav bar should be shown for the current route.
@@ -8,5 +8,5 @@ import { isBottomNavRoute } from '../components/app/bottom-nav-bar/bottom-nav-ba
 export function useBottomNavBar(): boolean {
   const { pathname } = useLocation();
 
-  return isBottomNavRoute(pathname);
+  return isMainNavRoute(pathname);
 }
