@@ -17,6 +17,11 @@ export type MarketingMomentAction = Omit<
    * Button label. Callers pass already-localized copy.
    */
   label: ReactNode;
+  /**
+   * Test id for the button. The design-system button accepts this in JSX,
+   * but `ButtonProps` does not declare it, so object literals need it here.
+   */
+  'data-testid'?: string;
 };
 
 /**
@@ -53,9 +58,16 @@ export type MarketingMomentProps = {
   artwork?: ReactNode;
   /**
    * Props spread onto the box that sizes `artwork`. Defaults to centered.
-   * `className` is merged onto the box layout classes.
+   * `className` is merged onto the box layout classes. `ref` is omitted
+   * because `Box` accepts an object or callback ref, and `BoxProps` still
+   * includes the string ref from `ComponentProps<'div'>`.
    */
-  artworkWrapperProps?: Omit<BoxProps, 'children'>;
+  artworkWrapperProps?: Omit<BoxProps, 'children' | 'ref'> & {
+    /**
+     * Test id for the artwork box. `BoxProps` does not declare it.
+     */
+    'data-testid'?: string;
+  };
   /**
    * Recommended action.
    */
