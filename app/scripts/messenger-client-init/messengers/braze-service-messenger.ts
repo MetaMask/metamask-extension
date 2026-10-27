@@ -28,12 +28,14 @@ export function getBrazeServiceMessenger(
     messenger: serviceMessenger,
     actions: [
       'AuthenticationController:getState',
+      'ClientController:getState',
       'KeyringController:getState',
       'OnboardingController:getState',
       'PreferencesController:getState',
     ],
     events: [
       'AuthenticationController:stateChange',
+      'ClientController:stateChange',
       'KeyringController:stateChange',
       'OnboardingController:stateChange',
       'PreferencesController:stateChange',

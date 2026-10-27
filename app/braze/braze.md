@@ -28,11 +28,11 @@ context.
 
 `getDesiredBrazeUser` (`shared/lib/braze.ts`) decides the user:
 
-| State                                                         | Result                             |
-| ------------------------------------------------------------- | ---------------------------------- |
-| Onboarding incomplete, Basic Functionality off, or signed out | Clear (`wipeData`, then `destroy`) |
-| Unlocked, signed in, with a canonical profile ID              | Identify                           |
-| Locked, or the profile ID is not available yet                | No change                          |
+| State                                                                       | Result                             |
+| --------------------------------------------------------------------------- | ---------------------------------- |
+| Onboarding incomplete, Basic Functionality off, or signed out               | Clear (`wipeData`, then `destroy`) |
+| Unlocked, signed in, canonical profile ID available, and a UI document open | Identify                           |
+| Locked, profile ID not available yet, or no UI document open                | No change                          |
 
 - Basic Functionality defaults to on during onboarding; waiting for onboarding
   completion means the user's choice has been applied before Braze runs.
@@ -42,14 +42,32 @@ context.
   flushes queued data. A host that never loaded the SDK does not load it to
   clear: with no storage grant it holds no data.
 - Lock never clears data.
+- **Identifying waits for an open UI document.** `changeUser` opens a Braze
+  session and the SDK cannot end one early, so the service also reads
+  `ClientController.isUiOpen`, which the background maintains from the UI ports
+  (popup, expanded tab, side panel, notification). A background-only wakeup
+  therefore loads no SDK, sends no request, and starts no session. Opening a
+  document flips `isUiOpen` and identifies; closing the last document only
+  stops new sessions from being started — the current one expires on Braze's
+  side after `sessionTimeoutInSeconds` (30 minutes by default) and the
+  offscreen document keeps flushing queued events, so nothing is lost.
+- Reopening inside that window keeps the same session (`changeUser` is a no-op
+  for the same ID). Reopening after it expired starts a new session on the next
+  flush, because `requestImmediateDataFlush` re-evaluates the session.
+- `ClientController.isUiOpen` is derived from the UI ports and is not persisted,
+  so a service worker restart while a document stays open leaves it `false`
+  until that document reconnects or is reopened. The service then stays idle,
+  which fails safe (no session) but also means no identity until the next open.
+  A UI-driven Braze call (fetching banners, for example) is the natural place
+  to re-sync if that ever needs to be tightened.
 - The host is recreated when the service worker restarts (MV3) or the
   background page reloads (MV2). On MV3 `createOffscreen` closes and recreates
   an existing offscreen document on every service worker boot, so the host is
   recreated on every boot, not only on browser restart. The service re-syncs on
-  startup; Braze keeps its state in memory only, so the new host identifies the
-  user again and starts a new session. Until the offscreen document survives
-  the service worker, expect one session start per boot while the wallet is
-  unlocked and signed in (see "Storage").
+  startup; Braze keeps its state in memory only, so a boot with a UI document
+  open identifies again and starts a new session. Until the offscreen document
+  survives the service worker, expect one session start per boot with a UI
+  document open (see "Storage").
 - Braze defers its periodic flush while the document is hidden. The MV2
   background page can be hidden, so the host calls
   `requestImmediateDataFlush` after applying an identified user. This is a

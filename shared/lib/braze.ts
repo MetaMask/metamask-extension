@@ -53,6 +53,7 @@ export type BrazeUserInputs = {
   isSignedIn: boolean;
   isUnlocked: boolean;
   canonicalProfileId: string | undefined;
+  isUiOpen: boolean;
 };
 
 /**
@@ -62,8 +63,14 @@ export type BrazeUserInputs = {
  * Functionality defaults to on before the user can choose), Basic
  * Functionality is off, or the user is signed out of Profile Sync.
  * - A profile ID: identify this user.
- * - `undefined`: no change. The wallet is locked, or the profile ID is not
- * available yet. Locking never clears Braze data.
+ * - `undefined`: no change. The wallet is locked, the profile ID is not
+ * available yet, or no MetaMask UI document is open. Locking never clears
+ * Braze data.
+ *
+ * Identifying is what starts a Braze session (`changeUser` opens one, and
+ * flushing can too), and the SDK has no way to end a session early. Waiting for
+ * an open UI document keeps sessions tied to actual wallet use instead of to
+ * background-only service worker wakeups.
  *
  * @param inputs - The relevant wallet state.
  * @param inputs.completedOnboarding
@@ -71,6 +78,7 @@ export type BrazeUserInputs = {
  * @param inputs.isSignedIn
  * @param inputs.isUnlocked
  * @param inputs.canonicalProfileId
+ * @param inputs.isUiOpen
  * @returns The desired Braze user.
  */
 export function getDesiredBrazeUser({
@@ -79,12 +87,13 @@ export function getDesiredBrazeUser({
   isSignedIn,
   isUnlocked,
   canonicalProfileId,
+  isUiOpen,
 }: BrazeUserInputs): string | null | undefined {
   if (!completedOnboarding || !useExternalServices || !isSignedIn) {
     return null;
   }
 
-  if (!isUnlocked || !canonicalProfileId) {
+  if (!isUnlocked || !canonicalProfileId || !isUiOpen) {
     return undefined;
   }
 
