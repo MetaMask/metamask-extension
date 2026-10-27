@@ -3,6 +3,8 @@
     "@braze/web-sdk": {
       "globals": {
         "EventSource": false,
+        "Intl": false,
+        "Intl.DateTimeFormat": true,
         "Notification": false,
         "ServiceWorkerRegistration": false,
         "atob": false,
@@ -11,13 +13,16 @@
         "crypto.getRandomValues": true,
         "innerHeight": false,
         "innerWidth": false,
+        "localStorage": false,
         "location": false,
         "location.href": true,
         "open": false,
         "orientation": false,
         "safari": false,
+        "screen.height": false,
         "screen.mozOrientation": false,
-        "screen.msOrientation": false
+        "screen.msOrientation": false,
+        "screen.width": false
       }
     },
     "@ethersproject/wallet>@ethersproject/random": {

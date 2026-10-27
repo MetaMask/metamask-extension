@@ -31,15 +31,6 @@ function initializeBraze(sdk: BrazeSdk): boolean {
 }
 
 /**
- * Whether Braze has persisted data in this extension's `localStorage`.
- *
- * @returns True when a Braze storage key exists.
- */
-function hasPersistedBrazeData(): boolean {
-  return Object.keys(localStorage).some((key) => key.startsWith('ab.'));
-}
-
-/**
  * Make the SDK match the desired user.
  *
  * Identifying calls `changeUser` only when the ID differs; a changed ID starts
@@ -97,8 +88,10 @@ export function createBrazeHost({
   return async function syncBrazeUser(profileId: string | null): Promise<void> {
     latestProfileId = profileId;
 
-    // Clearing a document that never used Braze must not load the SDK.
-    if (profileId === null && !sdkPromise && !hasPersistedBrazeData()) {
+    // Braze keeps no state outside this document (the SDK is not granted
+    // `localStorage`), so a host that never loaded the SDK has nothing to
+    // clear, and loading it would create a user and a session just to wipe it.
+    if (profileId === null && !sdkPromise) {
       return;
     }
 
@@ -108,11 +101,7 @@ export function createBrazeHost({
     });
     const sdk = await sdkPromise;
 
-    if (
-      latestProfileId === null &&
-      !sdk.isInitialized() &&
-      !hasPersistedBrazeData()
-    ) {
+    if (latestProfileId === null && !sdk.isInitialized()) {
       return;
     }
     applyBrazeUser(sdk, latestProfileId);
