@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "Активы"
   },
-  "assetsDescription": {
-    "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
-  },
   "asterdexReferralSubtitle": {
     "message": "Получайте 4% кэшбэка от сделок с реферальным кодом MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Назад в безопасное место"
+  },
+  "backToWallet": {
+    "message": "Вернуться в кошелек"
   },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
@@ -4386,9 +4386,6 @@
   "generalCameraErrorTitle": {
     "message": "Что-то пошло не так...."
   },
-  "generalDescription": {
-    "message": "Синхронизируйте настройки между устройствами, выбирайте настройки сети и отслеживайте данные токенов"
-  },
   "generateNewQrCode": {
     "message": "Сгенерировать новый QR-код"
   },
@@ -5207,9 +5204,6 @@
   "loading": {
     "message": "Загрузка..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Завершите транзакцию в Snap."
-  },
   "loadingTokenList": {
     "message": "Загружается список токенов"
   },
@@ -5464,14 +5458,20 @@
   "mfaMethodEmail": {
     "message": "Эл. почта"
   },
-  "mfaOtpPaste": {
-    "message": "Вставить"
-  },
   "mfaOtpResend": {
     "message": "Повторно отправить код"
   },
+  "mfaOtpRetry": {
+    "message": "Повторить попытку"
+  },
   "mfaPickerOr": {
     "message": "или"
+  },
+  "mfaSettingsAdd": {
+    "message": "Добавить"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Продолжить"
   },
   "minimumReceivedExplanation": {
     "message": "Минимум, которые вы получите, если цена изменится во время обработки вашей транзакции, рассчитывается на основе настроек проскальзывания. Оценка предоставляется поставщиками ликвидности, поэтому окончательная сумма может отличаться."
@@ -6787,9 +6787,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Добавить пользовательский шлюз IPFS"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL шлюза IPFS действителен"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Когда вы используете наши настройки и конфигурации по умолчанию, мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC) по умолчанию, чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum, который мы можем предложить. В ограниченных случаях мы можем использовать других поставщиков RPC, чтобы обеспечить наилучший опыт для наших пользователей. Вы можете выбрать свой собственный RPC, но помните, что любой RPC получит ваш IP-адрес и кошелек Ethereum для совершения транзакций. Чтобы узнать больше о том, как Infura обрабатывает данные для учетных записей EVM, прочтите нашу статью $1; для счетов Solana — $2."
@@ -9696,21 +9693,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Новый пароль сохранен"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Безопасность и конфиденциальность"
-  },
-  "securityDescription": {
-    "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета"
-  },
   "securityMessageLinkForNetworks": {
     "message": "мошенничества с сетью и угроз безопасности"
   },
   "securityProviderPoweredBy": {
     "message": "На основе $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета и данные"
   },
   "securitySocialLoginEnabled": {
     "message": "Включено"

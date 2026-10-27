@@ -7,7 +7,9 @@
     "stage": "string",
     "warning": "null"
   },
-  "activeTab": {},
+  "activeTab": {
+    "id": "number"
+  },
   "appState": {
     "accountDetail": {
       "privateKey": "string"
@@ -302,14 +304,6 @@
       }
     },
     "autoramps": [],
-    "balances": {
-      "*": {
-        "*": {
-          "unit": "string",
-          "amount": "string"
-        }
-      }
-    },
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
     "batchTransactionCounts": {},
@@ -339,31 +333,6 @@
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
-    "conversionRates": {
-      "*": {
-        "currency": "string",
-        "rate": "string",
-        "conversionTime": "number",
-        "expirationTime": "number",
-        "marketData": {
-          "fungible": "boolean",
-          "allTimeHigh": "string",
-          "allTimeLow": "string",
-          "circulatingSupply": "string",
-          "marketCap": "string",
-          "totalVolume": "string",
-          "pricePercentChange": {
-            "PT1H": "number",
-            "P1D": "number",
-            "P7D": "number",
-            "P14D": "number",
-            "P30D": "number",
-            "P200D": "number",
-            "P1Y": "number"
-          }
-        }
-      }
-    },
     "country": "string",
     "coverageResults": {},
     "countries": {
@@ -556,7 +525,6 @@
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
     "hip3ConfigVersion": "number",
-    "historicalPrices": {},
     "ignoredNfts": [],
     "initializationAttempts": "number",
     "initializationError": "null",
@@ -902,6 +870,7 @@
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
     "onboardingDate": "null",
+    "onboardingJourneyEnded": "boolean",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
@@ -1255,7 +1224,6 @@
     "throttledOrigins": {},
     "timeoutMinutes": "number",
     "timezone": "string",
-    "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {
       "data": "null",
@@ -1265,7 +1233,6 @@
       "selected": "null"
     },
     "tokenSecurityTypeDestination": "null",
-    "tokensChainsCache": {},
     "tokenWarnings": [],
     "tradeConfigurations": {
       "testnet": {},

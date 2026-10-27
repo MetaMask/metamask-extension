@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "Assets"
   },
-  "assetsDescription": {
-    "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
-  },
   "asterdexReferralSubtitle": {
     "message": "Erhalten Sie 4 % zurück auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Zurück zu Sicherheit"
+  },
+  "backToWallet": {
+    "message": "Zurück zur Wallet"
   },
   "backUpIncomplete": {
     "message": "Sicherung unvollständig"
@@ -4386,9 +4386,6 @@
   "generalCameraErrorTitle": {
     "message": "Etwas ist schiefgelaufen...."
   },
-  "generalDescription": {
-    "message": "Synchronisieren Sie Einstellungen geräteübergreifend, wählen Sie Netzwerkeinstellungen aus und verfolgen Sie Token-Daten"
-  },
   "generateNewQrCode": {
     "message": "Neuen QR-Code generieren"
   },
@@ -5207,9 +5204,6 @@
   "loading": {
     "message": "Wird geladen ..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Bitte schließen Sie die Transaktion im Snap ab."
-  },
   "loadingTokenList": {
     "message": "Token-Liste wird geladen"
   },
@@ -5464,14 +5458,20 @@
   "mfaMethodEmail": {
     "message": "E-Mail"
   },
-  "mfaOtpPaste": {
-    "message": "Einfügen"
-  },
   "mfaOtpResend": {
     "message": "Code erneut senden"
   },
+  "mfaOtpRetry": {
+    "message": "Erneut versuchen"
+  },
   "mfaPickerOr": {
     "message": "oder"
+  },
+  "mfaSettingsAdd": {
+    "message": "Hinzufügen"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Fortfahren"
   },
   "minimumReceivedExplanation": {
     "message": "Der von Ihnen erhaltene Mindestbetrag, wenn sich der Kurs während der Abwicklung Ihrer Transaktion entsprechend Ihrer Slippage-Einstellung ändert. Diese Schätzung stammt von Liquiditätsanbietern, der Endbetrag kann daher abweichen."
@@ -6787,9 +6787,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Benutzerdefiniertes IPFS-Gateway hinzufügen"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL für IPFS-Gateway ist gültig"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Wenn Sie unsere Standardeinstellungen und -konfigurationen verwenden, nutzen wir Infura als Standard-RPC-Anbieter (Remote Procedure Call), um einen möglichst zuverlässigen und privaten Zugriff auf Ethereum-Daten zu gewährleisten. In Ausnahmefällen können wir auch andere RPC-Anbieter einsetzen, um unseren Nutzern das bestmögliche Erlebnis zu bieten. Sie können Ihren eigenen RPC wählen, doch bedenken Sie dabei, dass jeder RPC Ihre IP-Adresse und Ihr Ethereum-Wallet zur Durchführung von Transaktionen erhalten wird. Weitere Informationen darüber, wie Infura Daten für EVM-Konten verarbeitet, finden Sie in unserer $1; und für Solana-Konten in der $2."
@@ -9696,21 +9693,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Neues Passwort gespeichert"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Sicherheit und Datenschutz"
-  },
-  "securityDescription": {
-    "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten"
-  },
   "securityMessageLinkForNetworks": {
     "message": "Netzwerk-Betrügereien und Sicherheitsrisiken"
   },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten und Daten."
   },
   "securitySocialLoginEnabled": {
     "message": "Aktiviert"

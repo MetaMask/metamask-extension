@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "Tài sản"
   },
-  "assetsDescription": {
-    "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
-  },
   "asterdexReferralSubtitle": {
     "message": "Được hoàn 4% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Quay lại mục an toàn"
+  },
+  "backToWallet": {
+    "message": "Quay lại ví"
   },
   "backUpIncomplete": {
     "message": "Sao lưu chưa hoàn tất"
@@ -4390,9 +4390,6 @@
   "generalCameraErrorTitle": {
     "message": "Đã xảy ra sự cố..."
   },
-  "generalDescription": {
-    "message": "Đồng bộ chế độ cài đặt trên các thiết bị, chọn mạng ưa thích và theo dõi dữ liệu token"
-  },
   "generateNewQrCode": {
     "message": "Tạo mã QR mới"
   },
@@ -5211,9 +5208,6 @@
   "loading": {
     "message": "Đang tải..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Vui lòng hoàn tất giao dịch trên Snap."
-  },
   "loadingTokenList": {
     "message": "Đang tải danh sách token"
   },
@@ -5468,14 +5462,20 @@
   "mfaMethodEmail": {
     "message": "Email"
   },
-  "mfaOtpPaste": {
-    "message": "Dán"
-  },
   "mfaOtpResend": {
     "message": "Gửi lại mã"
   },
+  "mfaOtpRetry": {
+    "message": "Thử lại"
+  },
   "mfaPickerOr": {
     "message": "hoặc"
+  },
+  "mfaSettingsAdd": {
+    "message": "Thêm"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Tiếp tục"
   },
   "minimumReceivedExplanation": {
     "message": "Số lượng tối thiểu bạn sẽ nhận được nếu giá thay đổi trong quá trình giao dịch, dựa trên chế độ cài đặt trượt giá của bạn. Ước tính này đến từ các nhà cung cấp thanh khoản, nên số lượng cuối cùng có thể khác."
@@ -6791,9 +6791,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Thêm Cổng IPFS tùy chỉnh"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL cổng IPFS hợp lệ"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Khi bạn sử dụng các chế độ cài đặt và cấu hình mặc định của chúng tôi, chúng tôi sử dụng Infura làm nhà cung cấp gọi hàm từ xa (RPC) mặc định để cung cấp quyền truy cập dữ liệu Ethereum đáng tin cậy và riêng tư nhất có thể. Trong một số trường hợp giới hạn, chúng tôi có thể sử dụng các nhà cung cấp RPC khác nhằm mang đến trải nghiệm tốt nhất cho người dùng. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ nhận được địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Để tìm hiểu thêm về cách Infura xử lý dữ liệu đối với các tài khoản EVM, hãy đọc $1, và đối với các tài khoản Solana, hãy đọc $2."
@@ -9710,21 +9707,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Mật khẩu mới đã được lưu"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Bảo mật & Quyền riêng tư"
-  },
-  "securityDescription": {
-    "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản của bạn"
-  },
   "securityMessageLinkForNetworks": {
     "message": "lừa đảo mạng và rủi ro bảo mật"
   },
   "securityProviderPoweredBy": {
     "message": "Được cung cấp bởi $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản cũng như dữ liệu của bạn"
   },
   "securitySocialLoginEnabled": {
     "message": "Đã bật"

@@ -85,7 +85,8 @@ export type MfaKitErrorCode =
   | 'passkey_unsupported'
   | 'passkey_ceremony_cancelled'
   | 'invalid_request'
-  | 'email_already_enrolled';
+  | 'email_already_enrolled'
+  | 'totp_already_enrolled';
 
 /**
  * Every code `verifyOrEnroll` and `enroll` can reject with, as read by
@@ -207,7 +208,28 @@ export type MfaFlowStep =
       options: MfaMethod[];
     }
   | { name: 'emailEntry'; prefillEmail?: string }
-  | { name: 'otp'; purpose: MfaPurpose; email?: string; codeSent: boolean }
+  | {
+      name: 'totpSetup';
+      /** Base32 secret, for typing into the authenticator app. */
+      secret: string;
+      /** PNG data URL of the QR code, for setting up another device. */
+      qrCode: string;
+      /** `otpauth://` link that opens an authenticator app on this device. */
+      setupUri: string;
+      /**
+       * The previous setup expired and this one has a new secret: an account
+       * already added to the app from the old one no longer works.
+       */
+      isRestart: boolean;
+    }
+  | {
+      name: 'otp';
+      purpose: MfaPurpose;
+      /** Where the code comes from: an email, or the authenticator app. */
+      method: 'email_otp' | 'totp';
+      email?: string;
+      codeSent: boolean;
+    }
   | { name: 'passkey'; purpose: MfaPurpose }
   | { name: 'failure'; code: MfaFlowErrorCode; canRetry: boolean };
 
@@ -226,6 +248,7 @@ export interface MfaFlowState {
 
 export type MfaFlowAction =
   | { type: 'continue' }
+  | { type: 'back' }
   | { type: 'choose'; method: MfaMethod }
   | { type: 'submitEmail'; email: string }
   | { type: 'submitCode'; code: string }

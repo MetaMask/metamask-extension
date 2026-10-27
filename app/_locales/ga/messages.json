@@ -534,9 +534,6 @@
   "assets": {
     "message": "Sócmhainní"
   },
-  "assetsDescription": {
-    "message": "Braith comharthaí i do sparán go huathoibríoch, taispeáin NFTanna, agus faigh nuashonruithe baisce ar iarmhéid an chuntais"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Iarracht an malartú a chealú saor in aisce"
   },
@@ -2031,9 +2028,6 @@
   "generalCameraErrorTitle": {
     "message": "Chuaigh rud éigin mícheart...."
   },
-  "generalDescription": {
-    "message": "Sioncrónaigh socruithe trasna gléasanna, roghnaigh roghanna líonra, agus rianaigh sonraí comharthaí"
-  },
   "genericExplorerView": {
     "message": "Féach ar chuntas ar $1"
   },
@@ -2523,9 +2517,6 @@
   },
   "loading": {
     "message": "Ag lódáil..."
-  },
-  "loadingScreenSnapMessage": {
-    "message": "Comhlánaigh an t-idirbheart ar an Snap le do thoil."
   },
   "loadingTokenList": {
     "message": "Ag lódáil liosta comharthaí"
@@ -3314,9 +3305,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Cuir Geata IPFS saincheaptha leis"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Tá URL geata IPFS bailí"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Nuair a úsáideann tú ár socruithe agus cumraíochtaí réamhshocraithe, úsáidimid Infura mar ár soláthraí glaonna nós imeachta cianda (RPC) réamhshocraithe chun an rochtain is iontaofa agus is príobháideacha is féidir a thairiscint ar shonraí Ethereum. I gcásanna teoranta, féadfaimid soláthraithe RPC eile a úsáid chun an taithí is fearr a sholáthar dár n-úsáideoirí. Is féidir leat do RPC féin a roghnú, ach cuimhnigh go bhfaighidh aon RPC do sheoladh IP agus do sparán Ethereum chun idirbhearta a dhéanamh. Chun tuilleadh a fhoghlaim faoi mar a láimhseálann Infura sonraí le haghaidh cuntais EVM, léigh ár $1; le haghaidh cuntais Solana, $2."
@@ -4149,21 +4137,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Pasfhocal nua sábháilte"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Slándáil & príobháideacht"
-  },
-  "securityDescription": {
-    "message": "Laghdaigh do sheans go mbeidh tú páirteach i líonraí neamhshábháilte agus cosain do chuntais"
-  },
   "securityMessageLinkForNetworks": {
     "message": "camscéimeanna líonra agus rioscaí slándála"
   },
   "securityProviderPoweredBy": {
     "message": "Cumhachtaithe ag $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Laghdaigh do sheansanna dul isteach i líonraí neamhshábháilte agus cosain do chuntais agus do shonraí"
   },
   "securitySocialLoginEnabled": {
     "message": "Cumasaithe"

@@ -199,6 +199,7 @@ import {
   TraceOperation,
   TraceRequest,
 } from '../../shared/lib/trace';
+import type { SerializedTraceContext } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
@@ -219,8 +220,11 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../shared/types';
-// eslint-disable-next-line import-x/no-restricted-paths
+
+/* eslint-disable import-x/no-restricted-paths */
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { getOAuthTraceTags } from '../../app/scripts/services/oauth/utils';
+/* eslint-enable import-x/no-restricted-paths */
 import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
@@ -263,6 +267,7 @@ export function goHome() {
  * @param bufferedTrace - The buffered trace function from MetaMetrics context.
  * @param bufferedEndTrace - The buffered end trace function from MetaMetrics context.
  * @param trackEvent - The track event function from MetaMetrics context.
+ * @param parentTraceContext - Optional serialized parent context for OAuth traces.
  * @returns The social login result.
  */
 export function startOAuthLogin(
@@ -273,6 +278,7 @@ export function startOAuthLogin(
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ) => Promise<void>,
+  parentTraceContext?: SerializedTraceContext,
 ): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
@@ -291,9 +297,11 @@ export function startOAuthLogin(
     }
 
     try {
+      const oauthTraceTags = getOAuthTraceTags(authConnection, isRehydration);
       const [oauth2LoginResult] = await Promise.all([
         submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
           authConnection,
+          ...(parentTraceContext ? [parentTraceContext] : []),
         ]),
         submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
       ]);
@@ -304,6 +312,8 @@ export function startOAuthLogin(
         bufferedTrace?.({
           name: TraceName.OnboardingOAuthSeedlessAuthenticate,
           op: TraceOperation.OnboardingSecurityOp,
+          tags: oauthTraceTags,
+          parentContext: parentTraceContext,
         });
         ({ isNewUser } = await submitRequestToBackground('authenticate', [
           oauth2LoginResult,
@@ -319,8 +329,7 @@ export function startOAuthLogin(
             account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_rehydration:
-              isRehydration === null ? 'unknown' : String(isRehydration),
+            is_rehydration: oauthTraceTags.is_rehydration,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failure_type: 'error',
@@ -328,6 +337,16 @@ export function startOAuthLogin(
             // eslint-disable-next-line @typescript-eslint/naming-convention
             error_category: 'seedless_auth',
           },
+        });
+
+        bufferedTrace?.({
+          name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
+          op: TraceOperation.OnboardingError,
+          tags: oauthTraceTags,
+          parentContext: parentTraceContext,
+        });
+        bufferedEndTrace?.({
+          name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
         });
 
         captureException(
@@ -5956,65 +5975,6 @@ export async function tokenDetectionStopPollingByPollingToken(
 }
 
 /**
- * Informs the TokenListController that the UI requires token list polling
- *
- * @param chainId
- * @returns polling token that can be used to stop polling
- */
-export async function tokenListStartPolling(chainId: string): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenListStartPolling',
-    [{ chainId }],
-  );
-
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the TokenListController that the UI no longer token list polling
- *
- * @param pollingToken - Poll token received from calling tokenListStartPolling
- */
-export async function tokenListStopPollingByPollingToken(pollingToken: string) {
-  await submitRequestToBackground('tokenListStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-export async function tokenBalancesStartPolling(
-  chainIds: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenBalancesStartPolling',
-    [{ chainIds }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-export async function tokenBalancesStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('tokenBalancesStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-export function updateBalancesFoAccounts(
-  chainIds: string[],
-  queryAllAccounts: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateBalances', [
-      { chainIds, queryAllAccounts },
-    ]);
-  };
-}
-
-/**
  * Informs the StaticAssetsController that the UI requires static assets polling
  * for the given chain ids and selected account address.
  *
@@ -7583,14 +7543,6 @@ export async function decodeTransactionData({
       contractAddress,
       chainId,
     },
-  ]);
-}
-
-export async function multichainUpdateBalance(
-  accountId: string,
-): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateBalance', [
-    accountId,
   ]);
 }
 

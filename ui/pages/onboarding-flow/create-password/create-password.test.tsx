@@ -27,6 +27,13 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreatePassword from './create-password';
 
 const mockTrackEvent = jest.fn();
+const mockEndJourney = jest.fn();
+
+jest.mock('../../../contexts/onboarding-trace', () => ({
+  useOnboardingTrace: () => ({
+    endJourney: mockEndJourney,
+  }),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -407,6 +414,10 @@ describe('Onboarding Create Password', () => {
     });
 
     it('should create new wallet without marketing checked when its social login flow', async () => {
+      const setDataCollectionForMarketingSpy = jest.spyOn(
+        Actions,
+        'setDataCollectionForMarketing',
+      );
       const mockStore = configureMockStore([thunk])({
         ...mockState,
         metamask: {
@@ -457,6 +468,7 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockCreateNewAccount).toHaveBeenCalled();
+        expect(setDataCollectionForMarketingSpy).toHaveBeenCalledWith(false);
       });
     });
   });
@@ -742,6 +754,7 @@ describe('Onboarding Create Password', () => {
           },
         );
       });
+      expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
     });
 
     it('tracks Wallet Imported when import succeeds', async () => {
@@ -1463,6 +1476,7 @@ describe('Onboarding Create Password', () => {
           { replace: true },
         );
       });
+      expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
     });
   });
 

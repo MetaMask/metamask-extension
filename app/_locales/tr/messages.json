@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "Varlıklar"
   },
-  "assetsDescription": {
-    "message": "Cüzdanınızdaki tokenlar otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask referans kodu ile işlemlerde %4'e varan iade alın.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Güvenliğe geri dön"
+  },
+  "backToWallet": {
+    "message": "Cüzdana geri dön"
   },
   "backUpIncomplete": {
     "message": "Yedekleme tamamlanmadı"
@@ -4390,9 +4390,6 @@
   "generalCameraErrorTitle": {
     "message": "Bir şeyler ters gitti...."
   },
-  "generalDescription": {
-    "message": "Cihazlar genelindeki ayarları senkronize edin, ağ tercihlerini seçin ve token verilerini takip edin"
-  },
   "generateNewQrCode": {
     "message": "Yeni bir QR kodu oluştur"
   },
@@ -5211,9 +5208,6 @@
   "loading": {
     "message": "Yükleniyor..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Lütfen işlemi Snap üzerinde tamamlayın."
-  },
   "loadingTokenList": {
     "message": "Token listesi yükleniyor"
   },
@@ -5468,14 +5462,20 @@
   "mfaMethodEmail": {
     "message": "E-posta"
   },
-  "mfaOtpPaste": {
-    "message": "Yapıştır"
-  },
   "mfaOtpResend": {
     "message": "Kodu tekrar gönder"
   },
+  "mfaOtpRetry": {
+    "message": "Tekrar deneyin"
+  },
   "mfaPickerOr": {
     "message": "veya"
+  },
+  "mfaSettingsAdd": {
+    "message": "Ekle"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Devam Et"
   },
   "minimumReceivedExplanation": {
     "message": "Kayma ayarlarınıza göre işleminiz gerçekleştirilirken fiyat değişirse alacağınız minimum tutar. Bu tahmin likidite sağlayıcılarından alınır, yani nihai tutar değişiklik gösterebilir."
@@ -6791,9 +6791,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Özel IPFS Ağ Geçidi Ekle"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFS ağ geçidi URL adresi geçerli"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Varsayılan ayarlarınızı ve yapılandırmalarınızı kullandığımızda, Ethereum verilerine mümkün olan en güvenilir ve gizli erişimi sunmak amacıyla varsayılan uzak yordam çağrısı (RPC) sağlayıcısı olarak Infura'yı kullanırız. Sınırlı durumlarda, kullanıcılarımıza en iyi deneyimi sağlamak amacıyla başka RPC sağlayıcıları kullanabiliriz. Kendi RPC'nizi seçebilirsiniz ancak her RPC'nin işlem yapmak için IP adresinize ve Ethereum cüzdanınıza ulaşacağını unutmayın. Infura'nın, EVM hesapları için verileri nasıl kullandığı hakkında bilgi edinmek için $1 bölümümüzü; Solana hesapları için ise $2 bölümümüzü okuyun."
@@ -9710,21 +9707,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Yeni şifre kaydedildi"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Güvenlik ve gizlilik"
-  },
-  "securityDescription": {
-    "message": "Güvensiz ağlara katılma şansınızı azaltın ve hesaplarınızı koruyun"
-  },
   "securityMessageLinkForNetworks": {
     "message": "ağ dolandırıcılıkları ve güvenlik riskleri"
   },
   "securityProviderPoweredBy": {
     "message": "$1 hizmetidir",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Güvensiz ağlara katılma şansınızı azaltın ve hesaplarınızı ve verilerinizi koruyun"
   },
   "securitySocialLoginEnabled": {
     "message": "Etkinleştirildi"
