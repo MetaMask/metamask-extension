@@ -292,7 +292,7 @@
     "which@npm:^1.2.12": "^4.0.0",
     "which@npm:^1.2.14": "^4.0.0",
     "which@npm:^1.3.1": "^4.0.0",
-    "qs": "^6.16.0",
+    "qs": "^6.16.1",
     "gridplus-sdk@npm:^4.0.0": "patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch",
     "gridplus-sdk/uuid@npm:^13.0.0": "^8.3.2",
     "gridplus-sdk/@types/uuid@npm:^11.0.0": "^8.3.4",
