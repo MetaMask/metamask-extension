@@ -86,8 +86,6 @@ import {
   walletGetAccountUpgradeStatus,
 } from '@metamask/eip-7702-internal-rpc-middleware';
 
-import { walletPay } from '@metamask/transaction-pay-middleware';
-
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -247,6 +245,7 @@ import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiRef
 import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
 import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
 import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
+import { createWalletPayMiddleware } from './lib/wallet-pay/createWalletPayMiddleware';
 import { createPopupOpener } from './popup/background';
 
 import {
@@ -1154,18 +1153,16 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    this.walletPayMiddleware = createScaffoldMiddleware({
-      wallet_pay: createAsyncMiddleware(async (req, res) => {
-        await walletPay(
-          req,
-          res,
-          {
-            getPermittedAccountsForOrigin: async () =>
-              this.getPermittedAccounts(req.origin),
-          },
-          walletPayMessenger,
-        );
-      }),
+    this.walletPayMiddleware = createWalletPayMiddleware({
+      getPermittedAccounts: (origin) => this.getPermittedAccounts(origin),
+      getAccountByAddress: (address) =>
+        this.accountsController.getAccountByAddress(address),
+      getSelectedAccount: () => this.accountsController.getSelectedAccount(),
+      setSelectedAccountGroupByAccountId: (accountId) =>
+        this.accountTreeController.setSelectedAccountGroupByAccountId(
+          accountId,
+        ),
+      messenger: walletPayMessenger,
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
