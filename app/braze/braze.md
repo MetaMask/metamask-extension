@@ -128,8 +128,11 @@ need for identity and banners:
 - Braze-hosted HTML rendering (`innerHeight`, `innerWidth`, `orientation`,
   `screen.mozOrientation`, `screen.msOrientation`)
 - any persistent storage (`localStorage`; `indexedDB` is not granted)
-- device resolution (`screen.width`, `screen.height`), which the host opts out
-  of with `devicePropertyAllowlist`
+
+`screen.width`/`screen.height` stay granted: the SDK reads them while building
+the device block of every request, and denying them throws on every flush.
+`resolution` is never sent — the SDK writes it to a field its serializer does
+not read.
 
 `crypto` is narrowed to `getRandomValues`, `Intl` to `DateTimeFormat`, and
 `window.location` to `location.href`, so `_openUri` (Braze-hosted link clicks)
@@ -145,10 +148,80 @@ SDK can read. It also means `document.location` (including `assign`) and
 `document.cookie` stay reachable, which is why the `location` narrowing above
 only removes the `window.location` write. `navigator` is read at module load by
 the browser detector (`userAgent`, `userAgentData`, `platform`, `language`) and
-during `initialize` (`cookieEnabled`), and it is a read-only grant; its
-remaining members add no capability the granted `XMLHttpRequest` does not
-already provide.
+during `initialize` (`cookieEnabled`), and it is a read-only grant.
 
-`development/webpack/test/lavamoat.braze.test.ts` pins the granted set for all
-eight build variants, so a regenerated policy that adds a grant fails the test
-instead of landing silently.
+These grants describe what the SDK does; they are not what contains it. The
+containment story is in "Security" below.
+
+`development/webpack/test/lavamoat.braze.test.ts` asserts that the eight build
+variants share one policy and that the capabilities denied above stay denied, so
+a variant that drifts fails the test instead of landing silently. It
+deliberately does not restate the granted set: a new grant is a question for the
+`policy.json` review, not a test assertion.
+
+## Security
+
+Braze is third-party code with network access, so we do not assume its code is
+sound. The boundary is architectural; the policy is defence in depth.
+
+**Where it runs.** `app/braze/braze-sdk.ts` is the only import of
+`@braze/web-sdk`, and no UI document imports it. The SDK therefore only ever
+runs in the offscreen document (MV3) or the background page (MV2). The wallet
+UI, its Redux store, the provider, and the unlocked keyrings live in other
+documents and cannot be reached from there.
+
+**What the shipped bundle contains.** Because `braze-sdk.ts` imports only
+identity functions, webpack tree-shakes everything that renders or interprets
+Braze content. In the built `braze-sdk` chunk:
+
+```sh
+grep -c -E 'innerHTML|srcdoc|insertAdjacentHTML|document\.write|createContextualFragment' dist/chrome/*.js
+# 0
+```
+
+There is also no `eval`, `new Function`, `iframe`, `postMessage`,
+`insertBanner`, `showInAppMessage` or `handleBrazeAction` in it. This is what
+makes "Braze cannot inject HTML or script" true of the artifact rather than of
+its configuration: `allowUserSuppliedJavascript: false` is irrelevant because
+the code that would honour it is not shipped. Re-run the grep after changing
+the imports, especially for the banners work — `Banner/index.js` re-exports
+`insertBanner` from the same barrel.
+
+**What LavaMoat adds.** `scuttleGlobalThis` (driven through Snow in production
+builds) removes most ambient globals from the document the SDK runs in, so
+reaching the real window through `document.defaultView` does not hand back
+extension authority. Measured on production builds by evaluating
+`document.createElement('a').ownerDocument.defaultView.<name>` in the offscreen
+document (Chrome MV3) and in the background page (Firefox MV2):
+
+- **Blocked on both** (access throws): `eval`, `chrome`, `browser`, `indexedDB`,
+  `localStorage`, `EventSource`, `XMLHttpRequest`, `WebSocket`, `Worker`,
+  `SharedWorker`, `open`, `atob`, `btoa`, `structuredClone`, `queueMicrotask`.
+- **Reachable on both**: the scuttling exceptions — `fetch`, `crypto` (including
+  `subtle`), `performance`, `navigator`, `WebAssembly`, `Request`, `history`,
+  `parent`, `frameElement`, `scrollX`/`scrollY`, `devicePixelRatio`, `Node`,
+  `ResizeObserver`, `setTimeout`/`clearTimeout` — plus `location`, which is an
+  unforgeable own binding. `Function` is reachable too, but evaluating a string
+  with it is refused by CSP ("call to Function() blocked by CSP").
+- **Firefox-only checks, all negative**: `browser` and `chrome` are blocked, so
+  MV2's `browser.extension.getViews()` — live `Window` handles for the popup and
+  tabs, with no MV3 equivalent — is unreachable. `wrappedJSObject`,
+  `ChromeUtils`, `Services` and `content` are absent; `Components` and
+  `InstallTrigger` are scuttled. A newly created iframe reports "Snow detected a
+  new realm creation attempt … Performing scuttling on new realm" and its
+  `localStorage` throws, so the SDK cannot escape into an unscuttled realm.
+
+Firefox's MV2 manifest sets no `content_security_policy`, so the CSP that blocks
+string evaluation there is Firefox's default (`script-src 'self'
+'wasm-unsafe-eval'`). That default allows `WebAssembly`, which is the one
+dynamic-code capability that survives on both platforms — inside the document
+that runs the SDK, not in the UI.
+
+So there is no extension API, no worker realm, and no string evaluation. What
+remains is network egress for what the compartment can already see (the
+canonical profile ID, device properties, its own document) and `WebAssembly` in
+that document. Neither reaches the wallet UI or its data.
+
+`chrome`, `browser` and `indexedDB` are scuttling exceptions in **test builds**,
+so containment must be measured on a production build. If a future SDK version
+needs another exception, that is a security review, not a policy edit.
