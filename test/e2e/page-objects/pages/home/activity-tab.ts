@@ -12,7 +12,7 @@ import HomePage from './homepage';
  * Boundaries: homepage chrome, balance, and tab switching stay on `HomePage`.
  * Post-submit toast UI belongs to `TxToastNotification`.
  * Related: `HomePage` (`goToActivityList`), `TxToastNotification`,
- * `flows/send-transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
+ * `flows/transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
  * land here after a tx.
  *
  * @see ui/pages/activity/activity-list.tsx
@@ -76,6 +76,29 @@ class ActivityTab extends HomePage {
   private readonly transactionStatusLabel = (status: string) => ({
     testId: `transaction-details-status-${status}`,
   });
+
+  /**
+   * Goes to the home page to check the balance, then opens the activity list
+   * and checks the number of confirmed transactions. When at least one is
+   * expected, also checks that the latest one is a "Sent ETH" transaction.
+   *
+   * @param expectedBalance - The expected balance shown on the home page.
+   * @param expectedActivityEntries - The expected number of confirmed transactions. Defaults to 1.
+   */
+  async checkBalanceAndActivity(
+    expectedBalance: string,
+    expectedActivityEntries: number = 1,
+  ): Promise<void> {
+    await this.goToHomePage();
+    await this.checkExpectedBalanceIsDisplayed(expectedBalance);
+    await this.goToActivityList();
+    await this.checkConfirmedTxNumberDisplayedInActivity(
+      expectedActivityEntries,
+    );
+    if (expectedActivityEntries) {
+      await this.checkTxAction({ action: 'Sent ETH' });
+    }
+  }
 
   /**
    * This function checks a swap or bridge transaction's details
@@ -332,6 +355,18 @@ class ActivityTab extends HomePage {
     console.log(
       `${expectedNumber} pending transactions found in activity list on homepage`,
     );
+  }
+
+  /**
+   * Checks that the activity list shows a single confirmed "Sent ETH"
+   * transaction with the expected amount.
+   *
+   * @param amount - The expected signed amount without the symbol (e.g. '-10').
+   */
+  async checkSentEthTransaction(amount: string): Promise<void> {
+    await this.checkConfirmedTxNumberDisplayedInActivity(1);
+    await this.checkTxAction({ action: 'Sent ETH' });
+    await this.checkTxAmountInActivity(`${amount} ETH`, 1);
   }
 
   async checkSpeedUpInlineButtonIsPresent(): Promise<void> {

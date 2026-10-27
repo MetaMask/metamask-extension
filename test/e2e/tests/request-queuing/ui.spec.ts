@@ -22,6 +22,7 @@ import { Anvil } from '../../seeder/anvil';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import {
   openDappAndSwitchChain,
@@ -29,10 +30,6 @@ import {
   selectDappClickSend,
   switchToDialogPopoverValidateDetailsRedesign,
 } from '../../page-objects/flows/test-dapp.flow';
-import {
-  validateBalanceAndActivity,
-  validateTransaction,
-} from '../../page-objects/flows/send-transaction.flow';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -251,22 +248,25 @@ describe('Request-queue UI changes', function () {
         await driver.waitForWindowWithTitleToBePresent(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await validateTransaction(driver, '-0');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
+        await activityTab.checkSentEthTransaction('-0');
 
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
           await switchToNetworkFromNetworkSelect(driver, 'Localhost 7777');
-          await validateBalanceAndActivity(driver, '25');
+          await activityTab.checkBalanceAndActivity('25');
         }
 
         // Validate second network, where transaction was rejected
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
-        await validateBalanceAndActivity(driver, '25', 0);
+        await activityTab.checkBalanceAndActivity('25', 0);
 
         // Validate first network, where transaction was confirmed
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
-        await validateBalanceAndActivity(driver, '25');
-        await validateTransaction(driver, '-0');
+        await activityTab.checkBalanceAndActivity('25');
+        await activityTab.goToActivityList();
+        await activityTab.checkSentEthTransaction('-0');
       },
     );
   });
