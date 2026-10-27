@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Datenerhebung für das Marketing"
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "Erhalten Sie Produkt-Updates, Tipps und Neuigkeiten – auch per E-Mail. Wir können Ihre Interaktionen zur Verbesserung unseres Angebots nutzen."
-  },
   "dataUnavailable": {
     "message": "Daten nicht verfügbar"
   },

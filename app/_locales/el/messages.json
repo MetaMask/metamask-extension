@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Συγκέντρωση δεδομένων για μάρκετινγκ"
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "Λάβετε ενημερώσεις προϊόντων, συμβουλές και νέα – και μέσω email. Ενδέχεται να χρησιμοποιήσουμε τις αλληλεπιδράσεις σας για τη βελτίωση του περιεχομένου που κοινοποιούμε."
-  },
   "dataUnavailable": {
     "message": "μη διαθέσιμα δεδομένα"
   },

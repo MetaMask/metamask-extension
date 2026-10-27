@@ -3300,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "マーケティング目的のデータ収集"
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "製品の最新情報やヒント、ニュースをメールでお届けします。最適な情報をお届けするため、お客様のやり取りに関するデータを利用する場合があります。"
-  },
   "dataUnavailable": {
     "message": "データが利用できません"
   },

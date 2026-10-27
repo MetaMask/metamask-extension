@@ -5,8 +5,8 @@ import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { MetaMetricsConsentContainer } from './metametrics-consent-container';
 
-// The modal only renders once the user has opted in to MetaMetrics but has
-// not yet made a marketing data collection decision.
+// The modal renders when the user has not yet made a marketing data
+// collection decision. MetaMetrics participation does not affect it.
 const store = configureStore({
   ...testData,
   metamask: {

@@ -30,7 +30,7 @@ class OnboardingMetricsPage {
     '[data-testid="metametrics-data-collection-checkbox"][data-checked="true"]';
 
   private readonly metametricsMessage = {
-    text: 'Help improve MetaMask',
+    text: 'Help us improve MetaMask',
     tag: 'h2',
   };
 
