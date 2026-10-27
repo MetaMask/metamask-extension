@@ -1,6 +1,7 @@
+import type { SyncBrazeUser } from '../../../shared/lib/braze';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
+import { createBrazeHost } from '../../braze/braze-host';
 import { createOffscreenBrazeClient } from '../../offscreen/braze-client';
-import { createBrazeHost } from '../../offscreen/braze-host';
 import { BrazeService, BrazeServiceMessenger } from '../services/braze-service';
 import { MessengerClientInitFunction } from './types';
 
@@ -21,7 +22,7 @@ export const BrazeServiceInit: MessengerClientInitFunction<
   BrazeService,
   BrazeServiceMessenger
 > = ({ controllerMessenger, offscreenPromise }) => {
-  const syncUser = isManifestV3
+  const syncUser: SyncBrazeUser = isManifestV3
     ? createOffscreenBrazeClient(offscreenPromise)
     : createBrazeHost();
 

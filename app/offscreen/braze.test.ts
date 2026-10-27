@@ -11,7 +11,7 @@ jest.mock('../../shared/lib/sentry', () => ({
 }));
 
 const mockSyncBrazeUser = jest.fn();
-jest.mock('./braze-host', () => ({
+jest.mock('../braze/braze-host', () => ({
   createBrazeHost: () => mockSyncBrazeUser,
 }));
 
@@ -114,6 +114,27 @@ describe('initBraze', () => {
     expect(handled).toBe(true);
     expect(mockSyncBrazeUser).toHaveBeenCalledWith('canonical-123');
     expect(sendResponse).toHaveBeenCalledWith({ success: true });
+  });
+
+  it('reports a host failure to the background', async () => {
+    const error = new Error('SDK unavailable');
+    mockSyncBrazeUser.mockRejectedValueOnce(error);
+    initBraze();
+    const sendResponse = jest.fn();
+
+    const handled = listener(
+      { ...message, profileId: 'canonical-123' },
+      { id: extensionId, url: serviceWorkerUrl },
+      sendResponse,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(handled).toBe(true);
+    expect(captureException).toHaveBeenCalledWith(error);
+    expect(sendResponse).toHaveBeenCalledWith({
+      success: false,
+      error: 'SDK unavailable',
+    });
   });
 
   it('clears for an empty profile ID', async () => {

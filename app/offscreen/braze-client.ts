@@ -1,17 +1,10 @@
 import {
   BrazeAction,
   OffscreenCommunicationTarget,
+  type BrazeSyncUserMessage,
+  type BrazeSyncUserResponse,
 } from '../../shared/constants/offscreen-communication';
-
-export type BrazeSyncUserMessage = {
-  target: OffscreenCommunicationTarget.brazeOffscreen;
-  action: BrazeAction.syncUser;
-  profileId: string | null;
-};
-
-export type BrazeSyncUserResponse =
-  | { success: true }
-  | { success: false; error: string };
+import type { SyncBrazeUser } from '../../shared/lib/braze';
 
 type SendMessage = (
   message: BrazeSyncUserMessage,
@@ -33,7 +26,7 @@ const sendMessageToOffscreen: SendMessage = (message) =>
 export function createOffscreenBrazeClient(
   offscreenReady: Promise<void>,
   sendMessage: SendMessage = sendMessageToOffscreen,
-) {
+): SyncBrazeUser {
   return async function syncOffscreenBrazeUser(
     profileId: string | null,
   ): Promise<void> {

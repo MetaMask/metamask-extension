@@ -11,13 +11,17 @@ context.
   gates. It listens to `OnboardingController`, `PreferencesController`
   (`useExternalServices`), `AuthenticationController`, and `KeyringController`,
   and applies the desired user when it changes.
-- The host (`app/offscreen/braze-host.ts`) holds the only SDK instance and
-  loads the SDK chunk on the first identify. The platform only chooses how the
+- The host (`app/braze/braze-host.ts`) holds the only SDK instance and loads
+  the SDK chunk on the first identify. The platform only chooses how the
   background reaches it:
-  - MV3: `app/offscreen/braze.ts` runs the host in the offscreen document and
-    accepts `syncUser` messages from the extension's service worker only.
+  - MV3: `app/offscreen/braze.ts` runs the host in the offscreen document,
+    with `app/offscreen/braze-client.ts` sending `syncUser` messages from the
+    extension's service worker only.
   - MV2: `BrazeServiceInit` calls the host directly, because the background
     page has DOM storage.
+- `braze-service-init.ts` selects the adapter at runtime with `isManifestV3`.
+  The host is part of the shared background module graph, but its SDK chunk is
+  loaded lazily and only on MV2; MV3 selects the offscreen client instead.
 - UI documents have no Braze code.
 
 ## Lifecycle
@@ -58,9 +62,10 @@ by the message sender's fields rather than by the manifest.
 ## LavaMoat policy
 
 Braze is bundled in the MV3 offscreen entry and the MV2 background entry, so
-`lavamoat/webpack/mv3/*/policy.json` and `lavamoat/webpack/mv2/*/policy.json`
-reference it. The overrides deny capabilities Braze does not need for identity:
-push and Safari notifications, the real-time `EventSource`, Braze-hosted UI
-helpers, `open`, and action decoding. `crypto` is narrowed to
-`getRandomValues` and `location` to `location.href`. `localStorage` stays
-granted so the identity survives host restarts. `indexedDB` is not granted.
+`lavamoat/webpack/mv3/*` and `lavamoat/webpack/mv2/*` reference it in both
+`policy.json` and `policy-override.json`. The overrides deny capabilities Braze
+does not need for identity: push and Safari notifications, the real-time
+`EventSource`, Braze-hosted UI helpers, `open`, and action decoding. `crypto` is
+narrowed to `getRandomValues` and `location` to `location.href`. `localStorage`
+stays granted so the identity survives host restarts. `indexedDB` is not
+granted.

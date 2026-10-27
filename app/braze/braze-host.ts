@@ -1,3 +1,4 @@
+import type { SyncBrazeUser } from '../../shared/lib/braze';
 import type { BrazeSdk } from './braze-sdk';
 
 type LoadSdk = () => Promise<BrazeSdk>;
@@ -21,7 +22,7 @@ function initializeBraze(sdk: BrazeSdk): boolean {
       noCookies: true,
       doNotLoadFontAwesome: true,
       allowUserSuppliedJavascript: false,
-      // Leave the extension's service worker and push subscription alone.
+      // Never let the SDK register a service worker or manage push.
       manageServiceWorkerExternally: true,
       disablePushTokenMaintenance: true,
       appVersion: process.env.METAMASK_VERSION,
@@ -67,9 +68,9 @@ function applyBrazeUser(sdk: BrazeSdk, profileId: string | null): void {
     sdk.changeUser(profileId);
   }
 
-  // On MV2 the host runs in the background page, which can be hidden. Braze
-  // defers its periodic flush while the document is hidden, so flush the
-  // identity and session data now.
+  // Braze defers its periodic flush while the document is hidden. The MV2
+  // background page can be hidden, so flush the identity and session data now;
+  // this is also harmless in the MV3 offscreen document.
   sdk.requestImmediateDataFlush();
 }
 
@@ -89,11 +90,11 @@ function applyBrazeUser(sdk: BrazeSdk, profileId: string | null): void {
  */
 export function createBrazeHost({
   loadSdk = loadBrazeSdk,
-}: { loadSdk?: LoadSdk } = {}) {
+}: { loadSdk?: LoadSdk } = {}): SyncBrazeUser {
   let sdkPromise: Promise<BrazeSdk> | undefined;
   let latestProfileId: string | null = null;
 
-  return async function syncBrazeUser(profileId: string | null) {
+  return async function syncBrazeUser(profileId: string | null): Promise<void> {
     latestProfileId = profileId;
 
     // Clearing a document that never used Braze must not load the SDK.

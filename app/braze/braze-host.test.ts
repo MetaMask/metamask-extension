@@ -86,7 +86,7 @@ describe('createBrazeHost', () => {
     expect(loadSdk).not.toHaveBeenCalled();
   });
 
-  it('loads the SDK to wipe data persisted by a previous document', async () => {
+  it('loads the SDK to wipe data persisted by a previous host', async () => {
     localStorage.setItem('ab.storage.userId.test-key', '{"v":"canonical-123"}');
     const sdk = createSdk();
     const syncBrazeUser = createBrazeHost({ loadSdk: async () => sdk });

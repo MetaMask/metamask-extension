@@ -229,7 +229,7 @@ describe('BrazeService', () => {
     expect(syncUser).toHaveBeenCalledTimes(1);
   });
 
-  it('sends updates in order', async () => {
+  it('coalesces updates that arrive before the queue runs', async () => {
     const { syncUser, update } = setup();
     await flush();
 
@@ -241,19 +241,24 @@ describe('BrazeService', () => {
     expect(syncUser.mock.calls).toStrictEqual([['canonical-123']]);
   });
 
-  it('reports failures without retrying the same user', async () => {
+  it('retries on the next state change after a failure', async () => {
     const { syncUser, update } = setup({
       ...eligibleState,
       isUnlocked: false,
     });
+    await flush();
     const error = new Error('SDK unavailable');
     syncUser.mockRejectedValueOnce(error);
 
     await update({ isUnlocked: true });
-    await update({});
 
     expect(captureException).toHaveBeenCalledWith(error);
     expect(syncUser).toHaveBeenCalledTimes(1);
+
+    await update({});
+
+    expect(syncUser).toHaveBeenCalledTimes(2);
+    expect(syncUser).toHaveBeenLastCalledWith('canonical-123');
   });
 
   it('keeps syncing after a failed decision', async () => {
@@ -273,18 +278,5 @@ describe('BrazeService', () => {
     await update({});
 
     expect(syncUser).toHaveBeenCalledWith('canonical-123');
-  });
-
-  it('reports a failed sync', async () => {
-    const { syncUser, update } = setup({
-      ...eligibleState,
-      isUnlocked: false,
-    });
-    const error = new Error('Receiving end does not exist.');
-    syncUser.mockRejectedValueOnce(error);
-
-    await update({ isUnlocked: true });
-
-    expect(captureException).toHaveBeenCalledWith(error);
   });
 });

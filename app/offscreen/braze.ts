@@ -1,14 +1,12 @@
 import {
   BrazeAction,
   OffscreenCommunicationTarget,
+  type BrazeSyncUserMessage,
+  type BrazeSyncUserResponse,
 } from '../../shared/constants/offscreen-communication';
 import { isBrazeConfigured } from '../../shared/lib/braze';
 import { captureException } from '../../shared/lib/sentry';
-import type {
-  BrazeSyncUserMessage,
-  BrazeSyncUserResponse,
-} from './braze-client';
-import { createBrazeHost } from './braze-host';
+import { createBrazeHost } from '../braze/braze-host';
 
 /**
  * Whether a message was sent by this extension's service worker.
@@ -16,7 +14,8 @@ import { createBrazeHost } from './braze-host';
  * Offscreen documents only expose part of `chrome.runtime` (no `getManifest`,
  * for example), so the sender is identified by its fields: the service worker
  * has no tab and no document, while extension pages have a `documentId` and
- * tabs also have `tab`.
+ * tabs also have `tab`. `documentId` exists since Chrome 106 and offscreen
+ * documents require Chrome 109, so extension pages always have it here.
  *
  * @param sender - The message sender.
  * @returns True for the background service worker.
