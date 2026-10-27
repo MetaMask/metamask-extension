@@ -22,7 +22,8 @@ type UseValidateMoneyReferralCodeResult = {
  * Debounces `GET /referral/validate` while the code is edited.
  * A network failure is unknown, which still allows accept. The register call
  * is the authority. `validateCode` rethrows a `429` or `503` so Accept can
- * ask the user to try again instead of treating the code as invalid.
+ * ask the user to try again instead of treating the code as invalid. The
+ * code stays resolved, so Accept can be pressed again after the wait.
  *
  * @param code - The normalized code currently in the field.
  * @returns Validation state and a function that validates immediately.
@@ -101,6 +102,9 @@ export function useValidateMoneyReferralCode(
         return nextError;
       } catch (caught) {
         if (isBusyRewardsMoneyRead(caught)) {
+          if (requestId === requestIdRef.current) {
+            setResolvedCode(nextCode);
+          }
           throw caught;
         }
         if (requestId === requestIdRef.current) {

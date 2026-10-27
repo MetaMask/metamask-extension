@@ -98,7 +98,7 @@ describe('useValidateMoneyReferralCode', () => {
     expect(view.getByTestId('valid').textContent).toBe('true');
   });
 
-  it('rethrows a 429 or 503 from validateCode', async () => {
+  it('rethrows a 429 or 503 from validateCode and keeps Accept available', async () => {
     mockValidate.mockRejectedValue({
       data: { status: 429, retryAfterSeconds: 2 },
     });
@@ -114,6 +114,8 @@ describe('useValidateMoneyReferralCode', () => {
     });
 
     expect(view.getByTestId('thrown').textContent).toBe('yes');
+    expect(view.getByTestId('unknown').textContent).toBe('false');
+    expect(view.getByTestId('valid').textContent).toBe('true');
   });
 
   it('treats a debounced 503 as unknown so Accept stays available', async () => {
