@@ -92,7 +92,7 @@ const baseHardwareWalletConfig = {
 
 setBackgroundConnection({
   submitTx: jest.fn(),
-  setEnabledAllPopularNetworks: jest.fn(),
+  messengerCall: jest.fn(),
   getStatePatches: jest.fn(),
   getLocation: jest.fn().mockResolvedValue('Main View'),
   resetState: () => mockResetState(),

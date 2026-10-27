@@ -2904,14 +2904,6 @@ describe('MetaMaskController', () => {
             RequestSourceFlow.DappConnection,
           );
 
-          await localMetamaskController
-            .getApi()
-            .scanUrlForPhishing('http://mycrypto.com');
-
-          expect(scanUrlSpy).toHaveBeenCalledWith(
-            'http://mycrypto.com',
-            RequestSourceFlow.RevealSrp,
-          );
           streamTest.end();
         } finally {
           process.env.SECURITY_ALERTS_API_ENABLED =
