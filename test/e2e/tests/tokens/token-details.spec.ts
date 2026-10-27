@@ -96,7 +96,6 @@ describe('Token Details', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
-        ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
           ...(await mockTokenMetadataApis(mockServer, [
             {
@@ -154,9 +153,6 @@ describe('Token Details', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
-        // Native ETH price in the details view comes from the ETH conversion
-        // rate (see useCurrentPrice), so seed it to match the asserted price.
-        ethConversionInUsd: 1700,
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {

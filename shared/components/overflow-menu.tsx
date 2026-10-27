@@ -31,7 +31,7 @@ export function OverflowMenu({ items }: Props) {
         id={menuId}
         // @ts-expect-error need to update react types
         popover="auto"
-        className="absolute m-0 min-w-[180px] rounded-lg z-[1050]"
+        className="absolute m-0 p-0 min-w-[180px] rounded-lg z-[1050]"
         style={
           {
             inset: 'auto',

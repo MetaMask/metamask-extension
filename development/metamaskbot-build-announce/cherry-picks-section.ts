@@ -242,7 +242,7 @@ export function buildWhatsInRcSection(
   const cherryPicksAnchorId = getCherryPicksAnchorId(anchorSuffix);
 
   let section = `<a id="${anchorId}"></a>
-### :cherries: What's in this RC
+<strong>🍒 What's in this RC</strong>
 
 `;
 
@@ -285,7 +285,7 @@ export function buildWhatsInRcFailureSection(
   const anchorId = getWhatsInRcAnchorId(anchorSuffix);
   const cherryPicksAnchorId = getCherryPicksAnchorId(anchorSuffix);
   return `<a id="${anchorId}"></a>
-### :cherries: What's in this RC
+<strong>🍒 What's in this RC</strong>
 
 <a id="${cherryPicksAnchorId}"></a>
 <p><i>Unable to extract cherry-picks and changelog${errorMsg}</i></p>

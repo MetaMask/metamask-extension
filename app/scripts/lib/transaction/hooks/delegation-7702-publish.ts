@@ -20,6 +20,7 @@ import {
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { getSentinelSigners } from '../sentinel-api';
 import {
   getClientForTransactionMetadata,
   getClientVersionForTransactionMetadata,
@@ -144,6 +145,13 @@ export class Delegation7702PublishHook {
       throw new Error('Selected gas fee token not found');
     }
 
+    const redeemers = await getSentinelSigners(chainId);
+
+    if (!redeemers.length) {
+      // Fail closed rather than sign a delegation any address could redeem.
+      throw new Error(`No relay signers found for chain ${chainId}`);
+    }
+
     const includeTransfer =
       !isGasFeeIncluded && !transactionMeta.isGasFeeSponsored;
 
@@ -177,6 +185,8 @@ export class Delegation7702PublishHook {
               upgradeContractAddress:
                 (upgradeContractAddress as Hex) ?? undefined,
             },
+        // Only the Sentinel relay signers may submit the redeem.
+        redeemers,
         // Same as mobile's publish hook: relay the parent `execute()` as a
         // single execution. Expanding `nestedTransactions` into a batch
         // redeem is a shape mobile never publishes — on Monad it mined

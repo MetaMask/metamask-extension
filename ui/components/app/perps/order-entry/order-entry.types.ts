@@ -308,6 +308,8 @@ export type AutoCloseSectionProps = {
   entryPrice?: number;
   /** Signed position size in asset units (positive=long, negative=short) for estimated PnL */
   estimatedSize?: number;
+  /** Shared notional used to resolve the builder rate for both triggers. */
+  feeNotionalUsd?: number;
   /** Order type – used to pick the correct validation reference price */
   orderType?: OrderType;
   /** Limit price string – used as the reference price for limit-order TP/SL validation */

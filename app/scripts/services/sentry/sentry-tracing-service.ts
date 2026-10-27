@@ -3,6 +3,7 @@ import type { Messenger } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
 import {
   endTrace,
+  getPerformanceTimestamp,
   trace,
   type EndTraceRequest,
   type TraceRequest,
@@ -22,6 +23,25 @@ type BufferedTrace = {
   type: 'start' | 'end';
   request: Record<string, Json>;
 };
+
+type SerializedParentContext = {
+  _name: string;
+  _id?: string;
+};
+
+function isSerializedParentContext(
+  value: unknown,
+): value is SerializedParentContext {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    '_name' in value &&
+    typeof value._name === 'string' &&
+    (!('_id' in value) ||
+      value._id === undefined ||
+      typeof value._id === 'string')
+  );
+}
 
 export type SentryTracingServiceMessenger = Messenger<
   typeof SERVICE_NAME,
@@ -60,13 +80,14 @@ export class SentryTracingService {
       return;
     }
 
-    const { parentContext: _parentContext, ...requestWithoutParent } = request;
+    const { parentContext, ...requestWithoutParent } = request;
 
     this.#tracesBeforeMetricsOptIn.push({
       type: 'start',
       request: {
         ...requestWithoutParent,
-        startTime: request.startTime ?? Date.now(),
+        ...(isSerializedParentContext(parentContext) && { parentContext }),
+        startTime: request.startTime ?? getPerformanceTimestamp(),
       },
     });
   }
@@ -87,7 +108,7 @@ export class SentryTracingService {
       type: 'end',
       request: {
         ...request,
-        timestamp: request.timestamp ?? Date.now(),
+        timestamp: request.timestamp ?? getPerformanceTimestamp(),
       },
     });
   }

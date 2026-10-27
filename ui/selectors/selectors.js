@@ -1428,20 +1428,6 @@ export function getPrivacyMode(state) {
 }
 
 /**
- * Default address feature flag (extension-ux-default-address-versioned)
- *
- * @param state - Redux state
- * @returns {boolean}
- */
-export function getIsDefaultAddressEnabled(state) {
-  const remoteFeatureFlags = getRemoteFeatureFlags(state);
-  return getBooleanFeatureFlag(
-    remoteFeatureFlags?.extensionUxDefaultAddressVersioned,
-    false,
-  );
-}
-
-/**
  * Show default address preference
  *
  * @param state - Redux state
@@ -1903,6 +1889,12 @@ export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }
 
+export const getIsAddressResolutionEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(remoteFeatureFlags?.addressResolution, false),
+);
+
 export function getUSDConversionRate(state) {
   return getCurrencyRateControllerCurrencyRates(state)[
     getProviderConfig(state).ticker
@@ -2098,8 +2090,11 @@ export function getNativeCurrencyForChain(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
 
+// `TokenListController` is no longer initialized, so `tokensChainsCache` is
+// absent from state. Fall back to a stable empty object so consumers keep
+// working and selector memoization is preserved.
 export const selectERC20TokensByChain = (state) =>
-  state.metamask.tokensChainsCache;
+  state.metamask.tokensChainsCache ?? EMPTY_OBJECT;
 
 // Deep-equal memo: `|| {}` yields a new empty object when no cached token list for the chain.
 const selectERC20Tokens = createDeepEqualSelector(

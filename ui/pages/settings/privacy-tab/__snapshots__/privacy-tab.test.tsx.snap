@@ -404,7 +404,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
         <p
           class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
+          We'll collect data on how you interact with our marketing communications, so we can share relevant news (like product features and other materials).
         </p>
       </div>
     </div>

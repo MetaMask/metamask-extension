@@ -64,6 +64,11 @@ const DEPOSIT_FAILED_TOAST_COPY = {
 const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
   DEPOSIT_FAILED_TOAST_COPY[intent ?? 'addMusd'];
 
+// Shared across hook instances: several entry points can be on screen at once
+// (e.g. the token details banner and balance CTA), and each would otherwise
+// create its own placeholder batch on rapid clicks.
+let isDepositInitiationInFlight = false;
+
 /**
  * Initiates a Money Account deposit: creates the placeholder approve +
  * deposit batch in the background (from the money account, with mUSD as the
@@ -113,6 +118,10 @@ export function useMoneyAccountDeposit() {
 
   const initiateDeposit = useCallback(
     async (options?: InitiateDepositOptions) => {
+      if (isDepositInitiationInFlight) {
+        return;
+      }
+
       const batchId = bytesToHex(new Uint8Array(uuidParse(uuidv4())));
 
       // Recorded before the async work so the intent exists by the time any
@@ -121,6 +130,7 @@ export function useMoneyAccountDeposit() {
         setMoneyAccountDepositIntent(batchId, options.intent);
       }
 
+      isDepositInitiationInFlight = true;
       setIsLoading(true);
       try {
         if (!fundingAccount) {
@@ -151,6 +161,7 @@ export function useMoneyAccountDeposit() {
           },
         });
       } finally {
+        isDepositInitiationInFlight = false;
         setIsLoading(false);
       }
     },

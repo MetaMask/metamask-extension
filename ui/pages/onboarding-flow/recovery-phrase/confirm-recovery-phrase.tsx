@@ -43,6 +43,7 @@ import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { useDispatch } from '../../../store/hooks';
+import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -82,6 +83,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
     useOnboardingSearchParams();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { endJourney } = useOnboardingTrace();
   const { bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
@@ -162,7 +164,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         .build(),
     );
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
-    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+    endJourney({ success: true });
 
     const nextRoute =
       isFirefox || isFromReminder
@@ -183,6 +185,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     isFromReminder,
     nextRouteQueryString,
     bufferedEndTrace,
+    endJourney,
   ]);
 
   const onClose = useCallback(() => {

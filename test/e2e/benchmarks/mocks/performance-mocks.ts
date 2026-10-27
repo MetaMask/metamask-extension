@@ -604,7 +604,7 @@ export async function mockBenchmarkEndpoints(
       .thenCallback(delayedResponse(250, { statusCode: 200, json: [] })),
   );
 
-  endpoints.push(await mockTokensV2SupportedNetworks(server));
+  endpoints.push(...(await mockTokensV2SupportedNetworks(server)));
   endpoints.push(await mockTokensV3Assets(server));
 
   endpoints.push(

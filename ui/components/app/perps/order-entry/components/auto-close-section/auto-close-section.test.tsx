@@ -7,12 +7,16 @@ import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AutoCloseSection } from './auto-close-section';
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../../../../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({
-    feeRate: 0.00145,
-    isLoading: false,
-    hasError: false,
-  }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return {
+      feeRate: 0.00145,
+      isLoading: false,
+      hasError: false,
+    };
+  },
 }));
 
 const mockStore = configureStore({
@@ -37,6 +41,57 @@ describe('AutoCloseSection', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('quotes the pair at its largest trigger notional and refetches on size changes', () => {
+    const { rerender } = renderWithProvider(
+      <AutoCloseSection
+        {...defaultProps}
+        estimatedSize={-2}
+        takeProfitPrice="50000"
+        stopLossPrice="40000"
+      />,
+      mockStore,
+    );
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '100000',
+    });
+    expect(mockUsePerpsOrderFees).not.toHaveBeenCalledWith(
+      expect.objectContaining({ amount: '80000' }),
+    );
+    rerender(
+      <AutoCloseSection
+        {...defaultProps}
+        estimatedSize={-1}
+        takeProfitPrice="50000"
+        stopLossPrice="40000"
+      />,
+    );
+    expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '50000',
+    });
+  });
+
+  it('uses the parent order notional for attached TP/SL', () => {
+    renderWithProvider(
+      <AutoCloseSection
+        {...defaultProps}
+        estimatedSize={2}
+        takeProfitPrice="50,000"
+        stopLossPrice="40,000"
+        feeNotionalUsd={90000}
+      />,
+      mockStore,
+    );
+    expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '90000',
+    });
   });
 
   describe('rendering', () => {

@@ -200,6 +200,43 @@ describe('useMoneyAccountDeposit', () => {
     });
   });
 
+  it('ignores initiations from any entry point while one is in flight', async () => {
+    const { result } = renderHookWithProvider(
+      () => [useMoneyAccountDeposit(), useMoneyAccountDeposit()] as const,
+      EVM_ACCOUNT_STATE,
+    );
+    const [first, second] = result.current;
+
+    await act(async () => {
+      await Promise.all([
+        first.initiateDeposit(),
+        first.initiateDeposit(),
+        second.initiateDeposit(),
+      ]);
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledTimes(1);
+    expect(navigateToTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('allows a new initiation once the previous one settles', async () => {
+    createDepositTransactionMock.mockRejectedValueOnce(new Error('failed'));
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledTimes(2);
+    expect(navigateToTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
   it('passes the originating route as goBackTo so the confirmation returns there', async () => {
     const { result } = renderHookWithProvider(
       () => useMoneyAccountDeposit(),

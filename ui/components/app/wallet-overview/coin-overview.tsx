@@ -64,6 +64,7 @@ import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectBalanceBySelectedAccountGroup,
+  selectIsAssetsLoadingForSelectedAccountGroup,
 } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
@@ -241,6 +242,9 @@ export const CoinOverview = ({
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
+  const isAssetsLoading = useSelector(
+    selectIsAssetsLoadingForSelectedAccountGroup,
+  );
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const isTestnet = useSelector(getMultichainIsTestnet);
   const isEvm = isEvmChainId(chainId);
@@ -323,7 +327,7 @@ export const CoinOverview = ({
           !hasZeroFiatBalanceDelayElapsed)) ||
         (shouldCheckBalanceState &&
           !hasBalance &&
-          (balanceIsLoading || !balanceIsLoaded))),
+          (balanceIsLoading || !balanceIsLoaded || isAssetsLoading))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
@@ -333,6 +337,7 @@ export const CoinOverview = ({
       hasBalance,
       balanceIsLoading,
       balanceIsLoaded,
+      isAssetsLoading,
     ],
   );
 

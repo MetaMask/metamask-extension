@@ -102,6 +102,20 @@ describe('TotalRow', () => {
     expect(totalValue).toHaveTextContent('$123.46');
   });
 
+  it('shows a skeleton while a typed amount has not been committed', () => {
+    const state = getMockPersonalSignConfirmState();
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TotalRow />,
+      mockStore(state),
+      undefined,
+      undefined,
+      undefined,
+      true,
+    );
+
+    expect(getByTestId('total-row-skeleton')).toBeInTheDocument();
+  });
+
   it('excludes sponsored network gas from the total when paid by MetaMask', () => {
     useIsPaidByMetaMaskMock.mockReturnValue(true);
     useTransactionPayTotalsMock.mockReturnValue({

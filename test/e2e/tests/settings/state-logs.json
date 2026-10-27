@@ -7,7 +7,9 @@
     "stage": "string",
     "warning": "null"
   },
-  "activeTab": {},
+  "activeTab": {
+    "id": "number"
+  },
   "appState": {
     "accountDetail": {
       "privateKey": "string"
@@ -261,6 +263,9 @@
         "image": "string"
       }
     },
+    "assetsLoadingStatus": {
+      "*": "string"
+    },
     "assetsMetadata": {
       "*": {
         "name": "string",
@@ -285,19 +290,20 @@
         "marketCap": "number",
         "totalVolume": "number",
         "dilutedMarketCap": "number",
+        "allTimeHigh": "number",
+        "allTimeLow": "number",
+        "circulatingSupply": "number",
         "pricePercentChange1d": "number",
+        "pricePercentChange1h": "number",
+        "pricePercentChange7d": "number",
+        "pricePercentChange14d": "number",
+        "pricePercentChange30d": "number",
+        "pricePercentChange200d": "number",
+        "pricePercentChange1y": "number",
         "lastUpdated": "number"
       }
     },
     "autoramps": [],
-    "balances": {
-      "*": {
-        "*": {
-          "unit": "string",
-          "amount": "string"
-        }
-      }
-    },
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
     "batchTransactionCounts": {},
@@ -317,35 +323,16 @@
     "consentDecisionMade": "boolean",
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
-      "networks": "object"
+      "networks": "object",
+      "eventsConfig": {
+        "events": {},
+        "schemaVersion": "string",
+        "timestamp": "number",
+        "version": "string"
+      }
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
-    "conversionRates": {
-      "*": {
-        "currency": "string",
-        "rate": "string",
-        "conversionTime": "number",
-        "expirationTime": "number",
-        "marketData": {
-          "fungible": "boolean",
-          "allTimeHigh": "string",
-          "allTimeLow": "string",
-          "circulatingSupply": "string",
-          "marketCap": "string",
-          "totalVolume": "string",
-          "pricePercentChange": {
-            "PT1H": "number",
-            "P1D": "number",
-            "P7D": "number",
-            "P14D": "number",
-            "P30D": "number",
-            "P200D": "number",
-            "P1Y": "number"
-          }
-        }
-      }
-    },
     "country": "string",
     "coverageResults": {},
     "countries": {
@@ -441,6 +428,13 @@
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
+    "eventsConfigEtag": "null",
+    "eventsConfig": {
+      "events": {},
+      "schemaVersion": "string",
+      "timestamp": "number",
+      "version": "string"
+    },
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -531,7 +525,6 @@
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
     "hip3ConfigVersion": "number",
-    "historicalPrices": {},
     "ignoredNfts": [],
     "initializationAttempts": "number",
     "initializationError": "null",
@@ -822,6 +815,7 @@
     },
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
+    "moneyEarnBannerDismissedTokenKeys": [],
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -876,6 +870,7 @@
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
     "onboardingDate": "null",
+    "onboardingJourneyEnded": "boolean",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
@@ -1229,7 +1224,6 @@
     "throttledOrigins": {},
     "timeoutMinutes": "number",
     "timezone": "string",
-    "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {
       "data": "null",
@@ -1239,7 +1233,6 @@
       "selected": "null"
     },
     "tokenSecurityTypeDestination": "null",
-    "tokensChainsCache": {},
     "tokenWarnings": [],
     "tradeConfigurations": {
       "testnet": {},
@@ -1278,7 +1271,7 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
-    "version": "null",
+    "version": "string",
     "versionInfo": [],
     "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",

@@ -34,6 +34,7 @@
       "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "consentDecisionMade": true,
       "eventQueue": "object",
+      "eventsConfig": "object",
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": "boolean",
       "optedIn": true,
@@ -64,6 +65,7 @@
       "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": "object",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -106,8 +108,9 @@
     "ConfigRegistryController": {
       "configs": "object",
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
-      "version": null
+      "version": "0"
     },
     "CurrencyController": {},
     "DeFiPositionsControllerV2": "object",
@@ -132,8 +135,6 @@
     "MoneyAccountController": { "moneyAccounts": "object" },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {},
-    "MultichainAssetsRatesController": {},
-    "MultichainBalancesController": {},
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],
@@ -193,6 +194,7 @@
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
       "hasSeenOnboardingCompletionPage": true,
+      "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -335,7 +337,6 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenBalancesController": {},
     "TokenRatesController": {},
     "TokensController": {},
     "TransactionController": {
@@ -358,6 +359,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 230
+    "version": 233
   }
 }
