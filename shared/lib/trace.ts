@@ -50,6 +50,7 @@ export enum TraceName {
   NestedTest2 = 'Nested Test 2',
   NetworkList = 'Network List',
   NotificationDisplay = 'Notification Display',
+  NotificationListTimeToContent = 'Notification List Time To Content',
   PPOMValidation = 'PPOM Validation',
   ReceiveModal = 'Receive Modal',
   SendCompleted = 'Send Completed',
@@ -168,6 +169,7 @@ export enum TraceName {
  */
 export enum TraceOperation {
   AccountList = 'account.list',
+  NotificationPerformance = 'notification.performance',
   OnboardingUserJourney = 'onboarding.user_journey',
   OnboardingSecurityOp = 'onboarding.security_operation',
   OnboardingError = 'onboarding.error',
