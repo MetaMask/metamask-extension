@@ -445,30 +445,7 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": {
-      "moneyAccounts": {
-        "ff738093-9dbe-4169-84c3-5c8d94c392ad": {
-          "address": "0xd5fe9b0579443e7025cf3309ba420977710e7183",
-          "id": "ff738093-9dbe-4169-84c3-5c8d94c392ad",
-          "methods": [
-            "eth_signTransaction",
-            "personal_sign",
-            "eth_signTypedData_v1",
-            "eth_signTypedData_v3",
-            "eth_signTypedData_v4"
-          ],
-          "options": {
-            "entropy": {
-              "derivationPath": "m/44'/4392018'/0'/0",
-              "groupIndex": 0,
-              "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
-              "type": "mnemonic"
-            },
-            "exportable": false
-          },
-          "scopes": ["eip155:0"],
-          "type": "eip155:eoa"
-        }
-      }
+      "moneyAccounts": {}
     },
     "MoneyAccountUpgradeController": {
       "upgradedAccounts": {}
