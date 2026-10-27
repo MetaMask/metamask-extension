@@ -440,6 +440,9 @@
     "LoggingController": {
       "logs": {}
     },
+    "MarketingConsentController": {
+      "pendingMarketingConsent": null
+    },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0

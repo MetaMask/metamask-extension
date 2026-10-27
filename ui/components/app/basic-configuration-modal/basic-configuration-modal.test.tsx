@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
@@ -26,31 +26,37 @@ jest.mock('../../../hooks/useAnalytics', () => {
 });
 
 jest.mock('../../../store/actions', () => ({
-  setDataCollectionForMarketing: jest.fn(),
-  setParticipateInMetaMetrics: jest.fn(),
-  toggleBasicFunctionality: jest.fn(),
-  toggleExternalServices: jest.fn(),
+  // Returning the real action lets the reducer update consent state, so a
+  // regression that opts out of marketing fails the state assertion below.
+  setDataCollectionForMarketing: jest.fn((value: boolean) => ({
+    type: 'SET_DATA_COLLECTION_FOR_MARKETING',
+    value,
+  })),
+  setParticipateInMetaMetrics: jest.fn((value: boolean | null) => ({
+    type: 'SET_PARTICIPATE_IN_METAMETRICS',
+    value,
+  })),
+  toggleBasicFunctionality: jest.fn(() => ({
+    type: 'MOCK_TOGGLE_BASIC_FUNCTIONALITY',
+  })),
+  toggleExternalServices: jest.fn(() => ({
+    type: 'MOCK_TOGGLE_EXTERNAL_SERVICES',
+  })),
 }));
 
 jest.mock('../../../ducks/app/app', () => ({
-  hideBasicFunctionalityModal: jest.fn(),
-  onboardingToggleBasicFunctionalityOff: jest.fn(),
+  hideBasicFunctionalityModal: jest.fn(() => ({
+    type: 'MOCK_HIDE_BASIC_FUNCTIONALITY_MODAL',
+  })),
+  onboardingToggleBasicFunctionalityOff: jest.fn(() => ({
+    type: 'MOCK_ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF',
+  })),
 }));
 
 jest.mock('../../../selectors/multichain/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/multichain/feature-flags'),
   getIsBasicFunctionalityConsolidationEnabled: () => false,
 }));
-
-const mockDispatch = jest.fn();
-
-jest.mock('react-redux', () => {
-  const actual = jest.requireActual('react-redux');
-  return {
-    ...actual,
-    useDispatch: () => mockDispatch,
-  };
-});
 
 const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -63,8 +69,17 @@ jest.mock('react-router-dom', () => ({
 type StateOverrides<T extends boolean> = {
   metamask: {
     useExternalServices: T;
+    optedIn?: boolean;
+    optedInToMarketing?: boolean;
+    marketingConsentDecisionMade?: boolean;
   };
 };
+
+const marketingConsentOn = {
+  optedIn: true,
+  optedInToMarketing: true,
+  marketingConsentDecisionMade: true,
+} as const;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -76,6 +91,7 @@ type ArrangeMocksParams<T extends boolean> = {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type ArrangeMocksReturn<T extends boolean> = {
+  store: ReturnType<typeof configureStore>;
   toggleBasicFunctionalityButton: HTMLElement;
   cancelButton: HTMLElement;
   agreementCheckbox: T extends true ? HTMLElement : null;
@@ -112,10 +128,29 @@ const arrangeMocks = <T extends boolean>({
   const cancelButton = getByTestId('basic-configuration-modal-cancel-button');
 
   return {
+    store,
     toggleBasicFunctionalityButton,
     cancelButton,
     agreementCheckbox,
   } as ArrangeMocksReturn<T>;
+};
+
+/**
+ * Turning Basic Functionality off must not call `setDataCollectionForMarketing`.
+ * That action calls `AnalyticsController:optOutOfMarketing`, and
+ * MarketingConsentController writes the change to Authenticated User Storage.
+ *
+ * @param store - The store rendered with marketing consent already on.
+ */
+const expectMarketingConsentUntouched = (
+  store: ReturnType<typeof configureStore>,
+) => {
+  const { metamask } = store.getState();
+
+  expect(Actions.setDataCollectionForMarketing).not.toHaveBeenCalled();
+  expect(metamask.optedInToMarketing).toBe(true);
+  expect(metamask.marketingConsentDecisionMade).toBe(true);
+  expect(metamask.optedIn).toBe(false);
 };
 
 describe('BasicConfigurationModal', () => {
@@ -149,13 +184,14 @@ describe('BasicConfigurationModal', () => {
       expect(toggleBasicFunctionalityButton).toBeInTheDocument();
     });
 
-    it('should call appropriate actions when the turn off button is clicked', () => {
-      const { agreementCheckbox, toggleBasicFunctionalityButton } =
+    it('turns MetaMetrics off and leaves marketing consent untouched', () => {
+      const { agreementCheckbox, store, toggleBasicFunctionalityButton } =
         arrangeMocks({
           isOnboarding: true,
           stateOverrides: {
             metamask: {
               useExternalServices: true,
+              ...marketingConsentOn,
             },
           },
         });
@@ -170,8 +206,7 @@ describe('BasicConfigurationModal', () => {
       expect(onboardingToggleBasicFunctionalityOff).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledTimes(1);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expectMarketingConsentUntouched(store);
     });
   });
 
@@ -195,31 +230,29 @@ describe('BasicConfigurationModal', () => {
       expect(toggleBasicFunctionalityButton).toBeInTheDocument();
     });
 
-    it('should call appropriate actions when the turn off button is clicked', () => {
-      const { agreementCheckbox, toggleBasicFunctionalityButton } =
+    it('turns MetaMetrics off and leaves marketing consent untouched', () => {
+      const { agreementCheckbox, store, toggleBasicFunctionalityButton } =
         arrangeMocks({
           stateOverrides: {
             metamask: {
               useExternalServices: true,
+              ...marketingConsentOn,
             },
           },
         });
 
       fireEvent.click(agreementCheckbox);
 
-      waitFor(() => {
-        expect(toggleBasicFunctionalityButton).toBeEnabled();
-      });
+      expect(toggleBasicFunctionalityButton).toBeEnabled();
 
       fireEvent.click(toggleBasicFunctionalityButton);
 
       expect(hideBasicFunctionalityModal).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledTimes(1);
       expect(Actions.setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledTimes(1);
-      expect(Actions.setDataCollectionForMarketing).toHaveBeenCalledWith(false);
       expect(Actions.toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(Actions.toggleExternalServices).toHaveBeenCalledWith(false);
+      expectMarketingConsentUntouched(store);
     });
 
     it('should call the appropriate actions when the turn on button is clicked', () => {
