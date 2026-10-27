@@ -2377,7 +2377,6 @@ export default class MetamaskController extends EventEmitter {
       tokenRatesController,
       // Notification Controllers
       authenticationController,
-      userStorageController,
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
@@ -2387,10 +2386,6 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
 
-      setUseMultiAccountBalanceChecker:
-        preferencesController.setUseMultiAccountBalanceChecker.bind(
-          preferencesController,
-        ),
       isPublicEndpointUrl: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:isPublicEndpointUrl',
@@ -2451,13 +2446,6 @@ export default class MetamaskController extends EventEmitter {
 
       // PreferencesController
 
-      toggleExternalServices: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:toggleExternalServices',
-      ),
-      setPreference: preferencesController.setPreference.bind(
-        preferencesController,
-      ),
       dismissSidePanelMigrationToast:
         preferencesController.dismissSidePanelMigrationToast.bind(
           preferencesController,
@@ -2499,8 +2487,6 @@ export default class MetamaskController extends EventEmitter {
 
       // AppStateController
 
-      removeDeferredDeepLink:
-        appStateController.removeDeferredDeepLink.bind(appStateController),
       setLastVisitedRoute:
         appStateController.setLastVisitedRoute.bind(appStateController),
       setOnboardingDate:
@@ -2783,13 +2769,6 @@ export default class MetamaskController extends EventEmitter {
       requestProfilePairing:
         authenticationController.requestProfilePairing.bind(
           authenticationController,
-        ),
-
-      // UserStorageController
-      //
-      setIsBackupAndSyncFeatureEnabled:
-        userStorageController.setIsBackupAndSyncFeatureEnabled.bind(
-          userStorageController,
         ),
 
       // NotificationServicesController
