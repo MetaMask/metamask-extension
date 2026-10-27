@@ -22,7 +22,7 @@ import { transitionForward } from '../../../components/ui/transition';
 import { toast } from '../../../components/ui/toast/toast';
 import { getIsSocialLoginFlow } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { isMfaKitEnabled, useMfa } from '../../../hooks/identity/mfa';
+import { isMfaDevBuild, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
 import type { MfaDetailsMethod } from './mfa-method-details';
 import { MfaSettingsTestIds } from './test-ids';
@@ -155,7 +155,7 @@ const MfaSettings = () => {
           </button>
         </Box>
       ))}
-      {isMfaKitEnabled() ? (
+      {isMfaDevBuild() ? (
         <Box padding={4}>
           <MfaQaPresets />
         </Box>

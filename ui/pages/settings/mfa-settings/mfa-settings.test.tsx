@@ -11,7 +11,7 @@ import messages from '../../../../app/_locales/en/messages.json';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
-import { isMfaKitEnabled } from '../../../hooks/identity/mfa/isMfaKitEnabled';
+import { isMfaDevBuild } from '../../../hooks/identity/mfa/isMfaDevBuild';
 import {
   MFA_SETTINGS_EMAIL_ROUTE,
   MFA_SETTINGS_TOTP_ROUTE,
@@ -41,8 +41,8 @@ jest.mock('../../../hooks/identity/mfa/bindings', () => ({
   },
 }));
 
-jest.mock('../../../hooks/identity/mfa/isMfaKitEnabled', () => ({
-  isMfaKitEnabled: jest.fn(),
+jest.mock('../../../hooks/identity/mfa/isMfaDevBuild', () => ({
+  isMfaDevBuild: jest.fn(),
 }));
 
 const mockGetIsSocialLoginFlow = jest.fn();
@@ -70,7 +70,7 @@ describe('MfaSettings', () => {
     mockAdapter.refreshEnrolledCredentials.mockResolvedValue([]);
     mockAdapter.clearVerificationSession.mockResolvedValue(undefined);
     mockStartMfaFlow.mockResolvedValue({ credentials: [] });
-    jest.mocked(isMfaKitEnabled).mockReturnValue(true);
+    jest.mocked(isMfaDevBuild).mockReturnValue(true);
     mockGetIsSocialLoginFlow.mockReturnValue(false);
   });
 
@@ -190,7 +190,7 @@ describe('MfaSettings', () => {
   });
 
   it('hides the QA presets in production', () => {
-    jest.mocked(isMfaKitEnabled).mockReturnValue(false);
+    jest.mocked(isMfaDevBuild).mockReturnValue(false);
     renderSettings();
 
     expect(
