@@ -5204,9 +5204,6 @@
   "loading": {
     "message": "Carregando..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Por favor, conclua a transação no Snap."
-  },
   "loadingTokenList": {
     "message": "Carregando lista de tokens"
   },
@@ -5461,17 +5458,11 @@
   "mfaMethodEmail": {
     "message": "E-mail"
   },
-  "mfaOtpPaste": {
-    "message": "Colar"
-  },
   "mfaOtpResend": {
     "message": "Reenviar código"
   },
   "mfaOtpRetry": {
     "message": "Tentar novamente"
-  },
-  "mfaOtpVerify": {
-    "message": "Verificar"
   },
   "mfaPickerOr": {
     "message": "ou"

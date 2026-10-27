@@ -5208,9 +5208,6 @@
   "loading": {
     "message": "Đang tải..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Vui lòng hoàn tất giao dịch trên Snap."
-  },
   "loadingTokenList": {
     "message": "Đang tải danh sách token"
   },
@@ -5465,17 +5462,11 @@
   "mfaMethodEmail": {
     "message": "Email"
   },
-  "mfaOtpPaste": {
-    "message": "Dán"
-  },
   "mfaOtpResend": {
     "message": "Gửi lại mã"
   },
   "mfaOtpRetry": {
     "message": "Thử lại"
-  },
-  "mfaOtpVerify": {
-    "message": "Xác minh"
   },
   "mfaPickerOr": {
     "message": "hoặc"

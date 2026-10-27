@@ -5204,9 +5204,6 @@
   "loading": {
     "message": "लोड हो रहा है..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
-  },
   "loadingTokenList": {
     "message": "टोकन लिस्ट लोड हो रहा है"
   },
@@ -5458,17 +5455,11 @@
   "mfaMethodEmail": {
     "message": "ईमेल"
   },
-  "mfaOtpPaste": {
-    "message": "पेस्ट करें"
-  },
   "mfaOtpResend": {
     "message": "कोड फिर से भेजें"
   },
   "mfaOtpRetry": {
     "message": "फिर से प्रयास करें"
-  },
-  "mfaOtpVerify": {
-    "message": "सत्यापित करें"
   },
   "mfaPickerOr": {
     "message": "या"

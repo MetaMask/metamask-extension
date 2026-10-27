@@ -5208,9 +5208,6 @@
   "loading": {
     "message": "Memuat..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Selesaikan transaksi di Snap."
-  },
   "loadingTokenList": {
     "message": "Memuat daftar token"
   },
@@ -5465,17 +5462,11 @@
   "mfaMethodEmail": {
     "message": "Email"
   },
-  "mfaOtpPaste": {
-    "message": "Tempel"
-  },
   "mfaOtpResend": {
     "message": "Kirim ulang kode"
   },
   "mfaOtpRetry": {
     "message": "Coba lagi"
-  },
-  "mfaOtpVerify": {
-    "message": "Verifikasikan"
   },
   "mfaPickerOr": {
     "message": "atau"
