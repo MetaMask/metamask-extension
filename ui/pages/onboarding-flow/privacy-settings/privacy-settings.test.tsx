@@ -109,40 +109,20 @@ describe('Privacy Settings Onboarding View', () => {
     );
   });
 
-  const messengerCallMock = jest.fn(
-    (actionType: string, args: unknown[] = []) => {
-      switch (actionType) {
-        case 'PreferencesController:setFeatureFlag':
-          return setFeatureFlagStub(...args);
-        case 'PreferencesController:setUse4ByteResolution':
-          return setUse4ByteResolutionStub(...args);
-        case 'PreferencesController:setUseTokenDetection':
-          return setUseTokenDetectionStub(...args);
-        case 'PreferencesController:setUseCurrencyRateCheck':
-          return setUseCurrencyRateCheckStub(...args);
-        case 'PreferencesController:setIpfsGateway':
-          return setIpfsGatewayStub(...args);
-        case 'OnboardingController:completeOnboarding':
-          return completeOnboardingStub(...args);
-        case 'PreferencesController:setUseAddressBarEnsResolution':
-          return setUseAddressBarEnsResolutionStub(...args);
-        case 'PreferencesController:setUseTransactionSimulations':
-          return setUseTransactionSimulationsStub(...args);
-        case 'PreferencesController:setPreference':
-          return setPreferenceStub(...args);
-        default:
-          return Promise.resolve(undefined);
-      }
-    },
-  );
-
   setBackgroundConnection({
-    getStatePatches: jest.fn().mockResolvedValue([]),
-    messengerCall: messengerCallMock,
+    setFeatureFlag: setFeatureFlagStub,
+    setUse4ByteResolution: setUse4ByteResolutionStub,
+    setUseTokenDetection: setUseTokenDetectionStub,
+    setUseCurrencyRateCheck: setUseCurrencyRateCheckStub,
+    setIpfsGateway: setIpfsGatewayStub,
+    completeOnboarding: completeOnboardingStub,
+    setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
+    setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
+    toggleExternalServices: toggleExternalServicesStub,
     onboardingToggleBasicFunctionalityOn:
       onboardingToggleBasicFunctionalityOnStub,
-    setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
-    toggleExternalServices: toggleExternalServicesStub,
+    setUseTransactionSimulations: setUseTransactionSimulationsStub,
+    setPreference: setPreferenceStub,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);
 
