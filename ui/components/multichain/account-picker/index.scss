@@ -3,8 +3,4 @@
   &:not([disabled]):focus {
     background: var(--color-background-default-hover);
   }
-
-  &-container {
-    overflow: hidden;
-  }
 }

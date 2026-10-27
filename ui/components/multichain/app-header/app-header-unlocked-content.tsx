@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
+import classnames from 'clsx';
 import {
   matchPath,
   useLocation,
@@ -11,9 +12,6 @@ import {
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -137,50 +135,48 @@ export const AppHeaderUnlockedContent = ({
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <Box style={{ overflow: 'hidden' }}>
-        {/* Prevent overflow of account picker by long account names */}
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Start}
-          className="min-w-0"
-        >
-          {isFullScreenDesign ? (
-            <AccountName name={accountName} />
-          ) : (
-            <AccountPicker
-              address={''} // No address shown in multichain mode
-              name={accountName}
-              showAvatarAccount={false}
-              onClick={() => {
-                trace({
-                  name: TraceName.ShowAccountList,
-                  op: TraceOperation.AccountUi,
-                });
-                transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
-                trackEvent(
-                  createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
-                    .addCategory(MetaMetricsEventCategory.Navigation)
-                    .addProperties({
-                      location: 'Home',
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      pinned_count: accountListStats.pinnedCount,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      hidden_count: accountListStats.hiddenCount,
-                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                      // eslint-disable-next-line @typescript-eslint/naming-convention
-                      total_accounts: accountListStats.totalAccounts,
-                    })
-                    .build(),
-                );
-              }}
-              disabled={disableAccountPicker}
-              paddingLeft={2}
-              paddingRight={2}
-            />
-          )}
-        </Box>
+      <Box
+        className={classnames(
+          'min-w-0 flex-1 overflow-hidden',
+          isFullScreenDesign && 'max-w-lg',
+        )}
+      >
+        {isFullScreenDesign ? (
+          <AccountName name={accountName} />
+        ) : (
+          <AccountPicker
+            address={''} // No address shown in multichain mode
+            name={accountName}
+            showAvatarAccount={false}
+            onClick={() => {
+              trace({
+                name: TraceName.ShowAccountList,
+                op: TraceOperation.AccountUi,
+              });
+              transitionForward(() => navigate(ACCOUNT_LIST_PAGE_ROUTE));
+              trackEvent(
+                createEventBuilder(MetaMetricsEventName.NavAccountMenuOpened)
+                  .addCategory(MetaMetricsEventCategory.Navigation)
+                  .addProperties({
+                    location: 'Home',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    pinned_count: accountListStats.pinnedCount,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    hidden_count: accountListStats.hiddenCount,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    total_accounts: accountListStats.totalAccounts,
+                  })
+                  .build(),
+              );
+            }}
+            disabled={disableAccountPicker}
+            paddingLeft={2}
+            paddingRight={2}
+          />
+        )}
         {selectedMultichainAccountId && (
           <Box
             className="ml-2 mt-1 w-fit"
@@ -217,69 +213,53 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={2}
-        className="min-w-0"
+      {multichainAccountAppContent}
+
+      {isDiscoverSearchEnabled &&
+        (isFullScreenDesign ? (
+          <DiscoverSearchBar
+            className="ml-auto"
+            onOpen={handleOpenDiscoverSearch}
+          />
+        ) : (
+          <ButtonIcon
+            iconName={IconName.Search}
+            data-testid="discover-search-button"
+            ariaLabel={t('searchTokens')}
+            onClick={handleOpenDiscoverSearch}
+            size={ButtonIconSize.Md}
+          />
+        ))}
+
+      <BadgeWrapper
+        badge={
+          accountOptionsMenuOpen ? null : <NotificationsTagCounter noLabel />
+        }
+        position={BadgeWrapperPosition.TopRight}
+        badgeContainerProps={{
+          onClick: handleMainMenuToggle,
+          className: 'cursor-pointer',
+        }}
+        className="self-center"
       >
-        {multichainAccountAppContent}
-      </Box>
-      <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.End}
-        className={isFullScreenDesign ? 'ml-auto min-w-0 flex-1' : 'ml-auto'}
-      >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.End}
-          className="w-full"
-          gap={2}
-        >
-          {isDiscoverSearchEnabled && isFullScreenDesign && (
-            <DiscoverSearchBar onOpen={handleOpenDiscoverSearch} />
-          )}
-          {isDiscoverSearchEnabled && !isFullScreenDesign && (
-            <ButtonIcon
-              iconName={IconName.Search}
-              data-testid="discover-search-button"
-              ariaLabel={t('searchTokens')}
-              onClick={handleOpenDiscoverSearch}
-              size={ButtonIconSize.Md}
-            />
-          )}
-          <BadgeWrapper
-            badge={
-              accountOptionsMenuOpen ? null : (
-                <NotificationsTagCounter noLabel />
-              )
-            }
-            position={BadgeWrapperPosition.TopRight}
-            badgeContainerProps={{
-              onClick: handleMainMenuToggle,
-              className: 'cursor-pointer',
-            }}
-            className="self-center"
-          >
-            <ButtonIcon
-              ref={menuRef}
-              iconName={IconName.Menu}
-              data-testid="account-options-menu-button"
-              ariaLabel={t('accountOptions')}
-              onClick={handleMainMenuToggle}
-              size={ButtonIconSize.Md}
-            />
-          </BadgeWrapper>
-        </Box>
-        <GlobalMenuDrawerWithList
-          isOpen={accountOptionsMenuOpen}
-          onClose={closeAccountOptionsMenu}
+        <ButtonIcon
+          ref={menuRef}
+          iconName={IconName.Menu}
+          data-testid="account-options-menu-button"
+          ariaLabel={t('accountOptions')}
+          onClick={handleMainMenuToggle}
+          size={isFullScreenDesign ? ButtonIconSize.Lg : ButtonIconSize.Md}
         />
-        <VisitSupportDataConsentModal
-          isOpen={showSupportDataConsentModal}
-          onClose={() => dispatch(setShowSupportDataConsentModal(false))}
-        />
-      </Box>
+      </BadgeWrapper>
+
+      <GlobalMenuDrawerWithList
+        isOpen={accountOptionsMenuOpen}
+        onClose={closeAccountOptionsMenu}
+      />
+      <VisitSupportDataConsentModal
+        isOpen={showSupportDataConsentModal}
+        onClose={() => dispatch(setShowSupportDataConsentModal(false))}
+      />
     </>
   );
 };

@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
+import classnames from 'clsx';
 import { TextFieldSearch } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type DiscoverSearchBarProps = {
   onOpen: () => void;
+  className?: string;
 };
 
 /**
@@ -12,8 +14,12 @@ type DiscoverSearchBarProps = {
  *
  * @param props - The component props.
  * @param props.onOpen - Called when the search bar is clicked or activated.
+ * @param props.className - Extra classes for positioning within the header.
  */
-export const DiscoverSearchBar = ({ onOpen }: DiscoverSearchBarProps) => {
+export const DiscoverSearchBar = ({
+  onOpen,
+  className,
+}: DiscoverSearchBarProps) => {
   const t = useI18nContext();
 
   const handleKeyDown = useCallback(
@@ -27,7 +33,7 @@ export const DiscoverSearchBar = ({ onOpen }: DiscoverSearchBarProps) => {
 
   return (
     <TextFieldSearch
-      className="w-full max-w-[400px] min-w-0 cursor-pointer"
+      className={classnames('max-w-lg flex-1 cursor-pointer', className)}
       placeholder={t('searchTokens')}
       value=""
       isReadOnly

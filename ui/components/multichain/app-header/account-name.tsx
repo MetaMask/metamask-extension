@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, TextVariant } from '@metamask/design-system-react';
+import { Text, TextVariant } from '@metamask/design-system-react';
 
 type AccountNameProps = {
   name: string;
@@ -14,13 +14,12 @@ type AccountNameProps = {
  * @param props.name - The account name.
  */
 export const AccountName = ({ name }: AccountNameProps) => (
-  <Box className="min-w-0 px-2">
-    <Text
-      variant={TextVariant.HeadingMd}
-      ellipsis
-      data-testid="app-header-account-name"
-    >
-      {name}
-    </Text>
-  </Box>
+  <Text
+    variant={TextVariant.HeadingMd}
+    ellipsis
+    className="px-2"
+    data-testid="app-header-account-name"
+  >
+    {name}
+  </Text>
 );

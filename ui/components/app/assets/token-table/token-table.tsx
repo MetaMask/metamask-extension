@@ -41,7 +41,8 @@ export type TokenTableProps = {
 };
 
 const COLUMNS_CLASS_NAME =
-  'grid grid-cols-[minmax(0,1fr)_120px_96px_minmax(0,160px)] items-center gap-4 px-4';
+  'grid grid-cols-[minmax(0,1fr)_96px_minmax(0,160px)] lg:grid-cols-[minmax(0,1fr)_120px_96px_minmax(0,160px)] items-center gap-4 px-4';
+const PRICE_COLUMN_CLASS_NAME = 'hidden lg:block';
 
 const TokenTableHeader = () => {
   const t = useI18nContext();
@@ -63,6 +64,7 @@ const TokenTableHeader = () => {
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={TextColor.TextAlternative}
+        className={PRICE_COLUMN_CLASS_NAME}
       >
         {t('price')}
       </Text>
@@ -133,7 +135,9 @@ const TokenTableRow = ({
             />
             <TokenCellTitle token={displayToken} />
           </Box>
-          <TokenCellPrice token={displayToken} />
+          <div className={PRICE_COLUMN_CLASS_NAME}>
+            <TokenCellPrice token={displayToken} />
+          </div>
           <TokenCellPercentChange token={displayToken} />
           <Box className="flex min-w-0 flex-col">
             <TokenCellSecondaryDisplay
