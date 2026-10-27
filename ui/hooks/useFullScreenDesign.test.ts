@@ -55,6 +55,12 @@ describe('useFullScreenDesign', () => {
     jest.restoreAllMocks();
   });
 
+  it('uses the Tailwind md breakpoint inlined for the build', () => {
+    expect(FULL_SCREEN_DESIGN_MIN_WIDTH).toBe(
+      Number(process.env.TAILWIND_MD_MIN_WIDTH),
+    );
+  });
+
   it('returns true when the flag is enabled and the viewport is at the minimum width', () => {
     mockViewportWidth(FULL_SCREEN_DESIGN_MIN_WIDTH);
     const { result } = renderUseFullScreenDesign();

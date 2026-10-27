@@ -2,9 +2,17 @@ import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsFullscreenRedesignEnabled } from '../selectors/multichain/feature-flags';
 
-// Minimum viewport width at which the fullscreen design is used
-// Matches the Tailwind `md` breakpoint
-export const FULL_SCREEN_DESIGN_MIN_WIDTH = 768;
+// Minimum viewport width at which the fullscreen design is used.
+// Webpack inlines this from the resolved Tailwind `md` screen
+// (`theme.screens.md`) so the media query stays aligned with `md:` utilities.
+const tailwindMdMinWidth = Number(process.env.TAILWIND_MD_MIN_WIDTH);
+if (!Number.isInteger(tailwindMdMinWidth) || tailwindMdMinWidth <= 0) {
+  throw new Error(
+    'TAILWIND_MD_MIN_WIDTH must be the Tailwind md breakpoint in pixels.',
+  );
+}
+
+export const FULL_SCREEN_DESIGN_MIN_WIDTH = tailwindMdMinWidth;
 const FULL_SCREEN_DESIGN_MEDIA_QUERY = `(min-width: ${FULL_SCREEN_DESIGN_MIN_WIDTH}px)`;
 
 /**
