@@ -191,6 +191,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     logs: false,
   },
   MoneyAccountController: {
+    defaultMoneyAccountId: false,
     moneyAccounts: false,
   },
   MoneyAccountUpgradeController: {

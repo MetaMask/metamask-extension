@@ -117,7 +117,10 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
+      "moneyAccounts": "object"
+    },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
