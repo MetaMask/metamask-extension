@@ -109,6 +109,7 @@ type IsolatedHtmlEntries = {
 const lockdownBase = [
   String.raw`runtime\.[0-9a-h]{20}\.js`,
   String.raw`scripts\/contentscript\.js`,
+  String.raw`scripts\/cashtag\/contentscript\.js`,
   String.raw`service-worker\.js`,
 ];
 
@@ -177,7 +178,10 @@ export const lavamoatPlugin = (
             },
           },
         };
-      } else if (chunk.name === 'scripts/contentscript.js') {
+      } else if (
+        chunk.name === 'scripts/contentscript.js' ||
+        chunk.name === 'scripts/cashtag/contentscript.ts'
+      ) {
         return {
           mode: 'safe',
           embeddedOptions: {

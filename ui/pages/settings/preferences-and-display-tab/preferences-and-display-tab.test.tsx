@@ -7,6 +7,10 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { setBackgroundConnection } from '../../../store/background-connection';
 import PreferencesAndDisplayTab from './preferences-and-display-tab';
 
+jest.mock('#shared/lib/mv3.utils', () => ({
+  isManifestV3: true,
+}));
+
 const backgroundConnectionMock = new Proxy(
   {},
   { get: () => jest.fn().mockResolvedValue(undefined) },
