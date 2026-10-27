@@ -1,5 +1,7 @@
 import React from 'react';
+import RiveWasmProvider from '../../../contexts/rive-wasm';
 import CreationSuccessful from './creation-successful';
+import './index.scss';
 
 export default {
   title: 'Pages/OnboardingFlow/CreationSuccessful',
@@ -7,9 +9,9 @@ export default {
 
 export const DefaultStory = () => {
   return (
-    <div style={{ maxHeight: '2000px' }}>
+    <RiveWasmProvider>
       <CreationSuccessful />
-    </div>
+    </RiveWasmProvider>
   );
 };
 
