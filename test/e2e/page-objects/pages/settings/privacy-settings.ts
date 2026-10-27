@@ -106,6 +106,9 @@ class PrivacySettings {
   private readonly ipfsGatewayToggle =
     '[data-testid="ipfsToggle"] .toggle-button';
 
+  private readonly marketingConsentOptOutSheetConfirm =
+    '[data-testid="marketing-consent-opt-out-sheet-confirm"]';
+
   private readonly networkDetailsCheckToggle =
     '[data-testid="useSafeChainsListValidation"] .toggle-button';
 
@@ -557,6 +560,18 @@ class PrivacySettings {
       'Toggle data collection for marketing in Security and Privacy settings page',
     );
     await this.driver.clickElement(this.dataCollectionForMarketingToggle);
+    // Turning off warns when Updates and rewards notifications rely on it.
+    if (
+      targetState === 'off' &&
+      (await this.driver.isElementPresentAndVisible(
+        this.marketingConsentOptOutSheetConfirm,
+        2000,
+      ))
+    ) {
+      await this.driver.clickElementAndWaitToDisappear(
+        this.marketingConsentOptOutSheetConfirm,
+      );
+    }
     await this.driver.waitForSelector(
       `${this.dataCollectionForMarketingToggle}.toggle-button--${targetState}`,
     );

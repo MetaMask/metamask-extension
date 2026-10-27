@@ -4414,6 +4414,33 @@ export function setDataCollectionForMarketing(
   };
 }
 
+/**
+ * Saves the user's marketing consent and resolves once Authenticated User
+ * Storage has saved it. If AUS does not save it, the background re-applies the
+ * AUS value and this rejects.
+ *
+ * @param consent - Whether the user consents to marketing.
+ */
+export function saveMarketingConsent(
+  consent: boolean,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.MarketingConsentController:setMarketingConsent`);
+    try {
+      await submitRequestToBackground('messengerCall', [
+        'MarketingConsentController:setMarketingConsent',
+        [consent],
+      ]);
+    } finally {
+      // Refresh either way: on failure the background re-applied the AUS
+      // value. A failed refresh must not hide the save result.
+      await forceUpdateMetamaskState(dispatch).catch((error) =>
+        log.error(error),
+      );
+    }
+  };
+}
+
 export function setPna25Acknowledged(
   acknowledged: boolean,
   disableDelay: boolean = false,
@@ -7363,20 +7390,31 @@ export function getNotificationPreferences(): ThunkAction<
 }
 
 /**
- * Writes notification preferences to Authenticated User Storage.
+ * Saves a change to notification preferences through
+ * NotificationServicesController, which merges it over the stored
+ * preferences and rejects turning a marketing channel on without marketing
+ * consent.
  *
- * @param preferences - The complete notification preferences object to persist.
- * @returns A thunk action that writes notification preferences.
+ * @param update - The sections and fields to change.
+ * @returns A thunk action that resolves to the saved preferences.
  */
-export function putNotificationPreferences(
-  preferences: NotificationPreferences,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+export function updateNotificationPreferences(
+  update: NotificationServicesController.NotificationPreferencesUpdate,
+): ThunkAction<
+  Promise<NotificationPreferences>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async () => {
     try {
-      await submitRequestToBackground('putNotificationPreferences', [
-        preferences,
-        'extension',
-      ]);
+      return await submitRequestToBackground<NotificationPreferences>(
+        'messengerCall',
+        [
+          'NotificationServicesController:updateNotificationPreferences',
+          [update],
+        ],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
