@@ -17,9 +17,7 @@ jest.mock('../../../shared/lib/trace', () => ({
 }));
 
 describe('registerDocumentLoadMeasurement', () => {
-  const getEntriesByType = jest.fn();
   let timing: typeof Timing;
-  let getEntriesByTypeDescriptor: PropertyDescriptor | undefined;
 
   const register = () =>
     mockReadiness.registerDocumentLoadMeasurement({
@@ -29,17 +27,6 @@ describe('registerDocumentLoadMeasurement', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
-    // JSDOM does not implement the performance timeline.
-    getEntriesByTypeDescriptor = Object.getOwnPropertyDescriptor(
-      performance,
-      'getEntriesByType',
-    );
-    Object.defineProperty(performance, 'getEntriesByType', {
-      configurable: true,
-      writable: true,
-      value: getEntriesByType.mockReturnValue([]),
-    });
     jest.isolateModules(() => {
       mockReadiness = jest.requireActual('./useful-screen-ready');
       timing = jest.requireActual('../../../shared/lib/ui-startup-timing');
@@ -48,20 +35,11 @@ describe('registerDocumentLoadMeasurement', () => {
 
   afterEach(() => {
     window.dispatchEvent(new Event('pagehide'));
-    if (getEntriesByTypeDescriptor) {
-      Object.defineProperty(
-        performance,
-        'getEntriesByType',
-        getEntriesByTypeDescriptor,
-      );
-    } else {
-      Reflect.deleteProperty(performance, 'getEntriesByType');
-    }
   });
 
   it('records document loading until the page explicitly reports readiness', () => {
     const now = jest.spyOn(performance, 'now').mockReturnValue(400);
-    mockReadiness.trackUsefulScreenVisibility();
+    mockReadiness.trackDocumentPageClose();
     const tags = { 'example.initial_state': true };
     const measurement = mockReadiness.registerDocumentLoadMeasurement({
       screen: 'example',
@@ -92,7 +70,7 @@ describe('registerDocumentLoadMeasurement', () => {
   jestIt.each(['reportReady', 'discard'] as const)(
     'permanently ends document sampling after %s',
     (finish) => {
-      mockReadiness.trackUsefulScreenVisibility();
+      mockReadiness.trackDocumentPageClose();
       const measurement = register();
 
       measurement[finish]();
@@ -104,54 +82,53 @@ describe('registerDocumentLoadMeasurement', () => {
     },
   );
 
-  jestIt.each([
-    { states: ['visible'], samples: 1 },
-    { states: ['visible', 'hidden', 'visible'], samples: 0 },
-  ])(
-    'records $samples samples for visibility history $states',
-    ({ states, samples }) => {
-      getEntriesByType.mockReturnValue(states.map((name) => ({ name })));
-
-      mockReadiness.trackUsefulScreenVisibility();
-      const measurement = register();
-      measurement.reportReady();
-
-      expect(trace).toHaveBeenCalledTimes(samples);
-    },
-  );
-
-  jestIt.each<['visibilitychange' | 'pagehide', boolean]>([
-    ['visibilitychange', true],
-    ['visibilitychange', false],
-    ['pagehide', true],
-    ['pagehide', false],
-  ])(
-    'excludes %s events, before registration: %s',
-    (event, beforeRegistration) => {
-      mockReadiness.trackUsefulScreenVisibility();
+  jestIt.each([true, false])(
+    'excludes page close before registration: %s',
+    (beforeRegistration) => {
+      mockReadiness.trackDocumentPageClose();
       const measurement = beforeRegistration ? undefined : register();
-      const visibility = jest.spyOn(document, 'visibilityState', 'get');
 
-      visibility.mockReturnValue('hidden');
-      (event === 'pagehide' ? window : document).dispatchEvent(
-        new Event(event),
-      );
-      visibility.mockReturnValue('visible');
+      window.dispatchEvent(new Event('pagehide'));
       (measurement ?? register()).reportReady();
 
       expect(trace).not.toHaveBeenCalled();
     },
   );
 
-  it('excludes a document that is initially hidden', () => {
-    const visibility = jest
-      .spyOn(document, 'visibilityState', 'get')
-      .mockReturnValue('hidden');
-    mockReadiness.trackUsefulScreenVisibility();
-    visibility.mockReturnValue('visible');
-    register().reportReady();
-    expect(trace).not.toHaveBeenCalled();
-  });
+  jestIt.each(['hidden', 'visible'] as const)(
+    'records an initially hidden document when readiness is reported while %s',
+    (readyVisibility) => {
+      const visibility = jest
+        .spyOn(document, 'visibilityState', 'get')
+        .mockReturnValue('hidden');
+      mockReadiness.trackDocumentPageClose();
+      const measurement = register();
+
+      visibility.mockReturnValue(readyVisibility);
+      measurement.reportReady();
+
+      expect(trace).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  jestIt.each([true, false])(
+    'records readiness after visibility changes before registration: %s',
+    (beforeRegistration) => {
+      const visibility = jest
+        .spyOn(document, 'visibilityState', 'get')
+        .mockReturnValue('visible');
+      mockReadiness.trackDocumentPageClose();
+      const measurement = beforeRegistration ? undefined : register();
+
+      visibility.mockReturnValue('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      visibility.mockReturnValue('visible');
+      document.dispatchEvent(new Event('visibilitychange'));
+      (measurement ?? register()).reportReady();
+
+      expect(trace).toHaveBeenCalledTimes(1);
+    },
+  );
 
   jestIt.each([
     [undefined, 'unknown'],
@@ -165,7 +142,7 @@ describe('registerDocumentLoadMeasurement', () => {
           data: { method: 'BACKGROUND_INITIALIZED', params: { initializedAt } },
         });
       }
-      mockReadiness.trackUsefulScreenVisibility();
+      mockReadiness.trackDocumentPageClose();
       const measurement = register();
       measurement.reportReady();
       expect(trace).toHaveBeenCalledWith(

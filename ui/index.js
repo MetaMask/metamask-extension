@@ -63,7 +63,7 @@ import {
 } from './helpers/perps/entry-trace';
 import { createUIMessenger } from './messengers/ui-messenger';
 
-export { trackUsefulScreenVisibility } from './helpers/utils/useful-screen-ready';
+export { trackDocumentPageClose } from './helpers/utils/useful-screen-ready';
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
   displayCriticalErrorMessage,

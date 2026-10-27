@@ -17,26 +17,12 @@ let finished = false;
 /** Permanently exclude this document from useful-screen readiness sampling. */
 function discard(): void {
   finished = true;
-  document.removeEventListener('visibilitychange', onVisibilityChange);
   window.removeEventListener('pagehide', discard);
 }
 
-function onVisibilityChange(): void {
-  if (document.visibilityState !== 'visible') {
-    discard();
-  }
-}
-
-/** Track document visibility before waiting for background initialization. */
-export function trackUsefulScreenVisibility(): void {
-  document.addEventListener('visibilitychange', onVisibilityChange);
+/** Track document closure before waiting for background initialization. */
+export function trackDocumentPageClose(): void {
   window.addEventListener('pagehide', discard);
-  // The bundle itself may have loaded after the document became visible.
-  const visibilityEntries = performance.getEntriesByType('visibility-state');
-  if (visibilityEntries.some((entry) => entry.name === 'hidden')) {
-    discard();
-  }
-  onVisibilityChange();
 }
 
 /**
