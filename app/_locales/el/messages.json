@@ -1738,9 +1738,6 @@
     "message": "Εγκρίθηκε στο $1 για $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Καλώς ήρθατε στο Arc! Για να διευκολύνουμε και να επαληθεύσουμε τη χρήση του δικτύου Arc, ενδέχεται να κοινοποιούμε πληροφορίες στην ομάδα του Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Σημείωση"
   },
@@ -1786,9 +1783,6 @@
   },
   "assets": {
     "message": "Περιουσιακά στοιχεία"
-  },
-  "assetsDescription": {
-    "message": "Αυτόματος εντοπισμός των tokens στο πορτοφόλι σας, εμφάνιση NFT και ομαδοποιημένες ενημερώσεις υπολοίπων λογαριασμών"
   },
   "asterdexReferralSubtitle": {
     "message": "Λάβετε 4% επιστροφή στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
@@ -1847,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Πίσω στην ασφάλεια"
+  },
+  "backToWallet": {
+    "message": "Επιστροφή στο πορτοφόλι"
   },
   "backUpIncomplete": {
     "message": "Η δημιουργία αντιγράφου ασφαλείας δεν ολοκληρώθηκε"
@@ -3303,9 +3300,6 @@
   "dataCollectionForMarketing": {
     "message": "Συγκέντρωση δεδομένων για μάρκετινγκ"
   },
-  "dataCollectionForMarketingDescription": {
-    "message": "Θα χρησιμοποιήσουμε το MetaMetrics για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιησούμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων και άλλο υλικό)."
-  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Λάβετε ενημερώσεις προϊόντων, συμβουλές και νέα – και μέσω email. Ενδέχεται να χρησιμοποιήσουμε τις αλληλεπιδράσεις σας για τη βελτίωση του περιεχομένου που κοινοποιούμε."
   },
@@ -4259,10 +4253,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "Το MetaMask καλύπτει τα τέλη δικτύου για αυτή τη συναλλαγή. Αυτό περιλαμβάνει και μία εφάπαξ ενεργοποίηση έξυπνου συμβολαίου."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Αυτό το συγκεκριμένο δίκτυο απαιτεί τη διατήρηση ενός αποθεματικού ύψους $1 $2 στον λογαριασμό σας.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 ώρες",
     "description": "$1 represents a number of hours"
@@ -4396,9 +4386,6 @@
   "generalCameraErrorTitle": {
     "message": "Κάτι πήγε στραβά...."
   },
-  "generalDescription": {
-    "message": "Συγχρονισμός ρυθμίσεων σε όλες τις συσκευές, επιλογή προτιμήσεων δικτύου και παρακολούθηση δεδομένων των tokens"
-  },
   "generateNewQrCode": {
     "message": "Δημιουργία νέου κωδικού QR"
   },
@@ -4514,6 +4501,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Συνεχίστε"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Ξεκλειδώστε την και προσπαθήστε ξανά για να συνεχίσετε",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Το $1 σας υποστηρίζει μόνο την υπογραφή δεδομένων τύπου 4. Ο συγκεκριμένος ιστότοπος ζήτησε έναν παλαιότερο τύπο υπογραφής, ο οποίος δεν υποστηρίζεται",
@@ -5213,9 +5204,6 @@
   "loading": {
     "message": "Φόρτωση..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Ολοκληρώστε τη συναλλαγή στο Snap."
-  },
   "loadingTokenList": {
     "message": "Φόρτωση της λίστας των tokens"
   },
@@ -5440,6 +5428,51 @@
   "metrics": {
     "message": "Μετρήσεις"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Συνεχίστε"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Πληκτρολογήστε μια έγκυρη διεύθυνση email."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Διεύθυνση email"
+  },
+  "mfaErrorCooldown": {
+    "message": "Έχουν υποβληθεί πάρα πολλά αιτήματα. Περιμένετε λίγο και προσπαθήστε ξανά."
+  },
+  "mfaErrorGeneric": {
+    "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
+  },
+  "mfaFailureClose": {
+    "message": "Κλείσιμο"
+  },
+  "mfaFailureRetry": {
+    "message": "Προσπαθήστε ξανά"
+  },
+  "mfaFailureTitle": {
+    "message": "Κάτι πήγε στραβά"
+  },
+  "mfaIntroContinue": {
+    "message": "Έναρξη"
+  },
+  "mfaMethodEmail": {
+    "message": "Email"
+  },
+  "mfaOtpResend": {
+    "message": "Επαναποστολή κωδικού"
+  },
+  "mfaOtpRetry": {
+    "message": "Προσπαθήστε ξανά"
+  },
+  "mfaPickerOr": {
+    "message": "ή"
+  },
+  "mfaSettingsAdd": {
+    "message": "Προσθήκη"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Συνεχίστε"
+  },
   "minimumReceivedExplanation": {
     "message": "Το ελάχιστο ποσό που θα λάβετε, αν αλλάξει η τιμή κατά τη διάρκεια της επεξεργασίας της συναλλαγής σας, με βάση τη ρύθμιση απόκλισης. Η εκτίμηση προέρχεται από τους παρόχους ρευστότητας, επομένως το τελικό ποσό ενδέχεται να διαφέρει."
   },
@@ -5652,6 +5685,14 @@
   "moneyEarnApyTitle": {
     "message": "Κερδίστε έως και $1 APY"
   },
+  "moneyEarnBannerCta": {
+    "message": "Προσθήκη $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Κερδίστε με τον λογαριασμό Money",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "Κερδίστε από τα κρυπτονομίσματά σας"
   },
@@ -5806,6 +5847,10 @@
   },
   "moneySend": {
     "message": "Αποστολή"
+  },
+  "moneyStartEarning": {
+    "message": "Ξεκινήστε να κερδίζετε",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Δεν είναι δυνατή η προσθήκη κεφαλαίων. Προσπαθήστε ξανά."
@@ -6743,9 +6788,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Προσθήκη προσαρμοσμένης πύλης IPFS"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Η διεύθυνση URL της πύλης IPFS είναι έγκυρη"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Όταν χρησιμοποιείτε τις προεπιλεγμένες ρυθμίσεις και παραμέτρους μας, χρησιμοποιούμε την Infura ως προεπιλεγμένο πάροχο κλήσεων απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Σε ορισμένες περιπτώσεις, ενδέχεται να χρησιμοποιήσουμε άλλους παρόχους RPC προκειμένου να παρέχουμε την καλύτερη δυνατή εμπειρία στους χρήστες μας. Μπορείτε να επιλέξετε το δικό σας RPC, αλλά να θυμάστε ότι οποιοδήποτε RPC θα λάβει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιήσει συναλλαγές. Για να μάθετε περισσότερα σχετικά με το πώς η Infura χειρίζεται τα δεδομένα για λογαριασμούς EVM, διαβάστε την $1 μας, ενώ για λογαριασμούς Solana, $2."
   },
@@ -6784,7 +6826,7 @@
     "message": "Συλλογή βασικών δεδομένων χρήσης"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Ενημερώσεις προϊόντος"
+    "message": "Ενημερώσεις μάρκετινγκ"
   },
   "onboardingMetametricsContinue": {
     "message": "Συνεχίστε"
@@ -7472,6 +7514,9 @@
   "perps24hVolume": {
     "message": "Όγκος συναλλαγών 24ώρου"
   },
+  "perpsAbout": {
+    "message": "Σχετικά"
+  },
   "perpsActivity": {
     "message": "Δραστηριότητα"
   },
@@ -8074,6 +8119,9 @@
   "perpsRateLimitExceeded": {
     "message": "Πάρα πολλά αιτήματα. Προσπαθήστε ξανά σε λίγο."
   },
+  "perpsReadMore": {
+    "message": "Διαβάστε περισσότερα"
+  },
   "perpsRecentActivity": {
     "message": "Πρόσφατη δραστηριότητα"
   },
@@ -8120,6 +8168,18 @@
   "perpsSeeAll": {
     "message": "Προβολή όλων",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "επικοινωνήστε με την υποστήριξη",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Δείτε τις επιλογές σας στις Συχνές Ερωτήσεις",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Αντιμετωπίζουμε διακοπή λειτουργίας",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Η υπηρεσία είναι προσωρινά μη διαθέσιμη. Προσπαθήστε ξανά αργότερα."
@@ -9633,21 +9693,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Ασφάλεια & προστασία προσωπικών δεδομένων"
-  },
-  "securityDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς σας"
-  },
   "securityMessageLinkForNetworks": {
     "message": "διαδικτυακές απάτες και κίνδυνοι ασφαλείας"
   },
   "securityProviderPoweredBy": {
     "message": "Με την υποστήριξη του $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς και τα δεδομένα σας"
   },
   "securitySocialLoginEnabled": {
     "message": "Ενεργοποιημένο"
@@ -12152,6 +12203,9 @@
   },
   "turnOn": {
     "message": "Ενεργοποίηση"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "ενεργοποίηση βασικών λειτουργιών"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Προέκυψε σφάλμα κατά τη δημιουργία των ειδοποιήσεων. Προσπαθήστε ξανά αργότερα."

@@ -9,21 +9,24 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import Spinner from '../../components/ui/spinner';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE, SETTINGS_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useActiveMfaFlow } from '../../hooks/identity/mfa/engine/useActiveMfaFlow';
 import { MfaFlowTestIds } from './test-ids';
+import type { MfaFlowRouteState } from './types';
 import IntroStep from './steps/intro-step';
 import PickerStep from './steps/picker-step';
 import EmailEntryStep from './steps/email-entry-step';
+import TotpSetupStep from './steps/totp-setup-step';
 import CodeStep from './steps/code-step';
 import PasskeyStep from './steps/passkey-step';
-import SuccessStep from './steps/success-step';
 import FailureStep from './steps/failure-step';
 
 /**
  * Full-page view that renders the running MFA flow. Leaving it cancels the
- * flow; it goes back once the flow settles.
+ * flow; it goes back once the flow settles. Closing goes back to the page that
+ * started the flow, or home when that page is in Settings, matching how
+ * Settings pages close.
  */
 const MfaFlowHost = () => {
   const t = useI18nContext();
@@ -32,6 +35,7 @@ const MfaFlowHost = () => {
   const active = useActiveMfaFlow();
   const flow = active?.flow;
   const cancelTimer = useRef<ReturnType<typeof setTimeout>>();
+  const closeToHome = useRef(false);
 
   // StrictMode re-runs effects in development: deferring the cancel lets the
   // re-run keep the flow.
@@ -48,6 +52,10 @@ const MfaFlowHost = () => {
     if (flow) {
       return;
     }
+    if (closeToHome.current) {
+      navigate(DEFAULT_ROUTE, { replace: true });
+      return;
+    }
     if (location.key === 'default') {
       navigate(DEFAULT_ROUTE, { replace: true });
     } else {
@@ -61,6 +69,28 @@ const MfaFlowHost = () => {
 
   const { state } = active;
   const { step } = state;
+  const isPicker = step.name === 'picker';
+  const cancel = () => active.flow.dispatch({ type: 'cancel' });
+  const goBack = () => {
+    if (
+      step.name === 'otp' &&
+      step.method === 'totp' &&
+      step.purpose === 'setup'
+    ) {
+      active.flow.dispatch({ type: 'back' });
+      return;
+    }
+    cancel();
+  };
+  const close = () => {
+    const { returnTo } = (location.state ?? {}) as MfaFlowRouteState;
+    closeToHome.current =
+      returnTo === undefined ||
+      returnTo === SETTINGS_ROUTE ||
+      returnTo.startsWith(`${SETTINGS_ROUTE}/`) ||
+      returnTo.startsWith(`${SETTINGS_ROUTE}?`);
+    cancel();
+  };
   const key = 'purpose' in step ? `${step.name}-${step.purpose}` : step.name;
   const shared = {
     state,
@@ -76,12 +106,12 @@ const MfaFlowHost = () => {
         return <PickerStep key={key} {...shared} step={step} />;
       case 'emailEntry':
         return <EmailEntryStep key={key} {...shared} step={step} />;
+      case 'totpSetup':
+        return <TotpSetupStep key={key} {...shared} step={step} />;
       case 'otp':
         return <CodeStep key={key} {...shared} step={step} />;
       case 'passkey':
         return <PasskeyStep key={key} {...shared} step={step} />;
-      case 'success':
-        return <SuccessStep key={key} {...shared} step={step} />;
       case 'failure':
         return <FailureStep key={key} {...shared} step={step} />;
       default:
@@ -100,21 +130,35 @@ const MfaFlowHost = () => {
   };
 
   return (
+    // A centred column, as wide as the onboarding flow's, so wide windows
+    // and the side panel show the same phone-width screens.
     <Box
       flexDirection={BoxFlexDirection.Column}
-      className="h-full w-full bg-default"
+      className="h-full w-full max-w-[446px] mx-auto bg-default"
       data-testid={`${MfaFlowTestIds.CONTAINER}-${step.name}`}
     >
+      {/* The picker mirrors mobile's sheet, closed from its end; the other
+          steps can be left from either end. */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.End}
+        justifyContent={BoxJustifyContent.Between}
         padding={4}
       >
+        {isPicker ? (
+          <Box />
+        ) : (
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            ariaLabel={t('back')}
+            onClick={goBack}
+            data-testid={MfaFlowTestIds.BACK_BUTTON}
+          />
+        )}
         <ButtonIcon
           iconName={IconName.Close}
           ariaLabel={t('close')}
-          onClick={() => active.flow.dispatch({ type: 'cancel' })}
+          onClick={close}
           data-testid={MfaFlowTestIds.CLOSE_BUTTON}
         />
       </Box>

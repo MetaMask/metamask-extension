@@ -22,7 +22,7 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -32,10 +32,11 @@ import {
   getSelectedNetworkClientId,
 } from '../../../../shared/lib/selectors/networks';
 import {
-  getIsMainnet,
   getOpenSeaEnabled,
   getShouldShowTestNetworks,
+  getUseExternalServices,
 } from '../../../selectors';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   addNftVerifyOwnership,
@@ -78,7 +79,10 @@ export const ImportNftsForm = ({
   const location = useLocation();
   const dispatch = useDispatch();
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
-  const isMainnet = useSelector(getIsMainnet);
+  const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
   const showTestNetworks = useSelector(getShouldShowTestNetworks);
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -281,6 +285,11 @@ export const ImportNftsForm = ({
     setIsNetworkSelectorOpen(true);
   }, []);
 
+  const showNftDetectionNotice = isBasicFunctionalityConsolidationEnabled
+    ? !isBasicFunctionalityEnabled
+    : selectedNetworkForCustomImport === CHAIN_IDS.MAINNET &&
+      !isDisplayNFTMediaToggleEnabled;
+
   const networkTitle = selectedNetworkForCustomImport
     ? networkConfigurations[selectedNetworkForCustomImport]?.name
     : t('networkMenuHeading');
@@ -294,7 +303,7 @@ export const ImportNftsForm = ({
         >
           <Box className="min-h-0 flex-1 overflow-y-auto">
             <Box className="flex flex-col gap-6 p-4">
-              {isMainnet && !isDisplayNFTMediaToggleEnabled ? (
+              {showNftDetectionNotice ? (
                 <NftsDetectionNoticeImportNFTs onActionButtonClick={onClose} />
               ) : null}
               <Box>
@@ -400,7 +409,11 @@ export const ImportNftsForm = ({
               </Box>
             </Box>
           </Box>
-          <Box padding={4} paddingBottom={6} className="bg-background-default">
+          <Box
+            padding={4}
+            paddingBottom={6}
+            className="cta-footer bg-background-default"
+          >
             <Button
               size={ButtonSize.Lg}
               type="submit"

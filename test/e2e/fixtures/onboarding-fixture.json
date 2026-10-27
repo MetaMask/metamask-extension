@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 232,
+      "currentMigrationVersion": 233,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -72,16 +72,17 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
-      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -130,8 +131,8 @@
     },
     "ConfigRegistryController": {
       "configs": {
-        "networks": {},
-        "eventsConfig": null
+        "eventsConfig": null,
+        "networks": {}
       },
       "etag": null,
       "eventsConfigEtag": null,
@@ -180,12 +181,6 @@
       "accountsAssets": {},
       "allIgnoredAssets": {},
       "assetsMetadata": {}
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": {}
-    },
-    "MultichainBalancesController": {
-      "balances": {}
     },
     "MultichainNetworkController": {
       "isEvmSelected": true,
@@ -587,6 +582,7 @@
       "completedOnboarding": false,
       "firstTimeFlowType": null,
       "hasSeenOnboardingCompletionPage": false,
+      "onboardingJourneyEnded": false,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -2222,9 +2218,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
     "TokenRatesController": {
       "marketData": {}
     },
@@ -2253,6 +2246,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 232
+    "version": 233
   }
 }
