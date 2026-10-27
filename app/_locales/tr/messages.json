@@ -6114,7 +6114,7 @@
     "message": "Başla"
   },
   "musdEducationHeadline": {
-    "message": "STABİL KRİPTO PARALARDA\n%$1 ALIN",
+    "message": "Stabil kripto paralarda\n%$1 alın",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
