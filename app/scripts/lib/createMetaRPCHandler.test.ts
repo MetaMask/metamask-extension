@@ -22,6 +22,17 @@ type Api = Record<string, TaggedApiMethod>;
 
 const createStream = () => new PassThrough({ objectMode: true });
 
+// Canonical W3C traceparent (32-hex trace id, 16-hex span id, sampled flag)
+// and the `TraceparentData` it unpacks to once extracted.
+const TRACE_ID_MOCK = '4bf92f3577b34da6a3ce929d0e0e4736';
+const SPAN_ID_MOCK = '00f067aa0ba902b7';
+const TRACEPARENT_MOCK = `00-${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-01`;
+const TRACE_CONTEXT_MOCK = {
+  traceId: TRACE_ID_MOCK,
+  parentSpanId: SPAN_ID_MOCK,
+  parentSampled: true,
+};
+
 describe('createMetaRPCHandler', () => {
   it('can call the api when handler receives a JSON-RPC request', () => {
     const api = {
@@ -168,16 +179,13 @@ describe('createMetaRPCHandler', () => {
         jsonrpc: '2.0',
         id: 1,
         method: 'foo',
-        params: [
-          'bar',
-          { _traceContext: { _traceId: 'trace123', _spanId: 'span456' } },
-        ],
+        params: ['bar', { _traceContext: TRACEPARENT_MOCK }],
       });
 
       expect(trace).toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'Background RPC: foo',
-          parentContext: { _traceId: 'trace123', _spanId: 'span456' },
+          parentContext: TRACE_CONTEXT_MOCK,
           op: 'rpc.handler',
           data: { method: 'foo' },
         }),
@@ -199,10 +207,7 @@ describe('createMetaRPCHandler', () => {
         jsonrpc: '2.0',
         id: 1,
         method: 'foo',
-        params: [
-          'bar',
-          { _traceContext: { _traceId: 'trace123', _spanId: 'span456' } },
-        ],
+        params: ['bar', { _traceContext: TRACEPARENT_MOCK }],
       });
 
       expect(trace).toHaveBeenCalledWith(
@@ -225,15 +230,12 @@ describe('createMetaRPCHandler', () => {
         jsonrpc: '2.0',
         id: 1,
         method: 'foo',
-        params: [
-          'bar',
-          { _traceContext: { _traceId: 'trace123', _spanId: 'span456' } },
-        ],
+        params: ['bar', { _traceContext: TRACEPARENT_MOCK }],
       });
 
       expect(trace).not.toHaveBeenCalled();
       expect(continueTraceContext).toHaveBeenCalledWith(
-        { _traceId: 'trace123', _spanId: 'span456' },
+        TRACE_CONTEXT_MOCK,
         expect.any(Function),
       );
       expect(foo).toHaveBeenCalledWith('bar');
