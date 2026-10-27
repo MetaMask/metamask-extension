@@ -19,10 +19,8 @@
         "open": false,
         "orientation": false,
         "safari": false,
-        "screen.height": false,
         "screen.mozOrientation": false,
-        "screen.msOrientation": false,
-        "screen.width": false
+        "screen.msOrientation": false
       }
     },
     "@ethersproject/wallet>@ethersproject/random": {
