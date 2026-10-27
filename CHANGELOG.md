@@ -65,6 +65,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the internal error dialog to follow the selected theme (#46890)
 - Fixed misleading insufficient network fee alerts on Monad when the 10 MON reserve balance requirement was the cause (#46049)
 - Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions (#47233)
+- Fixed Flask builds staying on the loading screen when Perps was left out of the build (#47173)
+
+### Security
+
+- Patched fast-uri, body-parser, undici, serialize-javascript, and zod to resolve security advisories (#47358, #47363)
 
 ## [13.53.0]
 
