@@ -1,0 +1,25 @@
+package.json
+  s_2a7cc1ed45694e::t_8863c696aee0ae 666
+README.md
+  s_2a7cc1ed45694e::t_1c1ab1817d8605 88,99,104
+.skills.local.example
+  s_2a7cc1ed45694e::t_1c1ab1817d8605 21-22,27-29,33
+yarn.lock
+  s_2a7cc1ed45694e::t_2c594eee7dc5bc 10359-10361,10364,35618
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5c96ebe2170e52355a11e1482ea1d47563eb0039",
+  "prompts": {},
+  "sessions": {
+    "s_2a7cc1ed45694e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e81a953d8ffeTiy19BF4mYdxCf",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
