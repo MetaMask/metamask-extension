@@ -48,4 +48,3 @@ When there's a need to change policy (because of new or updated packages that re
 ### (optional) Phase 3: L2 Security Reviewer:
 
 1.  Review the dependency in question and inform the PR reviewers whether it’s deemed malicious or safe.
-
