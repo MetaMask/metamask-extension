@@ -33,9 +33,9 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
  * shield entry modal, survey and SRP toasts, and page-ready waits.
  * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
  * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
- * `CarouselPage`. Non-EVM account-specific helpers live on `NonEvmHomepage`.
+ * `CarouselPage`.
  * Related: `HeaderNavbar`, `TokensTab` / `NftsTab` / `DeFiTab` /
- * `ActivityTab` / `PerpsTab` / `CarouselPage` / `NonEvmHomepage`.
+ * `ActivityTab` / `PerpsTab` / `CarouselPage`.
  *
  * @see ui/pages/home/home.tsx
  */
