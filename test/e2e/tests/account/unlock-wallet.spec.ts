@@ -151,12 +151,9 @@ describe('Unlock wallet - ', function () {
         await loginPage.clickUsePassword();
         await loginPage.checkPageIsLoaded();
 
-        // React re-renders the unlock page asynchronously when switching between
-        // passkey and password modes. No DOM condition reliably signals the
-        // transition is complete, so a brief delay prevents a race where
-        // clickUnlockWithPasskey acts on a stale/transitioning DOM.
-        await driver.delay(2_000);
         await loginPage.clickUnlockWithPasskey();
+        await loginPage.checkPasskeyUnlockPageIsLoaded();
+        await loginPage.clickPasskeyUnlock();
         await homePage.checkPageIsLoaded();
 
         // Check unlock with password by password textbox
