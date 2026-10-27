@@ -526,6 +526,8 @@ export function pushPositionUpdate(
  * @param opts.user
  * @param opts.accountValue
  * @param opts.withdrawable
+ * @param opts.deliverAfterMs - Delay the websocket pushes. The closed account is
+ * recorded immediately, so refreshes during the delay already return it.
  */
 export function pushPositionClosed(
   server: { sendMessage: (msg: string) => void },
@@ -533,6 +535,7 @@ export function pushPositionClosed(
     user?: string;
     accountValue?: string;
     withdrawable?: string;
+    deliverAfterMs?: number;
   },
 ): void {
   const user = opts?.user ?? '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -557,6 +560,7 @@ export function pushPositionClosed(
   };
 
   setPushedClearinghouseState(emptyState);
+  const deliverAfterMs = opts?.deliverAfterMs ?? 0;
   const broadcast = () => {
     server.sendMessage(
       JSON.stringify({
@@ -569,10 +573,16 @@ export function pushPositionClosed(
       }),
     );
   };
-  broadcast();
-  setTimeout(broadcast, 200);
-  setTimeout(broadcast, 600);
-  setTimeout(broadcast, 1400);
+  // Callers that do not delay still observe the first update before the next
+  // driver command. A zero timer would let that command run first.
+  if (deliverAfterMs === 0) {
+    broadcast();
+  } else {
+    setTimeout(broadcast, deliverAfterMs);
+  }
+  setTimeout(broadcast, deliverAfterMs + 200);
+  setTimeout(broadcast, deliverAfterMs + 600);
+  setTimeout(broadcast, deliverAfterMs + 1400);
 }
 
 const WS_MOCK_DEFAULT_USER = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
