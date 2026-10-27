@@ -1,17 +1,17 @@
-import React from 'react';
-import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../../store/store';
-import { getToAccounts } from '../../../../ducks/bridge/selectors';
-import { setBackgroundConnection } from '../../../../store/background-connection';
-import { DestinationAccountPickerModal } from './destination-account-picker-modal';
+import React from "react";
+import { createBridgeMockStore } from "../../../../../test/data/bridge/mock-bridge-store";
+import { renderWithProvider } from "../../../../../test/lib/render-helpers-navigate";
+import configureStore from "../../../../store/store";
+import { getToAccounts } from "../../../../ducks/bridge/selectors";
+import { setBackgroundConnection } from "../../../../store/background-connection";
+import { DestinationAccountPickerModal } from "./destination-account-picker-modal";
 
 setBackgroundConnection({
-  messengerCall: jest.fn().mockResolvedValue('pollingToken'),
+  messengerCall: jest.fn().mockResolvedValue("pollingToken"),
 } as never);
 
-describe('DestinationAccountPickerModal', () => {
-  it('should render the modal when no account is selected', () => {
+describe("DestinationAccountPickerModal", () => {
+  it("should render the modal when no account is selected", () => {
     const { getByTestId, getAllByTestId } = renderWithProvider(
       <DestinationAccountPickerModal
         isOpen={true}
@@ -21,11 +21,11 @@ describe('DestinationAccountPickerModal', () => {
       />,
       configureStore(createBridgeMockStore()),
     );
-    expect(getAllByTestId('account-list-address')).toHaveLength(3);
-    expect(getByTestId('destination-account-picker-modal')).toMatchSnapshot();
+    expect(getAllByTestId("account-list-address")).toHaveLength(3);
+    expect(getByTestId("destination-account-picker-modal")).toMatchSnapshot();
   });
 
-  it('should render the modal when an account is selected', () => {
+  it("should render the modal when an account is selected", () => {
     const mockStore = configureStore(createBridgeMockStore());
     const selectedDestAccount = getToAccounts(mockStore.getState())[0];
     const { getByTestId, getAllByTestId } = renderWithProvider(
@@ -37,7 +37,7 @@ describe('DestinationAccountPickerModal', () => {
       />,
       mockStore,
     );
-    expect(getAllByTestId('account-list-address')).toHaveLength(3);
-    expect(getByTestId('destination-account-picker-modal')).toMatchSnapshot();
+    expect(getAllByTestId("account-list-address")).toHaveLength(3);
+    expect(getByTestId("destination-account-picker-modal")).toMatchSnapshot();
   });
 });
