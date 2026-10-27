@@ -362,6 +362,46 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('perps-positions-section')).toBeInTheDocument();
     });
 
+    describe('ETH position debug banner', () => {
+      it('renders the required copy above the positions list when ETH is open', () => {
+        renderWithProvider(<PerpsView />, mockStore);
+
+        const banner = screen.getByTestId('perps-debug-eth-position-banner');
+        const positionsSection = screen.getByTestId('perps-positions-section');
+
+        expect(banner).toHaveTextContent('ADR58 POC: ETH POSITION DETECTED');
+        expect(banner.compareDocumentPosition(positionsSection)).toBe(
+          Node.DOCUMENT_POSITION_FOLLOWING,
+        );
+      });
+
+      it('does not render when there are no open positions', () => {
+        jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+          positions: [],
+          isInitialLoading: false,
+        });
+
+        renderWithProvider(<PerpsView />, mockStore);
+
+        expect(
+          screen.queryByTestId('perps-debug-eth-position-banner'),
+        ).not.toBeInTheDocument();
+      });
+
+      it('does not render when only non-ETH positions are open', () => {
+        jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+          positions: [mocks.mockPositions[1]],
+          isInitialLoading: false,
+        });
+
+        renderWithProvider(<PerpsView />, mockStore);
+
+        expect(
+          screen.queryByTestId('perps-debug-eth-position-banner'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
     it('shows orders section when mock orders exist', () => {
       // Default mocks have orders
       expect(mocks.mockOrders.length).toBeGreaterThan(0);
