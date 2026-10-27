@@ -525,6 +525,34 @@ describe('AssetPage', () => {
     expect(getByTestId('asset-token-decimals')).toHaveTextContent('18');
   });
 
+  it('falls back to the static CDN icon in the header when the token has no image', () => {
+    const { getByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      store,
+    );
+
+    expect(
+      getByTestId('asset-page-header-avatar').querySelector('img'),
+    ).toHaveAttribute(
+      'src',
+      expect.stringContaining(
+        '/tokenIcons/assets/eip155/1/erc20/0xf0906d83c5a0bd6b74bc9b62d7d9f2014c6525c0',
+      ),
+    );
+  });
+
+  it('keeps the token image in the header when one is provided', () => {
+    const image = 'https://example.com/test-token.png';
+    const { getByTestId } = renderWithProvider(
+      <AssetPage asset={{ ...token, image }} optionsButton={null} />,
+      store,
+    );
+
+    expect(
+      getByTestId('asset-page-header-avatar').querySelector('img'),
+    ).toHaveAttribute('src', image);
+  });
+
   it('should not show a modal when token passed in props is not an ERC721', () => {
     renderWithProvider(<AssetPage asset={token} optionsButton={null} />, store);
     const actions = store.getActions();

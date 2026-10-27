@@ -106,6 +106,7 @@ import { useMoneyAssetOverviewBalanceCta } from '../../../hooks/money/use-money-
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
+import { getAvatarTokenSrc } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { AssetMarketDetails } from './asset-market-details';
 import { AssetPageHeader } from './asset-page-header';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
@@ -313,6 +314,13 @@ const AssetPage = ({
 
   const networkName = networkConfigurationsByChainId[chainId]?.name;
   const tokenChainImage = getImageForChainId(chainId);
+  // Same static CDN fallback as the asset list, for tokens the Tokens API returns no iconUrl for
+  const headerImage = getAvatarTokenSrc({
+    chainId,
+    isNative: type === AssetType.native,
+    tokenImage: image,
+    assetId: caipAssetId,
+  });
 
   const selectBip44Asset = useMemo(
     () => (state: Parameters<typeof getAsset>[0]) =>
@@ -452,7 +460,7 @@ const AssetPage = ({
       >
         <AssetPageHeader
           symbol={symbol}
-          image={image}
+          image={headerImage}
           networkImage={tokenChainImage}
           networkName={networkName}
           contractAddress={contractAddress || undefined}
