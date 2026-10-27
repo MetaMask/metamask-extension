@@ -51,17 +51,17 @@ export const submitBridgeTx = (
   callBridgeStatusControllerMethod<
     Parameters<BridgeStatusController['submitTx']>
   >('submitTx', [
-    accountAddress,
-    quote,
-    isStxSupportedInClient,
-    context,
-    location,
-    undefined,
-    activeAbTests,
-    tokenSecurityTypeDestination,
-    undefined,
-    inputPrimaryDenomination,
-    BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+    {
+      accountAddress,
+      quoteResponses: [quote],
+      isStxEnabled: isStxSupportedInClient,
+      quotesReceivedContext: context,
+      location,
+      activeAbTests,
+      tokenSecurityTypeDestination,
+      inputPrimaryDenomination,
+      migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+    },
   ]);
 
 /**
