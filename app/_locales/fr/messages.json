@@ -6119,7 +6119,7 @@
     "message": "Commencer"
   },
   "musdEducationHeadline": {
-    "message": "OBTENEZ UN BONUS DE $1 % SUR\nLES STABLECOINS",
+    "message": "Obtenez un bonus de $1 % sur\nles stablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {

@@ -11,9 +11,6 @@ import type { CaipAssetType } from '@metamask/utils';
 import {
   Box,
   Text,
-  Button,
-  ButtonVariant,
-  ButtonSize,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -21,15 +18,12 @@ import {
   TextVariant,
   TextColor,
   TextAlign,
-  FontFamily,
-  TextTransform,
   BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
   BoxBackgroundColor,
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
+import { MarketingMoment } from '../../../components/ui/marketing-moment';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
@@ -69,7 +63,7 @@ const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
  *
  * Displays a splash screen with:
  * - Close (X) icon button in the top-right corner
- * - Large hero headline using MMPoly font
+ * - Large hero headline using the Grotzec Cond hero font
  * - Body copy explaining the mUSD conversion bonus
  * - Central illustration (coin + MetaMask fox + bonus)
  * - "Get started" primary button and "Not now" link button
@@ -286,7 +280,7 @@ const MusdEducationScreen = () => {
 
   return (
     <Box
-      className="musd-education-screen"
+      className="musd-education-screen relative"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -298,14 +292,7 @@ const MusdEducationScreen = () => {
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
-      {/* Close icon – top-right */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.End}
-        paddingTop={3}
-        paddingRight={4}
-        style={{ flexShrink: 0 }}
-      >
+      <Box className="absolute top-3 right-4 z-10">
         <ButtonIcon
           iconName={IconName.Close}
           ariaLabel={t('close') as string}
@@ -315,132 +302,74 @@ const MusdEducationScreen = () => {
           data-testid="musd-education-skip-button"
         />
       </Box>
+      <MarketingMoment
+        className="pt-12"
+        title={t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
+        titleProps={{
+          style: { whiteSpace: 'pre-line' },
+        }}
+        description={
+          <Text
+            variant={TextVariant.BodyMd}
+            textAlign={TextAlign.Center}
+            color={TextColor.TextAlternative}
+            style={{ whiteSpace: 'pre-line' }}
+          >
+            {t('musdBonusExplanation', [
+              String(MUSD_CONVERSION_APY),
+              <TextButton key="terms-link" size={TextButtonSize.BodyMd} asChild>
+                <a
+                  href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    const properties = {
+                      location: 'conversion_education_screen',
+                      url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
+                    };
 
-      {/* Main content – scrolls on short viewports; CTAs stay pinned below */}
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        paddingLeft={4}
-        paddingRight={4}
-        style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}
-      >
-        {/* Inner wrapper – safe center: vertically centers when content fits; start-aligns when it would overflow (Chromium). */}
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          style={{
-            minHeight: '100%',
-            // `safe center` avoids unsafe flex centering that clips the top of the hero when scrolling.
-            justifyContent: 'safe center',
-          }}
-        >
-          {/* Hero headline */}
-          <Box marginBottom={3}>
-            <Text
-              variant={TextVariant.DisplayMd}
-              fontFamily={FontFamily.Hero}
-              textAlign={TextAlign.Center}
-              color={TextColor.TextDefault}
-              textTransform={TextTransform.Uppercase}
-              style={{ whiteSpace: 'pre-line' }}
-            >
-              {t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
-            </Text>
-          </Box>
-
-          {/* Body copy */}
-          <Box marginBottom={4}>
-            <Text
-              variant={TextVariant.BodyMd}
-              textAlign={TextAlign.Center}
-              color={TextColor.TextAlternative}
-              style={{ whiteSpace: 'pre-line' }}
-            >
-              {t('musdBonusExplanation', [
-                String(MUSD_CONVERSION_APY),
-                <TextButton
-                  key="terms-link"
-                  size={TextButtonSize.BodyMd}
-                  asChild
+                    trackEvent(
+                      createEventBuilder(
+                        MetaMetricsEventName.MusdBonusTermsOfUsePressed,
+                      )
+                        .addCategory(MetaMetricsEventCategory.MusdConversion)
+                        .addProperties(properties)
+                        .build(),
+                    );
+                  }}
                 >
-                  <a
-                    href={MUSD_CONVERSION_BONUS_TERMS_OF_USE}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      const properties = {
-                        location: 'conversion_education_screen',
-                        url: MUSD_CONVERSION_BONUS_TERMS_OF_USE,
-                      };
-
-                      trackEvent(
-                        createEventBuilder(
-                          MetaMetricsEventName.MusdBonusTermsOfUsePressed,
-                        )
-                          .addCategory(MetaMetricsEventCategory.MusdConversion)
-                          .addProperties(properties)
-                          .build(),
-                      );
-                    }}
-                  >
-                    {t('musdTermsApply')}
-                  </a>
-                </TextButton>,
-              ])}
-            </Text>
-          </Box>
-
-          {/* Central illustration */}
-          <Box
-            justifyContent={BoxJustifyContent.Center}
-            alignItems={BoxAlignItems.Center}
-          >
-            <img
-              src={
-                theme === ThemeType.dark
-                  ? MUSD_EDUCATION_COIN_IMAGE_DARK
-                  : MUSD_EDUCATION_COIN_IMAGE_LIGHT
-              }
-              alt={t('musdGetMusd') as string}
-              width={252}
-              height={252}
-              style={{ maxWidth: '100%', height: 'auto' }}
-            />
-          </Box>
-        </Box>
-      </Box>
-
-      {/* Footer actions – full-width buttons with padding to match Figma */}
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        gap={2}
-        padding={4}
-        style={{ flexShrink: 0 }}
-      >
-        <Box style={{ width: '100%' }}>
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={handleContinue}
-            disabled={isLoading}
-            style={{ width: '100%' }}
-            data-testid="musd-education-continue-button"
-          >
-            {primaryButtonLabel}
-          </Button>
-        </Box>
-
-        <Box style={{ width: '100%' }}>
-          <Button
-            variant={ButtonVariant.Tertiary}
-            size={ButtonSize.Lg}
-            onClick={handleSkip}
-            style={{ width: '100%', color: 'var(--color-text-default)' }}
-            data-testid="musd-education-not-now-button"
-          >
-            {secondaryButtonLabel}
-          </Button>
-        </Box>
-      </Box>
+                  {t('musdTermsApply')}
+                </a>
+              </TextButton>,
+            ])}
+          </Text>
+        }
+        artwork={
+          <img
+            src={
+              theme === ThemeType.dark
+                ? MUSD_EDUCATION_COIN_IMAGE_DARK
+                : MUSD_EDUCATION_COIN_IMAGE_LIGHT
+            }
+            alt={t('musdGetMusd') as string}
+            width={252}
+            height={252}
+            style={{ maxWidth: '100%', height: 'auto' }}
+          />
+        }
+        primaryAction={{
+          label: primaryButtonLabel,
+          onClick: handleContinue,
+          isDisabled: isLoading,
+          'data-testid': 'musd-education-continue-button',
+        }}
+        secondaryAction={{
+          label: secondaryButtonLabel,
+          onClick: handleSkip,
+          className: 'text-default',
+          'data-testid': 'musd-education-not-now-button',
+        }}
+      />
     </Box>
   );
 };
