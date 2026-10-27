@@ -367,9 +367,11 @@ describe('PerpsView', () => {
         renderWithProvider(<PerpsView />, mockStore);
 
         const banner = screen.getByTestId('perps-debug-eth-position-banner');
+        const bannerText = screen.getByText('ADR58 POC: ETH POSITION DETECTED');
         const positionsSection = screen.getByTestId('perps-positions-section');
 
         expect(banner).toHaveTextContent('ADR58 POC: ETH POSITION DETECTED');
+        expect(bannerText).toHaveClass('text-error-inverse');
         expect(banner.compareDocumentPosition(positionsSection)).toBe(
           Node.DOCUMENT_POSITION_FOLLOWING,
         );

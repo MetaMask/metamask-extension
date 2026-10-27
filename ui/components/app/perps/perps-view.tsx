@@ -522,7 +522,7 @@ export const PerpsView = () => {
         >
           <Text
             variant={TextVariant.BodySm}
-            color={TextColor.errorInverse}
+            color={TextColor.ErrorInverse}
             fontWeight={FontWeight.Medium}
           >
             ADR58 POC: ETH POSITION DETECTED
