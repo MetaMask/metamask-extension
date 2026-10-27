@@ -83,6 +83,7 @@ describe('getDesiredBrazeUser', () => {
     isSignedIn: true,
     isUnlocked: true,
     canonicalProfileId: 'canonical-123',
+    isUiOpen: true,
   };
 
   it('returns the canonical profile ID when every gate passes', () => {
@@ -111,7 +112,14 @@ describe('getDesiredBrazeUser', () => {
   it.each([
     ['the wallet is locked', { isUnlocked: false }],
     ['the profile ID is not available yet', { canonicalProfileId: undefined }],
+    ['no MetaMask document is open', { isUiOpen: false }],
   ])('keeps the current user when %s', (_, override) => {
     expect(getDesiredBrazeUser({ ...eligible, ...override })).toBeUndefined();
+  });
+
+  it('does not wait for an open document to clear the user', () => {
+    expect(
+      getDesiredBrazeUser({ ...eligible, isUiOpen: false, isSignedIn: false }),
+    ).toBeNull();
   });
 });

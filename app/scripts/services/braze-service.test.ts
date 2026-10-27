@@ -26,6 +26,7 @@ type WalletState = {
   isSignedIn: boolean;
   isUnlocked: boolean;
   canonicalProfileId?: string;
+  isUiOpen: boolean;
 };
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
@@ -36,6 +37,7 @@ const eligibleState: WalletState = {
   isSignedIn: true,
   isUnlocked: true,
   canonicalProfileId: 'canonical-123',
+  isUiOpen: true,
 };
 
 function setup(initialState: WalletState = eligibleState) {
@@ -45,6 +47,10 @@ function setup(initialState: WalletState = eligibleState) {
   const rootMessenger: RootMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
   });
+  rootMessenger.registerActionHandler(
+    'ClientController:getState',
+    () => ({ isUiOpen: state.isUiOpen }) as never,
+  );
   rootMessenger.registerActionHandler(
     'OnboardingController:getState',
     () => ({ completedOnboarding: state.completedOnboarding }) as never,
@@ -96,12 +102,14 @@ function setup(initialState: WalletState = eligibleState) {
     messenger,
     actions: [
       'AuthenticationController:getState',
+      'ClientController:getState',
       'KeyringController:getState',
       'OnboardingController:getState',
       'PreferencesController:getState',
     ],
     events: [
       'AuthenticationController:stateChange',
+      'ClientController:stateChange',
       'KeyringController:stateChange',
       'OnboardingController:stateChange',
       'PreferencesController:stateChange',
@@ -125,11 +133,17 @@ function setup(initialState: WalletState = eligibleState) {
     await flush();
   };
 
+  const updateUiOpen = async (isUiOpen: boolean) => {
+    state = { ...state, isUiOpen };
+    rootMessenger.publish('ClientController:stateChange', {} as never, []);
+    await flush();
+  };
+
   const failNextDecision = (error: Error) => {
     decisionError = error;
   };
 
-  return { service, syncUser, update, failNextDecision };
+  return { service, syncUser, update, updateUiOpen, failNextDecision };
 }
 
 describe('BrazeService', () => {
@@ -164,6 +178,61 @@ describe('BrazeService', () => {
     await flush();
 
     expect(syncUser).not.toHaveBeenCalled();
+  });
+
+  it('sends nothing on startup while no UI document is open', async () => {
+    const { syncUser } = setup({
+      ...eligibleState,
+      isUiOpen: false,
+    });
+    await flush();
+
+    expect(syncUser).not.toHaveBeenCalled();
+  });
+
+  it('identifies when a UI document opens', async () => {
+    const { syncUser, updateUiOpen } = setup({
+      ...eligibleState,
+      isUiOpen: false,
+    });
+    await flush();
+    expect(syncUser).not.toHaveBeenCalled();
+
+    await updateUiOpen(true);
+
+    expect(syncUser).toHaveBeenCalledWith('canonical-123');
+  });
+
+  it('identifies again when a UI document opens after closing', async () => {
+    const { syncUser, updateUiOpen } = setup();
+    await flush();
+    syncUser.mockClear();
+
+    await updateUiOpen(false);
+    await updateUiOpen(true);
+
+    expect(syncUser).toHaveBeenCalledWith('canonical-123');
+  });
+
+  it('does not clear when the last UI document closes', async () => {
+    const { syncUser, updateUiOpen } = setup();
+    await flush();
+    syncUser.mockClear();
+
+    await updateUiOpen(false);
+
+    expect(syncUser).not.toHaveBeenCalled();
+  });
+
+  it('clears while no UI document is open', async () => {
+    const { syncUser } = setup({
+      ...eligibleState,
+      isUiOpen: false,
+      isSignedIn: false,
+    });
+    await flush();
+
+    expect(syncUser).toHaveBeenCalledWith(null);
   });
 
   it('identifies after unlock', async () => {

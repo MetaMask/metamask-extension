@@ -1,3 +1,7 @@
+import type {
+  ClientControllerGetStateAction,
+  ClientControllerStateChangeEvent,
+} from '@metamask/client-controller';
 import {
   selectPrimaryHdKeyringEntropySourceId,
   type KeyringControllerGetStateAction,
@@ -27,12 +31,14 @@ const SERVICE_NAME = 'BrazeService';
 
 type AllowedActions =
   | AuthenticationControllerGetStateAction
+  | ClientControllerGetStateAction
   | KeyringControllerGetStateAction
   | OnboardingControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
 type AllowedEvents =
   | AuthenticationControllerStateChangeEvent
+  | ClientControllerStateChangeEvent
   | KeyringControllerStateChangeEvent
   | OnboardingControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent;
@@ -47,9 +53,9 @@ export type BrazeServiceMessenger = Messenger<
  * Keeps the Braze SDK identified with the user's canonical profile ID.
  *
  * The background owns every gate (onboarding, Basic Functionality, Profile
- * Sync sign-in, lock state) and applies the desired user whenever it changes
- * through a platform-specific `syncUser`: the offscreen document on MV3, and
- * the background page itself on MV2.
+ * Sync sign-in, lock state, an open UI document) and applies the desired user
+ * whenever it changes through a platform-specific `syncUser`: the offscreen
+ * document on MV3, and the background page itself on MV2.
  */
 export class BrazeService {
   readonly name: typeof SERVICE_NAME = SERVICE_NAME;
@@ -89,6 +95,14 @@ export class BrazeService {
     this.#messenger.subscribe('KeyringController:stateChange', sync);
     this.#messenger.subscribe('OnboardingController:stateChange', sync);
     this.#messenger.subscribe('PreferencesController:stateChange', sync);
+    this.#messenger.subscribe('ClientController:stateChange', () => {
+      // Re-apply the user whenever a UI document opens or closes. Applying the
+      // same user is a no-op in the SDK, but the flush that follows lets it
+      // start a new session when the previous one expired while no document
+      // was open.
+      this.#lastSyncedUser = undefined;
+      this.#sync();
+    });
 
     // Re-apply after a background restart; the host is recreated with it.
     this.#sync();
@@ -105,11 +119,13 @@ export class BrazeService {
       'AuthenticationController:getState',
     );
     const keyringState = this.#messenger.call('KeyringController:getState');
+    const { isUiOpen } = this.#messenger.call('ClientController:getState');
 
     return getDesiredBrazeUser({
       completedOnboarding,
       useExternalServices,
       isSignedIn,
+      isUiOpen,
       isUnlocked: keyringState.isUnlocked,
       canonicalProfileId: getPrimaryCanonicalProfileId(
         keyringState.isUnlocked
