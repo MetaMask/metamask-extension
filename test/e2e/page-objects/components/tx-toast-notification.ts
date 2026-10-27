@@ -17,6 +17,9 @@ export class TxToastNotification {
     text: 'Transaction confirmed',
   };
 
+  private readonly transactionConfirmedToast =
+    '[data-testid="transaction-confirmed-toast"]';
+
   private readonly transactionSubmittedToast =
     '[data-testid="transaction-submitted-toast"]';
 
@@ -37,6 +40,11 @@ export class TxToastNotification {
   async closeToastNotification(): Promise<void> {
     // The toast auto-dismisses after a few seconds, so use clickElementSafe to avoid race conditions.
     await this.driver.clickElementSafe(this.closeButton);
+  }
+
+  async waitForConfirmedToastToDisappear(): Promise<void> {
+    console.log('Wait for the transaction confirmed toast to disappear');
+    await this.driver.assertElementNotPresent(this.transactionConfirmedToast);
   }
 
   async waitForToastNotification(): Promise<void> {

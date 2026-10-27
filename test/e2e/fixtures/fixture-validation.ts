@@ -82,6 +82,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
+  // Fresh wallet creation mints a new ULID for the primary entropy source.
+  // The money account id and address stay stable for the E2E seed.
+  'data.MoneyAccountController.moneyAccounts.ff738093-9dbe-4169-84c3-5c8d94c392ad.options.entropy.id',
   'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
