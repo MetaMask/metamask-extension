@@ -98,4 +98,27 @@ describe('Header', () => {
       getByTestId('wallet-initiated-header-back-button'),
     ).toBeInTheDocument();
   });
+
+  it.each([TransactionType.perpsDeposit, TransactionType.perpsWithdraw])(
+    'renders the dApp-initiated header with a close button for %s transactions from a dApp',
+    (type) => {
+      const base = genUnapprovedContractInteractionConfirmation({
+        chainId: '0x1',
+      });
+      const state = getMockConfirmStateForTransaction({
+        ...base,
+        type,
+        origin: 'https://example.test',
+      } as TransactionMeta);
+
+      const { getByTestId, queryByTestId } = render(state);
+
+      expect(
+        getByTestId('dapp-initiated-header-close-button'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('wallet-initiated-header-back-button'),
+      ).not.toBeInTheDocument();
+    },
+  );
 });
