@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 233,
+      "currentMigrationVersion": 234,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -172,8 +172,8 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": {
-      "moneyAccounts": {},
-      "defaultMoneyAccountId": null
+      "defaultMoneyAccountId": null,
+      "moneyAccounts": {}
     },
     "MoneyAccountUpgradeController": {
       "upgradedAccounts": {}
@@ -2247,6 +2247,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 233
+    "version": 234
   }
 }
