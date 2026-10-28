@@ -2,10 +2,9 @@ import { Driver } from '../../../webdriver/driver';
 
 /**
  * The ramps build-quote screen. Deep links with a token intent land here when
- * the unified buy (`rampsEnabled`) feature flag is on and the ramps catalog
- * is populated: the entry page pre-selects the link's token, so reaching
- * build-quote with the right token proves the full routing chain — intent
- * parsed from the link, token found in the catalog, and accepted by the
+ * the ramps catalog is populated: the entry page pre-selects the link's token,
+ * so reaching build-quote with the right token proves the full routing chain —
+ * intent parsed from the link, token found in the catalog, and accepted by the
  * RampsController — not merely that the router landed in the app.
  */
 class RampsBuildQuotePage {
