@@ -295,16 +295,15 @@ const MusdEducationScreen = () => {
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
-      <Box className="absolute top-3 right-4 z-10">
-        <ButtonIcon
-          iconName={IconName.Close}
-          ariaLabel={t('close') as string}
-          size={ButtonIconSize.Sm}
-          color={IconColor.IconDefault}
-          onClick={handleSkip}
-          data-testid="musd-education-skip-button"
-        />
-      </Box>
+      <ButtonIcon
+        className="absolute top-3 right-4"
+        iconName={IconName.Close}
+        ariaLabel={t('close') as string}
+        size={ButtonIconSize.Sm}
+        color={IconColor.IconDefault}
+        onClick={handleSkip}
+        data-testid="musd-education-skip-button"
+      />
       <MarketingMoment
         className="pt-12 px-4"
         title={t('musdEducationHeadline', [String(MUSD_CONVERSION_APY)])}
