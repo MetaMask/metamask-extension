@@ -319,6 +319,7 @@ import {
 import {
   BackendWebSocketServiceInit,
   AccountActivityServiceInit,
+  OHLCVServiceInit,
 } from './messenger-client-init/core-backend';
 import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
@@ -567,6 +568,7 @@ export default class MetamaskController extends EventEmitter {
       WebSocketService: WebSocketServiceInit,
       BackendWebSocketService: BackendWebSocketServiceInit,
       AccountActivityService: AccountActivityServiceInit,
+      OHLCVService: OHLCVServiceInit,
       SentinelApiService: SentinelApiServiceInit,
       ComplianceService: ComplianceServiceInit,
       ComplianceController: ComplianceControllerInit,
