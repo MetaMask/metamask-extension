@@ -127,6 +127,8 @@ class TransactionConfirmation extends Confirmation {
     testId: 'inline-alert',
   };
 
+  private readonly nativeAmountHeadingSelector = 'h2';
+
   private readonly networkName: RawLocator =
     '[data-testid="confirmation__details-network-name"]';
 
@@ -625,7 +627,7 @@ class TransactionConfirmation extends Confirmation {
   ): Promise<string | null> {
     const amount: unknown = await this.driver.executeScript(
       `const symbol = ${JSON.stringify(symbol)};
-      const headings = Array.from(document.querySelectorAll('h2'));
+      const headings = Array.from(document.querySelectorAll(arguments[0]));
       const heading = headings.find((node) =>
         (node.textContent || '').includes(symbol),
       );
@@ -641,6 +643,7 @@ class TransactionConfirmation extends Confirmation {
         node = node.parentElement;
       }
       return heading.textContent;`,
+      this.nativeAmountHeadingSelector,
     );
     return typeof amount === 'string' && amount.trim() !== '' ? amount : null;
   }
