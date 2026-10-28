@@ -107,39 +107,27 @@ export const MarketingMoment = ({
       data-testid={dataTestId}
       flexDirection={BoxFlexDirection.Column}
       className={twMerge(
-        'h-full min-h-0 w-full flex-1 overflow-hidden',
+        'h-full min-h-0 w-full flex-1 overflow-y-auto',
         className,
       )}
     >
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        className="min-h-0 w-full flex-1 overflow-y-auto"
-      >
+      <Box flexDirection={BoxFlexDirection.Column} gap={4} className="shrink-0">
+        {renderTitle()}
+        {renderDescription()}
+        {children}
+      </Box>
+
+      {artwork ? (
         <Box
           flexDirection={BoxFlexDirection.Column}
-          gap={4}
-          className="shrink-0"
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          {...artworkBoxProps}
+          className={twMerge('w-full flex-1 overflow-hidden', artworkClassName)}
         >
-          {renderTitle()}
-          {renderDescription()}
-          {children}
+          {artwork}
         </Box>
-
-        {artwork ? (
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Center}
-            {...artworkBoxProps}
-            className={twMerge(
-              'w-full flex-1 overflow-hidden',
-              artworkClassName,
-            )}
-          >
-            {artwork}
-          </Box>
-        ) : null}
-      </Box>
+      ) : null}
 
       {primaryAction || secondaryAction ? (
         <Box
