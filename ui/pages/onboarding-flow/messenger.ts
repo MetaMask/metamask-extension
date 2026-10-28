@@ -14,3 +14,15 @@ export const ONBOARDING_TRACE_ROUTE_CAPABILITIES =
 export type OnboardingTraceRouteMessenger = RouteMessengerFromCapabilities<
   typeof ONBOARDING_TRACE_ROUTE_CAPABILITIES
 >;
+
+export const ONBOARDING_ROUTE_CAPABILITIES = defineAllowedRouteCapabilities({
+  actions: [
+    ...ONBOARDING_TRACE_ROUTE_CAPABILITIES.actions,
+    'AppStateController:setContinuityIdForTab',
+  ],
+  events: [],
+});
+
+export type OnboardingMessenger = RouteMessengerFromCapabilities<
+  typeof ONBOARDING_ROUTE_CAPABILITIES
+>;

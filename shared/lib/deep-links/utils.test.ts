@@ -117,6 +117,37 @@ describe('Deep link utils', () => {
         });
       });
 
+      it('preserves continuity metadata from the parsed destination', async () => {
+        const createdAt = Date.now();
+        mockParse.mockResolvedValue({
+          destination: {
+            path: '/?tab=perps',
+            query: new URLSearchParams(),
+            trackContinuity: true,
+          },
+          signature: VALID,
+          route: {} as never,
+        });
+
+        const result = await getDeferredDeepLinkRoute({
+          createdAt,
+          referringLink:
+            'https://link.metamask.io/perps?sig_params=market&market=ETH&ignored=value',
+        });
+
+        expect(mockParse).toHaveBeenCalledWith(
+          new URL(
+            'https://link.metamask.io/perps?sig_params=market&market=ETH&ignored=value',
+          ),
+        );
+        expect(result).toStrictEqual({
+          type: DeferredDeepLinkRouteType.Navigate,
+          route: '/?tab=perps',
+          signature: VALID,
+          trackContinuity: true,
+        });
+      });
+
       it('returns redirect for link less than 2 hours old', async () => {
         const oneHourMs = 60 * 60 * 1000;
         const createdAt = 1000000;

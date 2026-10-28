@@ -13,8 +13,26 @@ import {
 } from '../../../../shared/lib/deep-links/verify';
 import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { renderHookWithProviderTyped as renderHookWithAppProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import { useOnboardingCompletion } from './useOnboardingCompletion';
+
+const routeMessenger = createMockRouteMessenger();
+
+function renderHookWithProvider(
+  hook: () => ReturnType<typeof useOnboardingCompletion>,
+  state: Parameters<typeof renderHookWithAppProvider>[1],
+) {
+  return renderHookWithAppProvider(
+    hook,
+    state,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    routeMessenger,
+  );
+}
 
 const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 

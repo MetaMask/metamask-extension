@@ -98,6 +98,7 @@ export async function getDeferredDeepLinkRoute(
       type: DeferredDeepLinkRouteType.Navigate,
       route: queryString ? `${path}?${queryString}` : path,
       signature,
+      ...(destination.trackContinuity ? { trackContinuity: true } : {}),
     };
   } catch (error) {
     log.error('Failed to parse deferred deep link:', deferredDeepLink, error);

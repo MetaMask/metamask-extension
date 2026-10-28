@@ -54,6 +54,7 @@ export type DeferredDeepLinkRoute =
       type: DeferredDeepLinkRouteType.Navigate;
       route: string;
       signature: SignatureStatus;
+      trackContinuity?: boolean;
     }
   | {
       type: DeferredDeepLinkRouteType.Interstitial;

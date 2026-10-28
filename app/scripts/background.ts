@@ -61,10 +61,7 @@ import {
   isStateCorruptionErrorType,
 } from '../../shared/constants/critical-error';
 import { hasAnalyticsConsent } from '../../shared/lib/analytics';
-import {
-  createEvent,
-  shouldTrackDeepLinkNavigation,
-} from '../../shared/lib/deep-links/metrics';
+import { shouldTrackDeepLinkNavigation } from '../../shared/lib/deep-links/metrics';
 import { hasVault } from '../../shared/lib/stores/persistence-manager';
 import type { MetaMaskStateType } from '../../shared/lib/stores/base-store';
 import {
@@ -85,7 +82,11 @@ import rawFirstTimeState from './first-time-state';
 import { loadStateFromPersistence } from './lib/startup/load-state-from-persistence';
 import { wireStatePersistence } from './lib/startup/wire-state-persistence';
 import { parsePortInfo } from './lib/parse-port-info';
-import { createEventBuilder, trackEvent } from './controllers/analytics';
+import {
+  canSubmitAnalytics,
+  createEventBuilder,
+  trackEvent,
+} from './controllers/analytics';
 import MetamaskController from './metamask-controller';
 import NotificationManager from './lib/notification-manager';
 import { registerCashtagBackgroundBridge } from './cashtag/background';
@@ -112,7 +113,9 @@ import {
 } from './constants/stream';
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { trackDeepLinkNavigation } from './lib/deep-links/track-deep-link-navigation';
 import { getRequestSafeReload } from './lib/safe-reload';
+import { sanitizeSentryBackgroundState } from './lib/state-utils';
 import {
   readCriticalErrorRepairSession,
   clearCriticalErrorRepairSession,
@@ -671,10 +674,20 @@ async function initialize(backup: Backup | null) {
     getExtensionURL: platform.getExtensionURL,
     getState: initializedController.getState.bind(initializedController),
   })
-    .on('navigate', async ({ url, parsed }) => {
+    .on('navigate', async ({ tabId, url, parsed }) => {
       // don't track deep links that are immediately redirected (like /buy)
       if (shouldTrackDeepLinkNavigation(parsed)) {
-        trackEvent(createEvent({ signature: parsed.signature, url }));
+        trackDeepLinkNavigation({
+          canSubmitAnalytics,
+          parsed,
+          setContinuityIdForTab:
+            initializedController.appStateController.setContinuityIdForTab.bind(
+              initializedController.appStateController,
+            ),
+          tabId,
+          trackEvent,
+          url,
+        });
       }
     })
     .on('error', (error) => sentry?.captureException(error))
@@ -1132,7 +1145,9 @@ setupSidePanelToolbarBehavior({
 
 function setupSentryGetStateGlobal(store: MetaMaskControllerStore) {
   global.stateHooks.getSentryAppState = function () {
-    const backgroundState = store.memStore.getState();
+    const backgroundState = sanitizeSentryBackgroundState(
+      store.memStore.getState(),
+    );
     return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }
