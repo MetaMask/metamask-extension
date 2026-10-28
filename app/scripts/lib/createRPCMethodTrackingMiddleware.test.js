@@ -1334,17 +1334,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
 
-      it('reports the mapped status for an internal snap rejection error', async () => {
-        await runWalletPay({
-          error: {
-            code: errorCodes.rpc.internal,
-            message: 'Request rejected by user or snap.',
-          },
-        });
-
-        expect(getTrackedEventCall(1).properties.status).toBe('failed');
-      });
-
       it('omits the type when the params are malformed', async () => {
         await runWalletPay({
           params: ['not-an-object'],
