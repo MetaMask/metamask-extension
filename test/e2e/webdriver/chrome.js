@@ -91,9 +91,6 @@ class ChromeDriver {
       },
     });
 
-    // Temporarily lock to version 126
-    options.setBrowserVersion('126');
-
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
       options.setLocalState({
