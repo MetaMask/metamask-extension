@@ -483,9 +483,7 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
-      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       balance={balanceContent}
-      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       buttons={
         <CoinButtons
           {...{

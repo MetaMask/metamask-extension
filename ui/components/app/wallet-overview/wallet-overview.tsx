@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'clsx';
 
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -8,7 +7,17 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
 
-const WalletOverview = ({ balance, buttons, className }) => {
+type WalletOverviewProps = {
+  balance: React.ReactNode;
+  buttons: React.ReactNode;
+  className?: string;
+};
+
+const WalletOverview = ({
+  balance,
+  buttons,
+  className,
+}: WalletOverviewProps) => {
   const environmentType = getEnvironmentType();
 
   return (
@@ -29,12 +38,6 @@ const WalletOverview = ({ balance, buttons, className }) => {
       <div className="wallet-overview__buttons">{buttons}</div>
     </div>
   );
-};
-
-WalletOverview.propTypes = {
-  balance: PropTypes.element.isRequired,
-  buttons: PropTypes.element.isRequired,
-  className: PropTypes.string,
 };
 
 export default WalletOverview;
