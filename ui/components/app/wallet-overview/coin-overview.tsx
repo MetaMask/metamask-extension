@@ -12,7 +12,12 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box, Skeleton } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  Skeleton,
+} from '@metamask/design-system-react';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
@@ -70,6 +75,11 @@ import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
 import WalletOverview from './wallet-overview';
+import {
+  getBalanceAlignmentClassName,
+  getWalletOverviewLayout,
+  type WalletOverviewLayout,
+} from './wallet-overview-layout';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
@@ -86,12 +96,24 @@ export type CoinOverviewProps = {
 
 const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
-const BalanceOverviewSkeleton = () => (
+const BalanceOverviewSkeleton = ({
+  layout,
+}: {
+  layout: WalletOverviewLayout;
+}) => (
   <Box
-    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center gap-[10px] px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
+    className={classnames(
+      'flex w-full max-w-[400px] items-center gap-[10px] pb-4 pt-6',
+      layout.isFullscreenOrSidepanel ? 'px-4' : 'px-2',
+    )}
     data-testid="coin-overview-balance-skeleton"
   >
-    <Box className="wallet-overview__balance-skeleton-lines flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px]">
+    <Box
+      className={classnames(
+        'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
+        getBalanceAlignmentClassName(layout),
+      )}
+    >
       <Skeleton className="h-[50px] w-full rounded-lg" />
       <Skeleton className="h-6 w-[180px] rounded-lg" />
     </Box>
@@ -432,7 +454,11 @@ export const CoinOverview = ({
     };
 
     return (
-      <Box className="wallet-overview__currency-wrapper">
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        flexWrap={BoxFlexWrap.Wrap}
+        gap={2}
+      >
         <AccountGroupBalanceChange
           period={period}
           trailingChild={renderPercentageAndAmountChangeTrail}
@@ -440,6 +466,8 @@ export const CoinOverview = ({
       </Box>
     );
   };
+
+  const layout = getWalletOverviewLayout();
 
   const balanceSection: React.ReactNode = (
     <AccountGroupBalance
@@ -457,7 +485,12 @@ export const CoinOverview = ({
       title={t('balanceOutdated')}
       disabled={!balanceIsCached}
     >
-      <div className={`${classPrefix}-overview__balance`}>
+      <div
+        className={classnames(
+          `${classPrefix}-overview__balance`,
+          getBalanceAlignmentClassName(layout),
+        )}
+      >
         <div className={`${classPrefix}-overview__primary-container`}>
           {balanceSection}
           {balanceIsCached && !shouldShowBalanceEmptyState && (
@@ -470,7 +503,7 @@ export const CoinOverview = ({
   );
 
   if (shouldShowBalanceLoadingState) {
-    balanceContent = <BalanceOverviewSkeleton />;
+    balanceContent = <BalanceOverviewSkeleton layout={layout} />;
   } else if (shouldShowBalanceEmptyState) {
     balanceContent = (
       <BalanceEmptyState
