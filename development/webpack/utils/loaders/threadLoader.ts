@@ -1,6 +1,7 @@
 import { availableParallelism, arch, freemem } from 'node:os';
 import { pathToFileURL } from 'node:url';
 import type { RuleSetUseItem } from 'webpack';
+import { resolvePackage } from '../../../lib/build-paths.ts';
 
 export type ThreadLoaderConfig = {
   threads: number | 'auto';
@@ -49,6 +50,18 @@ export function resolveAutoJobs(threads: number): number {
 }
 
 /**
+ * Returns the runtime arguments required by a loader's execution format.
+ *
+ * @param filename - The source or compiled loader configuration filename.
+ * @returns A TSX preload for source TypeScript, or no preload for compiled JavaScript.
+ */
+export function getWorkerNodeArgs(filename: string): string[] {
+  return filename.endsWith('.ts')
+    ? ['--import', pathToFileURL(resolvePackage('tsx')).href]
+    : [];
+}
+
+/**
  * Get thread-loader configuration for parallelizing webpack loaders.
  *
  * @param config - Thread-loader options including thread/job counts and watch mode.
@@ -70,10 +83,9 @@ export function getThreadLoader(config: ThreadLoaderConfig) {
     options: {
       // TSX source workers need the runtime hook. Native ESM and emitted CJS
       // loaders use Node directly.
-      workerNodeArgs:
-        typeof __filename === 'string' && __filename.endsWith('.ts')
-          ? ['--import', pathToFileURL(require.resolve('tsx')).href]
-          : [],
+      workerNodeArgs: getWorkerNodeArgs(
+        typeof __filename === 'string' ? __filename : '',
+      ),
       workers: resolvedThreads,
       workerParallelJobs: resolvedJobs,
       poolTimeout: watch ? Number(Infinity) : 2000,
