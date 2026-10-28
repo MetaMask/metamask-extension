@@ -1115,7 +1115,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers": true,
+        "@metamask/assets-controller>@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/assets-controller>@metamask/controller-utils": true,
@@ -1169,6 +1169,15 @@
         "@metamask/assets-controllers>reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "@metamask/assets-controllers>uuid": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/assets-controllers": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/assets-controller>@metamask/controller-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
@@ -3030,7 +3039,8 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
-        "immer": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/permission-controller>immer": true,
         "nanoid": true
       }
     },
@@ -6340,6 +6350,11 @@
       }
     },
     "@metamask/network-controller>immer": {
+      "globals": {
+        "Iterator": true
+      }
+    },
+    "@metamask/permission-controller>immer": {
       "globals": {
         "Iterator": true
       }
