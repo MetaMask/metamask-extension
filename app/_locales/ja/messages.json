@@ -4253,6 +4253,10 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMaskは、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。"
   },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1は、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1時間",
     "description": "$1 represents a number of hours"
@@ -4530,9 +4534,6 @@
   "hardwareWalletErrorRecoveryConnection4": {
     "message": "$1デバイスのロックが解除されています",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorRecoveryTitle": {
-    "message": "引き続き次のことを確認します:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "$1デバイスのロックが解除されています",
@@ -5453,6 +5454,12 @@
   "mfaFailureClose": {
     "message": "閉じる"
   },
+  "mfaFailureContactSupport": {
+    "message": "サポートへのお問い合わせ"
+  },
+  "mfaFailureDone": {
+    "message": "完了"
+  },
   "mfaFailureRetry": {
     "message": "もう一度お試しください"
   },
@@ -5474,8 +5481,8 @@
   "mfaOtpRetry": {
     "message": "もう一度お試しください"
   },
-  "mfaOtpVerify": {
-    "message": "検証"
+  "mfaOtpVerifying": {
+    "message": "コードを確認しています"
   },
   "mfaPickerOr": {
     "message": "または"
@@ -9398,6 +9405,33 @@
   },
   "rewardsLinkAccountError": {
     "message": "アカウントの追加に失敗しました"
+  },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "最近取引を行われているため、招待を受けることはできません。"
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "お客様はすでに別のユーザーにより招待されています。"
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "無効な紹介コード"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "紹介コード"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "紹介コードを検証できませんでした."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "ご自身の紹介コードを利用することはできません。"
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "他の人から招待を受けることはできません。"
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "問題が発生しました。しばらくしてからもう一度お試しください。"
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "試行回数が多すぎます。しばらくお待ちください。"
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "地域を確認中…"
