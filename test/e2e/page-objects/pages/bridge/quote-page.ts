@@ -725,6 +725,7 @@ class BridgeQuotePage {
   }
 
   async selectSrcToken(token: string): Promise<void> {
+    console.log(`Selecting source token ${token}`);
     await this.driver.waitForSelector(this.sourceAssetPickerButton);
     await this.driver.clickElement(this.sourceAssetPickerButton);
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
@@ -738,6 +739,7 @@ class BridgeQuotePage {
    * @param token - Token symbol, such as ETH or MON.
    */
   async selectSrcTokenIfNeeded(token: string): Promise<void> {
+    console.log(`Selecting source token ${token} if needed`);
     const sourceButton = await this.driver.findElement(
       this.sourceAssetPickerButton,
     );
