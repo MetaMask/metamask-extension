@@ -49,6 +49,18 @@ export function resolveAutoJobs(threads: number): number {
 }
 
 /**
+ * Returns the runtime arguments required by a loader's execution format.
+ *
+ * @param filename - The source or compiled loader configuration filename.
+ * @returns A TSX preload for source TypeScript, or no preload for compiled JavaScript.
+ */
+export function getWorkerNodeArgs(filename: string): string[] {
+  return filename.endsWith('.ts')
+    ? ['--import', pathToFileURL(require.resolve('tsx')).href]
+    : [];
+}
+
+/**
  * Get thread-loader configuration for parallelizing webpack loaders.
  *
  * @param config - Thread-loader options including thread/job counts and watch mode.
@@ -70,9 +82,7 @@ export function getThreadLoader(config: ThreadLoaderConfig) {
     options: {
       // Workers don't inherit the main process's tsx hooks. Source loaders need
       // the same runtime for TypeScript imports; emitted CJS loaders don't.
-      workerNodeArgs: __filename.endsWith('.ts')
-        ? ['--import', pathToFileURL(require.resolve('tsx')).href]
-        : [],
+      workerNodeArgs: getWorkerNodeArgs(__filename),
       workers: resolvedThreads,
       workerParallelJobs: resolvedJobs,
       poolTimeout: watch ? Number(Infinity) : 2000,

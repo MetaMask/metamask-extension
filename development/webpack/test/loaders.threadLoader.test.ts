@@ -4,9 +4,11 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
+import { pathToFileURL } from 'node:url';
 import { webpack, NormalModule } from 'webpack';
 import {
   getThreadLoader,
+  getWorkerNodeArgs,
   resolveAutoThreads,
   resolveAutoJobs,
 } from '../utils/loaders/threadLoader';
@@ -67,6 +69,19 @@ describe('resolveAutoJobs', () => {
   it('returns 15 for multiple threads', () => {
     assert.strictEqual(resolveAutoJobs(2), 15);
     assert.strictEqual(resolveAutoJobs(8), 15);
+  });
+});
+
+describe('getWorkerNodeArgs', () => {
+  it('preloads TSX for source TypeScript loaders', () => {
+    assert.deepStrictEqual(getWorkerNodeArgs('threadLoader.ts'), [
+      '--import',
+      pathToFileURL(require.resolve('tsx')).href,
+    ]);
+  });
+
+  it('uses plain Node for compiled CommonJS loaders', () => {
+    assert.deepStrictEqual(getWorkerNodeArgs('threadLoader.js'), []);
   });
 });
 
