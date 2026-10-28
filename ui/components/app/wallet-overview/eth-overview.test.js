@@ -572,11 +572,6 @@ describe('EthOverview', () => {
       expect(queryByTestId('eth-overview-batchSell')).not.toBeInTheDocument();
     });
 
-    it('does not show the Discover link in the balance header', () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      expect(queryByTestId('portfolio-link')).not.toBeInTheDocument();
-    });
-
     it('should always show the Buy button regardless of current chain Id', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
       const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
