@@ -33,6 +33,7 @@ const ContactSupportStep = ({ step, onAction }: StepProps<'failure'>) => {
   return (
     <>
       <StepLayout
+        isVerticallyCentered
         top={
           <img
             src="./images/mfa-contact-support.svg"
@@ -85,6 +86,7 @@ const FailureStep = (props: StepProps<'failure'>) => {
   const specificKey = getSpecificErrorMessageKey(step.code);
   return (
     <StepLayout
+      isVerticallyCentered
       top={
         <AvatarIcon
           iconName={IconName.Danger}
