@@ -102,7 +102,7 @@ describe('commitTransactionPayUpdates', () => {
     expect(transaction.requiredAssets?.[0]?.amount).toBe('0x0');
   });
 
-  it('clears metadata derived from the previous amount', () => {
+  it('preserves the gas limit while clearing amount-derived metadata', () => {
     const transaction = createTransaction();
     transaction.txParams.gas = '0x5208';
     transaction.gasLimitNoBuffer = '0x6000';
@@ -133,8 +133,11 @@ describe('commitTransactionPayUpdates', () => {
     const [{ callback }] = updateTransactionMetadata.mock.calls[0];
     callback(transaction);
 
-    expect(transaction.txParams.gas).toBeUndefined();
-    expect(transaction.gasLimitNoBuffer).toBeUndefined();
+    // Clearing the gas limit would make the next simulation run with Monad's
+    // 150M default, which masks a pre-funding revert as a reserve balance
+    // violation. Nothing re-estimates gas after this commit.
+    expect(transaction.txParams.gas).toBe('0x5208');
+    expect(transaction.gasLimitNoBuffer).toBe('0x6000');
     expect(transaction.gasUsed).toBeUndefined();
     expect(transaction.securityAlertResponse).toBeUndefined();
     expect(transaction.simulationData).toBeUndefined();

@@ -1564,6 +1564,12 @@
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Security partners have flagged this address for malicious activity."
   },
+  "alertMessageAddressTrustSignalMaliciousWithAddress": {
+    "message": "Security partners have flagged this address $1 for malicious activity."
+  },
+  "alertMessageAddressTrustSignalWarningWithAddress": {
+    "message": "Security partners don't have enough reliable history to verify this address $1."
+  },
   "alertMessageBurnAddress": {
     "message": "You're sending your assets to a burn address. If you continue, you'll lose your assets."
   },
@@ -1581,6 +1587,12 @@
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "You do not have enough $1 in your account to pay for network fees."
+  },
+  "alertMessageNestedAddressTrustSignalMaliciousWithAddress": {
+    "message": "Security partners have flagged a nested transaction address $1 for malicious activity."
+  },
+  "alertMessageNestedAddressTrustSignalWarningWithAddress": {
+    "message": "Security partners don't have enough reliable history to verify this nested transaction address $1."
   },
   "alertMessageNoGasPrice": {
     "message": "We can’t move forward with this transaction until you manually update the fee."
@@ -1656,6 +1668,12 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Unnecessary permission"
+  },
+  "alertReasonNestedAddressTrustSignalMalicious": {
+    "message": "Nested address flagged as high risk"
+  },
+  "alertReasonNestedAddressTrustSignalWarning": {
+    "message": "Limited nested address signals"
   },
   "alertReasonNoGasPrice": {
     "message": "Fee estimate unavailable"
@@ -1976,11 +1994,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Includes basic features like token details and gas settings. Keep this feature on for the best experience.  Read our $1 to learn more.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Basic functionality"
@@ -4353,6 +4371,10 @@
     "message": "This network requires keeping at least $1 $2 in your account after the transaction. Smart accounts cannot go below this reserve.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 covers the network fee for this transaction. This includes a one-time smart account activation.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1 hrs",
     "description": "$1 represents a number of hours"
@@ -5590,9 +5612,6 @@
   "mfaErrorLimitReached": {
     "message": "You've reached the limit for this method."
   },
-  "mfaErrorMultiPrimarySrp": {
-    "message": "Verification isn't available yet for wallets with more than one Secret Recovery Phrase."
-  },
   "mfaErrorPasskeyCancelled": {
     "message": "Passkey request was cancelled."
   },
@@ -5617,8 +5636,20 @@
   "mfaFailureClose": {
     "message": "Close"
   },
+  "mfaFailureContactSupport": {
+    "message": "Contact support"
+  },
+  "mfaFailureDone": {
+    "message": "Done"
+  },
   "mfaFailureRetry": {
     "message": "Try again"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Contact support to continue."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "We couldn't verify your details"
   },
   "mfaFailureTitle": {
     "message": "Something went wrong"
@@ -7306,6 +7337,10 @@
   },
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
+  },
+  "paidBySponsor": {
+    "message": "Paid by $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "Paid with"
@@ -9781,6 +9816,33 @@
   "rewardsLinkAccountError": {
     "message": "Failed to add account"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "You cannot be referred because of recent trading activity."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "You have already been referred by another user."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Invalid referral code"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Referral code"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Referral code couldn’t be validated."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "You cannot use your own referral code."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "You cannot be referred by someone else."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Something went wrong. Try again shortly."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Too many tries. Wait a moment."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Checking region..."
   },
@@ -9818,24 +9880,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Opt-in failed"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Invalid referral code"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Referral code (optional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Referral code couldn’t be validated."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Check your connection and try again."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Hide code"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Have a referral code?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Join Rewards"
   },
@@ -9844,10 +9888,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Start earning rewards"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Verifying referral code...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",

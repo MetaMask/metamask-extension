@@ -140,7 +140,9 @@ export async function retrieveIssueByTitle(
     searchQuery,
   });
 
-  const issueWithSameTitle = retrieveIssueByTitleResult?.search?.nodes?.find(rawIssue => rawIssue.title === issueTitle);
+  const issueWithSameTitle = retrieveIssueByTitleResult?.search?.nodes?.find(
+    (rawIssue) => rawIssue.title === issueTitle,
+  );
 
   const issue: Labelable | undefined = issueWithSameTitle
     ? {
@@ -166,7 +168,6 @@ export async function retrieveLinkedIssues(
   repoName: string,
   prNumber: number,
 ): Promise<Labelable[]> {
-
   // We assume there won't be more than 100 linked issues
   const retrieveLinkedIssuesQuery = `
   query ($repoOwner: String!, $repoName: String!, $prNumber: Int!) {

@@ -1,4 +1,9 @@
 {
+  ".devcontainer/launch-firefox.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
   "app/scripts/controllers/qr-sync/qr-sync-controller.ts": {
     "promise/no-nesting": {
       "count": 1
