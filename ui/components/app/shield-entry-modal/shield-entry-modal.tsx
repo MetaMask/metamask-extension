@@ -7,18 +7,21 @@ import {
   ModalType,
   SubscriptionUserEvent,
 } from '@metamask/subscription-controller';
+import {
+  BoxJustifyContent,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  ModalContentSize,
+} from '@metamask/design-system-react';
 import log from 'loglevel';
 import {
   MarketingMoment,
   type MarketingMomentAction,
 } from '../../ui/marketing-moment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../component-library';
 import {
   setShowShieldEntryModalOnce,
   submitSubscriptionUserEvents,
@@ -215,8 +218,9 @@ const ShieldEntryModal = ({
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
-          className: '!bg-accent03-dark',
+          className: 'relative overflow-hidden bg-accent03-dark py-0',
         }}
+        size={ModalContentSize.Md}
       >
         <ModalHeader
           onClose={() => {
@@ -230,47 +234,53 @@ const ShieldEntryModal = ({
           closeButtonProps={{
             'data-testid': 'shield-entry-modal-close-button',
           }}
+          className="absolute top-4 left-0 right-0 w-full"
         />
-        <MarketingMoment
-          title={
-            modalType === MODAL_TYPE.A
-              ? t('shieldEntryModalTitleA')
-              : t('shieldEntryModalTitleB')
-          }
-          titleProps={{ className: 'text-accent04-light' }}
-          description={
-            modalType === MODAL_TYPE.A
-              ? t('shieldEntryModalSubtitleA', ['$10,000'])
-              : t('shieldEntryModalSubtitleB', ['$10,000'])
-          }
-          descriptionProps={{
-            className: 'text-accent04-light px-4',
-          }}
-          artworkWrapperProps={{ className: 'h-[252px] w-full flex-none' }}
-          artwork={
-            <ShieldIllustrationAnimation
-              containerClassName="h-full w-full"
-              canvasClassName="h-full w-full"
-            />
-          }
-          primaryAction={
-            {
-              label: t('shieldEntryModalGetStarted'),
-              onClick: handleOnGetStarted,
-              isDisabled: actionLoading,
-              'data-testid': 'shield-entry-modal-get-started-button',
-            } as MarketingMomentAction
-          }
-          secondaryAction={
-            {
-              label: t('learnMoreUpperCase'),
-              onClick: handleOnLearnMoreClick,
-              isDisabled: actionLoading,
-              'data-testid': 'shield-entry-modal-learn-more-button',
-            } as MarketingMomentAction
-          }
-          className="px-4"
-        />
+        <ModalBody className="overflow-y-auto py-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <MarketingMoment
+            className="pt-4"
+            title={
+              modalType === MODAL_TYPE.A
+                ? t('shieldEntryModalTitleA')
+                : t('shieldEntryModalTitleB')
+            }
+            titleProps={{ className: 'text-accent04-light' }}
+            description={
+              modalType === MODAL_TYPE.A
+                ? t('shieldEntryModalSubtitleA', ['$10,000'])
+                : t('shieldEntryModalSubtitleB', ['$10,000'])
+            }
+            descriptionProps={{
+              className: 'text-accent04-light',
+            }}
+            artworkWrapperProps={{
+              justifyContent: BoxJustifyContent.End,
+              className: 'min-h-0 min-w-0 w-full',
+            }}
+            artwork={
+              <ShieldIllustrationAnimation
+                containerClassName="aspect-[346/252] h-auto max-h-[252px] w-full min-w-0"
+                canvasClassName="h-full w-full"
+              />
+            }
+            primaryAction={
+              {
+                label: t('shieldEntryModalGetStarted'),
+                onClick: handleOnGetStarted,
+                isDisabled: actionLoading,
+                'data-testid': 'shield-entry-modal-get-started-button',
+              } as MarketingMomentAction
+            }
+            secondaryAction={
+              {
+                label: t('learnMoreUpperCase'),
+                onClick: handleOnLearnMoreClick,
+                isDisabled: actionLoading,
+                'data-testid': 'shield-entry-modal-learn-more-button',
+              } as MarketingMomentAction
+            }
+          />
+        </ModalBody>
       </ModalContent>
     </Modal>
   );

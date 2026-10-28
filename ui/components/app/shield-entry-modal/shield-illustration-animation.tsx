@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   useRive,
   Layout,
@@ -6,7 +6,7 @@ import {
   Alignment,
   useRiveFile,
 } from '@rive-app/react-canvas';
-import { Box } from '@metamask/design-system-react';
+import { Box, twMerge } from '@metamask/design-system-react';
 import {
   useRiveWasmContext,
   useRiveWasmFile,
@@ -19,6 +19,7 @@ const ShieldIllustrationAnimation = ({
   containerClassName?: string;
   canvasClassName?: string;
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
@@ -50,7 +51,7 @@ const ShieldIllustrationAnimation = ({
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
-      alignment: Alignment.Center,
+      alignment: Alignment.BottomCenter,
     }),
   });
 
@@ -68,20 +69,40 @@ const ShieldIllustrationAnimation = ({
     }
   }, [rive, isWasmReady, bufferLoading, buffer]);
 
-  // Don't render Rive component until WASM and buffer are ready to avoid errors
-  if (
-    !isWasmReady ||
-    bufferLoading ||
-    !buffer ||
-    status === 'loading' ||
-    status === 'failed'
-  ) {
-    return <Box className={containerClassName}></Box>;
-  }
+  const canvasReady =
+    isWasmReady &&
+    !bufferLoading &&
+    Boolean(buffer) &&
+    status !== 'loading' &&
+    status !== 'failed';
+
+  // Rive fits the artboard once. Refit when the modal width changes so the
+  // illustration scales instead of being clipped.
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!rive || !canvasReady || !element) {
+      return undefined;
+    }
+
+    const resize = () => {
+      rive.resizeDrawingSurfaceToCanvas();
+    };
+    const observer = new ResizeObserver(resize);
+    observer.observe(element);
+    resize();
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [canvasReady, rive]);
 
   return (
-    <Box className={containerClassName}>
-      <RiveComponent className={canvasClassName} />
+    <Box ref={containerRef} className={containerClassName}>
+      {canvasReady ? (
+        <RiveComponent
+          className={twMerge('!h-full !w-full max-w-full', canvasClassName)}
+        />
+      ) : null}
     </Box>
   );
 };
