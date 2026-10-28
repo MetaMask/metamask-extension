@@ -48,10 +48,7 @@ import {
 } from './ducks/metamask/metamask';
 import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root, { router } from './pages';
-import {
-  registerUnlockMeasurement,
-  UnlockMeasurementContext,
-} from './pages/unlock-page/unlock-performance';
+import { registerUnlockMeasurement } from './pages/unlock-page/unlock-performance';
 import txHelper from './helpers/utils/tx-helper';
 import {
   setBackgroundConnection,
@@ -244,12 +241,7 @@ async function startApp(metamaskState, opts) {
   initWebVitals();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
-  const unlockMeasurement = registerUnlockMeasurement({
-    isUnlocked: tags['wallet.unlocked'],
-    completedOnboarding: metamaskState.completedOnboarding,
-    uiType: tags['wallet.ui_type'],
-    router,
-  });
+  registerUnlockMeasurement(metamaskState, router);
 
   const store = await trace(
     {
@@ -281,12 +273,7 @@ async function startApp(metamaskState, opts) {
   // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
   // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    renderUi(
-      <UnlockMeasurementContext.Provider value={unlockMeasurement}>
-        <Root store={store} uiMessenger={uiMessenger} />
-      </UnlockMeasurementContext.Provider>,
-      opts.container,
-    ),
+    renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
 
   return store;

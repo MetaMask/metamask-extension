@@ -11,13 +11,16 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
 import { ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE } from '../../helpers/constants/routes';
-import { UnlockMeasurementContext } from './unlock-performance';
+import { discardUnlockMeasurement, UnlockReady } from './unlock-performance';
 import UnlockPage from './unlock-page.component';
 
 const mockTrackEvent = jest.fn();
 const mockUnlockWithPasskey = jest.fn();
 
-const measurement = { reportReady: jest.fn(), discard: jest.fn() };
+jest.mock('./unlock-performance', () => ({
+  discardUnlockMeasurement: jest.fn(),
+  UnlockReady: jest.fn(() => null),
+}));
 
 jest.mock('../../hooks/passkey/usePasskeyUnlock', () => ({
   usePasskeyUnlock: () => mockUnlockWithPasskey,
@@ -136,13 +139,7 @@ describe('UnlockPage component (passkey UI)', () => {
 
   describe('useful screen readiness', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
-      measurement.reportReady.mockClear();
-      measurement.discard.mockClear();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
+      jest.mocked(discardUnlockMeasurement).mockClear();
     });
 
     it('excludes successful automatic passkey authentication with real navigation', async () => {
@@ -165,38 +162,29 @@ describe('UnlockPage component (passkey UI)', () => {
       };
 
       const { getByTestId } = renderWithProvider(
-        <UnlockMeasurementContext.Provider value={measurement}>
-          <UnlockRoute />
-        </UnlockMeasurementContext.Provider>,
+        <UnlockRoute />,
         mockStore,
         '/unlock',
       );
-      act(() => jest.advanceTimersByTime(48));
       expect(mockUnlockWithPasskey).toHaveBeenCalledTimes(1);
-      expect(measurement.discard).toHaveBeenCalledTimes(1);
-      expect(measurement.reportReady).not.toHaveBeenCalled();
+      expect(discardUnlockMeasurement).toHaveBeenCalledTimes(1);
+      expect(jest.mocked(UnlockReady).mock.lastCall?.[0].ready).toBe(false);
 
       await act(async () => unlock.resolve());
-      act(() => jest.advanceTimersByTime(48));
       expect(getByTestId('unlocked-home')).toBeInTheDocument();
-      expect(measurement.reportReady).not.toHaveBeenCalled();
     });
 
     jestIt.each([false, true])(
       'reports an idle form with passkeys enabled: %s',
       (isPasskeyActive) => {
         renderWithProvider(
-          <UnlockMeasurementContext.Provider value={measurement}>
-            <UnlockPage {...buildProps({ isPasskeyActive })} />
-          </UnlockMeasurementContext.Provider>,
+          <UnlockPage {...buildProps({ isPasskeyActive })} />,
           mockStore,
           '/unlock',
         );
 
-        act(() => jest.advanceTimersByTime(48));
-
-        expect(measurement.reportReady).toHaveBeenCalledTimes(1);
-        expect(measurement.discard).not.toHaveBeenCalled();
+        expect(jest.mocked(UnlockReady).mock.lastCall?.[0].ready).toBe(true);
+        expect(discardUnlockMeasurement).not.toHaveBeenCalled();
       },
     );
   });

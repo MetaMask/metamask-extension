@@ -1,10 +1,18 @@
 import { it as jestIt } from '@jest/globals';
 import { createMemoryRouter } from 'react-router-dom';
+import { createElement } from 'react';
+import { act, render } from '@testing-library/react';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { registerDocumentLoadMeasurement } from '../../helpers/utils/useful-screen-ready';
-import { registerUnlockMeasurement } from './unlock-performance';
+import {
+  discardUnlockMeasurement,
+  registerUnlockMeasurement,
+  UnlockReady,
+} from './unlock-performance';
 
 jest.mock('../../helpers/utils/useful-screen-ready');
+jest.mock('../../../shared/lib/environment-type');
 
 describe('registerUnlockMeasurement', () => {
   const measurement = { reportReady: jest.fn(), discard: jest.fn() };
@@ -13,26 +21,28 @@ describe('registerUnlockMeasurement', () => {
   const register = (
     overrides: Partial<Parameters<typeof registerUnlockMeasurement>[0]> = {},
   ) =>
-    registerUnlockMeasurement({
-      isUnlocked: false,
-      completedOnboarding: true,
-      uiType: ENVIRONMENT_TYPE_POPUP,
+    registerUnlockMeasurement(
+      { isUnlocked: false, completedOnboarding: true, ...overrides },
       router,
-      ...overrides,
-    });
+    );
 
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
+    jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_POPUP);
     jest.mocked(registerDocumentLoadMeasurement).mockReturnValue(measurement);
     router = createMemoryRouter([{ path: '*', element: null }], {
       initialEntries: ['/unlock'],
     });
   });
 
-  afterEach(() => router.dispose());
+  afterEach(() => {
+    router.dispose();
+    jest.useRealTimers();
+  });
 
-  it('registers before mounting and waits for the page to report readiness', () => {
-    const handle = register();
+  it('registers before mounting and stops observing after readiness', async () => {
+    register();
     expect(registerDocumentLoadMeasurement).toHaveBeenCalledWith({
       screen: 'unlock',
       tags: {
@@ -42,7 +52,9 @@ describe('registerUnlockMeasurement', () => {
     });
     expect(measurement.reportReady).not.toHaveBeenCalled();
 
-    handle?.reportReady();
+    render(createElement(UnlockReady, { ready: true }));
+    act(() => jest.advanceTimersByTime(48));
+    await router.navigate('/');
 
     expect(measurement.reportReady).toHaveBeenCalledTimes(1);
     expect(measurement.discard).not.toHaveBeenCalled();
@@ -51,26 +63,30 @@ describe('registerUnlockMeasurement', () => {
   jestIt.each([{ isUnlocked: true }, { completedOnboarding: false }])(
     'does not register for initial wallet state %j',
     (state) => {
-      expect(register(state)).toBeUndefined();
+      register(state);
+      render(createElement(UnlockReady, { ready: true }));
+      act(() => jest.advanceTimersByTime(48));
       expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
+      expect(measurement.reportReady).not.toHaveBeenCalled();
     },
   );
 
   it('does not register when the document starts on an unrelated route', async () => {
     await router.navigate('/settings');
-    expect(register()).toBeUndefined();
+    register();
     expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
   });
 
   it('accepts the initial authentication redirect, including StrictMode replay', async () => {
     await router.navigate('/');
     const from = router.state.location;
-    const handle = register();
+    register();
 
     await router.navigate('/unlock', { replace: true, state: { from } });
     // Navigate's mount effect is replayed with the same source entry.
     await router.navigate('/unlock', { replace: true, state: { from } });
-    handle?.reportReady();
+    render(createElement(UnlockReady, { ready: true }));
+    act(() => jest.advanceTimersByTime(48));
 
     expect(measurement.discard).not.toHaveBeenCalled();
     expect(measurement.reportReady).toHaveBeenCalledTimes(1);
@@ -110,11 +126,25 @@ describe('registerUnlockMeasurement', () => {
   });
 
   it('stops observing navigation when the page discards its measurement', async () => {
-    const handle = register();
-    handle?.discard();
+    register();
+    discardUnlockMeasurement();
 
     await router.navigate('/');
 
+    expect(measurement.discard).toHaveBeenCalledTimes(1);
+  });
+
+  it('cannot report a discarded measurement after the form remounts', () => {
+    register();
+    const { unmount } = render(createElement(UnlockReady, { ready: true }));
+
+    discardUnlockMeasurement();
+    act(() => jest.advanceTimersByTime(48));
+    unmount();
+    render(createElement(UnlockReady, { ready: true }));
+    act(() => jest.advanceTimersByTime(48));
+
+    expect(measurement.reportReady).not.toHaveBeenCalled();
     expect(measurement.discard).toHaveBeenCalledTimes(1);
   });
 });

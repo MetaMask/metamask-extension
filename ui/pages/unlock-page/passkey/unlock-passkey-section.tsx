@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -45,8 +44,7 @@ import {
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
-import { useAfterPaint } from '../../../hooks/useAfterPaint';
-import { UnlockMeasurementContext } from '../unlock-performance';
+import { discardUnlockMeasurement, UnlockReady } from '../unlock-performance';
 
 export type PasskeyUnlockSuccessContext = {
   /**
@@ -84,16 +82,10 @@ export const UnlockPasskeySection = ({
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const isPasskeyMigrationEligible = useSelector(getIsPasskeyUserHandleBased);
   const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
-  const measurement = useContext(UnlockMeasurementContext);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
   const [showTroubleshootModal, setShowTroubleshootModal] = useState(false);
-
-  useAfterPaint(
-    isUnlockReady && !passkeyInProgress && !showTroubleshootModal,
-    measurement?.reportReady,
-  );
 
   const [mountAutoUnlockEligible] = useState(
     () =>
@@ -125,7 +117,7 @@ export const UnlockPasskeySection = ({
       // Automatic authentication never offers an idle form before user input.
       // Exclude the whole document, including cancellation/password fallback.
       if (isAutoPrompt) {
-        measurement?.discard();
+        discardUnlockMeasurement();
       }
 
       if (isMountedRef.current) {
@@ -239,7 +231,6 @@ export const UnlockPasskeySection = ({
       isPasswordInProgress,
       passkeyInProgress,
       isPasskeyActive,
-      measurement,
       onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,
@@ -309,6 +300,9 @@ export const UnlockPasskeySection = ({
       gap={4}
       padding={4}
     >
+      <UnlockReady
+        ready={isUnlockReady && !passkeyInProgress && !showTroubleshootModal}
+      />
       {logoSection}
       {passkeyError ? (
         <Text

@@ -1,6 +1,5 @@
-import { createContext, useContext } from 'react';
 import type { createHashRouter } from 'react-router-dom';
-import type { EnvironmentType } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { DEFAULT_ROUTE, UNLOCK_ROUTE } from '../../helpers/constants/routes';
 import {
   registerDocumentLoadMeasurement,
@@ -8,46 +7,41 @@ import {
 } from '../../helpers/utils/useful-screen-ready';
 import { useAfterPaint } from '../../hooks/useAfterPaint';
 
-// Isolated views without startup registration do not emit measurements.
-export const UnlockMeasurementContext = createContext<
-  LoadMeasurement | undefined
->(undefined);
+// Registered once at startup; isolated views do not emit measurements.
+let measurement: LoadMeasurement | undefined;
+let unsubscribe: (() => void) | undefined;
 
 /**
  * Register the initial Unlock visit before rendering or loading the page.
  *
- * @param options - Initial wallet state and the application router.
- * @param options.isUnlocked
- * @param options.completedOnboarding
- * @param options.uiType
- * @param options.router
+ * @param state - Initial wallet state.
+ * @param state.isUnlocked
+ * @param state.completedOnboarding
+ * @param router - The application router.
  */
-export function registerUnlockMeasurement({
-  isUnlocked,
-  completedOnboarding,
-  uiType,
-  router,
-}: {
-  isUnlocked: boolean;
-  completedOnboarding: boolean;
-  uiType: EnvironmentType;
-  router: ReturnType<typeof createHashRouter>;
-}): LoadMeasurement | undefined {
+export function registerUnlockMeasurement(
+  state: { isUnlocked: boolean; completedOnboarding: boolean },
+  router: ReturnType<typeof createHashRouter>,
+): void {
+  measurement = undefined;
   const initialLocation = router.state.location;
   if (
-    isUnlocked ||
-    !completedOnboarding ||
+    state.isUnlocked ||
+    !state.completedOnboarding ||
     ![DEFAULT_ROUTE, UNLOCK_ROUTE].includes(initialLocation.pathname)
   ) {
-    return undefined;
+    return;
   }
 
-  const measurement = registerDocumentLoadMeasurement({
+  measurement = registerDocumentLoadMeasurement({
     screen: 'unlock',
-    tags: { 'wallet.unlocked': isUnlocked, 'wallet.ui_type': uiType },
+    tags: {
+      'wallet.unlocked': state.isUnlocked,
+      'wallet.ui_type': getEnvironmentType(),
+    },
   });
   let locationKey = initialLocation.key;
-  const unsubscribe = router.subscribe(({ location: next, historyAction }) => {
+  unsubscribe = router.subscribe(({ location: next, historyAction }) => {
     if (next.key === locationKey) {
       return;
     }
@@ -62,31 +56,30 @@ export function registerUnlockMeasurement({
       locationKey = next.key;
       return;
     }
-    discard();
+    discardUnlockMeasurement();
   });
+}
 
-  function discard() {
-    unsubscribe();
-    measurement.discard();
-  }
+/** Permanently exclude this document from Unlock readiness sampling. */
+export function discardUnlockMeasurement(): void {
+  unsubscribe?.();
+  measurement?.discard();
+  measurement = undefined;
+}
 
-  return {
-    discard,
-    reportReady() {
-      unsubscribe();
-      measurement.reportReady();
-    },
-  };
+function reportReady(): void {
+  unsubscribe?.();
+  measurement?.reportReady();
+  measurement = undefined;
 }
 
 /**
- * Readiness marker for the existing class-based password form.
+ * Report an idle form after a paint opportunity.
  *
  * @param props - Form readiness.
  * @param props.ready
  */
 export function UnlockReady({ ready }: { ready: boolean }): null {
-  const measurement = useContext(UnlockMeasurementContext);
-  useAfterPaint(ready, measurement?.reportReady);
+  useAfterPaint(ready, measurement ? reportReady : undefined);
   return null;
 }
