@@ -79,19 +79,24 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                   <td className="py-3 pl-6 pr-3">
                     <div className="flex min-w-0 items-center gap-3">
                       <TokenAvatar asset={asset} />
-                      <div className="flex min-w-0 items-center gap-1">
+                      <div className="flex min-w-0 flex-col gap-0.5">
                         <span className="truncate font-medium">
-                          {asset.ticker}
+                          {asset.name}
                         </span>
-                        {securityBadge ? (
-                          <Icon
-                            className="flex-shrink-0"
-                            aria-label={securityBadge.accessibleLabel}
-                            name={securityBadge.icon}
-                            size={IconSize.Sm}
-                            color={securityBadge.iconColor}
-                          />
-                        ) : null}
+                        <div className="flex min-w-0 items-center gap-1">
+                          <span className="truncate text-s-body-sm text-alternative">
+                            {asset.ticker}
+                          </span>
+                          {securityBadge ? (
+                            <Icon
+                              className="flex-shrink-0"
+                              aria-label={securityBadge.accessibleLabel}
+                              name={securityBadge.icon}
+                              size={IconSize.Sm}
+                              color={securityBadge.iconColor}
+                            />
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   </td>
