@@ -5612,9 +5612,6 @@
   "mfaErrorLimitReached": {
     "message": "You've reached the limit for this method."
   },
-  "mfaErrorMultiPrimarySrp": {
-    "message": "Verification isn't available yet for wallets with more than one Secret Recovery Phrase."
-  },
   "mfaErrorPasskeyCancelled": {
     "message": "Passkey request was cancelled."
   },
@@ -5639,8 +5636,20 @@
   "mfaFailureClose": {
     "message": "Close"
   },
+  "mfaFailureContactSupport": {
+    "message": "Contact support"
+  },
+  "mfaFailureDone": {
+    "message": "Done"
+  },
   "mfaFailureRetry": {
     "message": "Try again"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Contact support to continue."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "We couldn't verify your details"
   },
   "mfaFailureTitle": {
     "message": "Something went wrong"

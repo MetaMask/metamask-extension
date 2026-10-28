@@ -36,6 +36,8 @@ type StepLayoutProps = {
   top?: ReactNode;
   children?: ReactNode;
   footer?: ReactNode;
+  /** Centers the content vertically, as on result screens. */
+  isVerticallyCentered?: boolean;
 };
 
 const STEP_TITLE_ID = 'mfa-step-title';
@@ -150,6 +152,7 @@ const StepLayout = ({
   top,
   children,
   footer,
+  isVerticallyCentered = false,
 }: StepLayoutProps) => (
   <Box flexDirection={BoxFlexDirection.Column} className="flex-1 min-h-0">
     <Box
@@ -158,7 +161,9 @@ const StepLayout = ({
       paddingHorizontal={4}
       paddingTop={4}
       paddingBottom={6}
-      className="flex-1 overflow-y-auto"
+      className={`flex-1 overflow-y-auto${
+        isVerticallyCentered ? ' justify-center' : ''
+      }`}
     >
       {top}
       <StepHeader
