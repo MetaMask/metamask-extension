@@ -173,5 +173,3 @@ export function initCashtag() {
 
   initializeCashtag().catch(() => undefined);
 }
-
-initCashtag();

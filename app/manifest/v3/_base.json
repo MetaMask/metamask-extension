@@ -51,7 +51,6 @@
     },
     {
       "matches": ["https://x.com/*", "https://www.x.com/*"],
-      "js": ["scripts/cashtag/contentscript.ts"],
       "css": [
         "scripts/cashtag/pill/page.css",
         "scripts/cashtag/widget/page.css"
