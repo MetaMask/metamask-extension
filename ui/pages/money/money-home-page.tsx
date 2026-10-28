@@ -7,6 +7,7 @@ import {
   BannerAlertSeverity,
   Button,
   ButtonVariant,
+  FontFamily,
   FontWeight,
   Icon,
   IconColor,
@@ -365,7 +366,7 @@ export function MoneyHomePage() {
       <div className="min-h-full" data-testid="money-home-loading">
         {header}
         <div className="flex flex-col gap-4 p-4">
-          <Skeleton className="h-12 w-36" />
+          <Skeleton className="h-14 w-36 md:h-[75px]" />
           <Skeleton className="h-20 w-full rounded-xl" />
           <Skeleton className="h-80 w-full rounded-2xl" />
         </div>
@@ -448,8 +449,8 @@ export function MoneyHomePage() {
         <div className="flex flex-col items-center gap-2 px-4 pt-2 mb-5">
           <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
             <SensitiveText
-              variant={TextVariant.DisplayMd}
-              fontWeight={FontWeight.Medium}
+              variant={TextVariant.AmountDisplayLg}
+              fontFamily={FontFamily.Hero}
               isHidden={privacyMode}
               data-testid="money-balance"
             >

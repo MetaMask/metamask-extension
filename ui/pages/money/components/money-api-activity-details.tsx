@@ -8,6 +8,7 @@ import {
   ButtonIcon,
   ButtonSize,
   ButtonVariant,
+  FontFamily,
   FontWeight,
   IconName,
   SensitiveText,
@@ -126,8 +127,8 @@ export function MoneyApiActivityDetails({
             size="xl"
           />
           <SensitiveText
-            variant={TextVariant.DisplayMd}
-            fontWeight={FontWeight.Medium}
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
             color={
               hero.isSuccessColor
                 ? TextColor.SuccessDefault
