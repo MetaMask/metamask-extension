@@ -29,9 +29,8 @@ describe('webpack launcher', () => {
     jest.restoreAllMocks();
   });
 
-  it.each([{ cache: false }, { help: true }, { watch: true }])(
-    'starts direct builds for %j',
-    async (args) => {
+  for (const args of [{ cache: false }, { help: true }, { watch: true }]) {
+    it(`starts direct builds for ${JSON.stringify(args)}`, async () => {
       jest.mocked(parser).mockReturnValue({ _: [], ...args });
       jest.isolateModules(() => {
         require('./launch');
@@ -39,8 +38,8 @@ describe('webpack launcher', () => {
       await settle();
       expect(build).toHaveBeenCalledTimes(1);
       expect(spawn).not.toHaveBeenCalled();
-    },
-  );
+    });
+  }
 
   it('forks cached builds instead of loading the build in the parent', async () => {
     jest.mocked(parser).mockReturnValue({ _: [] });
