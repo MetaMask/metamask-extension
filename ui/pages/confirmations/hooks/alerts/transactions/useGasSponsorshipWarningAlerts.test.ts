@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 
@@ -241,6 +244,36 @@ describe('useGasSponsorshipWarningAlerts', () => {
     );
     expect(alerts).toEqual([]);
   });
+
+  // Before Pay delivers the mUSD, the simulated vault transferFrom reverts and
+  // Monad masks it as a reserve balance violation. Blocking on that rejects a
+  // deposit that succeeds once Relay funds it.
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    ['deposit', TransactionType.moneyAccountDeposit],
+    ['withdraw', TransactionType.moneyAccountWithdraw],
+  ])(
+    'returns no alerts for a money account %s reporting a reserve violation',
+    (_name: string, transactionType: TransactionType) => {
+      const alerts = runHook(
+        getMockConfirmStateForTransaction(
+          {
+            ...CONFIRMATION_MOCK,
+            delegationAddress: DELEGATION_ADDRESS,
+            isGasFeeSponsored: true,
+            nestedTransactions: [{ type: transactionType }],
+            simulationData: {
+              callTraceErrors: ['reserve balance violation'],
+              tokenBalanceChanges: [],
+            },
+          } as unknown as TransactionMeta,
+          buildMonadNetworkState(),
+        ),
+      );
+
+      expect(alerts).toEqual([]);
+    },
+  );
 
   it('returns warning alert for an undelegated account when simulation reports a reserve violation', () => {
     const alerts = runHook(
