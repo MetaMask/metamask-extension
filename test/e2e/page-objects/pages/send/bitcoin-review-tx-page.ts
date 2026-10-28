@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -66,10 +67,10 @@ class BitcoinReviewTxPage {
     console.log(
       `Check if send amount ${amount} is displayed on bitcoin review tx page`,
     );
-    await this.driver.waitForSelector({
-      text: `-${amount} BTC`,
-      tag: 'p',
-    });
+    const sendAmount = await this.driver.waitForSelector(
+      '.snap-ui-renderer__text.mm-box--color-error-default',
+    );
+    assert.equal(await sendAmount.getText(), `-${amount}`);
   }
 
   async checkTotalAmountIsDisplayed(total: string): Promise<void> {

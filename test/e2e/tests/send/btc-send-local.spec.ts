@@ -3,14 +3,11 @@ import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { login } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
-import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import HomePage from '../../page-objects/pages/home/homepage';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
-import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
-import SendPage from '../../page-objects/pages/send/send-page';
+import {
+  confirmBitcoinSendAndAssertPending,
+  landOnBitcoinSendScreen,
+  waitForBitcoinSendConfirmation,
+} from '../../page-objects/flows/bitcoin-send.flow';
 import { BitcoinNode } from '../../seeder/bitcoin/node';
 import {
   mockCurrencyExchangeRates,
@@ -24,8 +21,8 @@ import {
 import { proxyBitcoinBlockchainCalls } from '../btc/mocks/local-bitcoin-node-mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 
-const BITCOIN_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';
 const RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
+const SEND_AMOUNT = '0.5';
 
 async function mockBtcSendLocalMocks(
   mockServer: Mockttp,
@@ -81,38 +78,29 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
           mockBtcSendLocalMocks(mockServer, localNodes),
       },
       async ({ driver }) => {
-        await login(driver);
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
-        // Refresh re-hydrates the UI from background state so the
-        // asynchronously-fetched Snap balance is shown reliably.
-        await driver.refresh();
-        await new TokensTab(driver).checkExpectedTokenBalanceIsDisplayed(
-          `${DEFAULT_BTC_BALANCE}`,
-          'BTC',
+        const expectedAmount = `-${SEND_AMOUNT} BTC`;
+        const bitcoinNode = localNodes.find(
+          (node): node is BitcoinNode => node instanceof BitcoinNode,
         );
+        if (!bitcoinNode) {
+          throw new Error('Bitcoin local node was not started');
+        }
 
-        const sendPage = new SendPage(driver);
-        await homePage.startSendFlow();
-        await sendPage.selectToken(BITCOIN_CHAIN_ID, 'BTC');
+        const sendPage = await landOnBitcoinSendScreen(driver);
         await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
-        await sendPage.fillAmount('0.5');
+        await sendPage.fillAmount(SEND_AMOUNT);
         await sendPage.checkContinueButton({ state: 'enabled' });
         await sendPage.pressContinueButton();
 
-        const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
-        await bitcoinReviewTxPage.checkPageIsLoaded();
-        await bitcoinReviewTxPage.clickConfirmButton();
-
-        const txToast = new TxToastNotification(driver);
-        await txToast.checkTxSubmittedToast();
-
-        const activityTab = new ActivityTab(driver);
-        await homePage.goToActivityList();
-        await activityTab.checkTransactionActivityByText('Sending');
-        await activityTab.checkWaitForTransactionStatus('pending');
+        const activityTab = await confirmBitcoinSendAndAssertPending({
+          driver,
+          expectedAmount,
+        });
+        await bitcoinNode.mineBlocks();
+        await waitForBitcoinSendConfirmation({
+          activityTab,
+          expectedAmount,
+        });
       },
     );
   });
