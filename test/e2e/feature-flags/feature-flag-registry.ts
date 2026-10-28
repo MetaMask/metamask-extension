@@ -3367,6 +3367,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  mfaUiKit: {
+    inProd: true,
+    name: 'mfaUiKit',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.56.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   moneyAccountBalanceSource: {
     inProd: true,
     name: 'moneyAccountBalanceSource',
