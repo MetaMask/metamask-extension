@@ -1,10 +1,11 @@
 import { strict as assert } from 'assert';
+import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { login } from '../../page-objects/flows/login.flow';
-import { MOCK_ANALYTICS_ID } from '../../constants';
+import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -64,10 +65,11 @@ async function mockBasicFunctionalityTurnedOff(mockServer: Mockttp) {
   ];
 }
 
-describe('Token detection event', function () {
-  it('is sent when onboarding user', async function () {
+pwTest.describe('Token detection event', () => {
+  pwTest('is sent when onboarding user', async () => {
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
@@ -75,7 +77,7 @@ describe('Token detection event', function () {
             optedIn: true,
           })
           .build(),
-        title: this.test?.fullTitle(),
+        title: pwTest.info().titlePath.join(' '),
         testSpecificMock: mockSegmentTrack,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -107,46 +109,50 @@ describe('Token detection event', function () {
     );
   });
 
-  it('sends Settings Updated when basic functionality is turned off', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2()
-          .withAnalyticsController({
-            analyticsId: MOCK_ANALYTICS_ID,
-            consentDecisionMade: true,
-            optedIn: true,
-          })
-          .withPreferencesController({
-            useTokenDetection: true,
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockBasicFunctionalityTurnedOff,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await login(driver);
+  pwTest(
+    'sends Settings Updated when basic functionality is turned off',
+    async () => {
+      await withFixtures(
+        {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          fixtures: new FixtureBuilderV2()
+            .withAnalyticsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
+            })
+            .withPreferencesController({
+              useTokenDetection: true,
+            })
+            .build(),
+          title: pwTest.info().titlePath.join(' '),
+          testSpecificMock: mockBasicFunctionalityTurnedOff,
+        },
+        async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+          await login(driver);
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openSettingsPage();
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openSettingsPage();
 
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToPrivacySettings();
 
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.checkPageIsLoaded();
 
-        await privacySettings.toggleBasicFunctionalityOff();
-        await waitForSettingsUpdated(driver, mockedEndpoints, {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: 'basic_functionality',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: true,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: false,
-          category: 'Settings',
-        });
-      },
-    );
-  });
+          await privacySettings.toggleBasicFunctionalityOff();
+          await waitForSettingsUpdated(driver, mockedEndpoints, {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_type: 'basic_functionality',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: false,
+            category: 'Settings',
+          });
+        },
+      );
+    },
+  );
 });
