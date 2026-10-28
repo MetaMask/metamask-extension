@@ -86,7 +86,7 @@ describe('WalletOverview', () => {
     },
   );
 
-  it('left-aligns the content and uncaps the buttons in the fullscreen design', () => {
+  it('left-aligns the content and removes max-width on the buttons in the fullscreen design', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
     mockUseFullScreenDesign.mockReturnValue(true);
 

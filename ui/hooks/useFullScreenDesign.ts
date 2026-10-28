@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsFullscreenRedesignEnabled } from '../selectors/multichain/feature-flags';
 
@@ -14,18 +14,20 @@ const FULL_SCREEN_DESIGN_MEDIA_QUERY = `(min-width: ${FULL_SCREEN_DESIGN_MIN_WID
  * @returns Whether the media query currently matches.
  */
 function useMediaQueryMatches(query: string): boolean {
+  // Created once per query and reused for both reading and listening.
+  const mediaQueryList = useMemo(() => window.matchMedia(query), [query]);
+
   const subscribe = useCallback(
     (onChange: () => void) => {
-      const mediaQueryList = window.matchMedia(query);
       mediaQueryList.addEventListener('change', onChange);
       return () => mediaQueryList.removeEventListener('change', onChange);
     },
-    [query],
+    [mediaQueryList],
   );
 
   const getSnapshot = useCallback(
-    () => window.matchMedia(query).matches,
-    [query],
+    () => mediaQueryList.matches,
+    [mediaQueryList],
   );
 
   return useSyncExternalStore(subscribe, getSnapshot);

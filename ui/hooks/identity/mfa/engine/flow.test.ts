@@ -225,6 +225,21 @@ describe('createMfaFlow', () => {
       codeSent: true,
     });
 
+    await act(flow, { type: 'back' });
+    expect(flow.getState().step).toStrictEqual({
+      name: 'emailEntry',
+      prefillEmail: 'new@b.co',
+    });
+    await act(flow, { type: 'submitEmail', email: 'new@b.co' });
+    expect(flow.getState().step).toStrictEqual({
+      name: 'otp',
+      purpose: 'setup',
+      method: 'email_otp',
+      email: 'new@b.co',
+      codeSent: true,
+    });
+    expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(1);
+
     await act(flow, { type: 'submitCode', code: '111111' });
     expect(fake.controller.completeCredentialEnrollment).toHaveBeenCalledWith({
       flowId: 'enroll-1',
@@ -571,6 +586,17 @@ describe('createMfaFlow', () => {
       expect(flow.getState()).toMatchObject({
         step: { name: 'emailEntry', prefillEmail: 'taken@b.co' },
         error: 'credential_already_enrolled',
+      });
+
+      // The spent challenge is not resumed: the same address gets a new code.
+      await act(flow, { type: 'submitEmail', email: 'taken@b.co' });
+      expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(
+        2,
+      );
+      expect(flow.getState().step).toMatchObject({
+        name: 'otp',
+        purpose: 'setup',
+        method: 'email_otp',
       });
     });
 
@@ -961,6 +987,28 @@ describe('createMfaFlow', () => {
     });
   });
 
+  describe('errors only support can fix', () => {
+    it('shows the failure screen without retry, and closes with the code', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.controller.beginCredentialVerification.mockRejectedValueOnce(
+        new MfaError('multi_primary_srp', 'unsupported wallet'),
+      );
+      const { flow, outcome } = await startFlow(EMAIL_ONLY, fake.controller);
+
+      expect(flow.getState().step).toStrictEqual({
+        name: 'failure',
+        code: 'multi_primary_srp',
+        canRetry: false,
+      });
+
+      await act(flow, { type: 'dismiss' });
+      const result = await outcome;
+      expect(result.ok || getMfaErrorCode(result.error)).toBe(
+        'multi_primary_srp',
+      );
+    });
+  });
+
   describe('error reporting', () => {
     it('reports a bug on our side with the step and operation', async () => {
       const fake = createFakeController([activeEmail]);
@@ -1049,6 +1097,7 @@ describe('createMfaFlow', () => {
         codeSent: true,
       });
 
+      // Back returns to the same setup, without starting another one.
       await act(flow, { type: 'back' });
       expect(flow.getState().step).toStrictEqual({
         name: 'totpSetup',

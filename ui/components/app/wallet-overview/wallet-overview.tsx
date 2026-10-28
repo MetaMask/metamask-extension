@@ -7,7 +7,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
 import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
-import { useBalanceAlignmentClassName } from './wallet-overview-layout';
+import { getBalanceAlignmentClassName } from './wallet-overview-layout';
 
 type WalletOverviewProps = {
   balance: React.ReactNode;
@@ -22,7 +22,6 @@ const WalletOverview = ({
 }: WalletOverviewProps) => {
   const environmentType = getEnvironmentType();
   const isFullScreenDesign = useFullScreenDesign();
-  const balanceAlignmentClassName = useBalanceAlignmentClassName();
   // The fullscreen design is left-aligned and full width.
   const isCentered =
     !isFullScreenDesign &&
@@ -40,7 +39,7 @@ const WalletOverview = ({
       <div
         className={classnames(
           'flex w-full flex-1 flex-col gap-1',
-          balanceAlignmentClassName,
+          getBalanceAlignmentClassName(),
         )}
       >
         {balance}
