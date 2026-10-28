@@ -9,6 +9,7 @@ module.exports = {
   coverageDirectory: './coverage/integration',
   coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test.(js|ts|tsx)'],
   coverageReporters: ['html', 'json'],
+  modulePathIgnorePatterns: ['<rootDir>/development/.webpack/'],
   maxWorkers: '50%',
   moduleNameMapper: {
     // Stub @metamask/perps-controller so integration suites can resolve it

@@ -1,6 +1,7 @@
 import { join, relative, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
-import type TerserPluginType from 'terser-webpack-plugin';
+import webpackApi from 'webpack';
+import { projectRoot } from '../../lib/build-paths.ts';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -49,7 +50,7 @@ export const TREZOR_MODULE_RE = new RegExp(
  * Windows.
  */
 export const UI_DIR_RE = new RegExp(
-  `^${join(__dirname, '..', '..', '..', 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
+  `^${join(projectRoot, 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
   'u',
 );
 
@@ -137,8 +138,8 @@ export const extensionToJs = (filename: string) =>
  * comparisons. Disabling mangling for the runtime chunk keeps it
  * content-stable while leaving mangling ON for all other chunks.
  */
-export function getMinimizers() {
-  const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
+export async function getMinimizers() {
+  const { default: TerserPlugin } = await import('terser-webpack-plugin');
   // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
   const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [
@@ -234,7 +235,7 @@ export function logStats(err?: Error | null, stats?: Stats) {
     const { name } = stats.compilation;
     const status = toGreen('successfully');
     const time = `${stats.endTime - stats.startTime} ms`;
-    const { version } = require('webpack');
+    const { version } = webpackApi;
     console.error(`${name} (webpack ${version}) compiled ${status} in ${time}`);
   }
 }

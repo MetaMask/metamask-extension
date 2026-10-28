@@ -1,3 +1,4 @@
+import { syncBuiltinESMExports } from 'node:module';
 import fs from 'node:fs';
 import { tmpdir } from 'node:os';
 import { describe, it, afterEach, before, after, mock } from 'node:test';
@@ -6,25 +7,30 @@ import process from 'node:process';
 import { join, resolve } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import { transform } from '@swc/core';
-import {
-  type Configuration,
-  type FileCacheOptions,
-  webpack,
+import webpackApi from 'webpack';
+import type {
+  Configuration,
+  FileCacheOptions,
   Compiler,
   WebpackPluginInstance,
   RuleSetRule,
 } from 'webpack';
-import { noop, type Manifest, NODE_MODULES_RE } from '../utils/helpers';
-import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
-import { getLatestCommit } from '../utils/git';
-import { version as packageVersion } from '../../../package.json';
-import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
-import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
+import { noop, type Manifest, NODE_MODULES_RE } from '../utils/helpers.ts';
+import { ManifestPlugin } from '../utils/plugins/ManifestPlugin/index.ts';
+import { getLatestCommit } from '../utils/git.ts';
+import packageJson from '../../../package.json' with { type: 'json' };
+import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants.ts';
+import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats.ts';
 import {
   DEFAULT_ZIP_MTIME,
   isValidZipMtime,
-} from '../utils/plugins/ManifestPlugin/zip-mtime';
-import type { SwcLoaderOptions } from '../utils/loaders/swcLoader';
+} from '../utils/plugins/ManifestPlugin/zip-mtime.ts';
+
+import type { SwcLoaderOptions } from '../utils/loaders/swcLoader.ts';
+
+const { version: packageVersion } = packageJson;
+
+const { webpack } = webpackApi;
 
 // `buildDependencies` entries are either a path or `{ dependency, optional }`.
 // The config only ever writes paths, but the type allows both.
@@ -102,13 +108,14 @@ async function withWatching<T>(
  */
 
 describe('webpack.config.test.ts', () => {
+  let configLoad = 0;
   let originalArgv: string[];
   let originalEnv: NodeJS.ProcessEnv;
   const originalReadFileSync = fs.readFileSync;
   let originalExistsSync: typeof fs.existsSync;
   const optionalRcPaths = {
-    metamaskrc: resolve(__dirname, '../../../.metamaskrc'),
-    metamaskprodrc: resolve(__dirname, '../../../.metamaskprodrc'),
+    metamaskrc: resolve(import.meta.dirname, '../../../.metamaskrc'),
+    metamaskprodrc: resolve(import.meta.dirname, '../../../.metamaskprodrc'),
   };
   before(() => {
     // cache originals before we start messing with them
@@ -125,24 +132,20 @@ describe('webpack.config.test.ts', () => {
     // reset argv to avoid affecting other tests
     process.argv = [process.argv0, process.argv[1]];
     process.env = originalEnv;
-    // each test needs to load a fresh config, so we need to clear webpack's cache
-    // TODO: can we use `await import` instead to get a fresh copy each time?
-    const cliPath = require.resolve('../utils/cli.ts');
-    const helpersPath = require.resolve('../utils/helpers.ts');
-    const webpackConfigPath = require.resolve('../webpack.config.ts');
-    delete require.cache[cliPath];
-    delete require.cache[helpersPath];
-    delete require.cache[webpackConfigPath];
     mock.restoreAll();
+    syncBuiltinESMExports();
   });
 
-  function getWebpackConfig(args: string[] = [], env: NodeJS.ProcessEnv = {}) {
-    // argv is automatically read when webpack.config is required/imported.
+  async function getWebpackConfig(
+    args: string[] = [],
+    env: NodeJS.ProcessEnv = {},
+  ) {
+    // Reload the ESM config for each case, matching main’s module-load lifecycle.
     // first two args are always ignored.
     process.argv = [...process.argv.slice(0, 2), ...args];
     process.env = { ...env };
     mock.method(fs, 'readFileSync', (path: string, options?: null) => {
-      if (path === resolve(__dirname, '../../../.metamaskrc')) {
+      if (path === resolve(import.meta.dirname, '../../../.metamaskrc')) {
         // mock `.metamaskrc`, as users might have customized it which may
         // break our tests
         return `
@@ -153,7 +156,12 @@ ${Object.entries(env)
       }
       return originalReadFileSync.call(fs, path, options);
     });
-    return require('../webpack.config.ts').default;
+    syncBuiltinESMExports();
+    return (
+      (await import(
+        `../webpack.config.ts?config=${configLoad++}`
+      )) as typeof import('../webpack.config.ts')
+    ).default();
   }
 
   function getPluginNames(config: Configuration): string[] {
@@ -212,10 +220,10 @@ ${Object.entries(env)
     );
   }
 
-  it('should have the correct defaults', () => {
+  it('should have the correct defaults', async () => {
     mockOptionalRcFiles();
 
-    const config: Configuration = getWebpackConfig();
+    const config: Configuration = await getWebpackConfig();
     // check that options are valid
     const { options } = webpack(config);
     assert.strictEqual(options.name, 'MetaMask – development');
@@ -321,10 +329,10 @@ ${Object.entries(env)
     assert(progressPlugin, 'Progress plugin should present');
   });
 
-  it('includes existing optional rc files in cache dependencies', () => {
+  it('includes existing optional rc files in cache dependencies', async () => {
     mockOptionalRcFiles({ metamaskrc: true });
 
-    const config: Configuration = getWebpackConfig();
+    const config: Configuration = await getWebpackConfig();
     const cache = config.cache as FileCacheOptions;
     const configBuildDependencies = (cache.buildDependencies?.config ?? []).map(
       buildDependencyPath,
@@ -346,7 +354,7 @@ ${Object.entries(env)
     for (const test of [false, true]) {
       it(`inlines public flags only for the npm loader in ${mode} with test=${test}`, async () => {
         mockOptionalRcFiles();
-        const config: Configuration = getWebpackConfig(
+        const config: Configuration = await getWebpackConfig(
           [
             '--mode',
             mode,
@@ -410,9 +418,12 @@ ${Object.entries(env)
 
   for (const watch of [false, true]) {
     it(`compiles TypeScript files with configured loaders and watch=${watch}`, async () => {
-      const config = getWebpackConfig(watch ? ['--watch'] : []);
+      const config = await getWebpackConfig(watch ? ['--watch'] : []);
       for (const extension of ['ts', 'mts', 'tsx']) {
-        const filename = resolve(__dirname, `../../../ui/test.${extension}`);
+        const filename = resolve(
+          import.meta.dirname,
+          `../../../ui/test.${extension}`,
+        );
         const rule = getSwcReactRules(config).find(
           ({ test }) => test instanceof RegExp && test.test(filename),
         );
@@ -429,10 +440,10 @@ ${Object.entries(env)
     });
   }
 
-  it('enables React Refresh for development watch builds', () => {
+  it('enables React Refresh for development watch builds', async () => {
     mockOptionalRcFiles();
 
-    const config: Configuration = getWebpackConfig(['--watch']);
+    const config: Configuration = await getWebpackConfig(['--watch']);
 
     assert.strictEqual(config.watch, true);
     assert.deepStrictEqual(
@@ -463,8 +474,8 @@ ${Object.entries(env)
     );
   });
 
-  it('does not enable React Refresh for production watch builds', () => {
-    const config: Configuration = getWebpackConfig(
+  it('does not enable React Refresh for production watch builds', async () => {
+    const config: Configuration = await getWebpackConfig(
       [
         '--mode',
         'production',
@@ -496,9 +507,9 @@ ${Object.entries(env)
     );
   });
 
-  it('should apply non-default options', () => {
+  it('should apply non-default options', async () => {
     const removeUnsupportedFeatures = ['--no-lavamoat'];
-    const config: Configuration = getWebpackConfig(
+    const config: Configuration = await getWebpackConfig(
       [
         '--mode',
         'production',
@@ -596,8 +607,8 @@ ${Object.entries(env)
     );
   });
 
-  it('uses SOURCE_DATE_EPOCH as the default zip mtime when set', () => {
-    const config: Configuration = getWebpackConfig(['--zip'], {
+  it('uses SOURCE_DATE_EPOCH as the default zip mtime when set', async () => {
+    const config: Configuration = await getWebpackConfig(['--zip'], {
       SOURCE_DATE_EPOCH: '1711141205',
     });
     const instance = getWebpackInstance(config);
@@ -610,8 +621,8 @@ ${Object.entries(env)
     assert.strictEqual(manifestPlugin.options.zipOptions.mtime, 1711141205000);
   });
 
-  it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', () => {
-    const config: Configuration = getWebpackConfig(['--bundleAnalyzer']);
+  it('should include BundleAnalyzerPlugin when --bundleAnalyzer is passed', async () => {
+    const config: Configuration = await getWebpackConfig(['--bundleAnalyzer']);
     const instance = getWebpackInstance(config);
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
@@ -621,15 +632,15 @@ ${Object.entries(env)
     assert.ok(bundleAnalyzerPlugin, 'BundleAnalyzerPlugin should be present');
   });
 
-  it('should allow disabling source maps', () => {
-    const config: Configuration = getWebpackConfig(['--devtool', 'none']);
+  it('should allow disabling source maps', async () => {
+    const config: Configuration = await getWebpackConfig(['--devtool', 'none']);
     // check that options are valid
     const instance = getWebpackInstance(config);
     assert.strictEqual(instance.options.devtool, false);
   });
 
-  it('enables manifest build IDs for test builds', () => {
-    const config: Configuration = getWebpackConfig(['--test']);
+  it('enables manifest build IDs for test builds', async () => {
+    const config: Configuration = await getWebpackConfig(['--test']);
     const instance = getWebpackInstance(config);
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
@@ -712,12 +723,12 @@ ${Object.entries(env)
     );
   });
 
-  it('should write the `dry-run` message then call exit(0)', () => {
+  it('should write the `dry-run` message then call exit(0)', async () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
 
     // we don't care about the return value, just that it logs and calls `exit`
-    getWebpackConfig(['--dry-run']);
+    await getWebpackConfig(['--dry-run']);
     assert.strictEqual(error.mock.calls.length, 1);
     assert.strictEqual(error.mock.calls[0].arguments.length, 1);
     // we don't care about the message, just that it is logged
@@ -728,12 +739,12 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
-  it('should write the `dryRun` message then call exit(0)', () => {
+  it('should write the `dryRun` message then call exit(0)', async () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
 
     // we don't care about the return value, just that it logs and calls `exit`
-    getWebpackConfig(['--dryRun']);
+    await getWebpackConfig(['--dryRun']);
     assert.strictEqual(error.mock.calls.length, 1);
     assert.strictEqual(error.mock.calls[0].arguments.length, 1);
     // we don't care about the message, just that it is logged
@@ -744,11 +755,11 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
-  it('includes the resolved zip mtime in the dry-run message when zipping', () => {
+  it('includes the resolved zip mtime in the dry-run message when zipping', async () => {
     const exit = mock.method(process, 'exit', noop, { times: 1 });
     const error = mock.method(console, 'error', noop, { times: 1 });
 
-    getWebpackConfig(['--zip', '--dry-run'], {
+    await getWebpackConfig(['--zip', '--dry-run'], {
       SOURCE_DATE_EPOCH: '1711141205',
     });
 
@@ -762,8 +773,8 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
 
-  it('validates SOURCE_DATE_EPOCH during zip dry-run', () => {
-    assert.throws(
+  it('validates SOURCE_DATE_EPOCH during zip dry-run', async () => {
+    await assert.rejects(
       () =>
         getWebpackConfig(['--zip', '--dry-run'], {
           SOURCE_DATE_EPOCH: '0',

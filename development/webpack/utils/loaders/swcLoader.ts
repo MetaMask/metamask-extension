@@ -3,7 +3,7 @@ import type { LoaderDefinitionFunction } from 'webpack';
 import { validate, type JSONSchema7 } from 'schema-utils';
 import type { FromSchema } from 'json-schema-to-ts';
 import { transform, type Options } from '@swc/core';
-import { toWebpackSourceName } from '../helpers';
+import { toWebpackSourceName } from '../helpers.ts';
 
 // the schema here is limited to only the options we actually use
 // there are loads more options available to SWC we could add.

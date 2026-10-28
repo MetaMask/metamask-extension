@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import {
   getReactCompilerLoader,
   type ReactCompilerLoaderConfig,
-} from '../utils/loaders/reactCompilerLoader';
+} from '../utils/loaders/reactCompilerLoader.ts';
 
 describe('getReactCompilerLoader', () => {
   const baseConfig: ReactCompilerLoaderConfig = {
@@ -86,7 +86,7 @@ describe('getReactCompilerLoader', () => {
 describe('reactCompilerLoaderWrapper', () => {
   it('names the input file relative to the build context in the source map', async () => {
     const { default: wrapper } =
-      await import('../utils/loaders/reactCompilerLoaderWrapper');
+      await import('../utils/loaders/reactCompilerLoaderWrapper.ts');
     const rootContext = '/project/app';
     const resourcePath = '/project/ui/component.tsx';
 

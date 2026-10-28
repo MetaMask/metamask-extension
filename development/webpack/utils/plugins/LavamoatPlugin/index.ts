@@ -4,11 +4,12 @@ import {
   LavaMoatPlugin,
   exclude as LavamoatExcludeLoader,
 } from '@lavamoat/webpack';
+import { projectRoot, resolvePackage } from '../../../../lib/build-paths.ts';
 import type { Args } from '../../cli';
 
 // While ../../../../../app is the main dir for the webpack build to use as context, the project root where package.json is one level up.
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
-const rootDir = join(__dirname, '../../../../../');
+const rootDir = projectRoot;
 
 // Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
 const nullUnsafeEntries: Set<string> = new Set([
@@ -208,7 +209,7 @@ export const lavamoatPlugin = (
           // If snow is enabled, it needs to run before LavaMoat
           staticShims: args.snow
             ? [
-                require.resolve('@lavamoat/snow/snow.prod.js'),
+                resolvePackage('@lavamoat/snow/snow.prod.js'),
                 join(rootDir, 'app/scripts/use-snow.js'),
               ]
             : [],

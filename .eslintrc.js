@@ -870,7 +870,27 @@ module.exports = defineConfig([
    * Webpack
    */
   {
-    files: ['./development/webpack/**/*.ts'],
+    files: [
+      './development/webpack/**/*.ts',
+      './development/lib/**/*.ts',
+      './development/build/set-environment-variables.ts',
+    ],
+    rules: {
+      // The webpack manifest selects ESM; dependencies belong to the root project.
+      'import-x/no-extraneous-dependencies': [
+        'error',
+        { packageDir: __dirname, devDependencies: true, includeTypes: true },
+      ],
+      'import-x/extensions': 'off',
+      // Native Node requires the explicit index filename in directory imports.
+      'import-x/no-useless-path-segments': ['error', { noUselessIndex: false }],
+    },
+  },
+  {
+    files: [
+      './development/webpack/**/*.ts',
+      './development/lib/build-paths.test.ts',
+    ],
     rules: {
       '@typescript-eslint/no-shadow': [
         'error',

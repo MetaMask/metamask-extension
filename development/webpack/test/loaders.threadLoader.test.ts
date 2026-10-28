@@ -1,60 +1,68 @@
-import { describe, it, mock } from 'node:test';
+import { describe, it, afterEach, mock } from 'node:test';
 import assert from 'node:assert';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import os, { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
-import { webpack, NormalModule } from 'webpack';
+import { createRequire, syncBuiltinESMExports } from 'node:module';
+import webpackApi from 'webpack';
 import {
   getThreadLoader,
   resolveAutoThreads,
   resolveAutoJobs,
-} from '../utils/loaders/threadLoader';
-import { getSwcLoader } from '../utils/loaders/getSwcLoader';
-import { getReactCompilerLoader } from '../utils/loaders/reactCompilerLoader';
+} from '../utils/loaders/threadLoader.ts';
+import { getSwcLoader } from '../utils/loaders/getSwcLoader.ts';
+import { getReactCompilerLoader } from '../utils/loaders/reactCompilerLoader.ts';
+
+const { webpack, NormalModule } = webpackApi;
+const require = createRequire(import.meta.url);
 
 describe('resolveAutoThreads', () => {
+  afterEach(() => {
+    mock.restoreAll();
+    syncBuiltinESMExports();
+  });
   it('returns numCores - 2 (min 1) for low core counts', () => {
-    mock.method(require('node:os'), 'availableParallelism', () => 4);
-    mock.method(require('node:os'), 'freemem', () => 16 * 1024 * 1024 * 1024);
+    mock.method(os, 'availableParallelism', () => 4);
+    mock.method(os, 'freemem', () => 16 * 1024 * 1024 * 1024);
+    syncBuiltinESMExports();
     const result = resolveAutoThreads();
     assert.strictEqual(result, 2);
-    mock.restoreAll();
   });
 
   it('returns 1 worker when core count is <= 3', () => {
-    mock.method(require('node:os'), 'availableParallelism', () => 3);
-    mock.method(require('node:os'), 'freemem', () => 16 * 1024 * 1024 * 1024);
+    mock.method(os, 'availableParallelism', () => 3);
+    mock.method(os, 'freemem', () => 16 * 1024 * 1024 * 1024);
+    syncBuiltinESMExports();
     const result = resolveAutoThreads();
     assert.strictEqual(result, 1);
-    mock.restoreAll();
   });
 
   it('returns numCores - 2 when core count is > 4 and memory is plentiful', () => {
-    mock.method(require('node:os'), 'availableParallelism', () => 16);
-    mock.method(require('node:os'), 'freemem', () => 32 * 1024 * 1024 * 1024);
+    mock.method(os, 'availableParallelism', () => 16);
+    mock.method(os, 'freemem', () => 32 * 1024 * 1024 * 1024);
+    syncBuiltinESMExports();
     const result = resolveAutoThreads();
     assert.strictEqual(result, 14);
-    mock.restoreAll();
   });
 
   it('caps workers based on available memory', () => {
-    mock.method(require('node:os'), 'availableParallelism', () => 16);
+    mock.method(os, 'availableParallelism', () => 16);
     // 1 GB free -> floor(1024 * 0.5 / 250) = floor(2.048) = 2 workers
-    mock.method(require('node:os'), 'freemem', () => 1 * 1024 * 1024 * 1024);
-    mock.method(require('node:os'), 'arch', () => 'arm64');
+    mock.method(os, 'freemem', () => 1 * 1024 * 1024 * 1024);
+    mock.method(os, 'arch', () => 'arm64');
+    syncBuiltinESMExports();
     const result = resolveAutoThreads();
     assert.strictEqual(result, 2);
-    mock.restoreAll();
   });
 
   it('returns at least 1 worker even under extreme memory pressure', () => {
-    mock.method(require('node:os'), 'availableParallelism', () => 16);
+    mock.method(os, 'availableParallelism', () => 16);
     // Very low memory: floor(100 * 0.5 / 250) = 0 -> clamped to 1
-    mock.method(require('node:os'), 'freemem', () => 100 * 1024 * 1024);
+    mock.method(os, 'freemem', () => 100 * 1024 * 1024);
+    syncBuiltinESMExports();
     const result = resolveAutoThreads();
     assert.strictEqual(result, 1);
-    mock.restoreAll();
   });
 });
 

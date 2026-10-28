@@ -3,8 +3,10 @@ import {
   type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
 } from 'react-compiler-webpack';
+import { webpackFile } from '../../../lib/build-paths.ts';
 
-const getWrapperPath = () => require.resolve('./reactCompilerLoaderWrapper');
+const getWrapperPath = () =>
+  webpackFile('utils/loaders/reactCompilerLoaderWrapper');
 
 /**
  * React Compiler result status stored in module.buildInfo (not buildMeta,

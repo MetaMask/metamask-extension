@@ -70,9 +70,10 @@ export function getThreadLoader(config: ThreadLoaderConfig) {
     options: {
       // Workers don't inherit the main process's tsx hooks. Source loaders need
       // the same runtime for TypeScript imports; emitted CJS loaders don't.
-      workerNodeArgs: __filename.endsWith('.ts')
-        ? ['--import', pathToFileURL(require.resolve('tsx')).href]
-        : [],
+      workerNodeArgs:
+        typeof __filename === 'string' && __filename.endsWith('.ts')
+          ? ['--import', pathToFileURL(require.resolve('tsx')).href]
+          : [],
       workers: resolvedThreads,
       workerParallelJobs: resolvedJobs,
       poolTimeout: watch ? Number(Infinity) : 2000,

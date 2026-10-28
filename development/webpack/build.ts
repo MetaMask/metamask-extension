@@ -1,31 +1,33 @@
-import { webpack } from 'webpack';
-import type WebpackDevServerType from 'webpack-dev-server';
-import { logStats, noop, ignoreCacheShutdownSignal } from './utils/helpers';
-import config from './webpack.config';
+import webpackApi from 'webpack';
+import browserslistNode from 'browserslist/node.js';
+import { logStats, noop, ignoreCacheShutdownSignal } from './utils/helpers.ts';
+import config from './webpack.config.ts';
 import {
   logWatchBuildStats,
   suppressDevServerInfoLogs,
-} from './utils/dev-server';
+} from './utils/dev-server/index.ts';
+
+const { webpack } = webpackApi;
 
 // disable browserslist stats as it needlessly traverses the filesystem multiple
 // times looking for a stats file that doesn't exist.
-require('browserslist/node').getStat = noop;
+browserslistNode.getStat = noop;
 
 /**
  * Builds the extension
  *
  * @param onComplete
  */
-export function build(onComplete: () => void = noop) {
+export async function build(onComplete: () => void = noop) {
   // we need to strip `watch` from the options passed to webpack
   // because webpack-dev-server calls `compiler.watch()` itself.
-  const { watch, ...options } = config;
+  const { watch, ...options } = await config();
   const compiler = webpack(options);
-  console.error(`🦊 Running ${config.mode} build…`);
+  console.error(`🦊 Running ${options.mode} build…`);
   if (watch) {
     suppressDevServerInfoLogs(compiler);
     logWatchBuildStats(compiler, '🦊 Watching for changes…');
-    const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
+    const { default: WebpackDevServer } = await import('webpack-dev-server');
     const server = new WebpackDevServer(options.devServer, compiler);
     server.start().catch((error: unknown) => {
       console.error(

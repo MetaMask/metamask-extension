@@ -1,13 +1,15 @@
 import { mock } from 'node:test';
-import {
-  sources,
-  type Compiler,
-  type Chunk,
-  type WebpackOptionsNormalized,
-  type Asset,
-  type Compilation,
+import webpackApi from 'webpack';
+import type {
+  Compiler,
+  Chunk,
+  WebpackOptionsNormalized,
+  Asset,
+  Compilation,
 } from 'webpack';
-import type { EntryDescriptionNormalized } from '../utils/plugins/ManifestPlugin';
+import type { EntryDescriptionNormalized } from '../utils/plugins/ManifestPlugin/index.ts';
+
+const { sources } = webpackApi;
 
 const { SourceMapSource, RawSource } = sources;
 
@@ -82,8 +84,8 @@ export function mockWebpack(
       (
         name: string,
         newSourceOrFunction:
-          | sources.Source
-          | ((source: sources.Source) => sources.Source),
+          | webpackApi.sources.Source
+          | ((source: webpackApi.sources.Source) => webpackApi.sources.Source),
       ) => {
         assets[name].source =
           typeof newSourceOrFunction === 'function'

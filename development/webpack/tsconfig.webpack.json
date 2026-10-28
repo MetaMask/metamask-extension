@@ -3,13 +3,17 @@
     "esModuleInterop": true,
     "incremental": true,
     "isolatedModules": true,
+    "allowJs": true,
     "outDir": "../.webpack",
-    "rootDir": ".",
+    "rootDir": "../..",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "rewriteRelativeImportExtensions": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noCheck": true
   },
-  "exclude": ["test", "../build/**/*.ts", "../lib/**/*.ts"],
+  "exclude": ["test", "*.test.ts", "../build/**/*.ts", "../lib/**/*.ts"],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node22/tsconfig.json"
 }

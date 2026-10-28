@@ -1,9 +1,11 @@
-import merge from 'lodash/merge';
+import fs from 'node:fs';
+import path from 'node:path';
+import merge from 'lodash/merge.js';
 import {
   CHROME_MANIFEST_KEY_NON_PRODUCTION,
   CHROME_MANIFEST_KEY_RELEASE_CANDIDATE,
   ENVIRONMENTS,
-} from '../../constants';
+} from '../../constants.ts';
 import type { Args } from '../../cli';
 import type { Browser } from '../../helpers';
 
@@ -102,8 +104,6 @@ export function transformManifest(
 
     if (manifestOverridesPath) {
       try {
-        const fs = require('node:fs');
-        const path = require('node:path');
         const manifestFlagsContent = fs.readFileSync(
           path.resolve(process.cwd(), manifestOverridesPath),
           'utf8',
