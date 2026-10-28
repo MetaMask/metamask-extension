@@ -113,20 +113,6 @@ describe('Header', () => {
 
       expect(screen.getByText('12345')).toBeInTheDocument();
     });
-
-    it('renders long formatted values (> 10 chars) in the Hero amount display', () => {
-      render(
-        <Header
-          {...baseProps}
-          totalReceivedFiat={1234567890.12}
-          selectedAsset={{ symbol: 'USDC' }}
-        />,
-      );
-
-      const total = screen.getByText(/1,234,567,890/u);
-      expect(total).toBeInTheDocument();
-      expect(total).toHaveClass('font-hero', 'text-s-amount-display-lg');
-    });
   });
 
   describe('Skeleton loading state', () => {

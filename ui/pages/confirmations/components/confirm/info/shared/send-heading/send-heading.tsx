@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import {
   FontFamily,
   Skeleton,
-  Text as DsText,
+  Text,
   TextColor as DsTextColor,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
@@ -13,7 +13,7 @@ import {
   AvatarToken,
   AvatarTokenSize,
   Box,
-  Text,
+  Text as LegacyText,
 } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
@@ -81,24 +81,24 @@ const SendHeading = () => {
 
   const TokenValue =
     pending || displayTransferValue === decodedTransferValue ? (
-      <DsText
+      <Text
         variant={DsTextVariant.AmountDisplayLg}
         fontFamily={FontFamily.Hero}
         color={DsTextColor.Inherit}
         className="block pb-1"
       >
         {TokenValueContent}
-      </DsText>
+      </Text>
     ) : (
       <Tooltip title={decodedTransferValue} position="right">
-        <DsText
+        <Text
           variant={DsTextVariant.AmountDisplayLg}
           fontFamily={FontFamily.Hero}
           color={DsTextColor.Inherit}
           className="block pb-1"
         >
           {TokenValueContent}
-        </DsText>
+        </Text>
       </Tooltip>
     );
 
@@ -113,9 +113,12 @@ const SendHeading = () => {
     (pending
       ? TokenFiatValueSkeleton
       : Boolean(fiatDisplayValue) && (
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <LegacyText
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+          >
             {fiatDisplayValue}
-          </Text>
+          </LegacyText>
         ));
 
   useSendingValueMetric({ transactionMeta, fiatValue });
