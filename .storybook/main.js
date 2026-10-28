@@ -149,12 +149,7 @@ module.exports = {
             to: path.join('fonts', 'fontawesome'),
           },
           {
-            from: path.join(
-              'node_modules',
-              '@rive-app',
-              'canvas',
-              'rive.wasm',
-            ),
+            from: path.join('node_modules', '@rive-app', 'canvas', 'rive.wasm'),
             to: path.join('images', 'rive.wasm'),
           },
         ],
