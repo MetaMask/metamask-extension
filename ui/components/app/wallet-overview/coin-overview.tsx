@@ -117,7 +117,7 @@ const BalanceOverviewSkeleton = () => {
       <Box
         className={classnames(
           'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
-          getBalanceAlignmentClassName(),
+          getBalanceAlignmentClassName(isFullScreenDesign),
         )}
       >
         <Skeleton className="h-[50px] w-full rounded-lg" />
@@ -239,7 +239,6 @@ export const CoinOverview = ({
 }: CoinOverviewProps) => {
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
   const isFullScreenDesign = useFullScreenDesign();
-  const balanceAlignmentClassName = useBalanceAlignmentClassName();
 
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -495,7 +494,7 @@ export const CoinOverview = ({
       <div
         className={classnames(
           `${classPrefix}-overview__balance`,
-          getBalanceAlignmentClassName(),
+          getBalanceAlignmentClassName(isFullScreenDesign),
         )}
       >
         <div className={`${classPrefix}-overview__primary-container`}>

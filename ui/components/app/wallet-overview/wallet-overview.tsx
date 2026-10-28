@@ -39,7 +39,7 @@ const WalletOverview = ({
       <div
         className={classnames(
           'flex w-full flex-1 flex-col gap-1',
-          getBalanceAlignmentClassName(),
+          getBalanceAlignmentClassName(isFullScreenDesign),
         )}
       >
         {balance}
