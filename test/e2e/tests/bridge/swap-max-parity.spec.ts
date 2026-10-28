@@ -16,8 +16,8 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { MAX_AMOUNT_NETWORKS } from '../send/max-amount-parity.constants';
 import {
-  MAX_AMOUNT_NETWORKS,
   assertAmountEquals,
   expectedSwapMax,
   getMaxAmountParityFixtures,

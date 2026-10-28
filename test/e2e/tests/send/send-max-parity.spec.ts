@@ -14,6 +14,8 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import {
   MAX_AMOUNT_NETWORKS,
   MAX_SEND_RECIPIENT,
+} from './max-amount-parity.constants';
+import {
   assertSendMaxParity,
   getMaxAmountParityFixtures,
 } from './max-amount-parity';
