@@ -145,7 +145,7 @@ module.exports = defineConfig([
    * TypeScript files
    */
   {
-    files: ['**/*.{cts,mts,ts,tsx}'],
+    files: ['**/*.{ts,tsx}'],
     ignores: [
       // Stories currently excluded from tsconfig due to type errors.
       // Ignore TypeScript lint rules for these until types are fixed.
@@ -333,7 +333,6 @@ module.exports = defineConfig([
       ],
       'jsdoc/check-tag-names': 'off',
       'jsdoc/require-jsdoc': 'off',
-      'jsdoc/require-param': 'off',
       'jsdoc/require-param-description': 'off',
       'jsdoc/require-returns': 'off',
       'jsdoc/require-returns-description': 'off',
@@ -360,17 +359,6 @@ module.exports = defineConfig([
    * The sections from here on out may overlap with each other in various
    * ways depending on their function.
    */
-
-  /**
-   * .mts files
-   */
-  {
-    files: ['**/*.mts'],
-    rules: {
-      // Extensions are required by Node.js for `.mts` files
-      'import-x/extensions': 'off',
-    },
-  },
 
   /**
    * React-specific code

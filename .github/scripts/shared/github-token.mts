@@ -13,9 +13,7 @@ import { execFileSync } from 'node:child_process';
 
 export function getGitHubToken(): string {
   const fromEnv = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
-  if (fromEnv) {
-    return fromEnv;
-  }
+  if (fromEnv) return fromEnv;
 
   try {
     return execFileSync('gh', ['auth', 'token'], {

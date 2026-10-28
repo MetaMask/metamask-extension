@@ -3,7 +3,7 @@ import type { GitHub } from '@actions/github/lib/utils';
 import { LabelableType, type Labelable } from './labelable.mts';
 import { retrieveRepo } from './repo.mts';
 
-type RawIssue = {
+interface RawIssue {
   id: string;
   title: string;
   number: number;
@@ -24,7 +24,7 @@ type RawIssue = {
       login: string;
     };
   };
-};
+}
 
 // This function retrieves an issue on a specific repo
 export async function retrieveIssue(
@@ -76,8 +76,8 @@ export async function retrieveIssue(
     id: retrieveIssueResult?.repository?.issue?.id,
     type: LabelableType.Issue,
     number: issueNumber,
-    repoOwner,
-    repoName,
+    repoOwner: repoOwner,
+    repoName: repoName,
     createdAt: retrieveIssueResult?.repository?.issue?.createdAt,
     body: retrieveIssueResult?.repository?.issue?.body,
     author: retrieveIssueResult?.repository?.issue?.author?.login,
@@ -149,8 +149,8 @@ export async function retrieveIssueByTitle(
         id: issueWithSameTitle?.id,
         type: LabelableType.Issue,
         number: issueWithSameTitle?.number,
-        repoOwner,
-        repoName,
+        repoOwner: repoOwner,
+        repoName: repoName,
         createdAt: issueWithSameTitle?.createdAt,
         body: issueWithSameTitle?.body,
         author: issueWithSameTitle?.author?.login,

@@ -41,19 +41,17 @@ function fixture({
 } = {}) {
   let clock = 0;
   const api = jest.fn(async (endpoint: string): Promise<unknown> => {
-    if (endpoint.includes('/status?')) {
+    if (endpoint.includes('/status?'))
       return {
         statuses: pointer
           ? [{ context: 'builds-from-run', description: pointer }]
           : [],
       };
-    }
-    if (endpoint.includes('/artifacts?')) {
+    if (endpoint.includes('/artifacts?'))
       return {
         artifacts: artifact ? [{ name: 'build-dist-webpack', expired }] : [],
       };
-    }
-    if (endpoint.includes('/jobs?')) {
+    if (endpoint.includes('/jobs?'))
       return {
         jobs: [
           {
@@ -63,8 +61,7 @@ function fixture({
           },
         ],
       };
-    }
-    if (endpoint.includes('/actions/runs/')) {
+    if (endpoint.includes('/actions/runs/'))
       return {
         head_sha: headSha,
         html_url: runUrl,
@@ -72,7 +69,6 @@ function fixture({
         event,
         referenced_workflows: referencedWorkflows,
       };
-    }
     return { sha: commit };
   });
   return {
@@ -181,12 +177,10 @@ describe('resolveBuildRun', () => {
     let pointerChecks = 0;
     let artifactChecks = 0;
     dependencies.api.mockImplementation(async (endpoint) => {
-      if (endpoint.includes('/status?') && pointerChecks++ === 0) {
+      if (endpoint.includes('/status?') && pointerChecks++ === 0)
         return { statuses: [] };
-      }
-      if (endpoint.includes('/artifacts?') && artifactChecks++ === 0) {
+      if (endpoint.includes('/artifacts?') && artifactChecks++ === 0)
         return { artifacts: [] };
-      }
       return original(endpoint);
     });
     const metadata = await resolveBuildRun(

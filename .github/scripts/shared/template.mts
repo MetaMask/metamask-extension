@@ -1,6 +1,6 @@
-type Template = {
+interface Template {
   titles: string[];
-};
+}
 
 // The different templates an issue/PR can match.
 export const TemplateType = {

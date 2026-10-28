@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-param */
 import { BaseController } from '@metamask/base-controller';
 import log from 'loglevel';
 import type { InternalAccount } from '@metamask/keyring-internal-api';

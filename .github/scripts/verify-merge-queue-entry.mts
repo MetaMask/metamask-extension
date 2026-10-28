@@ -76,7 +76,7 @@ const verification = await verifyMergeQueueRetry({
           };
         };
       };
-      errors?: { message: string }[];
+      errors?: Array<{ message: string }>;
     };
 
     if (response.errors?.length) {

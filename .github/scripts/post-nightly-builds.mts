@@ -16,15 +16,10 @@ async function main() {
     RELEASE_VERSION: process.env.RELEASE_VERSION || '0',
   };
 
-  if (!env.RUN_ID) {
-    throw new Error('RUN_ID not found');
-  }
-  if (!env.HOST_URL) {
-    throw new Error('HOST_URL not found');
-  }
-  if (!env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL) {
+  if (!env.RUN_ID) throw new Error('RUN_ID not found');
+  if (!env.HOST_URL) throw new Error('HOST_URL not found');
+  if (!env.SLACK_NIGHTLY_BUILDS_WEBHOOK_URL)
     throw new Error('SLACK_NIGHTLY_BUILDS_WEBHOOK_URL not found');
-  }
 
   console.log(
     `🚀 Posting nightly builds for the ${env.REPOSITORY} repository ${env.BRANCH} branch to Slack`,

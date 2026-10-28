@@ -576,9 +576,7 @@ function maybeCreateIssue(
     return null;
   }
   const [owner, repo] = full.split('/');
-  if (!owner || !repo) {
-    return null;
-  }
+  if (!owner || !repo) return null;
 
   let token: string;
   try {
@@ -610,7 +608,7 @@ function maybeCreateIssue(
       token,
     );
     const json = JSON.parse(raw) as {
-      items?: { number?: number; title?: string }[];
+      items?: Array<{ number?: number; title?: string }>;
     };
     const match = json.items?.find((item) => item.title === title);
     if (typeof match?.number === 'number') {
@@ -748,11 +746,11 @@ async function postSlackNotification(
     return `• *${a.moduleName}* (${meta}) — ${a.title}\n  <${a.url}|${a.url.split('/').pop()}>`;
   };
 
-  const sections: {
+  const sections: Array<{
     type: string;
     text?: { type: string; text: string };
-    elements?: { type: string; text: string }[];
-  }[] = [
+    elements?: Array<{ type: string; text: string }>;
+  }> = [
     {
       type: 'section',
       text: {
@@ -760,7 +758,8 @@ async function postSlackNotification(
         text:
           `:warning: *Yarn Audit: ${count} new or newly blocking ${noun}*` +
           ` just hit branch \`${BRANCH}\`` +
-          ` on \`${repo}\`\n\n${policyText}`,
+          ` on \`${repo}\`\n\n` +
+          policyText,
       },
     },
   ];
@@ -772,9 +771,10 @@ async function postSlackNotification(
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `:red_circle: *Release-blocking* (production, moderate+)\n${shown
-          .map((a) => formatAdvisory(a, false))
-          .join('\n')}${overflow > 0 ? `\n_…and ${overflow} more_` : ''}`,
+        text:
+          `:red_circle: *Release-blocking* (production, moderate+)\n` +
+          shown.map((a) => formatAdvisory(a, false)).join('\n') +
+          (overflow > 0 ? `\n_…and ${overflow} more_` : ''),
       },
     });
   }
@@ -786,9 +786,10 @@ async function postSlackNotification(
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `:large_blue_circle: *Informational* (dev-only or low severity)\n${shown
-          .map((a) => formatAdvisory(a, true))
-          .join('\n')}${overflow > 0 ? `\n_…and ${overflow} more_` : ''}`,
+        text:
+          `:large_blue_circle: *Informational* (dev-only or low severity)\n` +
+          shown.map((a) => formatAdvisory(a, true)).join('\n') +
+          (overflow > 0 ? `\n_…and ${overflow} more_` : ''),
       },
     });
   }
@@ -869,11 +870,10 @@ async function main() {
 
   // New or newly blocking advisories found.
   console.log(
-    `Found ${newAdvisories.length} new or newly blocking advisory/advisories${
-      isMainlineTrigger && blockingAdvisories.length !== newAdvisories.length
+    `Found ${newAdvisories.length} new or newly blocking advisory/advisories` +
+      (isMainlineTrigger && blockingAdvisories.length !== newAdvisories.length
         ? ` (${blockingAdvisories.length} release-blocking).`
-        : '.'
-    }`,
+        : '.'),
   );
 
   const treeText = formatAdvisoryTreeText(
@@ -968,9 +968,9 @@ async function main() {
         ? ` (${ambientAdvisories.length} ambient advisor${ambientAdvisories.length === 1 ? 'y' : 'ies'} also detected)`
         : '';
 
-    diffSummaryLines[1] = `### yarn audit: **FAILED** — ${actionableAdvisories.length} actionable advisor${actionableAdvisories.length === 1 ? 'y' : 'ies'}${
-      ambientSuffix
-    }`;
+    diffSummaryLines[1] =
+      `### yarn audit: **FAILED** — ${actionableAdvisories.length} actionable advisor${actionableAdvisories.length === 1 ? 'y' : 'ies'}` +
+      ambientSuffix;
     diffSummaryLines[3] =
       `New or newly blocking advisories were found and this PR changes an affected package/path. ` +
       `Automatic baseline refresh is skipped while actionable dependency changes remain. ` +
@@ -1022,9 +1022,8 @@ async function main() {
 
     githubAnnotate(
       'warning',
-      `${ambientAdvisories.length} ambient advisor${ambientAdvisories.length === 1 ? 'y' : 'ies'} found (not introduced by this PR).${
-        refreshUrl ? ` Baseline refresh: ${refreshUrl}` : ''
-      }`,
+      `${ambientAdvisories.length} ambient advisor${ambientAdvisories.length === 1 ? 'y' : 'ies'} found (not introduced by this PR).` +
+        (refreshUrl ? ` Baseline refresh: ${refreshUrl}` : ''),
     );
   }
 

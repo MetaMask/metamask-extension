@@ -1,11 +1,11 @@
 export const CONSTANT_TIME_PER_TESTCASE = 3000; // 3 seconds to setup/tear down each test case
 
-export type TestRun = {
+export interface TestRun {
   name: string;
   testFiles: TestFile[];
-};
+}
 
-export type TestFile = {
+export interface TestFile {
   path: string;
   tests: number;
   passed: number;
@@ -14,9 +14,9 @@ export type TestFile = {
   time: number;
   timePlusSetup?: number;
   testSuites: TestSuite[];
-};
+}
 
-export type TestSuite = {
+export interface TestSuite {
   name: string;
   job: {
     name: string;
@@ -32,7 +32,7 @@ export type TestSuite = {
   time: number;
   attempts: TestSuite[];
   testCases: TestCase[];
-};
+}
 
 export type TestCase =
   | {
@@ -47,10 +47,10 @@ export type TestCase =
       error: string;
     };
 
-export type TestChunk = {
+export interface TestChunk {
   time: number;
   paths: string[];
-};
+}
 
 export function getTestFilesSortedByTime(testRun: TestRun) {
   // add CONSTANT_TIME_PER_TESTCASE

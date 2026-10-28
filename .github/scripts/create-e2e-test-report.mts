@@ -54,9 +54,7 @@ async function main() {
       const results = await XML.parse(file);
 
       for (const suite of results.testsuites.testsuite || []) {
-        if (!suite.testcase || !suite.$.file) {
-          continue;
-        }
+        if (!suite.testcase || !suite.$.file) continue;
         const tests = +suite.$.tests;
         const failed = +suite.$.failures;
         const skipped = tests - suite.testcase.length;
@@ -192,15 +190,11 @@ async function main() {
         );
 
         if (total.failed > 0) {
-          if (testRun.name) {
-            console.log(`${consoleBold(title)} ❌`);
-          }
+          if (testRun.name) console.log(`${consoleBold(title)} ❌`);
           core.summary.addRaw(`\n<details open>\n`);
           core.summary.addRaw(`\n<summary>${title} ❌</summary>\n`);
         } else {
-          if (testRun.name) {
-            console.log(`${consoleBold(title)} ✅`);
-          }
+          if (testRun.name) console.log(`${consoleBold(title)} ✅`);
           core.summary.addRaw(`\n<details>\n`);
           core.summary.addRaw(`\n<summary>${title} ✅</summary>\n`);
         }
@@ -235,17 +229,13 @@ async function main() {
             `\n<hr style="height: 1px; margin-top: -5px; margin-bottom: 10px;">\n`,
           );
           for (const file of testRun.testFiles) {
-            if (file.failed === 0) {
-              continue;
-            }
+            if (file.failed === 0) continue;
             console.error(file.path);
             const testUrl = new URL(repositoryUrl);
             testUrl.pathname += `/blob/${env.BRANCH}/${file.path}`;
             core.summary.addRaw(`\n#### [${file.path}](${testUrl})\n`);
             for (const suite of file.testSuites) {
-              if (suite.failed === 0) {
-                continue;
-              }
+              if (suite.failed === 0) continue;
               if (suite.job.name && suite.job.id && suite.job.runId) {
                 const jobUrl = new URL(repositoryUrl);
                 jobUrl.pathname += `/actions/runs/${suite.job.runId}/job/${suite.job.id}`;
@@ -259,9 +249,7 @@ async function main() {
                 );
               }
               for (const test of suite.testCases) {
-                if (test.status !== 'failed') {
-                  continue;
-                }
+                if (test.status !== 'failed') continue;
                 console.error(`  ${test.name}`);
                 console.error(`  ${test.error}\n`);
                 core.summary.addRaw(`\n##### ${test.name}\n`);

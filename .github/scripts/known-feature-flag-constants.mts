@@ -23,11 +23,11 @@ const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
  * Constants that must be resolved by reading their source file (because
  * importing them would pull in browser-only dependencies).
  */
-const FILE_SOURCES: {
+const FILE_SOURCES: Array<{
   key: string;
   file: string;
   exportName: string;
-}[] = [
+}> = [
   {
     key: 'ASSETS_UNIFY_STATE_FLAG',
     file: 'shared/lib/assets-unify-state/remote-feature-flag.ts',

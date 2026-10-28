@@ -13,7 +13,7 @@ export const RETRY_CI_LABEL_MAX_ATTEMPT = 4;
 export type RetryMode = 'automatic' | 'label' | 'none';
 export type RetryContext = 'pr' | 'release-push' | 'observation';
 
-export type RetryBudgetInput = {
+export interface RetryBudgetInput {
   /** GitHub Actions run_attempt from the failed Main workflow. */
   attempt: number | string;
   /** Identifies whether the event can use a retry budget. */
@@ -24,9 +24,9 @@ export type RetryBudgetInput = {
   isRetryable: boolean;
   /** Last attempt that can automatically create a retry. */
   automaticRetryLimit?: number;
-};
+}
 
-export type RetryBudgetDecision = {
+export interface RetryBudgetDecision {
   /** Sanitized one-indexed attempt number used for all policy comparisons. */
   attemptNumber: number;
   /** Last attempt that can automatically create a retry. */
@@ -43,7 +43,7 @@ export type RetryBudgetDecision = {
   retryMode: RetryMode;
   /** Whether triage should call gh run rerun --failed. */
   willRetry: boolean;
-};
+}
 
 export function parseAttempt(attempt: number | string): number {
   const attemptNumber =

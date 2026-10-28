@@ -180,9 +180,7 @@ export function githubAnnotate(
 /** Append markdown to the current step's summary panel. */
 export function writeStepSummary(text: string): void {
   const path = process.env.GITHUB_STEP_SUMMARY;
-  if (!path) {
-    return;
-  }
+  if (!path) return;
   try {
     appendFileSync(path, text, 'utf8');
   } catch (error) {

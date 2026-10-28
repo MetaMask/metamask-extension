@@ -21,9 +21,7 @@ export function stripJsonComments(jsonc: string): string {
     .split('\n')
     .map((line) => {
       // Remove full-line comments
-      if (line.trim().startsWith('//')) {
-        return '';
-      }
+      if (line.trim().startsWith('//')) return '';
       // Remove inline comments: find '//' outside of quoted strings.
       // Walk through the line tracking whether we're inside a string.
       let inString = false;

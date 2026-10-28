@@ -163,7 +163,7 @@ async function main(): Promise<void> {
   }
 
   // --- Partition into registered / unregistered ---
-  const unregisteredFlags: { flag: string; files: string[] }[] = [];
+  const unregisteredFlags: Array<{ flag: string; files: string[] }> = [];
   let registeredCount = 0;
 
   for (const [flag, files] of flagToFiles) {
@@ -619,27 +619,20 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
           hasExpr = true;
           break;
         }
-        if (line[j] === '`') {
-          break;
-        }
+        if (line[j] === '`') break;
         j++;
       }
       if (hasExpr) {
-        let depth = 1;
-        let k = j + 2;
-        let foundClose = false;
+        let depth = 1,
+          k = j + 2,
+          foundClose = false;
         result += ch;
-        if (mode === 'mask') {
-          result += ' '.repeat(j - i - 1);
-        }
+        if (mode === 'mask') result += ' '.repeat(j - i - 1);
         result += '${';
         while (k < line.length) {
           if (line[k] === '\\') {
-            if (depth > 0) {
-              result += line[k] + (line[k + 1] || ' ');
-            } else if (mode === 'mask') {
-              result += '  ';
-            }
+            if (depth > 0) result += line[k] + (line[k + 1] || ' ');
+            else if (mode === 'mask') result += '  ';
             k += 2;
             continue;
           }
@@ -655,33 +648,29 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
               k += 2;
               continue;
             }
-            if (mode === 'mask') {
-              result += ' ';
-            }
-          } else if (line[k] === '$' && line[k + 1] === '{') {
-            result += '${';
-            depth++;
-            k++;
-          } else if (line[k] === '{') {
-            result += '{';
-            depth++;
-          } else if (line[k] === '}') {
-            result += '}';
-            depth--;
-          } else if (line[k] === '`' && depth === 1) {
-            result += '`';
-            depth++;
-          } else if (line[k] === '`' && depth > 1) {
-            result += '`';
-            depth--;
+            if (mode === 'mask') result += ' ';
           } else {
-            result += line[k];
+            if (line[k] === '$' && line[k + 1] === '{') {
+              result += '${';
+              depth++;
+              k++;
+            } else if (line[k] === '{') {
+              result += '{';
+              depth++;
+            } else if (line[k] === '}') {
+              result += '}';
+              depth--;
+            } else if (line[k] === '`' && depth === 1) {
+              result += '`';
+              depth++;
+            } else if (line[k] === '`' && depth > 1) {
+              result += '`';
+              depth--;
+            } else result += line[k];
           }
           k++;
         }
-        if (!foundClose) {
-          result += line.slice(k);
-        }
+        if (!foundClose) result += line.slice(k);
         i = foundClose ? k + 1 : line.length;
         continue;
       }
@@ -692,9 +681,7 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
         j += 2;
         continue;
       }
-      if (line[j] === ch) {
-        break;
-      }
+      if (line[j] === ch) break;
       j++;
     }
     if (j >= line.length) {
@@ -766,7 +753,7 @@ function logRegistryChanges(fullDiff: string): void {
 
 /** Builds the Markdown body for the PR comment. */
 function buildCommentBody(
-  unregistered: { flag: string; files: string[] }[],
+  unregistered: Array<{ flag: string; files: string[] }>,
   orphaned: string[],
 ): string {
   const lines: string[] = [
@@ -837,7 +824,7 @@ function buildCommentBody(
 
 /** Posts or updates the PR comment. Skips when not in a GitHub Actions context. */
 async function postPrComment(
-  unregistered: { flag: string; files: string[] }[],
+  unregistered: Array<{ flag: string; files: string[] }>,
   orphaned: string[] = [],
 ): Promise<void> {
   const token = process.env.GITHUB_TOKEN;
