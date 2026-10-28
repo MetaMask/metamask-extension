@@ -2,16 +2,17 @@ import { strict as assert } from 'assert';
 import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { getCleanAppState, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';
 
 /**
- * Delivery of the `sentry` remote feature flag over HTTP into
- * `RemoteFeatureFlagController`. Sampler arithmetic and the persist/apply race
+ * Whether the client requests the `sentry` remote feature flag.
+ * Sampler arithmetic, the persist/apply race, and versions-ladder unwrapping
  * live in unit tests (`sentry-traces-sampler.test.ts`,
- * `sentry-remote-rates.test.ts`); these arms only prove the value arrives (or
- * is never requested) and that a versions ladder is unwrapped.
+ * `sentry-remote-rates.test.ts`). These arms do not read extension state:
+ * Playwright's page.evaluate cannot run on a Firefox extension page under
+ * LavaMoat scuttling.
  */
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
@@ -61,7 +62,7 @@ const withMetaMetricsOn = () =>
 
 pwTest.describe('Sentry remote sample rates', () => {
   pwTest(
-    'delivers the sentry flag from the client-config API into controller state',
+    'requests the flags endpoint when a sentry flag is served',
     async () => {
       const sentry = {
         tracesSampleRate: 1,
@@ -78,42 +79,11 @@ pwTest.describe('Sentry remote sample rates', () => {
         },
         async ({ driver, mockedEndpoint }) => {
           await login(driver);
-          const uiState = await getCleanAppState(driver);
-
-          assert.deepStrictEqual(
-            uiState.metamask.remoteFeatureFlags.sentry,
-            sentry,
-            'the served sentry flag should reach RemoteFeatureFlagController state verbatim',
-          );
 
           const [flagsEndpoint] = mockedEndpoint;
           assert.ok(
             (await flagsEndpoint.getSeenRequests()).length > 0,
             'the flags endpoint should record requests when the controller is enabled',
-          );
-        },
-      );
-    },
-  );
-
-  pwTest(
-    'leaves the flag absent when the response carries no sentry key',
-    async () => {
-      await withFixtures(
-        {
-          driverType: E2E_DRIVER.PLAYWRIGHT,
-          fixtures: withMetaMetricsOn(),
-          title: pwTest.info().titlePath.join(' '),
-          testSpecificMock: mockFlagsWithSentry(undefined),
-        },
-        async ({ driver }) => {
-          await login(driver);
-          const uiState = await getCleanAppState(driver);
-
-          assert.equal(
-            uiState.metamask.remoteFeatureFlags.sentry,
-            undefined,
-            'no sentry flag should be present, so compile-time rates apply',
           );
         },
       );
@@ -146,38 +116,6 @@ pwTest.describe('Sentry remote sample rates', () => {
             seen.length,
             0,
             'a disabled controller should issue no flags request; a served-but-unfetched flag is not an "off" arm',
-          );
-        },
-      );
-    },
-  );
-
-  pwTest(
-    'unwraps a versions ladder to the rung matching the build version',
-    async () => {
-      const ladder = {
-        versions: {
-          '999.0.0': { tracesSampleRate: 0.75 },
-          '0.0.1': { tracesSampleRate: 0.25 },
-        },
-      };
-
-      await withFixtures(
-        {
-          driverType: E2E_DRIVER.PLAYWRIGHT,
-          fixtures: withMetaMetricsOn(),
-          title: pwTest.info().titlePath.join(' '),
-          testSpecificMock: mockFlagsWithSentry(ladder),
-        },
-        async ({ driver }) => {
-          await login(driver);
-          const uiState = await getCleanAppState(driver);
-          const { sentry } = uiState.metamask.remoteFeatureFlags;
-
-          assert.deepStrictEqual(
-            sentry,
-            { tracesSampleRate: 0.25 },
-            'state should hold the unwrapped rung for the build version, not the versions wrapper',
           );
         },
       );
