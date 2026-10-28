@@ -21,7 +21,6 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   rate_limited: 'mfaErrorCooldown',
   max_passkeys_reached: 'mfaErrorLimitReached',
   max_identifiers_reached: 'mfaErrorLimitReached',
-  multi_primary_srp: 'mfaErrorMultiPrimarySrp',
   authentication_required: 'mfaErrorSignedOut',
   passkey_unsupported: 'mfaErrorUnsupported',
   flow_in_progress: 'mfaErrorFlowInProgress',

@@ -25,6 +25,17 @@ const mockCopy = jest.fn();
 const mockUseCopyToClipboard = jest.fn();
 let mockIsCopied = false;
 let mockTheme: ThemeType;
+jest.mock(
+  '../../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({ supportLink }: { supportLink: string }) => (
+      <p data-testid="support-modal">{supportLink}</p>
+    ),
+  }),
+);
+
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: (...args: unknown[]) => {
     mockUseCopyToClipboard(...args);
@@ -756,6 +767,33 @@ describe('FailureStep', () => {
       screen.getByText(messages.mfaErrorLimitReached.message),
     ).toBeInTheDocument();
     expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
+  });
+
+  it('sends an error only support can fix to support', () => {
+    const onAction = jest.fn();
+    render(
+      <FailureStep
+        {...buildState({
+          name: 'failure',
+          code: 'multi_primary_srp',
+          canRetry: false,
+        })}
+        reason={reason}
+        onAction={onAction}
+      />,
+    );
+
+    expect(
+      screen.getByText(messages.mfaFailureSupportTitle.message),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+    const supportLink = new URL(
+      screen.getByTestId('support-modal').textContent ?? '',
+    );
+    expect(supportLink.searchParams.get('mfa_error')).toBe('multi_primary_srp');
+
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
 });
 
