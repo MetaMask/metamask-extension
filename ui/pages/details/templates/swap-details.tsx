@@ -4,8 +4,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { FeesRows, TotalAmountRow } from '../components/amounts-section';
 import { Footer, Section } from '../components/shared';
 import { BlockExplorerButton } from '../components/block-explorer-button';
-import { SwapAgainButton } from './bridge/swap-again-button';
 import { MetadataSection, TokensSection } from '../components/sections';
+import { SwapAgainButton } from './bridge/swap-again-button';
 
 export function SwapDetails({
   item,
