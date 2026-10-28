@@ -426,6 +426,23 @@ ${Object.entries(env)
     });
   }
 
+  it('loads the self-injection plugin for Firefox MV2', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig([
+      '--browser',
+      'firefox',
+      '--manifestVersion',
+      '2',
+    ]);
+    assert(getPluginNames(config).includes('SelfInjectPlugin'));
+  });
+
+  it('loads the React Compiler reporting plugin when verbose output is enabled', async () => {
+    mockOptionalRcFiles();
+    const config = await getWebpackConfig(['--reactCompilerVerbose']);
+    assert(getPluginNames(config).includes('ReactCompilerPlugin'));
+  });
+
   it('enables React Refresh for development watch builds', async () => {
     mockOptionalRcFiles();
 
