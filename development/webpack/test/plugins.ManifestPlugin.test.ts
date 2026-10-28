@@ -29,6 +29,7 @@ import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers.ts';
 import { getLatestCommit } from '../utils/git.ts';
 import { generateCases, type Combination, mockWebpack } from './helpers.ts';
 
+const __dirname = import.meta.dirname;
 const nodeRequire = createRequire(import.meta.url);
 
 const { sources } = webpackApi;
@@ -135,10 +136,7 @@ describe('ManifestPlugin', () => {
         webAccessibleResources,
         zip,
       } = testCase;
-      const context = join(
-        import.meta.dirname,
-        `fixtures/ManifestPlugin/${fixture}`,
-      );
+      const context = join(__dirname, `fixtures/ManifestPlugin/${fixture}`);
       const baseManifest = nodeRequire(
         join(context, `manifest/v${manifestVersion}`, '_base.json'),
       );
@@ -302,10 +300,7 @@ describe('ManifestPlugin', () => {
         files.map(() => null),
         'hidden-source-map',
       );
-      compiler.context = join(
-        import.meta.dirname,
-        'fixtures/ManifestPlugin/empty',
-      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
@@ -357,10 +352,7 @@ describe('ManifestPlugin', () => {
         files.map(({ source }) => source),
         files.map(() => null),
       );
-      compiler.context = join(
-        import.meta.dirname,
-        'fixtures/ManifestPlugin/empty',
-      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
@@ -417,10 +409,7 @@ describe('ManifestPlugin', () => {
         files.map(() => null),
         'hidden-source-map',
       );
-      compiler.context = join(
-        import.meta.dirname,
-        'fixtures/ManifestPlugin/empty',
-      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
@@ -464,10 +453,7 @@ describe('ManifestPlugin', () => {
 
     it('sets build_id in the emitted manifest when setBuildId is enabled', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compiler.context = join(
-        import.meta.dirname,
-        'fixtures/ManifestPlugin/empty',
-      );
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
       compilation.fullHash = 'test-full-hash';
 
       const manifestPlugin = new ManifestPlugin({
@@ -494,7 +480,7 @@ describe('ManifestPlugin', () => {
     });
 
     const entrypointsStatsFixtureContext = join(
-      import.meta.dirname,
+      __dirname,
       'fixtures/ManifestPlugin/entrypoints',
     );
     const chromeSummaryAssetPath = BUNDLE_SIZE_SUMMARY_FILE.replaceAll(
@@ -1041,10 +1027,7 @@ describe('ManifestPlugin', () => {
 
     it('adds manifest flags in development mode with path provided and empty manifest', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
-        if (
-          path ===
-          resolve(import.meta.dirname, '../../../', manifestOverridesPath)
-        ) {
+        if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
           return JSON.stringify(mockFlags);
         }
         return fs.readFileSync.original(path, options);
@@ -1073,10 +1056,7 @@ describe('ManifestPlugin', () => {
 
     it('overwrites existing manifest properties with override values but keeps original properties', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
-        if (
-          path ===
-          resolve(import.meta.dirname, '../../../', manifestOverridesPath)
-        ) {
+        if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
           return JSON.stringify(mockFlags);
         }
         return fs.readFileSync.original(path, options);
@@ -1243,10 +1223,7 @@ describe('ManifestPlugin', () => {
   });
 
   describe('build type overrides', () => {
-    const context = join(
-      import.meta.dirname,
-      'fixtures/ManifestPlugin/build-types',
-    );
+    const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
 
     it('should apply build type base manifest overrides', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
@@ -1544,7 +1521,7 @@ describe('ManifestPlugin', () => {
 
   describe('entrypoints', () => {
     const entrypointsContext = join(
-      import.meta.dirname,
+      __dirname,
       'fixtures/ManifestPlugin/entrypoints',
     );
     const html = [
@@ -2064,10 +2041,7 @@ describe('ManifestPlugin', () => {
   });
 
   describe('watch mode re-read', () => {
-    const context = join(
-      import.meta.dirname,
-      'fixtures/ManifestPlugin/entrypoints',
-    );
+    const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
 
     it('should not re-read manifests when modifiedFiles does not include a watched file', async () => {
       const { compiler, promise } = mockWebpack([], [], []);
@@ -2176,10 +2150,7 @@ describe('ManifestPlugin', () => {
 
   describe('file dependencies (watch mode)', () => {
     it('should add manifest files to compilation.fileDependencies', async () => {
-      const context = join(
-        import.meta.dirname,
-        'fixtures/ManifestPlugin/build-types',
-      );
+      const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
       const { compiler, compilation, promise } = mockWebpack([], [], []);
       compiler.context = context;
 
@@ -2221,10 +2192,7 @@ describe('ManifestPlugin', () => {
 
     it('should add config files to fileDependencies when they exist', async () => {
       // The entrypoints fixture has a .metamaskrc in its parent (fixtures/ManifestPlugin/)
-      const context = join(
-        import.meta.dirname,
-        'fixtures/ManifestPlugin/entrypoints',
-      );
+      const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
       const { compiler, compilation, promise } = mockWebpack([], [], []);
       compiler.context = context;
 
@@ -2260,10 +2228,7 @@ describe('ManifestPlugin', () => {
     });
 
     it('should not add non-existent manifest files to fileDependencies', async () => {
-      const context = join(
-        import.meta.dirname,
-        'fixtures/ManifestPlugin/entrypoints',
-      );
+      const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
       const { compiler, compilation, promise } = mockWebpack([], [], []);
       compiler.context = context;
 

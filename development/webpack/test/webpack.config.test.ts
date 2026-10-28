@@ -108,6 +108,7 @@ async function withWatching<T>(
  */
 
 describe('webpack.config.test.ts', () => {
+  let configLoad = 0;
   let originalArgv: string[];
   let originalEnv: NodeJS.ProcessEnv;
   const originalReadFileSync = fs.readFileSync;
@@ -139,7 +140,7 @@ describe('webpack.config.test.ts', () => {
     args: string[] = [],
     env: NodeJS.ProcessEnv = {},
   ) {
-    // The config factory reads argv when called.
+    // Reload the ESM config for each case, matching main’s module-load lifecycle.
     // first two args are always ignored.
     process.argv = [...process.argv.slice(0, 2), ...args];
     process.env = { ...env };
@@ -156,7 +157,11 @@ ${Object.entries(env)
       return originalReadFileSync.call(fs, path, options);
     });
     syncBuiltinESMExports();
-    return (await import('../webpack.config.ts')).default();
+    return (
+      (await import(
+        `../webpack.config.ts?config=${configLoad++}`
+      )) as typeof import('../webpack.config.ts')
+    ).default();
   }
 
   function getPluginNames(config: Configuration): string[] {
