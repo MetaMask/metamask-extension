@@ -91,11 +91,31 @@ const RESPONSE_OUTGOING_MOCK = {
   readable: 'Send',
 };
 
+type MockTransaction = {
+  from?: string;
+  valueTransfers?: { to?: string }[];
+};
+
+// Accounts API drops incoming transfers. The client no longer does.
+function withoutIncomingTransfers(transactions: MockTransaction[]) {
+  const subjectAddress = DEFAULT_FIXTURE_ACCOUNT.toLowerCase();
+
+  return transactions.filter((transaction) => {
+    const paidToSubject = transaction.valueTransfers?.some(
+      (transfer) => transfer.to?.toLowerCase() === subjectAddress,
+    );
+
+    return !(
+      paidToSubject && transaction.from?.toLowerCase() !== subjectAddress
+    );
+  });
+}
+
 async function mockAccountsApi(
   mockServer: Mockttp,
   {
     transactions,
-  }: { cursor?: string; transactions?: Record<string, unknown>[] } = {},
+  }: { cursor?: string; transactions?: MockTransaction[] } = {},
 ) {
   return [
     await mockServer
@@ -106,10 +126,9 @@ async function mockAccountsApi(
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          data: transactions ?? [
-            RESPONSE_STANDARD_MOCK,
-            RESPONSE_STANDARD_2_MOCK,
-          ],
+          data: withoutIncomingTransfers(
+            transactions ?? [RESPONSE_STANDARD_MOCK, RESPONSE_STANDARD_2_MOCK],
+          ),
           pageInfo: { hasNextPage: false },
         },
       })),
