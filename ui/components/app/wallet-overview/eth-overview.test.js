@@ -88,6 +88,14 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   },
 }));
 
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    goToBuy: mockGoToBuy,
+  })),
+}));
+
 const mockGetIntlLocale = getIntlLocale;
 
 let openTabSpy;
@@ -645,9 +653,7 @@ describe('EthOverview', () => {
       expect(buyButton).not.toBeDisabled();
 
       fireEvent.click(buyButton);
-      await waitFor(() =>
-        expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1),
-      );
+      await waitFor(() => expect(mockGoToBuy).toHaveBeenCalledTimes(1));
     });
   });
 
