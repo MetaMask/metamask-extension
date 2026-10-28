@@ -9,9 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import featureFlagsModule from '../../shared/lib/feature-flags';
-
-const { FeatureFlagNames } = featureFlagsModule;
+import { FeatureFlagNames } from '../../shared/lib/feature-flags';
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(

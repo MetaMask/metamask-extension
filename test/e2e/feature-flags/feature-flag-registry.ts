@@ -3497,6 +3497,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  mfaUiKit: {
+    inProd: true,
+    name: 'mfaUiKit',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.56.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   moneyAccountBalanceSource: {
     inProd: true,
     name: 'moneyAccountBalanceSource',
@@ -3960,25 +3971,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  rewardsBitcoinEnabledExtension: {
-    inProd: true,
-    name: 'rewardsBitcoinEnabledExtension',
-    productionDefault: false,
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  rewardsEnabled: {
-    inProd: true,
-    name: 'rewardsEnabled',
-    productionDefault: {
-      enabled: true,
-      minimumVersion: '13.32.0',
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
   rewardsMoneyControllerEnabled: {
     inProd: true,
     name: 'rewardsMoneyControllerEnabled',
@@ -3986,25 +3978,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       enabled: false,
       minimumVersion: '13.0.0',
     },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  rewardsOnboardingEnabled: {
-    inProd: true,
-    name: 'rewardsOnboardingEnabled',
-    productionDefault: {
-      enabled: true,
-      minimumVersion: '13.32.0',
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  rewardsTronEnabledExtension: {
-    inProd: true,
-    name: 'rewardsTronEnabledExtension',
-    productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
