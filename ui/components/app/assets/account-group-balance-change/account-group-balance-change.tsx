@@ -11,14 +11,12 @@ import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 export type AccountGroupBalanceChangeProps = {
   period: BalanceChangePeriod;
-  trailingChild: () => JSX.Element | null;
 };
 
 const balanceAmountSpanStyle = { whiteSpace: 'pre' } as const;
 
 const AccountGroupBalanceChangeComponent = ({
   period,
-  trailingChild,
 }: AccountGroupBalanceChangeProps) => {
   const { privacyMode, color, amountChange, percentChange, isLoading } =
     useAccountGroupBalanceDisplay(period);
@@ -50,7 +48,6 @@ const AccountGroupBalanceChangeComponent = ({
           {`(${formatPercentWithMinThreshold(percentChange, { signDisplay: 'always' })})`}
         </SensitiveText>
       </Box>
-      {trailingChild()}
     </Skeleton>
   );
 };
