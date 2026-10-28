@@ -57,10 +57,8 @@ export const EditGasFeesRow = ({
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();
 
-  // TODO: Use `TransactionMeta` once the transaction controller is released with `gasFeeSponsor`.
-  const { currentConfirmation: transactionMeta } = useConfirmContext<
-    TransactionMeta & { gasFeeSponsor?: string }
-  >();
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const showAdvancedDetails = useSelector(
