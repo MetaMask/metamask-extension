@@ -14,6 +14,9 @@ import {
   useRiveWasmFile,
 } from '../../../contexts/rive-wasm';
 
+const walletReadyContainerClassName =
+  'pointer-events-none flex h-[400px] w-full items-end justify-center';
+
 export default function WalletReadyAnimation() {
   const theme = useTheme();
   const context = useRiveWasmContext();
@@ -83,12 +86,12 @@ export default function WalletReadyAnimation() {
     status === 'loading' ||
     status === 'failed'
   ) {
-    return <Box className="riv-animation__wallet-ready-container"></Box>;
+    return <Box className={walletReadyContainerClassName}></Box>;
   }
 
   return (
-    <Box className="riv-animation__wallet-ready-container">
-      <RiveComponent className="riv-animation__canvas" />
+    <Box className={walletReadyContainerClassName}>
+      <RiveComponent className="h-full w-full" />
     </Box>
   );
 }

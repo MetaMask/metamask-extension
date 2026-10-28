@@ -184,7 +184,7 @@ export default function CreationSuccessful() {
   if (!isFromSettingsSRPBackup) {
     return (
       <MarketingMoment
-        className="creation-successful h-full"
+        className="h-full"
         data-testid="parent-selector-onboarding-complete"
         title={t('yourWalletIsReady')}
         artwork={<WalletReadyAnimation />}
@@ -213,7 +213,7 @@ export default function CreationSuccessful() {
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Between}
       gap={6}
-      className="creation-successful h-full"
+      className="h-full"
       data-testid="parent-selector-onboarding-complete"
     >
       <Box>
