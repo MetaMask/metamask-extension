@@ -9825,9 +9825,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^21.0.0":
-  version: 21.0.0
-  resolution: "@metamask/perps-controller@npm:21.0.0"
+"@metamask/perps-controller@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/perps-controller@npm:22.0.0"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.4"
     "@metamask/base-controller": "npm:^10.1.0"
@@ -9839,7 +9839,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.3.0"
     uuid: "npm:^11.1.1"
-  checksum: 10/535b307a13ed2fc2c1102c5568e6c84ca4622cf9a2f74ece27d7c6867250cca7d8cdbeb0f7eb763c8fbd948080cafd930f3ea3359b2557818eef8b86f5b623cc
+  checksum: 10/429c1afbe531ee9a96517b91db6c572936fa69ea21c40525d7d4f09685c81455293a1633a984d4c0c85b62e302fa6abc0eb989611eb00fac8611951a2304a159
   languageName: node
   linkType: hard
 
@@ -10925,21 +10925,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-middleware@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/transaction-pay-middleware@npm:1.0.0"
+"@metamask/transaction-pay-middleware@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/transaction-pay-middleware@npm:2.0.0"
   dependencies:
+    "@metamask/account-tree-controller": "npm:^11.2.0"
+    "@metamask/accounts-controller": "npm:^40.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/network-controller": "npm:^37.1.1"
-    "@metamask/perps-controller": "npm:^21.0.0"
+    "@metamask/perps-controller": "npm:^22.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/transaction-controller": "npm:^72.2.1"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/4ed864f54fc73e155143f15e0d0e3af0fc92eac95627ea174cef6587b550b063a90a073144f376db5b2a77841e405c32fe38fd6de8999d77026db5cecf4554f5
+  checksum: 10/7734744efec0df7712cb64db240d2440fca03e27b37e0abbe4b6e829c0d2bc3fd241c154481cf6a49842638fba337f0a1af42f6ec6a2ed2e9b75aefea4ed9bdf
   languageName: node
   linkType: hard
 
@@ -19209,22 +19211,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/mocker@npm:3.2.4":
-  version: 3.2.4
-  resolution: "@vitest/mocker@npm:3.2.4"
+"@vitest/mocker@npm:^4.1.12":
+  version: 4.1.12
+  resolution: "@vitest/mocker@npm:4.1.12"
   dependencies:
-    "@vitest/spy": "npm:3.2.4"
+    "@vitest/spy": "npm:4.1.12"
     estree-walker: "npm:^3.0.3"
-    magic-string: "npm:^0.30.17"
+    magic-string: "npm:^0.30.21"
   peerDependencies:
     msw: ^2.4.9
-    vite: ^5.0.0 || ^6.0.0 || ^7.0.0-0
+    vite: ^6.0.0 || ^7.0.0 || ^8.0.0
   peerDependenciesMeta:
     msw:
       optional: true
     vite:
       optional: true
-  checksum: 10/5e92431b6ed9fc1679060e4caef3e4623f4750542a5d7cd944774f8217c4d231e273202e8aea00bab33260a5a9222ecb7005d80da0348c3c829bd37d123071a8
+  checksum: 10/eb8521692a78e94d2a2723fb6e7847eb95aa6d85442281668174afa4afa43149d0a318e8c1fc4ae92d4d5ddd090c009e605808e247e2c97779e8e7154c4b681a
   languageName: node
   linkType: hard
 
@@ -19243,6 +19245,13 @@ __metadata:
   dependencies:
     tinyspy: "npm:^4.0.3"
   checksum: 10/7d38c299f42a8c7e5e41652b203af98ca54e63df69c3b072d0e401d5a57fbbba3e39d8538ac1b3022c26718a6388d0bcc222bc2f07faab75942543b9247c007d
+  languageName: node
+  linkType: hard
+
+"@vitest/spy@npm:4.1.12":
+  version: 4.1.12
+  resolution: "@vitest/spy@npm:4.1.12"
+  checksum: 10/4fbff08e92fae884ecddafc7d04071980fd0b07c5587fda0bf34229f594b9d115ee9d7bb6d13bb839bdee127ef50012d9f9867394233a6b1cad16ce53844e331
   languageName: node
   linkType: hard
 
@@ -21737,10 +21746,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"basic-ftp@npm:^5.0.2":
-  version: 5.3.1
-  resolution: "basic-ftp@npm:5.3.1"
-  checksum: 10/9232ee155114efafadf5adee86a6750208653a9071e53e9803dceac61a66b3ba3974771ff2490ff28f1a118fdfb806ffcc488f64609e61a9cedb52480b312843
+"basic-ftp@npm:^6.2.3":
+  version: 6.2.3
+  resolution: "basic-ftp@npm:6.2.3"
+  checksum: 10/2be08cc9eb366fca3bc9171e2710412720c54fce26a17c4a7f5ae1a2d4bc9c55b2f68b321059ef3a7cb6a1c88aa9c65c2878ee2f4d0e82134df8f53c406a4099
   languageName: node
   linkType: hard
 
@@ -34818,7 +34827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:^0.30.17, magic-string@npm:^0.30.21, magic-string@npm:^0.30.3, magic-string@npm:^0.30.5":
+"magic-string@npm:^0.30.21, magic-string@npm:^0.30.3, magic-string@npm:^0.30.5":
   version: 0.30.21
   resolution: "magic-string@npm:0.30.21"
   dependencies:
@@ -35661,7 +35670,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.6.0"
     "@metamask/transaction-controller": "npm:^72.2.1"
     "@metamask/transaction-pay-controller": "npm:^30.2.0"
-    "@metamask/transaction-pay-middleware": "npm:^1.0.0"
+    "@metamask/transaction-pay-middleware": "npm:^2.0.0"
     "@metamask/tron-wallet-snap": "npm:^4.3.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
@@ -40919,13 +40928,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.16.0":
-  version: 6.16.0
-  resolution: "qs@npm:6.16.0"
+"qs@npm:^6.16.1":
+  version: 6.16.1
+  resolution: "qs@npm:6.16.1"
   dependencies:
     es-define-property: "npm:^1.0.1"
     side-channel: "npm:^1.1.1"
-  checksum: 10/7fbf9c2eb9c9bbd8997700caecc4b057ac259635873deefd5027fb26d06d79426cf468da55da87ffd147a24e93d3641352d8ac6664bd84688ad5b2f0b8d04828
+  checksum: 10/e33e0a5ceecb7bef81ea1f855365482045f55ba55278f40b8dbf9ee18eae8ef82d44246fe4e4009d6b6f102cbf2885a34b88c4272536cd628cde40b4ac9912c2
   languageName: node
   linkType: hard
 
