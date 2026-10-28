@@ -6,6 +6,7 @@ import type { AccountTreeControllerState } from '@metamask/account-tree-controll
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
+import type { GasFeeState } from '@metamask/gas-fee-controller';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -297,11 +298,8 @@ class FixtureBuilderV2 {
    *
    * @param data - Subset of GasFeeController state to deep-merge.
    */
-  withGasFeeController(data: Record<string, unknown>): this {
-    merge(
-      this.fixture.data.GasFeeController,
-      data as Partial<FixtureType['data']['GasFeeController']>,
-    );
+  withGasFeeController(data: Partial<GasFeeState>): this {
+    merge(this.fixture.data.GasFeeController, data);
     return this;
   }
 

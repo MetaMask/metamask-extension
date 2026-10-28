@@ -8,6 +8,10 @@
  * Anvil is the chain. Mockttp covers gas, token, and price HTTP only.
  */
 
+import type {
+  GasFeeEstimates,
+  GasFeeStateFeeMarket,
+} from '@metamask/gas-fee-controller';
 import {
   type NetworkConfiguration,
   NetworkStatus,
@@ -19,7 +23,6 @@ import {
   INK_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT,
@@ -57,7 +60,7 @@ const ASSETS_PRICE_ETH = {
 // Fees are high enough that reserving gas moves the confirmation heading
 // below 25. A normal ~20 gwei fee is smaller than the heading's rounding
 // step, so "24.999 ETH" is shown as "25 ETH".
-const INK_SUGGESTED_GAS_FEES = {
+const INK_SUGGESTED_GAS_FEES: GasFeeEstimates = {
   low: {
     suggestedMaxPriorityFeePerGas: '100',
     suggestedMaxFeePerGas: '1000',
@@ -85,9 +88,9 @@ const INK_SUGGESTED_GAS_FEES = {
   baseFeeTrend: 'up',
 };
 
-const INK_CHAIN_GAS_FEE_STATE = {
+const INK_CHAIN_GAS_FEE_STATE: GasFeeStateFeeMarket = {
   estimatedGasFeeTimeBounds: {},
-  gasEstimateType: GasEstimateTypes.feeMarket,
+  gasEstimateType: 'fee-market',
   gasFeeEstimates: INK_SUGGESTED_GAS_FEES,
 };
 
@@ -165,7 +168,7 @@ function buildInkFixture() {
       },
     })
     .withGasFeeController({
-      gasEstimateType: GasEstimateTypes.feeMarket,
+      gasEstimateType: 'fee-market',
       gasFeeEstimates: INK_SUGGESTED_GAS_FEES,
       gasFeeEstimatesByChainId: {
         [CHAIN_IDS.INK]: INK_CHAIN_GAS_FEE_STATE,
