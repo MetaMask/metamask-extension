@@ -27,7 +27,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
 
   return (
     <div className="flex h-full flex-col pt-6">
-      <header className="mb-5 flex items-center gap-3 px-6">
+      <header className="mb-5 flex items-center gap-3 px-4">
         <ButtonIcon
           iconName={IconName.ArrowLeft}
           size={ButtonIconSize.Md}
@@ -47,7 +47,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
       <div className="min-h-0 flex-1 overflow-x-auto">
         <table className="w-full table-fixed border-collapse text-left">
           <colgroup>
-            <col className="w-[160px]" />
+            <col className="w-[180px]" />
             <col />
             <col />
             {showLiquidity ? <col /> : null}
@@ -55,13 +55,13 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
           </colgroup>
           <thead className="sticky top-0 z-10 bg-default">
             <tr className="text-s-body-sm font-medium text-alternative">
-              <th className="pb-3 pl-6 pr-3 font-medium">Name</th>
+              <th className="pb-3 pl-4 pr-3 font-medium">Name</th>
               <th className="pb-3 pr-3 text-end font-medium">Price</th>
               <th className="pb-3 pr-3 text-end font-medium">Market cap</th>
               {showLiquidity ? (
                 <th className="pb-3 pr-3 text-end font-medium">Liquidity</th>
               ) : null}
-              <th className="pb-3 pr-6 text-end font-medium whitespace-nowrap">
+              <th className="pb-3 pr-4 text-end font-medium whitespace-nowrap">
                 24h volume
               </th>
             </tr>
@@ -76,7 +76,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                   className="cursor-pointer border-t border-muted text-s-body-sm text-default hover:bg-muted-hover"
                   onClick={() => onSelect(asset)}
                 >
-                  <td className="py-3 pl-6 pr-3">
+                  <td className="py-3 pl-4 pr-3">
                     <div className="flex min-w-0 items-center gap-3">
                       <TokenAvatar asset={asset} />
                       <div className="flex min-w-0 flex-col gap-0.5">
@@ -100,7 +100,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                       </div>
                     </div>
                   </td>
-                  <td className="py-3 pr-3 text-end tabular-nums">
+                  <td className="py-3 pr-3 text-end tabular-nums truncate">
                     {asset.price === null ? '—' : formatUsd(asset.price)}
                   </td>
                   <td className="py-3 pr-3 text-end tabular-nums">
@@ -111,7 +111,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                       {formatCell(asset.liquidity)}
                     </td>
                   ) : null}
-                  <td className="py-3 pr-6 text-end tabular-nums">
+                  <td className="py-3 pr-4 text-end tabular-nums">
                     {formatCell(asset.volume24h)}
                   </td>
                 </tr>
