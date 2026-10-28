@@ -175,9 +175,6 @@ export function getTransactionControllerApi(
   transactionController: TransactionController,
 ) {
   return {
-    abortTransactionSigning: transactionController.abortTransactionSigning.bind(
-      transactionController,
-    ),
     getLayer1GasFee: transactionController.getLayer1GasFee.bind(
       transactionController,
     ),

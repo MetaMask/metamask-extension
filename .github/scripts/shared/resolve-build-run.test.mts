@@ -1,4 +1,5 @@
 /** @jest-environment node */
+import { describe, it } from '@jest/globals';
 import { resolveBuildRun } from './resolve-build-run.mts';
 
 const commit = 'a'.repeat(40);
