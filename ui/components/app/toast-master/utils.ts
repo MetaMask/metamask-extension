@@ -27,13 +27,16 @@ export function getIsPrivacyToastRecent(
 }
 
 export function setNewPrivacyPolicyToastShownDate(time: number) {
-  submitRequestToBackgroundAndCatch('setNewPrivacyPolicyToastShownDate', [
-    time,
-  ]);
+  submitRequestToBackgroundAndCatch(
+    'AppStateController:setNewPrivacyPolicyToastShownDate',
+    [time],
+  );
 }
 
 export function setNewPrivacyPolicyToastClickedOrClosed() {
-  submitRequestToBackgroundAndCatch('setNewPrivacyPolicyToastClickedOrClosed');
+  submitRequestToBackgroundAndCatch(
+    'AppStateController:setNewPrivacyPolicyToastClickedOrClosed',
+  );
 }
 
 // May move this to a different file after discussion with team
@@ -57,15 +60,17 @@ export function setShowInfuraSwitchToast(value: boolean) {
 }
 
 export function setShieldPausedToastLastClickedOrClosed(time: number) {
-  submitRequestToBackgroundAndCatch('setShieldPausedToastLastClickedOrClosed', [
-    time,
-  ]);
+  submitRequestToBackgroundAndCatch(
+    'AppStateController:setShieldPausedToastLastClickedOrClosed',
+    [time],
+  );
 }
 
 export function setShieldEndingToastLastClickedOrClosed(time: number) {
-  submitRequestToBackgroundAndCatch('setShieldEndingToastLastClickedOrClosed', [
-    time,
-  ]);
+  submitRequestToBackgroundAndCatch(
+    'AppStateController:setShieldEndingToastLastClickedOrClosed',
+    [time],
+  );
 }
 
 export function setPna25Acknowledged(acknowledged: boolean) {
