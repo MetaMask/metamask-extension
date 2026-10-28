@@ -1739,7 +1739,7 @@
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
   "arcUsageNoticeDescription": {
-    "message": "Καλώς ήρθατε στο Arc! Για να διευκολύνουμε και να επαληθεύσουμε τη χρήση του δικτύου Arc, ενδέχεται να κοινοποιούμε πληροφορίες στην ομάδα του Arc."
+    "message": "Καλώς ήρθατε στο Arc! Για να διευκολύνουμε και να επαληθεύουμε τη χρήση του blockchain Arc, ενδέχεται να κοινοποιήσουμε πληροφορίες στην ομάδα του Arc."
   },
   "arcUsageNoticeTitle": {
     "message": "Σημείωση"
@@ -1786,9 +1786,6 @@
   },
   "assets": {
     "message": "Περιουσιακά στοιχεία"
-  },
-  "assetsDescription": {
-    "message": "Αυτόματος εντοπισμός των tokens στο πορτοφόλι σας, εμφάνιση NFT και ομαδοποιημένες ενημερώσεις υπολοίπων λογαριασμών"
   },
   "asterdexReferralSubtitle": {
     "message": "Λάβετε 4% επιστροφή στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
@@ -1847,6 +1844,9 @@
   },
   "backToSafety": {
     "message": "Πίσω στην ασφάλεια"
+  },
+  "backToWallet": {
+    "message": "Επιστροφή στο πορτοφόλι"
   },
   "backUpIncomplete": {
     "message": "Η δημιουργία αντιγράφου ασφαλείας δεν ολοκληρώθηκε"
@@ -1919,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "Το MetaMask παρέχει βασικές λειτουργίες, όπως λεπτομέρειες για τα tokens και ρυθμίσεις τελών συναλλαγών μέσω υπηρεσιών διαδικτύου. Όταν χρησιμοποιείτε υπηρεσίες διαδικτύου, η διεύθυνση IP σας κοινοποιείται, σε αυτή την περίπτωση με στο MetaMask. Αυτό συμβαίνει ακριβώς όπως όταν επισκέπτεστε οποιονδήποτε ιστότοπο. Το MetaMask χρησιμοποιεί αυτά τα δεδομένα προσωρινά και δεν πωλεί ποτέ τα δεδομένα σας. Μπορείτε να χρησιμοποιήσετε ένα VPN ή να απενεργοποιήσετε αυτές τις υπηρεσίες, αλλά αυτό μπορεί να επηρεάσει την εμπειρία σας στο MetaMask. Για να μάθετε περισσότερα διαβάστε την $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Περιλαμβάνει βασικές λειτουργίες όπως λεπτομέρειες για tokens και ρυθμίσεις χρεώσεων. Διατηρήστε αυτή τη λειτουργία ενεργή για καλύτερη εμπειρία. Διαβάστε την $1 για να μάθετε περισσότερα.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Βασικές λειτουργίες"
@@ -1945,6 +1945,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Ενεργοποίηση βασικών λειτουργιών"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "Οι βασικές λειτουργίες είναι ενεργοποιημένες"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "Ενημερώσαμε τις ρυθμίσεις μας"
@@ -2622,6 +2625,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Αυτό το σύμβολο token δεν ταιριάζει με το όνομα δικτύου ή το αναγνωριστικό αλυσίδας που καταχωρίσατε. Πολλά δημοφιλή tokens χρησιμοποιούν παρόμοια σύμβολα, τα οποία οι απατεώνες μπορούν να χρησιμοποιήσουν για να σας εξαπατήσουν ώστε να τους στείλετε ένα πιο πολύτιμο token ως αντάλλαγμα. Επαληθεύετέ τα πάντοτε προτού συνεχίσετε."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "Μη αυτόματη καταχώριση στοιχείων δικτύου",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "Μη αυτόματη καταχώριση στοιχείων RPC",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "Μάθετε πώς να είστε ασφαλείς.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2633,6 +2644,22 @@
   "chainlistNetworkDetails": {
     "message": "Σύμβολο: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "Δεν βρέθηκαν αποτελέσματα από το ChainList",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "Τα στοιχεία RPC προέρχονται από το ChainList. Να τα επαληθεύετε πάντα πριν από την προσθήκη. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "Χρησιμοποιήστε το \"$1\" ως όνομα δικτύου",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "Χρησιμοποιήστε το \"$1\" ως URL RPC",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "Αλλαγή στις Ρυθμίσεις"
@@ -3304,7 +3331,7 @@
     "message": "Συγκέντρωση δεδομένων για μάρκετινγκ"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Θα χρησιμοποιήσουμε το MetaMetrics για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιησούμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων και άλλο υλικό)."
+    "message": "Συλλέγουμε δεδομένα σχετικά με τον τρόπο που αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ, ώστε να σας ενημερώνουμε για σχετικό περιεχόμενο (όπως νέες λειτουργίες προϊόντων και άλλο υλικό)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Λάβετε ενημερώσεις προϊόντων, συμβουλές και νέα – και μέσω email. Ενδέχεται να χρησιμοποιήσουμε τις αλληλεπιδράσεις σας για τη βελτίωση του περιεχομένου που κοινοποιούμε."
@@ -3355,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "Άνοιγμα μαζικής πώλησης στο κινητό"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "Οι εντολές ορίου είναι διαθέσιμες στην εφαρμογή MetaMask για κινητά. Σαρώστε αυτόν τον κωδικό με την κινητή συσκευή σας για να τις χρησιμοποιήσετε."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Άνοιγμα εντολών ορίου στο κινητό"
   },
   "deepLinkQrPredictDescription": {
     "message": "Για πρόσβαση στις Αγορές Προβλέψεων του MetaMask, σαρώστε τον κωδικό QR με την κινητή σας συσκευή."
@@ -3440,6 +3473,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "σελίδα ειδοποιήσεων"
+  },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "η σελίδα ρυθμίσεων ειδοποιήσεων"
   },
   "deepLink_theOnboardingPage": {
     "message": "η σελίδα υποδοχής"
@@ -3846,9 +3882,6 @@
   },
   "enableSmartContractAccountDescription": {
     "message": "Επωφεληθείτε από ταχύτερες συναλλαγές, χαμηλότερα τέλη δικτύου και περισσότερη ασφάλεια στα υποστηριζόμενα δίκτυα."
-  },
-  "enableSnap": {
-    "message": "Ενεργοποίηση"
   },
   "enableToken": {
     "message": "ενεργοποίηση $1",
@@ -4260,8 +4293,12 @@
     "message": "Το MetaMask καλύπτει τα τέλη δικτύου για αυτή τη συναλλαγή. Αυτό περιλαμβάνει και μία εφάπαξ ενεργοποίηση έξυπνου συμβολαίου."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Αυτό το συγκεκριμένο δίκτυο απαιτεί τη διατήρηση ενός αποθεματικού ύψους $1 $2 στον λογαριασμό σας.",
+    "message": "Αυτό το δίκτυο απαιτεί να διατηρείτε τουλάχιστον $1 $2 στον λογαριασμό σας μετά τη συναλλαγή. Τα έξυπνα πορτοφόλια δεν μπορούν να έχουν υπόλοιπο μικρότερο από αυτό το αποθεματικό.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "Το $1 καλύπτει τα τέλη δικτύου για αυτή τη συναλλαγή. Αυτό περιλαμβάνει και μία εφάπαξ ενεργοποίηση έξυπνου συμβολαίου.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 ώρες",
@@ -4396,9 +4433,6 @@
   "generalCameraErrorTitle": {
     "message": "Κάτι πήγε στραβά...."
   },
-  "generalDescription": {
-    "message": "Συγχρονισμός ρυθμίσεων σε όλες τις συσκευές, επιλογή προτιμήσεων δικτύου και παρακολούθηση δεδομένων των tokens"
-  },
   "generateNewQrCode": {
     "message": "Δημιουργία νέου κωδικού QR"
   },
@@ -4515,6 +4549,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Συνεχίστε"
   },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Ξεκλειδώστε την και προσπαθήστε ξανά για να συνεχίσετε",
+    "description": "Description shown when a hardware wallet is locked during an operation"
+  },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Το $1 σας υποστηρίζει μόνο την υπογραφή δεδομένων τύπου 4. Ο συγκεκριμένος ιστότοπος ζήτησε έναν παλαιότερο τύπο υπογραφής, ο οποίος δεν υποστηρίζεται",
     "description": "$1 is the hardware wallet type"
@@ -4537,7 +4575,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Συνεχίστε για να βεβαιωθείτε ότι:"
+    "message": "Για να συνεχίσετε, βεβαιωθείτε ότι:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Η $1 συσκευή σας ξεκλειδώθηκε",
@@ -5213,9 +5251,6 @@
   "loading": {
     "message": "Φόρτωση..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Ολοκληρώστε τη συναλλαγή στο Snap."
-  },
   "loadingTokenList": {
     "message": "Φόρτωση της λίστας των tokens"
   },
@@ -5440,6 +5475,252 @@
   "metrics": {
     "message": "Μετρήσεις"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Συνεχίστε"
+  },
+  "mfaEmailEntryDescription": {
+    "message": "Θα χρησιμοποιήσουμε το email σας για την επαλήθευση του λογαριασμού σας και για να σας στέλνουμε περιστασιακά ενημερώσεις σχετικά με αυτόν."
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Πληκτρολογήστε μια έγκυρη διεύθυνση email."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Διεύθυνση email"
+  },
+  "mfaEmailEntryTitle": {
+    "message": "Επαληθεύστε το email σας"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Ο κωδικός επαλήθευσης έληξε. Ζητήστε νέο κωδικό."
+  },
+  "mfaErrorCooldown": {
+    "message": "Έχουν υποβληθεί πάρα πολλά αιτήματα. Περιμένετε λίγο και προσπαθήστε ξανά."
+  },
+  "mfaErrorEmailTaken": {
+    "message": "Αυτό το email χρησιμοποιείται ήδη. Δοκιμάστε κάποιο άλλο."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "Μια άλλη διαδικασία επαλήθευσης βρίσκεται ήδη σε εξέλιξη."
+  },
+  "mfaErrorGeneric": {
+    "message": "Κάτι πήγε στραβά. Προσπαθήστε ξανά."
+  },
+  "mfaErrorInvalidPasskey": {
+    "message": "Δεν ήταν δυνατή η επαλήθευση του κλειδιού πρόσβασης. Προσπαθήστε ξανά."
+  },
+  "mfaErrorLimitReached": {
+    "message": "Έχετε φτάσει το όριο για αυτή τη μέθοδο."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "Το αίτημα για το κλειδί πρόσβασης ακυρώθηκε."
+  },
+  "mfaErrorSignedOut": {
+    "message": "Συνδεθείτε για να συνεχίσετε."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "Έχετε κάνει πάρα πολλές προσπάθειες. Ζητήστε νέο κωδικό."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "Η διαδικασία διήρκεσε πολύ. Πληκτρολογήστε τον τρέχοντα κωδικό από την εφαρμογή σας."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "Έχει ήδη ρυθμιστεί μια εφαρμογή ελέγχου ταυτότητας για αυτόν τον λογαριασμό."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "Έχετε κάνει πάρα πολλές προσπάθειες. Περιμένετε να εμφανιστεί ο νέος κωδικός στην εφαρμογή και προσπαθήστε ξανά."
+  },
+  "mfaErrorUnsupported": {
+    "message": "Αυτή η μέθοδος δεν υποστηρίζεται σε αυτήν τη συσκευή."
+  },
+  "mfaFailureClose": {
+    "message": "Κλείσιμο"
+  },
+  "mfaFailureContactSupport": {
+    "message": "Επικοινωνήστε με την υποστήριξη"
+  },
+  "mfaFailureDone": {
+    "message": "Τέλος"
+  },
+  "mfaFailureRetry": {
+    "message": "Προσπαθήστε ξανά"
+  },
+  "mfaFailureTitle": {
+    "message": "Κάτι πήγε στραβά"
+  },
+  "mfaIntroContinue": {
+    "message": "Έναρξη"
+  },
+  "mfaIntroDescription": {
+    "message": "Θα ρυθμίσουμε μερικούς τρόπους επιβεβαίωσης της ταυτότητάς σας. Αν χάσετε την πρόσβαση σε έναν από αυτούς, μπορείτε να χρησιμοποιήσετε κάποιον άλλο."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "Λάβετε έναν 6ψήφιο κωδικό στα εισερχόμενά σας"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Επιβεβαιώστε με τη συσκευή σας ή τον διαχειριστή κωδικών πρόσβασης"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Αποθηκεύτηκε σε αυτήν τη συσκευή"
+  },
+  "mfaIntroTitle": {
+    "message": "Ρυθμίστε την διαδικασία επαλήθευσης σε 2 βήματα"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Λάβετε έναν 6ψήφιο κωδικό από μια εφαρμογή όπως το Google Authenticator"
+  },
+  "mfaIntroTotpDone": {
+    "message": "Ρυθμίστε την εφαρμογή ελέγχου ταυτότητας"
+  },
+  "mfaMethodEmail": {
+    "message": "Email"
+  },
+  "mfaMethodPasskey": {
+    "message": "Κλειδί πρόσβασης"
+  },
+  "mfaMethodTotp": {
+    "message": "Εφαρμογή ελέγχου ταυτότητας"
+  },
+  "mfaOtpDescription": {
+    "message": "Στείλαμε έναν 6ψήφιο κωδικό στο email σας. Πληκτρολογήστε το παρακάτω για να επαληθεύσετε το email σας."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "Ανοίξτε την εφαρμογή ελέγχου ταυτότητας και πληκτρολογήστε τον 6ψήφιο κωδικό."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "Στείλαμε έναν 6ψήφιο κωδικό στο $1. Πληκτρολογήστε το παρακάτω για να επαληθεύσετε το email σας.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Αποστολή νέου κωδικού"
+  },
+  "mfaOtpResend": {
+    "message": "Επαναποστολή κωδικού"
+  },
+  "mfaOtpResendIn": {
+    "message": "Αποστολή νέου κωδικού σε $1 δευτ.",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "Σας στείλαμε νέο κωδικό."
+  },
+  "mfaOtpRetry": {
+    "message": "Προσπαθήστε ξανά"
+  },
+  "mfaOtpRetryIn": {
+    "message": "Προσπαθήστε ξανά σε $1 δευτ."
+  },
+  "mfaOtpSendIn": {
+    "message": "Αποστολή νέου κωδικού σε $1 δευτ.",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "Αποστολή κωδικού..."
+  },
+  "mfaOtpTitle": {
+    "message": "Πληκτρολογήστε τον κωδικό επαλήθευσης"
+  },
+  "mfaOtpVerifying": {
+    "message": "Επαλήθευση κωδικού"
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "Δημιουργία κλειδιού πρόσβασης"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "Χρήση του κλειδιού πρόσβασης σας"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "Λήψη κωδικού επαλήθευσης"
+  },
+  "mfaPickerOr": {
+    "message": "ή"
+  },
+  "mfaPickerPasskey": {
+    "message": "Επαλήθευση με κλειδί πρόσβασης"
+  },
+  "mfaPickerTitle": {
+    "message": "Επιβεβαιώστε την διαδικασία επαλήθευσης σε 2 βήματα"
+  },
+  "mfaPickerTotp": {
+    "message": "Χρήση εφαρμογής ελέγχου ταυτότητας"
+  },
+  "mfaSettingsAdd": {
+    "message": "Προσθήκη"
+  },
+  "mfaSettingsAddedOn": {
+    "message": "Προστέθηκε στις $1"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "Η διαδικασία επαλήθευσης μέσω email καταργήθηκε"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "Αυτό το email είναι η μοναδική μέθοδος ασφαλείας για αυτόν τον λογαριασμό. Προσθέστε μια άλλη μέθοδο πριν το αφαιρέσετε."
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "Δεν είναι δυνατή η κατάργηση του email"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "Αυτή η εφαρμογή ελέγχου ταυτότητας είναι η μοναδική μέθοδος ασφαλείας για αυτόν τον λογαριασμό. Προσθέστε μια άλλη μέθοδο πριν το αφαιρέσετε."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "Δεν είναι δυνατή η κατάργηση της εφαρμογής ελέγχου ταυτότητας"
+  },
+  "mfaSettingsNotice": {
+    "message": "Αυτές οι μέθοδοι προσθέτουν ένα επιπλέον επίπεδο προστασίας στις συναλλαγές σας στο Money account. Δεν μπορούν να ανακτήσουν το πορτοφόλι σας."
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "Οι άλλες μέθοδοι επαλήθευσης λειτουργούν μόνο στην εφαρμογή MetaMask για κινητά. Αφαιρέστε το email σας από εκεί."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "Δεν μπορείτε να αφαιρέσετε το email σας από εδώ"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "Αφαίρεση email"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "Δεν θα μπορείτε πλέον να συνδέεστε ή να επαληθεύετε συναλλαγές λαμβάνοντας κωδικό μέσω email."
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "Δεν ήταν δυνατή η κατάργηση αυτής της μεθόδου. Προσπαθήστε ξανά αργότερα."
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "Κατάργηση εφαρμογής ελέγχου ταυτότητας"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "Δεν θα μπορείτε πλέον να επαληθεύετε συναλλαγές μέσω του Money account σας με κωδικούς από την εφαρμογή ελέγχου ταυτότητας."
+  },
+  "mfaSettingsTitle": {
+    "message": "Διαδικασία επαλήθευσης σε 2 βήματα"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "Οι άλλες μέθοδοι επαλήθευσης λειτουργούν μόνο στην εφαρμογή MetaMask για κινητά. Καταργήστε την εφαρμογή ελέγχου ταυτότητας από εκεί."
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "Δεν μπορείτε να καταργήσετε την εφαρμογή ελέγχου ταυτότητας από εδώ"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "Η εφαρμογή ελέγχου ταυτότητας καταργήθηκε"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "Χρησιμοποιείται για"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Επαλήθευση συναλλαγών στον Money account"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Συνεχίστε"
+  },
+  "mfaTotpSetupKey": {
+    "message": "Κλειδί ρύθμισης"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "Κωδικός QR για την προσθήκη του MetaMask στην εφαρμογή ελέγχου ταυτότητας"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "Η διαδικασία διήρκεσε πολύ, οπότε δημιουργήσαμε ένα νέο κλειδί ρύθμισης. Καταργήστε την προηγούμενη καταχώριση του MetaMask από την εφαρμογή ελέγχου ταυτότητας και, στη συνέχεια, προσθέστε τη νέα."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "Ρύθμιση εφαρμογής ελέγχου ταυτότητας"
+  },
   "minimumReceivedExplanation": {
     "message": "Το ελάχιστο ποσό που θα λάβετε, αν αλλάξει η τιμή κατά τη διάρκεια της επεξεργασίας της συναλλαγής σας, με βάση τη ρύθμιση απόκλισης. Η εκτίμηση προέρχεται από τους παρόχους ρευστότητας, επομένως το τελικό ποσό ενδέχεται να διαφέρει."
   },
@@ -5649,8 +5930,28 @@
   "moneyConvertYourCrypto": {
     "message": "Μετατρέψτε τα κρυπτονομίσματά σας"
   },
+  "moneyEarnApy": {
+    "message": "Κερδίστε $1 APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Κερδίστε έως και $1 APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Προσθέστε $1 στον Money account σας και κερδίστε έως και $2 σε έναν χρόνο.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
+  },
+  "moneyEarnBannerCta": {
+    "message": "Προσθήκη $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Προσθέστε $1 στον Money account σας - χωρίς δεσμεύσεις ή ελάχιστο ποσό κατάθεσης.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Κερδίστε με τον λογαριασμό Money",
+    "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
     "message": "Κερδίστε από τα κρυπτονομίσματά σας"
@@ -5688,6 +5989,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Προσθέστε χρήματα στον Money account σας και δείτε το υπόλοιπό σας να αυξάνεται με απόδοση έως και $1 APY."
+  },
+  "moneyGetApy": {
+    "message": "Κερδίστε $1 APY",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "Η εμφανιζόμενη τιμή είναι η τρέχουσα Ετήσια Ποσοστιαία Απόδοση (APY). Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
@@ -5806,6 +6111,10 @@
   },
   "moneySend": {
     "message": "Αποστολή"
+  },
+  "moneyStartEarning": {
+    "message": "Ξεκινήστε να κερδίζετε",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Δεν είναι δυνατή η προσθήκη κεφαλαίων. Προσπαθήστε ξανά."
@@ -6256,6 +6565,9 @@
   "networkNameSolana": {
     "message": "Solana"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -6320,6 +6632,10 @@
   },
   "newCustomTokenAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "Για να χρησιμοποιήσετε το OpenSea και να δείτε τα NFT σας, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Ρυθμίσεις > Περιουσιακά στοιχεία"
@@ -6743,9 +7059,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Προσθήκη προσαρμοσμένης πύλης IPFS"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Η διεύθυνση URL της πύλης IPFS είναι έγκυρη"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Όταν χρησιμοποιείτε τις προεπιλεγμένες ρυθμίσεις και παραμέτρους μας, χρησιμοποιούμε την Infura ως προεπιλεγμένο πάροχο κλήσεων απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Σε ορισμένες περιπτώσεις, ενδέχεται να χρησιμοποιήσουμε άλλους παρόχους RPC προκειμένου να παρέχουμε την καλύτερη δυνατή εμπειρία στους χρήστες μας. Μπορείτε να επιλέξετε το δικό σας RPC, αλλά να θυμάστε ότι οποιοδήποτε RPC θα λάβει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιήσει συναλλαγές. Για να μάθετε περισσότερα σχετικά με το πώς η Infura χειρίζεται τα δεδομένα για λογαριασμούς EVM, διαβάστε την $1 μας, ενώ για λογαριασμούς Solana, $2."
   },
@@ -6784,7 +7097,7 @@
     "message": "Συλλογή βασικών δεδομένων χρήσης"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Ενημερώσεις προϊόντος"
+    "message": "Ενημερώσεις μάρκετινγκ"
   },
   "onboardingMetametricsContinue": {
     "message": "Συνεχίστε"
@@ -7472,6 +7785,13 @@
   "perps24hVolume": {
     "message": "Όγκος συναλλαγών 24ώρου"
   },
+  "perpsAbout": {
+    "message": "Σχετικά"
+  },
+  "perpsAboutAsset": {
+    "message": "Σχετικά με τα $1",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "Δραστηριότητα"
   },
@@ -7812,6 +8132,13 @@
   "perpsInsufficientMargin": {
     "message": "Μη επαρκές περιθώριο για την εκτέλεση αυτής της εντολής."
   },
+  "perpsIocCancel": {
+    "message": "Η εντολή σας δεν εκτελέστηκε εντός του ορίου απόκλισης ολίσθησης $1%. Δοκιμάστε μια εντολή ορίου ή προσαρμόστε την απόκλιση.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Η εντολή σας δεν εκτελέστηκε εντός του ορίου απόκλισης ολίσθησης. Δοκιμάστε μια εντολή ορίου ή προσαρμόστε την απόκλιση."
+  },
   "perpsKeepPositions": {
     "message": "Διατήρηση θέσεων"
   },
@@ -8067,12 +8394,23 @@
   "perpsPositions": {
     "message": "Θέσεις"
   },
+  "perpsPriceMoved": {
+    "message": "Η τιμή μεταβλήθηκε κατά $1%, ξεπερνώντας το όριο απόκλισης ολίσθησης κατά $2%. Ελέγξτε την ενημερωμένη τιμή και προσπαθήστε ξανά.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
   "perpsProducts": {
     "message": "Προϊόντα",
     "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Πάρα πολλά αιτήματα. Προσπαθήστε ξανά σε λίγο."
+  },
+  "perpsReadMore": {
+    "message": "Διαβάστε περισσότερα"
+  },
+  "perpsReadMoreAbout": {
+    "message": "Μάθετε περισσότερα για τα $1",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "Πρόσφατη δραστηριότητα"
@@ -8120,6 +8458,22 @@
   "perpsSeeAll": {
     "message": "Προβολή όλων",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "επικοινωνήστε με την υποστήριξη",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "Ορισμένες υπηρεσίες είναι προσωρινά μη διαθέσιμες. $1, ή $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Δείτε τις επιλογές σας στις Συχνές Ερωτήσεις",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Αντιμετωπίζουμε διακοπή λειτουργίας",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Η υπηρεσία είναι προσωρινά μη διαθέσιμη. Προσπαθήστε ξανά αργότερα."
@@ -9326,6 +9680,33 @@
   "rewardsLinkAccountError": {
     "message": "Αποτυχία προσθήκης λογαριασμού"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Δεν μπορείτε να εγγραφείτε μέσω παραπομπής λόγω της πρόσφατης δραστηριότητάς σας στις συναλλαγές."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Έχετε ήδη παραπεμφθεί από άλλον χρήστη."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Μη έγκυρος κωδικός παραπομπής"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Κωδικός παραπομπής"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Δεν μπορείτε να χρησιμοποιήσετε τον δικό σας κωδικό παραπομπής."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Δεν μπορείτε να εγγραφείτε μέσω παραπομπής από άλλο άτομο."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Παρουσιάστηκε κάποιο πρόβλημα. Προσπαθήστε ξανά σε λίγο."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Έχετε κάνει πάρα πολλές προσπάθειες. Περιμένετε λίγο και προσπαθήστε ξανά."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Έλεγχος περιοχής…"
   },
@@ -9363,24 +9744,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Αποτυχία συμμετοχής"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Μη έγκυρος κωδικός παραπομπής"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Κωδικός παραπομπής (προαιρετικά)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Απόκρυψη κωδικού"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Έχετε κωδικό παραπομπής;"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Εγγραφείτε για Ανταμοιβές"
   },
@@ -9389,10 +9752,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Ξεκινήστε να κερδίζετε ανταμοιβές"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Επαλήθευση κωδικού παραπομπής...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 πόντοι",
@@ -9633,21 +9992,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Ασφάλεια & προστασία προσωπικών δεδομένων"
-  },
-  "securityDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς σας"
-  },
   "securityMessageLinkForNetworks": {
     "message": "διαδικτυακές απάτες και κίνδυνοι ασφαλείας"
   },
   "securityProviderPoweredBy": {
     "message": "Με την υποστήριξη του $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς και τα δεδομένα σας"
   },
   "securitySocialLoginEnabled": {
     "message": "Ενεργοποιημένο"
@@ -12094,6 +12444,18 @@
     "message": "Αυτό είναι το ημερήσιο όριό σας, με βάση τα TRX που έχετε δεσμεύσει. Λαμβάνετε καθημερινά δωρεάν bandwidth αξίας $1.",
     "description": "$1 is the maximum bandwidth value"
   },
+  "tronDailyResourcesLoading": {
+    "message": "Φόρτωση ημερήσιας χρήσης πόρων…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "Οι πληροφορίες για την ενέργεια και το εύρος ζώνης σας είναι προσωρινά μη διαθέσιμες. Θα ενημερωθούν αυτόματα.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "Δεν ήταν δυνατή η φόρτωση των πόρων",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
   "tronEnergy": {
     "message": "Ενέργεια"
   },
@@ -12152,6 +12514,9 @@
   },
   "turnOn": {
     "message": "Ενεργοποίηση"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "ενεργοποίηση βασικών λειτουργιών"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Προέκυψε σφάλμα κατά τη δημιουργία των ειδοποιήσεων. Προσπαθήστε ξανά αργότερα."

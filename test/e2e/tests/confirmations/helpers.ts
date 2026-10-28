@@ -10,6 +10,10 @@ import {
   MOCK_ANALYTICS_ID,
 } from '../../constants';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import {
+  AccountsApiBalanceRow,
+  shapeV6AccountsApiBalances,
+} from '../../helpers/accounts-api-v6-balances';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =
@@ -598,10 +602,20 @@ async function mockAccountsApiV6DeFiBalances(
     })
     .asPriority(99)
     .always()
-    .thenCallback(() => {
+    .thenCallback((request) => {
+      const responseJson: Record<string, unknown> = {
+        ...json,
+        unprocessedIncludeAssetIds: [],
+      };
+      if (Array.isArray(json.balances)) {
+        responseJson.balances = shapeV6AccountsApiBalances(
+          request.url,
+          json.balances as AccountsApiBalanceRow[],
+        );
+      }
       return {
         statusCode,
-        json,
+        json: responseJson,
       };
     });
 }

@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import { cloneDeep } from 'lodash';
 import { MUSD_DECIMALS } from '@metamask/money-account-utils';
 import {
   TransactionStatus,
@@ -146,49 +145,66 @@ export function getTransactionMeta(
  * calldata (when provided), regenerated parent EIP-7702 batch
  * `txParams.data`, and optionally `requiredAssets[0].amount`.
  *
- * An empty `updates` array is intentional for the deposit path that writes
- * `requiredAssets` before vault encoding finishes — it still regenerates
- * nothing nested, but updates the required amount so Pay can requote.
- *
  * Pay requotes when `txParams.data` changes; nested-only writes would leave
  * Relay skip-embedding vault calls because parent data stayed empty.
  * Re-reads state first so a concurrent commit cannot clobber unrelated
  * fields from a stale copy.
  *
+ * Clears simulation, security, and receipt-less revert metadata derived from
+ * the previous amount, but keeps the gas limit — see the inline note below.
+ *
  * @param messenger - Messenger used to read and write the transaction.
  * @param transactionId - Id of the transaction to update.
  * @param updates - Nested calldata updates keyed by index.
- * @param note - TransactionController history note.
  * @param requiredAssetAmount - Optional new `requiredAssets[0].amount`.
  */
 export function commitTransactionPayUpdates(
   messenger: MoneyPayMessenger,
   transactionId: string,
   updates: GetAmountDataResponse['updates'],
-  note: string,
   requiredAssetAmount?: Hex,
 ): void {
-  const transaction = getTransactionMeta(messenger, transactionId);
-  if (!transaction) {
-    clearAmountCommit(transactionId);
-    return;
-  }
+  messenger.call('TransactionController:updateTransactionMetadata', {
+    transactionId,
+    skipResimulate: true,
+    callback: (transaction) => {
+      applyNestedAndParentCalldata(transaction, updates);
 
-  const nextTransaction = cloneDeep(transaction);
-  applyNestedAndParentCalldata(nextTransaction, updates);
+      if (
+        requiredAssetAmount !== undefined &&
+        transaction.requiredAssets?.[0]
+      ) {
+        transaction.requiredAssets = [
+          { ...transaction.requiredAssets[0], amount: requiredAssetAmount },
+          ...transaction.requiredAssets.slice(1),
+        ];
+      }
 
-  if (
-    requiredAssetAmount !== undefined &&
-    nextTransaction.requiredAssets?.[0]
-  ) {
-    nextTransaction.requiredAssets[0].amount = requiredAssetAmount;
-  }
+      // The gas limit is deliberately retained. Clearing it sends the next
+      // simulation with no gas limit, so Monad applies its 150M default; a
+      // pre-funding revert then burns the whole limit and the node masks the
+      // real revert reason as "reserve balance violation", which raises a
+      // blocking reserve alert on a deposit that succeeds once Pay delivers
+      // the mUSD. Nothing re-estimates gas after this point either: the
+      // deferred `skipInitialGasEstimate` estimate runs once at creation, and
+      // neither GasFeePoller nor the resimulation loop writes `txParams.gas`.
+      // The batch shape is fixed, so the existing estimate stays valid across
+      // amount changes.
+      transaction.gasUsed = undefined;
+      transaction.securityAlertResponse = undefined;
+      transaction.simulationData = undefined;
+      transaction.simulationFails = undefined;
 
-  messenger.call(
-    'TransactionController:updateTransaction',
-    nextTransaction,
-    note,
-  );
+      if (transaction.revert) {
+        delete transaction.revert.gas;
+        delete transaction.revert.simulation;
+
+        if (!transaction.revert.receipt) {
+          transaction.revert = undefined;
+        }
+      }
+    },
+  });
 }
 
 /**
