@@ -6,16 +6,12 @@ import {
   Alignment,
   useRiveFile,
 } from '@rive-app/react-canvas';
-import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {
   useRiveWasmContext,
   useRiveWasmFile,
 } from '../../../contexts/rive-wasm';
-
-const walletReadyContainerClassName =
-  'pointer-events-none flex h-[400px] w-full items-end justify-center';
 
 export default function WalletReadyAnimation() {
   const theme = useTheme();
@@ -86,12 +82,8 @@ export default function WalletReadyAnimation() {
     status === 'loading' ||
     status === 'failed'
   ) {
-    return <Box className={walletReadyContainerClassName}></Box>;
+    return null;
   }
 
-  return (
-    <Box className={walletReadyContainerClassName}>
-      <RiveComponent className="h-full w-full" />
-    </Box>
-  );
+  return <RiveComponent className="h-full w-full" />;
 }

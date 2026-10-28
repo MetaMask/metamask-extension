@@ -188,6 +188,9 @@ export default function CreationSuccessful() {
         data-testid="parent-selector-onboarding-complete"
         title={t('yourWalletIsReady')}
         artwork={<WalletReadyAnimation />}
+        artworkWrapperProps={{
+          className: 'pointer-events-none h-[400px] flex-none',
+        }}
         primaryAction={
           {
             label: doneButtonLabel,
