@@ -9825,9 +9825,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^21.0.0":
-  version: 21.0.0
-  resolution: "@metamask/perps-controller@npm:21.0.0"
+"@metamask/perps-controller@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/perps-controller@npm:22.0.0"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.4"
     "@metamask/base-controller": "npm:^10.1.0"
@@ -9839,7 +9839,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.3.0"
     uuid: "npm:^11.1.1"
-  checksum: 10/535b307a13ed2fc2c1102c5568e6c84ca4622cf9a2f74ece27d7c6867250cca7d8cdbeb0f7eb763c8fbd948080cafd930f3ea3359b2557818eef8b86f5b623cc
+  checksum: 10/429c1afbe531ee9a96517b91db6c572936fa69ea21c40525d7d4f09685c81455293a1633a984d4c0c85b62e302fa6abc0eb989611eb00fac8611951a2304a159
   languageName: node
   linkType: hard
 
@@ -10925,21 +10925,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-pay-middleware@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/transaction-pay-middleware@npm:1.0.0"
+"@metamask/transaction-pay-middleware@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/transaction-pay-middleware@npm:2.0.0"
   dependencies:
+    "@metamask/account-tree-controller": "npm:^11.2.0"
+    "@metamask/accounts-controller": "npm:^40.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/network-controller": "npm:^37.1.1"
-    "@metamask/perps-controller": "npm:^21.0.0"
+    "@metamask/perps-controller": "npm:^22.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/transaction-controller": "npm:^72.2.1"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/4ed864f54fc73e155143f15e0d0e3af0fc92eac95627ea174cef6587b550b063a90a073144f376db5b2a77841e405c32fe38fd6de8999d77026db5cecf4554f5
+  checksum: 10/7734744efec0df7712cb64db240d2440fca03e27b37e0abbe4b6e829c0d2bc3fd241c154481cf6a49842638fba337f0a1af42f6ec6a2ed2e9b75aefea4ed9bdf
   languageName: node
   linkType: hard
 
@@ -35661,7 +35663,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.6.0"
     "@metamask/transaction-controller": "npm:^72.2.1"
     "@metamask/transaction-pay-controller": "npm:^30.2.0"
-    "@metamask/transaction-pay-middleware": "npm:^1.0.0"
+    "@metamask/transaction-pay-middleware": "npm:^2.0.0"
     "@metamask/tron-wallet-snap": "npm:^4.3.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
