@@ -4,9 +4,9 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { NetworkName } from '../../../components/app/transaction/network-name';
-import { useBlockExplorerUrl } from './shared';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { NetworkName } from '../../../../components/app/transaction/network-name';
+import { useBlockExplorerUrl } from '../../components/shared';
 
 type Props = {
   sourceChainId: string;
