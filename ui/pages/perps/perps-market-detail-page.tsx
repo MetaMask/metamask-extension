@@ -59,6 +59,7 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
   PREVIOUS_ROUTE,
@@ -856,7 +857,7 @@ const PerpsMarketDetailPage = () => {
       navigate(PREVIOUS_ROUTE);
       return;
     }
-    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
+    navigate(PERPS_HOME_PAGE_ROUTE, { replace: true });
   }, [navigate]);
 
   const handleMarketListClick = useCallback(() => {

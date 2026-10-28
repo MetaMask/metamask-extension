@@ -88,10 +88,8 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity();
         await activityTab.checkTxAmountInActivity('-4 ETH');
       },

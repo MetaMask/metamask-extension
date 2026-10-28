@@ -217,6 +217,12 @@ class TokensTab extends HomePage {
     text: 'Token symbol',
   };
 
+  private readonly transactionToast =
+    '[data-testid="transaction-submitted-toast"], [data-testid="transaction-confirmed-toast"], [data-testid="transaction-failed-toast"]';
+
+  private readonly transactionToastCloseButton =
+    '[data-testid="toast-close-button"]';
+
   async checkAssetIsAbsent(symbol: string): Promise<void> {
     console.log(`Checking asset is absent: ${symbol}`);
     await this.driver.assertElementNotPresent({
@@ -740,6 +746,24 @@ class TokensTab extends HomePage {
   }
 
   /**
+   * Closes a transaction toast when it is covering the token list.
+   * No-op when the toast has already disappeared.
+   */
+  private async dismissTransactionToastIfPresent(): Promise<void> {
+    const toastPresent = await this.driver.isElementPresentAndVisible(
+      this.transactionToast,
+      500,
+    );
+    if (!toastPresent) {
+      return;
+    }
+
+    console.log('Dismiss transaction toast');
+    await this.driver.clickElementSafe(this.transactionToastCloseButton);
+    await this.driver.assertElementNotPresent(this.transactionToast);
+  }
+
+  /**
    * Expands the collapsed low-value assets section when the toggle is present.
    */
   async expandLowValueAssets(): Promise<void> {
@@ -764,6 +788,7 @@ class TokensTab extends HomePage {
       return;
     }
 
+    await this.dismissTransactionToastIfPresent();
     await this.driver.clickElement(this.lowValueAssetsToggle);
     await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }

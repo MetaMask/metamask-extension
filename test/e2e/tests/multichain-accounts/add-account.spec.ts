@@ -80,6 +80,7 @@ describe('Add account', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAmountInActivity('-2.8 ETH');
         await activityTab.waitPendingTxToNotBeVisible();

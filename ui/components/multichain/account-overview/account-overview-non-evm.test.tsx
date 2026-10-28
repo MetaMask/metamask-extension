@@ -86,7 +86,6 @@ const expectStandardTabs = (
 ) => {
   expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
   expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
-  expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
 };
 
 const expectAllTabs = (queryByTestId: (id: string) => HTMLElement | null) => {

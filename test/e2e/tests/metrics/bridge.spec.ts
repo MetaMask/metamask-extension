@@ -61,6 +61,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // QUOTE REQUEST #2 - Start the flow again
         console.log('Starting 2nd Swap flow');
+        await homePage.goToHomePage();
         await homePage.startSwapFlow();
 
         const inputChangesCount2 = await checkInputChangedEvents(

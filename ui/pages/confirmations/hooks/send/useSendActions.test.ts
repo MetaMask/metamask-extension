@@ -6,6 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
+  ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../../helpers/constants/routes';
@@ -243,7 +244,7 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
+      expect(mockUseNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE);
     });
   });
 
@@ -461,7 +462,7 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_4);
 
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
+      expect(mockUseNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE);
     });
 
     // The Snap emits the post-submit lifecycle events itself, so the client

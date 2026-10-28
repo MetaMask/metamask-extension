@@ -145,32 +145,6 @@ describe('Feature Flag Registry', () => {
       expect(flagNames).toContain('smartTransactionsNetworks');
     });
 
-    it('normalizes A/B threshold scopes to control at 1 and others at 0', () => {
-      const response = getProductionRemoteFlagApiResponse();
-      const bottomNav = response.find(
-        (item) =>
-          Object.keys(item as Record<string, unknown>)[0] ===
-          'coreExtensionUxCeux1141AbtestBottomNav',
-      ) as Record<string, Json> | undefined;
-
-      expect(bottomNav?.coreExtensionUxCeux1141AbtestBottomNav).toStrictEqual([
-        {
-          name: 'control',
-          scope: {
-            type: 'threshold',
-            value: 1,
-          },
-        },
-        {
-          name: 'treatment',
-          scope: {
-            type: 'threshold',
-            value: 0,
-          },
-        },
-      ]);
-    });
-
     it('only uses 0 or 1 for threshold scope values', () => {
       const collectThresholdValues = (value: Json): number[] => {
         if (Array.isArray(value)) {

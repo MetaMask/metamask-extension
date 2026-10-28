@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  ACTIVITY_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
@@ -126,7 +127,7 @@ export const useSendActions = () => {
 
         // Success. The Snap owns the rest of the non-EVM transaction
         // lifecycle (Submitted/Finalized) and emits those itself.
-        navigate(`${DEFAULT_ROUTE}?tab=activity`);
+        navigate(ACTIVITY_ROUTE);
       } catch (error) {
         // Check for user rejection using error code (4001) - this is language-independent
         const { errorCode, failurePhase } = classifyNonEvmSendError(error);

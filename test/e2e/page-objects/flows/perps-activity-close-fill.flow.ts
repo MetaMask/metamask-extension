@@ -1,8 +1,10 @@
 import type { Driver } from '../../webdriver/driver';
 import { PerpsActivityPage } from '../pages/perps/perps-activity-page';
 import { PerpsTab } from '../pages/home/perps-tab';
+import HomePage from '../pages/home/homepage';
 import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
+import { lockAndWaitForLoginPage, login } from './login.flow';
 
 /**
  * After a simulated position change in E2E, pushes a `userFills` snapshot via
@@ -48,6 +50,31 @@ export async function assertPerpsActivityShowsCloseFill({
 
   const activityPage = new PerpsActivityPage(driver);
   await activityPage.checkPageIsLoaded();
-  await activityPage.waitForAnyTransactionCard();
+  try {
+    await activityPage.waitForAnyTransactionCard();
+  } catch {
+    // The wallet's live `userFills` listener can stop receiving pushes. Lock
+    // and unlock rebuild the perps session, and the new `userFills` subscribe
+    // snapshot replays the fill.
+    // Remove once https://github.com/MetaMask/metamask-extension/issues/47287 is fixed.
+    await driver.navigate();
+    // Reloading restores the last Perps route, which has no account menu.
+    // Return to Home before locking the wallet.
+    await activityPage.checkPageIsLoaded();
+    await activityPage.clickHeaderBack();
+    const homePage = new HomePage(driver);
+    await homePage.goToHomePage();
+    await lockAndWaitForLoginPage(driver);
+    await login(driver, {
+      validateBalance: false,
+      waitForNonEvmAccounts: false,
+    });
+    await perpsTab.navigateToPerpsHome();
+    await perpsTab.waitForPerpsViewStable();
+    await perpsTab.waitForRecentActivitySection();
+    await perpsTab.clickRecentActivitySeeAll();
+    await activityPage.checkPageIsLoaded();
+    await activityPage.waitForAnyTransactionCard();
+  }
   await activityPage.waitForActivityTradeTitleContaining(expectedTitleContains);
 }

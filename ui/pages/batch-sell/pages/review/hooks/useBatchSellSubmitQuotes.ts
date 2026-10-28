@@ -13,7 +13,7 @@ import {
 } from '../../../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
 import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import { ACTIVITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useDispatch } from '../../../../../store/hooks';
 
@@ -76,7 +76,7 @@ export default function useBatchSellSubmitQuotes({
       setIsSubmitting(false);
     }
 
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+    navigate(ACTIVITY_ROUTE, {
       state: { stayOnHomePage: true },
       replace: true,
     });
