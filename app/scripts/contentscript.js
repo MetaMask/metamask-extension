@@ -1,4 +1,5 @@
 import { getIsBrowserPrerenderBroken } from '../../shared/lib/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
 import shouldInjectProvider from '../../shared/lib/provider-injection';
 import {
   destroyStreams,
@@ -26,7 +27,9 @@ const start = () => {
     initializeCookieHandlerSteam();
   }
 
-  initCashtag();
+  if (isManifestV3) {
+    initCashtag();
+  }
 
   if (shouldInjectProvider()) {
     initStreams();
