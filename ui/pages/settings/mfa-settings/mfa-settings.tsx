@@ -80,10 +80,13 @@ const MfaSettings = () => {
       .catch(() => undefined);
   }, []);
 
-  const rows = ROWS.filter(
-    ({ method }) =>
+  const rows = ROWS.map((row) => ({
+    ...row,
+    isSetUp: activeTypes.has(row.method),
+  })).filter(
+    ({ method, isSetUp }) =>
       !(isSocialLogin && method === 'email_otp') &&
-      (activeTypes.has(method) || methods.includes(method)),
+      (isSetUp || methods.includes(method)),
   );
 
   const open = ({
@@ -91,8 +94,9 @@ const MfaSettings = () => {
     route,
     operation,
     successMessage,
-  }: (typeof ROWS)[number]) => {
-    if (activeTypes.has(method)) {
+    isSetUp,
+  }: (typeof rows)[number]) => {
+    if (isSetUp) {
       transitionForward(() => navigate(route));
       return;
     }
@@ -141,7 +145,7 @@ const MfaSettings = () => {
               alignItems={BoxAlignItems.Center}
               gap={1}
             >
-              {activeTypes.has(row.method) ? null : (
+              {row.isSetUp ? null : (
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
