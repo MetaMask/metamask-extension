@@ -14,7 +14,12 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { openWindow } from '../../../../helpers/utils/window';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
-import { getCustomerServiceToken } from '../../../../store/actions';
+import {
+  getCustomerServiceToken,
+  setShouldShowSupportConsent,
+  setSupportDataSharingPreference,
+} from '../../../../store/actions';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
 const mockTrackEvent = jest.fn();
@@ -48,6 +53,14 @@ jest.mock('../../../../hooks/subscription/useSubscription', () => ({
 
 jest.mock('../../../../store/actions', () => ({
   getCustomerServiceToken: jest.fn(),
+  setShouldShowSupportConsent: jest.fn((value: boolean) => ({
+    type: 'SET_SHOULD_SHOW_SUPPORT_CONSENT',
+    value,
+  })),
+  setSupportDataSharingPreference: jest.fn((value: boolean) => ({
+    type: 'SET_SUPPORT_DATA_SHARING_PREFERENCE',
+    value,
+  })),
 }));
 
 describe('VisitSupportDataConsentModal', () => {
@@ -71,6 +84,7 @@ describe('VisitSupportDataConsentModal', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    store.clearActions();
   });
 
   const renderModal = (props = {}) => {
@@ -85,6 +99,111 @@ describe('VisitSupportDataConsentModal', () => {
       store,
     );
   };
+
+  it('renders the "Save my preference" checkbox checked by default', () => {
+    const { getByRole } = renderModal();
+
+    expect(
+      getByRole('checkbox', {
+        name: messages.visitSupportDataConsentModalSavePreference.message,
+      }),
+    ).toBeChecked();
+  });
+
+  it('saves the share preference when accepting with "Save my preference" checked', async () => {
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    await waitFor(() => {
+      expect(openWindow).toHaveBeenCalled();
+    });
+    expect(setSupportDataSharingPreference).toHaveBeenCalledWith(true);
+    expect(setShouldShowSupportConsent).toHaveBeenCalledWith(false);
+  });
+
+  it('saves the do-not-share preference when rejecting with "Save my preference" checked', () => {
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-reject-button'),
+    );
+
+    expect(setSupportDataSharingPreference).toHaveBeenCalledWith(false);
+    expect(setShouldShowSupportConsent).toHaveBeenCalledWith(false);
+    expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+  });
+
+  it('does not save a preference when "Save my preference" is unchecked', async () => {
+    const { getByRole, getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByRole('checkbox', {
+        name: messages.visitSupportDataConsentModalSavePreference.message,
+      }),
+    );
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    await waitFor(() => {
+      expect(openWindow).toHaveBeenCalled();
+    });
+    expect(setSupportDataSharingPreference).not.toHaveBeenCalled();
+    expect(setShouldShowSupportConsent).not.toHaveBeenCalled();
+  });
+
+  it('re-selects "Save my preference" the next time the modal opens after it was unchecked', async () => {
+    const { getByRole, getByTestId, rerender } = renderModal();
+    const checkboxName =
+      messages.visitSupportDataConsentModalSavePreference.message;
+
+    fireEvent.click(getByRole('checkbox', { name: checkboxName }));
+    expect(getByRole('checkbox', { name: checkboxName })).not.toBeChecked();
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+    await waitFor(() => {
+      expect(mockOnClose).toHaveBeenCalled();
+    });
+
+    // The modal stays mounted between opens in the app header.
+    rerender(
+      <VisitSupportDataConsentModal isOpen={false} onClose={mockOnClose} />,
+    );
+    rerender(<VisitSupportDataConsentModal isOpen onClose={mockOnClose} />);
+
+    expect(getByRole('checkbox', { name: checkboxName })).toBeChecked();
+  });
+
+  it('re-selects "Save my preference" after the modal is dismissed with it unchecked', () => {
+    const { getByRole, rerender } = renderModal();
+    const checkboxName =
+      messages.visitSupportDataConsentModalSavePreference.message;
+
+    fireEvent.click(getByRole('checkbox', { name: checkboxName }));
+    fireEvent.keyDown(getByRole('dialog'), { key: 'Escape' });
+    expect(mockOnClose).toHaveBeenCalled();
+
+    rerender(
+      <VisitSupportDataConsentModal isOpen={false} onClose={mockOnClose} />,
+    );
+    rerender(<VisitSupportDataConsentModal isOpen onClose={mockOnClose} />);
+
+    expect(getByRole('checkbox', { name: checkboxName })).toBeChecked();
+  });
+
+  it('does not save a preference when the modal is dismissed', () => {
+    const { getByRole } = renderModal();
+
+    fireEvent.keyDown(getByRole('dialog'), { key: 'Escape' });
+
+    expect(mockOnClose).toHaveBeenCalled();
+    expect(setSupportDataSharingPreference).not.toHaveBeenCalled();
+    expect(setShouldShowSupportConsent).not.toHaveBeenCalled();
+  });
 
   it('renders the modal correctly when open', () => {
     const { getByTestId } = renderModal();

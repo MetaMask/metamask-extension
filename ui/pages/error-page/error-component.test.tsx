@@ -78,6 +78,7 @@ describe('ErrorPage', () => {
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
+      configureMockState([thunk])(mockState),
     );
 
     expect(
@@ -100,6 +101,7 @@ describe('ErrorPage', () => {
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={error} />
       </MetaMetricsContext.Provider>,
+      configureMockState([thunk])(mockState),
     );
 
     expect(queryByTestId('error-page-error-message')).toBeNull();
@@ -113,6 +115,7 @@ describe('ErrorPage', () => {
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
+      configureMockState([thunk])(mockState),
     );
     const describeButton = getByTestId(
       'error-page-describe-what-happened-button',
@@ -155,6 +158,7 @@ describe('ErrorPage', () => {
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
+      configureMockState([thunk])(mockState),
     );
     const describeButton = queryByTestId(
       'error-page-describe-what-happened-button',
@@ -168,6 +172,7 @@ describe('ErrorPage', () => {
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
+      configureMockState([thunk])(mockState),
     );
     const tryAgainButton = getByTestId('error-page-try-again-button');
     fireEvent.click(tryAgainButton);
