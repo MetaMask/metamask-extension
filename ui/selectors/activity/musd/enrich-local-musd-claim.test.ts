@@ -5,15 +5,15 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { mapLocalTransaction } from '@metamask/client-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { toAssetId } from '../../../shared/lib/asset-utils';
-import type { TransactionGroup } from '../../../shared/lib/multichain/types';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
+import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import {
   DISTRIBUTOR_CLAIM_ABI,
   MERKL_DISTRIBUTOR_ADDRESS,
   MUSD_TOKEN_ADDRESS,
-} from '../../components/app/musd/constants';
+} from '../../../components/app/musd/constants';
 import {
   enrichLocalMusdClaimActivity,
   resolveMusdClaimAmount,
