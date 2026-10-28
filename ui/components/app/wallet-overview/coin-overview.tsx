@@ -24,6 +24,11 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -75,11 +80,7 @@ import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
 import WalletOverview from './wallet-overview';
-import {
-  getBalanceAlignmentClassName,
-  getWalletOverviewLayout,
-  type WalletOverviewLayout,
-} from './wallet-overview-layout';
+import { getBalanceAlignmentClassName } from './wallet-overview-layout';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
@@ -96,29 +97,32 @@ export type CoinOverviewProps = {
 
 const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
-const BalanceOverviewSkeleton = ({
-  layout,
-}: {
-  layout: WalletOverviewLayout;
-}) => (
-  <Box
-    className={classnames(
-      'flex w-full max-w-[400px] items-center gap-[10px] pb-4 pt-6',
-      layout.isFullscreenOrSidepanel ? 'px-4' : 'px-2',
-    )}
-    data-testid="coin-overview-balance-skeleton"
-  >
+const BalanceOverviewSkeleton = () => {
+  const environmentType = getEnvironmentType();
+  const isFullscreenOrSidepanel =
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  return (
     <Box
       className={classnames(
-        'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
-        getBalanceAlignmentClassName(layout),
+        'flex w-full max-w-[400px] items-center gap-[10px] pb-4 pt-6',
+        isFullscreenOrSidepanel ? 'px-4' : 'px-2',
       )}
+      data-testid="coin-overview-balance-skeleton"
     >
-      <Skeleton className="h-[50px] w-full rounded-lg" />
-      <Skeleton className="h-6 w-[180px] rounded-lg" />
+      <Box
+        className={classnames(
+          'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
+          getBalanceAlignmentClassName(),
+        )}
+      >
+        <Skeleton className="h-[50px] w-full rounded-lg" />
+        <Skeleton className="h-6 w-[180px] rounded-lg" />
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 export const LegacyAggregatedBalance = ({
   classPrefix,
@@ -467,8 +471,6 @@ export const CoinOverview = ({
     );
   };
 
-  const layout = getWalletOverviewLayout();
-
   const balanceSection: React.ReactNode = (
     <AccountGroupBalance
       classPrefix={classPrefix}
@@ -488,7 +490,7 @@ export const CoinOverview = ({
       <div
         className={classnames(
           `${classPrefix}-overview__balance`,
-          getBalanceAlignmentClassName(layout),
+          getBalanceAlignmentClassName(),
         )}
       >
         <div className={`${classPrefix}-overview__primary-container`}>
@@ -503,7 +505,7 @@ export const CoinOverview = ({
   );
 
   if (shouldShowBalanceLoadingState) {
-    balanceContent = <BalanceOverviewSkeleton layout={layout} />;
+    balanceContent = <BalanceOverviewSkeleton />;
   } else if (shouldShowBalanceEmptyState) {
     balanceContent = (
       <BalanceEmptyState

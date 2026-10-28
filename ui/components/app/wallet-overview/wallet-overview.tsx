@@ -1,10 +1,12 @@
 import React from 'react';
 import classnames from 'clsx';
 
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
-  getBalanceAlignmentClassName,
-  getWalletOverviewLayout,
-} from './wallet-overview-layout';
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
+import { getBalanceAlignmentClassName } from './wallet-overview-layout';
 
 type WalletOverviewProps = {
   balance: React.ReactNode;
@@ -17,8 +19,10 @@ const WalletOverview = ({
   buttons,
   className,
 }: WalletOverviewProps) => {
-  const layout = getWalletOverviewLayout();
-  const { isFullscreenOrSidepanel } = layout;
+  const environmentType = getEnvironmentType();
+  const isFullscreenOrSidepanel =
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   return (
     <div
@@ -31,17 +35,16 @@ const WalletOverview = ({
       <div
         className={classnames(
           'flex w-full flex-1 flex-col gap-1',
-          getBalanceAlignmentClassName(layout),
+          getBalanceAlignmentClassName(),
         )}
       >
         {balance}
       </div>
+      {/* 458px = 490px - 32px */}
       <div
-        className={classnames(
-          // 458px = 490px (side panel narrow breakpoint) - 32px
-          'flex h-full w-full max-w-[458px]',
-          { 'self-center': isFullscreenOrSidepanel },
-        )}
+        className={classnames('flex h-full w-full max-w-[458px]', {
+          'self-center': isFullscreenOrSidepanel,
+        })}
       >
         {buttons}
       </div>
