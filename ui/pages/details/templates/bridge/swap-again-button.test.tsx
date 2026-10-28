@@ -5,12 +5,12 @@ import {
   FeatureId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
-import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
-import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import type { TokenAmount } from '../../../../../shared/lib/activity/types';
+import { MetaMetricsSwapsEventSource } from '../../../../../shared/constants/metametrics';
+import { BridgeQueryParams } from '../../../../../shared/lib/deep-links/routes/swap';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import configureStore from '../../../../store/store';
 import * as bridgeActions from '../../../../ducks/bridge/actions';
 import { SwapAgainButton } from './swap-again-button';
