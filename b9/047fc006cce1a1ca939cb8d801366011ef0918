@@ -1,0 +1,27 @@
+.github/scripts/shared/resolve-build-run.mts
+  s_1c2616b5a2ded2::t_f7c583d19fc0e1 185-187
+  s_1c2616b5a2ded2::t_44a52da3eb88e6 183-184
+development/download-builds.test.ts
+  s_1c2616b5a2ded2::t_44a52da3eb88e6 12,26-27
+development/download-builds.ts
+  s_1c2616b5a2ded2::t_a81052add986b7 127-128
+  s_1c2616b5a2ded2::t_f24bcc6369dd54 98-99
+  s_1c2616b5a2ded2::t_44a52da3eb88e6 125-126,192-193
+  s_1c2616b5a2ded2::t_615922e445c21b 129-130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b9047fc006cce1a1ca939cb8d801366011ef0918",
+  "prompts": {},
+  "sessions": {
+    "s_1c2616b5a2ded2": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ec1a8bd65ffeK6IjPbbWjE4fpy",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

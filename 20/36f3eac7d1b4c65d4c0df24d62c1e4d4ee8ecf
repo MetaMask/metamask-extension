@@ -1,0 +1,26 @@
+app/scripts/migrations/215.test.ts
+  s_253342669b36b9::t_ca7ab76753ccf7 1
+app/scripts/migrations/index.js
+  h_d6a04d82b61d5e 253
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "2036f3eac7d1b4c65d4c0df24d62c1e4d4ee8ecf",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
+  "sessions": {
+    "s_253342669b36b9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1339488d0ffebLzkmSVK3ED7tw",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

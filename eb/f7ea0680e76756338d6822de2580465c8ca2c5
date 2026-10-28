@@ -1,0 +1,19 @@
+jest.config.js
+  s_734193f3849d77::t_9596560f15c07f 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ebf7ea0680e76756338d6822de2580465c8ca2c5",
+  "prompts": {},
+  "sessions": {
+    "s_734193f3849d77": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_eaf080937ffeTC8FNldce7xtUX",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

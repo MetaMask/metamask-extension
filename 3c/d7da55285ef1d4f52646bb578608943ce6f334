@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "3cd7da55285ef1d4f52646bb578608943ce6f334",
+  "prompts": {},
+  "humans": {
+    "h_bf2df3051e8d1a": {
+      "author": "cryptotavares"
+    }
+  }
+}

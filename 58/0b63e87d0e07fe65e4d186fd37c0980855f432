@@ -1,0 +1,36 @@
+.claude/skills/metamask-visual-testing/SKILL.md
+  536ce6c96b1e639b 78-83,87-98,102-108,119-130,173-176,459-463,465-469
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "580b63e87d0e07fe65e4d186fd37c0980855f432",
+  "prompts": {
+    "536ce6c96b1e639b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_22ab63669ffeOYs8qA8duP3lR7-7bac9da1-a32d-4aa2-8274-2af21f834497",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares",
+      "messages": [],
+      "total_additions": 51,
+      "total_deletions": 51,
+      "accepted_lines": 51,
+      "overriden_lines": 0
+    },
+    "d0919184bd9c0edc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_22ab63669ffeOYs8qA8duP3lR7-09644cc8-c632-49bc-8c41-5a30193affec",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}

@@ -1,0 +1,19 @@
+test/e2e/playwright/llm-workflow/daemon.ts
+  s_975545920b03a1::t_0b76630bf054b2 35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "eea8ab418cc2d0b1a9bb9472cc107f5cb8042b27",
+  "prompts": {},
+  "sessions": {
+    "s_975545920b03a1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_17d220ac7ffexUC0QjAhriU0dP",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

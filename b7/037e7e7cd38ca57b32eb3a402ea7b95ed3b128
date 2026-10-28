@@ -1,0 +1,14 @@
+test/e2e/playwright/llm-workflow/fixture-helper.ts
+  h_d6a04d82b61d5e 41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "b7037e7e7cd38ca57b32eb3a402ea7b95ed3b128",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

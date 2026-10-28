@@ -1,0 +1,24 @@
+package.json
+  s_6f1e3fcec438ba::t_d34d9d5318d7df 560
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "24290d77d4bc376ddd6b742825c7662f8a56dab0",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
+  "sessions": {
+    "s_6f1e3fcec438ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1aa60876bffeglfG1LSqmtvBQC",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

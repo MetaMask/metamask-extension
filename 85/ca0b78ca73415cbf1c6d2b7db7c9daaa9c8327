@@ -1,0 +1,28 @@
+test/agents/visual-testing/artifacts/summary.ts
+  s_e8ba53132af842::t_3e681af234a393 45,136
+test/agents/visual-testing/cli.ts
+  s_e8ba53132af842::t_3e681af234a393 8,115-116,119
+test/agents/visual-testing/runner/trial-runner.ts
+  s_e8ba53132af842::t_3e681af234a393 194,266
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "85ca0b78ca73415cbf1c6d2b7db7c9daaa9c8327",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
+  "sessions": {
+    "s_e8ba53132af842": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c008c493ffepvz8aytjKnFVM1",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

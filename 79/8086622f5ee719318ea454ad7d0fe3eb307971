@@ -1,0 +1,21 @@
+test/e2e/playwright/llm-workflow/launcher/state-inspector.ts
+  s_5c42f2cb9cdb51::t_0aa42c1621a193 259
+  s_5c42f2cb9cdb51::t_078cab31b33e60 345
+  s_5c42f2cb9cdb51::t_3a19ba152be5e6 324
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "798086622f5ee719318ea454ad7d0fe3eb307971",
+  "prompts": {},
+  "sessions": {
+    "s_5c42f2cb9cdb51": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1f8ca7e25ffeHe6Ha4U8a6HkjE",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
