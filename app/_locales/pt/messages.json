@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Desbloqueie transações mais rápidas, taxas de rede mais baixas e segurança adicional em redes compatíveis."
   },
-  "enableSnap": {
-    "message": "Ativar"
-  },
   "enableToken": {
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"
