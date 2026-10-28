@@ -38,7 +38,9 @@ const ContactSupportStep = ({ step, onAction }: StepProps<'failure'>) => {
           <img
             src="./images/mfa-contact-support.svg"
             alt=""
-            className="self-center"
+            width={370}
+            height={64}
+            className="self-center max-w-full h-auto"
           />
         }
         title={t('mfaFailureSupportTitle')}
