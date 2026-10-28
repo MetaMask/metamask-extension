@@ -2,12 +2,27 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { SubscriptionUserEvent } from '@metamask/subscription-controller';
+import {
+  MODAL_TYPE,
+  SubscriptionUserEvent,
+} from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import MockState from '../../../../test/data/mock-state.json';
 import ShieldEntryModal from './shield-entry-modal';
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  getEnvironmentType: jest.fn(),
+}));
+
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
@@ -53,6 +68,40 @@ describe('Shield Entry Modal', () => {
       pathname: '/any-other-path',
       search: '',
     });
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+  });
+
+  it('renders modal type A copy', () => {
+    const customStore = configureMockStore([thunk])({
+      ...mockState,
+      appState: {
+        ...mockState.appState,
+        shieldEntryModal: {
+          ...mockState.appState.shieldEntryModal,
+          modalType: MODAL_TYPE.A,
+        },
+      },
+    });
+    const { getByRole, getByTestId } = renderWithProvider(
+      <ShieldEntryModal />,
+      customStore,
+    );
+
+    expect(getByRole('heading')).toHaveTextContent(
+      'Transact with added confidence',
+    );
+    expect(getByTestId('shield-entry-modal')).toHaveTextContent(
+      'Transaction Shield provides protection up to $10,000 and 24/7 priority support.',
+    );
+  });
+
+  it('aligns artwork to the end in the popup', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+    const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
+
+    expect(
+      getByTestId('shield-illustration-animation').parentElement,
+    ).toHaveClass('justify-end');
   });
 
   it('should render', () => {
