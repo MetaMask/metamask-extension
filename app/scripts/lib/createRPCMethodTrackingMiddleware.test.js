@@ -1295,7 +1295,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           },
           referrer: { url: 'some.dapp' },
         });
-        expect(getTrackedEventCall(0).properties.outcome).toBeUndefined();
+        expect(getTrackedEventCall(0).properties.status).toBeUndefined();
       });
 
       it('reports a request without an amount', async () => {
@@ -1318,7 +1318,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         ['ineligible', { code: errorCodes.rpc.methodNotSupported }],
         ['failed', { code: errorCodes.rpc.internal }],
         ['failed', { code: -32000 }],
-      ])('tracks a %s outcome', async (outcome, error) => {
+      ])('tracks a %s status', async (status, error) => {
         await runWalletPay({ error });
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
@@ -1328,10 +1328,21 @@ describe('createRPCMethodTrackingMiddleware', () => {
             method: MESSAGE_TYPE.WALLET_PAY,
             transaction_type: 'perpsDeposit',
             has_amount: true,
-            outcome,
+            status,
           },
           referrer: { url: 'some.dapp' },
         });
+      });
+
+      it('reports the mapped status for an internal snap rejection error', async () => {
+        await runWalletPay({
+          error: {
+            code: errorCodes.rpc.internal,
+            message: 'Request rejected by user or snap.',
+          },
+        });
+
+        expect(getTrackedEventCall(1).properties.status).toBe('failed');
       });
 
       it('omits the type when the params are malformed', async () => {
@@ -1342,7 +1353,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
         expect(getTrackedEventCall(1).properties).toMatchObject({
           has_amount: false,
-          outcome: 'invalid',
+          status: 'invalid',
         });
         expect(
           getTrackedEventCall(1).properties.transaction_type,
