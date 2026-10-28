@@ -78,7 +78,6 @@ describe('last-activity', () => {
 
       expect(getLastActivityContext(1_500)).toStrictEqual({
         msSinceLastAppStart: 500,
-        msSinceLastServiceWorkerReload: 500,
         serviceWorkerReloadCount: 0,
       });
     });
@@ -92,7 +91,6 @@ describe('last-activity', () => {
       jest.setSystemTime(1_300);
 
       expect(getLastActivityContext().msSinceLastAppStart).toBe(300);
-      expect(getLastActivityContext().msSinceLastServiceWorkerReload).toBe(300);
     });
 
     it('reports the elapsed time since the last write', async () => {
@@ -107,27 +105,30 @@ describe('last-activity', () => {
       expect(getLastActivityContext(2_750).msSinceLastWrite).toBe(750);
     });
 
-    it('reports the elapsed time since the last UI open', async () => {
+    it('reports msSinceLastUiOpen only while a UI is open', async () => {
       jest.setSystemTime(1_000);
-      const { getLastActivityContext, hydrateLastActivity, recordUiOpen } =
-        await import('./last-activity');
+      const {
+        getLastActivityContext,
+        hydrateLastActivity,
+        recordUiOpen,
+        recordUiClosed,
+      } = await import('./last-activity');
       await hydrateLastActivity();
 
       jest.setSystemTime(3_000);
       recordUiOpen();
 
-      expect(getLastActivityContext(3_200).msSinceLastUiOpen).toBe(200);
-    });
-
-    it('reports the elapsed time since the last UI close', async () => {
-      jest.setSystemTime(1_000);
-      const { getLastActivityContext, hydrateLastActivity, recordUiClosed } =
-        await import('./last-activity');
-      await hydrateLastActivity();
+      expect(getLastActivityContext(3_200)).toStrictEqual(
+        expect.objectContaining({
+          msSinceLastUiOpen: 200,
+        }),
+      );
+      expect(getLastActivityContext(3_200).msSinceLastUiClosed).toBeUndefined();
 
       jest.setSystemTime(4_000);
       recordUiClosed();
 
+      expect(getLastActivityContext(4_100).msSinceLastUiOpen).toBeUndefined();
       expect(getLastActivityContext(4_100).msSinceLastUiClosed).toBe(100);
     });
 
@@ -143,7 +144,7 @@ describe('last-activity', () => {
       expect(getLastActivityContext(5_050).msSinceLastWindowEvent).toBe(50);
     });
 
-    it('tracks each signal independently', async () => {
+    it('tracks each signal independently while all UIs are closed', async () => {
       jest.setSystemTime(1_000);
       const {
         getLastActivityContext,
@@ -167,12 +168,22 @@ describe('last-activity', () => {
       expect(getLastActivityContext(6_000)).toStrictEqual({
         msSinceLastAppStart: 5_000,
         msSinceLastWrite: 4_000,
-        msSinceLastUiOpen: 3_000,
         msSinceLastUiClosed: 2_000,
         msSinceLastWindowEvent: 1_000,
-        msSinceLastServiceWorkerReload: 5_000,
         serviceWorkerReloadCount: 0,
       });
+    });
+
+    it('omits msSinceLastServiceWorkerReload when reload count is 0', async () => {
+      jest.setSystemTime(1_000);
+      const { getLastActivityContext, hydrateLastActivity } =
+        await import('./last-activity');
+      await hydrateLastActivity();
+
+      expect(
+        getLastActivityContext(1_500).msSinceLastServiceWorkerReload,
+      ).toBeUndefined();
+      expect(getLastActivityContext(1_500).serviceWorkerReloadCount).toBe(0);
     });
 
     it('updates msSinceLastWrite on every call to recordWrite', async () => {
@@ -199,7 +210,6 @@ describe('last-activity', () => {
       expect(mockStorageSessionGet).not.toHaveBeenCalled();
       expect(getLastActivityContext(1_200)).toStrictEqual({
         msSinceLastAppStart: 200,
-        msSinceLastServiceWorkerReload: 200,
       });
     });
 
@@ -219,7 +229,6 @@ describe('last-activity', () => {
       expect(getLastActivityContext(2_500)).toStrictEqual({
         msSinceLastAppStart: 1_500,
         msSinceLastWrite: 500,
-        msSinceLastServiceWorkerReload: 1_500,
       });
     });
   });
@@ -248,12 +257,35 @@ describe('last-activity', () => {
       expect(second.getLastActivityContext(8_500)).toStrictEqual({
         msSinceLastAppStart: 7_500,
         msSinceLastWrite: 6_500,
-        msSinceLastUiOpen: 5_500,
         msSinceLastUiClosed: 4_500,
         msSinceLastWindowEvent: 3_500,
         msSinceLastServiceWorkerReload: 500,
         serviceWorkerReloadCount: 1,
       });
+    });
+
+    it('restores UI-open presence across a service-worker reload', async () => {
+      jest.setSystemTime(1_000);
+      const first = await import('./last-activity');
+      await first.hydrateLastActivity();
+      jest.setSystemTime(3_000);
+      first.recordUiOpen();
+      await Promise.resolve();
+
+      jest.resetModules();
+      jest.setSystemTime(8_000);
+      const second = await import('./last-activity');
+      await second.hydrateLastActivity();
+
+      expect(second.getLastActivityContext(8_500)).toStrictEqual({
+        msSinceLastAppStart: 7_500,
+        msSinceLastUiOpen: 5_500,
+        msSinceLastServiceWorkerReload: 500,
+        serviceWorkerReloadCount: 1,
+      });
+      expect(
+        second.getLastActivityContext(8_500).msSinceLastUiClosed,
+      ).toBeUndefined();
     });
 
     it('keeps an in-memory timestamp recorded before hydrate finishes', async () => {

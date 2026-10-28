@@ -9,7 +9,7 @@ import { isManifestV3 } from '../mv3.utils';
  * Activity timestamps and the first app-start time are kept in
  * `storage.session` on MV3 so they survive a service-worker restart within
  * the browser session. `msSinceLastServiceWorkerReload` is this worker's
- * lifetime and is not restored.
+ * lifetime (only reported after at least one reload) and is not restored.
  *
  * `storage.session` is shared by every context (background and each open UI).
  * Only the background hydrates and persists it, so a popup or side panel
@@ -61,8 +61,31 @@ let lastUiClosedAt: number | undefined;
 let lastWindowEventAt: number | undefined;
 let serviceWorkerReloadCount: number | undefined;
 
+/**
+ * Whether any MetaMask UI is currently open. Updated by
+ * {@link recordUiOpen} / {@link recordUiClosed}, and restored after hydrate
+ * from the relative UI open/close timestamps.
+ */
+let isAnyUiOpen = false;
+
 let hydrated = false;
 let hydratePromise: Promise<void> | undefined;
+
+/**
+ * Infers UI-open presence from restored timestamps so a service-worker
+ * restart does not briefly report "all closed" while UIs are reconnecting.
+ */
+function syncIsAnyUiOpenFromTimestamps(): void {
+  if (lastUiOpenAt === undefined) {
+    isAnyUiOpen = false;
+    return;
+  }
+  if (lastUiClosedAt === undefined) {
+    isAnyUiOpen = true;
+    return;
+  }
+  isAnyUiOpen = lastUiOpenAt >= lastUiClosedAt;
+}
 
 /**
  * @param at - Timestamp of the last occurrence, if any.
@@ -175,6 +198,7 @@ async function hydrateFromSession(): Promise<void> {
       );
       const previousCount = readNumber(record, 'serviceWorkerReloadCount');
       serviceWorkerReloadCount = (previousCount ?? 0) + 1;
+      syncIsAnyUiOpenFromTimestamps();
     } else {
       serviceWorkerReloadCount = 0;
     }
@@ -218,6 +242,7 @@ export function recordWrite(): void {
 /** Marks a MetaMask UI connection (popup, side panel, notification, or tab). */
 export function recordUiOpen(): void {
   lastUiOpenAt = Date.now();
+  isAnyUiOpen = true;
   setSessionLastActivity().catch(() => undefined);
 }
 
@@ -226,6 +251,7 @@ export function recordUiOpen(): void {
  */
 export function recordUiClosed(): void {
   lastUiClosedAt = Date.now();
+  isAnyUiOpen = false;
   setSessionLastActivity().catch(() => undefined);
 }
 
@@ -239,6 +265,11 @@ export function recordWindowEvent(): void {
 
 /**
  * Current elapsed-time snapshot. Unset signals are omitted.
+ *
+ * `msSinceLastUiOpen` is only set while at least one UI is open.
+ * `msSinceLastUiClosed` is only set while every UI is closed.
+ * `msSinceLastServiceWorkerReload` is only set after at least one reload
+ * (`serviceWorkerReloadCount > 0`).
  *
  * @param now - Current time. Injectable for tests.
  * @returns The current {@link LastActivityContext}.
@@ -255,14 +286,16 @@ export function getLastActivityContext(
     context.msSinceLastWrite = msSinceLastWrite;
   }
 
-  const msSinceLastUiOpen = msSince(lastUiOpenAt, now);
-  if (msSinceLastUiOpen !== undefined) {
-    context.msSinceLastUiOpen = msSinceLastUiOpen;
-  }
-
-  const msSinceLastUiClosed = msSince(lastUiClosedAt, now);
-  if (msSinceLastUiClosed !== undefined) {
-    context.msSinceLastUiClosed = msSinceLastUiClosed;
+  if (isAnyUiOpen) {
+    const msSinceLastUiOpen = msSince(lastUiOpenAt, now);
+    if (msSinceLastUiOpen !== undefined) {
+      context.msSinceLastUiOpen = msSinceLastUiOpen;
+    }
+  } else {
+    const msSinceLastUiClosed = msSince(lastUiClosedAt, now);
+    if (msSinceLastUiClosed !== undefined) {
+      context.msSinceLastUiClosed = msSinceLastUiClosed;
+    }
   }
 
   const msSinceLastWindowEvent = msSince(lastWindowEventAt, now);
@@ -270,10 +303,11 @@ export function getLastActivityContext(
     context.msSinceLastWindowEvent = msSinceLastWindowEvent;
   }
 
-  context.msSinceLastServiceWorkerReload = now - serviceWorkerStartedAt;
-
   if (serviceWorkerReloadCount !== undefined) {
     context.serviceWorkerReloadCount = serviceWorkerReloadCount;
+    if (serviceWorkerReloadCount > 0) {
+      context.msSinceLastServiceWorkerReload = now - serviceWorkerStartedAt;
+    }
   }
 
   return context;

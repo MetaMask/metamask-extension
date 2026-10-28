@@ -37,10 +37,9 @@ const mockStoreGet = jest.fn();
 const mockStoreReset = jest.fn();
 
 jest.mock('../telemetry/last-activity', () => ({
-  getLastActivityContext: (...args: unknown[]) =>
-    mockGetLastActivityContext(...args),
-  hydrateLastActivity: (...args: unknown[]) => mockHydrateLastActivity(...args),
-  recordWrite: (...args: unknown[]) => mockRecordWrite(...args),
+  getLastActivityContext: () => mockGetLastActivityContext(),
+  hydrateLastActivity: () => mockHydrateLastActivity(),
+  recordWrite: () => mockRecordWrite(),
 }));
 
 jest.mock('./extension-store', () => {
