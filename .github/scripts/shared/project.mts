@@ -85,11 +85,15 @@ export async function retrieveGithubProject(
   }
 
   if (!project.id) {
-    throw new Error(`Project with number ${projectNumber} was found, but it has no 'id' property.`);
+    throw new Error(
+      `Project with number ${projectNumber} was found, but it has no 'id' property.`,
+    );
   }
 
   if (!project.fields) {
-    throw new Error(`Project with number ${projectNumber} was found, but it has no 'fields' property.`);
+    throw new Error(
+      `Project with number ${projectNumber} was found, but it has no 'fields' property.`,
+    );
   }
 
   return project;
@@ -155,7 +159,8 @@ export async function retrieveGithubProjectIssuesFieldValues(
     projectId,
   });
 
-  const projectIssuesFieldValues: RawGithubProjectIssuesFieldValues = retrieveProjectIssuesFieldValuesResult.node.items;
+  const projectIssuesFieldValues: RawGithubProjectIssuesFieldValues =
+    retrieveProjectIssuesFieldValuesResult.node.items;
 
   return projectIssuesFieldValues;
 }
@@ -169,19 +174,19 @@ export async function retrieveGithubProjectIssueFieldValuesRecursively(
   cursor: string | undefined,
 ): Promise<GithubProjectIssueFieldValues | undefined> {
   if (nbFetches >= MAX_NB_FETCHES) {
-    throw new Error(`Forbidden: Trying to do more than ${MAX_NB_FETCHES} fetches (${nbFetches}).`);
+    throw new Error(
+      `Forbidden: Trying to do more than ${MAX_NB_FETCHES} fetches (${nbFetches}).`,
+    );
   }
 
-  const projectIssuesFieldValuesResponse: RawGithubProjectIssuesFieldValues = await retrieveGithubProjectIssuesFieldValues(
-    octokit,
-    projectId,
-    cursor,
-  );
+  const projectIssuesFieldValuesResponse: RawGithubProjectIssuesFieldValues =
+    await retrieveGithubProjectIssuesFieldValues(octokit, projectId, cursor);
 
-  const projectIssueFieldValuesResponseWithSameId: RawGithubProjectIssueFieldValues | undefined =
-    projectIssuesFieldValuesResponse.nodes.find(
-      (issue) => issue.content?.id === issueId
-    ); // 'issue.content' can be equal to null in edge case where the Github Project board includes private repo issues that can't be accessed by the access token we're using
+  const projectIssueFieldValuesResponseWithSameId:
+    | RawGithubProjectIssueFieldValues
+    | undefined = projectIssuesFieldValuesResponse.nodes.find(
+    (issue) => issue.content?.id === issueId,
+  ); // 'issue.content' can be equal to null in edge case where the Github Project board includes private repo issues that can't be accessed by the access token we're using
 
   if (projectIssueFieldValuesResponseWithSameId) {
     const projectIssueFieldValues: GithubProjectIssueFieldValues = {
@@ -194,7 +199,13 @@ export async function retrieveGithubProjectIssueFieldValuesRecursively(
 
   const newCursor = projectIssuesFieldValuesResponse.pageInfo.endCursor;
   if (newCursor) {
-    return await retrieveGithubProjectIssueFieldValuesRecursively(nbFetches + 1, octokit, projectId, issueId, newCursor);
+    return await retrieveGithubProjectIssueFieldValuesRecursively(
+      nbFetches + 1,
+      octokit,
+      projectId,
+      issueId,
+      newCursor,
+    );
   } else {
     return undefined;
   }
@@ -229,19 +240,24 @@ export async function updateGithubProjectDateFieldValue(
   newDatePropertyValue: string,
 ): Promise<void> {
   if (!isValidDateFormat(newDatePropertyValue)) {
-    throw new Error(`Invalid input: date ${newDatePropertyValue} doesn't match "YYYY-MM-DD" format.`);
+    throw new Error(
+      `Invalid input: date ${newDatePropertyValue} doesn't match "YYYY-MM-DD" format.`,
+    );
   }
 
-  const issue: GithubProjectIssueFieldValues | undefined = await retrieveGithubProjectIssueFieldValuesRecursively(
-    0,
-    octokit,
-    projectId,
-    issueId,
-    undefined,
-  );
+  const issue: GithubProjectIssueFieldValues | undefined =
+    await retrieveGithubProjectIssueFieldValuesRecursively(
+      0,
+      octokit,
+      projectId,
+      issueId,
+      undefined,
+    );
 
   if (!issue) {
-    throw new Error(`Issue with ID ${issueId} was not found on Github Project with ID ${projectId}.`);
+    throw new Error(
+      `Issue with ID ${issueId} was not found on Github Project with ID ${projectId}.`,
+    );
   }
 
   const updateGithubProjectDatePropertyMutation = `

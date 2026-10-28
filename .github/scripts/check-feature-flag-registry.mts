@@ -19,7 +19,10 @@ const QUOTE_FLAG = `(?:'(\\w+)'|"(\\w+)"|` + '`(\\w+)`' + `)`;
 /** Bracket-access patterns run BEFORE string stripping (need quoted flag name). */
 const BRACKET_STRING_PATTERNS: RegExp[] = [
   new RegExp(`remoteFeatureFlags(?:\\?\\.)?\\[\\s*${QUOTE_FLAG}\\s*\\]`, 'g'),
-  new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[\\s*${QUOTE_FLAG}\\s*\\]`, 'g'),
+  new RegExp(
+    `getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[\\s*${QUOTE_FLAG}\\s*\\]`,
+    'g',
+  ),
 ];
 
 const FLAG_ACCESS_PATTERNS: RegExp[] = [
@@ -38,7 +41,10 @@ const DESTRUCTURING_PATTERNS: RegExp[] = [
 
 const CONSTANT_BRACKET_PATTERNS: RegExp[] = [
   /remoteFeatureFlags(?:\?\.)?\[([A-Za-z_]\w*(?:\.\w+)?)\]/g,
-  new RegExp(`getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[([A-Za-z_]\\w*(?:\\.\\w+)?)\\]`, 'g'),
+  new RegExp(
+    `getRemoteFeatureFlags\\(${ARGS}\\)(?:\\?\\.)?\\[([A-Za-z_]\\w*(?:\\.\\w+)?)\\]`,
+    'g',
+  ),
 ];
 
 /** @see ./known-feature-flag-constants.mts */
@@ -85,8 +91,7 @@ type FlagReference = {
 };
 
 async function main(): Promise<void> {
-  const baseBranch =
-    process.env.GITHUB_BASE_REF || process.argv[2] || 'main';
+  const baseBranch = process.env.GITHUB_BASE_REF || process.argv[2] || 'main';
 
   if (!/^[\w./-]+$/.test(baseBranch)) {
     console.error(`Invalid base branch name: "${baseBranch}"`);
@@ -107,7 +112,9 @@ async function main(): Promise<void> {
   }
 
   const { added: fileChanges, removed: fileRemovals } = parseDiff(diff);
-  const fileCount = [...fileChanges.values()].filter((c) => c.length > 0).length;
+  const fileCount = [...fileChanges.values()].filter(
+    (c) => c.length > 0,
+  ).length;
   console.log(`Found changes in ${fileCount} file(s)\n`);
 
   logRegistryChanges(diff);
@@ -131,9 +138,7 @@ async function main(): Promise<void> {
           allReferences.push(...extractFlagReferences(j3, filePath, true));
         }
       }
-      allReferences.push(
-        ...extractMultiLineDestructuring(chunk, filePath),
-      );
+      allReferences.push(...extractMultiLineDestructuring(chunk, filePath));
     }
   }
 
@@ -186,7 +191,9 @@ async function main(): Promise<void> {
   console.log(`  ${registeredCount} flag(s) are registered`);
   console.log(`  ${unregisteredFlags.length} flag(s) are NOT registered`);
   if (orphanedFlags.length > 0) {
-    console.log(`  ${orphanedFlags.length} flag(s) may need removal from the registry`);
+    console.log(
+      `  ${orphanedFlags.length} flag(s) may need removal from the registry`,
+    );
   }
   console.log('');
 
@@ -256,7 +263,8 @@ function findOrphanedFlags(flagNames: string[]): string[] {
     }
     try {
       const result = execFileSync(
-        'git', ['grep', '-lFw', '--', flag, ...SCAN_DIRECTORIES],
+        'git',
+        ['grep', '-lFw', '--', flag, ...SCAN_DIRECTORIES],
         { encoding: 'utf-8', stdio: 'pipe' },
       ).trim();
       const files = result
@@ -296,8 +304,12 @@ function parseDiff(diff: string): DiffResult {
       lastWasAdded = false;
     } else if (line.startsWith('+++ /dev/null') && pendingFile) {
       currentFile = pendingFile;
-      if (!added.has(currentFile)) { added.set(currentFile, []); }
-      if (!removed.has(currentFile)) { removed.set(currentFile, []); }
+      if (!added.has(currentFile)) {
+        added.set(currentFile, []);
+      }
+      if (!removed.has(currentFile)) {
+        removed.set(currentFile, []);
+      }
       lastWasAdded = false;
     } else if (
       line.startsWith('+') &&
@@ -333,10 +345,7 @@ function extractFlagReferences(
   const refs: FlagReference[] = [];
   const trimmed = line.trim();
 
-  if (
-    trimmed.startsWith('//') ||
-    trimmed.startsWith('*')
-  ) {
+  if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
     return refs;
   }
 
@@ -572,11 +581,17 @@ function findRegexClose(line: string, start: number): number {
     while (k - 1 - backslashes >= start && line[k - 1 - backslashes] === '\\') {
       backslashes++;
     }
-    if (backslashes % 2 === 1) { continue; }
+    if (backslashes % 2 === 1) {
+      continue;
+    }
     const c = line[k];
-    if (c === '[') { inCharClass = true; }
-    else if (c === ']' && inCharClass) { inCharClass = false; }
-    else if (c === '/' && !inCharClass) { return k; }
+    if (c === '[') {
+      inCharClass = true;
+    } else if (c === ']' && inCharClass) {
+      inCharClass = false;
+    } else if (c === '/' && !inCharClass) {
+      return k;
+    }
   }
   return -1;
 }
@@ -587,54 +602,105 @@ function processStrings(line: string, mode: 'strip' | 'mask'): string {
   let i = 0;
   while (i < line.length) {
     const ch = line[i];
-    if (ch !== "'" && ch !== '"' && ch !== '`') { result += ch; i++; continue; }
+    if (ch !== "'" && ch !== '"' && ch !== '`') {
+      result += ch;
+      i++;
+      continue;
+    }
     if (ch === '`') {
       let j = i + 1;
       let hasExpr = false;
       while (j < line.length) {
-        if (line[j] === '\\') { j += 2; continue; }
-        if (line[j] === '$' && line[j + 1] === '{') { hasExpr = true; break; }
+        if (line[j] === '\\') {
+          j += 2;
+          continue;
+        }
+        if (line[j] === '$' && line[j + 1] === '{') {
+          hasExpr = true;
+          break;
+        }
         if (line[j] === '`') break;
         j++;
       }
       if (hasExpr) {
-        let depth = 1, k = j + 2, foundClose = false;
-        result += ch; if (mode === 'mask') result += ' '.repeat(j - i - 1); result += '${';
+        let depth = 1,
+          k = j + 2,
+          foundClose = false;
+        result += ch;
+        if (mode === 'mask') result += ' '.repeat(j - i - 1);
+        result += '${';
         while (k < line.length) {
-          if (line[k] === '\\') { if (depth > 0) result += line[k] + (line[k+1]||' '); else if (mode === 'mask') result += '  '; k += 2; continue; }
+          if (line[k] === '\\') {
+            if (depth > 0) result += line[k] + (line[k + 1] || ' ');
+            else if (mode === 'mask') result += '  ';
+            k += 2;
+            continue;
+          }
           if (depth === 0) {
-            if (line[k] === '`') { foundClose = true; result += '`'; break; }
-            if (line[k] === '$' && line[k + 1] === '{') { depth = 1; result += '${'; k += 2; continue; }
+            if (line[k] === '`') {
+              foundClose = true;
+              result += '`';
+              break;
+            }
+            if (line[k] === '$' && line[k + 1] === '{') {
+              depth = 1;
+              result += '${';
+              k += 2;
+              continue;
+            }
             if (mode === 'mask') result += ' ';
           } else {
-            if (line[k] === '$' && line[k + 1] === '{') { result += '${'; depth++; k++; }
-            else if (line[k] === '{') { result += '{'; depth++; }
-            else if (line[k] === '}') { result += '}'; depth--; }
-            else if (line[k] === '`' && depth === 1) { result += '`'; depth++; }
-            else if (line[k] === '`' && depth > 1) { result += '`'; depth--; }
-            else result += line[k];
+            if (line[k] === '$' && line[k + 1] === '{') {
+              result += '${';
+              depth++;
+              k++;
+            } else if (line[k] === '{') {
+              result += '{';
+              depth++;
+            } else if (line[k] === '}') {
+              result += '}';
+              depth--;
+            } else if (line[k] === '`' && depth === 1) {
+              result += '`';
+              depth++;
+            } else if (line[k] === '`' && depth > 1) {
+              result += '`';
+              depth--;
+            } else result += line[k];
           }
           k++;
         }
         if (!foundClose) result += line.slice(k);
-        i = foundClose ? k + 1 : line.length; continue;
+        i = foundClose ? k + 1 : line.length;
+        continue;
       }
     }
     let j = i + 1;
     while (j < line.length) {
-      if (line[j] === '\\') { j += 2; continue; }
+      if (line[j] === '\\') {
+        j += 2;
+        continue;
+      }
       if (line[j] === ch) break;
       j++;
     }
-    if (j >= line.length) { result += ch; i++; continue; }
+    if (j >= line.length) {
+      result += ch;
+      i++;
+      continue;
+    }
     const len = j - i - 1;
     result += mode === 'mask' ? ch + ' '.repeat(len) + ch : ch + ch;
     i = j + 1;
   }
   return result;
 }
-function stripStringLiterals(line: string): string { return processStrings(line, 'strip'); }
-function maskStringLiterals(line: string): string { return processStrings(line, 'mask'); }
+function stripStringLiterals(line: string): string {
+  return processStrings(line, 'strip');
+}
+function maskStringLiterals(line: string): string {
+  return processStrings(line, 'mask');
+}
 
 /** Logs which flags were added/removed in the registry (informational only). */
 function logRegistryChanges(fullDiff: string): void {
@@ -690,7 +756,11 @@ function buildCommentBody(
   unregistered: Array<{ flag: string; files: string[] }>,
   orphaned: string[],
 ): string {
-  const lines: string[] = [PR_COMMENT_MARKER, '## Feature Flag Registry Check', ''];
+  const lines: string[] = [
+    PR_COMMENT_MARKER,
+    '## Feature Flag Registry Check',
+    '',
+  ];
 
   if (unregistered.length > 0) {
     lines.push(
@@ -761,9 +831,7 @@ async function postPrComment(
   const prNumber = context.payload.pull_request?.number;
 
   if (!token || !prNumber) {
-    console.log(
-      'Not in a GitHub Actions PR context — skipping PR comment.',
-    );
+    console.log('Not in a GitHub Actions PR context — skipping PR comment.');
     return;
   }
 
@@ -772,7 +840,12 @@ async function postPrComment(
   const body = buildCommentBody(unregistered, orphaned);
 
   try {
-    const existingComment = await findMarkerComment(octokit, owner, repo, prNumber);
+    const existingComment = await findMarkerComment(
+      octokit,
+      owner,
+      repo,
+      prNumber,
+    );
 
     if (existingComment) {
       await octokit.rest.issues.updateComment({
@@ -831,10 +904,12 @@ async function findMarkerComment(
   repo: string,
   prNumber: number,
 ): Promise<{ id: number } | undefined> {
-  const iterator = octokit.paginate.iterator(
-    octokit.rest.issues.listComments,
-    { owner, repo, issue_number: prNumber, per_page: 100 },
-  );
+  const iterator = octokit.paginate.iterator(octokit.rest.issues.listComments, {
+    owner,
+    repo,
+    issue_number: prNumber,
+    per_page: 100,
+  });
 
   for await (const { data: comments } of iterator) {
     const found = comments.find((c) => c.body?.includes(PR_COMMENT_MARKER));

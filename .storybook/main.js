@@ -26,31 +26,23 @@ module.exports = {
       __filename: true,
     };
 
-    config.resolve.alias['webextension-polyfill'] = require.resolve(
-      '../ui/__mocks__/webextension-polyfill.js',
-    );
-    config.resolve.alias['../../../../store/actions$'] = require.resolve(
-      '../ui/__mocks__/actions.js',
-    );
-    config.resolve.alias['../../../../../../store/actions$'] = require.resolve(
-      '../ui/__mocks__/actions.js',
-    );
-    config.resolve.alias['../../../store/actions$'] = require.resolve(
-      '../ui/__mocks__/actions.js',
-    );
-    config.resolve.alias['../../hooks/useAnalytics$'] = require.resolve(
-      '../ui/__mocks__/useAnalytics.ts',
-    );
-    config.resolve.alias['../../../hooks/useAnalytics$'] = require.resolve(
-      '../ui/__mocks__/useAnalytics.ts',
-    );
-    config.resolve.alias['../../../../hooks/useAnalytics$'] = require.resolve(
-      '../ui/__mocks__/useAnalytics.ts',
-    );
+    config.resolve.alias['webextension-polyfill'] =
+      require.resolve('../ui/__mocks__/webextension-polyfill.js');
+    config.resolve.alias['../../../../store/actions$'] =
+      require.resolve('../ui/__mocks__/actions.js');
+    config.resolve.alias['../../../../../../store/actions$'] =
+      require.resolve('../ui/__mocks__/actions.js');
+    config.resolve.alias['../../../store/actions$'] =
+      require.resolve('../ui/__mocks__/actions.js');
+    config.resolve.alias['../../hooks/useAnalytics$'] =
+      require.resolve('../ui/__mocks__/useAnalytics.ts');
+    config.resolve.alias['../../../hooks/useAnalytics$'] =
+      require.resolve('../ui/__mocks__/useAnalytics.ts');
+    config.resolve.alias['../../../../hooks/useAnalytics$'] =
+      require.resolve('../ui/__mocks__/useAnalytics.ts');
 
-    const hwSwapHooksMock = require.resolve(
-      '../ui/__mocks__/hardware-wallet-swap/hooks.ts',
-    );
+    const hwSwapHooksMock =
+      require.resolve('../ui/__mocks__/hardware-wallet-swap/hooks.ts');
     config.resolve.alias[
       '../../../../hooks/hardware-wallets/useHwSwapQuoteData$'
     ] = hwSwapHooksMock;
@@ -95,9 +87,8 @@ module.exports = {
       process: require.resolve('process/browser'),
       stream: require.resolve('stream-browserify'),
       zlib: false,
-      _stream_transform: require.resolve(
-        'readable-stream/lib/_stream_transform.js',
-      ),
+      _stream_transform:
+        require.resolve('readable-stream/lib/_stream_transform.js'),
     };
     config.module.strictExportPresence = true;
     config.module.rules.push({

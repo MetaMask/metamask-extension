@@ -77,14 +77,9 @@ export function getRetryBudget({
     // attempt ceiling after a label-funded retry removes the label.
     isPullRequest && attemptNumber >= labelRetryLimit;
   const canAutomaticallyRetry =
-    isRetryable &&
-    canRetry &&
-    !automaticRetryLimitReached;
+    isRetryable && canRetry && !automaticRetryLimitReached;
   const canRetryWithLabel =
-    isRetryable &&
-    isPullRequest &&
-    hasRetryLabel &&
-    !labelRetryLimitReached;
+    isRetryable && isPullRequest && hasRetryLabel && !labelRetryLimitReached;
   const retryMode: RetryMode = canAutomaticallyRetry
     ? 'automatic'
     : canRetryWithLabel
