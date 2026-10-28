@@ -283,15 +283,7 @@ const MusdEducationScreen = () => {
 
   return (
     <Box
-      className="musd-education-screen relative"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        flex: 1,
-        minHeight: 0,
-        width: '100%',
-        overflow: 'hidden',
-      }}
+      className="musd-education-screen relative w-full min-h-0 flex-1 overflow-hidden"
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >
