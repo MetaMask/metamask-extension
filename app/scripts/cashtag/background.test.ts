@@ -152,6 +152,9 @@ describe('createCashtagResponse', () => {
       remoteFeatureFlagController: {
         state: { remoteFeatureFlags: { cashtagInjection: true } },
       },
+      bridgeController: {
+        setLocation: jest.fn(),
+      },
     } satisfies Controller;
   }
 
@@ -236,6 +239,19 @@ describe('createCashtagResponse', () => {
     expect(browser.tabs.create).toHaveBeenCalledWith({
       url: `chrome-extension://${extensionId}/home.html${swapHash}`,
     });
+  });
+
+  it('sets bridge location to x_widget before opening swap route', async () => {
+    const controller = getController();
+    await createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      () => controller,
+    );
+
+    expect(controller.bridgeController?.setLocation).toHaveBeenCalledWith(
+      'x_widget',
+    );
   });
 });
 

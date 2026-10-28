@@ -1916,11 +1916,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMaskにより、インターネットサービスを通じてトークンの詳細やガス設定などの基本的な機能が提供されます。インターネットサービスを使用すると、ユーザーのIPアドレスが共有されます。この場合の共有先はMetaMaskです。これは他のどのWebサイトにアクセスした場合も同様です。MetaMaskによりこのデータが一時的に使用され、ユーザーのデータが販売されることは一切ありません。VPNを使用したり、これらのサービスをオフにしたりすることもできますが、MetaMaskでのエクスペリエンスに影響を与える可能性があります。詳細は$1をお読みください。",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "トークンの詳細やガス設定などの基本機能が含まれます。この機能をオンにすることで、最適な体験が得られます。詳細については、$1をお読みください。",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "基本機能"
@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "対応ネットワーク上で、より高速なトランザクション、お得なネットワーク手数料、強化されたセキュリティをご利用いただけます。"
   },
-  "enableSnap": {
-    "message": "有効にする"
-  },
   "enableToken": {
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5208,9 +5205,6 @@
   "loading": {
     "message": "読み込み中..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Snapでトランザクションを完了させてください。"
-  },
   "loadingTokenList": {
     "message": "トークンリストをロードしています"
   },
@@ -5465,17 +5459,11 @@
   "mfaMethodEmail": {
     "message": "メールアドレス"
   },
-  "mfaOtpPaste": {
-    "message": "貼り付け"
-  },
   "mfaOtpResend": {
     "message": "コードを再送する"
   },
   "mfaOtpRetry": {
     "message": "もう一度お試しください"
-  },
-  "mfaOtpVerify": {
-    "message": "検証"
   },
   "mfaPickerOr": {
     "message": "または"

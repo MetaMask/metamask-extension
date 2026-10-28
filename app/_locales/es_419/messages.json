@@ -1916,11 +1916,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask ofrece funciones básicas como los detalles del token y la configuración de gas mediante servicios de Internet. Al utilizar los servicios de Internet, su dirección IP es compartida, en este caso con MetaMask. Es lo mismo que cuando visita cualquier página web. MetaMask utiliza estos datos temporalmente y nunca los vende. Puede utilizar una VPN o desactivar estos servicios, pero esto podría afectar su experiencia con MetaMask. Para saber más, consulte nuestra $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Incluye funciones básicas como detalles de tokens y configuración de gas. Mantén activada esta función para disfrutar de la mejor experiencia. Lee nuestra $1 para obtener más información.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Funcionalidad básica"
@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Desbloquea transacciones más rápidas, tarifas de red más bajas y mayor seguridad en redes compatibles."
   },
-  "enableSnap": {
-    "message": "Habilitar"
-  },
   "enableToken": {
     "message": "activar $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5208,9 +5205,6 @@
   "loading": {
     "message": "Cargando..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Por favor, complete la transacción en el Snap."
-  },
   "loadingTokenList": {
     "message": "Cargando lista de tokens"
   },
@@ -5465,17 +5459,11 @@
   "mfaMethodEmail": {
     "message": "Correo electrónico"
   },
-  "mfaOtpPaste": {
-    "message": "Pegar"
-  },
   "mfaOtpResend": {
     "message": "Reenviar código"
   },
   "mfaOtpRetry": {
     "message": "Inténtalo de nuevo"
-  },
-  "mfaOtpVerify": {
-    "message": "Verificar"
   },
   "mfaPickerOr": {
     "message": "o"

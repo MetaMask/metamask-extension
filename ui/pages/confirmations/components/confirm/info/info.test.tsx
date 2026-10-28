@@ -21,12 +21,11 @@ import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permis
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { useUsefulScreenReady } from '../../../../../hooks/useUsefulScreenReady';
+import { useConfirmationReady } from '../../../confirmation-performance';
 import Info from './info';
 
-jest.mock('../../../../../hooks/useUsefulScreenReady', () => ({
-  ...jest.requireActual('../../../../../hooks/useUsefulScreenReady'),
-  useUsefulScreenReady: jest.fn(),
+jest.mock('../../../confirmation-performance', () => ({
+  useConfirmationReady: jest.fn(),
 }));
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
@@ -189,9 +188,8 @@ describe('Info', () => {
     const state = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
-    expect(useUsefulScreenReady).toHaveBeenLastCalledWith(
-      'confirmation',
-      false,
+    expect(useConfirmationReady).toHaveBeenLastCalledWith(
+      expect.objectContaining({ msgParams: expect.any(Object) }),
     );
     expect(container).toMatchSnapshot();
   });
@@ -240,7 +238,9 @@ describe('Info', () => {
     const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
-    expect(useUsefulScreenReady).toHaveBeenLastCalledWith('confirmation', true);
+    expect(useConfirmationReady).toHaveBeenLastCalledWith(
+      expect.objectContaining({ txParams: expect.any(Object) }),
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -318,10 +318,7 @@ describe('Info', () => {
       const mockStore = configureMockStore([])(state);
       renderWithConfirmContextProvider(<Info />, mockStore);
 
-      expect(useUsefulScreenReady).toHaveBeenLastCalledWith(
-        'confirmation',
-        false,
-      );
+      expect(useConfirmationReady).toHaveBeenLastCalledWith(undefined);
       expect(
         screen.getByTestId('confirmation__info_skeleton'),
       ).toBeInTheDocument();

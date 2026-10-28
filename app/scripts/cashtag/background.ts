@@ -1,4 +1,5 @@
 import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
+import type { BridgeControllerMetricsLocation } from '@metamask/bridge-controller';
 import browser from 'webextension-polyfill';
 import { POPUP_FILE, SIDEPANEL_FILE } from '#shared/constants/app';
 import {
@@ -541,8 +542,12 @@ function handleOpenExtension(
   }
 
   if (page === 'swap') {
+    const controller = getController();
+    controller?.bridgeController?.setLocation(
+      'x_widget' as BridgeControllerMetricsLocation,
+    );
     return openExtensionPage({
-      controller: getController(),
+      controller,
       sender,
       path: swapRoute,
       search: swapRouteSearchForDest(caipAssetId),

@@ -362,7 +362,7 @@
   },
   "RewardsController": {
     "rewardsAccounts": "object",
-    "rewardsActiveAccount": null,
+    "rewardsActiveAccount": "object",
     "rewardsPointsEstimateHistory": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
@@ -409,7 +409,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenBalancesController": { "tokenBalances": "object" },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},

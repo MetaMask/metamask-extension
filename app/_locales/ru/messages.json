@@ -1916,11 +1916,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае MetaMask. Это похоже на посещенеи вами любого веб-сайта. MetaMask временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с MetaMask. Чтобы узнать больше, прочитайте нашу $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Включает в себя основные функции, такие как информация о токене и настройки газа. Оставьте эту функцию включенной для удобства использования. Прочитайте нашу $1, чтобы узнать больше.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Базовый функционал"
@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Разблокируйте более быстрые транзакции, более низкие комиссии сети и дополнительную безопасность в поддерживаемых сетях."
   },
-  "enableSnap": {
-    "message": "Включить"
-  },
   "enableToken": {
     "message": "активирует для $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -5204,9 +5201,6 @@
   "loading": {
     "message": "Загрузка..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Завершите транзакцию в Snap."
-  },
   "loadingTokenList": {
     "message": "Загружается список токенов"
   },
@@ -5461,17 +5455,11 @@
   "mfaMethodEmail": {
     "message": "Эл. почта"
   },
-  "mfaOtpPaste": {
-    "message": "Вставить"
-  },
   "mfaOtpResend": {
     "message": "Повторно отправить код"
   },
   "mfaOtpRetry": {
     "message": "Повторить попытку"
-  },
-  "mfaOtpVerify": {
-    "message": "Проверить"
   },
   "mfaPickerOr": {
     "message": "или"
