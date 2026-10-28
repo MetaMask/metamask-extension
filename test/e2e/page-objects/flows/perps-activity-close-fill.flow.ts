@@ -1,6 +1,7 @@
 import type { Driver } from '../../webdriver/driver';
 import { PerpsActivityPage } from '../pages/perps/perps-activity-page';
 import { PerpsTab } from '../pages/home/perps-tab';
+import HomePage from '../pages/home/homepage';
 import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
 import { lockAndWaitForLoginPage, login } from './login.flow';
@@ -57,6 +58,12 @@ export async function assertPerpsActivityShowsCloseFill({
     // snapshot replays the fill.
     // Remove once https://github.com/MetaMask/metamask-extension/issues/47287 is fixed.
     await driver.navigate();
+    // Reloading restores the last Perps route, which has no account menu.
+    // Return to Home before locking the wallet.
+    await activityPage.checkPageIsLoaded();
+    await activityPage.clickHeaderBack();
+    const homePage = new HomePage(driver);
+    await homePage.goToHomePage();
     await lockAndWaitForLoginPage(driver);
     await login(driver, {
       validateBalance: false,
