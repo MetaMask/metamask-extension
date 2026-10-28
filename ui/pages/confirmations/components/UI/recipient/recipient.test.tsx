@@ -145,19 +145,4 @@ describe('Recipient', () => {
 
     expect(getByText('0x12345...45678')).toBeInTheDocument();
   });
-
-  it('renders account type label when account type is provided', () => {
-    const { getByText } = render(
-      <Recipient
-        isAccount={true}
-        recipient={{
-          ...mockAccountRecipient,
-          accountType: BtcAccountType.P2wpkh,
-        }}
-        onClick={jest.fn()}
-      />,
-    );
-
-    expect(getByText('Native SegWit')).toBeInTheDocument();
-  });
 });

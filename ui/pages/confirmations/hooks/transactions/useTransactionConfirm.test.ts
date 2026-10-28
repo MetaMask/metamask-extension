@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { act } from '@testing-library/react';
 
 import {
   genUnapprovedContractInteractionConfirmation,
@@ -13,6 +14,7 @@ import {
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { useConfirmContext } from '../../context/confirm';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -269,9 +271,24 @@ describe('useTransactionConfirm', () => {
 
     expect(updateAndApproveTxMock).toHaveBeenCalledWith(
       expect.any(Object),
-      true,
+      false,
       'Confirm with your hardware wallet',
       payingAccount,
+    );
+  });
+
+  it('skips the loading indicator when the paying account is not a hardware wallet', async () => {
+    mockUseIsHardwareWalletAccount.mockReturnValue(false);
+
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      true,
+      '',
+      TRANSACTION_META_MOCK.txParams.from,
     );
   });
 
@@ -1058,6 +1075,27 @@ describe('useTransactionConfirm', () => {
       const actual = updateAndApproveTxMock.mock.calls[0][0];
       expect(actual.isGasFeeSponsored).toBe(false);
       expect(actual.isExternalSign).toBe(false);
+    });
+  });
+
+  describe('pending amount', () => {
+    it('does not approve while the typed amount has not been committed', async () => {
+      const confirmation =
+        genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+      const { result } = renderHookWithConfirmContextProvider(() => {
+        const confirm = useTransactionConfirm();
+        const { setIsAmountPending } = useConfirmContext();
+        return { ...confirm, setIsAmountPending };
+      }, getMockConfirmStateForTransaction(confirmation));
+
+      act(() => {
+        result.current.setIsAmountPending(true);
+      });
+
+      const approved = await result.current.onTransactionConfirm();
+
+      expect(approved).toBe(false);
+      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
     });
   });
 });

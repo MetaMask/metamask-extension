@@ -261,6 +261,13 @@ const mockLiveAccount = jest.fn(() => ({
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 const mockPerpsTrack = jest.fn();
+const mockAboutRef = jest.fn();
+const mockUsePerpsMarketAboutTracking = jest.fn(
+  ({ description }: { description?: string; isPageRendered?: boolean }) => ({
+    hasDescription: Boolean(description?.trim()),
+    aboutRef: mockAboutRef,
+  }),
+);
 // Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
 // properties the page constructs.
 const mockPerpsScreenViewedOptions: {
@@ -279,6 +286,10 @@ jest.mock('../../hooks/perps', () => ({
     }
     return { track: mockPerpsTrack };
   },
+  usePerpsMarketAboutTracking: (options: {
+    description?: string;
+    isPageRendered?: boolean;
+  }) => mockUsePerpsMarketAboutTracking(options),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
@@ -1462,6 +1473,80 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText(messages.perps24hVolume.message)).toBeInTheDocument();
     });
 
+    it('displays the About section between Stats and Recent Activity', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH'
+            ? { ...market, description: 'Ethereum market description.' }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+
+      const store = mockStore(createMockState(true));
+      const { getByTestId, getByText } = await renderPage(store);
+
+      const statsHeader = getByTestId('perps-stats-section-header');
+      const aboutSection = getByTestId('perps-market-about-section');
+      const recentActivityHeader = getByText(
+        messages.perpsRecentActivity.message,
+      );
+
+      expect(statsHeader.compareDocumentPosition(aboutSection)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(aboutSection.compareDocumentPosition(recentActivityHeader)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+      expect(mockUsePerpsMarketAboutTracking).toHaveBeenCalledWith(
+        expect.objectContaining({
+          symbol: 'ETH',
+          description: 'Ethereum market description.',
+          isPageRendered: true,
+        }),
+      );
+    });
+
+    it('reattaches the about view observer when navigating between markets with descriptions', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH' || market.symbol === 'BTC'
+            ? { ...market, description: `${market.symbol} market description.` }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+      const { rerender } = await renderPage(mockStore(createMockState(true)));
+      const initialNode = mockAboutRef.mock.calls.findLast(
+        ([node]) => node instanceof HTMLElement,
+      )?.[0];
+
+      expect(initialNode).toBeInstanceOf(HTMLElement);
+
+      mockAboutRef.mockClear();
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      await act(async () => {
+        rerender(<PerpsMarketDetailPage />);
+      });
+
+      expect(mockAboutRef).toHaveBeenCalledWith(null);
+      const nextNode = mockAboutRef.mock.calls.findLast(
+        ([node]) => node instanceof HTMLElement,
+      )?.[0];
+      expect(nextNode).toBeInstanceOf(HTMLElement);
+      expect(nextNode).not.toBe(initialNode);
+    });
+
+    it('does not render the About section without a description', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { queryByTestId } = await renderPage(store);
+
+      expect(
+        queryByTestId('perps-market-about-section'),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays recent activity section', async () => {
       const store = mockStore(createMockState(true));
 
@@ -2212,6 +2297,35 @@ describe('PerpsMarketDetailPage', () => {
           replace: true,
         }),
       );
+    });
+
+    it('does not mark About as rendered when cached metadata exists but perps is unavailable', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH'
+            ? { ...market, description: 'Ethereum market description.' }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+
+      await renderPage(mockStore(createMockState(false)));
+
+      expect(mockNavigateComponent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: '/',
+          replace: true,
+        }),
+      );
+      expect(mockUsePerpsMarketAboutTracking).toHaveBeenCalledWith(
+        expect.objectContaining({
+          description: 'Ethereum market description.',
+          isPageRendered: false,
+        }),
+      );
+      expect(
+        screen.queryByTestId('perps-market-about-section'),
+      ).not.toBeInTheDocument();
     });
   });
 

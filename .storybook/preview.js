@@ -28,8 +28,11 @@ export const parameters = {
   backgrounds: {
     options: {
       default: { name: 'default', value: 'var(--color-background-default)' },
-      alternative: { name: 'alternative', value: 'var(--color-background-alternative)' }
-    }
+      alternative: {
+        name: 'alternative',
+        value: 'var(--color-background-alternative)',
+      },
+    },
   },
   options: {
     storySort: {

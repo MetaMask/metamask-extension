@@ -76,9 +76,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   // because controllers are constructed from the fixture state at boot, but there is
   // nothing to validate against.
   'data.CurrencyController',
-  'data.MultichainAssetsRatesController',
   'data.MultichainAssetsController',
-  'data.MultichainBalancesController',
   'data.TokenRatesController',
   'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
@@ -87,7 +85,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
-  'data.TokenBalancesController',
+  'data.MetaMetricsController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.
@@ -121,6 +119,9 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RewardsController.rewardsAccounts.solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3.lastFreshOptInStatusCheck',
+  // ConfigRegistryController.lastFetched is a Date.now() timestamp written on
+  // every successful poll, so its value never matches between runs.
+  'data.ConfigRegistryController.lastFetched',
 ];
 
 /**

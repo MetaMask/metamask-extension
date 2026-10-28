@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AvatarNetwork,
-  BannerAlert,
-  BannerAlertSeverity,
   Box,
+  BoxBackgroundColor,
   BoxFlexDirection,
   Button,
   ButtonSize,
@@ -14,14 +13,12 @@ import {
   Label,
   Text,
   TextAlign,
-  TextButton,
   TextColor,
   TextField,
   TextFieldSize,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isWebUrl } from '../../../shared/lib/url-utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -38,7 +35,10 @@ import {
   type ChainlistRpcChain,
   type ChainlistRpcSuggestion,
 } from './chainlist-rpc';
-import { getHexChainId } from './chainlist-network-picker';
+import {
+  ChainlistSourceBanner,
+  getHexChainId,
+} from './chainlist-network-picker';
 
 const templateInfuraRpc = (endpoint: string) => {
   const rpcUrl = endpoint.endsWith('{infuraProjectId}')
@@ -67,7 +67,6 @@ const EMPTY_RPC_URLS: string[] = [];
 export type RpcUrlSource = 'chainlist' | 'manual';
 
 type AddRpcUrlPageFormProps = {
-  onCancel: () => void;
   onAdded: (
     url: string,
     name: string | undefined,
@@ -87,7 +86,6 @@ const hasChainId = (chainId?: string) =>
   Boolean(chainId && /^(\d+|0x[0-9a-f]+)$/iu.test(chainId.trim()));
 
 export const AddRpcUrlPageForm = ({
-  onCancel,
   onAdded,
   chainId,
   networkName,
@@ -100,13 +98,13 @@ export const AddRpcUrlPageForm = ({
   const [name, setName] = useState('');
   const [rpcValidationError, setRpcValidationError] = useState<string>();
   const [validatedUrl, setValidatedUrl] = useState<string>();
-  const [isUrlFocused, setIsUrlFocused] = useState(false);
   const [suggestionsDismissed, setSuggestionsDismissed] = useState(false);
   const [urlFeedback, setUrlFeedback] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [source, setSource] = useState<RpcUrlSource>('manual');
   const validationRequestIdRef = useRef(0);
   const latestUrlRef = useRef(url);
+  const rpcUrlSectionRef = useRef<HTMLDivElement>(null);
   const debouncedUrl = useDebouncedValue(url);
 
   const urlErrorKey = getUrlErrorKey(url);
@@ -124,11 +122,9 @@ export const AddRpcUrlPageForm = ({
     });
   }, [chainId, chainlistEnabled, existingRpcUrls, safeChains, url]);
   const trimmedQuery = url.trim();
-  const showSuggestions =
-    isUrlFocused && !suggestionsDismissed && suggestions.length > 0;
+  const showSuggestions = !suggestionsDismissed && suggestions.length > 0;
   const showNoMatches =
     chainlistEnabled &&
-    isUrlFocused &&
     !suggestionsDismissed &&
     isWebUrl(trimmedQuery) &&
     suggestions.length === 0;
@@ -162,16 +158,32 @@ export const AddRpcUrlPageForm = ({
     setSource('chainlist');
   };
 
-  const handleLearnHowToStaySafe = () => {
-    global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });
-  };
-
   const handleUseTypedUrl = () => {
     setSuggestionsDismissed(true);
     if (trimmedQuery) {
       setUrlFeedback(true);
     }
   };
+
+  useEffect(() => {
+    if (suggestionsDismissed || !chainlistEnabled) {
+      return undefined;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const { target } = event;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (rpcUrlSectionRef.current?.contains(target)) {
+        return;
+      }
+      setSuggestionsDismissed(true);
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => document.removeEventListener('mousedown', handlePointerDown);
+  }, [chainlistEnabled, suggestionsDismissed]);
 
   useEffect(() => {
     const trimmedUrl = debouncedUrl.trim();
@@ -266,6 +278,7 @@ export const AddRpcUrlPageForm = ({
             </Box>
           ) : null}
           <Box
+            ref={rpcUrlSectionRef}
             className="flex w-full flex-col"
             onBlur={(event) => {
               if (
@@ -274,7 +287,6 @@ export const AddRpcUrlPageForm = ({
                 return;
               }
 
-              setIsUrlFocused(false);
               if (url.trim()) {
                 setUrlFeedback(true);
               }
@@ -285,12 +297,12 @@ export const AddRpcUrlPageForm = ({
             </Label>
             <TextField
               id="rpcUrl"
+              autoFocus
               size={TextFieldSize.Lg}
               placeholder={t('enterRpcUrl')}
               value={url}
               onChange={handleUrlChange}
               onFocus={() => {
-                setIsUrlFocused(true);
                 setSuggestionsDismissed(false);
               }}
               isError={Boolean(displayedError)}
@@ -339,26 +351,22 @@ export const AddRpcUrlPageForm = ({
             ) : null}
             {showSuggestions ? (
               <Box
-                className="mt-2 max-h-80 overflow-y-auto rounded-xl border border-border-muted bg-background-default p-3"
+                className="mt-2 max-h-[calc(100dvh-14rem)] overflow-y-auto rounded-xl border border-border-muted bg-background-default"
                 data-testid="add-rpc-chainlist-suggestions"
                 onMouseDown={(event) => event.preventDefault()}
               >
-                <BannerAlert
-                  severity={BannerAlertSeverity.Info}
-                  data-testid="add-rpc-chainlist-source-banner"
-                  description={t('chainlistRpcDataSourceBanner', [
-                    <TextButton
-                      key="chainlist-rpc-learn-how-to-stay-safe"
-                      onClick={handleLearnHowToStaySafe}
-                      onMouseDown={(event) => event.preventDefault()}
-                    >
-                      {t('chainlistLearnHowToStaySafe')}
-                    </TextButton>,
-                  ])}
-                />
+                <Box className="px-3 pt-3 pb-2">
+                  <ChainlistSourceBanner
+                    description={(learnMore) =>
+                      t('chainlistRpcDataSourceBanner', [learnMore])
+                    }
+                    onLearnMoreMouseDown={(event) => event.preventDefault()}
+                    testId="add-rpc-chainlist-source-banner"
+                  />
+                </Box>
                 {suggestions.map((suggestion) => (
                   <button
-                    className="flex w-full flex-col px-1 py-3 text-left hover:bg-hover"
+                    className="flex w-full flex-col px-4 py-3 text-left hover:bg-hover"
                     data-testid="add-rpc-chainlist-suggestion"
                     key={suggestion.url}
                     type="button"
@@ -411,27 +419,16 @@ export const AddRpcUrlPageForm = ({
       </Box>
 
       <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={4}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
         padding={4}
-        paddingBottom={6}
-        className="shrink-0 flex-row"
+        className="networks-form__footer networks-form__footer--page w-full shrink-0"
       >
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          onClick={onCancel}
-          className="flex-1"
-          data-testid="page-container-footer-cancel"
-        >
-          {t('cancel')}
-        </Button>
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           isDisabled={isSubmitDisabled}
           onClick={handleSubmit}
-          className="flex-1"
+          isFullWidth
           data-testid="page-container-footer-next"
         >
           {t('addUrl')}

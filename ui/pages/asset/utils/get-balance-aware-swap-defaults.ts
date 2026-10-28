@@ -8,11 +8,6 @@ import {
   type CaipAssetType,
 } from '@metamask/utils';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import {
-  ARC_ERC20_USDC_BRIDGE_ASSET,
-  isArcErc20UsdcSwapToken,
-  isNativeArcAsset,
-} from '../../../components/app/assets/enablement/arc';
 
 /**
  * Minimal token shape accepted by `openBridgeExperience` as the swap source.
@@ -110,34 +105,6 @@ function getComparableAddress(addressOrAssetId?: string): string {
 }
 
 /**
- * Returns the Arc ERC20 wrapper when the input is Arc native USDC.
- *
- * @param token - Token shown on the Token Detail Page.
- * @returns Token usable by Swaps.
- */
-function resolveSwapToken(
-  token: BalanceAwareSwapSourceToken,
-): BalanceAwareSwapSourceToken {
-  if (
-    isNativeArcAsset({
-      address: token.address,
-      chainId: token.chainId,
-      assetId: token.address,
-    })
-  ) {
-    return {
-      address: ARC_ERC20_USDC_BRIDGE_ASSET.address,
-      chainId: token.chainId,
-      decimals: ARC_ERC20_USDC_BRIDGE_ASSET.decimals,
-      symbol: ARC_ERC20_USDC_BRIDGE_ASSET.symbol,
-      name: ARC_ERC20_USDC_BRIDGE_ASSET.name,
-    };
-  }
-
-  return token;
-}
-
-/**
  * Whether two chain ids refer to the same network.
  *
  * @param leftChainId - First chain id (hex or CAIP-2).
@@ -221,16 +188,6 @@ function hasEligibleFiatBalance(asset: BalanceAwareUserAsset): boolean {
 function toSourceToken(
   asset: ChainScopedUserAsset,
 ): BalanceAwareSwapSourceToken {
-  if (isNativeArcAsset(asset)) {
-    return {
-      address: ARC_ERC20_USDC_BRIDGE_ASSET.address,
-      chainId: asset.chainId,
-      decimals: ARC_ERC20_USDC_BRIDGE_ASSET.decimals,
-      symbol: ARC_ERC20_USDC_BRIDGE_ASSET.symbol,
-      name: ARC_ERC20_USDC_BRIDGE_ASSET.name,
-    };
-  }
-
   return {
     address: asset.address ?? asset.assetId,
     chainId: asset.chainId,
@@ -377,33 +334,22 @@ export function getBalanceAwareSwapDefaults({
   currentTokenBalance,
   assetsByChain,
 }: GetBalanceAwareSwapDefaultsParams): BalanceAwareSwapDefaults {
-  const swapCurrentToken = resolveSwapToken(currentToken);
-
-  if (
-    swapCurrentToken !== currentToken ||
-    isArcErc20UsdcSwapToken(swapCurrentToken)
-  ) {
-    return {
-      sourceToken: swapCurrentToken,
-    };
-  }
-
   if (isCurrentTokenFunded(currentToken, currentTokenBalance, assetsByChain)) {
     return {
-      sourceToken: swapCurrentToken,
+      sourceToken: currentToken,
     };
   }
 
   const bestSource = selectBestSwapSourceToken(currentToken, assetsByChain);
   if (!bestSource) {
     return {
-      sourceToken: swapCurrentToken,
+      sourceToken: currentToken,
     };
   }
 
   const destTokenAssetId = toAssetId(
-    swapCurrentToken.address,
-    formatChainIdToCaip(swapCurrentToken.chainId),
+    currentToken.address,
+    formatChainIdToCaip(currentToken.chainId),
   ) as CaipAssetType | undefined;
 
   return {

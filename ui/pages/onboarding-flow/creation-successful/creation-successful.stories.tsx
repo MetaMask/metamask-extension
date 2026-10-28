@@ -1,4 +1,5 @@
 import React from 'react';
+import RiveWasmProvider from '../../../contexts/rive-wasm';
 import CreationSuccessful from './creation-successful';
 
 export default {
@@ -7,9 +8,9 @@ export default {
 
 export const DefaultStory = () => {
   return (
-    <div style={{ maxHeight: '2000px' }}>
+    <RiveWasmProvider>
       <CreationSuccessful />
-    </div>
+    </RiveWasmProvider>
   );
 };
 
