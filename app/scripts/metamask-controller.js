@@ -46,6 +46,7 @@ import {
 } from '@metamask/controller-utils';
 
 import { BRIDGE_CONTROLLER_NAME } from '@metamask/bridge-controller';
+import { Source } from '@metamask/assets-controllers';
 
 import {
   TransactionStatus,
@@ -2498,9 +2499,15 @@ export default class MetamaskController extends EventEmitter {
 
       // NftController
 
-      addNft: nftController.addNft.bind(nftController),
-      addNftVerifyOwnership:
-        nftController.addNftVerifyOwnership.bind(nftController),
+      // These are only called from the UI import flow, i.e. a manual import.
+      addNft: (address, tokenId, networkClientId) =>
+        nftController.addNft(address, tokenId, networkClientId, {
+          source: Source.Custom,
+        }),
+      addNftVerifyOwnership: (address, tokenId, networkClientId) =>
+        nftController.addNftVerifyOwnership(address, tokenId, networkClientId, {
+          source: Source.Custom,
+        }),
       removeAndIgnoreNft: nftController.removeAndIgnoreNft.bind(nftController),
       removeNft: nftController.removeNft.bind(nftController),
       checkAndUpdateAllNftsOwnershipStatus:
@@ -5934,6 +5941,10 @@ export default class MetamaskController extends EventEmitter {
             singleNft.contract,
             singleNft.tokenId,
             networkClientId,
+            // Automatic add after the user's own transaction, not a manual
+            // import. The default (`Source.Custom`) would exempt the NFT from
+            // spam auto-removal.
+            { source: Source.Detected },
           );
         });
         await Promise.allSettled(addNftPromises);
