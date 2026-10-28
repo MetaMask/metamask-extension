@@ -1,9 +1,5 @@
 import { noop } from 'lodash';
 import {
-  getAnalyticsControllerInitMessenger,
-  getAnalyticsControllerMessenger,
-} from './analytics-controller-messenger';
-import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
 } from './ppom-controller-messenger';
@@ -32,14 +28,10 @@ import {
   getAccountActivityServiceMessenger,
 } from './core-backend';
 import {
-  getMultichainBalancesControllerMessenger,
-  getMultichainBalancesControllerInitMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
   getMultichainAssetsControllerInitMessenger,
   getMultichainNetworkControllerMessenger,
-  getMultichainAssetsRatesControllerMessenger,
-  getMultichainAssetsRatesControllerInitMessenger,
 } from './multichain';
 import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
 import {
@@ -60,7 +52,6 @@ import {
   getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
-  getClientControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -90,10 +81,6 @@ import { getNetworkConnectionBannerControllerMessenger } from './network-connect
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
 import {
-  getTokenListControllerInitMessenger,
-  getTokenListControllerMessenger,
-} from './token-list-controller-messenger';
-import {
   getTokenDetectionControllerInitMessenger,
   getTokenDetectionControllerMessenger,
 } from './token-detection-controller-messenger';
@@ -101,10 +88,6 @@ import {
   getTokensControllerInitMessenger,
   getTokensControllerMessenger,
 } from './tokens-controller-messenger';
-import {
-  getTokenBalancesControllerInitMessenger,
-  getTokenBalancesControllerMessenger,
-} from './token-balances-controller-messenger';
 import {
   getStaticAssetsControllerInitMessenger,
   getStaticAssetsControllerMessenger,
@@ -118,7 +101,6 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
-import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 import {
   getAccountTrackerControllerInitMessenger,
   getAccountTrackerControllerMessenger,
@@ -135,17 +117,17 @@ import {
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
 import {
+  getRewardsMoneyControllerInitMessenger,
+  getRewardsMoneyControllerMessenger,
+} from './rewards-money-controller-messenger';
+import { getRewardsMoneyDataServiceMessenger } from './rewards-money-data-service-messenger';
+import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
 import { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 import { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 import { getAppStateControllerMessenger } from './app-state-controller-messenger';
-import {
-  getPermissionControllerMessenger,
-  getPermissionControllerInitMessenger,
-} from './permission-controller-messenger';
-import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 import { getShieldSubscriptionServiceMessenger } from './subscription/shield-subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
@@ -153,7 +135,6 @@ import { getAccountOrderControllerMessenger } from './account-order-controller-m
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 import {
@@ -185,8 +166,6 @@ import {
 } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
-import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
-import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 import { getComplianceControllerMessenger } from './compliance-controller-messenger';
 import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
@@ -239,8 +218,6 @@ export {
   getEncryptionPublicKeyControllerInitMessenger,
 } from './encryption-public-key-controller-messenger';
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-export { getLoggingControllerMessenger } from './logging-controller-messenger';
-export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type { NameControllerInitMessenger } from './name-controller-messenger';
@@ -257,17 +234,7 @@ export {
 } from './ramps-controller-messenger';
 export type { RampsControllerInitMessenger } from './ramps-controller-messenger';
 export { getRampsServiceMessenger } from './ramps-service-messenger';
-export type {
-  PermissionControllerMessenger,
-  PermissionControllerInitMessenger,
-} from './permission-controller-messenger';
-export {
-  getPermissionControllerMessenger,
-  getPermissionControllerInitMessenger,
-} from './permission-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
-export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
-export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 export { getSentryTracingServiceMessenger } from './sentry-tracing-service-messenger';
 export type { ChompApiServiceInitMessenger } from './chomp-api-service-messenger';
@@ -293,19 +260,18 @@ export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
-export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
 export {
   getSignatureControllerMessenger,
   getSignatureControllerInitMessenger,
 } from './signature-controller-messenger';
-export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
-export type { TokenBalancesControllerInitMessenger } from './token-balances-controller-messenger';
 export {
-  getTokenBalancesControllerMessenger,
-  getTokenBalancesControllerInitMessenger,
-} from './token-balances-controller-messenger';
+  getRewardsMoneyControllerInitMessenger,
+  getRewardsMoneyControllerMessenger,
+} from './rewards-money-controller-messenger';
+export type { RewardsMoneyControllerInitMessenger } from './rewards-money-controller-messenger';
+export { getRewardsMoneyDataServiceMessenger } from './rewards-money-data-service-messenger';
 export type { StaticAssetsControllerInitMessenger } from './static-assets-controller-messenger';
 export {
   getStaticAssetsControllerMessenger,
@@ -316,11 +282,6 @@ export {
   getTokenDetectionControllerMessenger,
   getTokenDetectionControllerInitMessenger,
 } from './token-detection-controller-messenger';
-export type { TokenListControllerInitMessenger } from './token-list-controller-messenger';
-export {
-  getTokenListControllerMessenger,
-  getTokenListControllerInitMessenger,
-} from './token-list-controller-messenger';
 export type { TokensControllerInitMessenger } from './tokens-controller-messenger';
 export {
   getTokensControllerMessenger,
@@ -369,10 +330,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
   },
-  AnalyticsController: {
-    getMessenger: getAnalyticsControllerMessenger,
-    getInitMessenger: getAnalyticsControllerInitMessenger,
-  },
   AssetsController: {
     getMessenger: getAssetsControllerMessenger,
     getInitMessenger: getAssetsControllerInitMessenger,
@@ -400,10 +357,6 @@ export const MESSENGER_FACTORIES = {
   ChompApiService: {
     getMessenger: getChompApiServiceMessenger,
     getInitMessenger: getChompApiServiceInitMessenger,
-  },
-  ClientController: {
-    getMessenger: getClientControllerMessenger,
-    getInitMessenger: noop,
   },
   ComplianceService: {
     getMessenger: getComplianceServiceMessenger,
@@ -461,24 +414,12 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getGatorPermissionsControllerMessenger,
     getInitMessenger: noop,
   },
-  GeolocationApiService: {
-    getMessenger: getGeolocationApiServiceMessenger,
-    getInitMessenger: noop,
-  },
-  GeolocationController: {
-    getMessenger: getGeolocationControllerMessenger,
-    getInitMessenger: noop,
-  },
   InstitutionalSnapController: {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
   LegacyBackgroundApiService: {
     getMessenger: getLegacyBackgroundApiServiceMessenger,
-    getInitMessenger: noop,
-  },
-  LoggingController: {
-    getMessenger: getLoggingControllerMessenger,
     getInitMessenger: noop,
   },
   MetaMetricsDataDeletionController: {
@@ -508,14 +449,6 @@ export const MESSENGER_FACTORIES = {
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
     getInitMessenger: getMultichainAssetsControllerInitMessenger,
-  },
-  MultichainAssetsRatesController: {
-    getMessenger: getMultichainAssetsRatesControllerMessenger,
-    getInitMessenger: getMultichainAssetsRatesControllerInitMessenger,
-  },
-  MultichainBalancesController: {
-    getMessenger: getMultichainBalancesControllerMessenger,
-    getInitMessenger: getMultichainBalancesControllerInitMessenger,
   },
   MultichainTransactionsController: {
     getMessenger: getMultichainTransactionsControllerMessenger,
@@ -549,10 +482,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getOnboardingControllerMessenger,
     getInitMessenger: noop,
   },
-  PermissionController: {
-    getMessenger: getPermissionControllerMessenger,
-    getInitMessenger: getPermissionControllerInitMessenger,
-  },
   PermissionLogController: {
     getMessenger: getPermissionLogControllerMessenger,
     getInitMessenger: noop,
@@ -571,10 +500,6 @@ export const MESSENGER_FACTORIES = {
   },
   RatesController: {
     getMessenger: getRatesControllerMessenger,
-    getInitMessenger: noop,
-  },
-  SelectedNetworkController: {
-    getMessenger: getSelectedNetworkControllerMessenger,
     getInitMessenger: noop,
   },
   SentinelApiService: {
@@ -617,10 +542,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getStaticAssetsControllerMessenger,
     getInitMessenger: getStaticAssetsControllerInitMessenger,
   },
-  SubjectMetadataController: {
-    getMessenger: getSubjectMetadataControllerMessenger,
-    getInitMessenger: noop,
-  },
   ShieldSubscriptionService: {
     getMessenger: getShieldSubscriptionServiceMessenger,
     getInitMessenger: noop,
@@ -632,6 +553,14 @@ export const MESSENGER_FACTORIES = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
+  },
+  RewardsMoneyDataService: {
+    getMessenger: getRewardsMoneyDataServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RewardsMoneyController: {
+    getMessenger: getRewardsMoneyControllerMessenger,
+    getInitMessenger: getRewardsMoneyControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
@@ -653,17 +582,9 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRampsControllerMessenger,
     getInitMessenger: getRampsControllerInitMessenger,
   },
-  TokenBalancesController: {
-    getMessenger: getTokenBalancesControllerMessenger,
-    getInitMessenger: getTokenBalancesControllerInitMessenger,
-  },
   TokenDetectionController: {
     getMessenger: getTokenDetectionControllerMessenger,
     getInitMessenger: getTokenDetectionControllerInitMessenger,
-  },
-  TokenListController: {
-    getMessenger: getTokenListControllerMessenger,
-    getInitMessenger: getTokenListControllerInitMessenger,
   },
   TokensController: {
     getMessenger: getTokensControllerMessenger,

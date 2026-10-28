@@ -1,11 +1,15 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { toChecksumHexAddress, toHex } from '@metamask/controller-utils';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
+  buildNativeEvmBalancePatch,
   getMockConfirmState,
   getMockConfirmStateForTransaction,
 } from '../../../../../../test/data/confirmations/helper';
@@ -53,7 +57,10 @@ const RESERVE_ALERT = {
   showArrow: false,
 };
 
-function buildMonadNetworkState(extraMetamask: Record<string, unknown> = {}) {
+function buildMonadNetworkState(
+  balanceWei: string = toHex(100n * 10n ** 18n),
+  extraMetamask: Record<string, unknown> = {},
+) {
   return {
     metamask: {
       networkConfigurationsByChainId: {
@@ -73,14 +80,11 @@ function buildMonadNetworkState(extraMetamask: Record<string, unknown> = {}) {
           blockExplorerUrls: [],
         },
       },
-      accountsByChainId: {
-        [CHAIN_IDS.MONAD]: {
-          [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-            // 100 MON — enough that proactive value check does not fire by default
-            balance: toHex(100n * 10n ** 18n),
-          },
-        },
-      },
+      // Default 100 MON — enough that proactive value check does not fire
+      ...buildNativeEvmBalancePatch({
+        hexChainId: CHAIN_IDS.MONAD,
+        amountWei: balanceWei,
+      }),
       ...extraMetamask,
     },
   };
@@ -183,15 +187,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
             value: VALUE_6_MON,
           },
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_15_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_15_MON),
       ),
     );
     expect(alerts).toEqual([RESERVE_ALERT]);
@@ -211,15 +207,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
             value: VALUE_6_MON,
           },
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_15_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_15_MON),
       ),
     );
     expect(alerts).toEqual([]);
@@ -237,15 +225,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
             value: '0x0',
           },
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_7_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_7_MON),
       ),
     );
     expect(alerts).toEqual([]);
@@ -259,19 +239,41 @@ describe('useGasSponsorshipWarningAlerts', () => {
           delegationAddress: DELEGATION_ADDRESS,
           isGasFeeSponsored: true,
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_7_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_7_MON),
       ),
     );
     expect(alerts).toEqual([]);
   });
+
+  // Before Pay delivers the mUSD, the simulated vault transferFrom reverts and
+  // Monad masks it as a reserve balance violation. Blocking on that rejects a
+  // deposit that succeeds once Relay funds it.
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    ['deposit', TransactionType.moneyAccountDeposit],
+    ['withdraw', TransactionType.moneyAccountWithdraw],
+  ])(
+    'returns no alerts for a money account %s reporting a reserve violation',
+    (_name: string, transactionType: TransactionType) => {
+      const alerts = runHook(
+        getMockConfirmStateForTransaction(
+          {
+            ...CONFIRMATION_MOCK,
+            delegationAddress: DELEGATION_ADDRESS,
+            isGasFeeSponsored: true,
+            nestedTransactions: [{ type: transactionType }],
+            simulationData: {
+              callTraceErrors: ['reserve balance violation'],
+              tokenBalanceChanges: [],
+            },
+          } as unknown as TransactionMeta,
+          buildMonadNetworkState(),
+        ),
+      );
+
+      expect(alerts).toEqual([]);
+    },
+  );
 
   it('returns warning alert for an undelegated account when simulation reports a reserve violation', () => {
     const alerts = runHook(
@@ -285,15 +287,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
             tokenBalanceChanges: [],
           },
         },
-        buildMonadNetworkState({
-          accountsByChainId: {
-            [CHAIN_IDS.MONAD]: {
-              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: BALANCE_15_MON,
-              },
-            },
-          },
-        }),
+        buildMonadNetworkState(BALANCE_15_MON),
       ),
     );
     expect(alerts).toEqual([RESERVE_ALERT]);

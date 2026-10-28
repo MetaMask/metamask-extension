@@ -92,7 +92,6 @@ import {
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
-import { isMfaKitEnabled } from '../../hooks/identity/mfa';
 import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
@@ -263,6 +262,9 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
+export const PageNotFound = mmLazy(
+  () => import('../../components/app/page-not-found/page-not-found.tsx'),
+);
 const BasicFunctionalityOff = mmLazy(
   () =>
     import('../basic-functionality-required/basic-functionality-required.tsx'),
@@ -439,14 +441,10 @@ export const routeConfig = [
             },
           ]
         : []),
-      ...(isMfaKitEnabled()
-        ? [
-            {
-              path: MFA_FLOW_ROUTE,
-              element: <MfaFlowHost />,
-            },
-          ]
-        : []),
+      {
+        path: MFA_FLOW_ROUTE,
+        element: <MfaFlowHost />,
+      },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
@@ -744,6 +742,12 @@ export const routeConfig = [
       },
     ],
   },
+  // Unmatched hashes stay in the address bar so route metrics still see them,
+  // and render the missing-page screen instead of the crash page.
+  {
+    path: '*',
+    element: <PageNotFound />,
+  },
 ];
 
 export default function Routes() {
@@ -925,7 +929,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
-      {isUnlocked && isMfaKitEnabled() ? <MfaFlowLauncher /> : null}
+      {isUnlocked ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}

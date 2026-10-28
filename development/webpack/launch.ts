@@ -15,6 +15,7 @@
 import { totalmem } from 'node:os';
 import { isatty } from 'node:tty';
 import { spawn, type StdioOptions } from 'node:child_process';
+import nodePty from '@lydell/node-pty';
 import parser from 'yargs-parser';
 import { webpackFile } from '../lib/build-paths.ts';
 import type { Child, PTY, Stdio, StdName } from './types.ts';
@@ -150,8 +151,6 @@ function createNonTTYStream(stream: NodeJS.WriteStream, name: StdName): Stdio {
 async function createTTYStream(stream: NodeJS.WriteStream): Promise<Stdio> {
   // create a PTY (Pseudo TTY) so the child stream behaves like a TTY
   const options = { cols: stream.columns, encoding: null, rows: stream.rows };
-  const nodePtyModule = await import('@lydell/node-pty');
-  const nodePty = nodePtyModule.default ?? nodePtyModule;
   const pty: PTY = nodePty.open(options);
 
   return {

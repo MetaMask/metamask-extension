@@ -1,14 +1,18 @@
 import React from 'react';
 import { AvatarBaseSize } from '@metamask/design-system-shared';
 import { useSelector } from 'react-redux';
+import { useGetDisplayName } from '#ui/hooks/useGetDisplayName';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { selectAccountGroupNameByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import { PreferredAvatar } from '../preferred-avatar';
 
 export function AccountName({ address }: { address?: string | null }) {
-  const accountName = useSelector((state) =>
+  const getDisplayName = useGetDisplayName();
+  const ownAccountName = useSelector((state) =>
     selectAccountGroupNameByAddress(state, address ?? ''),
   );
+  const accountName =
+    ownAccountName || (address ? getDisplayName(address) : '');
 
   if (!address) {
     return null;

@@ -32,6 +32,7 @@ import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/ne
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
+import { getTransactionPayingAccount } from '../../shared/lib/transactions.utils';
 import {
   getMoneyAccountTransactionType,
   isProtectedByEnforcedSimulations,
@@ -41,7 +42,7 @@ import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
 } from '../ducks/bridge-status/selectors';
-import { getInternalAccountsObject } from './accounts';
+import { getInternalAccounts, getInternalAccountsObject } from './accounts';
 import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getSelectedAccountGroup,
@@ -79,8 +80,9 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
 
 /**
  * Whether the selected account group belongs to the same HD entropy wallet that
- * owns the primary money account. Money-account activity is only surfaced for
- * that wallet so switching to another SRP does not leak unrelated rows.
+ * owns the primary money account. Money-account activity with no known payer
+ * is only surfaced for that wallet so switching to another SRP does not leak
+ * unrelated rows.
  *
  * @param selectedAccountGroup - Currently selected account group id.
  * @param primaryMoneyAccount - Primary money account, when present.
@@ -124,6 +126,32 @@ function isMoneyAccountTransaction(
   );
 }
 
+/**
+ * Account that funded a money-account transaction, such as the hardware
+ * account behind a deposit. Pay clears its account override once the
+ * transaction finalizes, so this falls back to the sender of the funding
+ * transactions Pay links via `requiredTransactionIds`.
+ *
+ * @param tx - The money-account transaction.
+ * @param transactionsById - Local transactions keyed by id.
+ * @param transactionPayData - Pay data keyed by transaction id.
+ * @returns Lowercased paying account address, if known.
+ */
+function getMoneyAccountPayer(
+  tx: TransactionMeta,
+  transactionsById: Map<string, TransactionMeta>,
+  transactionPayData: TransactionPayControllerState['transactionData'],
+) {
+  const fundingFrom = tx.requiredTransactionIds
+    ?.map((id) => transactionsById.get(id)?.txParams?.from)
+    .find(Boolean) as Hex | undefined;
+
+  return getTransactionPayingAccount(
+    tx,
+    transactionPayData[tx.id]?.accountOverride ?? fundingFrom,
+  )?.toLowerCase();
+}
+
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
   if (tx.txParams?.from?.toLowerCase() !== selectedAddress) {
@@ -152,6 +180,8 @@ export const selectLocalTransactions = createSelector(
   selectRequiredTransactionHashes,
   selectPrimaryMoneyAccount,
   getSelectedAccountGroup,
+  selectTransactionPayData,
+  getInternalAccounts,
   (
     transactions,
     evmAddress,
@@ -160,6 +190,8 @@ export const selectLocalTransactions = createSelector(
     internalTxHashes,
     primaryMoneyAccount,
     selectedAccountGroup,
+    transactionPayData,
+    internalAccounts,
   ): TransactionGroup[] => {
     if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
@@ -185,11 +217,39 @@ export const selectLocalTransactions = createSelector(
       return false;
     };
 
+    const transactionsById = new Map(
+      (transactions ?? []).map((tx) => [tx.id, tx]),
+    );
+
+    // Payers from the money account's own SRP keep the wallet-wide rule.
+    const isPayerOutsideMoneyAccountWallet = (payer: string) =>
+      payer !== moneyAccountAddress &&
+      internalAccounts.some(
+        (account) =>
+          account.address.toLowerCase() === payer &&
+          account.options?.entropySource !==
+            primaryMoneyAccount?.options?.entropy?.id,
+      );
+
+    const isSelectedMoneyAccountTransaction = (tx: TransactionMeta) => {
+      if (!isMoneyAccountTransaction(tx, moneyAccountAddress)) {
+        return false;
+      }
+      const payer = getMoneyAccountPayer(
+        tx,
+        transactionsById,
+        transactionPayData,
+      );
+      if (payer && isPayerOutsideMoneyAccountWallet(payer)) {
+        return payer === selectedAddress;
+      }
+      return includeMoneyAccountTransactions;
+    };
+
     const filtered = (transactions ?? []).filter(
       (tx) =>
         (isFromSelectedAccount(tx, selectedAddress) ||
-          (includeMoneyAccountTransactions &&
-            isMoneyAccountTransaction(tx, moneyAccountAddress))) &&
+          isSelectedMoneyAccountTransaction(tx)) &&
         !isInternalRequiredTransaction(tx),
     );
 

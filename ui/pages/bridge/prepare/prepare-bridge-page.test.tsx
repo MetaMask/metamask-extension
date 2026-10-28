@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
-import { act, render, fireEvent } from '@testing-library/react';
+import { act, render, fireEvent, waitFor } from '@testing-library/react';
 import {
   ChainId,
   formatChainIdToCaip,
@@ -27,6 +27,7 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../../contexts/hardware-wallets';
+import * as tokenSecurityUtils from '../utils/token-security';
 import PrepareBridgePage from './prepare-bridge-page';
 
 const mockQuoteTraceStart = jest.fn();
@@ -78,6 +79,7 @@ setBackgroundConnection({
   resetState: async () => jest.fn(),
   getStatePatches: async () => jest.fn(),
   updateBridgeQuoteRequestParams: async () => jest.fn(),
+  messengerCall: jest.fn(),
   setInputPrimaryDenomination: async () => undefined,
   trackUnifiedSwapBridgeEvent: async () => undefined,
 } as never);
@@ -505,6 +507,7 @@ describe('PrepareBridgePage', () => {
       resetState: jest.fn().mockResolvedValue(undefined),
       getStatePatches: jest.fn().mockResolvedValue([]),
       updateBridgeQuoteRequestParams,
+      messengerCall: jest.fn(),
       trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
     } as never);
 
@@ -665,6 +668,7 @@ describe('PrepareBridgePage', () => {
         resetState: jest.fn(),
         getStatePatches: jest.fn().mockResolvedValue([]),
         updateBridgeQuoteRequestParams: jest.fn().mockResolvedValue(undefined),
+        messengerCall: jest.fn(),
         trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
       } as never);
     });
@@ -808,8 +812,7 @@ describe('PrepareBridgePage', () => {
       getStatePatches: jest.fn(),
       updateBridgeQuoteRequestParams: jest.fn(),
       trackUnifiedSwapBridgeEvent: jest.fn(),
-      setEnabledAllPopularNetworks: jest.fn(),
-      setActiveNetwork: jest.fn(),
+      messengerCall: jest.fn(),
     } as never;
 
     beforeEach(() => {
@@ -901,6 +904,43 @@ describe('PrepareBridgePage', () => {
       await act(async () => {
         fireEvent.click(ctaButton);
       });
+    });
+
+    it('backfills fetched security data onto a toToken that has none', async () => {
+      setBackgroundConnection(backgroundWithAllMethods);
+      const mockState = makeStoreWithSecurityData(undefined);
+      mockState.metamask.useExternalServices = true;
+      const toTokenAssetId = toAssetId(
+        TOKEN_ADDRESS,
+        formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+      );
+      const fetchSpy = jest
+        .spyOn(tokenSecurityUtils, 'fetchCachedTokenAssets')
+        .mockResolvedValue([
+          {
+            assetId: toTokenAssetId,
+            securityData: { resultType: 'Malicious', features: [] },
+          },
+        ] as never);
+      const store = configureStore(mockState);
+
+      renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        store,
+      );
+
+      await waitFor(() =>
+        expect(store.getState().bridge.toToken?.securityData).toStrictEqual({
+          type: 'Malicious',
+          metadata: { features: [] },
+        }),
+      );
+      expect(fetchSpy).toHaveBeenCalledWith(
+        expect.arrayContaining([toTokenAssetId]),
+      );
+      fetchSpy.mockRestore();
     });
   });
 });

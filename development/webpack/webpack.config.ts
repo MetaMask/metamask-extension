@@ -80,16 +80,6 @@ export default async function createConfig() {
     args.devtool === 'source-map'
       ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
       : [];
-  // Styles for the outer X document. They cannot be bundled into the widget
-  // frame HTML because that HTML is the iframe, so they are imported as strings
-  // and injected by the content script instead.
-  const cashtagPageStylesRe =
-    /scripts[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$/u;
-  // HtmlBundlerPlugin extracts every stylesheet it recognises into its own asset,
-  // which would break the string imports above, so they are excluded here.
-  const bundledStylesRe =
-    /^(?!.*[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$|.*[\\/]cashtag[\\/]widget[\\/]widget\.css$).*\.(?:css|scss|sass|less|styl)$/u;
-
   // Keep widget.css outside HtmlBundler. Its CSS @import is not resolved
   // correctly there, which leaves design-token variables undefined in dist
   // builds. This transform preserves the previous working bundle behavior.
@@ -199,7 +189,6 @@ export default async function createConfig() {
       preprocessorOptions: { useWith: false },
       minify: args.minify,
       test: /\.html$/u, // default is eta/html, we only want html
-      css: { test: bundledStylesRe },
       data: { isTest: args.test },
       // In watch mode, inject the dev-only background client into the relevant HTML page.
       beforeEmit: (content, entry, compilation) => {
@@ -346,13 +335,14 @@ export default async function createConfig() {
   // #endregion plugins
 
   const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
-  const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+  // SWC enables TSX from the filename. Default to plain TypeScript for .mts.
+  const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
   const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 
   const swcReactRefreshConfig = { ...swcConfig, refresh: true };
-  const reactRefreshTsxLoader = getSwcLoader(
+  const reactRefreshTsLoader = getSwcLoader(
     'typescript',
-    true,
+    false,
     safeVariables,
     swcReactRefreshConfig,
   );
@@ -363,7 +353,17 @@ export default async function createConfig() {
     swcReactRefreshConfig,
   );
 
-  const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+  // Inline public flags in .js/.mjs dependencies: IN_TEST controls E2E polling,
+  // and NODE_ENV removes runtime reads before policy generation.
+  const npmEnvs = {
+    // TODO: Remove vendor IN_TEST inlining once the Core changes are released and
+    // adopted in Extension (explicit test polling and gas-estimation mocks):
+    // https://github.com/MetaMask/core/pull/10831
+    // https://github.com/MetaMask/metamask-extension/pull/47090
+    IN_TEST: safeVariables.IN_TEST,
+    NODE_ENV: safeVariables.NODE_ENV,
+  };
+  const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
   const cjsLoader = getSwcLoader(
     'ecmascript',
     false,
@@ -499,19 +499,19 @@ export default async function createConfig() {
               {
                 test: TYPESCRIPT_FILE_RE,
                 include: UI_DIR_RE,
-                use: reactRefreshTsxLoader,
+                use: reactRefreshTsLoader,
               },
               {
                 test: TYPESCRIPT_FILE_RE,
                 exclude: [NODE_MODULES_RE, UI_DIR_RE],
-                use: tsxLoader,
+                use: tsLoader,
               },
             ]
           : [
               {
                 test: TYPESCRIPT_FILE_RE,
                 exclude: NODE_MODULES_RE,
-                use: tsxLoader,
+                use: tsLoader,
               },
             ]),
         // own javascript, and own javascript with jsx
@@ -565,33 +565,9 @@ export default async function createConfig() {
             },
           ],
         },
-        // TODO: remove feature-specific hack from config.
-        // Cashtag widget host-page styles, imported as text so the content script can inject
-        // and remove them without exposing a web-accessible stylesheet.
-        {
-          test: cashtagPageStylesRe,
-          use: [
-            { loader: 'css-loader', options: { exportType: 'string' } },
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  config: false,
-                  plugins: [
-                    tailwindcss(),
-                    autoprefixer({ overrideBrowserslist: browsersListQuery }),
-                    rtlCss({ processEnv: false }),
-                    discardFontFace(['woff2']), // keep woff2 fonts
-                  ],
-                },
-              },
-            },
-          ],
-        },
         // css, sass/scss
         {
           test: /\.(css|sass|scss)$/u,
-          exclude: cashtagPageStylesRe,
           use: [
             // Resolves CSS `@import` and `url()` paths and loads the files.
             'css-loader',

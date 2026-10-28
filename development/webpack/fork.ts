@@ -11,6 +11,8 @@ import { webpackFile } from '../lib/build-paths.ts';
  * @see {@link ./launch.ts}
  */
 
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
 async function main() {
   const PPID = Number(process.env.PPID);
   if (isNaN(PPID) || PPID !== process.ppid) {

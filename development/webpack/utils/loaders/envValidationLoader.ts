@@ -19,9 +19,13 @@ export type EnvValidationLoaderOptions = {
 /**
  * Determines the parser syntax based on the file extension.
  *
- * Always enables JSX parsing since this loader only runs on the project's own
- * source files (not node_modules), and .js files in this codebase commonly
- * contain JSX. SWC can parse non-JSX code with JSX enabled, but not the reverse.
+ * This loader only runs on first-party source (not `node_modules`).
+ *
+ * - `.js` / `.jsx` / `.tsx`: parse with JSX enabled. Many of our `.js` files
+ * contain JSX, so JS must allow it.
+ * - `.ts` / `.mts`: parse TypeScript without JSX. From `@swc/core` 1.16 onward,
+ * JSX mode treats generics like `<T>(value: T) => value` as JSX tags and
+ * fails to parse them.
  *
  * @param resourcePath - The file path to determine syntax for.
  * @returns The parse options with appropriate syntax configuration.
@@ -30,7 +34,7 @@ function getParseOptions(resourcePath: string): ParseOptions {
   const isTypeScript = TYPESCRIPT_FILE_RE.test(resourcePath);
 
   if (isTypeScript) {
-    return { syntax: 'typescript', tsx: true };
+    return { syntax: 'typescript', tsx: resourcePath.endsWith('.tsx') };
   }
   return { syntax: 'ecmascript', jsx: true };
 }

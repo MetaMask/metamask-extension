@@ -67,21 +67,12 @@ import {
 } from '../../shared/lib/deep-links/metrics';
 import { hasVault } from '../../shared/lib/stores/persistence-manager';
 import type { MetaMaskStateType } from '../../shared/lib/stores/base-store';
-import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
-import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
 import {
-  isPhishingWarningPageUrl,
-  loadPhishingWarningPage,
-  maybeDetectPhishing,
-} from './lib/phishing';
-import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
-import ExtensionPlatform from './platforms/extension';
-import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
-import { registerCashtagBackgroundBridge } from './cashtag/background';
+  getStartupPhase,
+  setStartupPhase,
+  StartupPhase,
+} from '../../shared/lib/telemetry/startup-phase';
 
-import NotificationManager from './lib/notification-manager';
-import MetamaskController from './metamask-controller';
-import { createEventBuilder, trackEvent } from './controllers/analytics';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
 import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
@@ -94,6 +85,20 @@ import rawFirstTimeState from './first-time-state';
 import { loadStateFromPersistence } from './lib/startup/load-state-from-persistence';
 import { wireStatePersistence } from './lib/startup/wire-state-persistence';
 import { parsePortInfo } from './lib/parse-port-info';
+import { createEventBuilder, trackEvent } from './controllers/analytics';
+import MetamaskController from './metamask-controller';
+import NotificationManager from './lib/notification-manager';
+import { registerCashtagBackgroundBridge } from './cashtag/background';
+import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
+import ExtensionPlatform from './platforms/extension';
+import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
+import {
+  isPhishingWarningPageUrl,
+  loadPhishingWarningPage,
+  maybeDetectPhishing,
+} from './lib/phishing';
+import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
 import { loadPreinstalledSnaps } from './lib/load-preinstalled-snaps';
 import {
   handleOnInstalled,
@@ -221,6 +226,11 @@ const uiPresence = createUiPresenceTracker({
   getNotificationIsOpen: () => notificationIsOpen,
 });
 
+persistenceManager.setCurrentActivityProvider(() => ({
+  startupPhase: getStartupPhase(),
+  ...uiPresence.getOpenUiCounts(),
+}));
+
 // DappViewed / AppOpened metrics, tab→origin registries, and onNavigateToTab
 // (see app/scripts/lib/metrics/dapp-metrics.ts).
 const {
@@ -251,6 +261,7 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
  * called if initialization fails in an unrecoverable way.
  */
 let isInitialized: Promise<void>;
+let backgroundInitializedAt: number | undefined;
 let resolveInitialization: () => void;
 let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
 
@@ -261,7 +272,11 @@ let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
 function setGlobalInitializers() {
   const deferred = withResolvers<void>();
   isInitialized = deferred.promise;
-  resolveInitialization = deferred.resolve;
+  backgroundInitializedAt = undefined;
+  resolveInitialization = () => {
+    backgroundInitializedAt = Date.now();
+    deferred.resolve();
+  };
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
@@ -448,6 +463,7 @@ const handleOnConnect = async (port: Runtime.Port) => {
         !tryPostMessage(
           asChromeRuntimePort(port),
           BACKGROUND_INITIALIZED_METHOD,
+          { initializedAt: backgroundInitializedAt },
         )
       ) {
         return;
@@ -542,6 +558,8 @@ browser.runtime.onConnectExternal.addListener(async (port: Runtime.Port) => {
  * @param backup
  */
 async function initialize(backup: Backup | null) {
+  await setStartupPhase(StartupPhase.Initializing);
+
   // Initialize install type early so it's cached for MetaMetrics user traits
   // This is fire-and-forget - we don't await it to avoid blocking initialization
   initInstallType();
@@ -569,6 +587,8 @@ async function initialize(backup: Backup | null) {
   const { versionedData: initData } = await loadStateFromPersistence(backup, {
     ...rawFirstTimeState,
   });
+
+  await setStartupPhase(StartupPhase.SettingUpController);
 
   const initState = initData.data;
   const initLangCode = await getFirstPreferredLangCode();
@@ -1156,6 +1176,7 @@ async function initBackground(backup: Backup | null) {
     }
 
     log.info('MetaMask initialization complete.');
+    await setStartupPhase(StartupPhase.Initialized);
     resolveInitialization();
   } catch (error) {
     log.error(error);

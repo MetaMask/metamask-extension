@@ -8,11 +8,11 @@ import type { TransactionPaymentToken } from '@metamask/transaction-pay-controll
 import { useSelector } from 'react-redux';
 import { getMarketData } from '../../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import {
   selectDepositLimits,
-  selectRelayFixedSpread,
+  selectStablecoins,
 } from '../../selectors/feature-flags';
-import { isRouteToken } from '../../utils/relay-fixed-spread';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayAvailableTokens } from '../pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
@@ -26,11 +26,6 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../utils/relay-fixed-spread', () => ({
-  ...jest.requireActual('../../utils/relay-fixed-spread'),
-  isRouteToken: jest.fn(),
-}));
-
 jest.mock('../pay/usePayTokenAccountBalance');
 jest.mock('../pay/useTransactionPayAvailableTokens');
 jest.mock('../pay/useTransactionPayToken');
@@ -38,9 +33,17 @@ jest.mock('../send/useAccountTokensLoading');
 jest.mock('./useTransactionMetadataRequest');
 jest.mock('./useTransactionAccountOverride');
 
-const TOKEN_ADDRESS_MOCK = '0x1234567890123456789012345678901234567890' as Hex;
-const TOKEN_ADDRESS_B_MOCK =
-  '0x9876543210987654321098765432109876543210' as Hex;
+/** Ethereum USDT, listed for mainnet in the `stableTokens` defaults. */
+const ETHEREUM_USDT_ADDRESS =
+  '0xdac17f958d2ee523a2206206994597c13d831ec7' as Hex;
+/** Ethereum USDC, also listed, used when switching pay tokens. */
+const ETHEREUM_USDC_ADDRESS =
+  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex;
+/** Ethereum DAI. Absent from the defaults, so only listed via the flag. */
+const ETHEREUM_DAI_ADDRESS =
+  '0x6b175474e89094c44da98b954eedeac495271d0f' as Hex;
+const NON_STABLECOIN_ADDRESS =
+  '0x1111111111111111111111111111111111111111' as Hex;
 const CHAIN_ID_MOCK = '0x1' as Hex;
 const TRANSACTION_ID_MOCK = 'test-tx-id';
 
@@ -57,10 +60,10 @@ const useTransactionAccountOverrideMock = jest.mocked(
   useTransactionAccountOverride,
 );
 const useSelectorMock = jest.mocked(useSelector);
-const isRouteTokenMock = jest.mocked(isRouteToken);
 let marketDataMock:
   | Record<string, Record<string, { price: number }>>
   | undefined;
+let stablecoinsMock: Record<Hex, Hex[]>;
 
 function makeTransactionMeta(
   overrides?: Partial<TransactionMeta>,
@@ -78,7 +81,7 @@ function makePayToken(
   overrides?: Partial<TransactionPaymentToken>,
 ): TransactionPaymentToken {
   return {
-    address: TOKEN_ADDRESS_MOCK,
+    address: ETHEREUM_USDT_ADDRESS,
     balanceUsd: '1000',
     // Non-zero raw so uncapped 100% prefill can commit (waits on live raw).
     balanceRaw: '1000000000',
@@ -86,6 +89,16 @@ function makePayToken(
     chainId: CHAIN_ID_MOCK,
     ...overrides,
   } as TransactionPaymentToken;
+}
+
+/**
+ * The `stableTokens` fallback list, resolved through the real selector so the
+ * tests exercise the addresses that ship when the flag is absent.
+ */
+function getDefaultStablecoins(): Record<Hex, Hex[]> {
+  return selectStablecoins({
+    metamask: { remoteFeatureFlags: {} },
+  } as unknown as Parameters<typeof selectStablecoins>[0]);
 }
 
 function setupMocks(
@@ -97,6 +110,7 @@ function setupMocks(
     transactionMeta?: TransactionMeta;
     accountOverride?: Hex;
     stablecoin?: boolean;
+    stablecoins?: Record<Hex, Hex[]>;
     isLiveBalance?: boolean;
     isAccountTokensLoading?: boolean;
     availableTokens?: { disabled?: boolean; fiat?: { balance: number } }[];
@@ -108,15 +122,27 @@ function setupMocks(
     depositLimits = {},
     transactionMeta = makeTransactionMeta(),
     stablecoin = true,
+    stablecoins = getDefaultStablecoins(),
     isLiveBalance = true,
     isAccountTokensLoading = false,
     availableTokens = [{ fiat: { balance: 1000 } }],
   } = overrides;
 
-  const resolvedPayToken =
+  let resolvedPayToken =
     'payToken' in overrides
       ? (overrides.payToken ?? undefined)
       : makePayToken();
+
+  // `stablecoin: false` is expressed as a token the flag does not list, since
+  // the hook now decides from the address rather than a mocked predicate.
+  if (resolvedPayToken && !stablecoin) {
+    resolvedPayToken = {
+      ...resolvedPayToken,
+      address: NON_STABLECOIN_ADDRESS,
+    };
+  }
+
+  stablecoinsMock = stablecoins;
 
   useTransactionMetadataRequestMock.mockReturnValue(transactionMeta);
   useTransactionPayTokenMock.mockReturnValue({
@@ -135,12 +161,22 @@ function setupMocks(
     availableTokens as ReturnType<typeof useTransactionPayAvailableTokens>,
   );
   useTransactionAccountOverrideMock.mockReturnValue(overrides.accountOverride);
-  marketDataMock = {
-    [CHAIN_ID_MOCK]: {
-      [TOKEN_ADDRESS_MOCK]: { price: 1 },
-      [TOKEN_ADDRESS_B_MOCK]: { price: 1 },
-    },
-  };
+  // The hook checksums the pay token address before reading market data, so
+  // every chain the tests pay from carries a priced entry for each address.
+  marketDataMock = Object.fromEntries(
+    [CHAIN_ID_MOCK, ...Object.keys(getDefaultStablecoins())].map((chainId) => [
+      chainId,
+      Object.fromEntries(
+        [
+          ETHEREUM_USDT_ADDRESS,
+          ETHEREUM_USDC_ADDRESS,
+          ETHEREUM_DAI_ADDRESS,
+          NON_STABLECOIN_ADDRESS,
+          ...Object.values(getDefaultStablecoins()).flat(),
+        ].map((address) => [toChecksumHexAddress(address), { price: 1 }]),
+      ),
+    ]),
+  );
 
   useSelectorMock.mockImplementation((selector) => {
     if (selector === getMarketData) {
@@ -160,13 +196,11 @@ function setupMocks(
     if (selector === selectDepositLimits) {
       return depositLimits;
     }
-    if (selector === selectRelayFixedSpread) {
-      return { routes: [] };
+    if (selector === selectStablecoins) {
+      return stablecoinsMock;
     }
     return undefined;
   });
-
-  isRouteTokenMock.mockReturnValue(stablecoin);
 }
 
 function runHook() {
@@ -231,7 +265,7 @@ describe('useDepositPrefill', () => {
       });
     });
 
-    it('computes 100% for stablecoin route tokens', () => {
+    it('computes 100% for listed stablecoins', () => {
       setupMocks({
         stablecoin: true,
         payToken: makePayToken({ balanceUsd: '500' }),
@@ -240,7 +274,95 @@ describe('useDepositPrefill', () => {
       const { result } = runHook();
 
       expect(result.current.prefillAmount).toBe('500');
+      expect(result.current.percentage).toBe(100);
       expect(result.current.isUncappedMaxPrefill).toBe(true);
+    });
+
+    it('prefills the full balance for every fallback stablecoin', () => {
+      for (const [chainId, addresses] of Object.entries(
+        getDefaultStablecoins(),
+      )) {
+        for (const address of addresses) {
+          setupMocks({
+            payToken: makePayToken({
+              address,
+              balanceUsd: '1000',
+              chainId: chainId as Hex,
+            }),
+          });
+
+          const { result } = runHook();
+
+          expect(result.current.prefillAmount).toBe('1000');
+          expect(result.current.percentage).toBe(100);
+        }
+      }
+    });
+
+    // The flag stores lowercase addresses, but pay tokens can arrive
+    // checksummed, so the lookup has to normalise before comparing.
+    it('computes 100% when the pay token address is checksummed', () => {
+      setupMocks({
+        payToken: makePayToken({
+          address: toChecksumHexAddress(ETHEREUM_USDT_ADDRESS) as Hex,
+          balanceUsd: '80',
+        }),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current.prefillAmount).toBe('80');
+      expect(result.current.percentage).toBe(100);
+    });
+
+    it('computes 100% for a flag-listed token that is absent from the fallback list', () => {
+      setupMocks({
+        payToken: makePayToken({
+          address: ETHEREUM_DAI_ADDRESS,
+          balanceUsd: '1000',
+        }),
+        stablecoins: {
+          [CHAIN_ID_MOCK]: [ETHEREUM_USDT_ADDRESS, ETHEREUM_DAI_ADDRESS],
+        },
+      });
+
+      const { result } = runHook();
+
+      expect(result.current.prefillAmount).toBe('1000');
+      expect(result.current.percentage).toBe(100);
+    });
+
+    it('computes 50% for a fallback stablecoin the flag omits', () => {
+      setupMocks({
+        payToken: makePayToken({
+          address: ETHEREUM_USDT_ADDRESS,
+          balanceUsd: '1000',
+        }),
+        stablecoins: { [CHAIN_ID_MOCK]: [ETHEREUM_USDC_ADDRESS] },
+      });
+
+      const { result } = runHook();
+
+      expect(result.current.prefillAmount).toBe('500');
+      expect(result.current.percentage).toBe(50);
+    });
+
+    // The same address can be a stablecoin on one chain and something else on
+    // another, so a listing must not leak across chains.
+    it('computes 50% when the pay token is listed only on another chain', () => {
+      setupMocks({
+        payToken: makePayToken({
+          address: ETHEREUM_USDT_ADDRESS,
+          balanceUsd: '1000',
+          chainId: '0xa4b1',
+        }),
+        stablecoins: { [CHAIN_ID_MOCK]: [ETHEREUM_USDT_ADDRESS] },
+      });
+
+      const { result } = runHook();
+
+      expect(result.current.prefillAmount).toBe('500');
+      expect(result.current.percentage).toBe(50);
     });
 
     it('computes 50% for non-stablecoin tokens', () => {
@@ -379,7 +501,7 @@ describe('useDepositPrefill', () => {
 
       marketDataMock = {
         [CHAIN_ID_MOCK]: {
-          [TOKEN_ADDRESS_MOCK]: { price: 1 },
+          [toChecksumHexAddress(ETHEREUM_USDT_ADDRESS)]: { price: 1 },
         },
       };
       act(() => {
@@ -552,7 +674,7 @@ describe('useDepositPrefill', () => {
 
       useTransactionPayTokenMock.mockReturnValue({
         payToken: makePayToken({
-          address: TOKEN_ADDRESS_B_MOCK,
+          address: ETHEREUM_USDC_ADDRESS,
           balanceUsd: '800',
           balanceRaw: '800000000',
         }),

@@ -5,7 +5,10 @@
 
 import { access, readFile } from 'fs/promises';
 import { constants as fsConstants } from 'fs';
-import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files.mts';
+import {
+  PATTERN_E2E_SPEC_FILE,
+  walkFiles,
+} from './collect-qa-stats-walk-files.mts';
 
 /** Constants files whose string enums are resolved in E2E (imported by specs). */
 const METRICS_ENUM_SOURCE_FILES = [
@@ -60,9 +63,13 @@ export function parseEnumStringMembers(source: string): EnumMap {
 /**
  * Parses `const foo = 'bar';` at statement level.
  */
-export function parseConstStringLiterals(source: string): Record<string, string> {
+export function parseConstStringLiterals(
+  source: string,
+): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const m of source.matchAll(/\bconst\s+(\w+)\s*=\s*['"]([^'"]+)['"]\s*;/gu)) {
+  for (const m of source.matchAll(
+    /\bconst\s+(\w+)\s*=\s*['"]([^'"]+)['"]\s*;/gu,
+  )) {
     out[m[1]] = m[2];
   }
   return out;
@@ -198,11 +205,15 @@ export function collectMetametricsFromSource(
   for (const m of source.matchAll(/findEvent\([^,]+,\s*['"]([^'"]+)['"]/gu)) {
     out.add(m[1]);
   }
-  for (const m of source.matchAll(/findEvent\([^,]+,\s*onboardingEvents\.(\w+)/gu)) {
+  for (const m of source.matchAll(
+    /findEvent\([^,]+,\s*onboardingEvents\.(\w+)/gu,
+  )) {
     const v = onboardingMap[m[1]];
     if (v) out.add(v);
   }
-  for (const m of source.matchAll(/filterEvents\(\s*[^,]+,\s*['"]([^'"]+)['"]/gu)) {
+  for (const m of source.matchAll(
+    /filterEvents\(\s*[^,]+,\s*['"]([^'"]+)['"]/gu,
+  )) {
     out.add(m[1]);
   }
   for (const m of source.matchAll(
@@ -306,7 +317,9 @@ async function loadGlobalMetricsEnumMap(): Promise<EnumMap> {
       const raw = await readFile(rel, 'utf8');
       parts.push(parseEnumStringMembers(raw));
     } catch {
-      console.warn(`[metametrics] could not read ${rel}, skipping enum definitions`);
+      console.warn(
+        `[metametrics] could not read ${rel}, skipping enum definitions`,
+      );
     }
   }
   return mergeEnumMaps(parts);
@@ -347,7 +360,9 @@ export async function collectE2EMetaMetricsEventCoverage(): Promise<
   const names = new Set<string>();
   const files = await gatherMetametricsE2eFilePaths();
 
-  console.log(`[metametrics] scanning ${files.length} file(s) for referenced event names`);
+  console.log(
+    `[metametrics] scanning ${files.length} file(s) for referenced event names`,
+  );
 
   for (const filePath of files) {
     const source = await readFile(filePath, 'utf8');
