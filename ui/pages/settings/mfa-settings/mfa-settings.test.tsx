@@ -55,12 +55,19 @@ jest.mock('../../../selectors', () => ({
 const mockStartMfaFlow = jest.mocked(startMfaFlow);
 const mockAdapter = jest.mocked(extensionMfaControllerAdapter);
 
-const renderSettings = (enrolledCredentials: EnrolledCredential[] = []) =>
+const renderSettings = (
+  enrolledCredentials: EnrolledCredential[] = [],
+  remoteFeatureFlags = {},
+) =>
   renderWithProvider(
     <MfaSettings />,
     configureMockStore([thunk])({
       ...mockState,
-      metamask: { ...mockState.metamask, enrolledCredentials },
+      metamask: {
+        ...mockState.metamask,
+        enrolledCredentials,
+        remoteFeatureFlags,
+      },
     }),
   );
 
@@ -88,6 +95,21 @@ describe('MfaSettings', () => {
 
     expect(screen.queryByTestId(MfaSettingsTestIds.EMAIL_ROW)).toBeNull();
     expect(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW)).toBeInTheDocument();
+  });
+
+  it('only offers to add the methods the flag allows', () => {
+    renderSettings([], {
+      mfaUiKit: {
+        enabled: true,
+        minimumVersion: '1.0.0',
+        methods: ['email_otp'],
+      },
+    });
+
+    expect(
+      screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId(MfaSettingsTestIds.TOTP_ROW)).toBeNull();
   });
 
   it('refreshes the methods and offers to add email', async () => {

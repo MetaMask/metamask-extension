@@ -1,6 +1,6 @@
 import { it } from '@jest/globals';
 import { isMfaDevBuild } from '../../hooks/identity/mfa/isMfaDevBuild';
-import { getIsMfaUiKitEnabled } from './mfa-ui-kit';
+import { getIsMfaUiKitEnabled, getMfaUiKitMethods } from './mfa-ui-kit';
 
 jest.mock('../../hooks/identity/mfa/isMfaDevBuild', () => ({
   isMfaDevBuild: jest.fn(),
@@ -37,5 +37,27 @@ describe('getIsMfaUiKitEnabled', () => {
     jest.mocked(isMfaDevBuild).mockReturnValue(true);
 
     expect(getIsMfaUiKitEnabled.resultFunc(flags)).toBe(true);
+  });
+});
+
+describe('getMfaUiKitMethods', () => {
+  it('lists the flag methods', () => {
+    expect(
+      getMfaUiKitMethods.resultFunc({
+        mfaUiKit: {
+          enabled: true,
+          minimumVersion: '1.0.0',
+          methods: ['email_otp'],
+        },
+      }),
+    ).toStrictEqual(['email_otp']);
+  });
+
+  it('allows every method when the flag lists none', () => {
+    expect(getMfaUiKitMethods.resultFunc({})).toStrictEqual([
+      'passkey',
+      'totp',
+      'email_otp',
+    ]);
   });
 });

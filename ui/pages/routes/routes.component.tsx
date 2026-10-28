@@ -92,7 +92,6 @@ import {
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
-import { getIsMfaUiKitEnabled } from '../../selectors/identity/mfa-ui-kit';
 import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
@@ -765,7 +764,6 @@ export default function Routes() {
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     useAppSelector(getPreferences);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
-  const isMfaUiKitEnabled = useAppSelector(getIsMfaUiKitEnabled);
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -931,7 +929,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
-      {isUnlocked && isMfaUiKitEnabled ? <MfaFlowLauncher /> : null}
+      {isUnlocked ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}

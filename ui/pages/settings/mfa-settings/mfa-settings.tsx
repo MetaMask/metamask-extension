@@ -21,6 +21,7 @@ import {
 import { transitionForward } from '../../../components/ui/transition';
 import { toast } from '../../../components/ui/toast/toast';
 import { getIsSocialLoginFlow } from '../../../selectors';
+import { getMfaUiKitMethods } from '../../../selectors/identity/mfa-ui-kit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isMfaDevBuild, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
@@ -65,6 +66,7 @@ const MfaSettings = () => {
   const navigate = useNavigate();
   const { credentials, enroll } = useMfa();
   const isSocialLogin = useSelector(getIsSocialLoginFlow);
+  const methods = useSelector(getMfaUiKitMethods);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const activeTypes = new Set(
     credentials
@@ -79,7 +81,9 @@ const MfaSettings = () => {
   }, []);
 
   const rows = ROWS.filter(
-    ({ method }) => !(isSocialLogin && method === 'email_otp'),
+    ({ method }) =>
+      !(isSocialLogin && method === 'email_otp') &&
+      (activeTypes.has(method) || methods.includes(method)),
   );
 
   const open = ({
