@@ -29,8 +29,7 @@ export interface VerifyMergeQueueEntryOptions {
   sleep?: (milliseconds: number) => Promise<void>;
 }
 
-export interface VerifyMergeQueueRetryOptions
-  extends VerifyMergeQueueEntryOptions {
+export interface VerifyMergeQueueRetryOptions extends VerifyMergeQueueEntryOptions {
   /** Confirms the failed run's temporary merge-queue ref still exists. */
   refExists: () => Promise<boolean>;
 }

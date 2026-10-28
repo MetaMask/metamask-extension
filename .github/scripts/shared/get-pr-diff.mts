@@ -49,8 +49,9 @@ function filterDiffByDirectories(diff: string, dirs: string[]): string {
       const match = / b\/(.+)$/.exec(line);
       if (match) {
         const filePath = match[1];
-        include = normalizedDirs.some((dir) =>
-          filePath.startsWith(dir) || filePath === dir.replace(/\/$/, ''),
+        include = normalizedDirs.some(
+          (dir) =>
+            filePath.startsWith(dir) || filePath === dir.replace(/\/$/, ''),
         );
       } else {
         include = false;

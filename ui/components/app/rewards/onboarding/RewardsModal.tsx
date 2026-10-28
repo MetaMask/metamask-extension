@@ -3,15 +3,11 @@ import { useSelector } from 'react-redux';
 import {
   Modal,
   ModalContent,
+  ModalContentSize,
   ModalHeader,
   ModalOverlay,
-  ModalContentSize,
-} from '../../../component-library';
+} from '@metamask/design-system-react';
 import { ThemeType } from '../../../../../shared/constants/preferences';
-import {
-  AlignItems,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
 import {
   selectRewardsModalOpen,
   selectCandidateSubscriptionId,
@@ -19,9 +15,9 @@ import {
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   setRewardsModalOpen,
-  setOnboardingReferralCode,
   setRewardsDeeplinkUrl,
 } from '../../../../ducks/rewards';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../hooks/useTheme';
 import RewardsErrorToast from '../RewardsErrorToast';
 import RewardsQRCode from '../RewardsQRCode';
@@ -57,6 +53,7 @@ export default function RewardsModal({
   const dispatch = useDispatch();
 
   const theme = useTheme();
+  const t = useI18nContext();
 
   const isValidCandidateSubscriptionId = useMemo(
     () =>
@@ -75,7 +72,6 @@ export default function RewardsModal({
 
   const handleClose = useCallback(() => {
     dispatch(setRewardsModalOpen(false));
-    dispatch(setOnboardingReferralCode(null));
     dispatch(setRewardsDeeplinkUrl(null));
     onClose?.();
   }, [dispatch, onClose]);
@@ -88,35 +84,21 @@ export default function RewardsModal({
       // qr code hadware wallet uses a popover signing modal, so we don't want to close the rewards modal when clicking to sign a message
       isClosedOnOutsideClick={hardwareWalletType !== HardwareKeyringType.qr}
     >
-      <ModalOverlay className="rewards-onboarding-modal__overlay" />
+      <ModalOverlay className="rewards-onboarding-modal__overlay z-[1000]" />
       <ModalContent
-        className="rewards-onboarding-modal__content"
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        className="rewards-onboarding-modal__content z-[1000]"
         size={ModalContentSize.Md}
         modalDialogProps={{
-          paddingTop: 0,
-          paddingBottom: 0,
-          style: {
-            height: 'auto',
-            minHeight: isOptedIn ? undefined : '600px',
-            alignItems: 'center',
-            justifyContent: 'center',
-          },
+          className: isOptedIn ? undefined : 'min-h-[600px]',
         }}
       >
         <ModalHeader
           data-theme={theme === 'light' ? ThemeType.light : ThemeType.dark}
           data-testid="rewards-modal-header"
-          closeButtonProps={{
-            className: 'absolute z-10',
-            style: {
-              top: '24px',
-              right: '12px',
-            },
-          }}
-          paddingBottom={0}
           onClose={handleClose}
+          closeButtonProps={{
+            ariaLabel: t('close'),
+          }}
         />
 
         {isOptedIn ? (

@@ -183,6 +183,48 @@ export function getMoneyActivityErrorMessage(
   return message;
 }
 
+export type MoneyActivityTransactionHash = {
+  hash: Hex;
+  chainId: Hex;
+};
+
+/**
+ * Resolves the on-chain hash to show for a Money activity transaction.
+ *
+ * MetaMask Pay same-chain Relay deposits skip status polling and publish a
+ * `0x0` placeholder as the parent's hash; the real hash belongs to the
+ * required source transaction Pay submitted, or to the Relay source hash.
+ *
+ * @param tx - The transaction to present.
+ * @param requiredTransaction - Last required transaction submitted for `tx`.
+ * @returns The hash and the chain it was mined on, or undefined when unknown.
+ */
+export function getMoneyActivityTransactionHash(
+  tx: TransactionMeta,
+  requiredTransaction?: TransactionMeta,
+): MoneyActivityTransactionHash | undefined {
+  if (tx.hash && isValidTransactionHash(tx.hash)) {
+    return { hash: tx.hash as Hex, chainId: tx.chainId };
+  }
+
+  if (
+    requiredTransaction?.hash &&
+    isValidTransactionHash(requiredTransaction.hash)
+  ) {
+    return {
+      hash: requiredTransaction.hash as Hex,
+      chainId: requiredTransaction.chainId,
+    };
+  }
+
+  const sourceHash = tx.metamaskPay?.sourceHash;
+  if (sourceHash && isValidTransactionHash(sourceHash)) {
+    return { hash: sourceHash, chainId: tx.metamaskPay?.chainId ?? tx.chainId };
+  }
+
+  return undefined;
+}
+
 /**
  * Builds a block-explorer URL for an on-chain Money activity transaction.
  *

@@ -1,4 +1,9 @@
 {
+  ".devcontainer/launch-firefox.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
   "app/scripts/controllers/qr-sync/qr-sync-controller.ts": {
     "promise/no-nesting": {
       "count": 1
@@ -498,11 +503,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/send/useMaxAmount.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/send/useSendNfts.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -528,7 +528,7 @@
       "count": 2
     }
   },
-  "ui/pages/confirmations/hooks/transactions/useDepositPrefillAmount.ts": {
+  "ui/pages/confirmations/hooks/transactions/useDepositPrefill.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1
     }
@@ -628,11 +628,6 @@
       "count": 1
     }
   },
-  "ui/pages/onboarding-flow/onboarding-flow.tsx": {
-    "react-hooks/immutability": {
-      "count": 1
-    }
-  },
   "ui/pages/onboarding-flow/welcome/welcome.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 3
@@ -645,16 +640,6 @@
   },
   "ui/pages/ramps/build-quote/hooks/useBuildQuoteAmount.ts": {
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/ramps/build-quote/hooks/useRampsBuildQuote.ts": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 2
-    }
-  },
-  "ui/pages/ramps/provider-selection/provider-selection.tsx": {
-    "react-hooks/preserve-manual-memoization": {
       "count": 1
     }
   },

@@ -1,4 +1,3 @@
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   IconName,
   InvisibleCharacter,
@@ -14,7 +13,6 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import { t } from '../../../shared/lib/translate';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
-import { MULTICHAIN_ACCOUNT_TYPE_TO_NAME } from '../../../shared/constants/multichain/accounts';
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -207,14 +205,6 @@ export function getAccountLabels(type, account, keyrings, snapName) {
     default: {
       break;
     }
-  }
-
-  const { namespace } = parseCaipChainId(account.type);
-  if (namespace === KnownCaipNamespace.Bip122) {
-    labels.push({
-      label: `${MULTICHAIN_ACCOUNT_TYPE_TO_NAME[account.type]}`,
-      icon: null,
-    });
   }
 
   return labels;

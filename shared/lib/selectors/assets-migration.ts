@@ -53,7 +53,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // allDetectedTokens: DONE (Not being used)
 //
 // TokenBalancesController
-// tokenBalances: DONE
+// tokenBalances: DONE (via AssetsController when unify enabled; controller removed)
 //
 // CurrencyRateController
 // currencyRates: DONE
@@ -68,17 +68,17 @@ import { createDeepEqualSelector } from './selector-creators';
 // allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: DONE
+// balances: unused (controller removed)
 //
 // MultichainAssetsRatesController
-// conversionRates: DONE
-// historicalPrices: TODO (This state should be removed)
+// conversionRates: DONE (via AssetsController.assetsPrice when unify enabled)
+// historicalPrices: unused (controller removed; charts use Price API)
 //
 // RatesController
 // rates: DONE
 //
 // TokenListController
-// tokensChainsCache: TODO (There are no plans to port this state)
+// tokensChainsCache: unused (controller removed)
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
@@ -88,6 +88,12 @@ type ControllerStateSelector<
 > = (state: {
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
+
+// Dual-path selectors that also read AssetsController fields. Input is intentionally
+// loose so migrated fixtures (which omit legacy controller slices) type-check.
+type MigratingControllerStateSelector<Result> = (state: {
+  metamask: Record<string, unknown>;
+}) => Result;
 
 export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
@@ -553,9 +559,8 @@ export const getMultiChainAssetsControllerAssetsMetadata =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsControllerState,
-    'assetsMetadata'
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsControllerState['assetsMetadata']
   >;
 
 // AccountId -> Array of AssetIds
@@ -690,7 +695,9 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
 
     return selectedCurrency;
   },
-) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
+) as unknown as MigratingControllerStateSelector<
+  CurrencyRateState['currentCurrency']
+>;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -907,9 +914,8 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsRatesControllerState,
-    'conversionRates'
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsRatesControllerState['conversionRates']
   >;
 
 export const getRatesControllerRates = createDeepEqualSelector(

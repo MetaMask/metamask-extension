@@ -12,6 +12,7 @@ import type {
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
@@ -34,6 +35,7 @@ import {
 } from './shared';
 import {
   clearToastPhase,
+  setApprovedOrSignedToastPhase,
   shouldShowPendingToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
@@ -53,7 +55,6 @@ type ToastListenerMessenger = RouteMessengerFromCapabilities<
 // Flows with custom toasts — excluded for now from generic messenger event toasts.
 const excludedTransactionTypes: TransactionType[] = [
   TransactionType.musdRelayDeposit,
-  TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
   TransactionType.perpsRelayDeposit,
   TransactionType.shieldSubscriptionApprove,
@@ -63,7 +64,24 @@ const excludedTransactionTypes: TransactionType[] = [
 const earlyPendingToastTypes = new Set([
   TransactionType.musdConversion,
   TransactionType.musdClaim,
+  TransactionType.perpsDeposit,
 ]);
+
+/**
+ * In-wallet Perps deposits are toasted by `PerpsDepositToast`, which follows
+ * the deposit the Perps controller created. Deposits a dApp requests through
+ * `wallet_pay` are not tracked by the Perps controller, so they use the
+ * generic toasts instead.
+ *
+ * @param transactionMeta - The transaction to check.
+ * @returns Whether the transaction is an in-wallet Perps deposit.
+ */
+function isInWalletPerpsDeposit(transactionMeta: TransactionMeta): boolean {
+  return (
+    transactionMeta.origin === ORIGIN_METAMASK &&
+    hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
+  );
+}
 
 // Separate batch txs that share one toast with the main send/swap/bridge tx.
 export const batchHelperTransactionTypes = [
@@ -84,6 +102,7 @@ function isExcludedTransactionType(
   }
   return (
     hasTransactionType(transactionMeta, excludedTransactionTypes) ||
+    isInWalletPerpsDeposit(transactionMeta) ||
     isMoneyAccountTx(transactionMeta) ||
     isMoneyAccountChildTx(transactionMeta, transactions)
   );
@@ -197,6 +216,13 @@ export function useTransactionEventToasts(): void {
         transactionId: id,
         to: getDetailsRoute(chainId, hash),
       };
+
+      if (
+        status === TransactionStatus.approved ||
+        status === TransactionStatus.signed
+      ) {
+        setApprovedOrSignedToastPhase(id);
+      }
 
       if (isPendingToastStatus(transactionMeta, status)) {
         if (shouldShowPendingToast(id)) {

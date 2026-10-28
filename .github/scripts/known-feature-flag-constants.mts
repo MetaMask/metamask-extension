@@ -9,9 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import featureFlagsModule from '../../shared/lib/feature-flags';
-
-const { FeatureFlagNames } = featureFlagsModule;
+import { FeatureFlagNames } from '../../shared/lib/feature-flags';
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
@@ -116,6 +114,16 @@ const FILE_SOURCES: Array<{
     exportName: 'MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME',
   },
   {
+    key: 'MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME',
+  },
+  {
     key: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
     file: 'shared/lib/money/vault-config.ts',
     exportName: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
@@ -124,6 +132,16 @@ const FILE_SOURCES: Array<{
     key: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
     file: 'shared/lib/money/chomp-config.ts',
     exportName: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
+  },
+  {
+    key: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+    file: 'app/scripts/lib/transaction/caveats.ts',
+    exportName: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+  },
+  {
+    key: 'REWARDS_MONEY_CONTROLLER_FLAG',
+    file: 'app/scripts/messenger-client-init/rewards-money-controller-init.ts',
+    exportName: 'REWARDS_MONEY_CONTROLLER_FLAG',
   },
 ];
 

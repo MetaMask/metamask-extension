@@ -1,6 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../../constants';
+import { v6AccountsApiBalancesJson } from '../../../helpers/accounts-api-v6-balances';
 
 const ACCOUNTS_API_URL = 'https://accounts.api.cx.metamask.io';
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
@@ -13,9 +14,9 @@ const NATIVE_ASSET_ID_BY_CHAIN_ID: Record<number, string> = {
 
 /**
  * The ETH-to-USD conversion rate used by {@link mockPriceApi}.
- * Fixtures that rely on this mock must seed CurrencyController with the same
- * value to avoid race conditions between the initial render and the mock
- * response arriving.
+ * Fixtures that rely on this mock must seed `AssetsController.assetsPrice`
+ * with the same value to avoid race conditions between the initial render and
+ * the mock response arriving.
  */
 export const MOCK_ETH_CONVERSION_RATE = 3401;
 
@@ -177,10 +178,14 @@ export async function mockTokenMetadataApis(
                   assetId: `eip155:${token.chainId}/erc20:${token.address}`,
                   balance: token.balance ?? '0',
                 })),
-            ].map((row) =>
-              version === 'v6' ? { ...row, object: 'token' } : row,
-            );
+            ];
           });
+          if (version === 'v6') {
+            return {
+              statusCode: 200,
+              json: v6AccountsApiBalancesJson(request.url, balances),
+            };
+          }
           return {
             statusCode: 200,
             json: { count: balances.length, balances, unprocessedNetworks: [] },

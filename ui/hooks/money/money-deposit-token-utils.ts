@@ -130,62 +130,90 @@ function getUsdFiatAmount({
   );
 }
 
+export type MoneyDepositEligibilityOptions = Omit<
+  FilterMoneyDepositTokensOptions,
+  'assets'
+>;
+
 /**
- * Filters and sorts wallet assets that can fund a Money account.
+ * Resolves the USD value of a wallet asset if it can fund a Money account.
  *
- * @param options - Wallet assets and Money deposit configuration.
- * @param options.assets
+ * @param asset - The wallet asset.
+ * @param options - Money deposit configuration.
  * @param options.blockedTokens
  * @param options.minBalance
  * @param options.currentCurrency
  * @param options.currencyRates
  * @param options.networkConfigurations
+ * @returns The asset's USD value, or `undefined` when it is not an EVM asset,
+ * is blocked, or is below the minimum balance.
+ */
+export function getMoneyDepositFiatAmountUsd(
+  asset: Pick<Asset, 'accountType' | 'address' | 'chainId' | 'fiat'>,
+  {
+    blockedTokens,
+    minBalance,
+    currentCurrency,
+    currencyRates,
+    networkConfigurations,
+  }: MoneyDepositEligibilityOptions,
+): number | undefined {
+  const fiatAmount = Number(asset.fiat?.balance);
+  const chainId = String(asset.chainId ?? '');
+  if (
+    !asset.accountType?.includes('eip155') ||
+    !chainId ||
+    !asset.address ||
+    !Number.isFinite(fiatAmount) ||
+    isTokenBlocked(asset, blockedTokens)
+  ) {
+    return undefined;
+  }
+
+  const moneyFiatAmountUsd = getUsdFiatAmount({
+    fiatAmount,
+    chainId: formatChainIdToHex(chainId),
+    currentCurrency: asset.fiat?.currency ?? currentCurrency,
+    currencyRates,
+    networkConfigurations,
+  });
+  if (
+    moneyFiatAmountUsd === undefined ||
+    !Number.isFinite(moneyFiatAmountUsd) ||
+    moneyFiatAmountUsd <= 0 ||
+    moneyFiatAmountUsd < minBalance
+  ) {
+    return undefined;
+  }
+
+  return moneyFiatAmountUsd;
+}
+
+/**
+ * Filters and sorts wallet assets that can fund a Money account.
+ *
+ * @param options - Wallet assets and Money deposit configuration.
+ * @param options.assets
  * @returns Deposit-eligible EVM assets, normalized to USD.
  */
 export function filterMoneyDepositTokens({
   assets,
-  blockedTokens,
-  minBalance,
-  currentCurrency,
-  currencyRates,
-  networkConfigurations,
+  ...eligibilityOptions
 }: FilterMoneyDepositTokensOptions): MoneyDepositToken[] {
   return assets
     .flatMap((asset) => {
-      const fiatAmount = Number(asset.fiat?.balance);
-      const chainId = String(asset.chainId ?? '');
-      const { address } = asset;
-      if (
-        !asset.accountType?.includes('eip155') ||
-        !chainId ||
-        !address ||
-        !Number.isFinite(fiatAmount) ||
-        isTokenBlocked(asset, blockedTokens)
-      ) {
-        return [];
-      }
-
-      const chainIdHex = formatChainIdToHex(chainId);
-      const moneyFiatAmountUsd = getUsdFiatAmount({
-        fiatAmount,
-        chainId: chainIdHex,
-        currentCurrency: asset.fiat?.currency ?? currentCurrency,
-        currencyRates,
-        networkConfigurations,
-      });
-      if (
-        moneyFiatAmountUsd === undefined ||
-        !Number.isFinite(moneyFiatAmountUsd) ||
-        moneyFiatAmountUsd <= 0 ||
-        moneyFiatAmountUsd < minBalance
-      ) {
+      const moneyFiatAmountUsd = getMoneyDepositFiatAmountUsd(
+        asset,
+        eligibilityOptions,
+      );
+      if (moneyFiatAmountUsd === undefined) {
         return [];
       }
 
       return [
         {
-          address: address as Hex,
-          chainId: chainIdHex,
+          address: asset.address as Hex,
+          chainId: formatChainIdToHex(String(asset.chainId)),
           decimals: asset.decimals ?? 0,
           image: asset.image ?? '',
           networkImage: asset.networkImage,

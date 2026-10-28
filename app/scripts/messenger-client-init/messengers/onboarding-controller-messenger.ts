@@ -25,5 +25,14 @@ export function getOnboardingControllerMessenger(
       parent: messenger,
     });
 
+  messenger.delegate({
+    messenger: onboardingControllerMessenger,
+    actions: [
+      'SentryTracingService:bufferedTrace',
+      'SentryTracingService:bufferedEndTrace',
+    ],
+    events: [],
+  });
+
   return onboardingControllerMessenger;
 }

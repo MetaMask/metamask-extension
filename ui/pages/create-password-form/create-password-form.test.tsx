@@ -24,9 +24,7 @@ jest.mock('../../hooks/useAnalytics', () => {
 describe('CreatePasswordForm', () => {
   const createMockStore = (isInUSRegion: boolean = false) =>
     configureMockStore([thunk])({
-      metamask: {
-        location: isInUSRegion ? 'US' : undefined,
-      },
+      metamask: isInUSRegion ? { location: 'US-TX', country: 'US' } : {},
     });
 
   afterEach(() => {

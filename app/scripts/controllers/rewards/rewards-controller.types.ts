@@ -13,7 +13,6 @@ import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { RemoteFeatureFlagControllerStateChangeEvent } from '@metamask/remote-feature-flag-controller';
 import { Messenger } from '@metamask/messenger';
 import {
   EstimatePerpsContextDto,
@@ -32,7 +31,6 @@ import {
   RewardsDataServiceMobileJoinAction,
   RewardsDataServiceSiweJoinAction,
   RewardsDataServiceMobileOptinAction,
-  RewardsDataServiceValidateReferralCodeAction,
   RewardsDataServiceFetchGeoLocationAction,
   RewardsDataServiceGetSeasonMetadataAction,
   RewardsDataServiceGetDiscoverSeasonsAction,
@@ -901,7 +899,6 @@ type AllowedActions =
   | RewardsDataServiceGetSeasonStatusAction
   | RewardsDataServiceFetchGeoLocationAction
   | RewardsDataServiceMobileOptinAction
-  | RewardsDataServiceValidateReferralCodeAction
   | RewardsDataServiceMobileJoinAction
   | RewardsDataServiceSiweJoinAction
   | RewardsDataServiceGetOptInStatusAction
@@ -914,8 +911,7 @@ type AllowedActions =
 
 type AllowedEvents =
   | KeyringControllerUnlockEvent
-  | AccountTreeControllerSelectedAccountGroupChangeEvent
-  | RemoteFeatureFlagControllerStateChangeEvent;
+  | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
 export type RewardsControllerMessenger = Messenger<
   'RewardsController',
