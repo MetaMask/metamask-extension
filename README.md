@@ -47,9 +47,11 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 ## Building on your local machine
 
-- Install [Node.js](https://nodejs.org) version 24
+- Install [Node.js](https://nodejs.org) version 26
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
-- Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
+- Install and Enable Corepack
+  - Install by running `npm install -g corepack`, then enable by running `corepack enable` within the metamask-extension project.
+  - Corepack manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
 - Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
   - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.infura.io/networks/ethereum/how-to/secure-a-project/project-id).
     - If you don't have an Infura account, you can create one for free on the [Infura website](https://app.infura.io/register).
