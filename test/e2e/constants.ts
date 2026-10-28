@@ -193,6 +193,50 @@ export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 export const SECONDARY_BTC_ADDRESS =
   'bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7';
 
+/**
+ * Bitcoin addresses derived from `E2E_SRP` for HD accounts 1-8
+ * (`m/84'/0'/accountIndex'/0/0`).
+ */
+export const EXPECTED_BTC_ADDRESSES_BY_INDEX = [
+  DEFAULT_BTC_ADDRESS,
+  SECONDARY_BTC_ADDRESS,
+  'bc1q587h8r5vhgur5smhze893m24vws85sta828ary',
+  'bc1qt3juyvv225hevnqcq9kw9ana8e65zapl9xyl56',
+  'bc1q7eajm5mfj6m9xq78zmwkf8y3a97wjm8z56kf52',
+  'bc1qmfvnnyrgyqf2vpxkzdr6e56x9fv0z4dpca2qv2',
+  'bc1qcg5q0z0znp7kt0uhvckj88zkq6fnuftl0qfwye',
+  'bc1quy3j2zc7ans6ukmnqc90j5yt3cx4q4q528nzej',
+] as const satisfies readonly [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+];
+
+export const EXPECTED_BTC_SCRIPT_PUBKEYS_BY_INDEX = [
+  '0014469d76e8387e11cbe9010c72ee4b748dd9152fa5',
+  '0014b179e3f9e3d08721eb3c159a4352612d5d66f19c',
+  '0014a1fd738e8cba383a4377164e58ed5563a07a417d',
+  '00145c65c2318a552f964c18016ce2f67d3e7541743f',
+  '0014f67b2dd36996b65303c716dd649c91e97ce96ce2',
+  '0014da593990682012a604d61347acd3462a58f155a1',
+  '0014c2280789e2987d65bf97662d239c5606933e257f',
+  '0014e123250b1eece1ae5b73060af9508b8e0d505414',
+] as const satisfies readonly [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+];
+
 /* Default BTC Account name */
 export const DEFAULT_BTC_ACCOUNT_NAME = 'Bitcoin Account 1';
 

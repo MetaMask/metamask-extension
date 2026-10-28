@@ -45,7 +45,7 @@ pwTest.describe('App Installed Events', () => {
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2({ onboarding: true })
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -84,7 +84,7 @@ pwTest.describe('App Installed Events', () => {
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2({ onboarding: true })
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
             })
             .build(),

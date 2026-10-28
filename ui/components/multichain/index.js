@@ -9,7 +9,6 @@ export { NetworkListItem } from './network-list-item';
 export { NetworkListMenu } from './network-list-menu';
 export { ProductTour } from './product-tour-popover';
 export { ImportAccount } from './import-account';
-export { ImportNftsModal } from './import-nfts-modal';
 export { AccountDetailsMenuItem, ViewExplorerMenuItem } from './menu-items';
 export { AvatarGroup } from './avatar-group';
 export { ConnectedStatus } from './connected-status';

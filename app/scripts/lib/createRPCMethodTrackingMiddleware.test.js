@@ -24,7 +24,7 @@ import {
   configureAnalytics,
   setParticipateInMetaMetrics,
 } from '../controllers/analytics';
-import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
+import { getAnalyticsControllerInitMessenger } from '../wallet-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
 
@@ -210,19 +210,12 @@ const analyticsController = {
   },
 };
 
-messenger.registerActionHandler('MetaMetricsController:getState', () => ({
-  marketingCampaignCookieId: null,
-}));
 messenger.registerActionHandler(
   'SentryTracingService:trackTracesAfterMetricsOptIn',
   () => undefined,
 );
 messenger.registerActionHandler(
   'SentryTracingService:clearTracesAfterMetricsOptIn',
-  () => undefined,
-);
-messenger.registerActionHandler(
-  'MetaMetricsController:setMarketingCampaignCookieId',
   () => undefined,
 );
 
@@ -1269,6 +1262,94 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(getTrackedEventCall(0).properties).toMatchObject(properties);
       },
     );
+    describe('wallet_pay', () => {
+      const WALLET_PAY_PARAMS = [
+        { type: 'perpsDeposit', from: '0x1', amount: '10' },
+      ];
+
+      const runWalletPay = async ({ params = WALLET_PAY_PARAMS, error }) => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.WALLET_PAY,
+          origin: 'some.dapp',
+          params,
+        };
+        const res = { error };
+        const { next, executeMiddlewareStack } = getNext();
+        // A sample rate of 0 proves wallet_pay is never sampled out.
+        const handler = createHandler({ rateLimitSamplePercent: 0 });
+
+        await handler(req, res, next);
+        await executeMiddlewareStack();
+      };
+
+      it('tracks the request with the dapp, type and amount', async () => {
+        await runWalletPay({});
+
+        expect(getTrackedEventCall(0)).toMatchObject({
+          event: MetaMetricsEventName.WalletPayRequested,
+          properties: {
+            method: MESSAGE_TYPE.WALLET_PAY,
+            transaction_type: 'perpsDeposit',
+            has_amount: true,
+          },
+          referrer: { url: 'some.dapp' },
+        });
+        expect(getTrackedEventCall(0).properties.outcome).toBeUndefined();
+      });
+
+      it('reports a request without an amount', async () => {
+        await runWalletPay({
+          params: [{ type: 'perpsWithdraw', from: '0x1' }],
+        });
+
+        expect(getTrackedEventCall(0).properties).toMatchObject({
+          transaction_type: 'perpsWithdraw',
+          has_amount: false,
+        });
+      });
+
+      it.each([
+        ['confirmed', undefined],
+        ['rejected', { code: errorCodes.provider.userRejectedRequest }],
+        ['blocked_by_flags', { code: errorCodes.rpc.methodNotFound }],
+        ['invalid', { code: errorCodes.rpc.invalidParams }],
+        ['unauthorized', { code: errorCodes.provider.unauthorized }],
+        ['ineligible', { code: errorCodes.rpc.methodNotSupported }],
+        ['failed', { code: errorCodes.rpc.internal }],
+        ['failed', { code: -32000 }],
+      ])('tracks a %s outcome', async (outcome, error) => {
+        await runWalletPay({ error });
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(getTrackedEventCall(1)).toMatchObject({
+          event: MetaMetricsEventName.WalletPayCompleted,
+          properties: {
+            method: MESSAGE_TYPE.WALLET_PAY,
+            transaction_type: 'perpsDeposit',
+            has_amount: true,
+            outcome,
+          },
+          referrer: { url: 'some.dapp' },
+        });
+      });
+
+      it('omits the type when the params are malformed', async () => {
+        await runWalletPay({
+          params: ['not-an-object'],
+          error: { code: errorCodes.rpc.invalidParams },
+        });
+
+        expect(getTrackedEventCall(1).properties).toMatchObject({
+          has_amount: false,
+          outcome: 'invalid',
+        });
+        expect(
+          getTrackedEventCall(1).properties.transaction_type,
+        ).toBeUndefined();
+      });
+    });
+
     describe('iframe detection properties', () => {
       it('should include is_iframe=false when frameId is 0 (top-level frame)', async () => {
         const req = {

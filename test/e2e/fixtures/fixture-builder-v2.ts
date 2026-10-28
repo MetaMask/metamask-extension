@@ -5,16 +5,13 @@ import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
+import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
-  MultichainAssetsRatesControllerState,
   NftControllerState,
   RatesControllerState,
   TokenRatesControllerState,
-  TokenBalancesControllerState,
-  TokenListMap,
-  TokenListState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -47,7 +44,6 @@ import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
-import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type { Preferences } from '../../../shared/types/preferences';
 import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
@@ -81,7 +77,6 @@ import onboardingFixtureJson from './onboarding-fixture.json';
 
 const STORAGE_SERVICE_NAMESPACE = Object.freeze({
   SNAP_CONTROLLER: 'SnapController',
-  TOKEN_LIST_CONTROLLER: 'TokenListController',
 } as const);
 
 const LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID =
@@ -130,14 +125,10 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
-type MetaMetricsControllerFixturePatch = Partial<MetaMetricsControllerState> & {
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+type AnalyticsControllerFixturePatch = {
   analyticsId?: string | null;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   consentDecisionMade?: boolean;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   dataCollectionForMarketing?: boolean;
 };
 
@@ -146,28 +137,12 @@ type StorageServiceNamespaceMap = {
     key: string;
     value: { sourceCode: string };
   };
-  [STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER]: {
-    key: `tokensChainsCache:${Hex}`;
-    value: { timestamp: number; data: TokenListMap };
-  };
 };
 
 type StorageServiceNamespace = keyof StorageServiceNamespaceMap;
 
 type FixtureBuildResult = FixtureType & {
   storageServiceData?: Record<string, unknown>;
-};
-
-/**
- * Like `Partial<MultichainAssetsRatesControllerState>`, but `conversionRates` may be a
- * partial map (lodash `merge` fills the rest).
- */
-type MultichainAssetsRatesControllerFixturePatch = Partial<
-  Omit<MultichainAssetsRatesControllerState, 'conversionRates'>
-> & {
-  conversionRates?: Partial<
-    MultichainAssetsRatesControllerState['conversionRates']
-  >;
 };
 
 /**
@@ -299,6 +274,17 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withBridgeStatusController(data: Partial<BridgeStatusControllerState>): this {
+    merge(this.fixture.data.BridgeStatusController, data);
+    return this;
+  }
+
+  /**
+   * @deprecated Assets-unify reads fiat from `AssetsController`. Set a displayed
+   * rate with {@link FixtureBuilderV2.withAssetsController} `assetsPrice`, and
+   * the selected currency with `selectedCurrency`.
+   * @param data - Legacy CurrencyController state to merge.
+   */
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -309,16 +295,13 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+  withAnalyticsController(data: AnalyticsControllerFixturePatch): this {
     const {
       analyticsId,
       optedIn,
       consentDecisionMade,
       dataCollectionForMarketing,
-      ...metaMetricsControllerPatch
     } = data;
-
-    merge(this.fixture.data.MetaMetricsController, metaMetricsControllerPatch);
 
     if (
       analyticsId !== undefined ||
@@ -351,13 +334,6 @@ class FixtureBuilderV2 {
       merge(analyticsController, analyticsPatch);
     }
 
-    return this;
-  }
-
-  withMultichainAssetsRatesController(
-    data: MultichainAssetsRatesControllerFixturePatch,
-  ): this {
-    merge(this.fixture.data.MultichainAssetsRatesController, data);
     return this;
   }
 
@@ -459,22 +435,6 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
-    return this;
-  }
-
-  withTokenBalancesController(
-    data: Partial<TokenBalancesControllerState>,
-  ): this {
-    merge(this.fixture.data.TokenBalancesController, data);
-    return this;
-  }
-
-  withTokenListController(data: Partial<TokenListState>): this {
-    (this.fixture.data as Record<string, unknown>).TokenListController ??= {};
-    merge(
-      (this.fixture.data as Record<string, unknown>).TokenListController,
-      data,
-    );
     return this;
   }
 
@@ -744,14 +704,6 @@ class FixtureBuilderV2 {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
     });
-  }
-
-  withConversionRates(
-    conversionRates: Partial<
-      MultichainAssetsRatesControllerState['conversionRates']
-    > = {},
-  ): this {
-    return this.withMultichainAssetsRatesController({ conversionRates });
   }
 
   withCurrencyRates(
@@ -1468,7 +1420,7 @@ class FixtureBuilderV2 {
       this
         // When `assetsUnifyState` is enabled the asset list is derived from the
         // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
-        // not from TokensController/TokenBalancesController.
+        // not from TokensController.
         .withAssetsController({
           customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
           assetsBalance: {
@@ -1638,19 +1590,6 @@ class FixtureBuilderV2 {
     });
   }
 
-  /**
-   * Uses the pre-consolidation settings layout (Assets autodetect toggles,
-   * Privacy → Third-party APIs, etc.). Required for E2E tests that exercise
-   * those surfaces when `default-fixture.json` marks the wallet consolidated.
-   */
-  withBasicFunctionalityConsolidationDisabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        isBasicFunctionalityConsolidatedEnabled: false,
-      },
-    });
-  }
-
   /* ==================================================================
                         STORAGE SERVICE DATA
      ==================================================================
@@ -1678,19 +1617,6 @@ class FixtureBuilderV2 {
       key: snapId,
       value: { sourceCode },
     });
-  }
-
-  withTokenListControllerStorageServiceData(
-    entries: { chainId: Hex; data: TokenListMap }[],
-  ): this {
-    for (const { chainId, data } of entries) {
-      this.withStorageServiceData({
-        namespace: STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER,
-        key: `tokensChainsCache:${chainId}`,
-        value: { timestamp: Date.now(), data },
-      });
-    }
-    return this;
   }
 
   build(): FixtureBuildResult {

@@ -484,6 +484,46 @@
   "activity_marketShort_success_title": {
     "message": "Short-Position geschlossen ‒ Markt"
   },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "An: Money Account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Einzahlung fehlgeschlagen"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "An: Money Account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "$1 einzahlen",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "An: Money Account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "$1 eingezahlt",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Von: Money Account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Empfangen fehlgeschlagen"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Von: Money Account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "$1 empfangen",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Von: Money Account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "$1 empfangen",
+    "description": "$1 is the token symbol"
+  },
   "activity_nftBuy_failed_title": {
     "message": "Kauf fehlgeschlagen"
   },
@@ -1479,6 +1519,9 @@
   "alertMessageGasFeeLow": {
     "message": "Wenn Sie eine niedrige Gebühr wählen, müssen Sie mit langsameren Transaktionen und längeren Wartezeiten rechnen. Für schnellere Transaktionen wählen Sie die Gebührenoptionen Markt oder Aggressiv."
   },
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "Um mit dieser Transaktion fortzufahren, müssen Sie das Gas-Limit auf 12000 oder mehr erhöhen."
+  },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Sie haben nicht genug $1 auf Ihrem Konto, um die Netzwerkgebühren zu bezahlen."
   },
@@ -1695,9 +1738,6 @@
     "message": "Genehmigt am $1 für $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Willkommen bei Arc! Um Ihre Nutzung der Arc Chain zu erleichtern und zu verifizieren, geben wir möglicherweise Informationen an das Arc-Team weiter."
-  },
   "arcUsageNoticeTitle": {
     "message": "Hinweis"
   },
@@ -1743,9 +1783,6 @@
   },
   "assets": {
     "message": "Assets"
-  },
-  "assetsDescription": {
-    "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
   },
   "asterdexReferralSubtitle": {
     "message": "Erhalten Sie 4 % zurück auf Trades mit einem MetaMask-Empfehlungscode.",
@@ -1804,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "Zurück zu Sicherheit"
+  },
+  "backToWallet": {
+    "message": "Zurück zur Wallet"
   },
   "backUpIncomplete": {
     "message": "Sicherung unvollständig"
@@ -1876,11 +1916,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask bietet grundlegende Funktionen wie Token-Details und Gas-Einstellungen über Internetdienste. Wenn Sie Internetdienste nutzen, wird Ihre IP-Adresse weitergegeben, in diesem Fall an MetaMask. Das ist genau so, wie wenn Sie eine beliebige Website besuchen. MetaMask verwendet diese Daten vorübergehend und verkauft Ihre Daten niemals. Sie können ein VPN verwenden oder diese Dienste abschalten, aber das kann Ihr MetaMask-Erlebnis beeinträchtigen. Um mehr zu erfahren, lesen Sie unsere $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Enthält grundlegende Funktionen wie Token-Details und Gaseinstellungen. Lassen Sie diese Funktion für ein optimales Erlebnis eingeschaltet.  Lesen Sie unsere $1, um mehr zu erfahren.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Grundfunktionalität"
@@ -1904,33 +1944,36 @@
     "message": "Grundfunktionalität einschalten"
   },
   "basicFunctionalityMigrationModalTitle": {
-    "message": "Ihre Einstellungen haben sich geändert"
+    "message": "Wir haben unsere Einstellungen aktualisiert"
   },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "Blog-Post"
   },
   "basicFunctionalityMigrationSocialModalBody1": {
-    "message": "Wir aktualisieren die Funktionsweise von MetaMask für die Anmeldung über soziale Netzwerke. Um eine nahtlose Benutzererfahrung in MetaMask zu gewährleisten, werden Ihre Anmeldedaten für soziale Netzwerke (E-Mail-Adresse oder Nutzername) nun sicher mit Ihrem Benutzerprofil und den zugehörigen Kontoadressen verknüpft. Im Rahmen dieser Aktualisierung sind die Grundfunktionen und andere Standardeinstellungen stets aktiviert."
+    "message": "Durch die Anmeldung mit Google, Apple oder Telegram wird Ihre E-Mail-Adresse (bzw. Ihr Telegram-Benutzername) nun zusammen mit Ihren Wallet-Adressen in Ihrem MetaMask-Profil gespeichert. Auf diese Weise funktioniert Ihr Konto einheitlich über alle MetaMask-Funktionen hinweg. Die Grundfunktionen bleiben für Konten zur Anmeldung über soziale Netzwerke aktiviert. Ihre Schlüssel gehören weiterhin ausschließlich Ihnen."
   },
   "basicFunctionalityMigrationSocialModalBody2": {
-    "message": "Wir verkaufen Ihre Daten niemals an Dritte. Erfahren Sie mehr über die von uns erfassten Daten und die Gründe dafür in unseren $1 und den aktualisierten $2.",
+    "message": "Mehr dazu erfahren Sie in unserem $1 und in unserer $2.",
     "description": "$1 is the blog post link, $2 is the Privacy Notice link"
   },
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "Datenschutzerklärung"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Datenschutz- und Produktaktualisierungen"
+    "message": "Aktualisierungen für die Anmeldung über soziale Netzwerke"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "APIs von Drittanbietern sind nun Teil der Grundfunktionen. Basierend auf Ihren bisherigen Einstellungen ist diese Option $1. Sie können dies jederzeit ändern unter $2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+    "message": "Ihre Datenschutzoptionen sind nun unter einer einzigen Einstellung zusammengefasst: „Grundfunktionalität“. Diese ist entsprechend Ihren bisherigen Einstellungen auf $1 gesetzt. Diese kann jederzeit unter $2 und $3 angepasst werden.",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
-    "message": "deaktiviert"
+    "message": "aus"
   },
   "basicFunctionalityMigrationToastEnabled": {
-    "message": "aktiviert"
+    "message": "bei"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "Mehr erfahren"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Einstellungen > Datenschutz"
@@ -2193,9 +2236,6 @@
   },
   "bridgeLowestCost": {
     "message": "Niedrigste Kosten"
-  },
-  "bridgeMalicious": {
-    "message": "Bösartig"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "Bösartiges Token"
@@ -2477,9 +2517,6 @@
     "message": "Aktivieren Sie zuerst $1 auf Stellar",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "Verdächtig"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "Verdächtiges Token"
   },
@@ -2631,6 +2668,9 @@
   "clearActivityDescription": {
     "message": "Setzt die Nonce des Kontos zurück und löscht Daten aus dem Aktivitäten-Tab in Ihrer Wallet. Nur das aktuelle Konto und Netzwerk sind betroffen. Ihr Guthaben und Ihre eingehenden Transaktionen bleiben unverändert."
   },
+  "clearClipboard": {
+    "message": "Zwischenablage leeren"
+  },
   "clearFilters": {
     "message": "Filter löschen"
   },
@@ -2640,6 +2680,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Klicken Sie hier, um Ihren Ledger über WebHID zu verbinden.",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "Zwischenablage konnte nicht geleert werden. Versuchen Sie es erneut."
+  },
+  "clipboardCleared": {
+    "message": "Zwischenablage geleert"
   },
   "close": {
     "message": "Schließen"
@@ -3063,6 +3109,9 @@
   "copiedToClipboard": {
     "message": "In die Zwischenablage kopiert"
   },
+  "copy": {
+    "message": "Kopieren"
+  },
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
   },
@@ -3124,11 +3173,20 @@
     "message": "Falls nichts vom oben Genannten funktioniert, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Konten wiederherstellen"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask neu installieren"
   },
   "criticalErrorResetMetaMaskState": {
     "message": "MetaMask-Status zurücksetzen"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "Beim Wiederherstellen von Konten werden Ihre aktuellen Einstellungen und Präferenzen gelöscht."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "Durch das Zurücksetzen des MetaMask-Status werden Ihre aktuellen Konten, Einstellungen und Präferenzen gelöscht."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Haben Sie immer noch Probleme?"
@@ -3241,9 +3299,6 @@
   },
   "dataCollectionForMarketing": {
     "message": "Datenerhebung für das Marketing"
-  },
-  "dataCollectionForMarketingDescription": {
-    "message": "Wir verwenden MetaMetrics, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale und andere Materialien) teilen."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Erhalten Sie Produkt-Updates, Tipps und Neuigkeiten – auch per E-Mail. Wir können Ihre Interaktionen zur Verbesserung unseres Angebots nutzen."
@@ -3786,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Schalten Sie schnellere Transaktionen, niedrigere Netzwerkgebühren und zusätzliche Sicherheit in unterstützten Netzwerken frei."
   },
-  "enableSnap": {
-    "message": "Aktivieren"
-  },
   "enableToken": {
     "message": "$1 aktivieren",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4161,6 +4213,9 @@
   "from": {
     "message": "Von"
   },
+  "fullyDiluted": {
+    "message": "Vollständig verwässert"
+  },
   "function": {
     "message": "Funktion: $1"
   },
@@ -4177,6 +4232,9 @@
   "gasLimitBelowMinimum": {
     "message": "Gas-Limit muss mindestens 12000 betragen."
   },
+  "gasLimitEditingUnavailable": {
+    "message": "Das Bearbeiten des Gas-Limits ist erst nach einer Schätzung durch MetaMask möglich."
+  },
   "gasPrice": {
     "message": "Gas-Preis"
   },
@@ -4191,10 +4249,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask übernimmt die Netzwerkgebühr für diese Transaktion. Dies beinhaltet die einmalige Aktivierung des Smart-Kontos."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Dieses spezifische Netzwerk erfordert, dass Sie eine Reserve von $1 $2 auf Ihrem Konto aufrechterhalten.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 Stunden",
@@ -4329,9 +4383,6 @@
   "generalCameraErrorTitle": {
     "message": "Etwas ist schiefgelaufen...."
   },
-  "generalDescription": {
-    "message": "Synchronisieren Sie Einstellungen geräteübergreifend, wählen Sie Netzwerkeinstellungen aus und verfolgen Sie Token-Daten"
-  },
   "generateNewQrCode": {
     "message": "Neuen QR-Code generieren"
   },
@@ -4447,6 +4498,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Fortfahren"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Entsperren Sie es und versuchen Sie es erneut, um fortzufahren",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Ihr $1 kann nur Daten des Typs Version 4 (V4) signieren. Diese Website hat einen älteren Signaturtyp angefordert, der nicht unterstützt wird.",
@@ -5146,9 +5201,6 @@
   "loading": {
     "message": "Wird geladen ..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Bitte schließen Sie die Transaktion im Snap ab."
-  },
   "loadingTokenList": {
     "message": "Token-Liste wird geladen"
   },
@@ -5373,6 +5425,51 @@
   "metrics": {
     "message": "Metriken"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Fortfahren"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Geben Sie eine gültige E-Mail-Adresse ein."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "E-Mail-Adresse"
+  },
+  "mfaErrorCooldown": {
+    "message": "Zu viele Anfragen. Warten Sie einen Augenblick und versuchen Sie es erneut."
+  },
+  "mfaErrorGeneric": {
+    "message": "Hoppla! Etwas ist schiefgelaufen! Versuchen Sie es erneut."
+  },
+  "mfaFailureClose": {
+    "message": "Schließen"
+  },
+  "mfaFailureRetry": {
+    "message": "Erneut versuchen"
+  },
+  "mfaFailureTitle": {
+    "message": "Etwas ist schiefgelaufen"
+  },
+  "mfaIntroContinue": {
+    "message": "Los geht's"
+  },
+  "mfaMethodEmail": {
+    "message": "E-Mail"
+  },
+  "mfaOtpResend": {
+    "message": "Code erneut senden"
+  },
+  "mfaOtpRetry": {
+    "message": "Erneut versuchen"
+  },
+  "mfaPickerOr": {
+    "message": "oder"
+  },
+  "mfaSettingsAdd": {
+    "message": "Hinzufügen"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Fortfahren"
+  },
   "minimumReceivedExplanation": {
     "message": "Der von Ihnen erhaltene Mindestbetrag, wenn sich der Kurs während der Abwicklung Ihrer Transaktion entsprechend Ihrer Slippage-Einstellung ändert. Diese Schätzung stammt von Liquiditätsanbietern, der Endbetrag kann daher abweichen."
   },
@@ -5410,6 +5507,14 @@
   },
   "money": {
     "message": "Money"
+  },
+  "moneyAccountApyPitchApy": {
+    "message": "$1 % APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "Verdienen Sie $1",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "Der angegebene effektive Jahreszins (APY) ist ein auf den aktuellen Marktbedingungen basierender Schätzwert. Der effektive Jahreszins ist variabel und wird nicht garantiert."
@@ -5532,7 +5637,7 @@
     "message": "$1 APY"
   },
   "moneyBalanceInfoBody": {
-    "message": "Ihr durch den US-Dollar gedecktes mUSD-Guthaben steht Ihnen jederzeit zum Ausgeben, Versenden oder Handeln zur Verfügung. Wir rechnen dies nicht in Ihren Gesamtkontostand ein."
+    "message": "Ihr durch den Dollar gedecktes mUSD-Guthaben bringt Ihnen stets Erträge ein. Wir rechnen dies nicht in Ihren Gesamtkontostand ein."
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "Auszahlungen werden umgehend bearbeitet, vorbehaltlich der üblichen Bestätigungszeiten des Netzwerks auf der jeweiligen Blockchain. Bei knapper Liquidität kann es zu vorübergehenden Verzögerungen kommen."
@@ -5551,6 +5656,10 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Erzielen Sie automatisch Zinsen auf Ihr Guthaben"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Verdienen Sie automatisch bis zu $1",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Erhalten Sie volle Liquidität ohne Sperrfristen, sodass Sie jederzeit handeln oder auszahlen können"
@@ -5573,6 +5682,14 @@
   "moneyEarnApyTitle": {
     "message": "Verdienen Sie bis zu $1 effektiven Jahreszins"
   },
+  "moneyEarnBannerCta": {
+    "message": "$1 hinzufügen",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Mit Ihrem „Money Account“ verdienen",
+    "description": "Token details Money earn banner title when the APY is unavailable"
+  },
   "moneyEarnOnCrypto": {
     "message": "Verdienen Sie an Ihrem Krypto"
   },
@@ -5591,6 +5708,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Keine Gebühr"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Die Prognose geht davon aus, dass der $1 % Effektivertrag (APY) über einen Zeitraum von einem Jahr unverändert bleibt. Der Effektivertrag ist variabel und wird nicht garantiert. Keine Garantie für die Rendite.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Verdienen Sie auf Ihrem Guthaben"
   },
@@ -5607,7 +5728,11 @@
     "message": "Finanzieren Sie Ihren Money Account und beobachten Sie, wie Ihr Saldo mit bis zu $1 APY wächst."
   },
   "moneyHomeApyTooltip": {
-    "message": "Der angegebene effektive Jahreszins (APY) ist ein Schätzwert, der auf den aktuellen Marktbedingungen basiert. Der APY ist variabel und nicht garantiert. Die Gelder fließen in einen DeFi-Tresor, der von Veda verwaltet und von Steakhouse Financial risikoüberwacht wird und Renditen auf den etablierten Kreditmärkten erwirtschaftet."
+    "message": "Der angegebene Zinssatz entspricht dem aktuellen effektiven Jahreszins (APY). Der APY ist variabel und wird nicht garantiert."
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Ihr Money Account verdient automatisch bis zu $1 APY.",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Das Money Account wird durch Monad betrieben."
@@ -5619,14 +5744,8 @@
     "message": "Fügen Sie mUSD hinzu, und Ihr durch US-Dollar gedecktes Guthaben steht Ihnen jederzeit zum Ausgeben, Handeln oder Versenden bereit."
   },
   "moneyHowItWorksDescription1": {
-    "message": "Fügen Sie mUSD zu Ihrem Money Account hinzu und verdienen Sie automatisch bis zu $1 Effektivertrag (variabel). Die Gelder fließen in einen DeFi-Tresor, der von Veda verwaltet und dessen Risiko von Steakhouse Financial überwacht wird. Der Zinssatz wird von DeFi-Plattformen Dritter generiert, die Gelder in Blockchain-Protokollen bereitstellen. Kein Staking, keine Ansprüche, keine Lock-ups.",
+    "message": "Konvertieren Sie beliebige Kryptowährungen in Ihren Money Account und verdienen Sie automatisch bis zu $1 Effektivertrag (variabel). Die Gelder fließen in einen DeFi-Tresor, der von Veda verwaltet und dessen Risiko von Steakhouse Financial überwacht wird. Der Zinssatz wird von DeFi-Plattformen Dritter generiert, die Gelder in Blockchain-Protokollen bereitstellen. Kein Staking, keine Ansprüche, keine Lock-ups.",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Ihr Geldguthaben ist Ihr Ausgabensaldo. Verknüpfen Sie Ihre MetaMask Card, um bei mehr als 150 Millionen Händlern weltweit zu bezahlen. Ihr Geld verdient so lange, bis Sie es nutzen."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Das Money Account wird durch Monad betrieben."
   },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "Fügen Sie mUSD hinzu und verdienen Sie bis zu $1. Ihr Guthaben ist durch US-Dollar gedeckt und jederzeit bereit zum Ausgeben, Handeln oder Versenden.",
@@ -5643,52 +5762,48 @@
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "Ändert sich der APY-Satz?"
+    "message": "Wie viel kann ich mit einem MetaMask Money Account verdienen?"
   },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Sie! MetaMask ist eine Wallet zur Eigenverwahrung; das bedeutet, dass ausschließlich die privaten Schlüssel des Kontoinhabers die Kontrolle darüber haben. MetaMask kann weder auf Ihre Gelder zugreifen noch diese einfrieren oder verschieben. Genau das unterscheidet uns von herkömmlichen Bankkonten und Krypto-Plattformen mit Fremdverwahrung: Es gibt keinen Drittanbieter, der Ihre Gelder verwahrt."
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "An den meisten Orten! Derzeit sind wir im Vereinigten Königreich sowie in Ländern, die auf der US-Sanktionsliste stehen, nicht verfügbar."
   },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Wer kontrolliert mein Geld?"
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "In welchen Ländern ist das MetaMask Money Account verfügbar?"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Für die Eröffnung eines Money Accounts und die Einzahlung von Stablecoins fallen keine Gebühren an. Bei der Einzahlung von Token, die keine Stablecoins sind, werden Gebühren berechnet. Zudem fallen Gebühren für Transaktionen mit der MetaMask Card, Bargeldabhebungen am Geldautomaten sowie Kosten für die Auszahlung in Lokalwährung an. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Hier finden Sie die vollständige Aufschlüsselung der Kartengebühren."
+    "message": "Die Eröffnung eines Money Accounts ist gebührenfrei, ebenso wie die Einzahlung von Stablecoins. Bei der Einzahlung von Token, die keine Stablecoins sind, fallen Gebühren an."
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Fallen Gebühren an?"
+    "message": "Wie hoch sind die Gebühren für das MetaMask Money Account?"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "Nein, für die Eröffnung eines Money Accounts ist keine Identitätsverifizierung erforderlich. Bestimmte Funktionen – darunter die Karte und Ramps – setzen jedoch eine Verifizierung voraus. Diese Überprüfungen werden von Drittanbietern durchgeführt, die regulierte Dienste betreiben, und nicht von MetaMask. Falls erforderlich, werden Sie während der Registrierung innerhalb der App durch den Prozess geführt."
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "Muss ich eine Identitätsverifizierung durchführen, um ein MetaMask Money Account nutzen zu können?"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Ja. Sie können Ihr gesamtes Guthaben jederzeit handeln, versenden, ausgeben oder abheben – ohne Kündigungsfristen, Strafgebühren oder Auszahlungsgebühren seitens MetaMask. Bei geringer Liquidität kann es zu vorübergehenden Verzögerungen kommen."
+    "message": "Ja. Sie können Ihr gesamtes Guthaben jederzeit versenden oder abheben – ohne Kündigungsfristen, Strafgebühren oder Auszahlungsgebühren seitens MetaMask. Bei geringer Liquidität kann es zu vorübergehenden Verzögerungen kommen."
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Ist mein Geld gesperrt? Kann ich es jederzeit auszahlen lassen?"
+    "message": "Kann ich jederzeit Geld vom MetaMask Money Account abheben?"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "Ein Konto, das einen Effektivvertrag von bis zu $1 verdient. Sie zahlen Gelder ein – das auf dem Konto als mUSD gehalten wird – und erzielen einen Effektivvertrag von bis zu $1. mUSD ist der durch den US-Dollar gedeckte Stablecoin von MetaMask. Sie können jederzeit ohne Strafen über Ihre Gelder verfügen oder sie abheben. Zudem können Sie Ihre Gelder mit der MetaMask Card bei weltweit mehr als 150 Millionen Mastercard-Akzeptanzstellen ausgeben.",
+    "message": "Ein Konto, das einen Effektivvertrag von bis zu $1 verdient. Sie zahlen Gelder ein – die auf dem Konto als mUSD gehalten wird – und erzielen einen Effektivvertrag von bis zu $1. mUSD ist der durch den US-Dollar gedeckte Stablecoin von MetaMask. Sie können jederzeit ohne Strafen über Ihre Gelder verfügen oder sie abheben.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Was ist das Geldkonto?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD ist der 1:1 durch den Dollar gedeckten Stablecoin von MetaMask. Ihr Saldo wird in mUSD geführt und steht Ihnen jederzeit zum Ausgeben, Versenden oder Handeln zur Verfügung.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "Was ist mUSD?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Ihr „Money“-Guthaben ist Ihr Ausgabenguthaben – es bringt so lange Erträge ein, bis Sie es verwenden. Das „Money“-Konto ist weder ein Bankkonto noch ein Sparkonto noch ein Produkt mit Einlagensicherung.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Ist dies ein Sparkonto oder ein Ausgabenkonto?"
+    "message": "Was ist MetaMask Money Account?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQs"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "Sie können die folgenden Stablecoins und aTokens ohne Umrechnungsgebühren auf Ihr Money Account einzahlen:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nAlle anderen EVM-Token können auf den Money Account eingezahlt werden, wobei jedoch die üblichen Gebühren anfallen können. Sie können Ihren Money Account auch per Debitkarte, Kreditkarte, Bankkonto, PayPal, Apple Pay oder Google Pay aufladen.\n\nHinweis: Zur Gewährleistung der Liquidität gilt ein anfängliches Einzahlungslimit von $1 pro Token.",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "Welche Token kann ich auf das Money Account einzahlen?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "Wenn Sie Gelder einzahlen, werden diese in etablierten DeFi-Protokollen wie Aave und Morpho angelegt, wo sie durch reale wirtschaftliche Aktivitäten Erträge erwirtschaften. Diese Erträge werden Ihnen in Form einem Effektivvertrag gutgeschrieben.\n\nEin externer Dienstleister namens Steakhouse Financial überwacht die Mittelallokation innerhalb der Protokolle. Veda, ein externer Infrastrukturanbieter, implementiert und wartet die Smart Contracts der Vaults, in denen Ihre Gelder verwahrt werden.\n\nBei den Erträgen handelt es sich nicht um Zinsen, die von MetaMask oder dem Emittenten von mUSD gezahlt werden. Vielmehr sind es On-Chain-Renditen, die durch Positionen in DeFi-Protokollen von Drittanbietern generiert werden."
@@ -5723,8 +5838,16 @@
   "moneyMusd": {
     "message": "mUSD"
   },
+  "moneyOnboardingFundTitle": {
+    "message": "Money Account finanzieren",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
+  },
   "moneySend": {
     "message": "Senden"
+  },
+  "moneyStartEarning": {
+    "message": "Mit dem Verdienen beginnen",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Geld hinzufügen nicht möglich. Versuchen Sie es erneut."
@@ -6159,9 +6282,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinSegwit": {
-    "message": "Bitcoin nativer SegWit"
   },
   "networkNameDefinition": {
     "message": "Der diesem Netzwerk zugeordnete Name."
@@ -6665,9 +6785,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Benutzerdefiniertes IPFS-Gateway hinzufügen"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL für IPFS-Gateway ist gültig"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Wenn Sie unsere Standardeinstellungen und -konfigurationen verwenden, nutzen wir Infura als Standard-RPC-Anbieter (Remote Procedure Call), um einen möglichst zuverlässigen und privaten Zugriff auf Ethereum-Daten zu gewährleisten. In Ausnahmefällen können wir auch andere RPC-Anbieter einsetzen, um unseren Nutzern das bestmögliche Erlebnis zu bieten. Sie können Ihren eigenen RPC wählen, doch bedenken Sie dabei, dass jeder RPC Ihre IP-Adresse und Ihr Ethereum-Wallet zur Durchführung von Transaktionen erhalten wird. Weitere Informationen darüber, wie Infura Daten für EVM-Konten verarbeitet, finden Sie in unserer $1; und für Solana-Konten in der $2."
   },
@@ -6706,7 +6823,7 @@
     "message": "Grundlegende Nutzungsdaten sammeln"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Produkt-Updates"
+    "message": "Marketing-Updates"
   },
   "onboardingMetametricsContinue": {
     "message": "Fortfahren"
@@ -6901,6 +7018,42 @@
   "passkeyErrorVerificationFailed": {
     "message": "Wir konnten Ihr $1 nicht verifizieren. Versuchen Sie es erneut oder verwenden Sie Ihr Passwort.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationDescription1": {
+    "message": "Die Speichermethode Ihres Passworts bietet keinen vollständigen Schutz für Ihren Wallet-Schlüssel. Bitte ersetzen Sie diesen, um die biometrische Funktion weiterhin nutzen zu können.",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "Wenn Ihr Browser Sie nach dem Speicherort fragt, wählen Sie „Google-Passwortmanager“ und nicht „Dieses Gerät“. $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Ihr aktuelles Passwort bleibt gültig, bis Sie es ändern.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "Es wurde auf diesem Gerät gespeichert, das Ihren Wallet-Schlüssel nicht schützen kann. Versuchen Sie es erneut und wählen Sie bei entsprechender Browser-Abfrage „Google-Passwortmanager“ als Speicherort aus. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Behalte vorerst mein aktuelles Passwort bei",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "Dieses Passwort funktioniert nicht",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Erneut versuchen",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "Unterstützte Anbieter anzeigen",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Ihr Passwort muss aktualisiert werden",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "$1 registrieren",
@@ -7358,6 +7511,9 @@
   "perps24hVolume": {
     "message": "24-Std.-Volumen"
   },
+  "perpsAbout": {
+    "message": "Über"
+  },
   "perpsActivity": {
     "message": "Aktivität"
   },
@@ -7372,6 +7528,13 @@
   },
   "perpsAddFunds": {
     "message": "Gelder hinzufügen"
+  },
+  "perpsAddFundsHint": {
+    "message": "Zur Ausführung dieser Order müssen Sie mindestens $1 auf Ihr Perps-Konto einzahlen.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Guthaben für den Handel hinzufügen"
   },
   "perpsAddMargin": {
     "message": "Margin hinzufügen"
@@ -7953,6 +8116,9 @@
   "perpsRateLimitExceeded": {
     "message": "Zu viele Anfragen. Bitte warten Sie und versuchen Sie es erneut."
   },
+  "perpsReadMore": {
+    "message": "Mehr erfahren"
+  },
   "perpsRecentActivity": {
     "message": "Neueste Aktivität"
   },
@@ -7999,6 +8165,18 @@
   "perpsSeeAll": {
     "message": "Alle sehen",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "wenden Sie sich an den Support,",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Informieren Sie sich in den FAQs über Ihre Optionen",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Wir haben einen Ausfall",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Service vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
@@ -8835,7 +9013,7 @@
     "message": "Sofort"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "Weniger als"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "Min."
@@ -8848,7 +9026,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "Bis zu $1",
+    "message": "$1 Limit",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8873,9 +9051,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Kaufen ist vorübergehend nicht möglich"
   },
-  "rampsShowAllTokens": {
-    "message": "Alle Token anzeigen"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "Dieses Token ist in Ihrer Region nicht verfügbar.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -8897,7 +9072,7 @@
     "message": "Beinhaltet $1 % MM-Gebühr."
   },
   "readdToken": {
-    "message": "Sie können diese Token immer erneut hinzufügen, indem Sie in den Menüpunkt „Token hinzufügen“ in den Einstellungen Ihres Kontos gehen."
+    "message": "Sie können dieses Token in Zukunft wieder hinzufügen, indem Sie im Menü „Token“ die Option „Token verwalten“ aufrufen"
   },
   "receive": {
     "message": "Empfangen"
@@ -8968,6 +9143,10 @@
   "relayerFee": {
     "message": "Relayer-Gebühr"
   },
+  "remindMeLater": {
+    "message": "Später erinnern",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Entfernen"
   },
@@ -9030,6 +9209,10 @@
   },
   "replace": {
     "message": "ersetzen"
+  },
+  "replacePasskey": {
+    "message": "Passwort ersetzen",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Ein Problem melden"
@@ -9311,6 +9494,9 @@
   "rpcUrl": {
     "message": "RPC-URL"
   },
+  "rpcUrlRateLimited": {
+    "message": "Dieser RPC-Anbieter begrenzt die Anzahl der Anfragen. Bitte versuchen Sie es später erneut oder verwenden Sie eine andere RPC-URL."
+  },
   "safeTransferFrom": {
     "message": "Sichere Übertragung von"
   },
@@ -9504,21 +9690,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Neues Passwort gespeichert"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Sicherheit und Datenschutz"
-  },
-  "securityDescription": {
-    "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten"
-  },
   "securityMessageLinkForNetworks": {
     "message": "Netzwerk-Betrügereien und Sicherheitsrisiken"
   },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten und Daten."
   },
   "securitySocialLoginEnabled": {
     "message": "Aktiviert"
@@ -9931,6 +10108,9 @@
   "sendingNativeAsset": {
     "message": "Senden von $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "Diese sensiblen Daten bleiben in Ihrer Zwischenablage gespeichert."
   },
   "sent": {
     "message": "Gesendet"
@@ -11528,7 +11708,7 @@
     "message": "Angebotsquelle"
   },
   "swapQuotesExpiredErrorDescription": {
-    "message": "Bitte fordern Sie neue Angebote an, um die aktuellen Preise zu erhalten."
+    "message": "Bitte fordern Sie neue Angebote an, um die aktuellen Kurse zu erhalten."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Angebot-Timeout"
@@ -11574,6 +11754,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Automatisch"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Die Slippage-Toleranz wurde auf 100 % begrenzt."
   },
   "swapSlippageHighDescription": {
     "message": "Die eingegebene Slippage ($1%) wird als sehr hoch angesehen und kann zu einem schlechten Kurs führen.",
@@ -11847,7 +12030,7 @@
     "message": "Insgesamt empfangen"
   },
   "totalVolume": {
-    "message": "Gesamtvolumen"
+    "message": "Gesamtvolumen (24 Std.)"
   },
   "transaction": {
     "message": "Transaktion"
@@ -12017,6 +12200,9 @@
   },
   "turnOn": {
     "message": "Einschalten"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "grundfunktionalität einschalten"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Beim Erstellen der Benachrichtigungen ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
@@ -12290,6 +12476,9 @@
   "volume": {
     "message": "Volumen"
   },
+  "volumeToMarketCap": {
+    "message": "Volumen / Marktkapitalisierung"
+  },
   "wallet": {
     "message": "Wallet"
   },
@@ -12337,7 +12526,7 @@
     "message": "Web3"
   },
   "web3ShimUsageNotification": {
-    "message": "Wir haben festgestellt, dass die aktuelle Website versucht hat, die entfernte window.web3 API zu verwenden. Sollte die Seite defekt sein, klicken Sie bitte auf $1 für weitere Informationen.",
+    "message": "Wir haben festgestellt, dass die aktuelle Webseite versucht hat, die entfernte window.web3 API zu verwenden. Sollte die Seite defekt sein, klicken Sie bitte auf $1 für weitere Informationen.",
     "description": "$1 is a clickable link."
   },
   "webhid": {

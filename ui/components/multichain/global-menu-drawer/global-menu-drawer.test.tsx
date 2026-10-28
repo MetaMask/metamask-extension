@@ -1,5 +1,14 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
+import {
+  CANCEL_TYPES,
+  PAYMENT_TYPES,
+  PRODUCT_TYPES,
+  RECURRING_INTERVALS,
+  Subscription,
+  SUBSCRIPTION_STATUSES,
+  SubscriptionPaymentMethod,
+} from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -8,9 +17,21 @@ import {
   NETWORKS_ROUTE,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
+import {
+  getIsMetaMaskShieldFeatureEnabled,
+  isGatorPermissionsRevocationFeatureEnabled,
+} from '../../../../shared/lib/environment';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { DAY } from '../../../../shared/constants/time';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
+
+const mockTrackEvent = jest.fn();
 
 const getEnvironmentType = jest.requireMock(
   '../../../../shared/lib/environment-type',
@@ -35,6 +56,19 @@ jest.mock('../../../../shared/lib/browser-runtime.utils', () => ({
 jest.mock('../../../hooks/useBrowserSupportsSidePanel', () => ({
   useBrowserSupportsSidePanel: jest.fn(() => false),
 }));
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../hooks/shield/metrics/useSubscriptionMetrics', () => ({
   useSubscriptionMetrics: jest.fn(() => ({
@@ -306,6 +340,124 @@ describe('GlobalMenuDrawerWithList', () => {
     });
 
     fireEvent.click(getByTestId('drawer-close-button'));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+});
+
+const ACTIVE_SHIELD_SUBSCRIPTION: Subscription = {
+  id: 'sub_123',
+  status: SUBSCRIPTION_STATUSES.active,
+  products: [
+    {
+      name: PRODUCT_TYPES.SHIELD,
+      currency: 'usd',
+      unitAmount: 100,
+      unitDecimals: 2,
+    },
+  ],
+  paymentMethod: { type: PAYMENT_TYPES.byCard } as SubscriptionPaymentMethod,
+  interval: RECURRING_INTERVALS.month,
+  currentPeriodStart: new Date().toISOString(),
+  currentPeriodEnd: new Date(Date.now() + 30 * DAY).toISOString(),
+  isEligibleForSupport: true,
+  cancelType: CANCEL_TYPES.ALLOWED_AT_PERIOD_END,
+};
+
+describe('GlobalMenuDrawerWithList support menu', () => {
+  const captureCommonExistingShieldSubscriptionEvents = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getEnvironmentType.mockReturnValue('popup');
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(false);
+    jest.mocked(getIsMetaMaskShieldFeatureEnabled).mockReturnValue(false);
+    jest.mocked(useUserSubscriptions).mockReturnValue({
+      subscriptions: [],
+    } as unknown as ReturnType<typeof useUserSubscriptions>);
+    jest.mocked(useSubscriptionMetrics).mockReturnValue({
+      captureCommonExistingShieldSubscriptionEvents,
+    } as unknown as ReturnType<typeof useSubscriptionMetrics>);
+  });
+
+  async function renderOpenMenu(
+    onClose: () => void,
+    useExternalServices = false,
+  ) {
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        transactions: [],
+        useExternalServices,
+      },
+    });
+    const view = renderWithProvider(
+      <GlobalMenuDrawerWithList
+        isOpen
+        onClose={onClose}
+        data-testid="global-menu-drawer"
+      />,
+      store,
+      '/',
+    );
+
+    await waitFor(() => {
+      expect(view.getByTestId('global-menu-support')).toBeInTheDocument();
+    });
+
+    return view;
+  }
+
+  it('tracks Support Link Clicked when shield priority support is unavailable', async () => {
+    const onClose = jest.fn();
+    const { getByTestId } = await renderOpenMenu(onClose);
+
+    fireEvent.click(getByTestId('global-menu-support'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Home,
+          url: process.env.SUPPORT_LINK || '',
+          location: 'Home',
+        }),
+      }),
+    );
+    expect(
+      captureCommonExistingShieldSubscriptionEvents,
+    ).not.toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('tracks Shield Priority Support Clicked and skips Support Link Clicked when shield is active', async () => {
+    jest.mocked(getIsMetaMaskShieldFeatureEnabled).mockReturnValue(true);
+    jest.mocked(useUserSubscriptions).mockReturnValue({
+      subscriptions: [ACTIVE_SHIELD_SUBSCRIPTION],
+    } as ReturnType<typeof useUserSubscriptions>);
+
+    const onClose = jest.fn();
+    const { getByTestId } = await renderOpenMenu(onClose, true);
+
+    fireEvent.click(getByTestId('global-menu-support'));
+
+    expect(captureCommonExistingShieldSubscriptionEvents).toHaveBeenCalledWith(
+      {
+        subscriptionStatus: SUBSCRIPTION_STATUSES.active,
+        paymentType: PAYMENT_TYPES.byCard,
+        billingInterval: RECURRING_INTERVALS.month,
+        cryptoPaymentChain: undefined,
+        cryptoPaymentCurrency: undefined,
+      },
+      MetaMetricsEventName.ShieldPrioritySupportClicked,
+    );
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.SupportLinkClicked,
+      }),
+    );
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

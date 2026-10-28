@@ -61,7 +61,7 @@ export function MoneyApiActivityDetails({
 }: MoneyApiActivityDetailsProps) {
   const t = useI18nContext() as MoneyActivityTranslate;
   // useCopyToClipboard analysis: Copies a public transaction hash
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   const display = getAccountsApiActivityDisplayInfo(activity, t);
   const hero = getMoneyApiActivityDetailsHeroAmount(activity);

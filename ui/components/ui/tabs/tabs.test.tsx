@@ -7,7 +7,6 @@ describe('Tabs', () => {
   const renderTabs = (props = {}) => {
     const defaultProps = {
       onTabClick: () => null,
-      subHeader: null,
     };
 
     return render(
@@ -96,13 +95,6 @@ describe('Tabs', () => {
     fireEvent.click(getByText('Tab 2'));
 
     expect(onTabClick).toHaveBeenCalledWith('tab2');
-  });
-
-  it('renders subHeader when provided', () => {
-    const subHeader = <div data-testid="sub-header">Sub Header Content</div>;
-    const { getByTestId } = renderTabs({ subHeader });
-
-    expect(getByTestId('sub-header')).toBeInTheDocument();
   });
 
   it('applies tabListProps to the tab list', () => {

@@ -7,7 +7,9 @@
     "stage": "string",
     "warning": "null"
   },
-  "activeTab": {},
+  "activeTab": {
+    "id": "number"
+  },
   "appState": {
     "accountDetail": {
       "privateKey": "string"
@@ -196,7 +198,8 @@
                 "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
                 "<solana-account-1>",
                 "<bitcoin-account-1>",
-                "<tron-account-1>"
+                "<tron-account-1>",
+                "<stellar-account-1>"
               ]
             }
           }
@@ -261,6 +264,9 @@
         "image": "string"
       }
     },
+    "assetsLoadingStatus": {
+      "*": "string"
+    },
     "assetsMetadata": {
       "*": {
         "name": "string",
@@ -285,19 +291,20 @@
         "marketCap": "number",
         "totalVolume": "number",
         "dilutedMarketCap": "number",
+        "allTimeHigh": "number",
+        "allTimeLow": "number",
+        "circulatingSupply": "number",
         "pricePercentChange1d": "number",
+        "pricePercentChange1h": "number",
+        "pricePercentChange7d": "number",
+        "pricePercentChange14d": "number",
+        "pricePercentChange30d": "number",
+        "pricePercentChange200d": "number",
+        "pricePercentChange1y": "number",
         "lastUpdated": "number"
       }
     },
     "autoramps": [],
-    "balances": {
-      "*": {
-        "*": {
-          "unit": "string",
-          "amount": "string"
-        }
-      }
-    },
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
     "batchTransactionCounts": {},
@@ -317,35 +324,16 @@
     "consentDecisionMade": "boolean",
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
-      "networks": "object"
+      "networks": "object",
+      "eventsConfig": {
+        "events": {},
+        "schemaVersion": "string",
+        "timestamp": "number",
+        "version": "string"
+      }
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
-    "conversionRates": {
-      "*": {
-        "currency": "string",
-        "rate": "string",
-        "conversionTime": "number",
-        "expirationTime": "number",
-        "marketData": {
-          "fungible": "boolean",
-          "allTimeHigh": "string",
-          "allTimeLow": "string",
-          "circulatingSupply": "string",
-          "marketCap": "string",
-          "totalVolume": "string",
-          "pricePercentChange": {
-            "PT1H": "number",
-            "P1D": "number",
-            "P7D": "number",
-            "P14D": "number",
-            "P30D": "number",
-            "P200D": "number",
-            "P1Y": "number"
-          }
-        }
-      }
-    },
     "country": "string",
     "coverageResults": {},
     "countries": {
@@ -423,6 +411,7 @@
         "tron:2494104990": "boolean"
       }
     },
+    "enrolledCredentials": [],
     "nativeAssetIdentifiers": {
       "eip155:1": "string",
       "eip155:11155111": "string",
@@ -440,6 +429,13 @@
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
+    "eventsConfigEtag": "null",
+    "eventsConfig": {
+      "events": {},
+      "schemaVersion": "string",
+      "timestamp": "number",
+      "version": "string"
+    },
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -530,7 +526,6 @@
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
     "hip3ConfigVersion": "number",
-    "historicalPrices": {},
     "ignoredNfts": [],
     "initializationAttempts": "number",
     "initializationError": "null",
@@ -626,6 +621,33 @@
           }
         },
         "<tron-account-1>": {
+          "type": "string",
+          "scopes": ["string"],
+          "id": "string",
+          "address": "string",
+          "options": {
+            "exportable": "boolean",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": ["string"],
+          "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "keyring": {
+              "type": "string"
+            },
+            "snap": {
+              "id": "string"
+            },
+            "lastSelected": "number"
+          }
+        },
+        "<stellar-account-1>": {
           "type": "string",
           "scopes": ["string"],
           "id": "string",
@@ -821,6 +843,7 @@
     },
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
+    "moneyEarnBannerDismissedTokenKeys": [],
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -870,11 +893,13 @@
     "nonEvmTransactions": {
       "<solana-account-1>": {},
       "<bitcoin-account-1>": {},
-      "<tron-account-1>": {}
+      "<tron-account-1>": {},
+      "<stellar-account-1>": {}
     },
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
     "onboardingDate": "null",
+    "onboardingJourneyEnded": "boolean",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
@@ -928,6 +953,7 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "hasLinkedSocialLoginProfile": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "basicFunctionalityMigrationNotification": "null",
@@ -1062,7 +1088,13 @@
         "subscriptionId": "null"
       }
     },
-    "rewardsActiveAccount": "null",
+    "rewardsActiveAccount": {
+      "account": "string",
+      "lastFreshOptInStatusCheck": "number",
+      "lastPerpsDiscountRateFetched": "null",
+      "perpsFeeDiscount": "null",
+      "subscriptionId": "null"
+    },
     "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
@@ -1227,7 +1259,6 @@
     "throttledOrigins": {},
     "timeoutMinutes": "number",
     "timezone": "string",
-    "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {
       "data": "null",
@@ -1237,7 +1268,6 @@
       "selected": "null"
     },
     "tokenSecurityTypeDestination": "null",
-    "tokensChainsCache": {},
     "tokenWarnings": [],
     "tradeConfigurations": {
       "testnet": {},
@@ -1276,7 +1306,7 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
-    "version": "null",
+    "version": "string",
     "versionInfo": [],
     "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",

@@ -141,6 +141,41 @@ describe('getMetaMaskPayProperties', () => {
       expect(result.properties.mm_pay_use_case).toBe('perps_withdraw');
     });
 
+    (
+      [
+        [TransactionType.predictDeposit, 'predict_deposit'],
+        [TransactionType.predictDepositAndOrder, 'predict_deposit_and_order'],
+        [TransactionType.predictWithdraw, 'predict_withdraw'],
+        [TransactionType.moneyAccountDeposit, 'money_account_deposit'],
+        [TransactionType.moneyAccountWithdraw, 'money_account_withdraw'],
+      ] as const
+    ).forEach(([type, useCase]) => {
+      it(`sets ${useCase} for ${type} transactions`, async () => {
+        const request = createPayRequest({
+          transactionMeta: {
+            ...createPayRequest().transactionMeta,
+            type,
+          },
+        });
+        const result = await getMetaMaskPayProperties(request);
+
+        expect(result.properties.mm_pay_use_case).toBe(useCase);
+      });
+    });
+
+    it('sets money_account_deposit for batch transactions with a nested money account deposit', async () => {
+      const request = createPayRequest({
+        transactionMeta: {
+          ...createPayRequest().transactionMeta,
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+        },
+      });
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_use_case).toBe('money_account_deposit');
+    });
+
     it('sets musd_conversion for musdConversion transactions', async () => {
       const request = createPayRequest({
         transactionMeta: {
@@ -299,15 +334,16 @@ describe('getMetaMaskPayProperties', () => {
       expect(result.properties.mm_pay_amount_input_type).toBeUndefined();
     });
 
-    it('does not tag pay types without prefill support even when the flag default is enabled', async () => {
+    it('copies prefill metrics for perps deposits', async () => {
       const base = createPayRequest();
       const request = createBuilderRequest({
         transactionMeta: base.transactionMeta,
         transactionMetricsRequest: {
           ...base.transactionMetricsRequest,
-          getFeatureFlags: jest.fn().mockReturnValue({
-            confirmations_pay_extended: {
-              prefilledAmount: { default: { enabled: true } },
+          getTransactionUIMetricsFragment: jest.fn().mockReturnValue({
+            properties: {
+              mm_pay_amount_input_type: 'prefilled_50',
+              mm_pay_prefilled_amount: 250,
             },
           }),
         },
@@ -316,7 +352,8 @@ describe('getMetaMaskPayProperties', () => {
       const result = await getMetaMaskPayProperties(request);
 
       expect(result.properties.mm_pay_use_case).toBe('perps_deposit');
-      expect(result.properties.mm_pay_amount_input_type).toBeUndefined();
+      expect(result.properties.mm_pay_amount_input_type).toBe('prefilled_50');
+      expect(result.properties.mm_pay_prefilled_amount).toBe(250);
     });
 
     it('prefers the input type recorded on the UI metrics fragment', async () => {
@@ -420,6 +457,26 @@ describe('getMetaMaskPayProperties', () => {
       });
       const result = await getMetaMaskPayProperties(request);
 
+      expect(result.properties.mm_pay_receiving_value_usd).toBe(99);
+    });
+
+    it('falls back to persisted USD values when transaction pay data is unavailable', async () => {
+      const request = createPayRequest({
+        transactionMeta: {
+          ...createPayRequest().transactionMeta,
+          assetsFiatValues: {
+            sending: '100',
+            receiving: '98',
+          },
+          metamaskPay: {
+            ...createPayRequest().transactionMeta.metamaskPay,
+            targetFiat: '99',
+          },
+        },
+      });
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_sending_value_usd).toBe(100);
       expect(result.properties.mm_pay_receiving_value_usd).toBe(99);
     });
 

@@ -142,11 +142,6 @@
       "count": 1
     }
   },
-  "ui/components/ui/check-box/check-box.component.js": {
-    "react-hooks/immutability": {
-      "count": 1
-    }
-  },
   "ui/components/ui/form-combo-field/form-combo-field.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 3
@@ -255,11 +250,6 @@
   "ui/hooks/metamask-notifications/useSwitchNotifications.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 3
-    }
-  },
-  "ui/hooks/perps/stream/usePerpsLivePrices.ts": {
-    "react-hooks/purity": {
-      "count": 1
     }
   },
   "ui/hooks/perps/usePerpsMeasurement.ts": {
@@ -508,11 +498,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/send/useMaxAmount.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/send/useSendNfts.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -538,7 +523,7 @@
       "count": 2
     }
   },
-  "ui/pages/confirmations/hooks/transactions/useDepositPrefillAmount.ts": {
+  "ui/pages/confirmations/hooks/transactions/useDepositPrefill.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1
     }
@@ -638,11 +623,6 @@
       "count": 1
     }
   },
-  "ui/pages/onboarding-flow/onboarding-flow.tsx": {
-    "react-hooks/immutability": {
-      "count": 1
-    }
-  },
   "ui/pages/onboarding-flow/welcome/welcome.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 3
@@ -655,16 +635,6 @@
   },
   "ui/pages/ramps/build-quote/hooks/useBuildQuoteAmount.ts": {
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/ramps/build-quote/hooks/useRampsBuildQuote.ts": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 2
-    }
-  },
-  "ui/pages/ramps/provider-selection/provider-selection.tsx": {
-    "react-hooks/preserve-manual-memoization": {
       "count": 1
     }
   },

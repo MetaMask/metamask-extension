@@ -88,7 +88,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -155,7 +155,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

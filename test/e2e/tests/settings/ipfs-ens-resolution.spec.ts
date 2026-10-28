@@ -93,7 +93,7 @@ describe('Settings', function () {
     );
   });
 
-  it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
+  it('Does not fetch ENS data for ENS Domain when basic functionality is switched off', async function () {
     async function ensDomainPassthrough(
       mockServer: MockttpServer,
     ): Promise<MockedEndpoint[]> {
@@ -111,9 +111,7 @@ describe('Settings', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
-          .withBasicFunctionalityConsolidationDisabled()
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: ensDomainPassthrough,
       },
@@ -126,12 +124,10 @@ describe('Settings', function () {
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
-        // turns off IPFS setting and ENS domain resolution
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
-        await privacySettings.goToThirdPartyApisSettings();
-        await privacySettings.toggleEnsDomainResolution();
+        await privacySettings.toggleBasicFunctionalityOff();
 
         try {
           await driver.openNewPage(ENS_NAME_URL);

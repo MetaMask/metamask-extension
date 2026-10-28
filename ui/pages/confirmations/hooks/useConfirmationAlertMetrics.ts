@@ -1,8 +1,13 @@
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 /* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { validate as isUuid } from 'uuid';
 
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import useAlerts from '../../../hooks/useAlerts';
 import { isSignatureTransactionType } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
@@ -34,6 +39,44 @@ export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
   [AlertsName.Blockaid]: 'blockaid',
 };
 
+/**
+ * Alert keys that are suppressed from confirmation metrics for a given
+ * transaction type, because the generic alert that produces them cannot
+ * meaningfully apply to that flow.
+ *
+ * Money Account deposits are submitted as EIP-7702/ERC-7821 batches whose
+ * outer call targets the Money Account itself, so the generic non-contract
+ * address check fires on an address that has no code while the real calls
+ * (mUSD token, teller) sit in `nestedTransactions`. The alert is left intact
+ * for the UI; it is only excluded here so it does not skew rollout metrics.
+ */
+const EXCLUDED_ALERT_KEYS_BY_TRANSACTION_TYPE: [TransactionType, string[]][] = [
+  [
+    TransactionType.moneyAccountDeposit,
+    [AlertsName.HexDataWhileInteractingWithNonContractAddress],
+  ],
+];
+
+/**
+ * Resolves the alert keys to omit from metrics for a confirmation.
+ *
+ * Matches on nested transactions as well as the top-level type, since pay
+ * batches carry their meaningful type on a nested call.
+ *
+ * @param transactionMeta - The confirmation to inspect.
+ * @returns The set of alert keys to exclude from metrics.
+ */
+function getExcludedAlertKeys(
+  transactionMeta: TransactionMeta | undefined,
+): Set<string> {
+  const keys = EXCLUDED_ALERT_KEYS_BY_TRANSACTION_TYPE.filter(
+    ([transactionType]) =>
+      hasTransactionType(transactionMeta, [transactionType]),
+  ).flatMap(([, alertKeys]) => alertKeys);
+
+  return new Set(keys);
+}
+
 function uniqueFreshArrayPush<T>(array: T[], value: T): T[] {
   return [...new Set([...array, value])];
 }
@@ -53,20 +96,36 @@ export function useConfirmationAlertMetrics() {
   const ownerId = currentConfirmation?.id ?? '';
 
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
+
+  const excludedAlertKeys = useMemo(
+    () => getExcludedAlertKeys(currentConfirmation as TransactionMeta),
+    [currentConfirmation],
+  );
+
+  // Filtered before the emptiness check below so that a confirmation whose
+  // only alert is excluded reports no alert properties at all, rather than a
+  // zeroed-out block it would not have emitted otherwise.
+  const metricsAlerts = useMemo(
+    () => alerts.filter((alert) => !excludedAlertKeys.has(alert.key)),
+    [alerts, excludedAlertKeys],
+  );
+
   const alertsProperties = useMemo(() => {
-    return alerts.length > 0
-      ? {
-          alert_triggered_count: alerts.length,
-          alert_triggered: getAlertNames(alerts),
-          alert_resolved_count: alerts.filter((alert) =>
-            isAlertConfirmed(alert.key),
-          ).length,
-          alert_resolved: getAlertNames(
-            alerts.filter((alert) => isAlertConfirmed(alert.key)),
-          ),
-        }
-      : undefined;
-  }, [alerts, isAlertConfirmed]);
+    if (metricsAlerts.length === 0) {
+      return undefined;
+    }
+
+    const resolvedAlerts = metricsAlerts.filter((alert) =>
+      isAlertConfirmed(alert.key),
+    );
+
+    return {
+      alert_triggered_count: metricsAlerts.length,
+      alert_triggered: getAlertNames(metricsAlerts),
+      alert_resolved_count: resolvedAlerts.length,
+      alert_resolved: getAlertNames(resolvedAlerts),
+    };
+  }, [metricsAlerts, isAlertConfirmed]);
 
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -85,42 +144,63 @@ export function useConfirmationAlertMetrics() {
       : undefined;
   }, [alertsProperties, metricsProperties]);
 
-  const trackAlertRender = useCallback((alertKey: string) => {
-    setMetricsProperties((prevState) => {
-      const newState = { ...prevState };
-      const alertName = getAlertName(alertKey);
-      newState.alert_visualized = uniqueFreshArrayPush(
-        prevState.alert_visualized,
-        alertName,
-      );
-      newState.alert_visualized_count = newState.alert_visualized.length;
-      return newState;
-    });
-  }, []);
+  const trackAlertRender = useCallback(
+    (alertKey: string) => {
+      if (excludedAlertKeys.has(alertKey)) {
+        return;
+      }
 
-  const trackInlineAlertClicked = useCallback((alertKey: string) => {
-    setMetricsProperties((prevState) => {
-      const newState = { ...prevState };
-      const alertName = getAlertName(alertKey);
-      newState.alert_key_clicked = uniqueFreshArrayPush(
-        prevState.alert_key_clicked,
-        alertName,
-      );
-      return newState;
-    });
-  }, []);
+      setMetricsProperties((prevState) => {
+        const newState = { ...prevState };
+        const alertName = getAlertName(alertKey);
+        newState.alert_visualized = uniqueFreshArrayPush(
+          prevState.alert_visualized,
+          alertName,
+        );
+        newState.alert_visualized_count = newState.alert_visualized.length;
+        return newState;
+      });
+    },
+    [excludedAlertKeys],
+  );
 
-  const trackAlertActionClicked = useCallback((alertKey: string) => {
-    setMetricsProperties((prevState) => {
-      const newState = { ...prevState };
-      const alertName = getAlertName(alertKey);
-      newState.alert_action_clicked = uniqueFreshArrayPush(
-        prevState.alert_action_clicked,
-        alertName,
-      );
-      return newState;
-    });
-  }, []);
+  const trackInlineAlertClicked = useCallback(
+    (alertKey: string) => {
+      if (excludedAlertKeys.has(alertKey)) {
+        return;
+      }
+
+      setMetricsProperties((prevState) => {
+        const newState = { ...prevState };
+        const alertName = getAlertName(alertKey);
+        newState.alert_key_clicked = uniqueFreshArrayPush(
+          prevState.alert_key_clicked,
+          alertName,
+        );
+        return newState;
+      });
+    },
+    [excludedAlertKeys],
+  );
+
+  const trackAlertActionClicked = useCallback(
+    (alertKey: string) => {
+      if (excludedAlertKeys.has(alertKey)) {
+        return;
+      }
+
+      setMetricsProperties((prevState) => {
+        const newState = { ...prevState };
+        const alertName = getAlertName(alertKey);
+        newState.alert_action_clicked = uniqueFreshArrayPush(
+          prevState.alert_action_clicked,
+          alertName,
+        );
+        return newState;
+      });
+    },
+    [excludedAlertKeys],
+  );
 
   const updateAlertMetrics = useCallback(() => {
     if (!properties) {

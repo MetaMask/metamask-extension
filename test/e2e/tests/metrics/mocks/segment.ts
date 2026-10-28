@@ -1,21 +1,33 @@
 import { Mockttp } from 'mockttp';
 
 /**
- * Mocks Segment identify batches. Event-name constants are intentionally
- * omitted so a rename in source fails these tests instead of silently
- * tracking a new payload shape.
+ * Mocks the Settings Updated track emitted when Basic Functionality is turned
+ * off. Event-name constants are intentionally omitted so a rename in source
+ * fails these tests instead of silently tracking a new payload shape.
  *
  * @param mockServer - The mock server instance.
  * @returns The mocked endpoints.
  */
-export async function mockSegmentIdentify(mockServer: Mockttp) {
+export async function mockBasicFunctionalityTurnedOff(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'identify' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'Settings Updated',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              settings_type: 'basic_functionality',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              old_value: true,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_value: false,
+            },
+          },
+        ],
       })
-      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,

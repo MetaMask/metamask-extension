@@ -33,7 +33,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -63,7 +63,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -93,7 +93,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -117,7 +117,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -156,7 +156,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),

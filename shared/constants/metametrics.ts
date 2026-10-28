@@ -867,6 +867,7 @@ export enum MetaMetricsEventName {
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   MoneyButtonClicked = 'Money Button Clicked',
+  MoneyOnboardingEvent = 'Money Onboarding Event',
   MoneySurfaceClicked = 'Money Surface Clicked',
   MoneySurfaceViewed = 'Money Surface Viewed',
   MoneyTooltipClicked = 'Money Tooltip Clicked',
@@ -1053,9 +1054,11 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   ChainlistAddClicked = 'Chainlist Add Clicked',
   ChainlistNetworkSelected = 'Chainlist Network Selected',
+  ChainlistRpcSelected = 'Chainlist RPC Selected',
   CustomNetworkFormViewed = 'Custom Network Form Viewed',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  WebWidgetViewed = 'Web Widget Viewed',
   TokenDetailsCtaClicked = 'Token Details CTA Clicked',
   ExploreSearchInteracted = 'Explore Search Interacted',
   TokenDetailsSecuritySectionClicked = 'token_details_security_section_clicked',
@@ -1154,7 +1157,10 @@ export enum MetaMetricsEventName {
   SendAmountSelected = 'Send Amount Selected',
   SendAssetSelected = 'Send Asset Selected',
   SendRecipientSelected = 'Send Recipient Selected',
+  SendFailed = 'Send Failed',
   Wallet5792Called = 'EIP-5792 API Called',
+  WalletPayRequested = 'Wallet Pay Requested',
+  WalletPayCompleted = 'Wallet Pay Completed',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
   // Extension Port Stream
@@ -1186,9 +1192,9 @@ export enum MetaMetricsEventName {
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
-  ShieldMembershipRestartRequest = 'Shield Membership Restart Request',
-  ShieldMembershipCancelled = 'Shield Membership Cancelled',
-  ShieldPaymentMethodChange = 'Shield Payment Method Change',
+  ShieldMembershipRestartRequest = 'Shield Membership Restart',
+  ShieldMembershipCancelled = 'Shield Membership Canceled',
+  ShieldPaymentMethodChange = 'Shield Payment Method Changed',
   ShieldPaymentMethodRetried = 'Shield Payment Method Retried',
   ShieldPaymentMethodUpdated = 'Shield Payment Method Updated',
   ShieldBillingHistoryOpened = 'Shield Billing History Opened',
@@ -1398,6 +1404,30 @@ export enum MetaMetricsEventLocation {
   TokenDetection = 'token_detection',
   TokenMenu = 'token_menu',
   Transaction = 'transaction',
+}
+
+/**
+ * Segment `location` for the `Account Hidden` event — the surface the hide or
+ * unhide was performed from.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/account-hidden.yaml` (`location` enum).
+ *
+ * Kept separate from {@link MetaMetricsAccountRemovedLocation} because the two
+ * events accept different sets of surfaces, so a shared enum would let an
+ * invalid value through (e.g. `account_details` is not a valid hide location).
+ */
+export enum MetaMetricsAccountHiddenLocation {
+  ManageAccounts = 'manage_accounts',
+  AccountMenu = 'account_menu',
+}
+
+/**
+ * Segment `location` for the `Account Removed` event — the surface the removal
+ * was performed from.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/account-removed.yaml` (`location` enum).
+ */
+export enum MetaMetricsAccountRemovedLocation {
+  ManageAccounts = 'manage_accounts',
+  AccountDetails = 'account_details',
 }
 
 export enum MetaMetricsEventUiCustomization {

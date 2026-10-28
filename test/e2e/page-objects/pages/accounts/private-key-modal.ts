@@ -25,10 +25,8 @@ class PrivateKeyModal {
   private readonly parentSelector =
     '[data-testid="parent-selector-multichain-account-private-key-list-page"]';
 
-  private readonly privateKeyCopiedMessage = {
-    css: '[data-testid="multichain-address-row-address"]',
-    text: 'Private key copied',
-  };
+  private readonly privateKeyCopyButton =
+    '[data-testid="multichain-private-key-copy-eip155:1"]';
 
   private readonly privateKeyPasswordInput =
     '[data-testid="multichain-private-key-password-input"]';
@@ -57,10 +55,13 @@ class PrivateKeyModal {
   }
 
   /**
-   * Wait for the private-key copied confirmation.
+   * Check that private key copy feedback is displayed.
    */
   async checkPrivateKeyIsCopied(): Promise<void> {
-    await this.driver.waitForSelector(this.privateKeyCopiedMessage);
+    await this.driver.waitForSelector({
+      css: this.privateKeyCopyButton,
+      text: 'Private key copied',
+    });
   }
 
   /**
@@ -78,10 +79,10 @@ class PrivateKeyModal {
   }
 
   /**
-   * Copy the revealed private key.
+   * Copy the EVM private key without revealing it.
    */
   async clickCopyPrivateKeyButton(): Promise<void> {
-    await this.driver.clickElement(this.copyPrivateKeyButton);
+    await this.driver.clickElement(this.privateKeyCopyButton);
   }
 
   /**

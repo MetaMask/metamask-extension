@@ -12,7 +12,7 @@ import {
   en as messages,
   renderWithProvider,
 } from '../../../../test/lib/render-helpers-navigate';
-import { SWAP_PATH } from '../../../helpers/constants/routes';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
@@ -34,6 +34,21 @@ const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 
 const mockTrackUnifiedSwapBridgeEvent = jest.fn();
+
+/**
+ * Bridge fixtures seed AssetsController fields via createBridgeMockStore.
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -283,17 +298,13 @@ describe('BridgeInputGroup', () => {
       { tokenSecurityData: { isVerified: true } },
     );
 
-    expect(
-      getByTestId('bridge-selected-asset-verified-badge'),
-    ).toBeInTheDocument();
+    expect(getByTestId('security-badge')).toBeInTheDocument();
   });
 
   it('leaves the selected asset button unchanged without fetched metadata', () => {
     const { queryByTestId } = renderBridgeInputGroup();
 
-    expect(
-      queryByTestId('bridge-selected-asset-verified-badge'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 
   it('moves the caret only when the input denomination changes', () => {
@@ -355,7 +366,7 @@ describe('BridgeInputGroup', () => {
     expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });
 
-  it('replaces the asset picker route when closing the page', async () => {
+  it('returns to the previous page when closing the picker', async () => {
     setupFetchMock();
 
     renderAssetPickerPage();
@@ -368,10 +379,45 @@ describe('BridgeInputGroup', () => {
 
     await userEvent.click(screen.getByLabelText(messages.back.message));
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      { pathname: SWAP_PATH, search: '' },
-      { replace: true, state: { token: undefined } },
-    );
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('shows only the native representation of Arc USDC', async () => {
+    const nativeArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId: 'eip155:5042/slip44:5042' as CaipAssetType,
+      decimals: 18,
+    };
+    const erc20ArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId:
+        'eip155:5042/erc20:0x3600000000000000000000000000000000000000' as CaipAssetType,
+      decimals: 6,
+    };
+    setupFetchMock([], false, [nativeArcUsdc, erc20ArcUsdc]);
+    mockUseVirtualizer.mockReturnValue({
+      getVirtualItems: () =>
+        [nativeArcUsdc, erc20ArcUsdc].map((token, index) => ({
+          index,
+          start: index * 78,
+          key: token.assetId,
+        })),
+      getTotalSize: () => 156,
+      measureElement: () => 78,
+    });
+
+    renderAssetPickerPage();
+
+    expect(
+      await screen.findByTestId(`bridge-asset--${nativeArcUsdc.assetId}`),
+    ).toBeVisible();
+    expect(
+      screen.queryByTestId(`bridge-asset--${erc20ArcUsdc.assetId}`),
+    ).not.toBeInTheDocument();
   });
 
   it('clears picker flags when browser navigation unmounts the page', async () => {
@@ -574,7 +620,7 @@ describe('BridgeInputGroup', () => {
                 assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 balance: '1.530',
                 chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                decimals: 18,
+                decimals: 9,
                 iconUrl:
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
                 name: 'Solana',
@@ -613,11 +659,13 @@ describe('BridgeInputGroup', () => {
                 assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 balance: '1.530',
                 chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                decimals: 18,
+                decimals: 9,
                 iconUrl:
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
                 name: 'Solana',
                 rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
               },
@@ -632,6 +680,8 @@ describe('BridgeInputGroup', () => {
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
                 name: 'USDC',
                 rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
               },

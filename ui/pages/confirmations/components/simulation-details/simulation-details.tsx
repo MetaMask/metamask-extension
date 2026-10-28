@@ -582,8 +582,8 @@ export const SimulationDetails = ({
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
-        {staticRows.map((staticRow, index) => (
-          <Fragment key={index}>
+        {staticRows.map((staticRow) => (
+          <Fragment key={staticRow.label}>
             <BalanceChangeList
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
