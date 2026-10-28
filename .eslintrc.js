@@ -362,6 +362,17 @@ module.exports = defineConfig([
    */
 
   /**
+   * .mts files
+   */
+  {
+    files: ['**/*.mts'],
+    rules: {
+      // Extensions are required by Node.js for `.mts` files
+      'import-x/extensions': 'off',
+    },
+  },
+
+  /**
    * React-specific code
    *
    * Code in this category contains JSX and hence needs to be run through the

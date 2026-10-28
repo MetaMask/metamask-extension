@@ -87,11 +87,6 @@
       "count": 1
     }
   },
-  ".github/scripts/emit-e2e-quality-gate-annotations.mts": {
-    "import-x/extensions": {
-      "count": 1
-    }
-  },
   ".github/scripts/git-diff-default-branch.mts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 1
@@ -130,9 +125,6 @@
     },
     "@typescript-eslint/no-shadow": {
       "count": 2
-    },
-    "import-x/extensions": {
-      "count": 1
     }
   },
   ".github/scripts/resolve-e2e-report-run-ids.mts": {
@@ -216,9 +208,6 @@
     "@typescript-eslint/no-non-null-assertion": {
       "count": 1
     },
-    "import-x/extensions": {
-      "count": 1
-    },
     "require-unicode-regexp": {
       "count": 2
     }
@@ -270,11 +259,6 @@
       "count": 1
     }
   },
-  "development/metamaskbot-build-announce/build-links.test.mts": {
-    "import-x/extensions": {
-      "count": 1
-    }
-  },
   "development/optimize-media.mts": {
     "@typescript-eslint/no-shadow": {
       "count": 1
@@ -296,22 +280,11 @@
   "test/e2e/run-all-pw.mts": {
     "@typescript-eslint/naming-convention": {
       "count": 1
-    },
-    "import-x/extensions": {
-      "count": 2
-    }
-  },
-  "test/e2e/run-all-shared.mts": {
-    "import-x/extensions": {
-      "count": 1
     }
   },
   "test/e2e/run-all.mts": {
     "@typescript-eslint/naming-convention": {
       "count": 1
-    },
-    "import-x/extensions": {
-      "count": 2
     }
   },
   "ui/components/app/balance-empty-state/balance-empty-state.tsx": {
