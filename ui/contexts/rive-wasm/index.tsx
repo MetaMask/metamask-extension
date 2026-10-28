@@ -49,12 +49,16 @@ function ensureRiveWasmLoaded(): Promise<void> {
   return riveWasmInitPromise;
 }
 
-export const useRiveWasmReady = () => {
+export const useRiveWasmReady = (enabled = true) => {
   const [isWasmReady, setIsWasmReady] = useState(false);
   const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+
     let cancelled = false;
 
     ensureRiveWasmLoaded()
@@ -76,7 +80,7 @@ export const useRiveWasmReady = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [enabled]);
 
   return {
     isWasmReady,
@@ -84,6 +88,11 @@ export const useRiveWasmReady = () => {
     error,
   };
 };
+
+// Animation consumers request initialization; mounting the app shell alone
+// must not fetch and compile WASM on screens without animations.
+// eslint-disable-next-line no-empty-function
+const RiveWasmLoadContext = createContext<() => void>(() => {});
 
 // create a context only for the wasm ready state
 const RiveWasmContext = createContext<{
@@ -123,7 +132,9 @@ export default function RiveWasmProvider({
     [setAnimationCompleted],
   );
 
-  const { isWasmReady, loading, error } = useRiveWasmReady();
+  const [loadRequested, setLoadRequested] = useState(false);
+  const requestLoad = useCallback(() => setLoadRequested(true), []);
+  const { isWasmReady, loading, error } = useRiveWasmReady(loadRequested);
 
   const contextValue = useMemo(
     () => ({
@@ -137,14 +148,18 @@ export default function RiveWasmProvider({
   );
 
   return (
-    <RiveWasmContext.Provider value={contextValue}>
-      {children}
-    </RiveWasmContext.Provider>
+    <RiveWasmLoadContext.Provider value={requestLoad}>
+      <RiveWasmContext.Provider value={contextValue}>
+        {children}
+      </RiveWasmContext.Provider>
+    </RiveWasmLoadContext.Provider>
   );
 }
 
 export const useRiveWasmContext = () => {
   const context = useContext(RiveWasmContext);
+  const requestLoad = useContext(RiveWasmLoadContext);
+  useEffect(requestLoad, [requestLoad]);
   if (!context) {
     throw new Error('useRiveWasm must be used within RiveWasmProvider');
   }
