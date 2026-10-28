@@ -1,6 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { getIsRampsEnabled } from '../../selectors/ramps-feature-flags';
 import { useRampsAnalytics } from './useRampsAnalytics';
 import { useRampsUserRegion } from './useRampsUserRegion';
 
@@ -25,7 +23,6 @@ export function useRampsScreenViewed(
   { waitForRegion = true }: { waitForRegion?: boolean } = {},
 ): void {
   const { trackScreenViewed } = useRampsAnalytics();
-  const isRampsEnabled = useSelector(getIsRampsEnabled);
   const { userRegion } = useRampsUserRegion();
   const isReady = waitForRegion ? userRegion !== null : true;
 
@@ -40,10 +37,10 @@ export function useRampsScreenViewed(
   const hasTrackedRef = useRef(false);
 
   useEffect(() => {
-    if (!isReady || !isRampsEnabled || hasTrackedRef.current) {
+    if (!isReady || hasTrackedRef.current) {
       return;
     }
     hasTrackedRef.current = true;
     trackScreenViewed(locationRef.current);
-  }, [isReady, isRampsEnabled, trackScreenViewed]);
+  }, [isReady, trackScreenViewed]);
 }
