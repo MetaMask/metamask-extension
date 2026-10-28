@@ -4,9 +4,7 @@
 import { execFileSync } from 'child_process';
 import * as path from 'path';
 import { context, getOctokit } from '@actions/github';
-import featureFlagsModule from '../../test/e2e/feature-flags';
-
-const { getRegisteredFlagNames } = featureFlagsModule;
+import { getRegisteredFlagNames } from '../../test/e2e/feature-flags';
 import { buildKnownFlagConstants } from './known-feature-flag-constants.mts';
 import { getPrDiff } from './shared/get-pr-diff.mts';
 

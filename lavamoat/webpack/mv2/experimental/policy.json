@@ -806,6 +806,12 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/transaction-pay-middleware>@metamask/perps-controller>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/account-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -925,7 +931,6 @@
         "URL": true,
         "URLSearchParams": true,
         "clearInterval": true,
-        "clearTimeout": true,
         "console.error": true,
         "console.log": true,
         "console.warn": true,
@@ -955,7 +960,6 @@
         "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
-        "@metamask/assets-controllers>immer": true,
         "@metamask/assets-controller>lodash-es": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/assets-controllers>reselect": true,
@@ -1347,6 +1351,24 @@
         "@metamask/assets-controller>lodash-es": true
       }
     },
+    "@metamask/geolocation-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
     "@metamask/money-account-api-data-service>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1598,6 +1620,23 @@
       }
     },
     "@metamask/transaction-pay-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/transaction-pay-middleware>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
@@ -2153,7 +2192,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
+        "@metamask/geolocation-controller>@metamask/controller-utils": true
       }
     },
     "@metamask/jazzicon": {
@@ -2815,6 +2854,12 @@
         "@metamask/perps-controller>bignumber.js": true,
         "@metamask/perps-controller>reselect": true,
         "@metamask/perps-controller>uuid": true
+      }
+    },
+    "@metamask/transaction-pay-middleware>@metamask/perps-controller": {
+      "packages": {
+        "@metamask/transaction-pay-middleware>@metamask/perps-controller>@metamask/abi-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/phishing-controller": {
@@ -3494,6 +3539,20 @@
         "@metamask/assets-controller>lodash-es": true
       }
     },
+    "@metamask/transaction-pay-middleware": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/transaction-pay-middleware>@metamask/controller-utils": true,
+        "@metamask/transaction-pay-middleware>@metamask/perps-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/superstruct": true,
+        "@metamask/transaction-controller": true,
+        "@metamask/utils": true,
+        "@metamask/transaction-pay-middleware>bignumber.js": true
+      }
+    },
     "@metamask/user-operation-controller": {
       "globals": {
         "fetch": true
@@ -3536,6 +3595,7 @@
       "packages": {
         "@metamask/accounts-controller": true,
         "@metamask/wallet>@metamask/address-book-controller": true,
+        "@metamask/analytics-controller": true,
         "@metamask/wallet>@metamask/approval-controller": true,
         "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
@@ -3545,6 +3605,7 @@
         "@metamask/wallet>@metamask/connectivity-controller": true,
         "@metamask/wallet>@metamask/controller-utils": true,
         "@metamask/wallet>@metamask/gas-fee-controller": true,
+        "@metamask/geolocation-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
         "@metamask/messenger": true,
@@ -4869,6 +4930,11 @@
         "crypto": true
       }
     },
+    "@metamask/transaction-pay-middleware>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@ngraveio/bc-ur>bignumber.js": {
       "globals": {
         "crypto": true,
@@ -5983,11 +6049,6 @@
       },
       "packages": {
         "eth-ens-namehash>idna-uts46-hx>punycode": true
-      }
-    },
-    "@metamask/assets-controllers>immer": {
-      "globals": {
-        "Iterator": true
       }
     },
     "@metamask/base-controller>immer": {
@@ -7366,7 +7427,7 @@
     },
     "remote-redux-devtools>socketcluster-client>sc-channel": {
       "packages": {
-        "remote-redux-devtools>socketcluster-client>sc-channel>component-emitter": true
+        "remote-redux-devtools>socketcluster-client>component-emitter": true
       }
     },
     "remote-redux-devtools>socketcluster-client>sc-formatter": {
