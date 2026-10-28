@@ -38,9 +38,13 @@ exports[`TokenTransferInfo renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-12 w-12 bg-overlay-default"
       >
-        ?
+        <span
+          class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+        >
+          ?
+        </span>
       </div>
     </div>
   </div>
