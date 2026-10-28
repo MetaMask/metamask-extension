@@ -24,7 +24,7 @@ import {
   configureAnalytics,
   setParticipateInMetaMetrics,
 } from '../controllers/analytics';
-import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
+import { getAnalyticsControllerInitMessenger } from '../wallet-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
 
