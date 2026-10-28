@@ -2,27 +2,18 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  FontFamily,
-  Skeleton,
-  Text,
-  TextColor as DsTextColor,
-  TextVariant as DsTextVariant,
-} from '@metamask/design-system-react';
-import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
-import {
   AvatarToken,
   AvatarTokenSize,
   Box,
-  Text as LegacyText,
-} from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
-import {
-  AlignItems,
-  BackgroundColor,
-  Display,
+  BoxAlignItems,
+  FontFamily,
+  Skeleton,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
+import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -50,26 +41,22 @@ const SendHeading = () => {
   );
   const { showFiatInTestnets } = useSelector(getPreferences);
 
+  const isUnknownToken = tokenSymbol === t('unknown');
+
   const TokenImage = (
     <AvatarToken
       src={tokenImage}
-      name={tokenSymbol !== t('unknown') && tokenSymbol}
+      name={isUnknownToken ? undefined : tokenSymbol}
       size={AvatarTokenSize.Xl}
-      backgroundColor={
-        tokenSymbol === t('unknown')
-          ? BackgroundColor.overlayDefault
-          : BackgroundColor.backgroundDefault
-      }
-      color={
-        tokenSymbol === t('unknown')
-          ? TextColor.textMuted
-          : TextColor.textDefault
-      }
+      className={isUnknownToken ? 'bg-overlay-default' : 'bg-default'}
+      fallbackTextProps={{
+        color: isUnknownToken ? TextColor.TextMuted : TextColor.TextDefault,
+      }}
     />
   );
 
   const TokenValueSkeleton = (
-    <Box display={Display.InlineFlex} alignItems={AlignItems.center} gap={2}>
+    <Box className="inline-flex" alignItems={BoxAlignItems.Center} gap={2}>
       <Skeleton width={40} height={56} />
       {tokenSymbol}
     </Box>
@@ -82,9 +69,9 @@ const SendHeading = () => {
   const TokenValue =
     pending || displayTransferValue === decodedTransferValue ? (
       <Text
-        variant={DsTextVariant.AmountDisplayLg}
+        variant={TextVariant.AmountDisplayLg}
         fontFamily={FontFamily.Hero}
-        color={DsTextColor.Inherit}
+        color={TextColor.Inherit}
         className="block pb-1"
       >
         {TokenValueContent}
@@ -92,9 +79,9 @@ const SendHeading = () => {
     ) : (
       <Tooltip title={decodedTransferValue} position="right">
         <Text
-          variant={DsTextVariant.AmountDisplayLg}
+          variant={TextVariant.AmountDisplayLg}
           fontFamily={FontFamily.Hero}
-          color={DsTextColor.Inherit}
+          color={TextColor.Inherit}
           className="block pb-1"
         >
           {TokenValueContent}
@@ -113,12 +100,9 @@ const SendHeading = () => {
     (pending
       ? TokenFiatValueSkeleton
       : Boolean(fiatDisplayValue) && (
-          <LegacyText
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-          >
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {fiatDisplayValue}
-          </LegacyText>
+          </Text>
         ));
 
   useSendingValueMetric({ transactionMeta, fiatValue });
