@@ -14,6 +14,7 @@ import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
+import { NetworkPillSelector } from '../network-pill-selector/network-pill-selector';
 import { TokenTable } from '../token-table/token-table';
 import AssetListControlBar from './asset-list-control-bar';
 
@@ -62,7 +63,10 @@ const TokenListContainer = React.memo(
     );
 
     return isFullScreenDesign ? (
-      <TokenTable onTokenClick={onTokenClick} safeChains={safeChains} />
+      <>
+        <NetworkPillSelector />
+        <TokenTable onTokenClick={onTokenClick} safeChains={safeChains} />
+      </>
     ) : (
       <TokenList onTokenClick={onTokenClick} safeChains={safeChains} />
     );

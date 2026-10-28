@@ -11184,6 +11184,9 @@
   "showExtensionInFullSizeViewDescription": {
     "message": "Turn this on to make full-size view your default when you click the extension icon."
   },
+  "showFewerNetworks": {
+    "message": "Show fewer networks"
+  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },
@@ -11202,6 +11205,10 @@
   },
   "showMore": {
     "message": "Show more"
+  },
+  "showMoreNetworks": {
+    "message": "Show $1 more networks",
+    "description": "$1 is the number of networks that are hidden"
   },
   "showNativeTokenAsMainBalance": {
     "message": "Show native token as main balance"

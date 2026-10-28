@@ -12,13 +12,23 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box, Skeleton } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  Skeleton,
+} from '@metamask/design-system-react';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -69,7 +79,9 @@ import {
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
+import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 import WalletOverview from './wallet-overview';
+import { useBalanceAlignmentClassName } from './wallet-overview-layout';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
@@ -86,17 +98,35 @@ export type CoinOverviewProps = {
 
 const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
-const BalanceOverviewSkeleton = () => (
-  <Box
-    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center gap-[10px] px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
-    data-testid="coin-overview-balance-skeleton"
-  >
-    <Box className="wallet-overview__balance-skeleton-lines flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px]">
-      <Skeleton className="h-[50px] w-full rounded-lg" />
-      <Skeleton className="h-6 w-[180px] rounded-lg" />
+const BalanceOverviewSkeleton = () => {
+  const environmentType = getEnvironmentType();
+  const isFullScreenDesign = useFullScreenDesign();
+  const balanceAlignmentClassName = useBalanceAlignmentClassName();
+  const isFullscreenOrSidepanel =
+    isFullScreenDesign ||
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  return (
+    <Box
+      className={classnames(
+        'flex w-full max-w-[400px] items-center gap-[10px] pb-4 pt-6',
+        isFullscreenOrSidepanel ? 'px-4' : 'px-2',
+      )}
+      data-testid="coin-overview-balance-skeleton"
+    >
+      <Box
+        className={classnames(
+          'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
+          balanceAlignmentClassName,
+        )}
+      >
+        <Skeleton className="h-[50px] w-full rounded-lg" />
+        <Skeleton className="h-6 w-[180px] rounded-lg" />
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 export const LegacyAggregatedBalance = ({
   classPrefix,
@@ -209,6 +239,8 @@ export const CoinOverview = ({
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
+  const isFullScreenDesign = useFullScreenDesign();
+  const balanceAlignmentClassName = useBalanceAlignmentClassName();
 
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -432,7 +464,11 @@ export const CoinOverview = ({
     };
 
     return (
-      <Box className="wallet-overview__currency-wrapper">
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        flexWrap={BoxFlexWrap.Wrap}
+        gap={2}
+      >
         <AccountGroupBalanceChange
           period={period}
           trailingChild={renderPercentageAndAmountChangeTrail}
@@ -457,7 +493,12 @@ export const CoinOverview = ({
       title={t('balanceOutdated')}
       disabled={!balanceIsCached}
     >
-      <div className={`${classPrefix}-overview__balance`}>
+      <div
+        className={classnames(
+          `${classPrefix}-overview__balance`,
+          balanceAlignmentClassName,
+        )}
+      >
         <div className={`${classPrefix}-overview__primary-container`}>
           {balanceSection}
           {balanceIsCached && !shouldShowBalanceEmptyState && (
@@ -474,7 +515,10 @@ export const CoinOverview = ({
   } else if (shouldShowBalanceEmptyState) {
     balanceContent = (
       <BalanceEmptyState
-        className="w-full max-w-[460px] self-center"
+        className={classnames('w-full max-w-[460px]', {
+          'self-center': !isFullScreenDesign,
+          'self-start max-w-none': isFullScreenDesign,
+        })}
         data-testid="coin-overview-balance-empty-state"
         onClickReceive={handleReceiveOnClick}
       />
@@ -483,9 +527,7 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
-      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       balance={balanceContent}
-      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       buttons={
         <CoinButtons
           {...{

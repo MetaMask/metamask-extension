@@ -65,6 +65,9 @@ const dialogClassNameFullScreenDesignColumn =
 const dialogClassNameFullscreen =
   'min-[576px]:top-[68px] min-[576px]:h-[calc(100%-68px)] min-[576px]:max-h-[calc(100%-68px)]';
 
+const dialogClassNameFullScreenDesignHeader =
+  'min-[576px]:top-[var(--header-height-fullscreen-design)] min-[576px]:h-[calc(100%-var(--header-height-fullscreen-design))] min-[576px]:max-h-[calc(100%-var(--header-height-fullscreen-design))]';
+
 const frameClassName = classnames(
   'h-full w-full',
 
@@ -163,10 +166,15 @@ export const GlobalMenuDrawer = ({
   const titleId = 'global-menu-drawer-title';
   const dialogClassName = classnames(
     dialogClassNameBase,
-    (isFullscreen || isFullScreenDesign) && dialogClassNameFullscreen,
     isFullScreenDesign
-      ? dialogClassNameFullScreenDesignColumn
-      : dialogClassNameCappedColumn,
+      ? [
+          dialogClassNameFullScreenDesignHeader,
+          dialogClassNameFullScreenDesignColumn,
+        ]
+      : [
+          isFullscreen && dialogClassNameFullscreen,
+          dialogClassNameCappedColumn,
+        ],
   );
 
   const panel = (

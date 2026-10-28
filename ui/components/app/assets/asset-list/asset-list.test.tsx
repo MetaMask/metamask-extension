@@ -134,6 +134,10 @@ jest.mock('../token-table/token-table', () => ({
   TokenTable: () => <div data-testid="token-table" />,
 }));
 
+jest.mock('../network-pill-selector/network-pill-selector', () => ({
+  NetworkPillSelector: () => <div data-testid="network-pill-selector" />,
+}));
+
 jest.mock('../../../../hooks/useFullScreenDesign');
 
 const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
@@ -247,6 +251,9 @@ describe('AssetList', () => {
 
       expect(screen.getByTestId('mock-token-list-item')).toBeInTheDocument();
       expect(screen.queryByTestId('token-table')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('network-pill-selector'),
+      ).not.toBeInTheDocument();
     });
 
     it('renders the token table instead of the token list when the fullscreen design is on', async () => {
@@ -257,6 +264,7 @@ describe('AssetList', () => {
       });
 
       expect(screen.getByTestId('token-table')).toBeInTheDocument();
+      expect(screen.getByTestId('network-pill-selector')).toBeInTheDocument();
       expect(
         screen.queryByTestId('mock-token-list-item'),
       ).not.toBeInTheDocument();

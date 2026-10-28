@@ -154,7 +154,10 @@ describe('GlobalMenuDrawer', () => {
         '/',
       );
 
-      expect(getByTestId('drawer')).toHaveClass('min-[576px]:top-[68px]');
+      expect(getByTestId('drawer')).toHaveClass(
+        'min-[576px]:top-[var(--header-height-fullscreen-design)]',
+        'min-[576px]:h-[calc(100%-var(--header-height-fullscreen-design))]',
+      );
     });
 
     it('does not offset the drawer from the top outside the fullscreen design', () => {

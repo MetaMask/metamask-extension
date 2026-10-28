@@ -3,10 +3,4 @@
 .multichain-app-header {
   view-transition-name: app-header;
   z-index: design-system.$header-z-index;
-  min-height: var(--header-height);
-
-  &__contents {
-    height: var(--header-height);
-    border-bottom: 1px solid var(--color-border-muted);
-  }
 }
