@@ -78,7 +78,7 @@ jest.mock('../../components/amounts-section', () => ({
   ),
 }));
 
-jest.mock('../../components/bridge-explorer-buttons', () => ({
+jest.mock('./bridge-explorer-buttons', () => ({
   BridgeExplorerButtons: ({
     sourceChainId,
     sourceTxHash,
@@ -100,7 +100,7 @@ jest.mock('../../components/bridge-explorer-buttons', () => ({
   ),
 }));
 
-jest.mock('../../components/swap-again-button', () => ({
+jest.mock('./swap-again-button', () => ({
   SwapAgainButton: ({
     sourceToken,
     destinationToken,

@@ -593,7 +593,7 @@
       "count": 1
     }
   },
-  "ui/pages/details/components/swap-again-button.tsx": {
+  "ui/pages/details/templates/bridge/swap-again-button.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 2
     }
