@@ -12,7 +12,6 @@ import { selectRampsSettlementHashes } from '../../../selectors/rampsController'
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
-import { isIncomingTokenTransfer } from './incoming-token-transfer';
 import { isZeroValueSelfSend } from './zero-value-self-send';
 
 type Props = ActivityListFilter & { subjectAddress: string };
@@ -35,7 +34,6 @@ export function useQueryFilters(queryFilters: Props) {
       // Ideally we'd want to move some of these filters to the API
       const txFilters: ((tx: V1TransactionByHashResponse) => boolean)[] = [
         (tx) => !isZeroValueSelfSend(tx, subjectAddress),
-        (tx) => !isIncomingTokenTransfer(tx, subjectAddress),
         (tx) => !isExcludedTransactionHash(tx, excludedHashes),
       ];
       // This really should be moved to the API

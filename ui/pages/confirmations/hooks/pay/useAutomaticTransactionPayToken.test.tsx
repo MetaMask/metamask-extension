@@ -1019,6 +1019,43 @@ describe('useAutomaticTransactionPayToken', () => {
     });
   });
 
+  it('does not prefer a no-fee token for a hardware payer', () => {
+    useIsHardwareWalletAccountMock.mockReturnValue(true);
+    useIsPayHardwareBlockedMock.mockReturnValue(false);
+    selectMinimumRequiredTokenBalanceMock.mockReturnValue(5);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+        fiat: { balance: 20 },
+      },
+      {
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+        fiat: { balance: 10 },
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.moneyAccountDeposit,
+      remoteFeatureFlags: {
+        confirmations_relay_fixed_spread: {
+          chains: { src: CHAIN_ID_2_MOCK, dst: CHAIN_ID_1_MOCK },
+          tokens: {
+            fee: TOKEN_ADDRESS_2_MOCK,
+            other: TOKEN_ADDRESS_1_MOCK,
+          },
+          routes: [['src', 'fee', 'dst', 'other']],
+        },
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_1_MOCK,
+      chainId: CHAIN_ID_1_MOCK,
+    });
+  });
+
   it('leaves pay token unset after empty-account reselect timeout', () => {
     jest.useFakeTimers();
     useTransactionPayAvailableTokensMock.mockReturnValue([
