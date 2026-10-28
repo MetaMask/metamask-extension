@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import { CommandError } from './command-error';
 import { LEGACY_APIS, readApiMemberNames, type LegacyApi } from './legacy-apis';
 import { SNAPSHOT_PATH } from './constants';
+import { setSubtract } from './set-utils';
 
 /**
  * The names stored for each tracked legacy background API.
@@ -49,8 +50,13 @@ export function check({
   stderr: Writable;
 }): void {
   const snapshot = readSnapshot();
+  const currentNamesByApiName = readApiMemberNames();
   const results = Object.values(LEGACY_APIS).map((legacyApi) =>
-    checkApiMemberNamesMatchSnapshot(legacyApi, snapshot),
+    checkApiMemberNamesMatchSnapshot({
+      legacyApi,
+      currentNames: currentNamesByApiName[legacyApi.name],
+      snapshot,
+    }),
   );
   const newApiMemberResults = results.filter(
     (result) => result.namesToRemoveFromLegacyApi.length > 0,
@@ -81,29 +87,33 @@ export function check({
 /**
  * Compares one tracked API against the snapshot.
  *
- * @param legacyApi - The API to compare.
- * @param snapshot - The snapshot to compare against.
+ * @param options - The options.
+ * @param options.legacyApi - The API to compare.
+ * @param options.currentNames - The names the API currently exposes.
+ * @param options.snapshot - The snapshot to compare against.
  * @returns The names that differ.
  */
-function checkApiMemberNamesMatchSnapshot(
-  legacyApi: LegacyApi,
-  snapshot: Snapshot,
-): Result {
-  const currentNames = readApiMemberNames(legacyApi);
+function checkApiMemberNamesMatchSnapshot({
+  legacyApi,
+  currentNames,
+  snapshot,
+}: {
+  legacyApi: LegacyApi;
+  currentNames: Set<string>;
+  snapshot: Snapshot;
+}): Result {
   const snapshottedNames = new Set(
     readSnapshottedApiMemberNames(snapshot, legacyApi.name),
   );
 
   return {
     legacyApi,
-    namesToRemoveFromLegacyApi: setSubtract(
-      currentNames,
-      snapshottedNames,
-    ).sort(),
-    namesToRemoveFromSnapshot: setSubtract(
-      snapshottedNames,
-      currentNames,
-    ).sort(),
+    namesToRemoveFromLegacyApi: [
+      ...setSubtract(currentNames, snapshottedNames),
+    ].sort(),
+    namesToRemoveFromSnapshot: [
+      ...setSubtract(snapshottedNames, currentNames),
+    ].sort(),
   };
 }
 
@@ -120,29 +130,18 @@ function reportNewApiMembersError(
   { stdout, stderr }: { stdout: Writable; stderr: Writable },
 ): void {
   stderr.write(
-    `${chalk.red('ERROR: Extra methods have been added to some legacy background APIs:\n')}\n`,
+    `${chalk.red('ERROR: New methods have been added to some UI<->background APIs which are deprecated. More details below.')}\n\n`,
   );
-  const legacyApiNames = results.map((result) => result.legacyApi.name);
 
   for (const result of results) {
     stderr.write(
-      `- ${result.legacyApi.name}\n${formatList(result.namesToRemoveFromLegacyApi)}\n`,
-    );
-  }
-  stderr.write('\n');
-
-  if (legacyApiNames.length > 1) {
-    stderr.write(
-      `${legacyApiNames.join(' and ')} are deprecated legacy APIs,\nand we do not support extending them further.\n`,
-    );
-  } else {
-    stderr.write(
-      `${legacyApiNames[0]} is a deprecated legacy API,\nand we do not support extending it further.\n`,
+      `- ${result.legacyApi.newMethodsExplanation}:\n${formatList(result.namesToRemoveFromLegacyApi, 2)}\n`,
     );
   }
 
   stderr.write(`
-To call a controller or service action through the UI:
+The Core Platform team has requested that these APIs not be extended further,
+and has developed a new process for accessing controllers and services through the UI:
 
 1. Go to the controller or service and expose the action through its messenger
 2. Back in the extension, assign a messenger to the enclosing route and specify the capabilities
@@ -204,13 +203,18 @@ function readSnapshot(): Snapshot {
   }
 
   return {
-    'MetamaskController.getApi': readSnapshottedApiMemberNames(
+    legacyBackgroundApiServiceMethods: readSnapshottedApiMemberNames(
       snapshot,
-      'MetamaskController.getApi',
+      'legacyBackgroundApiServiceMethods',
     ),
-    LegacyBackgroundApiService: readSnapshottedApiMemberNames(
+    messengerClientApiMethods: readSnapshottedApiMemberNames(
       snapshot,
-      'LegacyBackgroundApiService',
+      'messengerClientApiMethods',
+    ),
+    getApiMethods: readSnapshottedApiMemberNames(snapshot, 'getApiMethods'),
+    adhocControllerConnectionMethods: readSnapshottedApiMemberNames(
+      snapshot,
+      'adhocControllerConnectionMethods',
     ),
   };
 }
@@ -239,22 +243,13 @@ function readSnapshottedApiMemberNames(
 }
 
 /**
- * Lists the values in one set which are not in another.
- *
- * @param set1 - The set to filter.
- * @param set2 - The set to exclude from `set1`.
- * @returns The values in `set1` which are not in `set2`.
- */
-function setSubtract(set1: Set<string>, set2: Set<string>): string[] {
-  return [...set1].filter((name) => !set2.has(name));
-}
-
-/**
  * Formats names as a bulleted list.
  *
  * @param names - The names to format.
+ * @param indentSize - The number of spaces before each bullet.
  * @returns The formatted list.
  */
-function formatList(names: string[]): string {
-  return names.map((name) => `  - ${name}`).join('\n');
+function formatList(names: string[], indentSize = 2): string {
+  const indentation = ' '.repeat(indentSize);
+  return names.map((name) => `${indentation}- ${name}`).join('\n');
 }
