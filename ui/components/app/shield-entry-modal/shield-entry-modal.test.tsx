@@ -93,6 +93,7 @@ describe('Shield Entry Modal', () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
     const closeButton = getByTestId('shield-entry-modal-close-button');
+    expect(closeButton).toHaveAccessibleName('Close');
     fireEvent.click(closeButton);
     expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
       show: false,

@@ -233,6 +233,7 @@ const ShieldEntryModal = ({
           }}
           closeButtonProps={{
             'data-testid': 'shield-entry-modal-close-button',
+            ariaLabel: t('close'),
           }}
           className="absolute top-4 left-0 right-0 w-full"
         />
