@@ -201,8 +201,17 @@ export class RewardsDataService {
       const version = extensionPlatform.getVersion();
       headers['rewards-client-id'] = `extension-${version}`;
     } catch (error) {
-      // Continue without client header if version retrieval fails
-      console.warn('Failed to retrieve app version for client header:', error);
+      // Unit tests and other non-extension runtimes have no browser manifest.
+      // The build-time version is set in those environments.
+      const fallbackVersion = process.env.METAMASK_VERSION;
+      if (fallbackVersion) {
+        headers['rewards-client-id'] = `extension-${fallbackVersion}`;
+      } else {
+        console.warn(
+          'Failed to retrieve app version for client header:',
+          error,
+        );
+      }
     }
 
     // Add bearer token for authenticated requests

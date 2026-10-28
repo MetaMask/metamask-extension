@@ -1056,7 +1056,13 @@
         "subscriptionId": "null"
       }
     },
-    "rewardsActiveAccount": "null",
+    "rewardsActiveAccount": {
+      "account": "string",
+      "lastFreshOptInStatusCheck": "number",
+      "lastPerpsDiscountRateFetched": "null",
+      "perpsFeeDiscount": "null",
+      "subscriptionId": "null"
+    },
     "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
