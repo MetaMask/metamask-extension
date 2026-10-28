@@ -29,11 +29,29 @@
     "moduleResolution": "bundler"
   },
   "exclude": [
+    "app/vendor/",
+    "development/.webpack/",
+    "development/chromereload.js",
+    "development/ts-migration-dashboard/build/",
+    "test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js",
+    "test/e2e/send-eth-with-private-key-test/web3js.js",
+    "test/test-results/",
     // don't typecheck stories, as they don't yet pass the type checker.
     "**/*.stories.tsx",
     "**/*.stories.ts"
   ],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node22/tsconfig.json",
-  "include": ["app", "development", "shared", "test", "types", "ui", "*.ts"]
+  "include": [
+    ".github",
+    ".storybook",
+    "app",
+    "development",
+    "shared",
+    "test",
+    "types",
+    "ui",
+    "*.mts",
+    "*.ts"
+  ]
 }
