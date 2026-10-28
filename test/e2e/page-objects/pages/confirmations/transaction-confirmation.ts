@@ -321,9 +321,15 @@ class TransactionConfirmation extends Confirmation {
     );
     await this.driver.waitUntil(
       async () => {
-        const headings = await this.driver.findElements('h2');
-        for (const heading of headings) {
-          const text = await heading.getText();
+        // Read every heading in one script. Holding WebElement references
+        // across getText() fails on Firefox when the confirmation re-renders.
+        const headingTexts = (await this.driver.executeScript(() =>
+          Array.from(
+            document.querySelectorAll('h2'),
+            (heading) => heading.textContent ?? '',
+          ),
+        )) as string[];
+        for (const text of headingTexts) {
           if (!/[A-Za-z]/u.test(text)) {
             continue;
           }
