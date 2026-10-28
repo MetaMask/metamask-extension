@@ -32,7 +32,7 @@ describe('webpack launcher', () => {
   it.each([{ cache: false }, { help: true }, { watch: true }])(
     'starts direct builds for %j',
     async (args) => {
-      jest.mocked(parser).mockReturnValue(args);
+      jest.mocked(parser).mockReturnValue({ _: [], ...args });
       jest.isolateModules(() => {
         require('./launch');
       });
@@ -43,7 +43,7 @@ describe('webpack launcher', () => {
   );
 
   it('forks cached builds instead of loading the build in the parent', async () => {
-    jest.mocked(parser).mockReturnValue({});
+    jest.mocked(parser).mockReturnValue({ _: [] });
     jest.mocked(spawn).mockReturnValue(new ChildProcess());
     jest.isolateModules(() => {
       require('./launch');
@@ -55,7 +55,7 @@ describe('webpack launcher', () => {
 
   it('reports rejected build initialization and exits unsuccessfully', async () => {
     const error = new Error('initialization rejected');
-    jest.mocked(parser).mockReturnValue({ cache: false });
+    jest.mocked(parser).mockReturnValue({ _: [], cache: false });
     jest.mocked(build).mockRejectedValue(error);
     jest.isolateModules(() => {
       require('./launch');
