@@ -10,6 +10,7 @@ import { strict as assert } from 'assert';
 import { merge } from 'lodash';
 import type { Mockttp } from 'mockttp';
 import type { NetworkState } from '@metamask/network-controller';
+import type { CaipAssetType } from '@metamask/utils';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import {
   CHAIN_IDS,
@@ -110,7 +111,7 @@ const LATEST_BLOCK = {
 export type MaxAmountNetwork = {
   chainId: string;
   chainIdDecimal: number;
-  assetId: string;
+  assetId: CaipAssetType;
   symbol: string;
   name: string;
   networkClientId: string;
@@ -189,7 +190,7 @@ export function buildMaxAmountParityFixture(network: MaxAmountNetwork) {
       },
       assetsPrice: {
         [network.assetId]: {
-          assetPriceType: 'fungible',
+          assetPriceType: 'fungible' as const,
           id: network.symbol.toLowerCase(),
           lastUpdated: 0,
           price: 1,
