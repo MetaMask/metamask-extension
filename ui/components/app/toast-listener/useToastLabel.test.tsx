@@ -1,5 +1,7 @@
+import { it } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ToastStatus } from './shared';
 import { useToastLabel } from './useToastLabel';
 
 const mockT = jest.fn((key: string, args?: string[]) =>
@@ -57,6 +59,16 @@ function addPerpsWithdrawItem(
     data: {},
     ...overrides,
   } as ActivityListItem);
+}
+
+function addPerpsAddFundsItem(id: string) {
+  mockItems.set(id, {
+    type: 'perpsAddFunds',
+    chainId: 'eip155:42161',
+    status: 'pending',
+    timestamp: 0,
+    data: {},
+  } as unknown as ActivityListItem);
 }
 
 describe('useToastLabel', () => {
@@ -187,5 +199,29 @@ describe('useToastLabel', () => {
       title: 'perpsWithdrawPostQuoteToastErrorTitle',
       description: 'perpsWithdrawPostQuoteToastErrorDescription',
     });
+  });
+
+  it.each<[ToastStatus, string, string]>([
+    [
+      'pending',
+      'perpsDepositToastPendingTitle',
+      'perpsDepositToastPendingDescription',
+    ],
+    [
+      'success',
+      'perpsDepositToastSuccessTitle',
+      'perpsDepositToastSuccessDescription',
+    ],
+    [
+      'failed',
+      'perpsDepositToastErrorTitle',
+      'perpsDepositToastErrorDescription',
+    ],
+  ])('returns %s perps deposit toast content', (status, title, description) => {
+    addPerpsAddFundsItem('tx-1');
+
+    const { result } = renderHook(() => useToastLabel(status, 'tx-1'));
+
+    expect(result.current).toStrictEqual({ title, description });
   });
 });

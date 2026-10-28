@@ -943,9 +943,7 @@ const retryBudget = getRetryBudget({
   context: retryContext,
   hasRetryLabel,
   isRetryable,
-  automaticRetryLimit: hasMainTargetE2eFailure
-    ? 1
-    : DEFAULT_RETRY_MAX_ATTEMPT,
+  automaticRetryLimit: hasMainTargetE2eFailure ? 1 : DEFAULT_RETRY_MAX_ATTEMPT,
 });
 const atRetryCiLimit = retryBudget.labelRetryLimitReached;
 const willRetry = retryBudget.willRetry;
@@ -1098,9 +1096,9 @@ if (WORKFLOW_EVENT === 'merge_group' && !willRetry) {
     ? `Retry-ci limit reached (attempt ${retryBudget.attemptNumber} of ${retryBudget.labelRetryLimit})`
     : retryBudget.automaticRetryLimitReached
       ? `Automatic retry limit reached (attempt ${retryBudget.attemptNumber} of ${retryBudget.automaticRetryLimit})`
-    : isRetryable
-      ? 'Retryable failures, but no retry budget available'
-      : 'Non-retryable failures detected';
+      : isRetryable
+        ? 'Retryable failures, but no retry budget available'
+        : 'Non-retryable failures detected';
   try {
     ghApi(`${repoApi}/statuses/${headSha}`, {
       method: 'POST',

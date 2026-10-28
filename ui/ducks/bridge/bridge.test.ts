@@ -55,8 +55,7 @@ describe('Ducks - Bridge', () => {
   describe('setFromToken', () => {
     beforeEach(() => {
       setBackgroundConnection({
-        setActiveNetwork: jest.fn(),
-        setEnabledAllPopularNetworks: jest.fn(),
+        messengerCall: jest.fn(),
         getStatePatches: jest.fn(),
       } as never);
     });

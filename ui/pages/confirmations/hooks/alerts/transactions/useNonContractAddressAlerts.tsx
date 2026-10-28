@@ -11,6 +11,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
+import { AlertsName } from '../constants';
 import { NonContractAddressAlertMessage } from './NonContractAddressAlertMessage';
 import { useContractCode } from './useContractCode';
 
@@ -49,7 +50,7 @@ export function useNonContractAddressAlerts(): Alert[] {
       {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
-        key: 'hexDataWhileInteractingWithNonContractAddress',
+        key: AlertsName.HexDataWhileInteractingWithNonContractAddress,
         reason: t('nonContractAddressAlertTitle'),
         content: <NonContractAddressAlertMessage />,
         severity: Severity.Warning,

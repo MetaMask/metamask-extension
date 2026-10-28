@@ -5,6 +5,7 @@ import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { MFA_FLOW_ROUTE } from '../../helpers/constants/routes';
 import { useActiveMfaFlow } from '../../hooks/identity/mfa/engine/useActiveMfaFlow';
 import type { MfaFlow } from '../../hooks/identity/mfa/engine/types';
+import type { MfaFlowRouteState } from './types';
 
 /**
  * Opens the MFA page when the running flow has a screen to show. Flows that
@@ -35,7 +36,8 @@ const MfaFlowLauncher = () => {
       );
       return;
     }
-    navigate(MFA_FLOW_ROUTE);
+    const state: MfaFlowRouteState = { returnTo: `${pathname}${search}` };
+    navigate(MFA_FLOW_ROUTE, { state });
   }, [flow, hasScreen, navigate, pathname, search]);
 
   return null;

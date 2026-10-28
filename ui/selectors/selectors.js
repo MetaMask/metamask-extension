@@ -37,6 +37,7 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 
 import log from 'loglevel';
+import { isManifestV3 } from '#shared/lib/mv3.utils';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
@@ -1556,6 +1557,7 @@ export function selectShowTickerWidget(state) {
 export function selectIsTickerWidgetFeatureEnabled(state) {
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
   return (
+    isManifestV3 &&
     state.metamask.useExternalServices !== false &&
     getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false)
   );

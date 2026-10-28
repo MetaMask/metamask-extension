@@ -66,7 +66,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { useUsefulScreenReady } from '../../../../hooks/useUsefulScreenReady';
+import { useHomeReady } from '../../../../pages/home/home-performance';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
@@ -276,10 +276,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     );
 
   // Persisted tokens count as content; loading placeholders do not.
-  useUsefulScreenReady(
-    'home',
-    Boolean(selectedAccountGroup) && !showLoadingSkeleton,
-  );
+  useHomeReady(Boolean(selectedAccountGroup) && !showLoadingSkeleton);
 
   useCoordinatedTrace({
     name: TraceName.HomepageSectionTimeToContent,
