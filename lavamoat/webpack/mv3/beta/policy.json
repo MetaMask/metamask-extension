@@ -1022,6 +1022,12 @@
         "@metamask/keyring-utils": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/account-api": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true
+      }
+    },
     "@metamask/account-tree-controller": {
       "globals": {
         "TextDecoder": true,
@@ -2241,6 +2247,28 @@
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "console.info": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/multichain-account-service>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": true,
+        "@metamask/multichain-account-service>@metamask/eth-snap-keyring>@metamask/keyring-sdk": true,
+        "@metamask/multichain-account-service>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/multichain-account-service>@metamask/account-api>uuid": true
+      }
+    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -2608,6 +2636,14 @@
         "@metamask/keyring-utils": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/eth-snap-keyring>@metamask/keyring-internal-snap-client": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/keyring-snap-client": true,
+        "@metamask/keyring-utils": true
+      }
+    },
     "@metamask/keyring-sdk": {
       "globals": {
         "TextDecoder": true,
@@ -2639,6 +2675,11 @@
         "@metamask/eth-money-keyring>@metamask/keyring-sdk>uuid": true
       }
     },
+    "@metamask/multichain-account-service>@metamask/eth-snap-keyring>@metamask/keyring-sdk": {
+      "packages": {
+        "@metamask/multichain-account-service>@metamask/account-api>uuid": true
+      }
+    },
     "@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2648,6 +2689,11 @@
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
+      "packages": {
+        "@metamask/superstruct": true
+      }
+    },
+    "@metamask/multichain-account-service>@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
       "packages": {
         "@metamask/superstruct": true
       }
@@ -2666,7 +2712,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/utils": true,
-        "uuid": true
+        "@metamask/logging-controller>uuid": true
       }
     },
     "@metamask/logo": {
@@ -2819,8 +2865,8 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/account-api": true,
-        "@metamask/eth-snap-keyring": true,
+        "@metamask/multichain-account-service>@metamask/account-api": true,
+        "@metamask/multichain-account-service>@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/keyring-snap-client": true,
@@ -3358,7 +3404,7 @@
         "@metamask/base-controller": true,
         "@metamask/remote-feature-flag-controller>@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "uuid": true
+        "@metamask/remote-feature-flag-controller>uuid": true
       }
     },
     "@metamask/rpc-errors": {
@@ -8165,9 +8211,15 @@
         "crypto": true
       }
     },
-    "@metamask/analytics-controller>uuid": {
+    "@metamask/multichain-account-service>@metamask/account-api>uuid": {
       "globals": {
         "crypto": true
+      }
+    },
+    "@metamask/analytics-controller>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/assets-controllers>uuid": {
@@ -8177,7 +8229,8 @@
     },
     "@metamask/base-data-service>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/bridge-controller>uuid": {
@@ -8192,7 +8245,8 @@
     },
     "@metamask/core-backend>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/eth-qr-keyring>uuid": {
@@ -8226,6 +8280,12 @@
         "crypto": true
       }
     },
+    "@metamask/logging-controller>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
+      }
+    },
     "@metamask/mobile-wallet-protocol-core>uuid": {
       "globals": {
         "crypto": true
@@ -8238,7 +8298,8 @@
     },
     "@metamask/network-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/notification-services-controller>uuid": {
@@ -8283,12 +8344,14 @@
     },
     "@metamask/profile-metrics-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/transaction-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "remote-redux-devtools>socketcluster-client>uuid": {
