@@ -51,8 +51,7 @@ export function TokenRow({
     <div className="flex items-center gap-2">
       <ChainBadge chainId={chainId}>{avatar}</ChainBadge>
       <Text
-        variant="amount-display-lg"
-        fontFamily="hero"
+        variant="heading-lg"
         color={
           token.direction === 'in' ? 'text-success-default' : 'text-default'
         }
