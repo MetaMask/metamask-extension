@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import type { ActivityListItem } from '#shared/lib/activity/types';
 import { TemplateLoader } from './template-loader';
 
 jest.mock('./asset-activation-details', () => ({
@@ -27,10 +27,10 @@ jest.mock('./nft-details', () => ({
 jest.mock('./money/money-account-details', () => ({
   MoneyAccountDetails: () => <div data-testid="money-account-details" />,
 }));
-jest.mock('./perps-deposit-details', () => ({
+jest.mock('./perps/perps-deposit-details', () => ({
   PerpsDepositDetails: () => <div data-testid="perps-deposit-details" />,
 }));
-jest.mock('./perps-details', () => ({
+jest.mock('./perps/perps-details', () => ({
   PerpsDetails: () => <div data-testid="perps-details" />,
 }));
 jest.mock('./ramps/ramp-order-details', () => ({

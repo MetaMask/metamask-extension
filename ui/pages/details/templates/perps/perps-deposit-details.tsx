@@ -6,18 +6,18 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { usePerpsDepositConfirmation } from '../../../components/app/perps/hooks/usePerpsDepositConfirmation';
-import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
+import type { ActivityListItem } from '#shared/lib/activity/types';
+import { CHAIN_IDS } from '#shared/constants/network';
+import { usePerpsDepositConfirmation } from '#ui/components/app/perps/hooks/usePerpsDepositConfirmation';
+import { useLocalTransactionMeta } from '#ui/hooks/activity/useLocalTransactionMeta';
 import {
   ARBITRUM_USDC,
   PERPS_CURRENCY,
   // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../confirmations/constants/perps';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
-import { MmPayDetailsLayout } from './mm-pay-details-layout';
+} from '#ui/pages/confirmations/constants/perps';
+import { useI18nContext } from '#ui/hooks/useI18nContext';
+import { useFormatters } from '#ui/hooks/useFormatters';
+import { MmPayDetailsLayout } from '../mm-pay-details-layout';
 
 const PERPS_USDC_ASSET_ID = `${toEvmCaipChainId(CHAIN_IDS.ARBITRUM)}/erc20:${ARBITRUM_USDC.address}`;
 

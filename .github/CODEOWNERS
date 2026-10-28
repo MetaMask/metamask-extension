@@ -292,6 +292,7 @@ ui/components/app/transaction-activity-empty-state/            @MetaMask/core-ex
 ui/pages/activity                                              @MetaMask/core-extension-ux
 ui/pages/details                                               @MetaMask/core-extension-ux
 ui/pages/details/templates/ramps/                              @MetaMask/money-movement @MetaMask/core-extension-ux
+ui/pages/details/templates/perps/                              @MetaMask/perps @MetaMask/core-extension-ux
 ui/pages/details/templates/money/                              @MetaMask/earn @MetaMask/core-extension-ux
 ui/selectors/activity/musd/                                    @MetaMask/earn @MetaMask/core-extension-ux
 

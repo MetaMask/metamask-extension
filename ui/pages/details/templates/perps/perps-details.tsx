@@ -1,25 +1,22 @@
 import React, { useMemo } from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
-import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { AccountName } from '../../../components/app/transaction/account-name';
-import { NetworkName } from '../../../components/app/transaction/network-name';
-import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
-import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
+import type { ActivityListItem, TokenAmount } from '#shared/lib/activity/types';
+import { toAssetId } from '#shared/lib/asset-utils';
+import { AccountName } from '#ui/components/app/transaction/account-name';
+import { NetworkName } from '#ui/components/app/transaction/network-name';
+import { TransactionStatus } from '#ui/components/app/transaction/transaction-status';
+import { useLocalTransactionMeta } from '#ui/hooks/activity/useLocalTransactionMeta';
 import {
   ARBITRUM_USDC,
   PERPS_CURRENCY,
   // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../confirmations/constants/perps';
-import { BlockExplorerButton } from '../components/block-explorer-button';
-import { Footer, Row, Section } from '../components/shared';
-import { TokensSection } from '../components/sections';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
-import { useDestinationToken } from './helpers';
+} from '#ui/pages/confirmations/constants/perps';
+import { useI18nContext } from '#ui/hooks/useI18nContext';
+import { useFormatters } from '#ui/hooks/useFormatters';
+import { BlockExplorerButton } from '../../components/block-explorer-button';
+import { Footer, Row, Section } from '../../components/shared';
+import { TokensSection } from '../../components/sections';
+import { useDestinationToken } from '../helpers';
 
 const ARBITRUM_USDC_ASSET_ID = toAssetId(
   ARBITRUM_USDC.address,
