@@ -96,10 +96,7 @@ module.exports = {
     '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/release-testing-ai-analyzer/**/*.test.ts',
   ],
-  testPathIgnorePatterns: [
-    '<rootDir>/development/webpack/',
-    '<rootDir>/development/lib/build-paths.test.ts',
-  ],
+  testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the

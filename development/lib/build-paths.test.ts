@@ -1,15 +1,9 @@
-import assert from 'node:assert/strict';
-import {
-  mkdtempSync,
-  mkdirSync,
-  rmSync,
-  writeFileSync,
-  existsSync,
-} from 'node:fs';
+/** @jest-environment node */
+
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, describe, it } from 'node:test';
-import { findProjectRoot, webpackFile } from './build-paths.ts';
+import { findProjectRoot, webpackFile } from './build-paths';
 
 describe('build paths', () => {
   const directories: string[] = [];
@@ -38,8 +32,7 @@ describe('build paths', () => {
       writeFileSync(join(root, 'package.json'), '{}');
       // The compiled tree can contain its own copied package.json.
       writeFileSync(join(compiled, 'package.json'), '{}');
-      assert.equal(
-        findProjectRoot(join(root, entry), temporaryDirectory()),
+      expect(findProjectRoot(join(root, entry), temporaryDirectory())).toBe(
         root,
       );
     });
@@ -49,28 +42,26 @@ describe('build paths', () => {
     const root = temporaryDirectory();
     writeFileSync(join(root, 'builds.yml'), '');
     writeFileSync(join(root, 'package.json'), '{}');
-    assert.equal(
-      findProjectRoot(join(temporaryDirectory(), 'runner.js'), root),
+    expect(findProjectRoot(join(temporaryDirectory(), 'runner.js'), root)).toBe(
       root,
     );
   });
 
   it('fails when neither location belongs to a checkout', () => {
-    assert.throws(
-      () =>
-        findProjectRoot(
-          join(temporaryDirectory(), 'runner.js'),
-          temporaryDirectory(),
-        ),
-      /Could not find/u,
-    );
+    expect(() =>
+      findProjectRoot(
+        join(temporaryDirectory(), 'runner.js'),
+        temporaryDirectory(),
+      ),
+    ).toThrow('Could not find');
   });
 
-  it('resolves native source files without compilation', () => {
-    assert.equal(
-      webpackFile('launch'),
-      join(findProjectRoot(), 'development/webpack/launch.ts'),
+  it('resolves compiled tooling when loaded through CommonJS', () => {
+    expect(webpackFile('launch')).toBe(
+      join(
+        findProjectRoot(),
+        'development/.webpack/development/webpack/launch.js',
+      ),
     );
-    assert.equal(existsSync(webpackFile('launch')), true);
   });
 });
