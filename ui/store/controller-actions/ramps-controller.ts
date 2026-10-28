@@ -90,7 +90,8 @@ export async function addRampsPrecreatedOrder(params: {
   orderId: string;
   providerCode: string;
   walletAddress: string;
-  chainId?: string;
+  // Required since ramps-controller v20: precreated stubs must carry a network.
+  chainId: string;
 }): Promise<void> {
   return submitRequestToBackground('addRampsPrecreatedOrder', [params]);
 }
@@ -127,6 +128,10 @@ export async function getRampsOrderFromCallback(
   ]);
 }
 
+export async function syncRampsOrdersWithUserStorage(): Promise<void> {
+  return submitRequestToBackground('syncRampsOrdersWithUserStorage');
+}
+
 export async function watchRampsCheckoutTab(params: {
   url: string;
   providerCode: string;
@@ -137,4 +142,13 @@ export async function watchRampsCheckoutTab(params: {
   providerName?: string;
 }): Promise<void> {
   return submitRequestToBackground('watchRampsCheckoutTab', [params]);
+}
+
+export async function watchRampsProviderOrderTab(params: {
+  url: string;
+  providerCode: string;
+  walletAddress: string;
+  orderCode?: string;
+}): Promise<void> {
+  return submitRequestToBackground('watchRampsProviderOrderTab', [params]);
 }

@@ -1,5 +1,6 @@
-const { readFileSync } = require('node:fs');
-const { defineConfig } = require('eslint/config');
+const path = require('node:path');
+const { defineConfig, globalIgnores } = require('eslint/config');
+const { includeIgnoreFile } = require('@eslint/config-helpers');
 const eslintConfig = require('@metamask/eslint-config').default;
 const typescriptConfig = require('@metamask/eslint-config-typescript').default;
 const mochaConfig = require('@metamask/eslint-config-mocha').default;
@@ -27,14 +28,19 @@ const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
 
+const gitignorePath = path.resolve(__dirname, '.gitignore');
+
 module.exports = defineConfig([
-  {
-    // Ignore files which are also in .prettierignore
-    ignores: readFileSync('.prettierignore', 'utf8')
-      .trim()
-      .split('\n')
-      .map((path) => (path.startsWith('/') ? path.slice(1) : `**/${path}`)),
-  },
+  includeIgnoreFile(gitignorePath),
+  globalIgnores([
+    // vendored code
+    '.yarn/**/*',
+    'app/vendor/**',
+    'development/chromereload.js',
+    'test/e2e/send-eth-with-private-key-test/**/*',
+    // snapshots
+    '**/__snapshots__/**/*',
+  ]),
   {
     languageOptions: {
       // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
@@ -277,6 +283,7 @@ module.exports = defineConfig([
       '@typescript-eslint/await-thenable': 'off',
       '@typescript-eslint/consistent-type-exports': 'off',
       '@typescript-eslint/consistent-type-imports': 'off',
+      'import-x/consistent-type-specifier-style': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/no-duplicate-type-constituents': 'off',
@@ -344,12 +351,6 @@ module.exports = defineConfig([
           alwaysTryTypes: true,
         },
       },
-    },
-  },
-  {
-    files: ['.agents/**/*.ts'],
-    rules: {
-      'import-x/no-nodejs-modules': 'off',
     },
   },
   /**
@@ -863,17 +864,6 @@ module.exports = defineConfig([
     },
     rules: {
       'page-object/member-order': 'error',
-    },
-  },
-  /**
-   * Generated messenger action types.
-   */
-  {
-    files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
-    rules: {
-      // Keep generated messenger action type formatting stable while the
-      // repository transitions from eslint-plugin-prettier to oxfmt.
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },
   /**

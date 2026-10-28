@@ -115,6 +115,7 @@ describe('useSafeChains', () => {
     const mockState = {
       metamask: {
         useSafeChainsListValidation: true,
+        useExternalServices: true,
       },
     };
 
@@ -159,6 +160,47 @@ describe('useSafeChains', () => {
     expect(mockFetchWithCache).toHaveBeenCalledTimes(1);
   });
 
+  it('fetches safe chains when enabled even if validation is off', async () => {
+    const { result, mockFetchWithCache } = arrangeAct((mocks) => {
+      mocks.mockState.metamask.useSafeChainsListValidation = false;
+    });
+
+    const enabledHook = renderHookWithProviderTyped(
+      () => useSafeChains({ enabled: true }),
+      {
+        metamask: {
+          useSafeChainsListValidation: false,
+          useExternalServices: true,
+        },
+      },
+    );
+
+    await waitFor(() =>
+      expect(enabledHook.result.current.safeChains).toHaveLength(1),
+    );
+    expect(mockFetchWithCache).toHaveBeenCalledTimes(1);
+    expect(result.current.safeChains).toHaveLength(0);
+  });
+
+  it('does not fetch safe chains when basic functionality is off', async () => {
+    const { mockFetchWithCache } = arrangeAct((mocks) => {
+      mocks.mockState.metamask.useExternalServices = false;
+    });
+
+    const enabledHook = renderHookWithProviderTyped(
+      () => useSafeChains({ enabled: true }),
+      {
+        metamask: {
+          useSafeChainsListValidation: true,
+          useExternalServices: false,
+        },
+      },
+    );
+
+    expect(enabledHook.result.current.safeChains).toHaveLength(0);
+    expect(mockFetchWithCache).not.toHaveBeenCalled();
+  });
+
   it('does not fetch safe chains when useSafeChainsListValidation is disabled', async () => {
     const { result, mockFetchWithCache } = arrangeAct((mocks) => {
       mocks.mockState.metamask.useSafeChainsListValidation = false;
@@ -176,5 +218,35 @@ describe('useSafeChains', () => {
     await waitFor(() => expect(result.current.error).toBeDefined());
     expect(result.current.safeChains).toBeUndefined();
     expect(mockFetchWithCache).toHaveBeenCalled();
+  });
+
+  it('syncs cached safe chains when another instance loaded before effect runs', async () => {
+    const { mockFetchWithCache, mockState, mockSafeChain } = arrange();
+    let resolveFetch!: (value: SafeChain[]) => void;
+    mockFetchWithCache.mockReturnValue(
+      new Promise<SafeChain[]>((resolve) => {
+        resolveFetch = resolve;
+      }),
+    );
+
+    const firstHook = renderHookWithProviderTyped(
+      () => useSafeChains(),
+      mockState,
+    );
+    const secondHook = renderHookWithProviderTyped(
+      () => useSafeChains(),
+      mockState,
+    );
+
+    expect(secondHook.result.current.safeChains).toHaveLength(0);
+
+    resolveFetch([mockSafeChain]);
+    await waitFor(() =>
+      expect(firstHook.result.current.safeChains).toHaveLength(1),
+    );
+    await waitFor(() =>
+      expect(secondHook.result.current.safeChains).toHaveLength(1),
+    );
+    expect(mockFetchWithCache).toHaveBeenCalledTimes(1);
   });
 });

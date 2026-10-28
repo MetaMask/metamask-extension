@@ -187,6 +187,12 @@ type PerpsActionName =
   | 'perpsClearPendingTransactionRequests'
   | 'perpsSaveOrderBookGrouping'
   | 'perpsGetOrderBookGrouping'
+  | 'perpsGetOrderBookPreferences'
+  | 'perpsSetOrderBookPreferences'
+  | 'perpsGetSelectedOrderType'
+  | 'perpsSetSelectedOrderType'
+  | 'perpsGetVisibleCandleCount'
+  | 'perpsSetVisibleCandleCount'
   | 'perpsGetProLayoutPreferences'
   | 'perpsSetProLayoutPreferences'
   | 'perpsGetMaxSlippage'
@@ -526,6 +532,18 @@ function getApi(
       messengerClient.saveOrderBookGrouping.bind(messengerClient),
     perpsGetOrderBookGrouping:
       messengerClient.getOrderBookGrouping.bind(messengerClient),
+    perpsGetOrderBookPreferences:
+      messengerClient.getOrderBookPreferences.bind(messengerClient),
+    perpsSetOrderBookPreferences:
+      messengerClient.setOrderBookPreferences.bind(messengerClient),
+    perpsGetSelectedOrderType:
+      messengerClient.getSelectedOrderType.bind(messengerClient),
+    perpsSetSelectedOrderType:
+      messengerClient.setSelectedOrderType.bind(messengerClient),
+    perpsGetVisibleCandleCount:
+      messengerClient.getVisibleCandleCount.bind(messengerClient),
+    perpsSetVisibleCandleCount:
+      messengerClient.setVisibleCandleCount.bind(messengerClient),
     perpsGetProLayoutPreferences:
       messengerClient.getProLayoutPreferences.bind(messengerClient),
     perpsSetProLayoutPreferences:

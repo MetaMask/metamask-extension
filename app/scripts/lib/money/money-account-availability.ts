@@ -5,15 +5,21 @@ import type {
   KeyringControllerWithKeyringUnsafeAction,
 } from '@metamask/keyring-controller';
 import type { Messenger } from '@metamask/messenger';
+import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import {
   getMoneyAccountGeoBlockedCountries,
-  isMoneyAccountEnabled,
   isMoneyAccountGeoEligible,
 } from '../../../../shared/lib/money/feature-flags';
+import { getMoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
+import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
+import {
+  createMoneyChainConfigurator,
+  type EnsureMoneyChainConfigured,
+} from './money-chain-config';
 
 const log = createProjectLogger('money-account-availability');
 
@@ -21,6 +27,8 @@ const serviceName = 'MoneyAccountAvailabilityService';
 
 type MoneyAccountAvailabilityAllowedActions =
   | KeyringControllerWithKeyringUnsafeAction
+  | LegacyBackgroundApiServiceAddNetworkAction
+  | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | GeolocationControllerGetGeolocationAction;
 
@@ -37,22 +45,10 @@ export type MoneyAccountAvailabilityServiceGetAvailabilityAction = {
   handler: MoneyAccountAvailabilityService['getAvailability'];
 };
 
-/**
- * The action other clients use to call {@link MoneyAccountAvailabilityService.getAddress}
- * directly through the messenger, instead of via a controller wrapper method.
- */
-export type MoneyAccountAvailabilityServiceGetAddressAction = {
-  type: `${typeof serviceName}:getAddress`;
-  handler: MoneyAccountAvailabilityService['getAddress'];
-};
-
-type MoneyAccountAvailabilityActions =
-  | MoneyAccountAvailabilityServiceGetAvailabilityAction
-  | MoneyAccountAvailabilityServiceGetAddressAction;
-
 export type MoneyAccountAvailabilityMessenger = Messenger<
   typeof serviceName,
-  MoneyAccountAvailabilityActions | MoneyAccountAvailabilityAllowedActions,
+  | MoneyAccountAvailabilityServiceGetAvailabilityAction
+  | MoneyAccountAvailabilityAllowedActions,
   MoneyAccountAvailabilityEvents
 >;
 
@@ -63,16 +59,24 @@ const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 /**
  * Resolves whether the Money Account surface should be shown at all.
  *
- * We look at the state of the `moneyEnableMoneyAccount` flag, whether the
- * user's region is allowed (`moneyAccountGeoBlockedCountries`), and whether
- * a money address can be derived from an unlocked wallet.
+ * We look at whether the user's region is allowed
+ * (`moneyAccountGeoBlockedCountries`), and whether a money address can be
+ * derived from an unlocked wallet. The configured Money Account chain must
+ * also be ready for use.
  *
  * A money account being available doesn’t mean that the account has been
- * upgraded yet.
+ * upgraded yet, nor that the Money keyring exists in the vault yet. The
+ * address is derived straight from the seed, so it is the same whether or not
+ * `MoneyAccountController.init()` has run; creating the keyring is that
+ * controller's job, and it creates it on demand before any signing.
  *
- * The flag and geo check are never cached because they can change when
- * remote feature flags update or geolocation refreshes. Unknown or failed
- * geolocation is treated as blocked (fail closed).
+ * Callers are expected to gate on the `moneyEnableMoneyAccount` flag
+ * themselves before calling; this service does not check it, to avoid
+ * re-implementing a check every caller already has to make.
+ *
+ * The geo check is never cached because it can change when remote feature
+ * flags update or geolocation refreshes. Unknown or failed geolocation is
+ * treated as blocked (fail closed).
  *
  * The derived address is cached as a promise until the next unlock,
  * so concurrent callers share one in-flight derivation; failures are not
@@ -85,8 +89,11 @@ export class MoneyAccountAvailabilityService {
 
   #address?: Promise<Hex>;
 
+  readonly #ensureChainConfigured: EnsureMoneyChainConfigured;
+
   constructor({ messenger }: { messenger: MoneyAccountAvailabilityMessenger }) {
     this.#messenger = messenger;
+    this.#ensureChainConfigured = createMoneyChainConfigurator(messenger);
 
     // An unlock can follow a vault restore, which changes the primary seed and
     // therefore the derived address, so the cached value is dropped. A lock
@@ -99,10 +106,7 @@ export class MoneyAccountAvailabilityService {
       this.#address = undefined;
     });
 
-    this.#messenger.registerMethodActionHandlers(this, [
-      'getAvailability',
-      'getAddress',
-    ]);
+    this.#messenger.registerMethodActionHandlers(this, ['getAvailability']);
   }
 
   /**
@@ -112,22 +116,23 @@ export class MoneyAccountAvailabilityService {
    */
   async getAvailability(): Promise<MoneyAccountAvailability> {
     try {
-      if (!this.#isEnabled()) {
+      const { remoteFeatureFlags } = this.#messenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+
+      if (!(await this.#isGeoEligible(remoteFeatureFlags))) {
         return UNAVAILABLE;
       }
 
-      if (!(await this.#isGeoEligible())) {
-        return UNAVAILABLE;
-      }
-
-      const address = await this.getAddress();
+      const address = await this.#getAddress();
+      await this.#configureChain(remoteFeatureFlags);
 
       return { isAvailable: true, address };
     } catch (error) {
-      // A locked wallet, unknown region, or a transient failure reading the
-      // feature flag, geolocation, or derived address lands here. None of
-      // these are evidence that the user has no money account, so the
-      // surface is hidden without the answer being cached.
+      // A locked wallet, unknown region, or a transient failure reading
+      // feature flags, geolocation, deriving the address, or configuring the
+      // chain lands here. None of these are evidence that the user has no
+      // money account, so the surface is hidden without caching the answer.
       log('Failed to resolve money account availability', error);
       return UNAVAILABLE;
     }
@@ -143,7 +148,7 @@ export class MoneyAccountAvailabilityService {
    *
    * @returns The money account address.
    */
-  async getAddress(): Promise<Hex> {
+  async #getAddress(): Promise<Hex> {
     if (!this.#address) {
       const address = deriveMoneyAccountAddress(this.#messenger);
 
@@ -161,13 +166,15 @@ export class MoneyAccountAvailabilityService {
     return await this.#address;
   }
 
-  /**
-   * Read the `moneyEnableMoneyAccount` flag.
-   *
-   * @returns Whether the Money Account feature is enabled.
-   */
-  #isEnabled(): boolean {
-    return isMoneyAccountEnabled(this.#getRemoteFeatureFlags());
+  async #configureChain(
+    remoteFeatureFlags: Record<string, unknown> | undefined,
+  ): Promise<void> {
+    const vaultConfig = getMoneyAccountVaultConfig(remoteFeatureFlags);
+    if (!vaultConfig) {
+      throw new Error('Money Account vault configuration is unavailable');
+    }
+
+    await this.#ensureChainConfigured(vaultConfig);
   }
 
   /**
@@ -175,24 +182,18 @@ export class MoneyAccountAvailabilityService {
    *
    * Fail-closed: unknown, empty, or failed geolocation is treated as blocked.
    *
+   * @param remoteFeatureFlags - The current remote feature flags.
    * @returns Whether the user is geo-eligible.
    */
-  async #isGeoEligible(): Promise<boolean> {
-    const blockedCountries = getMoneyAccountGeoBlockedCountries(
-      this.#getRemoteFeatureFlags(),
-    );
+  async #isGeoEligible(
+    remoteFeatureFlags: Record<string, unknown> | undefined,
+  ): Promise<boolean> {
+    const blockedCountries =
+      getMoneyAccountGeoBlockedCountries(remoteFeatureFlags);
     const location = await this.#messenger.call(
       'GeolocationController:getGeolocation',
     );
 
     return isMoneyAccountGeoEligible(location, blockedCountries);
-  }
-
-  #getRemoteFeatureFlags(): Record<string, unknown> {
-    const { remoteFeatureFlags } = this.#messenger.call(
-      'RemoteFeatureFlagController:getState',
-    );
-
-    return remoteFeatureFlags;
   }
 }

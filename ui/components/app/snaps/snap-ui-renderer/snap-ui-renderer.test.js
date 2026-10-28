@@ -130,13 +130,13 @@ describe('SnapUIRenderer', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       1,
-      'updateInterfaceState',
+      'SnapInterfaceController:updateInterfaceState',
       [MOCK_INTERFACE_ID, { input: 'a' }],
     );
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       2,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -180,7 +180,9 @@ describe('SnapUIRenderer', () => {
     } = renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     const input = getByRole('textbox');
-    input.focus();
+    act(() => {
+      input.focus();
+    });
     expect(input).toHaveFocus();
 
     await act(async () => {

@@ -17,8 +17,10 @@ import type { WebSocketMessageMock } from '../../../websocket/types';
 import {
   buildSubscribedConfirmation,
   buildWsPostResponse,
+  getCurrentClearinghouseState,
   parseWsPost,
   setPendingUserFills,
+  setPushedClearinghouseState,
 } from './websocketDefaultMocks';
 
 /**
@@ -55,8 +57,13 @@ const FUNDED_CLEARING_HOUSE_STATE = {
  *
  * `marginUsed` must exceed notional/leverage (7125/3 = 2375) so the UI allows removing margin
  * (`calculateMaxRemovableMargin` in usePerpsMarginCalculations); otherwise "Available to subtract" is $0.
+ *
+ * Exported so the REST `clearinghouseState` mock can serve the same account as this
+ * subscription. perps-controller 15.1.0 reads positions from the current-connection DEX
+ * slice *or* an HTTP read and never merges the two, so a REST response that disagrees
+ * with the stream makes symbol operations fail.
  */
-const ETH_LONG_CLEARING_HOUSE_STATE = {
+export const ETH_LONG_CLEARING_HOUSE_STATE = {
   ...FUNDED_CLEARING_HOUSE_STATE,
   marginSummary: {
     ...FUNDED_CLEARING_HOUSE_STATE.marginSummary,
@@ -108,14 +115,16 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"clearinghouseState"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: {
+    dynamicFollowUp: () => ({
       channel: 'clearinghouseState',
       data: {
-        clearinghouseState: ETH_LONG_CLEARING_HOUSE_STATE,
+        clearinghouseState: getCurrentClearinghouseState(
+          ETH_LONG_CLEARING_HOUSE_STATE,
+        ),
         dex: '',
         user: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       },
-    },
+    }),
     followUpDelay: 50,
     delay: 50,
     logMessage:
@@ -124,10 +133,12 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData2"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: {
+    dynamicFollowUp: () => ({
       channel: 'webData2',
       data: {
-        clearinghouseState: ETH_LONG_CLEARING_HOUSE_STATE,
+        clearinghouseState: getCurrentClearinghouseState(
+          ETH_LONG_CLEARING_HOUSE_STATE,
+        ),
         openOrders: [],
         frontendOpenOrders: [],
         fills: [],
@@ -135,7 +146,7 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
         userNonFundingLedgerUpdates: [],
         serverTime: 0,
       },
-    },
+    }),
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Perps ETH long mock: webData2 with ETH position',
@@ -143,12 +154,14 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"webData3"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: {
+    dynamicFollowUp: () => ({
       channel: 'webData3',
       data: {
         perpDexStates: [
           {
-            clearinghouseState: ETH_LONG_CLEARING_HOUSE_STATE,
+            clearinghouseState: getCurrentClearinghouseState(
+              ETH_LONG_CLEARING_HOUSE_STATE,
+            ),
             openOrders: [],
             frontendOpenOrders: [],
             fills: [],
@@ -159,7 +172,7 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
           },
         ],
       },
-    },
+    }),
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Perps ETH long mock: webData3 with ETH position',
@@ -169,7 +182,11 @@ export const WS_USER_WITH_ETH_LONG_POSITION: WebSocketMessageMock[] = [
     dynamicResponse: (message: string) => {
       const req = parseWsPost(message);
       return req
-        ? buildWsPostResponse(req.id, req.type, ETH_LONG_CLEARING_HOUSE_STATE)
+        ? buildWsPostResponse(
+            req.id,
+            req.type,
+            getCurrentClearinghouseState(ETH_LONG_CLEARING_HOUSE_STATE),
+          )
         : null;
     },
     delay: 50,
@@ -479,6 +496,7 @@ export function pushPositionUpdate(
   // navigation (e.g. order entry unmount → market detail remount) those counts
   // can briefly be zero, so a single broadcast is dropped. Re-send on a short
   // schedule so tests reliably observe the simulated fill after UI re-subscribes.
+  setPushedClearinghouseState(stateWithPosition);
   const broadcast = () => {
     server.sendMessage(
       JSON.stringify({
@@ -538,6 +556,7 @@ export function pushPositionClosed(
     time: Date.now(),
   };
 
+  setPushedClearinghouseState(emptyState);
   const broadcast = () => {
     server.sendMessage(
       JSON.stringify({

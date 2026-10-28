@@ -6,7 +6,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';
@@ -59,7 +59,9 @@ describe('Address Book', function (this: Suite) {
           amount: '2',
         });
 
-        await new TransactionConfirmation(driver).clickFooterConfirmButton();
+        await new TransactionConfirmation(driver).clickFooterButton({
+          button: 'confirm',
+        });
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
@@ -113,7 +115,7 @@ describe('Address Book', function (this: Suite) {
 
         const confirmation = new TransactionConfirmation(driver);
         await confirmation.waitForReviewAlertToDisappear();
-        await confirmation.clickFooterConfirmButton();
+        await confirmation.clickFooterButton({ button: 'confirm' });
 
         // Select Linea to check the Activity list
         const networkSelector = new SelectNetworkModal(driver);

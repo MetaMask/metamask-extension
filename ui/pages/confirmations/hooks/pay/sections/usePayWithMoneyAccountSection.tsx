@@ -6,8 +6,11 @@ import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { selectPrimaryMoneyAccount } from '../../../../../selectors/money-account';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyMoneyAccountOverride } from '../../../utils/transaction-pay';
 import type { PayWithSectionConfig } from '../../../components/modals/pay-with-modal/pay-with-modal.types';
@@ -15,9 +18,6 @@ import type { PayWithSectionConfig } from '../../../components/modals/pay-with-m
 export const PAY_WITH_MONEY_ACCOUNT_SECTION_TEST_ID =
   'pay-with-section-money-account';
 export const PAY_WITH_MONEY_ACCOUNT_ROW_TEST_ID = 'pay-with-money-account-row';
-
-/** Temporary placeholder until Money account balance wiring lands. */
-export const MONEY_ACCOUNT_DUMMY_BALANCE_FIAT = '$7.05';
 
 type UsePayWithMoneyAccountSectionArgs = {
   onClose: () => void;
@@ -29,10 +29,14 @@ export function usePayWithMoneyAccountSection({
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
-  const transactionType = currentConfirmation?.type;
+  const transactionType = getConfirmationTransactionType(currentConfirmation);
+  const primaryMoneyAccount = useSelector(selectPrimaryMoneyAccount);
 
   const isEnabled = useSelector((state) =>
     selectIsMoneyAccountTransactionEnabled(state, transactionType),
+  );
+  const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
+    Boolean(isEnabled && primaryMoneyAccount),
   );
 
   const paymentOverride = useSelector((state: TransactionPayState) =>
@@ -45,14 +49,27 @@ export function usePayWithMoneyAccountSection({
     if (!transactionId) {
       return;
     }
-    applyMoneyAccountOverride(transactionId, undefined, currentConfirmation);
+    applyMoneyAccountOverride(
+      transactionId,
+      primaryMoneyAccount?.address,
+      currentConfirmation,
+    );
     onClose();
-  }, [currentConfirmation, onClose, transactionId]);
+  }, [
+    currentConfirmation,
+    onClose,
+    primaryMoneyAccount?.address,
+    transactionId,
+  ]);
 
   return useMemo(() => {
-    if (!isEnabled) {
+    if (!isEnabled || !primaryMoneyAccount) {
       return null;
     }
+
+    const subtitle = withdrawableFiatFormatted
+      ? `${withdrawableFiatFormatted} ${t('available')}`
+      : undefined;
 
     return {
       id: 'money-account',
@@ -71,7 +88,7 @@ export function usePayWithMoneyAccountSection({
             />
           ),
           title: t('payWithMoneyAccount'),
-          subtitle: `${MONEY_ACCOUNT_DUMMY_BALANCE_FIAT} ${t('available')}`,
+          subtitle,
           isSelected: isMoneyAccountSelected,
           trailingElement: isMoneyAccountSelected ? 'checkmark' : 'none',
           onPress: handlePress,
@@ -79,5 +96,12 @@ export function usePayWithMoneyAccountSection({
         },
       ],
     };
-  }, [handlePress, isEnabled, isMoneyAccountSelected, t]);
+  }, [
+    handlePress,
+    isEnabled,
+    isMoneyAccountSelected,
+    primaryMoneyAccount,
+    t,
+    withdrawableFiatFormatted,
+  ]);
 }

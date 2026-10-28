@@ -45,7 +45,7 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   Dropdown,
   type DropdownOption,
-} from './market-list/components/dropdown';
+} from '../../components/app/perps/dropdown';
 
 const ACTIVITY_FILTERS: PerpsTransactionFilter[] = [
   'trade',

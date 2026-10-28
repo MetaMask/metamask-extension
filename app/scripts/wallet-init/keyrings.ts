@@ -17,6 +17,10 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
+import {
+  buildMoneyKeyringBuilder,
+  buildMoneyKeyringV2Builder,
+} from '../lib/money/money-keyring-builder';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { TrezorMv2Bridge } from '../lib/offscreen-bridge/trezor-mv2-bridge';
@@ -30,6 +34,7 @@ import {
   RootMessengerActions,
   RootMessengerEvents,
 } from '../lib/messenger';
+import { getMoneyKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/money-keyring-builder-messenger';
 import { getSnapKeyringBuilderMessenger } from '../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
 import {
   getSnapKeyringV2BuilderMessenger,
@@ -101,6 +106,7 @@ export function getKeyringV2Builders(): KeyringV2Builder[] {
     buildHardwareV2Builder(QrKeyringV2, QrKeyring.type),
     buildHardwareV2Builder(TrezorKeyringV2, TrezorKeyring.type),
     buildHardwareV2Builder(OneKeyKeyringV2, OneKeyKeyring.type),
+    buildMoneyKeyringV2Builder(),
     // The v2 Snap keyring is registered via `SnapKeyringV1Adapter`, which owns the
     // inner `SnapKeyring` (v2) instance and exposes a proper v1-compatible face for
     // KeyringController vault management. The same inner instance is retrieved via
@@ -179,6 +185,13 @@ export function getKeyringBuilders(
       keyringBuilderFactory(LatticeKeyringOffscreen as unknown as KeyringClass),
     );
   }
+
+  // Registered unconditionally, not behind the Money feature flag, so the
+  // `KeyringController` can always recognise the Money keyring type while
+  // deserializing the vault. See `buildMoneyKeyringBuilder`.
+  keyrings.push(
+    buildMoneyKeyringBuilder(getMoneyKeyringBuilderMessenger(messenger)),
+  );
 
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   keyrings.push(snapKeyringBuilder(getSnapKeyringBuilderMessenger(messenger)));

@@ -18,6 +18,10 @@ class PreinstalledExampleSettings {
 
   private readonly settingsDropdown = '[data-testid="snaps-dropdown"]';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly settingsPageTitle = {
     text: 'Preferences and display',
     tag: 'p',
@@ -42,6 +46,7 @@ class PreinstalledExampleSettings {
     try {
       await this.driver.waitForMultipleSelectors([
         this.snapRenderPanel,
+        this.settingsPage,
         this.settingsPageTitle,
       ]);
     } catch (e) {

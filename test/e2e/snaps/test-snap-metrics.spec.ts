@@ -21,7 +21,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import HomePage from '../page-objects/pages/home/homepage';
-import SnapListPage from '../page-objects/pages/snap-list-page';
+import SnapListPage from '../page-objects/pages/snaps/list-page';
 import packageJson from '../../../package.json';
 
 async function mockedSnapInstall(mockServer: Mockttp) {
@@ -149,7 +149,7 @@ describe('Test Snap Metrics', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -226,7 +226,7 @@ describe('Test Snap Metrics', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -297,7 +297,7 @@ describe('Test Snap Metrics', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -365,7 +365,7 @@ describe('Test Snap Metrics', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -389,6 +389,7 @@ describe('Test Snap Metrics', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
+          { snapId: 'npm:@metamask/notification-example-snap' },
         );
 
         await driver.switchToWindowWithTitle(
@@ -433,7 +434,7 @@ describe('Test Snap Metrics', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -455,12 +456,9 @@ describe('Test Snap Metrics', function () {
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
 
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
-          'Reconnect to Update Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
+          expectedMessage: 'Reconnect to Update Snap',
+        });
 
         await testSnaps.scrollAndClickButton('connectUpdateNewButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -515,7 +513,7 @@ describe('Test Snap Metrics', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -539,12 +537,9 @@ describe('Test Snap Metrics', function () {
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
 
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
-          'Reconnect to Update Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
+          expectedMessage: 'Reconnect to Update Snap',
+        });
 
         await testSnaps.scrollAndClickButton('connectUpdateNewButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -596,7 +591,7 @@ describe('Test Snap Metrics', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -619,12 +614,9 @@ describe('Test Snap Metrics', function () {
       }) => {
         await login(driver);
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
-          'Reconnect to Update Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
+          expectedMessage: 'Reconnect to Update Snap',
+        });
 
         await testSnaps.scrollAndClickButton('connectUpdateNewButton');
         await driver.delay(1000);

@@ -46,4 +46,5 @@ export const broadcastBitcoinSend = async ({
 
   const txToast = new TxToastNotification(driver);
   await txToast.checkTxSubmittedToast();
+  await txToast.closeToastNotification();
 };

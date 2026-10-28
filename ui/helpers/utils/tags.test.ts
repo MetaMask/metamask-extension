@@ -10,7 +10,9 @@ jest.mock('../../../shared/lib/environment-type', () => ({
 
 const STATE_EMPTY_MOCK = {
   metamask: {
-    allTokens: {},
+    assetsInfo: {},
+    assetsBalance: {},
+    customAssets: {},
     internalAccounts: {
       accounts: {},
     },
@@ -19,7 +21,9 @@ const STATE_EMPTY_MOCK = {
 } as unknown as MetaMaskReduxState;
 
 function createMockState(
-  metamaskState: Partial<MetaMaskReduxState['metamask']>,
+  // AssetsController fields used below are not yet on FlattenedBackgroundStateProxy.
+  metamaskState: Partial<MetaMaskReduxState['metamask']> &
+    Record<string, unknown>,
 ): MetaMaskReduxState {
   return {
     ...STATE_EMPTY_MOCK,
@@ -161,16 +165,67 @@ describe('Tags Utils', () => {
     });
 
     it('includes token count', () => {
+      const account1 = 'account-1';
+      const account2 = 'account-2';
+      const account3 = 'account-3';
+      const tokenIds = [
+        'eip155:1/erc20:0x0000000000000000000000000000000000000001',
+        'eip155:1/erc20:0x0000000000000000000000000000000000000002',
+        'eip155:1/erc20:0x0000000000000000000000000000000000000003',
+        'eip155:2/erc20:0x0000000000000000000000000000000000000004',
+      ] as const;
+
       const state = createMockState({
-        allTokens: {
-          '0x1': {
-            '0x1234': [{}, {}],
-            '0x4321': [{}],
+        internalAccounts: {
+          accounts: {
+            [account1]: {
+              id: account1,
+              address: '0x1234',
+              type: 'eip155:eoa',
+            },
+            [account2]: {
+              id: account2,
+              address: '0x4321',
+              type: 'eip155:eoa',
+            },
+            [account3]: {
+              id: account3,
+              address: '0x5678',
+              type: 'eip155:eoa',
+            },
           },
-          '0x2': {
-            '0x5678': [{}],
+        } as unknown as MetaMaskReduxState['metamask']['internalAccounts'],
+        assetsInfo: {
+          [tokenIds[0]]: {
+            type: 'erc20',
+            name: 'Token 1',
+            symbol: 'T1',
+            decimals: 18,
           },
-        } as unknown as MetaMaskReduxState['metamask']['allTokens'],
+          [tokenIds[1]]: {
+            type: 'erc20',
+            name: 'Token 2',
+            symbol: 'T2',
+            decimals: 18,
+          },
+          [tokenIds[2]]: {
+            type: 'erc20',
+            name: 'Token 3',
+            symbol: 'T3',
+            decimals: 18,
+          },
+          [tokenIds[3]]: {
+            type: 'erc20',
+            name: 'Token 4',
+            symbol: 'T4',
+            decimals: 18,
+          },
+        },
+        customAssets: {
+          [account1]: [tokenIds[0], tokenIds[1]],
+          [account2]: [tokenIds[2]],
+          [account3]: [tokenIds[3]],
+        },
       });
 
       const tags = getStartupTraceTags(state);

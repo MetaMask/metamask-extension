@@ -83,7 +83,7 @@ export function Row({
 
   return (
     <div
-      className="flex items-start justify-between gap-4 py-2"
+      className="flex items-center justify-between gap-4 min-h-8"
       data-testid={testId}
     >
       <Text
@@ -104,7 +104,11 @@ export function Row({
 }
 
 export function Section({ children }: Readonly<{ children: ReactNode }>) {
-  return <section className="py-2 empty:hidden">{children}</section>;
+  return (
+    <section className="flex flex-col gap-2 py-2 empty:hidden">
+      {children}
+    </section>
+  );
 }
 
 export function Footer({ children }: Readonly<{ children: ReactNode }>) {

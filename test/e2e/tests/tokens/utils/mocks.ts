@@ -1,7 +1,9 @@
 import { Mockttp } from 'mockttp';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../../constants';
+import { v6AccountsApiBalancesJson } from '../../../helpers/accounts-api-v6-balances';
 
+const ACCOUNTS_API_URL = 'https://accounts.api.cx.metamask.io';
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 const TOKENS_API_URL = 'https://tokens.api.cx.metamask.io';
 const TOKEN_API_URL = 'https://token.api.cx.metamask.io';
@@ -12,9 +14,9 @@ const NATIVE_ASSET_ID_BY_CHAIN_ID: Record<number, string> = {
 
 /**
  * The ETH-to-USD conversion rate used by {@link mockPriceApi}.
- * Fixtures that rely on this mock must seed CurrencyController with the same
- * value to avoid race conditions between the initial render and the mock
- * response arriving.
+ * Fixtures that rely on this mock must seed `AssetsController.assetsPrice`
+ * with the same value to avoid race conditions between the initial render and
+ * the mock response arriving.
  */
 export const MOCK_ETH_CONVERSION_RATE = 3401;
 
@@ -102,6 +104,9 @@ export async function mockTokenMetadataApis(
                   name: token.name,
                   symbol: token.symbol,
                   decimals: token.decimals,
+                  // TokenDataSource treats missing occurrences as 0 and drops
+                  // ERC-20s below the chain floor (mainnet default 3).
+                  occurrences: 100,
                 })),
             ];
 
@@ -139,52 +144,57 @@ export async function mockTokenMetadataApis(
     ),
   );
 
-  const accountBalancesMock = await mockServer
-    .forGet(
-      `${TOKEN_API_URL.replace('token.api', 'accounts.api')}/v4/multiaccount/balances`,
-    )
-    .always()
-    .thenCallback((request) => {
-      const url = new URL(request.url);
-      const accountAddressesParam =
-        url.searchParams.get('accountAddresses') ?? '';
-      const accountAddresses = accountAddressesParam
-        .split(',')
-        .map((accountAddress) => accountAddress.trim())
-        .filter(Boolean);
+  const accountBalancesMocks = await Promise.all(
+    ['v5', 'v6'].map((version) =>
+      mockServer
+        .forGet(`${ACCOUNTS_API_URL}/${version}/multiaccount/balances`)
+        .always()
+        .thenCallback((request) => {
+          const accountIds = (
+            new URL(request.url).searchParams.get('accountIds') ?? ''
+          )
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean);
+          const uniqueChainIds = [
+            ...new Set(normalizedTokens.map((token) => token.chainId)),
+          ];
+          const balances = accountIds.flatMap((accountId) => {
+            const chainRef = accountId.split(':')[1];
+            return [
+              ...uniqueChainIds
+                .filter((chainId) => String(chainId) === chainRef)
+                .map((chainId) => NATIVE_ASSET_ID_BY_CHAIN_ID[chainId])
+                .filter(Boolean)
+                .map((assetId) => ({
+                  accountId,
+                  assetId,
+                  balance: '25',
+                })),
+              ...normalizedTokens
+                .filter((token) => String(token.chainId) === chainRef)
+                .map((token) => ({
+                  accountId,
+                  assetId: `eip155:${token.chainId}/erc20:${token.address}`,
+                  balance: token.balance ?? '0',
+                })),
+            ];
+          });
+          if (version === 'v6') {
+            return {
+              statusCode: 200,
+              json: v6AccountsApiBalancesJson(request.url, balances),
+            };
+          }
+          return {
+            statusCode: 200,
+            json: { count: balances.length, balances, unprocessedNetworks: [] },
+          };
+        }),
+    ),
+  );
 
-      const chainIds = [
-        ...new Set(normalizedTokens.map((token) => token.chainId)),
-      ];
-      const balances = accountAddresses.flatMap((accountId) => [
-        ...chainIds
-          .map((chainId) => NATIVE_ASSET_ID_BY_CHAIN_ID[chainId])
-          .filter(Boolean)
-          .map((assetId) => ({
-            accountId,
-            accountAddress: accountId,
-            assetId,
-            balance: '25',
-          })),
-        ...normalizedTokens.map((token) => ({
-          accountId,
-          accountAddress: accountId,
-          assetId: `eip155:${token.chainId}/erc20:${token.address}`,
-          balance: token.balance ?? '0',
-        })),
-      ]);
-
-      return {
-        statusCode: 200,
-        json: {
-          count: balances.length,
-          balances,
-          unprocessedNetworks: [],
-        },
-      };
-    });
-
-  return [...assetsV3Mock, ...tokenListMocks, accountBalancesMock];
+  return [...assetsV3Mock, ...tokenListMocks, ...accountBalancesMocks];
 }
 
 export const mockEmptyHistoricalPrices = async (
@@ -382,6 +392,10 @@ export const getMockAssetsPrice = (
   'eip155:59144/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:8453/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:42161/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:11155111/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  // AC 15 stores some testnet natives under the zero-address ERC-20 alias.
+  'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
+    ETH_ASSET_PRICE_ENTRY(ethConversionRate),
 });
 
 export const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';

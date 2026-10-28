@@ -32,8 +32,136 @@ import {
   getProviderConfig,
   getNetworkConfigurationsByChainId,
 } from '../../../../../shared/lib/selectors/networks';
-import type { ExtensionState } from '../launcher-types';
-import { HomePage } from '../page-objects/home-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import LoginPage from '../../../page-objects/pages/onboarding/login-page';
+import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
+import OnboardingMetricsPage from '../../../page-objects/pages/onboarding/onboarding-metrics-page';
+import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboarding-password-page';
+import OnboardingPrivacySettingsPage from '../../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
+import OnboardingSrpPage from '../../../page-objects/pages/onboarding/onboarding-srp-page';
+import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import type { Driver } from '../../../webdriver/driver';
+import { getE2EDriver, withTimeout } from '../e2e-driver';
+import type { ExtensionState, ScreenName } from '../launcher-types';
+
+const SCREEN_PROBE_TIMEOUT_MS = 2_000;
+const BALANCE_TIMEOUT_MS = 2_000;
+
+export type ScreenCheck = {
+  screen: ScreenName;
+  description: string;
+  check: (driver: Driver) => Promise<void>;
+};
+
+/**
+ * Screens recognised from the DOM, each by its e2e page object's own load
+ * assertion, so a UI change that breaks one also fails the e2e suite.
+ */
+export const SCREEN_CHECKS: ScreenCheck[] = [
+  {
+    screen: 'unlock',
+    description: 'unlock page',
+    check: (driver) => new LoginPage(driver).checkPageIsLoaded(),
+  },
+  {
+    screen: 'onboarding-welcome',
+    description: 'onboarding welcome page',
+    check: (driver) => new StartOnboardingPage(driver).checkLoginPageIsLoaded(),
+  },
+  {
+    screen: 'home',
+    description: 'home page',
+    check: (driver) => new HomePage(driver).checkPageIsLoaded(),
+  },
+  {
+    screen: 'onboarding-srp',
+    description: 'secret recovery phrase page',
+    check: (driver) => new OnboardingSrpPage(driver).checkPageIsLoaded(),
+  },
+  {
+    screen: 'onboarding-password',
+    description: 'create password page',
+    check: (driver) => new OnboardingPasswordPage(driver).checkPageIsLoaded(),
+  },
+  {
+    screen: 'onboarding-complete',
+    description: 'onboarding complete page',
+    check: (driver) => new OnboardingCompletePage(driver).checkPageIsLoaded(),
+  },
+  {
+    screen: 'onboarding-metametrics',
+    description: 'metametrics page',
+    check: (driver) => new OnboardingMetricsPage(driver).checkPageIsLoaded(),
+  },
+  {
+    screen: 'onboarding-privacy',
+    description: 'privacy settings page',
+    check: (driver) =>
+      new OnboardingPrivacySettingsPage(driver).checkPageIsLoaded(),
+  },
+  {
+    screen: 'settings',
+    description: 'settings page',
+    check: (driver) => new SettingsPage(driver).checkPageIsLoaded(),
+  },
+];
+
+const LAUNCH_SCREENS: ScreenName[] = ['unlock', 'onboarding-welcome', 'home'];
+
+/** Screens the extension can open on after launch. */
+export const LAUNCH_SCREEN_CHECKS: ScreenCheck[] = SCREEN_CHECKS.filter(
+  ({ screen }) => LAUNCH_SCREENS.includes(screen),
+);
+
+/**
+ * Resolves with the first screen whose check passes. Rejects only when every
+ * check fails.
+ *
+ * @param driver - The e2e driver bound to the page.
+ * @param checks - The candidate screens.
+ * @returns The screen that was reached.
+ */
+export async function waitForAnyScreen(
+  driver: Driver,
+  checks: ScreenCheck[],
+): Promise<ScreenCheck> {
+  return await Promise.any(
+    checks.map(async (screenCheck) => {
+      await screenCheck.check(driver);
+      return screenCheck;
+    }),
+  );
+}
+
+// Some page objects use their own longer waits, so the probe is capped here
+// rather than through the driver timeout alone.
+async function detectScreenFromPageObjects(
+  page: Page,
+): Promise<ExtensionState['currentScreen']> {
+  const handles: { timer?: ReturnType<typeof setTimeout> } = {};
+  const giveUp = new Promise<ScreenName>((resolve) => {
+    handles.timer = setTimeout(
+      () => resolve('unknown'),
+      SCREEN_PROBE_TIMEOUT_MS,
+    );
+  });
+  try {
+    return await Promise.race([
+      waitForAnyScreen(
+        withTimeout(getE2EDriver(page), SCREEN_PROBE_TIMEOUT_MS),
+        SCREEN_CHECKS,
+      ).then(
+        ({ screen }) => screen,
+        (): ScreenName => 'unknown',
+      ),
+      giveUp,
+    ]);
+  } finally {
+    clearTimeout(handles.timer);
+  }
+}
 
 const UNLOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
   'home',
@@ -73,51 +201,7 @@ export async function detectCurrentScreen(
     return urlScreenMatch;
   }
 
-  const screenSelectors: {
-    screen: ExtensionState['currentScreen'];
-    selector: string;
-  }[] = [
-    { screen: 'unlock', selector: '[data-testid="unlock-password"]' },
-    { screen: 'home', selector: '[data-testid="account-menu-icon"]' },
-    { screen: 'onboarding-welcome', selector: '[data-testid="get-started"]' },
-    {
-      screen: 'onboarding-import',
-      selector: '[data-testid="onboarding-import-wallet"]',
-    },
-    {
-      screen: 'onboarding-create',
-      selector: '[data-testid="onboarding-create-wallet"]',
-    },
-    {
-      screen: 'onboarding-srp',
-      selector: '[data-testid="srp-input-import__srp-note"]',
-    },
-    {
-      screen: 'onboarding-password',
-      selector: '[data-testid="create-password-new-input"]',
-    },
-    {
-      screen: 'onboarding-complete',
-      selector: '[data-testid="onboarding-complete-done"]',
-    },
-    {
-      screen: 'onboarding-metametrics',
-      selector: '[data-testid="metametrics-i-agree"]',
-    },
-    { screen: 'settings', selector: '[data-testid="settings-page"]' },
-  ];
-
-  for (const { screen, selector } of screenSelectors) {
-    const isVisible = await page
-      .locator(selector)
-      .isVisible({ timeout: 200 })
-      .catch(() => false);
-    if (isVisible) {
-      return screen;
-    }
-  }
-
-  return 'unknown';
+  return await detectScreenFromPageObjects(page);
 }
 
 export function detectScreenFromUrl(
@@ -237,10 +321,14 @@ export async function detectUnlockState(
     return false;
   }
 
-  return page
-    .locator('[data-testid="account-menu-icon"]')
-    .isVisible()
-    .catch(() => false);
+  return await new HeaderNavbar(
+    withTimeout(getE2EDriver(page), SCREEN_PROBE_TIMEOUT_MS),
+  )
+    .checkPageIsLoaded()
+    .then(
+      () => true,
+      () => false,
+    );
 }
 
 // Fetches the raw metamask Redux state via stateHooks. Uses CDP
@@ -360,8 +448,10 @@ export async function getBaseExtensionState(
   // Balance remains DOM-based (home screen only) pending a separate
   // investigation into extracting it from Redux state.
   if (isUnlocked && currentScreen === 'home') {
-    const homePage = new HomePage(page);
-    balance = (await homePage.getBalance()) || null;
+    balance =
+      (await new HomePage(getE2EDriver(page))
+        .getBalance(BALANCE_TIMEOUT_MS)
+        .catch(() => '')) || null;
   }
 
   return {

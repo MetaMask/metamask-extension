@@ -58,8 +58,9 @@ const IMAGE_SOURCES = {
   ARBITRUM: './images/arbitrum.svg',
 } as const;
 
+// MMDS AvatarNetwork falls back to 'Network logo' when no name is provided
 const ALT_TEXTS = {
-  NETWORK_LOGO: 'network logo',
+  NETWORK_LOGO: 'Network logo',
 } as const;
 
 const createTestProps = (

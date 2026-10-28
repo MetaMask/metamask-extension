@@ -3,39 +3,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@metamask/react-data-query';
-import { MUSD_DECIMALS } from '@metamask/money-account-utils';
 import type {
   CanonicalMoneyAccountBalanceResponse,
   NormalizedVaultApyResponse,
 } from '@metamask/money-account-balance-service';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
+import { MUSD_UNIT } from '../../../shared/lib/money/withdrawable-balance';
 import { moneyFormatUsd } from '../../helpers/money/format';
+import { projectVmusdValueInMusdToHuman } from '../../helpers/money/withdrawable-balance';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
+import {
+  clearReportedMoneyQueryError,
+  reportMoneyQueryErrorOnce,
+} from '../../helpers/money/report-money-error';
 import { setLastKnownMoneyBalance } from '../../ducks/money-balance';
 import {
   isPersistedMoneyBalanceUsable,
   selectLastKnownMoneyBalance,
 } from '../../ducks/money-balance/selectors';
-import { selectMoneyVaultApyRemoteConfig } from '../../selectors/money/money-account-feature-flags';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
+import { useMoneyVaultApy } from './useMoneyVaultApy';
 
 const DEFAULT_REFETCH_INTERVAL = 30 * 1000; // 30 seconds
-const FIVE_MINUTES_MS = 5 * 60 * 1000;
-
-/** Percentage points per unit of a decimal rate. */
-const PERCENT = 100;
-
-/** Decimal places the APY percentage is presented to. */
-const APY_PERCENT_DP = 1;
-
-/**
- * The unit scale of an mUSD minimal unit, as a divisor.
- *
- * `dividedBy(10 ** MUSD_DECIMALS)` rather than mobile's `shiftedBy(-n)`:
- * `shiftedBy` does not exist in the `bignumber.js@4` this repo pins, and would
- * fail as a `TypeError` at runtime.
- */
-const MUSD_UNIT = 10 ** MUSD_DECIMALS;
 
 export type UseMoneyAccountBalanceResult = {
   moneyBalanceQuery: UseQueryResult<CanonicalMoneyAccountBalanceResponse>;
@@ -85,9 +74,6 @@ export function useMoneyAccountBalance({
   const moneyAccountAddress = primaryMoneyAccount?.address;
 
   const lastKnownBalance = useSelector(selectLastKnownMoneyBalance);
-  const { vaultApyFallback, vaultApyOverride } = useSelector(
-    selectMoneyVaultApyRemoteConfig,
-  );
 
   const hasAddress = Boolean(moneyAccountAddress);
 
@@ -103,11 +89,8 @@ export function useMoneyAccountBalance({
     refetchInterval,
   });
 
-  const vaultApyQuery = useQuery<NormalizedVaultApyResponse>({
-    queryKey: [MoneyAccountBalanceServiceQueryKeys.GET_VAULT_APY],
-    enabled: enabled && hasAddress,
-    refetchInterval: FIVE_MINUTES_MS,
-  });
+  const { vaultApyQuery, apyDecimal, apyPercent, apyPercentFormatted } =
+    useMoneyVaultApy({ enabled: enabled && hasAddress });
 
   /**
    * True while the balance query is loading with no cached data (even if stale).
@@ -120,6 +103,19 @@ export function useMoneyAccountBalance({
   const balanceSource = moneyBalanceQuery.data?.source;
   const usedFallback = moneyBalanceQuery.data?.usedFallback === true;
   const isBalanceDegraded = usedFallback;
+
+  useEffect(() => {
+    if (!moneyBalanceQuery.isError) {
+      clearReportedMoneyQueryError('fetchBalanceWithFallback');
+      return;
+    }
+    reportMoneyQueryErrorOnce(
+      'fetchBalanceWithFallback',
+      '[Money Account] Balance fetch failed',
+      moneyBalanceQuery.error,
+      { query: 'fetchBalanceWithFallback' },
+    );
+  }, [moneyBalanceQuery.error, moneyBalanceQuery.isError]);
 
   const refetchBalance = useCallback(
     () =>
@@ -139,11 +135,10 @@ export function useMoneyAccountBalance({
         : new BigNumber(0);
 
       // the withdrawable amount.
-      const vmusdDecimal = moneyBalanceQuery.data?.vmusdValueInMusd
-        ? new BigNumber(moneyBalanceQuery.data.vmusdValueInMusd).dividedBy(
-            MUSD_UNIT,
-          )
-        : new BigNumber(0);
+      const vmusdDecimal =
+        projectVmusdValueInMusdToHuman(
+          moneyBalanceQuery.data?.vmusdValueInMusd,
+        ) ?? new BigNumber(0);
 
       // Undefined while loading or on error so callers can distinguish from a genuine zero.
       const computedWithdrawableMusd =
@@ -218,27 +213,6 @@ export function useMoneyAccountBalance({
   )
     ? lastKnownBalance.value
     : undefined;
-
-  const serviceApy = vaultApyQuery.data?.apy;
-
-  // Override always wins when set; otherwise use the live service value, then
-  // the configured fallback so projected earnings remain available on load.
-  const apyDecimal = vaultApyOverride ?? serviceApy ?? vaultApyFallback;
-
-  const apyPercent =
-    apyDecimal === undefined
-      ? undefined
-      : new BigNumber(apyDecimal.toString())
-          .times(PERCENT)
-          // `round(dp, rm)`, not mobile's `dp(dp, rm)`: in `bignumber.js@4`
-          // `decimalPlaces`/`dp` is a getter that ignores both arguments and
-          // returns the decimal-place *count* — it would silently yield a
-          // nonsense percentage rather than failing.
-          .round(APY_PERCENT_DP, BigNumber.ROUND_HALF_UP)
-          .toNumber();
-
-  const apyPercentFormatted =
-    apyPercent === undefined ? undefined : `${apyPercent}%`;
 
   return {
     moneyBalanceQuery,

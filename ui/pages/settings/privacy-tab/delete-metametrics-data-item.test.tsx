@@ -7,7 +7,7 @@ import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics
 import {
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
@@ -39,7 +39,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   const mockSelectorsDefault = () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -74,7 +74,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('button is disabled when metametrics is not enabled', () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -94,7 +94,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('button is disabled when analyticsId is null', () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -134,7 +134,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('opens deletion in progress modal when deletion was requested this session', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -177,7 +177,7 @@ describe('DeleteMetametricsDataItem', () => {
 
   it('opens delete modal when revisiting after a previous deletion request', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {

@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "ಗ್ಯಾಸ್ ಮಿತಿ"
   },
-  "gasLimitTooLow": {
-    "message": "ಗ್ಯಾಸ್ ಮಿತಿಯು ಕನಿಷ್ಟ 21000 ಆಗಿರಬೇಕು"
-  },
   "gasUsed": {
     "message": "ಗ್ಯಾಸ್ ಬಳಸಲಾಗಿದೆ"
   },
@@ -414,9 +411,6 @@
   "privateKey": {
     "message": "ಖಾಸಗಿ ಕೀ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "ಎಚ್ಚರಿಕೆ: ಈ ಕೀಯನ್ನು ಎಂದಿಗೂ ಬಹಿರಂಗಪಡಿಸಬೇಡಿ. ನಿಮ್ಮ ಖಾಸಗಿ ಕೀಗಳನ್ನು ಹೊಂದಿರುವ ಯಾರಾದರೂ ನಿಮ್ಮ ಖಾತೆಯಲ್ಲಿರುವ ಯಾವುದೇ ಸ್ವತ್ತುಗಳನ್ನು ಕದಿಯಬಹುದು."
   },
   "privateNetwork": {
     "message": "ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"

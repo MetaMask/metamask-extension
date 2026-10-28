@@ -37,7 +37,10 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         await login(driver);
         await testDapp.openTestDappAndTriggerDeploy();
         await confirmation.clickScrollToBottomButton();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.triggerSignature(SignatureType.NFTPermit);
@@ -49,7 +52,10 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
 
         await assertInfoValues(driver);
         await confirmation.clickScrollToBottomButton();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await assertAccountDetailsMetrics(
           driver,
@@ -88,13 +94,19 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         await login(driver);
         await testDapp.openTestDappAndTriggerDeploy();
         await confirmation.clickScrollToBottomButton();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

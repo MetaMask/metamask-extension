@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getTrendingTokens, searchTokens } from '@metamask/assets-controllers';
 
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { DISCOVER_SEARCH_CHAIN_IDS } from './constants';
 import { useDiscoverCryptoSearch } from './useDiscoverCryptoSearch';
 
 jest.mock('@metamask/assets-controllers', () => ({
@@ -61,13 +62,30 @@ describe('useDiscoverCryptoSearch', () => {
 
     expect(mockGetTrendingTokens).toHaveBeenCalledWith(
       expect.objectContaining({
-        chainIds: expect.arrayContaining([MultichainNetworks.BITCOIN]),
+        chainIds: DISCOVER_SEARCH_CHAIN_IDS,
         includeTokenSecurityData: true,
       }),
     );
     expect(mockSearchTokens).not.toHaveBeenCalled();
     expect(result.current.data).toHaveLength(1);
     expect(result.current.data[0].symbol).toBe('ETH');
+  });
+
+  it('includes Stellar in trending chain IDs', async () => {
+    mockGetTrendingTokens.mockResolvedValue([]);
+
+    const { result } = renderHook(
+      () => useDiscoverCryptoSearch({ query: '' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(mockGetTrendingTokens.mock.calls[0][0].chainIds).toContain(
+      MultichainNetworks.STELLAR,
+    );
   });
 
   it('searches tokens when query is present', async () => {

@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { getTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { getMoneyAccountTransactionType } from '../../utils/confirm';
 import {
   selectBlockedPayTokens,
   type BlockedPayTokensListConfig,
@@ -12,7 +14,12 @@ import { useTransactionMetadataRequestOptional } from '../transactions/useTransa
  */
 export function useTransactionPayBlockedTokens(): BlockedPayTokensListConfig {
   const transactionMeta = useTransactionMetadataRequestOptional();
-  const transactionType = transactionMeta?.type;
+  // Prefer money-account nested type when present — deposit batches are
+  // `[approve, deposit]`, so top-level `type` is `batch` and the first nested
+  // type is the approve.
+  const transactionType =
+    getMoneyAccountTransactionType(transactionMeta) ??
+    getTransactionType(transactionMeta);
 
   return useSelector((state) => selectBlockedPayTokens(state, transactionType));
 }

@@ -76,6 +76,7 @@ const createMockState = () => {
         ...state.metamask.multichainNetworkConfigurationsByChainId,
       },
       selectedNetworkClientId: 'selectedNetworkClientId',
+      completedOnboarding: true,
       networkConfigurationsByChainId: {
         '0x1': {
           chainId: '0x1',
@@ -122,12 +123,18 @@ const addSolanaAccountToSelectedGroup = (
   ].groups[DEFAULT_ACCOUNT_GROUP_ID].accounts.push(SOLANA_ACCOUNT_ID);
 };
 
+const selectSolanaAccount = (state: ReturnType<typeof createMockState>) => {
+  addSolanaAccountToSelectedGroup(state);
+  state.metamask.internalAccounts.selectedAccount = SOLANA_ACCOUNT_ID;
+  state.metamask.completedOnboarding = true;
+};
+
 describe('NFTs options', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', async () => {
+  it('renders a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', async () => {
     const detectNftsSpy = jest.spyOn(actions, 'detectNfts');
     const checkAndUpdateAllNftsOwnershipStatusSpy = jest.spyOn(
       actions,
@@ -487,6 +494,76 @@ describe('NFTs options', () => {
     fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
 
     expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
+  });
+
+  it('shows Refresh list for non-EVM accounts on the tokens tab', async () => {
+    const state = createMockState();
+    selectSolanaAccount(state);
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(
+      <AssetListControlBar showTokensLinks />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
+
+    const refreshListButton = await findByTestId('refreshList__button');
+    expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
+    expect(await findByTestId('manageTokens__button')).toBeInTheDocument();
+  });
+
+  it('refreshes via AssetsController', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const refreshAssetsSpy = jest.spyOn(
+      actions,
+      'refreshAssetsForSelectedAccount',
+    );
+
+    const state = createMockState();
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(
+      <AssetListControlBar showTokensLinks />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
+    fireEvent.click(await findByTestId('refreshList__button'));
+
+    expect(refreshAssetsSpy).toHaveBeenCalledWith(
+      [expect.objectContaining({ id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3' })],
+      {
+        chainIds: ['eip155:1'],
+        assetTypes: ['token', 'price', 'metadata'],
+      },
+    );
+  });
+
+  it('keeps the original NFT overflow menu for non-EVM accounts', async () => {
+    const state = createMockState();
+    selectSolanaAccount(state);
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, queryByTestId } = renderWithProvider(
+      <AssetListControlBar />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('importTokens-button'));
+
+    expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
+    expect(queryByTestId('import-nfts')).not.toBeInTheDocument();
+    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
+      state: {
+        globalMenuTransition: 'forward',
+      },
+    });
   });
 
   it('shows a refresh-only menu when onRefresh is provided and import token button is hidden', async () => {

@@ -3,7 +3,6 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MultichainAccountServiceMessenger } from '@metamask/multichain-account-service';
 import {
   PreferencesControllerGetStateAction,
@@ -56,9 +55,7 @@ export function getMultichainAccountServiceMessenger(
   return serviceMessenger;
 }
 
-type AllowedInitializationActions =
-  | PreferencesControllerGetStateAction
-  | RemoteFeatureFlagControllerGetStateAction;
+type AllowedInitializationActions = PreferencesControllerGetStateAction;
 
 type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
 
@@ -90,10 +87,7 @@ export function getMultichainAccountServiceInitMessenger(
   });
   messenger.delegate({
     messenger: serviceInitMessenger,
-    actions: [
-      'PreferencesController:getState',
-      'RemoteFeatureFlagController:getState',
-    ],
+    actions: ['PreferencesController:getState'],
     events: ['PreferencesController:stateChange'],
   });
   return serviceInitMessenger;

@@ -109,7 +109,7 @@ const ChangePassword = ({
   const mustDeferPasskeyToBrowserTab =
     isPasskeyActive && isPasskeyIncompatibleWithSidepanel;
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
-  const animationEventEmitter = useRef(new EventEmitter());
+  const [animationEventEmitter] = useState(() => new EventEmitter());
   const hasDeferredPasskeyToBrowserTabRef = useRef(false);
 
   const [step, setStep] = useState(() =>
@@ -147,7 +147,7 @@ const ChangePassword = ({
     }
     return (
       <Mascot
-        animationEventEmitter={animationEventEmitter.current}
+        animationEventEmitter={animationEventEmitter}
         width="100"
         height="100"
       />

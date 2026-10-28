@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import { Skeleton } from '@metamask/design-system-react';
 import {
   Display,
@@ -13,10 +14,11 @@ import {
 import { Box, Text } from '../../../../../components/component-library';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import {
-  useIsTransactionPayLoading,
-  useTransactionPayIsMaxAmount,
-} from '../../../hooks/pay/useTransactionPayData';
+
+const FIAT_DISPLAY_DECIMALS = 2;
+
+// The field is a fiat amount, so keystrokes past the cent are rejected.
+const FIAT_INPUT_PATTERN = /^\d*[.,]?\d{0,2}$/u;
 
 export type CustomAmountProps = {
   amountFiat: string;
@@ -27,6 +29,29 @@ export type CustomAmountProps = {
   isLoading?: boolean;
   onChange?: (value: string) => void;
 };
+
+/**
+ * Cents-only field value for a parent-driven amount (Max / percentage).
+ * Sub-cent amounts are left intact so they do not collapse to `0`.
+ *
+ * @param amountFiat - Full-precision fiat amount used for quotes / submit.
+ * @returns Value to render in the input.
+ */
+function getAmountFiatDisplay(amountFiat: string): string {
+  const value = new BigNumber(amountFiat);
+
+  if (!value.isFinite()) {
+    return amountFiat;
+  }
+
+  const display = value.round(FIAT_DISPLAY_DECIMALS, BigNumber.ROUND_DOWN);
+
+  if (display.eq(value) || (display.lte(0) && value.gt(0))) {
+    return amountFiat;
+  }
+
+  return display.toString(10);
+}
 
 function getFontSize(displayWidth: number): string {
   if (displayWidth <= 8) {
@@ -90,13 +115,15 @@ export const CustomAmount = React.memo(
     isLoading,
     onChange,
   }: CustomAmountProps) => {
-    const isMaxAmount = useTransactionPayIsMaxAmount();
-    const isQuotesLoading = useIsTransactionPayLoading();
     const selectedCurrency = useSelector(getCurrentCurrency);
     const currency = currencyProp ?? selectedCurrency;
     const fiatSymbol = getCurrencySymbol(currency);
-    const amountLength = amountFiat.length;
-    const decimalSeparatorCount = (amountFiat.match(/[.,]/gu) || []).length;
+    // Parent-driven amounts (Max / percentage) may be full precision for
+    // submit; the field shows cents only.
+    const amountFiatDisplay = getAmountFiatDisplay(amountFiat);
+    const amountLength = amountFiatDisplay.length;
+    const decimalSeparatorCount = (amountFiatDisplay.match(/[.,]/gu) || [])
+      .length;
     // Decimal separators visually take roughly half the width of a digit in
     // proportional fonts, so account for them as 0.5ch each. Counting them
     // as a full ch over-allocates (visible cursor gap); counting them as 0
@@ -104,19 +131,17 @@ export const CustomAmount = React.memo(
     const amountWidth = amountLength - decimalSeparatorCount * 0.5;
     const displayWidth = amountWidth + Math.max(1, fiatSymbol.length);
 
-    const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
-
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-        if (/^[0-9]*[.,]?[0-9]*$/u.test(value)) {
+        if (FIAT_INPUT_PATTERN.test(value)) {
           onChange?.(value);
         }
       },
       [onChange],
     );
 
-    if (showLoader) {
+    if (isLoading) {
       return <CustomAmountSkeleton />;
     }
 
@@ -146,7 +171,7 @@ export const CustomAmount = React.memo(
           data-testid="custom-amount-input"
           type="text"
           inputMode="decimal"
-          value={amountFiat}
+          value={amountFiatDisplay}
           onChange={handleChange}
           disabled={disabled}
           style={

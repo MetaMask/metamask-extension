@@ -393,7 +393,7 @@ describe('Multichain API', function () {
             await firstConfirmation.checkPageIsLoaded();
             let currentAccount = await firstConfirmation.getSenderAccountName();
             let currentNetwork = await firstConfirmation.getNetworkName();
-            await firstConfirmation.clickFooterConfirmButton();
+            await firstConfirmation.clickFooterButton({ button: 'confirm' });
             resultConfirmations.push({
               account: currentAccount,
               network: currentNetwork,
@@ -414,9 +414,12 @@ describe('Multichain API', function () {
 
               // Confirm the transaction except for the last one
               if (i < EVM_SCOPES.length - 2) {
-                await confirmation.clickFooterConfirmButton();
+                await confirmation.clickFooterButton({ button: 'confirm' });
               } else {
-                await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+                await confirmation.clickFooterButton({
+                  button: 'confirm',
+                  waitUntil: 'windowClose',
+                });
               }
             }
 
@@ -487,7 +490,7 @@ describe('Multichain API', function () {
             await firstConfirmation.checkPageIsLoaded();
             let currentNetworkName = await firstConfirmation.getNetworkName();
             await firstConfirmation.checkPageNumbers(1, totalNumberOfScopes);
-            await firstConfirmation.clickFooterConfirmButton();
+            await firstConfirmation.clickFooterButton({ button: 'confirm' });
             currentNetworks.add(currentNetworkName);
 
             for (let i = 0; i < totalNumberOfScopes - 1; i++) {
@@ -518,10 +521,13 @@ describe('Multichain API', function () {
                   1,
                   totalNumberOfScopes - i - 1,
                 );
-                await confirmation.clickFooterConfirmButton();
+                await confirmation.clickFooterButton({ button: 'confirm' });
               } else {
                 // Last confirmation: confirm and wait for window to close
-                await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+                await confirmation.clickFooterButton({
+                  button: 'confirm',
+                  waitUntil: 'windowClose',
+                });
               }
             }
 
@@ -672,7 +678,10 @@ describe('Multichain API', function () {
             const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
               driver,
             );
-            await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            await upgradeAndBatchTxConfirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -745,7 +754,10 @@ describe('Multichain API', function () {
             const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
               driver,
             );
-            await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            await upgradeAndBatchTxConfirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,

@@ -14,5 +14,22 @@ export function getTradeableBalance(
     | null
     | undefined,
 ): string {
-  return account?.withdrawableBalance ?? account?.spendableBalance ?? '0';
+  return getTradeableBalanceRaw(account) ?? '0';
+}
+
+/**
+ * Same resolution as `getTradeableBalance` but without the `'0'` fallback, so
+ * callers can tell "the provider reported no balance field" apart from "the
+ * account holds zero collateral". Surfaces that act on an unfunded balance need
+ * that distinction; everything else should keep using `getTradeableBalance`.
+ *
+ * @param account - Perps account state (or null/undefined if not loaded).
+ */
+export function getTradeableBalanceRaw(
+  account:
+    | Pick<AccountState, 'spendableBalance' | 'withdrawableBalance'>
+    | null
+    | undefined,
+): string | undefined {
+  return account?.withdrawableBalance ?? account?.spendableBalance;
 }

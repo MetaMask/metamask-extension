@@ -1,11 +1,17 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { RampOrderDetails } from './ramp-order-details';
 
 const mockHandleCopy = jest.fn();
 const mockGoToBuy = jest.fn();
 const mockOpenTab = jest.fn();
+const mockWatchProviderOrderTab = jest.fn();
+
+jest.mock('../../../../store/controller-actions/ramps-controller', () => ({
+  watchRampsProviderOrderTab: (...args: unknown[]) =>
+    mockWatchProviderOrderTab(...args),
+}));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, args?: string[]) =>
@@ -44,11 +50,11 @@ jest.mock('../../../../hooks/ramps/useRampsScreenViewed', () => ({
   ) => mockScreenViewed(location, options),
 }));
 
+const mockGetOrderById = jest.fn();
+
 jest.mock('../../../../hooks/ramps/useRampsOrders', () => ({
   useRampsOrders: () => ({
-    getOrderById: () => ({
-      paymentMethod: { name: 'VISA **** 4242' },
-    }),
+    getOrderById: mockGetOrderById,
   }),
 }));
 
@@ -107,6 +113,12 @@ beforeEach(() => {
   (
     global as unknown as { platform: { openTab: typeof mockOpenTab } }
   ).platform = { openTab: mockOpenTab };
+  mockGetOrderById.mockReturnValue({
+    provider: { id: 'transak', name: 'Transak' },
+    walletAddress: '0xabc123',
+    paymentMethod: { name: 'VISA **** 4242' },
+  });
+  mockWatchProviderOrderTab.mockResolvedValue(undefined);
 });
 
 type RampOrderItem = Extract<
@@ -243,14 +255,75 @@ describe('RampOrderDetails', () => {
     ).toBeInTheDocument();
   });
 
-  it('opens the provider order link when "view on provider" is clicked', () => {
+  it('re-opens the provider order link under the callback watcher when "view on provider" is clicked', async () => {
     const { getByText } = render(<RampOrderDetails item={buildItem()} />);
 
-    getByText('rampsOrderDetailsViewOnProvider:Transak').click();
+    await act(async () => {
+      getByText('rampsOrderDetailsViewOnProvider:Transak').click();
+    });
+
+    expect(mockWatchProviderOrderTab).toHaveBeenCalledWith({
+      url: 'https://transak.example/order-123',
+      providerCode: 'transak',
+      walletAddress: '0xabc123',
+      orderCode: 'order-123456789012',
+    });
+    expect(mockOpenTab).not.toHaveBeenCalled();
+  });
+
+  it('falls back to a plain tab open when the raw order is unavailable', async () => {
+    mockGetOrderById.mockReturnValue(undefined);
+    const { getByText } = render(<RampOrderDetails item={buildItem()} />);
+
+    await act(async () => {
+      getByText('rampsOrderDetailsViewOnProvider:Transak').click();
+    });
+
+    expect(mockWatchProviderOrderTab).not.toHaveBeenCalled();
+    expect(mockOpenTab).toHaveBeenCalledWith({
+      url: 'https://transak.example/order-123',
+    });
+  });
+
+  it('falls back to a plain tab open when the watcher fails to open the tab', async () => {
+    mockWatchProviderOrderTab.mockRejectedValue(new Error('Failed to open'));
+    const { getByText } = render(<RampOrderDetails item={buildItem()} />);
+
+    await act(async () => {
+      getByText('rampsOrderDetailsViewOnProvider:Transak').click();
+    });
 
     expect(mockOpenTab).toHaveBeenCalledWith({
       url: 'https://transak.example/order-123',
     });
+  });
+
+  it('prevents duplicate provider tabs while the watcher is opening one', async () => {
+    let resolveWatch: (() => void) | undefined;
+    mockWatchProviderOrderTab.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveWatch = resolve;
+      }),
+    );
+    const { getByRole } = render(<RampOrderDetails item={buildItem()} />);
+    const viewOnProvider = getByRole('button', {
+      name: 'rampsOrderDetailsViewOnProvider:Transak',
+    });
+
+    await act(async () => {
+      viewOnProvider.click();
+    });
+
+    // While the watcher round-trip is in flight the button is disabled, so
+    // duplicate clicks cannot open multiple watched tabs.
+    expect(viewOnProvider).toBeDisabled();
+    viewOnProvider.click();
+    expect(mockWatchProviderOrderTab).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolveWatch?.();
+    });
+    expect(viewOnProvider).not.toBeDisabled();
   });
 
   it('shows a "buy again" CTA for a buy order', () => {

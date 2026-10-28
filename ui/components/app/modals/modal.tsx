@@ -1,10 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { AnyAction, Dispatch } from 'redux';
-import { usePureBlack } from '@metamask/design-system-react';
 
 import { connect } from 'react-redux';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
@@ -15,7 +12,6 @@ import {
   TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
   TurnOnBackupAndSyncModal,
 } from './identity';
-import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
@@ -62,24 +58,6 @@ type ModalConfig = {
 };
 
 const MODALS: Record<string, ModalConfig> = {
-  HIDE_TOKEN_CONFIRMATION: {
-    contents: <HideTokenConfirmationModal />,
-    testId: 'hide-token-confirmation-modal',
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '400px' : '449px',
-      top: 'calc(33% + 45px)',
-      paddingLeft:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
-      paddingRight:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
-    },
-  },
-
   CONVERT_TOKEN_TO_NFT: {
     contents: <ConvertTokenToNftModal />,
     mobileModalStyle: {
@@ -289,7 +267,6 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const isPureBlack = usePureBlack();
   const modalRef = useRef<FadeModalRef | null>(null);
 
   useEffect(() => {
@@ -302,13 +279,10 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
 
   const modal = MODALS[modalState.name ?? 'DEFAULT'];
   const { contents: children, disableBackdropClick = false, testId } = modal;
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
   const modalStyle = {
     ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
-    ...(isPureBlack && {
-      backgroundColor: 'var(--color-background-alternative)',
-      border: '1px solid var(--color-border-muted)',
-    }),
+    backgroundColor: 'var(--color-background-elevated1)',
+    border: '1px solid var(--color-border-alternative)',
   };
   const contentStyle = modal.contentStyle ?? {};
 

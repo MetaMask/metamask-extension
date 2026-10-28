@@ -1,6 +1,4 @@
-import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
 import {
   Icon,
   IconColor,
@@ -11,25 +9,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  ACTIVITY_ROUTE,
-  DEFAULT_ROUTE,
-  MONEY_HOME_ROUTE,
-  PERPS_HOME_PAGE_ROUTE,
-} from '../../../helpers/constants/routes';
-import {
-  MetaMetricsSwapsEventSource,
-  ScreenViewedEntryPoint,
-} from '../../../../shared/constants/metametrics';
-import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
-import { getDefaultHomeActiveTabName } from '../../../selectors';
-import useBridging from '../../../hooks/bridge/useBridging';
-import { resetBridgeController } from '../../../ducks/bridge/actions';
-import { useDispatch } from '../../../store/hooks';
-import { transitionForward } from '../../ui/transition';
-import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
-import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
+import { useMainNavItems } from '../../../hooks/useMainNavItems';
 
 type NavTabProps = {
   isActive: boolean;
@@ -73,123 +53,24 @@ const NavTab = ({
 };
 
 export function BottomNavBar() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
-  const { availability: moneyAccountAvailability } =
-    useMoneyAccountAvailability();
-  const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
-  const { openBridgeExperience } = useBridging();
-
-  const { isHome, isPerps, isMoney, isSwaps, isActivity } =
-    getActiveBottomNavTabs(pathname);
-
-  // Mirrors the back-button behaviour in bridge/index.tsx: reset the bridge
-  // controller (clears quotes + cache) and pass stayOnHomePage:true so that
-  // ConfirmationRouter doesn't redirect back during the async reset window.
-  const resetBridgeIfNeeded = useCallback(() => {
-    if (isSwaps) {
-      dispatch(resetBridgeController());
-    }
-  }, [dispatch, isSwaps]);
-
-  const handleHomeClick = useCallback(() => {
-    resetBridgeIfNeeded();
-    transitionForward(() =>
-      navigate(
-        lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
-        {
-          state: {
-            entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-            stayOnHomePage: true,
-          },
-        },
-      ),
-    );
-  }, [navigate, lastActiveTab, resetBridgeIfNeeded]);
-
-  const handlePerpsClick = useCallback(() => {
-    resetBridgeIfNeeded();
-    transitionForward(() =>
-      navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
-    );
-  }, [navigate, resetBridgeIfNeeded]);
-
-  const handleMoneyClick = useCallback(() => {
-    resetBridgeIfNeeded();
-    transitionForward(() =>
-      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
-    );
-  }, [navigate, resetBridgeIfNeeded]);
-
-  const handleSwapsClick = useCallback(() => {
-    if (isSwaps) {
-      return;
-    }
-    transitionForward(() =>
-      openBridgeExperience(MetaMetricsSwapsEventSource.BottomNavBar),
-    );
-  }, [openBridgeExperience, isSwaps]);
-
-  const handleActivityClick = useCallback(() => {
-    resetBridgeIfNeeded();
-    transitionForward(() =>
-      navigate(ACTIVITY_ROUTE, {
-        state: {
-          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
-        },
-      }),
-    );
-  }, [navigate, resetBridgeIfNeeded]);
+  const items = useMainNavItems();
 
   return (
     <nav
-      data-testid="bottom-nav-bar"
-      className="bottom-nav-bar w-full bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100]"
+      data-testid="parent-selector-bottom-nav-bar"
+      className="bottom-nav-bar sticky bottom-0 mt-auto w-full shrink-0 bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100] transition-[background-color,backdrop-filter] duration-200"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
-      <NavTab
-        isActive={isHome}
-        icon={isHome ? IconName.HomeFilled : IconName.Home}
-        label={t('home')}
-        onClick={handleHomeClick}
-        data-testid="bottom-nav-home"
-      />
-      {isPerpsAvailable && (
+      {items.map(({ id, icon, label, isActive, onClick }) => (
         <NavTab
-          isActive={isPerps}
-          icon={isPerps ? IconName.CandlestickFilled : IconName.Candlestick}
-          label={t('perps')}
-          onClick={handlePerpsClick}
-          data-testid="bottom-nav-perps"
+          key={id}
+          isActive={isActive}
+          icon={icon}
+          label={label}
+          onClick={onClick}
+          data-testid={`bottom-nav-${id}`}
         />
-      )}
-      {moneyAccountAvailability.isAvailable && (
-        <NavTab
-          isActive={isMoney}
-          icon={IconName.Coin}
-          label={t('money')}
-          onClick={handleMoneyClick}
-          data-testid="bottom-nav-money"
-        />
-      )}
-      <NavTab
-        isActive={isSwaps}
-        icon={IconName.SwapVertical}
-        label={t('swap')}
-        onClick={handleSwapsClick}
-        data-testid="bottom-nav-swaps"
-      />
-      <NavTab
-        isActive={isActivity}
-        icon={isActivity ? IconName.ClockFilled : IconName.Clock}
-        label={t('activity')}
-        onClick={handleActivityClick}
-        data-testid="bottom-nav-activity"
-      />
+      ))}
     </nav>
   );
 }

@@ -143,6 +143,12 @@ export type ManifestFlags = {
      * instead of the default 12345.
      */
     fixtureServerPort?: number;
+    /**
+     * Whether test builds inject a PRF result the virtual authenticator
+     * cannot produce. Defaults to enabled. Set false to exercise a passkey
+     * authenticator that does not return PRF.
+     */
+    mockPasskeyPrfEnabled?: boolean;
   };
 };
 

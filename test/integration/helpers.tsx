@@ -32,7 +32,6 @@ export const createMockImplementation = <T,>(requests: Record<string, T>) => {
     }
     if (
       method === 'trackAnalyticsEvent' ||
-      method === 'trackMetaMetricsEvent' ||
       method === 'addEventBeforeMetricsOptIn'
     ) {
       return Promise.resolve(undefined);

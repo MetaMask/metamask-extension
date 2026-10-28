@@ -1,15 +1,11 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { fireEvent, screen } from '@testing-library/react';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import CoinButtons from './coin-buttons';
-
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  usePureBlack: jest.fn(() => false),
-}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -27,8 +23,7 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
-    goToBuy: jest.fn(),
-    isRampsEnabled: false,
+    goToBuy: jest.fn().mockResolvedValue('native'),
   })),
 }));
 
@@ -37,6 +32,18 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   __esModule: true,
   default: jest.fn(() => ({
     openBridgeExperience: jest.fn(),
+  })),
+}));
+
+jest.mock('../../../pages/asset/hooks/useBalanceAwareSwapDefaults', () => ({
+  useBalanceAwareSwapDefaults: jest.fn(() => ({
+    sourceToken: {
+      symbol: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: '0x1',
+      decimals: 18,
+      name: 'Ether',
+    },
   })),
 }));
 
@@ -65,6 +72,22 @@ jest.mock('../../../selectors/batch-sell/feature-flags', () => ({
   getIsBatchSellEnabled: jest.fn(() => true),
 }));
 
+jest.mock('../perps/perps-trade-buttons', () => ({
+  PerpsTradeButtons: ({
+    marketSymbol,
+    classPrefix,
+  }: {
+    marketSymbol: string;
+    classPrefix: string;
+  }) => (
+    <div
+      data-testid="perps-trade-buttons"
+      data-market={marketSymbol}
+      data-prefix={classPrefix}
+    />
+  ),
+}));
+
 jest.mock(
   '../../../../shared/lib/multichain-accounts/remote-feature-flag',
   () => ({
@@ -77,8 +100,6 @@ jest.mock(
 
 jest.mock('../../../store/actions', () => ({
   setActiveNetworkWithError: jest.fn(),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 const mockAccount = {
@@ -90,59 +111,143 @@ const mockAccount = {
   type: EthAccountType.Eoa,
 };
 
-const renderCoinButtons = (batchSellEnabled = true) => {
-  const state = {
-    ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      featureFlags: {
-        ...((mockState.metamask as Record<string, unknown>).featureFlags ?? {}),
-        batchSellEnabled,
-      },
-    },
-  };
-  const store = configureStore(state);
-
-  return renderWithProvider(
-    <CoinButtons
-      account={mockAccount as Parameters<typeof CoinButtons>[0]['account']}
-      chainId="0x1"
-      trackingLocation="home"
-      isSwapsChain={false}
-      isSigningEnabled
-    />,
-    store,
-    '/',
+describe('CoinButtons – asset page swap token', () => {
+  const { useBalanceAwareSwapDefaults } = jest.requireMock(
+    '../../../pages/asset/hooks/useBalanceAwareSwapDefaults',
   );
-};
 
-describe('CoinButtons – MoreButtonsGroup pure black dropdown', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
-    usePureBlack.mockReturnValue(false);
   });
 
-  it('uses bg-background-default for the dropdown in normal mode', async () => {
-    const { getByTestId, container } = renderCoinButtons();
-    fireEvent.click(getByTestId('coin-overview-more'));
+  const renderAssetPageCoinButtons = (
+    chainId: string,
+    props: Partial<React.ComponentProps<typeof CoinButtons>> = {},
+  ) =>
+    renderWithProvider(
+      <CoinButtons
+        account={mockAccount as Parameters<typeof CoinButtons>[0]['account']}
+        chainId={chainId as Parameters<typeof CoinButtons>[0]['chainId']}
+        trackingLocation="asset-page"
+        isSwapsChain
+        isSigningEnabled
+        {...props}
+      />,
+      configureStore(mockState),
+      '/',
+    );
 
-    await waitFor(() => {
-      const dropdown = container.querySelector('.bg-background-default');
-      expect(dropdown).toBeInTheDocument();
+  it('describes the native token with a CAIP-2 chain id on a non-EVM chain', () => {
+    renderAssetPageCoinButtons('bip122:000000000019d6689c085ae165831e93');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: expect.objectContaining({
+        symbol: 'BTC',
+        decimals: 8,
+        // The decimal chain id from `getNativeAssetForChainId` is not a chain
+        // the bridge entry point accepts.
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+      }),
     });
   });
 
-  it('uses bg-background-alternative for the dropdown in pure black mode', async () => {
-    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
-    usePureBlack.mockReturnValue(true);
+  it('describes the native token with a CAIP-2 chain id on an EVM chain', () => {
+    renderAssetPageCoinButtons('0x1');
 
-    const { getByTestId, container } = renderCoinButtons();
-    fireEvent.click(getByTestId('coin-overview-more'));
-
-    await waitFor(() => {
-      const dropdown = container.querySelector('.bg-background-alternative');
-      expect(dropdown).toBeInTheDocument();
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: expect.objectContaining({
+        symbol: 'ETH',
+        chainId: 'eip155:1',
+      }),
     });
+  });
+
+  it('uses Arc native USDC for the asset page native swap button', () => {
+    renderAssetPageCoinButtons('0x13b2');
+    const arcNativeAsset = getNativeAssetForChainId('0x13b2');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: {
+        symbol: arcNativeAsset.symbol,
+        address: arcNativeAsset.address,
+        chainId: 'eip155:5042',
+        decimals: arcNativeAsset.decimals,
+        name: arcNativeAsset.name,
+      },
+    });
+  });
+
+  it('passes no token when the chain cannot open a swap', () => {
+    renderAssetPageCoinButtons('0x539');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: null,
+    });
+  });
+
+  it('renders the Perps row for a matching native market', () => {
+    renderAssetPageCoinButtons('0x1', {
+      perpsMarketSymbol: 'ETH',
+      hasBalance: true,
+    });
+
+    expect(screen.getByTestId('perps-trade-buttons')).toHaveAttribute(
+      'data-market',
+      'ETH',
+    );
+    expect(screen.getByTestId('coin-overview-send')).toBeInTheDocument();
+    expect(screen.getByTestId('coin-overview-more')).toBeInTheDocument();
+    expect(screen.queryByTestId('coin-overview-buy')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('coin-overview-swap')).not.toBeInTheDocument();
+  });
+
+  it('renders Receive instead of Send for a zero-balance native Perps asset', () => {
+    renderAssetPageCoinButtons('0x1', {
+      perpsMarketSymbol: 'ETH',
+      hasBalance: false,
+    });
+
+    expect(screen.getByTestId('coin-overview-receive')).toBeInTheDocument();
+    expect(screen.queryByTestId('coin-overview-send')).not.toBeInTheDocument();
+  });
+
+  it('keeps Receive out of More when it already occupies the Perps action row', () => {
+    renderAssetPageCoinButtons('0x1', {
+      perpsMarketSymbol: 'ETH',
+      hasBalance: false,
+    });
+
+    fireEvent.click(screen.getByTestId('coin-overview-more'));
+
+    expect(screen.getAllByTestId('coin-overview-receive')).toHaveLength(1);
+    expect(
+      screen.queryByTestId('coin-overview-more-receive'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('coin-overview-more-buy')).toBeInTheDocument();
+  });
+
+  it('keeps Receive in More when Send occupies the Perps action row', () => {
+    renderAssetPageCoinButtons('0x1', {
+      perpsMarketSymbol: 'ETH',
+      hasBalance: true,
+    });
+
+    fireEvent.click(screen.getByTestId('coin-overview-more'));
+
+    expect(
+      screen.getByTestId('coin-overview-more-receive'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('coin-overview-receive'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps Send for zero balance when the standard row is rendered', () => {
+    renderAssetPageCoinButtons('0x1', { hasBalance: false });
+
+    expect(screen.getByTestId('coin-overview-send')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('coin-overview-receive'),
+    ).not.toBeInTheDocument();
   });
 });

@@ -28,7 +28,13 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
-import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import {
+  createEventBuilder,
+  createEventFragment,
+  finalizeEventFragment,
+  trackEvent,
+  updateEventFragment,
+} from '../controllers/analytics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 import { getIframeProperties } from './getIframeProperties';
 
@@ -74,6 +80,7 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.WALLET_GET_CALLS_STATUS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.WALLET_GET_CAPABILITIES]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.WALLET_PAY]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
 };
 
 /**
@@ -136,6 +143,27 @@ const EVENT_NAME_MAP = {
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: {
     REQUESTED: MetaMetricsEventName.Wallet5792Called,
   },
+  // `wallet_pay` reports every outcome on the completed event, through the
+  // `outcome` property, rather than splitting approved and rejected.
+  [MESSAGE_TYPE.WALLET_PAY]: {
+    APPROVED: MetaMetricsEventName.WalletPayCompleted,
+    REJECTED: MetaMetricsEventName.WalletPayCompleted,
+    REQUESTED: MetaMetricsEventName.WalletPayRequested,
+  },
+};
+
+/**
+ * How a `wallet_pay` request ended, reported as `outcome` on the completed
+ * event.
+ */
+const WALLET_PAY_OUTCOME = {
+  CONFIRMED: 'confirmed',
+  REJECTED: 'rejected',
+  FAILED: 'failed',
+  BLOCKED_BY_FLAGS: 'blocked_by_flags',
+  INVALID: 'invalid',
+  UNAUTHORIZED: 'unauthorized',
+  INELIGIBLE: 'ineligible',
 };
 
 /**
@@ -152,6 +180,7 @@ const TRANSFORM_PARAMS_MAP = {
 const CUSTOM_PROPERTIES_MAP = {
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: getWalletSendCallsProperties,
   [MESSAGE_TYPE.WALLET_CREATE_SESSION]: getWalletCreateSessionProperties,
+  [MESSAGE_TYPE.WALLET_PAY]: getWalletPayProperties,
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -160,25 +189,19 @@ let globalRateLimitCount = 0;
 /**
  * Create signature request event fragment with an assigned unique identifier
  *
- * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
- * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ * @param {MetaMetricsEventFragmentPayload} fragmentPayload
  * @param {MetaMetricsEventCategory} eventCategory
  */
-function createSignatureFragment(
-  metaMetricsController,
-  req,
-  fragmentPayload,
-  eventCategory,
-) {
-  metaMetricsController.createEventFragment({
+function createSignatureFragment(req, fragmentPayload, eventCategory) {
+  createEventFragment({
     category: eventCategory,
 
     initialEvent: MetaMetricsEventName.SignatureRequested,
     successEvent: MetaMetricsEventName.SignatureApproved,
     failureEvent: MetaMetricsEventName.SignatureRejected,
 
-    uniqueIdentifier: generateSignatureUniqueId(req.id),
+    id: generateSignatureUniqueId(req.id),
     persist: true,
     referrer: {
       url: req.origin,
@@ -190,25 +213,16 @@ function createSignatureFragment(
 /**
  * Updates and finalizes event fragment for signature requests
  *
- * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
- * @param {MetaMetricsFinalizeEventFragmentOptions}  finalizeEventOptions
- * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ * @param {{ abandoned?: boolean }} finalizeEventOptions
+ * @param {MetaMetricsEventFragmentPayload} fragmentPayload
  */
-function finalizeSignatureFragment(
-  metaMetricsController,
-  req,
-  finalizeEventOptions,
-  fragmentPayload,
-) {
+function finalizeSignatureFragment(req, finalizeEventOptions, fragmentPayload) {
   const signatureUniqueId = generateSignatureUniqueId(req.id);
 
-  metaMetricsController.updateEventFragment(signatureUniqueId, fragmentPayload);
+  updateEventFragment(signatureUniqueId, fragmentPayload);
 
-  metaMetricsController.finalizeEventFragment(
-    signatureUniqueId,
-    finalizeEventOptions,
-  );
+  finalizeEventFragment(signatureUniqueId, finalizeEventOptions);
 }
 
 function isMultichainRequestMethod(method) {
@@ -237,7 +251,6 @@ function isMultichainRequestMethod(method) {
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
  * tracked within the globalRateLimitTimeout time window.
  * @param {AppStateController} [opts.appStateController]
- * @param {MetaMetricsController} [opts.metaMetricsController]
  * @param {AnalyticsController} [opts.analyticsController]
  * @returns {Function}
  */
@@ -252,7 +265,6 @@ export default function createRPCMethodTrackingMiddleware({
   getHardwareTypeForMetric,
   snapAndHardwareMessenger,
   appStateController,
-  metaMetricsController,
   analyticsController,
   getHDEntropyIndex,
 }) {
@@ -275,10 +287,12 @@ export default function createRPCMethodTrackingMiddleware({
       : MetaMetricsEventCategory.InpageProvider;
 
     let invokedMethod = method;
+    let invokedMethodParams = params;
     let multichainApiRequestScope;
     // if the request is through the multichain api, the method is nested in the params
     if (method === MESSAGE_TYPE.WALLET_INVOKE_METHOD) {
       invokedMethod = params?.request?.method;
+      invokedMethodParams = params?.request?.params;
       multichainApiRequestScope = params?.scope;
     }
 
@@ -364,10 +378,10 @@ export default function createRPCMethodTrackingMiddleware({
         // In personal messages the first param is data while in typed messages second param is data
         // if condition below is added to ensure that the right params are captured as data and address.
         let data;
-        if (isValidAddress(req?.params?.[1])) {
-          data = req?.params?.[0];
+        if (isValidAddress(invokedMethodParams?.[1])) {
+          data = invokedMethodParams?.[0];
         } else {
-          data = req?.params?.[1];
+          data = invokedMethodParams?.[1];
         }
 
         if (req.securityAlertResponse?.providerRequestsCount) {
@@ -462,12 +476,7 @@ export default function createRPCMethodTrackingMiddleware({
           sensitiveProperties: sensitiveEventProperties,
         };
 
-        createSignatureFragment(
-          metaMetricsController,
-          req,
-          fragmentPayload,
-          eventCategory,
-        );
+        createSignatureFragment(req, fragmentPayload, eventCategory);
       } else {
         trackEvent(
           createEventBuilder(event)
@@ -577,12 +586,7 @@ export default function createRPCMethodTrackingMiddleware({
           sensitiveProperties: sensitiveEventProperties,
         };
 
-        finalizeSignatureFragment(
-          metaMetricsController,
-          req,
-          finalizeOptions,
-          fragmentPayload,
-        );
+        finalizeSignatureFragment(req, finalizeOptions, fragmentPayload);
       } else {
         trackEvent(
           createEventBuilder(event)
@@ -610,6 +614,56 @@ function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
 
   if (callCount) {
     eventProperties.batch_transaction_count = callCount;
+  }
+}
+
+/**
+ * Adds the transaction type and whether an amount was passed to every
+ * `wallet_pay` event, and the outcome to the completed event.
+ *
+ * @param {object} req - The JSON-RPC request.
+ * @param {object} [res] - The JSON-RPC response, once the request has ended.
+ * @param {string} stage - The event stage.
+ * @param {object} eventProperties - The event properties to add to.
+ */
+function getWalletPayProperties(req, res, stage, eventProperties) {
+  const request = req.params?.[0];
+
+  if (typeof request?.type === 'string') {
+    eventProperties.transaction_type = request.type;
+  }
+
+  eventProperties.has_amount = request?.amount !== undefined;
+
+  if (stage !== STAGE.REQUESTED) {
+    eventProperties.outcome = getWalletPayOutcome(res?.error);
+  }
+}
+
+/**
+ * Maps a `wallet_pay` response error to an outcome.
+ *
+ * @param {object} [error] - The JSON-RPC error, if the request failed.
+ * @returns {string} The outcome.
+ */
+function getWalletPayOutcome(error) {
+  if (!error) {
+    return WALLET_PAY_OUTCOME.CONFIRMED;
+  }
+
+  switch (error.code) {
+    case errorCodes.provider.userRejectedRequest:
+      return WALLET_PAY_OUTCOME.REJECTED;
+    case errorCodes.rpc.methodNotFound:
+      return WALLET_PAY_OUTCOME.BLOCKED_BY_FLAGS;
+    case errorCodes.rpc.invalidParams:
+      return WALLET_PAY_OUTCOME.INVALID;
+    case errorCodes.provider.unauthorized:
+      return WALLET_PAY_OUTCOME.UNAUTHORIZED;
+    case errorCodes.rpc.methodNotSupported:
+      return WALLET_PAY_OUTCOME.INELIGIBLE;
+    default:
+      return WALLET_PAY_OUTCOME.FAILED;
   }
 }
 

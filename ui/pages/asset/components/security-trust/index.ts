@@ -11,7 +11,4 @@ export { SecurityBanner } from './security-banner';
 export { SecurityTrustEntryCard } from './security-trust-entry-card';
 export type { SecurityTrustEntryCardToken } from './security-trust-entry-card';
 export { SecurityTrustInfoModal } from './security-trust-info-modal';
-export {
-  SecurityTrustInlineBadge,
-  SecurityTrustVerifiedBadge,
-} from '../../../../components/app/security-trust';
+export { SecurityTrustInlineBadge } from '../../../../components/app/security-trust';

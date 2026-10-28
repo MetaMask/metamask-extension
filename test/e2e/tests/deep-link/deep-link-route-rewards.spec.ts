@@ -1,7 +1,7 @@
 import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
 import { REWARDS_ROUTE } from '../../../../ui/helpers/constants/routes';
@@ -26,20 +26,6 @@ describe('Deep Link - Rewards Route', function () {
       await getConfig({
         title: this.test?.fullTitle(),
         deepLinkPublicKey,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            rewardsEnabled: {
-              enabled: true,
-              minimumVersion: '0.0.0',
-            },
-            rewardsOnboardingEnabled: {
-              enabled: true,
-              minimumVersion: '0.0.0',
-            },
-            rewardsBitcoinEnabledExtension: true,
-            rewardsTronEnabledExtension: true,
-          },
-        },
         additionalMocks: async (server: Mockttp) => {
           await mockRewardsApi(server);
         },

@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
-import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
+import NFTDetailsPage from '../../../page-objects/pages/asset/nft-details-page';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
 

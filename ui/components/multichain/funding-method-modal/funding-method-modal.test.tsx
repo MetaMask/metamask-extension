@@ -7,13 +7,21 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { FundingMethodModal } from './funding-method-modal';
 
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => ({ goToBuy: mockGoToBuy }),
 }));
+
+jest.mock('../../../helpers/utils/show-buy-tab-opened-toast', () => ({
+  showBuyTabOpenedToast: jest.fn(),
+}));
+const mockShowBuyTabOpenedToast = jest.mocked(
+  jest.requireMock('../../../helpers/utils/show-buy-tab-opened-toast')
+    .showBuyTabOpenedToast,
+);
 
 const mockTrackEvent = jest.fn();
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -106,6 +114,26 @@ describe('FundingMethodModal', () => {
     fireEvent.click(getByText(messages.tokenMarketplace.message));
     await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
     expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('shows the tab-opened toast when Buy opens Portfolio', async () => {
+    mockGoToBuy.mockResolvedValueOnce('portfolio');
+    const { getByText } = renderWithProvider(
+      <FundingMethodModal
+        isOpen={true}
+        onClose={jest.fn()}
+        title="Test Modal"
+        onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
+      />,
+      store,
+    );
+
+    fireEvent.click(getByText(messages.tokenMarketplace.message));
+    await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
+    expect(mockShowBuyTabOpenedToast.mock.calls.length).toMatchInlineSnapshot(
+      `1`,
+    );
   });
 
   it('should call onClickReceive when the Receive Crypto item is clicked', () => {

@@ -6,13 +6,10 @@ import {
 
 const t = (key: string, substitutions?: string[]) => {
   if (key === 'rampsPaymentMethodLimits') {
-    return `${substitutions?.[0]} – ${substitutions?.[1]}`;
+    return `${substitutions?.[0]} limit`;
   }
   if (key === 'rampsPaymentMethodMinLimit') {
     return `Min ${substitutions?.[0]}`;
-  }
-  if (key === 'rampsPaymentMethodMaxLimit') {
-    return `Max ${substitutions?.[0]}`;
   }
   return key;
 };
@@ -50,6 +47,16 @@ describe('getProviderBuyLimit', () => {
 });
 
 describe('formatPaymentMethodLimits', () => {
+  it('shows the maximum as a limit label', () => {
+    expect(
+      formatPaymentMethodLimits(
+        { minAmount: Number.NaN, maxAmount: 2000 },
+        formatFiat,
+        t,
+      ),
+    ).toBe('$2000 limit');
+  });
+
   it('matches snapshot for min/max formatting', () => {
     expect({
       both: formatPaymentMethodLimits(
@@ -59,6 +66,11 @@ describe('formatPaymentMethodLimits', () => {
       ),
       minOnly: formatPaymentMethodLimits(
         { minAmount: 25, maxAmount: Number.NaN },
+        formatFiat,
+        t,
+      ),
+      maxOnly: formatPaymentMethodLimits(
+        { minAmount: Number.NaN, maxAmount: 2000 },
         formatFiat,
         t,
       ),

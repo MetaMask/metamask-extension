@@ -7,7 +7,9 @@
     "stage": "string",
     "warning": "null"
   },
-  "activeTab": {},
+  "activeTab": {
+    "id": "number"
+  },
   "appState": {
     "accountDetail": {
       "privateKey": "string"
@@ -155,6 +157,7 @@
     "accountIdByAddress": {
       "*": "string"
     },
+    "accountSourceBackfillEnqueued": "boolean",
     "accountsAssets": {
       "*": "array"
     },
@@ -195,7 +198,8 @@
                 "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
                 "<solana-account-1>",
                 "<bitcoin-account-1>",
-                "<tron-account-1>"
+                "<tron-account-1>",
+                "<stellar-account-1>"
               ]
             }
           }
@@ -205,6 +209,7 @@
     "accountWalletsMetadata": {},
     "activeProvider": "string",
     "activeQrCodeScanRequest": "null",
+    "arcUsageNoticeShown": "boolean",
     "lastQrScanCompletedSuccessfully": "null",
     "addressBook": {},
     "addressScanCache": {},
@@ -259,6 +264,9 @@
         "image": "string"
       }
     },
+    "assetsLoadingStatus": {
+      "*": "string"
+    },
     "assetsMetadata": {
       "*": {
         "name": "string",
@@ -283,20 +291,23 @@
         "marketCap": "number",
         "totalVolume": "number",
         "dilutedMarketCap": "number",
+        "allTimeHigh": "number",
+        "allTimeLow": "number",
+        "circulatingSupply": "number",
         "pricePercentChange1d": "number",
+        "pricePercentChange1h": "number",
+        "pricePercentChange7d": "number",
+        "pricePercentChange14d": "number",
+        "pricePercentChange30d": "number",
+        "pricePercentChange200d": "number",
+        "pricePercentChange1y": "number",
         "lastUpdated": "number"
       }
     },
-    "balances": {
-      "*": {
-        "*": {
-          "unit": "string",
-          "amount": "string"
-        }
-      }
-    },
+    "autoramps": [],
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
+    "batchTransactionCounts": {},
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -304,7 +315,6 @@
     "cachedMarketDataByProvider": "object",
     "cachedUserDataByProvider": "object",
     "cacheTimestamp": "number",
-    "canTrackWalletFundsObtained": "boolean",
     "claims": [],
     "claimsConfigurations": {
       "supportedNetworks": ["string"],
@@ -314,35 +324,16 @@
     "consentDecisionMade": "boolean",
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
-      "networks": "object"
+      "networks": "object",
+      "eventsConfig": {
+        "events": {},
+        "schemaVersion": "string",
+        "timestamp": "number",
+        "version": "string"
+      }
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
-    "conversionRates": {
-      "*": {
-        "currency": "string",
-        "rate": "string",
-        "conversionTime": "number",
-        "expirationTime": "number",
-        "marketData": {
-          "fungible": "boolean",
-          "allTimeHigh": "string",
-          "allTimeLow": "string",
-          "circulatingSupply": "string",
-          "marketCap": "string",
-          "totalVolume": "string",
-          "pricePercentChange": {
-            "PT1H": "number",
-            "P1D": "number",
-            "P7D": "number",
-            "P14D": "number",
-            "P30D": "number",
-            "P200D": "number",
-            "P1Y": "number"
-          }
-        }
-      }
-    },
     "country": "string",
     "coverageResults": {},
     "countries": {
@@ -377,7 +368,6 @@
       "verifiedSnaps": {}
     },
     "databaseUnavailable": "boolean",
-    "dataCollectionForMarketing": "boolean",
     "defaultHomeActiveTabName": "null",
     "depositInProgress": "boolean",
     "depositRequests": [],
@@ -421,6 +411,7 @@
         "tron:2494104990": "boolean"
       }
     },
+    "enrolledCredentials": [],
     "nativeAssetIdentifiers": {
       "eip155:1": "string",
       "eip155:11155111": "string",
@@ -438,6 +429,13 @@
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
+    "eventsConfigEtag": "null",
+    "eventsConfig": {
+      "events": {},
+      "schemaVersion": "string",
+      "timestamp": "number",
+      "version": "string"
+    },
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -482,6 +480,28 @@
         "schedule": "string",
         "scheduledAt": "string",
         "snapId": "string"
+      },
+      "cronjob-npm:@metamask/stellar-wallet-snap-0": {
+        "date": "string",
+        "id": "string",
+        "recurring": "boolean",
+        "request": {
+          "method": "string"
+        },
+        "schedule": "string",
+        "scheduledAt": "string",
+        "snapId": "string"
+      },
+      "cronjob-npm:@metamask/stellar-wallet-snap-1": {
+        "date": "string",
+        "id": "string",
+        "recurring": "boolean",
+        "request": {
+          "method": "string"
+        },
+        "schedule": "string",
+        "scheduledAt": "string",
+        "snapId": "string"
       }
     },
     "fcmToken": "string",
@@ -489,8 +509,8 @@
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
     "firstTimeInfo": {},
+    "installAttribution": "null",
     "forgottenPassword": "boolean",
-    "fragments": {},
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
@@ -506,7 +526,6 @@
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
     "hip3ConfigVersion": "number",
-    "historicalPrices": {},
     "ignoredNfts": [],
     "initializationAttempts": "number",
     "initializationError": "null",
@@ -627,6 +646,33 @@
             },
             "lastSelected": "number"
           }
+        },
+        "<stellar-account-1>": {
+          "type": "string",
+          "scopes": ["string"],
+          "id": "string",
+          "address": "string",
+          "options": {
+            "exportable": "boolean",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": ["string"],
+          "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "keyring": {
+              "type": "string"
+            },
+            "snap": {
+              "id": "string"
+            },
+            "lastSelected": "number"
+          }
         }
       },
       "selectedAccount": "string"
@@ -654,6 +700,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
+    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -685,6 +732,7 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
+    "lastPerpsDepositEntryPoint": "null",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
@@ -695,6 +743,7 @@
     "logs": {},
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
+    "marketingConsentDecisionMade": "boolean",
     "marketData": {
       "*": {}
     },
@@ -711,6 +760,7 @@
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "mode": "string",
+    "moneyAccounts": {},
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "string",
@@ -793,6 +843,7 @@
     },
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
+    "moneyEarnBannerDismissedTokenKeys": [],
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -822,6 +873,7 @@
       }
     },
     "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
     "networkConnectionBannerNetwork": "null",
@@ -841,14 +893,21 @@
     "nonEvmTransactions": {
       "<solana-account-1>": {},
       "<bitcoin-account-1>": {},
-      "<tron-account-1>": {}
+      "<tron-account-1>": {},
+      "<stellar-account-1>": {}
     },
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
     "onboardingDate": "null",
+    "onboardingJourneyEnded": "boolean",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
+    "optedInToMarketing": "boolean",
+    "orderBookPreferences": {
+      "currency": "string",
+      "metric": "string"
+    },
     "orderedNetworkList": [
       {
         "networkId": "string"
@@ -859,6 +918,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
+    "lastShownPrfMigrationReminderAt": "null",
     "paymentMethods": {
       "data": [],
       "error": "null",
@@ -893,8 +953,11 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "hasLinkedSocialLoginProfile": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
+      "basicFunctionalityMigrationNotification": "null",
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
@@ -979,6 +1042,7 @@
       "variational": {}
     },
     "region": "string",
+    "reportedAccounts": ["string"],
     "requests": {
       "*": {
         "status": "string",
@@ -1024,7 +1088,13 @@
         "subscriptionId": "null"
       }
     },
-    "rewardsActiveAccount": "null",
+    "rewardsActiveAccount": {
+      "account": "string",
+      "lastFreshOptInStatusCheck": "number",
+      "lastPerpsDiscountRateFetched": "null",
+      "perpsFeeDiscount": "null",
+      "subscriptionId": "null"
+    },
     "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
@@ -1036,6 +1106,7 @@
     "selectedAccountGroup": "string",
     "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
+    "selectedOrderType": "string",
     "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
     "shieldSubscriptionError": "null",
@@ -1049,18 +1120,7 @@
     "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
-    "syncQueue": {
-      "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
-        {
-          "address": "string",
-          "scopes": ["string"]
-        },
-        {
-          "address": "string",
-          "scopes": ["string", "string", "string"]
-        }
-      ]
-    },
+    "syncQueue": {},
     "slides": [],
     "smartTransactionsState": {
       "fees": {
@@ -1179,6 +1239,15 @@
         "subjectType": "string",
         "svgIcon": "string",
         "version": "string"
+      },
+      "npm:@metamask/stellar-wallet-snap": {
+        "extensionId": "null",
+        "iconUrl": "null",
+        "name": "string",
+        "origin": "string",
+        "subjectType": "string",
+        "svgIcon": "string",
+        "version": "string"
       }
     },
     "subjects": {},
@@ -1190,7 +1259,6 @@
     "throttledOrigins": {},
     "timeoutMinutes": "number",
     "timezone": "string",
-    "tokenBalances": {},
     "tokenScanCache": {},
     "tokens": {
       "data": "null",
@@ -1200,17 +1268,12 @@
       "selected": "null"
     },
     "tokenSecurityTypeDestination": "null",
-    "tokensChainsCache": {},
     "tokenWarnings": [],
     "tradeConfigurations": {
       "testnet": {},
       "mainnet": {}
     },
-    "tracesBeforeMetricsOptIn": [],
-    "traits": {
-      "install_date_ext": "string",
-      "storage_kind": "string"
-    },
+    "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},
     "transactions": [],
@@ -1227,6 +1290,7 @@
     "unapprovedTypedMessagesCount": "number",
     "unconnectedAccountAlertShownOrigins": {},
     "updateModalLastDismissedAt": "null",
+    "upgradedAccounts": {},
     "urlScanCache": {},
     "use4ByteResolution": "boolean",
     "useAddressBarEnsResolution": "boolean",
@@ -1242,8 +1306,9 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
-    "version": "null",
+    "version": "string",
     "versionInfo": [],
+    "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {
       "testnet": [],
@@ -1292,6 +1357,9 @@
       "isOpen": "boolean",
       "title": "string"
     }
+  },
+  "sendMaxValue": {
+    "maxValueMode": {}
   },
   "smartAccounts": {
     "toggleStates": {}

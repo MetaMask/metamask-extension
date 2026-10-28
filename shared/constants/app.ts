@@ -149,6 +149,7 @@ export const MESSAGE_TYPE = {
   WALLET_GET_CAPABILITIES: 'wallet_getCapabilities',
   WALLET_GET_SESSION: 'wallet_getSession',
   WALLET_INVOKE_METHOD: 'wallet_invokeMethod',
+  WALLET_PAY: 'wallet_pay',
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WALLET_REVOKE_SESSION: 'wallet_revokeSession',
   WALLET_SEND_CALLS: 'wallet_sendCalls',
@@ -164,6 +165,7 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_CONFIRMATION: DIALOG_APPROVAL_TYPES.confirmation,
   SNAP_DIALOG_PROMPT: DIALOG_APPROVAL_TYPES.prompt,
   SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
+  HYPERLIQUID_DEPOSIT_PROMPT: 'hyperliquid_deposit_prompt',
   HYPERLIQUID_REFERRAL_CONSENT: 'hyperliquid_referral_consent',
   ASTERDEX_REFERRAL_CONSENT: 'asterdex_referral_consent',
   GMX_REFERRAL_CONSENT: 'gmx_referral_consent',
@@ -175,6 +177,8 @@ export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
 // Custom ApprovalTypes for DeFi referral consent
 export const HYPERLIQUID_APPROVAL_TYPE =
   MESSAGE_TYPE.HYPERLIQUID_REFERRAL_CONSENT;
+export const HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE =
+  MESSAGE_TYPE.HYPERLIQUID_DEPOSIT_PROMPT;
 export const ASTERDEX_APPROVAL_TYPE = MESSAGE_TYPE.ASTERDEX_REFERRAL_CONSENT;
 export const GMX_APPROVAL_TYPE = MESSAGE_TYPE.GMX_REFERRAL_CONSENT;
 export const VARIATIONAL_APPROVAL_TYPE =

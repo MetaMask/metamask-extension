@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import {
   Display,
   FlexDirection,
@@ -15,9 +15,6 @@ export default {
   title: 'Components/ComponentLibrary/BannerTip',
   component: BannerTip,
   tags: ['autodocs'],
-  parameters: {
-    backgrounds: { default: 'alternative' },
-  },
   argTypes: {
     logoType: {
       options: Object.values(BannerTipLogoType),
@@ -25,6 +22,11 @@ export default {
     },
     className: {
       control: 'text',
+    },
+  },
+  globals: {
+    backgrounds: {
+      value: 'alternative',
     },
   },
 } as Meta<typeof BannerTip>;

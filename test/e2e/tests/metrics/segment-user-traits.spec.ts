@@ -7,7 +7,7 @@ import {
   createNewWalletOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { MOCK_ANALYTICS_ID } from '../../constants';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { waitForExpectedTraits } from './helpers';
@@ -33,7 +33,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -63,7 +63,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -93,7 +93,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -117,7 +117,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
@@ -156,7 +156,7 @@ describe('Segment User Traits', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
