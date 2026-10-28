@@ -204,9 +204,8 @@ async function hydrateFromSession(): Promise<void> {
     }
   } catch {
     // Telemetry must not block startup when session storage is unavailable.
-    // Leave reload count unset and skip the write so a failed read cannot
-    // wipe a later successful session.
-    hydrated = true;
+    // Leave `hydrated` false so later record* calls cannot overwrite an
+    // existing session record with unhydrated defaults.
     return;
   }
 

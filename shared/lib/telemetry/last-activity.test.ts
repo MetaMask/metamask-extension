@@ -288,6 +288,34 @@ describe('last-activity', () => {
       ).toBeUndefined();
     });
 
+    it('does not overwrite session storage after a failed hydrate read', async () => {
+      sessionStore.lastActivity = {
+        appStartedAt: 10,
+        lastWriteAt: 50,
+        serviceWorkerReloadCount: 3,
+      };
+      mockStorageSessionGet.mockRejectedValueOnce(
+        new Error('session unavailable'),
+      );
+
+      jest.setSystemTime(1_000);
+      const { hydrateLastActivity, recordWrite } =
+        await import('./last-activity');
+      await hydrateLastActivity();
+      mockStorageSessionSet.mockClear();
+
+      jest.setSystemTime(2_000);
+      recordWrite();
+      await Promise.resolve();
+
+      expect(mockStorageSessionSet).not.toHaveBeenCalled();
+      expect(sessionStore.lastActivity).toStrictEqual({
+        appStartedAt: 10,
+        lastWriteAt: 50,
+        serviceWorkerReloadCount: 3,
+      });
+    });
+
     it('keeps an in-memory timestamp recorded before hydrate finishes', async () => {
       let releaseGet: (() => void) | undefined;
       mockStorageSessionGet.mockImplementationOnce(
