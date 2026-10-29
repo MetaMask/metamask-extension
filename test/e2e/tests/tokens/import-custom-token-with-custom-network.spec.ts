@@ -1,5 +1,6 @@
 import type { Mockttp } from 'mockttp';
 import { utils as ethersUtils } from 'ethers';
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -314,7 +315,9 @@ async function reloadExtension(driver: Driver): Promise<void> {
 
   await driver.switchToWindow(extensionWindow);
   await driver.executeScript(
-    `setTimeout(() => (globalThis.browser ?? globalThis.chrome).runtime.reload(), 100)`,
+    process.env.SELENIUM_BROWSER === Browser.CHROME
+      ? `setTimeout(() => (globalThis.browser ?? globalThis.chrome).runtime.reload(), 100)`
+      : `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
   );
 
   await driver.switchToWindow(blankWindow);
