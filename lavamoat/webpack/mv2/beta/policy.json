@@ -1127,12 +1127,12 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/chomp-api-service>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@metamask/base-data-service": true,
-        "@metamask/controller-utils": true,
+        "@metamask/chomp-api-service>@metamask/controller-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "cockatiel": true
@@ -1317,6 +1317,23 @@
       }
     },
     "@metamask/chain-agnostic-permission>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/chomp-api-service>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
@@ -2353,23 +2370,6 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/money-account-upgrade-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
     "@metamask/signature-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -2583,8 +2583,8 @@
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
         "@metamask/money-account-upgrade-controller>@metamask/delegation-deployments": true,
-        "@metamask/money-account-upgrade-controller>@metamask/keyring-controller": true,
-        "@metamask/money-account-utils": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/money-account-upgrade-controller>@metamask/money-account-utils": true,
         "@metamask/utils": true
       }
     },
@@ -2593,6 +2593,11 @@
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@metamask/transaction-controller": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/money-account-upgrade-controller>@metamask/money-account-utils": {
+      "packages": {
         "@metamask/utils": true
       }
     },
