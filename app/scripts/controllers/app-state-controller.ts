@@ -59,6 +59,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { recordUiInteraction } from '../../../shared/lib/telemetry/last-activity';
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
 import { ShieldSubscriptionError } from '../../../shared/lib/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
@@ -750,6 +751,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSignatureSecurityAlertResponse',
   'getThrottledOriginState',
   'getUnlockPromise',
+  'recordUiInteraction',
   'removeDeferredDeepLink',
   'removePollingToken',
   'removeSlide',
@@ -1156,6 +1158,13 @@ export class AppStateController extends BaseController<
    */
   setLastActiveTime(): void {
     this.#resetTimer();
+  }
+
+  /**
+   * Records a click or keypress inside a MetaMask UI for state-write telemetry.
+   */
+  recordUiInteraction(): void {
+    recordUiInteraction();
   }
 
   /**
