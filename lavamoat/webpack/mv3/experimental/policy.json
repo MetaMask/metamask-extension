@@ -4303,7 +4303,6 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
-        "fetch": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -4330,6 +4329,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils>@metamask/type-utils": true,
+        "@metamask/sentinel-api-service": true,
         "@metamask/utils": true,
         "async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
@@ -8895,7 +8895,8 @@
     },
     "@metamask/transaction-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/user-operation-controller>uuid": {
