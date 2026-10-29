@@ -85,6 +85,38 @@ async function sendKeysWithActions(driver, element, keys) {
 }
 
 /**
+ * Sets the files of an `<input type="file">` through the DevTools protocol,
+ * which also dispatches the `input` and `change` events.
+ *
+ * @param {object} driver - The Driver instance
+ * @param {WebElement} element - The file input
+ * @param {Array<string>} keys - File paths, newline-separated as for sendKeys
+ */
+async function setFileInputFilesWithCdp(driver, element, keys) {
+  const files = keys.join('').split('\n').filter(Boolean);
+  const marker = `${Date.now()}-${Math.random()}`;
+  await driver.driver.executeScript(
+    'arguments[0].setAttribute("data-e2e-file-input", arguments[1])',
+    element,
+    marker,
+  );
+  const { result } = await driver.driver.sendAndGetDevToolsCommand(
+    'Runtime.evaluate',
+    {
+      expression: `document.querySelector('[data-e2e-file-input="${marker}"]')`,
+    },
+  );
+  await driver.driver.sendDevToolsCommand('DOM.setFileInputFiles', {
+    files,
+    objectId: result.objectId,
+  });
+  await driver.driver.executeScript(
+    'arguments[0].removeAttribute("data-e2e-file-input")',
+    element,
+  );
+}
+
+/**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
@@ -152,65 +184,19 @@ function wrapElementWithAPI(element, driver) {
     );
     const isFileInput = inputType === 'file';
 
-    if (isFileInput) {
-      // For file inputs, we must use native sendKeys - JavaScript can't directly set file input values
-      try {
-        return await element.originalSendKeys(...keys);
-      } catch (e) {
-        if (e.name === 'JavascriptError') {
-          // Chrome 140+ CDP issues affect file uploads too
-          // Try workaround: use fetch to load the file and DataTransfer API to set it
-          const filePath = keys[0];
-          console.log(
-            `Chrome 140+ file upload workaround: loading file via fetch for ${filePath}`,
-          );
-
-          // For test files, try loading via file:// protocol or use a test data URL
-          // This workaround only works if the file is accessible via HTTP or if we use a test fixture
-          try {
-            await driver.driver.executeScript(
-              `
-              const input = arguments[0];
-              const filePath = arguments[1];
-              
-              // Create a simple test file for testing purposes
-              // In real scenarios, the test should pre-load the file data
-              const fileName = filePath.split('/').pop() || filePath.split('\\\\').pop() || 'test-file';
-              const fileContent = 'Test file content for E2E testing';
-              const blob = new Blob([fileContent], { type: 'application/octet-stream' });
-              const file = new File([blob], fileName, { type: 'application/pdf' });
-              
-              const dataTransfer = new DataTransfer();
-              dataTransfer.items.add(file);
-              input.files = dataTransfer.files;
-              
-              // Dispatch change event to notify the application
-              input.dispatchEvent(new Event('change', { bubbles: true }));
-              `,
-              element,
-              filePath,
-            );
-            console.log('File upload workaround completed');
-            return;
-          } catch (workaroundError) {
-            console.error('File upload workaround failed:', workaroundError);
-            throw e; // Re-throw original error
-          }
-        }
+    try {
+      await element.originalSendKeys(...keys);
+    } catch (e) {
+      if (e.name !== 'JavascriptError') {
         throw e;
       }
-    }
-
-    try {
-      return await element.originalSendKeys(...keys);
-    } catch (e) {
-      if (e.name === 'JavascriptError') {
-        // ChromeDriver 140+ atoms rely on `arguments.callee.caller`, which SES
-        // lockdown removes, so element sendKeys fails on LavaMoat pages. The
-        // Actions API dispatches real key events without those atoms.
-        await sendKeysWithActions(driver, element, keys);
+      // ChromeDriver 140+ atoms rely on `arguments.callee.caller`, which SES
+      // lockdown removes, so element sendKeys fails on LavaMoat pages.
+      if (isFileInput) {
+        await setFileInputFilesWithCdp(driver, element, keys);
       } else {
-        throw e;
+        // The Actions API dispatches real key events without those atoms.
+        await sendKeysWithActions(driver, element, keys);
       }
     }
   };
@@ -342,8 +328,22 @@ function wrapElementWithAPI(element, driver) {
         }
         await element.originalClick();
       } else if (e.name === 'JavascriptError') {
-        // Chrome 140+ has issues with native WebDriver click, fall back to JavaScript click
-        await driver.driver.executeScript('arguments[0].click()', element);
+        // Chrome 140+ has issues with native WebDriver click, fall back to JavaScript click.
+        // Clicking an <option> via JS doesn't select it, so select it explicitly.
+        await driver.driver.executeScript(
+          `
+          const el = arguments[0];
+          const select = el.tagName === 'OPTION' ? el.closest('select') : null;
+          if (select) {
+            el.selected = true;
+            select.dispatchEvent(new Event('input', { bubbles: true }));
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          } else {
+            el.click();
+          }
+          `,
+          element,
+        );
       } else {
         throw e; // If the error is not related to the loading overlay or modal backdrop, throw it
       }
