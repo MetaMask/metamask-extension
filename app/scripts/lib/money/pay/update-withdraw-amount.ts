@@ -14,6 +14,7 @@ import {
   beginAmountCommit,
   clearAmountCommitIfCurrent,
   commitTransactionPayUpdates,
+  getPendingAmountCommit,
   getTransactionMeta,
   parseMusdHumanAmount,
   pruneStaleAmountCommits,
@@ -82,7 +83,7 @@ export async function updateMoneyAccountWithdrawAmount(
 /**
  * Re-encodes an already funded withdrawal when a new receive token or
  * recipient changes the transfer target. Leaves placeholder or unchanged
- * batches alone.
+ * batches alone. An in-flight typed amount wins over the stored one.
  *
  * @param messenger - Messenger used to encode and commit.
  * @param transactionId - Id of the Money Account withdrawal transaction.
@@ -102,9 +103,12 @@ export async function syncMoneyAccountWithdrawTransfer(
   }
 
   const transfer = getTransfer(transaction);
+  // A pending commit may still write the previous target, so replace it.
+  const pending = getPendingAmountCommit(transactionId);
+  const amountRaw = pending?.amountRaw ?? transfer?.amountRaw;
   const context = getMoneyPayContext(messenger);
 
-  if (!transaction || !transfer || !context) {
+  if (!transaction || amountRaw === undefined || !context) {
     return false;
   }
 
@@ -116,12 +120,12 @@ export async function syncMoneyAccountWithdrawTransfer(
     transaction,
   });
 
-  if (transfer.to.toLowerCase() === target.toLowerCase()) {
+  if (!pending && transfer?.to.toLowerCase() === target.toLowerCase()) {
     return false;
   }
 
   const result = await commitWithdrawAmount({
-    amountRaw: transfer.amountRaw,
+    amountRaw,
     messenger,
     recipientOverride,
     paymentToken,
@@ -145,7 +149,7 @@ async function commitWithdrawAmount({
   transaction: TransactionMeta;
 }): Promise<MoneyAccountWithdrawAmountUpdate | false> {
   const { id: transactionId } = transaction;
-  const isCurrent = beginAmountCommit(transactionId);
+  const isCurrent = beginAmountCommit(transactionId, amountRaw);
 
   try {
     const recipient = resolveWithdrawRecipient(messenger, recipientOverride);

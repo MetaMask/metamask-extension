@@ -486,6 +486,48 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
     );
   });
 
+  it('re-encodes the in-flight typed amount when the token changes', async () => {
+    const { messenger, updateTransactionMetadata } = setup({
+      transactions: [
+        createWithdrawTransaction({
+          transferData: encodeTransfer(HARDWARE_RECIPIENT, 1_000_000n),
+        }),
+      ],
+    });
+    let resolveTyped: (value: unknown) => void = () => undefined;
+    buildWithdrawBatchMock.mockImplementationOnce(
+      async () =>
+        await new Promise((resolve) => {
+          resolveTyped = resolve as typeof resolveTyped;
+        }),
+    );
+
+    const typed = updateMoneyAccountWithdrawAmount(
+      messenger,
+      TRANSACTION_ID,
+      '2',
+      HARDWARE_RECIPIENT,
+      MUSD_RECEIVE_TOKEN,
+    );
+    const synced = syncMoneyAccountWithdrawTransfer(
+      messenger,
+      TRANSACTION_ID,
+      HARDWARE_RECIPIENT,
+      BRIDGED_RECEIVE_TOKEN,
+    );
+
+    await expect(synced).resolves.toBe(true);
+    resolveTyped(await buildWithdrawBatchMock.mock.results[1].value);
+    await expect(typed).resolves.toBe(false);
+    expect(buildWithdrawBatchMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        amount: 2_000_000n,
+        recipient: MONEY_ACCOUNT_ADDRESS_MOCK,
+      }),
+    );
+    expect(updateTransactionMetadata).toHaveBeenCalledTimes(1);
+  });
+
   it('leaves the batch alone when the transfer target already matches', async () => {
     const { messenger, updateTransactionMetadata } = setup({
       transactions: [
