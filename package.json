@@ -527,7 +527,7 @@
     "@metamask/snaps-utils": "^12.6.1",
     "@metamask/solana-wallet-snap": "^7.2.0",
     "@metamask/solana-wallet-standard": "^1.0.0",
-    "@metamask/stellar-wallet-snap": "^1.3.0",
+    "@metamask/stellar-wallet-snap": "^2.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^8.0.1",
     "@metamask/transaction-controller": "^72.3.0",
