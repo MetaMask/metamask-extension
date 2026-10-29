@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box } from '@metamask/design-system-react';
 import { useMainNavItems } from '../../../hooks/useMainNavItems';
 import { SideNavAccounts } from './side-nav-accounts';
 import { SideNavItem } from './side-nav-item';
@@ -16,9 +15,7 @@ export const SideNav = () => {
       // Keeps the side nav out of the root page transition, like the bottom nav bar.
       style={{ viewTransitionName: 'side-nav' }}
     >
-      <Box padding={4}>
-        <img alt="" className="size-7" src="./images/logo/metamask-fox.svg" />
-      </Box>
+      <img alt="" className="m-4 size-7" src="./images/logo/metamask-fox.svg" />
       <nav className="flex shrink-0 flex-col gap-1 pb-2">
         {items.map(({ id, icon, label, isActive, onClick }) => (
           <SideNavItem
