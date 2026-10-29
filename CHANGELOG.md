@@ -7,6 +7,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.55.0]
+
+### Added
+
+- Added a link to supported passkey providers when passkey setup fails because the provider is unsupported (#47275)
+- Added Stellar as a default address option (#47134)
+- Added a mobile QR code for Limit Order deeplinks (#47181)
+- Added friendly names for known contract addresses in Activity (#47149)
+
+### Changed
+
+- Made marketing data collection independent of MetaMetrics and corrected the default marketing opt-in for social login users in the US (#47039)
+- Disconnected the backend WebSocket when Basic functionality is turned off (#47068)
+- Displayed the Money header while content loads and aligned its spacing with other pages (#47202)
+- Listed networks with logos first in Chainlist dropdowns (#47205)
+- Reorganized default onboarding settings into Privacy, Backup and sync, and Networks sections (#47192)
+- Updated error monitoring for swap and batch-sell flows (#47183)
+- Added self-onboarding support for development tooling (#46916)
+- Updated how Stellar spendable balances use asset decimals (#47263)
+- Updated the bundled Stellar wallet (#47198)
+- Improved transaction simulation accuracy for verified contracts (#47025)
+- Updated the preinstalled Stellar wallet. (#47080)
+
+### Removed
+
+- Removed the Speed up action from pending swap and bridge activity rows (#47152)
+
+### Fixed
+
+- Fixed Perps order and close failures to clearly explain slippage-related rejections (#47264)
+- Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions (#47233)
+- Fixed the token list loading state to show skeleton rows until assets load (#47248)
+- Kept default test networks visible in Chainlist when Show test networks is off and enabled the setting when one is opened (#47213)
+- Fixed Money balances and earnings remaining visible when privacy mode is enabled (#47139)
+- Fixed duplicate native token entries in Manage Tokens (#47038)
+- Added a Max option for Money account deposits using non-native tokens (#47115)
+- Updated the wallet recovery completion screen and prevented onboarding content from flashing after Secret Recovery Phrase backup (#45879)
+- Fixed Stellar contract-token sends showing a memo field when memos are not supported. (#46973)
+- Fixed the bottom navigation bar and account header appearing on Money subpages. (#47268)
+- Fixed Perps order and position-close failures to show clear slippage errors for immediate-or-cancel and price-movement rejections. (#47182, #47264)
+- Fixed MetaMask Pay quotes not loading for some users with outdated token data saved from older versions. (#47233, #47272)
+- Fixed errors when changing a Money Account deposit amount. (#47194)
+- Fixed Bitcoin price charts showing another network's history when that network was selected. (#47109)
+- Fixed Swap Back returning to Home instead of the previous page. (#46888)
+- Fixed Flask builds remaining on the loading screen when Perps was not included in the build. (#47171)
+- Fixed errors when opening unknown wallet pages by showing a Page Not Found screen. (#46749)
+- Fixed missing native-token icons for sends in Activity on networks not supported by Bridge. (#47145)
+- Fixed transaction nonce reuse when the network transaction count lagged behind a confirmed transaction. (#47085)
+- Fixed Money deposits confirming the previous Max amount when Add funds was pressed before the typed amount finished updating. (#47018)
+- Fixed Money routes becoming a dead end when the bottom navbar was unavailable (#47321)
+
+### Security
+
+- Fixed malicious and suspicious token warnings not appearing in Swaps when destination tokens were opened from deeplinks, asset pages, and other entry points. (#47097)
+
 ## [13.54.0]
 
 ### Added
@@ -3545,6 +3600,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.54.0...HEAD
+[13.55.0]: https://github.com/MetaMask/metamask-extension/compare/v13.54.0...v13.55.0
 [13.54.0]: https://github.com/MetaMask/metamask-extension/compare/v13.53.0...v13.54.0
 [13.53.0]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...v13.53.0
 [13.52.0]: https://github.com/MetaMask/metamask-extension/compare/v13.51.0...v13.52.0
