@@ -24,41 +24,44 @@ describe('helpers', () => {
 
   describe('sigToBytes', () => {
     it('should decode a valid base64url signature string to Uint8Array (modern browsers)', () => {
-      // we don't test `Uint8Array.fromBase64` because node.js doesn't support
-      // it. It is IDENTICAL to doing `Buffer.from(bytes).toString('base64url')`
-      //
-      // If node ever ships `Uint8Array.fromBase64` this test will fail, and we
-      // can write a real test for it.
-      //
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((Uint8Array as any).fromBase64).toBeUndefined();
+      // 64 bytes = 86 base64url chars (no padding)
+      // Use a known 64-byte buffer, encode to base64url, then decode
+      // `i + 98`, because this causes both url-safe replacements to occur in
+      // the output.
+      const bytes = Array.from({ length: 64 }, (_, i) => i + 98);
+
+      // @ts-expect-error This method not supported by tsc until v6
+      const base64url = new Uint8Array(bytes).toBase64({
+        alphabet: 'base64url',
+      });
+      const result = sigToBytes(base64url);
+      expect(result).toBeInstanceOf(Uint8Array);
+      expect(result).toHaveLength(64);
+      expect(Array.from(result)).toStrictEqual(bytes);
     });
 
     it('should decode a valid base64url signature string to Uint8Array (old browsers fallback)', () => {
-      // we don't test `Uint8Array.fromBase64` because node.js doesn't support
-      // it. Its is IDENTICAL to doing `Buffer.from(bytes).toString('base64url')`
       // Simulate old browser by deleting Uint8Array.fromBase64
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const orig = (Uint8Array as any).fromBase64;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (Uint8Array as any).fromBase64;
+      // @ts-expect-error This method not supported by tsc until v6
+      jest.spyOn(Uint8Array, 'fromBase64', undefined);
+
+      // Re-import so that module-scope check for `Uint8Array.fromBase64` is re-evaluated
+      const { sigToBytes: reimportedSigToBytes } = require('./helpers');
 
       // 64 bytes = 86 base64url chars (no padding)
       // Use a known 64-byte buffer, encode to base64url, then decode
       // `i + 98`, because this causes both url-safe replacements to occur in
       // the output.
       const bytes = Array.from({ length: 64 }, (_, i) => i + 98);
-      // we can't use `btoa`, as it doesn't output a base64url, so we use Buffer
-      // for test because our tests are in Node, so we can :-)
-      const base64url = Buffer.from(bytes).toString('base64url');
-      const result = sigToBytes(base64url);
+
+      // @ts-expect-error This method not supported by tsc until v6
+      const base64url = new Uint8Array(bytes).toBase64({
+        alphabet: 'base64url',
+      });
+      const result = reimportedSigToBytes(base64url);
       expect(result).toBeInstanceOf(Uint8Array);
       expect(result).toHaveLength(64);
       expect(Array.from(result)).toStrictEqual(bytes);
-
-      // Restore the original method
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (Uint8Array as any).fromBase64 = orig;
     });
   });
 
@@ -135,7 +138,9 @@ describe('helpers', () => {
     it('should return undefined or throw if no key is present when in production-mode', () => {
       delete process.env.IN_TEST;
       delete process.env.DEEP_LINK_PUBLIC_KEY;
-      expect(() => getKeyData()).toThrow(Error);
+      expect(() => getKeyData()).toThrowErrorMatchingInlineSnapshot(
+        `"input argument must be a string"`,
+      );
     });
   });
 });
