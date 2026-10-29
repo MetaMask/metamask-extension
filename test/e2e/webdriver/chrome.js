@@ -40,6 +40,7 @@ class ChromeDriver {
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
       '--no-sandbox',
+      '--enable-unsafe-extension-debugging', // Allow reloading extensions at runtime without developer mode
     ];
 
     if (isBenchmark) {
