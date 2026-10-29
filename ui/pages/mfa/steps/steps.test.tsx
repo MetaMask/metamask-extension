@@ -762,13 +762,13 @@ describe('FailureStep', () => {
       screen.getByText(messages.mfaFailureTitle.message),
     ).toBeInTheDocument();
     expect(screen.queryByText(messages.mfaErrorGeneric.message)).toBeNull();
+    expect(screen.queryByTestId(MfaFlowTestIds.SECONDARY_BUTTON)).toBeNull();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
     expect(onAction).toHaveBeenCalledWith({ type: 'retry' });
-    fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
-    expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
 
   it('only offers to close for a final error', () => {
+    const onAction = jest.fn();
     render(
       <FailureStep
         {...buildState({
@@ -777,14 +777,19 @@ describe('FailureStep', () => {
           canRetry: false,
         })}
         reason={reason}
-        onAction={jest.fn()}
+        onAction={onAction}
       />,
     );
 
     expect(
+      screen.getByText(messages.mfaFailureTitle.message),
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(messages.mfaErrorLimitReached.message),
     ).toBeInTheDocument();
     expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
 
   it('sends an error only support can fix to support', () => {
