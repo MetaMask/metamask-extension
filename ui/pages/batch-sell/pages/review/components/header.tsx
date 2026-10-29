@@ -10,6 +10,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonVariant,
+  FontFamily,
   FontWeight,
   IconName,
   Text,
@@ -88,11 +89,8 @@ export const Header = ({
           }
         >
           <Text
-            variant={
-              (formattedTotalReceive?.length ?? 0) > 10
-                ? TextVariant.DisplayMd
-                : TextVariant.DisplayLg
-            }
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
             color={TextColor.SuccessDefault}
             className="min-w-0 break-words"
           >

@@ -12,10 +12,10 @@ import type {
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
+  isInWalletPerpsDepositTransaction,
   isPerpsWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
 import {
@@ -67,22 +67,6 @@ const earlyPendingToastTypes = new Set([
   TransactionType.perpsDeposit,
 ]);
 
-/**
- * In-wallet Perps deposits are toasted by `PerpsDepositToast`, which follows
- * the deposit the Perps controller created. Deposits a dApp requests through
- * `wallet_pay` are not tracked by the Perps controller, so they use the
- * generic toasts instead.
- *
- * @param transactionMeta - The transaction to check.
- * @returns Whether the transaction is an in-wallet Perps deposit.
- */
-function isInWalletPerpsDeposit(transactionMeta: TransactionMeta): boolean {
-  return (
-    transactionMeta.origin === ORIGIN_METAMASK &&
-    hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
-  );
-}
-
 // Separate batch txs that share one toast with the main send/swap/bridge tx.
 export const batchHelperTransactionTypes = [
   TransactionType.bridgeApproval,
@@ -102,7 +86,9 @@ function isExcludedTransactionType(
   }
   return (
     hasTransactionType(transactionMeta, excludedTransactionTypes) ||
-    isInWalletPerpsDeposit(transactionMeta) ||
+    // In-wallet Perps deposits have their own toast (`PerpsDepositToast`).
+    // dApp-requested ones use the generic toasts.
+    isInWalletPerpsDepositTransaction(transactionMeta) ||
     isMoneyAccountTx(transactionMeta) ||
     isMoneyAccountChildTx(transactionMeta, transactions)
   );

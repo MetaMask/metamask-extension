@@ -293,7 +293,6 @@ import {
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
-  TokenRatesControllerInit,
 } from './messenger-client-init/assets';
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
 import { ComplianceServiceInit } from './messenger-client-init/compliance-service-init';
@@ -593,11 +592,8 @@ export default class MetamaskController extends EventEmitter {
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
-      // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
-      // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
-      TokenRatesController: TokenRatesControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
@@ -739,7 +735,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController =
       messengerClientsByName.TokenDetectionController;
     this.tokensController = messengerClientsByName.TokensController;
-    this.tokenRatesController = messengerClientsByName.TokenRatesController;
     this.currencyRateController = messengerClientsByName.CurrencyRateController;
     this.multichainNetworkController =
       messengerClientsByName.MultichainNetworkController;
@@ -1370,7 +1365,6 @@ export default class MetamaskController extends EventEmitter {
      */
     const resetOnRestartStore = {
       AccountTracker: this.accountTrackerController,
-      TokenRatesController: this.tokenRatesController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
@@ -1443,7 +1437,6 @@ export default class MetamaskController extends EventEmitter {
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
         MultichainTransactionsController: this.multichainTransactionsController,
-        TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
@@ -2408,7 +2401,6 @@ export default class MetamaskController extends EventEmitter {
       tokensController,
       txController,
       backup,
-      tokenRatesController,
       // Notification Controllers
       authenticationController,
       notificationServicesController,
@@ -2738,17 +2730,6 @@ export default class MetamaskController extends EventEmitter {
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
         ),
-
-      // TokenRatesController
-
-      tokenRatesStartPolling:
-        tokenRatesController.startPolling.bind(tokenRatesController),
-      tokenRatesStopPollingByPollingToken:
-        tokenRatesController.stopPollingByPollingToken.bind(
-          tokenRatesController,
-        ),
-
-      // TokenDetectionController
 
       tokenDetectionStartPolling: tokenDetectionController.startPolling.bind(
         tokenDetectionController,
@@ -5485,7 +5466,6 @@ export default class MetamaskController extends EventEmitter {
     try {
       this.gasFeeController.stopAllPolling();
       this.currencyRateController.stopAllPolling();
-      this.tokenRatesController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
@@ -5513,7 +5493,6 @@ export default class MetamaskController extends EventEmitter {
       // Consider storing the tokens per controller in state instead.
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
-      this.tokenRatesController.stopPollingByPollingToken(pollingToken);
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);
