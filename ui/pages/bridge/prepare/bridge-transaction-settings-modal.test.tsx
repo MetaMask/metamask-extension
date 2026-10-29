@@ -66,10 +66,7 @@ setBackgroundConnection({
   setSwapsLiveness: jest.fn(),
   getStatePatches: jest.fn(),
   messengerCall: messengerCallMock,
-  resetState: jest.fn(),
   gasFeeStartPolling: jest.fn(),
-  trackUnifiedSwapBridgeEvent: jest.fn(),
-  updateBridgeQuoteRequestParams: jest.fn(),
 });
 
 const TX_MODAL = {
