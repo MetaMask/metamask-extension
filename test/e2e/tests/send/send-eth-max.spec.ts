@@ -5,16 +5,34 @@
  * - Max amount calculation
  * - Gas fee changes affecting max amount
  * - Custom gas values with max amount
+ * - Fee estimates seeded for a non-default chain id
  */
 
+import type {
+  GasFeeEstimates,
+  GasFeeStateFeeMarket,
+} from '@metamask/gas-fee-controller';
+import {
+  type NetworkConfiguration,
+  NetworkStatus,
+  RpcEndpointType,
+} from '@metamask/network-controller';
+import { type Hex } from '@metamask/utils';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+} from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
-import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
+import {
+  sendNativeMaxAndCheckConfirmedActivity,
+  validateTransaction,
+} from '../../page-objects/flows/send-transaction.flow';
 import { mockEthPrices } from '../tokens/utils/mocks';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -68,6 +86,171 @@ const ASSETS_CONTROLLER_ETH_1700 = {
 };
 
 const ETH_USD_PRICE = 1700;
+
+// Chain id `0xdef1` (decimal `57073`) is separate from localhost `0x539`.
+// Hex and decimal forms are different `gasFeeEstimatesByChainId` keys.
+// Native max reads one key and does not wait for a gas poll, so both forms
+// are seeded.
+const CUSTOM_EVM_CHAIN_ID: Hex = '0xdef1';
+const CUSTOM_EVM_DECIMAL_CHAIN_ID = '57073';
+const CUSTOM_EVM_NATIVE_ASSET_ID = `eip155:${CUSTOM_EVM_DECIMAL_CHAIN_ID}/slip44:60`;
+const CUSTOM_EVM_CLIENT_ID = 'custom-evm';
+const CUSTOM_EVM_BALANCE_HEX = '0x15af1d78b58c40000';
+const CUSTOM_EVM_BALANCE_ETH = '25';
+const CUSTOM_EVM_RECIPIENT = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
+
+// Fees are high enough that reserving gas moves the confirmation heading
+// below 25. A normal ~20 gwei fee is smaller than the heading's rounding
+// step, so "24.999 ETH" is shown as "25 ETH".
+const CUSTOM_EVM_SUGGESTED_GAS_FEES: GasFeeEstimates = {
+  low: {
+    suggestedMaxPriorityFeePerGas: '100',
+    suggestedMaxFeePerGas: '1000',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 30000,
+  },
+  medium: {
+    suggestedMaxPriorityFeePerGas: '100',
+    suggestedMaxFeePerGas: '1000',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 45000,
+  },
+  high: {
+    suggestedMaxPriorityFeePerGas: '100',
+    suggestedMaxFeePerGas: '1000',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 60000,
+  },
+  estimatedBaseFee: '900',
+  networkCongestion: 0.14685,
+  latestPriorityFeeRange: ['100', '100'],
+  historicalPriorityFeeRange: ['100', '100'],
+  historicalBaseFeeRange: ['900', '900'],
+  priorityFeeTrend: 'down',
+  baseFeeTrend: 'up',
+};
+
+const CUSTOM_EVM_GAS_FEE_STATE: GasFeeStateFeeMarket = {
+  estimatedGasFeeTimeBounds: {},
+  gasEstimateType: 'fee-market',
+  gasFeeEstimates: CUSTOM_EVM_SUGGESTED_GAS_FEES,
+};
+
+const CUSTOM_EVM_ACCOUNT_BALANCE = {
+  [DEFAULT_FIXTURE_ACCOUNT]: {
+    balance: CUSTOM_EVM_BALANCE_HEX,
+    stakedBalance: '0x0',
+  },
+};
+
+/**
+ * Custom EVM network entry for hex chain id `0xdef1`.
+ *
+ * @returns Network configuration selected by the fixture.
+ */
+function customEvmNetworkConfiguration(): NetworkConfiguration {
+  return {
+    blockExplorerUrls: ['http://localhost:8545'],
+    chainId: CUSTOM_EVM_CHAIN_ID,
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    name: 'Custom EVM',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: CUSTOM_EVM_CLIENT_ID,
+        type: RpcEndpointType.Custom,
+        url: 'http://localhost:8545',
+      },
+    ],
+  };
+}
+
+/**
+ * Builds the custom EVM fixture. Fee estimates are seeded before the send
+ * because native Max reads them by exact key and does not wait for a gas poll.
+ * The gas API itself is keyed by the decimal network id.
+ *
+ * @returns Fixture state for the non-default chain max-send flow.
+ */
+function buildCustomEvmMaxFixture() {
+  return new FixtureBuilderV2()
+    .withNetworkController({
+      selectedNetworkClientId: CUSTOM_EVM_CLIENT_ID,
+      networkConfigurationsByChainId: {
+        [CUSTOM_EVM_CHAIN_ID]: customEvmNetworkConfiguration(),
+      },
+      networksMetadata: {
+        [CUSTOM_EVM_CLIENT_ID]: {
+          EIPS: { 1559: true },
+          status: NetworkStatus.Available,
+        },
+      },
+    })
+    .withEnabledNetworks({
+      eip155: { [CUSTOM_EVM_CHAIN_ID]: true },
+    })
+    .withAccountTracker({
+      accountsByChainId: {
+        [CUSTOM_EVM_CHAIN_ID]: CUSTOM_EVM_ACCOUNT_BALANCE,
+      },
+    })
+    .withAssetsController({
+      assetsInfo: {
+        [CUSTOM_EVM_NATIVE_ASSET_ID]: ETH_NATIVE_INFO,
+      },
+      assetsBalance: {
+        [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+          [CUSTOM_EVM_NATIVE_ASSET_ID]: { amount: CUSTOM_EVM_BALANCE_ETH },
+        },
+      },
+      assetsPrice: {
+        'eip155:1/slip44:60': ASSETS_PRICE_ETH_1700,
+        [CUSTOM_EVM_NATIVE_ASSET_ID]: ASSETS_PRICE_ETH_1700,
+      },
+    })
+    .withGasFeeController({
+      gasEstimateType: 'fee-market',
+      gasFeeEstimates: CUSTOM_EVM_SUGGESTED_GAS_FEES,
+      gasFeeEstimatesByChainId: {
+        [CUSTOM_EVM_CHAIN_ID]: CUSTOM_EVM_GAS_FEE_STATE,
+        [CUSTOM_EVM_DECIMAL_CHAIN_ID]: CUSTOM_EVM_GAS_FEE_STATE,
+      },
+    })
+    .build();
+}
+
+/**
+ * Mocks gas, token, and ETH price HTTP for the custom EVM chain. The gas API
+ * route uses the decimal network id for every chain.
+ *
+ * @param mockServer - Mockttp server for this test.
+ */
+async function mockCustomEvmApis(mockServer: MockttpServer): Promise<void> {
+  await mockServer
+    .forGet(
+      `${GAS_API_BASE_URL}/networks/${CUSTOM_EVM_DECIMAL_CHAIN_ID}/suggestedGasFees`,
+    )
+    .asPriority(99)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: CUSTOM_EVM_SUGGESTED_GAS_FEES,
+    }));
+
+  await mockServer
+    .forGet(
+      `https://token.api.cx.metamask.io/tokens/${CUSTOM_EVM_DECIMAL_CHAIN_ID}`,
+    )
+    .asPriority(99)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
+  await mockEthPrices(mockServer, ETH_USD_PRICE, [CUSTOM_EVM_CHAIN_ID]);
+}
 
 describe('Send ETH - Max Amount', function () {
   // This test is flaky in FF - so we are skipping it for now
@@ -317,6 +500,28 @@ describe('Send ETH - Max Amount', function () {
         });
 
         await validateTransaction(driver, '-10');
+      },
+    );
+  });
+
+  it('sends max native below the balance when fee estimates are seeded for a non-default chain id', async function () {
+    await withFixtures(
+      {
+        fixtures: buildCustomEvmMaxFixture(),
+        localNodeOptions: {
+          chainId: Number(CUSTOM_EVM_DECIMAL_CHAIN_ID),
+          hardfork: 'london',
+        },
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockCustomEvmApis,
+      },
+      async ({ driver }) => {
+        await sendNativeMaxAndCheckConfirmedActivity({
+          driver,
+          chainId: CUSTOM_EVM_CHAIN_ID,
+          recipientAddress: CUSTOM_EVM_RECIPIENT,
+          availableBalance: CUSTOM_EVM_BALANCE_ETH,
+        });
       },
     );
   });
