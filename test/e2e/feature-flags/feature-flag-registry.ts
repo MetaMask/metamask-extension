@@ -3264,6 +3264,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  extensionUxFullscreenRedesign: {
+    inProd: true,
+    name: 'extensionUxFullscreenRedesign',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.50.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   extensionUxHyperliquidDepositPrompt: {
     inProd: true,
     name: 'extensionUxHyperliquidDepositPrompt',

@@ -14,11 +14,13 @@ import type { Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Box, Skeleton } from '@metamask/design-system-react';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
-import { ButtonLink, IconName } from '../../component-library';
-import { TextVariant } from '../../../helpers/constants/design-system';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -35,10 +37,6 @@ import {
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
-  getDataCollectionForMarketing,
-  getAnalyticsId,
-  getConsentDecisionMade,
-  getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
@@ -70,6 +68,7 @@ import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
 import WalletOverview from './wallet-overview';
+import { getBalanceAlignmentClassName } from './wallet-overview-layout';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
@@ -86,17 +85,32 @@ export type CoinOverviewProps = {
 
 const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
-const BalanceOverviewSkeleton = () => (
-  <Box
-    className="wallet-overview__balance-skeleton flex w-full max-w-[400px] items-center gap-[10px] px-2 pb-4 pt-6 [.wallet-overview-fullscreen_&]:px-4"
-    data-testid="coin-overview-balance-skeleton"
-  >
-    <Box className="wallet-overview__balance-skeleton-lines flex w-full max-w-[368px] flex-col items-start justify-center gap-[2px]">
-      <Skeleton className="h-[50px] w-full rounded-lg" />
-      <Skeleton className="h-6 w-[180px] rounded-lg" />
+const BalanceOverviewSkeleton = () => {
+  const environmentType = getEnvironmentType();
+  const isFullscreenOrSidepanel =
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  return (
+    <Box
+      className={classnames(
+        'flex w-full max-w-[400px] items-center gap-[10px] pb-4 pt-6',
+        isFullscreenOrSidepanel ? 'px-4' : 'px-2',
+      )}
+      data-testid="coin-overview-balance-skeleton"
+    >
+      <Box
+        className={classnames(
+          'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
+          getBalanceAlignmentClassName(),
+        )}
+      >
+        <Skeleton className="h-14 w-full rounded-lg md:h-[75px]" />
+        <Skeleton className="h-6 w-[180px] rounded-lg" />
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 export const LegacyAggregatedBalance = ({
   classPrefix,
@@ -211,15 +225,6 @@ export const CoinOverview = ({
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
   const { trackEvent, createEventBuilder } = useAnalytics();
-
-  const analyticsId = useSelector(getAnalyticsId);
-  const consentDecisionMade = useSelector(getConsentDecisionMade);
-  const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = useMemo(
-    () => consentDecisionMade && isOptedIn,
-    [consentDecisionMade, isOptedIn],
-  );
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -367,32 +372,6 @@ export const CoinOverview = ({
     dispatch(setPrivacyMode(!privacyMode));
   }, [dispatch, privacyMode]);
 
-  const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl(
-      'explore/tokens',
-      'ext_portfolio_button',
-      analyticsId,
-      isMetaMetricsEnabled === true,
-      isMarketingEnabled === true,
-    );
-    global.platform.openTab({ url });
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Navigation)
-        .addProperties({
-          location: 'Home',
-          text: 'Portfolio',
-        })
-        .build(),
-    );
-  }, [
-    isMarketingEnabled,
-    isMetaMetricsEnabled,
-    analyticsId,
-    trackEvent,
-    createEventBuilder,
-  ]);
-
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
     trackEvent(
@@ -416,30 +395,9 @@ export const CoinOverview = ({
     }
   }, [selectedAccountGroup, navigate, trackEvent, chainId, createEventBuilder]);
 
-  const renderPercentageAndAmountChange = () => {
-    const renderPercentageAndAmountChangeTrail = () => {
-      return (
-        <ButtonLink
-          endIconName={IconName.Export}
-          onClick={handlePortfolioOnClick}
-          as="a"
-          data-testid="portfolio-link"
-          textProps={{ variant: TextVariant.bodyMdMedium }}
-        >
-          {t('discover')}
-        </ButtonLink>
-      );
-    };
-
-    return (
-      <Box className="wallet-overview__currency-wrapper">
-        <AccountGroupBalanceChange
-          period={period}
-          trailingChild={renderPercentageAndAmountChangeTrail}
-        />
-      </Box>
-    );
-  };
+  const renderPercentageAndAmountChange = () => (
+    <AccountGroupBalanceChange period={period} />
+  );
 
   const balanceSection: React.ReactNode = (
     <AccountGroupBalance
@@ -457,7 +415,12 @@ export const CoinOverview = ({
       title={t('balanceOutdated')}
       disabled={!balanceIsCached}
     >
-      <div className={`${classPrefix}-overview__balance`}>
+      <div
+        className={classnames(
+          `${classPrefix}-overview__balance`,
+          getBalanceAlignmentClassName(),
+        )}
+      >
         <div className={`${classPrefix}-overview__primary-container`}>
           {balanceSection}
           {balanceIsCached && !shouldShowBalanceEmptyState && (
@@ -483,9 +446,7 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
-      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       balance={balanceContent}
-      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       buttons={
         <CoinButtons
           {...{

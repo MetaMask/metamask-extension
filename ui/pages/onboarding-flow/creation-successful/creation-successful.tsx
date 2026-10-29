@@ -14,6 +14,10 @@ import {
   BoxAlignItems,
   TextButton,
 } from '@metamask/design-system-react';
+import {
+  MarketingMoment,
+  type MarketingMomentAction,
+} from '../../../components/ui/marketing-moment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
@@ -169,78 +173,92 @@ export default function CreationSuccessful() {
     );
   };
 
+  const openWalletDisabled = isSidePanelEnabled && isSidePanelOpen;
+
   const handleLearnMoreClick = () => {
     global.platform.openTab({
       url: learnMoreLink,
     });
   };
 
+  if (!isFromSettingsSRPBackup) {
+    return (
+      <MarketingMoment
+        className="h-full"
+        data-testid="parent-selector-onboarding-complete"
+        title={t('yourWalletIsReady')}
+        artwork={<WalletReadyAnimation />}
+        artworkWrapperProps={{
+          className: 'pointer-events-none h-[400px] flex-none',
+        }}
+        primaryAction={
+          {
+            label: doneButtonLabel,
+            onClick: onDone,
+            isDisabled: openWalletDisabled,
+            'data-testid': 'onboarding-complete-done',
+          } as MarketingMomentAction
+        }
+        secondaryAction={
+          {
+            label: t('manageDefaultSettings'),
+            onClick: () => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE),
+            isDisabled: openWalletDisabled,
+            'data-testid': 'manage-default-settings',
+          } as MarketingMomentAction
+        }
+      />
+    );
+  }
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Between}
       gap={6}
-      className="creation-successful h-full"
+      className="h-full"
       data-testid="parent-selector-onboarding-complete"
     >
-      {isFromSettingsSRPBackup && (
-        <Box>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            justifyContent={BoxJustifyContent.Center}
-            alignItems={BoxAlignItems.Start}
-          >
-            <Text
-              variant={TextVariant.HeadingLg}
-              className="self-start mb-4 flex justify-center"
-            >
-              {t('yourWalletIsReadyFromReminder')}
-            </Text>
-            <Box className="w-full mb-6">
-              <Box className="w-36 h-36 mx-auto">{renderFox}</Box>
-            </Box>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              className="mb-6"
-            >
-              {renderDetails1}
-            </Text>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              className="mb-6"
-            >
-              {t('walletReadyLearn', [
-                <TextButton
-                  key="walletReadyLearn"
-                  className="hover:bg-transparent active:bg-transparent w-fit"
-                  onClick={handleLearnMoreClick}
-                >
-                  {t('learnHow')}
-                </TextButton>,
-              ])}
-            </Text>
-          </Box>
-        </Box>
-      )}
-      {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
-      {!isFromSettingsSRPBackup && (
-        <Text className="title">{t('yourWalletIsReady')}</Text>
-      )}
-      {renderDoneButton()}
-      {!isFromSettingsSRPBackup && (
-        <Button
-          variant={ButtonVariant.Tertiary}
-          size={ButtonSize.Lg}
-          className="w-full"
-          data-testid="manage-default-settings"
-          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
-          disabled={isSidePanelEnabled && isSidePanelOpen}
+      <Box>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Start}
         >
-          {t('manageDefaultSettings')}
-        </Button>
-      )}
+          <Text
+            variant={TextVariant.HeadingLg}
+            className="self-start mb-4 flex justify-center"
+          >
+            {t('yourWalletIsReadyFromReminder')}
+          </Text>
+          <Box className="w-full mb-6">
+            <Box className="w-36 h-36 mx-auto">{renderFox}</Box>
+          </Box>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            className="mb-6"
+          >
+            {renderDetails1}
+          </Text>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            className="mb-6"
+          >
+            {t('walletReadyLearn', [
+              <TextButton
+                key="walletReadyLearn"
+                className="hover:bg-transparent active:bg-transparent w-fit"
+                onClick={handleLearnMoreClick}
+              >
+                {t('learnHow')}
+              </TextButton>,
+            ])}
+          </Text>
+        </Box>
+      </Box>
+      {renderDoneButton()}
     </Box>
   );
 }
