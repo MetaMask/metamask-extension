@@ -74,7 +74,9 @@ describe('SideNavAccounts', () => {
   it('renders the title and the account list', () => {
     renderSideNavAccounts();
 
-    expect(screen.getByText(messages.accounts.message)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: messages.accounts.message }),
+    ).toBeInTheDocument();
     expect(screen.getAllByTestId(walletHeaderTestId).length).toBeGreaterThan(0);
     expect(screen.getByText('Account 1')).toBeInTheDocument();
     expect(screen.getByText('Account 2')).toBeInTheDocument();
@@ -169,6 +171,9 @@ describe('SideNavAccounts', () => {
       });
 
       expect(screen.queryByTestId(searchInputTestId)).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: searchButtonName }),
+      ).toHaveFocus();
     });
   });
 

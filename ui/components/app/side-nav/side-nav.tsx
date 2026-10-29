@@ -10,7 +10,7 @@ export const SideNav = () => {
   const items = useMainNavItems();
 
   return (
-    <aside
+    <div
       data-testid="side-nav"
       className="side-nav flex h-full min-h-0 w-[320px] shrink-0 flex-col bg-background-default border-r border-border-muted"
       // Keeps the side nav out of the root page transition, like the bottom nav bar.
@@ -32,6 +32,6 @@ export const SideNav = () => {
         ))}
       </nav>
       <SideNavAccounts />
-    </aside>
+    </div>
   );
 };

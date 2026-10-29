@@ -1,10 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon,
   ButtonIconSize,
-  ButtonIconVariant,
   FontWeight,
   IconName,
   Text,
@@ -47,6 +46,7 @@ export const SideNavAccounts = () => {
   );
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchButtonRef = useRef<HTMLButtonElement>(null);
   const {
     searchPattern,
     onSearchBarChange,
@@ -67,6 +67,7 @@ export const SideNavAccounts = () => {
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Escape') {
         handleSearchToggle();
+        searchButtonRef.current?.focus();
       }
     },
     [handleSearchToggle],
@@ -90,11 +91,13 @@ export const SideNavAccounts = () => {
           variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           color={TextColor.TextDefault}
+          asChild
         >
-          {t('accounts')}
+          <h2>{t('accounts')}</h2>
         </Text>
         <div className="flex items-center gap-1">
           <ButtonIcon
+            ref={searchButtonRef}
             iconName={IconName.Search}
             size={ButtonIconSize.Sm}
             ariaLabel={t('searchYourAccounts')}
