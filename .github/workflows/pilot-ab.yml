@@ -11,7 +11,7 @@ name: Pilot A/B benchmarks
 #
 # Round 2 (branches trigger-ci-pilot-r2*): StandardHome only, default 100
 # shards per browser. Build B gets a busy-wait; shard s runs arm (s-1) % 4 with
-# the iteration count from R2_ITERATIONS, and which build goes first alternates
+# the duration from R2_INJECT_MS, and which build goes first alternates
 # every 4 shards so each arm is balanced.
 
 on:
@@ -29,8 +29,9 @@ env:
   BENCHMARK_AB_PILOT: '1'
   # Session order; a random per-job flip swaps which build goes first.
   BENCHMARK_AB_SEQUENCE: ABBABAABAB
-  # Round 2 busy-wait iterations per arm (arm 0 is the hook with no work).
-  R2_ITERATIONS: '{"chrome": [0, 4000000, 8000000, 16000000], "firefox": [0, 6000000, 12000000, 24000000]}'
+  # Round 2 busy-wait milliseconds per arm, about 2, 4 and 8% of median
+  # uiStartup (arm 0 is the hook with no work).
+  R2_INJECT_MS: '{"chrome": [0, 19, 38, 76], "firefox": [0, 31, 62, 125]}'
 
 jobs:
   plan:
@@ -61,7 +62,7 @@ jobs:
             exit 1
           fi
           if (( round == 2 )); then
-            matrix=$(jq -nc --argjson s "$shards" --argjson it "$R2_ITERATIONS" '
+            matrix=$(jq -nc --argjson s "$shards" --argjson ms "$R2_INJECT_MS" '
               {include: [
                 ("chrome", "firefox") as $browser
                 | range(1; $s + 1) as $shard
@@ -69,9 +70,9 @@ jobs:
                 | {browser: $browser, pageType: "startupStandardHome",
                    shard: $shard, arm: $arm,
                    flip: (((($shard - 1) / 4) | floor) % 2),
-                   iterations: $it[$browser][$arm],
+                   injectMs: $ms[$browser][$arm],
                    suffix: "-arm\($arm)",
-                   injectArg: "--inject-iterations \($it[$browser][$arm])"}
+                   injectArg: "--inject-ms \($ms[$browser][$arm])"}
               ]}')
             echo "Round 2: $shards shards per browser, arm = (shard - 1) % 4"
           else

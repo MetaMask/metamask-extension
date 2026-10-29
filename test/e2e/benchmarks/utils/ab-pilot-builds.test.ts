@@ -66,18 +66,18 @@ describe('prepareAbBuilds', () => {
       browser: 'chrome',
       sourceDirectory: 'dist/chrome',
       baseDirectory: workDir,
-      injectIterations: 1000,
+      injectMs: 40,
     });
 
     const read = (dir: string) =>
       fs.readFileSync(path.join(workDir, dir, 'scripts/app.js'), 'utf8');
     expect(read('dist/chrome-a')).toBe('console.log(1)');
     expect(read('dist/chrome-b')).toBe(
-      `${getInjectionSnippet(1000)}console.log(1)`,
+      `${getInjectionSnippet(40)}console.log(1)`,
     );
     expect(summary.injection).toStrictEqual({
       file: 'scripts/app.js',
-      iterations: 1000,
+      targetMs: 40,
       hashes: { A: expect.any(String), B: expect.any(String) },
     });
     expect(summary.injection?.hashes.A).not.toBe(summary.injection?.hashes.B);
@@ -99,33 +99,34 @@ describe('prepareAbBuilds', () => {
         browser: 'chrome',
         sourceDirectory: 'dist/chrome',
         baseDirectory: workDir,
-        injectIterations: 0,
+        injectMs: 0,
       }),
     ).toThrow('A/B builds differ outside');
     jest.restoreAllMocks();
   });
 
-  it('rejects a negative or fractional iteration count', () => {
+  it('rejects a negative or non-finite duration', () => {
     expect(() =>
       prepareAbBuilds({
         browser: 'chrome',
         sourceDirectory: 'dist/chrome',
         baseDirectory: workDir,
-        injectIterations: -1,
+        injectMs: -1,
       }),
-    ).toThrow('Invalid injection iterations -1');
+    ).toThrow('Invalid injection milliseconds -1');
   });
 
   it('runs and records its duration in a performance mark', () => {
-    const now = jest.fn().mockReturnValueOnce(10).mockReturnValueOnce(35);
-    const mark = jest.fn();
-    vm.runInNewContext(getInjectionSnippet(500), {
-      performance: { now, mark },
-      Math,
+    let clock = 10;
+    const now = jest.fn(() => {
+      clock += 4;
+      return clock;
     });
+    const mark = jest.fn();
+    vm.runInNewContext(getInjectionSnippet(20), { performance: { now, mark } });
 
     expect(mark).toHaveBeenCalledWith(INJECTION_MARK, {
-      detail: { iterations: 500, ms: 25, sink: expect.any(Number) },
+      detail: { targetMs: 20, ms: 24, spins: 4 },
     });
   });
 

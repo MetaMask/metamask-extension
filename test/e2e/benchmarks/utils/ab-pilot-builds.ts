@@ -10,7 +10,7 @@ import {
 
 export type AbInjection = {
   file: string;
-  iterations: number;
+  targetMs: number;
   hashes: Record<AbBuild, string>;
 };
 
@@ -29,17 +29,18 @@ export type AbBuildsSummary = {
 export const INJECTION_MARK = 'abInjected';
 
 /**
- * Fixed amount of CPU work, so its cost scales with the machine like real code.
- * The mark records the time it took; 0 iterations keeps the hook but does no work.
+ * Spins the main thread until targetMs has passed. A fixed iteration count is
+ * not fixed work in Firefox, where loop speed depends on when JIT compilation
+ * lands. The mark records the time spent; 0 keeps the hook but does no work.
  *
- * @param iterations - Loop iterations.
+ * @param targetMs - Milliseconds to spin.
  */
-export function getInjectionSnippet(iterations: number): string {
+export function getInjectionSnippet(targetMs: number): string {
   return (
-    `;(function(){var n=${iterations},t=performance.now(),x=0;` +
-    'for(var i=0;i<n;i++){x=(x+Math.imul(i,2654435761))|0}' +
-    `performance.mark('${INJECTION_MARK}',{detail:{iterations:n,` +
-    'ms:performance.now()-t,sink:x}})})();\n'
+    `;(function(){var n=${targetMs},t=performance.now(),s=0;` +
+    'while(performance.now()-t<n){s++}' +
+    `performance.mark('${INJECTION_MARK}',{detail:{targetMs:n,` +
+    'ms:performance.now()-t,spins:s}})})();\n'
   );
 }
 
@@ -102,25 +103,22 @@ function hashContent(
  * @param options.browser - `chrome` or `firefox`.
  * @param options.sourceDirectory - Unpacked donor build, for example `dist/chrome`.
  * @param options.baseDirectory - Working directory the output paths are under.
- * @param options.injectIterations - When set, B's first home.html script gets
- * a busy-wait of this many iterations, and that file may also differ.
+ * @param options.injectMs - When set, B's first home.html script gets a
+ * busy-wait of this many milliseconds, and that file may also differ.
  */
 export function prepareAbBuilds({
   browser,
   sourceDirectory,
   baseDirectory = process.cwd(),
-  injectIterations,
+  injectMs,
 }: {
   browser: string;
   sourceDirectory: string;
   baseDirectory?: string;
-  injectIterations?: number;
+  injectMs?: number;
 }): AbBuildsSummary {
-  if (
-    injectIterations !== undefined &&
-    !(Number.isInteger(injectIterations) && injectIterations >= 0)
-  ) {
-    throw new Error(`Invalid injection iterations ${injectIterations}`);
+  if (injectMs !== undefined && !(Number.isFinite(injectMs) && injectMs >= 0)) {
+    throw new Error(`Invalid injection milliseconds ${injectMs}`);
   }
   const markerKey = getMarkerKey(browser);
   const source = path.resolve(baseDirectory, sourceDirectory);
@@ -145,15 +143,15 @@ export function prepareAbBuilds({
 
   const exclude = ['manifest.json'];
   let injection: AbInjection | undefined;
-  if (injectIterations !== undefined) {
+  if (injectMs !== undefined) {
     const file = getFirstHomeScript(source);
     const targetB = path.resolve(baseDirectory, directories.B, file);
     const original = fs.readFileSync(targetB, 'utf8');
-    fs.writeFileSync(targetB, getInjectionSnippet(injectIterations) + original);
+    fs.writeFileSync(targetB, getInjectionSnippet(injectMs) + original);
     exclude.push(path.normalize(file));
     injection = {
       file,
-      iterations: injectIterations,
+      targetMs: injectMs,
       hashes: {
         A: hashFile(path.resolve(baseDirectory, directories.A, file)),
         B: hashFile(targetB),

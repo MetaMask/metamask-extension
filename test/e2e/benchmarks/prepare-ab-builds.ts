@@ -1,6 +1,6 @@
 /**
  * Prepares the two build copies for the same-machine A/B pilot.
- * Usage: yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts --browser chrome --source dist/chrome --out summary.json [--inject-iterations N]
+ * Usage: yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts --browser chrome --source dist/chrome --out summary.json [--inject-ms N]
  */
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -18,13 +18,13 @@ async function main(): Promise<void> {
     })
     .option('source', { demandOption: true, type: 'string' })
     .option('out', { type: 'string' })
-    .option('inject-iterations', { type: 'number' })
+    .option('inject-ms', { type: 'number' })
     .parseAsync();
 
   const summary = prepareAbBuilds({
     browser: argv.browser,
     sourceDirectory: argv.source,
-    injectIterations: argv.injectIterations,
+    injectMs: argv.injectMs,
   });
   console.log(JSON.stringify(summary, null, 2));
 
