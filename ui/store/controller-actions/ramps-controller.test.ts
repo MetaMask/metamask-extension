@@ -3,6 +3,7 @@ import {
   addRampsOrder,
   addRampsPrecreatedOrder,
   getRampsBuyWidgetData,
+  getRampsCountries,
   getRampsOrderFromCallback,
   getRampsPaymentMethods,
   getRampsProviders,
@@ -51,6 +52,7 @@ describe('ramps-controller actions', () => {
     await setRampsSelectedPaymentMethod('credit_debit_card');
     await getRampsTokens('us-ca');
     await getRampsTokens('us-ca', 'sell');
+    await getRampsCountries();
     await getRampsProviders('us-ca');
     await getRampsPaymentMethods('us-ca', {
       fiat: 'USD',

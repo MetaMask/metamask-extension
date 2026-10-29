@@ -916,12 +916,55 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('cold fetch with an unloaded countries list → skips seeding and fetches nothing', async () => {
-    // Seeding through `setUserRegion` with no countries loaded is exactly the
-    // failure path that wipes controller state, so it must not be attempted.
-    // No region is resolvable then, and preselection requires one, so the
-    // fetch is skipped too (real-controller parity: `setRampsSelectedToken`
-    // throws "Tokens not loaded").
+  it('fetches countries on a cold start before seeding the region, then pre-selects and navigates', async () => {
+    // Countries are not persisted, so on the first cold start (or a fresh
+    // profile) the catalog may be loading while the entry page runs. The fetch
+    // is on demand, so the deep link still resolves its token instead of
+    // surfacing a false "unsupported" modal.
+    const assetId = 'eip155:1/erc20:0xabc';
+    const catalogAssetId = 'eip155:1/erc20:0xABC';
+    backgroundHandlers.getRampsCountries = () => [region.country];
+    backgroundHandlers.setRampsUserRegion = () => region;
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [
+        { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+      ],
+    });
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        countries: { ...loaded, data: [] },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe('native');
+    expect(mockBackground).toHaveBeenCalledWith('getRampsCountries');
+    expect(mockBackground).toHaveBeenCalledWith('setRampsUserRegion', [
+      'US-CA',
+    ]);
+    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+      'us',
+      'buy',
+    ]);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      catalogAssetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: catalogAssetId },
+      replace: false,
+    });
+    expect(getModalName()).toBeNull();
+  });
+
+  it('cold fetch with no countries available → skips seeding and token fetch', async () => {
+    // When the on-demand countries fetch also comes back empty, no region is
+    // resolvable; `setUserRegion` must not be attempted without countries (its
+    // failure path wipes controller state), and preselection then fails as the
+    // real controller would without a fetched catalog.
     const assetId = 'eip155:1/erc20:0xabc';
     backgroundHandlers.setRampsSelectedToken = () => {
       throw new Error(
@@ -940,6 +983,7 @@ describe('useRampsNavigation goToBuy', () => {
 
     expect(opened).toBe(false);
     expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
+    expect(mockBackground).toHaveBeenCalledWith('getRampsCountries');
     expect(mockBackground).not.toHaveBeenCalledWith(
       'setRampsUserRegion',
       expect.anything(),

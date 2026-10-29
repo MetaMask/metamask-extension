@@ -168,6 +168,7 @@ import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messeng
 import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
+import { BuyDeepLinkGate } from '../ramps/buy-deeplink-entry/buy-deeplink-gate';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -586,13 +587,6 @@ export const routeConfig = [
         element: <TransactionDetailsRoute />,
       },
       {
-        // The `/buy` deep-link entry must resolve before the basic
-        // functionality guard: with the ramps flag off it opens Portfolio, and
-        // that fallback must stay reachable when external services are off.
-        path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
-        element: <BuyDeepLinkEntry />,
-      },
-      {
         element: <RequireBasicFunctionality />,
         children: [
           {
@@ -755,6 +749,18 @@ export const routeConfig = [
             ],
           },
         ],
+      },
+    ],
+  },
+  {
+    // Public so the flag-off fallback can redirect without requiring unlock;
+    // the flag-on path falls through to the authenticated entry page.
+    path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
+    element: <BuyDeepLinkGate />,
+    children: [
+      {
+        element: <RequireAuthenticated />,
+        children: [{ index: true, element: <BuyDeepLinkEntry /> }],
       },
     ],
   },

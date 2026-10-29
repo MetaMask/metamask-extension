@@ -1,5 +1,6 @@
 import type {
   BuyWidget,
+  Country,
   ExecuteRequestOptions,
   PaymentMethod,
   Provider,
@@ -45,6 +46,10 @@ export async function getRampsTokens(
   action: 'buy' | 'sell' = 'buy',
 ): Promise<TokensResponse> {
   return submitRequestToBackground('getRampsTokens', [region, action]);
+}
+
+export async function getRampsCountries(): Promise<Country[]> {
+  return submitRequestToBackground('getRampsCountries');
 }
 
 export async function getRampsProviders(region: string) {

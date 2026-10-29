@@ -198,19 +198,21 @@ describe('Deep link utils', () => {
         jest.setSystemTime(createdAt + 60 * 1000);
 
         mockParse.mockResolvedValue({
-          destination: { redirectTo: new URL('https://app.metamask.io/buy') },
+          destination: {
+            redirectTo: new URL('https://metamask.io/card'),
+          },
           signature: MISSING,
-          route: { pathname: '/buy' } as never,
+          route: { pathname: '/card-onboarding' } as never,
         });
 
         const result = await getDeferredDeepLinkRoute({
           createdAt,
-          referringLink: 'https://link.metamask.io/buy',
+          referringLink: 'https://link.metamask.io/card-onboarding',
         });
 
         expect(result).toStrictEqual({
           type: DeferredDeepLinkRouteType.Interstitial,
-          urlPathAndQuery: '/buy',
+          urlPathAndQuery: '/card-onboarding',
           signature: MISSING,
         });
       });

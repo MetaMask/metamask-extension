@@ -17,6 +17,7 @@ import {
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
+  getRampsCountries,
   getRampsTokens,
   setRampsUserRegion,
 } from '../../../store/controller-actions/ramps-controller';
@@ -253,17 +254,24 @@ export default function useRampsNavigation() {
       }
 
       // `tokens` isn't persisted, and `setSelectedToken` requires both a
-      // fetched catalog and a region in controller state, so skip the fetch
-      // when no region is resolvable. Seed one via `setUserRegion` only when
-      // the countries list is loaded — it normalizes the geolocation into the
-      // controller's region code, and an unknown location fails the seeding.
+      // fetched catalog and a region in controller state. Countries aren't
+      // persisted either, so on a cold start they can still be loading while
+      // this runs: fetch them on demand rather than skipping the intent. Seed
+      // the region via `setUserRegion` once countries are available — it
+      // normalizes the geolocation into the controller's region code, and an
+      // unknown location fails the seeding.
       let fetchedTokens: TokensResponse | null = null;
       if (!tokens.data) {
-        const region =
-          userRegion?.regionCode ??
-          (countries.data?.length
-            ? (await setRampsUserRegion(location).catch(() => null))?.regionCode
-            : undefined);
+        let region = userRegion?.regionCode;
+        if (!region) {
+          const hasCountries =
+            Boolean(countries.data?.length) ||
+            Boolean((await getRampsCountries().catch(() => null))?.length);
+          if (hasCountries) {
+            region = (await setRampsUserRegion(location).catch(() => null))
+              ?.regionCode;
+          }
+        }
         if (region) {
           fetchedTokens = await getRampsTokens(region, 'buy').catch(() => null);
         }

@@ -44,7 +44,7 @@ export function parseRampIntent(
   // No assetId: assume EVM `address` + `chainId` params (Portfolio link shape).
   let evmChainId: CaipChainId;
   try {
-    evmChainId = toEvmCaipChainId(toHex(chainId ?? '1'));
+    evmChainId = toEvmCaipChainId(toHex(chainId || '1'));
   } catch {
     // Invalid chainId — drop the asset intent entirely.
     return undefined;

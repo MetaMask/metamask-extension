@@ -25,6 +25,14 @@ describe('parseRampIntent', () => {
       { assetId: DAI },
     ],
     [
+      'defaults the chain to Ethereum mainnet when the chainId is empty',
+      {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        chainId: '',
+      },
+      { assetId: DAI },
+    ],
+    [
       'builds a native assetId for the zero address',
       {
         address: '0x0000000000000000000000000000000000000000',
@@ -36,6 +44,16 @@ describe('parseRampIntent', () => {
       'builds a native assetId when no address is given',
       { chainId: '137' },
       { assetId: 'eip155:137/slip44:.' },
+    ],
+    [
+      'drops amount and currency, which the in-app buy flow cannot consume',
+      {
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        chainId: '1',
+        amount: '100',
+        currency: 'USD',
+      },
+      { assetId: DAI },
     ],
     [
       'drops address and chainId when assetId takes precedence',
