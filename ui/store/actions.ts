@@ -6242,39 +6242,6 @@ export async function staticAssetsStopPollingByPollingToken(
 }
 
 /**
- * Informs the TokenRatesController that the UI requires
- * token rate polling for the given chain id.
- *
- * @param chainIds - An array of chain ids to poll token rates on.
- * @returns polling token that can be used to stop polling
- */
-export async function tokenRatesStartPolling(
-  chainIds: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenRatesStartPolling',
-    [{ chainIds }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the TokenRatesController that the UI no longer
- * requires token rate polling for the given chain id.
- *
- * @param pollingToken -
- */
-export async function tokenRatesStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('tokenRatesStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
  * Stops polling on the account tracker controller.
  *
  * @param pollingToken - polling token to use to stop polling.
@@ -6874,22 +6841,6 @@ export function estimateRewardsPoints(
   };
 }
 
-export function validateRewardsReferralCode(
-  code: string,
-): ThunkAction<
-  Promise<{ valid: boolean; isVipCode: boolean }>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    return await submitRequestToBackground(
-      'RewardsController:validateReferralCode',
-      [code],
-    );
-  };
-}
-
 export function getRewardsGeoMetadata(): ThunkAction<
   Promise<RewardsGeoMetadata | null>,
   MetaMaskReduxState,
@@ -6905,10 +6856,8 @@ export function getRewardsGeoMetadata(): ThunkAction<
 
 export function rewardsOptIn({
   accounts,
-  referralCode,
 }: {
   accounts: InternalAccount[];
-  referralCode?: string;
 }): ThunkAction<
   Promise<string | null>,
   MetaMaskReduxState,
@@ -6918,7 +6867,6 @@ export function rewardsOptIn({
   return async () => {
     return await submitRequestToBackground('RewardsController:optIn', [
       accounts,
-      referralCode,
     ]);
   };
 }
