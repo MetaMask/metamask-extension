@@ -6,7 +6,7 @@ export default {
   title: 'Pages/OnboardingFlow/CreationSuccessful',
 };
 
-export const DefaultStory = () => {
+const CreationSuccessfulStory = () => {
   return (
     <RiveWasmProvider>
       <CreationSuccessful />
@@ -14,4 +14,13 @@ export const DefaultStory = () => {
   );
 };
 
-DefaultStory.storyName = 'Default';
+export const DefaultStory = () => <CreationSuccessfulStory />;
+
+DefaultStory.storyName = 'Wallet ready';
+
+export const SrpBackupReminderStory = () => <CreationSuccessfulStory />;
+
+SrpBackupReminderStory.storyName = 'SRP backup reminder';
+SrpBackupReminderStory.parameters = {
+  initialEntries: ['/?isFromReminder=true'],
+};

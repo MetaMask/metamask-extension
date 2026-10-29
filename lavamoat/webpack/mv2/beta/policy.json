@@ -2725,7 +2725,8 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
-        "immer": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/permission-controller>immer": true,
         "nanoid": true
       }
     },
@@ -5907,6 +5908,11 @@
       }
     },
     "@metamask/network-controller>immer": {
+      "globals": {
+        "Iterator": true
+      }
+    },
+    "@metamask/permission-controller>immer": {
       "globals": {
         "Iterator": true
       }

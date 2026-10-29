@@ -746,9 +746,6 @@
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
     "marketingConsentDecisionMade": "boolean",
-    "marketData": {
-      "*": {}
-    },
     "marketFilterPreferences": {
       "optionId": "string",
       "direction": "string"

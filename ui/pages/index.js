@@ -84,7 +84,7 @@ function RouteErrorBoundary() {
   return <ErrorPage error={error} />;
 }
 
-const router = createHashRouter([
+export const router = createHashRouter([
   {
     element: <AppProviders />,
     errorElement: <RouteErrorBoundary />,
