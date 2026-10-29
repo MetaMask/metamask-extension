@@ -29,6 +29,7 @@ const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
   const supportLink = new URL(SUPPORT_LINK as string);
   supportLink.searchParams.set('mfa_error', step.code);
   const dismiss = () => onAction({ type: 'dismiss' });
+  const retry = () => onAction({ type: 'retry' });
 
   const renderFooter = () => {
     if (getErrorHandling(step.code) === 'support') {
@@ -62,7 +63,7 @@ const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
         size={ButtonSize.Lg}
         isFullWidth
         isLoading={state.busy}
-        onClick={() => onAction({ type: 'retry' })}
+        onClick={retry}
         data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
       >
         {t('mfaFailureRetry')}
