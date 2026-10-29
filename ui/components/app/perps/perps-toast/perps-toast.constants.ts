@@ -20,6 +20,7 @@ export const PERPS_TOAST_KEYS = {
   PARTIAL_CLOSE_IN_PROGRESS: 'perpsToastPartialCloseInProgress',
   PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
   PARTIAL_LIMIT_CLOSE_FAILED: 'perpsToastPartialLimitCloseFailed',
+  POSITION_ALREADY_CLOSED: 'perpsToastPositionAlreadyClosed',
   REVERSE_FAILED: 'perpsToastReverseFailed',
   REVERSE_IN_PROGRESS: 'perpsToastReverseInProgress',
   REVERSE_SUCCESS: 'perpsToastReverseSuccess',

@@ -8837,6 +8837,10 @@
     "message": "Failed to place partial close order",
     "description": "Error toast text shown when placing a partial perps limit close order fails"
   },
+  "perpsToastPositionAlreadyClosed": {
+    "message": "This position is already closed",
+    "description": "Toast text shown when a perps TP/SL update or close targets a position that closed before the request reached the provider"
+  },
   "perpsToastPositionStillActive": {
     "message": "Your position is still active",
     "description": "Subtitle shown in perps close failure toasts when the position remains open"

@@ -70,6 +70,8 @@ import {
 } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
+import { getPerpsStreamManager } from '../../../../providers/perps';
+import { captureException } from '../../../../../shared/lib/sentry';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
@@ -751,6 +753,18 @@ export const ClosePositionModal = ({
           'perpsClosePosition',
           [closeRequestParams],
         );
+        if (
+          !result.success &&
+          isPerpsErrorCode(result, PERPS_ERROR_CODES.POSITION_NOT_FOUND)
+        ) {
+          // The position closed after this modal rendered. Say so and drop it
+          // from the view instead of reporting a failed close.
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.POSITION_ALREADY_CLOSED,
+          });
+          getPerpsStreamManager().refreshPositions().catch(captureException);
+          return;
+        }
         if (!result.success) {
           const failure: PerpsErrorInput = {
             error: result.error || 'Failed to close position',

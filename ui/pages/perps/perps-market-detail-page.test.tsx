@@ -52,6 +52,7 @@ jest.mock('@metamask/perps-controller', () => ({
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -324,10 +325,16 @@ jest.mock(
   }),
 );
 
-const mockLivePositions = jest.fn(() => ({
-  positions: mockPositions,
-  isInitialLoading: false,
-}));
+const mockLivePositions = jest.fn(
+  (): {
+    positions: typeof mockPositions;
+    isInitialLoading: boolean;
+    isSeeded?: boolean;
+  } => ({
+    positions: mockPositions,
+    isInitialLoading: false,
+  }),
+);
 const mockLiveMarketData = jest.fn(() => ({
   markets: [...mockCryptoMarkets, ...mockHip3Markets],
   isInitialLoading: false,
@@ -2005,6 +2012,26 @@ describe('PerpsMarketDetailPage', () => {
       expect(
         screen.getByText(messages.perpsDisclaimer.message),
       ).toBeInTheDocument();
+    });
+
+    it('disables TP/SL and close controls while positions are a seeded snapshot', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+        isSeeded: true,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(screen.getByTestId('perps-close-cta-button')).toBeDisabled();
+      expect(screen.getByTestId('perps-modify-cta-button')).toBeDisabled();
+      const autoCloseRow = screen.getByTestId('perps-auto-close-row');
+      expect(autoCloseRow).toHaveAttribute('aria-disabled', 'true');
+      fireEvent.click(autoCloseRow);
+      expect(
+        screen.queryByText(messages.perpsTakeProfit.message),
+      ).not.toBeInTheDocument();
     });
 
     it('opens TP/SL modal when Auto Close row is clicked', async () => {

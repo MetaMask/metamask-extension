@@ -35,6 +35,7 @@ import {
 import {
   ORDER_SLIPPAGE_CONFIG,
   PERPS_CONSTANTS,
+  PERPS_ERROR_CODES,
   PERFORMANCE_CONFIG,
   TRADING_DEFAULTS,
   type ClosePositionParams,
@@ -118,6 +119,7 @@ import {
 } from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import {
+  isPerpsErrorCode,
   isSlippageFailure,
   translatePerpsError,
   type PerpsErrorInput,
@@ -130,6 +132,7 @@ import { useSelectedAccountComplianceGate } from '../../components/app/complianc
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { captureException } from '../../../shared/lib/sentry';
 import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplaySymbol,
@@ -428,7 +431,11 @@ const PerpsOrderEntryPage = () => {
 
   const vipTier = useVipTier();
 
-  const { positions: allPositions } = usePerpsLivePositions();
+  const {
+    positions: allPositions,
+    isInitialLoading: isLoadingPositions,
+    isSeeded: isPositionSeeded,
+  } = usePerpsLivePositions();
   const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
@@ -1428,6 +1435,8 @@ const PerpsOrderEntryPage = () => {
     !selectedAddress ||
     feeNotional === undefined ||
     (orderMode === 'new' && isLoadingAccount) ||
+    // Modify and close act on the position: wait until live data confirms it.
+    (orderMode !== 'new' && (isLoadingPositions || isPositionSeeded)) ||
     isDepositLoading ||
     isOrderPending ||
     (isPrimaryTradeAction &&
@@ -1901,12 +1910,26 @@ const PerpsOrderEntryPage = () => {
     [handleOrderTypeChange],
   );
 
+  // The position closed after this form rendered: say so, drop it from the
+  // view and leave rather than fall through to placing a new order.
+  const handlePositionAlreadyClosed = useCallback(() => {
+    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.POSITION_ALREADY_CLOSED });
+    getPerpsStreamManager().refreshPositions().catch(captureException);
+    handleBackClick();
+  }, [replacePerpsToastByKey, handleBackClick]);
+
   const handleOrderSubmit = useCallback(async () => {
     if (!isEligible) {
       setIsGeoBlockModalOpen(true);
       return;
     }
     if (!orderFormState || !selectedAddress || currentPrice <= 0) {
+      return;
+    }
+
+    if (orderMode !== 'new' && !position) {
+      hasSubmittedOrderRef.current = true;
+      handlePositionAlreadyClosed();
       return;
     }
 
@@ -1989,6 +2012,13 @@ const PerpsOrderEntryPage = () => {
     // Controller `{ success: false }` already ran submitted/terminal analytics —
     // surface UI only. Transport throws still use catch + client PerpsError.
     const surfaceControllerFailure = (error: unknown) => {
+      if (
+        orderMode !== 'new' &&
+        isPerpsErrorCode(error, PERPS_ERROR_CODES.POSITION_NOT_FOUND)
+      ) {
+        handlePositionAlreadyClosed();
+        return;
+      }
       // The submission did not go through and the user stays on the form, so
       // this is no longer a committed flow: re-arm abandon tracking, otherwise
       // one failed submit suppresses every later abandonment on this page.
@@ -2397,6 +2427,7 @@ const PerpsOrderEntryPage = () => {
     getCloseSuccessToastDescription,
     getCloseFailureToastConfig,
     handleBackClick,
+    handlePositionAlreadyClosed,
     track,
     hidePerpsToast,
     replacePerpsToastByKey,

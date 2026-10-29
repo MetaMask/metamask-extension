@@ -18,7 +18,10 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  PERPS_ERROR_CODES,
+  type Position as PerpsPosition,
+} from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
@@ -69,6 +72,7 @@ import {
   getStopLossLiquidationErrorDirection,
 } from '../utils/tpslValidation';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
+import { isPerpsErrorCode } from '../utils/translate-perps-error';
 import {
   applyDefaultStopLossSign,
   isSignedDecimalInput,
@@ -509,6 +513,19 @@ export const UpdateTPSLModalContent = ({
           ],
         );
 
+        if (
+          !result.success &&
+          isPerpsErrorCode(result, PERPS_ERROR_CODES.POSITION_NOT_FOUND)
+        ) {
+          // The position closed after this modal rendered. Say so and drop it
+          // from the view instead of reporting a failed update.
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.POSITION_ALREADY_CLOSED,
+          });
+          getPerpsStreamManager().refreshPositions().catch(captureException);
+          onClose();
+          return;
+        }
         if (!result.success) {
           const failMessage = result.error || 'Failed to update TP/SL';
           replacePerpsToastByKey({

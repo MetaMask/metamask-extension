@@ -15,7 +15,11 @@ const ETH_POSITION = { symbol: 'ETH' } as Position;
 const BTC_POSITION = { symbol: 'BTC' } as Position;
 
 function mockPositions(positions: Position[], isInitialLoading = false) {
-  mockUsePerpsLivePositions.mockReturnValue({ positions, isInitialLoading });
+  mockUsePerpsLivePositions.mockReturnValue({
+    positions,
+    isInitialLoading,
+    isSeeded: false,
+  });
 }
 
 function mockStreamError(error: Error | null) {

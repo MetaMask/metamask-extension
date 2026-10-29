@@ -125,6 +125,7 @@ jest.mock('@metamask/perps-controller', () => ({
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -254,6 +255,7 @@ const mockStreamManagerBase = {
   setOptimisticTPSL: jest.fn(),
   clearOptimisticTPSL: jest.fn(),
   pushPositionsWithOverrides: jest.fn(),
+  refreshPositions: jest.fn().mockResolvedValue(undefined),
   prewarm: jest.fn(),
   cleanupPrewarm: jest.fn(),
   isInitialized: () => true,
@@ -265,6 +267,12 @@ const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
+}));
+
+const mockCaptureException = jest.fn();
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
 }));
 
 const mockReplacePerpsToastByKey = jest.fn();
@@ -304,7 +312,7 @@ jest.mock(
 );
 
 const mockLivePositions = jest.fn<
-  { positions: Position[]; isInitialLoading: boolean },
+  { positions: Position[]; isInitialLoading: boolean; isSeeded?: boolean },
   []
 >(() => ({
   positions: [],
@@ -4773,6 +4781,107 @@ describe('PerpsOrderEntryPage', () => {
     beforeEach(() => {
       mockSubmitRequestToBackground.mockResolvedValue({ success: true });
     });
+
+    it.each(['modify', 'close'])(
+      'reports an already-closed position instead of placing an order in %s mode',
+      async (mode) => {
+        mockSearchParams.set('mode', mode);
+
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('submit-order-button'));
+        });
+
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+        expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+          replace: true,
+        });
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsPlaceOrder',
+          expect.anything(),
+        );
+      },
+    );
+
+    it('reports a failed refresh after an already-closed position', async () => {
+      const refreshError = new Error('positions unavailable');
+      mockStreamManagerBase.refreshPositions.mockRejectedValueOnce(
+        refreshError,
+      );
+      mockSearchParams.set('mode', 'close');
+
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockCaptureException).toHaveBeenCalledWith(refreshError);
+      expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+        key: 'perpsToastPositionAlreadyClosed',
+      });
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+      });
+    });
+
+    it.each([
+      ['close', 'perpsClosePosition'],
+      ['modify', 'perpsUpdatePositionTPSL'],
+    ])(
+      'reports an already-closed position when %s is rejected with POSITION_NOT_FOUND',
+      async (mode, method) => {
+        mockSearchParams.set('mode', mode);
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        mockSubmitRequestToBackground.mockImplementation((name: string) =>
+          Promise.resolve(
+            name === method
+              ? { success: false, error: 'POSITION_NOT_FOUND' }
+              : { success: true },
+          ),
+        );
+
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        await act(async () => {
+          fireEvent.click(screen.getByTestId('submit-order-button'));
+        });
+
+        expect(mockReplacePerpsToastByKey).toHaveBeenLastCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+        expect(mockStreamManagerBase.refreshPositions).toHaveBeenCalledTimes(1);
+        expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+          replace: true,
+        });
+      },
+    );
+
+    it.each(['modify', 'close'])(
+      'disables submit in %s mode until live positions replace a seeded snapshot',
+      (mode) => {
+        mockSearchParams.set('mode', mode);
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+          isSeeded: true,
+        });
+
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      },
+    );
 
     it('shows close failure toast when closePosition fails', async () => {
       mockSearchParams.set('mode', 'close');
