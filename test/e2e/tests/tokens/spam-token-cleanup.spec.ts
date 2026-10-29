@@ -171,10 +171,20 @@ function buildFixtures(title: string) {
           ),
         },
         assetsInfo: Object.fromEntries(
-          TRACKED_ASSETS.map(({ assetId, name, symbol, decimals }) => [
-            assetId,
-            { type: 'erc20' as const, aggregators: [], decimals, name, symbol },
-          ]),
+          TRACKED_ASSETS.map(
+            ({ assetId, name, symbol, decimals, occurrences }) => [
+              assetId,
+              {
+                type: 'erc20' as const,
+                aggregators: [],
+                decimals,
+                image: 'icon',
+                name,
+                occurrences,
+                symbol,
+              },
+            ],
+          ),
         ),
         customAssets: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: [CUSTOM_ASSET.assetId],
