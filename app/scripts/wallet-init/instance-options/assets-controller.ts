@@ -1,40 +1,50 @@
 import {
   AssetsController,
   type AssetsControllerMessenger,
-  type AssetsControllerOptions,
 } from '@metamask/assets-controller';
-import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type {
   TraceCallback as ControllerTraceCallback,
   TraceContext as ControllerTraceContext,
   TraceRequest as ControllerTraceRequest,
 } from '@metamask/controller-utils';
-import { type MessengerClientInitFunction } from '../types';
-import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { WalletOptions } from '@metamask/wallet';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
-import { traceAsControllerCallback } from '../../../../shared/lib/trace';
-import {
-  getBackendApiUrlsOption,
-  isBackendAuthDisabled,
-} from '../../../../shared/lib/core-backend-api-urls';
+import type { PreferencesControllerState } from '../../controllers/preferences-controller';
+import type { MessengerClientPersistedState } from '../../messenger-client-init/types';
+import type { AssetsControllerInitMessenger } from '../messengers/assets-controller-messenger';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateTracesEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  getBackendApiUrlsOption,
+  isBackendAuthDisabled,
+} from '../../../../shared/lib/core-backend-api-urls';
+import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+
+type AssetsControllerInstanceOptions = NonNullable<
+  WalletOptions['instanceOptions']['assetsController']
+>;
+
+type GetAssetsControllerInstanceOptionsRequest = {
+  getIsUiOpen: () => boolean;
+  initMessenger: AssetsControllerInitMessenger;
+  persistedState: MessengerClientPersistedState;
+};
 
 const ARC_CAIP_CHAIN_ID = toEvmCaipChainId(CHAIN_IDS.ARC);
 
 /**
  * Cached API client instance.
  */
-let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
+let apiClient: AssetsControllerInstanceOptions['queryApiClient'] | null = null;
 
 /**
  * Safely retrieves the bearer token for API authentication.
@@ -161,111 +171,49 @@ function createAssetsControllerTrace(
  */
 function getApiClient(
   initMessenger: AssetsControllerInitMessenger,
-): AssetsControllerOptions['queryApiClient'] {
+): AssetsControllerInstanceOptions['queryApiClient'] {
   if (!apiClient) {
     apiClient = createApiPlatformClient({
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
       ...getBackendApiUrlsOption(),
-    }) as unknown as AssetsControllerOptions['queryApiClient'];
+    }) as unknown as AssetsControllerInstanceOptions['queryApiClient'];
   }
   return apiClient;
 }
 
 /**
- * Forces a full Arc assets refresh after a confirmed transaction.
+ * Build the extension's client-specific options for `AssetsController`.
  *
- * Arc USDC is represented as a native asset in the wallet, but the
- * AccountActivity incremental balance update can miss that native USDC balance
- * after swaps while updating ERC-20 balances such as EURC correctly. A full
- * account asset scan resolves the native USDC balance, matching the manual
- * recovery path of reloading the extension or switching accounts.
- *
- * @param controllerMessenger - The AssetsController messenger.
- * @param assetsController - The initialized AssetsController instance.
- */
-function subscribeToArcTransactionConfirmedRefresh(
-  controllerMessenger: AssetsControllerMessenger,
-  assetsController: AssetsController,
-): void {
-  controllerMessenger.subscribe(
-    'TransactionController:transactionConfirmed',
-    (transactionMeta: TransactionMeta) => {
-      if (transactionMeta.chainId?.toLowerCase() !== CHAIN_IDS.ARC) {
-        return;
-      }
-
-      const fromAddress = transactionMeta.txParams.from?.toLowerCase();
-      if (!fromAddress) {
-        return;
-      }
-
-      // TODO: should be moved to the controller (comment on PR#46259)
-      const matchedAccount = controllerMessenger
-        .call('AccountTreeController:getAccountsFromSelectedAccountGroup')
-        .find(
-          (account: InternalAccount) =>
-            account.address.toLowerCase() === fromAddress,
-        );
-
-      if (!matchedAccount) {
-        return;
-      }
-
-      assetsController
-        .getAssets([matchedAccount], {
-          chainIds: [ARC_CAIP_CHAIN_ID],
-          forceUpdate: true,
-          bypassServerCache: true,
-        })
-        .catch(() => undefined);
-    },
-  );
-}
-
-/**
- * Init function for the AssetsController.
+ * `@metamask/wallet` constructs the controller from these options and supplies
+ * `messenger` and `state`. Options are built inside `initializeWallet`, before
+ * `PreferencesController` exists, so preference reads stay lazy.
  *
  * @param request - The request object.
- * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.persistedState - The persisted state of the extension.
- * @param request.initMessenger - The init messenger to use for the controller.
- * @param request.getMessengerClient - The function to get a messenger client.
- * @returns The initialized controller.
+ * @param request.getIsUiOpen - Whether the extension UI is currently open.
+ * @param request.initMessenger - Messenger used for onboarding, auth, preferences, and feature flags.
+ * @param request.persistedState - Persisted controller state used by the assets metadata migration.
+ * @returns The extension `AssetsController` instance options.
  */
-export const AssetsControllerInit: MessengerClientInitFunction<
-  AssetsController,
-  AssetsControllerMessenger,
-  AssetsControllerInitMessenger
-> = ({
-  controllerMessenger,
-  persistedState,
+export function getAssetsControllerInstanceOptions({
+  getIsUiOpen,
   initMessenger,
-  getMessengerClient,
-}) => {
-  const clientController = () => getMessengerClient('ClientController');
-
-  // Get token detection preference
-  const tokenDetectionEnabled = safeGetTokenDetectionEnabled(initMessenger);
-
-  // Basic functionality: when true (useExternalServices), token/price APIs are used; when false, RPC only.
+  persistedState,
+}: GetAssetsControllerInstanceOptionsRequest): AssetsControllerInstanceOptions {
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
   // Extension: subscribe to PreferencesController:stateChange and notify the controller only when useExternalServices changes.
   // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
-  // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
     onChange: (isBasic: boolean) => void,
   ): void => {
-    controllerMessenger.subscribe(
+    initMessenger.subscribe(
       'PreferencesController:stateChange',
-      (_useExternalServices: boolean) => {
+      () => {
         onChange(isBasicFunctionality());
       },
-      (state: PreferencesState) =>
-        (state as PreferencesState & { useExternalServices?: boolean })
-          .useExternalServices ?? true,
+      (state: PreferencesControllerState) => state.useExternalServices ?? true,
     );
     // When onboarding completes, re-evaluate basic functionality so price
     // subscriptions start (or stay stopped) based on the current preference.
@@ -281,17 +229,13 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     );
   };
 
-  // Create the controller - it now creates all data sources internally.
-  // queryApiClient is cast to the package's type to avoid duplicate @metamask/core-backend type conflicts.
-  const messengerClient = new AssetsController({
-    messenger: controllerMessenger,
-    state: persistedState.AssetsController,
-    isEnabled: () => clientController().state.isUiOpen,
+  return {
+    isEnabled: () => getIsUiOpen(),
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
     rpcDataSourceConfig: {
-      tokenDetectionEnabled: () => tokenDetectionEnabled,
+      tokenDetectionEnabled: () => safeGetTokenDetectionEnabled(initMessenger),
       balanceInterval: 30_000,
       detectionInterval: 180_000,
     },
@@ -318,12 +262,66 @@ export const AssetsControllerInit: MessengerClientInitFunction<
       AccountsController: persistedState.AccountsController,
     }),
     trace: createAssetsControllerTrace(initMessenger),
-  });
+  };
+}
 
-  subscribeToArcTransactionConfirmedRefresh(
-    controllerMessenger,
-    messengerClient,
+/**
+ * Forces a full Arc assets refresh after a confirmed transaction.
+ *
+ * Arc USDC is represented as a native asset in the wallet, but the
+ * AccountActivity incremental balance update can miss that native USDC balance
+ * after swaps while updating ERC-20 balances such as EURC correctly. A full
+ * account asset scan resolves the native USDC balance, matching the manual
+ * recovery path of reloading the extension or switching accounts.
+ *
+ * Subscribing is safe as soon as the wallet instance exists. The callback runs
+ * later, on `transactionConfirmed`, when AccountTreeController is available.
+ *
+ * The controller messenger is protected, but it is the wallet-owned messenger
+ * that already delegates `transactionConfirmed` and AccountTree reads.
+ *
+ * @param assetsControllerInstance - The initialized AssetsController instance.
+ */
+export function subscribeToArcTransactionConfirmedRefresh(
+  assetsControllerInstance: AssetsController,
+): void {
+  const controllerMessenger = (
+    assetsControllerInstance as AssetsController & {
+      messenger: AssetsControllerMessenger;
+    }
+  ).messenger;
+
+  controllerMessenger.subscribe(
+    'TransactionController:transactionConfirmed',
+    (transactionMeta: TransactionMeta) => {
+      if (transactionMeta.chainId?.toLowerCase() !== CHAIN_IDS.ARC) {
+        return;
+      }
+
+      const fromAddress = transactionMeta.txParams.from?.toLowerCase();
+      if (!fromAddress) {
+        return;
+      }
+
+      // TODO: should be moved to the controller (comment on PR#46259)
+      const matchedAccount = controllerMessenger
+        .call('AccountTreeController:getAccountsFromSelectedAccountGroup')
+        .find(
+          (account: InternalAccount) =>
+            account.address.toLowerCase() === fromAddress,
+        );
+
+      if (!matchedAccount) {
+        return;
+      }
+
+      assetsControllerInstance
+        .getAssets([matchedAccount], {
+          chainIds: [ARC_CAIP_CHAIN_ID],
+          forceUpdate: true,
+          bypassServerCache: true,
+        })
+        .catch(() => undefined);
+    },
   );
-
-  return { messengerClient };
-};
+}

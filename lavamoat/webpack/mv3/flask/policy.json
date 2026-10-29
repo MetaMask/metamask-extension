@@ -1115,7 +1115,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers": true,
+        "@metamask/assets-controller>@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/assets-controller>@metamask/controller-utils": true,
@@ -1169,6 +1169,15 @@
         "@metamask/assets-controllers>reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "@metamask/assets-controllers>uuid": true
+      }
+    },
+    "@metamask/assets-controller>@metamask/assets-controllers": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/assets-controller>@metamask/controller-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
@@ -1637,6 +1646,23 @@
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/network-enablement-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -2767,6 +2793,11 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2799,7 +2830,7 @@
         "@metamask/network-connection-banner-controller>@metamask/client-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/network-controller": true,
-        "@metamask/network-enablement-controller": true,
+        "@metamask/network-connection-banner-controller>@metamask/network-enablement-controller": true,
         "@metamask/utils": true,
         "reselect": true
       }
@@ -2846,10 +2877,15 @@
     "@metamask/network-enablement-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/network-enablement-controller>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/network-connection-banner-controller>@metamask/network-enablement-controller": {
+      "packages": {
         "@metamask/utils": true,
         "reselect": true
       }
@@ -2934,6 +2970,21 @@
         "deep-freeze-strict": true,
         "immer": true,
         "nanoid": true
+      }
+    },
+    "@metamask/wallet>@metamask/permission-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/wallet>@metamask/controller-utils": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "deep-freeze-strict": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/wallet>@metamask/permission-controller>immer": true,
+        "@metamask/wallet>@metamask/permission-controller>nanoid": true
       }
     },
     "@metamask/permission-log-controller": {
@@ -3716,6 +3767,7 @@
         "@metamask/wallet>@metamask/address-book-controller": true,
         "@metamask/analytics-controller": true,
         "@metamask/wallet>@metamask/approval-controller": true,
+        "@metamask/assets-controller": true,
         "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/wallet>@metamask/claims-controller": true,
@@ -3729,8 +3781,9 @@
         "@metamask/logging-controller": true,
         "@metamask/messenger": true,
         "@metamask/network-controller": true,
+        "@metamask/network-enablement-controller": true,
         "@metamask/passkey-controller": true,
-        "@metamask/permission-controller": true,
+        "@metamask/wallet>@metamask/permission-controller": true,
         "@metamask/remote-feature-flag-controller": true,
         "@metamask/seedless-onboarding-controller": true,
         "@metamask/selected-network-controller": true,
@@ -6194,6 +6247,11 @@
         "Iterator": true
       }
     },
+    "@metamask/wallet>@metamask/permission-controller>immer": {
+      "globals": {
+        "Iterator": true
+      }
+    },
     "string.prototype.matchall>internal-slot": {
       "packages": {
         "string.prototype.matchall>es-errors": true,
@@ -6623,6 +6681,11 @@
       }
     },
     "nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/wallet>@metamask/permission-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }
