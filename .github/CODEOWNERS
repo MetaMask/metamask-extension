@@ -153,12 +153,8 @@ ui/components/app/import-token                                 @MetaMask/core-ex
 ui/components/app/toast-listener                               @MetaMask/core-extension-ux
 ui/components/ui/toast                                         @MetaMask/core-extension-ux
 ui/css                                                         @MetaMask/core-extension-ux
-shared/lib/activity                                            @MetaMask/core-extension-ux
 ui/pages/home                                                  @MetaMask/core-extension-ux
-ui/pages/activity                                              @MetaMask/core-extension-ux
 ui/pages/core                                                  @MetaMask/core-extension-ux
-ui/pages/details                                               @MetaMask/core-extension-ux
-ui/pages/details/templates/ramps/                              @MetaMask/money-movement
 ui/pages/permissions-connect/                                  @MetaMask/core-extension-ux
 ui/pages/settings                                              @MetaMask/core-extension-ux
 ui/pages/settings/mfa-settings                                 @MetaMask/accounts-engineers
@@ -280,6 +276,24 @@ app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/
 shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 ui/selectors/money/                  @MetaMask/earn
 ui/components/app/money/             @MetaMask/earn
+
+# Activity
+# This block must remain BELOW all feature-team blocks (Swaps-Bridge, Money Movement,
+# Perps, mUSD, etc.) so that explicit activity paths take precedence over broader
+# feature patterns (e.g., **/ramps/**, **/perps/**). Feature-specific subfolders under
+# activity are co-owned by the feature team and core-extension-ux.
+shared/lib/activity                                            @MetaMask/core-extension-ux
+ui/hooks/activity/                                             @MetaMask/core-extension-ux
+ui/selectors/activity/                                         @MetaMask/core-extension-ux
+ui/selectors/activity.ts                                       @MetaMask/core-extension-ux
+ui/selectors/activity.test.ts                                  @MetaMask/core-extension-ux
+ui/components/app/activity-list-item-avatar/                   @MetaMask/core-extension-ux
+ui/components/app/transaction-activity-empty-state/            @MetaMask/core-extension-ux
+ui/pages/activity                                              @MetaMask/core-extension-ux
+ui/pages/details                                               @MetaMask/core-extension-ux
+ui/pages/details/templates/ramps/                              @MetaMask/money-movement @MetaMask/core-extension-ux
+ui/pages/details/templates/money/                              @MetaMask/earn @MetaMask/core-extension-ux
+ui/selectors/activity/musd/                                    @MetaMask/earn @MetaMask/core-extension-ux
 
 
 # Extension Platform owns build, development tooling,
