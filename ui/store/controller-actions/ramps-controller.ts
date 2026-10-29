@@ -41,7 +41,7 @@ export async function setRampsSelectedPaymentMethod(
   ]);
 }
 
-export async function getRampsCountries(): Promise<Country[]> {
+export function getRampsCountries(): Promise<Country[]> {
   return submitRequestToBackground('getRampsCountries');
 }
 
