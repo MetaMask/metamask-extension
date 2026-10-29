@@ -126,6 +126,8 @@ class ChromeDriver {
     // Ensure Chrome is cleaned up if anything below fails (extension ID
     // lookup, etc.).  Without this, a partial failure orphans the browser.
     try {
+      // The default window size in headless mode is tiny.
+      // We increase it to reduce the chance of buttons being hidden behind toasts.
       if (isHeadless('SELENIUM')) {
         await driver
           .manage()
