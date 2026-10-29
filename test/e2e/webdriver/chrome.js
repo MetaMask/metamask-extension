@@ -60,7 +60,7 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
 
-    if (constrainWindowSize) {
+    if (constrainWindowSize && !isHeadless('SELENIUM')) {
       args.push('--window-size=320,600');
     }
 
@@ -125,6 +125,13 @@ class ChromeDriver {
     // Ensure Chrome is cleaned up if anything below fails (extension ID
     // lookup, etc.).  Without this, a partial failure orphans the browser.
     try {
+      if (isHeadless('SELENIUM')) {
+        await driver
+          .manage()
+          .window()
+          .setRect({ width: constrainWindowSize ? 320 : 800, height: 800 });
+      }
+
       // When the manifest has a `key`, the extension ID is deterministic and can
       // be computed locally — skipping the chrome://extensions round-trip (~880ms).
       let extensionId = ChromeDriver._computeExtensionId('dist/chrome');
