@@ -8,6 +8,11 @@ name: Pilot A/B benchmarks
 #
 # Shards per browser: branch ending in -smoke gives 1, -s<N> gives N, anything
 # else gives 50. The journey leg runs half as many shards (minimum 1).
+#
+# Round 2 (branches trigger-ci-pilot-r2*): StandardHome only, default 100
+# shards per browser. Build B gets a busy-wait; shard s runs arm (s-1) % 4 with
+# the iteration count from R2_ITERATIONS, and which build goes first alternates
+# every 4 shards so each arm is balanced.
 
 on:
   push:
@@ -24,6 +29,8 @@ env:
   BENCHMARK_AB_PILOT: '1'
   # Session order; a random per-job flip swaps which build goes first.
   BENCHMARK_AB_SEQUENCE: ABBABAABAB
+  # Round 2 busy-wait iterations per arm (arm 0 is the hook with no work).
+  R2_ITERATIONS: '{"chrome": [0, 4000000, 8000000, 16000000], "firefox": [0, 6000000, 12000000, 24000000]}'
 
 jobs:
   plan:
@@ -36,33 +43,53 @@ jobs:
         env:
           BRANCH_NAME: ${{ github.ref_name }}
         run: |
+          round=1
+          default=50
+          if [[ "$BRANCH_NAME" == trigger-ci-pilot-r2* ]]; then
+            round=2
+            default=100
+          fi
           if [[ "$BRANCH_NAME" =~ -smoke$ ]]; then
             shards=1
           elif [[ "$BRANCH_NAME" =~ -s([0-9]+)$ ]]; then
             shards="${BASH_REMATCH[1]}"
           else
-            shards=50
+            shards=$default
           fi
           if (( shards < 1 || shards > 100 )); then
             echo "::error::Shards per browser must be 1 to 100, got $shards"
             exit 1
           fi
-          journey=$(( shards / 2 ))
-          (( journey < 1 )) && journey=1
-          matrix=$(jq -nc --argjson s "$shards" --argjson j "$journey" '
-            {include: [
-              ("chrome", "firefox") as $browser
-              | ({pageType: "startupStandardHome", n: $s},
-                 {pageType: "userJourneyOnboardingImport", n: $j}) as $leg
-              | range(1; $leg.n + 1) as $shard
-              | {browser: $browser, pageType: $leg.pageType, shard: $shard}
-            ]}')
-          echo "Shards per browser: $shards (journey $journey)"
+          if (( round == 2 )); then
+            matrix=$(jq -nc --argjson s "$shards" --argjson it "$R2_ITERATIONS" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | range(1; $s + 1) as $shard
+                | (($shard - 1) % 4) as $arm
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, arm: $arm,
+                   flip: (((($shard - 1) / 4) | floor) % 2),
+                   iterations: $it[$browser][$arm]}
+              ]}')
+            echo "Round 2: $shards shards per browser, arm = (shard - 1) % 4"
+          else
+            journey=$(( shards / 2 ))
+            (( journey < 1 )) && journey=1
+            matrix=$(jq -nc --argjson s "$shards" --argjson j "$journey" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | ({pageType: "startupStandardHome", n: $s},
+                   {pageType: "userJourneyOnboardingImport", n: $j}) as $leg
+                | range(1; $leg.n + 1) as $shard
+                | {browser: $browser, pageType: $leg.pageType, shard: $shard}
+              ]}')
+            echo "Shards per browser: $shards (journey $journey)"
+          fi
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
   pilot:
     needs: plan
-    name: ${{ matrix.browser }}-${{ matrix.pageType }}-${{ matrix.shard }}
+    name: ${{ matrix.browser }}-${{ matrix.pageType }}-${{ matrix.shard }}${{ matrix.arm != null && format('-arm{0}', matrix.arm) || '' }}
     continue-on-error: true
     strategy:
       fail-fast: false
@@ -110,9 +137,12 @@ jobs:
           --browser ${{ matrix.browser }}
           --source dist/${{ matrix.browser }}
           --out test-artifacts/benchmarks/ab-builds-${{ matrix.browser }}-${{ matrix.pageType }}-s${{ matrix.shard }}.json
+          ${{ matrix.iterations != null && format('--inject-iterations {0}', matrix.iterations) || '' }}
 
       - name: Choose which build goes first
-        run: echo "BENCHMARK_AB_FLIP=$((RANDOM % 2))" >> "$GITHUB_ENV"
+        env:
+          MATRIX_FLIP: ${{ matrix.flip }}
+        run: echo "BENCHMARK_AB_FLIP=${MATRIX_FLIP:-$((RANDOM % 2))}" >> "$GITHUB_ENV"
 
       - name: Run the A/B benchmark
         timeout-minutes: 25

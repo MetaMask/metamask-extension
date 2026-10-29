@@ -8,16 +8,54 @@ import {
   type AbBuild,
 } from './ab-pilot';
 
+export type AbInjection = {
+  file: string;
+  iterations: number;
+  hashes: Record<AbBuild, string>;
+};
+
 export type AbBuildsSummary = {
   browser: string;
   sourceDirectory: string;
   directories: Record<AbBuild, string>;
   fileCount: number;
-  // Hash of every file except manifest.json; equal for A and B by construction.
+  // Hash of every file except manifest.json and the injected file; equal for A and B.
   contentHash: string;
   manifestHashes: Record<AbBuild, string>;
   markerKey: string;
+  injection?: AbInjection;
 };
+
+export const INJECTION_MARK = 'abInjected';
+
+/**
+ * Fixed amount of CPU work, so its cost scales with the machine like real code.
+ * The mark records the time it took; 0 iterations keeps the hook but does no work.
+ *
+ * @param iterations - Loop iterations.
+ */
+export function getInjectionSnippet(iterations: number): string {
+  return (
+    `;(function(){var n=${iterations},t=performance.now(),x=0;` +
+    'for(var i=0;i<n;i++){x=(x+Math.imul(i,2654435761))|0}' +
+    `performance.mark('${INJECTION_MARK}',{detail:{iterations:n,` +
+    'ms:performance.now()-t,sink:x}})})();\n'
+  );
+}
+
+/**
+ * First script home.html loads, so the work runs before the UI starts.
+ *
+ * @param directory - Unpacked build.
+ */
+export function getFirstHomeScript(directory: string): string {
+  const html = fs.readFileSync(path.join(directory, 'home.html'), 'utf8');
+  const match = html.match(/<script[^>]*\ssrc="([^"]+)"/u);
+  if (!match) {
+    throw new Error('No script found in home.html');
+  }
+  return match[1];
+}
 
 function listFiles(root: string, dir = ''): string[] {
   const entries = fs.readdirSync(path.join(root, dir), { withFileTypes: true });
@@ -34,15 +72,19 @@ function hashFile(file: string): string {
 }
 
 /**
- * Hash of the relative paths and contents of every file except manifest.json.
+ * Hash of the relative paths and contents of every file not in `exclude`.
  *
  * @param root - Directory to hash.
+ * @param exclude
  */
-function hashContent(root: string): { files: string[]; hash: string } {
+function hashContent(
+  root: string,
+  exclude: string[],
+): { files: string[]; hash: string } {
   const files = listFiles(root);
   const hash = createHash('sha256');
   for (const file of files) {
-    if (file !== 'manifest.json') {
+    if (!exclude.includes(file)) {
       hash.update(
         `${file.split(path.sep).join('/')}\0${hashFile(path.join(root, file))}\n`,
       );
@@ -60,16 +102,26 @@ function hashContent(root: string): { files: string[]; hash: string } {
  * @param options.browser - `chrome` or `firefox`.
  * @param options.sourceDirectory - Unpacked donor build, for example `dist/chrome`.
  * @param options.baseDirectory - Working directory the output paths are under.
+ * @param options.injectIterations - When set, B's first home.html script gets
+ * a busy-wait of this many iterations, and that file may also differ.
  */
 export function prepareAbBuilds({
   browser,
   sourceDirectory,
   baseDirectory = process.cwd(),
+  injectIterations,
 }: {
   browser: string;
   sourceDirectory: string;
   baseDirectory?: string;
+  injectIterations?: number;
 }): AbBuildsSummary {
+  if (
+    injectIterations !== undefined &&
+    !(Number.isInteger(injectIterations) && injectIterations >= 0)
+  ) {
+    throw new Error(`Invalid injection iterations ${injectIterations}`);
+  }
   const markerKey = getMarkerKey(browser);
   const source = path.resolve(baseDirectory, sourceDirectory);
   const manifest = JSON.parse(
@@ -91,10 +143,28 @@ export function prepareAbBuilds({
     manifestHashes[build] = createHash('sha256').update(text).digest('hex');
   }
 
-  const a = hashContent(path.resolve(baseDirectory, directories.A));
-  const b = hashContent(path.resolve(baseDirectory, directories.B));
+  const exclude = ['manifest.json'];
+  let injection: AbInjection | undefined;
+  if (injectIterations !== undefined) {
+    const file = getFirstHomeScript(source);
+    const targetB = path.resolve(baseDirectory, directories.B, file);
+    const original = fs.readFileSync(targetB, 'utf8');
+    fs.writeFileSync(targetB, getInjectionSnippet(injectIterations) + original);
+    exclude.push(path.normalize(file));
+    injection = {
+      file,
+      iterations: injectIterations,
+      hashes: {
+        A: hashFile(path.resolve(baseDirectory, directories.A, file)),
+        B: hashFile(targetB),
+      },
+    };
+  }
+
+  const a = hashContent(path.resolve(baseDirectory, directories.A), exclude);
+  const b = hashContent(path.resolve(baseDirectory, directories.B), exclude);
   if (a.hash !== b.hash || a.files.join('\n') !== b.files.join('\n')) {
-    throw new Error('A/B builds differ outside manifest.json');
+    throw new Error(`A/B builds differ outside ${exclude.join(', ')}`);
   }
   const manifestA = JSON.parse(
     fs.readFileSync(
@@ -122,5 +192,6 @@ export function prepareAbBuilds({
     contentHash: a.hash,
     manifestHashes,
     markerKey,
+    ...(injection && { injection }),
   };
 }

@@ -17,6 +17,8 @@ export type AbSessionRecord = {
   success?: boolean;
   pageLoads?: number;
   timers?: Record<string, number>;
+  // Busy-wait milliseconds per page load; null where the build has no injection.
+  injectedMs?: (number | null)[];
 };
 
 export type AbPilotRecord = {
@@ -112,7 +114,10 @@ export function beginAbSession(index: number): AbBuild | undefined {
 
 export function endAbSession(
   index: number,
-  details: Pick<AbSessionRecord, 'success' | 'pageLoads' | 'timers'>,
+  details: Pick<
+    AbSessionRecord,
+    'success' | 'pageLoads' | 'timers' | 'injectedMs'
+  >,
 ): void {
   if (!isAbPilotEnabled()) {
     return;

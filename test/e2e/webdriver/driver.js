@@ -2148,6 +2148,12 @@ function collectMetrics() {
     results.tbt = longTaskData.tbt;
   }
 
+  // TEMPORARY (A/B pilot): busy-wait timing from an injected build; absent otherwise.
+  const injected = window.performance.getEntriesByName('abInjected')[0];
+  if (injected) {
+    results.abInjected = injected.detail;
+  }
+
   return {
     ...results,
     ...window.stateHooks.getCustomTraces(),

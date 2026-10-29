@@ -467,7 +467,13 @@ export async function runPageLoadBenchmark(
       { retries },
       () => measurePageFn(pageName, pageLoads),
     );
-    endAbSession(i, { success: true, pageLoads: metrics.length });
+    endAbSession(i, {
+      success: true,
+      pageLoads: metrics.length,
+      injectedMs: metrics.map(
+        (m) => (m as { abInjected?: { ms: number } }).abInjected?.ms ?? null,
+      ),
+    });
     runResults = runResults.concat(metrics);
     if (webVitalsRuns) {
       const indexed = webVitalsRuns.map((wv: WebVitalsMetrics, j: number) => ({
