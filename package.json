@@ -708,7 +708,7 @@
     "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.6.1",
     "@toruslabs/eccrypto": "^6.1.0",
-    "@tsconfig/node22": "^22.0.0",
+    "@tsconfig/node24": "^24.0.5",
     "@types/babel__code-frame": "^7.0.6",
     "@types/babelify": "^7.3.7",
     "@types/browserify": "^12.0.37",
