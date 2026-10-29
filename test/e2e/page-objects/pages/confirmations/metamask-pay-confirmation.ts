@@ -49,6 +49,8 @@ export class MetaMaskPayConfirmation extends Confirmation {
     testId: 'wallet-initiated-header-back-button',
   };
 
+  protected readonly paidByMetaMask = { testId: 'paid-by-metamask' };
+
   protected readonly payWithPill = { testId: 'pay-with-pill' };
 
   protected readonly payWithRow = { testId: 'pay-with-row' };
