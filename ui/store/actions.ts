@@ -5744,6 +5744,27 @@ export function setLastActiveTime(): ThunkAction<
   };
 }
 
+/**
+ * Forwards a trusted UI click or keypress to the background for state-write
+ * telemetry. Failures are ignored so activity tracking never breaks the UI.
+ *
+ * @returns A thunk that reports the interaction.
+ */
+export function recordUiInteraction(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('AppStateController:recordUiInteraction');
+    } catch {
+      // Telemetry must not surface background failures in the UI.
+    }
+  };
+}
+
 export function setDismissSeedBackUpReminder(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

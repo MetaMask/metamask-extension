@@ -6647,4 +6647,37 @@ describe('Actions', () => {
       ).toBe(true);
     });
   });
+
+  describe('#recordUiInteraction', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls AppStateController:recordUiInteraction', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({ messengerCall: messengerCallStub });
+
+      await store.dispatch(actions.recordUiInteraction());
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'AppStateController:recordUiInteraction',
+          [],
+        ),
+      ).toBe(true);
+    });
+
+    it('swallows background errors', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon
+        .stub()
+        .rejects(new Error('background down'));
+      setBackgroundConnection({ messengerCall: messengerCallStub });
+
+      await expect(
+        store.dispatch(actions.recordUiInteraction()),
+      ).resolves.toBeUndefined();
+    });
+  });
 });
