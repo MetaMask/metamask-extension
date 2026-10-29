@@ -35,7 +35,7 @@ class ChromeDriver {
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
-      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad,DisableLoadExtensionCommandLineSwitch,ExtensionDisableUnsupportedDeveloper', // Stop chrome from calling home so much (auto-downloads of AI models; time sync); disable Crashpad to prevent orphaned crash-reporter processes; keep --load-extension working on Chrome 137+, including after `runtime.reload()` (otherwise the extension is disabled as an "unsupported developer extension")
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,Crashpad,DisableLoadExtensionCommandLineSwitch,ExtensionDisableUnsupportedDeveloper', // Stop chrome from calling home so much (auto-downloads of AI models; time sync; omnibox AI Mode eligibility checks to www.google.com/async/folae); disable Crashpad to prevent orphaned crash-reporter processes; keep --load-extension working on Chrome 137+, including after `runtime.reload()` (otherwise the extension is disabled as an "unsupported developer extension")
       '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
@@ -44,6 +44,13 @@ class ChromeDriver {
       // animations (e.g. modal fade-ins) stall and elements stay invisible
       '--disable-backgrounding-occluded-windows',
       '--disable-renderer-backgrounding',
+      // Chrome 140 starts GCM for its FCM invalidation services, even with
+      // background networking and sync disabled. Point it at a closed
+      // loopback port (loopback bypasses the proxy) so its calls to
+      // android.clients.google.com don't show up in the privacy specs.
+      '--gcm-checkin-url=http://127.0.0.1:9/checkin',
+      '--gcm-registration-url=http://127.0.0.1:9/c2dm/register3',
+      '--gcm-mcs-endpoint=https://127.0.0.1:9',
     ];
 
     if (isBenchmark) {
@@ -81,6 +88,9 @@ class ChromeDriver {
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
       args.push('--headless=new');
+      // Unlike Chrome 126, Chrome 140 headless emulates an 800x600 screen,
+      // which shrinks the viewport to ~756x364 and clips modals and content
+      args.push('--screen-info={1920x1080}');
     }
 
     // Build complete goog:chromeOptions object to avoid conflicts between

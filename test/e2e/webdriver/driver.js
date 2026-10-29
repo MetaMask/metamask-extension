@@ -166,6 +166,10 @@ function wrapElementWithAPI(element, driver) {
       
       // Dispatch input event to notify React of the change
       el.dispatchEvent(new Event('input', { bubbles: true }));
+      // Pages that only listen for key events (e.g. the test dapp's encrypt
+      // form enables its button on keyup) would otherwise never see the value
+      el.dispatchEvent(new Event('keyup', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
       `,
       element,
       input,
