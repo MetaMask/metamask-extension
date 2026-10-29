@@ -27,10 +27,9 @@ import {
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
 import {
-  isHardwareWithdrawRecipient,
   syncMoneyAccountWithdrawTransfer,
   updateMoneyAccountWithdrawAmount,
-  type WithdrawRoute,
+  type WithdrawPaymentToken,
 } from '../lib/money/pay/update-withdraw-amount';
 import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
 import type {
@@ -113,12 +112,7 @@ function getApi(
     createMoneyAccountWithdrawTransaction: async (recipient: Hex) => {
       const result =
         await createMoneyAccountWithdrawTransaction(moneyPayMessenger);
-      seedWithdrawPayConfig(
-        messengerClient,
-        moneyPayMessenger,
-        result.transactionId,
-        recipient,
-      );
+      seedWithdrawPayConfig(messengerClient, result.transactionId, recipient);
       return result;
     },
     setTransactionPayIsMaxAmount: (
@@ -198,12 +192,7 @@ function getApi(
         return;
       }
 
-      seedWithdrawPayConfig(
-        messengerClient,
-        moneyPayMessenger,
-        transactionId,
-        accountOverride,
-      );
+      seedWithdrawPayConfig(messengerClient, transactionId, accountOverride);
       await syncWithdrawTransfer(
         messengerClient,
         moneyPayMessenger,
@@ -261,7 +250,7 @@ function getApi(
         transactionId,
         amountHuman,
         recipientOverride ?? transactionData?.accountOverride,
-        getWithdrawRoute(transactionData),
+        getWithdrawPaymentToken(transactionData),
       );
     },
     setTransactionPayPaymentOverride: (
@@ -317,18 +306,15 @@ function getApi(
   };
 }
 
-function getWithdrawRoute(
+function getWithdrawPaymentToken(
   transactionData:
     | TransactionPayController['state']['transactionData'][string]
     | undefined,
-): WithdrawRoute {
+): WithdrawPaymentToken | undefined {
   const paymentToken = transactionData?.paymentToken;
-  return {
-    isRecipientOnly: transactionData?.isAccountOverrideRecipientOnly,
-    paymentToken: paymentToken
-      ? { address: paymentToken.address, chainId: paymentToken.chainId }
-      : undefined,
-  };
+  return paymentToken
+    ? { address: paymentToken.address, chainId: paymentToken.chainId }
+    : undefined;
 }
 
 async function syncWithdrawTransfer(
@@ -344,7 +330,7 @@ async function syncWithdrawTransfer(
       moneyPayMessenger,
       transactionId,
       transactionData?.accountOverride,
-      getWithdrawRoute(transactionData),
+      getWithdrawPaymentToken(transactionData),
     );
   } catch (error) {
     console.error('Money Account withdraw: transfer sync failed', error);
@@ -354,29 +340,20 @@ async function syncWithdrawTransfer(
 /**
  * Seeds Pay's withdraw recipient. Without this override the confirmation
  * account row falls back to the money account instead of the user's
- * currently selected EVM account.
- *
- * A hardware or QR recipient only receives the output: quotes are requested
- * and submitted from the money account, so the device never signs.
+ * currently selected EVM account. Pay only sends the output there; quotes
+ * are requested and submitted from the money account.
  *
  * @param messengerClient - TransactionPayController to write config on.
- * @param moneyPayMessenger - Messenger used to look up the recipient account.
  * @param transactionId - Withdrawal transaction id.
  * @param recipient - Account that receives the withdrawal.
  */
 function seedWithdrawPayConfig(
   messengerClient: TransactionPayController,
-  moneyPayMessenger: MoneyPayMessenger,
   transactionId: string,
   recipient: Hex,
 ): void {
-  const isRecipientOnly = isHardwareWithdrawRecipient(
-    moneyPayMessenger,
-    recipient,
-  );
   messengerClient.setTransactionConfig(transactionId, (config) => {
     config.accountOverride = recipient;
-    config.isAccountOverrideRecipientOnly = isRecipientOnly;
   });
 }
 

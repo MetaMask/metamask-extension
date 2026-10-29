@@ -63,7 +63,6 @@ describe('getTransactionPayControllerInitMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: expect.arrayContaining([
-          'AccountsController:getAccountByAddress',
           'AccountsController:getSelectedAccount',
           'NetworkController:getNetworkClientById',
           'TransactionController:getState',

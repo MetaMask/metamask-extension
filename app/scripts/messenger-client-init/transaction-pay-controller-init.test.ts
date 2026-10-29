@@ -19,7 +19,6 @@ import {
 } from '../lib/money/pay/update-deposit-amount';
 import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
 import {
-  isHardwareWithdrawRecipient,
   syncMoneyAccountWithdrawTransfer,
   updateMoneyAccountWithdrawAmount,
 } from '../lib/money/pay/update-withdraw-amount';
@@ -51,7 +50,6 @@ jest.mock('../lib/money/pay/payment-override-callback', () => ({
   getPaymentOverrideData: jest.fn(),
 }));
 jest.mock('../lib/money/pay/update-withdraw-amount', () => ({
-  isHardwareWithdrawRecipient: jest.fn(),
   syncMoneyAccountWithdrawTransfer: jest.fn(),
   updateMoneyAccountWithdrawAmount: jest.fn(),
 }));
@@ -64,7 +62,6 @@ const createWithdrawTransactionMock = jest.mocked(
 const updateDepositAmountMock = jest.mocked(updateMoneyAccountDepositAmount);
 const updateWithdrawAmountMock = jest.mocked(updateMoneyAccountWithdrawAmount);
 const syncWithdrawTransferMock = jest.mocked(syncMoneyAccountWithdrawTransfer);
-const isHardwareRecipientMock = jest.mocked(isHardwareWithdrawRecipient);
 const getMoneyAccountAmountDataMock = jest.mocked(getMoneyAccountAmountData);
 const getPaymentOverrideDataMock = jest.mocked(getPaymentOverrideData);
 
@@ -426,66 +423,39 @@ describe('TransactionPayControllerInit', () => {
       expect(syncWithdrawTransferMock).not.toHaveBeenCalled();
     });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ['a hardware', true],
-      ['a software', false],
-    ])(
-      'marks whether %s withdraw recipient only receives, then syncs the transfer',
-      async (_label: string, isHardware: boolean) => {
-        const { api, messengerClient, setTransactionConfigMock } = initApi([
-          WITHDRAW_TRANSACTION,
-        ]);
-        isHardwareRecipientMock.mockReturnValue(isHardware);
-        (
-          messengerClient as {
-            state: {
-              transactionData: Record<
-                string,
-                {
-                  accountOverride: string;
-                  isAccountOverrideRecipientOnly: boolean;
-                }
-              >;
-            };
-          }
-        ).state = {
-          transactionData: {
-            'tx-withdraw': {
-              accountOverride: ACCOUNT_OVERRIDE,
-              isAccountOverrideRecipientOnly: isHardware,
-            },
-          },
-        };
+    it('sets the withdraw recipient, then syncs the transfer', async () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi([
+        WITHDRAW_TRANSACTION,
+      ]);
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<string, { accountOverride: string }>;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-withdraw': { accountOverride: ACCOUNT_OVERRIDE },
+        },
+      };
 
-        await api.setTransactionPayAccountOverride(
-          'tx-withdraw',
-          ACCOUNT_OVERRIDE,
-        );
+      await api.setTransactionPayAccountOverride(
+        'tx-withdraw',
+        ACCOUNT_OVERRIDE,
+      );
 
-        const updater = setTransactionConfigMock.mock.calls[0][1];
-        const config: {
-          accountOverride?: string;
-          isAccountOverrideRecipientOnly?: boolean;
-        } = {};
-        updater(config as never);
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { accountOverride?: string } = {};
+      updater(config as never);
 
-        expect(isHardwareRecipientMock).toHaveBeenCalledWith(
-          expect.anything(),
-          ACCOUNT_OVERRIDE,
-        );
-        expect(config).toEqual({
-          accountOverride: ACCOUNT_OVERRIDE,
-          isAccountOverrideRecipientOnly: isHardware,
-        });
-        expect(syncWithdrawTransferMock).toHaveBeenCalledWith(
-          expect.anything(),
-          'tx-withdraw',
-          ACCOUNT_OVERRIDE,
-          { isRecipientOnly: isHardware, paymentToken: undefined },
-        );
-      },
-    );
+      expect(config).toEqual({ accountOverride: ACCOUNT_OVERRIDE });
+      expect(syncWithdrawTransferMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-withdraw',
+        ACCOUNT_OVERRIDE,
+        undefined,
+      );
+    });
   });
 
   describe('api.setTransactionPayPaymentOverride', () => {
@@ -748,46 +718,28 @@ describe('TransactionPayControllerInit', () => {
       });
     });
 
-    // @ts-expect-error This function is missing from the Mocha type definitions
-    it.each([
-      ['a hardware', true],
-      ['a software', false],
-    ])(
-      'seeds %s recipient as the accountOverride after creating the batch',
-      async (_label: string, isHardware: boolean) => {
-        const { api, setTransactionConfigMock } = initApi();
-        isHardwareRecipientMock.mockReturnValue(isHardware);
+    it('seeds the recipient as the accountOverride after creating the batch', async () => {
+      const { api, setTransactionConfigMock } = initApi();
 
-        const result =
-          await api.createMoneyAccountWithdrawTransaction(ACCOUNT_OVERRIDE);
+      const result =
+        await api.createMoneyAccountWithdrawTransaction(ACCOUNT_OVERRIDE);
 
-        expect(result).toEqual({
-          transactionId: 'tx-withdraw',
-          batchId: '0x1234',
-        });
-        expect(createWithdrawTransactionMock).toHaveBeenCalledTimes(1);
+      expect(result).toEqual({
+        transactionId: 'tx-withdraw',
+        batchId: '0x1234',
+      });
+      expect(createWithdrawTransactionMock).toHaveBeenCalledTimes(1);
 
-        const updater = setTransactionConfigMock.mock.calls[0][1];
-        const config: {
-          accountOverride?: string;
-          isAccountOverrideRecipientOnly?: boolean;
-        } = {};
-        updater(config as never);
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { accountOverride?: string } = {};
+      updater(config as never);
 
-        expect(setTransactionConfigMock).toHaveBeenCalledWith(
-          'tx-withdraw',
-          expect.any(Function),
-        );
-        expect(isHardwareRecipientMock).toHaveBeenCalledWith(
-          expect.anything(),
-          ACCOUNT_OVERRIDE,
-        );
-        expect(config).toEqual({
-          accountOverride: ACCOUNT_OVERRIDE,
-          isAccountOverrideRecipientOnly: isHardware,
-        });
-      },
-    );
+      expect(setTransactionConfigMock).toHaveBeenCalledWith(
+        'tx-withdraw',
+        expect.any(Function),
+      );
+      expect(config).toEqual({ accountOverride: ACCOUNT_OVERRIDE });
+    });
   });
 
   describe('api.updateMoneyAccountDepositAmount', () => {
@@ -983,11 +935,11 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
         accountOverride,
-        { isRecipientOnly: undefined, paymentToken: undefined },
+        undefined,
       );
     });
 
-    it('forwards the selected receive token and recipient-only mode', async () => {
+    it('forwards the selected receive token', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
       if (!api) {
@@ -998,19 +950,13 @@ describe('TransactionPayControllerInit', () => {
           state: {
             transactionData: Record<
               string,
-              {
-                isAccountOverrideRecipientOnly: boolean;
-                paymentToken: { address: string; chainId: string };
-              }
+              { paymentToken: { address: string; chainId: string } }
             >;
           };
         }
       ).state = {
         transactionData: {
-          'tx-1': {
-            isAccountOverrideRecipientOnly: true,
-            paymentToken: { address: '0x123', chainId: '0x1' },
-          },
+          'tx-1': { paymentToken: { address: '0x123', chainId: '0x1' } },
         },
       };
       updateWithdrawAmountMock.mockResolvedValue(false);
@@ -1022,10 +968,7 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
         undefined,
-        {
-          isRecipientOnly: true,
-          paymentToken: { address: '0x123', chainId: '0x1' },
-        },
+        { address: '0x123', chainId: '0x1' },
       );
     });
 
@@ -1063,7 +1006,7 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
         recipientOverride,
-        { isRecipientOnly: undefined, paymentToken: undefined },
+        undefined,
       );
     });
   });
@@ -1122,10 +1065,7 @@ describe('TransactionPayControllerInit', () => {
         expect.anything(),
         'tx-1',
         '0xabc',
-        {
-          isRecipientOnly: undefined,
-          paymentToken: { address: '0x123', chainId: '0x1' },
-        },
+        { address: '0x123', chainId: '0x1' },
       );
       expect(callOrder).toEqual(['update', 'sync']);
     });

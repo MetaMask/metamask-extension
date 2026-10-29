@@ -1,14 +1,16 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { useCallback } from 'react';
 
+import { getMoneyAccountWithdrawTransferTarget } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import {
   selectTransactionById,
   type TransactionState,
 } from '../../../../selectors/transactionController';
 import {
-  selectTransactionDataByTransactionId,
+  selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -68,9 +70,8 @@ function readTransactionFromStore(
  * the confirmation clone instead of requiring the IPC object to be funded.
  *
  * Funded nested calldata is reused only when it already encodes the latest
- * typed amount and pays the current recipient, and never for a recipient-only
- * route. Otherwise Send could approve a previous encode for an older amount,
- * recipient, or receive token.
+ * typed amount and pays the current transfer target. Otherwise Send could
+ * approve a previous encode for an older amount, recipient, or receive token.
  *
  * @returns An object with `prepareWithdrawTransaction`.
  */
@@ -93,25 +94,37 @@ export function useMoneyAccountWithdrawConfirm() {
     ): Promise<TransactionMeta | null> => {
       const amountHuman = getLastMoneyAccountWithdrawAmount(transactionMeta.id);
       const fromStore = readTransactionFromStore(dispatch, transactionMeta.id);
-      const isRecipientOnly = dispatch(
-        (_, getState) =>
-          selectTransactionDataByTransactionId(
-            getState() as unknown as TransactionPayState,
-            transactionMeta.id,
-          )?.isAccountOverrideRecipientOnly,
+      const paymentToken = dispatch((_, getState) =>
+        selectTransactionPaymentTokenByTransactionId(
+          getState() as unknown as TransactionPayState,
+          transactionMeta.id,
+        ),
       );
 
       // Skip re-encode only when nested calldata already matches the amount
-      // on screen and pays the recipient. A recipient-only route may keep the
-      // mUSD on the money account, so only the background can pick its target.
-      const isReusable = (transaction: TransactionMeta | undefined) =>
-        !isRecipientOnly &&
-        doesWithdrawCalldataMatchAmount(transaction, amountHuman) &&
-        (!recipient ||
-          isEqualCaseInsensitive(
-            getMoneyAccountWithdrawTransferDetails(transaction).recipient ?? '',
-            recipient,
-          ));
+      // on screen and pays the current target. Quoted tokens keep the mUSD on
+      // the money account.
+      const isReusable = (transaction: TransactionMeta | undefined) => {
+        if (
+          !transaction ||
+          !doesWithdrawCalldataMatchAmount(transaction, amountHuman)
+        ) {
+          return false;
+        }
+        if (!recipient) {
+          return true;
+        }
+        const target = getMoneyAccountWithdrawTransferTarget({
+          moneyAccountAddress: transaction.txParams.from as Hex,
+          paymentToken,
+          recipient,
+          transaction,
+        });
+        return isEqualCaseInsensitive(
+          getMoneyAccountWithdrawTransferDetails(transaction).recipient ?? '',
+          target,
+        );
+      };
       const ready =
         (isReusable(fromStore) ? withFundedBatchCalldata(fromStore) : null) ??
         (isReusable(transactionMeta)

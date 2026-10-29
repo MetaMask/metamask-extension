@@ -134,9 +134,8 @@ function getWithdrawLabel(
 }
 
 /**
- * A quoted withdrawal to a hardware or QR recipient transfers the mUSD to the
- * money account itself and Pay delivers the output, so that transfer does not
- * name the destination.
+ * A quoted withdrawal transfers the mUSD to the money account itself and Pay
+ * delivers the output, so that transfer does not name the destination.
  *
  * @param transactionMeta - The withdrawal transaction.
  * @returns The recipient, or `undefined` when the transfer stays on the money account.

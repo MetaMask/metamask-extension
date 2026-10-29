@@ -6,9 +6,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
 import {
-  isHardwareWithdrawRecipient,
   syncMoneyAccountWithdrawTransfer,
   updateMoneyAccountWithdrawAmount,
 } from './update-withdraw-amount';
@@ -40,18 +38,6 @@ const MUSD_RECEIVE_TOKEN = {
 const BRIDGED_RECEIVE_TOKEN = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
   chainId: '0x1' as Hex,
-};
-const RECIPIENT_ONLY_QUOTED_ROUTE = {
-  isRecipientOnly: true,
-  paymentToken: BRIDGED_RECEIVE_TOKEN,
-};
-const RECIPIENT_ONLY_DIRECT_ROUTE = {
-  isRecipientOnly: true,
-  paymentToken: MUSD_RECEIVE_TOKEN,
-};
-const SIGNING_RECIPIENT_QUOTED_ROUTE = {
-  isRecipientOnly: false,
-  paymentToken: BRIDGED_RECEIVE_TOKEN,
 };
 
 type UpdateTransactionMetadataOptions = {
@@ -249,7 +235,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
   });
 
-  it('keeps the mUSD on the money account when a recipient-only token is quoted', async () => {
+  it('keeps the mUSD on the money account when the receive token is quoted', async () => {
     const { messenger } = setup();
 
     await updateMoneyAccountWithdrawAmount(
@@ -257,7 +243,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       TRANSACTION_ID,
       '1',
       HARDWARE_RECIPIENT,
-      RECIPIENT_ONLY_QUOTED_ROUTE,
+      BRIDGED_RECEIVE_TOKEN,
     );
 
     expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
@@ -265,7 +251,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
   });
 
-  it('pays a recipient-only account directly for mUSD on the vault chain', async () => {
+  it('pays the recipient directly for mUSD on the vault chain', async () => {
     const { messenger } = setup();
 
     await updateMoneyAccountWithdrawAmount(
@@ -273,7 +259,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       TRANSACTION_ID,
       '1',
       HARDWARE_RECIPIENT,
-      RECIPIENT_ONLY_DIRECT_ROUTE,
+      MUSD_RECEIVE_TOKEN,
     );
 
     expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
@@ -281,7 +267,7 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
   });
 
-  it('pays a signing recipient directly when the receive token is quoted', async () => {
+  it('keeps the mUSD on the money account for a software recipient when the token is quoted', async () => {
     const { messenger } = setup();
 
     await updateMoneyAccountWithdrawAmount(
@@ -289,11 +275,11 @@ describe('updateMoneyAccountWithdrawAmount', () => {
       TRANSACTION_ID,
       '1',
       ACCOUNT_OVERRIDE,
-      SIGNING_RECIPIENT_QUOTED_ROUTE,
+      BRIDGED_RECEIVE_TOKEN,
     );
 
     expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
-      expect.objectContaining({ recipient: ACCOUNT_OVERRIDE }),
+      expect.objectContaining({ recipient: MONEY_ACCOUNT_ADDRESS_MOCK }),
     );
   });
 
@@ -440,7 +426,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
       messenger,
       TRANSACTION_ID,
       HARDWARE_RECIPIENT,
-      RECIPIENT_ONLY_QUOTED_ROUTE,
+      BRIDGED_RECEIVE_TOKEN,
     );
 
     expect(result).toBe(true);
@@ -466,7 +452,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
       messenger,
       TRANSACTION_ID,
       HARDWARE_RECIPIENT,
-      RECIPIENT_ONLY_DIRECT_ROUTE,
+      MUSD_RECEIVE_TOKEN,
     );
 
     expect(result).toBe(true);
@@ -475,11 +461,11 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
     );
   });
 
-  it('re-encodes to a signing recipient that replaced a recipient-only one', async () => {
+  it('re-encodes to a new recipient for a direct token', async () => {
     const { messenger } = setup({
       transactions: [
         createWithdrawTransaction({
-          transferData: encodeTransfer(MONEY_ACCOUNT_ADDRESS_MOCK, 1_000_000n),
+          transferData: encodeTransfer(HARDWARE_RECIPIENT, 1_000_000n),
         }),
       ],
     });
@@ -488,7 +474,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
       messenger,
       TRANSACTION_ID,
       ACCOUNT_OVERRIDE,
-      SIGNING_RECIPIENT_QUOTED_ROUTE,
+      MUSD_RECEIVE_TOKEN,
     );
 
     expect(result).toBe(true);
@@ -513,7 +499,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
       messenger,
       TRANSACTION_ID,
       HARDWARE_RECIPIENT,
-      RECIPIENT_ONLY_QUOTED_ROUTE,
+      BRIDGED_RECEIVE_TOKEN,
     );
 
     expect(result).toBe(false);
@@ -528,7 +514,7 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
       messenger,
       TRANSACTION_ID,
       HARDWARE_RECIPIENT,
-      RECIPIENT_ONLY_QUOTED_ROUTE,
+      BRIDGED_RECEIVE_TOKEN,
     );
 
     expect(result).toBe(false);
@@ -549,51 +535,10 @@ describe('syncMoneyAccountWithdrawTransfer', () => {
       messenger,
       TRANSACTION_ID,
       HARDWARE_RECIPIENT,
-      RECIPIENT_ONLY_QUOTED_ROUTE,
+      BRIDGED_RECEIVE_TOKEN,
     );
 
     expect(result).toBe(false);
     expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
-  });
-});
-
-describe('isHardwareWithdrawRecipient', () => {
-  function setupAccount(keyringType?: string) {
-    return setup({
-      handlers: {
-        'AccountsController:getAccountByAddress': () =>
-          keyringType
-            ? { metadata: { keyring: { type: keyringType } } }
-            : undefined,
-      },
-    });
-  }
-
-  // @ts-expect-error This function is missing from the Mocha type definitions
-  it.each(Object.values(HardwareKeyringType))(
-    'returns true for a %s account',
-    (keyringType: string) => {
-      const { messenger } = setupAccount(keyringType);
-
-      expect(isHardwareWithdrawRecipient(messenger, HARDWARE_RECIPIENT)).toBe(
-        true,
-      );
-    },
-  );
-
-  it('returns false for a software account', () => {
-    const { messenger } = setupAccount('HD Key Tree');
-
-    expect(isHardwareWithdrawRecipient(messenger, ACCOUNT_OVERRIDE)).toBe(
-      false,
-    );
-  });
-
-  it('returns false for an unknown account', () => {
-    const { messenger } = setupAccount();
-
-    expect(isHardwareWithdrawRecipient(messenger, ACCOUNT_OVERRIDE)).toBe(
-      false,
-    );
   });
 });
