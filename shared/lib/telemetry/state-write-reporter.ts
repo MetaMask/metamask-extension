@@ -58,6 +58,12 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
     ['ui_closed', event.lastActivity.msSinceLastUiClosed],
     ['ui_interaction', event.lastActivity.msSinceLastUiInteraction],
     ['window_event', event.lastActivity.msSinceLastWindowEvent],
+    ['dapp_rpc', event.lastActivity.msSinceLastDappRpc],
+    ['snap_rpc', event.lastActivity.msSinceLastSnapRpc],
+    [
+      'external_extension_rpc',
+      event.lastActivity.msSinceLastExternalExtensionRpc,
+    ],
     [
       'last_service_worker_reload',
       event.lastActivity.msSinceLastServiceWorkerReload,

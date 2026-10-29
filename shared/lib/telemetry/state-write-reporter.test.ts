@@ -18,6 +18,9 @@ const EVENT: SplitStateWriteEvent = {
     msSinceLastUiOpen: 2_000,
     msSinceLastUiInteraction: 4_000,
     msSinceLastWindowEvent: 3_000,
+    msSinceLastDappRpc: 6_000,
+    msSinceLastSnapRpc: 7_000,
+    msSinceLastExternalExtensionRpc: 8_000,
   },
   bytesByController: new Map([
     ['BarController', 21],
@@ -76,6 +79,9 @@ describe('trackSplitStateWrite', () => {
           'state.write.ms_since_ui_open': 2_000,
           'state.write.ms_since_ui_interaction': 4_000,
           'state.write.ms_since_window_event': 3_000,
+          'state.write.ms_since_dapp_rpc': 6_000,
+          'state.write.ms_since_snap_rpc': 7_000,
+          'state.write.ms_since_external_extension_rpc': 8_000,
           'state.write.sample_rate': 0.01,
           'state.write.size_measurement_source': 'storage_get_bytes_in_use',
           'state.write.notification_is_open': true,
@@ -148,6 +154,11 @@ describe('trackSplitStateWrite', () => {
       'state.write.ms_since_ui_interaction',
     );
     expect(attributes).not.toHaveProperty('state.write.ms_since_window_event');
+    expect(attributes).not.toHaveProperty('state.write.ms_since_dapp_rpc');
+    expect(attributes).not.toHaveProperty('state.write.ms_since_snap_rpc');
+    expect(attributes).not.toHaveProperty(
+      'state.write.ms_since_external_extension_rpc',
+    );
     expect(attributes).not.toHaveProperty(
       'state.write.ms_since_last_service_worker_reload',
     );
