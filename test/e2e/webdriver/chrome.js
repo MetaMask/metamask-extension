@@ -93,6 +93,8 @@ class ChromeDriver {
 
     options.setBrowserVersion('137');
 
+    options.get('goog:chromeOptions').enableExtensionTargets = true;
+
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
       options.setLocalState({
