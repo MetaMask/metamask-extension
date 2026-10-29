@@ -331,7 +331,7 @@ describe('Ducks - Bridge', () => {
     it('dispatches quote params to the bridge controller', () => {
       const mockUpdateParams = jest.fn();
       setBackgroundConnection({
-        updateBridgeQuoteRequestParams: mockUpdateParams,
+        messengerCall: mockUpdateParams,
         getStatePatches: jest.fn(),
       } as never);
 
@@ -343,63 +343,46 @@ describe('Ducks - Bridge', () => {
             srcTokenAddress: zeroAddress(),
             destTokenAddress: undefined,
           },
+          // These names are formatted this way intentionally.
+          /* eslint-disable @typescript-eslint/naming-convention */
           {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             stx_enabled: false,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_source: 'ETH',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_destination: 'ETH',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_security_type_destination: null,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_warnings: [],
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_amount_source: 1000,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
           },
+          /* eslint-enable @typescript-eslint/naming-convention */
         ) as never,
       );
 
       expect(mockUpdateParams).toHaveBeenCalledTimes(1);
       expect(mockUpdateParams).toHaveBeenCalledWith(
-        {
-          walletAddress: '0x1234567890',
-          srcChainId: 1,
-          srcTokenAddress: zeroAddress(),
-          destTokenAddress: undefined,
-        },
-        {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          stx_enabled: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: 'ETH',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_destination: 'ETH',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_security_type_destination: null,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_warnings: [],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_amount_source: 1000,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-        },
-        0,
-        1,
+        'BridgeController:updateBridgeQuoteRequestParams',
+        [
+          {
+            walletAddress: '0x1234567890',
+            srcChainId: 1,
+            srcTokenAddress: zeroAddress(),
+            destTokenAddress: undefined,
+          },
+          // These names are formatted this way intentionally.
+          /* eslint-disable @typescript-eslint/naming-convention */
+          {
+            stx_enabled: false,
+            token_symbol_source: 'ETH',
+            token_symbol_destination: 'ETH',
+            token_security_type_destination: null,
+            security_warnings: [],
+            usd_amount_source: 1000,
+            feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+          },
+          /* eslint-enable @typescript-eslint/naming-convention */
+          0,
+          1,
+        ],
       );
     });
   });
@@ -419,13 +402,17 @@ describe('Ducks - Bridge', () => {
         'clearAllBridgeCacheItems',
       );
       setBackgroundConnection({
-        resetState: mockResetBridgeState,
+        messengerCall: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 
       await mockStore.dispatch((await resetBridgeController()) as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+      expect(mockResetBridgeState).toHaveBeenCalledWith(
+        'BridgeController:resetState',
+        [],
+      );
       const actions = mockStore.getActions();
       expect(actions.map((action) => action.type)).not.toContain(
         'bridge/resetInputFields',
