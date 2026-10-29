@@ -10,6 +10,7 @@ import {
   type TransactionState,
 } from '../../../../selectors/transactionController';
 import {
+  selectTransactionPayAccountOverrideByTransactionId,
   selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
@@ -28,7 +29,6 @@ import {
   getMoneyAccountWithdrawTransferDetails,
   withFundedBatchCalldata,
 } from '../../utils/money-account-withdraw';
-import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 
 async function persistWithdrawTransaction(
   transaction: TransactionMeta,
@@ -77,9 +77,6 @@ function readTransactionFromStore(
  */
 export function useMoneyAccountWithdrawConfirm() {
   const dispatch = useDispatch();
-  // Withdraws store the recipient in Pay's account override. It is only
-  // encoded into the transfer calldata and never signs.
-  const recipient = useTransactionAccountOverride();
 
   /**
    * Encodes (when needed) and returns the funded withdraw transaction to
@@ -100,6 +97,14 @@ export function useMoneyAccountWithdrawConfirm() {
           transactionMeta.id,
         ),
       );
+      // Read at confirm time so a recipient picked after the last render is
+      // used. It never signs.
+      const recipient = dispatch((_, getState) =>
+        selectTransactionPayAccountOverrideByTransactionId(
+          getState() as unknown as TransactionPayState,
+          transactionMeta.id,
+        ),
+      );
 
       // Skip re-encode only when nested calldata already matches the amount
       // on screen and pays the current target. Quoted tokens keep the mUSD on
@@ -111,19 +116,18 @@ export function useMoneyAccountWithdrawConfirm() {
         ) {
           return false;
         }
-        if (!recipient) {
-          return true;
+        const transferRecipient =
+          getMoneyAccountWithdrawTransferDetails(transaction).recipient;
+        if (!transferRecipient) {
+          return false;
         }
         const target = getMoneyAccountWithdrawTransferTarget({
           moneyAccountAddress: transaction.txParams.from as Hex,
           paymentToken,
-          recipient,
+          recipient: recipient ?? (transferRecipient as Hex),
           transaction,
         });
-        return isEqualCaseInsensitive(
-          getMoneyAccountWithdrawTransferDetails(transaction).recipient ?? '',
-          target,
-        );
+        return isEqualCaseInsensitive(transferRecipient, target);
       };
       const ready =
         (isReusable(fromStore) ? withFundedBatchCalldata(fromStore) : null) ??
@@ -195,7 +199,7 @@ export function useMoneyAccountWithdrawConfirm() {
       );
       return null;
     },
-    [dispatch, recipient],
+    [dispatch],
   );
 
   return { prepareWithdrawTransaction };

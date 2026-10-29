@@ -14,7 +14,6 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useDispatch } from '../../../../store/hooks';
 import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
-import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(() => Promise.resolve()),
@@ -28,7 +27,6 @@ jest.mock(
   }),
 );
 jest.mock('../../../../store/hooks', () => ({ useDispatch: jest.fn() }));
-jest.mock('./useTransactionAccountOverride');
 
 const FROM = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' as Hex;
 const CHAIN_ID = '0x8f' as Hex;
@@ -53,43 +51,40 @@ const PLACEHOLDER_NESTED = [
   { to: MUSD_ADDRESS, data: '0x' as Hex },
 ] as TransactionMeta['nestedTransactions'];
 
-const FUNDED_NESTED = [
-  { to: TELLER_ADDRESS, data: WITHDRAW_DATA },
-  { to: MUSD_ADDRESS, data: FUNDED_TRANSFER_DATA },
-] as TransactionMeta['nestedTransactions'];
-
-const TYPED_FUNDED_NESTED = [
-  { to: TELLER_ADDRESS, data: WITHDRAW_DATA },
-  {
-    to: MUSD_ADDRESS,
-    data: FUNDED_TRANSFER_DATA,
-    type: TransactionType.tokenMethodTransfer,
-  },
-] as TransactionMeta['nestedTransactions'];
-
-const MONEY_ACCOUNT_FUNDED_NESTED = [
-  { to: TELLER_ADDRESS, data: WITHDRAW_DATA },
-  {
-    to: MUSD_ADDRESS,
-    data: MONEY_ACCOUNT_TRANSFER_DATA,
-    type: TransactionType.tokenMethodTransfer,
-  },
-] as TransactionMeta['nestedTransactions'];
-
-const QUOTED_PAY_DATA = {
-  [TRANSACTION_ID]: {
-    paymentToken: {
-      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      chainId: '0x1',
+function buildFundedNested(
+  transferData: Hex,
+): TransactionMeta['nestedTransactions'] {
+  return [
+    { to: TELLER_ADDRESS, data: WITHDRAW_DATA },
+    {
+      to: MUSD_ADDRESS,
+      data: transferData,
+      type: TransactionType.tokenMethodTransfer,
     },
-  },
+  ] as TransactionMeta['nestedTransactions'];
+}
+
+const FUNDED_NESTED = buildFundedNested(FUNDED_TRANSFER_DATA);
+const OVERRIDE_FUNDED_NESTED = buildFundedNested(OVERRIDE_TRANSFER_DATA);
+const MONEY_ACCOUNT_FUNDED_NESTED = buildFundedNested(
+  MONEY_ACCOUNT_TRANSFER_DATA,
+);
+
+type PayData = Record<
+  string,
+  { accountOverride?: Hex; paymentToken?: { address: Hex; chainId: Hex } }
+>;
+
+const QUOTED_PAYMENT_TOKEN = {
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
+  chainId: '0x1' as Hex,
 };
 
-const DIRECT_PAY_DATA = {
-  [TRANSACTION_ID]: {
-    paymentToken: { address: MUSD_ADDRESS, chainId: CHAIN_ID },
-  },
-};
+const DIRECT_PAYMENT_TOKEN = { address: MUSD_ADDRESS, chainId: CHAIN_ID };
+
+function buildPayData(data: PayData[string]): PayData {
+  return { [TRANSACTION_ID]: data };
+}
 
 const FUNDED_UPDATE = {
   withdrawData: WITHDRAW_DATA,
@@ -109,9 +104,6 @@ function buildTransaction(
 }
 
 const mockUseDispatch = jest.mocked(useDispatch);
-const mockUseTransactionAccountOverride = jest.mocked(
-  useTransactionAccountOverride,
-);
 const mockGetLastMoneyAccountWithdrawAmount = jest.mocked(
   getLastMoneyAccountWithdrawAmount,
 );
@@ -164,7 +156,6 @@ describe('useMoneyAccountWithdrawConfirm', () => {
       // Suppress the expected refusal logs.
     });
     mockUseDispatch.mockReturnValue(buildDispatch([undefined]) as never);
-    mockUseTransactionAccountOverride.mockReturnValue(undefined);
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue(undefined);
     mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue(false);
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
@@ -236,9 +227,11 @@ describe('useMoneyAccountWithdrawConfirm', () => {
 
   it('re-encodes when the funded transfer does not pay the current recipient', async () => {
     // The batch pays TRANSFER_TARGET while the user switched the recipient.
-    mockUseTransactionAccountOverride.mockReturnValue(OVERRIDE_ADDRESS);
     mockUseDispatch.mockReturnValue(
-      buildDispatch([buildTransaction(TYPED_FUNDED_NESTED)]) as never,
+      buildDispatch(
+        [buildTransaction(FUNDED_NESTED)],
+        buildPayData({ accountOverride: OVERRIDE_ADDRESS }),
+      ) as never,
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue({
@@ -248,7 +241,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     const { prepareWithdrawTransaction } = runHook();
 
     const result = await prepareWithdrawTransaction(
-      buildTransaction(TYPED_FUNDED_NESTED),
+      buildTransaction(FUNDED_NESTED),
     );
 
     expect(mockUpdateMoneyAccountWithdrawAmount).toHaveBeenCalledWith(
@@ -260,12 +253,17 @@ describe('useMoneyAccountWithdrawConfirm', () => {
   });
 
   it('reuses funded calldata that already pays the current recipient', async () => {
-    mockUseTransactionAccountOverride.mockReturnValue(TRANSFER_TARGET);
+    mockUseDispatch.mockReturnValue(
+      buildDispatch(
+        [undefined],
+        buildPayData({ accountOverride: TRANSFER_TARGET }),
+      ) as never,
+    );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     const { prepareWithdrawTransaction } = runHook();
 
     const result = await prepareWithdrawTransaction(
-      buildTransaction(TYPED_FUNDED_NESTED),
+      buildTransaction(FUNDED_NESTED),
     );
 
     expect(result?.nestedTransactions?.[1].data).toBe(FUNDED_TRANSFER_DATA);
@@ -273,15 +271,20 @@ describe('useMoneyAccountWithdrawConfirm', () => {
   });
 
   it('reuses a direct mUSD withdrawal that pays the recipient', async () => {
-    mockUseTransactionAccountOverride.mockReturnValue(TRANSFER_TARGET);
     mockUseDispatch.mockReturnValue(
-      buildDispatch([undefined], DIRECT_PAY_DATA) as never,
+      buildDispatch(
+        [undefined],
+        buildPayData({
+          accountOverride: TRANSFER_TARGET,
+          paymentToken: DIRECT_PAYMENT_TOKEN,
+        }),
+      ) as never,
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     const { prepareWithdrawTransaction } = runHook();
 
     const result = await prepareWithdrawTransaction(
-      buildTransaction(TYPED_FUNDED_NESTED),
+      buildTransaction(FUNDED_NESTED),
     );
 
     expect(result?.nestedTransactions?.[1].data).toBe(FUNDED_TRANSFER_DATA);
@@ -289,9 +292,14 @@ describe('useMoneyAccountWithdrawConfirm', () => {
   });
 
   it('reuses a quoted withdrawal whose transfer keeps the mUSD on the money account', async () => {
-    mockUseTransactionAccountOverride.mockReturnValue(OVERRIDE_ADDRESS);
     mockUseDispatch.mockReturnValue(
-      buildDispatch([undefined], QUOTED_PAY_DATA) as never,
+      buildDispatch(
+        [undefined],
+        buildPayData({
+          accountOverride: OVERRIDE_ADDRESS,
+          paymentToken: QUOTED_PAYMENT_TOKEN,
+        }),
+      ) as never,
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     const { prepareWithdrawTransaction } = runHook();
@@ -307,11 +315,13 @@ describe('useMoneyAccountWithdrawConfirm', () => {
   });
 
   it('re-encodes a quoted withdrawal whose transfer still pays the recipient', async () => {
-    mockUseTransactionAccountOverride.mockReturnValue(TRANSFER_TARGET);
     mockUseDispatch.mockReturnValue(
       buildDispatch(
-        [buildTransaction(TYPED_FUNDED_NESTED)],
-        QUOTED_PAY_DATA,
+        [buildTransaction(FUNDED_NESTED)],
+        buildPayData({
+          accountOverride: TRANSFER_TARGET,
+          paymentToken: QUOTED_PAYMENT_TOKEN,
+        }),
       ) as never,
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
@@ -322,7 +332,7 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     const { prepareWithdrawTransaction } = runHook();
 
     const result = await prepareWithdrawTransaction(
-      buildTransaction(TYPED_FUNDED_NESTED),
+      buildTransaction(FUNDED_NESTED),
     );
 
     expect(mockUpdateMoneyAccountWithdrawAmount).toHaveBeenCalledWith(
@@ -335,12 +345,62 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     );
   });
 
-  it('does not approve a quoted store batch that pays the recipient when the encode did not commit', async () => {
-    mockUseTransactionAccountOverride.mockReturnValue(TRANSFER_TARGET);
+  it('checks the recipient picked after the hook rendered', async () => {
+    const payData = buildPayData({ accountOverride: TRANSFER_TARGET });
     mockUseDispatch.mockReturnValue(
       buildDispatch(
-        [buildTransaction(TYPED_FUNDED_NESTED)],
-        QUOTED_PAY_DATA,
+        [buildTransaction(OVERRIDE_FUNDED_NESTED)],
+        payData,
+      ) as never,
+    );
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
+    const { prepareWithdrawTransaction } = runHook();
+    payData[TRANSACTION_ID].accountOverride = OVERRIDE_ADDRESS;
+
+    const result = await prepareWithdrawTransaction(
+      buildTransaction(OVERRIDE_FUNDED_NESTED),
+    );
+
+    expect(result?.nestedTransactions?.[1].data).toBe(OVERRIDE_TRANSFER_DATA);
+    expect(mockUpdateMoneyAccountWithdrawAmount).not.toHaveBeenCalled();
+  });
+
+  it('re-encodes a quoted withdrawal that pays out before any recipient is set', async () => {
+    mockUseDispatch.mockReturnValue(
+      buildDispatch(
+        [buildTransaction(FUNDED_NESTED)],
+        buildPayData({ paymentToken: QUOTED_PAYMENT_TOKEN }),
+      ) as never,
+    );
+    mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
+    mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue({
+      withdrawData: WITHDRAW_DATA,
+      transferData: MONEY_ACCOUNT_TRANSFER_DATA,
+    });
+    const { prepareWithdrawTransaction } = runHook();
+
+    const result = await prepareWithdrawTransaction(
+      buildTransaction(FUNDED_NESTED),
+    );
+
+    expect(mockUpdateMoneyAccountWithdrawAmount).toHaveBeenCalledWith(
+      TRANSACTION_ID,
+      '0.05',
+      undefined,
+    );
+    expect(result?.nestedTransactions?.[1].data).toBe(
+      MONEY_ACCOUNT_TRANSFER_DATA,
+    );
+  });
+
+  it('does not approve a quoted store batch that pays the recipient when the encode did not commit', async () => {
+    mockUseDispatch.mockReturnValue(
+      buildDispatch(
+        [buildTransaction(FUNDED_NESTED)],
+        buildPayData({
+          accountOverride: TRANSFER_TARGET,
+          paymentToken: QUOTED_PAYMENT_TOKEN,
+        }),
       ) as never,
     );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
@@ -387,7 +447,12 @@ describe('useMoneyAccountWithdrawConfirm', () => {
   });
 
   it('passes the account override as the withdraw recipient', async () => {
-    mockUseTransactionAccountOverride.mockReturnValue(OVERRIDE_ADDRESS);
+    mockUseDispatch.mockReturnValue(
+      buildDispatch(
+        [undefined],
+        buildPayData({ accountOverride: OVERRIDE_ADDRESS }),
+      ) as never,
+    );
     mockGetLastMoneyAccountWithdrawAmount.mockReturnValue('0.05');
     mockUpdateMoneyAccountWithdrawAmount.mockResolvedValue(FUNDED_UPDATE);
     const { prepareWithdrawTransaction } = runHook();
