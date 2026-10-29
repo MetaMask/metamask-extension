@@ -135,6 +135,7 @@
     "database": "object",
     "databaseUnavailable": "boolean",
     "defaultHomeActiveTabName": null,
+    "defaultMoneyAccountId": null,
     "depositInProgress": "boolean",
     "depositRequests": "object",
     "dismissSeedBackUpReminder": false,

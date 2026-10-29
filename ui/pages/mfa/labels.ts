@@ -68,6 +68,36 @@ export const getSpecificErrorMessageKey = (
 ): string | undefined =>
   (method === 'totp' ? TOTP_ERROR_KEYS[code] : undefined) ?? ERROR_KEYS[code];
 
+/**
+ * Errors whose failure screen has its own title and description, rather than
+ * "Something went wrong" and the error's message.
+ */
+const FAILURE_KEYS: Partial<
+  Record<MfaFlowErrorCode, { title: string; description: string }>
+> = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- the server's code
+  multi_primary_srp: {
+    title: 'mfaFailureSupportTitle',
+    description: 'mfaFailureSupportDescription',
+  },
+};
+
+/**
+ * The failure screen's message keys for an error.
+ *
+ * @param code - The error's code.
+ * @returns The title key, and a description key when there is more to say.
+ */
+export const getFailureCopyKeys = (
+  code: MfaFlowErrorCode,
+): { title: string; description?: string } =>
+  FAILURE_KEYS[code] ?? {
+    title: 'mfaFailureTitle',
+    // The title already says something went wrong; only a specific reason
+    // adds to it.
+    description: getSpecificErrorMessageKey(code),
+  };
+
 export const getErrorMessageKey = (
   code: MfaFlowErrorCode,
   method?: MfaMethod,

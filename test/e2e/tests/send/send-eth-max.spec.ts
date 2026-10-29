@@ -23,7 +23,10 @@ import type { Hex } from '@metamask/utils';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows/transaction.flow';
+import {
+  createInternalTransactionWithMaxAmount,
+  sendNativeMaxAndCheckConfirmedActivity,
+} from '../../page-objects/flows/transaction.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import {
@@ -31,11 +34,8 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
 } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  sendNativeMaxAndCheckConfirmedActivity,
-  validateTransaction,
-} from '../../page-objects/flows/send-transaction.flow';
 import { mockEthPrices } from '../tokens/utils/mocks';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -288,7 +288,10 @@ describe('Send ETH - Max Amount', function () {
           button: 'confirm',
           waitUntil: 'disappear',
         });
-        await validateTransaction(driver, '-24.99945808');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-24.99945808 ETH');
       },
     );
   });
@@ -339,7 +342,10 @@ describe('Send ETH - Max Amount', function () {
             waitUntil: 'disappear',
           });
 
-          await validateTransaction(driver, '-24.997');
+          const activityTab = new ActivityTab(driver);
+          await activityTab.goToActivityList();
+          await activityTab.checkTxAction({ action: 'Sent ETH' });
+          await activityTab.checkTxAmountInActivity('-24.997 ETH');
         },
       );
     });
@@ -386,7 +392,10 @@ describe('Send ETH - Max Amount', function () {
             waitUntil: 'disappear',
           });
 
-          await validateTransaction(driver, '-24.9996');
+          const activityTab = new ActivityTab(driver);
+          await activityTab.goToActivityList();
+          await activityTab.checkTxAction({ action: 'Sent ETH' });
+          await activityTab.checkTxAmountInActivity('-24.9996 ETH');
         },
       );
     });
@@ -462,7 +471,10 @@ describe('Send ETH - Max Amount', function () {
           button: 'confirm',
           waitUntil: 'disappear',
         });
-        await validateTransaction(driver, '-24.9989');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-24.9989 ETH');
       },
     );
   });
@@ -504,7 +516,10 @@ describe('Send ETH - Max Amount', function () {
           waitUntil: 'disappear',
         });
 
-        await validateTransaction(driver, '-10');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-10 ETH');
       },
     );
   });

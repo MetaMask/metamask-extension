@@ -12,7 +12,7 @@ import HomePage from './homepage';
  * Boundaries: homepage chrome, balance, and tab switching stay on `HomePage`.
  * Post-submit toast UI belongs to `TxToastNotification`.
  * Related: `HomePage` (`goToActivityList`), `TxToastNotification`,
- * `flows/send-transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
+ * `flows/transaction.flow.ts` / `flows/bridge.flow.ts` for journeys that
  * land here after a tx.
  *
  * @see ui/pages/activity/activity-list.tsx
