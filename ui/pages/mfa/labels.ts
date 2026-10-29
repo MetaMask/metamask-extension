@@ -21,11 +21,14 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   rate_limited: 'mfaErrorCooldown',
   max_passkeys_reached: 'mfaErrorLimitReached',
   max_identifiers_reached: 'mfaErrorLimitReached',
-  multi_primary_srp: 'mfaErrorMultiPrimarySrp',
   authentication_required: 'mfaErrorSignedOut',
   passkey_unsupported: 'mfaErrorUnsupported',
   flow_in_progress: 'mfaErrorFlowInProgress',
   totp_already_enrolled: 'mfaErrorTotpTaken',
+};
+
+const ERROR_LINKS: Partial<Record<MfaFlowErrorCode, string>> = {
+  email_claimed: 'https://support.metamask.io/configure/wallet/email-in-use',
 };
 
 /**
@@ -39,6 +42,15 @@ const TOTP_ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   too_many_attempts: 'mfaErrorTotpTooManyAttempts',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
+
+/**
+ * The help article for an error, if it has one.
+ *
+ * @param code - The error code.
+ * @returns The article URL.
+ */
+export const getErrorLink = (code: MfaFlowErrorCode): string | undefined =>
+  ERROR_LINKS[code];
 
 export const getMethodLabelKey = (method: MfaMethod): string =>
   METHOD_KEYS[method];
