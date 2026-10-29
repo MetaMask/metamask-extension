@@ -318,11 +318,15 @@ describe('setup-initial-state-hooks', () => {
         persistenceManagerModule.PersistenceManager;
       const [{ getIsIdle }] = persistenceManagerConstructor.mock.calls.at(
         -1,
-      ) as [{ getIsIdle: () => boolean | undefined }];
+      ) as [
+        {
+          getIsIdle: (currentActivity: object, lastActivity: object) => unknown;
+        },
+      ];
       // @ts-expect-error intentional missing hooks for regression coverage
       delete globalThis.stateHooks;
 
-      expect(getIsIdle()).toBeUndefined();
+      expect(getIsIdle({}, {})).toBeUndefined();
     });
 
     it('tracks write retry recovery events to Segment', async () => {

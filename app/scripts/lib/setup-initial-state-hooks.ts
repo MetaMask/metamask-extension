@@ -59,7 +59,8 @@ function getStateForEarlySegmentEvent(manager: PersistenceManager) {
 
 // Single PersistenceManager per context: one in background, one per UI context.
 export const persistenceManager = new PersistenceManager({
-  getIsIdle: () => globalThis.stateHooks?.getIsIdle?.(),
+  getIsIdle: (currentActivity, lastActivity) =>
+    globalThis.stateHooks?.getIsIdle?.(currentActivity, lastActivity),
   getPersistenceWriteSampleRate: getPersistenceWriteTelemetrySampleRate,
   localStore,
 })
