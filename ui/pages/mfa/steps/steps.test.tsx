@@ -289,6 +289,24 @@ describe('EmailEntryStep', () => {
     });
   });
 
+  it('links the help article when the email is already in use', () => {
+    render(
+      <EmailEntryStep
+        {...buildState({ name: 'emailEntry' }, { error: 'email_claimed' })}
+        reason={reason}
+        onAction={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId(MfaFlowTestIds.ERROR)).toHaveTextContent(
+      messages.mfaErrorEmailTaken.message,
+    );
+    expect(screen.getByTestId(MfaFlowTestIds.ERROR_LINK)).toHaveAttribute(
+      'href',
+      'https://support.metamask.io/configure/wallet/email-in-use',
+    );
+  });
+
   it('submits with Enter', () => {
     const onAction = jest.fn();
     render(
