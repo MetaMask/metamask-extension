@@ -42,6 +42,7 @@ import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
 } from '../ducks/bridge-status/selectors';
+import { isMnemonicMoneyAccount } from '../../shared/lib/money/money-accounts';
 import { getInternalAccounts, getInternalAccountsObject } from './accounts';
 import {
   getInternalAccountBySelectedAccountGroupAndCaip,
@@ -79,6 +80,21 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
 
 /**
+ * The entropy source ID backing the primary money account. MPC-backed money
+ * accounts have no entropy source ID, so this is `undefined` for them.
+ *
+ * @param primaryMoneyAccount - Primary money account, when present.
+ * @returns The entropy source ID, or `undefined`.
+ */
+function getMoneyAccountEntropyId(
+  primaryMoneyAccount: PrimaryMoneyAccount | undefined,
+): string | undefined {
+  return primaryMoneyAccount && isMnemonicMoneyAccount(primaryMoneyAccount)
+    ? primaryMoneyAccount.options.entropy.id
+    : undefined;
+}
+
+/**
  * Whether the selected account group belongs to the same HD entropy wallet that
  * owns the primary money account. Money-account activity with no known payer
  * is only surfaced for that wallet so switching to another SRP does not leak
@@ -92,7 +108,9 @@ function isSelectedGroupOwnedByMoneyAccountEntropy(
   selectedAccountGroup: string | null | undefined,
   primaryMoneyAccount: PrimaryMoneyAccount | undefined,
 ): boolean {
-  const entropyId = primaryMoneyAccount?.options?.entropy?.id;
+  // MPC-backed money accounts have no entropy source ID, so no account group
+  // is ever owned by their entropy.
+  const entropyId = getMoneyAccountEntropyId(primaryMoneyAccount);
   if (!selectedAccountGroup || !entropyId) {
     return false;
   }
@@ -222,13 +240,15 @@ export const selectLocalTransactions = createSelector(
     );
 
     // Payers from the money account's own SRP keep the wallet-wide rule.
+    // MPC-backed money accounts have no entropy source ID, so every payer
+    // other than the money account itself counts as outside its wallet.
+    const moneyAccountEntropyId = getMoneyAccountEntropyId(primaryMoneyAccount);
     const isPayerOutsideMoneyAccountWallet = (payer: string) =>
       payer !== moneyAccountAddress &&
       internalAccounts.some(
         (account) =>
           account.address.toLowerCase() === payer &&
-          account.options?.entropySource !==
-            primaryMoneyAccount?.options?.entropy?.id,
+          account.options?.entropySource !== moneyAccountEntropyId,
       );
 
     const isSelectedMoneyAccountTransaction = (tx: TransactionMeta) => {

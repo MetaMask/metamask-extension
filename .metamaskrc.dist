@@ -129,6 +129,17 @@ TEST_SRP_2=
 ; Entry points to connecting remain unchanged regardless of this flag.
 NEW_HARDWARE_WALLET_ONBOARDING='false'
 
+; Set this to `true` to register the MPC money keyring builder with the
+; KeyringController (compile-time gate, see builds.yml). Fenced while the
+; feature is unreleased.
+MM_MONEY_MPC_KEYRING_ENABLED='false'
+
+; Optional: static hex address (all-lowercase or EIP-55 checksummed;
+; normalized to lowercase) served by the MPC money keyring stub through
+; `getAccounts`, so the keyring wiring can be verified without the MPC stack.
+; Unset by default: the stub serves no accounts.
+;MM_MONEY_MPC_ADDRESS='0x0000000000000000000000000000000000000000'
+
 ; Set this to `true` to force enforced simulations to apply whenever a
 ; transaction has balance changes, bypassing the trust signal check.
 ; Intended for local development and QA only.
