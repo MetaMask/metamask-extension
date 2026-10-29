@@ -73,6 +73,7 @@ import {
 } from '../utils/tpslValidation';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { isPerpsErrorCode } from '../utils/translate-perps-error';
+import { usePerpsPositionAlreadyClosed } from '../hooks/usePerpsPositionAlreadyClosed';
 import {
   applyDefaultStopLossSign,
   isSignedDecimalInput,
@@ -132,6 +133,7 @@ export const UpdateTPSLModalContent = ({
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const notifyPositionAlreadyClosed = usePerpsPositionAlreadyClosed();
   const { privacyMode } = useSelector(getPreferences);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -519,10 +521,7 @@ export const UpdateTPSLModalContent = ({
         ) {
           // The position closed after this modal rendered. Say so and drop it
           // from the view instead of reporting a failed update.
-          replacePerpsToastByKey({
-            key: PERPS_TOAST_KEYS.POSITION_ALREADY_CLOSED,
-          });
-          getPerpsStreamManager().refreshPositions().catch(captureException);
+          notifyPositionAlreadyClosed();
           onClose();
           return;
         }
@@ -614,6 +613,7 @@ export const UpdateTPSLModalContent = ({
     onClose,
     position,
     replacePerpsToastByKey,
+    notifyPositionAlreadyClosed,
     track,
     buildTpslTrackingData,
   ]);

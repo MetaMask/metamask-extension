@@ -33,6 +33,8 @@ export class PerpsDataChannel<TData> {
 
   private seeded = false;
 
+  private generation = 0;
+
   private connectFn: ((callback: (data: TData) => void) => () => void) | null =
     null;
 
@@ -114,12 +116,21 @@ export class PerpsDataChannel<TData> {
   }
 
   /**
+   * Count of cache clears. Async work captures it before awaiting and drops
+   * its result when the cache was cleared (account/network change) meanwhile.
+   */
+  getGeneration(): number {
+    return this.generation;
+  }
+
+  /**
    * Clear the cache back to initial value
    * Called on account/network change
    */
   clearCache(): void {
     this.cache = this.initialValue;
     this.seeded = false;
+    this.generation += 1;
   }
 
   /**

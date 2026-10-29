@@ -70,11 +70,10 @@ import {
 } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
-import { getPerpsStreamManager } from '../../../../providers/perps';
-import { captureException } from '../../../../../shared/lib/sentry';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
+import { usePerpsPositionAlreadyClosed } from '../hooks/usePerpsPositionAlreadyClosed';
 import {
   CloseAmountSection,
   LimitPriceInput,
@@ -386,6 +385,7 @@ export const ClosePositionModal = ({
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
   const { replacePerpsToastByKey } = usePerpsToast();
+  const notifyPositionAlreadyClosed = usePerpsPositionAlreadyClosed();
   const formatFiat = useCallback(
     (value: number | string) =>
       formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }),
@@ -759,10 +759,7 @@ export const ClosePositionModal = ({
         ) {
           // The position closed after this modal rendered. Say so and drop it
           // from the view instead of reporting a failed close.
-          replacePerpsToastByKey({
-            key: PERPS_TOAST_KEYS.POSITION_ALREADY_CLOSED,
-          });
-          getPerpsStreamManager().refreshPositions().catch(captureException);
+          notifyPositionAlreadyClosed();
           return;
         }
         if (!result.success) {
@@ -844,6 +841,7 @@ export const ClosePositionModal = ({
     gate,
     isEligible,
     replacePerpsToastByKey,
+    notifyPositionAlreadyClosed,
     isPartialClose,
     position,
     closeSize,
