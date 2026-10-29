@@ -91,9 +91,8 @@ export const SideNavAccounts = () => {
           variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           color={TextColor.TextDefault}
-          asChild
         >
-          <h2>{t('accounts')}</h2>
+          {t('accounts')}
         </Text>
         <div className="flex items-center gap-1">
           <ButtonIcon
