@@ -11,6 +11,7 @@
   "duringOnboarding": [
     "accounts.api.cx.metamask.io",
     "accounts.google.com",
+    "android.clients.google.com",
     "chainid.network",
     "firefox.settings.services.mozilla.com",
     "metamask.github.io",
