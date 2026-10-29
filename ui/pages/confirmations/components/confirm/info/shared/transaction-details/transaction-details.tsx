@@ -54,7 +54,13 @@ export const OriginRow = () => {
   );
 };
 
-export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
+export const RecipientRow = ({
+  recipient,
+  nestedTransactionIndex,
+}: {
+  recipient?: Hex;
+  nestedTransactionIndex?: number;
+} = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isUpgrade } = useIsUpgradeTransaction();
@@ -78,7 +84,11 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   return (
     <ConfirmInfoAlertRow
       ownerId={id}
-      alertKey={RowAlertKey.InteractingWith}
+      alertKey={
+        nestedTransactionIndex === undefined
+          ? RowAlertKey.InteractingWith
+          : `${RowAlertKey.InteractingWith}-${nestedTransactionIndex}`
+      }
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}

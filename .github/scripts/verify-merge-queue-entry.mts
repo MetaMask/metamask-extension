@@ -76,7 +76,7 @@ const verification = await verifyMergeQueueRetry({
           };
         };
       };
-      errors?: Array<{ message: string }>;
+      errors?: { message: string }[];
     };
 
     if (response.errors?.length) {
@@ -86,8 +86,8 @@ const verification = await verifyMergeQueueRetry({
     }
 
     return (
-      response.data?.repository?.pullRequest?.mergeQueueEntry?.headCommit?.oid ??
-      null
+      response.data?.repository?.pullRequest?.mergeQueueEntry?.headCommit
+        ?.oid ?? null
     );
   },
   refExists: async () => {
@@ -101,9 +101,7 @@ const verification = await verifyMergeQueueRetry({
       );
       return true;
     } catch (error) {
-      const stderr = String(
-        (error as { stderr?: unknown }).stderr ?? '',
-      );
+      const stderr = String((error as { stderr?: unknown }).stderr ?? '');
       if (stderr.includes('HTTP 404')) {
         // Only GitHub's explicit absence response proves the ref is gone.
         return false;

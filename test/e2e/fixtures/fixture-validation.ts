@@ -77,7 +77,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   // nothing to validate against.
   'data.CurrencyController',
   'data.MultichainAssetsController',
-  'data.TokenRatesController',
   'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
@@ -85,7 +84,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
-  'data.TokenBalancesController',
+  'data.MetaMetricsController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.
