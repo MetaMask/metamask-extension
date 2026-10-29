@@ -106,10 +106,7 @@ export const MarketingMoment = ({
     <Box
       data-testid={dataTestId}
       flexDirection={BoxFlexDirection.Column}
-      className={twMerge(
-        'h-full min-h-0 w-full flex-1 overflow-y-auto',
-        className,
-      )}
+      className={twMerge('h-full min-h-0 w-full flex-1', className)}
     >
       <Box flexDirection={BoxFlexDirection.Column} gap={4} className="shrink-0">
         {renderTitle()}

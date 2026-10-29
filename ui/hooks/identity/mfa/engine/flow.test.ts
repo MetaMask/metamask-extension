@@ -987,6 +987,28 @@ describe('createMfaFlow', () => {
     });
   });
 
+  describe('errors only support can fix', () => {
+    it('shows the failure screen without retry, and closes with the code', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.controller.beginCredentialVerification.mockRejectedValueOnce(
+        new MfaError('multi_primary_srp', 'unsupported wallet'),
+      );
+      const { flow, outcome } = await startFlow(EMAIL_ONLY, fake.controller);
+
+      expect(flow.getState().step).toStrictEqual({
+        name: 'failure',
+        code: 'multi_primary_srp',
+        canRetry: false,
+      });
+
+      await act(flow, { type: 'dismiss' });
+      const result = await outcome;
+      expect(result.ok || getMfaErrorCode(result.error)).toBe(
+        'multi_primary_srp',
+      );
+    });
+  });
+
   describe('error reporting', () => {
     it('reports a bug on our side with the step and operation', async () => {
       const fake = createFakeController([activeEmail]);

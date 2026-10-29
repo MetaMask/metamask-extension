@@ -3,7 +3,7 @@ import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
-import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
+import { sendTransaction } from '../../page-objects/flows/transaction.flow';
 import {
   login,
   lockAndWaitForLoginPage,
@@ -72,9 +72,9 @@ describe('Add account', function () {
         });
         await accountListPage.closeMultichainAccountsPage();
 
-        await sendRedesignedTransactionToAccount({
+        await sendTransaction({
           driver,
-          recipientAccount: SECOND_ACCOUNT_NAME,
+          recipientName: SECOND_ACCOUNT_NAME,
           amount: '2.8',
         });
 

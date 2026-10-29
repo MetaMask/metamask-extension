@@ -4371,6 +4371,10 @@
     "message": "This network requires keeping at least $1 $2 in your account after the transaction. Smart accounts cannot go below this reserve.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 covers the network fee for this transaction. This includes a one-time smart account activation.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1 hrs",
     "description": "$1 represents a number of hours"
@@ -5608,9 +5612,6 @@
   "mfaErrorLimitReached": {
     "message": "You've reached the limit for this method."
   },
-  "mfaErrorMultiPrimarySrp": {
-    "message": "Verification isn't available yet for wallets with more than one Secret Recovery Phrase."
-  },
   "mfaErrorPasskeyCancelled": {
     "message": "Passkey request was cancelled."
   },
@@ -5635,8 +5636,20 @@
   "mfaFailureClose": {
     "message": "Close"
   },
+  "mfaFailureContactSupport": {
+    "message": "Contact support"
+  },
+  "mfaFailureDone": {
+    "message": "Done"
+  },
   "mfaFailureRetry": {
     "message": "Try again"
+  },
+  "mfaFailureSupportDescription": {
+    "message": "Contact support to continue."
+  },
+  "mfaFailureSupportTitle": {
+    "message": "We couldn't verify your details"
   },
   "mfaFailureTitle": {
     "message": "Something went wrong"
@@ -7324,6 +7337,10 @@
   },
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
+  },
+  "paidBySponsor": {
+    "message": "Paid by $1",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "paidWith": {
     "message": "Paid with"
@@ -9799,6 +9816,33 @@
   "rewardsLinkAccountError": {
     "message": "Failed to add account"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "You cannot be referred because of recent trading activity."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "You have already been referred by another user."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Invalid referral code"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Referral code"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Referral code couldn’t be validated."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "You cannot use your own referral code."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "You cannot be referred by someone else."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Something went wrong. Try again shortly."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Too many tries. Wait a moment."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Checking region..."
   },
@@ -9836,24 +9880,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Opt-in failed"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Invalid referral code"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Referral code (optional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Referral code couldn’t be validated."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Check your connection and try again."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Hide code"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Have a referral code?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Join Rewards"
   },
@@ -9862,10 +9888,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Start earning rewards"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Verifying referral code...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",
