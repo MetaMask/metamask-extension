@@ -1,4 +1,5 @@
 import { it as jestIt } from '@jest/globals';
+import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../../../shared/lib/deep-links/common';
 import { resolveTrustedDeepLinkHref } from './resolve-deep-link-href';
 
 describe('resolveTrustedDeepLinkHref', () => {
@@ -36,7 +37,7 @@ describe('resolveTrustedDeepLinkHref', () => {
     {
       description: 'a /buy deep link',
       href: 'https://link.metamask.io/buy?chainId=1',
-      expected: '/ramps/buy-deeplink-entry?chainId=1',
+      expected: `${RAMPS_BUY_DEEP_LINK_ENTRY_PATH}?chainId=1`,
     },
     {
       description: 'an unparseable deep link',

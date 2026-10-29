@@ -33,6 +33,9 @@ exports[`ramps-controller actions matches snapshot for background action calls 1
     ],
   ],
   [
+    "getRampsCountries",
+  ],
+  [
     "getRampsTokens",
     [
       "us-ca",

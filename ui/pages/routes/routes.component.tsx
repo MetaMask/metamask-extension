@@ -581,13 +581,6 @@ export const routeConfig = [
         element: <TransactionDetailsRoute />,
       },
       {
-        // The `/buy` deep-link entry must resolve before the basic
-        // functionality guard: with the ramps flag off it opens Portfolio, and
-        // that fallback must stay reachable when external services are off.
-        path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
-        element: <BuyDeepLinkEntry />,
-      },
-      {
         element: <RequireBasicFunctionality />,
         children: [
           {
@@ -655,6 +648,11 @@ export const routeConfig = [
                 element: <RampsPaymentMethod />,
               },
             ],
+          },
+          {
+            // Resolves the intent and redirects; no flow chrome to show.
+            path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
+            element: <BuyDeepLinkEntry />,
           },
           {
             path: RAMPS_COMPLETE_BUY_ROUTE,

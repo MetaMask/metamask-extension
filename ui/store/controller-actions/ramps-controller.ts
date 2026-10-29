@@ -1,5 +1,6 @@
 import type {
   BuyWidget,
+  Country,
   ExecuteRequestOptions,
   PaymentMethod,
   Provider,
@@ -38,6 +39,10 @@ export async function setRampsSelectedPaymentMethod(
   return submitRequestToBackground('setRampsSelectedPaymentMethod', [
     paymentMethod,
   ]);
+}
+
+export async function getRampsCountries(): Promise<Country[]> {
+  return submitRequestToBackground('getRampsCountries');
 }
 
 export async function getRampsTokens(

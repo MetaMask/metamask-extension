@@ -548,6 +548,30 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
+  it('no intent on a cold catalog → navigates without fetching the catalog', async () => {
+    // The token-selection page hydrates itself; only an intent needs the
+    // catalog up front.
+    const { result } = run(
+      buildState({
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    await goToBuy(result);
+
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE, {
+      replace: false,
+    });
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'getRampsTokens',
+      expect.anything(),
+    );
+    expect(mockBackground).not.toHaveBeenCalledWith(
+      'setRampsUserRegion',
+      expect.anything(),
+    );
+  });
+
   it('intent with supported assetId → pre-selects token and navigates to build quote', async () => {
     const assetId = 'eip155:1/erc20:0xabc';
     const { result, getModalName } = run(
@@ -865,9 +889,43 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('cold fetch with an unloaded countries list → skips seeding and fetches nothing', async () => {
-    // Without countries, seeding would fail; skip the fetch and preselect.
+  it('loads the countries catalog before seeding the region on a fresh install', async () => {
+    // Countries are not persisted, so a first buy can land before the
+    // controller has anything to resolve the geolocation against.
     const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsCountries = () => [region.country];
+    backgroundHandlers.setRampsUserRegion = () => region;
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+    });
+    const { result, getModalName } = run(
+      buildState({
+        userRegion: null,
+        countries: { ...loaded, data: [] },
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    const opened = await goToBuy(result, { assetId });
+
+    expect(opened).toBe('native');
+    expect(mockBackground.mock.calls.map(([method]) => method)).toStrictEqual([
+      'getGeolocation',
+      'getRampsCountries',
+      'setRampsUserRegion',
+      'getRampsTokens',
+      'setRampsSelectedToken',
+    ]);
+    expect(getModalName()).toBeNull();
+  });
+
+  it('cold fetch whose countries fetch fails → skips the fetch and shows RAMPS_UNSUPPORTED', async () => {
+    // Without countries, seeding fails; preselect fails closed.
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsCountries = () => {
+      throw new Error('network down');
+    };
     backgroundHandlers.setRampsSelectedToken = () => {
       throw new Error(
         'Tokens not loaded. Cannot set selected token before tokens are fetched.',
@@ -885,10 +943,6 @@ describe('useRampsNavigation goToBuy', () => {
 
     expect(opened).toBe(false);
     expect(getModalName()).toBe('RAMPS_UNSUPPORTED');
-    expect(mockBackground).not.toHaveBeenCalledWith(
-      'setRampsUserRegion',
-      expect.anything(),
-    );
     expect(mockBackground).not.toHaveBeenCalledWith(
       'getRampsTokens',
       expect.anything(),

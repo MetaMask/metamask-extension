@@ -263,14 +263,16 @@ describe('Routes Component', () => {
     expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
   });
 
-  it('keeps the buy deep-link entry route outside the basic functionality guard', () => {
+  it('puts the buy deep-link entry route behind the basic functionality guard', () => {
     const matches = matchRoutes(routeConfig, RAMPS_BUY_DEEP_LINK_ENTRY_PATH);
 
     expect(matches?.map(({ route }) => route.path)).toStrictEqual([
       undefined,
+      undefined,
       RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
     ]);
     expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+    expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
   });
 
   describe('render during send flow', () => {

@@ -20,6 +20,7 @@ import {
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
+  getRampsCountries,
   getRampsTokens,
   setRampsUserRegion,
 } from '../../../store/controller-actions/ramps-controller';
@@ -175,11 +176,15 @@ async function fetchTokensForIntent({
     return null;
   }
 
-  const region =
-    userRegion?.regionCode ??
-    (countries.data?.length
-      ? (await setRampsUserRegion(location).catch(() => null))?.regionCode
-      : undefined);
+  let region = userRegion?.regionCode;
+  if (!region) {
+    if (!countries.data?.length) {
+      // `setUserRegion` needs the countries catalog, which a fresh install may
+      // not have loaded yet (countries are not persisted).
+      await getRampsCountries().catch(() => null);
+    }
+    region = (await setRampsUserRegion(location).catch(() => null))?.regionCode;
+  }
 
   return region ? getRampsTokens(region, 'buy').catch(() => null) : null;
 }
@@ -339,12 +344,16 @@ export default function useRampsNavigation() {
         return false;
       }
 
-      const fetchedTokens = await fetchTokensForIntent({
-        tokens,
-        userRegion,
-        countries,
-        location: gate.location,
-      });
+      // Only an intent needs the catalog before navigating; without one the
+      // token-selection page hydrates itself.
+      const fetchedTokens = intent?.assetId
+        ? await fetchTokensForIntent({
+            tokens,
+            userRegion,
+            countries,
+            location: gate.location,
+          })
+        : null;
 
       return navigateToNativeBuy({
         intent,
