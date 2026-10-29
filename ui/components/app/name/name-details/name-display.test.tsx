@@ -86,4 +86,27 @@ describe('NameDisplay', () => {
     );
     expect(getByText('TEST')).toBeInTheDocument();
   });
+
+  it('keeps ten characters on each side of an unknown address', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: null,
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      isAccount: false,
+    });
+    const address = toChecksumHexAddress(
+      '0xc0ffee254729296a45a3885639ac7e10f9d54979',
+    );
+    const { getByText } = renderWithProvider(
+      <NameDisplay
+        value={address}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={'0x1'}
+        addressSideLength={10}
+      />,
+    );
+    expect(
+      getByText(`${address.slice(0, 10)}...${address.slice(-10)}`),
+    ).toBeInTheDocument();
+  });
 });

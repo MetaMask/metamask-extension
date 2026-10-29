@@ -1,4 +1,5 @@
 import { NameType } from '@metamask/name-controller';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
@@ -308,7 +309,8 @@ describe('NameDetails', () => {
       isAccount: false,
     });
 
-    const { baseElement } = renderWithProvider(
+    const checksumAddress = toChecksumAddress(ADDRESS_NO_NAME_MOCK);
+    const { baseElement, getByText } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
@@ -318,6 +320,13 @@ describe('NameDetails', () => {
       store,
     );
 
+    expect(
+      getByText(
+        `${checksumAddress.slice(0, 10)}...${checksumAddress.slice(-10)}`,
+      ),
+    ).toBeInTheDocument();
+    expect(document.getElementById('address')).toHaveValue(checksumAddress);
+    expect(document.getElementById('address')).toHaveAttribute('readonly');
     expect(baseElement).toMatchSnapshot();
   });
 

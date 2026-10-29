@@ -22,6 +22,11 @@ export type NameDisplayProps = {
   handleClick?: () => void;
   showFullName?: boolean;
   /**
+   * Characters to keep on each side of an unknown address. Falls back to the
+   * standard shortened address when omitted.
+   */
+  addressSideLength?: number;
+  /**
    * The fallback value to display if the name is not found or cannot be resolved.
    */
   fallbackName?: string;
@@ -39,6 +44,7 @@ const NameDisplay = memo(
     variation,
     handleClick,
     showFullName = false,
+    addressSideLength,
     fallbackName,
     disableNameClick,
     ...props
@@ -81,7 +87,14 @@ const NameDisplay = memo(
     const renderName = () => {
       const nameWithFallbackValue = name || fallbackName;
       if (!nameWithFallbackValue) {
-        return <FormattedName value={value} type={type} {...props} />;
+        return (
+          <FormattedName
+            value={value}
+            type={type}
+            addressSideLength={addressSideLength}
+            {...props}
+          />
+        );
       }
 
       if (name && showFullName) {
