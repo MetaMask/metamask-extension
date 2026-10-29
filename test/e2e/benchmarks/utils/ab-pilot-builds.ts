@@ -8,8 +8,11 @@ import {
   type AbBuild,
 } from './ab-pilot';
 
+export type InjectionSite = 'first' | 'middle' | 'last';
+
 export type AbInjection = {
   file: string;
+  site: InjectionSite;
   targetMs: number;
   hashes: Record<AbBuild, string>;
 };
@@ -45,19 +48,28 @@ export function getInjectionSnippet(targetMs: number): string {
 }
 
 /**
- * Last script home.html loads (the UI entry point), so the work runs once every
- * script has loaded. Work in the first script overlaps Firefox's loading of the
- * later scripts and barely moves uiStartup.
+ * A script home.html loads. The last one is the UI entry point, so work there
+ * runs once every script has loaded; work in the first script overlaps
+ * Firefox's loading of the later ones.
  *
  * @param directory - Unpacked build.
+ * @param site - Which script: the first, the middle one or the last.
  */
-export function getLastHomeScript(directory: string): string {
+export function getHomeScript(
+  directory: string,
+  site: InjectionSite = 'last',
+): string {
   const html = fs.readFileSync(path.join(directory, 'home.html'), 'utf8');
   const sources = [...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/gu)];
   if (sources.length === 0) {
     throw new Error('No script found in home.html');
   }
-  return sources[sources.length - 1][1];
+  const index = {
+    first: 0,
+    middle: Math.floor((sources.length - 1) / 2),
+    last: sources.length - 1,
+  }[site];
+  return sources[index][1];
 }
 
 function listFiles(root: string, dir = ''): string[] {
@@ -105,19 +117,22 @@ function hashContent(
  * @param options.browser - `chrome` or `firefox`.
  * @param options.sourceDirectory - Unpacked donor build, for example `dist/chrome`.
  * @param options.baseDirectory - Working directory the output paths are under.
- * @param options.injectMs - When set, B's last home.html script gets a
- * busy-wait of this many milliseconds, and that file may also differ.
+ * @param options.injectMs - When set, B's home.html script at `injectSite`
+ * gets a busy-wait of this many milliseconds, and that file may also differ.
+ * @param options.injectSite - Which script gets the busy-wait; default last.
  */
 export function prepareAbBuilds({
   browser,
   sourceDirectory,
   baseDirectory = process.cwd(),
   injectMs,
+  injectSite = 'last',
 }: {
   browser: string;
   sourceDirectory: string;
   baseDirectory?: string;
   injectMs?: number;
+  injectSite?: InjectionSite;
 }): AbBuildsSummary {
   if (injectMs !== undefined && !(Number.isFinite(injectMs) && injectMs >= 0)) {
     throw new Error(`Invalid injection milliseconds ${injectMs}`);
@@ -146,13 +161,14 @@ export function prepareAbBuilds({
   const exclude = ['manifest.json'];
   let injection: AbInjection | undefined;
   if (injectMs !== undefined) {
-    const file = getLastHomeScript(source);
+    const file = getHomeScript(source, injectSite);
     const targetB = path.resolve(baseDirectory, directories.B, file);
     const original = fs.readFileSync(targetB, 'utf8');
     fs.writeFileSync(targetB, getInjectionSnippet(injectMs) + original);
     exclude.push(path.normalize(file));
     injection = {
       file,
+      site: injectSite,
       targetMs: injectMs,
       hashes: {
         A: hashFile(path.resolve(baseDirectory, directories.A, file)),

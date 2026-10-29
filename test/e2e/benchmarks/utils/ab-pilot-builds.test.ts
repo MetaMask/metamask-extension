@@ -4,6 +4,7 @@ import path from 'path';
 import vm from 'vm';
 import { getMarkerKey } from './ab-pilot';
 import {
+  getHomeScript,
   getInjectionSnippet,
   INJECTION_MARK,
   prepareAbBuilds,
@@ -85,10 +86,35 @@ describe('prepareAbBuilds', () => {
     );
     expect(summary.injection).toStrictEqual({
       file: 'scripts/app.js',
+      site: 'last',
       targetMs: 40,
       hashes: { A: expect.any(String), B: expect.any(String) },
     });
     expect(summary.injection?.hashes.A).not.toBe(summary.injection?.hashes.B);
+  });
+
+  it('picks the first, middle or last script of home.html', () => {
+    fs.writeFileSync(
+      path.join(workDir, 'home.html'),
+      ['a', 'b', 'c', 'd', 'e']
+        .map((name) => `<script src="scripts/${name}.js"></script>`)
+        .join(''),
+    );
+    expect(getHomeScript(workDir, 'first')).toBe('scripts/a.js');
+    expect(getHomeScript(workDir, 'middle')).toBe('scripts/c.js');
+    expect(getHomeScript(workDir, 'last')).toBe('scripts/e.js');
+  });
+
+  it('injects into the requested script and records the site', () => {
+    const summary = prepareAbBuilds({
+      browser: 'chrome',
+      sourceDirectory: 'dist/chrome',
+      baseDirectory: workDir,
+      injectMs: 5,
+      injectSite: 'first',
+    });
+    expect(summary.injection?.site).toBe('first');
+    expect(summary.injection?.file).toBe('scripts/boot.js');
   });
 
   it('still rejects other differences when injecting', () => {

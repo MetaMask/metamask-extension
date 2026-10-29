@@ -13,6 +13,11 @@ name: Pilot A/B benchmarks
 # shards per browser. Build B gets a busy-wait; shard s runs arm (s-1) % 4 with
 # the duration from R2_INJECT_MS, and which build goes first alternates
 # every 4 shards so each arm is balanced.
+#
+# Round 3 (branches trigger-ci-pilot-r3*): injection-site test. StandardHome
+# only, default 100 shards per browser. Build B gets the same busy-wait
+# (Chrome 76 ms, Firefox 125 ms) in arm 0: none, 1: first script, 2: middle
+# script, 3: last script; order alternates as in round 2.
 
 on:
   push:
@@ -32,6 +37,9 @@ env:
   # Round 2 busy-wait milliseconds per arm, about 2, 4 and 8% of median
   # uiStartup (arm 0 is the hook with no work).
   R2_INJECT_MS: '{"chrome": [0, 19, 38, 76], "firefox": [0, 31, 62, 125]}'
+  # Round 3 busy-wait milliseconds and injection site per arm.
+  R3_INJECT_MS: '{"chrome": 76, "firefox": 125}'
+  R3_SITES: '["last", "first", "middle", "last"]'
 
 jobs:
   plan:
@@ -48,6 +56,9 @@ jobs:
           default=50
           if [[ "$BRANCH_NAME" == trigger-ci-pilot-r2* ]]; then
             round=2
+            default=100
+          elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r3* ]]; then
+            round=3
             default=100
           fi
           if [[ "$BRANCH_NAME" =~ -smoke$ ]]; then
@@ -75,6 +86,22 @@ jobs:
                    injectArg: "--inject-ms \($ms[$browser][$arm])"}
               ]}')
             echo "Round 2: $shards shards per browser, arm = (shard - 1) % 4"
+          elif (( round == 3 )); then
+            matrix=$(jq -nc --argjson s "$shards" --argjson ms "$R3_INJECT_MS" \
+              --argjson sites "$R3_SITES" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | range(1; $s + 1) as $shard
+                | (($shard - 1) % 4) as $arm
+                | (if $arm == 0 then 0 else $ms[$browser] end) as $inject
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, arm: $arm,
+                   flip: (((($shard - 1) / 4) | floor) % 2),
+                   injectMs: $inject,
+                   suffix: "-arm\($arm)-\($sites[$arm])",
+                   injectArg: "--inject-ms \($inject) --inject-site \($sites[$arm])"}
+              ]}')
+            echo "Round 3: $shards shards per browser, arm = (shard - 1) % 4"
           else
             journey=$(( shards / 2 ))
             (( journey < 1 )) && journey=1
