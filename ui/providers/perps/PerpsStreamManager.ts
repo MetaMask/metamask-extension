@@ -206,7 +206,10 @@ class PerpsStreamManager {
           if (cancelled || hasLivePositions()) {
             return;
           }
-          submitRequestToBackground<Position[]>('perpsGetPositions', [])
+          // Replace a seed with fresh REST data: the provider's WebSocket
+          // cache has not confirmed it either.
+          const params = this.positions.isSeeded() ? [{ skipCache: true }] : [];
+          submitRequestToBackground<Position[]>('perpsGetPositions', params)
             .then((data) => {
               if (!cancelled && !hasLivePositions()) {
                 push(data ?? EMPTY_POSITIONS);

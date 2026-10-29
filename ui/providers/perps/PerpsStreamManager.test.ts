@@ -536,7 +536,7 @@ describe('PerpsStreamManager', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsGetPositions',
-        [],
+        [{ skipCache: true }],
       );
       expect(cb).toHaveBeenLastCalledWith(livePositions);
       expect(manager.positions.isSeeded()).toBe(false);
