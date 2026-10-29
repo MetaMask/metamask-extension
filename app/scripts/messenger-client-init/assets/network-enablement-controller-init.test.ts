@@ -4,8 +4,8 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import {
-  NetworkEnablementController,
   NetworkEnablementControllerMessenger,
+  NetworkEnablementControllerState,
 } from '@metamask/network-enablement-controller';
 import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
@@ -23,9 +23,33 @@ import {
   NetworkEnablementControllerInitMessenger,
 } from '../messengers/assets';
 import { getRootMessenger } from '../../lib/messenger';
+import { setupNetworkEnablementController } from '../../wallet-init/instance-options/network-enablement-controller';
 import { NetworkEnablementControllerInit } from './network-enablement-controller-init';
 
-jest.mock('@metamask/network-enablement-controller');
+function runSetup(request: ReturnType<typeof getInitRequestMock>) {
+  const messengerClient = {
+    messenger: request.controllerMessenger,
+    state: {
+      enabledNetworkMap: {},
+      nativeAssetIdentifiers: {},
+    } as NetworkEnablementControllerState,
+    enableAllPopularNetworks: jest.fn(),
+    enableNetwork: jest.fn(),
+    enableNetworkInNamespace: jest.fn(),
+    restoreEnabledNetworkMap: jest.fn(),
+    init: jest.fn(),
+  };
+
+  setupNetworkEnablementController({
+    networkEnablementController: messengerClient as unknown as Parameters<
+      typeof setupNetworkEnablementController
+    >[0]['networkEnablementController'],
+    initMessenger: request.initMessenger,
+    persistedState: request.persistedState,
+  });
+
+  return { messengerClient };
+}
 
 function getInitRequestMock(
   baseMessenger = getRootMessenger<never, never>(),
@@ -81,9 +105,8 @@ describe('NetworkEnablementControllerInit', () => {
   });
 
   it('initializes the controller', () => {
-    const { messengerClient } =
-      NetworkEnablementControllerInit(getInitRequestMock());
-    expect(messengerClient).toBeInstanceOf(NetworkEnablementController);
+    const { messengerClient } = runSetup(getInitRequestMock());
+    expect(messengerClient.init).toHaveBeenCalledTimes(1);
   });
 
   it('enables the Solana network when `AccountsController:selectedAccountChange` is emitted', () => {
@@ -95,7 +118,7 @@ describe('NetworkEnablementControllerInit', () => {
       namespace: MOCK_ANY_NAMESPACE,
     });
     const request = getInitRequestMock(messenger);
-    const { messengerClient } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
 
     expect(messengerClient.enableNetworkInNamespace).not.toHaveBeenCalled();
 
@@ -125,7 +148,7 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     const request = getInitRequestMock(messenger);
-    const { messengerClient } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
 
     messengerClient.state = {
       enabledNetworkMap: {
@@ -134,6 +157,7 @@ describe('NetworkEnablementControllerInit', () => {
       nativeAssetIdentifiers: {},
     };
 
+    messengerClient.enableNetwork.mockClear();
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
@@ -160,7 +184,7 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     const request = getInitRequestMock(messenger);
-    const { messengerClient } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
 
     messengerClient.state = {
       enabledNetworkMap: {
@@ -169,6 +193,7 @@ describe('NetworkEnablementControllerInit', () => {
       nativeAssetIdentifiers: {},
     };
 
+    messengerClient.enableNetwork.mockClear();
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
@@ -194,7 +219,7 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     const request = getInitRequestMock(messenger);
-    const { messengerClient } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
 
     messengerClient.state = {
       enabledNetworkMap: {
@@ -203,6 +228,7 @@ describe('NetworkEnablementControllerInit', () => {
       nativeAssetIdentifiers: {},
     };
 
+    messengerClient.enableNetwork.mockClear();
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
@@ -227,7 +253,7 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     const request = getInitRequestMock(messenger);
-    const { messengerClient } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
 
     messengerClient.state = {
       enabledNetworkMap: {
@@ -237,6 +263,7 @@ describe('NetworkEnablementControllerInit', () => {
       nativeAssetIdentifiers: {},
     };
 
+    messengerClient.enableNetwork.mockClear();
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
     messenger.publish(
@@ -258,61 +285,23 @@ describe('NetworkEnablementControllerInit', () => {
       process.env.METAMASK_ENVIRONMENT = environment;
       process.env.IN_TEST = '';
 
-      const { messengerClient } =
-        NetworkEnablementControllerInit(getInitRequestMock());
+      const { messengerClient } = runSetup(getInitRequestMock());
 
-      const controllerMock = jest.mocked(NetworkEnablementController);
-      expect(controllerMock).toHaveBeenLastCalledWith({
-        messenger: expect.any(Object),
-        state: {
-          enabledNetworkMap: {
-            [KnownCaipNamespace.Eip155]: {
-              [CHAIN_IDS.MAINNET]: false,
-              [CHAIN_IDS.POLYGON]: false,
-              [CHAIN_IDS.SEPOLIA]: false,
-              [CHAIN_IDS.LOCALHOST]: false,
-            },
-            [KnownCaipNamespace.Solana]: {
-              [SolScope.Mainnet]: false,
-            },
-            [KnownCaipNamespace.Bip122]: {
-              [BtcScope.Mainnet]: false,
-            },
-          },
-          nativeAssetIdentifiers: {},
-        },
-      });
+      expect(messengerClient.init).toHaveBeenCalledTimes(1);
       expect(messengerClient.enableAllPopularNetworks).toHaveBeenCalledTimes(1);
+      expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
     });
   });
 
   it('initialises the controller with only localhost enabled in test builds', () => {
     process.env.IN_TEST = 'true';
 
-    const { messengerClient } =
-      NetworkEnablementControllerInit(getInitRequestMock());
+    const { messengerClient } = runSetup(getInitRequestMock());
 
-    const controllerMock = jest.mocked(NetworkEnablementController);
-    expect(controllerMock).toHaveBeenCalledWith({
-      messenger: expect.any(Object),
-      state: {
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.MAINNET]: false,
-            [CHAIN_IDS.POLYGON]: false,
-            [CHAIN_IDS.SEPOLIA]: false,
-            [CHAIN_IDS.LOCALHOST]: true,
-          },
-          [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: false,
-          },
-          [KnownCaipNamespace.Bip122]: {
-            [BtcScope.Mainnet]: false,
-          },
-        },
-        nativeAssetIdentifiers: {},
-      },
-    });
+    expect(messengerClient.init).toHaveBeenCalledTimes(1);
+    expect(messengerClient.enableNetwork).toHaveBeenCalledWith(
+      CHAIN_IDS.LOCALHOST,
+    );
     expect(messengerClient.enableAllPopularNetworks).not.toHaveBeenCalled();
   });
 
@@ -349,30 +338,12 @@ describe('NetworkEnablementControllerInit', () => {
       throw new Error(`Unexpected messengerClient name: ${controllerName}`);
     });
 
-    NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
 
-    const controllerMock = jest.mocked(NetworkEnablementController);
-    expect(controllerMock).toHaveBeenLastCalledWith({
-      messenger: expect.any(Object),
-      state: {
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.MAINNET]: false,
-            [CHAIN_IDS.POLYGON]: false,
-            [CHAIN_IDS.SEPOLIA]: false,
-            [CHAIN_IDS.LOCALHOST]: true,
-            [CHAIN_IDS.ARC]: false,
-          },
-          [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: false,
-          },
-          [KnownCaipNamespace.Bip122]: {
-            [BtcScope.Mainnet]: false,
-          },
-        },
-        nativeAssetIdentifiers: {},
-      },
-    });
+    expect(messengerClient.enableNetwork).toHaveBeenCalledWith(
+      CHAIN_IDS.LOCALHOST,
+    );
+    expect(messengerClient.enableAllPopularNetworks).not.toHaveBeenCalled();
   });
 
   it('preserves a single filter when Config Registry auto-adds Arc', async () => {
@@ -398,7 +369,7 @@ describe('NetworkEnablementControllerInit', () => {
         }) as never,
     );
 
-    const { messengerClient } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
     messengerClient.state = {
       enabledNetworkMap: {
         [KnownCaipNamespace.Eip155]: {
@@ -458,7 +429,7 @@ describe('NetworkEnablementControllerInit', () => {
         }) as never,
     );
 
-    const { messengerClient } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
     messengerClient.state = {
       enabledNetworkMap: {
         [KnownCaipNamespace.Eip155]: {
@@ -506,7 +477,7 @@ describe('NetworkEnablementControllerInit', () => {
       () => ({ configs: { networks: {} } }) as never,
     );
 
-    const { messengerClient } = NetworkEnablementControllerInit(request);
+    const { messengerClient } = runSetup(request);
     messengerClient.state = {
       enabledNetworkMap: {
         [KnownCaipNamespace.Eip155]: {
@@ -523,5 +494,46 @@ describe('NetworkEnablementControllerInit', () => {
     } as never);
 
     expect(messengerClient.restoreEnabledNetworkMap).not.toHaveBeenCalled();
+  });
+});
+
+describe('NetworkEnablementControllerInit', () => {
+  it('returns the wallet instance without persisting it again', () => {
+    const request = getInitRequestMock();
+    const walletController = {
+      messenger: request.controllerMessenger,
+      state: {
+        enabledNetworkMap: {
+          eip155: { '0x1': true },
+        },
+        nativeAssetIdentifiers: {},
+      },
+      enableAllPopularNetworks: jest.fn(),
+      enableNetwork: jest.fn(),
+      enableNetworkInNamespace: jest.fn(),
+      restoreEnabledNetworkMap: jest.fn(),
+      init: jest.fn(),
+    };
+    request.getMessengerClient.mockReturnValue(
+      walletController as unknown as ReturnType<
+        typeof request.getMessengerClient
+      >,
+    );
+    request.persistedState = {
+      NetworkEnablementController: {
+        enabledNetworkMap: {
+          eip155: { '0x1': true },
+        },
+      },
+    } as unknown as typeof request.persistedState;
+
+    expect(NetworkEnablementControllerInit(request)).toEqual({
+      messengerClient: walletController,
+      persistedStateKey: null,
+      memStateKey: null,
+    });
+    expect(walletController.init).toHaveBeenCalledTimes(1);
+    expect(walletController.enableAllPopularNetworks).not.toHaveBeenCalled();
+    expect(walletController.enableNetwork).not.toHaveBeenCalled();
   });
 });

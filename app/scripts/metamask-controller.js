@@ -288,7 +288,6 @@ import {
 } from './messenger-client-init/multichain';
 import {
   AssetsContractControllerInit,
-  AssetsControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -638,7 +637,6 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       MoneyAccountController: MoneyAccountControllerInit,
       MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
-      AssetsController: AssetsControllerInit,
       LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
     };
 
@@ -727,7 +725,7 @@ export default class MetamaskController extends EventEmitter {
     this.nftDetectionController = messengerClientsByName.NftDetectionController;
     this.assetsContractController =
       messengerClientsByName.AssetsContractController;
-    this.assetsController = messengerClientsByName.AssetsController;
+    this.assetsController = this.wallet.getInstance('AssetsController');
     this.multichainAssetsController =
       messengerClientsByName.MultichainAssetsController;
     this.multichainTransactionsController =
@@ -768,8 +766,9 @@ export default class MetamaskController extends EventEmitter {
       'SubscriptionController',
     );
     this.networkOrderController = messengerClientsByName.NetworkOrderController;
-    this.networkEnablementController =
-      messengerClientsByName.NetworkEnablementController;
+    this.networkEnablementController = this.wallet.getInstance(
+      'NetworkEnablementController',
+    );
     this.shieldController = this.wallet.getInstance('ShieldController');
     this.gatorPermissionsController =
       messengerClientsByName.GatorPermissionsController;

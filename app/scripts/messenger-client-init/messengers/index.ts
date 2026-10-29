@@ -41,7 +41,6 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
-  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
@@ -50,8 +49,7 @@ import {
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getNetworkEnablementControllerInitMessenger,
-  getAssetsControllerMessenger,
-  getAssetsControllerInitMessenger,
+  getNetworkEnablementControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -329,10 +327,6 @@ export const MESSENGER_FACTORIES = {
   AppStateController: {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
-  },
-  AssetsController: {
-    getMessenger: getAssetsControllerMessenger,
-    getInitMessenger: getAssetsControllerInitMessenger,
   },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
@@ -647,7 +641,10 @@ export const MESSENGER_FACTORIES = {
     getInitMessenger: noop,
   },
   NetworkEnablementController: {
-    getMessenger: getNetworkEnablementControllerMessenger,
+    // The wallet already registered this namespace. Creating another messenger
+    // here would throw. Extension setup uses the wallet instance's messenger.
+    // The cast keeps this messenger in the root action/event union.
+    getMessenger: noop as typeof getNetworkEnablementControllerMessenger,
     getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
   ProfileMetricsController: {

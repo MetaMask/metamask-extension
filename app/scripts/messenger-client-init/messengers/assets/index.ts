@@ -25,9 +25,3 @@ export {
   getNetworkEnablementControllerInitMessenger,
 } from './network-enablement-controller-messenger';
 export type { NetworkEnablementControllerInitMessenger } from './network-enablement-controller-messenger';
-
-export {
-  getAssetsControllerMessenger,
-  getAssetsControllerInitMessenger,
-} from './assets-controller-messenger';
-export type { AssetsControllerInitMessenger } from './assets-controller-messenger';

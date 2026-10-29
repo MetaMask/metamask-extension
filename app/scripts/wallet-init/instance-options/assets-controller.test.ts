@@ -1,14 +1,17 @@
 import { createApiPlatformClient } from '@metamask/core-backend';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ASSETS_UNIFY_STATE_FLAG } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import { getRootMessenger } from '../../lib/messenger';
+import type { MessengerClientPersistedState } from '../../messenger-client-init/types';
 import {
   getAssetsControllerInitMessenger,
-  getAssetsControllerMessenger,
   type AssetsControllerInitMessenger,
-} from '../../messenger-client-init/messengers/assets/assets-controller-messenger';
-import type { MessengerClientPersistedState } from '../../messenger-client-init/types';
-import { getAssetsControllerInstanceOptions } from './assets-controller';
+} from '../messengers/assets-controller-messenger';
+import {
+  getAssetsControllerInstanceOptions,
+  subscribeToArcTransactionConfirmedRefresh,
+} from './assets-controller';
 
 jest.mock('../../../../shared/lib/trace', () => ({
   traceAsControllerCallback: jest.fn((_req, fn) =>
@@ -33,7 +36,6 @@ function buildRequest({
 } = {}) {
   const rootMessenger = getRootMessenger<never, never>();
   const initMessenger = getAssetsControllerInitMessenger(rootMessenger);
-  const controllerMessenger = getAssetsControllerMessenger(rootMessenger);
 
   initMessenger.call = jest.fn().mockImplementation((action: string) => {
     if (action === 'OnboardingController:getState') {
@@ -52,7 +54,6 @@ function buildRequest({
   }) as AssetsControllerInitMessenger['call'];
 
   return {
-    controllerMessenger,
     getIsUiOpen: jest.fn(() => true),
     initMessenger,
     persistedState: {} as MessengerClientPersistedState,
@@ -142,5 +143,55 @@ describe('getAssetsControllerInstanceOptions', () => {
     await expect(options.trace?.(request, fn)).resolves.toBe('result');
 
     expect(traceAsControllerCallback).toHaveBeenCalledWith(request, fn);
+  });
+});
+
+describe('subscribeToArcTransactionConfirmedRefresh', () => {
+  function subscribe() {
+    const listeners: Record<string, (value: unknown) => void> = {};
+    const getAssets = jest.fn().mockResolvedValue(undefined);
+    const messenger = {
+      subscribe: jest.fn(
+        (event: string, listener: (value: unknown) => void) => {
+          listeners[event] = listener;
+        },
+      ),
+      call: jest.fn(() => [{ address: '0xabc' }]),
+    };
+
+    subscribeToArcTransactionConfirmedRefresh({
+      messenger,
+      getAssets,
+    } as never);
+
+    return { listeners, getAssets, messenger };
+  }
+
+  it('refreshes Arc assets for the confirmed sender', () => {
+    const { listeners, getAssets } = subscribe();
+
+    listeners['TransactionController:transactionConfirmed']({
+      chainId: CHAIN_IDS.ARC,
+      txParams: { from: '0xABC' },
+    });
+
+    expect(getAssets).toHaveBeenCalledWith(
+      [{ address: '0xabc' }],
+      expect.objectContaining({
+        forceUpdate: true,
+        bypassServerCache: true,
+      }),
+    );
+  });
+
+  it('ignores confirmed transactions on other chains', () => {
+    const { listeners, getAssets } = subscribe();
+
+    listeners['TransactionController:transactionConfirmed']({
+      chainId: CHAIN_IDS.MAINNET,
+      txParams: { from: '0xABC' },
+    });
+
+    expect(getAssets).not.toHaveBeenCalled();
   });
 });

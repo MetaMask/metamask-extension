@@ -1,24 +1,16 @@
-import type { AssetsControllerMessenger } from '@metamask/assets-controller';
-import {
-  Messenger,
-  type MessengerActions,
-  type MessengerEvents,
-} from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import {
-  assetsController,
-  type DefaultActions,
-  type DefaultEvents,
-  type RootMessenger as WalletRootMessenger,
-} from '@metamask/wallet';
-import {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
-} from '../../../controllers/onboarding';
-import type { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
-import { RootMessenger } from '../../../lib/messenger';
+} from '../../controllers/onboarding';
+import type {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../controllers/preferences-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 /**
  * Messenger type for AssetsController initialization.
@@ -39,28 +31,15 @@ export const ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS = [
 ] as const;
 
 /**
- * Get a messenger for the AssetsController.
- *
- * Delegations are owned by `@metamask/wallet`'s `assetsController.getMessenger`.
- * The extension root messenger is wider than the wallet's default root, so it
- * is cast to the type that configuration expects.
- *
- * @param messenger - The root controller messenger.
- * @returns The controller messenger.
+ * Events delegated to the AssetsController initialization messenger.
  */
-export function getAssetsControllerMessenger(
-  messenger: RootMessenger<
-    MessengerActions<AssetsControllerMessenger>,
-    MessengerEvents<AssetsControllerMessenger>
-  >,
-): AssetsControllerMessenger {
-  return assetsController.getMessenger(
-    messenger as unknown as WalletRootMessenger<DefaultActions, DefaultEvents>,
-  );
-}
+export const ASSETS_CONTROLLER_INIT_DELEGATED_EVENTS = [
+  'OnboardingController:stateChange',
+  'PreferencesController:stateChange',
+] as const;
 
 /**
- * Actions needed during AssetsController initialization.
+ * Actions needed while building AssetsController options.
  */
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
@@ -70,13 +49,19 @@ type AllowedInitializationActions =
   | RemoteFeatureFlagControllerGetStateAction;
 
 /**
- * Events needed during AssetsController initialization.
+ * Events needed while building AssetsController options.
+ *
+ * Preference changes are subscribed here, not on the controller messenger.
+ * Options are built inside `new Wallet()`, before PreferencesController exists,
+ * and the wallet owns the AssetsController messenger.
  */
-type AllowedInitializationEvents = OnboardingControllerStateChangeEvent;
+type AllowedInitializationEvents =
+  | OnboardingControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent;
 
 /**
  * Get a restricted messenger for AssetsController initialization.
- * This is scoped to actions and events needed during initialization.
+ * This is scoped to actions and events needed while building instance options.
  *
  * @param messenger - The root controller messenger.
  * @returns The restricted initialization messenger.
@@ -100,7 +85,7 @@ export function getAssetsControllerInitMessenger(
   messenger.delegate({
     messenger: initMessenger,
     actions: [...ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS],
-    events: ['OnboardingController:stateChange'],
+    events: [...ASSETS_CONTROLLER_INIT_DELEGATED_EVENTS],
   });
 
   return initMessenger;

@@ -1,5 +1,6 @@
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
-import { Wallet } from '@metamask/wallet';
+import { AssetsController } from '@metamask/assets-controller';
+import { assetsController, Wallet } from '@metamask/wallet';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { isObject } from '@metamask/utils';
 import { isInE2eTest } from '../../../shared/lib/environment';
@@ -11,6 +12,10 @@ import {
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getAnalyticsControllerInstanceOptions } from './instance-options/analytics-controller';
+import {
+  getAssetsControllerInstanceOptions,
+  subscribeToArcTransactionConfirmedRefresh,
+} from './instance-options/assets-controller';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
@@ -23,6 +28,7 @@ import {
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
 import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
+import { getAssetsControllerInitMessenger } from './messengers/assets-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
@@ -68,6 +74,13 @@ export function initializeWallet(request: InitializeWalletRequest) {
     getTransactionControllerInitMessenger(messenger);
   const seedlessOnboardingControllerInitMessenger =
     getSeedlessOnboardingControllerInitMessenger(messenger);
+  const assetsControllerInitMessenger =
+    getAssetsControllerInitMessenger(messenger);
+
+  // `isEnabled` runs after every wallet instance exists. Hold the wallet so the
+  // callback can read ClientController, which is constructed after
+  // AssetsController.
+  const walletRef: { current?: Wallet } = {};
 
   // TC event listeners must be set up before the wallet is initialized.
   // So that the TC can emit events to the wallet's messenger during initialization.
@@ -77,19 +90,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
   });
 
   const wallet = new Wallet({
-    // The AssetsController wallet preview also registers
-    // NetworkEnablementController by default. This extension still builds that
-    // controller in messenger-client-init, after MultichainNetworkController
-    // exists, with extension-specific state and subscriptions. Override the
-    // wallet default so the two constructors do not share one messenger
-    // namespace.
-    initializationConfigurations: [
-      {
-        name: 'NetworkEnablementController',
-        init: () => ({}),
-        getMessenger: () => ({}),
-      },
-    ],
+    initializationConfigurations: [assetsController],
     instanceOptions: {
       analyticsController: getAnalyticsControllerInstanceOptions({
         initMessenger: getAnalyticsControllerInitMessenger(messenger),
@@ -98,6 +99,13 @@ export function initializeWallet(request: InitializeWalletRequest) {
       }),
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
+      }),
+      assetsController: getAssetsControllerInstanceOptions({
+        getIsUiOpen: () =>
+          walletRef.current?.getInstance('ClientController').state.isUiOpen ??
+          false,
+        initMessenger: assetsControllerInitMessenger,
+        persistedState: state,
       }),
       claimsService: getClaimsServiceInstanceOptions(),
       configRegistryApiService: getConfigRegistryApiServiceInstanceOptions(),
@@ -143,6 +151,12 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     state,
   });
+  walletRef.current = wallet;
+
+  // AssetsController is opt-in, so it is not part of Wallet's default instance union.
+  subscribeToArcTransactionConfirmedRefresh(
+    wallet.getInstance('AssetsController') as unknown as AssetsController,
+  );
 
   // Fixture-less test builds (like `yarn build:test:dev`) have no persisted
   // networks, so they would otherwise come up with Arc selected. Fixtures that
