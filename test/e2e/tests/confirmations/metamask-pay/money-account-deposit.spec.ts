@@ -44,6 +44,9 @@ describe('Money Account Deposit', function (this: Suite) {
         // Pay with USDC on Mainnet, picked explicitly from the asset list.
         await selectPayToken(driver, confirmation, CHAIN_IDS.MAINNET, 'USDC');
 
+        await confirmation.clickPercentage(10);
+        await confirmation.checkAmount('10');
+
         await confirmation.clickPercentage(25);
         await confirmation.checkAmount('25');
 
