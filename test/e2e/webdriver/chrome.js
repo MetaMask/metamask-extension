@@ -130,7 +130,7 @@ class ChromeDriver {
         await driver
           .manage()
           .window()
-          .setRect({ width: constrainWindowSize ? 320 : 800, height: 800 });
+          .setRect({ width: constrainWindowSize ? 320 : 800, height: 1080 });
       }
 
       // When the manifest has a `key`, the extension ID is deterministic and can
