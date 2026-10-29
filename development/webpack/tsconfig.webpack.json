@@ -3,10 +3,12 @@
     "esModuleInterop": true,
     "incremental": true,
     "isolatedModules": true,
+    "allowJs": true,
     "outDir": "../.webpack",
-    "rootDir": ".",
+    "rootDir": "../..",
     "module": "commonjs",
     "moduleResolution": "node",
+    "rewriteRelativeImportExtensions": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noCheck": true

@@ -5,14 +5,13 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
-import {
-  HotModuleReplacementPlugin,
-  ProvidePlugin,
-  type Chunk,
-  type Configuration,
-  type WebpackPluginInstance,
-  type MemoryCacheOptions,
-  type FileCacheOptions,
+import webpackApi from 'webpack';
+import type {
+  Chunk,
+  Configuration,
+  WebpackPluginInstance,
+  MemoryCacheOptions,
+  FileCacheOptions,
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
@@ -21,8 +20,13 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
-import { discardFontFace } from '../postcss-plugins/discard-font-face';
-import { loadBuildTypesConfig } from '../lib/build-type.js';
+import {
+  projectRoot,
+  resolvePackage,
+  webpackFile,
+} from '../lib/build-paths.ts';
+import { discardFontFace } from '../postcss-plugins/discard-font-face.js';
+import { loadBuildTypesConfig } from '../lib/build-type.ts';
 import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,
@@ -32,20 +36,26 @@ import {
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
   UI_DIR_RE,
-} from './utils/helpers';
-import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
-import { parseArgv, getDryRunMessage } from './utils/cli';
-import { getSwcLoader } from './utils/loaders/getSwcLoader';
-import { getVariables } from './utils/config';
-import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
-import { getThreadLoader } from './utils/loaders/threadLoader';
-import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
-import { getLatestCommit } from './utils/git';
-import { MODES } from './utils/constants';
-import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
-import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
-import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
-import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
+} from './utils/helpers.ts';
+import { transformManifest } from './utils/plugins/ManifestPlugin/helpers.ts';
+import { parseArgv, getDryRunMessage } from './utils/cli.ts';
+import { getSwcLoader } from './utils/loaders/getSwcLoader.ts';
+import { getVariables } from './utils/config.ts';
+import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader.ts';
+import { getThreadLoader } from './utils/loaders/threadLoader.ts';
+import { ManifestPlugin } from './utils/plugins/ManifestPlugin/index.ts';
+import { getLatestCommit } from './utils/git.ts';
+import { MODES } from './utils/constants.ts';
+import {
+  getDevServerOptions,
+  injectEntryScripts,
+} from './utils/dev-server/index.ts';
+import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol.ts';
+import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats.ts';
+import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime.ts';
+
+const { HotModuleReplacementPlugin, ProvidePlugin, ProgressPlugin } =
+  webpackApi;
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -54,8 +64,8 @@ if (args.dryRun) {
   exit(0);
 }
 
-const context = join(__dirname, '../../app');
-const nodeModules = join(__dirname, '../../node_modules');
+const context = join(projectRoot, 'app');
+const nodeModules = join(projectRoot, 'node_modules');
 const root = join(context, '..');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
 const isDevelopmentWatchMode = isDevelopment && args.watch;
@@ -108,12 +118,11 @@ const cache = args.cache
       // Disable allowCollectingMemory because it can slow the build by 10%!
       allowCollectingMemory: false,
       buildDependencies: {
-        defaultConfig: [__filename],
+        defaultConfig: [webpackFile('webpack.config')],
         // Invalidates the build cache when the listed files change.
-        // `__filename` makes all `require`d dependencies of *this* file
-        // `buildDependencies`
+        // Track this config and the dependencies loaded by it.
         config: [
-          __filename,
+          webpackFile('webpack.config'),
           ...[join(root, '.metamaskprodrc'), join(root, '.metamaskrc')].filter(
             existsSync,
           ),
@@ -286,24 +295,23 @@ async function getPlugins() {
   // MV2 requires self-injection
   if (MANIFEST_VERSION === 2) {
     const { SelfInjectPlugin } =
-      await import('./utils/plugins/SelfInjectPlugin');
+      await import('./utils/plugins/SelfInjectPlugin/index.ts');
     plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
   }
   if (args.lavamoat) {
     const { lavamoatPlugin, lavamoatUnsafeLayerPlugin } =
-      await import('./utils/plugins/LavamoatPlugin');
+      await import('./utils/plugins/LavamoatPlugin/index.ts');
     plugins.push(
       lavamoatPlugin(args, manifestPlugin),
       lavamoatUnsafeLayerPlugin,
     );
   }
   if (args.progress) {
-    const { ProgressPlugin } = require('webpack');
     plugins.push(new ProgressPlugin());
   }
   if (args.reactCompilerVerbose) {
     const { ReactCompilerPlugin } =
-      await import('./utils/plugins/ReactCompilerPlugin');
+      await import('./utils/plugins/ReactCompilerPlugin/index.ts');
     plugins.push(new ReactCompilerPlugin());
   }
 
@@ -431,20 +439,20 @@ const config = {
       // #region conditionally remove developer tooling
       // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
       'react-devtools-core': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? require.resolve('react-devtools-core')
+        ? resolvePackage('react-devtools-core')
         : false,
       // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
       'remote-redux-devtools': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? require.resolve('remote-redux-devtools')
+        ? resolvePackage('remote-redux-devtools')
         : false,
       // #endregion conditionally remove developer tooling
       // #region node polyfills
-      crypto: require.resolve('crypto-browserify'),
+      crypto: resolvePackage('crypto-browserify'),
       fs: false,
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      path: require.resolve('path-browserify'),
-      stream: require.resolve('stream-browserify'),
+      http: resolvePackage('stream-http'),
+      https: resolvePackage('https-browserify'),
+      path: resolvePackage('path-browserify'),
+      stream: resolvePackage('stream-browserify'),
       vm: false,
       zlib: false,
       // #endregion node polyfills
@@ -474,7 +482,7 @@ const config = {
         exclude: NODE_MODULES_RE,
         enforce: 'pre' as const,
         use: {
-          loader: require.resolve('./utils/loaders/envValidationLoader'),
+          loader: webpackFile('utils/loaders/envValidationLoader'),
           options: { declarations: [...buildEnvVarDeclarations] },
         },
       },

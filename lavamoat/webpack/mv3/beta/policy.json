@@ -822,8 +822,8 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import.",
-          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import."
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/container' and webpack collapsed that to a direct import.",
+          "Dependency '@ledgerhq/device-management-kit>inversify' reexports from '@ledgerhq/device-management-kit>inversify>@inversifyjs/core' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {

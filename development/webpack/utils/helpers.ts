@@ -1,5 +1,7 @@
 import { join, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
+import webpackApi from 'webpack';
+import { projectRoot } from '../../lib/build-paths.ts';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -48,7 +50,7 @@ export const TREZOR_MODULE_RE = new RegExp(
  * Windows.
  */
 export const UI_DIR_RE = new RegExp(
-  `^${join(__dirname, '..', '..', '..', 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
+  `^${join(projectRoot, 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
   'u',
 );
 
@@ -206,7 +208,7 @@ export function logStats(err?: Error | null, stats?: Stats) {
     const { name } = stats.compilation;
     const status = toGreen('successfully');
     const time = `${stats.endTime - stats.startTime} ms`;
-    const { version } = require('webpack');
+    const { version } = webpackApi;
     console.error(`${name} (webpack ${version}) compiled ${status} in ${time}`);
   }
 }

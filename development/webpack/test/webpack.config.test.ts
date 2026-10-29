@@ -1,3 +1,4 @@
+import { syncBuiltinESMExports } from 'node:module';
 import fs from 'node:fs';
 import { tmpdir } from 'node:os';
 import { describe, it, afterEach, before, after, mock } from 'node:test';
@@ -6,25 +7,30 @@ import process from 'node:process';
 import { join, resolve } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import { transform } from '@swc/core';
-import {
-  type Configuration,
-  type FileCacheOptions,
-  webpack,
+import webpackApi from 'webpack';
+import type {
+  Configuration,
+  FileCacheOptions,
   Compiler,
   WebpackPluginInstance,
   RuleSetRule,
 } from 'webpack';
-import { noop, type Manifest, NODE_MODULES_RE } from '../utils/helpers';
-import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
-import { getLatestCommit } from '../utils/git';
-import { version as packageVersion } from '../../../package.json';
-import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants';
-import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats';
+import { noop, type Manifest, NODE_MODULES_RE } from '../utils/helpers.ts';
+import { ManifestPlugin } from '../utils/plugins/ManifestPlugin/index.ts';
+import { getLatestCommit } from '../utils/git.ts';
+import packageJson from '../../../package.json' with { type: 'json' };
+import { CHROME_MANIFEST_KEY_NON_PRODUCTION } from '../utils/constants.ts';
+import { BUNDLE_SIZE_SUMMARY_FILE } from '../utils/plugins/ManifestPlugin/stats.ts';
 import {
   DEFAULT_ZIP_MTIME,
   isValidZipMtime,
-} from '../utils/plugins/ManifestPlugin/zip-mtime';
-import type { SwcLoaderOptions } from '../utils/loaders/swcLoader';
+} from '../utils/plugins/ManifestPlugin/zip-mtime.ts';
+
+import type { SwcLoaderOptions } from '../utils/loaders/swcLoader.ts';
+
+const { version: packageVersion } = packageJson;
+
+const { webpack } = webpackApi;
 
 // `buildDependencies` entries are either a path or `{ dependency, optional }`.
 // The config only ever writes paths, but the type allows both.
@@ -102,13 +108,14 @@ async function withWatching<T>(
  */
 
 describe('webpack.config.test.ts', () => {
+  let configLoad = 0;
   let originalArgv: string[];
   let originalEnv: NodeJS.ProcessEnv;
   const originalReadFileSync = fs.readFileSync;
   let originalExistsSync: typeof fs.existsSync;
   const optionalRcPaths = {
-    metamaskrc: resolve(__dirname, '../../../.metamaskrc'),
-    metamaskprodrc: resolve(__dirname, '../../../.metamaskprodrc'),
+    metamaskrc: resolve(import.meta.dirname, '../../../.metamaskrc'),
+    metamaskprodrc: resolve(import.meta.dirname, '../../../.metamaskprodrc'),
   };
   before(() => {
     // cache originals before we start messing with them
@@ -125,21 +132,20 @@ describe('webpack.config.test.ts', () => {
     // reset argv to avoid affecting other tests
     process.argv = [process.argv0, process.argv[1]];
     process.env = originalEnv;
-    // The config reads argv and env when loaded, so reload it for each case.
-    delete require.cache[require.resolve('../webpack.config.ts')];
     mock.restoreAll();
+    syncBuiltinESMExports();
   });
 
   async function getWebpackConfig(
     args: string[] = [],
     env: NodeJS.ProcessEnv = {},
   ) {
-    // The config reads argv when its module is loaded.
+    // Reload the ESM config for each case, matching main’s module-load lifecycle.
     // first two args are always ignored.
     process.argv = [...process.argv.slice(0, 2), ...args];
     process.env = { ...env };
     mock.method(fs, 'readFileSync', (path: string, options?: null) => {
-      if (path === resolve(__dirname, '../../../.metamaskrc')) {
+      if (path === resolve(import.meta.dirname, '../../../.metamaskrc')) {
         // mock `.metamaskrc`, as users might have customized it which may
         // break our tests
         return `
@@ -150,7 +156,12 @@ ${Object.entries(env)
       }
       return originalReadFileSync.call(fs, path, options);
     });
-    return require('../webpack.config.ts').default();
+    syncBuiltinESMExports();
+    return (
+      (await import(
+        `../webpack.config.ts?config=${configLoad++}`
+      )) as typeof import('../webpack.config.ts')
+    ).default();
   }
 
   function getPluginNames(config: Configuration): string[] {
@@ -409,7 +420,10 @@ ${Object.entries(env)
     it(`compiles TypeScript files with configured loaders and watch=${watch}`, async () => {
       const config = await getWebpackConfig(watch ? ['--watch'] : []);
       for (const extension of ['ts', 'mts', 'tsx']) {
-        const filename = resolve(__dirname, `../../../ui/test.${extension}`);
+        const filename = resolve(
+          import.meta.dirname,
+          `../../../ui/test.${extension}`,
+        );
         const rule = getSwcReactRules(config).find(
           ({ test }) => test instanceof RegExp && test.test(filename),
         );
