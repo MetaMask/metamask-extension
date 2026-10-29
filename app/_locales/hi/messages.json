@@ -1738,6 +1738,9 @@
     "message": "$1 पर $2 के लिए एप्रूव किया गया",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Arc में आपका स्वागत है! Arc चेन के आपके उपयोग को सुगम बनाने और सत्यापित करने के लिए, हम Arc टीम के साथ आपकी जानकारी साझा कर सकते हैं।"
+  },
   "arcUsageNoticeTitle": {
     "message": "नोटिस"
   },
@@ -1942,6 +1945,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "बेसिक फंक्शनलिटी को चालू करें"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "बेसिक फंक्शनलिटी चालू है"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "हमने अपनी सेटिंग्स अपडेट कर दी हैं"
@@ -2619,6 +2625,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "यह टोकन सिंबल आपके द्वारा डाले गए नेटवर्क नाम या चेन ID से मैच नहीं कर रहा है। कई लोकप्रिय टोकन इसी तरह के सिंबल का उपयोग करते हैं, जिनका उपयोग स्कैमर्स आपको बदले में ज़्यादा कीमती टोकन भेजने का झांसा देने के लिए कर सकते हैं। आगे बढ़ने से पहले हर चीज़ अच्छे से वेरीफाई कर लें।"
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "नेटवर्क डिटेल्स मैन्युअली डालें",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "RPC डिटेल्स मैन्युअली डालें",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "जानें कि सुरक्षित कैसे रहें।",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2630,6 +2644,22 @@
   "chainlistNetworkDetails": {
     "message": "सिंबल: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "ChainList से कोई मैच नहीं",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "RPC डेटा ChainList से आता है। जोड़ने से पहले हमेशा वेरिफ़ाई करें। $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "नेटवर्क नाम के तौर पर \"$1\" का इस्तेमाल करें",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "RPC URL के तौर पर \"$1\" का इस्तेमाल करें",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "सेटिंग्स में बदलाव"
@@ -3300,6 +3330,9 @@
   "dataCollectionForMarketing": {
     "message": "मार्केटिंग के लिए डेटा संग्रह"
   },
+  "dataCollectionForMarketingDescription": {
+    "message": "हम इस बारे में डेटा इकट्ठा करेंगे कि आप हमारे मार्केटिंग कम्युनिकेशन के साथ कैसे इंटरैक्ट करते हैं, ताकि हम काम की खबरें (जैसे प्रोडक्ट फ़ीचर और दूसरी चीज़ें) शेयर कर सकें।"
+  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "उत्पाद अपडेट, सुझाव और समाचार प्राप्त करें - ईमेल के माध्यम से भी। हम आपके इंटरैक्शन का उपयोग साझा की जाने वाली जानकारी को बेहतर बनाने के लिए कर सकते हैं।"
   },
@@ -3349,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "मोबाइल पर बैच सेल खोलें"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "लिमिट ऑर्डर MetaMask मोबाइल पर उपलब्ध हैं। इन्हें इस्तेमाल करने के लिए इस कोड को अपने मोबाइल डिवाइस से स्कैन करें।"
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "मोबाइल पर लिमिट ऑर्डर खोलें"
   },
   "deepLinkQrPredictDescription": {
     "message": "MetaMask प्रेडिक्शन मार्केट्स को एक्सेस करने के लिए, अपने मोबाइल डिवाइस से QR कोड स्कैन करें।"
@@ -3434,6 +3473,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "नोटिफिकेशंस पेज"
+  },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "नोटिफ़िकेशन सेटिंग पेज"
   },
   "deepLink_theOnboardingPage": {
     "message": "ऑनबोर्डिंग पेज"
@@ -4250,6 +4292,14 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask इस ट्रांसेक्शन के लिए नेटवर्क फ़ीस कवर करता है। इसमें एक बार का स्मार्ट अकाउंट एक्टिवेशन शामिल है।"
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "इस नेटवर्क के लिए ट्रांसेक्शन के बाद आपके अकाउंट में कम से कम $1 $2 रखना ज़रूरी है। स्मार्ट अकाउंट इस रिज़र्व से नीचे नहीं जा सकते।",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 इस ट्रांसेक्शन के लिए नेटवर्क फ़ीस कवर करता है। इसमें एक बार का स्मार्ट अकाउंट एक्टिवेशन शामिल है।",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
     "description": "$1 represents a number of hours"
@@ -4525,7 +4575,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "सुनिश्चित करते रहें कि:"
+    "message": "आगे बढ़ने के लिए, सुनिश्चित करें:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "आपका $1 डिवाइस अनलॉक है",
@@ -5428,17 +5478,68 @@
   "mfaEmailEntryContinue": {
     "message": "जारी रखें"
   },
+  "mfaEmailEntryDescription": {
+    "message": "हम आपके अकाउंट को वेरिफ़ाई करने के लिए आपके ईमेल का इस्तेमाल करेंगे और कभी-कभी आपको अकाउंट अपडेट भेजेंगे।"
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "कृपया एक मान्य ईमेल एड्रेस दर्ज करें।"
+  },
   "mfaEmailEntryPlaceholder": {
     "message": "मेल पता"
+  },
+  "mfaEmailEntryTitle": {
+    "message": "अपनी ईमेल वेरिफ़ाई करें"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "आपका वेरिफ़िकेशन कोड एक्सपायर हो गया है, नया कोड पाएं।"
   },
   "mfaErrorCooldown": {
     "message": "बहुत ज़्यादा रिक्वेस्ट हैं। थोड़ा इंतज़ार करें और फिर से कोशिश करें।"
   },
+  "mfaErrorEmailTaken": {
+    "message": "यह ईमेल पहले से इस्तेमाल हो रहा है। कोई दूसरा ईमेल आज़माएँ।"
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "दूसरा वेरिफ़िकेशन पहले से चल रहा है।"
+  },
   "mfaErrorGeneric": {
     "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
   },
+  "mfaErrorInvalidPasskey": {
+    "message": "आपकी पासकी वेरिफ़ाई नहीं हो सकी। फिर से कोशिश करें।"
+  },
+  "mfaErrorLimitReached": {
+    "message": "आप इस तरीके की लिमिट तक पहुँच गए हैं।"
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "पासकी रिक्वेस्ट कैंसिल कर दी गई थी।"
+  },
+  "mfaErrorSignedOut": {
+    "message": "जारी रखने के लिए साइन इन करें।"
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "बहुत ज़्यादा कोशिशें की गईं। नए कोड का अनुरोध करें।"
+  },
+  "mfaErrorTotpExpired": {
+    "message": "इसमें बहुत ज़्यादा समय लगा। अपने ऐप से मौजूदा कोड डालें।"
+  },
+  "mfaErrorTotpTaken": {
+    "message": "इस अकाउंट के लिए एक ऑथेंटिकेटर ऐप पहले से सेट है।"
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "बहुत ज़्यादा कोशिशें की गईं। अपने ऐप में नए कोड का इंतज़ार करें और फिर से कोशिश करें।"
+  },
+  "mfaErrorUnsupported": {
+    "message": "यह तरीका इस डिवाइस पर सपोर्टेड नहीं है।"
+  },
   "mfaFailureClose": {
     "message": "बंद करें"
+  },
+  "mfaFailureContactSupport": {
+    "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "mfaFailureDone": {
+    "message": "पूरा हुआ"
   },
   "mfaFailureRetry": {
     "message": "फिर से प्रयास करें"
@@ -5449,23 +5550,173 @@
   "mfaIntroContinue": {
     "message": "शुरू करें"
   },
+  "mfaIntroDescription": {
+    "message": "हम यह कन्फर्म करने के लिए कुछ तरीके सेट अप करेंगे कि यह आप ही हैं। अगर आप एक तरीके का एक्सेस खो देते हैं, तो आप दूसरा इस्तेमाल कर सकते हैं।"
+  },
+  "mfaIntroEmailDescription": {
+    "message": "अपने इनबॉक्स में 6-डिजिट का कोड पाएं"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "अपने डिवाइस या पासवर्ड मैनेजर से कन्फर्म करें"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "इस डिवाइस में सेव किया गया"
+  },
+  "mfaIntroTitle": {
+    "message": "2-स्टेप वेरिफिकेशन सेट अप करें"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "गूगल ऑथेंटिकेटर जैसे ऐप से 6-डिजिट का कोड पाएं"
+  },
+  "mfaIntroTotpDone": {
+    "message": "अपने ऑथेंटिकेटर ऐप में सेट अप करें"
+  },
   "mfaMethodEmail": {
     "message": "ईमेल"
+  },
+  "mfaMethodPasskey": {
+    "message": "पासकी"
+  },
+  "mfaMethodTotp": {
+    "message": "ऑथेंटिकेटर ऐप"
+  },
+  "mfaOtpDescription": {
+    "message": "हमने आपके ईमेल पर 6-डिजिट का कोड भेजा है। अपना ईमेल वेरिफ़ाई करने के लिए इसे नीचे डालें।"
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "अपना ऑथेंटिकेटर ऐप खोलें और 6-डिजिट का कोड डालें।"
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "हमने $1 पर 6-डिजिट का कोड भेजा है। अपना ईमेल वेरिफ़ाई करने के लिए इसे नीचे डालें।",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "नया कोड प्राप्त करें"
   },
   "mfaOtpResend": {
     "message": "कोड फिर से भेजें"
   },
+  "mfaOtpResendIn": {
+    "message": "$1s में कोड फिर से भेजें",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "हमने आपको एक नया कोड भेजा है।"
+  },
   "mfaOtpRetry": {
     "message": "फिर से प्रयास करें"
+  },
+  "mfaOtpRetryIn": {
+    "message": "$1s में फिर से कोशिश करें"
+  },
+  "mfaOtpSendIn": {
+    "message": "$1s में नया कोड भेजा जा रहा है",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "कोड भेजा जा रहा है..."
+  },
+  "mfaOtpTitle": {
+    "message": "अपना वेरिफ़िकेशन कोड दर्ज करें"
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "एक पासकी बनाएं"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "अपनी पासकी इस्तेमाल करें"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "वेरिफ़िकेशन कोड पाएं"
   },
   "mfaPickerOr": {
     "message": "या"
   },
+  "mfaPickerPasskey": {
+    "message": "पासकी से वेरिफ़ाई करें"
+  },
+  "mfaPickerTitle": {
+    "message": "2-स्टेप वेरिफ़िकेशन से कन्फर्म करें"
+  },
+  "mfaPickerTotp": {
+    "message": "ऑथेंटिकेटर ऐप इस्तेमाल करें"
+  },
   "mfaSettingsAdd": {
     "message": "जोड़ें"
   },
+  "mfaSettingsAddedOn": {
+    "message": "$1 जोड़ा गया"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "ईमेल वेरिफ़िकेशन हटा दिया गया"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "यह ईमेल इस अकाउंट के लिए सिक्योरिटी का एकमात्र तरीका है। इसे हटाने से पहले दूसरा तरीका जोड़ें।"
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "ईमेल हटाया नहीं जा सकता"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "यह ऑथेंटिकेटर ऐप इस अकाउंट के लिए सिक्योरिटी का एकमात्र तरीका है। इसे हटाने से पहले दूसरा तरीका जोड़ें।"
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "ऑथेंटिकेटर ऐप हटाया नहीं जा सकता"
+  },
+  "mfaSettingsNotice": {
+    "message": "ये तरीके Money account ट्रांसेक्शन में सुरक्षा जोड़ते हैं। वे आपके वॉलेट को रिकवर नहीं कर सकते।"
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "आपके दूसरे तरीके सिर्फ़ MetaMask मोबाइल ऐप में काम करते हैं। वहां से अपना ईमेल हटा दें।"
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "ईमेल यहां से नहीं हटाया जा सकता"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "ईमेल हटा दें"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "अब आप ईमेल से कोड पाकर लॉग इन या ट्रांसेक्शन वेरिफ़ाई नहीं कर पाएँगे।"
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "यह तरीका हटाया नहीं जा सका। बाद में फिर से कोशिश करें।"
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "ऑथेंटिकेटर ऐप हटाएँ"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "अब आप अपने ऑथेंटिकेटर ऐप से कोड से Money ट्रांसेक्शन वेरिफ़ाई नहीं कर पाएँगे।"
+  },
+  "mfaSettingsTitle": {
+    "message": "2-स्टेप वेरिफ़िकेशन"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "आपके दूसरे तरीके सिर्फ़ MetaMask मोबाइल ऐप में काम करते हैं। वहां से अपना ऑथेंटिकेटर ऐप हटा दें।"
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "ऑथेंटिकेटर ऐप यहाँ से हटाया नहीं जा सकता"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "ऑथेंटिकेटर ऐप हटा दिया गया"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "इसके लिए इस्तेमाल किया जाता है"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Money ट्रांसेक्शन वेरिफ़ाई किया जा रहा है"
+  },
   "mfaTotpSetupContinue": {
     "message": "जारी रखें"
+  },
+  "mfaTotpSetupKey": {
+    "message": "सेटअप की (key)"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "अपने ऑथेंटिकेटर ऐप में MetaMask जोड़ने के लिए QR कोड"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "इसमें बहुत ज़्यादा समय लगा, इसलिए हमने एक नई सेटअप की (key) बनाई। अपने ऑथेंटिकेटर ऐप से पहले की MetaMask एंट्री हटाएँ, फिर यह वाली जोड़ें।"
+  },
+  "mfaTotpSetupTitle": {
+    "message": "ऑथेंटिकेटर ऐप सेट अप करें"
   },
   "minimumReceivedExplanation": {
     "message": "यदि आपके ट्रांसेक्शन के दौरान प्राइस बदलती है, तो न्यूनतम राशि जो आपको मिलेगी, वह आपके स्लिपेज (slippage) सेटिंग पर आधारित होगी। यह अनुमान लिक्विडिटी प्रोवाइडर्स से लिया गया है, इसलिए अंतिम राशि अलग हो सकती है।"
@@ -5676,12 +5927,24 @@
   "moneyConvertYourCrypto": {
     "message": "अपने क्रिप्टो को कन्वर्ट करें"
   },
+  "moneyEarnApy": {
+    "message": "$1 APY कमाएं",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "$1 APY तक कमाएं"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "अपने Money अकाउंट में $1 जोड़ें और एक साल में $2 तक कमाएँ।",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
   },
   "moneyEarnBannerCta": {
     "message": "$1 जोड़ें",
     "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "अपने Money Account में $1 जोड़ें—न कोई लॉक-अप, न ही न्यूनतम।",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerTitleNoApy": {
     "message": "अपने Money Account से कमाएं",
@@ -5723,6 +5986,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "अपने Money Account में पैसे डालें और अपने बैलेंस को $1 APY तक बढ़ते हुए देखें।"
+  },
+  "moneyGetApy": {
+    "message": "$1 APY पाएं",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "दिखाई गई दर वर्तमान सालाना प्रतिशत यील्ड (APY) है। APY परिवर्तनीय है और इसकी गारंटी नहीं है।"
@@ -6295,6 +6562,9 @@
   "networkNameSolana": {
     "message": "सोलाना"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -6359,6 +6629,10 @@
   },
   "newCustomTokenAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "अपने NFTs, $1 देखने के लिए OpenSea का इस्तेमाल करने के लिए।",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "सेटिंग्स > एसेट्स"
@@ -7511,6 +7785,10 @@
   "perpsAbout": {
     "message": "बारे में"
   },
+  "perpsAboutAsset": {
+    "message": "$1 के बारे में",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "एक्टिविटी"
   },
@@ -7851,6 +8129,13 @@
   "perpsInsufficientMargin": {
     "message": "इस ऑर्डर को लगाने के लिए पर्याप्त मार्जिन नहीं है।"
   },
+  "perpsIocCancel": {
+    "message": "आपका ऑर्डर आपके $1% स्लिपेज टॉलरेंस के अंदर नहीं भर सका। लिमिट ऑर्डर आज़माएँ या अपना स्लिपेज एडजस्ट करें।",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "आपका ऑर्डर आपके स्लिपेज टॉलरेंस के अंदर नहीं भरा जा सका। लिमिट ऑर्डर ट्राई करें या अपना स्लिपेज एडजस्ट करें।"
+  },
   "perpsKeepPositions": {
     "message": "पोज़िशन्स रखें"
   },
@@ -8106,6 +8391,10 @@
   "perpsPositions": {
     "message": "पोजीशन्स"
   },
+  "perpsPriceMoved": {
+    "message": "कीमत $1% बढ़ गई, जो आपके $2% स्लिपेज टॉलरेंस से ज़्यादा है। अपडेटेड कीमत देखें और फिर से कोशिश करें।",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
   "perpsProducts": {
     "message": "प्रोडक्ट्स",
     "description": "Heading of the Perps tab section listing market categories as chips"
@@ -8115,6 +8404,10 @@
   },
   "perpsReadMore": {
     "message": "और पढ़ें"
+  },
+  "perpsReadMoreAbout": {
+    "message": "$1 के बारे में और पढ़ें",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "हालिया गतिविधि"
@@ -8166,6 +8459,10 @@
   "perpsServiceInterruptionContactSupport": {
     "message": "सपोर्ट से संपर्क करें",
     "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "कुछ सेवाएं अस्थायी रूप से उपलब्ध नहीं हैं। $1, या $2।",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "FAQs में अपने विकल्प देखें",
@@ -9380,6 +9677,33 @@
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "आपको हाल की ट्रेडिंग एक्टिविटी की वजह से रेफ़र नहीं किया जा सकता।"
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "आप पहले ही किसी अन्य उपयोगकर्ता द्वारा रेफर किए जा चुके हैं।"
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "रेफरल कोड ग़लत है"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "रेफरल कोड"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "आप अपना स्वयं का रेफरल कोड उपयोग नहीं कर सकते।"
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "आपको कोई और रेफ़र नहीं कर सकता।"
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "कुछ गलत हो गया। थोड़ी देर में फिर से कोशिश करें।"
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "बहुत ज़्यादा कोशिशें की गईं। थोड़ा इंतज़ार करें।"
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "क्षेत्र की जांच की जा रही है…"
   },
@@ -9417,24 +9741,6 @@
   "rewardsOnboardingOptInError": {
     "message": "ऑप्ट-इन नहीं हो पाया"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "रेफरल कोड ग़लत है"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "रेफरल कोड (वैकल्पिक)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "कोड छिपाएँ"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "क्या आपके पास रेफ़रल कोड है?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "रिवॉर्ड में शामिल हों"
   },
@@ -9443,10 +9749,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "रिवॉर्ड कमाना शुरू करें"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "रेफरल कोड वेरीफाई किया जा रहा है…",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 पॉइंट",
@@ -12138,6 +12440,18 @@
   "tronDailyResourcesDescription": {
     "message": "यह आपके स्टेक किए गए TRX के आधार पर आपका डेली अलाउंस है। आपको रोज़ $1 बैंडविड्थ फ्री मिलता है।",
     "description": "$1 is the maximum bandwidth value"
+  },
+  "tronDailyResourcesLoading": {
+    "message": "डेली रिसोर्स यूसेज लोड हो रहा है…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "आपकी एनर्जी और बैंडविड्थ की जानकारी कुछ समय के लिए उपलब्ध नहीं है। यह अपने आप अपडेट हो जाएगी।",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "रिसोर्स लोड नहीं हो सके",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
   },
   "tronEnergy": {
     "message": "ऊर्जा"

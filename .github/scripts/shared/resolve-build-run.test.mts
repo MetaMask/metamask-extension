@@ -145,7 +145,10 @@ describe('resolveBuildRun', () => {
     {
       name: 'another repository',
       referencedWorkflows: [
-        { ...buildWorkflow, path: 'other/repo/.github/workflows/run-build.yml@main' },
+        {
+          ...buildWorkflow,
+          path: 'other/repo/.github/workflows/run-build.yml@main',
+        },
       ],
     },
     {

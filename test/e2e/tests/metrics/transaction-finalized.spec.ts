@@ -9,7 +9,7 @@ import {
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
-import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
+import { sendTransaction } from '../../page-objects/flows/transaction.flow';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
@@ -120,7 +120,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await login(driver);
 
         // TODO: Update Test when Multichain Send Flow is added
-        await sendRedesignedTransactionToAddress({
+        await sendTransaction({
           driver,
           recipientAddress: RECIPIENT,
           amount: '2',

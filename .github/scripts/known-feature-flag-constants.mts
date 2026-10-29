@@ -138,6 +138,11 @@ const FILE_SOURCES: Array<{
     file: 'app/scripts/lib/transaction/caveats.ts',
     exportName: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
   },
+  {
+    key: 'REWARDS_MONEY_CONTROLLER_FLAG',
+    file: 'app/scripts/messenger-client-init/rewards-money-controller-init.ts',
+    exportName: 'REWARDS_MONEY_CONTROLLER_FLAG',
+  },
 ];
 
 /**

@@ -55,7 +55,10 @@
  */
 
 import { collectE2EMetaMetricsEventCoverage } from './collect-qa-stats-metametrics.mts';
-import { PATTERN_E2E_SPEC_FILE, walkFiles } from './collect-qa-stats-walk-files.mts';
+import {
+  PATTERN_E2E_SPEC_FILE,
+  walkFiles,
+} from './collect-qa-stats-walk-files.mts';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { execFileSync } from 'child_process';
 import { join } from 'path';
@@ -874,12 +877,16 @@ async function collectBenchmarkScenarioCount(): Promise<
 /**
  * Static scan of E2E MetaMetrics assertions (no GitHub artifacts). On failure, returns {}.
  */
-async function collectMetametricsQaStats(): Promise<Record<string, number | string>> {
+async function collectMetametricsQaStats(): Promise<
+  Record<string, number | string>
+> {
   try {
     return await collectE2EMetaMetricsEventCoverage();
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    console.warn(`[metametrics] static scan failed, skipping namespace: ${message}`);
+    console.warn(
+      `[metametrics] static scan failed, skipping namespace: ${message}`,
+    );
     return {};
   }
 }
@@ -898,9 +905,8 @@ async function collectMetametricsQaStats(): Promise<Record<string, number | stri
 async function collectFeatureFlagCoverage(): Promise<Record<string, number>> {
   console.log('[e2e_feature_flags] running static coverage analysis...');
 
-  const { generateReport } = await import(
-    '../../test/e2e/scripts/feature-flag-coverage-report'
-  );
+  const { generateReport } =
+    await import('../../test/e2e/scripts/feature-flag-coverage-report');
 
   const report = generateReport(process.cwd());
   const { summary } = report;

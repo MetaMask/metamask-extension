@@ -182,16 +182,20 @@ describe('Actions', () => {
         .stub()
         .resolves(mockSerializedSeedPhrase);
 
-      const messengerCallStub = sinon
-        .stub()
+      const messengerCallStub = sinon.stub();
+      messengerCallStub
         .withArgs(
           'LegacyBackgroundApiService:createSeedPhraseBackup',
           sinon.match.array,
         )
         .resolves();
       background.messengerCall = messengerCallStub;
+      messengerCallStub
+        .withArgs('LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase', [
+          'password',
+        ])
+        .callsFake(createNewVaultAndGetSeedPhraseStub);
       Object.assign(background, {
-        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -201,7 +205,7 @@ describe('Actions', () => {
 
       expect(createNewVaultAndGetSeedPhraseStub.callCount).toStrictEqual(1);
       expect(
-        messengerCallStub.calledOnceWithExactly(
+        messengerCallStub.calledWithExactly(
           'LegacyBackgroundApiService:createSeedPhraseBackup',
           ['password', mockSerializedSeedPhrase.data, mockUlid],
         ),
@@ -600,7 +604,7 @@ describe('Actions', () => {
         .stub()
         .resolves(mockSerializedSeedPhrase);
       setBackgroundConnection({
-        createNewVaultAndGetSeedPhrase: createNewVaultAndGetSeedPhraseStub,
+        messengerCall: createNewVaultAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -609,7 +613,10 @@ describe('Actions', () => {
       );
 
       expect(
-        createNewVaultAndGetSeedPhraseStub.calledOnceWith('password'),
+        createNewVaultAndGetSeedPhraseStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:createNewVaultAndGetSeedPhrase',
+          ['password'],
+        ),
       ).toBe(true);
       expect(seedPhrase).toStrictEqual(mockSeedPhrase);
     });
@@ -630,7 +637,7 @@ describe('Actions', () => {
         .stub()
         .resolves(mockSerializedSeedPhrase);
       setBackgroundConnection({
-        unlockAndGetSeedPhrase: unlockAndGetSeedPhraseStub,
+        messengerCall: unlockAndGetSeedPhraseStub,
         getStatePatches: sinon.stub().resolves([]),
       });
 
@@ -638,7 +645,12 @@ describe('Actions', () => {
         actions.unlockAndGetSeedPhrase('password'),
       );
 
-      expect(unlockAndGetSeedPhraseStub.calledOnceWith('password')).toBe(true);
+      expect(
+        unlockAndGetSeedPhraseStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:unlockAndGetSeedPhrase',
+          ['password'],
+        ),
+      ).toBe(true);
       expect(seedPhrase).toStrictEqual(mockSeedPhrase);
     });
   });
@@ -731,19 +743,29 @@ describe('Actions', () => {
       const getSeedPhraseStub = sinon
         .stub()
         .resolves(toSerializedSeedPhraseBuffer('test'));
+      messengerCallStub
+        .withArgs('LegacyBackgroundApiService:getSeedPhrase', [
+          undefined,
+          undefined,
+        ])
+        .callsFake(getSeedPhraseStub);
       setBackgroundConnection({
         messengerCall: messengerCallStub,
-        getSeedPhrase: getSeedPhraseStub,
       });
 
       await store.dispatch(actions.requestRevealSeedWords());
       expect(
-        messengerCallStub.calledOnceWithExactly(
+        messengerCallStub.calledWithExactly(
           'KeyringController:verifyPassword',
           [undefined],
         ),
       ).toBe(true);
-      expect(getSeedPhraseStub.calledOnceWith()).toBe(true);
+      expect(
+        getSeedPhraseStub.calledOnceWithExactly(
+          'LegacyBackgroundApiService:getSeedPhrase',
+          [undefined, undefined],
+        ),
+      ).toBe(true);
     });
 
     it('hides loading indicator and rethrows when callback in background errors', async () => {
@@ -754,9 +776,14 @@ describe('Actions', () => {
         .withArgs('KeyringController:verifyPassword', sinon.match.array)
         .resolves();
       const getSeedPhraseStub = sinon.stub().rejects(new Error('error'));
+      messengerCallStub
+        .withArgs('LegacyBackgroundApiService:getSeedPhrase', [
+          undefined,
+          undefined,
+        ])
+        .callsFake(getSeedPhraseStub);
       setBackgroundConnection({
         messengerCall: messengerCallStub,
-        getSeedPhrase: getSeedPhraseStub,
       });
 
       const expectedActions = [
@@ -5182,72 +5209,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#validateRewardsReferralCode', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls background with provided code and returns true', async () => {
-      const store = mockStore();
-
-      background = {
-        messengerCall: sinon.stub().resolves(true),
-      };
-      setBackgroundConnection(background);
-
-      const code = 'ABCDEF';
-      const result = await store.dispatch(
-        actions.validateRewardsReferralCode(code),
-      );
-
-      expect(
-        background.messengerCall.calledOnceWithExactly(
-          'RewardsController:validateReferralCode',
-          [code],
-        ),
-      ).toBe(true);
-      expect(result).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-
-    it('returns false when background reports invalid code', async () => {
-      const store = mockStore();
-
-      background = {
-        messengerCall: sinon.stub().resolves(false),
-      };
-      setBackgroundConnection(background);
-
-      const code = 'INVALID';
-      const result = await store.dispatch(
-        actions.validateRewardsReferralCode(code),
-      );
-
-      expect(
-        background.messengerCall.calledOnceWithExactly(
-          'RewardsController:validateReferralCode',
-          [code],
-        ),
-      ).toBe(true);
-      expect(result).toBe(false);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-
-    it('propagates errors from background without dispatching actions', async () => {
-      const store = mockStore();
-
-      background = {
-        messengerCall: sinon.stub().rejects(new Error('network error')),
-      };
-      setBackgroundConnection(background);
-
-      await expect(
-        store.dispatch(actions.validateRewardsReferralCode('ABCDEF')),
-      ).rejects.toThrow('network error');
-      expect(store.getActions()).toStrictEqual([]);
-    });
-  });
-
   describe('#getRewardsGeoMetadata', () => {
     afterEach(() => {
       sinon.restore();
@@ -5408,7 +5369,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls background with referral code and returns subscription id', async () => {
+    it('calls background and returns subscription id', async () => {
       const store = mockStore();
 
       background = {
@@ -5419,14 +5380,13 @@ describe('Actions', () => {
       const result = await store.dispatch(
         actions.rewardsOptIn({
           accounts: mockAccounts,
-          referralCode: 'ABCDEF',
         }),
       );
 
       expect(
         background.messengerCall.calledOnceWithExactly(
           'RewardsController:optIn',
-          [mockAccounts, 'ABCDEF'],
+          [mockAccounts],
         ),
       ).toBe(true);
       expect(result).toStrictEqual('sub_123');
@@ -5448,7 +5408,7 @@ describe('Actions', () => {
       expect(
         background.messengerCall.calledOnceWithExactly(
           'RewardsController:optIn',
-          [mockAccounts, undefined],
+          [mockAccounts],
         ),
       ).toBe(true);
       expect(result).toBeNull();
