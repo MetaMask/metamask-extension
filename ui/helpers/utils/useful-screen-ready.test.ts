@@ -55,6 +55,7 @@ describe('registerDocumentLoadMeasurement', () => {
       name: TraceName.UsefulScreenReady,
       op: TraceOperation.UiScreenPerformance,
       startTime: performance.timeOrigin,
+      allowActiveSpanFallback: true,
       tags: expect.objectContaining({
         screen: 'example',
         'example.initial_state': true,

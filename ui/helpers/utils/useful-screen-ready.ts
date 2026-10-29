@@ -56,6 +56,8 @@ export function registerDocumentLoadMeasurement({
         name: TraceName.UsefulScreenReady,
         op: TraceOperation.UiScreenPerformance,
         startTime: performance.timeOrigin,
+        // Same document load as the pageload span, so keep it in that trace.
+        allowActiveSpanFallback: true,
         tags: {
           ...initialTags,
           screen,
