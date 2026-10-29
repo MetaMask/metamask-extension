@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<SendHeading /> renders component 1`] = `
 <div>
@@ -29,18 +29,22 @@ exports[`<SendHeading /> renders component 1`] = `
             style="display: inline;"
             tabindex="0"
           >
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--padding-bottom-1 mm-box--color-inherit"
+            <span
+              class="text-inherit text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block pb-1"
             >
               &lt;0.000001 Unknown
-            </h2>
+            </span>
           </div>
         </div>
       </div>
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-12 w-12 bg-overlay-default"
       >
-        ?
+        <span
+          class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+        >
+          ?
+        </span>
       </div>
     </div>
   </div>
