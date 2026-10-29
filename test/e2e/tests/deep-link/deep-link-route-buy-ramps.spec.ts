@@ -15,11 +15,8 @@ import {
 } from './helpers';
 
 describe('Deep Link - /buy Route (unified buy)', function () {
-  // `/buy` deep links must route into the in-app unified buy flow instead of
-  // the external Portfolio redirect. With a token intent the flow pre-selects
-  // it and lands on build-quote; without one it opens token selection.
-  // Interstitial behavior (signed vs unsigned) is covered by the other
-  // deep-link specs, so one case per destination.
+  // `/buy` links must route in-app: with a token intent to build-quote,
+  // without one to token selection. Interstitial behavior is covered elsewhere.
   const buyScenarios = [
     {
       route:

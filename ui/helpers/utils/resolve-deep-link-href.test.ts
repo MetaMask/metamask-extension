@@ -21,32 +21,37 @@ describe('resolveTrustedDeepLinkHref', () => {
     },
   );
 
-  it('leaves a lookalike hostname unchanged', async () => {
-    const href =
-      'https://link.metamask.com.evil.com/home?openNetworkSelector=true';
-
-    await expect(resolveTrustedDeepLinkHref(href)).resolves.toBe(href);
-  });
-
-  it('returns internal route hrefs unchanged', async () => {
-    await expect(resolveTrustedDeepLinkHref('/buy?chainId=1')).resolves.toBe(
-      '/buy?chainId=1',
-    );
-  });
-
-  it('resolves /buy to the in-app entry route', async () => {
-    await expect(
-      resolveTrustedDeepLinkHref('https://link.metamask.io/buy?chainId=1'),
-    ).resolves.toBe('/ramps/buy-deeplink-entry?chainId=1');
-  });
-
-  it('falls back to the original href when the link cannot be parsed', async () => {
-    const href = 'https://link.metamask.io/unknown';
-    await expect(resolveTrustedDeepLinkHref(href)).resolves.toBe(href);
-  });
-
-  it('falls back to the original href for an invalid URL', async () => {
-    const href = 'not a url';
-    await expect(resolveTrustedDeepLinkHref(href)).resolves.toBe(href);
-  });
+  jestIt.each([
+    {
+      description: 'a lookalike hostname',
+      href: 'https://link.metamask.com.evil.com/home?openNetworkSelector=true',
+      expected:
+        'https://link.metamask.com.evil.com/home?openNetworkSelector=true',
+    },
+    {
+      description: 'an internal route href',
+      href: '/buy?chainId=1',
+      expected: '/buy?chainId=1',
+    },
+    {
+      description: 'a /buy deep link',
+      href: 'https://link.metamask.io/buy?chainId=1',
+      expected: '/ramps/buy-deeplink-entry?chainId=1',
+    },
+    {
+      description: 'an unparseable deep link',
+      href: 'https://link.metamask.io/unknown',
+      expected: 'https://link.metamask.io/unknown',
+    },
+    {
+      description: 'an invalid URL',
+      href: 'not a url',
+      expected: 'not a url',
+    },
+  ])(
+    'returns the expected href for $description',
+    async ({ href, expected }) => {
+      await expect(resolveTrustedDeepLinkHref(href)).resolves.toBe(expected);
+    },
+  );
 });

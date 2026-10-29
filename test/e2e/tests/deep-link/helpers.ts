@@ -273,10 +273,8 @@ export const shouldRenderCheckbox = (
 };
 
 /**
- * Mocks the ramps catalog endpoints (countries, region tokens, providers and
- * payment methods) with a populated US-TX catalog containing only DAI, so
- * the `/buy` deep link can pre-select its token deterministically and no
- * unmocked pass-through requests occur.
+ * Mocks the ramps catalog with a populated US-TX catalog containing only DAI,
+ * so `/buy` deep links can pre-select their token deterministically.
  *
  * @param server - The Mockttp server instance.
  */

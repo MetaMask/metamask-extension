@@ -10,12 +10,9 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import type { RampIntent } from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 
 /**
- * Builds a buy intent from `/buy` deep link query params (mobile
- * `parseRampIntent` parity). Supports both a CAIP-19 `assetId` param and the
- * EVM-style `address` + `chainId` pair used by Portfolio links, converted to
- * a CAIP-19 asset id; the native token is the zero address or no address.
- * `amount` and `currency` are not consumable by the extension's in-app buy
- * flow and are intentionally dropped.
+ * Builds a buy intent from `/buy` deep link params (mobile `parseRampIntent`
+ * parity). Accepts a CAIP-19 `assetId` or the EVM `address` + `chainId` pair;
+ * `amount` and `currency` are not consumable by the in-app flow.
  *
  * @param params - The deep link query params.
  * @returns The intent, or undefined when no valid asset survives.
@@ -27,13 +24,10 @@ export function parseRampIntent(
   const rawAssetId = params.get('assetId');
   const chainId = params.get('chainId');
 
-  // Deep link params are untrusted input, and the buy flow's catalog lookup
-  // fails open while the catalog is unsettled, so malformed asset ids must
-  // never reach it.
+  // Untrusted params: malformed asset ids must never reach the catalog lookup.
   const assetId =
     rawAssetId && isCaipAssetType(rawAssetId) ? rawAssetId : undefined;
   if (assetId) {
-    // A valid CAIP-19 assetId param takes precedence over the EVM params.
     return { assetId };
   }
 
@@ -41,18 +35,15 @@ export function parseRampIntent(
     return undefined;
   }
 
-  // No assetId: assume EVM `address` + `chainId` params (Portfolio link shape).
   let evmChainId: CaipChainId;
   try {
     evmChainId = toEvmCaipChainId(toHex(chainId ?? '1'));
   } catch {
-    // Invalid chainId — drop the asset intent entirely.
     return undefined;
   }
 
   if (!address || address === NATIVE_TOKEN_ADDRESS) {
-    // `slip44:.` is the native placeholder that `resolveRampControllerToken`
-    // matches against the catalog's `slip44:{coinType}` native ids.
+    // `slip44:.` is the native placeholder matched by `resolveRampControllerToken`.
     return { assetId: `${evmChainId}/slip44:.` as CaipAssetType };
   }
   if (isValidHexAddress(address)) {
@@ -61,6 +52,5 @@ export function parseRampIntent(
         `${evmChainId}/erc20:${toChecksumHexAddress(address)}` as CaipAssetType,
     };
   }
-  // Invalid address — drop the asset intent.
   return undefined;
 }

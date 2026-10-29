@@ -4,10 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
 import type {
+  Country,
   Provider,
+  RampsOrder,
   RampsToken,
   ResourceState,
   TokensResponse,
+  UserRegion,
 } from '@metamask/ramps-controller';
 import type { ChainId } from '../../../../shared/constants/network';
 import {
@@ -118,14 +121,166 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
   }
 }
 
+type BuyBlockingModal =
+  | 'RAMPS_SERVICE_DISRUPTION'
+  | 'RAMPS_ELIGIBILITY_FAILED'
+  | 'RAMPS_UNSUPPORTED';
+
+type BuyGateResult =
+  | { blocker: BuyBlockingModal }
+  | { blocker: null; location: string };
+
+async function getBuyGate({
+  isDisruption,
+  isRegionUnsupported,
+}: {
+  isDisruption: boolean;
+  isRegionUnsupported: boolean;
+}): Promise<BuyGateResult> {
+  if (isDisruption) {
+    return { blocker: 'RAMPS_SERVICE_DISRUPTION' };
+  }
+
+  const location = await resolveGeolocation();
+  if (!location || location === UNKNOWN_LOCATION) {
+    return { blocker: 'RAMPS_ELIGIBILITY_FAILED' };
+  }
+
+  if (isRegionUnsupported) {
+    return { blocker: 'RAMPS_UNSUPPORTED' };
+  }
+
+  return { blocker: null, location };
+}
+
+function getSettledCatalogData(
+  providers: ProvidersState,
+  tokens: TokensState,
+): TokensResponse | null {
+  return isCatalogSettled(providers, tokens) ? tokens.data : null;
+}
+
+async function fetchTokensForIntent({
+  tokens,
+  userRegion,
+  countries,
+  location,
+}: {
+  tokens: TokensState;
+  userRegion: UserRegion | null;
+  countries: ResourceState<Country[]>;
+  location: string;
+}): Promise<TokensResponse | null> {
+  if (tokens.data) {
+    return null;
+  }
+
+  const region =
+    userRegion?.regionCode ??
+    (countries.data?.length
+      ? (await setRampsUserRegion(location).catch(() => null))?.regionCode
+      : undefined);
+
+  return region ? getRampsTokens(region, 'buy').catch(() => null) : null;
+}
+
+async function runPortfolioMigrationOnce({
+  everConnectedToPortfolio,
+  isBackupAndSyncEnabled,
+  isRampsSyncingEnabled,
+  rampsOrders,
+  portfolioMigrationRef,
+  openPortfolio,
+}: {
+  everConnectedToPortfolio: boolean;
+  isBackupAndSyncEnabled: boolean;
+  isRampsSyncingEnabled: boolean;
+  rampsOrders: RampsOrder[];
+  portfolioMigrationRef: { current: Promise<boolean> | null };
+  openPortfolio: () => Promise<unknown>;
+}): Promise<boolean> {
+  if (
+    !everConnectedToPortfolio ||
+    !isBackupAndSyncEnabled ||
+    !isRampsSyncingEnabled ||
+    rampsOrders.length > 0
+  ) {
+    return false;
+  }
+
+  const migration =
+    portfolioMigrationRef.current ??
+    (portfolioMigrationRef.current = (async () => {
+      if (await hasAttemptedPortfolioBuyMigration()) {
+        return false;
+      }
+      await openPortfolio();
+      // Record the attempt only after Portfolio was opened so a failed open
+      // does not permanently consume the one-time migration.
+      await markPortfolioBuyMigrationAttempted();
+      return true;
+    })());
+
+  try {
+    return await migration;
+  } finally {
+    if (portfolioMigrationRef.current === migration) {
+      portfolioMigrationRef.current = null;
+    }
+  }
+}
+
+async function navigateToNativeBuy({
+  intent,
+  replace,
+  tokens,
+  fetchedTokens,
+  catalogData,
+  dispatch,
+  navigate,
+}: {
+  intent?: RampIntent;
+  replace: boolean;
+  tokens: TokensState;
+  fetchedTokens: TokensResponse | null;
+  catalogData: TokensResponse | null;
+  dispatch: ReturnType<typeof useDispatch>;
+  navigate: ReturnType<typeof useNavigate>;
+}): Promise<RampsNavigationResult> {
+  const assetId = intent?.assetId;
+  if (!assetId) {
+    navigate(RAMPS_TOKEN_SELECTION_ROUTE, { replace });
+    return 'native';
+  }
+
+  const catalogToken = findCatalogToken(fetchedTokens ?? tokens.data, assetId);
+  if (
+    (catalogData || fetchedTokens) &&
+    (!catalogToken || catalogToken.tokenSupported === false)
+  ) {
+    dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
+    return false;
+  }
+
+  const selectedAssetId =
+    (catalogToken?.assetId as CaipAssetType | undefined) ?? assetId;
+  if (!(await preselectToken(selectedAssetId))) {
+    dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
+    return false;
+  }
+
+  navigate(RAMPS_BUILD_QUOTE_ROUTE, {
+    state: { assetId: selectedAssetId },
+    replace,
+  });
+  return 'native';
+}
+
 /**
- * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
+ * Provides the `goToBuy` gate for the Ramps buy entry point.
  *
- * @returns An object with `goToBuy`, an async callback taking an optional
- * {@link RampIntent} and an optional `{ replace }` (replace the history entry
- * instead of pushing). It runs the gate and either shows a blocking modal or
- * opens the buy destination. Resolves to the destination when it proceeded and
- * `false` when a blocking modal was shown.
+ * @returns `goToBuy`, which shows a blocking modal or opens the buy
+ * destination, resolving to the destination or `false` when blocked.
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -147,147 +302,59 @@ export default function useRampsNavigation() {
   const goToBuy = useCallback(
     async (
       intent?: RampIntent,
-      // `replace` swaps the history entry, so the deep-link entry page can't
-      // be navigated back to. `portfolioRedirectUrl` overrides the generic
-      // Portfolio buy URL used when the buy leaves the extension (the rollout
-      // gate off, or the one-time Portfolio order migration), so e.g. `/buy`
-      // deep-link params survive the redirect.
+      // `replace` swaps the history entry; `portfolioRedirectUrl` preserves
+      // the `/buy` params when the buy opens Portfolio instead.
       {
         replace = false,
         portfolioRedirectUrl,
       }: { replace?: boolean; portfolioRedirectUrl?: string } = {},
     ): Promise<RampsNavigationResult> => {
-      // Opens Portfolio: the deep link's own redirect URL when present (its
-      // params survive), the generic buy URL otherwise. `getBuyURI` accepts
-      // any hex chain id; the narrower `ChainId` param is just an over-tight
-      // annotation.
       const openPortfolio = () =>
         portfolioRedirectUrl
           ? global.platform.openTab({ url: portfolioRedirectUrl })
           : openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
 
-      // Returning Portfolio users get one migration visit before native Buy.
-      // This precedes native eligibility gates because Portfolio performs the
-      // migration from its app shell, independently of native Buy support.
       if (
-        everConnectedToPortfolio &&
-        isBackupAndSyncEnabled &&
-        isRampsSyncingEnabled &&
-        rampsOrders.length === 0
+        await runPortfolioMigrationOnce({
+          everConnectedToPortfolio,
+          isBackupAndSyncEnabled,
+          isRampsSyncingEnabled,
+          rampsOrders,
+          portfolioMigrationRef,
+          openPortfolio,
+        })
       ) {
-        const migration =
-          portfolioMigrationRef.current ??
-          (portfolioMigrationRef.current = (async () => {
-            if (await hasAttemptedPortfolioBuyMigration()) {
-              return false;
-            }
-            await openPortfolio();
-            // Record the attempt only after Portfolio was opened so a failed
-            // open does not permanently consume the one-time migration.
-            await markPortfolioBuyMigrationAttempted();
-            return true;
-          })());
-        try {
-          if (await migration) {
-            return 'portfolio';
-          }
-        } finally {
-          if (portfolioMigrationRef.current === migration) {
-            portfolioMigrationRef.current = null;
-          }
-        }
+        return 'portfolio';
       }
 
-      // 1. Service-disruption kill-switch for native Buy.
-      if (isDisruption) {
-        dispatch(showModal({ name: 'RAMPS_SERVICE_DISRUPTION' }));
+      const gate = await getBuyGate({ isDisruption, isRegionUnsupported });
+      if (gate.blocker) {
+        dispatch(showModal({ name: gate.blocker }));
         return false;
       }
 
-      // 2. Geolocation unknown. Resolve on demand via the GeolocationController
-      // (it does not fetch at startup, so reading synced state alone would
-      // report UNKNOWN and fail closed). A settled `UNKNOWN`/failed lookup means
-      // we cannot verify the user's location → EligibilityFailed.
-      const location = await resolveGeolocation();
-      if (!location || location === UNKNOWN_LOCATION) {
-        dispatch(showModal({ name: 'RAMPS_ELIGIBILITY_FAILED' }));
-        return false;
-      }
-
-      // 3. Region definitively unsupported.
-      if (isRegionUnsupported) {
-        dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
-        return false;
-      }
-
-      // 4. Providers/tokens fetched but empty. A null `tokens.data` means
-      // providers/tokens haven't been fetched yet (fetched together by the
-      // native flow), so fail open and skip this check entirely until then.
-      // A fetch error also fails open (mobile parity) — an empty result only
-      // counts once the catalog has actually settled, not on a failed fetch.
-      const catalogSettled = isCatalogSettled(providers, tokens);
-      const catalogData = catalogSettled ? tokens.data : null;
+      const catalogData = getSettledCatalogData(providers, tokens);
       if (catalogData && isCatalogEmpty(providers, catalogData)) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
       }
 
-      // 5. Route into the native buy flow.
-      const assetId = intent?.assetId;
-      if (!assetId) {
-        // No specific asset → token selection page (it loads the catalog).
-        navigate(RAMPS_TOKEN_SELECTION_ROUTE, { replace });
-        return 'native';
-      }
-
-      // `tokens` isn't persisted, and `setSelectedToken` requires both a
-      // fetched catalog and a region in controller state, so skip the fetch
-      // when no region is resolvable. Seed one via `setUserRegion` only when
-      // the countries list is loaded — it normalizes the geolocation into the
-      // controller's region code, and an unknown location fails the seeding.
-      let fetchedTokens: TokensResponse | null = null;
-      if (!tokens.data) {
-        const region =
-          userRegion?.regionCode ??
-          (countries.data?.length
-            ? (await setRampsUserRegion(location).catch(() => null))?.regionCode
-            : undefined);
-        if (region) {
-          fetchedTokens = await getRampsTokens(region, 'buy').catch(() => null);
-        }
-      }
-
-      // Resolve against the catalog. Block on one that definitively lacks or
-      // does not support the token — either the rendered catalog settled
-      // (checked above), or the catalog we just fetched. Otherwise fail open
-      // (proceed with it selected, page re-resolves).
-      const catalogToken = findCatalogToken(
-        fetchedTokens ?? tokens.data,
-        assetId,
-      );
-      if (
-        (catalogData || fetchedTokens) &&
-        (!catalogToken || catalogToken.tokenSupported === false)
-      ) {
-        dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
-        return false;
-      }
-
-      // `setSelectedToken` looks the token up by exact assetId, so pre-select
-      // with the catalog's own spelling rather than the caller's checksummed
-      // one. Without a catalog to resolve against, the intent is all we have.
-      const selectedAssetId =
-        (catalogToken?.assetId as CaipAssetType | undefined) ?? assetId;
-      const didPreselect = await preselectToken(selectedAssetId);
-      if (!didPreselect) {
-        dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
-        return false;
-      }
-      navigate(RAMPS_BUILD_QUOTE_ROUTE, {
-        state: { assetId: selectedAssetId },
-        replace,
+      const fetchedTokens = await fetchTokensForIntent({
+        tokens,
+        userRegion,
+        countries,
+        location: gate.location,
       });
-      return 'native';
+
+      return navigateToNativeBuy({
+        intent,
+        replace,
+        tokens,
+        fetchedTokens,
+        catalogData,
+        dispatch,
+        navigate,
+      });
     },
     [
       isDisruption,

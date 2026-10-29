@@ -14,12 +14,9 @@ import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-
 import { parseRampIntent } from './parse-ramp-intent';
 
 /**
- * Entry page for `/buy` deep links when the unified buy feature is enabled:
- * maps the params to a buy intent and hands it to the shared `goToBuy` gate
- * (same eligibility gating and token preselection as the in-app Buy
- * buttons), keeping the deep link params on any Portfolio redirect. Falls
- * back to the wallet home page when no navigation is possible; eligibility
- * modals are displayed by the global modal manager.
+ * Entry page for `/buy` deep links: maps the params to a buy intent and hands
+ * it to the shared `goToBuy` gate, keeping the params on any Portfolio
+ * redirect.
  *
  * @returns The loading page shown while the buy flow is being resolved.
  */
@@ -30,9 +27,8 @@ export function BuyDeepLinkEntry() {
   const { goToBuy } = useRampsNavigation();
   const hasInitiatedRef = useRef(false);
 
-  // Unmount-only on purpose: `goToBuy`'s identity changes mid-flight, and
-  // cancelling on dep changes would strand the user on the spinner. Guards
-  // against yanking a user who navigated away. Reset on setup for StrictMode.
+  // Unmount-only: `goToBuy` changes identity mid-flight, and cancelling on
+  // dependency changes would strand the user on the spinner.
   const isCancelledRef = useRef(false);
   useEffect(() => {
     isCancelledRef.current = false;
@@ -50,10 +46,8 @@ export function BuyDeepLinkEntry() {
     const params = new URLSearchParams(location.search);
     const intent = parseRampIntent(params);
 
-    // Portfolio must receive the deep link params verbatim (the pre-UB2
-    // `/buy` behavior) when the buy leaves the extension. Intentionally not
-    // `openBuyCryptoInPdapp`: it drops the link's params and appends
-    // analytics params.
+    // Portfolio receives the deep link params verbatim; `openBuyCryptoInPdapp`
+    // would drop them and append analytics params.
     const portfolioRedirectUrl =
       getBuyPortfolioRedirectDestination(params).redirectTo.toString();
 
@@ -63,15 +57,11 @@ export function BuyDeepLinkEntry() {
       }
     };
 
-    // Replace this page in history: it exists only to intercept the deep link,
-    // and back-buttoning into it would re-run the interception forever.
+    // Replace this page in history: it exists only to intercept the deep link.
     goToBuy(intent, { replace: true, portfolioRedirectUrl })
       .then((result) => {
-        // `'native'`: the in-app buy flow navigated. Anything else ends this
-        // page: `false` means an eligibility modal was shown instead, and
-        // `'portfolio'` means the buy opened outside the extension (flag off,
-        // or the one-time Portfolio order migration) — without this, the
-        // spinner would spin forever.
+        // `'native'` navigated; `false` showed a modal, and `'portfolio'`
+        // opened outside the extension. Both end this page.
         if (result !== 'native') {
           goHome();
         }

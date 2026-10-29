@@ -770,11 +770,8 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('cold catalog fetches tokens for the persisted region, then pre-selects and navigates to build quote', async () => {
-    // `tokens` is not persisted: after a service-worker restart (the normal
-    // state when someone clicks a `/buy` link from email) tokens.data is null
-    // and the controller's setSelectedToken throws until tokens are fetched.
-    // goToBuy must fetch the catalog first, then pre-select with the freshly
-    // fetched catalog's spelling.
+    // Tokens aren't persisted after a service-worker restart; fetch the
+    // catalog before pre-selecting the intent.
     const assetId = 'eip155:1/erc20:0xabc';
     const catalogAssetId = 'eip155:1/erc20:0xABC';
     backgroundHandlers.getRampsTokens = () => ({
@@ -807,9 +804,7 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('resolves the cold-start fetch region through the controller when the persisted region is unavailable', async () => {
-    // With no persisted region, the fetch region must be the one the
-    // controller itself resolves (and will use for `setSelectedToken`), not
-    // an ad-hoc lowercasing of the raw geolocation string.
+    // Use the controller-resolved region, not a lowercased geolocation string.
     const assetId = 'eip155:1/erc20:0xabc';
     backgroundHandlers.getRampsTokens = () => ({
       topTokens: [],
@@ -835,9 +830,8 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('warm catalog with no persisted region → fetches nothing and does not touch the controller region', async () => {
-    // `setUserRegion` resets dependent resources on change and wipes state on
-    // failure, so a navigation hook must not call it when the catalog is
-    // already in state — even with no persisted region.
+    // setUserRegion can wipe controller state, so skip it when the catalog is
+    // already loaded.
     const assetId = 'eip155:1/erc20:0xabc';
     const { result, getModalName } = run(
       buildState({
@@ -872,11 +866,7 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('cold fetch with an unloaded countries list → skips seeding and fetches nothing', async () => {
-    // Seeding through `setUserRegion` with no countries loaded is exactly the
-    // failure path that wipes controller state, so it must not be attempted.
-    // No region is resolvable then, and preselection requires one, so the
-    // fetch is skipped too (real-controller parity: `setRampsSelectedToken`
-    // throws "Tokens not loaded").
+    // Without countries, seeding would fail; skip the fetch and preselect.
     const assetId = 'eip155:1/erc20:0xabc';
     backgroundHandlers.setRampsSelectedToken = () => {
       throw new Error(
@@ -906,10 +896,7 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('skips the fetch when seeding the region fails', async () => {
-    // E.g. the geolocation string resolves to no region in the loaded
-    // countries list: `setUserRegion` fails, the seeding is tolerated, and
-    // with no region there is nothing useful to fetch for — preselection
-    // requires one, so the flow ends at the unsupported modal.
+    // An unresolvable region ends at the unsupported modal.
     const assetId = 'eip155:1/erc20:0xabc';
     backgroundHandlers.setRampsSelectedToken = () => {
       throw new Error(
@@ -937,9 +924,7 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('cold catalog fetch that fails and a controller that cannot pre-select → shows RAMPS_UNSUPPORTED', async () => {
-    // Real-controller parity for the deep-link cold start: without a fetched
-    // catalog, setSelectedToken throws "Tokens not loaded" — the entry page
-    // must surface the unsupported modal rather than navigate.
+    // Without a fetched catalog, preselect fails closed.
     const assetId = 'eip155:1/erc20:0xabc';
     backgroundHandlers.getRampsTokens = () => {
       throw new Error('network down');
@@ -963,11 +948,8 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('cold catalog fetch is not gated by the never-fetched providers snapshot', async () => {
-    // The service-worker-restart case: the hook's closure still holds the
-    // default providers state (data: [], isLoading: false) even while the
-    // controller is fetching providers, so the freshly fetched catalog must
-    // not be judged "settled empty" by that stale snapshot — the deep link
-    // must proceed to build-quote.
+    // A stale providers snapshot must not mark a freshly fetched catalog as
+    // empty.
     const assetId = 'eip155:1/erc20:0xabc';
     backgroundHandlers.getRampsTokens = () => ({
       topTokens: [],
@@ -994,9 +976,7 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('freshly fetched catalog that lacks the token → shows RAMPS_UNSUPPORTED', async () => {
-    // A catalog we just fetched is authoritative: when it definitively does
-    // not contain the token, fail closed rather than routing to build-quote
-    // with an unresolvable intent.
+    // A freshly fetched catalog is authoritative when it lacks the token.
     const assetId = 'eip155:1/erc20:0xmissing';
     backgroundHandlers.getRampsTokens = () => ({
       topTokens: [],
@@ -1020,9 +1000,7 @@ describe('useRampsNavigation goToBuy', () => {
   });
 
   it('intent with assetId but catalog not settled → fails open to build quote', async () => {
-    // tokens.data === null and the on-demand fetch resolves without data: the
-    // catalog is still unsettled, so fail open and proceed with the token
-    // pre-selected rather than blocking.
+    // No fetched data still means the catalog is unsettled: fail open.
     const assetId = 'eip155:1/erc20:0xabc';
     const { result, getModalName } = run(
       buildState({
