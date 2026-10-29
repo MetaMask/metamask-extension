@@ -8,7 +8,8 @@ import {
   type AbBuild,
 } from './ab-pilot';
 
-export type InjectionSite = 'first' | 'middle' | 'last';
+// 'first', 'middle', 'last', or a zero-based index into home.html's scripts.
+export type InjectionSite = string;
 
 export type AbInjection = {
   file: string;
@@ -53,7 +54,7 @@ export function getInjectionSnippet(targetMs: number): string {
  * Firefox's loading of the later ones.
  *
  * @param directory - Unpacked build.
- * @param site - Which script: the first, the middle one or the last.
+ * @param site - Which script: first, middle, last or a zero-based index.
  */
 export function getHomeScript(
   directory: string,
@@ -64,11 +65,17 @@ export function getHomeScript(
   if (sources.length === 0) {
     throw new Error('No script found in home.html');
   }
-  const index = {
+  const named: Record<string, number> = {
     first: 0,
     middle: Math.floor((sources.length - 1) / 2),
     last: sources.length - 1,
-  }[site];
+  };
+  const index = /^\d+$/u.test(site) ? Number(site) : named[site];
+  if (index === undefined || index >= sources.length) {
+    throw new Error(
+      `Invalid injection site ${site} for ${sources.length} scripts`,
+    );
+  }
   return sources[index][1];
 }
 

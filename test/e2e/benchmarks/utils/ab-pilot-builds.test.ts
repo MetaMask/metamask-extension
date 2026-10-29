@@ -103,6 +103,11 @@ describe('prepareAbBuilds', () => {
     expect(getHomeScript(workDir, 'first')).toBe('scripts/a.js');
     expect(getHomeScript(workDir, 'middle')).toBe('scripts/c.js');
     expect(getHomeScript(workDir, 'last')).toBe('scripts/e.js');
+    expect(getHomeScript(workDir, '1')).toBe('scripts/b.js');
+    expect(() => getHomeScript(workDir, '5')).toThrow('Invalid injection site');
+    expect(() => getHomeScript(workDir, 'second')).toThrow(
+      'Invalid injection site',
+    );
   });
 
   it('injects into the requested script and records the site', () => {
