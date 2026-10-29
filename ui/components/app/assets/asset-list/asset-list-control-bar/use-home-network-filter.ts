@@ -41,7 +41,6 @@ export const getSelectableChainId = (network: MultichainNetworkConfiguration) =>
   network.isEvm ? convertCaipToHexChainId(network.chainId) : network.chainId;
 
 type UseHomeNetworkFilterOptions = {
-  /** Called after a selection or an add, e.g. to close the modal. */
   onClose?: () => void;
   onPendingChange?: (isPending: boolean) => void;
 };

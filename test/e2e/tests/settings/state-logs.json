@@ -369,6 +369,7 @@
     },
     "databaseUnavailable": "boolean",
     "defaultHomeActiveTabName": "null",
+    "defaultMoneyAccountId": "null",
     "depositInProgress": "boolean",
     "depositRequests": [],
     "dismissSeedBackUpReminder": "boolean",
