@@ -35,11 +35,15 @@ class ChromeDriver {
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
-      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad,DisableLoadExtensionCommandLineSwitch', // Stop chrome from calling home so much (auto-downloads of AI models; time sync); disable Crashpad to prevent orphaned crash-reporter processes; keep --load-extension working on Chrome 137+
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad,DisableLoadExtensionCommandLineSwitch,ExtensionDisableUnsupportedDeveloper', // Stop chrome from calling home so much (auto-downloads of AI models; time sync); disable Crashpad to prevent orphaned crash-reporter processes; keep --load-extension working on Chrome 137+, including after `runtime.reload()` (otherwise the extension is disabled as an "unsupported developer extension")
       '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
       '--no-sandbox',
+      // Keep rendering windows that aren't in the foreground; otherwise CSS
+      // animations (e.g. modal fade-ins) stall and elements stay invisible
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding',
     ];
 
     if (isBenchmark) {

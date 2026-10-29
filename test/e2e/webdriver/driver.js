@@ -30,6 +30,60 @@ const PAGES = {
   SIDEPANEL: 'sidepanel',
 };
 
+const MODIFIER_KEYS = new Set([Key.SHIFT, Key.CONTROL, Key.ALT, Key.META]);
+
+/**
+ * Types keys into an element using the Actions API, following WebDriver
+ * sendKeys semantics: modifier keys stay pressed until pressed again or until
+ * `Key.NULL`, and the caret is placed at the end of the existing value.
+ *
+ * @param {object} driver - The Driver instance
+ * @param {WebElement} element - Element to type into
+ * @param {Array<string|number>} keys - Keys to send
+ */
+async function sendKeysWithActions(driver, element, keys) {
+  await driver.driver.executeScript(
+    `
+    const el = arguments[0];
+    el.focus();
+    try {
+      const end = el.value?.length ?? 0;
+      el.setSelectionRange(end, end);
+    } catch (e) {
+      // Not a text field, or the input type doesn't support selection
+    }
+    `,
+    element,
+  );
+
+  const actions = driver.driver.actions();
+  const heldModifiers = [];
+  const releaseModifiers = () => {
+    while (heldModifiers.length) {
+      actions.keyUp(heldModifiers.pop());
+    }
+  };
+
+  for (const symbol of keys.join('')) {
+    if (symbol === Key.NULL) {
+      releaseModifiers();
+    } else if (MODIFIER_KEYS.has(symbol)) {
+      const index = heldModifiers.indexOf(symbol);
+      if (index === -1) {
+        heldModifiers.push(symbol);
+        actions.keyDown(symbol);
+      } else {
+        heldModifiers.splice(index, 1);
+        actions.keyUp(symbol);
+      }
+    } else {
+      actions.keyDown(symbol).keyUp(symbol);
+    }
+  }
+  releaseModifiers();
+  await actions.perform();
+}
+
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -151,32 +205,10 @@ function wrapElementWithAPI(element, driver) {
       return await element.originalSendKeys(...keys);
     } catch (e) {
       if (e.name === 'JavascriptError') {
-        // Chrome 140+ has issues with native WebDriver sendKeys, fall back to JavaScript
-        // Join all keys into a single string value
-        const value = keys.join('');
-        await driver.driver.executeScript(
-          `
-          const el = arguments[0];
-          const value = arguments[1];
-          
-          // Get the native value setter from the appropriate prototype
-          const isTextArea = el.tagName.toLowerCase() === 'textarea';
-          const prototype = isTextArea
-            ? Object.getPrototypeOf(document.createElement('textarea'))
-            : Object.getPrototypeOf(document.createElement('input'));
-          const nativeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
-          
-          el.focus();
-          // Append to existing value (sendKeys appends, unlike fill which replaces)
-          const currentValue = el.value || '';
-          nativeValueSetter.call(el, currentValue + value);
-          
-          // Dispatch input event to notify React of the change
-          el.dispatchEvent(new Event('input', { bubbles: true }));
-          `,
-          element,
-          value,
-        );
+        // ChromeDriver 140+ atoms rely on `arguments.callee.caller`, which SES
+        // lockdown removes, so element sendKeys fails on LavaMoat pages. The
+        // Actions API dispatches real key events without those atoms.
+        await sendKeysWithActions(driver, element, keys);
       } else {
         throw e;
       }
@@ -1061,6 +1093,24 @@ class Driver {
   }
 
   /**
+   * Moves the pointer off any toast and waits for toasts to auto-dismiss.
+   * react-hot-toast pauses its dismiss timer while hovered, so a toast that
+   * appears under the pointer would otherwise keep intercepting clicks.
+   * Best-effort: persistent toasts are left in place.
+   */
+  async #waitForToastsToDismiss() {
+    try {
+      await this.driver.actions().move({ x: 0, y: 0 }).perform();
+      await this.driver.wait(
+        until.elementIsNotPresent(By.css('.toast-container [role="status"]')),
+        5000,
+      );
+    } catch {
+      // The toast may be persistent; fall through to the regular retry.
+    }
+  }
+
+  /**
    * Function that aims to simulate a click action on a specified web element within a web page
    *
    * @param {string | object} rawLocator - Element locator
@@ -1095,6 +1145,7 @@ class Driver {
           // scrolling it to the viewport center usually moves it clear of the
           // obstruction so the next attempt can succeed.
           if (error.name === 'ElementClickInterceptedError') {
+            await this.#waitForToastsToDismiss();
             try {
               const el = await this.findElement(rawLocator, timeout);
               await this.scrollToElement(el);
@@ -1498,30 +1549,21 @@ class Driver {
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
-    // Use fill method which uses JavaScript - more reliable with Chrome 140+
-    await this.fill(rawLocator, contentToPaste);
+    // Click to focus the field
+    await this.clickElement(rawLocator);
+    await this.driver.executeScript(
+      'navigator.clipboard.writeText(arguments[0])',
+      contentToPaste,
+    );
+    await this.pasteFromClipboardIntoField(rawLocator);
   }
 
   async pasteFromClipboardIntoField(rawLocator) {
-    // Read from clipboard and use fill method - more reliable with Chrome 140+
+    // A real paste keystroke is required: some fields (e.g. the SRP import
+    // textarea) only react to the `paste` event, which `fill()` doesn't fire.
+    await this.fill(rawLocator, '');
     const element = await this.findElement(rawLocator);
-    await this.driver.executeScript(
-      `
-      const el = arguments[0];
-      navigator.clipboard.readText().then(text => {
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-          window.HTMLInputElement.prototype,
-          'value'
-        ).set;
-        el.focus();
-        nativeInputValueSetter.call(el, text);
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-      });
-      `,
-      element,
-    );
-    // Wait a bit for the async clipboard read to complete
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await element.sendKeys(Key.chord(this.Key.MODIFIER, 'v'));
   }
 
   // Navigation
