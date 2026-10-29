@@ -77,6 +77,24 @@ describe('NetworkPillSelector', () => {
     );
   });
 
+  it('shows no balance while the balances are not available', () => {
+    jest.mocked(useNetworkPillBalances).mockReturnValue({
+      balanceByChainId: { 'eip155:1': undefined, 'eip155:10': undefined },
+      total: undefined,
+      currency: undefined,
+    });
+
+    renderSelector();
+
+    expect(screen.getByTestId('network-pill-all-default')).toHaveTextContent(
+      /^All default networks$/u,
+    );
+    expect(screen.getByTestId('network-pill-0x1')).toHaveTextContent(
+      /^Ethereum$/u,
+    );
+    expect(screen.queryByText('$0.00')).not.toBeInTheDocument();
+  });
+
   it('selects a network or all default networks using the dropdown handlers', () => {
     renderSelector();
 
@@ -87,7 +105,7 @@ describe('NetworkPillSelector', () => {
     expect(mockHandleSelectAll).toHaveBeenCalledTimes(1);
   });
 
-  it('marks the selected network and disables unsupported or pending pills', () => {
+  it('marks the selected network and disables unsupported pills', () => {
     mockFilter({
       isAllDefaultSelected: false,
       isNetworkSelected: (network: MultichainNetworkConfiguration) =>

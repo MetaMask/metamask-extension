@@ -537,6 +537,7 @@ export const CoinOverview = ({
             isBridgeChain,
             classPrefix,
           }}
+          showAsPills={isFullScreenDesign}
         />
       }
       className={className}

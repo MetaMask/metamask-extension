@@ -2,7 +2,13 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { parseCaipChainId } from '@metamask/utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { selectUnifiedBalanceGetterBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  selectAccountGroupBalanceForEmptyState,
+  selectAccountGroupBalanceIsLoadedForEmptyState,
+  selectIsAssetsLoadingForSelectedAccountGroup,
+  selectUnifiedBalanceGetterBySelectedAccountGroup,
+} from '../../../../selectors/assets';
+import { useAccountGroupBalanceDisplay } from '../account-group-balance-change/useAccountGroupBalanceDisplay';
 import { getSelectableChainId } from '../asset-list/asset-list-control-bar/use-home-network-filter';
 
 type EnabledNetworkMap = Record<string, Record<string, boolean>>;
@@ -36,21 +42,34 @@ export const useNetworkPillBalances = (
   const getBalance = useSelector(
     selectUnifiedBalanceGetterBySelectedAccountGroup,
   );
+  const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+  const balanceIsLoaded = useSelector(
+    selectAccountGroupBalanceIsLoadedForEmptyState,
+  );
+  const isAssetsLoading = useSelector(
+    selectIsAssetsLoadingForSelectedAccountGroup,
+  );
+  const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay('1d');
+
+  // Same check the wallet overview uses to show its loading state.
+  const isLoading =
+    !hasBalance && (balanceIsLoading || !balanceIsLoaded || isAssetsLoading);
 
   return useMemo(() => {
-    const balanceByChainId: Record<string, number> = {};
+    const balanceByChainId: Record<string, number | undefined> = {};
     networks.forEach((network) => {
-      balanceByChainId[network.chainId] =
-        getBalance(toEnabledNetworkMap([network]))
-          ?.totalBalanceInUserCurrency ?? 0;
+      balanceByChainId[network.chainId] = isLoading
+        ? undefined
+        : getBalance(toEnabledNetworkMap([network]))
+            ?.totalBalanceInUserCurrency;
     });
 
     const total = getBalance(toEnabledNetworkMap(networks));
 
     return {
       balanceByChainId,
-      total: total?.totalBalanceInUserCurrency ?? 0,
+      total: isLoading ? undefined : total?.totalBalanceInUserCurrency,
       currency: total?.userCurrency,
     };
-  }, [getBalance, networks]);
+  }, [getBalance, isLoading, networks]);
 };

@@ -65,6 +65,7 @@ const TokenListContainer = React.memo(
     return isFullScreenDesign ? (
       <>
         <NetworkPillSelector />
+        <div className="my-1 border-b border-1 border-border-muted" />
         <TokenTable onTokenClick={onTokenClick} safeChains={safeChains} />
       </>
     ) : (

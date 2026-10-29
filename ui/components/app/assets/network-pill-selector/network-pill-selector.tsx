@@ -3,9 +3,8 @@ import classnames from 'clsx';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  ButtonBaseSize,
-  ButtonFilter,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   SensitiveText,
@@ -27,9 +26,9 @@ import { useNetworkPillBalances } from './use-network-pill-balances';
 
 type NetworkPillProps = {
   name: string;
-  balance: string;
+  balance?: string;
   isSelected: boolean;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   privacyMode: boolean;
   icon: React.ReactNode;
   onClick: () => void;
@@ -41,44 +40,45 @@ const NetworkPill = ({
   name,
   balance,
   isSelected,
-  isDisabled,
+  isDisabled = false,
   privacyMode,
   icon,
   onClick,
   title,
   testId,
 }: NetworkPillProps) => (
-  <ButtonFilter
-    size={ButtonBaseSize.Lg}
-    // ButtonBase is full width by default.
+  <button
+    type="button"
     className={classnames(
-      'w-auto shrink-0',
-      !isSelected && !isDisabled && 'hover:bg-muted-hover',
+      'flex h-10 shrink-0 items-center gap-2 rounded-full border-0 px-4',
+      isSelected
+        ? 'bg-icon-default text-background-default'
+        : 'bg-muted text-default hover:bg-muted-hover',
+      isDisabled ? 'cursor-default opacity-50' : 'cursor-pointer',
     )}
-    isActive={isSelected}
-    isDisabled={isDisabled}
     aria-pressed={isSelected}
-    startAccessory={icon}
+    disabled={isDisabled}
     onClick={onClick}
     title={title}
     data-testid={testId}
   >
-    <span className="inline-flex items-center gap-2">
-      <Text
-        variant={TextVariant.BodyMd}
-        color={isSelected ? TextColor.Inherit : TextColor.TextAlternative}
-      >
-        {name}
-      </Text>
+    {icon}
+    <Text
+      variant={TextVariant.BodySm}
+      color={isSelected ? TextColor.Inherit : TextColor.TextAlternative}
+    >
+      {name}
+    </Text>
+    {balance !== undefined && (
       <SensitiveText
-        variant={TextVariant.BodyMd}
+        variant={TextVariant.BodySm}
         color={TextColor.Inherit}
         isHidden={privacyMode}
       >
         {balance}
       </SensitiveText>
-    </span>
-  </ButtonFilter>
+    )}
+  </button>
 );
 
 /**
@@ -100,7 +100,6 @@ export const NetworkPillSelector = () => {
     isAllDefaultSelected,
     isNetworkDisabled,
     isNetworkSelected,
-    isPending,
   } = useHomeNetworkFilter();
   const { balanceByChainId, total, currency } =
     useNetworkPillBalances(defaultNetworks);
@@ -133,7 +132,8 @@ export const NetworkPillSelector = () => {
   }, [defaultNetworks.length]);
 
   const format = useMemo(
-    () => (amount: number) => formatCurrency(amount, currency),
+    () => (amount?: number) =>
+      amount === undefined ? undefined : formatCurrency(amount, currency),
     [formatCurrency, currency],
   );
 
@@ -155,9 +155,14 @@ export const NetworkPillSelector = () => {
           }
           balance={format(total)}
           isSelected={isAllDefaultSelected}
-          isDisabled={isPending}
           privacyMode={privacyMode}
-          icon={<Icon name={IconName.Global} size={IconSize.Md} />}
+          icon={
+            <Icon
+              name={IconName.Global}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
+          }
           onClick={handleSelectAllDefaultNetworks}
           testId="network-pill-all-default"
         />
@@ -167,15 +172,16 @@ export const NetworkPillSelector = () => {
             <NetworkPill
               key={network.chainId}
               name={network.name}
-              balance={format(balanceByChainId[network.chainId] ?? 0)}
+              balance={format(balanceByChainId[network.chainId])}
               isSelected={isNetworkSelected(network)}
-              isDisabled={isPending || disabled}
+              isDisabled={disabled}
               privacyMode={privacyMode}
               icon={
                 <AvatarNetwork
                   name={network.name}
                   src={getNetworkIcon(network)}
                   size={AvatarNetworkSize.Sm}
+                  className="rounded-full"
                 />
               }
               onClick={() => handleSelectNetwork(network.chainId)}
