@@ -453,7 +453,6 @@
   "ui/components/app/wallet-overview/eth-overview.stories.js",
   "ui/components/app/wallet-overview/eth-overview.test.js",
   "ui/components/app/wallet-overview/index.js",
-  "ui/components/app/wallet-overview/wallet-overview.js",
   "ui/components/component-library/form-text-field/deprecated/form-text-field.js",
   "ui/components/component-library/form-text-field/deprecated/index.js",
   "ui/components/multichain/account-list-item-menu/account-list-item-menu.js",

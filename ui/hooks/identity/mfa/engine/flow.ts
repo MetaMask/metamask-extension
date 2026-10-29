@@ -485,7 +485,12 @@ export const createMfaFlow = ({
     }
     const code = getFlowErrorCode(error);
     const handling = getErrorHandling(code);
-    if (!presented && handling !== 'refresh' && handling !== 'failure') {
+    if (
+      !presented &&
+      handling !== 'refresh' &&
+      handling !== 'failure' &&
+      handling !== 'support'
+    ) {
       // No screen yet to show the error on: the failure screen offers to try
       // again, so the flow cannot hang on `idle`.
       fail(code, true);
@@ -511,6 +516,11 @@ export const createMfaFlow = ({
         return undefined;
       case 'failure':
         fail(code, false, error);
+        return undefined;
+      case 'support':
+        // Shown even before any other screen: the user needs a way to
+        // contact support.
+        show({ name: 'failure', code, canRetry: false });
         return undefined;
       default:
         setState({ busy: false, error: code });

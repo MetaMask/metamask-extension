@@ -9,9 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import featureFlagsModule from '../../shared/lib/feature-flags';
-
-const { FeatureFlagNames } = featureFlagsModule;
+import { FeatureFlagNames } from '../../shared/lib/feature-flags';
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
@@ -139,6 +137,11 @@ const FILE_SOURCES: Array<{
     key: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
     file: 'app/scripts/lib/transaction/caveats.ts',
     exportName: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+  },
+  {
+    key: 'REWARDS_MONEY_CONTROLLER_FLAG',
+    file: 'app/scripts/messenger-client-init/rewards-money-controller-init.ts',
+    exportName: 'REWARDS_MONEY_CONTROLLER_FLAG',
   },
 ];
 
