@@ -5,6 +5,7 @@ import type { MfaMethod } from '../../hooks/identity/mfa/engine/types';
 const METHOD_KEYS: Record<MfaMethod, string> = {
   email_otp: 'mfaMethodEmail',
   passkey: 'mfaMethodPasskey',
+  totp: 'mfaMethodTotp',
 };
 
 const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
@@ -15,16 +16,41 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   invalid_attestation: 'mfaErrorInvalidPasskey',
   passkey_ceremony_cancelled: 'mfaErrorPasskeyCancelled',
   credential_already_enrolled: 'mfaErrorEmailTaken',
+  email_claimed: 'mfaErrorEmailTaken',
   otp_resend_cooldown: 'mfaErrorCooldown',
   rate_limited: 'mfaErrorCooldown',
   max_passkeys_reached: 'mfaErrorLimitReached',
   max_identifiers_reached: 'mfaErrorLimitReached',
-  multi_primary_srp: 'mfaErrorMultiPrimarySrp',
   authentication_required: 'mfaErrorSignedOut',
   passkey_unsupported: 'mfaErrorUnsupported',
   flow_in_progress: 'mfaErrorFlowInProgress',
+  totp_already_enrolled: 'mfaErrorTotpTaken',
+};
+
+const ERROR_LINKS: Partial<Record<MfaFlowErrorCode, string>> = {
+  email_claimed: 'https://support.metamask.io/configure/wallet/email-in-use',
+};
+
+/**
+ * Wording for authenticator app codes, which the app shows rather than an
+ * email: a new code is in the app, not requested.
+ */
+const TOTP_ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
+  invalid_code: 'mfaErrorInvalidTotpCode',
+  flow_expired: 'mfaErrorTotpExpired',
+  invalid_flow: 'mfaErrorTotpExpired',
+  too_many_attempts: 'mfaErrorTotpTooManyAttempts',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
+
+/**
+ * The help article for an error, if it has one.
+ *
+ * @param code - The error code.
+ * @returns The article URL.
+ */
+export const getErrorLink = (code: MfaFlowErrorCode): string | undefined =>
+  ERROR_LINKS[code];
 
 export const getMethodLabelKey = (method: MfaMethod): string =>
   METHOD_KEYS[method];
@@ -33,11 +59,46 @@ export const getMethodLabelKey = (method: MfaMethod): string =>
  * The message key for errors that have their own, rather than the generic one.
  *
  * @param code - The error's code.
+ * @param method - The method the error is about, when its wording differs.
  * @returns The key, or `undefined` for the generic case.
  */
 export const getSpecificErrorMessageKey = (
   code: MfaFlowErrorCode,
-): string | undefined => ERROR_KEYS[code];
+  method?: MfaMethod,
+): string | undefined =>
+  (method === 'totp' ? TOTP_ERROR_KEYS[code] : undefined) ?? ERROR_KEYS[code];
 
-export const getErrorMessageKey = (code: MfaFlowErrorCode): string =>
-  getSpecificErrorMessageKey(code) ?? 'mfaErrorGeneric';
+/**
+ * Errors whose failure screen has its own title and description, rather than
+ * "Something went wrong" and the error's message.
+ */
+const FAILURE_KEYS: Partial<
+  Record<MfaFlowErrorCode, { title: string; description: string }>
+> = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- the server's code
+  multi_primary_srp: {
+    title: 'mfaFailureSupportTitle',
+    description: 'mfaFailureSupportDescription',
+  },
+};
+
+/**
+ * The failure screen's message keys for an error.
+ *
+ * @param code - The error's code.
+ * @returns The title key, and a description key when there is more to say.
+ */
+export const getFailureCopyKeys = (
+  code: MfaFlowErrorCode,
+): { title: string; description?: string } =>
+  FAILURE_KEYS[code] ?? {
+    title: 'mfaFailureTitle',
+    // The title already says something went wrong; only a specific reason
+    // adds to it.
+    description: getSpecificErrorMessageKey(code),
+  };
+
+export const getErrorMessageKey = (
+  code: MfaFlowErrorCode,
+  method?: MfaMethod,
+): string => getSpecificErrorMessageKey(code, method) ?? 'mfaErrorGeneric';

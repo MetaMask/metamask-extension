@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 233,
+      "currentMigrationVersion": 234,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -72,6 +72,7 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
@@ -82,7 +83,6 @@
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
-      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -131,8 +131,8 @@
     },
     "ConfigRegistryController": {
       "configs": {
-        "networks": {},
-        "eventsConfig": null
+        "eventsConfig": null,
+        "networks": {}
       },
       "etag": null,
       "eventsConfigEtag": null,
@@ -172,6 +172,7 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
       "moneyAccounts": {}
     },
     "MoneyAccountUpgradeController": {
@@ -181,12 +182,6 @@
       "accountsAssets": {},
       "allIgnoredAssets": {},
       "assetsMetadata": {}
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": {}
-    },
-    "MultichainBalancesController": {
-      "balances": {}
     },
     "MultichainNetworkController": {
       "isEvmSelected": true,
@@ -588,6 +583,7 @@
       "completedOnboarding": false,
       "firstTimeFlowType": null,
       "hasSeenOnboardingCompletionPage": false,
+      "onboardingJourneyEnded": false,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -2223,12 +2219,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
-    "TokenRatesController": {
-      "marketData": {}
-    },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
@@ -2254,6 +2244,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 233
+    "version": 234
   }
 }

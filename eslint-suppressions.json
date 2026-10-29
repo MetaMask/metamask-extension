@@ -1,4 +1,249 @@
 {
+  ".devcontainer/launch-firefox.ts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    }
+  },
+  ".github/scripts/benchmark-fp-rate.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 10
+    }
+  },
+  ".github/scripts/check-feature-flag-registry.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 5
+    },
+    "@typescript-eslint/no-non-null-assertion": {
+      "count": 1
+    },
+    "no-plusplus": {
+      "count": 12
+    },
+    "no-useless-concat": {
+      "count": 2
+    },
+    "require-unicode-regexp": {
+      "count": 21
+    }
+  },
+  ".github/scripts/check-template-and-add-labels.mts": {
+    "array-callback-return": {
+      "count": 1
+    },
+    "no-plusplus": {
+      "count": 1
+    },
+    "require-unicode-regexp": {
+      "count": 9
+    }
+  },
+  ".github/scripts/classify-failures.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 4
+    },
+    "@typescript-eslint/no-non-null-assertion": {
+      "count": 2
+    },
+    "@typescript-eslint/no-shadow": {
+      "count": 1
+    },
+    "@typescript-eslint/no-use-before-define": {
+      "count": 1
+    },
+    "no-eq-null": {
+      "count": 1
+    },
+    "no-nested-ternary": {
+      "count": 4
+    },
+    "require-unicode-regexp": {
+      "count": 13
+    }
+  },
+  ".github/scripts/collect-qa-stats-metametrics.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 2
+    }
+  },
+  ".github/scripts/collect-qa-stats.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 22
+    },
+    "no-plusplus": {
+      "count": 3
+    }
+  },
+  ".github/scripts/create-e2e-test-report.mts": {
+    "@typescript-eslint/no-shadow": {
+      "count": 1
+    },
+    "@typescript-eslint/restrict-template-expressions": {
+      "count": 1
+    },
+    "no-implicit-coercion": {
+      "count": 7
+    },
+    "require-unicode-regexp": {
+      "count": 1
+    }
+  },
+  ".github/scripts/git-diff-default-branch.mts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 1
+    }
+  },
+  ".github/scripts/identify-codeowners.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 5
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 4
+    },
+    "@typescript-eslint/no-shadow": {
+      "count": 1
+    },
+    "no-negated-condition": {
+      "count": 2
+    },
+    "require-unicode-regexp": {
+      "count": 3
+    }
+  },
+  ".github/scripts/known-feature-flag-constants.mts": {
+    "require-unicode-regexp": {
+      "count": 2
+    }
+  },
+  ".github/scripts/merge-test-results.mts": {
+    "no-plusplus": {
+      "count": 1
+    }
+  },
+  ".github/scripts/post-nightly-builds.mts": {
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-shadow": {
+      "count": 2
+    }
+  },
+  ".github/scripts/resolve-e2e-report-run-ids.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 4
+    }
+  },
+  ".github/scripts/shared/audit-utils.mts": {
+    "no-control-regex": {
+      "count": 3
+    },
+    "require-unicode-regexp": {
+      "count": 6
+    }
+  },
+  ".github/scripts/shared/get-pr-diff.mts": {
+    "require-unicode-regexp": {
+      "count": 3
+    }
+  },
+  ".github/scripts/shared/github-options.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 1
+    }
+  },
+  ".github/scripts/shared/json-tools.mts": {
+    "no-irregular-whitespace": {
+      "count": 1
+    },
+    "require-unicode-regexp": {
+      "count": 1
+    }
+  },
+  ".github/scripts/shared/pull-request-files.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 2
+    }
+  },
+  ".github/scripts/shared/resolve-build-run.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 3
+    }
+  },
+  ".github/scripts/shared/resolve-build-run.test.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 3
+    },
+    "@typescript-eslint/no-non-null-assertion": {
+      "count": 2
+    },
+    "no-plusplus": {
+      "count": 2
+    }
+  },
+  ".github/scripts/shared/retry-budget.mts": {
+    "no-nested-ternary": {
+      "count": 1
+    }
+  },
+  ".github/scripts/shared/utils.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 1
+    },
+    "@typescript-eslint/no-explicit-any": {
+      "count": 2
+    },
+    "@typescript-eslint/no-shadow": {
+      "count": 1
+    },
+    "no-param-reassign": {
+      "count": 1
+    },
+    "require-unicode-regexp": {
+      "count": 3
+    }
+  },
+  ".github/scripts/slack-rc-notification.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 2
+    },
+    "@typescript-eslint/no-non-null-assertion": {
+      "count": 1
+    },
+    "require-unicode-regexp": {
+      "count": 2
+    }
+  },
+  ".github/scripts/split-tests-by-timings.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 1
+    }
+  },
+  ".github/scripts/yarn-audit-and-triage.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 5
+    },
+    "no-negated-condition": {
+      "count": 1
+    },
+    "require-unicode-regexp": {
+      "count": 3
+    }
+  },
+  ".github/scripts/yarn-audit-diff.mts": {
+    "@typescript-eslint/restrict-template-expressions": {
+      "count": 3
+    },
+    "require-unicode-regexp": {
+      "count": 3
+    }
+  },
+  ".github/scripts/yarn-audit-local.mts": {
+    "@typescript-eslint/restrict-template-expressions": {
+      "count": 1
+    },
+    "no-negated-condition": {
+      "count": 1
+    }
+  },
   "app/scripts/controllers/qr-sync/qr-sync-controller.ts": {
     "promise/no-nesting": {
       "count": 1
@@ -9,8 +254,36 @@
       "count": 3
     }
   },
+  "development/lint-baseline.mts": {
+    "@typescript-eslint/restrict-template-expressions": {
+      "count": 1
+    }
+  },
+  "development/optimize-media.mts": {
+    "@typescript-eslint/no-shadow": {
+      "count": 1
+    },
+    "no-param-reassign": {
+      "count": 2
+    }
+  },
+  "development/validate-svg.mts": {
+    "require-unicode-regexp": {
+      "count": 1
+    }
+  },
   "development/webpack/utils/loaders/swcLoader.ts": {
     "promise/no-callback-in-promise": {
+      "count": 1
+    }
+  },
+  "test/e2e/run-all-pw.mts": {
+    "@typescript-eslint/naming-convention": {
+      "count": 1
+    }
+  },
+  "test/e2e/run-all.mts": {
+    "@typescript-eslint/naming-convention": {
       "count": 1
     }
   },
@@ -623,11 +896,6 @@
       "count": 1
     }
   },
-  "ui/pages/onboarding-flow/onboarding-flow.tsx": {
-    "react-hooks/immutability": {
-      "count": 1
-    }
-  },
   "ui/pages/onboarding-flow/welcome/welcome.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 3
@@ -640,16 +908,6 @@
   },
   "ui/pages/ramps/build-quote/hooks/useBuildQuoteAmount.ts": {
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/ramps/build-quote/hooks/useRampsBuildQuote.ts": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 2
-    }
-  },
-  "ui/pages/ramps/provider-selection/provider-selection.tsx": {
-    "react-hooks/preserve-manual-memoization": {
       "count": 1
     }
   },

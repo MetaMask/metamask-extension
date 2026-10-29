@@ -132,11 +132,12 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
+      "moneyAccounts": "object"
+    },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {},
-    "MultichainAssetsRatesController": {},
-    "MultichainBalancesController": {},
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],
@@ -196,6 +197,7 @@
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
       "hasSeenOnboardingCompletionPage": true,
+      "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -307,7 +309,7 @@
     },
     "RewardsController": {
       "rewardsAccounts": "object",
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": "object",
       "rewardsPointsEstimateHistory": "object",
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
@@ -338,8 +340,6 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenBalancesController": {},
-    "TokenRatesController": {},
     "TokensController": {},
     "TransactionController": {
       "lastFetchedBlockNumbers": "object",
@@ -361,6 +361,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 233
+    "version": 234
   }
 }

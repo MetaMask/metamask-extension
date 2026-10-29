@@ -81,8 +81,6 @@ jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../store/controller-actions/transaction-controller');
@@ -291,32 +289,39 @@ describe('AssetPage', () => {
         },
       },
       tokenList: {},
-      tokenBalances: {
-        [selectedAccountAddress]: {
-          [CHAIN_IDS.MAINNET]: {},
-        },
-      },
-      marketData: {},
-      allTokens: {},
-      accountsByChainId: {
-        '0x1': {
-          [selectedAccountAddress]: {
-            address: selectedAccountAddress,
-            balance: '0x00',
-          },
-        },
-      },
-      currentCurrency: 'usd',
+      selectedCurrency: 'usd',
       accounts: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-      currencyRates: {
-        TEST: {
-          conversionRate: 123,
-          ticker: 'ETH',
+      // Native asset page uses symbol TEST; token marketData uses network nativeCurrency ETH.
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'TEST',
         },
-        ETH: {
-          conversionRate: 123,
-          ticker: 'ETH',
+        'eip155:10/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+      },
+      assetsPrice: {
+        'eip155:1/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 123,
+          usdPrice: 123,
+          lastUpdated: 0,
+        },
+        'eip155:10/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 123,
+          usdPrice: 123,
+          lastUpdated: 0,
+        },
+      },
+      assetsBalance: {
+        [selectedAccountAddress]: {
+          'eip155:1/slip44:60': { amount: '0' },
         },
       },
       useCurrencyRateCheck: true,
@@ -402,8 +407,12 @@ describe('AssetPage', () => {
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
-      getTokenSymbol: jest.fn(),
-      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
+      messengerCall: jest.fn((actionType: string) => {
+        if (actionType === 'AuthenticationController:getBearerToken') {
+          return Promise.resolve('mock-bearer-token');
+        }
+        return Promise.resolve(undefined);
+      }),
     } as never);
   });
 
@@ -807,6 +816,7 @@ describe('AssetPage', () => {
 
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
+    const assetId = `eip155:1/erc20:${address}`;
 
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
@@ -814,11 +824,21 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          marketData: {
-            [CHAIN_IDS.MAINNET]: {
-              [address]: {
-                price: 123,
-              },
+          assetsInfo: {
+            ...mockStore.metamask.assetsInfo,
+            [assetId]: {
+              type: 'erc20',
+              decimals: 18,
+              symbol: 'TEST',
+            },
+          },
+          assetsPrice: {
+            ...mockStore.metamask.assetsPrice,
+            [assetId]: {
+              assetPriceType: 'fungible',
+              // price in native * native rate
+              price: 123 * 123,
+              lastUpdated: 0,
             },
           },
         },
@@ -834,7 +854,9 @@ describe('AssetPage', () => {
 
   it('should render an ERC20 token with prices', async () => {
     const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+    const assetId = `eip155:1/erc20:${address}`;
     const marketCap = 456;
+    const ethRate = 123;
 
     // Mock price history (v3 CAIP path; address must match checksummed segment from useHistoricalPrices)
     nock('https://price.api.cx.metamask.io')
@@ -850,13 +872,21 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          marketData: {
-            [CHAIN_IDS.MAINNET]: {
-              [address]: {
-                price: 123,
-                marketCap,
-                currency: 'ETH',
-              },
+          assetsInfo: {
+            ...mockStore.metamask.assetsInfo,
+            [assetId]: {
+              type: 'erc20',
+              decimals: 18,
+              symbol: 'TEST',
+            },
+          },
+          assetsPrice: {
+            ...mockStore.metamask.assetsPrice,
+            [assetId]: {
+              assetPriceType: 'fungible',
+              price: 123 * ethRate,
+              marketCap: marketCap * ethRate,
+              lastUpdated: 0,
             },
           },
         },
@@ -1132,6 +1162,14 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
+          assetsInfo: {
+            ...mockStore.metamask.assetsInfo,
+            [stellarXlmAssetId]: {
+              type: 'native',
+              decimals: 7,
+              symbol: 'XLM',
+            },
+          },
           assetsBalance,
           accountTree: {
             wallets: {
@@ -1221,7 +1259,6 @@ describe('AssetPage', () => {
               metadata: {
                 minimumReserveBalance: '25000000',
                 spendableBalance: '75000000',
-                decimal: 7,
               },
             },
           },

@@ -295,9 +295,15 @@ export default function reduceApp(
         externalServicesOnboardingToggleState: true,
       };
     case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF:
+      // Backup and sync requires basic functionality. Apply the cascade here
+      // rather than in BackupAndSyncToggle: that toggle mounts only on the
+      // Backup and sync category, so opting out from Privacy would leave the
+      // intent flag on and completion would keep account, contact, and ramps
+      // sync enabled.
       return {
         ...appState,
         externalServicesOnboardingToggleState: false,
+        backupAndSyncOnboardingToggleState: false,
       };
 
     case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON:

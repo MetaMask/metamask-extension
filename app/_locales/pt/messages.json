@@ -1738,6 +1738,9 @@
     "message": "Aprovada em $1 para $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Boas-vindas à Arc! Para facilitar e verificar seu uso da rede Arc, podemos ter que compartilhar informações com a equipe da Arc."
+  },
   "arcUsageNoticeTitle": {
     "message": "Aviso"
   },
@@ -1783,9 +1786,6 @@
   },
   "assets": {
     "message": "Ativos"
-  },
-  "assetsDescription": {
-    "message": "Detecte automaticamente tokens em sua carteira, exiba NFTs e receba atualizações de saldo de contas em lote"
   },
   "asterdexReferralSubtitle": {
     "message": "Receba 4% de reembolso em negociações com um código de indicação da MetaMask.",
@@ -1844,6 +1844,9 @@
   },
   "backToSafety": {
     "message": "Voltar para a segurança"
+  },
+  "backToWallet": {
+    "message": "Voltar à carteira"
   },
   "backUpIncomplete": {
     "message": "Backup incompleto"
@@ -1916,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "A MetaMask oferece recursos básicos como detalhes de token e configurações de gás por meio de serviços de internet. Quando você usa serviços de internet, seu endereço IP é compartilhado, neste caso com a MetaMask. É exatamente igual a quando você visita qualquer site. A MetaMask usa esses dados temporariamente e nunca os vende. Você pode usar uma VPN ou desligar esses serviços, mas isso poderá afetar sua experiência com a MetaMask. Para saber mais, leia nossa $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Inclui recursos básicos como detalhes do token e configurações de gas. Mantenha este recurso ativado para melhorar sua experiência. Leia nosso $1 para saber mais.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Funcionalidade básica"
@@ -1942,6 +1945,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Ativar funcionalidade básica"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "A funcionalidade básica está ativada"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "Atualizamos nossas configurações"
@@ -2619,6 +2625,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "O símbolo deste token não corresponde ao nome ou ID da cadeia inseridos para a rede. Muitos tokens populares apresentam símbolos semelhantes, que podem ser usados por golpistas para induzir você ao erro de enviar um token mais valioso em troca. Verifique todos os detalhes antes de continuar."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "Insira os detalhes da rede manualmente",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "Insira os detalhes de RPC manualmente",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "Saiba como manter sua segurança.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2630,6 +2644,22 @@
   "chainlistNetworkDetails": {
     "message": "Símbolo: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "Nenhum resultado encontrado na ChainList",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "Os dados da RPC são provenientes da ChainList. Sempre verifique antes de adicionar. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "Use \"$1\" como nome da rede",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "Use \"$1\" como URL de RPC",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "Alterar em configurações"
@@ -3300,6 +3330,9 @@
   "dataCollectionForMarketing": {
     "message": "Coleta de dados para marketing"
   },
+  "dataCollectionForMarketingDescription": {
+    "message": "Coletaremos dados sobre como você interage com nossas comunicações de marketing, para que possamos compartilhar novidades relevantes (como funcionalidades de produtos e outros materiais)."
+  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Receba atualizações de produtos, dicas e novidades, inclusive por e-mail. Podemos usar suas interações para aprimorar o que compartilharmos."
   },
@@ -3349,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "Abrir venda em lote no celular"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "As ordens limitadas estão disponíveis no MetaMask para dispositivos móveis. Escaneie este código com seu dispositivo móvel para usá-las."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Abrir ordens limitadas no celular"
   },
   "deepLinkQrPredictDescription": {
     "message": "Para acessar os Mercados de Previsão da MetaMask, escaneie o código QR com seu dispositivo móvel."
@@ -3434,6 +3473,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "a página de notificações"
+  },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "a página de configurações de notificação"
   },
   "deepLink_theOnboardingPage": {
     "message": "a página de integração"
@@ -3840,9 +3882,6 @@
   },
   "enableSmartContractAccountDescription": {
     "message": "Desbloqueie transações mais rápidas, taxas de rede mais baixas e segurança adicional em redes compatíveis."
-  },
-  "enableSnap": {
-    "message": "Ativar"
   },
   "enableToken": {
     "message": "ativar $1",
@@ -4253,6 +4292,14 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "A MetaMask cobre a taxa de rede desta transação. Isso inclui a ativação única da conta inteligente."
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "Esta rede exige que você mantenha pelo menos $1 $2 em sua conta após a transação. Contas inteligentes não podem ficar abaixo deste valor de reserva.",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "A $1 cobre a taxa de rede desta transação. Isso inclui a ativação única da conta inteligente.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1 h",
     "description": "$1 represents a number of hours"
@@ -4385,9 +4432,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Ocorreu algum erro...."
-  },
-  "generalDescription": {
-    "message": "Sincronize as configurações entre dispositivos, selecione as preferências de rede e rastreie dados de tokens"
   },
   "generateNewQrCode": {
     "message": "Gerar novo código QR"
@@ -4531,7 +4575,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Prossiga para garantir que:"
+    "message": "Para continuar, certifique-se de que:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Seu dispositivo $1 está desbloqueado",
@@ -5207,9 +5251,6 @@
   "loading": {
     "message": "Carregando..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Por favor, conclua a transação no Snap."
-  },
   "loadingTokenList": {
     "message": "Carregando lista de tokens"
   },
@@ -5437,20 +5478,68 @@
   "mfaEmailEntryContinue": {
     "message": "Continuar"
   },
+  "mfaEmailEntryDescription": {
+    "message": "Usaremos seu e-mail para verificar sua conta e enviar-lhe atualizações ocasionais."
+  },
   "mfaEmailEntryInvalid": {
     "message": "Insira um endereço de e-mail válido."
   },
   "mfaEmailEntryPlaceholder": {
     "message": "Endereço de e-mail"
   },
+  "mfaEmailEntryTitle": {
+    "message": "Verifique seu e-mail"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Seu código de verificação expirou; obtenha um novo código."
+  },
   "mfaErrorCooldown": {
     "message": "Excesso de solicitações. Aguarde um pouco e tente novamente."
+  },
+  "mfaErrorEmailTaken": {
+    "message": "Este e-mail já está em uso. Tente outro."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "Outra verificação já está em andamento."
   },
   "mfaErrorGeneric": {
     "message": "Algo deu errado. Tente de novo."
   },
+  "mfaErrorInvalidPasskey": {
+    "message": "Não foi possível verificar sua chave de acesso. Tente novamente."
+  },
+  "mfaErrorLimitReached": {
+    "message": "Você atingiu o limite para este método."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "A solicitação de chave de acesso foi cancelada."
+  },
+  "mfaErrorSignedOut": {
+    "message": "Faça login para continuar."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "Excesso de tentativas. Solicite um novo código."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "Isso demorou demais. Insira o código atual pelo seu aplicativo."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "Um aplicativo autenticador já está configurado para esta conta."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "Excesso de tentativas. Aguarde um novo código no seu aplicativo e tente novamente."
+  },
+  "mfaErrorUnsupported": {
+    "message": "Este método não é compatível com este dispositivo."
+  },
   "mfaFailureClose": {
     "message": "Fechar"
+  },
+  "mfaFailureContactSupport": {
+    "message": "Falar com o suporte"
+  },
+  "mfaFailureDone": {
+    "message": "Pronto"
   },
   "mfaFailureRetry": {
     "message": "Tentar novamente"
@@ -5461,17 +5550,176 @@
   "mfaIntroContinue": {
     "message": "Começar"
   },
+  "mfaIntroDescription": {
+    "message": "Vamos configurar alguns métodos para confirmar sua identidade. Se você perder acesso a um dos métodos, poderá usar outro."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "Receba um código de 6 dígitos em sua caixa de entrada"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Confirme usando seu dispositivo ou gerenciador de senhas"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Salvo neste dispositivo"
+  },
+  "mfaIntroTitle": {
+    "message": "Configurar verificação em duas etapas"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Obtenha um código de 6 dígitos em um aplicativo como o Google Authenticator"
+  },
+  "mfaIntroTotpDone": {
+    "message": "Configure no seu aplicativo autenticador"
+  },
   "mfaMethodEmail": {
     "message": "E-mail"
   },
-  "mfaOtpPaste": {
-    "message": "Colar"
+  "mfaMethodPasskey": {
+    "message": "Chaves de acesso"
+  },
+  "mfaMethodTotp": {
+    "message": "Aplicativo autenticador"
+  },
+  "mfaOtpDescription": {
+    "message": "Enviamos um código de 6 dígitos para o seu e-mail. Insira-o abaixo para verificar seu e-mail."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "Abra seu aplicativo autenticador e insira o código de 6 dígitos."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "Enviamos um código de 6 dígitos para $1. Insira-o abaixo para verificar seu e-mail.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Obter novo código"
   },
   "mfaOtpResend": {
     "message": "Reenviar código"
   },
+  "mfaOtpResendIn": {
+    "message": "Reenviar código em $1s",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "Enviamos um novo código para você."
+  },
+  "mfaOtpRetry": {
+    "message": "Tentar novamente"
+  },
+  "mfaOtpRetryIn": {
+    "message": "Tente novamente em $1s"
+  },
+  "mfaOtpSendIn": {
+    "message": "Enviando um novo código em $1s",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "Enviando código..."
+  },
+  "mfaOtpTitle": {
+    "message": "Insira seu código de verificação"
+  },
+  "mfaOtpVerifying": {
+    "message": "Verificando código"
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "Criar uma chave de acesso"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "Use sua chave de acesso"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "Obtenha um código de verificação"
+  },
   "mfaPickerOr": {
     "message": "ou"
+  },
+  "mfaPickerPasskey": {
+    "message": "Verificar com chave de acesso"
+  },
+  "mfaPickerTitle": {
+    "message": "Confirmar com verificação em duas etapas"
+  },
+  "mfaPickerTotp": {
+    "message": "Usar um aplicativo autenticador"
+  },
+  "mfaSettingsAdd": {
+    "message": "Adicionar"
+  },
+  "mfaSettingsAddedOn": {
+    "message": "Adicionado $1"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "Verificação de e-mail removida"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "Este e-mail é o único método de segurança desta conta. Adicione um segundo método antes de removê-lo."
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "Não é possível remover o e-mail"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "Este aplicativo autenticador é o único método de segurança para esta conta. Adicione um segundo método antes de removê-lo."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "Não é possível remover o aplicativo autenticador"
+  },
+  "mfaSettingsNotice": {
+    "message": "Esses métodos adicionam proteção às transações da conta Money. Eles não podem recuperar sua carteira."
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "Seus outros métodos só funcionam no aplicativo móvel da MetaMask. Remova seu e-mail por lá."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "Não é possível remover o e-mail aqui"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "Remover e-mail"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "Você não poderá mais fazer login nem verificar transações recebendo um código por e-mail."
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "Não foi possível remover este método. Tente novamente mais tarde."
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "Remover aplicativo autenticador"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "Você não poderá mais verificar transações da conta Money com códigos pelo seu aplicativo autenticador."
+  },
+  "mfaSettingsTitle": {
+    "message": "Verificação em duas etapas"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "Seus outros métodos só funcionam no aplicativo móvel da MetaMask. Remova seu aplicativo autenticador por lá."
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "Não é possível remover o aplicativo autenticador aqui"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "Aplicativo autenticador removido"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "Usada para"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Verificação de transações da Money"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Continuar"
+  },
+  "mfaTotpSetupKey": {
+    "message": "Chave de configuração"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "Código QR para adicionar a MetaMask ao seu aplicativo autenticador"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "Isso demorou demais; por isso, criamos uma nova chave de configuração. Remova o registro anterior do MetaMask do seu aplicativo autenticador e, em seguida, adicione esta."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "Configurar aplicativo autenticador"
   },
   "minimumReceivedExplanation": {
     "message": "O valor mínimo que você receberá se o preço mudar enquanto sua transação é processada, com base em sua configuração de slippage. A estimativa é fornecida pelos provedores de liquidez, portanto o valor final pode ser diferente."
@@ -5682,12 +5930,24 @@
   "moneyConvertYourCrypto": {
     "message": "Converta suas criptomoedas"
   },
+  "moneyEarnApy": {
+    "message": "Ganhe $1 de APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Ganhe até $1 de APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Adicione $1 à sua conta Money e ganhe até $2 em um ano.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
   },
   "moneyEarnBannerCta": {
     "message": "Adicionar $1",
     "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Adicione $1 à sua conta Money — sem períodos de bloqueio nem valores mínimos.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerTitleNoApy": {
     "message": "Ganhe com sua conta Money",
@@ -5729,6 +5989,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Adicione fundos à sua conta Money e veja seu saldo crescer com até $1 de APY."
+  },
+  "moneyGetApy": {
+    "message": "Receba $1 de APY",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "A taxa apresentada é o Rendimento Percentual Anual (APY) atual. O APY é variável e não é garantido."
@@ -6113,7 +6377,7 @@
     "message": "Comece já"
   },
   "musdEducationHeadline": {
-    "message": "RECEBA $1% EM\nSTABLECOINS",
+    "message": "Receba $1% em\nstablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6301,6 +6565,9 @@
   "networkNameSolana": {
     "message": "Solana"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -6365,6 +6632,10 @@
   },
   "newCustomTokenAdded": {
     "message": "“$1” foi adicionado com sucesso!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "Para usar o OpenSea para visualizar seus NFTs, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Configurações > Ativos"
@@ -6787,9 +7058,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Adicionar gateway IPFS personalizado"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "O URL do gateway IPFS é válido"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Quando você utiliza nossas configurações e definições padrão, utilizamos a Infura como nosso provedor padrão de chamada de procedimento remoto (RPC) para oferecer o acesso mais confiável e privado possível aos dados Ethereum. Em alguns casos, podemos utilizar outros provedores de RPC para proporcionar a melhor experiência possível aos nossos usuários. Você pode escolher sua própria RPC, mas lembre-se de que qualquer uma delas receberá seu endereço IP e sua carteira Ethereum para realizar transações. Para saber mais sobre como a Infura trata os dados de contas EVM, leia a nossa $1; para contas Solana, $2."
@@ -7520,6 +7788,10 @@
   "perpsAbout": {
     "message": "Sobre"
   },
+  "perpsAboutAsset": {
+    "message": "Sobre a $1",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "Atividade"
   },
@@ -7860,6 +8132,13 @@
   "perpsInsufficientMargin": {
     "message": "Margem insuficiente para executar esta ordem."
   },
+  "perpsIocCancel": {
+    "message": "Não foi possível executar sua ordem dentro da sua tolerância de slippage de $1%. Tente uma ordem limitada ou ajuste o slippage.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Não foi possível executar sua ordem dentro da tolerância de slippage. Tente uma ordem limitada ou ajuste o slippage."
+  },
   "perpsKeepPositions": {
     "message": "Manter posições"
   },
@@ -8115,6 +8394,10 @@
   "perpsPositions": {
     "message": "Posições"
   },
+  "perpsPriceMoved": {
+    "message": "O preço oscilou $1%, ultrapassando sua tolerância de $2% de slippage. Revise o preço atualizado e tente novamente.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
   "perpsProducts": {
     "message": "Produtos",
     "description": "Heading of the Perps tab section listing market categories as chips"
@@ -8124,6 +8407,10 @@
   },
   "perpsReadMore": {
     "message": "Saiba mais"
+  },
+  "perpsReadMoreAbout": {
+    "message": "Leia mais sobre $1",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "Atividade recente"
@@ -8175,6 +8462,10 @@
   "perpsServiceInterruptionContactSupport": {
     "message": "entre em contato com o suporte",
     "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "Alguns serviços estão temporariamente indisponíveis. $1 ou $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Consulte suas opções nas Perguntas frequentes (FAQs).",
@@ -9389,6 +9680,33 @@
   "rewardsLinkAccountError": {
     "message": "Falha ao adicionar a conta"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Você não pode ser indicado devido à sua atividade de negociação recente."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Você já foi indicado por outro usuário."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Código de indicação inválido"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Código de indicação"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Não foi possível validar o código de indicação."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Você não pode usar seu próprio código de indicação."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Você não pode ser indicado por outra pessoa."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Algo deu errado. Tente novamente em instantes."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Tentativas demais. Aguarde um momento."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Verificando região..."
   },
@@ -9426,24 +9744,6 @@
   "rewardsOnboardingOptInError": {
     "message": "A participação falhou"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Código de indicação inválido"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Código de indicação (opcional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Não foi possível validar o código de indicação."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Verifique sua conexão e tente novamente."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Ocultar código"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Tem um código de indicação?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Participe do programa de recompensas"
   },
@@ -9452,10 +9752,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Comece a ganhar recompensas"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Verificando código de indicação...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 pontos",
@@ -9696,21 +9992,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nova senha salva"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Segurança e privacidade"
-  },
-  "securityDescription": {
-    "message": "Reduza suas chances de ingressar em redes perigosas e proteja suas contas"
-  },
   "securityMessageLinkForNetworks": {
     "message": "golpes de rede e riscos de segurança"
   },
   "securityProviderPoweredBy": {
     "message": "Com tecnologia da $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Reduza suas chances de ingressar em redes perigosas e proteja suas contas e dados"
   },
   "securitySocialLoginEnabled": {
     "message": "Ativado"
@@ -12156,6 +12443,18 @@
   "tronDailyResourcesDescription": {
     "message": "Esta é a sua cota diária com base nos seus TRX em staking. Você recebe $1 em largura de banda gratuitamente por dia.",
     "description": "$1 is the maximum bandwidth value"
+  },
+  "tronDailyResourcesLoading": {
+    "message": "Carregando o uso diário de recursos…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "As informações sobre sua energia e largura de banda estão temporariamente indisponíveis. Elas serão atualizadas automaticamente.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "Não foi possível carregar os recursos",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
   },
   "tronEnergy": {
     "message": "Energia"

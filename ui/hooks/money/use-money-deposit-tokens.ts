@@ -10,6 +10,7 @@ import {
 import { useSendTokens } from '../../pages/confirmations/hooks/send/useSendTokens';
 import { selectBlockedPayTokens } from '../../pages/confirmations/selectors/feature-flags';
 import { selectMoneyDepositMinBalance } from '../../selectors/money/money-account-feature-flags';
+import { useIsHardwareWalletAccount } from '../useIsHardwareWalletAccount';
 import {
   filterMoneyDepositTokens,
   isNoFeeMoneyDepositToken,
@@ -19,6 +20,8 @@ import {
 
 /**
  * Returns wallet assets eligible to fund the Money account.
+ *
+ * Nothing is no-fee when the selected account is a hardware wallet.
  *
  * @returns Eligible tokens and a no-fee classifier.
  */
@@ -62,10 +65,12 @@ export function useMoneyDepositTokens(): {
       ),
     [remoteFeatureFlags],
   );
+  // Hardware accounts cannot use sponsored routes.
+  const isHardwareAccount = useIsHardwareWalletAccount();
   const isNoFeeToken = useCallback(
     (token: MoneyDepositToken) =>
-      isNoFeeMoneyDepositToken(token, subsidizedRoutes),
-    [subsidizedRoutes],
+      !isHardwareAccount && isNoFeeMoneyDepositToken(token, subsidizedRoutes),
+    [isHardwareAccount, subsidizedRoutes],
   );
 
   return { tokens, isNoFeeToken };

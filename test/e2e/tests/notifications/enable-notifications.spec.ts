@@ -8,8 +8,11 @@ import {
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
-import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/tron-account-derivation.flow';
-import { addAccount } from '../../page-objects/flows/add-account.flow';
+import {
+  addAccounts,
+  waitUntilAccountTreeSyncIdle,
+} from '../../page-objects/flows/add-account.flow';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
@@ -77,8 +80,15 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          await waitUntilAccountTreeSyncIdle(driver);
-          await addAccount({ driver, expectedBalance: '0' });
+          await addAccounts({
+            driver,
+            count: 1,
+            onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+            onAfterAdd: ({ label }) =>
+              new AccountListPage(driver).checkAccountDisplayedInAccountList(
+                label,
+              ),
+          });
           await enableNotificationsThroughGlobalMenu(driver);
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
@@ -112,8 +122,15 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          await waitUntilAccountTreeSyncIdle(driver);
-          await addAccount({ driver, expectedBalance: '0' });
+          await addAccounts({
+            driver,
+            count: 1,
+            onBeforeAdd: () => waitUntilAccountTreeSyncIdle(driver),
+            onAfterAdd: ({ label }) =>
+              new AccountListPage(driver).checkAccountDisplayedInAccountList(
+                label,
+              ),
+          });
           await enableNotificationsThroughSettingsPage(driver);
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,

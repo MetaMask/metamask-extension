@@ -1784,9 +1784,6 @@
   "assets": {
     "message": "アセット"
   },
-  "assetsDescription": {
-    "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
-  },
   "asterdexReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引額の4%が返ってきます。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1844,6 +1841,9 @@
   },
   "backToSafety": {
     "message": "安全な場所に戻る"
+  },
+  "backToWallet": {
+    "message": "ウォレットに戻る"
   },
   "backUpIncomplete": {
     "message": "バックアップ未完了"
@@ -1916,11 +1916,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMaskにより、インターネットサービスを通じてトークンの詳細やガス設定などの基本的な機能が提供されます。インターネットサービスを使用すると、ユーザーのIPアドレスが共有されます。この場合の共有先はMetaMaskです。これは他のどのWebサイトにアクセスした場合も同様です。MetaMaskによりこのデータが一時的に使用され、ユーザーのデータが販売されることは一切ありません。VPNを使用したり、これらのサービスをオフにしたりすることもできますが、MetaMaskでのエクスペリエンスに影響を与える可能性があります。詳細は$1をお読みください。",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "トークンの詳細やガス設定などの基本機能が含まれます。この機能をオンにすることで、最適な体験が得られます。詳細については、$1をお読みください。",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "基本機能"
@@ -3841,9 +3841,6 @@
   "enableSmartContractAccountDescription": {
     "message": "対応ネットワーク上で、より高速なトランザクション、お得なネットワーク手数料、強化されたセキュリティをご利用いただけます。"
   },
-  "enableSnap": {
-    "message": "有効にする"
-  },
   "enableToken": {
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4253,6 +4250,10 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMaskは、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。"
   },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1は、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1時間",
     "description": "$1 represents a number of hours"
@@ -4389,9 +4390,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "問題が発生しました...."
-  },
-  "generalDescription": {
-    "message": "デバイス間で設定を同期して、ネットワーク設定を選択し、トークンデータを追跡します"
   },
   "generateNewQrCode": {
     "message": "新しいQRコードを生成"
@@ -4533,9 +4531,6 @@
   "hardwareWalletErrorRecoveryConnection4": {
     "message": "$1デバイスのロックが解除されています",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorRecoveryTitle": {
-    "message": "引き続き次のことを確認します:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "$1デバイスのロックが解除されています",
@@ -5211,9 +5206,6 @@
   "loading": {
     "message": "読み込み中..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Snapでトランザクションを完了させてください。"
-  },
   "loadingTokenList": {
     "message": "トークンリストをロードしています"
   },
@@ -5456,6 +5448,12 @@
   "mfaFailureClose": {
     "message": "閉じる"
   },
+  "mfaFailureContactSupport": {
+    "message": "サポートへのお問い合わせ"
+  },
+  "mfaFailureDone": {
+    "message": "完了"
+  },
   "mfaFailureRetry": {
     "message": "もう一度お試しください"
   },
@@ -5468,14 +5466,23 @@
   "mfaMethodEmail": {
     "message": "メールアドレス"
   },
-  "mfaOtpPaste": {
-    "message": "貼り付け"
-  },
   "mfaOtpResend": {
     "message": "コードを再送する"
   },
+  "mfaOtpRetry": {
+    "message": "もう一度お試しください"
+  },
+  "mfaOtpVerifying": {
+    "message": "コードを確認しています"
+  },
   "mfaPickerOr": {
     "message": "または"
+  },
+  "mfaSettingsAdd": {
+    "message": "追加"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "続行"
   },
   "minimumReceivedExplanation": {
     "message": "トランザクションの処理中に価格が変動した場合に、お客様のスリッページ設定に基づいて受け取る最低額です。これは流動性プロバイダーから提供される見積もりであり、最終的な金額は異なる場合があります。"
@@ -6791,9 +6798,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "カスタムIPFSゲートウェイを追加"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "IPFSゲートウェイのURLが有効です"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "デフォルトの設定と構成を使用する場合、当社はInfuraをデフォルトの遠隔手続き呼び出し (RPC) プロバイダーとして使用し、イーサリアムデータへの可能な限り最も信頼性が高くプライベートなアクセスを提供します。まれに、ユーザーに最も優れたエクスペリエンスを提供するために、他のRPCプロバイダーが使用される場合もあります。ユーザーが自らRPCを選択することもできますが、どのRPCもトランザクションを実行するために、ユーザーのIPアドレスとイーサリアムウォレットを取得する点にご注意ください。InfuraによるEVMアカウントのデータの取り扱いに関する詳細は、$1をご覧ください。Solanaアカウントの場合は、$2。"
@@ -9393,6 +9397,33 @@
   "rewardsLinkAccountError": {
     "message": "アカウントの追加に失敗しました"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "最近取引を行われているため、招待を受けることはできません。"
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "お客様はすでに別のユーザーにより招待されています。"
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "無効な紹介コード"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "紹介コード"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "紹介コードを検証できませんでした."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "ご自身の紹介コードを利用することはできません。"
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "他の人から招待を受けることはできません。"
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "問題が発生しました。しばらくしてからもう一度お試しください。"
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "試行回数が多すぎます。しばらくお待ちください。"
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "地域を確認中…"
   },
@@ -9430,24 +9461,6 @@
   "rewardsOnboardingOptInError": {
     "message": "オプトインに失敗しました"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "無効な紹介コード"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "紹介コード（オプション）"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "紹介コードを検証できませんでした."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "接続を確認して、もう一度お試しください。"
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "コードを非表示"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "紹介コードをお持ちですか？"
-  },
   "rewardsOnboardingSignUp": {
     "message": "リワードに参加"
   },
@@ -9456,10 +9469,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "リワードの獲得を開始"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "紹介コードを検証中...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1ポイント",
@@ -9700,21 +9709,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "新しいパスワードを保存しました"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "セキュリティとプライバシー"
-  },
-  "securityDescription": {
-    "message": "安全ではないネットワークに参加してしまう可能性を減らし、アカウントを守ります"
-  },
   "securityMessageLinkForNetworks": {
     "message": "ネットワーク詐欺とセキュリティのリスク"
   },
   "securityProviderPoweredBy": {
     "message": "データソース: $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "安全ではないネットワークに参加する可能性を減らし、アカウントとデータを保護します"
   },
   "securitySocialLoginEnabled": {
     "message": "有効"

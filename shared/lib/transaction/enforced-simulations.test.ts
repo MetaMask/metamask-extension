@@ -20,6 +20,7 @@ import {
   hasPendingEnforcedSimulationsTrustSignals,
   isEnforcedSimulationsDefaultEnabled,
   isEnforcedSimulationsEligible,
+  isTransactionTrusted,
 } from './enforced-simulations';
 
 const ETHEREUM_CHAIN_ID: Hex = '0x1';
@@ -110,6 +111,136 @@ function buildRemoteFeatureFlagState(flag?: {
 }
 
 describe('enforced-simulations', () => {
+  describe('isTransactionTrusted', () => {
+    it('returns true when every contract target is trusted', () => {
+      expect(
+        isTransactionTrusted(
+          {
+            ...BASE_TRANSACTION_META,
+            nestedTransactions: [
+              { to: NESTED_ADDRESS_A as `0x${string}`, data: '0xabcd' },
+            ],
+          },
+          buildStateForAddresses({
+            [TO_ADDRESS]: ResultType.Trusted,
+            [NESTED_ADDRESS_A]: ResultType.Trusted,
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when a contract target has no trust signal', () => {
+      expect(
+        isTransactionTrusted(BASE_TRANSACTION_META, buildStateForAddresses({})),
+      ).toBe(false);
+    });
+
+    for (const resultType of [
+      ResultType.Loading,
+      ResultType.Benign,
+      ResultType.Warning,
+      ResultType.Malicious,
+      ResultType.ErrorResult,
+    ]) {
+      it(`returns false for a ${resultType} trust signal`, () => {
+        expect(
+          isTransactionTrusted(BASE_TRANSACTION_META, buildState(resultType)),
+        ).toBe(false);
+      });
+    }
+
+    it('returns false when any nested contract target is not trusted', () => {
+      expect(
+        isTransactionTrusted(
+          {
+            ...BASE_TRANSACTION_META,
+            nestedTransactions: [
+              { to: NESTED_ADDRESS_A as `0x${string}`, data: '0xabcd' },
+              { to: NESTED_ADDRESS_B as `0x${string}`, data: '0xabcd' },
+            ],
+          },
+          buildStateForAddresses({
+            [TO_ADDRESS]: ResultType.Trusted,
+            [NESTED_ADDRESS_A]: ResultType.Trusted,
+            [NESTED_ADDRESS_B]: ResultType.Warning,
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    it('uses the original target when a container changes the target', () => {
+      const containerAddress = '0xContainerAddress';
+
+      expect(
+        isTransactionTrusted(
+          {
+            ...BASE_TRANSACTION_META,
+            txParams: {
+              ...BASE_TRANSACTION_META.txParams,
+              to: containerAddress,
+            },
+            txParamsOriginal: {
+              ...BASE_TRANSACTION_META.txParams,
+              to: TO_ADDRESS,
+            },
+          },
+          buildStateForAddresses({
+            [TO_ADDRESS]: ResultType.Trusted,
+            [containerAddress]: ResultType.Warning,
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true for a simple send without a trust signal', () => {
+      expect(
+        isTransactionTrusted(
+          {
+            ...BASE_TRANSACTION_META,
+            type: TransactionType.simpleSend,
+          },
+          buildStateForAddresses({}),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true for an internal address without a trust signal', () => {
+      expect(
+        isTransactionTrusted(BASE_TRANSACTION_META, {
+          ...buildStateForAddresses({}),
+          internalAddresses: [TO_ADDRESS],
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true when there is no target', () => {
+      expect(
+        isTransactionTrusted(
+          {
+            ...BASE_TRANSACTION_META,
+            txParams: {
+              ...BASE_TRANSACTION_META.txParams,
+              to: undefined,
+            },
+          },
+          buildStateForAddresses({}),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when the chain ID is missing', () => {
+      expect(
+        isTransactionTrusted(
+          {
+            ...BASE_TRANSACTION_META,
+            chainId: undefined as never,
+          },
+          buildState(ResultType.Trusted),
+        ),
+      ).toBe(false);
+    });
+  });
+
   describe('getEnforcedSimulationsSlippage', () => {
     it('returns the value from the flag when provided', () => {
       expect(

@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import cn from 'clsx';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { ReadableAddressLabel } from '#ui/components/app/transaction/readable-address-label';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
@@ -15,8 +16,6 @@ import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
 import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
-import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
-import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
@@ -33,7 +32,7 @@ import { useFormatTokenAmount } from './useFormatTokenAmount';
 
 type ActivityContent = {
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode;
   primaryAmount?: ReactNode;
   primaryDirection?: TokenAmount['direction'];
   secondaryAmount?: ReactNode;
@@ -112,7 +111,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId } = getChainDisplay(activity.chainId);
   const formatAsFiat = useFormatAsFiat(chainId);
-  const formatDisplayName = useGetDisplayName();
   const labelKeys = getLabelKeys({
     type: activity.type,
     status: activity.status,
@@ -129,9 +127,14 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
-          subtitle: t(labelKeys.description.key, [
-            formatDisplayName(address) || t('unknown'),
-          ]),
+          subtitle: (
+            <ReadableAddressLabel
+              labelKey={labelKeys.description.key}
+              address={address}
+              chainId={activity.chainId}
+              fallback={t('unknown')}
+            />
+          ),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),
@@ -375,9 +378,14 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
-          subtitle: t(labelKeys.description.key, [
-            shortenAddress(to) || 'Contract',
-          ]),
+          subtitle: (
+            <ReadableAddressLabel
+              labelKey={labelKeys.description.key}
+              address={to}
+              chainId={activity.chainId}
+              fallback={t('contract')}
+            />
+          ),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
           secondaryAmount: formatAsFiat(token),

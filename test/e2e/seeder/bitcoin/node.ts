@@ -36,11 +36,18 @@ const MAINNET_GENESIS_BLOCK_HASH =
 const PROCESS_OUTPUT_LIMIT = 8_000;
 
 export type BitcoinLocalNodeOptions = {
+  accounts?: BitcoinLocalNodeAccount[];
   initialBalance?: number;
   p2pPort?: number;
   rpcPassword?: string;
   rpcPort?: number;
   rpcUser?: string;
+};
+
+export type BitcoinLocalNodeAccount = {
+  address: string;
+  balance?: number;
+  scriptPubKey: string;
 };
 
 type BitcoinRpcError = {
@@ -158,6 +165,18 @@ type EsploraOutspend = {
   vin?: number;
 };
 
+export function transactionTouchesScriptPubKey(
+  transaction: EsploraTransaction,
+  scriptPubKey: string,
+): boolean {
+  return (
+    transaction.vout.some((output) => output.scriptpubkey === scriptPubKey) ||
+    transaction.vin.some(
+      (input) => input.prevout?.scriptpubkey === scriptPubKey,
+    )
+  );
+}
+
 export function bitcoinToSatoshis(value: number): number {
   return Math.round(value * 100_000_000);
 }
@@ -171,12 +190,18 @@ export function scriptPubKeyToScriptHash(scriptPubKey: string): string {
 export function createEsploraTransaction(
   transaction: BitcoinVerboseTransaction,
   options: {
+    addressesByScriptPubKey?: ReadonlyMap<string, string>;
     blockHeight?: number;
     fee?: number;
     prevouts?: Map<string, EsploraTransactionOutput>;
   } = {},
 ): EsploraTransaction {
-  const { blockHeight, fee = 0, prevouts = new Map() } = options;
+  const {
+    addressesByScriptPubKey,
+    blockHeight,
+    fee = 0,
+    prevouts = new Map(),
+  } = options;
 
   return {
     fee,
@@ -208,7 +233,7 @@ export function createEsploraTransaction(
       };
     }),
     vout: transaction.vout.map((output) =>
-      createEsploraTransactionOutput(output),
+      createEsploraTransactionOutput(output, addressesByScriptPubKey),
     ),
     weight: transaction.weight,
   };
@@ -232,17 +257,20 @@ function createEsploraBlock(block: BitcoinBlock) {
   };
 }
 
-function createEsploraTransactionOutput(output: {
-  scriptPubKey: BitcoinScriptPubKey;
-  value: number;
-}): EsploraTransactionOutput {
+function createEsploraTransactionOutput(
+  output: {
+    scriptPubKey: BitcoinScriptPubKey;
+    value: number;
+  },
+  addressesByScriptPubKey: ReadonlyMap<string, string> = new Map([
+    [DEFAULT_BTC_SCRIPT_PUBKEY, DEFAULT_BTC_ADDRESS],
+  ]),
+): EsploraTransactionOutput {
   const { scriptPubKey } = output;
   return {
     scriptpubkey: scriptPubKey.hex,
     scriptpubkey_address:
-      scriptPubKey.hex === DEFAULT_BTC_SCRIPT_PUBKEY
-        ? DEFAULT_BTC_ADDRESS
-        : scriptPubKey.address,
+      addressesByScriptPubKey.get(scriptPubKey.hex) ?? scriptPubKey.address,
     scriptpubkey_asm: normalizeScriptPubKeyAsm(scriptPubKey),
     scriptpubkey_type: normalizeScriptPubKeyType(scriptPubKey.type),
     value: bitcoinToSatoshis(output.value),
@@ -280,7 +308,7 @@ async function wait(ms: number): Promise<void> {
 export class BitcoinNode {
   #dataDir: string | undefined;
 
-  #fundingTxId: string | undefined;
+  readonly #fundingTxIdsByScriptHash = new Map<string, string>();
 
   #nodeProcess: ChildProcess | undefined;
 
@@ -296,7 +324,7 @@ export class BitcoinNode {
 
   readonly #broadcastTxIds = new Set<string>();
 
-  readonly #targetScriptPubKey = DEFAULT_BTC_SCRIPT_PUBKEY;
+  #targetsByScriptHash = new Map<string, BitcoinLocalNodeAccount>();
 
   async start(options: BitcoinLocalNodeOptions = {}): Promise<void> {
     this.#rpcUser = options.rpcUser ?? this.#rpcUser;
@@ -306,9 +334,20 @@ export class BitcoinNode {
       await this.#startNativeNode(options);
       await this.waitForReady();
       await this.createWallet();
-      await this.fundDefaultAccount(
-        options.initialBalance ?? DEFAULT_BTC_BALANCE,
+      const accounts = options.accounts ?? [
+        {
+          address: DEFAULT_BTC_ADDRESS,
+          balance: options.initialBalance ?? DEFAULT_BTC_BALANCE,
+          scriptPubKey: DEFAULT_BTC_SCRIPT_PUBKEY,
+        },
+      ];
+      this.#targetsByScriptHash = new Map(
+        accounts.map((account) => [
+          scriptPubKeyToScriptHash(account.scriptPubKey),
+          account,
+        ]),
       );
+      await this.fundAccounts(accounts);
     } catch (error) {
       await this.quit();
       throw error;
@@ -396,21 +435,27 @@ export class BitcoinNode {
   async getScriptHashTransactions(
     scriptHash: string,
   ): Promise<EsploraTransaction[]> {
-    if (scriptHash !== this.targetScriptHash) {
+    const target = this.#targetsByScriptHash.get(scriptHash);
+    if (!target) {
       return [];
     }
 
     const txIds = [
-      ...(this.#fundingTxId ? [this.#fundingTxId] : []),
+      ...(this.#fundingTxIdsByScriptHash.has(scriptHash)
+        ? [this.#fundingTxIdsByScriptHash.get(scriptHash) as string]
+        : []),
       ...this.#broadcastTxIds,
     ];
 
     const transactions = await Promise.all(
       txIds.map((txId) => this.getTransaction(txId)),
     );
+    const matchingTransactions = transactions.filter((transaction) =>
+      transactionTouchesScriptPubKey(transaction, target.scriptPubKey),
+    );
 
     // Sort newest-first (descending block height); unconfirmed txs first.
-    return transactions.sort((a, b) => {
+    return matchingTransactions.sort((a, b) => {
       const heightA = a.status.block_height;
       const heightB = b.status.block_height;
 
@@ -429,17 +474,19 @@ export class BitcoinNode {
   }
 
   async getScriptHashUtxos(scriptHash: string): Promise<EsploraUtxo[]> {
-    if (scriptHash !== this.targetScriptHash || !this.#fundingTxId) {
+    const target = this.#targetsByScriptHash.get(scriptHash);
+    const fundingTxId = this.#fundingTxIdsByScriptHash.get(scriptHash);
+    if (!target || !fundingTxId) {
       return [];
     }
 
-    const txIds = [this.#fundingTxId, ...this.#broadcastTxIds];
+    const txIds = [fundingTxId, ...this.#broadcastTxIds];
     const utxos: EsploraUtxo[] = [];
 
     for (const txId of txIds) {
       const transaction = await this.getVerboseTransaction(txId);
       const matchingOutputs = transaction.vout.filter(
-        (candidate) => candidate.scriptPubKey.hex === this.#targetScriptPubKey,
+        (candidate) => candidate.scriptPubKey.hex === target.scriptPubKey,
       );
 
       for (const output of matchingOutputs) {
@@ -484,6 +531,7 @@ export class BitcoinNode {
     const fee = this.calculateFee(transaction, prevouts);
 
     return createEsploraTransaction(transaction, {
+      addressesByScriptPubKey: this.#getAddressesByScriptPubKey(),
       blockHeight,
       fee,
       prevouts,
@@ -511,7 +559,7 @@ export class BitcoinNode {
   }
 
   get targetScriptHash(): string {
-    return scriptPubKeyToScriptHash(this.#targetScriptPubKey);
+    return scriptPubKeyToScriptHash(DEFAULT_BTC_SCRIPT_PUBKEY);
   }
 
   private calculateFee(
@@ -578,7 +626,9 @@ export class BitcoinNode {
     return undefined;
   }
 
-  private async fundDefaultAccount(amount: number): Promise<void> {
+  private async fundAccounts(
+    accounts: BitcoinLocalNodeAccount[],
+  ): Promise<void> {
     const miningAddress = await this.rpc<string>(
       'getnewaddress',
       ['', 'bech32'],
@@ -586,23 +636,29 @@ export class BitcoinNode {
     );
     await this.rpc('generatetoaddress', [101, miningAddress]);
 
-    const decodedScript = await this.rpc<{
-      address?: string;
-      segwit?: { address?: string };
-    }>('decodescript', [this.#targetScriptPubKey]);
-    const regtestAddress =
-      decodedScript.segwit?.address ?? decodedScript.address;
-    if (!regtestAddress) {
-      throw new Error(
-        'bitcoind did not derive a regtest address for BTC script',
+    for (const account of accounts) {
+      const decodedScript = await this.rpc<{
+        address?: string;
+        segwit?: { address?: string };
+      }>('decodescript', [account.scriptPubKey]);
+      const regtestAddress =
+        decodedScript.segwit?.address ?? decodedScript.address;
+      if (!regtestAddress) {
+        throw new Error(
+          `bitcoind did not derive a regtest address for BTC script ${account.scriptPubKey}`,
+        );
+      }
+
+      const fundingTxId = await this.rpc<string>(
+        'sendtoaddress',
+        [regtestAddress, account.balance ?? DEFAULT_BTC_BALANCE],
+        true,
+      );
+      this.#fundingTxIdsByScriptHash.set(
+        scriptPubKeyToScriptHash(account.scriptPubKey),
+        fundingTxId,
       );
     }
-
-    this.#fundingTxId = await this.rpc<string>(
-      'sendtoaddress',
-      [regtestAddress, amount],
-      true,
-    );
     await this.rpc('generatetoaddress', [1, miningAddress]);
   }
 
@@ -626,12 +682,23 @@ export class BitcoinNode {
       if (previousOutput) {
         prevouts.set(
           createOutpoint(input.txid, input.vout),
-          createEsploraTransactionOutput(previousOutput),
+          createEsploraTransactionOutput(
+            previousOutput,
+            this.#getAddressesByScriptPubKey(),
+          ),
         );
       }
     }
 
     return prevouts;
+  }
+
+  #getAddressesByScriptPubKey(): Map<string, string> {
+    return new Map(
+      [...this.#targetsByScriptHash.values()].map(
+        ({ address, scriptPubKey }) => [scriptPubKey, address],
+      ),
+    );
   }
 
   private async getVerboseTransaction(

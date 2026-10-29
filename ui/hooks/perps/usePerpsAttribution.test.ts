@@ -73,6 +73,26 @@ describe('usePerpsAttribution', () => {
     expect(trackingData).not.toHaveProperty('inputMethod');
   });
 
+  it('carries market-order slippage context', () => {
+    const { result } = renderHook(() => usePerpsAttribution(), { wrapper });
+
+    const trackingData = result.current.buildTrackingData({
+      totalFee: 1.5,
+      marketPrice: 3000,
+      vipTier: null,
+      vipDiscount: undefined,
+      maxSlippageBps: 300,
+      maxSlippageSource: 'user_configured',
+      estimatedSlippageBps: 125,
+    });
+
+    expect(trackingData).toMatchObject({
+      maxSlippageBps: 300,
+      maxSlippageSource: 'user_configured',
+      estimatedSlippageBps: 125,
+    });
+  });
+
   it('builds TP/SL tracking data with flow attribution', () => {
     const { result } = renderHook(() => usePerpsAttribution(), { wrapper });
 

@@ -11,12 +11,27 @@ import messages from '../../../../app/_locales/en/messages.json';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
-import { isMfaKitEnabled } from '../../../hooks/identity/mfa/isMfaKitEnabled';
+import { isMfaDevBuild } from '../../../hooks/identity/mfa/isMfaDevBuild';
+import {
+  MFA_SETTINGS_EMAIL_ROUTE,
+  MFA_SETTINGS_TOTP_ROUTE,
+} from '../../../helpers/constants/routes';
+import { toast } from '../../../components/ui/toast/toast';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaSettings from './mfa-settings';
 
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
 jest.mock('../../../hooks/identity/mfa/engine/activeFlow', () => ({
   startMfaFlow: jest.fn(),
+}));
+
+jest.mock('../../../components/ui/toast/toast', () => ({
+  toast: { success: jest.fn() },
 }));
 
 jest.mock('../../../hooks/identity/mfa/bindings', () => ({
@@ -26,19 +41,33 @@ jest.mock('../../../hooks/identity/mfa/bindings', () => ({
   },
 }));
 
-jest.mock('../../../hooks/identity/mfa/isMfaKitEnabled', () => ({
-  isMfaKitEnabled: jest.fn(),
+jest.mock('../../../hooks/identity/mfa/isMfaDevBuild', () => ({
+  isMfaDevBuild: jest.fn(),
+}));
+
+const mockGetIsSocialLoginFlow = jest.fn();
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getIsSocialLoginFlow: (...args: unknown[]) =>
+    mockGetIsSocialLoginFlow(...args),
 }));
 
 const mockStartMfaFlow = jest.mocked(startMfaFlow);
 const mockAdapter = jest.mocked(extensionMfaControllerAdapter);
 
-const renderSettings = (enrolledCredentials: EnrolledCredential[] = []) =>
+const renderSettings = (
+  enrolledCredentials: EnrolledCredential[] = [],
+  remoteFeatureFlags = {},
+) =>
   renderWithProvider(
     <MfaSettings />,
     configureMockStore([thunk])({
       ...mockState,
-      metamask: { ...mockState.metamask, enrolledCredentials },
+      metamask: {
+        ...mockState.metamask,
+        enrolledCredentials,
+        remoteFeatureFlags,
+      },
     }),
   );
 
@@ -48,16 +77,51 @@ describe('MfaSettings', () => {
     mockAdapter.refreshEnrolledCredentials.mockResolvedValue([]);
     mockAdapter.clearVerificationSession.mockResolvedValue(undefined);
     mockStartMfaFlow.mockResolvedValue({ credentials: [] });
-    jest.mocked(isMfaKitEnabled).mockReturnValue(true);
+    jest.mocked(isMfaDevBuild).mockReturnValue(true);
+    mockGetIsSocialLoginFlow.mockReturnValue(false);
   });
 
-  it('refreshes the methods and offers to set up email', async () => {
+  it('hides email and keeps the authenticator app for social login users', () => {
+    mockGetIsSocialLoginFlow.mockReturnValue(true);
+    renderSettings([
+      {
+        id: 'email_otp',
+        type: 'email_otp',
+        status: 'active',
+        email: 'a@b.co',
+        verified: true,
+      },
+    ]);
+
+    expect(screen.queryByTestId(MfaSettingsTestIds.EMAIL_ROW)).toBeNull();
+    expect(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW)).toBeInTheDocument();
+  });
+
+  it('only offers to add the methods the flag allows', () => {
+    renderSettings([], {
+      mfaUiKit: {
+        enabled: true,
+        minimumVersion: '1.0.0',
+        methods: ['email_otp'],
+      },
+    });
+
+    expect(
+      screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId(MfaSettingsTestIds.TOTP_ROW)).toBeNull();
+  });
+
+  it('refreshes the methods and offers to add email', async () => {
     renderSettings();
     await act(async () => undefined);
 
     expect(mockAdapter.refreshEnrolledCredentials).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW)).toHaveTextContent(
+      messages.mfaSettingsAdd.message,
+    );
     await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_BUTTON));
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW));
     });
     expect(mockStartMfaFlow).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -66,11 +130,28 @@ describe('MfaSettings', () => {
         platform: 'extension',
       }),
     );
+    expect(toast.success).toHaveBeenCalledWith(
+      messages.mfaSettingsEmailVerified.message,
+    );
   });
 
-  it('offers to finish a pending email setup', () => {
+  it('ignores clicks while email is being set up', async () => {
+    mockStartMfaFlow.mockReturnValue(new Promise(() => undefined));
+    renderSettings();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW));
+    });
+    expect(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW)).toBeDisabled();
+    fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW));
+
+    expect(mockStartMfaFlow).toHaveBeenCalledTimes(1);
+  });
+
+  it('offers to add an email whose setup is not finished', () => {
     renderSettings([
       {
+        id: 'email_otp',
         type: 'email_otp',
         status: 'pending',
         email: 'a@b.co',
@@ -78,23 +159,30 @@ describe('MfaSettings', () => {
       },
     ]);
 
-    expect(
-      screen.getByText(messages.mfaSettingsEmailPending.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.mfaSettingsFinishSetup.message),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW)).toHaveTextContent(
+      messages.mfaSettingsAdd.message,
+    );
   });
 
-  it('shows an active email without a setup button', () => {
+  it('opens an active email', async () => {
     renderSettings([
-      { type: 'email_otp', status: 'active', email: 'a@b.co', verified: true },
+      {
+        id: 'email_otp',
+        type: 'email_otp',
+        status: 'active',
+        email: 'a@b.co',
+        verified: true,
+      },
     ]);
 
-    expect(screen.getByText('a•••@b.co')).toBeInTheDocument();
     expect(
-      screen.queryByTestId(MfaSettingsTestIds.EMAIL_BUTTON),
-    ).not.toBeInTheDocument();
+      screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW),
+    ).not.toHaveTextContent(messages.mfaSettingsAdd.message);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW));
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(MFA_SETTINGS_EMAIL_ROUTE);
+    expect(mockStartMfaFlow).not.toHaveBeenCalled();
   });
 
   it('shows how a QA preset settled', async () => {
@@ -123,16 +211,8 @@ describe('MfaSettings', () => {
     );
   });
 
-  it('shows an email linked to the sign-in without its address', () => {
-    renderSettings([{ type: 'email_otp', status: 'active', verified: true }]);
-
-    expect(
-      screen.getByText(messages.mfaSettingsEmailLinked.message),
-    ).toBeInTheDocument();
-  });
-
   it('hides the QA presets in production', () => {
-    jest.mocked(isMfaKitEnabled).mockReturnValue(false);
+    jest.mocked(isMfaDevBuild).mockReturnValue(false);
     renderSettings();
 
     expect(
@@ -146,6 +226,8 @@ describe('MfaSettings', () => {
     'Require email, no verification',
     'Enroll email',
     'Email and passkey (no passkey adapter)',
+    'Enroll authenticator app',
+    'Verify with authenticator app',
   ])('runs the "%s" preset and shows what it resolved with', async (label) => {
     renderSettings();
 
@@ -191,5 +273,37 @@ describe('MfaSettings', () => {
     expect(screen.getByTestId(MfaSettingsTestIds.QA_RESULT)).toHaveTextContent(
       'Enroll email: Rejected with unknown',
     );
+  });
+
+  it('offers to add an authenticator app', async () => {
+    renderSettings();
+
+    expect(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW)).toHaveTextContent(
+      messages.mfaSettingsAdd.message,
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW));
+    });
+    expect(mockStartMfaFlow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: { kind: 'enroll', method: 'totp' },
+        reason: { operation: 'settings.addAuthenticatorApp' },
+      }),
+    );
+    expect(toast.success).toHaveBeenCalledWith(
+      messages.mfaSettingsAuthenticatorAppAdded.message,
+    );
+  });
+
+  it('opens an authenticator app that is set up', async () => {
+    renderSettings([{ id: 'totp', type: 'totp', status: 'active' }]);
+
+    expect(
+      screen.getByTestId(MfaSettingsTestIds.TOTP_ROW),
+    ).not.toHaveTextContent(messages.mfaSettingsAdd.message);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW));
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(MFA_SETTINGS_TOTP_ROUTE);
   });
 });

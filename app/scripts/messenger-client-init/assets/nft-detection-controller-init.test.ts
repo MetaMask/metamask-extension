@@ -70,4 +70,34 @@ describe('NftDetectionControllerInit', () => {
 
     expect(nftDetectionControllerClassMock).toHaveBeenCalled();
   });
+
+  it('passes the NftController methods to the controller', () => {
+    const requestMock = buildInitRequestMock();
+    NftDetectionControllerInit(requestMock);
+
+    expect(nftDetectionControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        addNfts: expect.any(Function),
+        removeNft: expect.any(Function),
+      }),
+    );
+  });
+
+  it('delegates removeNft to the NftController', () => {
+    const removeNft = jest.fn();
+    const requestMock = buildInitRequestMock();
+    requestMock.getMessengerClient.mockReturnValue({
+      ...buildControllerMock(),
+      removeNft,
+    } as never);
+    NftDetectionControllerInit(requestMock);
+
+    const { removeNft: passedRemoveNft } =
+      nftDetectionControllerClassMock.mock.calls[0][0];
+    passedRemoveNft('0xabc', '1', 'mainnet', { userAddress: '0x1' });
+
+    expect(removeNft).toHaveBeenCalledWith('0xabc', '1', 'mainnet', {
+      userAddress: '0x1',
+    });
+  });
 });

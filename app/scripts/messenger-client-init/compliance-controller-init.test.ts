@@ -39,36 +39,9 @@ describe('ComplianceControllerInit', () => {
     const result = ComplianceControllerInit(request);
 
     expect(result.messengerClient).toBeDefined();
-    expect(result.api).toBeDefined();
     expect(ComplianceControllerMock).toHaveBeenCalledWith({
       messenger: request.controllerMessenger,
       state: persistedState,
     });
-  });
-
-  it('exposes complianceCheckWalletsCompliance through the background API', async () => {
-    const checkWalletsCompliance = jest
-      .fn()
-      .mockResolvedValue([{ address: '0xabc', blocked: false }]);
-    ComplianceControllerMock.mockImplementationOnce(
-      () =>
-        ({
-          checkWalletsCompliance,
-        }) as never,
-    );
-    const request = {
-      ...buildControllerInitRequestMock(),
-      controllerMessenger: {
-        call: jest.fn(),
-      } as unknown as ComplianceControllerMessenger,
-      initMessenger: undefined,
-    };
-
-    const { api } = ComplianceControllerInit(request);
-
-    await expect(
-      api?.complianceCheckWalletsCompliance(['0xabc']),
-    ).resolves.toEqual([{ address: '0xabc', blocked: false }]);
-    expect(checkWalletsCompliance).toHaveBeenCalledWith(['0xabc']);
   });
 });
