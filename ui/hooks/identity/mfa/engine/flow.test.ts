@@ -224,6 +224,7 @@ describe('createMfaFlow', () => {
       email: 'new@b.co',
       codeSent: true,
     });
+    expect(flow.getState().resendAvailableAt).toBe(NOW + 60_000);
 
     await act(flow, { type: 'back' });
     expect(flow.getState().step).toStrictEqual({
@@ -509,10 +510,11 @@ describe('createMfaFlow', () => {
       });
 
       await act(flow, { type: 'resend' });
+      // The sent code starts the next cooldown.
       expect(flow.getState()).toMatchObject({
         step: { name: 'otp', codeSent: true },
         error: undefined,
-        resendAvailableAt: undefined,
+        resendAvailableAt: NOW + 60_000,
       });
     });
 

@@ -38,6 +38,12 @@ interface CurrentStep {
   email?: string;
 }
 
+/**
+ * The server's minimum gap between two email codes. A sent code starts it, so
+ * the resend button waits rather than failing with the cooldown error.
+ */
+const EMAIL_RESEND_COOLDOWN_MS = 60_000;
+
 export const createMfaFlow = ({
   request,
   reason,
@@ -183,7 +189,10 @@ export const createMfaFlow = ({
         step: { ...state.step, codeSent: true },
         busy: false,
         error: undefined,
-        resendAvailableAt: undefined,
+        resendAvailableAt:
+          current.method === 'email_otp'
+            ? now() + EMAIL_RESEND_COOLDOWN_MS
+            : undefined,
       });
     }
   };
@@ -414,7 +423,7 @@ export const createMfaFlow = ({
    *
    * There is no `resendAvailableAt` check here: a resend that comes too early
    * fails with a cooldown code, which the `cooldown` branch handles, and a
-   * successful send clears it in `beginCodeChallenge`.
+   * successful send restarts it in `beginCodeChallenge`.
    *
    * @param code - The error's code.
    * @param isRecovery - Whether the failed operation was itself a recovery.
@@ -599,13 +608,16 @@ export const createMfaFlow = ({
     // first tells the user a code went out when enrollment still failed.
     await run(async () => {
       await beginCodeChallenge();
-      show({
-        name: 'otp',
-        purpose: 'setup',
-        method: 'email_otp',
-        email,
-        codeSent: true,
-      });
+      show(
+        {
+          name: 'otp',
+          purpose: 'setup',
+          method: 'email_otp',
+          email,
+          codeSent: true,
+        },
+        { resendAvailableAt: now() + EMAIL_RESEND_COOLDOWN_MS },
+      );
     });
   };
 
