@@ -8,17 +8,20 @@ import { FEATURED_RPCS } from '../../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
   getFilteredFeaturedNetworks,
+  getRpcDataByChainId,
   sortNetworks,
 } from '../../../../../../shared/lib/network.utils';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   addNetwork,
+  setActiveNetwork,
   setEnabledAllPopularNetworks,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 import {
   getAllEnabledNetworksForAllNamespaces,
+  getIsEvmMultichainNetworkSelected,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors/multichain/networks';
 import {
@@ -68,6 +71,7 @@ export const useHomeNetworkFilter = ({
       state.metamask.multichainNetworkConfigurationsByChainId,
   );
   const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+  const isEvmNetworkSelected = useSelector(getIsEvmMultichainNetworkSelected);
   const useExternalServices = useSelector(getUseExternalServices);
   const showTestnets = useSelector(getShouldShowTestNetworks);
   const blacklistedChainIds = useSelector(
@@ -201,9 +205,35 @@ export const useHomeNetworkFilter = ({
     if (isPending) {
       return;
     }
+
     dispatch(setEnabledAllPopularNetworks());
+
+    // Popular networks include EVM chains, but enabling them does not change the
+    // active network. Coming from a non-EVM network leaves the non-EVM account
+    // selected, so the NFT tab stays on the unsupported empty state.
+    if (!isEvmNetworkSelected) {
+      const firstEvmNetwork = defaultNetworks.find((network) => network.isEvm);
+      if (firstEvmNetwork) {
+        const hexChainId = convertCaipToHexChainId(firstEvmNetwork.chainId);
+        if (evmNetworks[hexChainId]) {
+          const { defaultRpcEndpoint } = getRpcDataByChainId(
+            firstEvmNetwork.chainId,
+            evmNetworks,
+          );
+          dispatch(setActiveNetwork(defaultRpcEndpoint.networkClientId));
+        }
+      }
+    }
+
     onClose?.();
-  }, [dispatch, isPending, onClose]);
+  }, [
+    defaultNetworks,
+    dispatch,
+    evmNetworks,
+    isEvmNetworkSelected,
+    isPending,
+    onClose,
+  ]);
 
   const handleSelectNetwork = useCallback(
     async (chainId: CaipChainId) => {

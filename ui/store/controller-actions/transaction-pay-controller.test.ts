@@ -38,7 +38,7 @@ describe('transaction-pay-controller actions', () => {
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'updateTransactionPaymentToken',
+        'TransactionPayController:updatePaymentToken',
         [params],
       );
     });

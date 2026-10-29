@@ -142,6 +142,9 @@ class HomePage {
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
+  private readonly srpAddedToastCloseButton =
+    '.toast-container button[aria-label="Close"]';
+
   private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
 
   private readonly storageErrorToastBackupButton = {
@@ -152,11 +155,6 @@ class HomePage {
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   protected readonly swapButton = '[data-testid$="-overview-swap"]';
-
-  // The generic toaster close button has no data-testid (ButtonIcon only sets
-  // aria-label), so this selector is shared by every toast.
-  private readonly toastCloseButton =
-    '.toast-container button[aria-label="Close"]';
 
   protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -541,13 +539,13 @@ class HomePage {
   }
 
   async dismissAccountImportedToast(): Promise<void> {
-    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
     // The toast can take some time to appear
-    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   /**

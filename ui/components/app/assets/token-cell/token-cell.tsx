@@ -12,7 +12,6 @@ import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layou
 import { useTokenDisplayInfo } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
 import { NativeTokenScamWarningModal } from './native-token-scam-warning-modal';
-
 import {
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
