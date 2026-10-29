@@ -75,6 +75,7 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
 }));
 
 jest.mock('../perps-toast', () => ({
+  ...jest.requireActual('../perps-toast'),
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),

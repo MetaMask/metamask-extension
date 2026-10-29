@@ -1847,6 +1847,29 @@ describe('PerpsStreamManager', () => {
       );
       expect(cb).toHaveBeenLastCalledWith(freshPositions);
     });
+
+    it.each([
+      ['the account switches', (m: PerpsStreamManager) => m.init('0xaccountB')],
+      ['the network changes', (m: PerpsStreamManager) => m.clearAllCaches()],
+      ['the manager resets', (m: PerpsStreamManager) => m.reset()],
+    ])('drops a response that resolves after %s', async (_, transition) => {
+      manager.init('0xaccountA');
+      let resolveStale: (positions: Position[]) => void = () => undefined;
+      mockSubmitRequestToBackground.mockReturnValueOnce(
+        new Promise<Position[]>((resolve) => {
+          resolveStale = resolve;
+        }),
+      );
+      const refresh = manager.refreshPositions();
+      transition(manager);
+      const currentPositions = [makePosition('ETH')];
+      manager.positions.pushData(currentPositions);
+
+      resolveStale([makePosition('BTC')]);
+      await refresh;
+
+      expect(manager.positions.getCachedData()).toBe(currentPositions);
+    });
   });
 
   describe('pushPositionsWithOverrides', () => {

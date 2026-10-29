@@ -130,9 +130,9 @@ import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-co
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
+import { usePerpsPositionAlreadyClosed } from '../../components/app/perps/hooks/usePerpsPositionAlreadyClosed';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { captureException } from '../../../shared/lib/sentry';
 import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplaySymbol,
@@ -1912,11 +1912,11 @@ const PerpsOrderEntryPage = () => {
 
   // The position closed after this form rendered: say so, drop it from the
   // view and leave rather than fall through to placing a new order.
+  const notifyPositionAlreadyClosed = usePerpsPositionAlreadyClosed();
   const handlePositionAlreadyClosed = useCallback(() => {
-    replacePerpsToastByKey({ key: PERPS_TOAST_KEYS.POSITION_ALREADY_CLOSED });
-    getPerpsStreamManager().refreshPositions().catch(captureException);
+    notifyPositionAlreadyClosed();
     handleBackClick();
-  }, [replacePerpsToastByKey, handleBackClick]);
+  }, [notifyPositionAlreadyClosed, handleBackClick]);
 
   const handleOrderSubmit = useCallback(async () => {
     if (!isEligible) {

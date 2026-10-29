@@ -486,10 +486,16 @@ class PerpsStreamManager {
    * so views drop a position that closed outside the stream's latest update.
    */
   async refreshPositions(): Promise<void> {
+    const generation = this.positions.getGeneration();
     const positions = await submitRequestToBackground<Position[]>(
       'perpsGetPositions',
       [{ skipCache: true }],
     );
+    // The response belongs to the account and network it was requested for.
+    // Drop it if either changed (or the manager reset) while it was in flight.
+    if (generation !== this.positions.getGeneration()) {
+      return;
+    }
     this.pushPositionsWithOverrides(positions);
   }
 
