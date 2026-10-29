@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { NameType } from '@metamask/name-controller';
 import { Text } from '../../../component-library';
-import { shortenAddress } from '../../../../helpers/utils/util';
+import { shortenAddress, shortenString } from '../../../../helpers/utils/util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 
 function formatValue(
@@ -15,17 +15,14 @@ function formatValue(
   }
 
   switch (type) {
-    case NameType.ETHEREUM_ADDRESS: {
-      const checksumAddress = toChecksumAddress(value);
-      if (!addressSideLength) {
-        return shortenAddress(checksumAddress);
-      }
-      if (checksumAddress.length <= addressSideLength * 2) {
-        return checksumAddress;
-      }
-
-      return `${checksumAddress.slice(0, addressSideLength)}...${checksumAddress.slice(-addressSideLength)}`;
-    }
+    case NameType.ETHEREUM_ADDRESS:
+      return addressSideLength
+        ? shortenString(toChecksumAddress(value), {
+            truncatedCharLimit: addressSideLength * 2 + 1,
+            truncatedStartChars: addressSideLength,
+            truncatedEndChars: addressSideLength,
+          })
+        : shortenAddress(toChecksumAddress(value));
 
     default:
       return value;
