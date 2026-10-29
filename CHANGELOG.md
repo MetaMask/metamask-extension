@@ -57,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed transaction nonce reuse when the network transaction count lagged behind a confirmed transaction. (#47085)
 - Fixed Money deposits confirming the previous Max amount when Add funds was pressed before the typed amount finished updating. (#47018)
 - Fixed Money routes becoming a dead end when the bottom navbar was unavailable (#47321)
+- Fixed Money Account deposits on Monad being incorrectly blocked by a reserve balance alert (#47439)
 
 ### Security
 
