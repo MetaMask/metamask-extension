@@ -22,7 +22,6 @@ import {
   SensitiveText,
   TextVariant,
   TextColor,
-  FontFamily,
   FontWeight,
   Icon,
   IconName,
@@ -1358,8 +1357,8 @@ const PerpsMarketDetailPage = () => {
         data-testid="perps-market-detail-summary"
       >
         <Text
-          variant={TextVariant.AmountDisplayLg}
-          fontFamily={FontFamily.Hero}
+          variant={TextVariant.HeadingLg}
+          fontWeight={FontWeight.Bold}
           data-testid="perps-market-detail-price"
         >
           {displayPrice}
