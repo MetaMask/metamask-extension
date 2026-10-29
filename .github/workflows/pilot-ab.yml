@@ -23,6 +23,11 @@ name: Pilot A/B benchmarks
 # Firefox only, default 100 shards; shard s runs arm (s - 1) % 5 from R4_ARMS
 # (milliseconds and zero-based script index), order alternating every 5
 # shards.
+#
+# Round 5 (branches trigger-ci-pilot-r5*): identical builds (A/A) with 20
+# sessions per job instead of 10, both browsers, default 100 shards per
+# browser, order alternating by shard. Compares the noise of one 20-session
+# job with two 10-session jobs from round 1.
 
 on:
   push:
@@ -69,6 +74,9 @@ jobs:
             default=100
           elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r4* ]]; then
             round=4
+            default=100
+          elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r5* ]]; then
+            round=5
             default=100
           fi
           if [[ "$BRANCH_NAME" =~ -smoke$ ]]; then
@@ -127,6 +135,16 @@ jobs:
                    injectArg: "--inject-ms \($a.ms) --inject-site \($a.site)"}
               ]}')
             echo "Round 4: $shards Firefox shards, arm = (shard - 1) % 5"
+          elif (( round == 5 )); then
+            matrix=$(jq -nc --argjson s "$shards" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | range(1; $s + 1) as $shard
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, flip: (($shard - 1) % 2),
+                   browserLoads: 20, suffix: "-aa20"}
+              ]}')
+            echo "Round 5: $shards shards per browser, 20 sessions per job"
           else
             journey=$(( shards / 2 ))
             (( journey < 1 )) && journey=1
@@ -150,7 +168,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     runs-on: ubuntu-26.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       SELENIUM_HEADLESS: true
@@ -200,11 +218,11 @@ jobs:
         run: echo "BENCHMARK_AB_FLIP=${MATRIX_FLIP:-$((RANDOM % 2))}" >> "$GITHUB_ENV"
 
       - name: Run the A/B benchmark
-        timeout-minutes: 25
+        timeout-minutes: 35
         run: >-
           yarn test:e2e:benchmark
           --preset ${{ matrix.pageType }}
-          ${{ matrix.pageType == 'startupStandardHome' && '--browserLoads 10 --pageLoads 10' || '--iterations 10' }}
+          ${{ matrix.pageType == 'startupStandardHome' && format('--browserLoads {0} --pageLoads 10', matrix.browserLoads || 10) || '--iterations 10' }}
           --retries 2
           --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-${{ matrix.pageType }}-s${{ matrix.shard }}.json
 
