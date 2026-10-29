@@ -28,10 +28,15 @@ import type {
   AuthenticatedUserStorageServiceGetNotificationPreferencesAction,
   AuthenticatedUserStorageServicePutNotificationPreferencesAction,
 } from '@metamask/authenticated-user-storage';
+import type { PerpsControllerGetMarketsAction } from '@metamask/perps-controller';
 import { RewardsControllerGetPerpsDiscountForAccountAction } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
+  // TODO: Import PerpsControllerMessenger from @metamask/perps-controller
+  // instead of reconstructing it, so that it has all of the PerpsController
+  // actions (including this one)
+  | PerpsControllerGetMarketsAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
