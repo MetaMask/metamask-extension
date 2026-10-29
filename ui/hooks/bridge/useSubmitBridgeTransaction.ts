@@ -155,6 +155,10 @@ export default function useSubmitBridgeTransaction(
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            // @ts-expect-error We're passing an enum that has more potential
+            // properties than `BridgeStatusController.submitIntent` knows what
+            // to do with.
+            // TODO: Remove these extra properties?
             location,
             tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
             activeAbTests,
@@ -178,6 +182,10 @@ export default function useSubmitBridgeTransaction(
             quoteResponse,
             smartTransactionsEnabled,
             quotesReceivedContext,
+            // @ts-expect-error We're passing an enum that has more potential
+            // properties than `BridgeStatusController.submitBridgeTx` knows
+            // what to do with.
+            // TODO: Remove these extra properties?
             location,
             toToken?.securityData?.type ?? null,
             activeAbTests,
