@@ -5209,72 +5209,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#validateRewardsReferralCode', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls background with provided code and returns true', async () => {
-      const store = mockStore();
-
-      background = {
-        messengerCall: sinon.stub().resolves(true),
-      };
-      setBackgroundConnection(background);
-
-      const code = 'ABCDEF';
-      const result = await store.dispatch(
-        actions.validateRewardsReferralCode(code),
-      );
-
-      expect(
-        background.messengerCall.calledOnceWithExactly(
-          'RewardsController:validateReferralCode',
-          [code],
-        ),
-      ).toBe(true);
-      expect(result).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-
-    it('returns false when background reports invalid code', async () => {
-      const store = mockStore();
-
-      background = {
-        messengerCall: sinon.stub().resolves(false),
-      };
-      setBackgroundConnection(background);
-
-      const code = 'INVALID';
-      const result = await store.dispatch(
-        actions.validateRewardsReferralCode(code),
-      );
-
-      expect(
-        background.messengerCall.calledOnceWithExactly(
-          'RewardsController:validateReferralCode',
-          [code],
-        ),
-      ).toBe(true);
-      expect(result).toBe(false);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-
-    it('propagates errors from background without dispatching actions', async () => {
-      const store = mockStore();
-
-      background = {
-        messengerCall: sinon.stub().rejects(new Error('network error')),
-      };
-      setBackgroundConnection(background);
-
-      await expect(
-        store.dispatch(actions.validateRewardsReferralCode('ABCDEF')),
-      ).rejects.toThrow('network error');
-      expect(store.getActions()).toStrictEqual([]);
-    });
-  });
-
   describe('#getRewardsGeoMetadata', () => {
     afterEach(() => {
       sinon.restore();
@@ -5435,7 +5369,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls background with referral code and returns subscription id', async () => {
+    it('calls background and returns subscription id', async () => {
       const store = mockStore();
 
       background = {
@@ -5446,14 +5380,13 @@ describe('Actions', () => {
       const result = await store.dispatch(
         actions.rewardsOptIn({
           accounts: mockAccounts,
-          referralCode: 'ABCDEF',
         }),
       );
 
       expect(
         background.messengerCall.calledOnceWithExactly(
           'RewardsController:optIn',
-          [mockAccounts, 'ABCDEF'],
+          [mockAccounts],
         ),
       ).toBe(true);
       expect(result).toStrictEqual('sub_123');
@@ -5475,7 +5408,7 @@ describe('Actions', () => {
       expect(
         background.messengerCall.calledOnceWithExactly(
           'RewardsController:optIn',
-          [mockAccounts, undefined],
+          [mockAccounts],
         ),
       ).toBe(true);
       expect(result).toBeNull();

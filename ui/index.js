@@ -49,6 +49,7 @@ import {
 import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root, { router } from './pages';
 import { registerHomeMeasurement } from './pages/home/home-performance';
+import { registerUnlockMeasurement } from './pages/unlock-page/unlock-performance';
 import txHelper from './helpers/utils/tx-helper';
 import {
   setBackgroundConnection,
@@ -242,6 +243,7 @@ async function startApp(metamaskState, opts) {
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
   registerHomeMeasurement(metamaskState, router);
+  registerUnlockMeasurement(metamaskState, router);
 
   const store = await trace(
     {

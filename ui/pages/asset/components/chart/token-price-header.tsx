@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Box,
   BoxFlexDirection,
+  FontFamily,
   FontWeight,
   Skeleton,
   Text,
@@ -32,7 +33,9 @@ export type TokenPriceHeaderProps = {
  */
 const PriceLoading = () => (
   <Skeleton hideChildren width="25%" className="mb-1 rounded-lg">
-    <Text variant={TextVariant.DisplayMd}>{'\u00A0'}</Text>
+    <Text variant={TextVariant.AmountDisplayLg} fontFamily={FontFamily.Hero}>
+      {'\u00A0'}
+    </Text>
   </Skeleton>
 );
 
@@ -41,7 +44,9 @@ const PriceLoading = () => (
  */
 const PriceEmptyState = () => (
   <Box marginBottom={1}>
-    <Text variant={TextVariant.DisplayMd}>{'\u00A0'}</Text>
+    <Text variant={TextVariant.AmountDisplayLg} fontFamily={FontFamily.Hero}>
+      {'\u00A0'}
+    </Text>
   </Box>
 );
 
@@ -142,8 +147,8 @@ const TokenPriceHeader = ({
         >
           <Text
             data-testid="asset-hovered-price"
-            variant={TextVariant.DisplayMd}
-            fontWeight={FontWeight.Medium}
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
           >
             {formatCurrencyTokenPrice(price, currency)}
           </Text>
