@@ -4299,10 +4299,6 @@
     "message": "В этой сети требуется оставить не менее $1 $2 на вашем счете после транзакции. Баланс смарт-счета не может опускаться ниже этого резерва.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 покрывает комиссию сети за эту транзакцию. Сюда входит однократная активация смарт-счета.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 ч",
     "description": "$1 represents a number of hours"
@@ -5541,12 +5537,6 @@
   "mfaFailureClose": {
     "message": "Закрыть"
   },
-  "mfaFailureContactSupport": {
-    "message": "Связаться с поддержкой"
-  },
-  "mfaFailureDone": {
-    "message": "Выполнено"
-  },
   "mfaFailureRetry": {
     "message": "Повторить попытку"
   },
@@ -5624,9 +5614,6 @@
   },
   "mfaOtpTitle": {
     "message": "Введите код подтверждения"
-  },
-  "mfaOtpVerifying": {
-    "message": "Отправить код"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Создать ключ доступа"
@@ -9685,33 +9672,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Не удалось добавить счет"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Вы не можете воспользоваться приглашением из-за недавней торговой активности."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Вас уже направил другой пользователь."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Недействительный реферальный код"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Реферальный код"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "Не удалось проверить реферальный код."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "Вы не можете использовать собственный реферальный код."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "Вы не можете воспользоваться приглашением другого пользователя."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Что-то пошло не так. Повторите попытку чуть позже."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Слишком много попыток. Подождите немного."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Проверка региона..."

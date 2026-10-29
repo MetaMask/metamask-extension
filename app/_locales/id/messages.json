@@ -4299,10 +4299,6 @@
     "message": "Jaringan ini mengharuskan Anda untuk menyisakan minimal $1 $2 di akun Anda setelah transaksi dilakukan. Akun cerdas tidak diperbolehkan memiliki saldo di bawah jumlah cadangan tersebut.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 menanggung biaya jaringan untuk transaksi ini. Ini termasuk aktivasi akun cerdas satu kali.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 jam",
     "description": "$1 represents a number of hours"
@@ -5545,12 +5541,6 @@
   "mfaFailureClose": {
     "message": "Tutup"
   },
-  "mfaFailureContactSupport": {
-    "message": "Hubungi dukungan"
-  },
-  "mfaFailureDone": {
-    "message": "Selesai"
-  },
   "mfaFailureRetry": {
     "message": "Coba lagi"
   },
@@ -5628,9 +5618,6 @@
   },
   "mfaOtpTitle": {
     "message": "Masukkan kode verifikasi Anda"
-  },
-  "mfaOtpVerifying": {
-    "message": "Memverifikasi kode"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Buat kode sandi"
@@ -9693,33 +9680,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Gagal menambahkan akun"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Anda tidak dapat dirujuk karena aktivitas perdagangan baru-baru ini."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Anda telah dirujuk oleh pengguna lain."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Kode referensi tidak valid"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Kode referensi"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "Kode referensi tidak dapat divalidasi."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "Anda tidak dapat menggunakan kode referensi milik Anda sendiri."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "Anda tidak dapat dirujuk oleh orang lain."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Terjadi kesalahan. Coba lagi nanti."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Terlalu banyak percobaan. Tunggu sebentar."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Memeriksa wilayah..."

@@ -4299,10 +4299,6 @@
     "message": "Kailangang panatilihin ng network na ito ang hindi bababa sa $1 $2 sa iyong account pagkatapos ng transaksyon. Hindi dapat mas mababa ang mga smart account sa reserbang ito.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "Saklaw ang $1 ang bayad sa network para sa transaksyong ito. Kabilang dito ang isang beses na pag-activate sa smart account.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 oras",
     "description": "$1 represents a number of hours"
@@ -5541,12 +5537,6 @@
   "mfaFailureClose": {
     "message": "Isara"
   },
-  "mfaFailureContactSupport": {
-    "message": "Kontakin ang suporta"
-  },
-  "mfaFailureDone": {
-    "message": "Tapos na"
-  },
   "mfaFailureRetry": {
     "message": "Subukang muli"
   },
@@ -5624,9 +5614,6 @@
   },
   "mfaOtpTitle": {
     "message": "Ilagay ang iyong code ng pag-verify"
-  },
-  "mfaOtpVerifying": {
-    "message": "Vine-verify ang code"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Gumawa ng passkey"
@@ -9685,33 +9672,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Bigong maidagdag ang account"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Hindi ka maaaring i-refer dahil sa kamakailang aktibidad sa pagti-trade."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Nai-refer ka na ng ibang user."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Hindi valid na referral code"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Referral code"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "Hindi ma-validate ang referral code."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "Hindi mo maaaring gamitin ang sarili mong referral code."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "Hindi ka maaaring i-refer ng ibang tao."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Nagkaproblema. Subukan muli maya-maya."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Napakaraming beses ng sinubukan. Maghintay sandali."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Sinusuri ang rehiyon..."

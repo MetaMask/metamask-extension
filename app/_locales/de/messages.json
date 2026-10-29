@@ -4299,10 +4299,6 @@
     "message": "Für dieses Netzwerk müssen nach der Transaktion mindestens $1 $2 auf Ihrem Konto verbleiben. Bei Smart-Konten darf dieser Mindestbetrag nicht unterschritten werden.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 übernimmt die Netzwerkgebühr für diese Transaktion. Dies beinhaltet die einmalige Aktivierung des Smart-Kontos.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 Stunden",
     "description": "$1 represents a number of hours"
@@ -5540,12 +5536,6 @@
   },
   "mfaFailureClose": {
     "message": "Schließen"
-  },
-  "mfaFailureContactSupport": {
-    "message": "Support kontaktieren"
-  },
-  "mfaFailureDone": {
-    "message": "Fertig"
   },
   "mfaFailureRetry": {
     "message": "Erneut versuchen"
@@ -9682,33 +9672,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Hinzufügen des Kontos fehlgeschlagen"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Aufgrund Ihrer jüngsten Handelsaktivitäten können Sie nicht empfohlen werden."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Sie wurden bereits von einem anderen Nutzer empfohlen."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Ungültiger Empfehlungscode"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Empfehlungscode"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "Empfehlungscode konnte nicht validiert werden."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "Sie können nicht Ihren eigenen Empfehlungscode verwenden."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "Sie können nicht von einer anderen Person empfohlen werden."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Etwas ist schiefgelaufen. Versuchen Sie es in Kürze erneut."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Zu viele Versuche. Einen Moment bitte."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Region wird überprüft ..."

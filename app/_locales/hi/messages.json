@@ -4299,10 +4299,6 @@
     "message": "इस नेटवर्क के लिए ट्रांसेक्शन के बाद आपके अकाउंट में कम से कम $1 $2 रखना ज़रूरी है। स्मार्ट अकाउंट इस रिज़र्व से नीचे नहीं जा सकते।",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 इस ट्रांसेक्शन के लिए नेटवर्क फ़ीस कवर करता है। इसमें एक बार का स्मार्ट अकाउंट एक्टिवेशन शामिल है।",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
     "description": "$1 represents a number of hours"
@@ -5540,12 +5536,6 @@
   },
   "mfaFailureClose": {
     "message": "बंद करें"
-  },
-  "mfaFailureContactSupport": {
-    "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
-  },
-  "mfaFailureDone": {
-    "message": "पूरा हुआ"
   },
   "mfaFailureRetry": {
     "message": "फिर से प्रयास करें"
@@ -9682,33 +9672,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "आपको हाल की ट्रेडिंग एक्टिविटी की वजह से रेफ़र नहीं किया जा सकता।"
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "आप पहले ही किसी अन्य उपयोगकर्ता द्वारा रेफर किए जा चुके हैं।"
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "रेफरल कोड ग़लत है"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "रेफरल कोड"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "आप अपना स्वयं का रेफरल कोड उपयोग नहीं कर सकते।"
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "आपको कोई और रेफ़र नहीं कर सकता।"
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "कुछ गलत हो गया। थोड़ी देर में फिर से कोशिश करें।"
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "बहुत ज़्यादा कोशिशें की गईं। थोड़ा इंतज़ार करें।"
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "क्षेत्र की जांच की जा रही है…"

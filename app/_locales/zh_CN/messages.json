@@ -4299,10 +4299,6 @@
     "message": "此网络要求交易后您的账户中至少保留 $1 $2。智能账户不能低于此保留金额。",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 将承担本次交易的网络费用，其中包括一次性智能账户激活。",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 小时",
     "description": "$1 represents a number of hours"
@@ -5540,12 +5536,6 @@
   },
   "mfaFailureClose": {
     "message": "关闭"
-  },
-  "mfaFailureContactSupport": {
-    "message": "联系支持团队"
-  },
-  "mfaFailureDone": {
-    "message": "已完成"
   },
   "mfaFailureRetry": {
     "message": "请重试"
@@ -9688,33 +9678,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "添加账户失败"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "由于近期的交易活动，您不能被推荐。"
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "您已被其他用户推荐过。"
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "推荐码无效"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "推荐码"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "推荐码验证失败."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "您无法使用您本人的推荐码。"
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "您不能被他人推荐。"
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "出现问题。请稍后重试。"
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "尝试次数过多。请稍候。"
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "正在检查地区……"

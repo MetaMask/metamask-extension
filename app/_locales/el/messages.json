@@ -4299,10 +4299,6 @@
     "message": "Αυτό το δίκτυο απαιτεί να διατηρείτε τουλάχιστον $1 $2 στον λογαριασμό σας μετά τη συναλλαγή. Τα έξυπνα πορτοφόλια δεν μπορούν να έχουν υπόλοιπο μικρότερο από αυτό το αποθεματικό.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "Το $1 καλύπτει τα τέλη δικτύου για αυτή τη συναλλαγή. Αυτό περιλαμβάνει και μία εφάπαξ ενεργοποίηση έξυπνου συμβολαίου.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 ώρες",
     "description": "$1 represents a number of hours"
@@ -5541,12 +5537,6 @@
   "mfaFailureClose": {
     "message": "Κλείσιμο"
   },
-  "mfaFailureContactSupport": {
-    "message": "Επικοινωνήστε με την υποστήριξη"
-  },
-  "mfaFailureDone": {
-    "message": "Τέλος"
-  },
   "mfaFailureRetry": {
     "message": "Προσπαθήστε ξανά"
   },
@@ -5624,9 +5614,6 @@
   },
   "mfaOtpTitle": {
     "message": "Πληκτρολογήστε τον κωδικό επαλήθευσης"
-  },
-  "mfaOtpVerifying": {
-    "message": "Επαλήθευση κωδικού"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Δημιουργία κλειδιού πρόσβασης"
@@ -9685,33 +9672,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Αποτυχία προσθήκης λογαριασμού"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Δεν μπορείτε να εγγραφείτε μέσω παραπομπής λόγω της πρόσφατης δραστηριότητάς σας στις συναλλαγές."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Έχετε ήδη παραπεμφθεί από άλλον χρήστη."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Μη έγκυρος κωδικός παραπομπής"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Κωδικός παραπομπής"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "Δεν μπορείτε να χρησιμοποιήσετε τον δικό σας κωδικό παραπομπής."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "Δεν μπορείτε να εγγραφείτε μέσω παραπομπής από άλλο άτομο."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Παρουσιάστηκε κάποιο πρόβλημα. Προσπαθήστε ξανά σε λίγο."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Έχετε κάνει πάρα πολλές προσπάθειες. Περιμένετε λίγο και προσπαθήστε ξανά."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Έλεγχος περιοχής…"

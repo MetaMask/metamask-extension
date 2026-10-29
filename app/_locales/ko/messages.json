@@ -4299,10 +4299,6 @@
     "message": "이 네트워크를 이용하려면 거래 후 계정에 최소 $1 $2의 잔액을 유지해야 합니다. 스마트 계정의 잔액은 이 금액보다 적어질 수 없습니다.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1는 스마트 계정을 활성화하는 1회성 비용과 이 거래의 네트워크 수수료를 부담합니다.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 시간",
     "description": "$1 represents a number of hours"
@@ -5545,12 +5541,6 @@
   "mfaFailureClose": {
     "message": "닫기"
   },
-  "mfaFailureContactSupport": {
-    "message": "지원팀에 문의"
-  },
-  "mfaFailureDone": {
-    "message": "완료"
-  },
   "mfaFailureRetry": {
     "message": "다시 시도"
   },
@@ -5628,9 +5618,6 @@
   },
   "mfaOtpTitle": {
     "message": "인증 코드 입력"
-  },
-  "mfaOtpVerifying": {
-    "message": "코드 확인 중"
   },
   "mfaPasskeyTitleSetup": {
     "message": "패스키 생성"
@@ -9693,33 +9680,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "계정 추가 실패"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "최근 거래 활동으로 인해 추천을 받을 수 없습니다."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "이미 다른 사용자의 추천을 받았습니다."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "잘못된 추천 코드"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "추천 코드"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "추천 코드를 확인할 수 없습니다."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "본인의 추천 코드는 사용할 수 없습니다."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "다른 사람의 추천을 받을 수 없습니다."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "시도 횟수가 너무 많습니다. 잠시 기다리세요."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "지역 확인 중..."

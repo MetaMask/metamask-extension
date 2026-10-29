@@ -4299,10 +4299,6 @@
     "message": "Esta red requiere mantener al menos $1 $2 en tu cuenta después de la transacción. Las cuentas inteligentes no pueden tener un saldo inferior a esta reserva.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 cubre la tarifa de red de esta transacción. Esto incluye la activación única de la cuenta inteligente.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 horas",
     "description": "$1 represents a number of hours"
@@ -5545,12 +5541,6 @@
   "mfaFailureClose": {
     "message": "Cerrar"
   },
-  "mfaFailureContactSupport": {
-    "message": "Contactar a soporte"
-  },
-  "mfaFailureDone": {
-    "message": "Hecho"
-  },
   "mfaFailureRetry": {
     "message": "Inténtalo de nuevo"
   },
@@ -5628,9 +5618,6 @@
   },
   "mfaOtpTitle": {
     "message": "Ingresa tu código de verificación"
-  },
-  "mfaOtpVerifying": {
-    "message": "Verificando código"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Crea una clave de acceso"
@@ -9699,33 +9686,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Error al agregar la cuenta"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "No puedes ser recomendado debido a tu actividad de trading reciente."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Ya otro usuario te ha recomendado."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Código de recomendación no válido"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Código de recomendación"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "El código de recomendación no se pudo validar."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "No puedes usar tu propio código de recomendación."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "No puedes ser recomendado por otra persona."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Se produjo un error. Inténtalo de nuevo en breve."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Demasiados intentos. Espera un momento."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Comprobando región..."

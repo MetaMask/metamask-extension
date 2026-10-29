@@ -4299,10 +4299,6 @@
     "message": "Mạng này yêu cầu tài khoản của bạn duy trì ít nhất $1 $2 sau giao dịch. Số dư của tài khoản thông minh không được thấp hơn mức dự trữ này.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 sẽ thanh toán phí mạng cho giao dịch này. Phí này bao gồm một lần kích hoạt tài khoản thông minh.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 giờ",
     "description": "$1 represents a number of hours"
@@ -5545,12 +5541,6 @@
   "mfaFailureClose": {
     "message": "Đóng"
   },
-  "mfaFailureContactSupport": {
-    "message": "Liên hệ bộ phận hỗ trợ"
-  },
-  "mfaFailureDone": {
-    "message": "Hoàn tất"
-  },
   "mfaFailureRetry": {
     "message": "Thử lại"
   },
@@ -5628,9 +5618,6 @@
   },
   "mfaOtpTitle": {
     "message": "Nhập mã xác minh của bạn"
-  },
-  "mfaOtpVerifying": {
-    "message": "Đang xác minh mã"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Tạo khóa truy cập"
@@ -9699,33 +9686,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Thêm tài khoản không thành công"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Không thể giới thiệu bạn do đã có hoạt động giao dịch gần đây."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Bạn đã được người dùng khác giới thiệu."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Mã giới thiệu không hợp lệ"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Mã giới thiệu"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "Không thể xác minh mã giới thiệu."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "Bạn không thể sử dụng mã giới thiệu của chính mình."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "Người khác không thể giới thiệu bạn."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Đã xảy ra sự cố. Hãy thử lại sau ít phút."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Bạn đã thử quá nhiều lần. Hãy đợi giây lát."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Đang kiểm tra khu vực..."

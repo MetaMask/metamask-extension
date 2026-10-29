@@ -4299,10 +4299,6 @@
     "message": "Bu ağ için işlemin ardından hesabınızda en az $1 $2 tutmanız gerekir. Akıllı hesaplar bu rezervin altına düşemez.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 bu işlem için ağ ücretini karşılamaktadır. Buna tek seferlik akıllı hesap aktivasyonu da dahildir.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 sa.",
     "description": "$1 represents a number of hours"
@@ -5545,12 +5541,6 @@
   "mfaFailureClose": {
     "message": "Kapat"
   },
-  "mfaFailureContactSupport": {
-    "message": "Destek ile iletişime geç"
-  },
-  "mfaFailureDone": {
-    "message": "Bitti"
-  },
   "mfaFailureRetry": {
     "message": "Tekrar deneyin"
   },
@@ -5628,9 +5618,6 @@
   },
   "mfaOtpTitle": {
     "message": "Doğrulama kodunuzu girin"
-  },
-  "mfaOtpVerifying": {
-    "message": "Kod doğrulanıyor"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Bir geçiş anahtarı oluşturun"
@@ -9699,33 +9686,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Hesap eklenemedi"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Son zamanlardaki işlem hareketleriniz nedeniyle referansla katılamazsınız."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Zaten başka bir kullanıcının referansı ile geldiniz."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Geçersiz referans kodu"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Referans kodu"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "Referans kodu doğrulanamadı."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "Kendi referans kodunuzu kullanamazsınız."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "Başka birinin referansıyla katılamazsınız."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Bir hata oluştu. Kısa süre sonra tekrar deneyin."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Çok fazla deneme. Bir süre sonra tekrar deneyin."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Bölge kontrol ediliyor..."

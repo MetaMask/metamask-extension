@@ -4299,10 +4299,6 @@
     "message": "Ce réseau exige de conserver au moins $1 $2 sur votre compte après la transaction. Le solde des comptes intelligents ne peut pas descendre en dessous de cette réserve.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
-  "gasSponsorshipSponsorTooltip": {
-    "message": "$1 prend en charge les frais de réseau liés à cette transaction. Cela inclut l'activation unique d'un compte intelligent.",
-    "description": "$1 is the name of the party paying the network fee, such as a dapp."
-  },
   "gasTimingHoursShort": {
     "message": "$1 h",
     "description": "$1 represents a number of hours"
@@ -5540,12 +5536,6 @@
   },
   "mfaFailureClose": {
     "message": "Fermer"
-  },
-  "mfaFailureContactSupport": {
-    "message": "Contacter le service d’assistance"
-  },
-  "mfaFailureDone": {
-    "message": "Terminé"
   },
   "mfaFailureRetry": {
     "message": "Réessayer"
@@ -9682,33 +9672,6 @@
   },
   "rewardsLinkAccountError": {
     "message": "Échec de l’ajout du compte"
-  },
-  "rewardsMoneyReferralActiveTrader": {
-    "message": "Vous ne pouvez pas être parrainé en raison de votre activité de trading récente."
-  },
-  "rewardsMoneyReferralAlreadyReferred": {
-    "message": "Vous avez déjà été parrainé par un autre utilisateur."
-  },
-  "rewardsMoneyReferralCodeError": {
-    "message": "Code de parrainage non valide"
-  },
-  "rewardsMoneyReferralCodeLabel": {
-    "message": "Code de parrainage"
-  },
-  "rewardsMoneyReferralCodeUnknownError": {
-    "message": "Impossible de valider le code de parrainage."
-  },
-  "rewardsMoneyReferralOwnCode": {
-    "message": "Vous ne pouvez pas utiliser votre propre code de parrainage."
-  },
-  "rewardsMoneyReferralReferrerCannotBeReferred": {
-    "message": "Vous ne pouvez pas être parrainé par quelqu’un d’autre."
-  },
-  "rewardsMoneyReferralSomethingWentWrong": {
-    "message": "Une erreur s’est produite. Veuillez réessayer dans quelques instants."
-  },
-  "rewardsMoneyReferralTooManyTries": {
-    "message": "Trop de tentatives. Veuillez patienter un instant."
   },
   "rewardsOnboardingCheckingRegion": {
     "message": "Vérification de la région…"
