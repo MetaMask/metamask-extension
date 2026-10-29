@@ -184,6 +184,7 @@
     "metaMetricsDataDeletionTimestamp": 0
   },
   "MoneyAccountController": {
+    "defaultMoneyAccountId": null,
     "moneyAccounts": "object"
   },
   "MoneyAccountUpgradeController": {
@@ -362,7 +363,7 @@
   },
   "RewardsController": {
     "rewardsAccounts": "object",
-    "rewardsActiveAccount": null,
+    "rewardsActiveAccount": "object",
     "rewardsPointsEstimateHistory": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
@@ -371,6 +372,7 @@
     "rewardsVipPerpsFees": "object"
   },
   "RewardsDataService": "undefined",
+  "RewardsMoneyController": "object",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",

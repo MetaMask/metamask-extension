@@ -1,45 +1,29 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextButton,
   TextButtonSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  ModalBody,
-  TextField,
-  TextFieldSize,
-} from '../../../component-library';
+import { ModalBody } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOptIn } from '../../../../hooks/rewards/useOptIn';
-import {
-  REFERRAL_CODE_MIN_LENGTH,
-  useValidateReferralCode,
-} from '../../../../hooks/rewards/useValidateReferralCode';
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
 import { useCandidateSubscriptionId } from '../../../../hooks/rewards/useCandidateSubscriptionId';
 import { setErrorToast } from '../../../../ducks/rewards';
 import {
   selectCandidateSubscriptionId,
-  selectOnboardingReferralCode,
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoError,
   selectOptinAllowedForGeoLoading,
-  selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
 import { useAppSelector, useDispatch } from '../../../../store/hooks';
-import LoadingIndicator from '../../../ui/loading-indicator';
 import RewardsErrorBanner from '../RewardsErrorBanner';
-import { RewardsVipReferralTag } from '../RewardsVipReferralTag';
 
 import {
   REWARDS_ONBOARD_HERO_IMAGE_URL,
@@ -64,7 +48,6 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
     shieldSubscriptionId,
   });
 
-  const onboardingReferralCode = useSelector(selectOnboardingReferralCode);
   const optinAllowedForGeo = useSelector(selectOptinAllowedForGeo);
   const optinAllowedForGeoLoading = useSelector(
     selectOptinAllowedForGeoLoading,
@@ -85,45 +68,6 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       (!candidateSubscriptionId || candidateSubscriptionIdError),
   });
   const { fetchCandidateSubscriptionId } = useCandidateSubscriptionId();
-
-  const hasPrefilledReferral = Boolean(onboardingReferralCode);
-  const [showReferralInput, setShowReferralInput] =
-    useState(hasPrefilledReferral);
-  const referralInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (showReferralInput) {
-      referralInputRef.current?.focus();
-    }
-  }, [showReferralInput]);
-
-  const {
-    referralCode,
-    setReferralCode: handleReferralCodeChange,
-    isValidating: isValidatingReferralCode,
-    isValid: referralCodeIsValid,
-    isVipCode: referralCodeIsVip,
-    isUnknownError: isUnknownErrorReferralCode,
-  } = useValidateReferralCode(
-    onboardingReferralCode
-      ? onboardingReferralCode.trim().toUpperCase()
-      : undefined,
-  );
-  const referralCodeReadyForValidation =
-    referralCode.length >= REFERRAL_CODE_MIN_LENGTH;
-
-  // Reactive UI gate (in addition to the controller's gating): hides the VIP
-  // tag immediately if the program flag flips off, so a stale cached
-  // `isVipCode` can't keep the tag on screen.
-  const vipProgramEnabled = useSelector(selectVipProgramEnabled);
-  const showVipReferralTag =
-    referralCodeIsValid && referralCodeIsVip && vipProgramEnabled;
-
-  const referralCodeIsError =
-    referralCodeReadyForValidation &&
-    !referralCodeIsValid &&
-    !isValidatingReferralCode &&
-    !isUnknownErrorReferralCode;
 
   const handleNext = useCallback(async () => {
     if (candidateSubscriptionIdError) {
@@ -168,7 +112,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       return;
     }
 
-    await optin(referralCode || undefined);
+    await optin();
   }, [
     candidateSubscriptionIdError,
     dispatch,
@@ -178,78 +122,23 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
     optinAllowedForGeo,
     optinAllowedForGeoError,
     optinAllowedForGeoLoading,
-    referralCode,
     rewardsActiveAccountSubscriptionId,
     t,
   ]);
 
-  const toggleReferralInput = useCallback(() => {
-    setShowReferralInput((prev) => {
-      if (prev) {
-        handleReferralCodeChange('');
-      }
-      return !prev;
-    });
-  }, [handleReferralCodeChange]);
-
-  const renderReferralIcon = () => {
-    if (isValidatingReferralCode) {
-      return (
-        <LoadingIndicator
-          alt={t('rewardsOptInVerifyingReferralCode')}
-          title={t('rewardsOptInVerifyingReferralCode')}
-          isLoading={true}
-          style={{ width: 32, height: 32, left: 5 }}
-        />
-      );
-    }
-
-    if (showVipReferralTag) {
-      return <RewardsVipReferralTag />;
-    }
-
-    if (referralCodeIsValid) {
-      return (
-        <Icon
-          name={IconName.Confirmation}
-          size={IconSize.Lg}
-          color={IconColor.SuccessDefault}
-        />
-      );
-    }
-
-    if (referralCodeReadyForValidation && !isValidatingReferralCode) {
-      return (
-        <Icon
-          name={IconName.Error}
-          size={IconSize.Lg}
-          color={IconColor.ErrorDefault}
-        />
-      );
-    }
-
-    return null;
-  };
-
   const isCtaLoading =
     optinLoading ||
     optinAllowedForGeoLoading ||
-    isValidatingReferralCode ||
     candidateSubscriptionId === 'pending' ||
     candidateSubscriptionId === 'retry';
 
   const isCtaDisabled =
-    isCtaLoading ||
-    Boolean(rewardsActiveAccountSubscriptionId) ||
-    (Boolean(referralCode) && !referralCodeIsValid) ||
-    isUnknownErrorReferralCode;
+    isCtaLoading || Boolean(rewardsActiveAccountSubscriptionId);
 
   let ctaLoadingText: string | undefined;
   if (isCtaLoading) {
     if (optinLoading) {
       ctaLoadingText = t('rewardsOnboardingSignUpLoading');
-    } else if (isValidatingReferralCode) {
-      ctaLoadingText = t('rewardsOptInVerifyingReferralCode');
     } else {
       ctaLoadingText = t('rewardsOnboardingCheckingRegion');
     }
@@ -286,66 +175,6 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       </Text>
     </Box>
   );
-
-  const renderReferralInput = () => {
-    if (!showReferralInput) {
-      return null;
-    }
-    return (
-      <Box
-        className="flex flex-col gap-2 w-full"
-        data-testid="rewards-onboarding-main-referral-input"
-      >
-        <TextField
-          inputRef={referralInputRef}
-          placeholder={t('rewardsOnboardingReferralCodePlaceholder')}
-          value={referralCode}
-          autoCapitalize="characters"
-          onChange={(e) => handleReferralCodeChange(e.target.value)}
-          disabled={optinLoading}
-          size={TextFieldSize.Lg}
-          className="w-full"
-          endAccessory={renderReferralIcon()}
-          error={referralCodeIsError}
-        />
-        {referralCodeIsError && (
-          <Text variant={TextVariant.BodySm} className="text-error-default">
-            {t('rewardsOnboardingReferralCodeError')}
-          </Text>
-        )}
-        {isUnknownErrorReferralCode && (
-          <RewardsErrorBanner
-            title={t('rewardsOnboardingReferralCodeUnknownError')}
-            description={t(
-              'rewardsOnboardingReferralCodeUnknownErrorDescription',
-            )}
-          />
-        )}
-      </Box>
-    );
-  };
-
-  const renderReferralToggle = () => {
-    if (isCtaLoading) {
-      return null;
-    }
-    return (
-      <Box
-        className="flex flex-col w-full"
-        data-testid="rewards-onboarding-main-referral-toggle"
-      >
-        <TextButton
-          size={TextButtonSize.BodySm}
-          className="self-center text-alternative"
-          onClick={toggleReferralInput}
-        >
-          {showReferralInput
-            ? t('rewardsOnboardingReferralHide')
-            : t('rewardsOnboardingReferralPrompt')}
-        </TextButton>
-      </Box>
-    );
-  };
 
   const renderActions = () => (
     <Box
@@ -429,9 +258,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       </Box>
 
       <Box className="flex flex-col gap-2">
-        {renderReferralInput()}
         {renderActions()}
-        {renderReferralToggle()}
         {renderLegalDisclaimer()}
       </Box>
     </ModalBody>

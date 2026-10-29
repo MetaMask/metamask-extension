@@ -198,7 +198,8 @@
                 "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
                 "<solana-account-1>",
                 "<bitcoin-account-1>",
-                "<tron-account-1>"
+                "<tron-account-1>",
+                "<stellar-account-1>"
               ]
             }
           }
@@ -368,6 +369,7 @@
     },
     "databaseUnavailable": "boolean",
     "defaultHomeActiveTabName": "null",
+    "defaultMoneyAccountId": "null",
     "depositInProgress": "boolean",
     "depositRequests": [],
     "dismissSeedBackUpReminder": "boolean",
@@ -429,6 +431,7 @@
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
     "eventsConfigEtag": "null",
+    "excludedRegions": "null",
     "eventsConfig": {
       "events": {},
       "schemaVersion": "string",
@@ -620,6 +623,33 @@
           }
         },
         "<tron-account-1>": {
+          "type": "string",
+          "scopes": ["string"],
+          "id": "string",
+          "address": "string",
+          "options": {
+            "exportable": "boolean",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": ["string"],
+          "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "keyring": {
+              "type": "string"
+            },
+            "snap": {
+              "id": "string"
+            },
+            "lastSelected": "number"
+          }
+        },
+        "<stellar-account-1>": {
           "type": "string",
           "scopes": ["string"],
           "id": "string",
@@ -865,7 +895,8 @@
     "nonEvmTransactions": {
       "<solana-account-1>": {},
       "<bitcoin-account-1>": {},
-      "<tron-account-1>": {}
+      "<tron-account-1>": {},
+      "<stellar-account-1>": {}
     },
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
@@ -1059,7 +1090,13 @@
         "subscriptionId": "null"
       }
     },
-    "rewardsActiveAccount": "null",
+    "rewardsActiveAccount": {
+      "account": "string",
+      "lastFreshOptInStatusCheck": "number",
+      "lastPerpsDiscountRateFetched": "null",
+      "perpsFeeDiscount": "null",
+      "subscriptionId": "null"
+    },
     "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
@@ -1303,7 +1340,6 @@
   },
   "rewards": {
     "rewardsModalOpen": "boolean",
-    "onboardingReferralCode": "string",
     "geoLocation": "null",
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",
@@ -1322,6 +1358,10 @@
       "isOpen": "boolean",
       "title": "string"
     }
+  },
+  "rewardsMoney": {
+    "referralMe": "null",
+    "referralMeSettled": "boolean"
   },
   "sendMaxValue": {
     "maxValueMode": {}
