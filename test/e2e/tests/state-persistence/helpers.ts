@@ -96,7 +96,7 @@ export const reloadExtension = async (driver: Driver): Promise<void> => {
   await driver.switchToWindow(extensionWindow);
   await pausePersistence(driver);
   await driver.executeScript(
-    `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+    `setTimeout(() => (globalThis.browser ?? globalThis.chrome).runtime.reload(), 100)`,
   );
 
   await driver.switchToWindow(blankWindow);

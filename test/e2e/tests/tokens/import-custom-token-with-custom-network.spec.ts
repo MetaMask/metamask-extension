@@ -314,7 +314,7 @@ async function reloadExtension(driver: Driver): Promise<void> {
 
   await driver.switchToWindow(extensionWindow);
   await driver.executeScript(
-    `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+    `setTimeout(() => (globalThis.browser ?? globalThis.chrome).runtime.reload(), 100)`,
   );
 
   await driver.switchToWindow(blankWindow);
