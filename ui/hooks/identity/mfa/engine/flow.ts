@@ -36,6 +36,8 @@ interface CurrentStep {
   purpose: MfaPurpose;
   flowId?: string;
   email?: string;
+  /** When the server accepts another email code. */
+  resendAvailableAt?: number;
 }
 
 /**
@@ -184,15 +186,16 @@ export const createMfaFlow = ({
             reason: tokenReason,
           });
     current.flowId = challenge.flowId;
+    current.resendAvailableAt =
+      current.method === 'email_otp'
+        ? now() + EMAIL_RESEND_COOLDOWN_MS
+        : undefined;
     if (state.step.name === 'otp') {
       setState({
         step: { ...state.step, codeSent: true },
         busy: false,
         error: undefined,
-        resendAvailableAt:
-          current.method === 'email_otp'
-            ? now() + EMAIL_RESEND_COOLDOWN_MS
-            : undefined,
+        resendAvailableAt: current.resendAvailableAt,
       });
     }
   };
@@ -594,13 +597,16 @@ export const createMfaFlow = ({
       current.email === email &&
       current.flowId
     ) {
-      show({
-        name: 'otp',
-        purpose: 'setup',
-        method: 'email_otp',
-        email,
-        codeSent: true,
-      });
+      show(
+        {
+          name: 'otp',
+          purpose: 'setup',
+          method: 'email_otp',
+          email,
+          codeSent: true,
+        },
+        { resendAvailableAt: current.resendAvailableAt },
+      );
       return;
     }
     current = { method: 'email_otp', purpose: 'setup', email };
@@ -616,7 +622,7 @@ export const createMfaFlow = ({
           email,
           codeSent: true,
         },
-        { resendAvailableAt: now() + EMAIL_RESEND_COOLDOWN_MS },
+        { resendAvailableAt: current?.resendAvailableAt },
       );
     });
   };

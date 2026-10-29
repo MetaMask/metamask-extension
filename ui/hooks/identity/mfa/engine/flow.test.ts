@@ -240,6 +240,8 @@ describe('createMfaFlow', () => {
       codeSent: true,
     });
     expect(fake.controller.beginCredentialEnrollment).toHaveBeenCalledTimes(1);
+    // Still the countdown of the code already sent.
+    expect(flow.getState().resendAvailableAt).toBe(NOW + 60_000);
 
     await act(flow, { type: 'submitCode', code: '111111' });
     expect(fake.controller.completeCredentialEnrollment).toHaveBeenCalledWith({
