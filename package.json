@@ -361,6 +361,7 @@
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/profile-sync-controller": "^36.0.0",
     "@metamask/account-tree-controller": "^11.0.0",
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@28.2.0-preview-4a8d4a2",
     "@graphql-tools/utils@npm:8.9.0": "12.0.3",
     "@graphql-tools/utils@npm:^8.8.0": "12.0.3",
     "tinypool@npm:2.1.0": "2.1.2",
