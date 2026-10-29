@@ -1,5 +1,5 @@
-import { defineConfig } from 'oxfmt';
 import os from 'os';
+import { defineConfig } from 'oxfmt';
 
 export default defineConfig({
   ignorePatterns: [
