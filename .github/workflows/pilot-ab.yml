@@ -69,7 +69,9 @@ jobs:
                 | {browser: $browser, pageType: "startupStandardHome",
                    shard: $shard, arm: $arm,
                    flip: (((($shard - 1) / 4) | floor) % 2),
-                   iterations: $it[$browser][$arm]}
+                   iterations: $it[$browser][$arm],
+                   suffix: "-arm\($arm)",
+                   injectArg: "--inject-iterations \($it[$browser][$arm])"}
               ]}')
             echo "Round 2: $shards shards per browser, arm = (shard - 1) % 4"
           else
@@ -89,7 +91,7 @@ jobs:
 
   pilot:
     needs: plan
-    name: ${{ matrix.browser }}-${{ matrix.pageType }}-${{ matrix.shard }}${{ matrix.arm != null && format('-arm{0}', matrix.arm) || '' }}
+    name: ${{ matrix.browser }}-${{ matrix.pageType }}-${{ matrix.shard }}${{ matrix.suffix }}
     continue-on-error: true
     strategy:
       fail-fast: false
@@ -137,7 +139,7 @@ jobs:
           --browser ${{ matrix.browser }}
           --source dist/${{ matrix.browser }}
           --out test-artifacts/benchmarks/ab-builds-${{ matrix.browser }}-${{ matrix.pageType }}-s${{ matrix.shard }}.json
-          ${{ matrix.iterations != null && format('--inject-iterations {0}', matrix.iterations) || '' }}
+          ${{ matrix.injectArg }}
 
       - name: Choose which build goes first
         env:
