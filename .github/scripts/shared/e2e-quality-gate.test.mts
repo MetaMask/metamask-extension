@@ -34,9 +34,9 @@ describe('E2E quality gate failures', () => {
 
   it('detects the exact quality-gate annotation title', () => {
     expect(
-      hasE2eQualityGateFailure(
-        [{ title: E2E_QUALITY_GATE_FAILURE_ANNOTATION_TITLE }],
-      ),
+      hasE2eQualityGateFailure([
+        { title: E2E_QUALITY_GATE_FAILURE_ANNOTATION_TITLE },
+      ]),
     ).toBe(true);
   });
 

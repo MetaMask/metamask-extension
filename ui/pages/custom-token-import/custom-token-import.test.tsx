@@ -512,7 +512,9 @@ describe('CustomTokenImportPage', () => {
 
       fireEvent.change(
         screen.getByTestId('custom-token-import-address-input'),
-        { target: { value: tokenAddress } },
+        {
+          target: { value: tokenAddress },
+        },
       );
 
       await screen.findByTestId('custom-token-import-symbol-input');

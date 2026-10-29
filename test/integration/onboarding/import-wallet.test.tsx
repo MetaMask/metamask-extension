@@ -98,7 +98,7 @@ describe('Import Wallet Events', () => {
       // Check for completeOnboarding call
       completeOnboardingCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'completeOnboarding',
+          (call) => call[0] === 'OnboardingController:completeOnboarding',
         );
 
       // Check for ExtensionPinned tracking event
@@ -109,7 +109,9 @@ describe('Import Wallet Events', () => {
             call[1]?.[0]?.name === MetaMetricsEventName.OnboardingCompleted,
         );
 
-      expect(completeOnboardingCall?.[0]).toBe('completeOnboarding');
+      expect(completeOnboardingCall?.[0]).toBe(
+        'OnboardingController:completeOnboarding',
+      );
       expect(extensionPinnedEvent?.[0]).toBe('trackAnalyticsEvent');
     });
 

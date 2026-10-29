@@ -76,12 +76,12 @@ const getMetaMaskStateWithUnapprovedApproveTransaction = (opts?: {
 };
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
-  decodeTransactionData: {
+  'LegacyBackgroundApiService:getNextNonce': '9',
+  'LegacyBackgroundApiService:decodeTransactionData': {
     data: [
       {
         name: 'Approve',
@@ -99,7 +99,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
-  addKnownMethodData: {},
+  'PreferencesController:addKnownMethodData': {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -126,7 +126,7 @@ describe('ERC20 Approve Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetailsByChain: {
+      'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain': {
         standard: ERC20,
         decimals: '4',
       },

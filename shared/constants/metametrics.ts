@@ -1159,6 +1159,8 @@ export enum MetaMetricsEventName {
   SendRecipientSelected = 'Send Recipient Selected',
   SendFailed = 'Send Failed',
   Wallet5792Called = 'EIP-5792 API Called',
+  WalletPayRequested = 'Wallet Pay Requested',
+  WalletPayCompleted = 'Wallet Pay Completed',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
   // Extension Port Stream
@@ -1187,6 +1189,7 @@ export enum MetaMetricsEventName {
   RewardsAccountLinkingStarted = 'REWARDS_ACCOUNT_LINKING_STARTED',
   RewardsAccountLinkingCompleted = 'REWARDS_ACCOUNT_LINKING_COMPLETED',
   RewardsAccountLinkingFailed = 'REWARDS_ACCOUNT_LINKING_FAILED',
+  RewardsMoneyReferralOfferInteracted = 'Rewards Money Referral Offer Interacted',
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',

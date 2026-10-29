@@ -76,6 +76,7 @@ describe('buildBundleSizeDiffSection', () => {
     common: 400,
     other: 100,
     contentScripts: 60,
+    unzipped: 6000,
     zip: 4200,
     timestamp: 2,
   } as const;
@@ -87,6 +88,7 @@ describe('buildBundleSizeDiffSection', () => {
       common: 400,
       other: 90,
       contentScripts: 50,
+      unzipped: 5800,
       zip: 4000,
       timestamp: 1,
     },
@@ -126,6 +128,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('| ✅ | common |');
     expect(result).toContain('| ✅ | other |');
     expect(result).toContain('| ✅ | content scripts |');
+    expect(result).toContain('| ✅ | unzipped |');
     expect(result).toContain('| ✅ | zip |');
   });
 
@@ -145,7 +148,45 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain(
       '| ✅ | content scripts | 60 Bytes | +10 Bytes | +20.00% |',
     );
+    expect(result).toContain(
+      '| ✅ | unzipped | 5.86 KiB | +200 Bytes | +3.45% |',
+    );
     expect(result).toContain('| ✅ | zip | 4.1 KiB | +200 Bytes | +5.00% |');
+  });
+
+  it('shows unavailable current zip metrics without reporting a size decrease', async () => {
+    const { unzipped, zip, ...summaryWithoutZip } = webpackSummary;
+    mockSuccessfulFetches({ webpack: summaryWithoutZip });
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain('|  | unzipped | n/a | n/a | n/a |');
+    expect(result).toContain('|  | zip | n/a | n/a | n/a |');
+    expect(result).not.toContain('| unzipped | 0 Bytes |');
+    expect(result).not.toContain('| zip | 0 Bytes |');
+  });
+
+  it('shows unavailable current zip metrics when no baseline is available', async () => {
+    const { unzipped, zip, ...summaryWithoutZip } = webpackSummary;
+    mockSuccessfulFetches({ webpack: summaryWithoutZip });
+
+    const result = await buildBundleSizeDiffSection(artifacts);
+
+    expect(result).toContain('|  | unzipped | n/a | n/a | n/a |');
+    expect(result).toContain('|  | zip | n/a | n/a | n/a |');
+  });
+
+  it('keeps a real zero-byte zip size distinct from a missing size', async () => {
+    mockSuccessfulFetches({
+      webpack: { ...webpackSummary, unzipped: 0, zip: 0 },
+    });
+
+    const result = await buildBundleSizeDiffSection(artifacts, MERGE_BASE);
+
+    expect(result).toContain(
+      '| ✅ | unzipped | 0 Bytes | -5.66 KiB | -100.00% |',
+    );
+    expect(result).toContain('| ✅ | zip | 0 Bytes | -3.91 KiB | -100.00% |');
   });
 
   it('uses the first baseline candidate found in history data', async () => {
@@ -258,6 +299,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('|  | common | 400 Bytes | n/a | n/a |');
     expect(result).toContain('|  | other | 100 Bytes | n/a | n/a |');
     expect(result).toContain('|  | content scripts | 60 Bytes | n/a | n/a |');
+    expect(result).toContain('|  | unzipped | 5.86 KiB | n/a | n/a |');
     expect(result).toContain('|  | zip | 4.1 KiB | n/a | n/a |');
   });
 
@@ -282,6 +324,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('| ✅ | common | 400 Bytes | 0 Bytes | 0.00% |');
     expect(result).toContain('|  | other | 100 Bytes | n/a | n/a |');
     expect(result).toContain('|  | content scripts | 60 Bytes | n/a | n/a |');
+    expect(result).toContain('|  | unzipped | 5.86 KiB | n/a | n/a |');
     expect(result).toContain('|  | zip | 4.1 KiB | n/a | n/a |');
   });
 
@@ -346,6 +389,7 @@ describe('buildBundleSizeDiffSection', () => {
     expect(result).toContain('|  | common | 400 Bytes | n/a | n/a |');
     expect(result).toContain('|  | other | 100 Bytes | n/a | n/a |');
     expect(result).toContain('|  | content scripts | 60 Bytes | n/a | n/a |');
+    expect(result).toContain('|  | unzipped | 5.86 KiB | n/a | n/a |');
     expect(result).toContain('|  | zip | 4.1 KiB | n/a | n/a |');
     expect(result).not.toContain('Bundle size data unavailable.');
     expect(consoleLogSpy).toHaveBeenCalledWith(
