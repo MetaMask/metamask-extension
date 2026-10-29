@@ -1,7 +1,7 @@
 import { ERC1155 } from '@metamask/controller-utils';
 import { useMemo } from 'react';
 
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import { Asset } from '../../types/send';
 import { formatToFixedDecimals, toTokenMinimalUnit } from '../../utils/send';
 import { useSendContext } from '../../context/send';

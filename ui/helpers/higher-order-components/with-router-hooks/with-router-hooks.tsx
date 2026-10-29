@@ -1,5 +1,12 @@
-import React from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import {
+  useNavigate,
+  useLocation,
+  useParams,
+  type Location as RouterLocation,
+} from 'react-router-dom';
+import { shallowEqual } from 'react-redux';
+import { useShallowEqualityCheck } from '../../../hooks/useShallowEqualityCheck';
 
 // Types for the router hooks
 export type RouterHooksProps = {
@@ -8,9 +15,39 @@ export type RouterHooksProps = {
   params: ReturnType<typeof useParams>;
 };
 
+function isSameLocationParams(a: RouterLocation, b: RouterLocation): boolean {
+  return (
+    a.pathname === b.pathname &&
+    a.search === b.search &&
+    a.hash === b.hash &&
+    shallowEqual(a.state, b.state)
+  );
+}
+
+/**
+ * Stabilizes location by comparing only meaningful properties.
+ * Intentionally excludes `key` which changes on every navigation, even to the same path.
+ *
+ * @param location - The location object from useLocation()
+ * @returns Referentially stable location that only changes when pathname/search/hash/state change
+ */
+function useLocationStable(location: RouterLocation): RouterLocation {
+  const [stableLocation, setStableLocation] = useState(location);
+
+  if (!isSameLocationParams(stableLocation, location)) {
+    setStableLocation(location);
+  }
+
+  return stableLocation;
+}
+
 function withRouterHooks<Props extends object>(
-  WrappedComponent: React.ComponentType<Props & RouterHooksProps>,
-): React.ComponentType<Props & Partial<RouterHooksProps>> {
+  WrappedComponent: React.ComponentType<
+    React.PropsWithChildren<Props & RouterHooksProps>
+  >,
+): React.ComponentType<
+  React.PropsWithChildren<Props & Partial<RouterHooksProps>>
+> {
   const ComponentWithRouterHooks = (
     props: Props & Partial<RouterHooksProps>,
   ) => {
@@ -18,17 +55,22 @@ function withRouterHooks<Props extends object>(
     const hookLocation = useLocation();
     const hookParams = useParams();
 
+    const stableHookParams = useShallowEqualityCheck(hookParams);
+    const stableParams = props.params ?? stableHookParams;
+
+    // Stabilize location excluding 'key' which changes on every navigation
+    const stableHookLocation = useLocationStable(hookLocation);
+    const stableLocation = props.location ?? stableHookLocation;
+
     // Use passed props if they exist, otherwise fall back to hooks
     const navigate = props.navigate ?? hookNavigate;
-    const location = props.location ?? hookLocation;
-    const params = props.params ?? hookParams;
 
     return (
       <WrappedComponent
         {...props}
         navigate={navigate}
-        location={location}
-        params={params}
+        location={stableLocation}
+        params={stableParams}
       />
     );
   };

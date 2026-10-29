@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
 import { WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import LoginPage from '../page-objects/pages/login-page';
+import { login } from '../page-objects/flows/login.flow';
+import LoginPage from '../page-objects/pages/onboarding/login-page';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 
 describe('eth_sendTransaction', function () {
@@ -16,14 +16,14 @@ describe('eth_sendTransaction', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -52,7 +52,10 @@ describe('eth_sendTransaction', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const actualHash = await driver.executeScript(
@@ -67,14 +70,14 @@ describe('eth_sendTransaction', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -103,7 +106,10 @@ describe('eth_sendTransaction', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const result = await driver
@@ -127,7 +133,7 @@ describe('eth_sendTransaction', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
@@ -167,7 +173,10 @@ describe('eth_sendTransaction', function () {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkSiteSuggestedGas('~15 sec');
         await confirmation.checkNoInLineAlertIsDisplayed();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const actualHash = await driver.executeScript(

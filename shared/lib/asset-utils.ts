@@ -9,7 +9,9 @@ import {
   isStrictHexString,
   parseCaipAssetType,
   KnownCaipNamespace,
+  numberToHex,
 } from '@metamask/utils';
+import log from 'loglevel';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
@@ -17,18 +19,21 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { Asset } from '@metamask/assets-controllers';
-import getFetchWithTimeout from '../modules/fetch-with-timeout';
-import { decimalToPrefixedHex } from '../modules/conversion.utils';
+
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
-  TRON_RESOURCE_SYMBOLS_SET,
-  TronResourceSymbol,
+  TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
+  SLIP44_ASSET_NAMESPACE,
+  type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
+import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
+import getFetchWithTimeout from './fetch-with-timeout';
+import { decimalToPrefixedHex } from './conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
+const polygonCaipChainId = 'eip155:137' as CaipChainId;
 
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
@@ -50,14 +55,40 @@ export const toAssetId = (
     return undefined;
   }
 
-  if (isNativeAddress(addressToUse)) {
-    return getNativeAssetForChainId(chainIdToUse)?.assetId;
+  // TODO: Fix or replace `isNativeAddress` to support Polygon
+  const isPolygonNative =
+    chainIdToUse === polygonCaipChainId &&
+    addressToUse === POLYGON_NATIVE_TOKEN_ADDRESS;
+
+  if (isNativeAddress(addressToUse) || isPolygonNative) {
+    try {
+      return getNativeAssetForChainId(chainIdToUse)?.assetId;
+    } catch {
+      // Skip error for unsupported chains (e.g., custom networks) so we obtain the assetId in another way
+      // This allows the send flow to work for custom networks even if they're not in the swaps map
+      // Format normalization in isEvmChainId should prevent most errors, but this is a defensive fallback
+    }
   }
   if (chainIdToUse === MultichainNetworks.SOLANA) {
     return CaipAssetTypeStruct.create(`${chainIdToUse}/token:${addressToUse}`);
   }
   if (chainIdToUse === MultichainNetworks.TRON) {
     return CaipAssetTypeStruct.create(`${chainIdToUse}/trc20:${addressToUse}`);
+  }
+  // Stellar classic: `CODE-ISSUER` (issuer StrKey starts with G).
+  // SEP-41 (Soroban) tokens: contract StrKey is `C` + 55 Base32 chars ([A-Z2-7]), 56 chars total.
+  if (chainIdToUse === MultichainNetworks.STELLAR) {
+    const ref = String(addressToUse);
+    if (/^[A-Za-z0-9]{1,12}-G[A-Z2-7]{55}$/u.test(ref)) {
+      return CaipAssetTypeStruct.create(`${chainIdToUse}/asset:${ref}`);
+    }
+    const sep41ContractMatch = /^(?:sep41:)?(C[A-Z2-7]{55})$/u.exec(ref);
+    if (sep41ContractMatch) {
+      return CaipAssetTypeStruct.create(
+        `${chainIdToUse}/sep41:${sep41ContractMatch[1]}`,
+      );
+    }
+    return undefined;
   }
   // EVM assets
   const checksummedAddress = toChecksumHexAddress(addressToUse) ?? addressToUse;
@@ -67,6 +98,82 @@ export const toAssetId = (
     );
   }
   return undefined;
+};
+
+/**
+ * Resolve a chain's native asset as a CAIP-19 asset id, or `undefined` for
+ * chains unknown to the bridge asset map (`getNativeAssetForChainId` throws on
+ * custom/unsupported networks).
+ *
+ * @param chainId - The chain id in caip or hex format.
+ * @returns The native asset id, or `undefined` when it can't be resolved.
+ */
+export const getNativeAssetId = (
+  chainId?: CaipChainId | Hex,
+): CaipAssetType | undefined => {
+  if (!chainId) {
+    return undefined;
+  }
+  try {
+    return getNativeAssetForChainId(chainId).assetId;
+  } catch {
+    return undefined;
+  }
+};
+
+export const isNativeCaipAssetId = (assetId: CaipAssetType) => {
+  try {
+    return (
+      parseCaipAssetType(assetId).assetNamespace === SLIP44_ASSET_NAMESPACE
+    );
+  } catch {
+    return false;
+  }
+};
+
+export const normalizeTokenAssetId = (assetId: CaipAssetType) => {
+  const { chain } = parseCaipAssetType(assetId);
+  return chain.namespace === KnownCaipNamespace.Eip155
+    ? (assetId.toLowerCase() as CaipAssetType)
+    : assetId;
+};
+
+/**
+ * Builds a normalized CAIP-19 token id from a contract address and chain, or
+ * from an id that is already in CAIP-19 form. Returns `undefined` when the
+ * address or chain cannot be used (for example a decimal chain id like `"1").
+ *
+ * @param addressOrAssetId - Contract address, or an existing CAIP-19 asset id.
+ * @param chainId - Hex or CAIP chain id when `addressOrAssetId` is an address.
+ * @returns Normalized CAIP-19 asset id, or `undefined`.
+ */
+export const toNormalizedCaipAssetId = (
+  addressOrAssetId: string | undefined,
+  chainId?: CaipChainId | Hex | string | number,
+): CaipAssetType | undefined => {
+  if (!addressOrAssetId) {
+    return undefined;
+  }
+
+  let chainIdForLookup: CaipChainId | Hex | undefined;
+
+  // Get a chain id to pass to toAssetId
+  if (!isCaipAssetType(addressOrAssetId)) {
+    if (chainId === undefined || chainId === null) {
+      return undefined;
+    }
+    const chainIdString =
+      typeof chainId === 'string' ? chainId : String(chainId);
+    // Reject decimal and other invalid chain ids so toAssetId doesn't throw
+    if (!isStrictHexString(chainIdString) && !isCaipChainId(chainIdString)) {
+      return undefined;
+    }
+
+    chainIdForLookup = chainIdString;
+  }
+
+  const caipAssetId = toAssetId(addressOrAssetId, chainIdForLookup);
+  return caipAssetId ? normalizeTokenAssetId(caipAssetId) : undefined;
 };
 
 /**
@@ -80,17 +187,44 @@ export const getAssetImageUrl = (
   assetId: CaipAssetType | Hex | string,
   chainId: CaipChainId | Hex,
 ) => {
-  const assetIdInCaip = toAssetId(assetId, chainId);
-  if (!assetIdInCaip) {
+  try {
+    // SLIP-44 references are coin types, not addresses: `toAssetId` would
+    // rebuild them as `erc20:0x<coinType>` for chains outside the bridge map
+    const assetIdInCaip = isNativeCaipAssetId(assetId as CaipAssetType)
+      ? (assetId as CaipAssetType)
+      : toAssetId(assetId, chainId);
+    if (!assetIdInCaip) {
+      return undefined;
+    }
+    const normalizedAssetId = (
+      isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
+    ).replaceAll(':', '/');
+    return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
+      normalizedAssetId
+    }.png`;
+  } catch (error) {
+    log.error('Failed to get asset image URL', {
+      error: error instanceof Error ? error.message : String(error),
+      assetId,
+      chainId,
+    });
     return undefined;
   }
-  const normalizedAssetId = (
-    isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
-  ).replaceAll(':', '/');
+};
 
-  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
-    normalizedAssetId
-  }.png`;
+/**
+ * Returns the image url for a CAIP-formatted asset
+ *
+ * @param assetId - The CAIP-formatted asset id
+ * @returns The image url for the asset
+ */
+export const getCaipAssetImageUrl = (assetId?: CaipAssetType) => {
+  if (!assetId) {
+    return undefined;
+  }
+
+  const chainId = assetId.split('/')[0] as CaipChainId;
+  return getAssetImageUrl(assetId, chainId);
 };
 
 export type AssetMetadata = {
@@ -221,9 +355,27 @@ export const fetchAssetMetadataForAssetIds = async (
  * @returns `true` if the chain ID is an EVM chain ID, `false` otherwise.
  */
 export const isEvmChainId = (chainId: CaipChainId | Hex) => {
-  const chainIdInCaip = isCaipChainId(chainId)
-    ? chainId
-    : toEvmCaipChainId(chainId);
+  if (typeof chainId !== 'string') {
+    return false;
+  }
+
+  let chainIdInCaip: CaipChainId;
+
+  if (isCaipChainId(chainId)) {
+    chainIdInCaip = chainId;
+  } else if (isStrictHexString(chainId)) {
+    chainIdInCaip = toEvmCaipChainId(chainId);
+  } else {
+    // Before converting decimal strings to hex, check if it's a non-EVM chainId
+    // This prevents misidentifying non-EVM chains (e.g., Solana, Bitcoin, Tron) as EVM
+    if (isNonEvmChainId(chainId)) {
+      return false;
+    }
+    // Handle decimal strings by converting to hex first
+    // This fixes issues where chainIds are passed as decimal strings (e.g., '1439' for Injective testnet)
+    // instead of hex format (e.g., '0x59f')
+    chainIdInCaip = toEvmCaipChainId(numberToHex(Number(chainId)));
+  }
 
   // TODO Replace with isEvmCaipChainId from @metamask/multichain-network-controller when it is exported
   const { namespace } = parseCaipChainId(chainIdInCaip);
@@ -231,22 +383,44 @@ export const isEvmChainId = (chainId: CaipChainId | Hex) => {
 };
 
 /**
- * Checks if the given assetId is a Tron resource
+ * Checks if the given CAIP asset ID represents a Tron special asset
+ * (resources, staking state, etc.) that should be filtered out from
+ * user-facing asset lists.
  *
- * @param asset - The assetId to check.
- * @returns `true` if the assetId is a Tron resource, `false` otherwise.
+ * @param assetId - The CAIP asset ID to check.
+ * @returns `true` if the asset is a Tron special asset, `false` otherwise.
  */
-export const isTronResource = (asset: Asset): boolean => {
-  if (!isCaipAssetType(asset.assetId)) {
+export const isTronSpecialAsset = (
+  assetId: CaipAssetType | string | undefined,
+): boolean => {
+  if (!assetId || !isCaipAssetType(assetId)) {
     return false;
   }
-  const { chain } = parseCaipAssetType(asset.assetId);
+  const { chain, assetNamespace, assetReference } = parseCaipAssetType(assetId);
 
   if (chain.namespace !== KnownCaipNamespace.Tron) {
     return false;
   }
 
-  return TRON_RESOURCE_SYMBOLS_SET.has(
-    asset.symbol?.toLowerCase() as TronResourceSymbol,
+  return TRON_SPECIAL_ASSET_CAIP_TYPES_SET.has(
+    `${assetNamespace}:${assetReference}` as TronSpecialAssetCaipType,
   );
 };
+
+/**
+ * Returns the chain ID from a CAIP asset ID
+ *
+ * @param assetId - The CAIP asset ID to get the chain ID from.
+ * @returns The chain ID from the CAIP asset ID.
+ */
+export function getChainIdFromAssetId(
+  assetId: CaipAssetType,
+): CaipChainId | undefined {
+  if (!assetId) {
+    return undefined;
+  }
+
+  return CaipAssetTypeStruct.is(assetId)
+    ? parseCaipAssetType(assetId).chainId
+    : undefined;
+}

@@ -200,7 +200,6 @@ export const useDeviceEventHandlers = ({
       onDeviceEvent?.(payload);
     },
     // Adding ignore to exclude refs.
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateConnectionState, onDeviceEvent],
   );
@@ -231,7 +230,6 @@ export const useDeviceEventHandlers = ({
       }
     },
     // Adding ignore to exclude refs.
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [setters, updateConnectionState],
   );

@@ -77,15 +77,15 @@ automatically categorized by environment based on build target and GitHub contex
 
 ### Environments
 
-| Environment         | When Used           | Build Command     | Webpack Command                                                | Branch/Context       |
-| ------------------- | ------------------- | ----------------- | -------------------------------------------------------------- | -------------------- |
-| `production`        | Production releases | `yarn build prod` | `yarn webpack --env production --targetEnvironment production` | `stable` branch      |
-| `staging`           | Main branch builds  | `yarn build dist` | `yarn webpack --env production`                                | `main` branch        |
-| `development`       | Local development   | `yarn start`      | `yarn webpack --env development --watch`                       | Local                |
-| `testing`           | E2E test builds     | `yarn build:test` | `yarn webpack --env production --test`                         | Any                  |
-| `pull-request`      | PR builds           | `yarn build dist` | `yarn webpack --env production`                                | `pull_request` event |
-| `release-candidate` | Release branches    | `yarn build dist` | `yarn webpack --env production`                                | `release/*` branches |
-| `other`             | Local dist builds   | `yarn build dist` | `yarn webpack --env production`                                | Local builds         |
+| Environment         | When Used           | Build Command     | Webpack Command                                   | Branch/Context       |
+| ------------------- | ------------------- | ----------------- | ------------------------------------------------- | -------------------- |
+| `production`        | Production releases | `yarn build prod` | `yarn webpack --mode production --env production` | `release/*` branches |
+| `staging`           | Main branch builds  | `yarn build dist` | `yarn webpack --mode production`                  | `main` branch        |
+| `development`       | Local development   | `yarn start`      | `yarn webpack --mode development --watch`         | Local                |
+| `testing`           | E2E test builds     | `yarn build:test` | `yarn webpack --mode production --test`           | Any                  |
+| `pull-request`      | PR builds           | `yarn build dist` | `yarn webpack --mode production`                  | `pull_request` event |
+| `release-candidate` | Release branches    | `yarn build dist` | `yarn webpack --mode production`                  | `release/*` branches |
+| `other`             | Local dist builds   | `yarn build dist` | `yarn webpack --mode production`                  | Local builds         |
 
 For non-main build types (beta, flask, experimental), the environment includes the build type suffix:
 
@@ -113,7 +113,7 @@ Environments are determined by `development/build/utils.js:getEnvironment()`:
 
 ### DSN Selection Logic
 
-The Sentry target DSN is determined by `app/scripts/lib/setupSentry.js:getSentryTarget()`:
+The Sentry target DSN is determined by `app/scripts/lib/setupSentry.ts:getSentryTarget()`:
 
 ```
 if (IN_TEST && !SENTRY_DSN_DEV)     → SENTRY_DSN_FAKE (no events sent)

@@ -1,42 +1,46 @@
+import type { ReadonlyAnalyticsEventFragment } from '@metamask/analytics-controller';
 import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from 'viem';
+import type { TransactionData } from '@metamask/transaction-pay-controller';
+import type { Hex } from 'viem';
 import {
   PaymentType,
   RecurringInterval,
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
-import type {
-  MetaMetricsEventFragment,
-  MetaMetricsPageObject,
-  MetaMetricsReferrerObject,
-} from '../constants/metametrics';
+import type { MetaMetricsEventFragmentPayload } from '../constants/metametrics';
 import type { TokenStandard } from '../constants/transaction';
 import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
 import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
 import type { ScanAddressResponse } from '../lib/trust-signals';
 
+export type UTMParameter =
+  | 'utm_campaign'
+  | 'utm_content'
+  | 'utm_medium'
+  | 'utm_source'
+  | 'utm_term';
+
+export const UTM_PARAMETERS = new Set([
+  'utm_campaign',
+  'utm_content',
+  'utm_medium',
+  'utm_source',
+  'utm_term',
+]) as Set<UTMParameter> & { has: (key: string) => key is UTMParameter };
+
 export type TransactionMetricsRequest = {
-  createEventFragment: (
-    options: Omit<MetaMetricsEventFragment, 'id'>,
-  ) => MetaMetricsEventFragment;
-  finalizeEventFragment: (
-    fragmentId: string,
-    options?: {
-      abandoned?: boolean;
-      page?: MetaMetricsPageObject;
-      referrer?: MetaMetricsReferrerObject;
-    },
-  ) => void;
-  getEventFragmentById: (fragmentId: string) => MetaMetricsEventFragment;
-  updateEventFragment: (
-    fragmentId: string,
-    payload: Partial<MetaMetricsEventFragment>,
+  getTransactionUIMetricsFragment: (
+    transactionId: string,
+  ) => ReadonlyAnalyticsEventFragment | undefined;
+  upsertTransactionUIMetricsFragment: (
+    transactionId: string,
+    payload: MetaMetricsEventFragmentPayload,
   ) => void;
   getAccountBalance: (account: Hex, chainId: Hex) => Hex;
   getAccountType: (
@@ -47,7 +51,7 @@ export type TransactionMetricsRequest = {
   ) => Promise<'ledger' | 'lattice' | 'N/A' | string>;
   getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>;
   // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
-  // doesn't include some properties used in buildEventFragmentProperties,
+  // doesn't include some properties used in transaction metrics assembly,
   // hence returning any here to avoid type errors.
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,12 +65,16 @@ export type TransactionMetricsRequest = {
     standard?: TokenStandard;
   }>;
   getTransaction: (transactionId: string) => TransactionMeta;
+  getTransactionPayData: (transactionId: string) => TransactionData | undefined;
+  getAllTransactions: () => TransactionMeta[];
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
   getIsSmartTransaction: (chainId: Hex) => boolean;
+  getSmartTransactionsPreferenceEnabled: () => boolean;
+  getSmartTransactionsEnabled: (chainId: Hex) => boolean;
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;

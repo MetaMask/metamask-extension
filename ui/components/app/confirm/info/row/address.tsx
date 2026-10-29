@@ -7,12 +7,12 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { Box, Text } from '../../../../component-library';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Name from '../../../name/name';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { PreferredAvatar } from '../../../preferred-avatar';
-import { useFallbackDisplayName } from './hook';
 
 export type ConfirmInfoRowAddressProps = {
   address: string;
@@ -28,7 +28,7 @@ export const ConfirmInfoRowAddress = memo(
     isSnapUsingThis,
     showFullName = false,
   }: ConfirmInfoRowAddressProps) => {
-    const { displayName, hexAddress } = useFallbackDisplayName(address);
+    const hexAddress = toChecksumHexAddress(address);
     const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
     const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
     const onCloseHandler = () => setIsNicknamePopoverShown(false);
@@ -60,7 +60,7 @@ export const ConfirmInfoRowAddress = memo(
                   color={TextColor.inherit}
                   data-testid="confirm-info-row-display-name"
                 >
-                  {isSnapUsingThis ? shortenAddress(address) : displayName}
+                  {shortenAddress(address)}
                 </Text>
               </Box>
               {isNicknamePopoverShown ? (

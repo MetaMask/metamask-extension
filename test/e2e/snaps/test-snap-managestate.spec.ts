@@ -1,10 +1,10 @@
 import { Driver } from '../webdriver/driver';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { mockManageStateSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap manageState', function () {
@@ -14,20 +14,20 @@ describe('Test Snap manageState', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockManageStateSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
-        await openTestSnapClickButtonAndInstall(driver, 'connectstateButton');
-        await testSnaps.checkInstallationComplete(
-          'connectstateButton',
-          'Reconnect to State Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectstateButton', {
+          expectedMessage: 'Reconnect to State Snap',
+        });
 
         // Enter data and click set, then validate results
         await testSnaps.fillMessage('setStateKeyInput', 'foo');
@@ -37,11 +37,26 @@ describe('Test Snap manageState', function () {
           'encryptedStateResultSpan',
           JSON.stringify({ foo: 'bar' }, null, 2),
         );
+        await testSnaps.fillMessage('setStateKeyInput', 'baz');
+        await testSnaps.fillMessage('dataStateInput', '"qux"');
+        await testSnaps.scrollAndClickButton('sendStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'encryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
+        );
 
         // Retrieve one state key and validate
         await testSnaps.fillMessage('getStateInput', 'foo');
         await testSnaps.scrollAndClickButton('sendGetStateButton');
         await testSnaps.checkMessageResultSpan('getStateResultSpan', '"bar"');
+
+        // Retrieve two state keys and validate
+        await testSnaps.fillMessage('getStateInput', 'foo,baz');
+        await testSnaps.scrollAndClickButton('sendGetStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'getStateResultSpan',
+          JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
+        );
 
         // Clear results and validate
         await testSnaps.clickButton('clearStateButton');
@@ -58,12 +73,26 @@ describe('Test Snap manageState', function () {
           'unencryptedStateResultSpan',
           JSON.stringify({ foo: 'bar' }, null, 2),
         );
+        await testSnaps.fillMessage('setStateKeyUnencryptedInput', 'baz');
+        await testSnaps.fillMessage('dataUnencryptedStateInput', '"qux"');
+        await testSnaps.scrollAndClickButton('sendUnencryptedStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'unencryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
+        );
 
         await testSnaps.fillMessage('getUnencryptedStateInput', 'foo');
         await testSnaps.scrollAndClickButton('sendGetUnencryptedStateButton');
         await testSnaps.checkMessageResultSpan(
           'getStateUnencryptedResultSpan',
           '"bar"',
+        );
+
+        await testSnaps.fillMessage('getUnencryptedStateInput', 'foo,baz');
+        await testSnaps.scrollAndClickButton('sendGetUnencryptedStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'getStateUnencryptedResultSpan',
+          JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
         );
 
         await testSnaps.clickButton('clearStateUnencryptedButton');
@@ -78,7 +107,9 @@ describe('Test Snap manageState', function () {
   it('can use the legacy state API', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockManageStateSnap,
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
@@ -86,17 +117,14 @@ describe('Test Snap manageState', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectManageStateButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectManageStateButton',
-          'Reconnect to Legacy State Snap',
+          { expectedMessage: 'Reconnect to Legacy State Snap' },
         );
 
         // enter data, click send manage state and validate results

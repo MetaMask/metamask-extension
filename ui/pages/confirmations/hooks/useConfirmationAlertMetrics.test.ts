@@ -1,7 +1,10 @@
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 /* eslint-disable @typescript-eslint/naming-convention */
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { act } from '@testing-library/react-hooks';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
@@ -42,9 +45,49 @@ const alertsMock = [
   },
 ];
 
+const NON_CONTRACT_ALERT_MOCK = {
+  key: AlertsName.HexDataWhileInteractingWithNonContractAddress,
+  field: 'InteractingWith',
+  severity: Severity.Warning,
+  message: 'Non-contract address',
+  reason: 'Reason 3',
+};
+
 const contractInteraction = genUnapprovedContractInteractionConfirmation({
   chainId: '0x5',
 });
+
+/**
+ * Builds confirm state for a transaction carrying the given alerts.
+ *
+ * @param alerts - The alerts to attach to the confirmation.
+ * @param confirmationOverrides - Overrides applied to the base confirmation.
+ * @returns The mock confirm state.
+ */
+function buildState(
+  alerts: Record<string, unknown>[],
+  confirmationOverrides: Partial<TransactionMeta> = {},
+) {
+  return getMockConfirmStateForTransaction(
+    {
+      ...contractInteraction,
+      ...confirmationOverrides,
+      id: OWNER_ID_MOCK,
+    } as TransactionMeta,
+    {
+      metamask: {},
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: alerts },
+        confirmed: { [OWNER_ID_MOCK]: {} },
+      },
+    },
+  );
+}
+
+const MONEY_ACCOUNT_DEPOSIT_OVERRIDES = {
+  type: TransactionType.batch,
+  nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+} as unknown as Partial<TransactionMeta>;
 
 const STATE_MOCK = getMockConfirmStateForTransaction(
   { ...contractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
@@ -86,6 +129,17 @@ beforeEach(() => {
 });
 
 describe('useConfirmationAlertMetrics', () => {
+  it('reports an unreadable Perps balance under its own metrics name', () => {
+    // The key was split from InsufficientPayTokenBalance so alert_triggered /
+    // alert_resolved stop conflating the two. `getAlertName` falls back to the
+    // raw key, so dropping or renaming the entry does not fail anything — it
+    // just silently changes the metric's shape mid-flight, emitting the
+    // camelCase `perpsWithdrawBalanceUnavailable` among snake_case names.
+    expect(
+      ALERTS_NAME_METRICS[AlertsName.PerpsWithdrawBalanceUnavailable],
+    ).toBe('perps_withdraw_balance_unavailable');
+  });
+
   it('initializes metrics properties correctly', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationAlertMetrics(),
@@ -185,4 +239,123 @@ describe('useConfirmationAlertMetrics', () => {
       );
     },
   );
+
+  describe('hexDataWhileInteractingWithNonContractAddress exclusion', () => {
+    it('omits the alert from a money account deposit batch and keeps counts consistent', () => {
+      renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        buildState(
+          [alertsMock[0], NON_CONTRACT_ALERT_MOCK],
+          MONEY_ACCOUNT_DEPOSIT_OVERRIDES,
+        ),
+      );
+
+      const { properties } =
+        mockUpdateTransactionEventFragment.mock.calls.at(-1)[0];
+
+      expect(properties.alert_triggered).toStrictEqual([
+        ALERT_NAME_METRICS_MOCK,
+      ]);
+      expect(properties.alert_triggered_count).toBe(
+        properties.alert_triggered.length,
+      );
+    });
+
+    it('omits the alert when the money account deposit type is top-level', () => {
+      renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        buildState([alertsMock[0], NON_CONTRACT_ALERT_MOCK], {
+          type: TransactionType.moneyAccountDeposit,
+        } as Partial<TransactionMeta>),
+      );
+
+      const { properties } =
+        mockUpdateTransactionEventFragment.mock.calls.at(-1)[0];
+
+      expect(properties.alert_triggered).toStrictEqual([
+        ALERT_NAME_METRICS_MOCK,
+      ]);
+    });
+
+    it('reports no alert properties when the excluded alert is the only one', () => {
+      renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        buildState([NON_CONTRACT_ALERT_MOCK], MONEY_ACCOUNT_DEPOSIT_OVERRIDES),
+      );
+
+      expect(mockUpdateTransactionEventFragment).not.toHaveBeenCalled();
+    });
+
+    it('does not record the excluded alert via trackAlertRender', () => {
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        buildState(
+          [alertsMock[0], NON_CONTRACT_ALERT_MOCK],
+          MONEY_ACCOUNT_DEPOSIT_OVERRIDES,
+        ),
+      );
+
+      act(() => {
+        result.current.trackAlertRender(
+          AlertsName.HexDataWhileInteractingWithNonContractAddress,
+        );
+        result.current.trackInlineAlertClicked(
+          AlertsName.HexDataWhileInteractingWithNonContractAddress,
+        );
+        result.current.trackAlertActionClicked(
+          AlertsName.HexDataWhileInteractingWithNonContractAddress,
+        );
+      });
+
+      const { properties } =
+        mockUpdateTransactionEventFragment.mock.calls.at(-1)[0];
+
+      expect(properties.alert_visualized).toStrictEqual([]);
+      expect(properties.alert_visualized_count).toBe(0);
+      expect(properties.alert_key_clicked).toStrictEqual([]);
+      expect(properties.alert_action_clicked).toStrictEqual([]);
+    });
+
+    it('still reports the alert for a non-money-account transaction', () => {
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        buildState([alertsMock[0], NON_CONTRACT_ALERT_MOCK]),
+      );
+
+      act(() => {
+        result.current.trackAlertRender(
+          AlertsName.HexDataWhileInteractingWithNonContractAddress,
+        );
+      });
+
+      const { properties } =
+        mockUpdateTransactionEventFragment.mock.calls.at(-1)[0];
+
+      expect(properties.alert_triggered).toStrictEqual([
+        ALERT_NAME_METRICS_MOCK,
+        AlertsName.HexDataWhileInteractingWithNonContractAddress,
+      ]);
+      expect(properties.alert_triggered_count).toBe(2);
+      expect(properties.alert_visualized).toStrictEqual([
+        AlertsName.HexDataWhileInteractingWithNonContractAddress,
+      ]);
+    });
+
+    it('keeps other alerts for a money account deposit batch', () => {
+      renderHookWithConfirmContextProvider(
+        () => useConfirmationAlertMetrics(),
+        buildState([NON_CONTRACT_ALERT_MOCK, alertsMock[1]], {
+          ...MONEY_ACCOUNT_DEPOSIT_OVERRIDES,
+        }),
+      );
+
+      const { properties } =
+        mockUpdateTransactionEventFragment.mock.calls.at(-1)[0];
+
+      expect(properties.alert_triggered).toStrictEqual([
+        ALERTS_NAME_METRICS[AlertsName.Blockaid],
+      ]);
+      expect(properties.alert_triggered_count).toBe(1);
+    });
+  });
 });

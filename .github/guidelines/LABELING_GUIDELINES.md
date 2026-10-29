@@ -24,6 +24,12 @@ Any label can be manually added on demand depending on the PR's content. For ins
 Using any of these labels should be exceptional in case of CI friction and urgencies. Please use them reasonably and verify new changes and regressions manually.
 
 - **skip-e2e-quality-gate**: This label will disable the default test retries for E2E test files modified in the PR. Useful when making large refactors or when changes don't pose flakiness risk.
+- **skip-e2e**: Skip E2E tests entirely. Use only if you're sure what you're working on will not affect them.
+- **force-e2e**: Force E2E tests to run, overriding all automatic skip conditions.
+- **skip-builds**: Force build reuse regardless of hash match (skip the build step).
+- **force-builds**: Force fresh builds, disabling build reuse.
+
+For the full CI flow that these labels control, see [E2E_DECISION_TREE.md](E2E_DECISION_TREE.md).
 
 ### Block merge if any is present
 

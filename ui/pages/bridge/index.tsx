@@ -1,26 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
-import {
-  UnifiedSwapBridgeEventName,
-  isNonEvmChainId,
-} from '@metamask/bridge-controller';
-import { I18nContext } from '../../contexts/i18n';
-import { clearSwapsState } from '../../ducks/swaps/swaps';
-import {
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  AWAITING_SIGNATURES_ROUTE,
-  TRANSACTION_SHIELD_ROUTE,
-} from '../../helpers/constants/routes';
-import { toRelativeRoutePath } from '../routes/utils';
-import { resetBackgroundSwapsState } from '../../store/actions';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-} from '../../components/component-library';
-import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
+} from '@metamask/design-system-react';
+import { I18nContext } from '../../contexts/i18n';
+import {
+  AWAITING_SIGNATURES_ROUTE,
+  PREPARE_SWAP_ASSETS_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
+import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
+import { endTrace, TraceName } from '../../../shared/lib/trace';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -28,45 +25,98 @@ import {
   Header,
   Page,
 } from '../../components/multichain/pages/page';
-import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import {
-  resetBridgeState,
-  restoreQuoteRequestFromState,
-  trackUnifiedSwapBridgeEvent,
-} from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { resetBridgeController } from '../../ducks/bridge/actions';
+import { getFromChain } from '../../ducks/bridge/selectors';
+import {
+  startSwapViewLoadTrace,
+  useBridgeNavigation,
+} from '../../hooks/bridge/useBridgeNavigation';
+import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSearchQuery';
+import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
+import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
+import { transitionBack } from '../../components/ui/transition';
+import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
+import { useDispatch } from '../../store/hooks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
+import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
-import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
+import AwaitingSignatures from './awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
+import { clearAllBridgeCacheItems } from './utils/cache';
+import { swapQuoteFetchTrace } from './utils/swap-quote-fetch-trace';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
-  // Load swaps feature flags so that we can use smart transactions
-  useSwapsFeatureFlags();
   useBridging();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { search } = useLocation();
 
-  const isFromTransactionShield = new URLSearchParams(search || '').get(
-    'isFromTransactionShield',
-  );
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { key: locationKey, state: locationState } = useLocation();
+  const {
+    navigateToDefaultRoute,
+    search,
+    swapViewTraceId,
+    swapViewPrefilledAmount,
+  } = useBridgeNavigation();
+  const hasNoInAppHistory =
+    locationKey === 'default' ||
+    (locationState as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
+  const [swapViewTrace] = useState(() => {
+    if (swapViewTraceId) {
+      return {
+        id: swapViewTraceId,
+        prefilledAmount: Boolean(swapViewPrefilledAmount),
+      };
+    }
+
+    const searchParams = new URLSearchParams(search);
+    return {
+      id: startSwapViewLoadTrace({
+        token: null,
+        search: searchParams,
+        entryPoint: 'deeplink',
+      }),
+      prefilledAmount: Boolean(searchParams.get(BridgeQueryParams.Amount)),
+    };
+  });
+  const isSwapFlowMountedRef = useRef(false);
+
+  useEffect(() => {
+    isSwapFlowMountedRef.current = true;
+
+    return () => {
+      isSwapFlowMountedRef.current = false;
+      // Defer cancellation so React StrictMode's setup/cleanup/setup probe is
+      // not mistaken for the user leaving the page.
+      queueMicrotask(() => {
+        if (isSwapFlowMountedRef.current) {
+          return;
+        }
+
+        endTrace({
+          name: TraceName.SwapViewLoaded,
+          id: swapViewTrace.id,
+          timestamp: Date.now(),
+          data: { result: 'cancelled' },
+        });
+        swapQuoteFetchTrace.finish('cancelled');
+      });
+    };
+  }, [swapViewTrace.id]);
+  // Pre-fill the src chain balances, slippage and other quote params before rendering the bridge page
+  // This also resets any search query parameters and navigation states
+  usePrefillFromSearchQuery();
+  usePrefillFromBridgeState();
+  useSmartSlippage();
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
-
-  const resetControllerAndInputStates = async () => {
-    await dispatch(resetBridgeState());
-  };
-
-  const { activeQuote } = useSelector(getBridgeQuotes);
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
@@ -78,27 +128,6 @@ const CrossChainSwap = () => {
   const shouldFetchGasEstimates =
     fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
 
-  useEffect(() => {
-    dispatch(
-      trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
-    );
-
-    if (activeQuote) {
-      dispatch(restoreQuoteRequestFromState(activeQuote.quote));
-    }
-
-    // Reset controller and inputs before unloading the page
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    window.addEventListener('beforeunload', resetControllerAndInputStates);
-    return () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      window.removeEventListener('beforeunload', resetControllerAndInputStates);
-      resetControllerAndInputStates();
-    };
-  }, []);
-
   // Needed for refreshing gas estimates (only for EVM chains)
   useGasFeeEstimates(selectedNetworkClientId, shouldFetchGasEstimates);
   // Needed for fetching exchange rates for tokens that have not been imported
@@ -108,81 +137,109 @@ const CrossChainSwap = () => {
   // Sets tx alerts for the active quote
   useTxAlerts();
 
-  const redirectToDefaultRoute = async () => {
-    await resetControllerAndInputStates();
-    if (isFromTransactionShield) {
-      navigate(TRANSACTION_SHIELD_ROUTE);
-    } else {
-      navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
-    }
-    dispatch(clearSwapsState());
-    await dispatch(resetBackgroundSwapsState());
-  };
-
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
+  // Pre-fetch the popular tokens list
+  const { fetchTokens } = useInitialBridgeTokens();
+  useEffect(() => {
+    fetchTokens();
+    return () => {
+      clearAllBridgeCacheItems();
+    };
+  }, [fetchTokens]);
+  const handleBack = () => {
+    transitionBack(() => {
+      // Direct open or deep link: leave Swap for Home, or Transaction Shield.
+      if (hasNoInAppHistory) {
+        navigateToDefaultRoute();
+        return;
+      }
+
+      // Opened from another page: reset Swap and return to that page.
+      dispatch(resetBridgeController()).catch(() => undefined);
+      navigate(PREVIOUS_ROUTE);
+    });
+  };
+
+  const prepareBody = (
+    <>
+      <BridgeTransactionSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => {
+          setIsSettingsModalOpen(false);
+        }}
+      />
+      <PrepareBridgePage
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        swapViewTrace={swapViewTrace}
+      />
+    </>
+  );
+
+  const swapHeader = (
+    <Header
+      textProps={{ variant: TextVariant.headingSm }}
+      startAccessory={
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          size={ButtonIconSize.Md}
+          ariaLabel={t('back')}
+          onClick={handleBack}
+        />
+      }
+      endAccessory={
+        <ButtonIcon
+          iconName={IconName.Setting}
+          size={ButtonIconSize.Md}
+          ariaLabel={t('settings')}
+          data-testid="bridge__header-settings-button"
+          onClick={() => {
+            setIsSettingsModalOpen(true);
+          }}
+        />
+      }
+    >
+      {t('swap')}
+    </Header>
+  );
+
   return (
-    <Page className="bridge__container">
-      <Header
-        textProps={{ variant: TextVariant.headingSm }}
-        startAccessory={
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={redirectToDefaultRoute}
-          />
+    <Routes>
+      {/*
+       * Behind the network management feature flag, token selection is shown on
+       * its own page instead of inside the prepare-bridge modal. It renders its
+       * own page shell, so it lives outside the shared swap header.
+       */}
+      <Route
+        path={toRelativeRoutePath(PREPARE_SWAP_ASSETS_ROUTE)}
+        element={<BridgeAssetPickerPage />}
+      />
+      <Route
+        path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+        element={
+          <Page className="bridge__container">
+            {swapHeader}
+            <Content padding={0}>{prepareBody}</Content>
+          </Page>
         }
-        endAccessory={
-          <ButtonIcon
-            iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('settings')}
-            data-testid="bridge__header-settings-button"
-            onClick={() => {
-              setIsSettingsModalOpen(true);
-            }}
-          />
+      />
+      <Route
+        path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+        element={
+          <Page className="bridge__container">
+            {swapHeader}
+            <Content padding={0}>
+              <Content>
+                <AwaitingSignatures />
+              </Content>
+              <Footer>
+                <AwaitingSignaturesCancelButton />
+              </Footer>
+            </Content>
+          </Page>
         }
-      >
-        {t('swap')}
-      </Header>
-      <Content padding={0}>
-        <Routes>
-          <Route
-            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
-            element={
-              <>
-                <BridgeTransactionSettingsModal
-                  isOpen={isSettingsModalOpen}
-                  onClose={() => {
-                    setIsSettingsModalOpen(false);
-                  }}
-                />
-                <PrepareBridgePage
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
-                />
-              </>
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
-            element={
-              <>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
-              </>
-            }
-          />
-        </Routes>
-      </Content>
-    </Page>
+      />
+    </Routes>
   );
 };
 

@@ -11,8 +11,7 @@ export enum BannerAlertSeverity {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface BannerAlertStyleUtilityProps
-  extends BannerBaseStyleUtilityProps {
+export interface BannerAlertStyleUtilityProps extends BannerBaseStyleUtilityProps {
   /**
    * An additional className to apply to the Banner
    */

@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import React from 'react';
 import { Text } from '../text';
 import {
@@ -6,7 +6,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 
 import { SelectButtonSize } from './select-button.types';
 import { SelectButton } from './select-button';
@@ -22,11 +21,7 @@ import { SelectOption } from '../select-option';
 export default {
   title: 'Components/ComponentLibrary/SelectButton',
   component: SelectButton,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
+  tags: ['autodocs'],
   argTypes: {},
   args: {
     startAccessory: <AvatarBase size={AvatarBaseSize.Sm} />,

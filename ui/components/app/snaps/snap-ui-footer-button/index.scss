@@ -1,57 +1,47 @@
 .snap-ui-renderer__footer-button {
-  &:not(.hide-snap-branding) {
-    &.mm-button-primary {
+  &:not(.hide-snap-branding):not(.snap-ui-renderer__footer-button--disabled) {
+    &.snap-ui-renderer__footer-button--primary {
       box-shadow: none;
 
-      &:hover:not(&--disabled) {
+      &:hover {
         opacity: 80%;
         box-shadow: none;
       }
 
-      &:active:not(&--disabled) {
+      &:active {
         opacity: 60%;
       }
 
-      &:not(.mm-button-primary--type-danger) {
-        color: var(--color-text-alternative);
+      &:not(.snap-ui-renderer__footer-button--danger) {
+        color: var(--color-icon-inverse);
         background-color: var(--color-icon-default);
       }
     }
 
-    &.mm-button-secondary {
+    &.snap-ui-renderer__footer-button--secondary {
       border-color: var(--color-icon-default);
+      color: var(--color-icon-default);
 
-      & span {
-        color: var(--color-icon-default);
-      }
-
-      &:hover:not(&--disabled) {
+      &:hover {
         border-color: var(--color-icon-default);
-        color: var(--color-background-default);
+        color: var(--color-icon-default);
         background-color: var(--color-background-default-hover);
         box-shadow: none;
-
-        & span {
-          color: var(--color-icon-default);
-        }
       }
 
-      &:active:not(&--disabled) {
+      &:active {
         border-color: var(--color-icon-default);
+        color: var(--color-icon-default);
         opacity: 60%;
-
-        & span {
-          color: var(--color-icon-default);
-        }
       }
 
-      &:not(.mm-button-primary--type-danger) {
+      &:not(.snap-ui-renderer__footer-button--danger) {
         color: var(--color-icon-default);
       }
     }
   }
 
-  &:not(&--disabled) {
+  &:not(.snap-ui-renderer__footer-button--disabled) {
     &:hover {
       cursor: pointer;
     }

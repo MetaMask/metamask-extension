@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import BN from 'bn.js';
 
 import {
   findNetworkClientIdByChainId,
@@ -7,14 +6,30 @@ import {
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
 
-const getBalanceValue = (balance: string | { words: string }) => {
+type BnLike = {
+  words: number[];
+};
+
+const getBalanceValue = (balance: unknown) => {
   let balanceStr: string;
   if (typeof balance === 'string') {
     balanceStr = parseInt(balance, 16).toString();
-  } else if (balance && typeof balance === 'object' && 'words' in balance) {
+  } else if (
+    balance &&
+    typeof balance === 'object' &&
+    'words' in balance &&
+    Array.isArray((balance as { words?: unknown }).words)
+  ) {
     // Reconstruct from BN internal structure (Firefox case)
     // BN stores value in `words` array as base-2^26 limbs
-    balanceStr = new BN(balance.words, 'le').toString(10);
+    const base = 2n ** 26n;
+    const { words } = balance as BnLike;
+    const value = words.reduce(
+      (accumulator, word, index) =>
+        accumulator + BigInt(word) * base ** BigInt(index),
+      0n,
+    );
+    balanceStr = value.toString(10);
   } else {
     balanceStr = '0';
   }

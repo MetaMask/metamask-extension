@@ -1,25 +1,25 @@
 import { Driver } from '../../webdriver/driver';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // initiates a transaction from the dapp
         const testDapp = new TestDapp(driver);
@@ -38,13 +38,16 @@ describe('Multiple transactions', function () {
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.checkPageNumbers(1, 2);
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.checkNavigationIsNotPresent();
 
         // confirms first transaction
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -52,8 +55,8 @@ describe('Multiple transactions', function () {
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(2);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(2);
       },
     );
   });
@@ -62,13 +65,13 @@ describe('Multiple transactions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // initiates a transaction from the dapp
         const testDapp = new TestDapp(driver);
@@ -87,13 +90,16 @@ describe('Multiple transactions', function () {
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkPageNumbers(1, 2);
         await transactionConfirmation.checkGasFee('0.0002');
-        await transactionConfirmation.clickFooterCancelButton();
+        await transactionConfirmation.clickFooterButton({ button: 'cancel' });
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.checkNavigationIsNotPresent();
 
         // rejects first transaction
-        await transactionConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -101,8 +107,8 @@ describe('Multiple transactions', function () {
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkNoTxInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkNoTxInActivity();
       },
     );
   });

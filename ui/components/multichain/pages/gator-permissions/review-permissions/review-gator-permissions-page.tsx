@@ -20,16 +20,10 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useTheme } from '../../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../../ui/tab-empty-state';
-import { ThemeType } from '../../../../../../shared/constants/preferences';
 import {
   extractNetworkName,
   getDisplayOrigin,
@@ -42,12 +36,14 @@ import {
   getAggregatedGatorPermissionByChainId,
   getAggregatedGatorPermissionByChainIdAndOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
-import { ReviewGatorPermissionItem } from '../components';
+import {
+  ReviewGatorPermissionItem,
+  PermissionsEmptyState,
+} from '../components';
 import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
 export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
-  const theme = useTheme();
   const navigate = useNavigate();
   const { chainId, origin } = useParams<{
     chainId: string;
@@ -127,9 +123,7 @@ export const ReviewGatorPermissionsPage = () => {
   });
 
   const handleRevokeClick = useCallback(
-    async (
-      permission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
-    ) => {
+    async (permission: PermissionInfoWithMetadata) => {
       const { context } = permission.permissionResponse;
 
       // Set pending state immediately to disable button and show "Pending..." text
@@ -160,9 +154,7 @@ export const ReviewGatorPermissionsPage = () => {
     [revokeGatorPermission, addPendingContext, removePendingContext],
   );
 
-  const renderGatorPermissions = (
-    permissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[],
-  ) =>
+  const renderGatorPermissions = (permissions: PermissionInfoWithMetadata[]) =>
     permissions.map((permission) => (
       <ReviewGatorPermissionItem
         key={`${permission.siteOrigin}-${permission.permissionResponse.context}`}
@@ -187,10 +179,9 @@ export const ReviewGatorPermissionsPage = () => {
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            className="connections-header__start-accessory"
             color={IconColor.IconDefault}
             onClick={() => navigate(PREVIOUS_ROUTE)}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
           />
         }
       >
@@ -213,22 +204,7 @@ export const ReviewGatorPermissionsPage = () => {
             className="h-full"
             padding={4}
           >
-            <TabEmptyState
-              icon={
-                <img
-                  src={
-                    theme === ThemeType.dark
-                      ? '/images/empty-state-permissions-dark.png'
-                      : '/images/empty-state-permissions-light.png'
-                  }
-                  alt={t('permissionsPageEmptyDescription')}
-                  width={72}
-                  height={72}
-                />
-              }
-              description={t('permissionsPageEmptyDescription')}
-              className="mx-auto"
-            />
+            <PermissionsEmptyState />
           </Box>
         )}
       </Content>

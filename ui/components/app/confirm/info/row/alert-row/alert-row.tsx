@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Skeleton } from '@metamask/design-system-react';
 import {
   JustifyContent,
   Severity,
@@ -14,7 +15,6 @@ import {
   ConfirmInfoRowProps,
   ConfirmInfoRowVariant,
 } from '../row';
-import { Skeleton } from '../../../../../component-library/skeleton';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;

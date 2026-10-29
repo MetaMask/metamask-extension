@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   setRewardsGeoMetadata,
   setRewardsGeoMetadataError,
@@ -7,6 +6,7 @@ import {
 } from '../../ducks/rewards';
 import { getRewardsGeoMetadata } from '../../store/actions';
 import { RewardsGeoMetadata } from '../../../shared/types/rewards';
+import { useDispatch } from '../../store/hooks';
 
 type UseGeoRewardsMetadataProps = {
   enabled?: boolean;

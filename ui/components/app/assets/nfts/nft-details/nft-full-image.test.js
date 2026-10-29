@@ -8,7 +8,7 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as UseGetAssetImageUrlModule from '../../../../../hooks/useGetAssetImageUrl';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { getAllNfts } from '../../../../../ducks/metamask/metamask';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../../../selectors';
@@ -71,11 +71,21 @@ describe('NFT full image', () => {
   });
 
   it('should match snapshot', async () => {
+    const rafSpy = jest
+      .spyOn(window, 'requestAnimationFrame')
+      .mockImplementation((callback) => {
+        callback();
+        return 0;
+      });
+
     const { container } = renderWithProvider(<NftFullImage />, mockStore);
 
     await waitFor(() => {
-      expect(container).toMatchSnapshot();
+      expect(container.querySelector('.fade-in.visible')).toBeTruthy();
     });
+    expect(container).toMatchSnapshot();
+
+    rafSpy.mockRestore();
   });
 
   it('should show the first image if an NFT has an array of images', async () => {

@@ -1,32 +1,48 @@
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { NameType } from '@metamask/name-controller';
+import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../context/confirm';
-import {
-  useTrustSignal,
-  TrustSignalDisplayState,
-} from '../../../../hooks/useTrustSignals';
+import { useTrustSignals } from '../../../../hooks/useTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+import {
+  buildTrustSignalAlerts,
+  buildTrustSignalRequests,
+  TrustSignalAlertTarget,
+} from './utils';
 
 export function useAddressTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
   const t = useI18nContext();
 
-  const addressToCheck = useMemo(() => {
+  const addressesToCheck = useMemo(() => {
     if (!currentConfirmation) {
-      return null;
+      return [];
     }
 
-    // For transactions, check the 'to' address
-    if ((currentConfirmation as TransactionMeta)?.txParams?.to) {
-      return (currentConfirmation as TransactionMeta).txParams.to;
+    const addresses: TrustSignalAlertTarget[] = [];
+
+    // For transactions, check the original 'to' address before container
+    // wrapping replaces it with the delegation manager address.
+    const transactionMeta = currentConfirmation as TransactionMeta;
+    const transactionAddress =
+      transactionMeta?.txParamsOriginal?.to ?? transactionMeta?.txParams?.to;
+    if (transactionAddress) {
+      addresses.push({ address: transactionAddress });
     }
+
+    transactionMeta?.nestedTransactions?.forEach((nested, index) => {
+      if (nested.to) {
+        addresses.push({
+          address: nested.to,
+          nestedTransactionIndex: index,
+        });
+      }
+    });
 
     // For signatures, check the verifying contract if available
     if ((currentConfirmation as SignatureRequestType)?.msgParams?.data) {
@@ -35,51 +51,36 @@ export function useAddressTrustSignalAlerts(): Alert[] {
           ?.data;
         const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
         if (parsedData?.domain?.verifyingContract) {
-          return parsedData.domain.verifyingContract;
+          addresses.push({ address: parsedData.domain.verifyingContract });
         }
       } catch (e) {
         // Ignore parsing errors
       }
     }
 
-    return null;
+    return addresses;
   }, [currentConfirmation]);
 
-  const { state: trustSignalDisplayState } = useTrustSignal(
-    addressToCheck || '',
-    NameType.ETHEREUM_ADDRESS,
-    currentConfirmation?.chainId,
-  );
+  const trustSignalsRequests = useMemo(() => {
+    return buildTrustSignalRequests(
+      addressesToCheck,
+      currentConfirmation?.chainId as Hex | undefined,
+    );
+  }, [addressesToCheck, currentConfirmation?.chainId]);
+
+  const trustSignals = useTrustSignals(trustSignalsRequests);
 
   return useMemo(() => {
-    if (!addressToCheck || !isSecurityAlertsAPIEnabled()) {
+    if (addressesToCheck.length === 0 || !isSecurityAlertsAPIEnabled()) {
       return [];
     }
 
-    const alerts: Alert[] = [];
-
-    if (trustSignalDisplayState === TrustSignalDisplayState.Malicious) {
-      alerts.push({
-        actions: [],
-        field: RowAlertKey.InteractingWith,
-        isBlocking: false,
-        key: 'trustSignalMalicious',
-        message: t('alertMessageAddressTrustSignalMalicious'),
-        reason: t('nameModalTitleMalicious'),
-        severity: Severity.Danger,
-      });
-    } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
-      alerts.push({
-        actions: [],
-        field: RowAlertKey.InteractingWith,
-        isBlocking: false,
-        key: 'trustSignalWarning',
-        message: t('alertMessageAddressTrustSignal'),
-        reason: t('nameModalTitleWarning'),
-        severity: Severity.Warning,
-      });
-    }
-
-    return alerts;
-  }, [addressToCheck, trustSignalDisplayState, t]);
+    return buildTrustSignalAlerts({
+      targets: addressesToCheck,
+      trustSignals,
+      field: RowAlertKey.InteractingWith,
+      keyPrefix: 'trustSignal',
+      t,
+    });
+  }, [addressesToCheck, trustSignals, t]);
 }

@@ -7,10 +7,7 @@ import { setBackgroundConnection } from '../../../../store/background-connection
 import { DestinationAccountPickerModal } from './destination-account-picker-modal';
 
 setBackgroundConnection({
-  tokenBalancesStartPolling: jest.fn(),
-  addPollingTokenToAppState: jest.fn(),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
+  messengerCall: jest.fn().mockResolvedValue('pollingToken'),
 } as never);
 
 describe('DestinationAccountPickerModal', () => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import {
   useEIP7702Networks,
@@ -43,12 +44,6 @@ const mockIsUpgraded = jest.fn();
 
 const mockAddress = '0x742d35Cc6634C0532925a3b8D4E8f3c9B26e6e6e';
 
-const mockState = {
-  appState: {
-    accountDetailsAddress: mockAddress,
-  },
-};
-
 const mockNetworksData: EIP7702NetworkConfiguration[] = [
   {
     chainId: 'eip155:1' as const,
@@ -76,7 +71,6 @@ const mockNetworksData: EIP7702NetworkConfiguration[] = [
 
 const render = (stateOverride = {}) => {
   const store = configureStore({
-    ...mockState,
     ...stateOverride,
   });
   return renderWithProvider(
@@ -112,10 +106,12 @@ describe('SmartContractAccountToggleSection', () => {
       const { container } = render();
 
       expect(screen.getByTestId('network-loader')).toBeInTheDocument();
-      expect(screen.getByText('Use smart account')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.enableSmartContractAccount.message),
+      ).toBeInTheDocument();
       expect(
         screen.getByText(
-          'Unlock faster transactions, lower network fees, and added security on supported networks.',
+          messages.enableSmartContractAccountDescription.message,
         ),
       ).toBeInTheDocument();
       expect(container).toMatchSnapshot();
@@ -186,7 +182,9 @@ describe('SmartContractAccountToggleSection', () => {
 
       const { container } = render();
 
-      const learnMoreButton = screen.getByText('Learn more');
+      const learnMoreButton = screen.getByText(
+        messages.learnMoreUpperCase.message,
+      );
       fireEvent.click(learnMoreButton);
 
       expect(mockOpenTab).toHaveBeenCalledWith({

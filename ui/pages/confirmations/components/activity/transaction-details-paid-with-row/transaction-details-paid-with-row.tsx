@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Text, Box } from '../../../../../components/component-library';
 import {
   Display,
@@ -11,10 +11,10 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
-import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
+import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TokenIcon } from '../../token-icon';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsPaidWithRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
@@ -22,24 +22,23 @@ export function TransactionDetailsPaidWithRow() {
   const { metamaskPay } = transactionMeta;
   const { chainId, tokenAddress } = metamaskPay || {};
 
-  const token = useSelector((state) =>
-    tokenAddress && chainId
-      ? getTokenByAccountAndAddressAndChainId(
-          state,
-          undefined,
-          tokenAddress as Hex,
-          chainId as Hex,
-        )
-      : null,
+  const token = useTokenWithBalance(
+    (tokenAddress ?? '0x0') as Hex,
+    (chainId ?? '0x0') as Hex,
   );
 
   if (!chainId || !tokenAddress || !token) {
     return null;
   }
 
+  const isWithdraw = hasTransactionType(transactionMeta, [
+    TransactionType.perpsWithdraw,
+  ]);
+  const label = isWithdraw ? t('receiveToken') : t('paidWith');
+
   return (
     <TransactionDetailsRow
-      label={t('paidWith')}
+      label={label}
       data-testid="transaction-details-paid-with-row"
     >
       <Box

@@ -9,9 +9,19 @@ import { replaceColon } from '../../flask/multichain-api/testHelpers';
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
+/**
+ * Multichain API test dapp for session create/get/revoke and method invokes.
+ *
+ * Screen: `http://127.0.0.1:8080` served from `@metamask/test-dapp-multichain`.
+ * Owns: extension-id connect, scope checkboxes, wallet session buttons,
+ * session/method result panels, and connected-account assertions.
+ * Boundaries: the multichain dapp only. MetaMask permission/connect
+ * confirmations belong to confirmation page objects.
+ * Related: connect and review-permissions confirmations.
+ *
+ * @see node_modules/@metamask/test-dapp-multichain/build/index.html
+ */
 class TestDappMultichain {
-  private readonly driver: Driver;
-
   private readonly connectedAccount = (account: string) => {
     return {
       testId: 'connected-accounts-list',
@@ -29,6 +39,8 @@ class TestDappMultichain {
     tag: 'h1',
   };
 
+  private readonly driver: Driver;
+
   private readonly extensionIdInput = '[placeholder="Enter extension ID"]';
 
   private readonly firstSessionMethodResult = '#session-method-result-0';
@@ -36,6 +48,11 @@ class TestDappMultichain {
   private readonly invokeAllMethodsButton = {
     testId: 'invoke-all-methods-button',
   };
+
+  private readonly resultSummary = '.result-summary';
+
+  private readonly scopeCheckboxByName = (scope: string) =>
+    `input[name="${scope}"]`;
 
   private readonly sessionResultListItem = (resultNumber: number) => {
     return `#session-method-details-${resultNumber}`;
@@ -48,8 +65,6 @@ class TestDappMultichain {
   private readonly walletNotifyResult = '#wallet-notify-container';
 
   private readonly walletRevokeSessionButton = '#revoke-session-btn';
-
-  private readonly resultSummary = '.result-summary';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -67,12 +82,11 @@ class TestDappMultichain {
     return `#add-custom-scope-button-${i}`;
   }
 
-  customAccountAddressInput(i: number) {
-    return `#custom-CAIP\\ Address-input-${i}`;
-  }
-
-  customScopeInput(i: number) {
-    return `#custom-Scope-input-${i}`;
+  async checkConnectedAccounts(expectedAccounts: string[]): Promise<void> {
+    console.log('Checking connected accounts on multichain test dapp.');
+    for (const account of expectedAccounts) {
+      await this.driver.waitForSelector(this.connectedAccount(account));
+    }
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -92,6 +106,21 @@ class TestDappMultichain {
     await this.driver.waitForSelector(
       this.sessionResultListItem(totalItems - 1),
     );
+  }
+
+  /**
+   * Checks if the wallet notify result is displayed on multichain test dapp.
+   *
+   * @param scope - The CAIP-2 scope.
+   */
+  async checkWalletNotifyResult(scope: string): Promise<void> {
+    console.log(
+      `Checking wallet notify result for scope ${scope} on multichain test dapp.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.walletNotifyResult,
+      text: scope,
+    });
   }
 
   async clickConnectExternallyConnectableButton() {
@@ -121,25 +150,6 @@ class TestDappMultichain {
     await this.driver.clickElement(this.walletRevokeSessionButton);
   }
 
-  async fillExtensionIdInput(extensionId: string) {
-    await this.driver.fill(this.extensionIdInput, extensionId, { retries: 3 });
-  }
-
-  /**
-   * Open the multichain test dapp page.
-   *
-   * @param options - The options for opening the test dapp page.
-   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
-   * @returns A promise that resolves when the new page is opened.
-   */
-  async openTestDappPage({
-    url = DAPP_URL,
-  }: {
-    url?: string;
-  } = {}): Promise<void> {
-    await this.driver.openNewPage(url);
-  }
-
   /**
    * Connect to multichain test dapp to the Multichain API via externally_connectable.
    *
@@ -156,30 +166,28 @@ class TestDappMultichain {
     await this.driver.delay(veryLargeDelayMs);
   }
 
+  customAccountAddressInput(i: number) {
+    return `#custom-CAIP\\ Address-input-${i}`;
+  }
+
+  customScopeInput(i: number) {
+    return `#custom-Scope-input-${i}`;
+  }
+
   /**
-   * Initiates a request to wallet extension to create session for the passed scopes.
+   * Clicks scope checkboxes on the multichain test dapp to deselect the given scopes.
    *
-   * @param scopes - scopes to create session for.
-   * @param accounts - The account addresses to create session for.
+   * @param scopes - CAIP-2 scope strings matching `input[name]` on the dapp.
    */
-  async initCreateSessionScopes(
-    scopes: string[],
-    accounts: string[] = [],
-  ): Promise<void> {
+  async deselectScopes(scopes: string[]): Promise<void> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
-    for (const [i, scope] of scopes.entries()) {
-      await this.driver.fill(this.customScopeInput(i), scope);
-      await this.driver.clickElement(this.addCustomScopeButton(i));
+    for (const scope of scopes) {
+      await this.driver.clickElement(this.scopeCheckboxByName(scope));
     }
+  }
 
-    for (const [i, account] of accounts.entries()) {
-      await this.driver.fill(this.customAccountAddressInput(i), account);
-      await this.driver.clickElement(this.addCustomAccountAddressInput(i));
-    }
-
-    await this.clickWalletCreateSessionButton();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.delay(largeDelayMs);
+  async fillExtensionIdInput(extensionId: string) {
+    await this.driver.fill(this.extensionIdInput, extensionId, { retries: 3 });
   }
 
   /**
@@ -278,10 +286,29 @@ class TestDappMultichain {
   }
 
   /**
-   * Revokes permitted session.
+   * Initiates a request to wallet extension to create session for the passed scopes.
+   *
+   * @param scopes - scopes to create session for.
+   * @param accounts - The account addresses to create session for.
    */
-  async revokeSession(): Promise<void> {
-    await this.clickWalletRevokeSessionButton();
+  async initCreateSessionScopes(
+    scopes: string[],
+    accounts: string[] = [],
+  ): Promise<void> {
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+    for (const [i, scope] of scopes.entries()) {
+      await this.driver.fill(this.customScopeInput(i), scope);
+      await this.driver.clickElement(this.addCustomScopeButton(i));
+    }
+
+    for (const [i, account] of accounts.entries()) {
+      await this.driver.fill(this.customAccountAddressInput(i), account);
+      await this.driver.clickElement(this.addCustomAccountAddressInput(i));
+    }
+
+    await this.clickWalletCreateSessionButton();
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.delay(largeDelayMs);
   }
 
   /**
@@ -332,31 +359,6 @@ class TestDappMultichain {
   }
 
   /**
-   * Invokes a JSON-RPC method for a given scope and retrieves the result.
-   *
-   * @param params - The parameters for invoking the method.
-   * @param params.scope - The CAIP-2 scope.
-   * @param params.method - The JSON-RPC method to invoke.
-   * @param params.params - The parameters for the JSON-RPC method.
-   * @param params.methodCount - The 1-based index of the method result to return. Defaults to 1.
-   * @returns The result as string.
-   */
-  async invokeMethodAndReturnResult({
-    scope,
-    method,
-    params = {},
-    methodCount = 1,
-  }: {
-    scope: string;
-    method: string;
-    params?: Json;
-    methodCount?: number;
-  }): Promise<string> {
-    await this.invokeMethod({ scope, method, params });
-    return this.getInvokeMethodResult({ scope, method, methodCount });
-  }
-
-  /**
    * Invokes a JSON-RPC method for a given scope and checks the result.
    *
    * @param params - The parameters for invoking the method.
@@ -382,6 +384,53 @@ class TestDappMultichain {
       css: `[id="invoke-method-${replaceColon(scope)}-${method}-result-0"]`,
       text: expectedResult,
     });
+  }
+
+  /**
+   * Invokes a JSON-RPC method for a given scope and retrieves the result.
+   *
+   * @param params - The parameters for invoking the method.
+   * @param params.scope - The CAIP-2 scope.
+   * @param params.method - The JSON-RPC method to invoke.
+   * @param params.params - The parameters for the JSON-RPC method.
+   * @param params.methodCount - The 1-based index of the method result to return. Defaults to 1.
+   * @returns The result as string.
+   */
+  async invokeMethodAndReturnResult({
+    scope,
+    method,
+    params = {},
+    methodCount = 1,
+  }: {
+    scope: string;
+    method: string;
+    params?: Json;
+    methodCount?: number;
+  }): Promise<string> {
+    await this.invokeMethod({ scope, method, params });
+    return this.getInvokeMethodResult({ scope, method, methodCount });
+  }
+
+  /**
+   * Open the multichain test dapp page.
+   *
+   * @param options - The options for opening the test dapp page.
+   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
+   * @returns A promise that resolves when the new page is opened.
+   */
+  async openTestDappPage({
+    url = DAPP_URL,
+  }: {
+    url?: string;
+  } = {}): Promise<void> {
+    await this.driver.openNewPage(url);
+  }
+
+  /**
+   * Revokes permitted session.
+   */
+  async revokeSession(): Promise<void> {
+    await this.clickWalletRevokeSessionButton();
   }
 
   /**
@@ -440,28 +489,6 @@ class TestDappMultichain {
       },
       { interval: 100, timeout: 5000 },
     );
-  }
-
-  /**
-   * Checks if the wallet notify result is displayed on multichain test dapp.
-   *
-   * @param scope - The CAIP-2 scope.
-   */
-  async checkWalletNotifyResult(scope: string): Promise<void> {
-    console.log(
-      `Checking wallet notify result for scope ${scope} on multichain test dapp.`,
-    );
-    await this.driver.waitForSelector({
-      css: this.walletNotifyResult,
-      text: scope,
-    });
-  }
-
-  async checkConnectedAccounts(expectedAccounts: string[]): Promise<void> {
-    console.log('Checking connected accounts on multichain test dapp.');
-    for (const account of expectedAccounts) {
-      await this.driver.waitForSelector(this.connectedAccount(account));
-    }
   }
 }
 

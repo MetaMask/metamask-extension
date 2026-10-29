@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
-import { WALLET_PASSWORD } from '../../constants';
-import { withFixtures } from '../../helpers';
+import { Mockttp } from 'mockttp';
+import { MOCK_ANALYTICS_ID, WALLET_PASSWORD } from '../../constants';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
@@ -9,21 +11,47 @@ import {
 import {
   getFirstAddress,
   onboardThenTriggerCorruptionFlow,
+  simpleReloadScript,
 } from '../../page-objects/flows/vault-corruption.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
-import { getConfig } from './helpers';
+import CriticalErrorPage from '../../page-objects/pages/vault/critical-error-page';
+import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 /**
- * Simple script that reloads the extension.
- * Used when manifest flags (like simulateStorageGetFailure) handle the corruption simulation.
+ * Mocks the Segment event sent after a persistence write succeeds on retry.
+ * The literal event and property names intentionally make schema changes fail
+ * this test instead of changing alongside a shared constant.
+ *
+ * @param mockServer - The mock server instance.
+ * @returns The mocked Segment endpoint.
  */
-const simpleReloadScript = `
-  const callback = arguments[arguments.length - 1];
-  const browser = globalThis.browser ?? globalThis.chrome;
-  browser.runtime.reload();
-  callback();
-`;
+async function mockWriteRetryRecoveredEvent(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [
+          {
+            type: 'track',
+            event: 'Data Persistence Write Retry Recovered',
+            properties: {
+              category: 'Error',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              persistence_event: 'persist-retry-recovered',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              first_error_message:
+                'Simulated storage.local.set failure for testing',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              first_error_name: 'Error',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              retry_delay_ms: 500,
+            },
+          },
+        ],
+      })
+      .thenCallback(() => ({ statusCode: 200 })),
+  ];
+}
 
 /**
  * Tests for storage operations failure recovery.
@@ -40,16 +68,22 @@ describe('Storage Operations Failure Recovery', function () {
 
   describe('storage.local.get() failure with simulateStorageGetFailure flag', function () {
     it('triggers vault recovery when get() fails but backup exists in IndexedDB', async function () {
-      await withFixtures(
-        getConfig(this.test?.title, {
-          additionalIgnoredErrors: [
-            'Simulated storage.local.get failure for testing',
-          ],
-          additionalManifestFlags: {
+      const config = getConfig(this.test?.title, {
+        additionalIgnoredErrors: [
+          'Simulated storage.local.get failure for testing',
+        ],
+        additionalManifestFlags: {
+          testing: {
             // Enable the simulation flag - it will only trigger after backup exists
             simulateStorageGetFailure: true,
           },
-        }),
+        },
+      });
+      await withFixtures(
+        {
+          ...config,
+          testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+        },
         async ({ driver }: { driver: Driver }) => {
           // Phase 1: Onboard, get address, lock, reload, and wait for vault recovery
           // The simulateStorageGetFailure manifest flag triggers after backup exists
@@ -59,15 +93,26 @@ describe('Storage Operations Failure Recovery', function () {
           );
 
           // Phase 2: Start recovery
-          const vaultRecoveryPage = new VaultRecoveryPage(driver);
-          await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+          const criticalErrorPage = new CriticalErrorPage(driver);
+          await criticalErrorPage.clickRepairButton({
+            confirm: true,
+            expectsExtensionReload: false,
+          });
 
           // Phase 3: Complete vault recovery onboarding
           await completeVaultRecoveryOnboardingFlow({
             driver,
             password: WALLET_PASSWORD,
           });
-          const restoredFirstAddress = await getFirstAddress(driver);
+          // After restoring from backup, multichain account sync may hang in
+          // CI. Skip the sync check — we only need to read the existing address.
+          const restoredFirstAddress = await getFirstAddress(
+            driver,
+            undefined,
+            {
+              waitForSync: false,
+            },
+          );
 
           // Phase 4: Verify address is preserved
           assert.equal(
@@ -81,6 +126,46 @@ describe('Storage Operations Failure Recovery', function () {
   });
 
   describe('storage.local.set() failure with simulateStorageSetFailure flag', function () {
+    it('tracks recovery when a persistence write succeeds on retry', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2()
+            .withAnalyticsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+              consentDecisionMade: true,
+              optedIn: true,
+            })
+            .build(),
+          manifestFlags: {
+            testing: {
+              simulateStorageSetFailure: 'once',
+            },
+          },
+          testSpecificMock: mockWriteRetryRecoveredEvent,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+          const events = await getEventPayloads(driver, mockedEndpoints);
+          assert.equal(events.length, 1);
+          assert.equal(
+            events[0].event,
+            'Data Persistence Write Retry Recovered',
+          );
+          assert.equal(events[0].properties.category, 'Error');
+          assert.equal(
+            events[0].properties.persistence_event,
+            'persist-retry-recovered',
+          );
+          assert.equal(
+            events[0].properties.first_error_message,
+            'Simulated storage.local.set failure for testing',
+          );
+          assert.equal(events[0].properties.first_error_name, 'Error');
+          assert.equal(events[0].properties.retry_delay_ms, 500);
+        },
+      );
+    });
+
     it('shows storage error toast when set() fails after onboarding', async function () {
       await withFixtures(
         getConfig(this.test?.title, {
@@ -88,8 +173,10 @@ describe('Storage Operations Failure Recovery', function () {
             'Simulated storage.local.set failure for testing',
           ],
           additionalManifestFlags: {
-            // Enable set failure - will trigger immediately
-            simulateStorageSetFailure: true,
+            testing: {
+              // Enable set failure - will trigger immediately
+              simulateStorageSetFailure: true,
+            },
           },
         }),
         async ({ driver }: { driver: Driver }) => {

@@ -11,6 +11,7 @@ async function buildWebDriver({
   timeOut,
   proxyPort,
   disableServerMochaToBackground,
+  isBenchmark = false,
 } = {}) {
   const browser = process.env.SELENIUM_BROWSER;
 
@@ -24,6 +25,7 @@ async function buildWebDriver({
     port,
     constrainWindowSize,
     proxyPort,
+    isBenchmark,
   });
   const driver = new Driver({
     driver: seleniumDriver,

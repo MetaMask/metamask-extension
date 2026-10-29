@@ -8,12 +8,14 @@ import {
 
 import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
-import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
@@ -93,8 +95,6 @@ const getBatchedApprovalDisplayValue = async (
   return undefined;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BatchedApprovalFunction({
   method,
   nestedTransactionIndex,
@@ -135,12 +135,16 @@ export function BatchedApprovalFunction({
         <ConfirmInfoRowText text={method.name} />
       </ConfirmInfoRow>
       <Box paddingLeft={2}>
-        <ConfirmInfoRow label={t('spender')}>
+        <ConfirmInfoAlertRow
+          alertKey={`${RowAlertKey.Spender}-${nestedTransactionIndex}`}
+          ownerId={currentConfirmation.id}
+          label={t('spender')}
+        >
           <ConfirmInfoRowAddress
             address={value.spender ?? ''}
             chainId={chainId}
           />
-        </ConfirmInfoRow>
+        </ConfirmInfoAlertRow>
         {value.amount && (
           <ConfirmInfoRow label={t('amount')}>
             <ConfirmInfoRowText text={value.amount} />

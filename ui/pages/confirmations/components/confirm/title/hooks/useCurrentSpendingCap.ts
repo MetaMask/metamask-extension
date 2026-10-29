@@ -51,5 +51,8 @@ export function useCurrentSpendingCap(currentConfirmation: Confirmation) {
     customSpendingCap = spendingCap;
   }
 
-  return { customSpendingCap, pending };
+  return {
+    customSpendingCap,
+    pending: isTxWithSpendingCap && pending,
+  };
 }

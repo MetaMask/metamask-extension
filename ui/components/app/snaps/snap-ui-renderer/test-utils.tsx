@@ -8,6 +8,11 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import mockState from '../../../../../test/data/mock-state.json';
 import { SnapUIRenderer } from './snap-ui-renderer';
 
+jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(),
+}));
+
 export const MOCK_SNAP_ID = 'npm:@metamask/test-snap-bip44';
 export const MOCK_INTERFACE_ID = 'interfaceId';
 
@@ -86,6 +91,7 @@ export function renderInterface(
               state: action.state ?? reduxState,
               context: null,
               contentType: null,
+              displayed: true,
             },
           },
         },

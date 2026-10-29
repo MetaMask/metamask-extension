@@ -1,5 +1,3 @@
-'use no memo';
-
 import {
   TransactionMeta,
   TransactionStatus,
@@ -43,8 +41,22 @@ export function useSigningOrSubmittingAlerts(): Alert[] {
 
   const isValidType = isCorrectDeveloperTransactionType(type);
 
+  const hasSigningOrSubmittingForCurrentScope = useMemo(() => {
+    if (!from) {
+      return false;
+    }
+
+    const fromLower = from.toLowerCase();
+
+    return signingOrSubmittingTransactions.some(
+      (tx: TransactionMeta) =>
+        tx.chainId === chainId &&
+        tx.txParams?.from?.toLowerCase() === fromLower,
+    );
+  }, [signingOrSubmittingTransactions, chainId, from]);
+
   const isSigningOrSubmitting =
-    isValidType && signingOrSubmittingTransactions.length > 0;
+    isValidType && hasSigningOrSubmittingForCurrentScope;
 
   const payTokenChainId = payToken?.chainId;
   const isPayTokenOnDifferentChain =

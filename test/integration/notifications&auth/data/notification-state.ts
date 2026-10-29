@@ -15,6 +15,11 @@ const notificationsAccountAddress =
       .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
   ].address;
 
+export const ethSentNotificationTemplate = {
+  title: 'Sent to 0x881D4...D300D',
+  body: 'You sent 0.005 ETH',
+};
+
 export const ethSentNotification = processNotification(
   createMockNotificationEthSent(),
 ) as Extract<INotification, { type: TRIGGER_TYPES.ETH_SENT }>;
@@ -22,6 +27,7 @@ export const ethSentNotification = processNotification(
 if (ethSentNotification.type === TRIGGER_TYPES.ETH_SENT) {
   ethSentNotification.payload.address = notificationsAccountAddress;
   ethSentNotification.payload.data.from = notificationsAccountAddress;
+  ethSentNotification.template = ethSentNotificationTemplate;
   ethSentNotification.isRead = true;
 }
 
@@ -40,6 +46,7 @@ export const getMockedNotificationsState = () => {
     isBackupAndSyncUpdateLoading: false,
     isContactSyncingEnabled: true,
     isContactSyncingInProgress: false,
+    analyticsId: 'test-metametrics-id',
     isMetamaskNotificationsFeatureSeen: true,
     isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,

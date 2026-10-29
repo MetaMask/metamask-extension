@@ -1,44 +1,34 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { createFormatters } from '@metamask/assets-controllers';
+import { createFormatters } from '@metamask/client-utils';
 import { getIntlLocale } from '../ducks/locale/locale';
 
-type Value = number | bigint | `${number}`;
+const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
 
-function formatPercentWithMinThreshold(
-  formatNumber: (value: Value, options?: Intl.NumberFormatOptions) => string,
-  value: Value,
-  options: Intl.NumberFormatOptions = {},
+function getCachedDateTimeFormat(
+  locale: string,
+  options: Intl.DateTimeFormatOptions = {},
 ) {
-  const minThreshold = 0.0001; // 0.01%
-  const number = Number(value);
-
-  if (!Number.isFinite(number)) {
-    return '';
+  const key = `${locale}_${JSON.stringify(options)}`;
+  if (!dateTimeFormatCache[key]) {
+    dateTimeFormatCache[key] = new Intl.DateTimeFormat(locale, options);
   }
-
-  const clamped =
-    number === 0
-      ? 0
-      : Math.sign(number) * Math.max(Math.abs(number), minThreshold);
-
-  return formatNumber(clamped, {
-    style: 'percent',
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-    ...options,
-  });
+  return dateTimeFormatCache[key];
 }
 
-function formatCompact(
-  formatNumber: (value: Value, options?: Intl.NumberFormatOptions) => string,
-  value: Value,
+// Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
+function formatMediumDate(
+  locale: string,
+  timestamp: string | number,
+  options?: Intl.DateTimeFormatOptions,
 ) {
-  return formatNumber(value, {
-    notation: 'compact',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  if (!timestamp) {
+    return '';
+  }
+  return getCachedDateTimeFormat(locale, {
+    dateStyle: 'medium',
+    ...options,
+  }).format(new Date(timestamp));
 }
 
 export function useFormatters() {
@@ -49,13 +39,9 @@ export function useFormatters() {
     return {
       ...base,
       /**
-       * Format a value as a percentage string with two decimal digits (ratio input: 0.1234 -> "12.34%").
+       * Format a timestamp as a localized medium date string (e.g. "Mar 15, 2024").
        */
-      formatPercentWithMinThreshold: formatPercentWithMinThreshold.bind(
-        null,
-        base.formatNumber,
-      ),
-      formatCompact: formatCompact.bind(null, base.formatNumber),
+      formatMediumDate: formatMediumDate.bind(null, locale),
     };
   }, [locale]);
 }

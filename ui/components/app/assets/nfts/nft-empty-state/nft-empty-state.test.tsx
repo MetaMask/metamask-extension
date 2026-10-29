@@ -3,22 +3,31 @@ import { fireEvent, screen } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
-import * as actions from '../../../../../store/actions';
+import { IMPORT_NFTS_ROUTE } from '../../../../../helpers/constants/routes';
 import { NftEmptyState } from './nft-empty-state';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 describe('NftEmptyState', () => {
   const mockStore = configureMockStore([thunk]);
   let store: ReturnType<typeof mockStore>;
 
-  const renderComponent = (props = {}, stateOverride = {}) => {
+  const renderComponent = (stateOverride = {}) => {
     store = mockStore({ ...mockState, ...stateOverride });
-    return renderWithProvider(<NftEmptyState {...props} />, store);
+    return renderWithProvider(<NftEmptyState />, store);
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNavigate.mockClear();
   });
 
   it('should render the component with correct test id', () => {
@@ -29,37 +38,26 @@ describe('NftEmptyState', () => {
   it('should render description text', () => {
     renderComponent();
     expect(
-      screen.getByText(
-        "There's a world of NFTs out there. Start your collection today.",
-      ),
+      screen.getByText(messages.nftEmptyDescription.message),
     ).toBeInTheDocument();
   });
 
   it('should render import button', () => {
     renderComponent();
     expect(
-      screen.getByRole('button', { name: 'Import NFT' }),
+      screen.getByRole('button', { name: messages.importNFT.message }),
     ).toBeInTheDocument();
   });
 
-  it('should apply custom className when provided', () => {
-    const customClassName = 'custom-test-class';
-    renderComponent({ className: customClassName });
-
-    const emptyState = screen.getByTestId('nft-tab-empty-state');
-    expect(emptyState).toHaveClass(customClassName);
-  });
-
-  it('should dispatch showImportNftsModal when import button is clicked', () => {
-    const showImportNftsModalSpy = jest.spyOn(actions, 'showImportNftsModal');
+  it('navigates to the import NFTs page when import button is clicked', () => {
     renderComponent();
 
     const importButton = screen.getByRole('button', {
-      name: 'Import NFT',
+      name: messages.importNFT.message,
     });
     fireEvent.click(importButton);
 
-    expect(showImportNftsModalSpy).toHaveBeenCalledWith({});
+    expect(mockNavigate).toHaveBeenCalledWith(IMPORT_NFTS_ROUTE);
   });
 
   it('should render light theme icon by default', () => {
@@ -77,9 +75,37 @@ describe('NftEmptyState', () => {
       },
     };
 
-    renderComponent({}, darkThemeState);
+    renderComponent(darkThemeState);
 
     const image = screen.getByAltText('NFTs');
     expect(image).toHaveAttribute('src', './images/empty-state-nfts-dark.png');
+  });
+
+  describe('when a non-EVM network is selected', () => {
+    const nonEvmNetworkState = {
+      metamask: {
+        ...mockState.metamask,
+        isEvmSelected: false,
+      },
+    };
+
+    it('should render the unsupported empty state', () => {
+      renderComponent(nonEvmNetworkState);
+
+      expect(
+        screen.getByTestId('nft-tab-unsupported-empty-state'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('nft-tab-empty-state'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should not render import button', () => {
+      renderComponent(nonEvmNetworkState);
+
+      expect(
+        screen.queryByRole('button', { name: messages.importNFT.message }),
+      ).not.toBeInTheDocument();
+    });
   });
 });

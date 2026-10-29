@@ -1,7 +1,7 @@
 import React from 'react';
 import InlineAlert, { InlineAlertProps } from './inline-alert';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 
 export default {
   title: 'Confirmations/Components/Alerts/InlineAlert',
@@ -10,7 +10,8 @@ export default {
     severity: {
       control: 'select',
       options: [Severity.Info, Severity.Warning, Severity.Danger],
-      description: 'The severity of the alert. Options: Severity.Warning, Severity.Info and Severity.Danger.',
+      description:
+        'The severity of the alert. Options: Severity.Warning, Severity.Info and Severity.Danger.',
       defaultValue: Severity.Info,
     },
     onClick: {

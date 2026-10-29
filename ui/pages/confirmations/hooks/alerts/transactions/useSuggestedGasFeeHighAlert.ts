@@ -1,5 +1,3 @@
-'use no memo';
-
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -10,8 +8,8 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
-import { getMarketFeeFromEstimates } from '../../../../../../shared/modules/transaction.utils';
+import { Numeric } from '../../../../../../shared/lib/Numeric';
+import { getMarketFeeFromEstimates } from '../../../../../../shared/lib/transaction.utils';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../../../helpers/utils/confirm-tx.util';
 import { isNativeAddress } from '../../../../../helpers/utils/token-insights';
 

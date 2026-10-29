@@ -1,23 +1,14 @@
 import { createSelector } from 'reselect';
 import type { MetaMaskReduxState } from '../../store/store';
-import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getUseExternalServices } from '../../selectors/selectors';
 import {
   validatedVersionGatedFeatureFlag,
   type VersionGatedFeatureFlag,
 } from '../../../shared/lib/feature-flags/version-gating';
 
-export const selectOnboardingModalOpen = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingModalOpen;
-
-export const selectOnboardingActiveStep = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingActiveStep;
-
-export const selectOnboardingModalRendered = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingModalRendered;
-
-export const selectOnboardingReferralCode = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingReferralCode;
+export const selectRewardsModalOpen = (state: MetaMaskReduxState) =>
+  state.rewards.rewardsModalOpen;
 
 export const selectOptinAllowedForGeo = (state: MetaMaskReduxState) =>
   state.rewards.optinAllowedForGeo;
@@ -41,50 +32,15 @@ export const selectSeasonStatus = (state: MetaMaskReduxState) =>
 export const selectSeasonStatusError = (state: MetaMaskReduxState) =>
   state.rewards.seasonStatusError;
 
+/**
+ * Whether rewards (including onboarding) is available.
+ *
+ * Matches mobile: rewards follows basic functionality (`useExternalServices`)
+ * and is not gated by a remote feature flag.
+ */
 export const selectRewardsEnabled = createSelector(
-  getRemoteFeatureFlags,
   getUseExternalServices,
-  (remoteFeatureFlags, useExternalServices): boolean => {
-    const rewardsFeatureFlag = remoteFeatureFlags?.rewardsEnabled as
-      | VersionGatedFeatureFlag
-      | boolean
-      | undefined;
-
-    const resolveFlag = (flag: unknown): boolean => {
-      if (typeof flag === 'boolean') {
-        return flag;
-      }
-      return Boolean(
-        validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
-      );
-    };
-
-    const featureFlagEnabled = resolveFlag(rewardsFeatureFlag);
-    return featureFlagEnabled && Boolean(useExternalServices);
-  },
-);
-
-export const selectRewardsOnboardingEnabled = createSelector(
-  getRemoteFeatureFlags,
-  getUseExternalServices,
-  (remoteFeatureFlags, useExternalServices): boolean => {
-    const rewardsFeatureFlag = remoteFeatureFlags?.rewardsOnboardingEnabled as
-      | VersionGatedFeatureFlag
-      | boolean
-      | undefined;
-
-    const resolveFlag = (flag: unknown): boolean => {
-      if (typeof flag === 'boolean') {
-        return flag;
-      }
-      return Boolean(
-        validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
-      );
-    };
-
-    const featureFlagEnabled = resolveFlag(rewardsFeatureFlag);
-    return featureFlagEnabled && Boolean(useExternalServices);
-  },
+  (useExternalServices): boolean => Boolean(useExternalServices),
 );
 
 export const selectErrorToast = (state: MetaMaskReduxState) =>
@@ -96,3 +52,32 @@ export const selectRewardsBadgeHidden = (state: MetaMaskReduxState) =>
 export const selectRewardsAccountLinkedTimestamp = (
   state: MetaMaskReduxState,
 ) => state.rewards?.accountLinkedTimestamp ?? null;
+
+export const selectRewardsDeeplinkUrl = (state: MetaMaskReduxState) =>
+  state.rewards.rewardsDeeplinkUrl ?? null;
+
+/**
+ * Whether the VIP program (fee discounts + VIP badge) is enabled.
+ *
+ * Reads the `vipProgramEnabled` remote feature flag. Supports both a plain
+ * boolean and a version-gated object (`{ enabled, minimumVersion }`). When
+ * `false`, absent, or the current version doesn't meet the minimum, VIP tier
+ * lookups and discount calculations are suppressed across the app (perps,
+ * bridge, etc.).
+ */
+export const selectVipProgramEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): boolean => {
+    const flag = remoteFeatureFlags?.vipProgramEnabled as
+      | VersionGatedFeatureFlag
+      | boolean
+      | undefined;
+
+    if (typeof flag === 'boolean') {
+      return flag;
+    }
+    return Boolean(
+      validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
+    );
+  },
+);

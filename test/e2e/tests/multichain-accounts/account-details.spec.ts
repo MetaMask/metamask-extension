@@ -1,18 +1,16 @@
 import { Suite } from 'mocha';
 import { WALLET_PASSWORD } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
-import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
-import MultichainWalletDetailsPage from '../../page-objects/pages/multichain/multichain-wallet-details-page';
-import PrivateKeyModal from '../../page-objects/pages/multichain/private-key-modal';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import AccountAddressModal from '../../page-objects/pages/accounts/address-modal';
+import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
+import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
+import WalletDetailsPage from '../../page-objects/pages/accounts/wallet-details-page';
+import PrivateKeyModal from '../../page-objects/pages/accounts/private-key-modal';
 import { Driver } from '../../webdriver/driver';
-import { withMultichainAccountsDesignEnabled } from './common';
 
 const account1 = {
   name: 'Account 1',
@@ -22,11 +20,20 @@ const account1 = {
 describe('Multichain Accounts - Account Details', function (this: Suite) {
   describe('Base screen', function () {
     it('displays account details page with all required elements', async function () {
-      await withMultichainAccountsDesignEnabled(
+      await withFixtures(
         {
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .withKeyringControllerMultiSRP()
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .build(),
           title: this.test?.fullTitle(),
         },
-        async (driver: Driver) => {
+        async ({ driver }: { driver: Driver }) => {
+          await login(driver, { validateBalance: false });
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openAccountMenu();
+
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
@@ -36,7 +43,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
             'Account details',
           );
 
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          const accountDetailsPage = new AccountDetailsPage(driver);
           await accountDetailsPage.checkPageIsLoaded();
           const headerName = await accountDetailsPage.getAccountName();
           if (headerName !== account1.name) {
@@ -59,14 +66,16 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           }
 
           await accountDetailsPage.clickNetworksRow();
-          const addressListModal = new AddressListModal(driver);
+          const accountAddressListPage = new AccountAddressListPage(driver);
 
           const visibleNetworks = ['Ethereum', 'Linea', 'Base'];
           for (const networkName of visibleNetworks) {
-            await addressListModal.checkNetworkNameisDisplayed(networkName);
+            await accountAddressListPage.checkNetworkNameisDisplayed(
+              networkName,
+            );
           }
 
-          await addressListModal.clickQRbutton();
+          await accountAddressListPage.clickQRbutton();
           const accountAddressModal = new AccountAddressModal(driver);
           await accountAddressModal.checkPageIsLoaded();
           const address = await accountAddressModal.getAccountAddress();
@@ -77,7 +86,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           }
 
           await accountAddressModal.goBack();
-          await addressListModal.goBack();
+          await accountAddressListPage.goBack();
 
           const walletName = await accountDetailsPage.getWalletName();
           if (!walletName) {
@@ -91,12 +100,21 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
   });
 
   describe('Show account details', function () {
-    it('should show the correct private key from account menu', async function () {
-      await withMultichainAccountsDesignEnabled(
+    it('copies the private key without revealing it', async function () {
+      await withFixtures(
         {
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .withKeyringControllerMultiSRP()
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .build(),
           title: this.test?.fullTitle(),
         },
-        async (driver: Driver) => {
+        async ({ driver }: { driver: Driver }) => {
+          await login(driver, { validateBalance: false });
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openAccountMenu();
+
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
@@ -106,58 +124,42 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
             'Account details',
           );
 
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          const accountDetailsPage = new AccountDetailsPage(driver);
           await accountDetailsPage.clickPrivateKeyRow();
 
           const privateKeyModal = new PrivateKeyModal(driver);
           await privateKeyModal.checkPageIsLoaded();
           await privateKeyModal.typePassword(WALLET_PASSWORD);
           await privateKeyModal.clickConfirm();
-          const accountDetailsModal = new AccountDetailsModal(driver);
-          await accountDetailsModal.clickCopyPrivateKeyButton();
-          await accountDetailsModal.checkAddressIsCopied();
-        },
-      );
-    });
-
-    it('should show the correct private key from global menu', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }) => {
-          await loginWithoutBalanceValidation(driver);
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountDetailsModal();
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-          await accountDetailsPage.clickPrivateKeyRow();
-          const privateKeyModal = new PrivateKeyModal(driver);
-          await privateKeyModal.checkPageIsLoaded();
-          await privateKeyModal.typePassword(WALLET_PASSWORD);
-          await privateKeyModal.clickConfirm();
-          const accountDetailsModal = new AccountDetailsModal(driver);
-          await accountDetailsModal.clickCopyPrivateKeyButton();
-          await accountDetailsModal.checkAddressIsCopied();
+          await privateKeyModal.clickCopyPrivateKeyButton();
+          await privateKeyModal.checkPrivateKeyIsCopied();
         },
       );
     });
   });
-
   describe('Rename', function () {
     it('renames account successfully', async function () {
-      await withMultichainAccountsDesignEnabled(
+      await withFixtures(
         {
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .withKeyringControllerMultiSRP()
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .build(),
           title: this.test?.fullTitle(),
         },
-        async (driver: Driver) => {
+        async ({ driver }: { driver: Driver }) => {
+          await login(driver, { validateBalance: false });
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openAccountMenu();
+
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
           await accountListPage.clickMultichainAccountMenuItem('Rename');
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          const accountDetailsPage = new AccountDetailsPage(driver);
 
           const newName = 'Updated Account Name';
           await accountDetailsPage.fillAccountNameInput(newName);
@@ -174,11 +176,20 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
   describe('Wallet property', function () {
     it('navigates to wallet details when wallet row is clicked', async function () {
-      await withMultichainAccountsDesignEnabled(
+      await withFixtures(
         {
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .withKeyringControllerMultiSRP()
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .build(),
           title: this.test?.fullTitle(),
         },
-        async (driver: Driver) => {
+        async ({ driver }: { driver: Driver }) => {
+          await login(driver, { validateBalance: false });
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openAccountMenu();
+
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
@@ -188,10 +199,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
             'Account details',
           );
 
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          const accountDetailsPage = new AccountDetailsPage(driver);
           await accountDetailsPage.clickWalletRow();
 
-          const walletDetailsPage = new MultichainWalletDetailsPage(driver);
+          const walletDetailsPage = new WalletDetailsPage(driver);
           await walletDetailsPage.checkPageIsLoaded('Wallet 1');
         },
       );
@@ -200,11 +211,20 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
   describe('Share or show address', function () {
     it('shows share modal with QR code and checksummed address', async function () {
-      await withMultichainAccountsDesignEnabled(
+      await withFixtures(
         {
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .withKeyringControllerMultiSRP()
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .build(),
           title: this.test?.fullTitle(),
         },
-        async (driver: Driver) => {
+        async ({ driver }: { driver: Driver }) => {
+          await login(driver, { validateBalance: false });
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openAccountMenu();
+
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
@@ -212,8 +232,8 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           });
           await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
-          const addressListModal = new AddressListModal(driver);
-          await addressListModal.clickQRbutton();
+          const accountAddressListPage = new AccountAddressListPage(driver);
+          await accountAddressListPage.clickQRbutton();
           await driver.delay(1000);
 
           const accountAddressModal = new AccountAddressModal(driver);
@@ -230,11 +250,20 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
   describe('Copy address', function () {
     it('copies address to clipboard', async function () {
-      await withMultichainAccountsDesignEnabled(
+      await withFixtures(
         {
+          fixtures: new FixtureBuilderV2()
+            .withShowNativeTokenAsMainBalanceDisabled()
+            .withKeyringControllerMultiSRP()
+            .withEnabledNetworks({ eip155: { '0x1': true } })
+            .build(),
           title: this.test?.fullTitle(),
         },
-        async (driver: Driver) => {
+        async ({ driver }: { driver: Driver }) => {
+          await login(driver, { validateBalance: false });
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openAccountMenu();
+
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
@@ -242,42 +271,12 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           });
           await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
-          const addressListModal = new AddressListModal(driver);
-          await addressListModal.checkPageIsLoaded();
-          await addressListModal.clickCopyButton();
+          const accountAddressListPage = new AccountAddressListPage(driver);
+          await accountAddressListPage.checkPageIsLoaded();
+          await accountAddressListPage.clickCopyButton();
 
           // Verify UI feedback for copy action
-          await addressListModal.verifyCopyButtonFeedback();
-        },
-      );
-    });
-  });
-
-  describe('View on etherscan', function () {
-    it('navigates to etherscan when view on etherscan is clicked', async function () {
-      await withMultichainAccountsDesignEnabled(
-        {
-          title: this.test?.fullTitle(),
-        },
-        async (driver: Driver) => {
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded();
-          await accountListPage.openMultichainAccountMenu({
-            accountLabel: account1.name,
-          });
-          await accountListPage.clickMultichainAccountMenuItem(
-            'Account details',
-          );
-
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-          await accountDetailsPage.clickNetworksRow();
-
-          const addressListModal = new AddressListModal(driver);
-          await addressListModal.clickQRbutton();
-
-          const accountAddressModal = new AccountAddressModal(driver);
-          await accountAddressModal.checkPageIsLoaded();
-          await accountAddressModal.checkViewOnEtherscanButton();
+          await accountAddressListPage.verifyCopyButtonFeedback();
         },
       );
     });

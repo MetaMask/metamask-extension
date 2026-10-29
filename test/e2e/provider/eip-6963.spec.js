@@ -1,8 +1,6 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../fixtures/fixture-builder');
-const {
-  loginWithBalanceValidation,
-} = require('../page-objects/flows/login.flow');
+const { default: FixtureBuilderV2 } = require('../fixtures/fixture-builder-v2');
+const { login } = require('../page-objects/flows/login.flow');
 const { withFixtures } = require('../helpers');
 const { DAPP_URL } = require('../constants');
 
@@ -17,13 +15,13 @@ describe('EIP-6963 Provider', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(DAPP_URL);
         await driver.executeScript(`

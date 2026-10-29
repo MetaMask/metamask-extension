@@ -4,18 +4,16 @@ import {
   SubscriptionControllerGetCryptoApproveTransactionParamsAction,
   SubscriptionControllerGetPricingAction,
   SubscriptionControllerGetSubscriptionsAction,
-  SubscriptionControllerStartShieldSubscriptionWithCardAction,
+  SubscriptionControllerStartSubscriptionWithCardAction,
   SubscriptionControllerUpdatePaymentMethodAction,
   SubscriptionControllerSubmitSponsorshipIntentsAction,
   SubscriptionControllerGetStateAction,
   SubscriptionControllerLinkRewardsAction,
-  SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
+  SubscriptionControllerSubmitSubscriptionCryptoApprovalAction,
+  SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
-import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
-import {
-  TransactionControllerGetTransactionsAction,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import { TransactionControllerGetTransactionsAction } from '@metamask/transaction-controller';
 import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
 import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
@@ -24,73 +22,78 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.types';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
-  AppStateControllerGetStateAction,
   AppStateControllerSetPendingShieldCohortAction,
-} from '../../controllers/app-state-controller';
-import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+  AppStateControllerSetPendingRedirectRouteAction,
+  AppStateControllerSetShieldSubscriptionErrorAction,
+} from '../../controllers/app-state-controller-method-action-types';
 import {
+  RewardsControllerGetActualSubscriptionIdAction,
   RewardsControllerGetHasAccountOptedInAction,
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
-} from '../../controllers/rewards/rewards-controller.types';
+} from '../../controllers/rewards/rewards-controller-method-action-types';
+import { ShieldSubscriptionServiceMethodActions } from './shield-subscription-service-method-action-types';
 
-export const SERVICE_NAME = 'SubscriptionService';
+export type {
+  ShieldSubscriptionServiceUpdateSubscriptionCardPaymentMethodAction,
+  ShieldSubscriptionServiceUpdateSubscriptionCryptoPaymentMethodAction,
+  ShieldSubscriptionServiceStartSubscriptionWithCardAction,
+  ShieldSubscriptionServiceHandlePostTransactionAction,
+  ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction,
+  ShieldSubscriptionServiceLinkRewardToExistingSubscriptionAction,
+} from './shield-subscription-service-method-action-types';
+
+export const SERVICE_NAME = 'ShieldSubscriptionService';
 
 export type ServiceName = typeof SERVICE_NAME;
 
-export type SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction = {
-  type: `${ServiceName}:submitSubscriptionSponsorshipIntent`;
-  handler: (txMeta: TransactionMeta) => Promise<void>;
-};
-
-export type SubscriptionServiceAction =
+type AllowedActions =
   | SubscriptionControllerGetPricingAction
-  | SubscriptionControllerStartShieldSubscriptionWithCardAction
+  | SubscriptionControllerStartSubscriptionWithCardAction
   | SubscriptionControllerUpdatePaymentMethodAction
   | SubscriptionControllerGetSubscriptionsAction
   | SubscriptionControllerGetCryptoApproveTransactionParamsAction
   | SubscriptionControllerGetBillingPortalUrlAction
   | SubscriptionControllerSubmitSponsorshipIntentsAction
-  | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerLinkRewardsAction
-  | SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction
+  | SubscriptionControllerSubmitSubscriptionCryptoApprovalAction
+  | SubscriptionControllerClearLastSelectedPaymentMethodAction
   | TransactionControllerGetTransactionsAction
   | PreferencesControllerGetStateAction
   | AccountsControllerGetStateAction
   | SmartTransactionsControllerGetStateAction
-  | SwapsControllerGetStateAction
   | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
-  | AuthenticationControllerGetBearerToken
+  | AuthenticationControllerGetBearerTokenAction
   | AppStateControllerGetStateAction
   | AppStateControllerSetPendingShieldCohortAction
-  | MetaMetricsControllerTrackEventAction
+  | AppStateControllerSetPendingRedirectRouteAction
+  | AppStateControllerSetShieldSubscriptionErrorAction
   | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
   // Rewards Integration
+  | RewardsControllerGetActualSubscriptionIdAction // For metrics, to get the rewards subscription ID
   | RewardsControllerGetSeasonStatusAction // For rewards, to get the season status for claiming points with the shield subscription
   | RewardsControllerGetSeasonMetadataAction // For rewards, to check if the season is active and can claim points
   | RewardsControllerGetHasAccountOptedInAction; // For rewards, to check if the account has opted in to rewards
 
-export type SubscriptionServiceEvent = never;
+export type ShieldSubscriptionServiceEvent = never;
 
-export type SubscriptionServiceMessenger = Messenger<
+export type ShieldSubscriptionServiceMessenger = Messenger<
   ServiceName,
-  SubscriptionServiceAction,
-  SubscriptionServiceEvent
+  ShieldSubscriptionServiceMethodActions | AllowedActions,
+  ShieldSubscriptionServiceEvent
 >;
 
-export type SubscriptionServiceOptions = {
+export type ShieldSubscriptionServiceOptions = {
   /**
    * The messenger used to communicate with other services and controllers.
    */
-  messenger: SubscriptionServiceMessenger;
+  messenger: ShieldSubscriptionServiceMessenger;
 
   platform: ExtensionPlatform;
 
   webAuthenticator: WebAuthenticator;
-
-  captureException: (error: unknown) => void;
 };

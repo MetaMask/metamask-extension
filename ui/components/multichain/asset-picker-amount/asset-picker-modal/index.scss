@@ -13,16 +13,6 @@
 .asset-picker-modal {
   $self: &;
 
-  &__search-list {
-    max-width: 100%;
-    overflow: auto;
-    max-height: 200px;
-
-    &:hover {
-      border-color: var(--color-primary-default);
-    }
-  }
-
   &__autodetect {
     vertical-align: unset;
   }

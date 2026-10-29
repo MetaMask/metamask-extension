@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box } from '../../../../components/component-library';
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../hooks/useTheme';
 import { TabEmptyState } from '../../../../components/ui/tab-empty-state';
@@ -15,7 +15,10 @@ export const AssetChartEmptyState = () => {
       : '/images/empty-state-asset-details-light.png';
 
   return (
-    <Box className="asset-chart__empty-or-loading-state-container">
+    <Box
+      className="asset-chart__empty-or-loading-state-container"
+      data-testid="asset-chart-empty-state"
+    >
       <TabEmptyState
         icon={
           <img

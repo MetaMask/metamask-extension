@@ -1,38 +1,52 @@
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { NetworksForm } from '../../../../../pages/settings/networks-tab/networks-form/networks-form';
-import { useNetworkFormState } from '../../../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { useSearchParams } from 'react-router-dom';
+import {
+  NetworksForm,
+  type NetworksFormChainlist,
+} from '../../../networks-form/networks-form';
+import { useNetworkFormState } from '../../../networks-form/networks-form-state';
 
 type AddNetworkProps = {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   network: UpdateNetworkFields;
   isEdit?: boolean;
+  chainlist?: NetworksFormChainlist;
+  onAddFromChainlist?: () => void;
 };
 
-export const AddNetwork: React.FC<AddNetworkProps> = ({
+export const AddNetwork = ({
   networkFormState,
   network,
   isEdit = false,
-}) => {
-  const navigate = useNavigate();
+  chainlist,
+  onAddFromChainlist,
+}: AddNetworkProps) => {
+  const [, setSearchParams] = useSearchParams();
   return (
     <NetworksForm
       toggleNetworkMenuAfterSubmit={false}
+      usePageFooterStyle={true}
       onComplete={() => {
-        console.log(`onComplete pushing to /?tab=custom-networks`);
-        navigate('/?tab=custom-networks');
+        if (!isEdit) {
+          networkFormState.clear();
+        }
+        setSearchParams({});
       }}
       onEdit={() => {
-        navigate('/edit');
+        setSearchParams({ view: 'edit' });
       }}
       networkFormState={networkFormState}
       existingNetwork={network}
+      chainlist={chainlist}
+      onAddFromChainlist={onAddFromChainlist}
       onRpcAdd={() => {
-        navigate(isEdit ? '/edit-rpc' : '/add-rpc');
+        setSearchParams({ view: isEdit ? 'edit-rpc' : 'add-rpc' });
       }}
       onBlockExplorerAdd={() => {
-        navigate(isEdit ? '/edit-explorer-url' : '/add-explorer-url');
+        setSearchParams({
+          view: isEdit ? 'edit-explorer-url' : 'add-explorer-url',
+        });
       }}
     />
   );

@@ -5,13 +5,37 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
+import { AppMetadataControllerMethodActions } from './app-metadata-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'AppMetadataController';
 
 /**
+ * Information about when MetaMask was first installed.
+ * This is recorded on first installation and never changes.
+ */
+export type FirstTimeInfo = {
+  /** The MetaMask version when first installed */
+  version: string;
+  /** Timestamp (Date.now()) when first installed */
+  date: number;
+};
+
+/**
  * The options that AppMetadataController takes.
  */
+
+/**
+ * Google Analytics identifiers captured from the metamask.io `_ga` cookie at
+ * install time.
+ */
+export type InstallGaAttribution = {
+  /** Raw `_ga` cookie value. Maps to the Segment `cookie_id` trait. */
+  cookieId: string;
+  /** Parsed Google Analytics client identifier. Maps to the Segment `ga_client_id` trait. */
+  gaClientId?: string;
+};
+
 export type AppMetadataControllerOptions = {
   state?: Partial<AppMetadataControllerState>;
   messenger: AppMetadataControllerMessenger;
@@ -27,6 +51,9 @@ export type AppMetadataControllerState = {
   previousAppVersion: string;
   previousMigrationVersion: number;
   currentMigrationVersion: number;
+  /** Installation version and date - set once on first install, never changes */
+  firstTimeInfo?: FirstTimeInfo;
+  installAttribution: InstallGaAttribution | null;
 };
 
 /**
@@ -38,6 +65,8 @@ export const getDefaultAppMetadataControllerState =
     previousAppVersion: '',
     previousMigrationVersion: 0,
     currentMigrationVersion: 0,
+    firstTimeInfo: undefined,
+    installAttribution: null,
   });
 
 /**
@@ -51,7 +80,9 @@ export type AppMetadataControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link AppMetadataController}.
  */
-export type AppMetadataControllerActions = AppMetadataControllerGetStateAction;
+export type AppMetadataControllerActions =
+  | AppMetadataControllerGetStateAction
+  | AppMetadataControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link AppMetadataController} changes.
@@ -76,7 +107,7 @@ type AllowedEvents = never;
 /**
  * Messenger type for the {@link AppMetadataController}.
  */
-type AppMetadataControllerMessenger = Messenger<
+export type AppMetadataControllerMessenger = Messenger<
   typeof controllerName,
   AppMetadataControllerActions | AllowedActions,
   AppMetadataControllerEvents | AllowedEvents
@@ -114,7 +145,27 @@ const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: false,
   },
+  firstTimeInfo: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  installAttribution: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
 };
+
+/**
+ * Methods exposed by the {@link AppMetadataController} messenger.
+ */
+const MESSENGER_EXPOSED_METHODS = [
+  'maybeRecordFirstTimeInfo',
+  'setInstallAttribution',
+] as const;
 
 /**
  * The AppMetadata controller stores metadata about the current extension instance,
@@ -122,7 +173,7 @@ const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
  * run migration.
  *
  */
-export default class AppMetadataController extends BaseController<
+export class AppMetadataController extends BaseController<
   typeof controllerName,
   AppMetadataControllerState,
   AppMetadataControllerMessenger
@@ -155,6 +206,11 @@ export default class AppMetadataController extends BaseController<
     this.#maybeUpdateAppVersion(currentAppVersion);
 
     this.#maybeUpdateMigrationVersion(currentMigrationVersion);
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
@@ -187,5 +243,49 @@ export default class AppMetadataController extends BaseController<
         state.currentMigrationVersion = maybeNewMigrationVersion;
       });
     }
+  }
+
+  /**
+   * Records the first time info if it hasn't been set yet.
+   * This captures the version and date when MetaMask was first installed.
+   * Once set, this value never changes.
+   *
+   * @param version - The current MetaMask version
+   */
+  maybeRecordFirstTimeInfo(version: string): void {
+    if (!this.state.firstTimeInfo) {
+      this.update((state) => {
+        state.firstTimeInfo = {
+          version,
+          date: Date.now(),
+        };
+      });
+    }
+  }
+
+  /**
+   * Records Google Analytics identifiers captured at install time.
+   * Write-once: no-op if install attribution is already set, or if `cookieId` is empty.
+   *
+   * @param attribution - Install-time GA cookie values.
+   * @param attribution.cookieId - Raw `_ga` cookie value.
+   * @param attribution.gaClientId - Parsed Google Analytics client identifier.
+   */
+  setInstallAttribution({
+    cookieId,
+    gaClientId,
+  }: {
+    cookieId: string;
+    gaClientId?: string;
+  }): void {
+    if (this.state.installAttribution || !cookieId) {
+      return;
+    }
+
+    this.update((state) => {
+      state.installAttribution = gaClientId
+        ? { cookieId, gaClientId }
+        : { cookieId };
+    });
   }
 }

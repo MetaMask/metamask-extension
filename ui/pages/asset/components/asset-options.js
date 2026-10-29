@@ -1,27 +1,26 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { I18nContext } from '../../../contexts/i18n';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Menu, MenuItem } from '../../../components/ui/menu';
-import { getBlockExplorerLinkText } from '../../../selectors';
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { ERC20 } from '@metamask/controller-utils';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-} from '../../../components/component-library';
-import { Color } from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { I18nContext } from '../../../contexts/i18n';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { Menu, MenuItem } from '../../../components/ui/menu';
+import { getBlockExplorerLinkText } from '../../../selectors';
+import { selectIsAssetInAssetsBalance } from '../../../selectors/assets';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 
 const AssetOptions = ({
   onRemove,
@@ -31,11 +30,21 @@ const AssetOptions = ({
   isNativeAsset,
 }) => {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
-  const ref = useRef(false);
+  const [menuAnchorElement, setMenuAnchorElement] = useState(null);
+
+  const assetId =
+    token?.address && token?.chainId
+      ? toAssetId(token.address, token.chainId)
+      : undefined;
+
+  const hasBalanceEntry = useSelector((state) =>
+    selectIsAssetInAssetsBalance(state, assetId),
+  );
+  const canHideToken = !isNativeAsset && hasBalanceEntry;
 
   const routeToAddBlockExplorerUrl = () => {
     navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -48,42 +57,41 @@ const AssetOptions = ({
 
   const handleRemoveToken = () => {
     // Track the TokenHidden event before calling onRemove
-    trackEvent({
-      event: MetaMetricsEventName.TokenHidden,
-      category: MetaMetricsEventCategory.Wallet,
-      sensitiveProperties: {
-        token_symbol: token?.symbol,
-        token_contract_address: token?.address,
-        token_decimal_precision: token?.decimals,
-        location: MetaMetricsEventLocation.TokenDetails,
-        token_standard: TokenStandard.ERC20,
-        asset_type: AssetType.token,
-        chain_id: token?.chainId,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenHidden)
+        .addCategory(MetaMetricsEventCategory.Wallet)
+        .addSensitiveProperties({
+          token_symbol: token?.symbol,
+          token_contract_address: token?.address,
+          token_decimal_precision: token?.decimals,
+          location: MetaMetricsEventLocation.TokenDetails,
+          token_standard: ERC20,
+          asset_type: AssetType.token,
+          chain_id: token?.chainId,
+        })
+        .build(),
+    );
 
     setAssetOptionsOpen(false);
     onRemove();
   };
 
   return (
-    <div ref={ref}>
+    <div ref={setMenuAnchorElement} className="shrink-0">
       <ButtonIcon
-        className="asset-options__button"
         data-testid="asset-options__button"
         onClick={() => setAssetOptionsOpen(true)}
         ariaLabel={t('assetOptions')}
         iconName={IconName.MoreVertical}
-        color={Color.textDefault}
-        size={ButtonIconSize.Sm}
+        size={ButtonIconSize.Md}
       />
       {assetOptionsOpen ? (
         <Menu
-          anchorElement={ref.current}
+          anchorElement={menuAnchorElement}
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem
-            iconName={IconName.Export}
+            iconNameLegacy={IconName.Export}
             data-testid="asset-options__etherscan"
             onClick={
               blockExplorerLinkText.firstPart === 'addBlockExplorer'
@@ -98,9 +106,9 @@ const AssetOptions = ({
                 : [t('blockExplorerAssetAction')],
             )}
           </MenuItem>
-          {!isNativeAsset && (
+          {canHideToken && (
             <MenuItem
-              iconName={IconName.Trash}
+              iconNameLegacy={IconName.Trash}
               data-testid="asset-options__hide"
               onClick={handleRemoveToken}
             >
@@ -109,7 +117,7 @@ const AssetOptions = ({
           )}
           {isNativeAsset || !onViewTokenDetails ? null : (
             <MenuItem
-              iconName={IconName.Info}
+              iconNameLegacy={IconName.Info}
               data-testid="asset-options__token-details"
               onClick={() => {
                 setAssetOptionsOpen(false);

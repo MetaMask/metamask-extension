@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type CaipChainId } from '@metamask/utils';
 import { BridgeClientId } from '@metamask/bridge-controller';
+import { type AccountGroupId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
@@ -8,34 +9,32 @@ import { BridgeToken } from '../../ducks/bridge/types';
 import { toBridgeToken } from '../../ducks/bridge/utils';
 import { type BridgeAppState } from '../../ducks/bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
-import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { fetchTokensBySearchQuery } from '../../pages/bridge/utils/tokens';
+import { getBearerToken } from '../../store/actions';
+import { useAsyncResult } from '../useAsync';
 
 /**
  * Returns a list of tokens from the bridge api that match the search query
  *
  * @param params
  * @param params.chainIds - enabled src/dest chainIds to return tokens for
- * @param params.accountAddress - the account address used for balances
+ * @param params.accountGroupId - the account group id used for balances
  * @param params.searchQuery - the search query
  * @param params.assetsToInclude - the assets to show at the top of the search results
  */
 export const useTokenSearchResults = ({
   searchQuery,
-  accountAddress,
+  accountGroupId,
   chainIds,
   assetsToInclude,
 }: {
   chainIds: Set<CaipChainId>;
   searchQuery: string;
-  accountAddress: string;
+  accountGroupId?: AccountGroupId;
   assetsToInclude: BridgeToken[];
 }) => {
-  const [accountGroup] = useSelector((state: BridgeAppState) =>
-    getAccountGroupsByAddress(state, [accountAddress]),
-  );
   const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
-    getBridgeAssetsByAssetId(state, accountGroup.id),
+    getBridgeAssetsByAssetId(state, accountGroupId),
   );
 
   const abortControllerRef = useRef<AbortController>(new AbortController());
@@ -54,6 +53,10 @@ export const useTokenSearchResults = ({
     string | undefined
   >(undefined);
 
+  const { value: jwt } = useAsyncResult(async () => {
+    return await getBearerToken();
+  }, []);
+
   const fetchSearchResults = useCallback(
     (
       query: string,
@@ -68,7 +71,9 @@ export const useTokenSearchResults = ({
         chainIds: Array.from(chainIds),
         assetsWithBalances: filteredAssetsToInclude,
         query,
+        jwt,
         clientId: BridgeClientId.EXTENSION,
+        clientVersion: process.env.METAMASK_VERSION,
         signal: abortControllerRef.current?.signal,
         bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
         after: cursor,
@@ -97,17 +102,24 @@ export const useTokenSearchResults = ({
           setIsSearchResultsLoading(false);
         });
     },
-    [ownedAssetsByAssetId, chainIds, abortControllerRef],
+    [ownedAssetsByAssetId, chainIds, jwt],
   );
 
+  const fetchSearchResultsRef = useRef(fetchSearchResults);
+  // eslint-disable-next-line react-hooks/refs -- sync latest fetch impl for stable debounced caller
+  fetchSearchResultsRef.current = fetchSearchResults;
+
+  /* eslint-disable react-hooks/refs -- stable debounced caller; fetch impl synced via ref above */
   const debouncedFetchSearchResults = useRef(
-    debounce(
-      (query: string, assets: BridgeToken[]) =>
-        fetchSearchResults(query, assets),
-      300,
-    ),
-  );
+    debounce((query: string, assets: BridgeToken[]) => {
+      fetchSearchResultsRef.current(query, assets);
+    }, 300),
+  ).current;
+  /* eslint-enable react-hooks/refs */
 
+  /*
+   * Placeholder assets while fetching search results
+   */
   const filteredAssetsToInclude = useMemo(() => {
     return assetsToInclude.filter((token) => {
       return (
@@ -118,27 +130,59 @@ export const useTokenSearchResults = ({
     });
   }, [searchQuery, assetsToInclude]);
 
+  /*
+   * Combine asset IDs into a string to avoid re-fetching
+   * results whenever the balance or fiat balance amount changes
+   */
+  const stableMinimalAssetsString = useMemo(() => {
+    return filteredAssetsToInclude.map(({ assetId }) => assetId).join('|');
+  }, [filteredAssetsToInclude]);
+
+  const searchResetKey = `${searchQuery}|${stableMinimalAssetsString}|${Array.from(chainIds).join(',')}|${jwt ?? ''}`;
+
+  const filteredAssetsToIncludeRef = useRef(filteredAssetsToInclude);
   useEffect(() => {
-    // Reset state on search query change
-    abortControllerRef.current.abort('Search query changed');
-    setSearchResultsWithBalance([]);
-    setSearchResultCursor(undefined);
-    setHasMoreResults(false);
-    if (searchQuery.length > 0) {
-      setIsSearchResultsLoading(true);
-      setSearchResultsWithBalance(filteredAssetsToInclude);
-      // Debounce the initial fetch until the user stops typing
-      debouncedFetchSearchResults.current(searchQuery, filteredAssetsToInclude);
-    }
-  }, [searchQuery, filteredAssetsToInclude]);
+    filteredAssetsToIncludeRef.current = filteredAssetsToInclude;
+  }, [filteredAssetsToInclude]);
 
   useEffect(() => {
-    const debouncedFn = debouncedFetchSearchResults.current;
+    const assetsToIncludeForSearch = filteredAssetsToIncludeRef.current;
+
+    abortControllerRef.current.abort('Search reset key changed');
+    debouncedFetchSearchResults.cancel();
+
+    queueMicrotask(() => {
+      setSearchResultCursor(undefined);
+      setHasMoreResults(false);
+
+      if (searchQuery.length === 0) {
+        setSearchResultsWithBalance([]);
+        setIsSearchResultsLoading(false);
+        return;
+      }
+
+      setSearchResultsWithBalance(assetsToIncludeForSearch);
+
+      if (!jwt) {
+        setIsSearchResultsLoading(false);
+        return;
+      }
+
+      setIsSearchResultsLoading(true);
+    });
+
+    if (searchQuery.length > 0 && jwt) {
+      debouncedFetchSearchResults(searchQuery, assetsToIncludeForSearch);
+    }
+  }, [searchResetKey, searchQuery, jwt, debouncedFetchSearchResults]);
+
+  useEffect(() => {
+    const debouncedFn = debouncedFetchSearchResults;
     return () => {
       abortControllerRef.current.abort('Page unmounted');
       debouncedFn.cancel();
     };
-  }, []);
+  }, [debouncedFetchSearchResults]);
 
   return {
     searchResults: searchResultsWithBalance,

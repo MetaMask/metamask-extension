@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import log from 'loglevel';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   setIsBackupAndSyncFeatureEnabled as setIsBackupAndSyncFeatureEnabledAction,
   hideLoadingIndication,

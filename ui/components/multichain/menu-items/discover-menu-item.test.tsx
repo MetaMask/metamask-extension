@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';

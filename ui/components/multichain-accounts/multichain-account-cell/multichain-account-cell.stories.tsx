@@ -1,24 +1,23 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { MultichainAccountCell } from './multichain-account-cell';
 import { MultichainAccountCellProps } from './multichain-account-cell';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName, Checkbox } from '../../component-library';
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxJustifyContent,
+  Checkbox,
+} from '@metamask/design-system-react';
+import { Icon, IconName } from '../../component-library';
 
 // End accessory
 const MoreOptionsAccessory = () => (
   <Box
-    display={Display.Flex}
-    alignItems={AlignItems.center}
-    justifyContent={JustifyContent.center}
-    backgroundColor={BackgroundColor.backgroundMuted}
-    borderRadius={BorderRadius.LG}
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Center}
+    backgroundColor={BoxBackgroundColor.BackgroundMuted}
+    className="flex rounded-lg"
     padding={1}
   >
     <Icon name={IconName.MoreVertical} />
@@ -27,12 +26,18 @@ const MoreOptionsAccessory = () => (
 
 const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => (
   <Box
-    display={Display.Flex}
-    alignItems={AlignItems.center}
-    justifyContent={JustifyContent.center}
+    className="flex"
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Center}
     marginRight={2}
   >
-    <Checkbox isChecked={checked} />
+    <Checkbox
+      id={`multichain-account-cell-checkbox-${checked ? 'checked' : 'unchecked'}`}
+      isSelected={checked}
+      onChange={() => {
+        // Story accessory only — selection is controlled via story args.
+      }}
+    />
   </Box>
 );
 
@@ -43,7 +48,7 @@ export default {
     docs: {
       description: {
         component:
-          'A reusable component for displaying account information in a compact cell format.',
+          'A reusable component for displaying account information in a compact cell format. Supports `isHidden`, `isEditMode` and `isDeleteMode` props (all default to `false`).',
       },
     },
     controls: { sort: 'alpha' },
@@ -79,12 +84,47 @@ export default {
       control: 'boolean',
       description: 'Whether the account is selected',
     },
+    showDefaultAddress: {
+      control: 'boolean',
+      description:
+        'Whether to show the network avatars and copy functionality with optional default address',
+    },
+    isHidden: {
+      control: 'boolean',
+      description: 'Whether the account is in hidden mode with muted styling',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    isEditMode: {
+      control: 'boolean',
+      description:
+        'Whether the cell is in edit mode, suppressing menu controls',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    isDeleteMode: {
+      control: 'boolean',
+      description:
+        'Whether the edit-mode visibility icon is replaced by a delete icon',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    onVisibilityIconClick: {
+      control: false,
+      description: 'Called when the edit-mode visibility icon is clicked',
+      action: 'visibilityIconClicked',
+    },
+    onDeleteIconClick: {
+      control: false,
+      description: 'Called when the edit-mode delete icon is clicked',
+      action: 'deleteIconClicked',
+    },
   },
   args: {
     accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     accountName: 'Account 1',
     balance: '$2,400.00',
     selected: false,
+    isHidden: false,
+    isEditMode: false,
+    isDeleteMode: false,
     endAccessory: <MoreOptionsAccessory />,
   },
 } as Meta<typeof MultichainAccountCell>;
@@ -98,7 +138,6 @@ const Template: StoryFn<typeof MultichainAccountCell> = (
 );
 
 export const Default = Template.bind({});
-Default.storyName = 'Default';
 
 export const Selected = Template.bind({});
 Selected.args = {
@@ -218,3 +257,57 @@ export const MultipleAccountsWithStartAccessories: StoryFn<
     />
   </div>
 );
+
+export const WithHoverableNetworkGroup = Template.bind({});
+WithHoverableNetworkGroup.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Account with Networks',
+  balance: '$2,400.00',
+  showDefaultAddress: true,
+};
+WithHoverableNetworkGroup.parameters = {
+  docs: {
+    description: {
+      story:
+        'Shows the network avatars and copy functionality below the account name with optional default address.',
+    },
+  },
+};
+
+export const Hidden = Template.bind({});
+Hidden.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Hidden Account',
+  balance: '$2,400.00',
+  isHidden: true,
+  endAccessory: <MoreOptionsAccessory />,
+};
+
+export const Edit = Template.bind({});
+Edit.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Account in Edit Mode',
+  balance: '$2,400.00',
+  isEditMode: true,
+  onVisibilityIconClick: () => console.log('Visibility icon clicked'),
+};
+
+export const HiddenAndEdit = Template.bind({});
+HiddenAndEdit.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Hidden Account in Edit Mode',
+  balance: '$2,400.00',
+  isHidden: true,
+  isEditMode: true,
+  onVisibilityIconClick: () => console.log('Visibility icon clicked'),
+};
+
+export const Delete = Template.bind({});
+Delete.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Removable Account in Edit Mode',
+  balance: '$2,400.00',
+  isEditMode: true,
+  isDeleteMode: true,
+  onDeleteIconClick: () => console.log('Delete icon clicked'),
+};

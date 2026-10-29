@@ -25,7 +25,6 @@ export type TransactionDetailsModalProps = {
   onClose: () => void;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsModal({
   transactionMeta,
   onClose,
@@ -34,10 +33,14 @@ export function TransactionDetailsModal({
 
   const title = useMemo(() => {
     switch (transactionMeta.type) {
+      case TransactionType.musdClaim:
+        return t('musdClaimTitle');
       case TransactionType.musdConversion:
         return t('musdConversionTitle');
       case TransactionType.perpsDeposit:
         return t('perpsDepositTitle');
+      case TransactionType.perpsWithdraw:
+        return t('perpsWithdrawFundsTitle');
       default:
         return t('transaction');
     }

@@ -1,26 +1,35 @@
-import { E2E_SRP } from '../../fixtures/default-fixture';
-import { WALLET_PASSWORD } from '../../constants';
+import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
-import { Driver } from '../../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockPriceApi } from '../tokens/utils/mocks';
 import {
-  withImportedAccount,
-  withMultichainAccountsDesignEnabled,
-} from './common';
+  login,
+  lockAndWaitForLoginPage,
+} from '../../page-objects/flows/login.flow';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import HomePage from '../../page-objects/pages/home/homepage';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
+import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
+import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
+import { Driver } from '../../webdriver/driver';
+import {
+  getMainnet25EthAssetsControllerPatch,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
+import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const SECOND_ACCOUNT_NAME = 'Account 2';
 const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
 const CUSTOM_ACCOUNT_NAME = 'Custom 1';
 const TEST_PRIVATE_KEY =
   '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
+// Matches mock-e2e `DEFAULT_ETH_USD_PRICE`; 25 ETH × 3010 = $75,250.00
+const ETH_USD_CONVERSION_RATE = 3010;
 
 const importedAccount = {
   name: 'Imported Account 1',
@@ -31,19 +40,36 @@ describe('Add account', function () {
   // BUG #38568 - Sending token crashes the Extension with BigNumber error
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
-    await withMultichainAccountsDesignEnabled(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(MOCK_ETH_CONVERSION_RATE),
+          )
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer)];
+        },
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { expectedBalance: '$85,025.00' });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('0');
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
+          wallet: 'Wallet 1',
+          account: SECOND_ACCOUNT_NAME,
+        });
         await accountListPage.closeMultichainAccountsPage();
 
         await sendRedesignedTransactionToAccount({
@@ -53,22 +79,33 @@ describe('Add account', function () {
         });
 
         const homePage = new HomePage(driver);
-        const headerNavbar = new HeaderNavbar(driver);
         await homePage.checkPageIsLoaded();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAmountInActivity('-2.8 ETH');
-        await activityList.waitPendingTxToNotBeVisible();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAmountInActivity('-2.8 ETH');
+        await activityTab.waitPendingTxToNotBeVisible();
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkMultichainAccountBalanceDisplayed('75,502');
+        await accountListPage.checkMultichainAccountBalanceDisplayed({
+          wallet: 'Wallet 1',
+          account: 'Account 1',
+          balance: '$75,502.00',
+        });
         await accountListPage.closeMultichainAccountsPage();
 
         // Lock wallet and recover via SRP in "forget password" option
-        await headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
         await new LoginPage(driver).gotoResetPasswordPage();
         const resetPasswordPage = new ResetPasswordPage(driver);
         await resetPasswordPage.checkPageIsLoaded();
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
         await resetPasswordPage.waitForPasswordInputToNotBeVisible();
+
+        // Assert passkey setup is shown for chrome
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+        if (!isFirefox) {
+          const setupPasskeyPage = new SetupPasskeyPage(driver);
+          await setupPasskeyPage.checkPageIsLoaded();
+          await setupPasskeyPage.skipPasskeySetup();
+        }
 
         // Check wallet balance for both accounts
         await homePage.checkPageIsLoaded();
@@ -86,21 +123,37 @@ describe('Add account', function () {
   });
 
   it('should remove imported private key account successfully', async function () {
-    await withImportedAccount(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(ETH_USD_CONVERSION_RATE),
+          )
+          .build(),
         title: this.test?.fullTitle(),
-        privateKey: TEST_PRIVATE_KEY,
-        testSpecificMock: mockPriceApi,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer, ETH_USD_CONVERSION_RATE)];
+        },
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { expectedBalance: '$75,250.00' });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
+
+        await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: importedAccount.name,
         });
         await accountListPage.clickMultichainAccountMenuItem('Account details');
 
-        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        const accountDetailsPage = new AccountDetailsPage(driver);
         await accountDetailsPage.checkPageIsLoaded();
 
         await accountDetailsPage.clickRemoveAccountButton();
@@ -118,25 +171,42 @@ describe('Add account', function () {
     const testPrivateKey: string =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
-    await withMultichainAccountsDesignEnabled(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(MOCK_ETH_CONVERSION_RATE),
+          )
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer)];
+        },
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { expectedBalance: '$85,025.00' });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('0');
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
+          account: SECOND_ACCOUNT_NAME,
+          wallet: 'Wallet 1',
+        });
         await accountListPage.openMultichainAccountMenu({
           accountLabel: SECOND_ACCOUNT_NAME,
         });
         await accountListPage.clickMultichainAccountMenuItem('Account details');
         // Check user cannot delete 2nd account
-        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        const accountDetailsPage = new AccountDetailsPage(driver);
         await accountDetailsPage.checkPageIsLoaded();
         const buttonPresent =
           await accountDetailsPage.checkRemoveAccountButtonPresent();
@@ -146,25 +216,26 @@ describe('Add account', function () {
         await accountDetailsPage.navigateBack();
 
         // Create 3rd account with private key
-        await accountListPage.addNewImportedAccount(testPrivateKey, undefined, {
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.addNewImportedAccount(testPrivateKey);
 
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed('0');
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
+          account: IMPORTED_ACCOUNT_NAME,
+          wallet: 'Imported accounts',
+        });
 
         // Remove the 3rd account imported with a private key
         await accountListPage.openMultichainAccountMenu({
           accountLabel: IMPORTED_ACCOUNT_NAME,
         });
         await accountListPage.clickMultichainAccountMenuItem('Account details');
-        // Check user cannot delete 2nd account
         await accountDetailsPage.checkPageIsLoaded();
         await accountDetailsPage.removeAccount();
 
-        const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountNotDisplayedInAccountList(
@@ -174,13 +245,27 @@ describe('Add account', function () {
     );
   });
 
-  it('added account should persiste after wallet lock', async function () {
-    await withMultichainAccountsDesignEnabled(
+  it('added account should persist after wallet lock', async function () {
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(ETH_USD_CONVERSION_RATE),
+          )
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockPriceApi,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          return [await mockPriceApi(mockServer, ETH_USD_CONVERSION_RATE)];
+        },
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { expectedBalance: '$75,250.00' });
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
@@ -195,12 +280,18 @@ describe('Add account', function () {
         );
         await accountListPage.switchToAccount(CUSTOM_ACCOUNT_NAME);
 
-        const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
 
+        // Wait for the runtime-created non-EVM (Solana/Bitcoin) accounts to finish
+        // loading before locking. Otherwise account creation is still in-flight in
+        // the background when the wallet locks, which slows the service-worker restart
+        // and makes the post-lock navigate time out waiting for `.controller-loaded`.
+        const homePage = new HomePage(driver);
+        await homePage.waitForNonEvmAccountsLoaded();
+
         // Lock and unlock wallet
-        await headerNavbar.lockMetaMask();
-        await loginWithoutBalanceValidation(driver);
+        await lockAndWaitForLoginPage(driver);
+        await login(driver, { validateBalance: false });
 
         // Verify both account labels persist after unlock
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);

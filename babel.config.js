@@ -1,3 +1,4 @@
+require('tsx/cjs');
 const path = require('path');
 
 module.exports = function (api) {
@@ -9,33 +10,41 @@ module.exports = function (api) {
       strictMode: true,
     },
     targets: {
-      browsers: ['chrome >= 89', 'firefox >= 89'],
+      browsers: ['chrome >= 123', 'firefox >= 128'],
     },
     overrides: [
       {
         test: new RegExp(
-          `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*\\.(?:test|stories|container)\\.)(?:.*)\\.(?:m?[jt]s|[jt]sx)$`,
+          `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
-        plugins: [['babel-plugin-react-compiler', { target: '17' }]],
+        exclude: /\.storybook/u,
+        plugins: [['babel-plugin-react-compiler', { target: '18' }]],
       },
     ],
     plugins: [
-      // `browserify` is old and busted, and doesn't support `??=` (and other
-      // logical assignment operators). This plugin lets us target es2020-level
-      // browsers (except we do still end up with transpiled logical assignment
-      // operators 😭)
-      '@babel/plugin-transform-logical-assignment-operators',
       [
         path.resolve(
           __dirname,
-          'development/build/transforms/import-meta-url.js',
+          'development/build/transforms/import-meta-url.ts',
         ),
         {
           pattern:
             /^@metamask\/([^/]+)\/dist\/preinstalled-snap\.json(\.gz)?$/u,
           rootPath: '/snaps/',
         },
+        'import-meta-url-snaps',
+      ],
+      [
+        path.resolve(
+          __dirname,
+          'development/build/transforms/import-meta-url.ts',
+        ),
+        {
+          pattern: /^@rive-app\/canvas\/(rive)\.wasm$/u,
+          rootPath: '/images/',
+        },
+        'import-meta-url-rive',
       ],
     ],
     presets: [

@@ -1,48 +1,5 @@
 @use "design-system";
 
-.wallet-overview {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  flex: 1;
-  min-width: 0;
-  flex-direction: column;
-  width: 100%;
-  gap: 16px;
-
-  &-fullscreen {
-    align-items: center;
-  }
-
-  &__balance {
-    flex: 1;
-    display: flex;
-    gap: 4px;
-    flex-direction: column;
-    align-items: start;
-    width: 100%;
-
-    .wallet-overview-fullscreen > & {
-      align-items: center;
-    }
-  }
-
-  &__buttons {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    width: 100%;
-    max-width: calc(490px - 32px); // 490px (sidepanel max-width) - 32px (side padding)
-  }
-
-  &__currency-wrapper {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-}
-
 %asset-buttons {
   min-width: initial;
   width: 100px;
@@ -72,7 +29,6 @@
     flex-direction: column;
     min-width: 0;
     position: relative;
-    align-items: start;
   }
 
   &__primary-container {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import {
   AlignItems,
@@ -15,10 +15,15 @@ import {
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
+import { transitionBack } from '../../../../../components/ui/transition';
 
 export const Header = () => {
   const t = useI18nContext();
   const { goToPreviousPage } = useNavigateSendPage();
+
+  const handleBack = useCallback(() => {
+    transitionBack(goToPreviousPage);
+  }, [goToPreviousPage]);
 
   return (
     <Box
@@ -31,8 +36,8 @@ export const Header = () => {
         ariaLabel="go to previous page"
         className="send-header__previous-btn"
         iconName={IconName.ArrowLeft}
-        onClick={goToPreviousPage}
-        size={ButtonIconSize.Sm}
+        onClick={handleBack}
+        size={ButtonIconSize.Md}
       />
       <Text variant={TextVariant.headingSm}>{t('send')}</Text>
     </Box>

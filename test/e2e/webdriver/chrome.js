@@ -1,3 +1,6 @@
+const nodeCrypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
@@ -28,13 +31,20 @@ class ChromeDriver {
     constrainWindowSize,
     port,
     proxyPort,
+    isBenchmark = false,
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
-      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,DisableLoadExtensionCommandLineSwitch', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad,DisableLoadExtensionCommandLineSwitch', // Stop chrome from calling home so much (auto-downloads of AI models; time sync); disable Crashpad to prevent orphaned crash-reporter processes; keep --load-extension working on Chrome 137+
+      '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
+      '--no-sandbox',
     ];
+
+    if (isBenchmark) {
+      args.push('--js-flags=--expose-gc');
+    }
 
     if (process.env.MULTIPROVIDER) {
       args.push(
@@ -67,8 +77,6 @@ class ChromeDriver {
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
       args.push('--headless=new');
-    } else {
-      args.push('--no-sandbox');
     }
 
     // Build complete goog:chromeOptions object to avoid conflicts between
@@ -121,14 +129,73 @@ class ChromeDriver {
 
     builder.setChromeService(service);
     const driver = builder.build();
-    const chromeDriver = new ChromeDriver(driver);
-    const extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
 
-    return {
-      driver,
-      extensionId,
-      extensionUrl: `chrome-extension://${extensionId}`,
-    };
+    // Ensure Chrome is cleaned up if anything below fails (extension ID
+    // lookup, etc.).  Without this, a partial failure orphans the browser.
+    try {
+      // When the manifest has a `key`, the extension ID is deterministic and can
+      // be computed locally — skipping the chrome://extensions round-trip (~880ms).
+      let extensionId = ChromeDriver._computeExtensionId('dist/chrome');
+      if (!extensionId) {
+        const chromeDriver = new ChromeDriver(driver);
+        extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
+      }
+
+      return {
+        driver,
+        extensionId,
+        extensionUrl: `chrome-extension://${extensionId}`,
+      };
+    } catch (error) {
+      // Clean up Chrome on partial build failure. Must close all windows
+      // before quit() — on Windows, quit() alone leaves Chrome running
+      // (see PR #31962).
+      try {
+        const handles = await driver.getAllWindowHandles();
+        for (const handle of handles) {
+          await driver.switchTo().window(handle);
+          await driver.close();
+        }
+      } catch {
+        // best-effort
+      }
+      try {
+        await driver.quit();
+      } catch {
+        // best-effort
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Computes the deterministic Chrome extension ID from the manifest's `key` field.
+   * Returns null if the key is absent.
+   *
+   * @param {string} extensionDir - Path to the unpacked extension directory
+   * @returns {string|null} The 32-char extension ID, or null
+   */
+  static _computeExtensionId(extensionDir) {
+    try {
+      const manifest = JSON.parse(
+        fs.readFileSync(path.join(extensionDir, 'manifest.json'), 'utf8'),
+      );
+      if (!manifest.key) {
+        return null;
+      }
+      const keyBytes = Buffer.from(manifest.key, 'base64');
+      const hash = nodeCrypto
+        .createHash('sha256')
+        .update(keyBytes)
+        .digest('hex');
+      return hash
+        .slice(0, 32)
+        .replace(/[0-9a-f]/gu, (c) =>
+          String.fromCharCode(97 + parseInt(c, 16)),
+        );
+    } catch {
+      return null;
+    }
   }
 
   /**
@@ -146,23 +213,35 @@ class ChromeDriver {
    */
   async getExtensionIdByName(extensionName) {
     await this._driver.get('chrome://extensions');
-    return await this._driver.executeScript(`
-      const extensions = document.querySelector("extensions-manager").shadowRoot
-        .querySelector("extensions-item-list").shadowRoot
-        .querySelectorAll("extensions-item")
+    const maxAttempts = 5;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const id = await this._driver.executeScript(`
+        try {
+          const extensions = document.querySelector("extensions-manager").shadowRoot
+            .querySelector("extensions-item-list").shadowRoot
+            .querySelectorAll("extensions-item")
 
-      for (let i = 0; i < extensions.length; i++) {
-        const extension = extensions[i].shadowRoot
-        const nameElement = extension.querySelector('#name');
-        const name = nameElement.textContent?.trim();
-
-        if (name.startsWith("${extensionName}")) {
-          return extensions[i].getAttribute("id")
+          for (let i = 0; i < extensions.length; i++) {
+            const extension = extensions[i].shadowRoot
+            const name = extension.querySelector('#name').textContent?.trim()
+            if (name.startsWith("${extensionName}")) {
+              return extensions[i].getAttribute("id")
+            }
+          }
+        } catch (e) {
+          return undefined
         }
+        return undefined
+      `);
+      if (id) {
+        return id;
       }
-
-      return undefined
-    `);
+      await this._driver.sleep(1000);
+    }
+    console.error(
+      `Failed to find extension "${extensionName}" after ${maxAttempts} attempts`,
+    );
+    return undefined;
   }
 }
 

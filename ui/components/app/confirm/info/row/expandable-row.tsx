@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import classnames from 'classnames';
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import classnames from 'clsx';
 import {
   Box,
   ButtonIcon,
@@ -10,6 +10,7 @@ import {
   Display,
   IconColor,
 } from '../../../../../helpers/constants/design-system';
+import { useBoolean } from '../../../../../hooks/useBoolean';
 import { ConfirmInfoRow, ConfirmInfoRowProps } from './row';
 
 export type ConfirmInfoExpandableRowProps = ConfirmInfoRowProps & {
@@ -22,19 +23,30 @@ export const ConfirmInfoExpandableRow = (
 ) => {
   const { content, children, startExpanded, ...rowProps } = props;
 
-  const ref = useRef() as React.MutableRefObject<HTMLSpanElement | null>;
+  const { value: expanded, toggle } = useBoolean(startExpanded);
+  const contentRef = useRef<HTMLSpanElement | null>(null);
+  const [contentHeight, setContentHeight] = useState(0);
 
-  const [expanded, setExpanded] = useState<boolean>(Boolean(startExpanded));
-  const [, setLoaded] = useState<boolean>(false);
+  useLayoutEffect(() => {
+    const node = contentRef.current;
+    if (!node) {
+      return undefined;
+    }
 
-  const handleClick = useCallback(() => {
-    setExpanded(!expanded);
-  }, [expanded]);
+    const updateHeight = () => {
+      setContentHeight(node.scrollHeight);
+    };
 
-  // Required to force a re-render so the content height can be calculated.
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
+    // Measure before paint so rows that start expanded are not clipped at 0px.
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(node);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [expanded, content]);
 
   return (
     <>
@@ -49,17 +61,17 @@ export const ConfirmInfoExpandableRow = (
             iconName={IconName.ArrowDown}
             color={IconColor.primaryDefault}
             size={ButtonIconSize.Sm}
-            onClick={handleClick}
+            onClick={toggle}
             ariaLabel="expand"
           />
           {children}
         </Box>
       </ConfirmInfoRow>
       <Box
-        ref={ref}
+        ref={contentRef}
         className="expandable"
         style={{
-          height: expanded ? ref.current?.scrollHeight : '0px',
+          height: expanded ? contentHeight : '0px',
         }}
       >
         {

@@ -1,20 +1,16 @@
-import React, { useCallback, useContext, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   Box,
   Text,
   ButtonIcon,
   IconName,
   ButtonIconSize,
-} from '../../components/component-library';
-import {
-  Display,
-  AlignItems,
+  BoxFlexDirection,
+  BoxAlignItems,
   TextVariant,
   TextColor,
   IconColor,
-  BlockSize,
-  FlexDirection,
-} from '../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import SrpInputImport from '../../components/app/srp-input-import';
 import SRPDetailsModal from '../../components/app/srp-details-modal';
@@ -22,12 +18,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 type SrpInputFormProps = {
   error?: string;
   setSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
   onClearCallback: () => void;
+  onClearClipboardRetry?: () => void;
+  onClipboardClearFailed?: () => void;
   /**
    * Whether to show the default description
    */
@@ -46,28 +44,33 @@ const SrpInputForm = ({
   error,
   setSecretRecoveryPhrase,
   onClearCallback,
+  onClearClipboardRetry,
+  onClipboardClearFailed,
   showDescription = true,
   toggleSrpDetailsModal = false,
   onSrpDetailsModalClose,
 }: SrpInputFormProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
 
   useEffect(() => {
+    // Sync modal open state from parent prop (restore-vault custom description).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional controlled sync from prop
     setShowSrpDetailsModal(toggleSrpDetailsModal);
   }, [toggleSrpDetailsModal]);
 
   const onShowSrpDetailsModal = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.SrpDefinitionClicked,
-      properties: {
-        location: 'import_srp',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SrpDefinitionClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          location: 'import_srp',
+        })
+        .build(),
+    );
     setShowSrpDetailsModal(true);
-  }, [trackEvent]);
+  }, [createEventBuilder, trackEvent]);
 
   return (
     <>
@@ -79,41 +82,42 @@ const SrpInputForm = ({
           }}
         />
       )}
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={4}
-        height={BlockSize.Full}
-      >
+      <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
         {showDescription && (
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            gap={1}
+            alignItems={BoxAlignItems.Center}
+          >
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
             >
               {t('typeYourSRP')}
             </Text>
             <ButtonIcon
               iconName={IconName.Info}
               size={ButtonIconSize.Sm}
-              color={IconColor.iconAlternative}
+              color={IconColor.IconAlternative}
               onClick={onShowSrpDetailsModal}
               ariaLabel="info"
             />
           </Box>
         )}
-        <Box width={BlockSize.Full}>
+        <Box className="w-full">
           <form onSubmit={(e) => e.preventDefault()}>
             <SrpInputImport
               onChange={setSecretRecoveryPhrase}
               onClearCallback={onClearCallback}
+              onClearClipboardRetry={onClearClipboardRetry}
+              onClipboardClearFailed={onClipboardClearFailed}
             />
             {error && (
               <Box marginTop={2}>
                 <Text
                   data-testid="import-srp-error"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.errorDefault}
+                  variant={TextVariant.BodySm}
+                  color={TextColor.ErrorDefault}
                 >
                   {error}
                 </Text>

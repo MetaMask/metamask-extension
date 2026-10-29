@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 
@@ -7,7 +7,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import {
-  useTrustSignal,
+  useTrustSignals,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
@@ -18,6 +18,7 @@ import {
   buildPermit2ApproveTransactionData,
 } from '../../../../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../../../../test/data/confirmations/set-approval-for-all';
+import { permitSignatureMsgWithUnsignedFields } from '../../../../../test/data/confirmations/typed_sign';
 import { useSpenderAlerts } from './useSpenderAlerts';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -29,7 +30,7 @@ jest.mock('../../context/confirm', () => ({
 }));
 
 jest.mock('../../../../hooks/useTrustSignals', () => ({
-  useTrustSignal: jest.fn(),
+  useTrustSignals: jest.fn(),
   TrustSignalDisplayState: {
     Loading: 'Loading',
     Malicious: 'malicious',
@@ -65,8 +66,8 @@ const mockUseIsNFT = useIsNFT as jest.MockedFunction<typeof useIsNFT>;
 const mockUseAsyncResult = useAsyncResult as jest.MockedFunction<
   typeof useAsyncResult
 >;
-const mockUseTrustSignal = useTrustSignal as jest.MockedFunction<
-  typeof useTrustSignal
+const mockUseTrustSignals = useTrustSignals as jest.MockedFunction<
+  typeof useTrustSignals
 >;
 const mockUseI18nContext = useI18nContext as jest.MockedFunction<
   typeof useI18nContext
@@ -81,10 +82,12 @@ const MOCK_TRANSACTION_ID = 'test-tx-id';
 function setupDefaultMocks() {
   jest.clearAllMocks();
   mockUseI18nContext.mockReturnValue((key: string) => key);
-  mockUseTrustSignal.mockReturnValue({
-    state: TrustSignalDisplayState.Unknown,
-    label: null,
-  });
+  mockUseTrustSignals.mockReturnValue([
+    {
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    },
+  ]);
   mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
   mockUseIsNFT.mockReturnValue({ isNFT: false, pending: false });
   mockUseAsyncResult.mockReturnValue({
@@ -106,7 +109,7 @@ function setupTrustSignal(
   state: TrustSignalDisplayState,
   label: string | null = null,
 ) {
-  mockUseTrustSignal.mockReturnValue({ state, label });
+  mockUseTrustSignals.mockReturnValue([{ state, label }]);
 }
 
 const expectedWarningAlert = {
@@ -114,8 +117,8 @@ const expectedWarningAlert = {
   field: RowAlertKey.Spender,
   isBlocking: false,
   key: 'spenderTrustSignalWarning',
-  message: 'alertMessageAddressTrustSignal',
-  reason: 'nameModalTitleWarning',
+  message: 'alertMessageAddressTrustSignalWarningWithAddress',
+  reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
 
@@ -124,8 +127,8 @@ const expectedMaliciousAlert = {
   field: RowAlertKey.Spender,
   isBlocking: false,
   key: 'spenderTrustSignalMalicious',
-  message: 'alertMessageAddressTrustSignalMalicious',
-  reason: 'nameModalTitleMalicious',
+  message: 'alertMessageAddressTrustSignalMaliciousWithAddress',
+  reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
 
@@ -154,7 +157,7 @@ function buildApproveTransaction({
 function buildPermitSignatureRequest({
   spender = MOCK_SPENDER_ADDRESS,
   value = '1000',
-  domain = { name: 'Token', version: '1' },
+  domain = { name: 'TestToken', version: '1' },
 }: {
   spender?: string;
   value?: string;
@@ -164,7 +167,17 @@ function buildPermitSignatureRequest({
     primaryType: 'Permit',
     domain,
     message: { spender, value },
-    types: {},
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Permit: [
+        { name: 'spender', type: 'address' },
+        { name: 'value', type: 'uint256' },
+      ],
+    },
   });
 
   return {
@@ -223,11 +236,13 @@ describe('useSpenderAlerts', () => {
 
       const { result } = renderHook(() => useSpenderAlerts());
 
-      expect(mockUseTrustSignal).toHaveBeenCalledWith(
-        MOCK_SPENDER_ADDRESS,
-        NameType.ETHEREUM_ADDRESS,
-        '0x1',
-      );
+      expect(mockUseTrustSignals).toHaveBeenCalledWith([
+        {
+          value: MOCK_SPENDER_ADDRESS,
+          type: NameType.ETHEREUM_ADDRESS,
+          chainId: '0x1',
+        },
+      ]);
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
     });
@@ -281,6 +296,66 @@ describe('useSpenderAlerts', () => {
 
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
+    });
+
+    it('does not let unsigned fields suppress a spender alert', () => {
+      setupDefaultMocks();
+      setupConfirmContext(permitSignatureMsgWithUnsignedFields);
+      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Phishing address');
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toEqual(expectedMaliciousAlert);
+    });
+
+    it('ignores an unsigned spender field', () => {
+      setupDefaultMocks();
+      setupConfirmContext({
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: JSON.stringify({
+            primaryType: 'Permit',
+            domain: {},
+            message: { spender: MOCK_SPENDER_ADDRESS, value: '1' },
+            types: {
+              Permit: [{ name: 'value', type: 'uint256' }],
+            },
+          }),
+        },
+      });
+      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Phishing address');
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
+    });
+
+    it('ignores a missing schema-declared spender field', () => {
+      setupDefaultMocks();
+      setupConfirmContext({
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: JSON.stringify({
+            primaryType: 'Permit',
+            domain: {},
+            message: { value: '1' },
+            types: {
+              Permit: [
+                { name: 'spender', type: 'address' },
+                { name: 'value', type: 'uint256' },
+              ],
+            },
+          }),
+        },
+      });
+      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Phishing address');
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
     });
 
     it('returns warning alert for warning spender in permit signature', () => {
@@ -386,7 +461,17 @@ describe('useSpenderAlerts', () => {
           verifyingContract: DAI_CONTRACT_ADDRESS,
         },
         message: { spender: MOCK_SPENDER_ADDRESS, allowed: false },
-        types: {},
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          Permit: [
+            { name: 'spender', type: 'address' },
+            { name: 'allowed', type: 'bool' },
+          ],
+        },
       });
       const mockSignatureRequest = {
         id: MOCK_TRANSACTION_ID,

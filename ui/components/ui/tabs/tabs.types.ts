@@ -17,6 +17,8 @@ export type TabProps<TKey extends string = string> = Omit<
   tabKey: TKey;
   /** Click handler called with the tab index (set by parent Tabs component) */
   onClick?: (tabIndex: number) => void;
+  /** Mouse enter handler for the underlying tab button */
+  onMouseEnter?: React.MouseEventHandler<HTMLButtonElement>;
   /** Tab index in the list (set by parent Tabs component) */
   tabIndex?: number;
   /** Content to render when this tab is active */
@@ -41,14 +43,16 @@ export type TabsProps<TKey extends string = string> = Omit<
   onTabClick?: (tabKey: TKey) => void;
   /** Tab components to render */
   children: React.ReactNode;
-  /** Additional content to render between tabs and content */
-  subHeader?: React.ReactNode;
+  /** Props for the tab list wrapper */
+  tabListWrapperProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** Props to pass to the tab list container */
   tabListProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** Props to pass to the tab content container */
   tabContentProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** CSS class name for the tabs container */
   className?: string;
+  /** Enable transition animation when switching tabs */
+  animated?: boolean;
 };
 
 export type TabsHandle<TKey extends string = string> = {

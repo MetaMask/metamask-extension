@@ -1,44 +1,61 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
+import { SolScope } from '@metamask/keyring-api';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { WINDOW_TITLES } from '../../constants';
-import { largeDelayMs } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
-import {
-  clickCancelButton,
-  clickConfirmButton,
-  connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-} from './testHelpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import { buildSolanaTestSpecificMock } from '../../tests/solana/common-solana';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
+
+// The dapp needs the Devnet scope, which a live connect cannot grant, so the
+// session is seeded with Mainnet + Devnet and restored silently on connect.
+const SOLANA_MAINNET_AND_DEVNET_PERMISSIONS = buildSolanaFixtureScopes([
+  SolScope.Mainnet,
+  SolScope.Devnet,
+]);
 
 describe('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {
     it('Should send a transaction', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp({
+              scopes: SOLANA_MAINNET_AND_DEVNET_PERMISSIONS,
+            })
+            .build(),
           title: this.test?.fullTitle(),
-          mockGetTransactionSuccess: true,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
+          testSpecificMock: buildSolanaTestSpecificMock({
+            mockGetTransactionSuccess: true,
+          }),
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
-            includeDevnet: true,
+            expectExistingSession: true,
           });
 
           // 1. Sign a transfer transaction
           const sendSolTest = await testDapp.getSendSolTest();
           await sendSolTest.signTransaction();
 
-          // Confirm the signature
-          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await clickConfirmButton(driver);
+          const signTxConfirmation = new SnapTransactionConfirmation(driver);
+          await signTxConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
           await testDapp.switchTo();
 
-          await driver.delay(largeDelayMs);
           const signedTransaction = await sendSolTest.getSignedTransaction();
           assert.strictEqual(signedTransaction.length, 1);
           assert.ok(signedTransaction[0]);
@@ -46,14 +63,14 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           // 2. Send the transaction
           await sendSolTest.sendTransaction();
 
-          // Confirm the transaction
-          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await clickConfirmButton(driver);
+          const txConfirmation = new SnapTransactionConfirmation(driver);
+          await txConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
           await testDapp.switchTo();
 
-          // Assert that a transaction hash is received
-          await driver.delay(largeDelayMs);
           const transactionHash = await sendSolTest.getTransactionHash();
           assert.ok(transactionHash);
         },
@@ -61,41 +78,55 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
     });
 
     it('Should be able to cancel a transaction and send another one', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp({
+              scopes: SOLANA_MAINNET_AND_DEVNET_PERMISSIONS,
+            })
+            .build(),
           title: this.test?.fullTitle(),
-          mockGetTransactionSuccess: true,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
+          testSpecificMock: buildSolanaTestSpecificMock({
+            mockGetTransactionSuccess: true,
+          }),
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await login(driver);
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await connectSolanaTestDapp(driver, testDapp, {
-            includeDevnet: true,
+            expectExistingSession: true,
           });
 
           // 1. Start a transaction and cancel it
           const sendSolTest = await testDapp.getSendSolTest();
           await sendSolTest.sendTransaction();
-
-          // Cancel the sendTransaction
-          await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await clickCancelButton(driver);
+          const dialogHandle = await driver.getCurrentWindowHandle();
+          const cancelTxConfirmation = new SnapTransactionConfirmation(driver);
+          await cancelTxConfirmation.clickFooterButton({
+            button: 'cancel',
+            waitUntil: 'windowClose',
+          });
           await testDapp.switchTo();
 
           // 2. Send another transaction
           await sendSolTest.sendTransaction();
 
-          // Confirm the transaction
-          await driver.delay(largeDelayMs);
+          await driver.waitForWindowToClose(dialogHandle);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await clickConfirmButton(driver);
+
+          const txConfirmation = new SnapTransactionConfirmation(driver);
+          await txConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
           await testDapp.switchTo();
 
-          // Assert that a transaction hash is received
-          await driver.delay(largeDelayMs);
           const transactionHash = await sendSolTest.getTransactionHash();
           assert.ok(transactionHash);
         },
@@ -104,36 +135,41 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
 
     describe('Given I have connected to Mainnet and Devnet', function () {
       it('Should use the Devnet scope as specified by the Dapp', async function () {
-        await withSolanaAccountSnap(
+        await withFixtures(
           {
-            ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+            fixtures: new FixtureBuilderV2()
+              .withPermissionControllerConnectedToTestDapp({
+                scopes: SOLANA_MAINNET_AND_DEVNET_PERMISSIONS,
+              })
+              .build(),
             title: this.test?.fullTitle(),
-            mockGetTransactionSuccess: true,
+            dappOptions: {
+              customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+            },
+            testSpecificMock: buildSolanaTestSpecificMock({
+              mockGetTransactionSuccess: true,
+            }),
           },
-          async (driver) => {
+          async ({ driver }) => {
+            await login(driver);
             const testDapp = new TestDappSolana(driver);
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();
             await connectSolanaTestDapp(driver, testDapp, {
-              includeDevnet: true,
+              expectExistingSession: true,
             });
 
             // Send a transaction
             const sendSolTest = await testDapp.getSendSolTest();
             await sendSolTest.sendTransaction();
 
-            // Confirm the signature
-            await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-            // Look for the target chain to be set to Devnet
-            const permission = await driver.findElement(
-              By.xpath("//p[contains(text(), 'Solana Devnet')]"),
-            );
-            assert.ok(permission);
-
-            // Confirm connection
-            await driver.clickElement({ text: 'Confirm', tag: 'span' });
+            const txConfirmation = new SnapTransactionConfirmation(driver);
+            await txConfirmation.checkNetworkIsDisplayed('Solana Devnet');
+            await txConfirmation.clickFooterButton({
+              button: 'confirm',
+              waitUntil: 'windowClose',
+            });
           },
         );
       });

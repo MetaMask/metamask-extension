@@ -1,0 +1,2288 @@
+import { it } from '@jest/globals';
+import type {
+  Position,
+  PerpsMarketData,
+  PriceUpdate,
+} from '@metamask/perps-controller';
+import { flushPromises } from '../../../test/lib/timer-helpers';
+import { trace, endTrace, TraceName } from '../../../shared/lib/trace';
+import { PerpsStreamManager } from './PerpsStreamManager';
+
+jest.mock('../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+  getPerformanceTimestamp: () => Date.now(),
+}));
+jest.mock('../../helpers/perps/entry-trace', () => ({
+  readPerpsLifecycleContext: () => 'cold_process',
+  PERPS_LIFECYCLE_TAG: 'lifecycle_context',
+}));
+
+// Polyfill crypto.randomUUID for jsdom
+let uuidCounter = 0;
+Object.defineProperty(globalThis, 'crypto', {
+  value: {
+    ...globalThis.crypto,
+    randomUUID: () => `test-uuid-${(uuidCounter += 1)}`,
+  },
+});
+
+const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
+}));
+
+jest.mock('./CandleStreamChannel', () => ({
+  CandleStreamChannel: jest.fn().mockImplementation(() => ({
+    clearAll: jest.fn(),
+    clearCache: jest.fn(),
+  })),
+}));
+
+function makePosition(
+  symbol: string,
+  overrides: Partial<Position> = {},
+): Position {
+  return {
+    symbol,
+    size: '1.0',
+    entryPrice: '100',
+    markPrice: '105',
+    unrealizedPnl: '5',
+    unrealizedPnlPercent: '5',
+    leverage: '10',
+    liquidationPrice: '90',
+    margin: '10',
+    side: 'long',
+    takeProfitPrice: undefined,
+    stopLossPrice: undefined,
+    ...overrides,
+  } as Position;
+}
+
+describe('PerpsStreamManager', () => {
+  let manager: PerpsStreamManager;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.clearAllMocks();
+
+    manager = new PerpsStreamManager();
+  });
+
+  afterEach(() => {
+    manager.reset();
+    jest.useRealTimers();
+  });
+
+  describe('startPreload', () => {
+    function createPreloadManager() {
+      return Object.assign(manager, {
+        initForAddress: jest.fn().mockResolvedValue(undefined),
+        prewarm: jest.fn(),
+        cleanupPrewarm: jest.fn(),
+      });
+    }
+    let preloadManager: ReturnType<typeof createPreloadManager>;
+    beforeEach(() => {
+      mockSubmitRequestToBackground.mockReset().mockResolvedValue(undefined);
+      preloadManager = createPreloadManager();
+    });
+    function deferred() {
+      let resolve!: () => void;
+      const promise = new Promise<void>((done) => {
+        resolve = done;
+      });
+      return { promise, resolve };
+    }
+    async function settle(run: () => void | Promise<void>) {
+      await run();
+      await flushPromises();
+    }
+    it('registers ownership before initializing and cancels before delayed registration completes', async () => {
+      const registration = deferred();
+      jest
+        .mocked(mockSubmitRequestToBackground)
+        .mockImplementation((method) =>
+          method === 'perpsRegisterPreload'
+            ? registration.promise
+            : Promise.resolve(undefined),
+        );
+      const { stop: unmount } = preloadManager.startPreload({
+        address: '0xfirst',
+        useTerminalApi: false,
+        accountChanged: false,
+        provider: 'hyperliquid',
+        isTestnet: false,
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsRegisterPreload',
+        [expect.any(String)],
+      );
+      expect(preloadManager.initForAddress).not.toHaveBeenCalled();
+      expect(trace).toHaveBeenCalledTimes(1);
+      expect(jest.mocked(trace).mock.calls[0][0]).not.toHaveProperty(
+        'startTime',
+      );
+      unmount();
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'released' },
+        }),
+      );
+      await settle(async () => {
+        registration.resolve();
+      });
+      expect(preloadManager.initForAddress).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsStartPreload',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsStopPreload',
+        [expect.any(String), false],
+      );
+    });
+
+    it('ends the connection span only after the background subscriptions are ready', async () => {
+      const ready = deferred();
+      jest
+        .mocked(mockSubmitRequestToBackground)
+        .mockImplementation((method) =>
+          method === 'perpsStartPreload'
+            ? ready.promise
+            : Promise.resolve(undefined),
+        );
+      let unmount!: () => void;
+      await settle(async () => {
+        ({ stop: unmount } = preloadManager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        }));
+      });
+      expect(endTrace).not.toHaveBeenCalled();
+      expect(preloadManager.prewarm).toHaveBeenCalledTimes(1);
+
+      await settle(async () => {
+        ready.resolve();
+      });
+
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.PerpsConnectionEstablishment,
+          data: { success: true, reason: 'subscriptions_ready' },
+        }),
+      );
+      const { id } = jest.mocked(trace).mock.calls[0][0];
+      unmount();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsStopPreload',
+        [id, true],
+      );
+      expect(endTrace).toHaveBeenCalledTimes(1);
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it('does not start subscriptions after unmount during initialization', async () => {
+      const init = deferred();
+      preloadManager.initForAddress.mockReturnValue(init.promise);
+      let unmount!: () => void;
+      await settle(async () => {
+        ({ stop: unmount } = preloadManager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        }));
+      });
+      expect(preloadManager.initForAddress).toHaveBeenCalledTimes(1);
+
+      unmount();
+      await settle(async () => {
+        init.resolve();
+      });
+
+      expect(preloadManager.prewarm).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsStartPreload',
+        expect.anything(),
+      );
+      expect(endTrace).toHaveBeenCalledTimes(1);
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'released' },
+        }),
+      );
+    });
+
+    it('records a timeout once and ignores late connection completion', async () => {
+      const ready = deferred();
+      jest
+        .mocked(mockSubmitRequestToBackground)
+        .mockImplementation((method) =>
+          method === 'perpsStartPreload'
+            ? ready.promise
+            : Promise.resolve(undefined),
+        );
+      await settle(async () => {
+        preloadManager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        });
+      });
+
+      await settle(async () => {
+        jest.advanceTimersByTime(30_000);
+        ready.resolve();
+      });
+
+      expect(endTrace).toHaveBeenCalledTimes(1);
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'timeout' },
+        }),
+      );
+      expect(preloadManager.cleanupPrewarm).toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsStopPreload',
+        [expect.any(String), false],
+      );
+    });
+
+    it.each(['failure', 'timeout', 'pending init'])(
+      'reinitializes on foreground entry after preload %s',
+      async (outcome) => {
+        preloadManager.initForAddress.mockImplementation((address: string) =>
+          PerpsStreamManager.prototype.initForAddress.call(manager, address),
+        );
+        let rejectPreload!: (error: Error) => void;
+        const ready = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        const init = deferred();
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsStartPreload') {
+            return ready;
+          }
+          if (method === 'perpsInitForAccount' && outcome === 'pending init') {
+            return init.promise;
+          }
+          return Promise.resolve();
+        });
+        await settle(() => {
+          manager.startPreload({
+            address: '0xfirst',
+            useTerminalApi: false,
+            accountChanged: false,
+            provider: 'hyperliquid',
+            isTestnet: false,
+          });
+        });
+        expect(manager.isInitialized('0xfirst')).toBe(
+          outcome !== 'pending init',
+        );
+
+        await settle(() => {
+          if (outcome === 'failure') {
+            rejectPreload(new Error('market fetch failed'));
+          } else {
+            jest.advanceTimersByTime(30_000);
+            init.resolve();
+          }
+        });
+
+        expect(manager.isInitialized('0xfirst')).toBe(false);
+        await manager.initForAddress('0xfirst');
+        expect(manager.isInitialized('0xfirst')).toBe(true);
+        expect(
+          mockSubmitRequestToBackground.mock.calls.filter(
+            ([method]) => method === 'perpsInitForAccount',
+          ),
+        ).toHaveLength(2);
+      },
+    );
+
+    it.each([
+      ['replacement preload', 'failure'],
+      ['replacement preload', 'timeout'],
+      ['new account', 'failure'],
+      ['new account', 'timeout'],
+    ])(
+      'preserves readiness for a %s after an older preload %s',
+      async (owner, outcome) => {
+        preloadManager.initForAddress.mockImplementation((address: string) =>
+          PerpsStreamManager.prototype.initForAddress.call(manager, address),
+        );
+        let rejectPreload!: (error: Error) => void;
+        const ready = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        let starts = 0;
+        mockSubmitRequestToBackground.mockImplementation((method: string) =>
+          method === 'perpsStartPreload' && (starts += 1) === 1
+            ? ready
+            : Promise.resolve(),
+        );
+        await settle(() => {
+          manager.startPreload({
+            address: '0xfirst',
+            useTerminalApi: false,
+            accountChanged: false,
+            provider: 'hyperliquid',
+            isTestnet: false,
+          });
+        });
+        const address = owner === 'new account' ? '0xsecond' : '0xfirst';
+        await settle(async () => {
+          if (owner === 'new account') {
+            await manager.initForAddress(address);
+          } else {
+            manager.startPreload({
+              address,
+              useTerminalApi: false,
+              accountChanged: false,
+              provider: 'hyperliquid',
+              isTestnet: false,
+            });
+          }
+        });
+        preloadManager.cleanupPrewarm.mockClear();
+        await settle(() => {
+          if (outcome === 'failure') {
+            rejectPreload(new Error('old preload failed'));
+          } else {
+            jest.advanceTimersByTime(30_000);
+          }
+        });
+
+        expect(manager.isInitialized(address)).toBe(true);
+        expect(preloadManager.cleanupPrewarm).not.toHaveBeenCalled();
+      },
+    );
+
+    it('records initialization failure without claiming readiness', async () => {
+      preloadManager.initForAddress.mockRejectedValue(new Error('offline'));
+      const debug = jest
+        .spyOn(console, 'debug')
+        .mockImplementation(() => undefined);
+
+      await settle(async () => {
+        preloadManager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        });
+      });
+
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'connection_failed' },
+        }),
+      );
+      expect(preloadManager.prewarm).not.toHaveBeenCalled();
+      expect(jest.getTimerCount()).toBe(0);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsStopPreload',
+        [expect.any(String), false],
+      );
+      debug.mockRestore();
+    });
+  });
+
+  describe('preload failure with mounted streams', () => {
+    it.each(['failure', 'timeout'])(
+      'keeps the mounted market fallback connected after preload %s',
+      async (outcome) => {
+        let rejectPreload!: (error: Error) => void;
+        const preload = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        let finishMarkets!: (markets: PerpsMarketData[]) => void;
+        const fallback = new Promise<PerpsMarketData[]>((resolve) => {
+          finishMarkets = resolve;
+        });
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsStartPreload') {
+            return preload;
+          }
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return fallback;
+          }
+          return Promise.resolve();
+        });
+        manager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        });
+        await flushPromises();
+        const onMarkets = jest.fn();
+        const unsubscribe = manager.markets.subscribe(onMarkets);
+        if (outcome === 'failure') {
+          rejectPreload(new Error('preload market fetch failed'));
+          await flushPromises();
+        }
+        jest.advanceTimersByTime(outcome === 'timeout' ? 30_000 : 3000);
+        await flushPromises();
+        expect(manager.isInitialized()).toBe(false);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: false }],
+        );
+        const markets = [{ symbol: 'BTC' }] as PerpsMarketData[];
+        finishMarkets(markets);
+        await flushPromises();
+        expect(onMarkets).toHaveBeenLastCalledWith(markets);
+        expect(manager.markets.getCachedData()).toEqual(markets);
+        unsubscribe();
+      },
+    );
+  });
+
+  describe('constructor', () => {
+    it('initializes all data channels with empty defaults', () => {
+      expect(manager.positions.getCachedData()).toEqual([]);
+      expect(manager.orders.getCachedData()).toEqual([]);
+      expect(manager.account.getCachedData()).toBeNull();
+      expect(manager.markets.getCachedData()).toEqual([]);
+      expect(manager.prices.getCachedData()).toEqual([]);
+      expect(manager.orderBook.getCachedData()).toBeNull();
+      expect(manager.fills.getCachedData()).toEqual([]);
+    });
+  });
+
+  describe('positions channel', () => {
+    it('fetches positions via REST after WS grace period when no WS data arrives', async () => {
+      jest.useFakeTimers();
+      const mockPositions = [makePosition('BTC')];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetPositions') {
+          return Promise.resolve(mockPositions);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      try {
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetPositions',
+          [],
+        );
+        expect(cb).toHaveBeenCalledWith(mockPositions);
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('skips REST fallback when WS pushes positions before grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        const wsPositions = [makePosition('ETH')];
+        manager.positions.pushData(wsPositions);
+        expect(cb).toHaveBeenCalledWith(wsPositions);
+
+        mockSubmitRequestToBackground.mockClear();
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetPositions',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('notifies subscribers with empty positions when REST fallback fails', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetPositions') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(cb).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch positions',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+  });
+
+  describe('orders channel', () => {
+    it('fetches orders via REST after WS grace period when no WS data arrives', async () => {
+      jest.useFakeTimers();
+      const mockOrders = [{ id: 'order-1' }];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetOpenOrders') {
+          return Promise.resolve(mockOrders);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      try {
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          [],
+        );
+        expect(cb).toHaveBeenCalledWith(mockOrders);
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('skips REST fallback when WS pushes orders before grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        const wsOrders = [{ id: 'ws-order-1' }] as never[];
+        manager.orders.pushData(wsOrders);
+        expect(cb).toHaveBeenCalledWith(wsOrders);
+
+        mockSubmitRequestToBackground.mockClear();
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetOpenOrders',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+
+    it('notifies subscribers with empty orders when REST fallback fails', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetOpenOrders') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const cb = jest.fn();
+        manager.orders.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(cb).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch orders',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+        jest.useFakeTimers();
+      }
+    });
+  });
+
+  describe('markets channel', () => {
+    beforeEach(() => {
+      jest.useRealTimers();
+    });
+
+    afterEach(() => {
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+      jest.useFakeTimers();
+    });
+
+    it('notifies subscribers with empty markets when REST fallback fails without cache', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const onData = jest.fn();
+        manager.markets.subscribe(onData);
+
+        // Advance past WS grace period to trigger REST fallback
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: false }],
+        );
+        expect(onData).toHaveBeenCalledWith([]);
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[PerpsStreamManager] Failed to fetch markets',
+          expect.any(Error),
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+      }
+    });
+
+    it('passes useTerminalApi: true when setUseTerminalApi(true) has been called', async () => {
+      jest.useFakeTimers();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockResolvedValue([]);
+
+        manager.setUseTerminalApi(true);
+        manager.markets.subscribe(jest.fn());
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: true }],
+        );
+      } finally {
+        consoleErrorSpy.mockRestore();
+        jest.useRealTimers();
+      }
+    });
+
+    it('clears cached markets when the terminal mode changes so the next fetch uses the new backend', () => {
+      manager.markets.pushData([{ symbol: 'BTC' }] as never[]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      manager.setUseTerminalApi(true);
+
+      expect(manager.markets.hasCachedData()).toBe(false);
+    });
+
+    it('keeps cached markets when the terminal mode is unchanged', () => {
+      manager.markets.pushData([{ symbol: 'BTC' }] as never[]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      // Default mode is already `false`; a no-op update must not wipe the
+      // warm cache on every remount that re-applies the same flag value.
+      manager.setUseTerminalApi(false);
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+    });
+
+    it('skips REST fallback when WS delivers data within grace period', async () => {
+      jest.useFakeTimers();
+
+      try {
+        mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+        const onData = jest.fn();
+        manager.markets.subscribe(onData);
+
+        // WS pushes data before grace period expires
+        const wsMarkets = [{ symbol: 'BTC', name: 'Bitcoin' }] as never[];
+        manager.markets.pushData(wsMarkets);
+        expect(onData).toHaveBeenCalledWith(wsMarkets);
+
+        mockSubmitRequestToBackground.mockClear();
+
+        // Advance past grace period — REST should NOT fire
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('preserves cached markets when reconnecting after data was already received', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const cachedMarkets = [
+          {
+            symbol: 'BTC',
+            name: 'Bitcoin',
+          },
+        ] as never[];
+
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return Promise.resolve(cachedMarkets);
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const onData = jest.fn();
+        const unsubscribe = manager.markets.subscribe(onData);
+
+        // Advance past grace period for initial fetch
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(onData).toHaveBeenCalledWith(cachedMarkets);
+
+        unsubscribe();
+        mockSubmitRequestToBackground.mockClear();
+
+        const onDataAfterReconnect = jest.fn();
+        manager.markets.subscribe(onDataAfterReconnect);
+
+        // Advance past grace period — REST should be skipped because cache exists
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        // Subscriber should receive cached data immediately
+        expect(onDataAfterReconnect).toHaveBeenCalledWith(cachedMarkets);
+        // No additional REST call because cache is warm
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          expect.anything(),
+        );
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+  });
+
+  describe('init', () => {
+    it('returns early when address is empty', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      manager.init('');
+
+      expect(manager.isInitialized()).toBe(false);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('No address provided'),
+      );
+      consoleSpy.mockRestore();
+    });
+
+    it('marks the manager as initialized for the given address', () => {
+      manager.init('0xaaa');
+
+      expect(manager.isInitialized('0xaaa')).toBe(true);
+      expect(manager.getCurrentAddress()).toBe('0xaaa');
+    });
+
+    it('returns early when same address is already initialized', () => {
+      manager.init('0xaaa');
+
+      const clearSpy = jest.spyOn(manager, 'clearAllCaches');
+      manager.init('0xaaa');
+
+      expect(clearSpy).not.toHaveBeenCalled();
+      clearSpy.mockRestore();
+    });
+
+    it('resets channels when address changes', () => {
+      manager.init('0xold');
+
+      const positionsResetSpy = jest.spyOn(manager.positions, 'reset');
+      const accountResetSpy = jest.spyOn(manager.account, 'reset');
+      manager.init('0xnew');
+
+      expect(positionsResetSpy).toHaveBeenCalledTimes(1);
+      expect(accountResetSpy).toHaveBeenCalledTimes(1);
+      expect(manager.getCurrentAddress()).toBe('0xnew');
+      positionsResetSpy.mockRestore();
+      accountResetSpy.mockRestore();
+    });
+
+    it('does not clear caches when initializing from null address', () => {
+      const clearSpy = jest.spyOn(manager, 'clearAllCaches');
+
+      manager.init('0xaaa');
+
+      expect(clearSpy).not.toHaveBeenCalled();
+      clearSpy.mockRestore();
+    });
+
+    it('clears optimistic TP/SL overrides on address change', () => {
+      manager.init('0xold');
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      manager.init('0xnew');
+
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBeUndefined();
+      expect(delivered[0].stopLossPrice).toBeUndefined();
+    });
+  });
+
+  describe('initForAddress', () => {
+    beforeEach(() => {
+      jest.useRealTimers();
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+      jest.useFakeTimers();
+    });
+
+    it('calls perpsInit on first init and sets address', async () => {
+      await manager.initForAddress('0xfirst');
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsInitForAccount',
+        ['0xfirst'],
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsDisconnect',
+      );
+      expect(manager.isInitialized('0xfirst')).toBe(true);
+    });
+
+    it('returns immediately when already initialized for the same address', async () => {
+      await manager.initForAddress('0xsame');
+      mockSubmitRequestToBackground.mockClear();
+
+      await manager.initForAddress('0xsame');
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('delegates account teardown and initialization to the shared background coordinator', async () => {
+      await manager.initForAddress('0xfirst');
+      mockSubmitRequestToBackground.mockClear();
+
+      const callOrder: string[] = [];
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        callOrder.push(method);
+        return Promise.resolve(undefined);
+      });
+
+      await manager.initForAddress('0xsecond');
+
+      expect(callOrder).not.toContain('perpsDisconnect');
+      expect(callOrder).toContain('perpsInitForAccount');
+
+      expect(manager.isInitialized('0xsecond')).toBe(true);
+    });
+
+    it.each<['positions' | 'orders' | 'account', string]>([
+      ['positions', 'perpsGetPositions'],
+      ['orders', 'perpsGetOpenOrders'],
+      ['account', 'perpsGetAccountState'],
+    ])(
+      'cancels the previous account %s fallback on switch',
+      async (channel, method) => {
+        jest.useFakeTimers();
+        await manager.initForAddress('0xfirst');
+        let resolveFallback!: (value: unknown) => void;
+        const fallback = new Promise((resolve) => {
+          resolveFallback = resolve;
+        });
+        mockSubmitRequestToBackground.mockImplementation((request: string) =>
+          request === method ? fallback : Promise.resolve(undefined),
+        );
+        const onData = jest.fn();
+        manager[channel].subscribe(onData);
+        await jest.advanceTimersByTimeAsync(3_000);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(method, []);
+
+        await manager.initForAddress('0xsecond');
+        const stale =
+          channel === 'account' ? { totalBalance: '99' } : [{ symbol: 'OLD' }];
+        resolveFallback(stale);
+        await fallback;
+        await Promise.resolve();
+
+        expect(manager[channel].hasCachedData()).toBe(false);
+        expect(onData).not.toHaveBeenCalled();
+      },
+    );
+
+    it('retains new-session snapshots emitted before initialization returns', async () => {
+      await manager.initForAddress('0xfirst');
+      const positions = [makePosition('NEW')];
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsInitForAccount') {
+            manager.handleBackgroundUpdate({
+              channel: 'positions',
+              data: [makePosition('OLD')],
+            });
+            expect(manager.positions.hasCachedData()).toBe(false);
+          }
+          if (method === 'perpsInitForAccount') {
+            manager.handleBackgroundUpdate({
+              channel: 'accountSession',
+              data: { address: '0xsecond' },
+            });
+            manager.handleBackgroundUpdate({
+              channel: 'positions',
+              data: positions,
+            });
+          }
+        },
+      );
+
+      await manager.initForAddress('0xsecond');
+
+      expect(manager.positions.getCachedData()).toEqual(positions);
+      const onData = jest.fn();
+      manager.positions.subscribe(onData);
+      expect(onData).toHaveBeenCalledWith(positions);
+    });
+
+    it('discards early snapshots when initialization fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation(async () => {
+        manager.handleBackgroundUpdate({
+          channel: 'positions',
+          data: [makePosition('FAILED')],
+        });
+        throw new Error('init failed');
+      });
+
+      await expect(manager.initForAddress('0xfailed')).rejects.toThrow(
+        'init failed',
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+      expect(manager.isInitialized()).toBe(false);
+    });
+
+    it('deduplicates concurrent calls for the same address', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+      const p1 = manager.initForAddress('0xaaa');
+      const p2 = manager.initForAddress('0xaaa');
+
+      await Promise.all([p1, p2]);
+
+      const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([m]: [string]) => m === 'perpsInitForAccount',
+      );
+      expect(initCalls).toHaveLength(1);
+    });
+
+    it('serializes A to B to A and drops stream updates during the transition', async () => {
+      let release!: () => void;
+      let entered!: () => void;
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const barrier = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementationOnce(() => {
+        entered();
+        return barrier;
+      });
+      const first = manager.initForAddress('0xaaa');
+      await started;
+      const middle = manager.initForAddress('0xbbb');
+      const latest = manager.initForAddress('0xaaa');
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('STALE')],
+      });
+      expect(manager.positions.getCachedData()).toEqual([]);
+      release();
+      await Promise.all([first, middle, latest]);
+
+      expect(manager.getCurrentAddress()).toBe('0xaaa');
+      expect(
+        mockSubmitRequestToBackground.mock.calls.map(([method]) => method),
+      ).toEqual(['perpsInitForAccount', 'perpsInitForAccount']);
+    });
+
+    it('cannot restore initialization after reset while the RPC is pending', async () => {
+      let release!: () => void;
+      let entered!: () => void;
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const barrier = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementationOnce(() => {
+        entered();
+        return barrier;
+      });
+      const pending = manager.initForAddress('0xaaa');
+      await started;
+
+      manager.reset();
+      release();
+      await pending;
+
+      expect(manager.isInitialized()).toBe(false);
+      expect(manager.getCurrentAddress()).toBeNull();
+    });
+
+    it('throws when address is empty', async () => {
+      await expect(manager.initForAddress('')).rejects.toThrow(
+        'No account selected',
+      );
+    });
+
+    it('queues the next shared account request until the previous request settles', async () => {
+      let releaseFirstInit: (() => void) | undefined;
+      const firstInitBarrier = new Promise<void>((resolve) => {
+        releaseFirstInit = resolve;
+      });
+
+      let perpsInitCount = 0;
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsDisconnect') {
+            return undefined;
+          }
+          if (method === 'perpsInitForAccount') {
+            perpsInitCount += 1;
+            if (perpsInitCount === 1) {
+              await firstInitBarrier;
+            }
+            return undefined;
+          }
+          return undefined;
+        },
+      );
+
+      const pFirst = manager.initForAddress('0xfirst');
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const pSecond = manager.initForAddress('0xsecond');
+      expect(manager.isInitialized()).toBe(false);
+      releaseFirstInit?.();
+      await Promise.all([pFirst, pSecond]);
+
+      const callOrder = mockSubmitRequestToBackground.mock.calls.map(
+        ([m]: [string]) => m,
+      );
+      expect(callOrder).toEqual(['perpsInitForAccount', 'perpsInitForAccount']);
+      expect(manager.getCurrentAddress()).toBe('0xsecond');
+
+      expect(releaseFirstInit).toBeDefined();
+      if (releaseFirstInit === undefined) {
+        throw new Error('releaseFirstInit not set by Promise executor');
+      }
+      releaseFirstInit();
+      await pFirst;
+      expect(manager.getCurrentAddress()).toBe('0xsecond');
+    });
+
+    it('clears pending init on perpsInit failure so the same address can be retried', async () => {
+      let initAttempts = 0;
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsDisconnect') {
+          return Promise.resolve(undefined);
+        }
+        if (method === 'perpsInitForAccount') {
+          initAttempts += 1;
+          if (initAttempts === 1) {
+            return Promise.reject(new Error('init failed'));
+          }
+          return Promise.resolve(undefined);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      await expect(manager.initForAddress('0xretry')).rejects.toThrow(
+        'init failed',
+      );
+
+      await manager.initForAddress('0xretry');
+
+      expect(manager.isInitialized('0xretry')).toBe(true);
+      const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
+        ([m]: [string]) => m === 'perpsInitForAccount',
+      );
+      expect(initCalls).toHaveLength(2);
+    });
+
+    it('clears pending init on shared account transition failure so switch can be retried', async () => {
+      await manager.initForAddress('0xfirst');
+      mockSubmitRequestToBackground.mockClear();
+
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsInitForAccount') {
+          return Promise.reject(new Error('disconnect failed'));
+        }
+        return Promise.resolve(undefined);
+      });
+
+      await expect(manager.initForAddress('0xnext')).rejects.toThrow(
+        'disconnect failed',
+      );
+
+      mockSubmitRequestToBackground.mockReset();
+      mockSubmitRequestToBackground.mockResolvedValue(undefined);
+
+      await manager.initForAddress('0xnext');
+      expect(manager.isInitialized('0xnext')).toBe(true);
+    });
+
+    it('does not apply a superseded address when an older init completes later', async () => {
+      let releaseFirstInit: (() => void) | undefined;
+      const firstInitBarrier = new Promise<void>((resolve) => {
+        releaseFirstInit = resolve;
+      });
+
+      let perpsInitCount = 0;
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsDisconnect') {
+            return undefined;
+          }
+          if (method === 'perpsInitForAccount') {
+            perpsInitCount += 1;
+            if (perpsInitCount === 1) {
+              await firstInitBarrier;
+            }
+            return undefined;
+          }
+          return undefined;
+        },
+      );
+
+      const pSlow = manager.initForAddress('0xslow');
+      await Promise.resolve();
+      await Promise.resolve();
+
+      const pWinner = manager.initForAddress('0xwins');
+      expect(manager.isInitialized()).toBe(false);
+      releaseFirstInit?.();
+      await Promise.all([pSlow, pWinner]);
+
+      expect(manager.getCurrentAddress()).toBe('0xwins');
+
+      expect(releaseFirstInit).toBeDefined();
+      if (releaseFirstInit === undefined) {
+        throw new Error('releaseFirstInit not set by Promise executor');
+      }
+      releaseFirstInit();
+      await pSlow;
+
+      expect(manager.getCurrentAddress()).toBe('0xwins');
+    });
+  });
+
+  describe('live snapshot provenance', () => {
+    const markets = [{ symbol: 'BTC' }] as PerpsMarketData[];
+    const prices = [{ symbol: 'BTC', price: '50000' }] as PriceUpdate[];
+
+    it('distinguishes persisted market seeds from current-session responses', () => {
+      manager.handleBackgroundUpdate({
+        channel: 'markets',
+        data: markets,
+        live: false,
+      });
+      expect(manager.hasLiveMarketData(markets)).toBe(false);
+
+      manager.handleBackgroundUpdate({
+        channel: 'markets',
+        data: markets,
+        live: true,
+      });
+      expect(manager.hasLiveMarketData(markets)).toBe(true);
+      expect(manager.hasLiveMarketData([{ ...markets[0] }])).toBe(false);
+    });
+
+    it('merges detail prices without discarding the other preloaded symbols', () => {
+      manager.handleBackgroundUpdate({
+        channel: 'prices',
+        data: [...prices, { symbol: 'ETH', price: '2000' }],
+      });
+      const previous = manager.prices.getCachedData();
+      manager.handleBackgroundUpdate({
+        channel: 'prices',
+        data: [{ symbol: 'BTC', price: '51000' }],
+      });
+      const current = manager.prices.getCachedData();
+
+      expect(current).toEqual([
+        { symbol: 'BTC', price: '51000' },
+        { symbol: 'ETH', price: '2000' },
+      ]);
+      expect(manager.hasLivePrices(current)).toBe(true);
+      expect(manager.hasLivePrices(previous)).toBe(false);
+      expect(manager.hasLivePrices(prices)).toBe(false);
+    });
+
+    it.each(['0', '-1', 'invalid'])(
+      'does not accept a %s price as live readiness',
+      (price) => {
+        manager.handleBackgroundUpdate({
+          channel: 'prices',
+          data: [{ symbol: 'BTC', price }],
+        });
+        expect(manager.hasLivePrices(manager.prices.getCachedData())).toBe(
+          false,
+        );
+      },
+    );
+
+    it.each(['reset', 'clearAllCaches'] as const)(
+      'invalidates consumed snapshots after %s',
+      (method) => {
+        manager.pushLiveMarkets(markets);
+        manager.handleBackgroundUpdate({ channel: 'prices', data: prices });
+        const snapshot = manager.prices.getCachedData();
+
+        manager[method]();
+
+        expect(manager.hasLiveMarketData(markets)).toBe(false);
+        expect(manager.hasLivePrices(snapshot)).toBe(false);
+      },
+    );
+
+    it('invalidates live market metadata after a backend change', () => {
+      manager.pushLiveMarkets(markets);
+      manager.setUseTerminalApi(true);
+      expect(manager.hasLiveMarketData(markets)).toBe(false);
+    });
+  });
+
+  describe('handleBackgroundUpdate', () => {
+    it('routes positions channel to positions.pushData', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      const positions = [makePosition('BTC')];
+      manager.handleBackgroundUpdate({ channel: 'positions', data: positions });
+
+      expect(cb).toHaveBeenCalledWith(positions);
+    });
+
+    it('routes orders channel to orders.pushData', () => {
+      const cb = jest.fn();
+      manager.orders.subscribe(cb);
+
+      const orders = [{ id: '1' }];
+      manager.handleBackgroundUpdate({ channel: 'orders', data: orders });
+
+      expect(cb).toHaveBeenCalledWith(orders);
+    });
+
+    it('routes account channel to account.pushData', () => {
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      const account = { totalBalance: '1000' };
+      manager.handleBackgroundUpdate({ channel: 'account', data: account });
+
+      expect(cb).toHaveBeenCalledWith(account);
+    });
+
+    it('routes fills channel to fills.pushData', () => {
+      const cb = jest.fn();
+      manager.fills.subscribe(cb);
+
+      const fills = [{ orderId: '1', symbol: 'BTC' }];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: fills });
+
+      expect(cb).toHaveBeenCalledWith(fills);
+    });
+
+    it('delivers wallet-warmed fills immediately after screen navigation', () => {
+      const initial = [{ orderId: '1', symbol: 'BTC' }];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: initial });
+      const firstScreen = jest.fn();
+      const leave = manager.fills.subscribe(firstScreen);
+      expect(firstScreen).toHaveBeenCalledWith(initial);
+      leave();
+      const updated = [{ orderId: '2', symbol: 'ETH' }, ...initial];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: updated });
+      const nextScreen = jest.fn();
+      manager.fills.subscribe(nextScreen);
+      expect(nextScreen).toHaveBeenCalledWith(updated);
+      expect(firstScreen).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('routes prices channel to prices.pushData', () => {
+      const cb = jest.fn();
+      manager.prices.subscribe(cb);
+
+      const prices = [{ symbol: 'BTC', price: '50000' }];
+      manager.handleBackgroundUpdate({ channel: 'prices', data: prices });
+
+      expect(cb).toHaveBeenCalledWith(prices);
+    });
+
+    it('routes orderBook channel to orderBook.pushData', () => {
+      const cb = jest.fn();
+      manager.orderBook.subscribe(cb);
+
+      const orderBook = { bids: [], asks: [] };
+      manager.handleBackgroundUpdate({ channel: 'orderBook', data: orderBook });
+
+      expect(cb).toHaveBeenCalledWith(orderBook);
+    });
+
+    it('routes orderBookAggregated channel to orderBookAggregated.pushData', () => {
+      const aggregatedCb = jest.fn();
+      const rawCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.orderBook.subscribe(rawCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-1');
+
+      const aggregated = { bids: [{ price: '1750' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: aggregated,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(aggregated);
+      // The raw channel must not receive aggregated data.
+      expect(rawCb).not.toHaveBeenCalled();
+    });
+
+    it('rejects aggregated packets when no subscription is active', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: { bids: [{ price: '1750' }], asks: [] },
+        subscriptionId: 'agg-closed',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('discards aggregated packets that do not match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const staleBook = { bids: [{ price: '73775' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: staleBook,
+        subscriptionId: 'agg-1',
+      });
+
+      expect(aggregatedCb).not.toHaveBeenCalled();
+      expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+    });
+
+    it('accepts aggregated packets that match the active subscription identity', () => {
+      const aggregatedCb = jest.fn();
+      manager.orderBookAggregated.subscribe(aggregatedCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      const book = { bids: [{ price: '73770' }], asks: [] };
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregated',
+        data: book,
+        subscriptionId: 'agg-2',
+      });
+
+      expect(aggregatedCb).toHaveBeenCalledWith(book);
+    });
+
+    it('discards aggregated status updates that do not match the active identity', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-2');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'connected',
+        subscriptionId: 'agg-1',
+      });
+
+      expect(statusCb).not.toHaveBeenCalledWith('connected');
+    });
+
+    it('routes orderBookAggregatedStatus to orderBookAggregatedStatus.pushData', () => {
+      const statusCb = jest.fn();
+      manager.orderBookAggregatedStatus.subscribe(statusCb);
+      manager.setActiveOrderBookAggregatedSubscriptionId('agg-status');
+
+      manager.handleBackgroundUpdate({
+        channel: 'orderBookAggregatedStatus',
+        data: 'error',
+        subscriptionId: 'agg-status',
+      });
+
+      expect(statusCb).toHaveBeenLastCalledWith('error');
+    });
+
+    it('routes candles channel to candles.pushFromBackground', () => {
+      const pushFromBackground = jest.fn();
+      (
+        manager.candles as unknown as { pushFromBackground: jest.Mock }
+      ).pushFromBackground = pushFromBackground;
+
+      const candleData = {
+        open: '100',
+        close: '110',
+        high: '115',
+        low: '98',
+        volume: '1000',
+        timestamp: 1000,
+      };
+      manager.handleBackgroundUpdate({
+        channel: 'candles',
+        data: candleData,
+        symbol: 'BTC',
+        interval: '1m' as import('@metamask/perps-controller').CandlePeriod,
+      });
+
+      expect(pushFromBackground).toHaveBeenCalledWith({
+        symbol: 'BTC',
+        interval: '1m',
+        data: candleData,
+      });
+    });
+
+    it('ignores candles channel without symbol or interval', () => {
+      const pushFromBackground = jest.fn();
+      (
+        manager.candles as unknown as { pushFromBackground: jest.Mock }
+      ).pushFromBackground = pushFromBackground;
+
+      manager.handleBackgroundUpdate({ channel: 'candles', data: {} });
+
+      expect(pushFromBackground).not.toHaveBeenCalled();
+    });
+
+    it('warns on unknown channel', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      manager.handleBackgroundUpdate({ channel: 'unknown', data: {} });
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Unknown channel'),
+        'unknown',
+      );
+      consoleSpy.mockRestore();
+    });
+
+    it('updates lastStreamUpdateAt on every call', () => {
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+    });
+
+    it('updates lastStreamUpdateAt even for unknown channels', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      manager.handleBackgroundUpdate({ channel: 'unknown', data: {} });
+
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+      consoleSpy.mockRestore();
+    });
+
+    it('routes markets channel to markets.pushData', () => {
+      const cb = jest.fn();
+      manager.markets.subscribe(cb);
+
+      const markets = [{ symbol: 'BTC', name: 'Bitcoin' }];
+      manager.handleBackgroundUpdate({ channel: 'markets', data: markets });
+
+      expect(cb).toHaveBeenCalledWith(markets);
+    });
+
+    it('handles connectionState channel silently (no-op)', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => undefined);
+
+      manager.handleBackgroundUpdate({
+        channel: 'connectionState',
+        data: { connected: true },
+      });
+
+      expect(consoleSpy).not.toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('setOptimisticTPSL / applyOptimisticOverrides', () => {
+    it('overrides position TP/SL in positions stream after block period', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+
+      expect(cb).toHaveBeenCalledTimes(1);
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBe('120');
+      expect(delivered[0].stopLossPrice).toBe('80');
+    });
+
+    it('blocks WebSocket pushes during WEBSOCKET_BLOCK_MS window', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+
+      expect(cb).not.toHaveBeenCalled();
+    });
+
+    it('allows WebSocket pushes after WEBSOCKET_BLOCK_MS', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+
+      expect(cb).toHaveBeenCalledTimes(1);
+    });
+
+    it('clears override when WebSocket data matches expected values', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [
+          makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' }),
+        ],
+      });
+
+      cb.mockClear();
+
+      jest.advanceTimersByTime(100);
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [
+          makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' }),
+        ],
+      });
+
+      const second = cb.mock.calls[0][0] as Position[];
+      expect(second[0].takeProfitPrice).toBe('120');
+      expect(second[0].stopLossPrice).toBe('80');
+    });
+
+    it('does not apply overrides to positions without matching symbol', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('ETH')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBeUndefined();
+      expect(delivered[0].stopLossPrice).toBeUndefined();
+    });
+
+    it('expires overrides after TTL (30 seconds)', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+
+      jest.advanceTimersByTime(31000);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBeUndefined();
+    });
+
+    it('matches values by parseFloat equivalence', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120.00', '80.00');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [
+          makePosition('BTC', { takeProfitPrice: '120', stopLossPrice: '80' }),
+        ],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBe('120');
+      expect(delivered[0].stopLossPrice).toBe('80');
+    });
+  });
+
+  describe('clearOptimisticTPSL', () => {
+    it('removes the override for the given symbol', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.clearOptimisticTPSL('BTC');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBeUndefined();
+    });
+  });
+
+  describe('clearAllOptimisticTPSL', () => {
+    it('removes overrides for all symbols', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.setOptimisticTPSL('ETH', '4000', '3000');
+      manager.clearAllOptimisticTPSL();
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC'), makePosition('ETH')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBeUndefined();
+      expect(delivered[1].takeProfitPrice).toBeUndefined();
+    });
+  });
+
+  describe('multiple simultaneous optimistic overrides', () => {
+    it('applies overrides independently per symbol', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.setOptimisticTPSL('ETH', '4000', '3000');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC'), makePosition('ETH')],
+      });
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBe('120');
+      expect(delivered[0].stopLossPrice).toBe('80');
+      expect(delivered[1].takeProfitPrice).toBe('4000');
+      expect(delivered[1].stopLossPrice).toBe('3000');
+    });
+
+    it('clears only the matching symbol when WS confirms', () => {
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.setOptimisticTPSL('ETH', '4000', '3000');
+
+      jest.advanceTimersByTime(3100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [
+          makePosition('BTC', {
+            takeProfitPrice: '120',
+            stopLossPrice: '80',
+          }),
+          makePosition('ETH'),
+        ],
+      });
+
+      cb.mockClear();
+      jest.advanceTimersByTime(100);
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('BTC'), makePosition('ETH')],
+      });
+
+      const second = cb.mock.calls[0][0] as Position[];
+      // BTC override was cleared (WS confirmed) — no longer overridden
+      expect(second[0].takeProfitPrice).toBeUndefined();
+      // ETH override is still active
+      expect(second[1].takeProfitPrice).toBe('4000');
+    });
+  });
+
+  describe('pushPositionsWithOverrides', () => {
+    it('applies overrides to manually pushed positions', () => {
+      manager.setOptimisticTPSL('BTC', '150', '90');
+
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      manager.pushPositionsWithOverrides([makePosition('BTC')]);
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBe('150');
+      expect(delivered[0].stopLossPrice).toBe('90');
+    });
+
+    it('does not clear overrides on push (REST may still be stale)', () => {
+      manager.setOptimisticTPSL('BTC', '150', '90');
+
+      manager.pushPositionsWithOverrides([
+        makePosition('BTC', {
+          takeProfitPrice: '150',
+          stopLossPrice: '90',
+        }),
+      ]);
+
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      manager.pushPositionsWithOverrides([makePosition('BTC')]);
+
+      const delivered = cb.mock.calls[0][0] as Position[];
+      expect(delivered[0].takeProfitPrice).toBe('150');
+    });
+  });
+
+  describe('isInitialized', () => {
+    it('returns true for the initialized address', () => {
+      manager.init('0xaaa');
+      expect(manager.isInitialized('0xaaa')).toBe(true);
+    });
+
+    it('returns false for a different address', () => {
+      manager.init('0xaaa');
+      expect(manager.isInitialized('0xbbb')).toBe(false);
+    });
+
+    it('works without an address argument', () => {
+      expect(manager.isInitialized()).toBe(false);
+      manager.init('0xaaa');
+      expect(manager.isInitialized()).toBe(true);
+    });
+  });
+
+  describe('getLastStreamUpdateAt', () => {
+    it('returns 0 before any updates', () => {
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+
+    it('returns the timestamp of the most recent handleBackgroundUpdate', () => {
+      manager.handleBackgroundUpdate({ channel: 'orders', data: [] });
+      const t1 = manager.getLastStreamUpdateAt();
+      expect(t1).toBeGreaterThan(0);
+
+      jest.advanceTimersByTime(5000);
+
+      manager.handleBackgroundUpdate({ channel: 'account', data: null });
+      const t2 = manager.getLastStreamUpdateAt();
+      expect(t2).toBeGreaterThan(t1);
+    });
+  });
+
+  describe('account channel delayed REST fallback', () => {
+    it('does not fetch account state immediately on subscribe', () => {
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        expect.anything(),
+      );
+    });
+
+    it('fetches account state via REST after fallback delay when no WS data arrives', async () => {
+      const mockAccount = { totalBalance: '100' };
+      mockSubmitRequestToBackground.mockResolvedValueOnce(mockAccount);
+
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      jest.advanceTimersByTime(4000);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        [],
+      );
+      expect(cb).toHaveBeenCalledWith(mockAccount);
+    });
+
+    it('skips REST fallback if WebSocket pushes account data before the delay', () => {
+      const cb = jest.fn();
+      manager.account.subscribe(cb);
+
+      const wsAccount = { totalBalance: '200' };
+      manager.handleBackgroundUpdate({ channel: 'account', data: wsAccount });
+
+      expect(cb).toHaveBeenCalledWith(wsAccount);
+
+      jest.advanceTimersByTime(4000);
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        expect.anything(),
+      );
+    });
+  });
+
+  describe('account fetch failure', () => {
+    /**
+     * Rejects `perpsGetAccountState` the way a total HyperLiquid outage does —
+     * the TAT-3832 report's `Failed to fetch account state
+     * (failedDexs=[main,xyz], spotError=WebSocket connection permanently
+     * terminated)`.
+     *
+     * @param error - The rejection surfaced to the account channel.
+     */
+    function rejectAccountStateWith(error: Error) {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetAccountState') {
+          return Promise.reject(error);
+        }
+        return Promise.resolve(undefined);
+      });
+    }
+
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('does not notify subscribers when the REST fallback fails without cache', async () => {
+      rejectAccountStateWith(
+        new Error(
+          'Failed to fetch account state (failedDexs=[main,xyz], spotError=WebSocket connection permanently terminated)',
+        ),
+      );
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      // A failed fetch is not data. Notifying here is what let the balance
+      // header leave its loading state and render a funded account as $0.00.
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[PerpsStreamManager] Failed to fetch account',
+        expect.any(Error),
+      );
+    });
+
+    // Pre-existing-behaviour guard, not proof of this fix: the old code's
+    // `!hasCachedData()` check already suppressed the push once a cache
+    // existed, so this passes with or without the fix. Kept to pin the
+    // behaviour that a later failure must never clobber a good balance.
+    it('keeps previously cached account data when a later REST fallback fails', async () => {
+      const cachedAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: cachedAccount,
+      });
+
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(manager.account.getCachedData()).toBe(cachedAccount);
+      // Subscribing with a cache present already fires once with that cache.
+      // Pinning the exact call count and payload proves nothing *else*
+      // notified — a bare `not.toHaveBeenCalledWith(null)` would pass even if
+      // the failure path had pushed something.
+      expect(onData).toHaveBeenCalledTimes(1);
+      expect(onData).toHaveBeenCalledWith(cachedAccount);
+    });
+
+    it('does not notify subscribers when the REST fallback settles empty', async () => {
+      // The messenger can settle with no payload instead of rejecting. `null`
+      // is this channel's initialValue, so pushing it notifies without setting
+      // a cache — the same fabricated `$0.00` as an outright rejection.
+      mockSubmitRequestToBackground.mockImplementation(() =>
+        Promise.resolve(undefined),
+      );
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('still delivers account data pushed after an account fetch failure', async () => {
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+
+      const recoveredAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: recoveredAccount,
+      });
+
+      expect(onData).toHaveBeenCalledWith(recoveredAccount);
+      expect(manager.account.hasCachedData()).toBe(true);
+    });
+
+    // #46623: an in-flight fetch can reject *after* the last subscriber has
+    // unsubscribed. The E2E harness turns any unignored console error into a
+    // failure, so a post-teardown rejection fails whichever test happens to be
+    // running — which is why this surfaced as unrelated "flaky" specs.
+    it('does not log when an in-flight fetch rejects after teardown', async () => {
+      let rejectInFlight: (reason: Error) => void = () => undefined;
+      mockSubmitRequestToBackground.mockImplementation(
+        (method: string) =>
+          new Promise((_resolve, reject) => {
+            if (method === 'perpsGetAccountState') {
+              rejectInFlight = reject;
+            }
+          }),
+      );
+
+      const unsubscribe = manager.account.subscribe(jest.fn());
+
+      // Let the grace-period timer fire so the fetch is genuinely in flight,
+      // then tear the channel down before it settles.
+      await jest.advanceTimersByTimeAsync(3_000);
+      unsubscribe();
+
+      rejectInFlight(
+        new Error(
+          'Failed to fetch account state (failedDexs=[main], spotError=WebSocket connection permanently terminated)',
+        ),
+      );
+      await jest.advanceTimersByTimeAsync(0);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        [],
+      );
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+        '[PerpsStreamManager] Failed to fetch account',
+        expect.anything(),
+      );
+    });
+  });
+
+  describe('getCurrentAddress', () => {
+    it('returns null before initialization', () => {
+      expect(manager.getCurrentAddress()).toBeNull();
+    });
+
+    it('returns the initialized address', () => {
+      manager.init('0xabc');
+      expect(manager.getCurrentAddress()).toBe('0xabc');
+    });
+  });
+
+  describe('prewarm / cleanupPrewarm / isPrewarming', () => {
+    it('starts prewarming all channels', () => {
+      manager.prewarm();
+
+      expect(manager.isPrewarming()).toBe(true);
+      expect(manager.positions.isPrewarming()).toBe(true);
+      expect(manager.orders.isPrewarming()).toBe(true);
+      expect(manager.account.isPrewarming()).toBe(true);
+      expect(manager.markets.isPrewarming()).toBe(true);
+      expect(manager.prices.isPrewarming()).toBe(true);
+      expect(manager.orderBook.isPrewarming()).toBe(true);
+    });
+
+    it('is idempotent — second prewarm is a no-op', () => {
+      manager.prewarm();
+      manager.prewarm();
+
+      expect(manager.isPrewarming()).toBe(true);
+    });
+
+    it('stops prewarming on cleanupPrewarm', () => {
+      manager.prewarm();
+      manager.cleanupPrewarm();
+
+      expect(manager.isPrewarming()).toBe(false);
+    });
+
+    it('cleanupPrewarm is safe to call when not prewarming', () => {
+      expect(() => manager.cleanupPrewarm()).not.toThrow();
+    });
+
+    it('leaves fills prewarming to the background provider session', () => {
+      manager.prewarm();
+
+      expect(manager.fills.isPrewarming()).toBe(false);
+    });
+  });
+
+  describe('clearAllCaches', () => {
+    it('resets all channel caches to initial values', () => {
+      manager.positions.pushData([makePosition('BTC')]);
+      manager.prices.pushData([
+        {
+          symbol: 'BTC',
+          price: '50000',
+        } as import('@metamask/perps-controller').PriceUpdate,
+      ]);
+      expect(manager.positions.getCachedData()).toHaveLength(1);
+      expect(manager.prices.getCachedData()).toHaveLength(1);
+
+      manager.clearAllCaches();
+
+      expect(manager.positions.getCachedData()).toEqual([]);
+      expect(manager.orders.getCachedData()).toEqual([]);
+      expect(manager.account.getCachedData()).toBeNull();
+      expect(manager.markets.getCachedData()).toEqual([]);
+      expect(manager.prices.getCachedData()).toEqual([]);
+      expect(manager.orderBook.getCachedData()).toBeNull();
+      expect(manager.fills.getCachedData()).toEqual([]);
+    });
+
+    it('resets lastStreamUpdateAt to 0', () => {
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+
+      manager.clearAllCaches();
+
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+
+    it('preserves the initialized address (unlike reset)', () => {
+      manager.init('0xabc');
+      manager.clearAllCaches();
+
+      expect(manager.isInitialized('0xabc')).toBe(true);
+      expect(manager.getCurrentAddress()).toBe('0xabc');
+    });
+  });
+
+  describe('reset', () => {
+    it('clears caches, prewarm, overrides, and address', () => {
+      manager.init('0xaaa');
+      manager.prewarm();
+      manager.setOptimisticTPSL('BTC', '120', '80');
+      manager.positions.pushData([makePosition('BTC')]);
+
+      manager.reset();
+
+      expect(manager.isPrewarming()).toBe(false);
+      expect(manager.positions.getCachedData()).toEqual([]);
+      expect(manager.isInitialized()).toBe(false);
+      expect(manager.getCurrentAddress()).toBeNull();
+    });
+
+    it('resets lastStreamUpdateAt to 0', () => {
+      manager.handleBackgroundUpdate({ channel: 'positions', data: [] });
+      expect(manager.getLastStreamUpdateAt()).toBeGreaterThan(0);
+
+      manager.reset();
+
+      expect(manager.getLastStreamUpdateAt()).toBe(0);
+    });
+  });
+
+  describe('hydrateFromControllerCache', () => {
+    const ADDR = '0xABCDEF0000000000000000000000000000000001';
+
+    it('hydrates markets when channel has no cached data', () => {
+      const markets = [
+        { symbol: 'BTC', name: 'Bitcoin' } as unknown as Parameters<
+          typeof manager.markets.pushData
+        >[0][number],
+      ];
+
+      manager.hydrateFromControllerCache({ markets });
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.markets.getCachedData()).toEqual(markets);
+    });
+
+    it('does not hydrate markets when an empty array is provided', () => {
+      manager.hydrateFromControllerCache({ markets: [] });
+
+      expect(manager.markets.hasCachedData()).toBe(false);
+    });
+
+    it('is a no-op when the live stream already populated the channel', () => {
+      manager.markets.pushData([{ symbol: 'ETH' } as never]);
+      expect(manager.markets.hasCachedData()).toBe(true);
+
+      manager.hydrateFromControllerCache({
+        markets: [{ symbol: 'BTC' } as never],
+      });
+
+      expect(manager.markets.getCachedData()).toEqual([{ symbol: 'ETH' }]);
+    });
+
+    it('only hydrates user-scoped channels when the cache address matches the selected account', () => {
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache({ positions, address: ADDR }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(true);
+      expect(manager.positions.getCachedData()).toEqual(positions);
+    });
+
+    it('refuses to hydrate user-scoped channels when the cache address does not match', () => {
+      const positions = [makePosition('BTC')];
+      const OTHER = '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+
+      manager.hydrateFromControllerCache({ positions, address: OTHER }, ADDR);
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('refuses to hydrate user-scoped channels when no selected address is provided', () => {
+      manager.hydrateFromControllerCache({
+        positions: [makePosition('BTC')],
+        address: ADDR,
+      });
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('does not flip positions cache when an empty array is supplied', () => {
+      manager.hydrateFromControllerCache(
+        { positions: [], address: ADDR },
+        ADDR,
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+
+    it('skips account hydration when the snapshot value is null', () => {
+      manager.hydrateFromControllerCache(
+        { account: null, address: ADDR },
+        ADDR,
+      );
+
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('hydrates markets even when the user scope does not match', () => {
+      const markets = [{ symbol: 'BTC' } as never];
+      const positions = [makePosition('BTC')];
+
+      manager.hydrateFromControllerCache(
+        { markets, positions, address: '0xwrong' },
+        ADDR,
+      );
+
+      expect(manager.markets.hasCachedData()).toBe(true);
+      expect(manager.positions.hasCachedData()).toBe(false);
+    });
+  });
+});

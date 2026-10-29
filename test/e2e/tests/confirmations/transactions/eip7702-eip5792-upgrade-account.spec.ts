@@ -3,11 +3,11 @@ import { Suite } from 'mocha';
 import { Anvil } from '../../../seeder/anvil';
 import { Driver } from '../../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/batch-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { mockEip7702FeatureFlag } from '../helpers';
@@ -19,7 +19,7 @@ describe.skip('Upgrade Account', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
@@ -42,7 +42,7 @@ describe.skip('Upgrade Account', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // We check that we have an EOA account
         let accountBytecode = await localNodes[0].getCode(
@@ -58,9 +58,6 @@ describe.skip('Upgrade Account', function (this: Suite) {
 
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
-        // acknowledge splash page
-        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-
         await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           'Smart account',
         );
@@ -73,7 +70,9 @@ describe.skip('Upgrade Account', function (this: Suite) {
         await upgradeAndBatchTxConfirmation.checkBatchTxListIsPresent();
 
         // Confirm upgrade and batch tx
-        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -84,8 +83,8 @@ describe.skip('Upgrade Account', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
         await homePage.checkExpectedBalanceIsDisplayed('24.9998', 'ETH');
 
         // We check that we have an upgraded account
@@ -102,7 +101,7 @@ describe.skip('Upgrade Account', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
@@ -125,7 +124,7 @@ describe.skip('Upgrade Account', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // We check that we have an EOA account
         let accountBytecode = await localNodes[0].getCode(
@@ -141,8 +140,10 @@ describe.skip('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // Reject batch tx
-        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-        await upgradeAndBatchTxConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         // We check that we continue to have an EOA account
         accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);

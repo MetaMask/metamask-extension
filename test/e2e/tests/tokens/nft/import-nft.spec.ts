@@ -1,11 +1,12 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import ImportNftPage from '../../../page-objects/pages/asset/import-nft-page';
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
+import { login } from '../../../page-objects/flows/login.flow';
 
 describe('Import NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -14,7 +15,7 @@ describe('Import NFT', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -23,14 +24,19 @@ describe('Import NFT', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, {
+          localNode: localNodes[0],
+        });
 
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
-        const nftList = new NftListPage(driver);
-        await nftList.importNft(contractAddress, '1');
-        await nftList.checkSuccessImportNftMessageIsDisplayed();
-        await nftList.checkNftImageIsDisplayed();
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(contractAddress, '1');
+        await nftsTab.checkSuccessImportNftMessageIsDisplayed();
+        await nftsTab.checkNftImageIsDisplayed();
       },
     );
   });
@@ -39,7 +45,7 @@ describe('Import NFT', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -48,15 +54,20 @@ describe('Import NFT', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, {
+          localNode: localNodes[0],
+        });
 
         // Import a NFT and check that it is displayed in the NFT tab on homepage
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
-        const nftList = new NftListPage(driver);
-        await nftList.importNft(contractAddress, '1');
-        await nftList.checkSuccessImportNftMessageIsDisplayed();
-        await nftList.checkNftImageIsDisplayed();
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(contractAddress, '1');
+        await nftsTab.checkSuccessImportNftMessageIsDisplayed();
+        await nftsTab.checkNftImageIsDisplayed();
 
         // Create new account with default name Account 2
         const headerNavbar = new HeaderNavbar(driver);
@@ -76,7 +87,7 @@ describe('Import NFT', function () {
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.checkAccountLabel('Account 1');
         await homepage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
-        await nftList.checkNftImageIsDisplayed();
+        await nftsTab.checkNftImageIsDisplayed();
       },
     );
   });
@@ -85,7 +96,7 @@ describe('Import NFT', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -94,10 +105,16 @@ describe('Import NFT', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, {
+          localNode: localNodes[0],
+        });
 
         await new Homepage(driver).goToNftTab();
-        await new NftListPage(driver).importNft(
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.openImportNft();
+        const importNftPage = new ImportNftPage(driver);
+        await importNftPage.checkPageIsLoaded();
+        await importNftPage.importNft(
           contractAddress,
           '2',
           'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',

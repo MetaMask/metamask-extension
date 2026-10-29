@@ -1,30 +1,12 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { isValidMnemonic } from '@ethersproject/hdnode';
+import { useSelector } from 'react-redux';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
   IconColor,
-  JustifyContent,
-  TextAlign,
+  BoxJustifyContent,
+  BoxAlignItems,
+  BoxFlexDirection,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentKeyring } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
-import {
   Text,
   Box,
   Button,
@@ -32,11 +14,19 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonSize,
-} from '../../../components/component-library';
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import {
-  forceUpdateMetamaskState,
-  resetOnboarding,
-} from '../../../store/actions';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { useOnboardingReset } from '../hooks/useOnboardingReset';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
@@ -48,15 +38,14 @@ const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ImportSRP({
   submitSecretRecoveryPhrase,
 }: ImportSRPProps) {
-  const dispatch = useDispatch();
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [srpError, setSrpError] = useState('');
+  const [shouldClearClipboard, setShouldClearClipboard] = useState(false);
   const navigate = useNavigate();
+  const resetOnboardingAndReturn = useOnboardingReset();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const t = useI18nContext();
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -67,23 +56,16 @@ export default function ImportSRP({
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
   }, [currentKeyring, navigate, isWalletResetInProgress]);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // reset onboarding flow
-    await dispatch(resetOnboarding());
-    await forceUpdateMetamaskState(dispatch);
-
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    await resetOnboardingAndReturn();
   };
 
   const onContinue = useCallback(() => {
     let newSrpError = '';
-    if (
-      hasUpperCase(secretRecoveryPhrase) ||
-      !isValidMnemonic(secretRecoveryPhrase)
-    ) {
+    if (hasUpperCase(secretRecoveryPhrase)) {
       newSrpError = t('invalidSeedPhraseNotFound');
     }
 
@@ -93,76 +75,85 @@ export default function ImportSRP({
       return;
     }
 
+    if (shouldClearClipboard) {
+      navigator.clipboard.writeText('').catch(() => {
+        // Do not block onboarding if clipboard access remains unavailable.
+      });
+    }
+
     submitSecretRecoveryPhrase?.(secretRecoveryPhrase);
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [
     secretRecoveryPhrase,
     t,
     hdEntropyIndex,
+    createEventBuilder,
     trackEvent,
     navigate,
     submitSecretRecoveryPhrase,
+    shouldClearClipboard,
   ]);
 
-  useEffect(() => {
+  const handleSecretRecoveryPhraseChange = useCallback((phrase: string) => {
+    setSecretRecoveryPhrase(phrase);
     setSrpError('');
-  }, [secretRecoveryPhrase]);
+  }, []);
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      className="import-srp h-full"
       gap={4}
-      className="import-srp"
-      data-testid="import-srp"
+      data-testid="parent-selector-onboarding-srp"
     >
       <Box>
         <Box marginBottom={4}>
           <ButtonIcon
             iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             size={ButtonIconSize.Md}
             data-testid="import-srp-back-button"
             onClick={onBack}
             ariaLabel={t('back')}
           />
         </Box>
-        <Box textAlign={TextAlign.Left} marginBottom={2}>
-          <Text variant={TextVariant.headingLg}>{t('importAWallet')}</Text>
+        <Box className="text-left mb-2">
+          <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
         </Box>
         <SrpInputForm
           error={srpError}
-          setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+          setSecretRecoveryPhrase={handleSecretRecoveryPhraseChange}
           onClearCallback={() => setSrpError('')}
+          onClearClipboardRetry={() => setShouldClearClipboard(false)}
+          onClipboardClearFailed={() => setShouldClearClipboard(true)}
         />
       </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-        textAlign={TextAlign.Left}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
+        className="w-full text-left"
       >
         <Button
-          width={BlockSize.Full}
           size={ButtonSize.Lg}
-          type="primary"
+          variant={ButtonVariant.Primary}
           data-testid="import-srp-confirm"
           onClick={onContinue}
           disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
-          className="import-srp__continue-button"
+          className="import-srp__continue-button w-full"
         >
           {t('continue')}
         </Button>

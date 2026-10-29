@@ -16,11 +16,11 @@ import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/
 import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row';
 import { useConfirmContext } from '../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { getSubjectMetadata } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { stripProtocol } from '../../utils/confirm';
+import { stripProtocol, toPunycodeURL } from '../../utils/confirm';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { AddEthereumChainContext } from './types';
@@ -90,7 +90,11 @@ export const AddEthereumChain = () => {
           alertKey={RowAlertKey.RpcUrl}
           ownerId={currentConfirmation.id}
         >
-          <Text>{stripProtocol(requestData.rpcUrl)}</Text>
+          <Text>
+            {stripProtocol(
+              toPunycodeURL(requestData.rpcUrl) ?? requestData.rpcUrl,
+            )}
+          </Text>
         </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
 

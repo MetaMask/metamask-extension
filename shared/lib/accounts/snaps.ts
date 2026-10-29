@@ -3,13 +3,12 @@ import {
   stripSnapPrefix,
   getLocalizedSnapManifest,
 } from '@metamask/snaps-utils';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { SnapKeyringBuilderMessenger } from '../../../app/scripts/lib/snap-keyring/types';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
-///: BEGIN:ONLY_INCLUDE_IF(tron)
+import { STELLAR_WALLET_SNAP_ID } from './stellar-wallet-snap';
 import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
-///: END:ONLY_INCLUDE_IF
 
 /**
  * A constant array that contains the IDs of whitelisted multichain
@@ -22,9 +21,8 @@ import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
 const WHITELISTED_SNAPS = [
   BITCOIN_WALLET_SNAP_ID,
   SOLANA_WALLET_SNAP_ID,
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TRON_WALLET_SNAP_ID,
-  ///: END:ONLY_INCLUDE_IF
+  STELLAR_WALLET_SNAP_ID,
 ];
 
 /**
@@ -49,7 +47,7 @@ export function getSnapName(
   messenger: SnapKeyringBuilderMessenger,
 ) {
   const { currentLocale } = messenger.call('PreferencesController:getState');
-  const snap = messenger.call('SnapController:get', snapId);
+  const snap = messenger.call('SnapController:getSnap', snapId);
 
   if (!snap) {
     return stripSnapPrefix(snapId);

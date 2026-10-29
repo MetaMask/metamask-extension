@@ -2,6 +2,7 @@ import React from 'react';
 import { Hex } from '@metamask/utils';
 
 import mockState from '../../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { SmartAccountTab } from './smart-account-tab';
@@ -33,15 +34,19 @@ describe('SmartAccountTab', () => {
   it('renders banner for smart account upgrade', async () => {
     const { getByText } = renderComponent();
 
-    expect(getByText('Switch to smart account')).toBeInTheDocument();
-    expect(getByText('Same address. Smarter features.')).toBeInTheDocument();
-    expect(getByText('Learn more')).toBeInTheDocument();
+    expect(
+      getByText(messages.smartAccountUpgradeBannerTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.smartAccountUpgradeBannerDescription.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.learnMoreUpperCase.message)).toBeInTheDocument();
   });
 
   it('renders list of networks', async () => {
     const { getAllByText } = renderComponent();
 
-    expect(getAllByText('Smart Account')).toHaveLength(2);
-    expect(getAllByText('Standard account')).toHaveLength(2);
+    expect(getAllByText(messages.smartAccountLabel.message)).toHaveLength(2);
+    expect(getAllByText(messages.standardAccountLabel.message)).toHaveLength(2);
   });
 });

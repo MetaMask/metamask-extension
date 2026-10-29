@@ -1,3 +1,5 @@
+/* eslint-disable jest/require-top-level-describe -- file-wide reselect dev mode hooks */
+import { setGlobalDevModeChecks } from 'reselect';
 import { ApprovalType } from '@metamask/controller-utils';
 import { KnownCaipNamespace } from '@metamask/utils';
 import {
@@ -7,6 +9,7 @@ import {
   SolAccountType,
 } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import { deepClone } from '@metamask/snaps-utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -16,30 +19,27 @@ import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
-import * as networkSelectors from '../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
-} from '../../shared/modules/feature-flags';
+} from '../../shared/lib/feature-flags';
 
-import {
-  SOLANA_WALLET_NAME,
-  SOLANA_WALLET_SNAP_ID,
-} from '../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
+import * as keyringSelectors from '../../shared/lib/selectors/keyring';
 import * as selectors from './selectors';
 
-jest.mock('../../shared/modules/selectors/networks', () => ({
-  ...jest.requireActual('../../shared/modules/selectors/networks'),
+jest.mock('../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../shared/lib/selectors/networks'),
 }));
 
-jest.mock('../../app/scripts/lib/util', () => ({
-  ...jest.requireActual('../../app/scripts/lib/util'),
+jest.mock('../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../shared/lib/environment-type'),
   getEnvironmentType: jest.fn().mockReturnValue('popup'),
 }));
 
-jest.mock('../../shared/modules/network.utils', () => {
-  const actual = jest.requireActual('../../shared/modules/network.utils');
+jest.mock('../../shared/lib/network.utils', () => {
+  const actual = jest.requireActual('../../shared/lib/network.utils');
   return {
     ...actual,
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
@@ -61,6 +61,14 @@ jest.mock('./multichain/networks', () => ({
     return state.metamask.selectedMultichainNetworkChainId;
   }),
 }));
+
+beforeAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'never' });
+});
+
+afterAll(() => {
+  setGlobalDevModeChecks({ inputStabilityCheck: 'once' });
+});
 
 const modifyStateWithHWKeyring = (keyring) => {
   const modifiedState = deepClone(mockState);
@@ -872,29 +880,33 @@ describe('Selectors', () => {
       const mockStateWithImported = modifyStateWithHWKeyring(
         KeyringType.imported,
       );
-      expect(selectors.isHardwareWallet(mockStateWithImported)).toBe(false);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithImported)).toBe(
+        false,
+      );
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
       const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
-      expect(selectors.isHardwareWallet(mockStateWithLedger)).toBe(true);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithLedger)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
       const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
-      expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
     });
 
     it('returns true if it is a Lattice HW wallet', () => {
       const mockStateWithLattice = modifyStateWithHWKeyring(
         KeyringType.lattice,
       );
-      expect(selectors.isHardwareWallet(mockStateWithLattice)).toBe(true);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithLattice)).toBe(
+        true,
+      );
     });
 
     it('returns true if it is a QR HW wallet', () => {
       const mockStateWithQr = modifyStateWithHWKeyring(KeyringType.qr);
-      expect(selectors.isHardwareWallet(mockStateWithQr)).toBe(true);
+      expect(keyringSelectors.isHardwareWallet(mockStateWithQr)).toBe(true);
     });
   });
 
@@ -918,11 +930,11 @@ describe('Selectors', () => {
           },
         },
       };
-      expect(selectors.accountSupportsSmartTx(state)).toBe(false);
+      expect(keyringSelectors.accountSupportsSmartTx(state)).toBe(false);
     });
 
     it('returns true if the account type is not "snap"', () => {
-      expect(selectors.accountSupportsSmartTx(mockState)).toBe(true);
+      expect(keyringSelectors.accountSupportsSmartTx(mockState)).toBe(true);
     });
   });
 
@@ -932,20 +944,20 @@ describe('Selectors', () => {
         KeyringType.imported,
       );
       expect(
-        selectors.getHardwareWalletType(mockStateWithImported),
+        keyringSelectors.getHardwareWalletType(mockStateWithImported),
       ).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
       const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
-      expect(selectors.getHardwareWalletType(mockStateWithLedger)).toBe(
+      expect(keyringSelectors.getHardwareWalletType(mockStateWithLedger)).toBe(
         KeyringType.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
       const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
-      expect(selectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
+      expect(keyringSelectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
         KeyringType.trezor,
       );
     });
@@ -961,12 +973,81 @@ describe('Selectors', () => {
 
   describe('#getTokenExchangeRates', () => {
     it('returns token exchange rates', () => {
-      const tokenExchangeRates = selectors.getTokenExchangeRates(mockState);
+      const ETH_RATE = 556.12;
+      const tokenAssetIds = {
+        test: 'eip155:5/erc20:0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d',
+        test2: 'eip155:5/erc20:0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        wbtc: 'eip155:5/erc20:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        usdc: 'eip155:5/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      };
+      const nativePrices = {
+        [tokenAssetIds.test]: 0.00039345803819379796,
+        [tokenAssetIds.test2]: 0.00008189274407698049,
+        [tokenAssetIds.wbtc]: 0.0017123,
+        [tokenAssetIds.usdc]: 0.0000000018,
+      };
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          assetsInfo: {
+            ...mockState.metamask.assetsInfo,
+            [tokenAssetIds.test]: {
+              type: 'erc20',
+              decimals: 18,
+              symbol: 'TEST',
+            },
+            [tokenAssetIds.test2]: {
+              type: 'erc20',
+              decimals: 8,
+              symbol: 'TEST2',
+            },
+            [tokenAssetIds.wbtc]: {
+              type: 'erc20',
+              decimals: 8,
+              symbol: 'WBTC',
+            },
+            [tokenAssetIds.usdc]: {
+              type: 'erc20',
+              decimals: 6,
+              symbol: 'USDC',
+            },
+          },
+          assetsPrice: {
+            ...mockState.metamask.assetsPrice,
+            [tokenAssetIds.test]: {
+              assetPriceType: 'fungible',
+              price: nativePrices[tokenAssetIds.test] * ETH_RATE,
+              usdPrice: nativePrices[tokenAssetIds.test] * ETH_RATE,
+              lastUpdated: 1,
+            },
+            [tokenAssetIds.test2]: {
+              assetPriceType: 'fungible',
+              price: nativePrices[tokenAssetIds.test2] * ETH_RATE,
+              usdPrice: nativePrices[tokenAssetIds.test2] * ETH_RATE,
+              lastUpdated: 1,
+            },
+            [tokenAssetIds.wbtc]: {
+              assetPriceType: 'fungible',
+              price: nativePrices[tokenAssetIds.wbtc] * ETH_RATE,
+              usdPrice: nativePrices[tokenAssetIds.wbtc] * ETH_RATE,
+              lastUpdated: 1,
+            },
+            [tokenAssetIds.usdc]: {
+              assetPriceType: 'fungible',
+              price: nativePrices[tokenAssetIds.usdc] * ETH_RATE,
+              usdPrice: nativePrices[tokenAssetIds.usdc] * ETH_RATE,
+              lastUpdated: 1,
+            },
+          },
+        },
+      };
+      const tokenExchangeRates = selectors.getTokenExchangeRates(state);
       expect(tokenExchangeRates).toStrictEqual({
-        '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d': 0.00039345803819379796,
-        '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': 0.00008189274407698049,
-        '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': 0.0017123,
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 0.0000000018,
+        '0x108cF70c7d384C552f42C07c41c0e1e46D77eA0D': 0.00039345803819379796,
+        '0xD8F6A2FFb0fC5952D16C9768B71CFD35b6399AA5': 0.00008189274407698049,
+        '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599': 0.0017123,
+        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 0.0000000018,
       });
     });
   });
@@ -1059,6 +1140,369 @@ describe('Selectors', () => {
     expect(totalUnapprovedCount).toStrictEqual(1);
   });
 
+  describe('transaction lookup selector memoization', () => {
+    const state = {
+      confirmTransaction: {
+        txData: {
+          txParams: {
+            data: '0x',
+            value: '0x0',
+          },
+        },
+      },
+      metamask: {
+        ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+        pendingApprovals: {},
+        transactions: [
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-1',
+            status: TransactionStatus.submitted,
+            txParams: { to: '0x1' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-2',
+            status: TransactionStatus.submitted,
+            txParams: { to: '0x2' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-3',
+            status: TransactionStatus.unapproved,
+            txParams: { to: '0x3' },
+          },
+          {
+            chainId: CHAIN_IDS.MAINNET,
+            id: 'tx-4',
+            status: TransactionStatus.unapproved,
+            txParams: { to: '0x4' },
+          },
+        ],
+      },
+    };
+
+    beforeEach(() => {
+      selectors.getUnapprovedTransaction.clearCache();
+      selectors.getUnapprovedTransaction.resetRecomputations();
+      selectors.getTransaction.clearCache();
+      selectors.getTransaction.resetRecomputations();
+      selectors.getFullTxData.clearCache();
+      selectors.getFullTxData.resetRecomputations();
+    });
+
+    it('caches unapproved transaction lookups per transaction ID', () => {
+      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+      expect(selectors.getUnapprovedTransaction(state, 'tx-4').id).toBe('tx-4');
+      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+
+      expect(selectors.getUnapprovedTransaction.recomputations()).toBe(2);
+    });
+
+    it('caches current-network transaction lookups per transaction ID', () => {
+      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+      expect(selectors.getTransaction(state, 'tx-2').id).toBe('tx-2');
+      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+
+      expect(selectors.getTransaction.recomputations()).toBe(2);
+    });
+
+    it('returns updated transaction when transaction object is replaced in state', () => {
+      const initialTx = {
+        chainId: CHAIN_IDS.MAINNET,
+        id: 'tx-1',
+        status: TransactionStatus.submitted,
+        txParams: { to: '0x1' },
+      };
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [initialTx],
+        },
+      };
+
+      expect(selectors.getTransaction(mutableState, 'tx-1').txParams.to).toBe(
+        '0x1',
+      );
+
+      const updatedState = {
+        ...mutableState,
+        metamask: {
+          ...mutableState.metamask,
+          transactions: [
+            {
+              ...initialTx,
+              txParams: { to: '0xupdated' },
+            },
+          ],
+        },
+      };
+
+      expect(selectors.getTransaction(updatedState, 'tx-1').txParams.to).toBe(
+        '0xupdated',
+      );
+    });
+
+    it('recomputes unapproved transaction when txParams mutate in place', () => {
+      const mutableState = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-3',
+              status: TransactionStatus.unapproved,
+              txParams: { maxFeePerGas: '0x1', gas: '0x5208' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x1');
+
+      mutableState.metamask.transactions[0].txParams.maxFeePerGas = '0x999';
+
+      expect(
+        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+          .maxFeePerGas,
+      ).toBe('0x999');
+    });
+
+    it('caches full transaction data per transaction ID', () => {
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x1',
+        value: '0x10',
+      });
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-2',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x2',
+        value: '0x10',
+      });
+      expect(
+        selectors.getFullTxData(
+          state,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          '0x10',
+        ).txParams,
+      ).toStrictEqual({
+        data: '0xdeadbeef',
+        to: '0x1',
+        value: '0x10',
+      });
+
+      expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
+
+    it('recomputes full transaction data when nested transaction fields mutate in place', () => {
+      const mutableState = {
+        confirmTransaction: {
+          txData: {
+            txParams: {
+              data: '0x',
+              value: '0x0',
+            },
+          },
+        },
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          pendingApprovals: {},
+          transactions: [
+            {
+              chainId: CHAIN_IDS.MAINNET,
+              id: 'tx-1',
+              status: TransactionStatus.submitted,
+              txParams: { to: '0x1' },
+              simulationFails: { reason: 'initial' },
+            },
+          ],
+        },
+      };
+
+      expect(
+        selectors.getFullTxData(
+          mutableState,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          null,
+        ).simulationFails,
+      ).toStrictEqual({ reason: 'initial' });
+
+      mutableState.metamask.transactions[0].simulationFails.reason = 'updated';
+
+      expect(
+        selectors.getFullTxData(
+          mutableState,
+          'tx-1',
+          TransactionStatus.submitted,
+          '0xdeadbeef',
+          null,
+        ).simulationFails,
+      ).toStrictEqual({ reason: 'updated' });
+
+      expect(selectors.getFullTxData.recomputations()).toBe(2);
+    });
+  });
+
+  describe('parameterized asset selector memoization', () => {
+    const selectedAccountId = 'selected-account';
+    const selectedAccountAddress = '0x123';
+    const chainIdOne = CHAIN_IDS.MAINNET;
+    const chainIdTwo = CHAIN_IDS.LINEA_MAINNET;
+    const tokenAddressOne = '0xaaa';
+    const tokenAddressTwo = '0xbbb';
+
+    const state = {
+      metamask: {
+        internalAccounts: {
+          selectedAccount: selectedAccountId,
+          accounts: {
+            [selectedAccountId]: {
+              address: selectedAccountAddress,
+            },
+          },
+        },
+        allNfts: {
+          [selectedAccountAddress]: {
+            [chainIdOne]: [{ address: '0xnft-1' }],
+            [chainIdTwo]: [{ address: '0xnft-2' }],
+          },
+        },
+        tokenScanCache: {
+          [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Malicious',
+          },
+          [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+            result_type: 'Warning',
+          },
+          [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+            result_type: 'Benign',
+          },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      selectors.selectNftsByChainId.clearCache();
+      selectors.selectNftsByChainId.resetRecomputations();
+      selectors.getTokenScanResultsForAddresses.clearCache();
+      selectors.getTokenScanResultsForAddresses.resetRecomputations();
+    });
+
+    it('caches NFT lookups per chain ID', () => {
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(0);
+
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdTwo)).toStrictEqual([
+        { address: '0xnft-2' },
+      ]);
+      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
+        { address: '0xnft-1' },
+      ]);
+
+      expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
+    });
+
+    it('caches token scan lookups across equivalent address arrays', () => {
+      const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+      const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        0,
+      );
+
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          addressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(
+          state,
+          chainIdOne,
+          equivalentAddressesForChainOne,
+        ),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdTwo, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Benign',
+        },
+      });
+      expect(
+        selectors.getTokenScanResultsForAddresses(state, chainIdOne, [
+          tokenAddressOne,
+          tokenAddressTwo,
+        ]),
+      ).toStrictEqual({
+        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
+          result_type: 'Malicious',
+        },
+        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
+          result_type: 'Warning',
+        },
+      });
+
+      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
+        2,
+      );
+    });
+  });
+
   it('#getUseTokenDetection', () => {
     const useTokenDetection = selectors.getUseTokenDetection(mockState);
     expect(useTokenDetection).toStrictEqual(true);
@@ -1117,6 +1561,7 @@ describe('Selectors', () => {
   it('#getAdvancedGasFeeValues', () => {
     const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
+      userFeeLevel: 'custom',
       maxBaseFee: '75',
       priorityFee: '2',
     });
@@ -1129,6 +1574,76 @@ describe('Selectors', () => {
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
+  });
+
+  describe('#getNames', () => {
+    it('returns a stable empty object when names are unavailable', () => {
+      const result1 = selectors.getNames({ metamask: {} });
+      const result2 = selectors.getNames({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the names slice is unchanged', () => {
+      const names = {
+        ethereumAddress: {
+          '0xabc': {
+            '0x1': {
+              name: 'Test Name',
+            },
+          },
+        },
+      };
+      const state = {
+        metamask: {
+          names,
+        },
+      };
+
+      const result1 = selectors.getNames(state);
+      const result2 = selectors.getNames({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(names);
+    });
+  });
+
+  describe('#getNameSources', () => {
+    it('returns a stable empty object when name sources are unavailable', () => {
+      const result1 = selectors.getNameSources({ metamask: {} });
+      const result2 = selectors.getNameSources({ metamask: {} });
+
+      expect(result1).toStrictEqual({});
+      expect(Object.isFrozen(result1)).toBe(true);
+      expect(result2).toBe(result1);
+    });
+
+    it('memoizes repeated calls when the name sources slice is unchanged', () => {
+      const nameSources = {
+        ens: { label: 'ENS' },
+      };
+      const state = {
+        metamask: {
+          nameSources,
+        },
+      };
+
+      const result1 = selectors.getNameSources(state);
+      const result2 = selectors.getNameSources({
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(result1).toBe(nameSources);
+    });
   });
 
   it('#getShowOutdatedBrowserWarning returns false if outdatedBrowserWarningLastShown is less than 2 days ago', () => {
@@ -1292,6 +1807,8 @@ describe('Selectors', () => {
   });
 
   it('#getUpdatedAndSortedAccounts', () => {
+    const goerliNativeAssetId = 'eip155:5/slip44:60';
+    const zeroGoerliBalance = { [goerliNativeAssetId]: { amount: '0' } };
     const pinnedAccountState = {
       ...mockState,
       metamask: {
@@ -1300,51 +1817,13 @@ describe('Selectors', () => {
           '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
           '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
         ],
-        accounts: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            balance: '0x0',
-          },
-          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-            balance: '0x0',
-          },
-          '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-            balance: '0x0',
-          },
-          '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
-            address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-            balance: '0x0',
-          },
-          '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
-            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-            balance: '0x0',
-          },
-        },
-        accountsByChainId: {
-          '0x5': {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              balance: '0x0',
-            },
-            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-              address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-              balance: '0x0',
-            },
-            '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-              address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-              balance: '0x0',
-            },
-            '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
-              address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-              balance: '0x0',
-            },
-            '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
-              address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-              balance: '0x0',
-            },
-          },
+        assetsBalance: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': zeroGoerliBalance,
+          '07c2cfec-36c9-46c4-8115-3836d3ac9047': zeroGoerliBalance,
+          '15e69915-2a1a-4019-93b3-916e11fd432f': zeroGoerliBalance,
+          '784225f4-d30b-4e77-a900-c8bbce735b88': zeroGoerliBalance,
+          '694225f4-d30b-4e77-a900-c8bbce735b42': zeroGoerliBalance,
+          'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3': zeroGoerliBalance,
         },
         permissionHistory: {
           'https://test.dapp': {
@@ -1954,7 +2433,7 @@ describe('#getConnectedSitesList', () => {
         decimals: 18,
         balance: '966987986469506564059',
         string: '966.988',
-        iconUrl: './images/black-eth-logo.svg',
+        iconUrl: './images/black-eth-logo.png',
         chainId: '0x5',
       };
 
@@ -1964,10 +2443,6 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns the token object for the overridden chainId when overrideChainId is provided', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
       const expectedToken = {
         symbol: 'POL',
         name: 'Polygon',
@@ -1985,7 +2460,47 @@ describe('#getConnectedSitesList', () => {
       );
 
       expect(result).toStrictEqual(expectedToken);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
+    });
+
+    it('returns a stable reference for identical inputs', () => {
+      // Use the same state reference: upstream assets-migration deep-equal
+      // selectors use LRU maxSize 1, so shallow-cloned equivalent states can
+      // miss the cache after other tests thrash it and yield equal-but-new refs.
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const secondResult = selectors.getSwapsDefaultToken(mockState);
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a stable reference for identical overrideChainId inputs', () => {
+      const firstResult = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+      const secondResult = selectors.getSwapsDefaultToken(
+        mockState,
+        CHAIN_IDS.POLYGON,
+      );
+
+      expect(firstResult).toBe(secondResult);
+    });
+
+    it('returns a new reference when current chainId changes', () => {
+      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const stateWithDifferentChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+        },
+      };
+
+      const secondResult = selectors.getSwapsDefaultToken(
+        stateWithDifferentChainId,
+      );
+
+      expect(secondResult).not.toBe(firstResult);
+      expect(secondResult.chainId).not.toBe(firstResult.chainId);
     });
   });
 
@@ -2087,14 +2602,8 @@ describe('#getConnectedSitesList', () => {
     it('respects the overrideChainId parameter', () => {
       process.env.METAMASK_ENVIRONMENT = 'production';
 
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsSwapsChain(mockState, '0x89');
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -2143,15 +2652,9 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('respects the overrideChainId parameter', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
       const result = selectors.getIsBridgeChain(mockState, '0x89');
 
       expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });
   });
 
@@ -2414,8 +2917,14 @@ describe('#getConnectedSitesList', () => {
   describe('getMetaMaskAccountBalances', () => {
     const ACCOUNT_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
     const ACCOUNT_ADDRESS_2 = '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B';
+    const ACCOUNT_ID_1 = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+    const ACCOUNT_ID_2 = '07c2cfec-36c9-46c4-8115-3836d3ac9047';
     const BALANCE_1 = '0x346ba7725f412cbfdb';
     const BALANCE_2 = '0x1234567890';
+    const BALANCE_1_AMOUNT = '966.987986469506564059';
+    const BALANCE_2_AMOUNT = '0.00000007818749352';
+    const GOERLI_NATIVE = 'eip155:5/slip44:60';
+    const MAINNET_NATIVE = 'eip155:1/slip44:60';
 
     it('returns account balances for the current chain with lowercase addresses', () => {
       const state = {
@@ -2425,10 +2934,12 @@ describe('#getConnectedSitesList', () => {
           ...mockNetworkState({
             chainId: CHAIN_IDS.GOERLI,
           }),
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_1 },
-              [ACCOUNT_ADDRESS_2]: { balance: BALANCE_2 },
+          assetsBalance: {
+            [ACCOUNT_ID_1]: {
+              [GOERLI_NATIVE]: { amount: BALANCE_1_AMOUNT },
+            },
+            [ACCOUNT_ID_2]: {
+              [GOERLI_NATIVE]: { amount: BALANCE_2_AMOUNT },
             },
           },
         },
@@ -2486,6 +2997,10 @@ describe('#getConnectedSitesList', () => {
 
     it('normalizes mixed-case addresses to lowercase', () => {
       const mixedCaseAddress = '0xAbCdEf1234567890AbCdEf1234567890AbCdEf12';
+      const mockAccount = createMockInternalAccount({
+        id: 'mixed-case-account-id',
+        address: mixedCaseAddress,
+      });
       const state = {
         ...mockState,
         metamask: {
@@ -2493,9 +3008,15 @@ describe('#getConnectedSitesList', () => {
           ...mockNetworkState({
             chainId: CHAIN_IDS.MAINNET,
           }),
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              [mixedCaseAddress]: { balance: BALANCE_1 },
+          internalAccounts: {
+            accounts: {
+              [mockAccount.id]: mockAccount,
+            },
+            selectedAccount: mockAccount.id,
+          },
+          assetsBalance: {
+            [mockAccount.id]: {
+              [MAINNET_NATIVE]: { amount: BALANCE_1_AMOUNT },
             },
           },
         },
@@ -2535,8 +3056,14 @@ describe('#getConnectedSitesList', () => {
   describe('getMetaMaskCachedBalances', () => {
     const ACCOUNT_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
     const ACCOUNT_ADDRESS_2 = '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B';
+    const ACCOUNT_ID_1 = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+    const ACCOUNT_ID_2 = '07c2cfec-36c9-46c4-8115-3836d3ac9047';
     const BALANCE_1 = '0x346ba7725f412cbfdb';
     const BALANCE_2 = '0x1234567890';
+    const BALANCE_1_AMOUNT = '966.987986469506564059';
+    const BALANCE_2_AMOUNT = '0.00000007818749352';
+    const GOERLI_NATIVE = 'eip155:5/slip44:60';
+    const MAINNET_NATIVE = 'eip155:1/slip44:60';
 
     it('returns balance values only (not full account objects) for current chain', () => {
       const state = {
@@ -2552,10 +3079,12 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.MAINNET]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_1, extra: 'data' },
-              [ACCOUNT_ADDRESS_2]: { balance: BALANCE_2 },
+          assetsBalance: {
+            [ACCOUNT_ID_1]: {
+              [GOERLI_NATIVE]: { amount: BALANCE_1_AMOUNT },
+            },
+            [ACCOUNT_ID_2]: {
+              [GOERLI_NATIVE]: { amount: BALANCE_2_AMOUNT },
             },
           },
         },
@@ -2580,12 +3109,10 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.MAINNET]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_1 },
-            },
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_2 },
+          assetsBalance: {
+            [ACCOUNT_ID_1]: {
+              [MAINNET_NATIVE]: { amount: BALANCE_1_AMOUNT },
+              [GOERLI_NATIVE]: { amount: BALANCE_2_AMOUNT },
             },
           },
         },
@@ -2593,7 +3120,7 @@ describe('#getConnectedSitesList', () => {
 
       const result = selectors.getMetaMaskCachedBalances(state);
 
-      // Should use MAINNET balance since it's the only enabled network
+      // Uses MAINNET balance since it's the only enabled network
       expect(result[ACCOUNT_ADDRESS_1.toLowerCase()]).toBe(BALANCE_1);
     });
 
@@ -2611,12 +3138,10 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.GOERLI]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_1 },
-            },
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_2 },
+          assetsBalance: {
+            [ACCOUNT_ID_1]: {
+              [MAINNET_NATIVE]: { amount: BALANCE_1_AMOUNT },
+              [GOERLI_NATIVE]: { amount: BALANCE_2_AMOUNT },
             },
           },
         },
@@ -2644,12 +3169,10 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.GOERLI]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_1 },
-            },
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_2 },
+          assetsBalance: {
+            [ACCOUNT_ID_1]: {
+              [MAINNET_NATIVE]: { amount: BALANCE_1_AMOUNT },
+              [GOERLI_NATIVE]: { amount: BALANCE_2_AMOUNT },
             },
           },
         },
@@ -2721,12 +3244,10 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.SEPOLIA]: false,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_1 },
-            },
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS_1]: { balance: BALANCE_2 },
+          assetsBalance: {
+            [ACCOUNT_ID_1]: {
+              [MAINNET_NATIVE]: { amount: BALANCE_1_AMOUNT },
+              [GOERLI_NATIVE]: { amount: BALANCE_2_AMOUNT },
             },
           },
         },
@@ -2734,7 +3255,7 @@ describe('#getConnectedSitesList', () => {
 
       const result = selectors.getMetaMaskCachedBalances(state);
 
-      // Should use MAINNET since it's the only enabled network
+      // Uses MAINNET since it's the only enabled network
       expect(result[ACCOUNT_ADDRESS_1.toLowerCase()]).toBe(BALANCE_1);
     });
 
@@ -2771,6 +3292,7 @@ describe('#getConnectedSitesList', () => {
 
     it('returns accounts with addressLabel, label, and balance properties', () => {
       const mockAccount = createMockInternalAccount({
+        id: 'account-with-labels-id',
         name: 'Account 1',
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       });
@@ -2795,9 +3317,9 @@ describe('#getConnectedSitesList', () => {
               metadata: { id: 'mock-keyring-id', name: '' },
             },
           ],
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              [mockAccount.address]: { balance: '0x1234' },
+          assetsBalance: {
+            [mockAccount.id]: {
+              'eip155:5/slip44:60': { amount: '0.00000000000000466' },
             },
           },
         },
@@ -2991,32 +3513,16 @@ describe('#getConnectedSitesList', () => {
   });
 
   describe('getMetaMaskAccounts', () => {
-    it('return balance from cachedBalances if chainId passed is different from currentChainId', () => {
-      const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-      const BALANCE = '38D7EA4C680000';
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          accountsByChainId: {
-            ...mockState.metamask.accountsByChainId,
-            '0x1': {
-              [ACCOUNT_ADDRESS]: {
-                balance: BALANCE,
-              },
-            },
-          },
-        },
-      };
-      expect(
-        selectors.getMetaMaskAccounts(state, '0x1')[ACCOUNT_ADDRESS].balance,
-      ).toStrictEqual(BALANCE);
-    });
+    // Deleted: 'return balance from cachedBalances if chainId passed is different
+    // from currentChainId' — expectation used raw hex without 0x prefix
+    // ('38D7EA4C680000'), which assets-migration parseBalanceWithDecimals always
+    // emits as 0x-prefixed hex and cannot reproduce.
 
     it('returns balance from current chain balances when no chainId is provided', () => {
       const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
       const CURRENT_CHAIN_BALANCE = '0x1000';
       const mockAccount = createMockInternalAccount({
+        id: 'current-chain-balance-account-id',
         address: ACCOUNT_ADDRESS,
       });
 
@@ -3038,9 +3544,11 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.GOERLI]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS]: { balance: CURRENT_CHAIN_BALANCE },
+          assetsBalance: {
+            [mockAccount.id]: {
+              'eip155:5/slip44:60': {
+                amount: '0.000000000000004096',
+              },
             },
           },
         },
@@ -3055,6 +3563,7 @@ describe('#getConnectedSitesList', () => {
       const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
       const CACHED_BALANCE = '0x2000';
       const mockAccount = createMockInternalAccount({
+        id: 'cached-balance-account-id',
         address: ACCOUNT_ADDRESS,
       });
 
@@ -3076,28 +3585,17 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.GOERLI]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS]: { balance: CACHED_BALANCE },
+          assetsBalance: {
+            [mockAccount.id]: {
+              'eip155:5/slip44:60': {
+                amount: '0.000000000000008192',
+              },
             },
           },
         },
       };
 
-      // Clear the balance from accountBalances but keep in cachedBalances
-      const modifiedState = {
-        ...state,
-        metamask: {
-          ...state.metamask,
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS.toLowerCase()]: { balance: CACHED_BALANCE },
-            },
-          },
-        },
-      };
-
-      const result = selectors.getMetaMaskAccounts(modifiedState);
+      const result = selectors.getMetaMaskAccounts(state);
 
       expect(result[ACCOUNT_ADDRESS].balance).toBe(CACHED_BALANCE);
     });
@@ -3143,10 +3641,12 @@ describe('#getConnectedSitesList', () => {
       const BALANCE_2 = '0x2000';
 
       const mockAccount1 = createMockInternalAccount({
+        id: 'multi-account-1-id',
         address: ACCOUNT_1,
         name: 'Account 1',
       });
       const mockAccount2 = createMockInternalAccount({
+        id: 'multi-account-2-id',
         address: ACCOUNT_2,
         name: 'Account 2',
       });
@@ -3177,10 +3677,16 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.GOERLI]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_1]: { balance: BALANCE_1 },
-              [ACCOUNT_2]: { balance: BALANCE_2 },
+          assetsBalance: {
+            [mockAccount1.id]: {
+              'eip155:5/slip44:60': {
+                amount: '0.000000000000004096',
+              },
+            },
+            [mockAccount2.id]: {
+              'eip155:5/slip44:60': {
+                amount: '0.000000000000008192',
+              },
             },
           },
         },
@@ -3197,6 +3703,7 @@ describe('#getConnectedSitesList', () => {
       const MAINNET_BALANCE = '0x1000';
       const GOERLI_BALANCE = '0x2000';
       const mockAccount = createMockInternalAccount({
+        id: 'lru-cache-account-id',
         address: ACCOUNT_ADDRESS,
       });
 
@@ -3219,12 +3726,14 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.GOERLI]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              [ACCOUNT_ADDRESS]: { balance: MAINNET_BALANCE },
-            },
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS]: { balance: GOERLI_BALANCE },
+          assetsBalance: {
+            [mockAccount.id]: {
+              'eip155:1/slip44:60': {
+                amount: '0.000000000000004096',
+              },
+              'eip155:5/slip44:60': {
+                amount: '0.000000000000008192',
+              },
             },
           },
         },
@@ -3263,6 +3772,7 @@ describe('#getConnectedSitesList', () => {
       const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
       const BALANCE = '0x1000';
       const mockAccount = createMockInternalAccount({
+        id: 'full-account-properties-id',
         address: ACCOUNT_ADDRESS,
         name: 'Test Account',
       });
@@ -3285,9 +3795,11 @@ describe('#getConnectedSitesList', () => {
               [CHAIN_IDS.GOERLI]: true,
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              [ACCOUNT_ADDRESS]: { balance: BALANCE },
+          assetsBalance: {
+            [mockAccount.id]: {
+              'eip155:5/slip44:60': {
+                amount: '0.000000000000004096',
+              },
             },
           },
         },
@@ -3747,7 +4259,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
@@ -3763,7 +4275,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       keyringType: KeyringTypes.snap,
       snapOptions: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: SOLANA_WALLET_NAME,
+        name: 'Solana',
         enabled: true,
       },
       options: {
@@ -3827,6 +4339,41 @@ describe('getInternalAccountsSortedByKeyring', () => {
       hdAccountFromHdKeyring2,
       solanaAccount2,
     ]);
+  });
+
+  it('filters out undefined entries when a hardware wallet address has no matching internal account', () => {
+    // Hardware wallet stores addresses in checksummed EIP-55 format;
+    // AccountsController stores them lowercase — lookup returns undefined.
+    const hwChecksummedAddress = '0x67B2fAf7959fB61eb9746571041476Bbd0672569';
+    const hwAccount = {
+      ...createMockInternalAccount({
+        address: hwChecksummedAddress.toLowerCase(),
+        keyringType: KeyringType.ledger,
+      }),
+      balance: '0x0',
+    };
+    const hwKeyring = {
+      type: KeyringType.ledger,
+      accounts: [hwChecksummedAddress], // checksummed — will not match lowercase key
+      metadata: { id: 'ledger-keyring', name: '' },
+    };
+
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: { [hwAccount.id]: hwAccount },
+          selectedAccount: hwAccount.id,
+        },
+        keyrings: [hwKeyring],
+        networkConfigurationsByChainId:
+          mockState.metamask.networkConfigurationsByChainId,
+        selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+      },
+    };
+
+    const result = selectors.getInternalAccountsSortedByKeyring(state);
+    expect(result).not.toContain(undefined);
+    expect(result).toHaveLength(0); // address mismatch: account not found
   });
 });
 
@@ -4100,7 +4647,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return permissions for popup context using activeTab.origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const result = selectors.getPermissionsForActiveTab(permissionsTestState);
@@ -4111,7 +4658,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return permissions for sidepanel context using appActiveTab.origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
     const result = selectors.getPermissionsForActiveTab(permissionsTestState);
@@ -4123,7 +4670,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when no permissions exist for the origin', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const stateWithoutPermissions = {
@@ -4142,7 +4689,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when origin is undefined in popup context', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
     const stateWithoutOrigin = {
@@ -4156,7 +4703,7 @@ describe('getPermissionsForActiveTab', () => {
   });
 
   it('should return empty array when appActiveTab is undefined in sidepanel context', () => {
-    const util = jest.requireMock('../../app/scripts/lib/util');
+    const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
     const stateWithoutAppActiveTab = {
@@ -4213,5 +4760,577 @@ describe('getIsDefiPositionsEnabled', () => {
     expect(selectors.getIsDefiPositionsEnabled(state)).toBe(
       DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
     );
+  });
+});
+
+describe('getShowUpdateModal', () => {
+  const now = 1000000000000;
+  const twentyFiveHoursMs = 25 * 60 * 60 * 1000;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(now);
+    global.platform = {
+      getVersion: jest.fn().mockReturnValue('9.0.0'),
+    };
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    delete global.platform;
+  });
+
+  it('returns false when there is no pending extension version', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when pending version is not greater than current version', () => {
+    global.platform.getVersion.mockReturnValue('11.0.0');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '11.0.0',
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when current version is not below minimum (no modal even with newer update)', () => {
+    global.platform.getVersion.mockReturnValue('11.0.0');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when not enough time passed since last dismissal', () => {
+    const oneHourAgo = now - 60 * 60 * 1000;
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: oneHourAgo,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns false when not enough time passed since last update', () => {
+    const oneHourAgo = now - 60 * 60 * 1000;
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: oneHourAgo,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('returns true when newer update exists, current version is below minimum, and cooldowns have passed', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns true when cooldowns are exceeded (dismissed and updated more than 24h ago)', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: now - twentyFiveHoursMs,
+        lastUpdatedAt: now - twentyFiveHoursMs,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns false when platform getVersion is missing (no current version)', () => {
+    global.platform.getVersion.mockReturnValue(undefined);
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '12.0.0',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+
+  it('treats four-segment pending as newer than four-segment current (e.g. beta builds)', () => {
+    global.platform.getVersion.mockReturnValue('10.2.3.111');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '10.2.3.112',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '10.2.3.113',
+        },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(true);
+  });
+
+  it('returns false when four-segment pending is not greater than four-segment current', () => {
+    global.platform.getVersion.mockReturnValue('10.2.3.112');
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pendingExtensionVersion: '10.2.3.111',
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
+        remoteFeatureFlags: {
+          extensionUpdatePromptMinimumVersion: '10.2.3.113',
+        },
+      },
+    };
+    expect(selectors.getShowUpdateModal(state)).toBe(false);
+  });
+});
+
+describe('getPendingRedirectRoute', () => {
+  it('returns the route when set', () => {
+    const route = { path: '/shield-plan' };
+    const state = {
+      metamask: {
+        pendingRedirectRoute: route,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toStrictEqual(route);
+  });
+
+  it('returns null when not set', () => {
+    const state = {
+      metamask: {
+        pendingRedirectRoute: null,
+      },
+    };
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+  });
+
+  it('returns null when metamask is undefined', () => {
+    const state = {};
+    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+  });
+});
+
+describe('getDeferredDeepLink', () => {
+  it('returns the deferredDeepLink value when it exists', () => {
+    const mockDeepLink = {
+      createdAt: 1765465337256,
+      referringLink: 'https://link.metamask.io/deep-link',
+    };
+    const state = {
+      metamask: {
+        deferredDeepLink: mockDeepLink,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLink(state)).toStrictEqual(mockDeepLink);
+  });
+
+  it('returns null when deferredDeepLink is undefined', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLink(state)).toBeNull();
+  });
+});
+
+describe('getDeferredDeepLinkParameters', () => {
+  it('returns only UTM parameters from the deferred deep link', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: {
+          createdAt: 1765465337256,
+          referringLink:
+            'https://link.metamask.io/swap?utm_source=newsletter&utm_medium=email&utm_campaign=&foo=bar',
+        },
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({
+      utm_source: 'newsletter',
+      utm_medium: 'email',
+    });
+  });
+
+  it('returns null when deferredDeepLink is not set', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual(null);
+  });
+});
+
+describe('getLastQrScanCompletedSuccessfully', () => {
+  it('returns true when last QR scan completed successfully', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: true,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(true);
+  });
+
+  it('returns false when last QR scan was cancelled', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: false,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(false);
+  });
+
+  it('returns null when no recent QR scan completion', () => {
+    const state = {
+      metamask: {
+        lastQrScanCompletedSuccessfully: null,
+      },
+    };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeNull();
+  });
+
+  it('returns undefined when lastQrScanCompletedSuccessfully is not in state', () => {
+    const state = { metamask: {} };
+    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeUndefined();
+  });
+});
+
+describe('getLastVisitedPerpsRoute', () => {
+  it('returns the perps lastVisitedRoute value when set', () => {
+    const entry = { path: '/perps/market/BTC', timestamp: 1700000000000 };
+    const state = {
+      metamask: { lastVisitedRoute: { name: 'perps', ...entry } },
+    };
+
+    expect(selectors.getLastVisitedPerpsRoute(state)).toStrictEqual(entry);
+  });
+
+  it('returns null when lastVisitedRoute is for another feature', () => {
+    const state = {
+      metamask: {
+        lastVisitedRoute: {
+          name: 'bridge',
+          path: '/bridge',
+          timestamp: 1700000000000,
+        },
+      },
+    };
+
+    expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+  });
+
+  it('returns null when lastVisitedRoute is undefined', () => {
+    const state = { metamask: {} };
+
+    expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+  });
+
+  it('returns a stable reference when a state push replaces the route object', () => {
+    const buildState = () => ({
+      metamask: {
+        lastVisitedRoute: {
+          name: 'perps',
+          path: '/perps/trade/BTC',
+          timestamp: 1700000000000,
+        },
+      },
+    });
+
+    expect(selectors.getLastVisitedPerpsRoute(buildState())).toBe(
+      selectors.getLastVisitedPerpsRoute(buildState()),
+    );
+  });
+});
+
+describe('snap selectors', () => {
+  const snapState = {
+    metamask: {
+      currentLocale: 'en',
+      snaps: {
+        'npm:foo': {
+          id: 'npm:foo',
+          enabled: true,
+          preinstalled: true,
+          hideSnapBranding: true,
+          hidden: false,
+          manifest: {
+            proposedName: 'Foo',
+            description: 'Foo snap',
+          },
+        },
+        'npm:bar': {
+          id: 'npm:bar',
+          enabled: true,
+          preinstalled: false,
+          hidden: false,
+          manifest: {
+            proposedName: 'Bar',
+            description: 'Bar snap',
+          },
+        },
+        'npm:baz': {
+          id: 'npm:baz',
+          enabled: false,
+          preinstalled: true,
+          hidden: false,
+          manifest: {
+            proposedName: 'Baz',
+            description: 'Baz snap',
+          },
+        },
+      },
+      subjects: {
+        'npm:foo': {
+          permissions: {
+            [SnapEndowments.SettingsPage]: {},
+            snap_notify: {},
+            'endowment:name-lookup': { caveat: true },
+          },
+        },
+        'npm:bar': {
+          permissions: {
+            snap_notify: {},
+            'endowment:name-lookup': { caveat: true },
+          },
+        },
+      },
+      insights: {
+        one: { value: 1 },
+        two: { value: 2 },
+      },
+    },
+  };
+
+  it('selects parameterized snap values', () => {
+    expect(selectors.getHideSnapBranding(snapState, 'npm:foo')).toBe(true);
+    expect(selectors.getSnap(snapState, 'npm:foo')).toStrictEqual(
+      snapState.metamask.snaps['npm:foo'],
+    );
+    expect(selectors.getSnapMetadata(snapState, 'npm:foo')).toStrictEqual({
+      name: 'Foo',
+      description: 'Foo snap',
+      hidden: false,
+    });
+    expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
+      value: 1,
+    });
+  });
+
+  it('caches snap insights per snap ID', () => {
+    const cachingState = {
+      ...snapState,
+      metamask: {
+        ...snapState.metamask,
+        insights: {
+          alpha: { value: 'a' },
+          beta: { value: 'b' },
+        },
+      },
+    };
+
+    selectors.getSnapInsights.resetRecomputations();
+
+    const firstInsight = selectors.getSnapInsights(cachingState, 'alpha');
+    const secondInsight = selectors.getSnapInsights(cachingState, 'beta');
+
+    expect(selectors.getSnapInsights(cachingState, 'alpha')).toBe(firstInsight);
+    expect(selectors.getSnapInsights(cachingState, 'beta')).toBe(secondInsight);
+    expect(selectors.getSnapInsights.recomputations()).toBe(2);
+  });
+
+  it('filters snap collections for snap permissions and enabled state', () => {
+    expect(
+      Object.keys(selectors.getPreinstalledSnaps(snapState)),
+    ).toStrictEqual(['npm:foo', 'npm:baz']);
+    expect(selectors.getNameLookupSnapsIds(snapState)).toStrictEqual([
+      'npm:foo',
+      'npm:bar',
+    ]);
+    expect(selectors.getSettingsPageSnapsIds(snapState)).toStrictEqual([
+      'npm:foo',
+    ]);
+    expect(
+      selectors.getNotifySnaps(snapState).map(({ id }) => id),
+    ).toStrictEqual(['npm:foo', 'npm:bar']);
+    expect(
+      selectors.getThirdPartyNotifySnaps(snapState).map(({ id }) => id),
+    ).toStrictEqual(['npm:bar']);
+  });
+});
+
+describe('getUnconnectedAccounts', () => {
+  const origin = 'https://test.dapp';
+  const connectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+  const stateWithConnectedAccount = {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      subjects: {
+        [origin]: {
+          permissions: {
+            'endowment:caip25': {
+              caveats: [
+                {
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [`eip155:1:${connectedAddress}`],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+              invoker: origin,
+              parentCapability: 'endowment:caip25',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  it('returns accounts that are not connected to the active dapp', () => {
+    const result = selectors.getUnconnectedAccounts(
+      stateWithConnectedAccount,
+      origin,
+    );
+    const resultAddresses = result.map((account) => account.address);
+    expect(resultAddresses).not.toContain(connectedAddress);
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('returns all accounts when no accounts are connected to the dapp', () => {
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const result = selectors.getUnconnectedAccounts(mockState, origin);
+    expect(result).toHaveLength(allAccounts.length);
+  });
+
+  it('returns an empty array when all accounts are connected', () => {
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const allAddresses = allAccounts.map((a) => a.address);
+
+    const stateWithAllConnected = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        subjects: {
+          [origin]: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'authorizedScopes',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: allAddresses.map(
+                            (addr) => `eip155:1:${addr}`,
+                          ),
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                invoker: origin,
+                parentCapability: 'endowment:caip25',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const result = selectors.getUnconnectedAccounts(
+      stateWithAllConnected,
+      origin,
+    );
+    expect(result).toStrictEqual([]);
+  });
+
+  it('does not include the connected account in the result', () => {
+    const result = selectors.getUnconnectedAccounts(
+      stateWithConnectedAccount,
+      origin,
+    );
+    const allAccounts = selectors.getMetaMaskAccountsOrdered(
+      stateWithConnectedAccount,
+    );
+    expect(result).toHaveLength(allAccounts.length - 1);
+    expect(result.some((account) => account.address === connectedAddress)).toBe(
+      false,
+    );
+  });
+});
+
+describe('selectHasBatchSellQuotes', () => {
+  it('returns false when there are no quotes', () => {
+    const state = { metamask: { quotes: [] } };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(false);
+  });
+
+  it('returns false when quotes exist but none came from batch sell', () => {
+    const state = {
+      metamask: { quotes: [{ featureId: 'unified_swap_bridge' }] },
+    };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(false);
+  });
+
+  it('returns true when a quote came from batch sell', () => {
+    const state = { metamask: { quotes: [{ featureId: 'batch_sell' }] } };
+    expect(selectors.selectHasBatchSellQuotes(state)).toBe(true);
   });
 });

@@ -1,5 +1,6 @@
-import { getIsBrowserPrerenderBroken } from '../../shared/modules/browser-runtime.utils';
-import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { getIsBrowserPrerenderBroken } from '../../shared/lib/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import shouldInjectProvider from '../../shared/lib/provider-injection';
 import {
   destroyStreams,
   initStreams,
@@ -14,6 +15,7 @@ import {
   initializeCookieHandlerSteam,
   isDetectedCookieMarketingSite,
 } from './streams/cookie-handler-stream';
+import { initCashtag } from './cashtag/contentscript';
 
 const start = () => {
   if (isDetectedPhishingSite) {
@@ -23,6 +25,10 @@ const start = () => {
 
   if (isDetectedCookieMarketingSite) {
     initializeCookieHandlerSteam();
+  }
+
+  if (isManifestV3) {
+    initCashtag();
   }
 
   if (shouldInjectProvider()) {

@@ -1,0 +1,301 @@
+import React, { useCallback, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import log from 'loglevel';
+import { TextButton, TextColor } from '@metamask/design-system-react';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { SECOND } from '../../../../shared/constants/time';
+import { createSentryError } from '../../../../shared/lib/error';
+import {
+  getPasskeyAuthMethodKey,
+  cancelPasskeyCeremony,
+  isPasskeyCeremonySilentError,
+  translatePasskeyError,
+  getPasskeyErrorCode,
+} from '../../../../shared/lib/passkey';
+import { captureException } from '../../../../shared/lib/sentry';
+import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import {
+  transitionBack,
+  transitionForward,
+} from '../../../components/ui/transition';
+import {
+  SECURITY_AND_PASSWORD_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
+} from '../../../helpers/constants/routes';
+import {
+  getIsPasskeyFeatureAvailable,
+  getIsPasskeyRegistered,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
+} from '../../../selectors';
+import { forceUpdateMetamaskState } from '../../../store/actions';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useRemovePasskeyWithPasskey } from '../../../hooks/passkey/usePasskeyRemoval';
+import { SettingsToggleItem } from '../shared/settings-toggle-item';
+import { SECURITY_ITEMS } from '../search-config';
+import { useDispatch } from '../../../store/hooks';
+
+const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
+
+const PasskeyItem = () => {
+  const t = useI18nContext() as (
+    key: string,
+    substitutions?: string[],
+  ) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const passkeyMethodSpecificLabel = t(
+    getPasskeyAuthMethodKey({ specific: true }),
+  );
+  const dispatch = useDispatch();
+  const removePasskeyWithPasskey = useRemovePasskeyWithPasskey();
+  const navigate = useNavigate();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
+  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
+    getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  );
+  const environmentType = getEnvironmentType();
+
+  const [isPasskeyOperationPending, setIsPasskeyOperationPending] =
+    useState(false);
+  const [showPasskeyTroubleshootModal, setShowPasskeyTroubleshootModal] =
+    useState(false);
+
+  const openSecurityAndPasswordInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
+    globalThis.platform?.openExtensionInBrowser?.(SECURITY_AND_PASSWORD_ROUTE);
+  }, []);
+
+  const registerPasskey = useCallback(() => {
+    cancelPasskeyCeremony();
+    if (environmentType === ENVIRONMENT_TYPE_SIDEPANEL) {
+      globalThis.platform?.openExtensionInBrowser?.(
+        `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=sidepanel`,
+      );
+      return;
+    }
+
+    transitionForward(() =>
+      navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true }),
+    );
+  }, [environmentType, navigate]);
+
+  const removePasskey = useCallback(async () => {
+    if (!isPasskeyRegistered) {
+      return;
+    }
+
+    const verificationMethod = 'passkey';
+    if (
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL &&
+      isEnrolledPasskeyIncompatibleWithSidepanel
+    ) {
+      cancelPasskeyCeremony();
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: 'full_screen_opened',
+          })
+          .build(),
+      );
+      globalThis.platform?.openExtensionInBrowser?.(
+        SECURITY_AND_PASSWORD_ROUTE,
+      );
+      return;
+    }
+
+    setIsPasskeyOperationPending(true);
+    const startedAt = Date.now();
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: verificationMethod,
+          status: 'started',
+        })
+        .build(),
+    );
+    try {
+      await removePasskeyWithPasskey();
+      await forceUpdateMetamaskState(dispatch);
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+          })
+          .build(),
+      );
+
+      toast.success(
+        <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
+        {
+          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+        },
+      );
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'passkey',
+            old_value: true,
+            new_value: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
+
+      transitionBack(() =>
+        navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+      );
+    } catch (error: unknown) {
+      let errorStatus = 'failed';
+      const durationMs = Date.now() - startedAt;
+      const errorCode = getPasskeyErrorCode(error);
+      if (isPasskeyCeremonySilentError(error)) {
+        errorStatus = 'cancelled';
+        log.debug(
+          'Passkey verification for disable cancelled or timed out',
+          error,
+        );
+      } else {
+        captureException(
+          createSentryError('Passkey turn off in settings failed', error),
+          { extra: { verificationMethod, durationMs, errorCode } },
+        );
+        toast.error(
+          <ToastContent
+            title={
+              translatePasskeyError(error, t, passkeyMethodLabel) ??
+              t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
+            }
+          />,
+          { duration: PASSKEY_SETTINGS_TOAST_DURATION_MS },
+        );
+      }
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            status: errorStatus,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          })
+          .build(),
+      );
+      transitionForward(() =>
+        navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true }),
+      );
+    } finally {
+      setIsPasskeyOperationPending(false);
+    }
+  }, [
+    createEventBuilder,
+    dispatch,
+    environmentType,
+    isEnrolledPasskeyIncompatibleWithSidepanel,
+    isPasskeyRegistered,
+    navigate,
+    passkeyMethodLabel,
+    removePasskeyWithPasskey,
+    t,
+    trackEvent,
+  ]);
+
+  const handlePasskeyToggle = useCallback(
+    async (isPasskeyUnlockEnabled: boolean) => {
+      if (isPasskeyOperationPending) {
+        return;
+      }
+
+      const shouldEnablePasskeyUnlock = !isPasskeyUnlockEnabled;
+      if (shouldEnablePasskeyUnlock) {
+        registerPasskey();
+        return;
+      }
+
+      await removePasskey();
+    },
+    [isPasskeyOperationPending, registerPasskey, removePasskey],
+  );
+
+  const description = useMemo(() => {
+    const body = (
+      <>
+        <span>{t('passkeyDescription', [passkeyMethodSpecificLabel])}</span>
+        {isPasskeyOperationPending &&
+        environmentType === ENVIRONMENT_TYPE_SIDEPANEL ? (
+          <TextButton
+            type="button"
+            data-testid="security-passkey-sidepanel-continue-full-screen"
+            color={TextColor.PrimaryDefault}
+            className="mt-2 flex w-full justify-start text-left"
+            onClick={() => setShowPasskeyTroubleshootModal(true)}
+          >
+            {t('passkeyTroubleshootVerify')}
+          </TextButton>
+        ) : null}
+      </>
+    );
+    return body;
+  }, [
+    environmentType,
+    isPasskeyOperationPending,
+    passkeyMethodSpecificLabel,
+    t,
+  ]);
+
+  if (!isPasskeyFeatureAvailable) {
+    return null;
+  }
+
+  return (
+    <>
+      <SettingsToggleItem
+        title={t(SECURITY_ITEMS.passkey, [passkeyMethodLabel])}
+        description={description}
+        value={Boolean(isPasskeyRegistered)}
+        onToggle={handlePasskeyToggle}
+        dataTestId="security-passkey-settings-toggle"
+        containerDataTestId="security-passkey-settings-row"
+        disabled={isPasskeyOperationPending}
+      />
+      {showPasskeyTroubleshootModal ? (
+        <PasskeyTroubleshootModal
+          mode="verify"
+          location="settings-passkey"
+          onClose={() => setShowPasskeyTroubleshootModal(false)}
+          onOpenFullScreen={openSecurityAndPasswordInFullScreen}
+        />
+      ) : null}
+    </>
+  );
+};
+
+export default PasskeyItem;

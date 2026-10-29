@@ -9,10 +9,9 @@ import {
   getMetaMaskHdKeyrings,
   getInternalAccounts,
 } from '..';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getMultichainAggregatedBalance } from '../assets';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts/snaps';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 type AccountsByChainId = {
@@ -27,7 +26,7 @@ type TokensByChainId = {
   }[];
 };
 
-const isPrimaryHdAndFirstPartySnapAccount = createDeepEqualSelector(
+const isPrimaryHdAndFirstPartySnapAccount = createSelector(
   (_state, account) => account,
   getMetaMaskHdKeyrings,
   (account, hdKeyrings: KeyringObject[]) => {
@@ -58,7 +57,7 @@ const isPrimaryHdAndFirstPartySnapAccount = createDeepEqualSelector(
   },
 );
 
-export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
+export const getShouldShowSeedPhraseReminder = createSelector(
   (state) => state,
   (_state, account) => account,
   getSelectedAccountTokensAcrossChains,

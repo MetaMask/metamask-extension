@@ -12,10 +12,10 @@ describe('DefaultNetworks - Gas fees sponsored logic', () => {
       '0x38': true,
       '0x89': false,
     };
+    const isHardwareWalletAccount = false;
 
-    // Simulate the isNetworkGasSponsored callback logic
     const isNetworkGasSponsored = (chainId: string | undefined): boolean => {
-      if (!chainId) {
+      if (!chainId || isHardwareWalletAccount) {
         return false;
       }
       return Boolean(
@@ -30,6 +30,30 @@ describe('DefaultNetworks - Gas fees sponsored logic', () => {
     expect(isNetworkGasSponsored('0x89')).toBe(false);
     expect(isNetworkGasSponsored('0x38')).toBe(true);
   });
+
+  it('isNetworkGasSponsored returns false for hardware wallet accounts even when gas fees are sponsored', () => {
+    const mockGasFeesSponsoredNetwork = {
+      '0x38': true,
+      '0x89': false,
+    };
+    const isHardwareWalletAccount = true;
+
+    const isNetworkGasSponsored = (chainId: string | undefined): boolean => {
+      if (!chainId || isHardwareWalletAccount) {
+        return false;
+      }
+      return Boolean(
+        mockGasFeesSponsoredNetwork[
+          chainId as keyof typeof mockGasFeesSponsoredNetwork
+        ],
+      );
+    };
+
+    expect(isNetworkGasSponsored(undefined)).toBe(false);
+    expect(isNetworkGasSponsored('0x1')).toBe(false);
+    expect(isNetworkGasSponsored('0x89')).toBe(false);
+    expect(isNetworkGasSponsored('0x38')).toBe(false);
+  });
 });
 
-export {}; // Makes this a module to satisfy linter rules.
+export {};

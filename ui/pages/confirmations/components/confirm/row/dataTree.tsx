@@ -6,7 +6,7 @@ import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../../../../shared/constants/signatures';
-import { isValidHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 
 import { sanitizeString } from '../../../../../helpers/utils/util';
 import { Box } from '../../../../../components/component-library';
@@ -120,7 +120,7 @@ export const DataTree = ({
             label.charAt(0).toUpperCase() + label.slice(1),
           )}:`}
           style={{ paddingRight: 0 }}
-          key={`tree-data-${label}-index-${i}`}
+          key={`tree-data-${label}`}
           data-testid={`confirmation_data-${label}-index-${i}`}
         >
           {
@@ -141,15 +141,11 @@ export const DataTree = ({
 };
 
 function isDateField(label: string, primaryType?: PrimaryType) {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   return (FIELD_DATE_PRIMARY_TYPES[label] || [])?.includes(primaryType || '');
 }
 
 function isTokenUnitsField(label: string, primaryType?: PrimaryType) {
   return (FIELD_TOKEN_UTILS_PRIMARY_TYPES[label] || [])?.includes(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     primaryType || '',
   );
 }

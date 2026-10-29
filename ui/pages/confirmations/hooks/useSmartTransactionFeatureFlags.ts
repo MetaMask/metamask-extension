@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
@@ -6,14 +6,13 @@ import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constant
 import {
   getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
-import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+} from '../../../../shared/lib/selectors';
 import {
   fetchSmartTransactionsLiveness,
-  setSwapsFeatureFlags,
   setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
 
 export function useSmartTransactionFeatureFlags() {
   const dispatch = useDispatch();
@@ -50,13 +49,8 @@ export function useSmartTransactionFeatureFlags() {
       return;
     }
 
-    Promise.all([
-      // TODO: remove this when swaps feature flags are removed.
-      fetchSwapsFeatureFlags(),
-      fetchSmartTransactionsLiveness({ chainId: transactionChainId })(),
-    ])
-      .then(([swapsFeatureFlags]) => {
-        dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+    fetchSmartTransactionsLiveness({ chainId: transactionChainId })()
+      .then(() => {
         dispatch(
           setSmartTransactionsRefreshInterval(
             featureFlags?.batchStatusPollingInterval ?? 1000,

@@ -7,11 +7,10 @@ import {
 import { addHexPrefix } from 'ethereumjs-util';
 import { NavigateFunction } from 'react-router-dom';
 
-import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
+import { Numeric, NumericBase } from '../../../../shared/lib/Numeric';
 import {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
-  getLayer1GasFeeValue,
 } from '../../../store/actions';
 import { Asset } from '../types/send';
 import {
@@ -219,26 +218,6 @@ export const submitEvmTransaction = async ({
   });
 };
 
-export const getLayer1GasFees = async ({
-  asset,
-  chainId,
-  from,
-  value,
-}: {
-  asset: Asset;
-  chainId: Hex;
-  from: Hex;
-  value: string;
-}): Promise<Hex | undefined> => {
-  return (await getLayer1GasFeeValue({
-    chainId,
-    transactionParams: {
-      value: fromTokenMinimalUnits(value, asset.decimals),
-      from,
-    },
-  })) as Hex | undefined;
-};
-
 export function isValidPositiveNumericString(str: string) {
   const decimalRegex = /^(\d+(\.\d+)?|\.\d+)$/u;
 
@@ -314,4 +293,18 @@ export const addLeadingZeroIfNeeded = (value?: string) => {
     return `0.${fracPart}`;
   }
   return value;
+};
+
+export const normalizeAmount = (value?: string): string => {
+  if (!value) {
+    return '0';
+  }
+  const str = String(value);
+  if (str === '.') {
+    return '0';
+  }
+  if (str.endsWith('.')) {
+    return str.slice(0, -1);
+  }
+  return str;
 };

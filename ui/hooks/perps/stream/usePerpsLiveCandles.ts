@@ -1,0 +1,196 @@
+import {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
+import type { CandleData } from '@metamask/perps-controller';
+import type {
+  CandlePeriod,
+  TimeDuration,
+} from '../../../components/app/perps/constants/chartConfig';
+import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
+
+/**
+ * Options for usePerpsLiveCandles hook
+ */
+export type UsePerpsLiveCandlesOptions = {
+  /** Symbol to get candles for (e.g., 'BTC', 'ETH') */
+  symbol: string;
+  /** Candle interval (e.g., CandlePeriod.OneHour) */
+  interval: CandlePeriod;
+  /** Time duration for initial historical data and load-more sizing */
+  duration?: TimeDuration;
+  /** Throttle interval in ms for live updates (default 1000) */
+  throttleMs?: number;
+  /** Callback for errors */
+  onError?: (error: Error) => void;
+};
+
+/**
+ * Return type for usePerpsLiveCandles hook
+ */
+export type UsePerpsLiveCandlesReturn = {
+  /** Candle data for the symbol */
+  candleData: CandleData | null;
+  /** Whether we're waiting for the first real data */
+  isInitialLoading: boolean;
+  /** Whether we're fetching more historical data (scroll-left load-more) */
+  isLoadingMore: boolean;
+  /** Whether historical data exists (more candles may be available) */
+  hasHistoricalData: boolean;
+  /** Error from subscription or fetch */
+  error: Error | null;
+  /** Fetch older historical candles (called on scroll-left edge detection) */
+  fetchMoreHistory: () => void;
+};
+
+/**
+ * Hook for real-time candlestick data via CandleStreamChannel.
+ *
+ * Routes through PerpsStreamManager.candles for subscription deduplication,
+ * caching, and throttling. Multiple consumers (chart, OHLCV bar, fullscreen)
+ * sharing the same symbol+interval will share one controller subscription.
+ *
+ * @param options - Configuration options
+ * @returns Object containing candle data, loading states, error, and fetchMoreHistory
+ * @example
+ * ```tsx
+ * import { CandlePeriod, TimeDuration } from '@metamask/perps-controller';
+ *
+ * function CandleChart() {
+ *   const {
+ *     candleData,
+ *     isInitialLoading,
+ *     isLoadingMore,
+ *     error,
+ *     fetchMoreHistory,
+ *   } = usePerpsLiveCandles({
+ *     symbol: 'BTC',
+ *     interval: CandlePeriod.OneHour,
+ *     duration: TimeDuration.YearToDate,
+ *     throttleMs: 1000,
+ *   });
+ *
+ *   if (isInitialLoading) return <Spinner />;
+ *   if (error && !candleData) return <ErrorState />;
+ *
+ *   return (
+ *     <Chart
+ *       candles={candleData?.candles}
+ *       onNeedMoreHistory={fetchMoreHistory}
+ *     />
+ *   );
+ * }
+ * ```
+ */
+export function usePerpsLiveCandles(
+  options: UsePerpsLiveCandlesOptions,
+): UsePerpsLiveCandlesReturn {
+  const { symbol, interval, duration, throttleMs = 1000, onError } = options;
+  const { streamManager } = usePerpsStreamManager();
+
+  const [candleData, setCandleData] = useState<CandleData | null>(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const hasReceivedFirstUpdate = useRef(false);
+  const symbolRef = useRef(symbol);
+  const intervalRef = useRef(interval);
+
+  useLayoutEffect(() => {
+    symbolRef.current = symbol;
+    intervalRef.current = interval;
+  }, [symbol, interval]);
+
+  const subscriptionKey = `${symbol}|${interval}|${duration ?? ''}|${throttleMs}`;
+  const [prevSubscriptionKey, setPrevSubscriptionKey] =
+    useState(subscriptionKey);
+
+  if (subscriptionKey !== prevSubscriptionKey) {
+    setPrevSubscriptionKey(subscriptionKey);
+    setCandleData(null);
+    setError(null);
+    setIsInitialLoading(Boolean(symbol && interval));
+  }
+
+  useEffect(() => {
+    hasReceivedFirstUpdate.current = false;
+  }, [subscriptionKey]);
+
+  useEffect(() => {
+    if (!symbol || !interval || !streamManager) {
+      return undefined;
+    }
+
+    const unsubscribe = streamManager.candles.subscribe({
+      symbol,
+      interval,
+      duration,
+      throttleMs,
+      callback: (data: CandleData) => {
+        // Validate incoming data matches current subscription
+        // (prevents stale data from race conditions during symbol/interval switch)
+        if (
+          data.symbol !== symbolRef.current ||
+          data.interval !== intervalRef.current
+        ) {
+          return;
+        }
+
+        if (!hasReceivedFirstUpdate.current) {
+          hasReceivedFirstUpdate.current = true;
+          setIsInitialLoading(false);
+        }
+        setError(null);
+        setCandleData(data);
+      },
+      onError: (err: Error) => {
+        setError(err);
+        if (!hasReceivedFirstUpdate.current) {
+          setIsInitialLoading(false);
+        }
+        onError?.(err);
+      },
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [streamManager, symbol, interval, duration, throttleMs, onError]);
+
+  // Fetch more historical candles (scroll-left load-more)
+  const fetchMoreHistory = useCallback(() => {
+    if (isLoadingMore || !symbol || !interval || !duration) {
+      return;
+    }
+
+    setIsLoadingMore(true);
+
+    const manager = getPerpsStreamManager();
+    manager.candles
+      .fetchHistoricalCandles(symbol, interval, duration)
+      .catch((err: unknown) => {
+        console.error('[usePerpsLiveCandles] fetchMoreHistory failed:', err);
+      })
+      .finally(() => {
+        setIsLoadingMore(false);
+      });
+  }, [symbol, interval, duration, isLoadingMore]);
+
+  // Determine if historical data is available (candles exist = more might be loadable)
+  const hasHistoricalData = Boolean(
+    candleData?.candles && candleData.candles.length > 0,
+  );
+
+  return {
+    candleData,
+    isInitialLoading,
+    isLoadingMore,
+    hasHistoricalData,
+    error,
+    fetchMoreHistory,
+  };
+}

@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import UnlockPage from './unlock-page.component';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
@@ -7,11 +6,6 @@ export default {
   title: 'Pages/UnlockPage',
 
   component: UnlockPage,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     isUnlocked: { control: 'boolean' },
     onRestore: { action: 'onRestore' },
@@ -46,8 +40,11 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   forceUpdateMetamaskState: () => ({
-    participateInMetaMetrics: true,
+    optedIn: true,
+    consentDecisionMade: true,
   }),
+  passkeyAutoUnlockSuppressed: false,
+  mustDeferPasskeyToBrowserTab: false,
 };
 
 DefaultStory.storyName = 'Default';

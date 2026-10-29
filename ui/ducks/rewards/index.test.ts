@@ -1,13 +1,10 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { OnboardingStep } from './types';
 import rewardsReducer, {
   initialState,
   resetRewardsState,
-  setOnboardingModalOpen,
-  setOnboardingActiveStep,
-  setOnboardingReferralCode,
+  setRewardsModalOpen,
   setRewardsGeoMetadata,
   setRewardsGeoMetadataLoading,
   setRewardsGeoMetadataError,
@@ -17,6 +14,7 @@ import rewardsReducer, {
   setSeasonStatusError,
   setErrorToast,
   setRewardsBadgeHidden,
+  setRewardsDeeplinkUrl,
 } from '.';
 
 describe('Ducks - Rewards', () => {
@@ -40,7 +38,7 @@ describe('Ducks - Rewards', () => {
     it('returns state unchanged for unknown action type', () => {
       const mockState = {
         ...initialState,
-        onboardingModalOpen: true,
+        rewardsModalOpen: true,
       };
       expect(
         rewardsReducer(mockState, {
@@ -55,7 +53,7 @@ describe('Ducks - Rewards', () => {
     it('resetRewardsState resets to initialState', () => {
       const mutated = {
         ...initialState,
-        onboardingModalOpen: true,
+        rewardsModalOpen: true,
         geoLocation: 'US',
         optinAllowedForGeo: true,
       };
@@ -65,37 +63,12 @@ describe('Ducks - Rewards', () => {
       expect(newState).toStrictEqual(initialState);
     });
 
-    it('setOnboardingModalOpen updates onboardingModalOpen', () => {
-      store.dispatch(setOnboardingModalOpen(true));
+    it('setRewardsModalOpen updates rewardsModalOpen', () => {
+      store.dispatch(setRewardsModalOpen(true));
       const actions = store.getActions();
-      expect(actions[0].type).toBe('rewards/setOnboardingModalOpen');
+      expect(actions[0].type).toBe('rewards/setRewardsModalOpen');
       const newState = rewardsReducer(initialState, actions[0]);
-      expect(newState.onboardingModalOpen).toBe(true);
-    });
-
-    it('setOnboardingActiveStep updates onboardingActiveStep', () => {
-      store.dispatch(setOnboardingActiveStep(OnboardingStep.STEP1));
-      const actions = store.getActions();
-      expect(actions[0].type).toBe('rewards/setOnboardingActiveStep');
-      const newState = rewardsReducer(initialState, actions[0]);
-      expect(newState.onboardingActiveStep).toBe(OnboardingStep.STEP1);
-    });
-
-    it('setOnboardingReferralCode updates onboardingReferralCode', () => {
-      store.dispatch(setOnboardingReferralCode('ABC123'));
-      const actions = store.getActions();
-      expect(actions[0].type).toBe('rewards/setOnboardingReferralCode');
-      const newState = rewardsReducer(initialState, actions[0]);
-      expect(newState.onboardingReferralCode).toBe('ABC123');
-    });
-
-    it('setOnboardingReferralCode clears onboardingReferralCode when payload is null', () => {
-      const existing = { ...initialState, onboardingReferralCode: 'ABC123' };
-      store.dispatch(setOnboardingReferralCode(null));
-      const actions = store.getActions();
-      expect(actions[0].type).toBe('rewards/setOnboardingReferralCode');
-      const newState = rewardsReducer(existing, actions[0]);
-      expect(newState.onboardingReferralCode).toBeNull();
+      expect(newState.rewardsModalOpen).toBe(true);
     });
 
     it('setRewardsGeoMetadata sets location and opt-in flags when payload provided', () => {
@@ -227,6 +200,23 @@ describe('Ducks - Rewards', () => {
       expect(actions[0].type).toBe('rewards/setRewardsBadgeHidden');
       const newState = rewardsReducer(initialState, actions[0]);
       expect(newState.rewardsBadgeHidden).toBe(false);
+    });
+
+    it('setRewardsDeeplinkUrl stores the deeplink URL', () => {
+      const url = 'https://link.metamask.io/rewards?referral=ABC123';
+      store.dispatch(setRewardsDeeplinkUrl(url));
+      const actions = store.getActions();
+      expect(actions[0].type).toBe('rewards/setRewardsDeeplinkUrl');
+      const newState = rewardsReducer(initialState, actions[0]);
+      expect(newState.rewardsDeeplinkUrl).toBe(url);
+    });
+
+    it('setRewardsDeeplinkUrl clears the deeplink URL when passed null', () => {
+      store.dispatch(setRewardsDeeplinkUrl(null));
+      const actions = store.getActions();
+      expect(actions[0].type).toBe('rewards/setRewardsDeeplinkUrl');
+      const newState = rewardsReducer(initialState, actions[0]);
+      expect(newState.rewardsDeeplinkUrl).toBeNull();
     });
   });
 });

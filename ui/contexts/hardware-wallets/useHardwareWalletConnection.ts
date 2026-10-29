@@ -1,0 +1,467 @@
+import { useCallback, useEffect } from 'react';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { createHardwareWalletError } from './errors';
+import { ConnectionState } from './connectionState';
+import { createAdapterForHardwareWalletType } from './adapters/factory';
+import {
+  HardwareWalletType,
+  type EnsureDeviceReadyOptions,
+  type HardwareWalletConnectionState,
+  type HardwareWalletAdapterOptions,
+  type DeviceEventPayload,
+} from './types';
+import { type HardwareWalletRefs } from './HardwareWalletStateManager';
+import { toHardwareWalletError } from './rpcErrorUtils';
+
+type UseHardwareWalletConnectionParams = {
+  refs: HardwareWalletRefs;
+  setters: {
+    setConnectionState: (
+      updater:
+        | HardwareWalletConnectionState
+        | ((
+            prev: HardwareWalletConnectionState,
+          ) => HardwareWalletConnectionState),
+    ) => void;
+  };
+  updateConnectionState: (newState: HardwareWalletConnectionState) => void;
+  handleDeviceEvent: (payload: DeviceEventPayload) => void;
+  handleDisconnect: (error?: unknown) => void;
+};
+
+export const useHardwareWalletConnection = ({
+  refs,
+  updateConnectionState,
+  handleDeviceEvent,
+  handleDisconnect,
+}: UseHardwareWalletConnectionParams) => {
+  const resetAdapterForFreshConnection = useCallback(
+    () => {
+      if (refs.adapterRef.current) {
+        refs.adapterRef.current.destroy();
+        refs.adapterRef.current = null;
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  /**
+   * Begins a new connection attempt by aborting any previous attempt
+   * and creating a fresh AbortController.
+   *
+   * @returns The AbortSignal for this attempt - use to check if aborted
+   */
+  const beginConnectionAttempt = useCallback(
+    () => {
+      // Abort any previous connection attempt
+      refs.abortControllerRef.current?.abort();
+
+      // Create a new AbortController for this attempt
+      const abortController = new AbortController();
+      refs.abortControllerRef.current = abortController;
+
+      // Increment connection ID to track this attempt
+      refs.currentConnectionIdRef.current =
+        (refs.currentConnectionIdRef.current ?? 0) + 1;
+
+      return abortController.signal;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const connectWithAdapter = useCallback(
+    async ({
+      walletType: targetWalletType,
+      abortSignal,
+    }: {
+      walletType: HardwareWalletType;
+      abortSignal: AbortSignal;
+    }): Promise<void> => {
+      if (abortSignal.aborted) {
+        return;
+      }
+
+      const adapterOptions: HardwareWalletAdapterOptions = {
+        onDisconnect: handleDisconnect,
+        onAwaitingConfirmation: () => {
+          if (!abortSignal.aborted) {
+            updateConnectionState(ConnectionState.awaitingConfirmation());
+          }
+        },
+        onDeviceLocked: () => {
+          if (!abortSignal.aborted) {
+            updateConnectionState(
+              ConnectionState.error(
+                createHardwareWalletError(
+                  ErrorCode.AuthenticationDeviceLocked,
+                  targetWalletType,
+                  'Device is locked',
+                ),
+              ),
+            );
+          }
+        },
+        onAppNotOpen: () => {
+          if (!abortSignal.aborted) {
+            updateConnectionState(ConnectionState.awaitingApp());
+          }
+        },
+        onDeviceEvent: handleDeviceEvent,
+      };
+
+      const adapter = createAdapterForHardwareWalletType(
+        targetWalletType,
+        adapterOptions,
+      );
+
+      if (abortSignal.aborted) {
+        adapter.destroy();
+        return;
+      }
+
+      refs.adapterRef.current = adapter;
+      await adapter.connect();
+
+      if (abortSignal.aborted) {
+        adapter.destroy();
+        // Only null out the adapter if it's still the one we created.
+        // Between setting refs.adapterRef.current = adapter (line 189) and this check,
+        // there's an await (line 190) during which a new connection could replace it.
+        if (refs.adapterRef.current === adapter) {
+          refs.adapterRef.current = null;
+        }
+        return;
+      }
+
+      updateConnectionState(ConnectionState.connected());
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [handleDeviceEvent, handleDisconnect, updateConnectionState],
+  );
+
+  const handleConnectError = useCallback(
+    ({
+      error,
+      abortSignal,
+      walletType,
+    }: {
+      error: unknown;
+      abortSignal: AbortSignal;
+      walletType: HardwareWalletType;
+    }): HardwareWalletError | null => {
+      if (abortSignal.aborted) {
+        return null;
+      }
+
+      const hwError = isHardwareWalletError(error)
+        ? error
+        : createHardwareWalletError(
+            ErrorCode.ConnectionClosed,
+            walletType,
+            error instanceof Error
+              ? error.message
+              : 'Failed to connect to hardware wallet',
+            { cause: error instanceof Error ? error : undefined },
+          );
+      updateConnectionState(ConnectionState.error(hwError));
+
+      const failedAdapter = refs.adapterRef.current;
+      failedAdapter?.destroy();
+      if (refs.adapterRef.current === failedAdapter) {
+        refs.adapterRef.current = null;
+      }
+      return hwError;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [updateConnectionState],
+  );
+
+  /**
+   * Resolves `null` on success (or when superseded), otherwise the error that
+   * was also stored on connection state.
+   */
+  const connect = useCallback(
+    (): Promise<HardwareWalletError | null> => {
+      // If there's already a connection in progress, return the pending promise
+      // so all callers wait for the same connection to complete
+      if (refs.connectingPromiseRef.current) {
+        return refs.connectingPromiseRef.current;
+      }
+
+      // Set flag to prevent auto-connect race conditions
+      // This must happen synchronously before any async work
+      refs.isConnectingRef.current = true;
+
+      const connectionPromise =
+        (async (): Promise<HardwareWalletError | null> => {
+          const effectiveType = refs.walletTypeRef.current;
+          if (!effectiveType) {
+            const unknownTypeError = createHardwareWalletError(
+              ErrorCode.Unknown,
+              HardwareWalletType.Unknown,
+              'Hardware wallet type is unknown',
+            );
+            updateConnectionState(ConnectionState.error(unknownTypeError));
+            return unknownTypeError;
+          }
+
+          resetAdapterForFreshConnection();
+          const abortSignal = beginConnectionAttempt();
+
+          try {
+            await connectWithAdapter({
+              walletType: effectiveType,
+              abortSignal,
+            });
+            return null;
+          } catch (error) {
+            return handleConnectError({
+              error,
+              abortSignal,
+              walletType: effectiveType,
+            });
+          }
+        })();
+
+      // Store the promise so concurrent callers can await it
+      refs.connectingPromiseRef.current = connectionPromise;
+
+      // Clear when the connection completes (success or failure)
+      // Only clear if still holding this promise (not a newer one from a disconnect + reconnect)
+      connectionPromise.finally(() => {
+        if (refs.connectingPromiseRef.current === connectionPromise) {
+          refs.connectingPromiseRef.current = null;
+        }
+        // Reset flag to allow new connection attempts
+        refs.isConnectingRef.current = false;
+      });
+
+      return connectionPromise;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      beginConnectionAttempt,
+      connectWithAdapter,
+      handleConnectError,
+      resetAdapterForFreshConnection,
+      updateConnectionState,
+    ],
+  );
+
+  useEffect(
+    () => {
+      refs.connectRef.current = connect;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [connect],
+  );
+
+  const disconnect = useCallback(
+    async (): Promise<void> => {
+      // Abort any in-progress connection attempt first.
+      // This ensures that if connect() is awaiting and fails due to adapter destruction,
+      // the error handlers will see abortSignal.aborted=true and skip state updates.
+      refs.abortControllerRef.current?.abort();
+      refs.isSigningInProgressRef.current = false;
+
+      // Capture references at the start to prevent race conditions
+      // where connect() creates new ones while disconnect() is awaiting
+      const adapterToDisconnect = refs.adapterRef.current;
+      const promiseToCancel = refs.connectingPromiseRef.current;
+      // Capture the abort controller to detect if a new connect() started during our await.
+      // A new connect() will create a new abort controller.
+      const controllerAtStart = refs.abortControllerRef.current;
+
+      try {
+        await adapterToDisconnect?.disconnect();
+      } finally {
+        // Only destroy the adapter we captured at the start, not any new adapter
+        // that may have been created by a concurrent connect() call
+        adapterToDisconnect?.destroy();
+        // Only null out references if they still hold the same values
+        // (i.e., no concurrent connect() replaced them)
+        if (refs.adapterRef.current === adapterToDisconnect) {
+          refs.adapterRef.current = null;
+        }
+        if (refs.connectingPromiseRef.current === promiseToCancel) {
+          refs.connectingPromiseRef.current = null;
+        }
+        // Only update state if no new connection started during our await.
+        // A new connection would have created a new abort controller.
+        if (refs.abortControllerRef.current === controllerAtStart) {
+          updateConnectionState(ConnectionState.disconnected());
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [updateConnectionState],
+  );
+
+  const clearError = useCallback(
+    () => {
+      if (refs.abortControllerRef.current?.signal.aborted) {
+        return;
+      }
+
+      if (refs.adapterRef.current?.isConnected()) {
+        updateConnectionState(ConnectionState.connected());
+      } else {
+        updateConnectionState(ConnectionState.disconnected());
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [updateConnectionState],
+  );
+
+  /**
+   * Resolves `null` when the device is ready, otherwise the error explaining
+   * why it is not (a generic one when no specific cause is known).
+   */
+  const ensureDeviceReadyOrError = useCallback(
+    async (
+      options?: EnsureDeviceReadyOptions,
+    ): Promise<HardwareWalletError | null> => {
+      const requireBlindSigning = options?.requireBlindSigning ?? true;
+      const dedupKey = `${requireBlindSigning}:${options?.preflightMessageBytes ?? ''}`;
+      const inFlightPromise =
+        refs.ensureDeviceReadyPromiseRef.current.get(dedupKey);
+      if (inFlightPromise) {
+        return inFlightPromise;
+      }
+
+      const notReady = () =>
+        createHardwareWalletError(
+          ErrorCode.Unknown,
+          refs.walletTypeRef.current ?? HardwareWalletType.Unknown,
+          'Hardware wallet device is not ready',
+        );
+
+      const ensurePromise = (async (): Promise<HardwareWalletError | null> => {
+        refs.isEnsuringDeviceReadyRef.current = true;
+
+        const abortSignalAtStart = refs.abortControllerRef.current?.signal;
+        if (abortSignalAtStart?.aborted) {
+          return notReady();
+        }
+
+        let expectedConnectionId = refs.currentConnectionIdRef.current ?? 0;
+
+        if (!refs.adapterRef.current?.isConnected()) {
+          const currentWalletType = refs.walletTypeRef.current;
+
+          if (!currentWalletType) {
+            return notReady();
+          }
+
+          const abortSignalBeforeConnect =
+            refs.abortControllerRef.current?.signal;
+          if (abortSignalBeforeConnect?.aborted) {
+            return notReady();
+          }
+
+          if (!refs.adapterRef.current?.isConnected()) {
+            const connectPromise = connect();
+            expectedConnectionId = refs.currentConnectionIdRef.current ?? 0;
+            const connectError = await connectPromise;
+            if (connectError) {
+              return connectError;
+            }
+          }
+        }
+
+        // Check if this is still the latest connection attempt
+        const currentId = refs.currentConnectionIdRef.current ?? 0;
+        if (currentId !== expectedConnectionId) {
+          return notReady();
+        }
+
+        // Get abort signal after connect() - it may have created a new one
+        const abortSignal = refs.abortControllerRef.current?.signal;
+
+        if (abortSignal?.aborted) {
+          return notReady();
+        }
+
+        const adapter = refs.adapterRef.current;
+        if (adapter?.ensureDeviceReady) {
+          const connectionIdBeforeEnsure = expectedConnectionId;
+          const isEnsureStale = () =>
+            (refs.currentConnectionIdRef.current ?? 0) !==
+              connectionIdBeforeEnsure || refs.adapterRef.current !== adapter;
+
+          if (abortSignal?.aborted || isEnsureStale()) {
+            return notReady();
+          }
+
+          try {
+            const result = await adapter.ensureDeviceReady({
+              requireBlindSigning,
+            });
+            if (abortSignal?.aborted || isEnsureStale()) {
+              return notReady();
+            }
+            if (!result) {
+              return notReady();
+            }
+            updateConnectionState(ConnectionState.ready());
+            return null;
+          } catch (error) {
+            if (abortSignal?.aborted || isEnsureStale()) {
+              return notReady();
+            }
+            const hwError = isHardwareWalletError(error)
+              ? error
+              : toHardwareWalletError(
+                  error,
+                  refs.walletTypeRef.current ?? HardwareWalletType.Unknown,
+                );
+            updateConnectionState(ConnectionState.error(hwError));
+            return hwError;
+          }
+        }
+
+        return notReady();
+      })();
+
+      refs.ensureDeviceReadyPromiseRef.current.set(dedupKey, ensurePromise);
+
+      ensurePromise.finally(() => {
+        const trackedPromise =
+          refs.ensureDeviceReadyPromiseRef.current.get(dedupKey);
+        if (trackedPromise === ensurePromise) {
+          refs.ensureDeviceReadyPromiseRef.current.delete(dedupKey);
+        }
+        refs.isEnsuringDeviceReadyRef.current =
+          refs.ensureDeviceReadyPromiseRef.current.size > 0;
+      });
+
+      return ensurePromise;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [connect, updateConnectionState],
+  );
+
+  /**
+   * Resolves `true` when the device is ready, `false` otherwise.
+   * Use `ensureDeviceReadyOrError` when the failure reason is needed.
+   */
+  const ensureDeviceReady = useCallback(
+    async (options?: EnsureDeviceReadyOptions): Promise<boolean> =>
+      (await ensureDeviceReadyOrError(options)) === null,
+    [ensureDeviceReadyOrError],
+  );
+
+  return {
+    connect,
+    disconnect,
+    clearError,
+    ensureDeviceReady,
+    ensureDeviceReadyOrError,
+  };
+};
+
+function isHardwareWalletError(error: unknown): error is HardwareWalletError {
+  return error instanceof HardwareWalletError;
+}

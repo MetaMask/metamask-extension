@@ -4,14 +4,11 @@ import type {
   SeasonStatusState,
   RewardsErrorToastState,
 } from '../../../shared/types/rewards';
-import { CandidateSubscriptionId, OnboardingStep } from './types';
+import { CandidateSubscriptionId } from './types';
 
 export type RewardsState = {
-  // Onboarding state
-  onboardingModalOpen: boolean;
-  onboardingActiveStep: OnboardingStep;
-  onboardingModalRendered: boolean;
-  onboardingReferralCode: string | null;
+  // Modal + onboarding state
+  rewardsModalOpen: boolean;
 
   // Geolocation state
   geoLocation: string | null;
@@ -33,13 +30,12 @@ export type RewardsState = {
   rewardsBadgeHidden: boolean;
   // Account linked timestamp (when an account is linked to a subscription)
   accountLinkedTimestamp: number | null;
+  // Full deeplink URL stored when user arrives via a rewards deeplink, used as QR code value
+  rewardsDeeplinkUrl: string | null;
 };
 
 export const initialState: RewardsState = {
-  onboardingModalOpen: false,
-  onboardingActiveStep: OnboardingStep.INTRO,
-  onboardingModalRendered: true,
-  onboardingReferralCode: '',
+  rewardsModalOpen: false,
 
   geoLocation: null,
   optinAllowedForGeo: null,
@@ -66,6 +62,7 @@ export const initialState: RewardsState = {
   rewardsBadgeHidden: true,
   // Account linked timestamp
   accountLinkedTimestamp: null,
+  rewardsDeeplinkUrl: null,
 };
 
 const rewardsSlice = createSlice({
@@ -79,23 +76,8 @@ const rewardsSlice = createSlice({
       };
     },
 
-    setOnboardingModalOpen: (state, action: PayloadAction<boolean>) => {
-      state.onboardingModalOpen = action.payload;
-    },
-
-    setOnboardingActiveStep: (state, action: PayloadAction<OnboardingStep>) => {
-      state.onboardingActiveStep = action.payload;
-    },
-
-    setOnboardingModalRendered: (state, action: PayloadAction<boolean>) => {
-      state.onboardingModalRendered = action.payload;
-    },
-
-    setOnboardingReferralCode: (
-      state,
-      action: PayloadAction<string | null>,
-    ) => {
-      state.onboardingReferralCode = action.payload;
+    setRewardsModalOpen: (state, action: PayloadAction<boolean>) => {
+      state.rewardsModalOpen = action.payload;
     },
 
     setRewardsGeoMetadata: (
@@ -134,6 +116,8 @@ const rewardsSlice = createSlice({
         previousCandidateId &&
         previousCandidateId !== 'pending' &&
         previousCandidateId !== 'error' &&
+        previousCandidateId !==
+          'error-existing-subscription-hardware-wallet-explicit-sign' &&
         previousCandidateId !== 'retry';
 
       const candidateIdChanged =
@@ -177,15 +161,16 @@ const rewardsSlice = createSlice({
     ) => {
       state.accountLinkedTimestamp = action.payload;
     },
+
+    setRewardsDeeplinkUrl: (state, action: PayloadAction<string | null>) => {
+      state.rewardsDeeplinkUrl = action.payload;
+    },
   },
 });
 
 export const {
   resetRewardsState,
-  setOnboardingModalOpen,
-  setOnboardingActiveStep,
-  setOnboardingModalRendered,
-  setOnboardingReferralCode,
+  setRewardsModalOpen,
   setCandidateSubscriptionId,
   setSeasonStatusLoading,
   setSeasonStatus,
@@ -196,6 +181,7 @@ export const {
   setErrorToast,
   setRewardsBadgeHidden,
   setRewardsAccountLinkedTimestamp,
+  setRewardsDeeplinkUrl,
 } = rewardsSlice.actions;
 
 export default rewardsSlice.reducer;

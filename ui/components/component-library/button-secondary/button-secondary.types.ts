@@ -12,8 +12,10 @@ export enum ButtonSecondarySize {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface ButtonSecondaryStyleUtilityProps
-  extends Omit<ButtonBaseStyleUtilityProps, 'size'> {
+export interface ButtonSecondaryStyleUtilityProps extends Omit<
+  ButtonBaseStyleUtilityProps,
+  'size'
+> {
   /**
    * An additional className to apply to the ButtonSecondary.
    */

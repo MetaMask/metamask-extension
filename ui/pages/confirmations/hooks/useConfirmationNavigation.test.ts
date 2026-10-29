@@ -11,21 +11,36 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
+  DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { useConfirmationNavigation } from './useConfirmationNavigation';
+import {
+  ConfirmationGoBackAction,
+  ConfirmationLoader,
+  PayWithOption,
+  getConfirmationRoute,
+  navigateConfirmationExit,
+  sanitizeConfirmationSearchParams,
+  useConfirmationNavigation,
+  useConfirmationNavigationOptions,
+} from './useConfirmationNavigation';
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
+const mockSearchParams = new URLSearchParams();
+const mockUseSearchParams = jest.fn(() => [mockSearchParams]);
+
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => mockUseLocation(),
+    useSearchParams: () => mockUseSearchParams(),
   };
 });
 
-jest.mock('../confirmation/templates', () => ({
+jest.mock('../confirmation/templates/approval-types', () => ({
   TEMPLATED_CONFIRMATION_APPROVAL_TYPES: ['wallet_addEthereumChain'],
 }));
 
@@ -234,6 +249,20 @@ describe('useConfirmationNavigation', () => {
         { replace: true },
       );
     });
+
+    it('strips payWithOption when navigating between confirmations', () => {
+      mockUseLocation.mockReturnValue({
+        search: '?loader=customAmount&payWithOption=money_account',
+      } as unknown as ReturnType<typeof mockUseLocation>);
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToIndex(1);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}?loader=customAmount`,
+        { replace: true },
+      );
+    });
   });
 
   describe('count', () => {
@@ -337,5 +366,367 @@ describe('useConfirmationNavigation', () => {
         { replace: true },
       );
     });
+  });
+
+  describe('navigateToTransaction', () => {
+    it('navigates to transaction route and marks back as a pop', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-123');
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-123`,
+        search: 'goBackAction=pop',
+      });
+    });
+
+    it('navigates to transaction route with loader param when loader option provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-456', {
+        loader: ConfirmationLoader.CustomAmount,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-456`,
+        search: 'loader=customAmount&goBackAction=pop',
+      });
+    });
+
+    it('navigates without loader param when loader is Default', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-789', {
+        loader: ConfirmationLoader.Default,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-789`,
+        search: 'goBackAction=pop',
+      });
+    });
+
+    it('navigates with only goBackTo param when no loader provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-100', {
+        goBackTo: '/asset/0x1/0xabc',
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-100`,
+        search: 'goBackTo=%2Fasset%2F0x1%2F0xabc&goBackAction=pop',
+      });
+    });
+
+    it('navigates with both loader and goBackTo params', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-200', {
+        loader: ConfirmationLoader.CustomAmount,
+        goBackTo: '/home?tab=tokens',
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-200`,
+        search:
+          'loader=customAmount&goBackTo=%2Fhome%3Ftab%3Dtokens&goBackAction=pop',
+      });
+    });
+
+    it('navigates with payWithOption param when provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-300', {
+        loader: ConfirmationLoader.CustomAmount,
+        payWithOption: PayWithOption.MoneyAccount,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-300`,
+        search:
+          'loader=customAmount&payWithOption=money_account&goBackAction=pop',
+      });
+    });
+
+    it('navigates with preferredPaymentToken params when provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-400', {
+        loader: ConfirmationLoader.CustomAmount,
+        preferredPaymentToken: {
+          address: '0xabc',
+          chainId: '0x1',
+        },
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-400`,
+        search:
+          'loader=customAmount&preferredPaymentTokenAddress=0xabc&preferredPaymentTokenChainId=0x1&goBackAction=pop',
+      });
+    });
+  });
+});
+
+describe('navigateConfirmationExit', () => {
+  const navigate = jest.fn();
+
+  beforeEach(() => {
+    navigate.mockReset();
+  });
+
+  it('pops a confirmation that was pushed onto an in-app page', () => {
+    navigateConfirmationExit(navigate, {
+      goBackTo: '/money-home/earn',
+      goBackAction: ConfirmationGoBackAction.Pop,
+      locationKey: 'earn-page',
+    });
+
+    expect(navigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('replaces with goBackTo when the confirmation replaced the origin page', () => {
+    navigateConfirmationExit(navigate, {
+      goBackTo: '/perps/trade/BTC',
+      locationKey: 'order-page',
+    });
+
+    expect(navigate).toHaveBeenCalledWith('/perps/trade/BTC', {
+      replace: true,
+    });
+  });
+
+  it('replaces when pop was requested but this is the first history entry', () => {
+    navigateConfirmationExit(navigate, {
+      goBackTo: '/money-home/earn',
+      goBackAction: ConfirmationGoBackAction.Pop,
+      locationKey: 'default',
+    });
+
+    expect(navigate).toHaveBeenCalledWith('/money-home/earn', {
+      replace: true,
+    });
+  });
+
+  it('replaces with the wallet home when there is no goBackTo', () => {
+    navigateConfirmationExit(navigate, {
+      locationKey: 'default',
+    });
+
+    expect(navigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
+  });
+});
+
+describe('sanitizeConfirmationSearchParams', () => {
+  it('removes payWithOption while retaining other params', () => {
+    expect(
+      sanitizeConfirmationSearchParams(
+        '?loader=customAmount&payWithOption=money_account&goBackTo=%2Fhome',
+      ),
+    ).toBe('?loader=customAmount&goBackTo=%2Fhome');
+  });
+
+  it('removes preferredPaymentToken params while retaining other params', () => {
+    expect(
+      sanitizeConfirmationSearchParams(
+        '?loader=customAmount&preferredPaymentTokenAddress=0xabc&preferredPaymentTokenChainId=0x1',
+      ),
+    ).toBe('?loader=customAmount');
+  });
+
+  it('returns an empty string when only flow-scoped params are present', () => {
+    expect(
+      sanitizeConfirmationSearchParams('?payWithOption=money_account'),
+    ).toBe('');
+  });
+
+  it('keeps goBackAction alongside goBackTo', () => {
+    expect(
+      sanitizeConfirmationSearchParams(
+        '?loader=customAmount&goBackAction=pop&goBackTo=%2Fmoney-home%2Fearn',
+      ),
+    ).toBe(
+      '?loader=customAmount&goBackAction=pop&goBackTo=%2Fmoney-home%2Fearn',
+    );
+  });
+});
+
+describe('getConfirmationRoute', () => {
+  it('strips payWithOption from reused query strings for transaction confirmations', () => {
+    const confirmations = [
+      {
+        id: APPROVAL_ID_MOCK,
+        type: ApprovalType.Transaction,
+      },
+    ] as never[];
+
+    expect(
+      getConfirmationRoute(
+        APPROVAL_ID_MOCK,
+        confirmations,
+        false,
+        '?loader=customAmount&payWithOption=money_account',
+      ),
+    ).toBe(
+      `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}?loader=customAmount`,
+    );
+  });
+});
+
+describe('useConfirmationNavigationOptions', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  function renderOptionsHook(searchParams: URLSearchParams) {
+    mockUseSearchParams.mockReturnValue([searchParams]);
+
+    const { result } = renderHookWithProvider(
+      () => useConfirmationNavigationOptions(),
+      mockState,
+    );
+
+    return result.current;
+  }
+
+  it('returns loader from search params', () => {
+    const searchParams = new URLSearchParams({ loader: 'customAmount' });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.CustomAmount);
+  });
+
+  it('returns Default loader when not present in search params', () => {
+    const searchParams = new URLSearchParams();
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.Default);
+  });
+
+  it('returns default loader value from search params', () => {
+    const searchParams = new URLSearchParams({ loader: 'default' });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.loader).toBe(ConfirmationLoader.Default);
+  });
+
+  it('returns sanitized goBackTo from search params', () => {
+    const searchParams = new URLSearchParams({
+      goBackTo: '/asset/0x1/0xabc',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.goBackTo).toBe('/asset/0x1/0xabc');
+  });
+
+  it('returns undefined goBackTo when not present in search params', () => {
+    const searchParams = new URLSearchParams();
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.goBackTo).toBeUndefined();
+  });
+
+  it('rejects unsafe goBackTo values', () => {
+    const searchParams = new URLSearchParams({
+      goBackTo: 'https://evil.com',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.goBackTo).toBeUndefined();
+  });
+
+  it('returns MoneyAccount payWithOption from search params', () => {
+    const searchParams = new URLSearchParams({
+      payWithOption: PayWithOption.MoneyAccount,
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.payWithOption).toBe(PayWithOption.MoneyAccount);
+  });
+
+  it('returns undefined payWithOption when the value is not recognized', () => {
+    const searchParams = new URLSearchParams({
+      payWithOption: 'unknown',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.payWithOption).toBeUndefined();
+  });
+
+  it('returns undefined payWithOption when not present in search params', () => {
+    const searchParams = new URLSearchParams();
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.payWithOption).toBeUndefined();
+  });
+
+  it('returns preferredPaymentToken when both hex params are present', () => {
+    const searchParams = new URLSearchParams({
+      preferredPaymentTokenAddress: '0xabc',
+      preferredPaymentTokenChainId: '0x1',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.preferredPaymentToken).toStrictEqual({
+      address: '0xabc',
+      chainId: '0x1',
+    });
+  });
+
+  it('returns undefined preferredPaymentToken when a param is missing', () => {
+    const searchParams = new URLSearchParams({
+      preferredPaymentTokenAddress: '0xabc',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.preferredPaymentToken).toBeUndefined();
+  });
+
+  it('returns pop when goBackAction is pop', () => {
+    const searchParams = new URLSearchParams({
+      goBackAction: ConfirmationGoBackAction.Pop,
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.goBackAction).toBe(ConfirmationGoBackAction.Pop);
+  });
+
+  it('returns undefined goBackAction when the value is not pop', () => {
+    const searchParams = new URLSearchParams({
+      goBackAction: 'replace',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.goBackAction).toBeUndefined();
+  });
+
+  it('returns undefined preferredPaymentToken when a param is not hex', () => {
+    const searchParams = new URLSearchParams({
+      preferredPaymentTokenAddress: 'not-hex',
+      preferredPaymentTokenChainId: '0x1',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.preferredPaymentToken).toBeUndefined();
   });
 });

@@ -20,12 +20,12 @@ export type SnapInsightProps = {
   isExpanded?: boolean | undefined;
 };
 
-export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
+export const SnapInsight = ({
   snapId,
   interfaceId,
   loading,
   isExpanded,
-}) => {
+}: SnapInsightProps) => {
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
@@ -35,6 +35,7 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
     <Text>
       {t('insightsFromSnap', [
         <Text
+          key="snap-name"
           fontWeight={FontWeight.Medium}
           variant={TextVariant.inherit}
           color={TextColor.inherit}

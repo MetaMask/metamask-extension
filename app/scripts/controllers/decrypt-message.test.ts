@@ -5,7 +5,8 @@ import {
 } from '@metamask/message-manager';
 import type { DecryptMessageManagerMessenger } from '@metamask/message-manager';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import DecryptMessageController, {
+import {
+  DecryptMessageController,
   DecryptMessageControllerMessenger,
   DecryptMessageControllerOptions,
   getDefaultState,
@@ -37,6 +38,7 @@ const createKeyringControllerMock = () => ({
 const createMessengerMock = () =>
   ({
     registerActionHandler: jest.fn(),
+    registerMethodActionHandlers: jest.fn(),
     registerInitialEventPayload: jest.fn(),
     subscribe: jest.fn(),
     publish: jest.fn(),

@@ -5,12 +5,41 @@
  * These may eventually be moved to core.
  */
 
+import { IconName } from '@metamask/design-system-react';
+import {
+  MARKET_CATEGORY_FILTERS,
+  type MarketCategoryFilter,
+  type MarketFilter,
+} from '../../../../shared/constants/perps';
+
+/**
+ * Height of list item rows (positions, orders, markets, transactions).
+ * Matches ASSET_CELL_HEIGHT from the tokens tab for visual consistency.
+ */
+export const PERPS_LIST_ITEM_HEIGHT = 62;
+
 /**
  * HyperLiquid asset icons base URL
  * Used to fetch asset icons for perps trading pairs
  */
 export const HYPERLIQUID_ASSET_ICONS_BASE_URL =
   'https://app.hyperliquid.xyz/coins/';
+
+/**
+ * MetaMask-hosted perps icons base URL (GitHub/contract-metadata)
+ * Primary source for asset icons; covers HIP-3 assets missing from HyperLiquid CDN
+ */
+export const METAMASK_PERPS_ICONS_BASE_URL =
+  'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:999/';
+
+/**
+ * Perps withdraw amount input: digits with optional decimal, max six fractional digits
+ * (aligned with HyperLiquid / controller expectations).
+ */
+export const PERPS_WITHDRAW_AMOUNT_REGEX = /^\d*\.?\d{0,6}$/u;
+
+export const isValidPerpsWithdrawAmount = (amount: string): boolean =>
+  PERPS_WITHDRAW_AMOUNT_REGEX.test(amount);
 
 /**
  * General perps display constants
@@ -22,7 +51,42 @@ export const PERPS_CONSTANTS = {
   FALLBACK_DATA_DISPLAY: '--',
   ZERO_AMOUNT_DISPLAY: '$0',
   ZERO_AMOUNT_DETAILED_DISPLAY: '$0.00',
+
+  RECENT_ACTIVITY_LIMIT: 3,
+  FILLS_LOOKBACK_MS: 90 * 24 * 60 * 60 * 1000, // 3 months in milliseconds
+
+  /** Max markets shown in the explore section (aligned with mobile). */
+  EXPLORE_MARKETS_LIMIT: 8,
+
+  /**
+   * Max markets ranked in the Top movers section. Matches mobile's
+   * `TOP_MOVERS_LIMIT` and fills the design's 2-column x 4-row grid exactly,
+   * so the pills stack without scrolling.
+   */
+  TOP_MOVERS_LIMIT: 8,
 } as const;
+
+/**
+ * Collateral asset used to settle perps positions. Shown in market pair labels
+ * such as "BTC-USDC perp".
+ */
+export const PERPS_COLLATERAL_SYMBOL = 'USDC';
+
+/**
+ * Minimum USD notional for market, limit and reduce-only orders on HyperLiquid (mainnet and testnet).
+ * Partial closes below this amount fail with ORDER_SIZE_MIN; full closes omit this check.
+ * Duplicates TRADING_DEFAULTS.amount in @metamask/perps-controller until a shared export exists.
+ * @see TRADING_DEFAULTS.amount in @metamask/perps-controller hyperLiquidConfig
+ */
+export const PERPS_MIN_MARKET_ORDER_USD = 10;
+
+/**
+ * A tradeable balance below this rounds to `0.00 USDC` in the displayed
+ * available-to-trade row, so a disabled Insufficient funds button reads as a
+ * bug. Treat it as unfunded and offer Add funds instead. This is a display
+ * threshold, not an order-minimum one — see `PERPS_MIN_MARKET_ORDER_USD`.
+ */
+export const PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC = 0.01;
 
 /**
  * Market sorting configuration
@@ -40,3 +104,94 @@ export const MARKET_SORTING_CONFIG = {
     FUNDING_RATE: 'fundingRate',
   } as const,
 } as const;
+
+/**
+ * HIP-3 market configuration
+ *
+ * HIP-3 markets are non-crypto assets (stock, pre-IPO, index, ETF,
+ * commodity, forex) available
+ * through partner DEX integrations. Each source identifier corresponds to a
+ * specific DEX provider.
+ *
+ * The list of supported sources is controlled by the `perpsHip3AllowlistMarkets`
+ * feature flag. Use the `getHip3AllowedSourcesSet` selector to get the current
+ * allowed sources, or the `useHip3MarketFilter` hook for filtering utilities.
+ *
+ * @see ui/selectors/perps/feature-flags.ts for the selector
+ * @see ui/hooks/perps/useHip3MarketFilter.ts for the hook
+ */
+export const HIP3_MARKET_CONFIG = {
+  /**
+   * Check if a market source is in the allowed HIP-3 sources
+   *
+   * @param marketSource - The market source identifier to check
+   * @param allowedSources - Set of allowed source identifiers from the feature flag
+   * @returns True if the source is an allowed HIP-3 provider
+   */
+  isAllowedSource: (
+    marketSource: string | undefined,
+    allowedSources: Set<string>,
+  ): boolean => {
+    return Boolean(marketSource && allowedSources.has(marketSource));
+  },
+} as const;
+
+/**
+ * i18n label key for every market filter. Driven by the controller's
+ * `MARKET_CATEGORIES` plus the UI-only `all` / `new` pseudo-filters and the
+ * `watchlist` user-state filter — adding a core category only requires a new
+ * label key here.
+ *
+ * Shared by every surface that labels a category: the market list's category
+ * rail and the Perps tab's Products chips, both through
+ * `PerpsMarketCategoryPill`, plus the rail's `More` menu options — so no two
+ * can drift.
+ */
+export const MARKET_FILTER_LABEL_KEYS: Record<MarketFilter, string> = {
+  all: 'perpsFilterAll',
+  // Reuses the Perps tab section heading rather than adding a duplicate string.
+  watchlist: 'perpsWatchlist',
+  crypto: 'perpsFilterCrypto',
+  memecoin: 'perpsFilterMemecoins',
+  stock: 'perpsFilterStocks',
+  'pre-ipo': 'perpsFilterPreIpo',
+  index: 'perpsFilterIndex',
+  etf: 'perpsFilterEtf',
+  commodity: 'perpsFilterCommodities',
+  forex: 'perpsFilterForex',
+  new: 'perpsFilterNew',
+};
+
+/**
+ * Leading glyph for each product category chip except `memecoin`, taken from
+ * the Products design (Figma `13192:28387`). Indices and ETFs deliberately
+ * share `Chart` — the design uses one bar-chart glyph for both. Memecoins use
+ * the local `PerpsSentimentSatisfiedIcon` until MMDS ships
+ * `IconName.SentimentSatisfied`.
+ */
+export const MARKET_CATEGORY_ICONS: Record<
+  Exclude<MarketCategoryFilter, 'memecoin'>,
+  IconName
+> = {
+  // `all` never renders a chip; kept so the record stays exhaustive.
+  all: IconName.Category,
+  crypto: IconName.Ethereum,
+  stock: IconName.Diagram,
+  'pre-ipo': IconName.Rocket,
+  commodity: IconName.Tint,
+  index: IconName.Chart,
+  new: IconName.Fire,
+  forex: IconName.Exchange,
+  etf: IconName.Chart,
+};
+
+export const MEMECOIN_CATEGORY_ID = 'memecoin' satisfies MarketCategoryFilter;
+
+/**
+ * Categories shown as Products chips on the Perps tab, taken from the
+ * controller's filters in its own order — the order the market list's filter
+ * rail uses too — so a core category change reaches the tab with no change
+ * here. `all` is the absence of a filter and never gets a chip.
+ */
+export const PERPS_PRODUCT_CATEGORIES: readonly MarketCategoryFilter[] =
+  MARKET_CATEGORY_FILTERS.filter((category) => category !== 'all');

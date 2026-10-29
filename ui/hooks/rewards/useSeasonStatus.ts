@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   getRewardsSeasonMetadata,
   getRewardsSeasonStatus,
 } from '../../store/actions';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -17,6 +17,7 @@ import {
 } from '../../ducks/rewards';
 import { CandidateSubscriptionId } from '../../ducks/rewards/types';
 import { REWARDS_ERROR_MESSAGES } from '../../../shared/constants/rewards';
+import { useDispatch } from '../../store/hooks';
 
 type UseSeasonStatusOptions = {
   subscriptionId: CandidateSubscriptionId;
@@ -51,6 +52,8 @@ export const useSeasonStatus = ({
       subscriptionId === 'pending' ||
       subscriptionId === 'retry' ||
       subscriptionId === 'error' ||
+      subscriptionId ===
+        'error-existing-subscription-hardware-wallet-explicit-sign' ||
       !isRewardsEnabled
     ) {
       dispatch(setSeasonStatus(null));

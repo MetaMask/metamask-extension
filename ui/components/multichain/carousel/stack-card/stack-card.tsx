@@ -1,30 +1,31 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   ButtonIcon,
   ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../component-library';
-import {
   IconColor,
+  IconName,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Text } from '../../../component-library';
+import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { SHIELD_CAROUSEL_ID } from '../../../../../shared/modules/shield/constants';
-import { SETTINGS_ROUTE } from '../../../../helpers/constants/routes';
-import { SHIELD_QUERY_PARAMS } from '../../../../../shared/lib/deep-links/routes/shield';
+import {
+  isInternalRouteHref,
+  resolveCarouselHref,
+} from '../resolve-carousel-href';
 import type { StackCardProps } from './stack-card.types';
 
-export const StackCard: React.FC<StackCardProps> = ({
+export const StackCard = ({
   slide,
   isCurrentCard,
   isLastSlide = false,
   onSlideClick,
   onTransitionToNextCard,
   className = '',
-}) => {
+}: StackCardProps) => {
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
@@ -39,36 +40,27 @@ export const StackCard: React.FC<StackCardProps> = ({
 
   const navigate = useNavigate();
 
-  const handleCardClick = () => {
+  const handleCardClick = async () => {
     if (!isCurrentCard) {
       return;
     }
 
-    const navigation = {
-      type: slide.href ? ('external' as const) : ('internal' as const),
-      href: slide.href,
-    };
+    const clickHandled = onSlideClick?.(slide.id);
 
-    if (slide.href) {
-      const key = slide.id;
-      if (key === SHIELD_CAROUSEL_ID) {
-        // in app navigation for shield carousel
-        // TODO: clean this once we have better control of how deeplink are opened
-        try {
-          const url = new URL(slide.href);
-          const params = url.searchParams.toString();
-          navigate(
-            `${SETTINGS_ROUTE}?${SHIELD_QUERY_PARAMS.showShieldEntryModal}=true${params ? `&${params}` : ''}`,
-          );
-        } catch (error) {
-          console.error('[StackCard] error parsing slide.href', error);
-        }
-      } else {
-        global.platform.openTab({ url: slide.href });
-      }
+    if (clickHandled) {
+      // If the click was handled by the parent component, we assume it took care of navigation or any other side effects, so we don't proceed with the `linkUrl` behavior.
+      return;
     }
 
-    onSlideClick?.(slide.id, navigation);
+    if (slide.href) {
+      const href = await resolveCarouselHref(slide.href);
+
+      if (isInternalRouteHref(href)) {
+        navigate(href);
+      } else {
+        global.platform.openTab({ url: href });
+      }
+    }
   };
 
   return (
@@ -92,9 +84,10 @@ export const StackCard: React.FC<StackCardProps> = ({
         {/* Title and close button container */}
         <div className="carousel-card__text-header">
           <Text
-            variant={TextVariant.bodyMdMedium}
+            variant={TextVariant.bodySmMedium}
             color={TextColor.textDefault}
             className="carousel-card__title"
+            data-testid="carousel-slide-title"
           >
             {isContentfulContent ? slide.title : t(slide.title)}
           </Text>
@@ -103,7 +96,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             <ButtonIcon
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
-              color={IconColor.iconAlternative}
+              iconProps={{ className: IconColor.IconAlternative }}
               ariaLabel={t('closeSlide', [
                 isContentfulContent ? slide.title : t(slide.title),
               ])}
@@ -116,9 +109,10 @@ export const StackCard: React.FC<StackCardProps> = ({
         {/* Description Text container */}
         <div className="carousel-card__text-body">
           <Text
-            variant={TextVariant.bodySmMedium}
+            variant={TextVariant.bodyXsMedium}
             color={TextColor.textAlternative}
             className="carousel-card__description"
+            data-testid="carousel-slide-description"
           >
             {isContentfulContent ? slide.description : t(slide.description)}
           </Text>

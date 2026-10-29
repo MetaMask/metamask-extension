@@ -1,10 +1,7 @@
 import { escapeRegExp } from 'lodash';
 import { BUILT_IN_CUSTOM_NETWORKS_RPC } from '@metamask/controller-utils';
-import {
-  CHAIN_SPEC_URL,
-  FEATURED_RPCS,
-  QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
-} from '../constants/network';
+import { CHAIN_SPEC_URL, FEATURED_RPCS } from '../constants/network';
+import { type CachedFetchStorageEntry } from './fetch-with-cache';
 import { getStorageItem } from './storage-helpers';
 
 const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
@@ -48,8 +45,9 @@ const KNOWN_CUSTOM_ENDPOINT_URLS = [
  */
 export async function getSafeChainsListFromCacheOnly(): Promise<ChainInfo[]> {
   try {
-    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
-    return cachedResponse || [];
+    const { cachedResponse } =
+      (await getStorageItem<CachedFetchStorageEntry>(cacheKey)) ?? {};
+    return Array.isArray(cachedResponse) ? (cachedResponse as ChainInfo[]) : [];
   } catch (error) {
     console.error('Error retrieving chains list from cache', error);
     return [];
@@ -75,42 +73,6 @@ export function getIsMetaMaskInfuraEndpointUrl(
 }
 
 /**
- * Determines whether the given RPC endpoint URL matches a known Quicknode URL.
- *
- * @param endpointUrl - The URL of the RPC endpoint.
- * @returns True if the URL is a Quicknode URL, false otherwise.
+ * The list of known unofficial endpoint URLs.
  */
-export function getIsQuicknodeEndpointUrl(endpointUrl: string): boolean {
-  return Object.values(QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME)
-    .map((getUrl) => getUrl())
-    .includes(endpointUrl);
-}
-
-/**
- * Some URLs that users add as networks refer to private servers, and we do not
- * want to report these in Segment (or any other data collection service). This
- * function returns whether the given RPC endpoint is safe to share.
- *
- * @param endpointUrl - The URL of the endpoint.
- * @param infuraProjectId - Our Infura project ID.
- * @returns True if the endpoint URL is safe to share with external data
- * collection services, false otherwise.
- */
-export function isPublicEndpointUrl(
-  endpointUrl: string,
-  infuraProjectId: string,
-) {
-  const isMetaMaskInfuraEndpointUrl = getIsMetaMaskInfuraEndpointUrl(
-    endpointUrl,
-    infuraProjectId,
-  );
-  const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
-  const isKnownCustomEndpointUrl =
-    KNOWN_CUSTOM_ENDPOINT_URLS.includes(endpointUrl);
-
-  return (
-    isMetaMaskInfuraEndpointUrl ||
-    isQuicknodeEndpointUrl ||
-    isKnownCustomEndpointUrl
-  );
-}
+export { KNOWN_CUSTOM_ENDPOINT_URLS };

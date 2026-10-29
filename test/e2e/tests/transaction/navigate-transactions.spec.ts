@@ -1,11 +1,11 @@
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { createDappTransaction } from '../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../page-objects/flows/transaction.flow';
 import { withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import HomePage from '../../page-objects/pages/home/homepage';
 
@@ -15,7 +15,7 @@ describe('Navigate transactions', function () {
   it('should navigate the unapproved transactions', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -24,7 +24,7 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -55,7 +55,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerTxSimulationsDisabled()
           .build(),
@@ -63,7 +63,7 @@ describe('Navigate transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
@@ -89,7 +89,7 @@ describe('Navigate transactions', function () {
   it('should reject and remove an unapproved transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -98,12 +98,12 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
         const navigation = new Confirmation(driver);
-        await navigation.clickFooterCancelButton();
+        await navigation.clickFooterButton({ button: 'cancel' });
 
         await navigation.checkPageNumbers(1, 3);
       },
@@ -113,7 +113,7 @@ describe('Navigate transactions', function () {
   it('should confirm and remove an unapproved transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -122,12 +122,12 @@ describe('Navigate transactions', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
         const navigation = new Confirmation(driver);
-        await navigation.clickFooterConfirmButton();
+        await navigation.clickFooterButton({ button: 'confirm' });
 
         await navigation.checkPageNumbers(1, 3);
       },
@@ -138,7 +138,7 @@ describe('Navigate transactions', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -146,7 +146,7 @@ describe('Navigate transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 

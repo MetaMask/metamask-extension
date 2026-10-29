@@ -1,8 +1,6 @@
 import Bowser from 'bowser';
-import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
@@ -39,20 +37,6 @@ describe('util', () => {
       const input = '0x0';
       const output = util.parseBalance(input);
       expect(output).toStrictEqual(['0', '0']);
-    });
-  });
-
-  describe('#addressSummary', () => {
-    it('should add case-sensitive checksum', () => {
-      const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
-      const result = util.addressSummary(address);
-      expect(result).toStrictEqual('0xFDEa65C8...b825');
-    });
-
-    it('should accept arguments for firstseg, lastseg, and keepPrefix', () => {
-      const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
-      const result = util.addressSummary(address, 4, 4, false);
-      expect(result).toStrictEqual('FDEa...b825');
     });
   });
 
@@ -188,37 +172,8 @@ describe('util', () => {
     });
   });
 
-  describe('isOriginContractAddress', () => {
-    it('should return true when the send address is the same as the selected tokens contract address', () => {
-      expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-        ),
-      ).toStrictEqual(true);
-    });
-
-    it('should return true when the send address is the same as the selected tokens contract address, capitalized input', () => {
-      expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0X8D6B81208414189A58339873AB429B6C47AB92D3',
-        ),
-      ).toStrictEqual(true);
-    });
-
-    it('should return false when the recipient address differs', () => {
-      expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
-        ),
-      ).toStrictEqual(false);
-    });
-  });
-
   describe('#numericBalance', () => {
-    it('should return a BN 0 if given nothing', () => {
+    it('should return 0 if given nothing', () => {
       const result = util.numericBalance();
       expect(result.toString(10)).toStrictEqual('0');
     });
@@ -241,13 +196,13 @@ describe('util', () => {
     });
 
     it('should return 1.0000 ETH', () => {
-      const input = new BN(ethInWei, 10).toJSON();
+      const input = BigInt(ethInWei).toString(16);
       const result = util.formatBalance(input, 4);
       expect(result).toStrictEqual('1.0000 ETH');
     });
 
     it('should return 0.500 ETH', function () {
-      const input = new BN(ethInWei, 10).div(new BN('2', 10)).toJSON();
+      const input = (BigInt(ethInWei) / 2n).toString(16);
       const result = util.formatBalance(input, 3);
       expect(result).toStrictEqual('0.500 ETH');
     });
@@ -283,56 +238,56 @@ describe('util', () => {
     });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.52',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36 OPR/109.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.165 Safari/537.36 OPR/98.0.4759.39',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36 OPR/108.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36 Edg/113.0.1774.50',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.2420.81 Safari/537.36 Edg/123.0.2420.81',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edge/109.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.2365.92 Safari/537.36 Edg/122.0.2365.92',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
@@ -343,25 +298,6 @@ describe('util', () => {
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('normalizing values', function () {
-    describe('#getRandomFileName', () => {
-      it('should only return a string containing alphanumeric characters', () => {
-        const result = util.getRandomFileName();
-        expect(result[0]).toStrictEqual(
-          expect.stringMatching(/^[a-zA-Z0-9]*$/gu),
-        );
-      });
-
-      // 50 samples
-      it('should return a string that is between 6 and 12 characters in length', () => {
-        for (let i = 0; i < 50; i++) {
-          const result = util.getRandomFileName();
-          expect(result.length >= 6 && result.length <= 12).toStrictEqual(true);
-        }
-      });
     });
   });
 
@@ -490,6 +426,9 @@ describe('util', () => {
     });
     it('should return value in hours for milliseconds passed very high above 5400000', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
+    });
+    it('should return sub-second value when milliseconds < 1000', () => {
+      expect(util.toHumanReadableTime(t, 200)).toStrictEqual('0.2 sec');
     });
   });
   describe('sanitizeMessage', () => {
@@ -1040,16 +979,6 @@ describe('util', () => {
     });
   });
 
-  describe('isDefaultMetaMaskChain()', () => {
-    it('should return true if the provided chainId is a default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
-    });
-
-    it('should return false if the provided chainId is a not default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
-    });
-  });
-
   describe('checkTokenIdExists()', () => {
     const data = {
       '0x2df920B180c58766951395c26ecF1EC2063490Fa': {
@@ -1176,6 +1105,12 @@ describe('util', () => {
       expect(
         util.shortenAddress('0x1234567890123456789012345678901234567890'),
       ).toStrictEqual('0x12345...67890');
+    });
+
+    it('keeps the first 5 characters of a non-EVM address', () => {
+      expect(
+        util.shortenAddress('bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker'),
+      ).toStrictEqual('bc1qn...5eker');
     });
   });
 
@@ -1614,57 +1549,6 @@ describe('util', () => {
       expect(util.transformOriginToTitle('http://[fe80::1]:9011/')).toBe(
         '[fe80::1]',
       );
-    });
-  });
-
-  describe('checkExistingAllTokens', () => {
-    const tokensList = {
-      1: {
-        '0xAccount1': [{ address: '0xToken1' }, { address: '0xToken2' }],
-      },
-      2: {
-        '0xAccount2': [{ address: '0xToken3' }],
-      },
-    };
-
-    it('should return false if address is not provided', () => {
-      const result = util.checkExistingAllTokens(
-        '',
-        1,
-        '0xAccount1',
-        tokensList,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('should return false if token is not found in the list', () => {
-      const result = util.checkExistingAllTokens(
-        '0xNonExistentToken',
-        1,
-        '0xAccount1',
-        tokensList,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('should return true if token is found (exact match)', () => {
-      const result = util.checkExistingAllTokens(
-        '0xToken1',
-        1,
-        '0xAccount1',
-        tokensList,
-      );
-      expect(result).toBe(true);
-    });
-
-    it('should return true if token is found (case insensitive)', () => {
-      const result = util.checkExistingAllTokens(
-        '0xtoken2',
-        1,
-        '0xAccount1',
-        tokensList,
-      );
-      expect(result).toBe(true);
     });
   });
 });

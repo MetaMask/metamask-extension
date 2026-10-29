@@ -6,14 +6,17 @@ import {
   Subscription,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';
+import { createSelector } from 'reselect';
 import {
   getIsShieldSubscriptionActive,
   getShieldSubscription,
+  ShieldSubscriptionError,
 } from '../../../shared/lib/shield';
 
-export type SubscriptionState = {
+type SubscriptionState = {
   metamask: SubscriptionControllerState & {
     showShieldEntryModalOnce: boolean | null;
+    shieldSubscriptionError?: ShieldSubscriptionError | null;
   };
 };
 
@@ -23,19 +26,20 @@ export function getSubscriptionPricing(
   return state.metamask.pricing;
 }
 
-export function getUserSubscriptions(state: SubscriptionState): {
-  customerId?: string;
-  subscriptions: Subscription[];
-  trialedProducts: ProductType[];
-  lastSubscription?: Subscription;
-} {
-  return {
-    customerId: state.metamask.customerId,
-    subscriptions: state.metamask.subscriptions,
-    trialedProducts: state.metamask.trialedProducts,
-    lastSubscription: state.metamask.lastSubscription,
-  };
-}
+export const getUserSubscriptions = createSelector(
+  [
+    (state: SubscriptionState) => state.metamask.customerId,
+    (state: SubscriptionState) => state.metamask.subscriptions,
+    (state: SubscriptionState) => state.metamask.trialedProducts,
+    (state: SubscriptionState) => state.metamask.lastSubscription,
+  ],
+  (customerId, subscriptions, trialedProducts, lastSubscription) => ({
+    customerId,
+    subscriptions,
+    trialedProducts,
+    lastSubscription,
+  }),
+);
 
 export function getIsActiveShieldSubscription(
   state: SubscriptionState,
@@ -79,4 +83,17 @@ export function getLatestShieldSubscription(
     return getShieldSubscription(lastSubscription);
   }
   return currentShieldSubscription;
+}
+
+/**
+ * Returns the shield subscription error object if one is set, or null otherwise.
+ * Used to display subscription-related errors on the shield plan page.
+ *
+ * @param state - Redux state object.
+ * @returns The error object with message and optional code, or null if no error
+ */
+export function getShieldSubscriptionError(
+  state: SubscriptionState,
+): ShieldSubscriptionError | null {
+  return state.metamask.shieldSubscriptionError ?? null;
 }

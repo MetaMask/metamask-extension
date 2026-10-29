@@ -1,0 +1,675 @@
+import path from 'path';
+import { promises as fs, existsSync } from 'fs';
+import { merge } from 'lodash';
+import { chromium, type Page, type BrowserContext } from '@playwright/test';
+import {
+  ConsoleErrorBuffer,
+  resolveExtensionId,
+} from '@metamask/client-mcp-core';
+import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
+import {
+  CONNECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+} from '../../../../ui/helpers/constants/routes';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { validateExtensionBuilt } from './validate-extension';
+import type {
+  LauncherLaunchOptions,
+  ScreenshotOptions,
+  ScreenshotResult,
+  LauncherContext,
+  NetworkConfig,
+} from './launcher-types';
+import { resolveRepoRoot } from './resolve-repo-root';
+import { finishOnboarding, runSelfOnboarding } from './self-onboarding';
+import { getE2EDriver, withTimeout } from './e2e-driver';
+import {
+  LAUNCH_SCREEN_CHECKS,
+  waitForAnyScreen,
+} from './launcher/state-inspector';
+
+const DEFAULT_PASSWORD = 'correct horse battery staple';
+const DEFAULT_CHAIN_ID = 1337;
+const UI_READY_TIMEOUT_MS = 30_000;
+const REPO_ROOT = resolveRepoRoot();
+
+// Routes that indicate a confirmation screen when matched against the sidepanel URL hash.
+const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
+  CONNECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+];
+type ResolvedOptions = {
+  extensionPath: string;
+  headless: boolean;
+  userDataDir: string;
+  viewportWidth: number;
+  viewportHeight: number;
+  slowMo: number;
+  screenshotDir: string;
+  stateMode: 'default' | 'onboarding' | 'custom';
+  network: NetworkConfig;
+  proxyServer?: string;
+  manifestFlags?: Partial<ManifestFlags>;
+  selfOnboarding: boolean;
+  srp?: string;
+  password?: string;
+};
+
+export function buildChromiumLaunchArgs(
+  extensionPath: string,
+  proxyServer?: string,
+  headless = false,
+): string[] {
+  const launchArgs = [
+    `--disable-extensions-except=${extensionPath}`,
+    `--load-extension=${extensionPath}`,
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-renderer-backgrounding',
+    '--disable-features=TranslateUI',
+  ];
+
+  if (headless) {
+    launchArgs.push('--headless=new');
+  }
+
+  if (proxyServer) {
+    launchArgs.unshift('--allow-insecure-localhost');
+    launchArgs.unshift('--ignore-certificate-errors');
+    launchArgs.unshift(`--proxy-server=${proxyServer}`);
+  }
+
+  return launchArgs;
+}
+
+export class MetaMaskExtensionLauncher {
+  private context: BrowserContext | undefined;
+
+  private extensionPage: Page | undefined;
+
+  private extensionId: string | undefined;
+
+  private options: ResolvedOptions;
+
+  private userDataDir: string;
+
+  private manifestBackupPath?: string;
+
+  private consoleErrorBuffer = new ConsoleErrorBuffer(100);
+
+  constructor(options: LauncherLaunchOptions = {}) {
+    this.options = {
+      extensionPath:
+        options.extensionPath ?? path.join(REPO_ROOT, 'dist', 'chrome'),
+      headless: Boolean(options.headless),
+      userDataDir: options.userDataDir ?? '',
+      viewportWidth: options.viewportWidth ?? 1280,
+      viewportHeight: options.viewportHeight ?? 800,
+      slowMo: options.slowMo ?? 0,
+      screenshotDir:
+        options.screenshotDir ??
+        path.join(REPO_ROOT, 'test-artifacts', 'screenshots'),
+      stateMode: options.stateMode ?? 'default',
+      network: options.network ?? {
+        mode: 'localhost',
+        chainId: DEFAULT_CHAIN_ID,
+      },
+      proxyServer: options.proxyServer,
+      manifestFlags: options.manifestFlags,
+      selfOnboarding: options.selfOnboarding === true,
+      srp: options.srp,
+      password: options.password,
+    };
+    this.userDataDir = '';
+
+    this.validateConfig();
+  }
+
+  private validateConfig(): void {
+    this.ensureDependenciesInstalled();
+    this.validateNetworkModeRequiresRpcUrl();
+    this.validateSelfOnboarding();
+  }
+
+  private validateSelfOnboarding(): void {
+    if (!this.options.selfOnboarding) {
+      return;
+    }
+    if (!this.options.srp) {
+      throw new Error(
+        'Configuration error: selfOnboarding requires a secret recovery phrase.',
+      );
+    }
+  }
+
+  private ensureDependenciesInstalled(): void {
+    const nodeModulesPath = path.join(REPO_ROOT, 'node_modules');
+    if (!existsSync(nodeModulesPath)) {
+      throw new Error(
+        'Dependencies not installed. The node_modules directory was not found.\n\n' +
+          'To fix this, run the following commands:\n' +
+          '  1. yarn install    # Install dependencies\n' +
+          '  2. yarn build:test # Build the extension\n\n' +
+          'Then try running this workflow again.',
+      );
+    }
+  }
+
+  private validateNetworkModeRequiresRpcUrl(): void {
+    const mode = this.options.network?.mode;
+    const rpcUrl = this.options.network?.rpcUrl;
+
+    if (mode === 'custom' || mode === 'fork') {
+      if (!rpcUrl) {
+        throw new Error(
+          `Configuration error: network.mode '${mode}' requires a valid 'rpcUrl' to be provided.`,
+        );
+      }
+      if (!URL.canParse(rpcUrl)) {
+        throw new Error(
+          `Configuration error: network.rpcUrl '${rpcUrl}' is not a valid URL. ` +
+            `Expected format: http://localhost:8545 or https://eth.llamarpc.com`,
+        );
+      }
+    }
+  }
+
+  private ensureExtensionInitialized(): void {
+    if (!this.extensionPage || !this.extensionId) {
+      throw new Error(
+        'Extension not initialized. Call launch() before using this method.',
+      );
+    }
+  }
+
+  private ensureBrowserContext(): void {
+    if (!this.context || !this.extensionId) {
+      throw new Error(
+        'Browser context not initialized. Call launch() before using this method.',
+      );
+    }
+  }
+
+  private getManifestPath(): string {
+    return path.join(this.options.extensionPath, 'manifest.json');
+  }
+
+  private async backupManifest(): Promise<void> {
+    const manifestPath = this.getManifestPath();
+    const backupPath = `${manifestPath}.backup`;
+    await fs.copyFile(manifestPath, backupPath);
+    this.manifestBackupPath = backupPath;
+  }
+
+  private async patchManifestFlags(
+    flags: Partial<ManifestFlags>,
+  ): Promise<void> {
+    const manifestPath = this.getManifestPath();
+    const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf-8'));
+    manifest._flags = merge({}, manifest._flags ?? {}, flags);
+    await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+  }
+
+  private async restoreManifest(): Promise<void> {
+    if (!this.manifestBackupPath || !existsSync(this.manifestBackupPath)) {
+      return;
+    }
+    await fs.copyFile(this.manifestBackupPath, this.getManifestPath());
+    await fs.rm(this.manifestBackupPath, { force: true });
+    this.manifestBackupPath = undefined;
+  }
+
+  async launch(): Promise<LauncherContext> {
+    await this.validateExtensionExists();
+
+    await this.ensureDirectories();
+
+    if (this.options.manifestFlags) {
+      await this.backupManifest();
+      await this.patchManifestFlags(this.options.manifestFlags);
+    }
+
+    try {
+      this.userDataDir =
+        this.options.userDataDir ||
+        path.join(REPO_ROOT, `temp-llm-workflow-${Date.now()}`);
+      await fs.mkdir(this.userDataDir, { recursive: true });
+
+      const launchArgs = buildChromiumLaunchArgs(
+        this.options.extensionPath,
+        this.options.proxyServer,
+        this.options.headless,
+      );
+
+      this.context = await chromium.launchPersistentContext(this.userDataDir, {
+        // Playwright's headless-shell does not load browser extensions. Use
+        // full Chromium with the modern headless flag so MV3 workers attach.
+        headless: false,
+        channel: 'chromium',
+        args: launchArgs,
+        ignoreHTTPSErrors: Boolean(this.options.proxyServer),
+        viewport: {
+          width: this.options.viewportWidth,
+          height: this.options.viewportHeight,
+        },
+        slowMo: this.options.slowMo,
+      });
+
+      await this.context.grantPermissions([
+        'clipboard-read',
+        'clipboard-write',
+      ]);
+
+      await this.waitForExtensionReady();
+
+      this.ensureExtensionInitialized();
+
+      if (this.options.selfOnboarding) {
+        let phrase = this.options.srp ?? '';
+        this.options.srp = undefined;
+        let password = this.options.password ?? DEFAULT_PASSWORD;
+        this.options.password = undefined;
+        try {
+          await runSelfOnboarding(
+            getE2EDriver(this.extensionPage as Page),
+            phrase,
+            password,
+          );
+          phrase = '';
+          const driver = withTimeout(
+            getE2EDriver(this.extensionPage as Page),
+            UI_READY_TIMEOUT_MS,
+          );
+          // Reloading lets the UI route to unlock or the completion page from
+          // the real wallet state; Done never navigates the tab when it opens
+          // the side panel, so home is loaded again afterwards.
+          await this.navigateToHome();
+          await finishOnboarding(driver, password);
+          password = '';
+          await this.navigateToHome();
+          await new HomePage(driver).checkPageIsLoaded();
+        } finally {
+          phrase = '';
+          password = '';
+        }
+      }
+
+      return {
+        context: this.context as BrowserContext,
+        extensionPage: this.extensionPage as Page,
+        extensionId: this.extensionId as string,
+      };
+    } catch (error) {
+      console.error('Launch failed, cleaning up services...');
+      await this.cleanup();
+      throw error;
+    }
+  }
+
+  private async validateExtensionExists(): Promise<void> {
+    await validateExtensionBuilt(this.options.extensionPath);
+    console.log('Extension build found at:', this.options.extensionPath);
+  }
+
+  private async ensureDirectories(): Promise<void> {
+    await fs.mkdir(this.options.screenshotDir, { recursive: true });
+  }
+
+  private async waitForExtensionReady(): Promise<void> {
+    // Extension initialization flow:
+    // 1. Resolve the extension ID from Chrome's extension management API
+    // 2. Check if an extension page already exists (dist builds auto-open one)
+    // 3. If not, get an existing blank page or create a new one
+    // 4. Navigate to home.html and wait for the UI to fully render
+    if (!this.context) {
+      throw new Error('Browser context not initialized');
+    }
+
+    this.extensionId = await resolveExtensionId({
+      context: this.context,
+      log: {
+        info: (message: string) => console.log(message),
+        warn: (message: string, error?: unknown) =>
+          console.warn(message, error),
+      },
+    });
+
+    if (!this.extensionId) {
+      throw new Error('Could not find MetaMask extension ID');
+    }
+
+    const extensionPrefix = `chrome-extension://${this.extensionId}/`;
+
+    // Wait for the extension to open its own page (dist builds).
+    // Poll for up to 3 seconds to give the extension time to auto-open.
+    let page: Page | undefined;
+    const pollStart = Date.now();
+    const pollTimeout = 3000;
+
+    while (Date.now() - pollStart < pollTimeout) {
+      const pages = (this.context as BrowserContext).pages();
+      page = pages.find((p) => p.url().startsWith(extensionPrefix));
+      if (page) {
+        console.log('Reusing existing extension page:', page.url());
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+
+    // If no extension page appeared, create one
+    if (!page) {
+      const pages = (this.context as BrowserContext).pages();
+      page = pages.find((p) => p.url() === 'about:blank') ?? pages[0];
+      if (!page) {
+        page = await this.context.newPage();
+      }
+      await page.goto(`${extensionPrefix}home.html`);
+    }
+
+    await page.waitForLoadState('domcontentloaded');
+
+    this.attachConsoleListeners(page);
+
+    this.extensionPage = page;
+    await this.waitForUiReady(page);
+  }
+
+  private async waitForUiReady(page: Page): Promise<void> {
+    try {
+      const { description } = await waitForAnyScreen(
+        withTimeout(getE2EDriver(page), UI_READY_TIMEOUT_MS),
+        LAUNCH_SCREEN_CHECKS,
+      );
+      console.log(`Extension UI is ready (${description})`);
+    } catch {
+      const screenshotPath = path.join(
+        this.options.screenshotDir,
+        `ui-ready-failure-${Date.now()}.png`,
+      );
+      await page
+        .screenshot({ path: screenshotPath, fullPage: true })
+        .catch(() => undefined);
+      console.error(`Debug screenshot saved: ${screenshotPath}`);
+      throw new Error(
+        `Extension UI did not reach expected state within ${UI_READY_TIMEOUT_MS}ms. ` +
+          `Current URL: ${page.url()}. ` +
+          `Expected one of: ${LAUNCH_SCREEN_CHECKS.map(({ description }) => description).join(', ')}. ` +
+          `Debug screenshot saved to: ${screenshotPath}`,
+      );
+    }
+  }
+
+  private attachConsoleListeners(page: Page): void {
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        this.addConsoleError(msg.text(), page.url());
+      }
+    });
+
+    page.on('pageerror', (error) => {
+      this.addConsoleError(`Page error: ${error.message}`, page.url());
+    });
+  }
+
+  private addConsoleError(message: string, source: string): void {
+    this.consoleErrorBuffer.add({
+      timestamp: Date.now(),
+      message,
+      source,
+    });
+  }
+
+  async screenshot(options: ScreenshotOptions): Promise<ScreenshotResult> {
+    const page = options.page ?? this.extensionPage;
+    if (!page) {
+      throw new Error('No page available for screenshot');
+    }
+
+    const timestamp = options.timestamp === false ? '' : `-${Date.now()}`;
+    const filename = `${options.name}${timestamp}.png`;
+    const filepath = path.join(this.options.screenshotDir, filename);
+
+    let screenshotBuffer: Buffer;
+
+    if (options.selector) {
+      const element = page.locator(options.selector);
+      screenshotBuffer = await element.screenshot({ path: filepath });
+    } else {
+      screenshotBuffer = await page.screenshot({
+        path: filepath,
+        fullPage: options.fullPage !== false,
+      });
+    }
+
+    const sharp = await import('sharp').then((m) => m.default);
+    const metadata = await sharp(screenshotBuffer).metadata();
+
+    return {
+      path: filepath,
+      base64: screenshotBuffer.toString('base64'),
+      width: metadata.width ?? 0,
+      height: metadata.height ?? 0,
+    };
+  }
+
+  getExtensionId(): string {
+    this.ensureExtensionInitialized();
+    return this.extensionId as string;
+  }
+
+  private async navigateToExtensionPath(navigationPath: string): Promise<void> {
+    this.ensureExtensionInitialized();
+    await (this.extensionPage as Page).goto(
+      `chrome-extension://${this.extensionId as string}/${navigationPath}`,
+    );
+    await (this.extensionPage as Page).waitForLoadState('domcontentloaded');
+  }
+
+  async navigateToHome(): Promise<void> {
+    await this.navigateToExtensionPath('home.html');
+  }
+
+  async navigateToSettings(): Promise<void> {
+    await this.navigateToExtensionPath('home.html#settings');
+  }
+
+  getPage(): Page {
+    if (!this.extensionPage) {
+      throw new Error('Extension page not initialized');
+    }
+    return this.extensionPage;
+  }
+
+  getContext(): BrowserContext {
+    if (!this.context) {
+      throw new Error('Browser context not initialized');
+    }
+    return this.context;
+  }
+
+  async getAllExtensionPages(): Promise<Page[]> {
+    this.ensureBrowserContext();
+
+    const extensionPrefix = `chrome-extension://${this.extensionId as string}`;
+    return (this.context as BrowserContext)
+      .pages()
+      .filter((page) => page.url().startsWith(extensionPrefix));
+  }
+
+  async waitForNotificationPage(
+    headless: boolean,
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
+    return headless
+      ? this.waitForSidepanelNotificationPage(timeoutMs)
+      : this.waitForPopupNotificationPage(timeoutMs);
+  }
+
+  private async throwNotifcationPageError(
+    timeoutMs: number,
+    notificationUrl: string,
+  ): Promise<never> {
+    const allPages = await this.getAllExtensionPages();
+    const pageUrls = allPages.map((p) => p.url()).join(', ');
+
+    throw new Error(
+      `Notification page did not appear within ${timeoutMs}ms. ` +
+        `Expected URL starting with: ${notificationUrl}. ` +
+        `Current extension pages: [${pageUrls}]`,
+    );
+  }
+
+  private async waitForPopupNotificationPage(
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
+    // Notification pages may initially open as about:blank before the extension
+    // redirects them. We wait for either an existing notification page or a new
+    // page event, handling the about:blank → notification.html transition.
+    this.ensureBrowserContext();
+
+    const notificationUrl = `chrome-extension://${this.extensionId as string}/notification.html`;
+
+    const existingPage = (this.context as BrowserContext)
+      .pages()
+      .find((page) => page.url().startsWith(notificationUrl));
+    if (existingPage) {
+      await existingPage.waitForLoadState('domcontentloaded');
+      this.attachConsoleListeners(existingPage);
+      return existingPage;
+    }
+
+    try {
+      const newPage = await (this.context as BrowserContext).waitForEvent(
+        'page',
+        {
+          timeout: timeoutMs,
+          predicate: (page: Page) => {
+            const url = page.url();
+            return url.startsWith(notificationUrl) || url === 'about:blank';
+          },
+        },
+      );
+
+      if (newPage.url() === 'about:blank') {
+        await newPage.waitForURL(
+          (url) => url.toString().startsWith(notificationUrl),
+          {
+            timeout: timeoutMs / 2,
+          },
+        );
+      }
+
+      await newPage.waitForLoadState('domcontentloaded');
+      this.attachConsoleListeners(newPage);
+      return newPage;
+    } catch (error) {
+      const finalCheck = (this.context as BrowserContext)
+        .pages()
+        .find((page) => page.url().startsWith(notificationUrl));
+      if (finalCheck) {
+        await finalCheck.waitForLoadState('domcontentloaded');
+        this.attachConsoleListeners(finalCheck);
+        return finalCheck;
+      }
+
+      return await this.throwNotifcationPageError(timeoutMs, notificationUrl);
+    }
+  }
+
+  private async waitForSidepanelNotificationPage(
+    timeoutMs: number = 10000,
+  ): Promise<Page> {
+    this.ensureBrowserContext();
+    const context = this.context as BrowserContext;
+    const sidepanelUrl = `chrome-extension://${this.extensionId as string}/sidepanel.html`;
+
+    let sidepanelPage = context
+      .pages()
+      .find((page) => page.url().startsWith(sidepanelUrl));
+
+    if (!sidepanelPage) {
+      sidepanelPage = await context.newPage();
+      await sidepanelPage.goto(sidepanelUrl);
+      await sidepanelPage.waitForLoadState('domcontentloaded');
+      this.attachConsoleListeners(sidepanelPage);
+    }
+
+    try {
+      await this.waitForSidepanelConfirmation(sidepanelPage, timeoutMs);
+      return sidepanelPage;
+    } catch {
+      return await this.throwNotifcationPageError(timeoutMs, sidepanelUrl);
+    }
+  }
+
+  private async waitForSidepanelConfirmation(
+    sidepanelPage: Page,
+    timeoutMs: number,
+  ): Promise<void> {
+    if (isOnConfirmationRoute(sidepanelPage.url())) {
+      await sidepanelPage.waitForLoadState('domcontentloaded');
+      return;
+    }
+
+    await sidepanelPage.waitForURL(
+      (url) => isOnConfirmationRoute(url.toString()),
+      { timeout: timeoutMs },
+    );
+
+    await sidepanelPage.waitForLoadState('domcontentloaded');
+  }
+
+  async cleanup(): Promise<void> {
+    try {
+      if (this.context) {
+        try {
+          await this.context.close();
+        } catch (e) {
+          console.warn('Failed to close browser context:', e);
+        }
+        this.context = undefined;
+      }
+
+      if (this.userDataDir && !this.options.userDataDir) {
+        try {
+          await fs.rm(this.userDataDir, { recursive: true, force: true });
+        } catch {
+          console.warn('Failed to clean up user data directory');
+        }
+      }
+    } finally {
+      await this.restoreManifest();
+      this.extensionPage = undefined;
+      this.extensionId = undefined;
+    }
+  }
+}
+
+export async function launchMetaMask(
+  options?: LauncherLaunchOptions,
+): Promise<MetaMaskExtensionLauncher> {
+  const launcher = new MetaMaskExtensionLauncher(options);
+  await launcher.launch();
+  return launcher;
+}
+
+function isOnConfirmationRoute(url: string): boolean {
+  const hashIndex = url.indexOf('#');
+  if (hashIndex === -1) {
+    return false;
+  }
+  const hashPath = url.substring(hashIndex + 1).split('?')[0];
+  return SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES.some(
+    (prefix) => hashPath === prefix || hashPath.startsWith(`${prefix}/`),
+  );
+}
+
+export { DEFAULT_PASSWORD };

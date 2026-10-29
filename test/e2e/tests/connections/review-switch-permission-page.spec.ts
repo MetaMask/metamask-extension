@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
@@ -16,7 +16,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
@@ -35,7 +35,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open Dapp One and check the chainId
         const testDapp = new TestDapp(driver);
@@ -55,7 +55,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         // Switch to ethereum network and check the chainId on testdapp
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdBeforeConnectAfterManualSwitch: string =
@@ -102,11 +102,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8546',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();

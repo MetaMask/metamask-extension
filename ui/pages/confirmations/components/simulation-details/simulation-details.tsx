@@ -7,25 +7,24 @@ import {
 } from '@metamask/transaction-controller';
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Skeleton } from '@metamask/design-system-react';
+import { RevertReason } from '../revert-reason/revert-reason';
+import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
-import {
-  ConfirmInfoAlertRow,
-  getAlertTextColors,
-} from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { getAlertTextColors } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import { Skeleton } from '../../../../components/component-library/skeleton';
+import type { ConfirmInfoSectionMarginBottom } from '../../../../components/app/confirm/info/row/section';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -43,26 +42,24 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectTransactionMetadata } from '../../../../selectors';
-import { SimulationSettingsModal } from '../modals/simulation-settings-modal/simulation-settings-modal';
-import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
-import { useIsEnforcedSimulationsSupported } from '../../hooks/transactions/useIsEnforcedSimulationsSupported';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type StaticRow = {
-  label: string;
-  balanceChanges: BalanceChange[];
+  readonly label: string;
+  readonly balanceChanges: BalanceChange[];
 };
 
 export type SimulationDetailsProps = {
-  enableMetrics?: boolean;
-  isTransactionsRedesign?: boolean;
-  metricsOnly?: boolean;
-  staticRows?: StaticRow[];
-  transaction: TransactionMeta;
-  smartTransactionStatus?: string;
+  readonly enableMetrics?: boolean;
+  readonly isTransactionsRedesign?: boolean;
+  readonly metricsOnly?: boolean;
+  readonly sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
+  readonly staticRows?: StaticRow[];
+  readonly transaction: TransactionMeta;
+  readonly smartTransactionStatus?: string;
 };
 
 /**
@@ -71,7 +68,7 @@ export type SimulationDetailsProps = {
  * @param props
  * @param props.error
  */
-const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
+const ErrorContent = ({ error }: { error: SimulationError }) => {
   const t = useI18nContext();
 
   function getMessage() {
@@ -102,7 +99,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 /**
  * Content when there are no balance changes.
  */
-const EmptyContent: React.FC = () => {
+const EmptyContent = () => {
   const t = useI18nContext();
   return (
     <Text
@@ -116,7 +113,7 @@ const EmptyContent: React.FC = () => {
   );
 };
 
-const HeaderWithAlert = ({
+const Header = ({
   title,
   titleTooltip,
   transactionId,
@@ -126,11 +123,6 @@ const HeaderWithAlert = ({
   transactionId: string;
 }) => {
   const t = useI18nContext();
-  const isEnforcedSimulationsSupported = useIsEnforcedSimulationsSupported();
-
-  const showAdvancedDetails = useSelector(
-    selectConfirmationAdvancedDetailsOpen,
-  );
 
   const transactionMetadata = useSelector((state) =>
     selectTransactionMetadata(state, transactionId),
@@ -152,12 +144,6 @@ const HeaderWithAlert = ({
       ? t('simulationDetailsTitleTooltipEnforced')
       : t('simulationDetailsTitleTooltip'));
 
-  const [settingsModalVisible, setSettingsModalVisible] =
-    useState<boolean>(false);
-
-  const showSettingsIcon =
-    showAdvancedDetails && isEnforcedSimulationsSupported;
-
   return (
     <Box
       display={Display.Flex}
@@ -166,32 +152,15 @@ const HeaderWithAlert = ({
       width={BlockSize.Full}
       alignItems={AlignItems.center}
     >
-      <ConfirmInfoAlertRow
-        alertKey={RowAlertKey.Resimulation}
+      <ConfirmInfoRow
         label={label}
-        ownerId={transactionId}
         tooltip={tooltip}
-        tooltipIcon={isEnforced && IconName.SecurityTick}
-        tooltipIconColor={isEnforced && IconColor.infoDefault}
         style={{
+          background: 'transparent',
           paddingLeft: 0,
           paddingRight: 0,
         }}
       />
-      {showSettingsIcon && (
-        <ButtonIcon
-          iconName={IconName.Setting}
-          size={ButtonIconSize.Sm}
-          color={IconColor.iconMuted}
-          ariaLabel="simulation-settings"
-          onClick={() => setSettingsModalVisible(true)}
-        />
-      )}
-      {settingsModalVisible && (
-        <SimulationSettingsModal
-          onClose={() => setSettingsModalVisible(false)}
-        />
-      )}
     </Box>
   );
 };
@@ -239,18 +208,18 @@ const LegacyHeader = () => {
  * @param props.title
  * @param props.titleTooltip
  */
-const HeaderLayout: React.FC<{
-  isTransactionsRedesign: boolean;
-  transactionId: string;
-  title?: string;
-  titleTooltip?: string;
-}> = ({
+const HeaderLayout = ({
   children,
   isTransactionsRedesign,
   transactionId,
   title,
   titleTooltip,
-}) => {
+}: React.PropsWithChildren<{
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+  title?: string;
+  titleTooltip?: string;
+}>) => {
   return (
     <Box
       display={Display.Flex}
@@ -259,7 +228,7 @@ const HeaderLayout: React.FC<{
       justifyContent={JustifyContent.spaceBetween}
     >
       {isTransactionsRedesign ? (
-        <HeaderWithAlert
+        <Header
           title={title}
           titleTooltip={titleTooltip}
           transactionId={transactionId}
@@ -281,24 +250,27 @@ const HeaderLayout: React.FC<{
  * @param props.inHeader
  * @param props.isTransactionsRedesign
  * @param props.children
+ * @param props.sectionMarginBottom
  * @param props.transactionId
  */
-export const SimulationDetailsLayout: React.FC<{
-  title?: string;
-  titleTooltip?: string;
-  inHeader?: React.ReactNode;
-  isTransactionsRedesign: boolean;
-  transactionId: string;
-}> = ({
+export const SimulationDetailsLayout = ({
   title,
   titleTooltip,
   inHeader,
   isTransactionsRedesign,
+  sectionMarginBottom,
   transactionId,
   children,
-}) =>
+}: React.PropsWithChildren<{
+  title?: string;
+  titleTooltip?: string;
+  inHeader?: React.ReactNode;
+  isTransactionsRedesign: boolean;
+  sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
+  transactionId: string;
+}>) =>
   isTransactionsRedesign ? (
-    <ConfirmInfoSection noPadding>
+    <ConfirmInfoSection noPadding marginBottom={sectionMarginBottom}>
       <Box
         data-testid="simulation-details-layout"
         className="simulation-details-layout"
@@ -405,14 +377,17 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function SimulationDetailsSkeleton({
   isTransactionsRedesign,
+  sectionMarginBottom,
   transactionId,
 }: {
   isTransactionsRedesign: boolean;
+  sectionMarginBottom?: ConfirmInfoSectionMarginBottom;
   transactionId: string;
 }) {
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
+      sectionMarginBottom={sectionMarginBottom}
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
@@ -422,7 +397,11 @@ function SimulationDetailsSkeleton({
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
         >
-          <Skeleton height={20} width={72} />
+          <Skeleton
+            height={20}
+            width={72}
+            data-testid="simulation-details-skeleton"
+          />
           <Skeleton height={20} width={100} />
         </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
@@ -442,14 +421,16 @@ function SimulationDetailsSkeleton({
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
  * @param props.metricsOnly - Whether to only track metrics and not render the UI.
+ * @param props.sectionMarginBottom - Optional bottom margin for the containing section.
  * @param props.staticRows - Optional static rows to display.
  * @param props.smartTransactionStatus - Optional Smart Transaction status to override transaction status for immediate UI updates.
  */
-export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
+export const SimulationDetails = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
   metricsOnly = false,
+  sectionMarginBottom,
   staticRows = [],
   smartTransactionStatus,
 }: SimulationDetailsProps) => {
@@ -457,6 +438,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const { chainId, id: transactionId, simulationData } = transaction;
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
+  const showSimulationRevert = Boolean(
+    showAdvancedDetails && transaction.revert?.simulation?.message,
+  );
 
   const hasStaticData =
     staticRows?.length > 0 &&
@@ -482,6 +469,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return (
       <SimulationDetailsSkeleton
         isTransactionsRedesign={isTransactionsRedesign}
+        sectionMarginBottom={sectionMarginBottom}
         transactionId={transactionId}
       />
     );
@@ -499,7 +487,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return null;
   }
 
-  if (error && !hasStaticData) {
+  if (
+    error &&
+    (error.code === SimulationErrorCode.Reverted || !hasStaticData)
+  ) {
     const inHeaderProp = error.code !== SimulationErrorCode.Reverted && {
       inHeader: <ErrorContent error={error} />,
     };
@@ -507,11 +498,18 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return (
       <SimulationDetailsLayout
         isTransactionsRedesign={isTransactionsRedesign}
+        sectionMarginBottom={sectionMarginBottom}
         transactionId={transactionId}
         {...inHeaderProp}
       >
         {error.code === SimulationErrorCode.Reverted && (
           <ErrorContent error={error} />
+        )}
+        {showSimulationRevert && (
+          <RevertReason
+            source="simulation"
+            data-testid="simulation-details-revert-reason"
+          />
         )}
       </SimulationDetailsLayout>
     );
@@ -523,6 +521,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return (
       <SimulationDetailsLayout
         isTransactionsRedesign={isTransactionsRedesign}
+        sectionMarginBottom={sectionMarginBottom}
         transactionId={transactionId}
         inHeader={<EmptyContent />}
       />
@@ -579,17 +578,20 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
+      sectionMarginBottom={sectionMarginBottom}
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
-        {staticRows.map((staticRow, index) => (
-          <Fragment key={index}>
+        {staticRows.map((staticRow) => (
+          <Fragment key={staticRow.label}>
             <BalanceChangeList
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
+              labelChildren={
+                <BalanceChangesAlert transactionId={transactionId} />
+              }
             />
-            <BalanceChangesAlert transactionId={transactionId} />
           </Fragment>
         ))}
         <BalanceChangeList

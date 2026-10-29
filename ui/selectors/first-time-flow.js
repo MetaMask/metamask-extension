@@ -1,5 +1,5 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/modules/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../shared/lib/environment';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -80,19 +80,4 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
 
 export const getFirstTimeFlowType = (state) => {
   return state.metamask.firstTimeFlowType;
-};
-
-export const getOnboardingInitiator = (state) => {
-  const { onboardingTabs } = state.metamask;
-
-  if (!onboardingTabs || Object.keys(onboardingTabs).length !== 1) {
-    return null;
-  }
-
-  const location = Object.keys(onboardingTabs)[0];
-  const tabId = onboardingTabs[location];
-  return {
-    location,
-    tabId,
-  };
 };

@@ -55,7 +55,9 @@ describe('Permit Single Signature Tests', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '4' },
+        'LegacyBackgroundApiService:getTokenStandardAndDetails': {
+          decimals: '4',
+        },
       }),
     );
   });
@@ -68,10 +70,10 @@ describe('Permit Single Signature Tests', () => {
     await renderSingleBatchSignature();
 
     expect(
-      await screen.findByText(tEn('confirmTitlePermitTokens') as string),
+      await screen.findByText(tEn('confirmTitlePermitTokens')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('confirmTitleDescPermitSignature') as string),
+      await screen.findByText(tEn('confirmTitleDescPermitSignature')),
     ).toBeInTheDocument();
   });
 

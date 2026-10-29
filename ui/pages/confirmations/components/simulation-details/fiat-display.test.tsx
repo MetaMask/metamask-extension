@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { merge } from 'lodash';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -21,9 +22,21 @@ const mockStateWithShowingFiatOnTestnets = merge({}, mockStateWithTestnet, {
       showFiatInTestnets: true,
     },
     useCurrencyRateCheck: true,
-    currencyRates: {
-      SepoliaETH: {
-        conversionRate: 1,
+    assetsInfo: {
+      ...mockState.metamask.assetsInfo,
+      'eip155:11155111/slip44:60': {
+        type: 'native',
+        decimals: 18,
+        symbol: 'SepoliaETH',
+      },
+    },
+    assetsPrice: {
+      ...mockState.metamask.assetsPrice,
+      'eip155:11155111/slip44:60': {
+        assetPriceType: 'fungible',
+        price: 1,
+        usdPrice: 1,
+        lastUpdated: 1,
       },
     },
   },
@@ -129,7 +142,9 @@ describe('FiatDisplay', () => {
         <TotalFiatDisplay fiatAmounts={[FIAT_UNAVAILABLE, FIAT_UNAVAILABLE]} />,
         mockStoreWithShowingFiatOnTestnets,
       );
-      expect(screen.getByText('Not available')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.simulationDetailsFiatNotAvailable.message),
+      ).toBeInTheDocument();
     });
   });
 });

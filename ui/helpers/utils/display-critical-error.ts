@@ -1,12 +1,51 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
-import { ErrorLike } from '../../../shared/constants/errors';
+import { type ErrorLike } from '../../../shared/constants/errors';
+import { hasAnalyticsConsent } from '../../../shared/lib/analytics';
 import {
   getErrorHtml,
   maybeGetLocaleContext,
 } from '../../../shared/lib/error-utils';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import {
+  CriticalErrorRepairAction,
+  CriticalErrorType,
+  isStateCorruptionErrorType,
+  METHOD_REPAIR_DATABASE,
+} from '../../../shared/constants/critical-error';
+import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
+import { ThemeType } from '../../../shared/constants/preferences';
+import {
+  hasVault,
+  type Backup,
+} from '../../../shared/lib/stores/persistence-manager';
+import { setTheme } from '../../pages/routes/utils';
+
+const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
+const REPAIR_BUTTON_ENABLE_DELAY_MS = 5_000;
+const SENTRY_REPORT_TIMEOUT_MS = 2_000;
+const STORED_THEME_TIMEOUT_MS = 1_000;
+
+/**
+ * Reads backup with a timeout so a hanging IndexedDB cannot block the critical error UI.
+ *
+ * @param timeoutMs - Max wait in milliseconds.
+ * @returns Backup or null on timeout, missing hook, or error.
+ */
+async function safeGetVaultBackup(
+  timeoutMs: number = SAFE_GET_VAULT_BACKUP_TIMEOUT_MS,
+): Promise<Backup | null> {
+  const getBackupState = globalThis.stateHooks?.getBackupState;
+  if (!getBackupState) {
+    return null;
+  }
+  const timeoutPromise = new Promise<Backup | null>((resolve) => {
+    setTimeout(() => resolve(null), timeoutMs);
+  });
+  const backupPromise = getBackupState().catch(() => null);
+  return Promise.race([backupPromise, timeoutPromise]);
+}
 
 /**
  * Extracts the Sentry envelope URL from a Sentry DSN.
@@ -45,9 +84,92 @@ function getSentryTarget() {
   return process.env.SENTRY_DSN;
 }
 
+function getBuildSentryTags(): Record<string, string> {
+  return {
+    'metamask.environment': process.env.METAMASK_ENVIRONMENT ?? 'unknown',
+    'metamask.build_type': process.env.METAMASK_BUILD_TYPE ?? 'unknown',
+  };
+}
+
 export enum CriticalErrorTranslationKey {
   TroubleStarting = 'troubleStarting',
   SomethingIsWrong = 'somethingIsWrong',
+}
+
+function isThemeType(value: unknown): value is ThemeType {
+  return (
+    value === ThemeType.light ||
+    value === ThemeType.dark ||
+    value === ThemeType.os
+  );
+}
+
+/**
+ * Applies the stored preference and, for the OS theme, keeps the dialog in
+ * sync with later system color-scheme changes. This screen is not React, so
+ * it cannot use `useTheme`.
+ *
+ * @param theme - Theme preference from PreferencesController.
+ */
+function applyStoredTheme(theme: ThemeType) {
+  setTheme(theme);
+  if (theme !== ThemeType.os || typeof window.matchMedia !== 'function') {
+    return;
+  }
+
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', () => {
+      setTheme(ThemeType.os);
+    });
+}
+
+function themeFromControllerState(value: unknown): ThemeType | undefined {
+  if (typeof value !== 'object' || value === null || !('theme' in value)) {
+    return undefined;
+  }
+  return isThemeType(value.theme) ? value.theme : undefined;
+}
+
+/**
+ * Reads the selected theme from extension storage.
+ *
+ * The critical error screen replaces the app before React applies
+ * `html[data-theme]`. PreferencesController may also be uninitialized when
+ * startup fails, so the stored value is the source of truth.
+ *
+ * @returns The stored theme, or undefined when storage is missing or too slow.
+ */
+async function readStoredTheme(): Promise<ThemeType | undefined> {
+  try {
+    const stored = await Promise.race([
+      browser.storage.local.get(['data', 'PreferencesController']),
+      new Promise<undefined>((resolve) => {
+        setTimeout(() => resolve(undefined), STORED_THEME_TIMEOUT_MS);
+      }),
+    ]);
+    if (!stored) {
+      return undefined;
+    }
+
+    const splitTheme = themeFromControllerState(stored.PreferencesController);
+    if (splitTheme) {
+      return splitTheme;
+    }
+
+    const { data } = stored;
+    if (
+      typeof data !== 'object' ||
+      data === null ||
+      !('PreferencesController' in data)
+    ) {
+      return undefined;
+    }
+    return themeFromControllerState(data.PreferencesController);
+  } catch (error) {
+    log.warn('Failed to read stored theme for critical error screen', error);
+    return undefined;
+  }
 }
 
 /**
@@ -67,6 +189,28 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     const eventId = uuidv4().replace(/-/gu, '');
     const timestamp = Math.floor(Date.now() / 1000);
 
+    // Extract sentryTags from error object (if present)
+    // Any error can define error.sentryTags to add searchable tags to Sentry
+    const errorObj = error as Record<string, unknown>;
+    const errorSentryTags =
+      errorObj?.sentryTags && typeof errorObj.sentryTags === 'object'
+        ? (errorObj.sentryTags as Record<string, string>)
+        : {};
+    const sentryTags = {
+      ...getBuildSentryTags(),
+      ...errorSentryTags,
+    };
+
+    // Create error_details without sentryTags to avoid duplication
+    // (sentryTags are sent as top-level tags)
+    let errorDetails: Record<string, unknown>;
+    if (error && typeof error === 'object') {
+      const { sentryTags: _omitted, ...rest } = errorObj;
+      errorDetails = rest;
+    } else {
+      errorDetails = { message: String(error) };
+    }
+
     // Create event payload according to Sentry specs
     // event_id, error_details and user_agent are required by Sentry envelope format, hence the disable is valid
     const eventPayload = {
@@ -79,13 +223,12 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
       release: browser.runtime.getManifest()?.version || 'unknown',
       extra: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_details:
-          error && typeof error === 'object'
-            ? error
-            : { message: String(error) },
+        error_details: errorDetails,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         user_agent: globalThis.navigator?.userAgent || 'unknown',
       },
+      // Add tags for searchable/filterable fields in Sentry UI
+      tags: sentryTags,
     };
 
     // Create envelope headers
@@ -114,6 +257,7 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
         'Content-Type': 'application/x-sentry-envelope',
       },
       body: envelope,
+      keepalive: true,
     });
   } catch (e) {
     console.error('Error sending report to Sentry:', e);
@@ -139,6 +283,23 @@ async function handleRestartAction(
 }
 
 /**
+ * Optional context for {@link displayCriticalErrorMessage}.
+ */
+export type DisplayCriticalErrorMessageOptions = {
+  currentLocale?: string;
+  /**
+   * Theme preference from PreferencesController (`light` | `dark` | `os`).
+   * Applied before the critical error HTML is shown.
+   */
+  theme?: ThemeType;
+  port?: browser.Runtime.Port;
+  criticalErrorType?: CriticalErrorType;
+  repairActionFromBackground?: CriticalErrorRepairAction;
+  analyticsConsentFromBackground?: boolean;
+  backgroundCaptureAttempted?: boolean;
+};
+
+/**
  * Displays a critical error message in the given container.
  *
  * This function always throws the error after displaying the message.
@@ -146,7 +307,14 @@ async function handleRestartAction(
  * @param container - The HTML element to display the error in.
  * @param errorKey - The key for the error message to display.
  * @param error - The error object to log.
- * @param currentLocale - Optional locale context for translations.
+ * @param options - Optional display context.
+ * @param options.currentLocale - Locale context for translations.
+ * @param options.theme - Theme preference from PreferencesController.
+ * @param options.port - Port for background communication (needed for vault recovery).
+ * @param options.criticalErrorType - Type of critical error (for analytics). Defaults to Other.
+ * @param options.repairActionFromBackground - Repair action derived by the background.
+ * @param options.analyticsConsentFromBackground - Analytics consent derived by the background.
+ * @param options.backgroundCaptureAttempted - Whether background already passed the error to Sentry.
  * @throws {ErrorLike} Throws the error after displaying the message.
  * @returns A promise that resolves to never, as it always throws an error.
  */
@@ -154,10 +322,69 @@ export async function displayCriticalErrorMessage(
   container: HTMLElement,
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
-  currentLocale?: string,
+  {
+    currentLocale,
+    theme: themeFromPreferences,
+    port,
+    criticalErrorType,
+    repairActionFromBackground,
+    analyticsConsentFromBackground,
+    backgroundCaptureAttempted = false,
+  }: DisplayCriticalErrorMessageOptions = {},
 ): Promise<never> {
+  const storedThemePromise = themeFromPreferences
+    ? Promise.resolve(themeFromPreferences)
+    : readStoredTheme();
+  let repairAction =
+    repairActionFromBackground ?? CriticalErrorRepairAction.None;
+  let analyticsOptedIn = analyticsConsentFromBackground ?? false;
+
+  if (
+    port &&
+    (repairActionFromBackground === undefined ||
+      analyticsConsentFromBackground === undefined)
+  ) {
+    const backup = await safeGetVaultBackup();
+    if (hasVault(backup)) {
+      repairAction = CriticalErrorRepairAction.Recover;
+    } else if (isStateCorruptionErrorType(criticalErrorType)) {
+      repairAction = CriticalErrorRepairAction.Reset;
+    }
+    analyticsOptedIn = hasAnalyticsConsent(backup);
+  }
+
+  try {
+    port?.postMessage({
+      data: {
+        method: CRITICAL_ERROR_SCREEN_VIEWED,
+        params: {
+          repairAction,
+          criticalErrorType,
+        },
+      },
+    });
+  } catch (e) {
+    log.warn('Failed to notify background of critical error screen view', e);
+  }
+
   const localeContext = await maybeGetLocaleContext(currentLocale);
-  const html = getErrorHtml(errorKey, error, localeContext, SUPPORT_LINK);
+  const html = getErrorHtml(
+    errorKey,
+    error,
+    localeContext,
+    SUPPORT_LINK,
+    repairAction,
+    criticalErrorType,
+    !analyticsOptedIn,
+  );
+
+  const storedTheme = await storedThemePromise;
+  // Apply light, dark, or OS, including when the document already has another
+  // theme. Skip only when no preference is available. Dark dialog colors stay
+  // the original brand palette; light overrides apply only for data-theme=light.
+  if (storedTheme) {
+    applyStoredTheme(storedTheme);
+  }
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
   if (criticalErrorContainer) {
@@ -169,12 +396,82 @@ export async function displayCriticalErrorMessage(
       criticalErrorContainer.querySelector<HTMLInputElement>(
         '#critical-error-checkbox',
       );
+    const shouldReportError = () =>
+      analyticsOptedIn
+        ? !backgroundCaptureAttempted
+        : (reportCheckbox?.checked ?? false);
 
     // Restart button: report error and restart MetaMask
     restartButton?.addEventListener('click', async () => {
-      const shouldReport = reportCheckbox?.checked ?? false;
-      await handleRestartAction(error, shouldReport);
+      await handleRestartAction(error, shouldReportError());
     });
+
+    // Recovery/reset button: trigger the critical error repair flow.
+    if (port && repairAction !== CriticalErrorRepairAction.None) {
+      const repairButton =
+        criticalErrorContainer.querySelector<HTMLButtonElement>(
+          '#critical-error-repair-button',
+        );
+
+      if (repairButton) {
+        repairButton.disabled = true;
+        setTimeout(() => {
+          repairButton.disabled = false;
+          // Wait a while before enabling the button to try to prevent accidental
+          // or rush clicks.
+        }, REPAIR_BUTTON_ENABLE_DELAY_MS);
+      }
+
+      const handleRepairClick = async (event: Event) => {
+        event.preventDefault();
+        if (!repairButton || repairButton.disabled) {
+          return;
+        }
+
+        // eslint-disable-next-line no-alert
+        const confirmed = confirm(
+          localeContext.t('stateCorruptionAreYouSure') ?? '',
+        );
+        if (confirmed) {
+          const originalLabel = repairButton.textContent;
+          repairButton.removeEventListener('click', handleRepairClick);
+          repairButton.disabled = true;
+          repairButton.textContent =
+            localeContext.t(
+              repairAction === CriticalErrorRepairAction.Recover
+                ? 'stateCorruptionRestoringDatabase'
+                : 'stateCorruptionResettingDatabase',
+            ) ?? '';
+
+          try {
+            if (shouldReportError()) {
+              await Promise.race([
+                sendErrorToSentry(error),
+                new Promise<void>((resolve) => {
+                  setTimeout(resolve, SENTRY_REPORT_TIMEOUT_MS);
+                }),
+              ]);
+            }
+            port.postMessage({
+              data: {
+                method: METHOD_REPAIR_DATABASE,
+                params: {
+                  repairAction,
+                  criticalErrorType,
+                },
+              },
+            });
+          } catch (e) {
+            log.warn('Failed to start critical error repair', e);
+            repairButton.textContent = originalLabel;
+            repairButton.disabled = false;
+            repairButton.addEventListener('click', handleRepairClick);
+          }
+        }
+      };
+
+      repairButton?.addEventListener('click', handleRepairClick);
+    }
   }
 
   log.error(error.stack);
@@ -201,6 +498,7 @@ export function displayCriticalErrorPage(
 
   const criticalErrorContainer = document.createElement('div');
   criticalErrorContainer.setAttribute('id', 'critical-error-content');
+  criticalErrorContainer.dataset.testid = 'critical-error-content';
   criticalErrorContainer.innerHTML = html;
 
   // Prevent app contents from writing over critical error by removing application root.

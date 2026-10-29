@@ -1,0 +1,190 @@
+/**
+ * Canonical perps analytics contract from `@metamask/perps-controller`.
+ *
+ * Values come from the controller package (Jest-mapped via
+ * `test/mocks/metamask-perps-controller.js`). A thin Extension compatibility
+ * layer aliases historical Extension key names onto controller string values
+ * so existing UI call sites keep compiling while emitting the controller
+ * contract. Prefer controller key names in new code.
+ */
+import {
+  PERPS_EVENT_PROPERTY as CONTROLLER_PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE as CONTROLLER_PERPS_EVENT_VALUE,
+  PerpsAnalyticsEvent,
+} from '@metamask/perps-controller';
+
+export { PerpsAnalyticsEvent };
+
+/**
+ * Controller property keys plus Extension UI-only keys not yet in the package.
+ */
+export const PERPS_EVENT_PROPERTY = {
+  ...CONTROLLER_PERPS_EVENT_PROPERTY,
+  /** @deprecated Prefer ORDER_SIZE or POSITION_SIZE from the controller contract. */
+  SIZE: 'size',
+  /** Extension market-list filter property. */
+  MARKET_CATEGORY_FILTER: 'market_category_filter',
+  /** Extension close-all summary property. */
+  NUMBER_POSITIONS_CLOSED: 'number_positions_closed',
+  /**
+   * Market-search funnel properties Mobile already emits but the controller
+   * contract does not export yet. Kept here (not inline) so the emitted keys
+   * stay snake_case without tripping the naming-convention lint rule.
+   */
+  QUERY_COUNT: 'query_count',
+  TIME_IN_SEARCH_MS: 'time_in_search_ms',
+  TIME_TO_TAP_MS: 'time_to_tap_ms',
+  QUERY_TEXT: 'query_text',
+  QUERY_LENGTH: 'query_length',
+  HAS_RESULTS: 'has_results',
+  ACTIVE_CHIPS: 'active_chips',
+  /**
+   * Mobile already emits these; not yet in the controller contract. Prefer
+   * the package constants once upstream adds them.
+   */
+  MARKET_SYMBOL: 'market_symbol',
+  MARKET_TYPE: 'market_type',
+  DESCRIPTION_LENGTH: 'description_length',
+  /** Extension unfunded-deposit funnel: what the Add funds click actually opened. */
+  DEPOSIT_CLICK_OUTCOME: 'deposit_click_outcome',
+} as const;
+
+/**
+ * Controller value enums plus Extension aliases / UI-only values.
+ * Alias keys keep historical Extension names; values match the controller
+ * contract (or prior Extension strings when no controller equivalent exists).
+ */
+export const PERPS_EVENT_VALUE = {
+  ...CONTROLLER_PERPS_EVENT_VALUE,
+  SOURCE: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.SOURCE,
+    /** @deprecated Use ASSET_DETAIL_SCREEN */
+    ASSET_DETAILS: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.ASSET_DETAIL_SCREEN,
+    /** @deprecated Use PERPS_MARKET_LIST_ALL */
+    MARKET_LIST: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.PERPS_MARKET_LIST_ALL,
+    /** @deprecated Use TRADE_SCREEN */
+    TRADING: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.TRADE_SCREEN,
+    /** @deprecated Use HOMESCREEN_TAB */
+    WALLET_HOME_PERPS_TAB: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
+    /** Extension-only: controller contract has no bottom-nav source yet. */
+    BOTTOM_NAV_BAR: 'bottom_nav_bar',
+    /** Extension-only: source for Hyperliquid deposit prompt. */
+    HYPERLIQUID_DEPOSIT_PROMPT: 'hyperliquid_deposit_prompt',
+  },
+  SCREEN_TYPE: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE,
+    /** @deprecated Use CREATE_TPSL */
+    CREATE_TP_SL: CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE.CREATE_TPSL,
+    /** @deprecated Use EDIT_TPSL */
+    UPDATE_TP_SL: CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE.EDIT_TPSL,
+    /**
+     * Extension-only: controller dropped FLIP_POSITION; keep historical
+     * `flip_position` so flip screen views are not misclassified as
+     * increase_exposure.
+     */
+    FLIP_POSITION: 'flip_position',
+  },
+  BUTTON_LOCATION: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_LOCATION,
+    /** @deprecated Use PERPS_TAB / PERPS_HOME */
+    WALLET_HOME_PERPS_TAB:
+      CONTROLLER_PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_TAB,
+    /** @deprecated Use TRADE_MENU_ACTION / keep trading location string */
+    TRADING: 'trading',
+    /** Extension trade-screen available-to-trade row Add funds control. */
+    AMOUNT_INPUT: 'amount_input',
+    /** Extension trade-screen sticky-footer primary CTA. */
+    ORDER_FORM_FOOTER: 'order_form_footer',
+  },
+  BUTTON_CLICKED: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED,
+    /** @deprecated Use PLACE_ORDER / OPEN_POSITION */
+    TRADE: CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED.PLACE_ORDER,
+    /** Extension support CTA */
+    SUPPORT: 'support',
+    /** @deprecated Use GIVE_FEEDBACK */
+    FEEDBACK: CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED.GIVE_FEEDBACK,
+    MARGIN: 'margin',
+    ADD_MARGIN: CONTROLLER_PERPS_EVENT_VALUE.ACTION.ADD_MARGIN,
+    REMOVE_MARGIN: CONTROLLER_PERPS_EVENT_VALUE.ACTION.REMOVE_MARGIN,
+    INCREASE_EXPOSURE: CONTROLLER_PERPS_EVENT_VALUE.ACTION.INCREASE_EXPOSURE,
+    REDUCE_EXPOSURE:
+      CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
+  },
+  INTERACTION_TYPE: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.INTERACTION_TYPE,
+    /** Extension close-all funnel (not yet in controller contract). */
+    CLOSE_ALL_TAPPED: 'close_all_tapped',
+    CLOSE_ALL_CONFIRMED: 'close_all_confirmed',
+    CLOSE_ALL_CANCELLED: 'close_all_cancelled',
+    /** Extension order-book panel open/close (not yet in controller contract). */
+    ORDER_BOOK_OPENED: 'order_book_opened',
+    ORDER_BOOK_CLOSED: 'order_book_closed',
+    /** Extension order-entry chart panel open/close (not yet in controller contract). */
+    CHART_OPENED: 'chart_opened',
+    CHART_CLOSED: 'chart_closed',
+    /**
+     * Unfunded trade-screen deposit funnel (not yet in the controller contract).
+     * Click is BUTTON_CLICKED + DEPOSIT; these cover the later drop-off points.
+     */
+    DEPOSIT_FLOW_OPENED: 'deposit_flow_opened',
+    DEPOSIT_CONFIRMED: 'deposit_confirmed',
+    TRADE_SUBMITTED_AFTER_DEPOSIT: 'trade_submitted_after_deposit',
+    /**
+     * Mobile already emits these; not yet in the controller contract. Prefer
+     * the package constants once upstream adds them.
+     */
+    MARKET_ABOUT_SECTION_DISPLAYED: 'market_about_section_displayed',
+    MARKET_ABOUT_SECTION_VIEWED: 'market_about_section_viewed',
+  },
+  /** What an Add funds click opened — geo-blocked clicks are a funnel drop-off. */
+  DEPOSIT_CLICK_OUTCOME: {
+    DEPOSIT: 'deposit',
+    GEO_BLOCK_MODAL: 'geo_block_modal',
+  },
+  ERROR_TYPE: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_TYPE,
+    /**
+     * Extension-only: a perps route opened with a symbol the market stream does
+     * not know. The controller contract has no equivalent yet.
+     */
+    MARKET_NOT_FOUND: 'market_not_found',
+  },
+  ERROR_MESSAGE_KEY: {
+    ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_MESSAGE_KEY,
+    /**
+     * Kept as an explicit local value (not solely the controller spread) since
+     * `test/mocks/metamask-perps-controller.js` does not define this key.
+     */
+    INSUFFICIENT_BALANCE: 'insufficient_balance',
+  },
+  /**
+   * Extension-only: which flow a PERPS_TRANSACTION_CONSIDERED belongs to. Only
+   * the trade flow emits it today; the controller contract does not export the
+   * value set.
+   */
+  ORDER_CONTEXT: {
+    TRADE: 'trade',
+  },
+} as const;
+
+/** Where a tracked button click happened. Derived so typos fail to compile. */
+export type PerpsButtonLocation =
+  (typeof PERPS_EVENT_VALUE.BUTTON_LOCATION)[keyof typeof PERPS_EVENT_VALUE.BUTTON_LOCATION];
+
+/** What an Add funds click opened. Derived so typos fail to compile. */
+export type PerpsDepositClickOutcome =
+  (typeof PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME)[keyof typeof PERPS_EVENT_VALUE.DEPOSIT_CLICK_OUTCOME];
+
+/**
+ * Extension-only event properties.
+ *
+ * The perps controller exposes no canonical key for the gap between the
+ * streamed (cached) balance and the freshly read one, which the withdraw page
+ * reports when it blocks a withdrawal the provider would reject (TAT-3490).
+ * Kept out of `PERPS_EVENT_PROPERTY` so the "must mirror the controller" rule
+ * above stays unambiguous.
+ */
+export const PERPS_EXTENSION_EVENT_PROPERTY = {
+  STALE_BALANCE_SHORTFALL: 'stale_balance_shortfall',
+} as const;

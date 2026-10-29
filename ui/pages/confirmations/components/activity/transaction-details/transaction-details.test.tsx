@@ -4,12 +4,21 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetails } from './transaction-details';
 
+jest.mock('../../../hooks/send/useSendTokens', () => ({
+  useSendTokens: () => [],
+}));
+
 const CHAIN_ID = '0x1';
 const TOKEN_ADDRESS = '0xtoken123';
+const TOKEN_ASSET_ID = `eip155:1/erc20:${TOKEN_ADDRESS}`;
+const FROM_ADDRESS = '0x123';
+const ACCOUNT_ID = 'account-1';
+const ACCOUNT_NAME = 'Account 1';
 
 const mockStore = configureMockStore([]);
 
@@ -18,23 +27,37 @@ function createMockState(includeToken = false) {
     metamask: {
       transactions: [],
       internalAccounts: {
-        accounts: {},
-        selectedAccount: '',
+        accounts: {
+          [ACCOUNT_ID]: {
+            id: ACCOUNT_ID,
+            address: FROM_ADDRESS,
+            // Required so that getSelectedEvmInternalAccount can find this
+            // account (it filters by isEvmAccountType).
+            type: EthAccountType.Eoa,
+            metadata: { name: ACCOUNT_NAME, keyring: { type: 'HD Key Tree' } },
+            options: {},
+            methods: [],
+          },
+        },
+        selectedAccount: ACCOUNT_ID,
       },
-      allTokens: includeToken
+      assetsInfo: includeToken
         ? {
-            [CHAIN_ID]: {
-              '0xaccount': [
-                {
-                  address: TOKEN_ADDRESS,
-                  symbol: 'USDC',
-                  decimals: 6,
-                },
-              ],
+            [TOKEN_ASSET_ID]: {
+              type: 'erc20',
+              symbol: 'USDC',
+              decimals: 6,
             },
           }
         : {},
-      tokenBalances: {},
+      customAssets: includeToken
+        ? {
+            [ACCOUNT_ID]: [TOKEN_ASSET_ID],
+          }
+        : {},
+      assetsBalance: {},
+      assetsPrice: {},
+      selectedCurrency: 'usd',
       tokensChainsCache: {},
       networkConfigurationsByChainId: {
         [CHAIN_ID]: {
@@ -45,6 +68,10 @@ function createMockState(includeToken = false) {
           defaultBlockExplorerUrlIndex: 0,
         },
       },
+      multichainNetworkConfigurationsByChainId: {},
+      selectedAccountGroup: null,
+      accountTree: { wallets: {} },
+      assetPreferences: {},
     },
   };
 }
@@ -60,7 +87,7 @@ function createMockTransactionMeta(
     time: Date.now(),
     type,
     txParams: {
-      from: '0x123',
+      from: FROM_ADDRESS,
       to: '0x456',
     },
     ...(includeMetamaskPay && {
@@ -112,23 +139,6 @@ describe('TransactionDetails', () => {
     expect(getByTestId('transaction-details-date-row')).toBeInTheDocument();
   });
 
-  it('renders account row', () => {
-    const { getByTestId } = render();
-    expect(getByTestId('transaction-details-account-row')).toBeInTheDocument();
-  });
-
-  it('renders network fee row', () => {
-    const { getByTestId } = render();
-    expect(
-      getByTestId('transaction-details-network-fee-row'),
-    ).toBeInTheDocument();
-  });
-
-  it('renders total row', () => {
-    const { getByTestId } = render();
-    expect(getByTestId('transaction-details-total-row')).toBeInTheDocument();
-  });
-
   it('renders summary section', () => {
     const { getByTestId } = render();
     expect(getByTestId('transaction-details-summary')).toBeInTheDocument();
@@ -153,19 +163,80 @@ describe('TransactionDetails', () => {
         queryByTestId('transaction-details-bridge-fee-row'),
       ).not.toBeInTheDocument();
     });
+
+    it('does not render network fee row', () => {
+      const { queryByTestId } = render();
+      expect(
+        queryByTestId('transaction-details-network-fee-row'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render total row', () => {
+      const { queryByTestId } = render();
+      expect(
+        queryByTestId('transaction-details-total-row'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render account row', () => {
+      const { queryByTestId } = render();
+      expect(
+        queryByTestId('transaction-details-account-row'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('with metamaskPay data', () => {
-    it('renders hero section when metamaskPay targetFiat is present', () => {
+    it('renders hero section', () => {
       const { getByTestId } = render(TransactionType.perpsDeposit, true);
       expect(getByTestId('transaction-details-hero')).toBeInTheDocument();
     });
 
-    it('renders bridge fee row when metamaskPay bridgeFeeFiat is present', () => {
+    it('renders paid with row', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(
+        getByTestId('transaction-details-paid-with-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders bridge fee row', () => {
       const { getByTestId } = render(TransactionType.perpsDeposit, true);
       expect(
         getByTestId('transaction-details-bridge-fee-row'),
       ).toBeInTheDocument();
+    });
+
+    it('renders network fee row', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(
+        getByTestId('transaction-details-network-fee-row'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders total row', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(getByTestId('transaction-details-total-row')).toBeInTheDocument();
+    });
+
+    it('renders account row', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(
+        getByTestId('transaction-details-account-row'),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('summary section visibility', () => {
+    it('renders summary section for perpsDeposit transactions', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(getByTestId('transaction-details-summary')).toBeInTheDocument();
+    });
+
+    it('hides summary section for perpsWithdraw transactions', () => {
+      const { queryByTestId } = render(TransactionType.perpsWithdraw, true);
+      expect(
+        queryByTestId('transaction-details-summary'),
+      ).not.toBeInTheDocument();
     });
   });
 });

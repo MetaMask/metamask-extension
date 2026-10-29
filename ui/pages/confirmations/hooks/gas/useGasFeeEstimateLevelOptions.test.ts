@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import {
   GasFeeEstimateType,
   GasFeeEstimateLevel,
@@ -7,7 +7,10 @@ import {
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useConfirmContext } from '../../context/confirm';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
+import { useTransactionGasLimit } from './useTransactionGasLimit';
 import { useGasFeeEstimateLevelOptions } from './useGasFeeEstimateLevelOptions';
+
+const mockPersistGasFeePreference = jest.fn();
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -25,34 +28,72 @@ jest.mock('../../components/confirm/info/hooks/useFeeCalculations', () => ({
   useFeeCalculations: jest.fn(),
 }));
 
-jest.mock('../transactions/useTransactionNativeTicker', () => ({
-  useTransactionNativeTicker: () => 'ETH',
+jest.mock('./useTransactionGasLimit', () => ({
+  useTransactionGasLimit: jest.fn(),
 }));
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('./usePersistGasFeePreference', () => ({
+  usePersistGasFeePreference: () => mockPersistGasFeePreference,
+}));
+
+jest.mock('../../../../store/actions/update-transaction-gas-fees', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
 
+const mockState = {
+  metamask: {
+    networkConfigurationsByChainId: {},
+  },
+};
+
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector?.(mockState) ?? undefined,
 }));
 
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockUseFeeCalculations = jest.mocked(useFeeCalculations);
+const mockUseTransactionGasLimit = jest.mocked(useTransactionGasLimit);
 
 describe('useGasFeeEstimateLevelOptions', () => {
   const mockHandleCloseModals = jest.fn();
+  const mockCalculateGasEstimate = jest.fn().mockReturnValue({
+    currentCurrencyFee: '$1.00',
+    preciseNativeCurrencyFee: '0.001',
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
 
+    mockCalculateGasEstimate.mockClear();
     mockUseFeeCalculations.mockReturnValue({
-      calculateGasEstimate: jest.fn().mockReturnValue({
-        currentCurrencyFee: '$1.00',
-        preciseNativeCurrencyFee: '0.001',
-      }),
+      calculateGasEstimate: mockCalculateGasEstimate,
     } as unknown as ReturnType<typeof useFeeCalculations>);
+
+    mockUseTransactionGasLimit.mockReturnValue({
+      gasLimit: '0x5208',
+      quotedGasLimit: undefined,
+    });
+  });
+
+  it('returns empty array when currentConfirmation is undefined', () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: undefined,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {},
+    } as ReturnType<typeof useGasFeeEstimates>);
+
+    const { result } = renderHook(() =>
+      useGasFeeEstimateLevelOptions({
+        handleCloseModals: mockHandleCloseModals,
+      }),
+    );
+
+    expect(result.current).toEqual([]);
   });
 
   it('returns empty array when gas fee estimate type is GasPrice', () => {
@@ -84,6 +125,7 @@ describe('useGasFeeEstimateLevelOptions', () => {
     mockUseConfirmContext.mockReturnValue({
       currentConfirmation: {
         id: '1',
+        chainId: '0x1',
         networkClientId: 'mainnet',
         userFeeLevel: 'medium',
         gasLimitNoBuffer: '0x5208',
@@ -133,6 +175,71 @@ describe('useGasFeeEstimateLevelOptions', () => {
     expect(result.current[1].key).toBe(GasFeeEstimateLevel.Medium);
     expect(result.current[2].key).toBe(GasFeeEstimateLevel.High);
     expect(result.current[1].isSelected).toBe(true);
+    // networkConfigurationsByChainId is empty in mockState; fallback ticker must not be the string "undefined"
+    expect(result.current[0].value).toBe('0.001 ETH');
+  });
+
+  it('persists the selected gas fee estimate level', async () => {
+    const transactionMeta = {
+      id: '1',
+      chainId: '0x1',
+      networkClientId: 'mainnet',
+      userFeeLevel: 'medium',
+      gasLimitNoBuffer: '0x5208',
+      txParams: {
+        from: '0xabc',
+      },
+      gasFeeEstimates: {
+        type: GasFeeEstimateType.FeeMarket,
+        [GasFeeEstimateLevel.Low]: {
+          maxFeePerGas: '0x1',
+          maxPriorityFeePerGas: '0x1',
+        },
+        [GasFeeEstimateLevel.Medium]: {
+          maxFeePerGas: '0x2',
+          maxPriorityFeePerGas: '0x2',
+        },
+        [GasFeeEstimateLevel.High]: {
+          maxFeePerGas: '0x3',
+          maxPriorityFeePerGas: '0x3',
+        },
+      },
+    };
+
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: transactionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {
+        [GasFeeEstimateLevel.Low]: {
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 30000,
+        },
+        [GasFeeEstimateLevel.Medium]: {
+          minWaitTimeEstimate: 10000,
+          maxWaitTimeEstimate: 20000,
+        },
+        [GasFeeEstimateLevel.High]: {
+          minWaitTimeEstimate: 5000,
+          maxWaitTimeEstimate: 10000,
+        },
+      },
+    } as unknown as ReturnType<typeof useGasFeeEstimates>);
+
+    const { result } = renderHook(() =>
+      useGasFeeEstimateLevelOptions({
+        handleCloseModals: mockHandleCloseModals,
+      }),
+    );
+
+    await act(async () => {
+      await result.current[2].onSelect();
+    });
+
+    expect(mockPersistGasFeePreference).toHaveBeenCalledWith(transactionMeta, {
+      userFeeLevel: GasFeeEstimateLevel.High,
+    });
   });
 
   it('skips high option when it has the same fees as medium for FeeMarket type', () => {
@@ -186,5 +293,66 @@ describe('useGasFeeEstimateLevelOptions', () => {
     expect(result.current).toHaveLength(2);
     expect(result.current[0].key).toBe(GasFeeEstimateLevel.Low);
     expect(result.current[1].key).toBe(GasFeeEstimateLevel.Medium);
+  });
+
+  it('passes the gas limit from useTransactionGasLimit to calculateGasEstimate and tooltip', () => {
+    mockUseTransactionGasLimit.mockReturnValue({
+      gasLimit: '0x1fbd0',
+      quotedGasLimit: undefined,
+    });
+
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        id: '1',
+        chainId: '0x1',
+        networkClientId: 'mainnet',
+        userFeeLevel: 'medium',
+        gasLimitNoBuffer: '0x5208',
+        containerTypes: ['EnforcedSimulations'],
+        gasFeeEstimates: {
+          type: GasFeeEstimateType.FeeMarket,
+          [GasFeeEstimateLevel.Low]: {
+            maxFeePerGas: '0x1',
+            maxPriorityFeePerGas: '0x1',
+          },
+          [GasFeeEstimateLevel.Medium]: {
+            maxFeePerGas: '0x2',
+            maxPriorityFeePerGas: '0x2',
+          },
+          [GasFeeEstimateLevel.High]: {
+            maxFeePerGas: '0x3',
+            maxPriorityFeePerGas: '0x3',
+          },
+        },
+      },
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {
+        [GasFeeEstimateLevel.Low]: {
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 30000,
+        },
+        [GasFeeEstimateLevel.Medium]: {
+          minWaitTimeEstimate: 10000,
+          maxWaitTimeEstimate: 20000,
+        },
+        [GasFeeEstimateLevel.High]: {
+          minWaitTimeEstimate: 5000,
+          maxWaitTimeEstimate: 10000,
+        },
+      },
+    } as unknown as ReturnType<typeof useGasFeeEstimates>);
+
+    const { result } = renderHook(() =>
+      useGasFeeEstimateLevelOptions({
+        handleCloseModals: mockHandleCloseModals,
+      }),
+    );
+
+    expect(mockCalculateGasEstimate).toHaveBeenCalledWith(
+      expect.objectContaining({ gas: '0x1fbd0' }),
+    );
+    expect(result.current[0].tooltipProps?.gasLimit).toBe(0x1fbd0);
   });
 });

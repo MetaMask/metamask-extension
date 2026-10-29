@@ -5,14 +5,14 @@ import {
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
@@ -53,12 +53,12 @@ describe('Account syncing - Settings Toggle', function () {
     // Phase 1: Initial setup and account creation with sync enabled
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Wait for the initial account sync to complete before adding new accounts
         const homePage = new HomePage(driver);
@@ -131,13 +131,13 @@ describe('Account syncing - Settings Toggle', function () {
     // Phase 3: Fresh app instance to verify sync persistence
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Wait for the account sync to complete before verifying accounts
         const homePage = new HomePage(driver);

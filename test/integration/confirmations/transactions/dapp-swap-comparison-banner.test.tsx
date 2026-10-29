@@ -15,10 +15,11 @@
  */
 
 import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { tEn } from '../../../lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
@@ -27,10 +28,11 @@ import {
   getUnapprovedDappSwapTransaction,
 } from './transactionDataHelpers';
 
+jest.setTimeout(30_000);
+
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -53,7 +55,7 @@ const getSelectedAccountAddress = () => {
   return account.address;
 };
 
-const createQuoteResponse = (overrides?: {
+const createQuoteResponseV1 = (overrides?: {
   srcTokenAmount?: string;
   destTokenAmount?: string;
   minDestTokenAmount?: string;
@@ -114,11 +116,11 @@ const createQuoteResponse = (overrides?: {
 });
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
+  'LegacyBackgroundApiService:getNextNonce': '9',
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -209,7 +211,7 @@ const getMetaMaskStateWithDappSwap = ({
   dappSwapUiEnabled?: boolean;
   includeQuote?: boolean;
 }) => {
-  const quotes = includeQuote ? [createQuoteResponse()] : [];
+  const quotes = includeQuote ? [createQuoteResponseV1()] : [];
 
   return {
     ...mockMetaMaskState,
@@ -253,6 +255,7 @@ const getMetaMaskStateWithDappSwap = ({
       ),
     ],
     currentCurrency: 'usd',
+    selectedCurrency: 'usd',
     remoteFeatureFlags: {
       dappSwapMetrics: {
         enabled: dappSwapMetricsEnabled,
@@ -331,15 +334,16 @@ describe('DappSwapComparisonBanner', () => {
 
     expect(screen.getByTestId('dapp-swap-banner')).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('dappSwapAdvantageSaveOnly') as string),
+      await screen.findByText(tEn('dappSwapAdvantageSaveOnly')),
     ).toBeInTheDocument();
 
-    // Verify metrics: swap_mm_cta_displayed should be tracked via updateEventFragment
+    // Verify metrics: swap_mm_cta_displayed should be tracked via tx-ui fragment upsert
     await waitFor(() => {
       const metricsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] ===
+              'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_cta_displayed === 'true',
         );
 
@@ -354,7 +358,8 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCallSwapOpened =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] ===
+              'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_opened === 'true',
         );
       expect(metricsCallSwapOpened).toBeDefined();
@@ -446,7 +451,8 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'updateEventFragment' &&
+            call[0] ===
+              'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_opened === 'true',
         );
 
@@ -511,7 +517,88 @@ describe('DappSwapComparisonBanner', () => {
 
     // Verify standard confirmation UI is displayed instead
     expect(
-      await screen.findByText(tEn('confirmTitleTransaction') as string),
+      await screen.findByText(tEn('confirmTitleTransaction')),
+    ).toBeInTheDocument();
+  });
+
+  it('does not display the banner for a wallet-initiated simpleSend', async () => {
+    const base = getUnapprovedContractInteractionTransaction(
+      getSelectedAccountAddress(),
+      pendingTransactionId,
+      pendingTransactionTime,
+    );
+    const simpleSendTransaction = {
+      ...base,
+      origin: 'metamask',
+      type: TransactionType.simpleSend,
+      txParams: {
+        ...base.txParams,
+        data: '0x',
+        to: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+        value: '0xde0b6b3a7640000',
+      },
+      simulationData: {
+        nativeBalanceChange: {
+          previousBalance: '0x1bc16d674ec80000',
+          newBalance: '0xde0b6b3a7640000',
+          difference: '0xde0b6b3a7640000',
+          isDecrease: true,
+        },
+        tokenBalanceChanges: [],
+      },
+    };
+
+    const mockedMetaMaskState = {
+      ...getMetaMaskStateWithDappSwap({
+        accountAddress: getSelectedAccountAddress(),
+        includeQuote: true,
+      }),
+      pendingApprovals: {
+        [pendingTransactionId]: {
+          id: pendingTransactionId,
+          origin: 'metamask',
+          time: pendingTransactionTime,
+          type: ApprovalType.Transaction,
+          requestData: {
+            txId: pendingTransactionId,
+          },
+          requestState: null,
+          expectsResult: false,
+        },
+      },
+      transactions: [simpleSendTransaction],
+    };
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    expect(screen.queryByTestId('market-rate-tab')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('metamask-swap-tab')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dapp-swap-banner')).not.toBeInTheDocument();
+
+    // Swap/Bridge quote-error UI lives on the bridge/swap prepare pages, not
+    // on a simpleSend confirmation. Asserting absence here guards against the
+    // WPN-1799 mis-routing where a native send could surface cross-chain
+    // quote-failure banners.
+    expect(
+      screen.queryByTestId('bridge-banner-alerts'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('swaps-banner-title')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('bridge-no-quotes')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('bridge-cta-button')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapFetchingQuotesErrorTitle.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapQuotesNotAvailableErrorTitle.message),
+    ).not.toBeInTheDocument();
+
+    expect(
+      await screen.findByText(messages.confirmTitleSending.message),
     ).toBeInTheDocument();
   });
 

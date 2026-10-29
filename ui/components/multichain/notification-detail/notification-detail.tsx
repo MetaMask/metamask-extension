@@ -1,5 +1,4 @@
 import React from 'react';
-import type { FC } from 'react';
 
 import { Box } from '../../component-library';
 import {
@@ -31,13 +30,13 @@ export type NotificationDetailProps = {
  * @param props.secondaryTextRight - The secondary text for the right side of the notification.
  * @returns Returns a notification list item component.
  */
-export const NotificationDetail: FC<NotificationDetailProps> = ({
+export const NotificationDetail = ({
   icon,
   primaryTextLeft,
   primaryTextRight,
   secondaryTextLeft,
   secondaryTextRight,
-}): JSX.Element => {
+}: NotificationDetailProps): JSX.Element => {
   return (
     <Box
       display={Display.Flex}

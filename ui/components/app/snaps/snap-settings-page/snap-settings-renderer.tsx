@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { deleteInterface } from '../../../../store/actions';
@@ -16,20 +16,14 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { Copyable } from '../copyable';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
-import { decodeSnapIdFromPathname } from '../../../../helpers/utils/snaps';
+import { useDispatch } from '../../../../store/hooks';
 
-type SnapSettingsRendererProps = {
-  snapId: string;
-};
-
-export const SnapSettingsRenderer: FunctionComponent<
-  SnapSettingsRendererProps
-> = () => {
-  const { pathname } = useLocation();
+export const SnapSettingsRenderer = () => {
+  const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
   const t = useI18nContext();
 
-  const snapId = useMemo(() => decodeSnapIdFromPathname(pathname), [pathname]);
+  const snapId = searchParams.get('snapId');
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
@@ -45,7 +39,7 @@ export const SnapSettingsRenderer: FunctionComponent<
     return () => {
       interfaceId && dispatch(deleteInterface(interfaceId));
     };
-  }, [interfaceId]);
+  }, [interfaceId, dispatch]);
 
   if (!snapId) {
     return null;
@@ -67,8 +61,6 @@ export const SnapSettingsRenderer: FunctionComponent<
           </SnapDelineator>
         </Box>
       )}
-      {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
       {(interfaceId || loading) && (
         <SnapUIRenderer
           snapId={snapId}

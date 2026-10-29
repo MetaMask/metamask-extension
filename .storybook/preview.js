@@ -4,57 +4,34 @@
 Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
   * */
 import React, { useEffect } from 'react';
-import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
-import { I18nProvider, LegacyI18nProvider } from './i18n';
+import { I18nProvider } from './i18n';
 import testData from './test-data.js';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { setBackgroundConnection } from '../ui/store/background-connection';
-import { metamaskStorybookTheme } from './metamask-storybook-theme';
-import { DocsContainer } from '@storybook/addon-docs';
-import { themes } from '@storybook/theming';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
 import './index.css';
 
-// eslint-disable-next-line
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 
 export const parameters = {
   backgrounds: {
-    default: 'default',
-    values: [
-      { name: 'default', value: 'var(--color-background-default)' },
-      { name: 'alternative', value: 'var(--color-background-alternative)' },
-    ],
-  },
-  docs: {
-    container: (context) => {
-      const theme = context?.globals?.theme || 'both';
-      const systemPrefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)',
-      ).matches;
-
-      const isDark =
-        theme === 'dark' || (theme === 'both' && systemPrefersDark);
-
-      const props = {
-        ...context,
-        theme: isDark
-          ? { ...themes.dark, ...metamaskStorybookTheme }
-          : { ...themes.light, ...metamaskStorybookTheme },
-        'data-theme': isDark ? 'dark' : 'light',
-      };
-
-      return (
-        <div data-theme={isDark ? 'dark' : 'light'}>
-          <DocsContainer {...props} />
-        </div>
-      );
+    options: {
+      default: { name: 'default', value: 'var(--color-background-default)' },
+      alternative: {
+        name: 'alternative',
+        value: 'var(--color-background-alternative)',
+      },
     },
   },
   options: {
@@ -111,7 +88,7 @@ const proxiedBackground = new Proxy(
   {
     get(_, method) {
       return function () {
-        action(`Background call: ${method}`)();
+        // No-op function for background calls in Storybook
         return new Promise(() => {});
       };
     },
@@ -152,27 +129,27 @@ const metamaskDecorator = (story, context) => {
 
   return (
     <Provider store={store}>
-      <MemoryRouter initialEntries={initialEntries}>
-        <AlertMetricsProvider
-          metrics={{
-            trackAlertActionClicked: () => undefined,
-            trackAlertRender: () => undefined,
-            trackInlineAlertClicked: () => undefined,
-          }}
-        >
-          <I18nProvider
-            currentLocale={currentLocale}
-            current={current}
-            en={allLocales.en}
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={initialEntries}>
+          <AlertMetricsProvider
+            metrics={{
+              trackAlertActionClicked: () => undefined,
+              trackAlertRender: () => undefined,
+              trackInlineAlertClicked: () => undefined,
+            }}
           >
-            <LegacyI18nProvider>
+            <I18nProvider
+              currentLocale={currentLocale}
+              current={current}
+              en={allLocales.en}
+            >
               <Routes>
                 <Route path={path} element={<StoryComponent />} />
               </Routes>
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </AlertMetricsProvider>
-      </MemoryRouter>
+            </I18nProvider>
+          </AlertMetricsProvider>
+        </MemoryRouter>
+      </QueryClientProvider>
     </Provider>
   );
 };
@@ -228,3 +205,9 @@ const withColorScheme = (Story, context) => {
 };
 
 export const decorators = [metamaskDecorator, withColorScheme];
+
+export const initialGlobals = {
+  backgrounds: {
+    value: 'default',
+  },
+};

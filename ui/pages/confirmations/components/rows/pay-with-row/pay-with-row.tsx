@@ -1,7 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
+/* eslint-disable @typescript-eslint/naming-convention */
+import React from 'react';
+import { Skeleton } from '@metamask/design-system-react';
 
 import {
   Box,
@@ -10,26 +9,29 @@ import {
   IconSize,
   Text,
 } from '../../../../../components/component-library';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
-  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
-import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
-import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
-import { useConfirmContext } from '../../../context/confirm';
-import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import { PayWithModal } from '../../modals/pay-with-modal';
+import useAlerts from '../../../../../hooks/useAlerts';
+import { AlertsName } from '../../../hooks/alerts/constants';
+import {
+  usePayWithToken,
+  type PayWithDisplayToken,
+} from '../../../hooks/pay/usePayWithToken';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 import { TokenIcon } from '../../token-icon';
+
+export { ConfirmInfoRowSize };
 
 export const PayWithRowSkeleton = () => {
   return (
@@ -54,88 +56,154 @@ export const PayWithRowSkeleton = () => {
   );
 };
 
-export const PayWithRow = () => {
+type PaySelectorContentProps = {
+  displayToken?: PayWithDisplayToken;
+  emptyLabel?: string;
+  balanceText: string;
+  showBalance: boolean;
+  showArrow: boolean;
+  isMoneyAccountSelected?: boolean;
+};
+
+function PaySelectorContent({
+  displayToken,
+  emptyLabel,
+  balanceText,
+  showBalance,
+  showArrow,
+  isMoneyAccountSelected = false,
+}: PaySelectorContentProps) {
+  return (
+    <>
+      {displayToken ? (
+        <>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            marginRight={1}
+          >
+            {isMoneyAccountSelected ? (
+              <img
+                src="./images/money.png"
+                alt=""
+                width={16}
+                height={16}
+                data-testid="pay-with-money-account-icon"
+              />
+            ) : (
+              <TokenIcon
+                chainId={displayToken.chainId as `0x${string}`}
+                tokenAddress={displayToken.address as `0x${string}`}
+                symbol={displayToken.symbol}
+                size="xs"
+              />
+            )}
+          </Box>
+          <Text data-testid="pay-with-symbol">
+            {displayToken.symbol}
+            {showBalance && (
+              <Text
+                as="span"
+                data-testid="pay-with-balance"
+                color={TextColor.textAlternative}
+              >
+                {balanceText}
+              </Text>
+            )}
+          </Text>
+        </>
+      ) : (
+        <Text data-testid="pay-with-symbol" color={TextColor.textAlternative}>
+          {emptyLabel}
+        </Text>
+      )}
+      {showArrow && (
+        <Icon
+          data-testid="pay-with-arrow"
+          name={IconName.ArrowDown}
+          size={IconSize.Sm}
+        />
+      )}
+    </>
+  );
+}
+
+type PayWithRowProps = {
+  variant?: ConfirmInfoRowSize;
+};
+
+export function PayWithRow({
+  variant = ConfirmInfoRowSize.Small,
+}: PayWithRowProps = {}) {
   const t = useI18nContext();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { payToken } = useTransactionPayToken();
-  const fiatFormatter = useFiatFormatter();
-
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const from = currentConfirmation?.txParams?.from;
-  const chainId = payToken?.chainId;
-
-  const fromAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, from ?? ''),
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
+  const {
+    displayToken,
+    balanceUsdFormatted,
+    label,
+    from,
+    ownerId,
+    isPostQuoteWithdraw,
+    isMoneyAccountSelected,
+    hasAvailableTokens,
+    openModal,
+    modal,
+  } = usePayWithToken();
+  // Read the registered confirmation alert so empty-placeholder visibility
+  // stays in sync with useConfirmationAlerts (do not re-run the wait timer).
+  // MM Pay strips row `field` associations, so look up by alert key instead of
+  // getFieldAlerts(PayWith).
+  const { alerts } = useAlerts(ownerId);
+  const hasAccountNoFunds = alerts.some(
+    (alert) => alert.key === AlertsName.AccountNoFunds,
   );
 
-  const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
+  // Money Account → Perps locks the source of funds, so the token picker stays
+  // hidden — same as mobile `PayWithRow`.
+  if (isMoneyAccountPerpsDeposit) {
+    return null;
+  }
 
-  const handleClick = useCallback(() => {
-    if (!canEdit) {
-      return;
-    }
-    setIsModalOpen(true);
-  }, [canEdit]);
-
-  const handleClose = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
-
-  const balanceUsdFormatted = useMemo(
-    () => fiatFormatter(new BigNumber(payToken?.balanceUsd ?? '0').toNumber()),
-    [fiatFormatter, payToken?.balanceUsd],
-  );
-
-  if (!payToken || !chainId) {
+  // Same as mobile: skeleton only while funding tokens exist to auto-select
+  // from. Without tokens the skeleton never resolves — show the empty
+  // "Select payment method" placeholder instead.
+  if (
+    !displayToken &&
+    !hasAccountNoFunds &&
+    !isPostQuoteWithdraw &&
+    hasAvailableTokens
+  ) {
     return <PayWithRowSkeleton />;
   }
 
   return (
     <>
-      {isModalOpen && (
-        <PayWithModal isOpen={isModalOpen} onClose={handleClose} />
-      )}
-      <Box
+      {modal}
+      <ConfirmInfoAlertRow
+        alertKey={RowAlertKey.PayWith}
+        ownerId={ownerId}
         data-testid="pay-with-row"
-        onClick={handleClick}
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        borderRadius={BorderRadius.pill}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        gap={3}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingLeft={2}
-        paddingRight={4}
-        style={{
-          cursor: canEdit ? 'pointer' : 'default',
-        }}
+        label={label}
+        rowVariant={variant}
       >
-        <TokenIcon chainId={chainId} tokenAddress={payToken.address} />
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textDefault}
-          data-testid="pay-with-symbol"
+        <Box
+          data-testid="pay-with-pill"
+          onClick={openModal}
+          display={Display.InlineFlex}
+          alignItems={AlignItems.center}
+          gap={1}
+          style={{ cursor: 'pointer' }}
         >
-          {`${t('payWith')} ${payToken.symbol}`}
-        </Text>
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
-          data-testid="pay-with-balance"
-        >
-          {balanceUsdFormatted}
-        </Text>
-        {canEdit && from && (
-          <Icon
-            name={IconName.ArrowDown}
-            size={IconSize.Sm}
-            color={IconColor.iconAlternative}
+          <PaySelectorContent
+            displayToken={displayToken}
+            emptyLabel={t('payWithEmptySelection')}
+            balanceText={` (${balanceUsdFormatted})`}
+            showBalance={Boolean(displayToken) && !isPostQuoteWithdraw}
+            showArrow={Boolean(from)}
+            isMoneyAccountSelected={isMoneyAccountSelected}
           />
-        )}
-      </Box>
+        </Box>
+      </ConfirmInfoAlertRow>
     </>
   );
-};
+}

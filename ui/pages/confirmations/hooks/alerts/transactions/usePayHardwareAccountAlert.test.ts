@@ -1,8 +1,8 @@
 import { Hex } from '@metamask/utils';
-import {
-  getMockConfirmStateForTransaction,
-  getMockConfirmState,
-} from '../../../../../../test/data/confirmations/helper';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import { waitFor } from '@testing-library/react';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import {
   genUnapprovedContractInteractionConfirmation,
   CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -11,53 +11,120 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { HardwareDeviceNames } from '../../../../../../shared/constants/hardware-wallets';
 import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 
-const HARDWARE_ACCOUNT_ID = 'hardware-account-id';
+const SENDER_ACCOUNT_ID = 'hardware-account-id';
+const PAYER_ACCOUNT_ID = 'payer-account-id';
+const PAYER_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
 
-function createHardwareAccountState(keyringType: string) {
+type PayHardwareFlag =
+  | boolean
+  | {
+      enabled?: boolean;
+      default?: { enabled?: boolean };
+      overrides?: Record<string, { enabled?: boolean }>;
+    };
+
+function buildAccount(address: string, id: string, keyringType: string) {
+  return {
+    address,
+    id,
+    metadata: {
+      importTime: 0,
+      name: `Account ${id}`,
+      keyring: { type: keyringType },
+      lastSelected: 0,
+    },
+    options: {},
+    methods: [
+      'personal_sign',
+      'eth_signTransaction',
+      'eth_signTypedData_v1',
+      'eth_signTypedData_v3',
+      'eth_signTypedData_v4',
+    ],
+    scopes: ['eip155:0'],
+    type: 'eip155:eoa',
+  };
+}
+
+function buildState({
+  senderKeyringType,
+  payerKeyringType,
+  flag,
+  transactionId,
+}: {
+  senderKeyringType: string;
+  payerKeyringType?: string;
+  flag: PayHardwareFlag;
+  transactionId?: string;
+}) {
+  const accounts = {
+    [SENDER_ACCOUNT_ID]: buildAccount(
+      CONTRACT_INTERACTION_SENDER_ADDRESS,
+      SENDER_ACCOUNT_ID,
+      senderKeyringType,
+    ),
+  } as Record<string, ReturnType<typeof buildAccount>>;
+  const accountIdByAddress = {
+    [CONTRACT_INTERACTION_SENDER_ADDRESS]: SENDER_ACCOUNT_ID,
+  } as Record<string, string>;
+
+  if (payerKeyringType) {
+    accounts[PAYER_ACCOUNT_ID] = buildAccount(
+      PAYER_ADDRESS,
+      PAYER_ACCOUNT_ID,
+      payerKeyringType,
+    );
+    accountIdByAddress[PAYER_ADDRESS] = PAYER_ACCOUNT_ID;
+  }
+
   return {
     metamask: {
-      internalAccounts: {
-        accounts: {
-          [HARDWARE_ACCOUNT_ID]: {
-            address: CONTRACT_INTERACTION_SENDER_ADDRESS,
-            id: HARDWARE_ACCOUNT_ID,
-            metadata: {
-              importTime: 0,
-              name: 'Hardware Account',
-              keyring: {
-                type: keyringType,
-              },
-              lastSelected: 0,
-            },
-            options: {},
-            methods: [
-              'personal_sign',
-              'eth_signTransaction',
-              'eth_signTypedData_v1',
-              'eth_signTypedData_v3',
-              'eth_signTypedData_v4',
-            ],
-            scopes: ['eip155:0'],
-            type: 'eip155:eoa',
-          },
-        },
-        selectedAccount: HARDWARE_ACCOUNT_ID,
+      internalAccounts: { accounts, selectedAccount: SENDER_ACCOUNT_ID },
+      accountIdByAddress,
+      remoteFeatureFlags: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay_hardware:
+          typeof flag === 'boolean' ? { enabled: flag } : flag,
       },
+      ...(payerKeyringType && transactionId
+        ? {
+            transactionData: {
+              [transactionId]: { accountOverride: PAYER_ADDRESS },
+            },
+          }
+        : {}),
     },
   };
 }
 
-function runHookWithTransaction(keyringType: string = 'HD Key Tree') {
-  const transaction = genUnapprovedContractInteractionConfirmation({
-    address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
-  });
+function runHook({
+  transactionType,
+  senderKeyringType = KeyringTypes.ledger,
+  payerKeyringType,
+  flag = false,
+}: {
+  transactionType: TransactionType;
+  senderKeyringType?: string;
+  payerKeyringType?: string;
+  flag?: PayHardwareFlag;
+}) {
+  const transaction = {
+    ...genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex,
+    }),
+    type: transactionType,
+  };
 
   const state = getMockConfirmStateForTransaction(
     transaction,
-    createHardwareAccountState(keyringType),
+    buildState({
+      senderKeyringType,
+      payerKeyringType,
+      flag,
+      transactionId: transaction.id,
+    }),
   );
 
   return renderHookWithConfirmContextProvider(
@@ -66,73 +133,69 @@ function runHookWithTransaction(keyringType: string = 'HD Key Tree') {
   );
 }
 
-function runHookWithoutTransaction() {
-  const state = getMockConfirmState();
+const EXPECTED_ALERT = {
+  key: AlertsName.PayHardwareAccount,
+  field: RowAlertKey.PayWith,
+  reason: 'Wallet not supported',
+  message: "Hardware wallets aren't supported.\nSwitch wallets to continue.",
+  severity: Severity.Danger,
+  isBlocking: true,
+};
 
-  return renderHookWithConfirmContextProvider(
-    () => usePayHardwareAccountAlert(),
-    state,
-  );
-}
+const FLAG_OFF: PayHardwareFlag = { enabled: false };
+const DEPOSIT_ONLY: PayHardwareFlag = {
+  default: { enabled: false },
+  overrides: { moneyAccountDeposit: { enabled: true } },
+};
 
 describe('usePayHardwareAccountAlert', () => {
-  it('returns alert if from address is a Ledger hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.ledger);
+  describe('moneyAccountDeposit — evaluates the paying account', () => {
+    it('returns alert for a Ledger payer when the deposit override is disabled', async () => {
+      const { result } = runHook({
+        transactionType: TransactionType.moneyAccountDeposit,
+        senderKeyringType: 'HD Key Tree',
+        payerKeyringType: KeyringTypes.ledger,
+        flag: FLAG_OFF,
+      });
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+      });
+    });
 
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
-  });
+    it('returns no alert for a Ledger payer when the deposit override is enabled', async () => {
+      const { result } = runHook({
+        transactionType: TransactionType.moneyAccountDeposit,
+        senderKeyringType: 'HD Key Tree',
+        payerKeyringType: KeyringTypes.ledger,
+        flag: DEPOSIT_ONLY,
+      });
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([]);
+      });
+    });
 
-  it('returns alert if from address is a Trezor hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.trezor);
+    it('returns alert for a QR payer even when the deposit override is enabled', async () => {
+      const { result } = runHook({
+        transactionType: TransactionType.moneyAccountDeposit,
+        senderKeyringType: 'HD Key Tree',
+        payerKeyringType: KeyringTypes.qr,
+        flag: DEPOSIT_ONLY,
+      });
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+      });
+    });
 
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
-  });
-
-  it('returns alert if from address is a Lattice hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.lattice);
-
-    expect(result.current).toStrictEqual([
-      {
-        key: AlertsName.PayHardwareAccount,
-        field: RowAlertKey.PayWith,
-        reason: 'Wallet not supported',
-        message:
-          "Hardware wallets aren't supported.\nSwitch wallets to continue.",
-        severity: Severity.Danger,
-        isBlocking: true,
-      },
-    ]);
-  });
-
-  it('returns no alert if from address is not a hardware wallet account', () => {
-    const { result } = runHookWithTransaction('HD Key Tree');
-
-    expect(result.current).toStrictEqual([]);
-  });
-
-  it('returns no alert if there is no current confirmation', () => {
-    const { result } = runHookWithoutTransaction();
-
-    expect(result.current).toStrictEqual([]);
+    it('ignores a hardware signer when the payer is a software account', async () => {
+      const { result } = runHook({
+        transactionType: TransactionType.moneyAccountDeposit,
+        senderKeyringType: KeyringTypes.ledger,
+        payerKeyringType: 'HD Key Tree',
+        flag: FLAG_OFF,
+      });
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([]);
+      });
+    });
   });
 });

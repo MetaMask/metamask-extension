@@ -4,9 +4,10 @@ import {
   CaipChainId,
   CaipNamespace,
   CaipAccountId,
+  toCaipAccountId,
 } from '@metamask/utils';
 import { EthScope } from '@metamask/keyring-api';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { AccountGroupWithInternalAccounts } from '../../../ui/selectors/multichain-accounts/account-tree.types';
 
 /**
@@ -54,21 +55,6 @@ export const anyScopesMatch = (
   }
 
   return false;
-};
-
-/**
- * Helper function to check if a single account scope matches the target scope.
- * This is a convenience wrapper around anyScopesMatch for single scope comparisons.
- *
- * @param accountScope - Single scope string from the account
- * @param targetScope - The target scope to match against
- * @returns True if the scope matches, false otherwise
- */
-export const scopeMatches = (
-  accountScope: string,
-  targetScope: string,
-): boolean => {
-  return anyScopesMatch([accountScope], targetScope);
 };
 
 /**
@@ -185,3 +171,14 @@ export const getCaip25AccountIdsFromAccountGroupAndScope = (
 
   return Array.from(updatedSelectedCaipAccountAddresses);
 };
+
+/**
+ * Converts an Ethereum account address to an EVM wildcard CAIP account ID.
+ * Uses the special chain reference "0" to represent "all EVM chains" for API compatibility.
+ *
+ * @param accountAddress - The Ethereum account address
+ * @returns The EVM wildcard CAIP account ID in format "eip155:0:address"
+ */
+export function toEvmCaipAccountId(accountAddress: string): CaipAccountId {
+  return toCaipAccountId(KnownCaipNamespace.Eip155, '0', accountAddress);
+}

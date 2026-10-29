@@ -1,9 +1,7 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import enLocale from '../../../../app/_locales/en/messages.json';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { userEvent as userEventApi } from '@testing-library/user-event';
+import { enLocale } from '../../../../test/lib/i18n-helpers';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers';
 import SrpInput from '.';
 
@@ -35,6 +33,7 @@ const poorlyFormattedInputs = [
 ];
 
 const whitespaceCharacters = [' ', '  ', '\n', '\t'];
+const userEvent = userEventApi.setup();
 
 describe('srp-input', () => {
   beforeEach(() => {
@@ -66,8 +65,9 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
-        await userEvent.keyboard('test');
+        fireEvent.change(getByTestId('import-srp__srp-word-0'), {
+          target: { value: 'test' },
+        });
 
         expect(onChange).toHaveBeenLastCalledWith('');
       });
@@ -83,8 +83,9 @@ describe('srp-input', () => {
         );
 
         for (const index of new Array(11).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard('test');
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: 'test' },
+          });
         }
 
         expect(onChange).toHaveBeenLastCalledWith('');
@@ -101,11 +102,13 @@ describe('srp-input', () => {
         );
 
         for (const index of new Array(11).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(index === 0 ? 'test test' : 'test');
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: index === 0 ? 'test test' : 'test' },
+          });
         }
-        getByTestId(`import-srp__srp-word-11`).focus();
-        await userEvent.keyboard('ball');
+        fireEvent.change(getByTestId(`import-srp__srp-word-11`), {
+          target: { value: 'ball' },
+        });
 
         expect(onChange).toHaveBeenLastCalledWith('');
       });
@@ -121,11 +124,13 @@ describe('srp-input', () => {
         );
 
         for (const index of new Array(10).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(index === 0 ? 'test test' : 'test');
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: index === 0 ? 'test test' : 'test' },
+          });
         }
-        getByTestId(`import-srp__srp-word-11`).focus();
-        await userEvent.keyboard('ball');
+        fireEvent.change(getByTestId(`import-srp__srp-word-11`), {
+          target: { value: 'ball' },
+        });
 
         expect(onChange).toHaveBeenLastCalledWith('');
       });
@@ -142,8 +147,9 @@ describe('srp-input', () => {
 
         const srpParts = invalidChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(onChange).toHaveBeenLastCalledWith('');
@@ -161,8 +167,9 @@ describe('srp-input', () => {
 
         const srpParts = invalidWordCorrectChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(onChange).toHaveBeenLastCalledWith('');
@@ -180,8 +187,9 @@ describe('srp-input', () => {
 
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
         await userEvent.clear(getByTestId('import-srp__srp-word-0'));
 
@@ -200,12 +208,14 @@ describe('srp-input', () => {
 
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
         await userEvent.clear(getByTestId('import-srp__srp-word-0'));
-        getByTestId(`import-srp__srp-word-0`).focus();
-        await userEvent.keyboard('ball');
+        fireEvent.change(getByTestId(`import-srp__srp-word-0`), {
+          target: { value: 'ball' },
+        });
 
         expect(onChange).toHaveBeenLastCalledWith('');
       });
@@ -220,12 +230,13 @@ describe('srp-input', () => {
           />,
         );
 
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(correct);
         const srpParts = invalidWordCorrectChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(onChange).toHaveBeenLastCalledWith('');
@@ -242,7 +253,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste('test');
 
         expect(onChange).toHaveBeenLastCalledWith('');
@@ -259,7 +270,7 @@ describe('srp-input', () => {
         );
 
         for (const index of new Array(11).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste('test');
         }
 
@@ -278,7 +289,7 @@ describe('srp-input', () => {
 
         const srpParts = invalidChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -297,7 +308,7 @@ describe('srp-input', () => {
 
         const srpParts = invalidWordCorrectChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -316,7 +327,7 @@ describe('srp-input', () => {
 
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
         await userEvent.clear(getByTestId('import-srp__srp-word-0'));
@@ -336,11 +347,12 @@ describe('srp-input', () => {
 
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
         await userEvent.clear(getByTestId('import-srp__srp-word-0'));
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste('ball');
 
         expect(onChange).toHaveBeenLastCalledWith('');
@@ -356,11 +368,11 @@ describe('srp-input', () => {
           />,
         );
 
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(correct);
         const srpParts = invalidWordCorrectChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -378,7 +390,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste('test');
 
         expect(onChange).toHaveBeenLastCalledWith('');
@@ -393,7 +405,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(tooManyWords);
 
         expect(onChange).not.toHaveBeenCalled();
@@ -409,7 +421,7 @@ describe('srp-input', () => {
               srpText={enLocale.secretRecoveryPhrase.message}
             />,
           );
-          getByTestId('import-srp__srp-word-0').focus();
+          await userEvent.click(getByTestId('import-srp__srp-word-0'));
           await userEvent.paste(invalidInput);
 
           expect(onChange).toHaveBeenLastCalledWith('');
@@ -424,7 +436,7 @@ describe('srp-input', () => {
               srpText={enLocale.secretRecoveryPhrase.message}
             />,
           );
-          getByTestId('import-srp__srp-word-1').focus();
+          await userEvent.click(getByTestId('import-srp__srp-word-1'));
           await userEvent.paste(invalidInput);
 
           expect(onChange).toHaveBeenLastCalledWith('');
@@ -439,7 +451,7 @@ describe('srp-input', () => {
               srpText={enLocale.secretRecoveryPhrase.message}
             />,
           );
-          getByTestId('import-srp__srp-word-1').focus();
+          await userEvent.click(getByTestId('import-srp__srp-word-1'));
           await userEvent.paste(correct);
           await userEvent.paste(invalidInput);
 
@@ -456,7 +468,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-1').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-1'));
         await userEvent.paste(correct);
         await userEvent.paste('test test');
 
@@ -476,8 +488,9 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(onChange).toHaveBeenLastCalledWith(correct);
@@ -495,12 +508,14 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
-            await userEvent.keyboard(
-              index === 0
-                ? `${whitespaceCharacter}${srpParts[index]}`
-                : srpParts[index],
-            );
+            fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+              target: {
+                value:
+                  index === 0
+                    ? `${whitespaceCharacter}${srpParts[index]}`
+                    : srpParts[index],
+              },
+            });
           }
 
           expect(onChange).toHaveBeenLastCalledWith(correct);
@@ -517,12 +532,14 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
-            await userEvent.keyboard(
-              index === 11
-                ? `${srpParts[index]}${whitespaceCharacter}`
-                : srpParts[index],
-            );
+            fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+              target: {
+                value:
+                  index === 11
+                    ? `${srpParts[index]}${whitespaceCharacter}`
+                    : srpParts[index],
+              },
+            });
           }
 
           expect(onChange).toHaveBeenLastCalledWith(correct);
@@ -539,10 +556,9 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
-            await userEvent.keyboard(
-              `${srpParts[index]}${whitespaceCharacter}`,
-            );
+            fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+              target: { value: `${srpParts[index]}${whitespaceCharacter}` },
+            });
           }
 
           expect(onChange).toHaveBeenLastCalledWith(correct);
@@ -562,7 +578,7 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -580,7 +596,7 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index].slice(0, 2));
           await userEvent.paste(srpParts[index].slice(2));
         }
@@ -600,7 +616,7 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
+            await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
             await userEvent.paste(
               index === 0
                 ? `${whitespaceCharacter}${srpParts[index]}`
@@ -622,7 +638,7 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
+            await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
             await userEvent.paste(
               index === 11
                 ? `${srpParts[index]}${whitespaceCharacter}`
@@ -644,7 +660,7 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
+            await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
             await userEvent.paste(`${srpParts[index]}${whitespaceCharacter}`);
           }
 
@@ -663,7 +679,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(correct);
 
         expect(onChange).toHaveBeenLastCalledWith(correct);
@@ -678,7 +694,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(invalidChecksum);
         await userEvent.paste(correct);
 
@@ -695,7 +711,7 @@ describe('srp-input', () => {
               srpText={enLocale.secretRecoveryPhrase.message}
             />,
           );
-          getByTestId('import-srp__srp-word-0').focus();
+          await userEvent.click(getByTestId('import-srp__srp-word-0'));
           await userEvent.paste(poorlyFormattedInput);
 
           expect(onChange).toHaveBeenLastCalledWith(correct);
@@ -710,7 +726,7 @@ describe('srp-input', () => {
               srpText={enLocale.secretRecoveryPhrase.message}
             />,
           );
-          getByTestId('import-srp__srp-word-1').focus();
+          await userEvent.click(getByTestId('import-srp__srp-word-1'));
           await userEvent.paste(poorlyFormattedInput);
 
           expect(onChange).toHaveBeenLastCalledWith(correct);
@@ -751,8 +767,9 @@ describe('srp-input', () => {
         );
         const srpParts = tooFewWords.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
@@ -773,8 +790,9 @@ describe('srp-input', () => {
         await userEvent.selectOptions(getByRole('combobox'), '15');
         const srpParts = invalidWordCount.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
@@ -794,8 +812,9 @@ describe('srp-input', () => {
         );
         const srpParts = invalidChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(
@@ -817,8 +836,9 @@ describe('srp-input', () => {
         );
         const srpParts = invalidWordCorrectChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(
@@ -840,8 +860,9 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         expect(
@@ -864,12 +885,14 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
-            await userEvent.keyboard(
-              index === 0
-                ? `${whitespaceCharacter}${srpParts[index]}`
-                : srpParts[index],
-            );
+            fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+              target: {
+                value:
+                  index === 0
+                    ? `${whitespaceCharacter}${srpParts[index]}`
+                    : srpParts[index],
+              },
+            });
           }
 
           expect(
@@ -891,12 +914,14 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
-            await userEvent.keyboard(
-              index === 11
-                ? `${srpParts[index]}${whitespaceCharacter}`
-                : srpParts[index],
-            );
+            fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+              target: {
+                value:
+                  index === 11
+                    ? `${srpParts[index]}${whitespaceCharacter}`
+                    : srpParts[index],
+              },
+            });
           }
 
           expect(
@@ -918,10 +943,9 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
-            await userEvent.keyboard(
-              `${srpParts[index]}${whitespaceCharacter}`,
-            );
+            fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+              target: { value: `${srpParts[index]}${whitespaceCharacter}` },
+            });
           }
 
           expect(
@@ -946,7 +970,7 @@ describe('srp-input', () => {
         );
         const srpParts = tooFewWords.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -968,7 +992,7 @@ describe('srp-input', () => {
         await userEvent.selectOptions(getByRole('combobox'), '15');
         const srpParts = invalidWordCount.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -989,7 +1013,7 @@ describe('srp-input', () => {
         );
         const srpParts = invalidChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -1012,7 +1036,7 @@ describe('srp-input', () => {
         );
         const srpParts = invalidWordCorrectChecksum.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -1035,7 +1059,7 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -1059,7 +1083,7 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
+            await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
             await userEvent.paste(
               index === 0
                 ? `${whitespaceCharacter}${srpParts[index]}`
@@ -1086,7 +1110,7 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
+            await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
             await userEvent.paste(
               index === 11
                 ? `${srpParts[index]}${whitespaceCharacter}`
@@ -1113,7 +1137,7 @@ describe('srp-input', () => {
           );
           const srpParts = correct.split(' ');
           for (const index of new Array(srpParts.length).keys()) {
-            getByTestId(`import-srp__srp-word-${index}`).focus();
+            await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
             await userEvent.paste(`${srpParts[index]}${whitespaceCharacter}`);
           }
 
@@ -1137,7 +1161,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(tooFewWords);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
@@ -1155,7 +1179,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(invalidWordCount);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeInTheDocument();
@@ -1173,7 +1197,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(invalidChecksum);
 
         expect(
@@ -1193,7 +1217,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(invalidWordCorrectChecksum);
 
         expect(
@@ -1213,7 +1237,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(correct);
 
         expect(
@@ -1234,7 +1258,7 @@ describe('srp-input', () => {
               srpText={enLocale.secretRecoveryPhrase.message}
             />,
           );
-          getByTestId('import-srp__srp-word-0').focus();
+          await userEvent.click(getByTestId('import-srp__srp-word-0'));
           await userEvent.paste(poorlyFormattedInput);
 
           expect(
@@ -1282,8 +1306,9 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
 
           expect(queryAllByRole('textbox')).toHaveLength(0);
         }
@@ -1300,7 +1325,7 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
 
           expect(queryAllByRole('textbox')).toHaveLength(0);
@@ -1316,7 +1341,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(correct);
 
         expect(queryAllByRole('textbox')).toHaveLength(0);
@@ -1338,8 +1363,9 @@ describe('srp-input', () => {
           await userEvent.click(
             getByTestId(`import-srp__srp-word-${index}-checkbox`),
           );
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
           await userEvent.click(
             getByTestId(`import-srp__srp-word-${index}-checkbox`),
           );
@@ -1365,7 +1391,7 @@ describe('srp-input', () => {
           await userEvent.click(
             getByTestId(`import-srp__srp-word-${index}-checkbox`),
           );
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
           await userEvent.click(
             getByTestId(`import-srp__srp-word-${index}-checkbox`),
@@ -1391,8 +1417,9 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
         }
 
         for (const index of new Array(srpParts.length).keys()) {
@@ -1424,7 +1451,7 @@ describe('srp-input', () => {
         );
         const srpParts = correct.split(' ');
         for (const index of new Array(srpParts.length).keys()) {
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
         }
 
@@ -1455,7 +1482,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-        getByTestId('import-srp__srp-word-0').focus();
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
         await userEvent.paste(correct);
 
         const srpParts = correct.split(' ');
@@ -1493,8 +1520,9 @@ describe('srp-input', () => {
           await userEvent.click(
             getByTestId(`import-srp__srp-word-${index}-checkbox`),
           );
-          getByTestId(`import-srp__srp-word-${index}`).focus();
-          await userEvent.keyboard(srpParts[index]);
+          fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+            target: { value: srpParts[index] },
+          });
 
           expect(
             getByTestId(`import-srp__srp-word-${index}-checkbox`),
@@ -1523,7 +1551,7 @@ describe('srp-input', () => {
           await userEvent.click(
             getByTestId(`import-srp__srp-word-${index}-checkbox`),
           );
-          getByTestId(`import-srp__srp-word-${index}`).focus();
+          await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
           await userEvent.paste(srpParts[index]);
 
           expect(
@@ -1551,8 +1579,10 @@ describe('srp-input', () => {
           />,
         );
         await userEvent.click(getByTestId('import-srp__srp-word-0-checkbox'));
-        getByTestId('import-srp__srp-word-0').focus();
-        await userEvent.keyboard('test');
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
+        fireEvent.change(getByTestId('import-srp__srp-word-0'), {
+          target: { value: 'test' },
+        });
         expect(queryAllByRole('textbox')).toHaveLength(1);
 
         await userEvent.paste(tooFewWords);
@@ -1574,8 +1604,10 @@ describe('srp-input', () => {
           />,
         );
         await userEvent.click(getByTestId('import-srp__srp-word-0-checkbox'));
-        getByTestId('import-srp__srp-word-0').focus();
-        await userEvent.keyboard('test');
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
+        fireEvent.change(getByTestId('import-srp__srp-word-0'), {
+          target: { value: 'test' },
+        });
         expect(queryAllByRole('textbox')).toHaveLength(1);
 
         await userEvent.paste(correct);
@@ -1597,8 +1629,10 @@ describe('srp-input', () => {
           />,
         );
         await userEvent.click(getByTestId('import-srp__srp-word-0-checkbox'));
-        getByTestId('import-srp__srp-word-0').focus();
-        await userEvent.keyboard('test');
+        await userEvent.click(getByTestId('import-srp__srp-word-0'));
+        fireEvent.change(getByTestId('import-srp__srp-word-0'), {
+          target: { value: 'test' },
+        });
         expect(queryAllByRole('textbox')).toHaveLength(1);
 
         await userEvent.paste('test');
@@ -1616,7 +1650,7 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(correct);
       await userEvent.click(getByTestId('import-srp__srp-word-0-checkbox'));
       expect(getByTestId('import-srp__srp-word-0-checkbox')).toBeChecked();
@@ -1641,8 +1675,9 @@ describe('srp-input', () => {
       );
       const srpParts = correct.split(' ');
       for (const index of new Array(srpParts.length).keys()) {
-        getByTestId(`import-srp__srp-word-${index}`).focus();
-        await userEvent.keyboard(srpParts[index]);
+        fireEvent.change(getByTestId(`import-srp__srp-word-${index}`), {
+          target: { value: srpParts[index] },
+        });
       }
 
       expect(writeTextSpy).not.toHaveBeenCalled();
@@ -1660,7 +1695,7 @@ describe('srp-input', () => {
       );
       const srpParts = correct.split(' ');
       for (const index of new Array(srpParts.length).keys()) {
-        getByTestId(`import-srp__srp-word-${index}`).focus();
+        await userEvent.click(getByTestId(`import-srp__srp-word-${index}`));
         await userEvent.paste(srpParts[index]);
       }
 
@@ -1677,7 +1712,7 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(tooManyWords);
 
       expect(writeTextSpy).not.toHaveBeenCalled();
@@ -1693,7 +1728,7 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(tooFewWords);
 
       expect(writeTextSpy).toHaveBeenCalledWith('');
@@ -1709,7 +1744,7 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(correct);
 
       expect(writeTextSpy).toHaveBeenCalledWith('');
@@ -1747,7 +1782,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(new Array(15).fill('test').join(' '));
 
       expect(
@@ -1771,7 +1806,7 @@ describe('srp-input', () => {
           />,
         );
       await userEvent.selectOptions(getByRole('combobox'), '15');
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(correct);
 
       expect(
@@ -1794,7 +1829,7 @@ describe('srp-input', () => {
             srpText={enLocale.secretRecoveryPhrase.message}
           />,
         );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(invalidWordCount);
 
       expect(
@@ -1837,7 +1872,7 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(new Array(15).fill('test').join(' '));
       await userEvent.selectOptions(getByRole('combobox'), '12');
       await userEvent.selectOptions(getByRole('combobox'), '15');
@@ -1861,7 +1896,7 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(tooManyWords);
 
       expect(
@@ -1878,9 +1913,9 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(tooManyWords);
-      await userEvent.click(getByText('Dismiss'));
+      await userEvent.click(getByText(enLocale.dismiss.message));
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),
@@ -1896,7 +1931,7 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(tooManyWords);
       await userEvent.paste(correct);
 
@@ -1914,7 +1949,7 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(tooManyWords);
       await userEvent.paste(tooManyWords);
 
@@ -1932,9 +1967,11 @@ describe('srp-input', () => {
           srpText={enLocale.secretRecoveryPhrase.message}
         />,
       );
-      getByTestId('import-srp__srp-word-0').focus();
+      await userEvent.click(getByTestId('import-srp__srp-word-0'));
       await userEvent.paste(tooManyWords);
-      await userEvent.keyboard('test');
+      fireEvent.change(getByTestId('import-srp__srp-word-0'), {
+        target: { value: 'test' },
+      });
 
       expect(
         queryByText(enLocale.srpPasteFailedTooManyWords.message),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import configureStore from '../../../../../store/store';
@@ -9,7 +9,37 @@ import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { toast, ToastContent } from '../../../../ui/toast/toast';
+import { PRIVACY_ROUTE } from '../../../../../helpers/constants/routes';
 import NftsTab from '.';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../../../../../hooks/useAnalytics', () => ({
+  useAnalytics: () => ({
+    trackEvent: jest.fn(),
+    createEventBuilder: jest.fn(() => ({
+      addCategory: jest.fn().mockReturnThis(),
+      addProperties: jest.fn().mockReturnThis(),
+      build: jest.fn().mockReturnValue({}),
+    })),
+  }),
+}));
+
+jest.mock('../../../../ui/toast/toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
+  ToastContent: jest.fn(({ title, dataTestId }) => (
+    <div data-testid={dataTestId}>{title}</div>
+  )),
+}));
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
@@ -152,6 +182,7 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
+  useExternalServices = true,
   balance = ETH_BALANCE,
 }) => {
   const store = configureStore({
@@ -212,6 +243,7 @@ const render = ({
       currentCurrency: 'usd',
       tokenList: {},
       useNftDetection,
+      useExternalServices,
       nftsDropdownState,
     },
   });
@@ -226,12 +258,26 @@ describe('NFT Items', () => {
   setBackgroundConnection({
     detectNfts: detectNftsStub,
     getState: getStateStub,
+    getStatePatches: jest.fn().mockResolvedValue([]),
     checkAndUpdateAllNftsOwnershipStatus:
       checkAndUpdateAllNftsOwnershipStatusStub,
     updateNftDropDownState: updateNftDropDownStateStub,
-    setUseNftDetection: setUseNftDetectionStub,
-    setOpenSeaEnabled: setDisplayNftMediaStub,
-    setPreference: setPreferenceStub,
+    messengerCall: (actionType, args = []) => {
+      switch (actionType) {
+        case 'PreferencesController:setUseNftDetection':
+          return setUseNftDetectionStub(...args);
+        case 'PreferencesController:setOpenSeaEnabled':
+          return setDisplayNftMediaStub(...args);
+        case 'PreferencesController:setPreference':
+          return setPreferenceStub(...args);
+        default:
+          throw new Error(`Unknown action type '${actionType}'`);
+      }
+    },
+  });
+
+  beforeEach(() => {
+    mockNavigate.mockClear();
   });
 
   describe('NFTs Detection Notice', () => {
@@ -240,7 +286,9 @@ describe('NFT Items', () => {
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
 
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has no nfts', async () => {
@@ -249,7 +297,9 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: false,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is ON', () => {
       render({
@@ -257,7 +307,9 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
     });
     it('should turn on nft detection without going to settings when user clicks "Enable NFT Autodetection" and nft detection is set to false', async () => {
       render({
@@ -265,11 +317,20 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: false,
       });
-      fireEvent.click(screen.queryByText('Enable NFT Autodetection'));
+      fireEvent.click(
+        screen.queryByText(messages.selectNFTPrivacyPreference.message),
+      );
       expect(setUseNftDetectionStub).toHaveBeenCalledTimes(1);
       expect(setDisplayNftMediaStub).toHaveBeenCalledTimes(1);
       expect(setUseNftDetectionStub.mock.calls[0][0]).toStrictEqual(true);
       expect(setDisplayNftMediaStub.mock.calls[0][0]).toStrictEqual(true);
+      expect(toast.success).toHaveBeenCalledWith(
+        <ToastContent
+          title={messages.nftAutoDetectionEnabled.message}
+          dataTestId="enabled-nft-auto-detection"
+        />,
+        { id: 'enabled-nft-auto-detection', duration: 5000 },
+      );
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
       render({
@@ -277,14 +338,18 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
     });
     it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).toBeInTheDocument();
     });
 
     it('should not render the NFTs Detection Notice when currently selected network is NOT Mainnet', () => {
@@ -294,7 +359,77 @@ describe('NFT Items', () => {
         useNftDetection: false,
         chainId: '0x4',
       });
-      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('basic functionality off', () => {
+    it('renders the basic functionality off empty state when useExternalServices is false', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useExternalServices: false,
+      });
+
+      expect(
+        screen.getByTestId('nfts-basic-functionality-off'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsBasicFunctionalityOff.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', {
+          name: messages.basicFunctionalityRequired_reviewInSettings.message,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.newNFTsAutodetected.message),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render the basic functionality off empty state when useExternalServices is true', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useExternalServices: true,
+      });
+
+      expect(
+        screen.queryByTestId('nfts-basic-functionality-off'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('navigates to privacy settings when Review in settings is clicked', () => {
+      render({
+        selectedAddress: ACCOUNT_1,
+        nfts: NFTS,
+        useExternalServices: false,
+      });
+
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: messages.basicFunctionalityRequired_reviewInSettings.message,
+        }),
+      );
+
+      expect(mockNavigate).toHaveBeenCalledWith(PRIVACY_ROUTE);
+    });
+  });
+
+  describe('Sort control', () => {
+    it('does not render the sort control', async () => {
+      await act(async () =>
+        render({
+          selectedAddress: ACCOUNT_1,
+          nfts: NFTS,
+          useNftDetection: true,
+        }),
+      );
+      expect(
+        screen.queryByTestId('sort-by-popover-toggle'),
+      ).not.toBeInTheDocument();
     });
   });
 });

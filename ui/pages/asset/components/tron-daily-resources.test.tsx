@@ -1,21 +1,18 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { CaipChainId } from '@metamask/utils';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import * as useTronResourcesHook from '../hooks/useTronResources';
+import * as useFreshTronAssetsHook from '../hooks/useFreshTronAssets';
 import { TronDailyResources } from './tron-daily-resources';
 
 // Mock the hooks
 jest.mock('../hooks/useTronResources');
+jest.mock('../hooks/useFreshTronAssets');
 
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, values?: string[]) => {
-    if (values) {
-      return `${key}-${values.join('-')}`;
-    }
-    return key;
-  },
-}));
+const mockT = tEn as (key: string, substitutions?: string[]) => string;
 
 describe('TronDailyResources', () => {
   const mockAccount: InternalAccount = {
@@ -30,18 +27,45 @@ describe('TronDailyResources', () => {
     methods: [],
   } as unknown as InternalAccount;
 
-  const chainId = MultichainNetworks.TRON;
+  const chainId = MultichainNetworks.TRON as CaipChainId;
 
   const mockUseTronResources =
     useTronResourcesHook.useTronResources as jest.Mock;
+  const mockUseFreshTronAssets =
+    useFreshTronAssetsHook.useFreshTronAssets as jest.Mock;
+  mockUseFreshTronAssets.mockReturnValue(undefined);
+
+  const defaultResources = {
+    energy: {
+      type: 'energy',
+      current: 65000,
+      max: 100000,
+      percentage: 65,
+    },
+    bandwidth: {
+      type: 'bandwidth',
+      current: 1000,
+      max: 5000,
+      percentage: 20,
+    },
+    dataState: 'available',
+  };
+
+  const mockHookReturn = (overrides: Partial<Record<string, unknown>> = {}) => {
+    mockUseTronResources.mockReturnValue({
+      ...defaultResources,
+      ...overrides,
+    });
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseFreshTronAssets.mockReturnValue(undefined);
   });
 
   describe('rendering', () => {
     it('renders the component with energy and bandwidth resources', () => {
-      mockUseTronResources.mockReturnValue({
+      mockHookReturn({
         energy: {
           type: 'energy',
           current: 65000,
@@ -56,33 +80,70 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
-      expect(screen.getByText('tronDailyResources')).toBeInTheDocument();
       expect(
-        screen.getByText('tronDailyResourcesDescription-5,000'),
+        screen.getByText(messages.tronDailyResources.message),
       ).toBeInTheDocument();
-      expect(screen.getByText('tronEnergy')).toBeInTheDocument();
-      expect(screen.getByText('tronBandwidth')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          messages.tronDailyResourcesDescription.message.replace('$1', '5,000'),
+        ),
+      ).toBeInTheDocument();
+      expect(screen.getByText(messages.tronEnergy.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.tronBandwidth.message),
+      ).toBeInTheDocument();
+    });
+
+    it('renders with data-testids', () => {
+      mockHookReturn();
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(screen.getByTestId('tron-daily-resources')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-title'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-description'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-energy'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-energy-description'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-bandwidth'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-bandwidth-description'),
+      ).toBeInTheDocument();
     });
 
     it('displays formatted current values for energy and bandwidth', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 65000,
-          max: 100000,
-          percentage: 65,
-        },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 1000,
-          max: 5000,
-          percentage: 20,
-        },
-      });
+      mockHookReturn();
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Check that values are formatted with locale
       expect(screen.getByText('65,000')).toBeInTheDocument();
@@ -90,85 +151,91 @@ describe('TronDailyResources', () => {
     });
 
     it('calculates USDT transfer coverage correctly (1 transfer)', () => {
-      mockUseTronResources.mockReturnValue({
+      mockHookReturn({
         energy: {
           type: 'energy',
           current: 65000, // Exactly 1 transfer
           max: 100000,
           percentage: 65,
         },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 1000,
-          max: 5000,
-          percentage: 20,
-        },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Should show singular message for 1 USDT transfer covered
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionSingular'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionSingular.message,
+        ),
       ).toBeInTheDocument();
     });
 
     it('calculates USDT transfer coverage correctly (multiple transfers)', () => {
-      mockUseTronResources.mockReturnValue({
+      mockHookReturn({
         energy: {
           type: 'energy',
           current: 195000, // 3 transfers (195000 / 65000 = 3)
           max: 300000,
           percentage: 65,
         },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 1000,
-          max: 5000,
-          percentage: 20,
-        },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Should show "3" USDT transfers covered
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionPlural-3'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionPlural.message.replace(
+            '$1',
+            '3',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
     it('calculates USDT transfer coverage as 0 when energy is insufficient', () => {
-      mockUseTronResources.mockReturnValue({
+      mockHookReturn({
         energy: {
           type: 'energy',
           current: 30000, // Less than 65000 needed
           max: 100000,
           percentage: 30,
         },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 1000,
-          max: 5000,
-          percentage: 20,
-        },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Should show "0" USDT transfers covered
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionPlural-0'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionPlural.message.replace(
+            '$1',
+            '0',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
     it('calculates TRX transfer coverage correctly (1 transfer)', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 65000,
-          max: 100000,
-          percentage: 65,
-        },
+      mockHookReturn({
         bandwidth: {
           type: 'bandwidth',
           current: 280, // Exactly 1 transfer
@@ -177,22 +244,24 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Should show singular message for 1 TRX transfer covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionSingular'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionSingular.message,
+        ),
       ).toBeInTheDocument();
     });
 
     it('calculates TRX transfer coverage correctly (multiple transfers)', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 65000,
-          max: 100000,
-          percentage: 65,
-        },
+      mockHookReturn({
         bandwidth: {
           type: 'bandwidth',
           current: 1120, // 4 transfers (1120 / 280 = 4)
@@ -201,22 +270,27 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Should show "4" TRX transfers covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionPlural-4'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionPlural.message.replace(
+            '$1',
+            '4',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
     it('calculates TRX transfer coverage as 0 when bandwidth is insufficient', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 65000,
-          max: 100000,
-          percentage: 65,
-        },
+      mockHookReturn({
         bandwidth: {
           type: 'bandwidth',
           current: 100, // Less than 280 needed
@@ -225,16 +299,27 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Should show "0" TRX transfers covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionPlural-0'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionPlural.message.replace(
+            '$1',
+            '0',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
     it('handles zero resources gracefully', () => {
-      mockUseTronResources.mockReturnValue({
+      mockHookReturn({
         energy: {
           type: 'energy',
           current: 0,
@@ -249,21 +334,37 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Both energy and bandwidth show "0", so we expect 2 instances
       const zeroElements = screen.getAllByText('0');
       expect(zeroElements).toHaveLength(2);
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionPlural-0'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionPlural.message.replace(
+            '$1',
+            '0',
+          ),
+        ),
       ).toBeInTheDocument();
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionPlural-0'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionPlural.message.replace(
+            '$1',
+            '0',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
     it('handles very high resource values', () => {
-      mockUseTronResources.mockReturnValue({
+      mockHookReturn({
         energy: {
           type: 'energy',
           current: 1000000,
@@ -278,7 +379,13 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Check formatted large numbers
       expect(screen.getByText('1,000,000')).toBeInTheDocument();
@@ -286,17 +393,27 @@ describe('TronDailyResources', () => {
 
       // 1000000 / 65000 = 15 USDT transfers
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionPlural-15'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionPlural.message.replace(
+            '$1',
+            '15',
+          ),
+        ),
       ).toBeInTheDocument();
 
       // 50000 / 280 = 178 TRX transfers
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionPlural-178'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionPlural.message.replace(
+            '$1',
+            '178',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
     it('handles percentage over 100 correctly (capped at 100 for display)', () => {
-      mockUseTronResources.mockReturnValue({
+      mockHookReturn({
         energy: {
           type: 'energy',
           current: 150000,
@@ -312,7 +429,11 @@ describe('TronDailyResources', () => {
       });
 
       const { container } = render(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Component should still render without errors
@@ -322,23 +443,14 @@ describe('TronDailyResources', () => {
     });
 
     it('renders ResourceCircle with correct SVG elements', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 50000,
-          max: 100000,
-          percentage: 50,
-        },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 2500,
-          max: 5000,
-          percentage: 50,
-        },
-      });
+      mockHookReturn();
 
       const { container } = render(
-        <TronDailyResources account={mockAccount} chainId={chainId} />,
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
       );
 
       // Check that SVG circles are rendered (2 circles per resource: background + progress)
@@ -351,29 +463,22 @@ describe('TronDailyResources', () => {
     });
 
     it('passes correct props to useTronResources hook', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 65000,
-          max: 100000,
-          percentage: 65,
-        },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 1000,
-          max: 5000,
-          percentage: 20,
-        },
-      });
+      mockHookReturn();
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       expect(mockUseTronResources).toHaveBeenCalledWith(mockAccount, chainId);
       expect(mockUseTronResources).toHaveBeenCalledTimes(1);
     });
 
     it('handles fractional transfer calculations correctly', () => {
-      mockUseTronResources.mockReturnValue({
+      mockHookReturn({
         energy: {
           type: 'energy',
           current: 100000, // 1.538 transfers, should floor to 1
@@ -388,39 +493,170 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
 
       // Should floor fractional transfers to 1, using singular message
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionSingular'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionSingular.message,
+        ),
       ).toBeInTheDocument();
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionSingular'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionSingular.message,
+        ),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('when data is unavailable', () => {
+    it('renders a warning banner instead of the resource rows', () => {
+      mockHookReturn({ dataState: 'unavailable' });
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(
+        screen.getByTestId('tron-daily-resources-error-banner'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.tronDailyResourcesUnavailableTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          messages.tronDailyResourcesUnavailableDescription.message,
+        ),
+      ).toBeInTheDocument();
+
+      expect(
+        screen.queryByTestId('tron-daily-resources-description'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('tron-daily-resources-energy'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('tron-daily-resources-bandwidth'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render the banner when data is available', () => {
+      mockHookReturn();
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(
+        screen.queryByTestId('tron-daily-resources-error-banner'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('when data is loading', () => {
+    it('renders neither the resource rows nor the banner', () => {
+      mockHookReturn({ dataState: 'loading' });
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(
+        screen.queryByTestId('tron-daily-resources-error-banner'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('tron-daily-resources-description'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('tron-daily-resources-energy'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('tron-daily-resources-bandwidth'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('marks the section as busy with visually hidden loading status', () => {
+      mockHookReturn({ dataState: 'loading' });
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(screen.getByTestId('tron-daily-resources')).toHaveAttribute(
+        'aria-busy',
+        'true',
+      );
+      expect(screen.getByRole('status')).toHaveTextContent(
+        messages.tronDailyResourcesLoading.message,
+      );
+    });
+
+    it('does not mark the section as busy once data is available', () => {
+      mockHookReturn();
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(screen.getByTestId('tron-daily-resources')).not.toHaveAttribute(
+        'aria-busy',
+      );
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    it('does not mark the section as busy when data is unavailable', () => {
+      mockHookReturn({ dataState: 'unavailable' });
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(screen.getByTestId('tron-daily-resources')).not.toHaveAttribute(
+        'aria-busy',
+      );
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
   });
 
   describe('edge cases', () => {
     it('handles undefined account gracefully', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 0,
-          max: 1,
-          percentage: 0,
-        },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 0,
-          max: 1,
-          percentage: 0,
-        },
-      });
+      mockHookReturn({ dataState: 'loading' });
 
       const { container } = render(
         <TronDailyResources
           account={undefined as unknown as InternalAccount}
           chainId={chainId}
+          t={mockT}
         />,
       );
 
@@ -429,23 +665,14 @@ describe('TronDailyResources', () => {
     });
 
     it('handles empty chainId gracefully', () => {
-      mockUseTronResources.mockReturnValue({
-        energy: {
-          type: 'energy',
-          current: 0,
-          max: 1,
-          percentage: 0,
-        },
-        bandwidth: {
-          type: 'bandwidth',
-          current: 0,
-          max: 1,
-          percentage: 0,
-        },
-      });
+      mockHookReturn({ dataState: 'loading' });
 
       const { container } = render(
-        <TronDailyResources account={mockAccount} chainId="" />,
+        <TronDailyResources
+          account={mockAccount}
+          chainId={'' as CaipChainId}
+          t={mockT}
+        />,
       );
 
       // Should still render without crashing

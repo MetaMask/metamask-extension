@@ -1,5 +1,10 @@
 import React from 'react';
-import { HYPERLIQUID_APPROVAL_TYPE } from '../../../../../shared/constants/app';
+import {
+  HYPERLIQUID_APPROVAL_TYPE,
+  GMX_APPROVAL_TYPE,
+  ASTERDEX_APPROVAL_TYPE,
+  VARIATIONAL_APPROVAL_TYPE,
+} from '../../../../../shared/constants/app';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
@@ -7,15 +12,21 @@ import {
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 
-const HYPERLIQUID_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
-// const ASTERDEX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDex];
+const HYPERLIQUID_CONFIG =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
+const GMX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
+const ASTERDEX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDEX];
+const VARIATIONAL_CONFIG =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
 
 const STATE_MOCK_DEFAULT = {
   metamask: {
     preferences: {
       referrals: {
         [DefiReferralPartner.Hyperliquid]: {},
-        // [DefiReferralPartner.AsterDex]: {},
+        [DefiReferralPartner.GMX]: {},
+        [DefiReferralPartner.AsterDEX]: {},
+        [DefiReferralPartner.Variational]: {},
       },
     },
   },
@@ -59,22 +70,59 @@ export const HyperliquidStory = (args: { selectedAddress: string }) => {
 
 HyperliquidStory.storyName = 'Hyperliquid';
 
-// TODO: uncomment when AsterDex is enabled
-// export const AsterDexStory = (args: { selectedAddress: string }) => {
-//   return (
-//     <PendingApproval
-//       type={ASTERDEX_APPROVAL_TYPE}
-//       requestData={{
-//         selectedAddress: args.selectedAddress,
-//         partnerId: ASTERDEX_CONFIG.id,
-//         partnerName: ASTERDEX_CONFIG.name,
-//         learnMoreUrl: ASTERDEX_CONFIG.learnMoreUrl,
-//       }}
-//       state={STATE_MOCK_DEFAULT}
-//     >
-//       <ConfirmationPage />
-//     </PendingApproval>
-//   );
-// };
+export const GMXStory = (args: { selectedAddress: string }) => {
+  return (
+    <PendingApproval
+      type={GMX_APPROVAL_TYPE}
+      requestData={{
+        selectedAddress: args.selectedAddress,
+        partnerId: GMX_CONFIG.id,
+        partnerName: GMX_CONFIG.name,
+        learnMoreUrl: GMX_CONFIG.learnMoreUrl,
+      }}
+      state={STATE_MOCK_DEFAULT}
+    >
+      <ConfirmationPage />
+    </PendingApproval>
+  );
+};
 
-// AsterDexStory.storyName = 'AsterDex';
+GMXStory.storyName = 'GMX';
+
+export const AsterdexStory = (args: { selectedAddress: string }) => {
+  return (
+    <PendingApproval
+      type={ASTERDEX_APPROVAL_TYPE}
+      requestData={{
+        selectedAddress: args.selectedAddress,
+        partnerId: ASTERDEX_CONFIG.id,
+        partnerName: ASTERDEX_CONFIG.name,
+        learnMoreUrl: ASTERDEX_CONFIG.learnMoreUrl,
+      }}
+      state={STATE_MOCK_DEFAULT}
+    >
+      <ConfirmationPage />
+    </PendingApproval>
+  );
+};
+
+AsterdexStory.storyName = 'Asterdex';
+
+export const VariationalStory = (args: { selectedAddress: string }) => {
+  return (
+    <PendingApproval
+      type={VARIATIONAL_APPROVAL_TYPE}
+      requestData={{
+        selectedAddress: args.selectedAddress,
+        partnerId: VARIATIONAL_CONFIG.id,
+        partnerName: VARIATIONAL_CONFIG.name,
+        learnMoreUrl: VARIATIONAL_CONFIG.learnMoreUrl,
+      }}
+      state={STATE_MOCK_DEFAULT}
+    >
+      <ConfirmationPage />
+    </PendingApproval>
+  );
+};
+
+VariationalStory.storyName = 'Variational';

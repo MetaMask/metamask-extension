@@ -14,14 +14,15 @@ export type PerpsFeatureFlag = {
 const APP_VERSION = packageJson.version;
 
 /**
- * Helper to check if the Perps feature flag is enabled with version gating.
- * Supports both simple boolean flags (backward compatible) and object flags
- * with enabled/minimumVersion properties.
+ * Remote rollout only: evaluates `perpsEnabledVersion` from LaunchDarkly (or overrides).
+ * Does not consider compile-time `PERPS_ENABLED` — use `getIsPerpsExperienceAvailable` for that.
  *
- * @param flagValue - The feature flag value (boolean or object with enabled/minimumVersion)
- * @returns True if the feature is enabled and meets version requirements
+ * Supports simple boolean flags (backward compatible) and object flags with enabled/minimumVersion.
+ *
+ * @param flagValue - The remote flag value (boolean or object with enabled/minimumVersion)
+ * @returns True if remote config allows this app version to use perps
  */
-export function isPerpsFeatureEnabled(flagValue: unknown): boolean {
+export function isPerpsRemoteConfigSatisfied(flagValue: unknown): boolean {
   if (!flagValue || !APP_VERSION) {
     return false;
   }

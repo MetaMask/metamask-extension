@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ProductTour } from '../../multichain/product-tour-popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { clearProductTour } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 
 const options = {
   placement: 'bottom-start',

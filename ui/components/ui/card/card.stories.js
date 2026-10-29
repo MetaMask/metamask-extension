@@ -10,7 +10,6 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 
-import README from './README.mdx';
 import Card from '.';
 
 const sizeOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -18,11 +17,6 @@ const sizeOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 export default {
   title: 'Components/UI/Card',
   component: Card,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     children: { control: 'text' },
     border: {

@@ -52,7 +52,7 @@ export type SeasonStatusBalanceDtoState = {
 };
 
 export type SeasonTierState = {
-  currentTier: SeasonTierDtoState;
+  currentTier: SeasonTierDtoState | null;
   nextTier: SeasonTierDtoState | null;
   nextTierPointsNeeded: number | null;
 };

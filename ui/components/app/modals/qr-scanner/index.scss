@@ -4,21 +4,10 @@
   width: 100%;
   height: 100%;
   background-color: var(--color-background-default);
-  display: flex;
-  flex-flow: column;
   border-radius: 8px;
 
-  &__title {
-    @include design-system.H3;
-
-    font-weight: 500;
-    padding: 16px 0;
-    text-align: center;
-  }
-
   &__content {
-    padding-left: 20px;
-    padding-right: 20px;
+    width: 100%;
 
     &__video-wrapper {
       overflow: hidden;
@@ -53,28 +42,6 @@
     }
   }
 
-  &__status {
-    @include design-system.H6;
-
-    text-align: center;
-    padding: 15px;
-  }
-
-  &__image {
-    @include design-system.H3;
-
-    font-weight: 500;
-    padding: 16px 0 0;
-    text-align: center;
-  }
-
-  &__error {
-    @include design-system.Paragraph;
-
-    text-align: center;
-    padding: 15px;
-  }
-
   &__footer {
     padding: 20px;
     flex-direction: row;
@@ -103,4 +70,3 @@
     font-weight: 300;
   }
 }
-

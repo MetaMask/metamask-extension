@@ -10,29 +10,151 @@ import type { Args } from '../../cli';
 // This discrepancy needs to be explained to LavaMoat plugin as it's searching for the package.json in the compilator.context by default.
 const rootDir = join(__dirname, '../../../../../');
 
-// Entries that need to be included in the unsafe layer to run without LavaMoat.
-const unsafeEntries: Set<string> = new Set([
+// Entries that run fully outside LavaMoat and host no wrapped code, so their chunk gets no LavaMoat runtime at all.
+const nullUnsafeEntries: Set<string> = new Set([
   'scripts/inpage.js',
   'bootstrap',
-  'service-worker.ts',
 ]);
 
-export const lavamoatPlugin = (args: Args) =>
+const getScuttleGlobalThisExceptions = (args: Args) => [
+  // globals used by different mm deps outside of lm compartment
+  'window',
+  'Proxy',
+  'toString',
+  'getComputedStyle',
+  'addEventListener',
+  'removeEventListener',
+  'ShadowRoot',
+  'HTMLElement',
+  'HTMLFormElement',
+  'Element',
+  'pageXOffset',
+  'pageYOffset',
+  'visualViewport',
+  'Reflect',
+  'Set',
+  'Object',
+  'navigator',
+  'harden',
+  'console',
+  'WeakSet',
+  'Event',
+  'EventTarget',
+  // globals used by the browser to generate notifications
+  'Image',
+  'fetch',
+  'AbortController',
+  'OffscreenCanvas',
+  /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+  'name',
+  'performance',
+  'parseFloat',
+  'innerWidth',
+  'innerHeight',
+  'Symbol',
+  'Math',
+  'DOMRect',
+  'Number',
+  'Array',
+  'crypto',
+  'Function',
+  'Uint8Array',
+  'String',
+  'Promise',
+  'JSON',
+  'Date',
+  // Selenium atoms construct regexes while locating elements.
+  'RegExp',
+  // globals sentry needs to function
+  '__SENTRY__',
+  'appState',
+  'extra',
+  'stateHooks',
+  'sentryHooks',
+  'sentry',
+  'logEncryptedVault',
+  'WebAssembly',
+  'Request',
+  // needed by Sentry and react-router-dom v6 HashRouter
+  'history',
+  // globals used by react-dom
+  'getSelection',
+  // globals opera needs to function
+  'opr',
+  // for @popperjs/core and snap simple keyring site
+  'devicePixelRatio',
+  // for @floating-ui/dom (via @metamask/design-system-react Popover), which
+  // reads these off the real window returned by `ownerDocument.defaultView`
+  'parent',
+  'frameElement',
+  'scrollX',
+  'scrollY',
+  'Node',
+  // for @tanstack/react-virtual
+  'ResizeObserver',
+  'setTimeout',
+  'clearTimeout',
+  // v10 Sentry web-vitals (whenIdleOrHidden) feature-detects this;
+  // under scuttling the detection itself throws unless excepted.
+  'requestIdleCallback',
+  // globals used by e2e
+  ...(args.test
+    ? [
+        'ret_nodes',
+        'browser',
+        'chrome',
+        'indexedDB',
+        // ChromeDriver 140+ needs these to interact with elements
+        'HTMLInputElement',
+        'Window',
+      ]
+    : []),
+];
+
+type IsolatedHtmlEntries = {
+  isIsolatedHtmlEntry: (name?: string | null) => boolean;
+  getIsolatedHtmlEntryNames: () => string[];
+};
+
+const lockdownBase = [
+  String.raw`runtime\.[0-9a-h]{20}\.js`,
+  String.raw`scripts\/contentscript\.js`,
+  String.raw`service-worker\.js`,
+];
+
+function lockdownPattern(isolatedHtmlNames: string[]) {
+  const isolated = isolatedHtmlNames.map(
+    (name) =>
+      `${name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}(?:\\.[0-9a-h]{20})?\\.js`,
+  );
+  return new RegExp(`^(?:${[...lockdownBase, ...isolated].join('|')})$`, 'u');
+}
+
+export const lavamoatPlugin = (
+  args: Args,
+  isolatedHtml?: IsolatedHtmlEntries,
+) =>
   new LavaMoatPlugin({
     rootDir,
     policyLocation: join(
       'lavamoat',
       'webpack',
-      `mv${args.manifest_version}`,
+      `mv${args.manifestVersion}`,
       args.type,
     ),
     diagnosticsVerbosity: 0,
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'runtime.<hash>.js' and 'scripts/contentscript.js'
-    inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u,
+    // Apply lockdown to shared runtimes and self-contained extension entrypoints.
+    // LavaMoat copies options at construct time, before WAR HTML entries exist,
+    // so this must resolve names when `.test` runs during emit.
+    inlineLockdown: {
+      test: (file: string) =>
+        lockdownPattern(isolatedHtml?.getIsolatedHtmlEntryNames() ?? []).test(
+          file,
+        ),
+    } as RegExp,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -43,11 +165,28 @@ export const lavamoatPlugin = (args: Args) =>
       errorTrapping: 'none',
       reporting: 'none',
     },
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
-      if (chunk.name && unsafeEntries.has(chunk.name)) {
-        // unsafeEntries are running outside of LavaMoat
+      if (chunk.name && nullUnsafeEntries.has(chunk.name)) {
+        // nullUnsafeEntries run fully outside of LavaMoat, no runtime added
         return { mode: 'null_unsafe' };
+      } else if (chunk.name === 'service-worker.ts') {
+        // The SW entry module and its static bootstrap imports are excluded
+        // from wrapping (the 'unsafe' layer), but this chunk must run in 'safe'
+        // mode so it carries the LavaMoat runtime. The imported `background` bundle
+        // is wrapped and relies on it.
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              // Globals used by the service worker
+              exceptions: [
+                ...getScuttleGlobalThisExceptions(args),
+                'importScripts',
+              ],
+            },
+          },
+        };
       } else if (chunk.name === 'scripts/contentscript.js') {
         return {
           mode: 'safe',
@@ -56,6 +195,20 @@ export const lavamoatPlugin = (args: Args) =>
               enabled: true,
               // Globals used by the contentscript
               exceptions: ['browser', 'chrome', 'btoa'],
+            },
+          },
+        };
+      } else if (isolatedHtml?.isIsolatedHtmlEntry(chunk.name)) {
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              exceptions: [
+                ...getScuttleGlobalThisExceptions(args),
+                'browser',
+                'chrome',
+              ],
             },
           },
         };
@@ -77,93 +230,52 @@ export const lavamoatPlugin = (args: Args) =>
       enabled: true,
       // Scuttler depends on Snow
       scuttlerName: args.snow ? 'SCUTTLER' : undefined,
-      exceptions: [
-        // globals used by different mm deps outside of lm compartment
-        'window',
-        'Proxy',
-        'toString',
-        'getComputedStyle',
-        'addEventListener',
-        'removeEventListener',
-        'ShadowRoot',
-        'HTMLElement',
-        'HTMLFormElement',
-        'Element',
-        'pageXOffset',
-        'pageYOffset',
-        'visualViewport',
-        'Reflect',
-        'Set',
-        'Object',
-        'navigator',
-        'harden',
-        'console',
-        'WeakSet',
-        'Event',
-        'EventTarget',
-        // globals used by the browser to generate notifications
-        'Image',
-        'fetch',
-        'AbortController',
-        'OffscreenCanvas',
-        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-        'name',
-        'performance',
-        'parseFloat',
-        'innerWidth',
-        'innerHeight',
-        'Symbol',
-        'Math',
-        'DOMRect',
-        'Number',
-        'Array',
-        'crypto',
-        'Function',
-        'Uint8Array',
-        'String',
-        'Promise',
-        'JSON',
-        'Date',
-        'setTimeout',
-        'clearTimeout',
-        'ResizeObserver',
-        // globals sentry needs to function
-        '__SENTRY__',
-        'appState',
-        'extra',
-        'stateHooks',
-        'sentryHooks',
-        'sentry',
-        'logEncryptedVault',
-        'history', // needed by Sentry and react-router-dom v6 HashRouter
-        // globals used by react-dom
-        'getSelection',
-        // globals opera needs to function
-        'opr',
-        // globals used by e2e
-        ...(args.test
-          ? ['ret_nodes', 'browser', 'chrome', 'indexedDB', 'devicePixelRatio']
-          : []),
-      ],
+      exceptions: getScuttleGlobalThisExceptions(args),
     },
   });
 
-// Unsafe layer that runs code without LavaMoat
+// Matches the app's `background` root module, which the service worker imports.
+// This is the boundary at which the 'unsafe' layer must stop, so that `background`
+// and its entire dependency graph run inside LavaMoat.
+const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.(?:js|ts)$/u;
+
+// Unsafe layer that runs code without LavaMoat. `background` is excluded here
+// because, although it is imported from the unsafe service worker, it must
+// itself be wrapped; `lavamoatBackgroundLayerRule` re-layers it (and its graph)
+// so it escapes this exclusion.
 export const lavamoatUnsafeLayerRule = {
   issuerLayer: 'unsafe',
+  exclude: backgroundEntryRe,
   use: LavamoatExcludeLoader,
 } satisfies RuleSetRule;
 
-// Unsafe layer plugin that applies the layer and assigns the unsafeEntries to it
+// Moves `background` out of the 'unsafe' layer so LavaMoat wraps it.
+// Without this, the import from the unsafe service worker would drag
+// the whole background graph into the 'unsafe' layer and leave it unprotected.
+export const lavamoatBackgroundLayerRule = {
+  test: backgroundEntryRe,
+  issuerLayer: 'unsafe',
+  layer: 'background',
+} satisfies RuleSetRule;
+
+// Entries assigned to the 'unsafe' layer so they are excluded from Compartment wrapping.
+const unsafeLayerEntries: Set<string> = new Set([
+  'scripts/inpage.js',
+  'bootstrap',
+  'service-worker.ts',
+]);
+
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
-    compiler.options.experiments.layers = true;
-    compiler.options.module.rules.push(lavamoatUnsafeLayerRule);
+    compiler.options.module.rules.push(
+      lavamoatUnsafeLayerRule,
+      lavamoatBackgroundLayerRule,
+    );
     compiler.hooks.thisCompilation.tap('Layer', (compilation) => {
       compilation.hooks.addEntry.tap('Layer', (entry, options) => {
         const { name } = options;
         if (name && 'request' in entry && typeof entry.request === 'string') {
-          if (unsafeEntries.has(name)) {
+          if (unsafeLayerEntries.has(name)) {
             const entryData = compilation.entries.get(name);
             if (entryData) {
               entryData.options.layer = lavamoatUnsafeLayerRule.issuerLayer;

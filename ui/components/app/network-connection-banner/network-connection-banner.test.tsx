@@ -6,12 +6,11 @@ import { useNetworkConnectionBanner } from '../../../hooks/useNetworkConnectionB
 import { setEditedNetwork } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { NetworkConnectionBanner } from './network-connection-banner';
 
 jest.mock('../../../store/actions', () => ({
-  updateNetworkConnectionBanner: jest.fn(() => ({
-    type: 'UPDATE_NETWORK_CONNECTION_BANNER',
-  })),
   setEditedNetwork: jest.fn(() => ({
     type: 'SET_EDITED_NETWORK',
   })),
@@ -43,10 +42,14 @@ describe('NetworkConnectionBanner', () => {
     it('renders the banner with a "Still connecting" message, including a "Update RPC" link if the network is not an Infura endpoint', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
-        networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
-        chainId: '0x1',
-        isInfuraEndpoint: false,
+        network: {
+          networkClientId: 'test-client',
+          name: 'Ethereum Mainnet',
+          rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+          chainId: '0x1',
+          isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: null,
+        },
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -58,18 +61,24 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Still connecting to Ethereum Mainnet...'),
+        getByText(
+          messages.stillConnectingTo.message.replace('$1', 'Ethereum Mainnet'),
+        ),
       ).toBeInTheDocument();
-      expect(getByText('Update RPC')).toBeInTheDocument();
+      expect(getByText(messages.updateRpc.message)).toBeInTheDocument();
     });
 
     it('renders the banner with a "Still connecting" message, excluding a "Update RPC" link if the network is an Infura endpoint', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
-        networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
-        chainId: '0x1',
-        isInfuraEndpoint: true,
+        network: {
+          networkClientId: 'test-client',
+          name: 'Ethereum Mainnet',
+          rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+          switchableInfuraNetworkClientId: null,
+        },
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -81,19 +90,25 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Still connecting to Ethereum Mainnet...'),
+        getByText(
+          messages.stillConnectingTo.message.replace('$1', 'Ethereum Mainnet'),
+        ),
       ).toBeInTheDocument();
-      expect(queryByText('Update RPC')).not.toBeInTheDocument();
+      expect(queryByText(messages.updateRpc.message)).not.toBeInTheDocument();
     });
 
     describe('when the "Update RPC" link is clicked', () => {
       it('navigates to the edit form for the degraded network', () => {
         mockUseNetworkConnectionBanner.mockReturnValue({
           status: 'degraded',
-          networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
-          chainId: '0x1',
-          isInfuraEndpoint: false,
+          network: {
+            networkClientId: 'test-client',
+            name: 'Ethereum Mainnet',
+            rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+            chainId: '0x1',
+            isInfuraEndpoint: false,
+            switchableInfuraNetworkClientId: null,
+          },
           trackNetworkBannerEvent: jest.fn(),
           switchToInfura: jest.fn(),
         });
@@ -103,23 +118,27 @@ describe('NetworkConnectionBanner', () => {
           <NetworkConnectionBanner />,
           store,
         );
-        fireEvent.click(getByText('Update RPC'));
+        fireEvent.click(getByText(messages.updateRpc.message));
 
         expect(mockSetEditedNetwork).toHaveBeenCalledWith({
           chainId: '0x1',
           trackRpcUpdateFromBanner: true,
         });
-        expect(mockUseNavigate).toHaveBeenCalledWith('/settings/networks');
+        expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
       });
 
       it('creates a metrics event', () => {
         const trackNetworkBannerEventMock = jest.fn();
         mockUseNetworkConnectionBanner.mockReturnValue({
           status: 'degraded',
-          networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
-          chainId: '0x1',
-          isInfuraEndpoint: false,
+          network: {
+            networkClientId: 'test-client',
+            name: 'Ethereum Mainnet',
+            rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+            chainId: '0x1',
+            isInfuraEndpoint: false,
+            switchableInfuraNetworkClientId: null,
+          },
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
           switchToInfura: jest.fn(),
         });
@@ -129,13 +148,12 @@ describe('NetworkConnectionBanner', () => {
           <NetworkConnectionBanner />,
           store,
         );
-        fireEvent.click(getByText('Update RPC'));
+        fireEvent.click(getByText(messages.updateRpc.message));
 
         expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
           bannerType: 'degraded',
           eventName:
             MetaMetricsEventName.NetworkConnectionBannerUpdateRpcClicked,
-          networkClientId: 'mainnet',
         });
       });
     });
@@ -145,10 +163,14 @@ describe('NetworkConnectionBanner', () => {
     it('renders the banner with a "Unable to connect" message, including a "Update RPC" link if the network is not an Infura endpoint', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
-        networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
-        chainId: '0x1',
-        isInfuraEndpoint: false,
+        network: {
+          networkClientId: 'test-client',
+          name: 'Ethereum Mainnet',
+          rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+          chainId: '0x1',
+          isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: null,
+        },
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -160,7 +182,9 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Unable to connect to Ethereum Mainnet.'),
+        getByText(
+          messages.unableToConnectTo.message.replace('$1', 'Ethereum Mainnet'),
+        ),
       ).toBeInTheDocument();
       expect(
         getByText('Check network connectivity', { exact: false }),
@@ -173,10 +197,14 @@ describe('NetworkConnectionBanner', () => {
     it('renders the banner with a "Unable to connect" message, excluding a "Update RPC" link if the network is an Infura endpoint', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
-        networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
-        chainId: '0x1',
-        isInfuraEndpoint: true,
+        network: {
+          networkClientId: 'test-client',
+          name: 'Ethereum Mainnet',
+          rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+          switchableInfuraNetworkClientId: null,
+        },
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -188,7 +216,9 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Unable to connect to Ethereum Mainnet.'),
+        getByText(
+          messages.unableToConnectTo.message.replace('$1', 'Ethereum Mainnet'),
+        ),
       ).toBeInTheDocument();
       expect(
         getByText('Check network connectivity', { exact: false }),
@@ -202,10 +232,14 @@ describe('NetworkConnectionBanner', () => {
       it('navigates to the edit form for the unavailable network', () => {
         mockUseNetworkConnectionBanner.mockReturnValue({
           status: 'unavailable',
-          networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
-          chainId: '0x1',
-          isInfuraEndpoint: false,
+          network: {
+            networkClientId: 'test-client',
+            name: 'Ethereum Mainnet',
+            rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+            chainId: '0x1',
+            isInfuraEndpoint: false,
+            switchableInfuraNetworkClientId: null,
+          },
           trackNetworkBannerEvent: jest.fn(),
           switchToInfura: jest.fn(),
         });
@@ -221,17 +255,21 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           trackRpcUpdateFromBanner: true,
         });
-        expect(mockUseNavigate).toHaveBeenCalledWith('/settings/networks');
+        expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
       });
 
       it('creates a metrics event', () => {
         const trackNetworkBannerEventMock = jest.fn();
         mockUseNetworkConnectionBanner.mockReturnValue({
           status: 'unavailable',
-          networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
-          chainId: '0x1',
-          isInfuraEndpoint: false,
+          network: {
+            networkClientId: 'test-client',
+            name: 'Ethereum Mainnet',
+            rpcUrl: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+            chainId: '0x1',
+            isInfuraEndpoint: false,
+            switchableInfuraNetworkClientId: null,
+          },
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
           switchToInfura: jest.fn(),
         });
@@ -247,27 +285,8 @@ describe('NetworkConnectionBanner', () => {
           bannerType: 'unavailable',
           eventName:
             MetaMetricsEventName.NetworkConnectionBannerUpdateRpcClicked,
-          networkClientId: 'mainnet',
         });
       });
-    });
-  });
-
-  describe('when the status of the banner is "unknown"', () => {
-    it('does not render the banner', () => {
-      mockUseNetworkConnectionBanner.mockReturnValue({
-        status: 'unknown',
-        trackNetworkBannerEvent: jest.fn(),
-        switchToInfura: jest.fn(),
-      });
-      const store = configureStore({});
-
-      const { container } = renderWithProvider(
-        <NetworkConnectionBanner />,
-        store,
-      );
-
-      expect(container.firstChild).not.toBeInTheDocument();
     });
   });
 
@@ -275,6 +294,7 @@ describe('NetworkConnectionBanner', () => {
     it('does not render the banner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'available',
+        network: null,
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: jest.fn(),
       });
@@ -294,11 +314,14 @@ describe('NetworkConnectionBanner', () => {
       const switchToInfuraMock = jest.fn();
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
-        networkName: 'Arbitrum One',
-        networkClientId: 'custom-arbitrum',
-        chainId: '0xa4b1',
-        isInfuraEndpoint: false,
-        infuraEndpointIndex: 1,
+        network: {
+          networkClientId: 'test-client',
+          name: 'Arbitrum One',
+          rpcUrl: 'https://arb1.arbitrum.io/rpc',
+          chainId: '0xa4b1',
+          isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: 'mainnet-infura',
+        },
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: switchToInfuraMock,
       });
@@ -309,19 +332,24 @@ describe('NetworkConnectionBanner', () => {
         store,
       );
 
-      expect(getByText('Switch to MetaMask default RPC')).toBeInTheDocument();
-      expect(queryByText('Update RPC')).not.toBeInTheDocument();
+      expect(
+        getByText(messages.switchToMetaMaskDefaultRpc.message),
+      ).toBeInTheDocument();
+      expect(queryByText(messages.updateRpc.message)).not.toBeInTheDocument();
     });
 
     it('renders "switch to MetaMask default RPC" button instead of "update RPC" for unavailable status', () => {
       const switchToInfuraMock = jest.fn();
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
-        networkName: 'Arbitrum One',
-        networkClientId: 'custom-arbitrum',
-        chainId: '0xa4b1',
-        isInfuraEndpoint: false,
-        infuraEndpointIndex: 1,
+        network: {
+          networkClientId: 'test-client',
+          name: 'Arbitrum One',
+          rpcUrl: 'https://arb1.arbitrum.io/rpc',
+          chainId: '0xa4b1',
+          isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: 'mainnet-infura',
+        },
         trackNetworkBannerEvent: jest.fn(),
         switchToInfura: switchToInfuraMock,
       });
@@ -345,11 +373,14 @@ describe('NetworkConnectionBanner', () => {
       const trackNetworkBannerEventMock = jest.fn();
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
-        networkName: 'Arbitrum One',
-        networkClientId: 'custom-arbitrum',
-        chainId: '0xa4b1',
-        isInfuraEndpoint: false,
-        infuraEndpointIndex: 1,
+        network: {
+          networkClientId: 'test-client',
+          name: 'Arbitrum One',
+          rpcUrl: 'https://arb1.arbitrum.io/rpc',
+          chainId: '0xa4b1',
+          isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: 'mainnet-infura',
+        },
         trackNetworkBannerEvent: trackNetworkBannerEventMock,
         switchToInfura: switchToInfuraMock,
       });
@@ -359,14 +390,13 @@ describe('NetworkConnectionBanner', () => {
         <NetworkConnectionBanner />,
         store,
       );
-      fireEvent.click(getByText('Switch to MetaMask default RPC'));
+      fireEvent.click(getByText(messages.switchToMetaMaskDefaultRpc.message));
 
       expect(switchToInfuraMock).toHaveBeenCalled();
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
         bannerType: 'degraded',
         eventName:
-          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
-        networkClientId: 'custom-arbitrum',
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
       });
     });
 
@@ -375,11 +405,14 @@ describe('NetworkConnectionBanner', () => {
       const trackNetworkBannerEventMock = jest.fn();
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
-        networkName: 'Arbitrum One',
-        networkClientId: 'custom-arbitrum',
-        chainId: '0xa4b1',
-        isInfuraEndpoint: false,
-        infuraEndpointIndex: 1,
+        network: {
+          networkClientId: 'test-client',
+          name: 'Arbitrum One',
+          rpcUrl: 'https://arb1.arbitrum.io/rpc',
+          chainId: '0xa4b1',
+          isInfuraEndpoint: false,
+          switchableInfuraNetworkClientId: 'mainnet-infura',
+        },
         trackNetworkBannerEvent: trackNetworkBannerEventMock,
         switchToInfura: switchToInfuraMock,
       });
@@ -397,8 +430,7 @@ describe('NetworkConnectionBanner', () => {
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
         bannerType: 'unavailable',
         eventName:
-          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
-        networkClientId: 'custom-arbitrum',
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
       });
     });
   });

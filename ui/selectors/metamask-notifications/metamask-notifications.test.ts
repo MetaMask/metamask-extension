@@ -1,3 +1,4 @@
+import { type Json } from '@metamask/utils';
 import {
   INotification as Notification,
   processNotification,
@@ -5,11 +6,13 @@ import {
 import { createMockNotificationEthReceived } from '@metamask/notification-services-controller/notification-services/mocks';
 import {
   selectIsMetamaskNotificationsEnabled,
+  selectIsFeatureAnnouncementsEnabled,
   getMetamaskNotifications,
+  getMetamaskNotificationById,
   getMetamaskNotificationsReadList,
   getMetamaskNotificationsUnreadCount,
-  selectIsFeatureAnnouncementsEnabled,
   getValidNotificationAccounts,
+  getIsNotificationEnabledByDefaultFeatureFlag,
   type NotificationAppState,
 } from './metamask-notifications';
 
@@ -46,6 +49,10 @@ describe('Metamask Notifications Selectors', () => {
     expect(selectIsMetamaskNotificationsEnabled(mockState())).toBe(true);
   });
 
+  it('should select the isFeatureAnnouncementsEnabled state', () => {
+    expect(selectIsFeatureAnnouncementsEnabled(mockState())).toBe(true);
+  });
+
   it('should select the metamaskNotificationsList from state', () => {
     expect(getMetamaskNotifications(mockState())).toStrictEqual(
       mockNotifications,
@@ -71,13 +78,68 @@ describe('Metamask Notifications Selectors', () => {
     );
   });
 
-  it('should select the isFeatureAnnouncementsEnabled state', () => {
-    expect(selectIsFeatureAnnouncementsEnabled(mockState())).toBe(true);
-  });
-
   it('should select the valid accounts that can enable notifications', () => {
     const state = mockState();
     state.metamask.subscriptionAccountsSeen = ['0x1111'];
     expect(getValidNotificationAccounts(state)).toStrictEqual(['0x1111']);
+  });
+
+  describe('getIsNotificationEnabledByDefaultFeatureFlag', () => {
+    const stateWithFlag = (value: Json): NotificationAppState => {
+      const state = mockState();
+      state.metamask.remoteFeatureFlags = {
+        assetsEnableNotificationsByDefaultV2: value,
+      };
+      return state;
+    };
+
+    it('reads a bare boolean (threshold shape)', () => {
+      expect(
+        getIsNotificationEnabledByDefaultFeatureFlag(stateWithFlag(true)),
+      ).toBe(true);
+      expect(
+        getIsNotificationEnabledByDefaultFeatureFlag(stateWithFlag(false)),
+      ).toBe(false);
+    });
+
+    it('reads a legacy { value } wrapper', () => {
+      expect(
+        getIsNotificationEnabledByDefaultFeatureFlag(
+          stateWithFlag({ value: true }),
+        ),
+      ).toBe(true);
+      expect(
+        getIsNotificationEnabledByDefaultFeatureFlag(
+          stateWithFlag({ value: false }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when the flag is missing', () => {
+      const state = mockState();
+      state.metamask.remoteFeatureFlags = {};
+      expect(getIsNotificationEnabledByDefaultFeatureFlag(state)).toBe(false);
+    });
+  });
+
+  describe('getMetamaskNotificationById', () => {
+    it('returns the notification when the id matches', () => {
+      const state = mockState();
+      const [first] = mockNotifications;
+      expect(getMetamaskNotificationById(state, first.id)).toStrictEqual(first);
+    });
+
+    it('returns undefined when the id is not in the list', () => {
+      const state = mockState();
+      expect(
+        getMetamaskNotificationById(state, 'non-existent-id'),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined when the notifications list is empty', () => {
+      const state = mockState();
+      state.metamask.metamaskNotificationsList = [];
+      expect(getMetamaskNotificationById(state, 'any-id')).toBeUndefined();
+    });
   });
 });

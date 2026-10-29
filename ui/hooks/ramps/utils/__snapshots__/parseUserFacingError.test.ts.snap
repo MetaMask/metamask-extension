@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parseUserFacingError matches snapshot for supported error shapes 1`] = `
+{
+  "emptyErrorMessage": "fallback",
+  "emptyResourceError": "fallback",
+  "emptyString": "fallback",
+  "errorWithMessage": "network down",
+  "fetchFailedWithStatus": "Failed to fetch quote.",
+  "fetchFailedWithStatusString": "Failed to fetch quote.",
+  "nullError": "fallback",
+  "resourceError": "invalid region",
+  "resourceFetchError": "fallback",
+  "statusCodeOnly": "fallback",
+  "stringError": " provider unavailable ",
+  "unknownError": "fallback",
+  "urlOnlyMessage": "fallback",
+}
+`;

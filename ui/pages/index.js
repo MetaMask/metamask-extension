@@ -1,21 +1,96 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
-import { captureException } from '../../shared/lib/sentry';
-import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
-  MetaMetricsProvider,
-  LegacyMetaMetricsProvider,
-} from '../contexts/metametrics';
+  HashRouter,
+  RouterProvider,
+  createHashRouter,
+  useRouteError,
+} from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { captureException } from '../../shared/lib/sentry';
+import { I18nProvider } from '../contexts/i18n';
+import { MetaMetricsProvider } from '../contexts/metametrics';
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
-import ErrorPage from './error-page/error-page.component';
+import { queryClient } from '../contexts/query-client';
+import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
+import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
+import { UIMessengerProvider } from '../contexts/ui-messenger';
+import ErrorPageBase from './error-page/error-page.component';
 
-import Routes from './routes';
+import Routes, { routeConfig } from './routes';
+
+const isStrictModeEnabled =
+  process.env.NODE_ENV === 'development' && !process.env.IN_TEST;
+
+/**
+ * Dev-only StrictMode in the app shell. Individual unit tests that need to
+ * exercise double-mount behavior can import `test/jest/strict-mode.js` helpers.
+ */
+
+function withStrictMode(children) {
+  return isStrictModeEnabled ? (
+    <React.StrictMode>{children}</React.StrictMode>
+  ) : (
+    children
+  );
+}
+
+function AppProviders() {
+  return (
+    <MetaMetricsProvider>
+      <I18nProvider>
+        <QueryClientProvider client={queryClient}>
+          <RampsBootstrap />
+          <AssetPollingProvider>
+            <MetamaskIdentityProvider>
+              <MetamaskNotificationsProvider>
+                <HardwareWalletErrorProvider>
+                  <ShieldSubscriptionProvider>
+                    <RiveWasmProvider>
+                      <Routes />
+                    </RiveWasmProvider>
+                  </ShieldSubscriptionProvider>
+                </HardwareWalletErrorProvider>
+              </MetamaskNotificationsProvider>
+            </MetamaskIdentityProvider>
+          </AssetPollingProvider>
+        </QueryClientProvider>
+      </I18nProvider>
+    </MetaMetricsProvider>
+  );
+}
+
+function ErrorPage({ error }) {
+  return (
+    <MetaMetricsProvider>
+      <I18nProvider>
+        <ErrorPageBase error={error} />
+      </I18nProvider>
+    </MetaMetricsProvider>
+  );
+}
+
+ErrorPage.propTypes = {
+  error: PropTypes.object,
+};
+
+function RouteErrorBoundary() {
+  const error = useRouteError();
+  return <ErrorPage error={error} />;
+}
+
+const router = createHashRouter([
+  {
+    element: <AppProviders />,
+    errorElement: <RouteErrorBoundary />,
+    children: routeConfig,
+  },
+]);
 
 class Index extends PureComponent {
   state = {};
@@ -30,19 +105,13 @@ class Index extends PureComponent {
 
   render() {
     const { error } = this.state;
-    const { store } = this.props;
+    const { store, uiMessenger } = this.props;
 
     if (error) {
       return (
         <Provider store={store}>
           <HashRouter>
-            <MetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <ErrorPage error={error} />
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </MetaMetricsProvider>
+            <ErrorPage error={error} />
           </HashRouter>
         </Provider>
       );
@@ -50,27 +119,9 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <HashRouter>
-          <MetaMetricsProvider>
-            <LegacyMetaMetricsProvider>
-              <I18nProvider>
-                <LegacyI18nProvider>
-                  <AssetPollingProvider>
-                    <MetamaskIdentityProvider>
-                      <MetamaskNotificationsProvider>
-                        <ShieldSubscriptionProvider>
-                          <RiveWasmProvider>
-                            <Routes />
-                          </RiveWasmProvider>
-                        </ShieldSubscriptionProvider>
-                      </MetamaskNotificationsProvider>
-                    </MetamaskIdentityProvider>
-                  </AssetPollingProvider>
-                </LegacyI18nProvider>
-              </I18nProvider>
-            </LegacyMetaMetricsProvider>
-          </MetaMetricsProvider>
-        </HashRouter>
+        <UIMessengerProvider value={uiMessenger}>
+          {withStrictMode(<RouterProvider router={router} />)}
+        </UIMessengerProvider>
       </Provider>
     );
   }
@@ -78,6 +129,7 @@ class Index extends PureComponent {
 
 Index.propTypes = {
   store: PropTypes.object,
+  uiMessenger: PropTypes.object,
 };
 
 export default Index;

@@ -1,0 +1,678 @@
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  Text,
+  SensitiveText,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
+import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+  PRICE_RANGES_UNIVERSAL,
+} from '../../../../../shared/lib/perps-formatters';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { TextField, TextFieldSize } from '../../../component-library';
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../helpers/constants/design-system';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import { getPerpsStreamManager } from '../../../../providers/perps';
+import {
+  usePerpsEligibility,
+  usePerpsEventTracking,
+} from '../../../../hooks/perps';
+import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../compliance';
+import type { Position, AccountState, PerpsBackgroundResult } from '../types';
+import { PerpsSlider } from '../perps-slider';
+import { getDisplaySymbol } from '../utils';
+import {
+  formatPerpsLiquidationPrice,
+  isPerpsLiquidationPriceValid,
+  PERPS_LIQUIDATION_PRICE_FALLBACK,
+} from '../utils/formatPerpsDisplayPrice';
+import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
+
+const MARGIN_PRESETS = [25, 50, 100] as const;
+const MARGIN_FAILED_FALLBACK_ERROR_PATTERNS = [
+  /^an unknown error occurred$/iu,
+  /^failed to update margin$/iu,
+  /^unknown error$/iu,
+  /^error$/iu,
+];
+
+/**
+ * Build the margin-adjustment failure toast, swapping unhelpful backend strings
+ * ("unknown error", empty) for the localized fallback copy. Shared by the
+ * `{ success: false }` branch and the transport `catch`.
+ *
+ * @param errorMessage - The raw error text from the controller or transport.
+ * @param fallbackDescription - Localized copy used when the raw text is empty
+ * or one of the known unhelpful strings.
+ * @returns The toast key and description to display.
+ */
+const getMarginAdjustmentFailedToast = (
+  errorMessage: string,
+  fallbackDescription: string,
+) => {
+  const normalizedErrorMessage = errorMessage.trim();
+  const shouldUseFallbackDescription =
+    normalizedErrorMessage.length === 0 ||
+    MARGIN_FAILED_FALLBACK_ERROR_PATTERNS.some((pattern) =>
+      pattern.test(normalizedErrorMessage),
+    );
+
+  return {
+    key: PERPS_TOAST_KEYS.MARGIN_ADJUSTMENT_FAILED,
+    description: shouldUseFallbackDescription
+      ? fallbackDescription
+      : normalizedErrorMessage,
+  };
+};
+
+export type EditMarginModalContentProps = {
+  position: Position;
+  account: AccountState | null;
+  currentPrice: number;
+  /** When used in modal: 'add' or 'remove' for single-purpose modal. No in-content toggle. */
+  mode: 'add' | 'remove';
+  onClose: () => void;
+  /** When true, the built-in save button is hidden (modal footer handles save). */
+  externalSave?: boolean;
+  /** Ref that will be set to the save handler so the parent can invoke it. */
+  onSaveRef?: React.MutableRefObject<(() => void) | null>;
+  /** Called whenever the save button's enabled state changes. */
+  onSaveEnabledChange?: (enabled: boolean) => void;
+  /** Called when the saving state changes (true = save in progress, false = done). */
+  onSavingChange?: (saving: boolean) => void;
+};
+
+/**
+ * Shared margin form content: available line, slider + USD amount, new liquidation info, save.
+ * Used inside EditMarginModal (and optionally EditMarginExpandable) with a fixed mode.
+ * @param options0
+ * @param options0.position
+ * @param options0.account
+ * @param options0.currentPrice
+ * @param options0.mode
+ * @param options0.onClose
+ * @param options0.externalSave
+ * @param options0.onSaveRef
+ * @param options0.onSaveEnabledChange
+ * @param options0.onSavingChange
+ */
+export const EditMarginModalContent = ({
+  position,
+  account,
+  currentPrice,
+  mode: marginMode,
+  onClose,
+  externalSave = false,
+  onSaveRef,
+  onSaveEnabledChange,
+  onSavingChange,
+}: EditMarginModalContentProps) => {
+  const t = useI18nContext();
+  const { isEligible } = usePerpsEligibility();
+  const { gate } = useSelectedAccountComplianceGate();
+  const { replacePerpsToastByKey } = usePerpsToast();
+  const { track } = usePerpsEventTracking();
+  const { privacyMode } = useSelector(getPreferences);
+  const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+
+  const [marginAmount, setMarginAmount] = useState<string>('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const calculations = usePerpsMarginCalculations({
+    position,
+    currentPrice,
+    account,
+    mode: marginMode,
+    amount: marginAmount,
+  });
+
+  const {
+    maxAmount,
+    anchorLiquidationPrice,
+    estimatedLiquidationPrice,
+    anchorLiquidationDistance,
+    estimatedLiquidationDistance,
+    riskAssessment,
+    isValid,
+  } = calculations;
+
+  const amountNumForDisplay = useMemo(
+    () => Number.parseFloat(marginAmount.replaceAll(',', '')) || 0,
+    [marginAmount],
+  );
+  const showLiquidationComparison = amountNumForDisplay > 0;
+  const hasValidAnchorLiquidationPrice = isPerpsLiquidationPriceValid(
+    anchorLiquidationPrice,
+  );
+  const hasValidEstimatedLiquidationPrice = isPerpsLiquidationPriceValid(
+    estimatedLiquidationPrice,
+  );
+
+  const liquidationPriceDisplay = useMemo(() => {
+    const displayAnchorLiquidationPrice = anchorLiquidationPrice ?? 0;
+    if (!hasValidAnchorLiquidationPrice) {
+      return (
+        <SensitiveText
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          isHidden={privacyMode}
+          data-testid="perps-edit-margin-liquidation-price-value"
+        >
+          {PERPS_LIQUIDATION_PRICE_FALLBACK}
+        </SensitiveText>
+      );
+    }
+    if (showLiquidationComparison && hasValidEstimatedLiquidationPrice) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          className="max-w-[65%] flex-wrap justify-end"
+        >
+          <SensitiveText
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            isHidden={privacyMode}
+          >
+            {formatPerpsFiat(displayAnchorLiquidationPrice, {
+              ranges: PRICE_RANGES_UNIVERSAL,
+            })}
+          </SensitiveText>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            →
+          </Text>
+          <SensitiveText
+            variant={TextVariant.BodySm}
+            color={TextColor.TextDefault}
+            fontWeight={FontWeight.Medium}
+            isHidden={privacyMode}
+            data-testid="perps-edit-margin-liquidation-price-value"
+          >
+            {formatPerpsLiquidationPrice(estimatedLiquidationPrice)}
+          </SensitiveText>
+        </Box>
+      );
+    }
+    return (
+      <SensitiveText
+        variant={TextVariant.BodySm}
+        color={TextColor.TextDefault}
+        fontWeight={FontWeight.Medium}
+        isHidden={privacyMode}
+        data-testid="perps-edit-margin-liquidation-price-value"
+      >
+        {formatPerpsLiquidationPrice(
+          showLiquidationComparison
+            ? estimatedLiquidationPrice
+            : anchorLiquidationPrice,
+        )}
+      </SensitiveText>
+    );
+  }, [
+    anchorLiquidationPrice,
+    estimatedLiquidationPrice,
+    hasValidAnchorLiquidationPrice,
+    hasValidEstimatedLiquidationPrice,
+    showLiquidationComparison,
+    privacyMode,
+  ]);
+
+  const marginPercent = useMemo(() => {
+    if (maxAmount <= 0) {
+      return 0;
+    }
+    const n = Number.parseFloat(marginAmount.replaceAll(',', '')) || 0;
+    return Math.min(100, Math.round((n / maxAmount) * 100));
+  }, [marginAmount, maxAmount]);
+
+  const formatLiquidationDistance = useCallback((distance: number | null) => {
+    if (distance === null || !Number.isFinite(distance)) {
+      return PERPS_LIQUIDATION_PRICE_FALLBACK;
+    }
+    // Match mobile's adjust-margin view: liquidation distance is rounded to a whole percent.
+    return `${distance.toFixed(0)}%`;
+  }, []);
+
+  const handleAmountChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      if (value === '' || /^[\d,]*\.?\d{0,2}$/u.test(value)) {
+        let cleaned = value.replaceAll(',', '');
+        if (marginMode === 'remove' && maxAmount > 0) {
+          const num = Number.parseFloat(cleaned) || 0;
+          if (num > maxAmount) {
+            cleaned = maxAmount.toFixed(2);
+          }
+        }
+        setMarginAmount(cleaned);
+      }
+    },
+    [marginMode, maxAmount],
+  );
+
+  const handleSliderChange = useCallback(
+    (_event: Event, value: number | number[]) => {
+      if (maxAmount <= 0) {
+        return;
+      }
+      const percent = Array.isArray(value) ? value[0] : value;
+      if (percent === 0) {
+        setMarginAmount('');
+        return;
+      }
+      const raw = (maxAmount * percent) / 100;
+      const floored = Math.floor(raw * 100) / 100;
+      if (floored <= 0) {
+        setMarginAmount('');
+        return;
+      }
+      setMarginAmount(floored.toFixed(2));
+    },
+    [maxAmount],
+  );
+
+  const handleSaveMargin = useCallback(async () => {
+    await gate(async () => {
+      if (!isEligible) {
+        setIsGeoBlockModalOpen(true);
+        return;
+      }
+      if (!isValid) {
+        return;
+      }
+
+      const rawMarginAmount = marginAmount.replaceAll(',', '');
+      const amountNum = Number.parseFloat(rawMarginAmount) || 0;
+      if (amountNum <= 0) {
+        return;
+      }
+
+      setIsSaving(true);
+      onSavingChange?.(true);
+
+      try {
+        const signedAmount =
+          marginMode === 'add' ? rawMarginAmount : `-${rawMarginAmount}`;
+
+        // The controller's UpdateMarginParams only accepts { symbol, amount,
+        // providerId } — it does not take trackingData, so (unlike the order /
+        // close / TP-SL flows) margin risk events can't carry client fee/VIP
+        // attribution until the controller adds it.
+        const result = await submitRequestToBackground<PerpsBackgroundResult>(
+          'perpsUpdateMargin',
+          [
+            {
+              symbol: position.symbol,
+              amount: signedAmount,
+            },
+          ],
+        );
+
+        if (!result.success) {
+          const errorMessage = result.error || 'Failed to update margin';
+
+          // Client fallback, deliberately kept: perps-controller 9.2.1 tracks
+          // RiskManagement only inside `if (result.success)` and in its catch,
+          // and HyperLiquidProvider.updateMargin RETURNS `{ success: false }`
+          // instead of throwing — so every provider-rejected margin adjustment
+          // ("No position found", "Insufficient balance") would otherwise emit
+          // no terminal risk event at all. Shaped like the controller's own
+          // margin event so the two line up if core ever covers this path.
+          //
+          // TAT-3134 says the submitted/terminal pattern should extend to
+          // PERPS_RISK_MANAGEMENT, but the non-throwing `{ success: false }`
+          // branch is not covered by the shipped 9.2.1. Re-check that branch
+          // against the controller when bumping: if it starts emitting, this
+          // becomes a double-emit and must be deleted in the same PR.
+          track(MetaMetricsEventName.PerpsRiskManagement, {
+            [PERPS_EVENT_PROPERTY.ASSET]: position.symbol,
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+            [PERPS_EVENT_PROPERTY.ACTION]:
+              marginMode === 'add'
+                ? PERPS_EVENT_VALUE.ACTION.ADD_MARGIN
+                : PERPS_EVENT_VALUE.ACTION.REMOVE_MARGIN,
+            [PERPS_EVENT_PROPERTY.MARGIN_USED]: Math.abs(
+              Number.parseFloat(rawMarginAmount) || 0,
+            ),
+            [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+          });
+
+          replacePerpsToastByKey(
+            getMarginAdjustmentFailedToast(
+              errorMessage,
+              t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
+            ),
+          );
+          // Error is DISPLAYED — emit the error screen view.
+          trackPerpsErrorScreenViewed(
+            track,
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+            PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+          );
+          return;
+        }
+
+        const streamManager = getPerpsStreamManager();
+        const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+          'perpsGetPositions',
+          [{ skipCache: true }],
+        );
+        streamManager.pushPositionsWithOverrides(freshPositions);
+        const displaySymbol = getDisplaySymbol(position.symbol);
+
+        replacePerpsToastByKey({
+          key:
+            marginMode === 'add'
+              ? PERPS_TOAST_KEYS.MARGIN_ADD_SUCCESS
+              : PERPS_TOAST_KEYS.MARGIN_REMOVE_SUCCESS,
+          messageParams: [`$${marginAmount}`, displaySymbol],
+        });
+
+        setMarginAmount('');
+        onClose();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'An unknown error occurred';
+
+        // Transport/background throws never reach the controller margin
+        // pipeline — keep client PerpsError for that gap. Unlike the
+        // `{ success: false }` branch above, no client PerpsRiskManagement is
+        // needed here: a throw that DOES reach the controller is caught by
+        // TradingService.updateMargin, which emits the failed risk event itself.
+        track(MetaMetricsEventName.PerpsError, {
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+        });
+        trackPerpsErrorScreenViewed(
+          track,
+          PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_MARKET_DETAILS,
+        );
+
+        replacePerpsToastByKey(
+          getMarginAdjustmentFailedToast(
+            errorMessage,
+            t('perpsToastMarginAdjustmentFailedDescriptionFallback'),
+          ),
+        );
+      } finally {
+        setIsSaving(false);
+        onSavingChange?.(false);
+      }
+    });
+  }, [
+    gate,
+    isEligible,
+    marginMode,
+    marginAmount,
+    isValid,
+    position.symbol,
+    onClose,
+    onSavingChange,
+    replacePerpsToastByKey,
+    track,
+    t,
+  ]);
+
+  const showRiskWarning =
+    marginMode === 'remove' &&
+    riskAssessment &&
+    (riskAssessment.riskLevel === 'warning' ||
+      riskAssessment.riskLevel === 'danger');
+
+  const confirmDisabled =
+    !isValid ||
+    isSaving ||
+    Number.parseFloat(marginAmount.replaceAll(',', '')) <= 0;
+
+  useEffect(() => {
+    if (onSaveRef) {
+      onSaveRef.current = confirmDisabled ? null : handleSaveMargin;
+    }
+    onSaveEnabledChange?.(!confirmDisabled);
+  }, [confirmDisabled, handleSaveMargin, onSaveRef, onSaveEnabledChange]);
+
+  const getConfirmButtonLabel = () => {
+    if (isSaving) {
+      return t('perpsSubmitting');
+    }
+    return marginMode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');
+  };
+
+  const availableLabel =
+    marginMode === 'add'
+      ? t('perpsAvailableToAdd')
+      : t('perpsAvailableToSubtract');
+
+  return (
+    <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {availableLabel}
+        </Text>
+        <SensitiveText
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
+          isHidden={privacyMode}
+          data-testid="perps-edit-margin-available-value"
+        >
+          {`${formatPerpsFiat(maxAmount, {
+            ranges: PRICE_RANGES_MINIMAL_VIEW,
+          })} USDC`}
+        </SensitiveText>
+      </Box>
+
+      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          fontWeight={FontWeight.Medium}
+        >
+          {t('perpsMargin')}
+        </Text>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Box
+            className="min-w-0 flex-1 px-3"
+            data-testid="perps-margin-amount-slider"
+          >
+            <PerpsSlider
+              min={0}
+              max={100}
+              step={1}
+              value={marginPercent}
+              onChange={handleSliderChange}
+              disabled={maxAmount <= 0 || isSaving}
+            />
+          </Box>
+          <Box className="shrink-0">
+            <TextField
+              size={TextFieldSize.Md}
+              data-testid="perps-edit-margin-amount-input"
+              value={marginAmount}
+              onChange={handleAmountChange}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
+              placeholder="0.00"
+              borderRadius={BorderRadius.MD}
+              borderWidth={0}
+              backgroundColor={BackgroundColor.backgroundMuted}
+              disabled={isSaving}
+              autoFocus
+              inputProps={{
+                inputMode: 'decimal',
+                size: 10,
+                onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (
+                    event.key !== 'Enter' ||
+                    event.shiftKey ||
+                    event.nativeEvent.isComposing ||
+                    confirmDisabled
+                  ) {
+                    return;
+                  }
+                  event.preventDefault();
+                  handleSaveMargin().catch(() => {
+                    // Errors are surfaced via the perps toast system.
+                  });
+                },
+              }}
+              startAccessory={
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                >
+                  $
+                </Text>
+              }
+            />
+          </Box>
+        </Box>
+      </Box>
+
+      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsLiquidationPrice')}
+          </Text>
+          {liquidationPriceDisplay}
+        </Box>
+
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsLiquidationDistance')}
+          </Text>
+          {showLiquidationComparison &&
+          estimatedLiquidationDistance !== null &&
+          Number.isFinite(estimatedLiquidationDistance) &&
+          hasValidAnchorLiquidationPrice &&
+          hasValidEstimatedLiquidationPrice ? (
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+              className="max-w-[65%] flex-wrap justify-end"
+            >
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                {formatLiquidationDistance(anchorLiquidationDistance)}
+              </Text>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                →
+              </Text>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextDefault}
+                fontWeight={FontWeight.Medium}
+                data-testid="perps-edit-margin-liquidation-distance-value"
+              >
+                {formatLiquidationDistance(estimatedLiquidationDistance)}
+              </Text>
+            </Box>
+          ) : (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextDefault}
+              fontWeight={FontWeight.Medium}
+              data-testid="perps-edit-margin-liquidation-distance-value"
+            >
+              {showLiquidationComparison || !hasValidAnchorLiquidationPrice
+                ? PERPS_LIQUIDATION_PRICE_FALLBACK
+                : formatLiquidationDistance(anchorLiquidationDistance)}
+            </Text>
+          )}
+        </Box>
+      </Box>
+
+      {/* Risk warning (remove mode) */}
+      {showRiskWarning && (
+        <Box
+          className="bg-warning-muted rounded-lg px-3 py-2"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Icon
+            name={IconName.Warning}
+            size={IconSize.Sm}
+            color={IconColor.WarningDefault}
+          />
+          <Text variant={TextVariant.BodySm} color={TextColor.WarningDefault}>
+            {t('perpsMarginRiskWarning')}
+          </Text>
+        </Box>
+      )}
+
+      {!externalSave && (
+        <Button
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          isFullWidth
+          onClick={handleSaveMargin}
+          disabled={confirmDisabled}
+          data-testid="perps-edit-margin-confirm"
+        >
+          {getConfirmButtonLabel()}
+        </Button>
+      )}
+      <PerpsGeoBlockModal
+        isOpen={isGeoBlockModalOpen}
+        onClose={() => setIsGeoBlockModalOpen(false)}
+      />
+    </Box>
+  );
+};

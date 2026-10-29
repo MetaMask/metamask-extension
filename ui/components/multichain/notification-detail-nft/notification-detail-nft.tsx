@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Box } from '../../component-library';
 import { NftItem } from '../nft-item';
 import {
@@ -11,7 +11,6 @@ export type NotificationDetailNftProps = {
   networkName: string;
   networkSrc: string;
   tokenName: string;
-  tokenId: string;
   tokenSrc: string;
 };
 
@@ -20,19 +19,17 @@ export type NotificationDetailNftProps = {
  *
  * @param props - The component props.
  * @param props.networkSrc - The URL of the badge icon.
- * @param props.tokenId - The ID of the NFT.
  * @param props.tokenName - The name of the NFT.
  * @param props.tokenSrc - The URL of the NFT icon.
  * @param props.networkName - The name of the network.
  * @returns The NotificationDetailNft component.
  */
-export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
+export const NotificationDetailNft = ({
   networkSrc,
-  tokenId,
   tokenName,
   tokenSrc,
   networkName,
-}) => (
+}: NotificationDetailNftProps) => (
   <Box
     paddingTop={1}
     paddingBottom={4}
@@ -47,7 +44,6 @@ export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
         name={tokenName}
         alt={tokenName}
         networkName={networkName}
-        tokenId={tokenId}
       />
     </Box>
   </Box>

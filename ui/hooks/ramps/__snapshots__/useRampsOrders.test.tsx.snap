@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRampsOrders matches snapshot 1`] = `
+{
+  "addOrder": [Function],
+  "addPrecreatedOrder": [Function],
+  "getOrderById": [Function],
+  "getOrderFromCallback": [Function],
+  "orders": [],
+  "refreshOrder": [Function],
+  "removeOrder": [Function],
+}
+`;

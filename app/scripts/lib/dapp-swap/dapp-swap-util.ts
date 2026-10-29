@@ -1,8 +1,7 @@
-import log from 'loglevel';
 import { Hex, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import {
   GenericQuoteRequest,
-  QuoteResponse,
+  QuoteResponseV1,
 } from '@metamask/bridge-controller';
 import {
   NetworkClientId,
@@ -15,10 +14,11 @@ import {
   checkValidSingleOrBatchTransaction,
   getDataFromSwap,
   parseTransactionData,
-} from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+} from '../../../../shared/lib/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import { SecurityAlertResponse } from '../ppom/types';
-import { DappSwapDecodingError } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-command-utils';
+import { DappSwapDecodingError } from '../../../../shared/lib/dapp-swap-comparison/dapp-swap-command-utils';
+import { createSentryError } from '../../../../shared/lib/error';
 
 export type DappSwapMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
@@ -69,7 +69,7 @@ export function getQuotesForConfirmation({
   dappSwapMetricsFlag,
 }: {
   req: DappSwapMiddlewareRequest<JsonRpcParams>;
-  fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
+  fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponseV1[]>;
   setDappSwapComparisonData: (
     uniqueId: string,
     info: DappSwapComparisonData,
@@ -90,7 +90,6 @@ export function getQuotesForConfirmation({
   try {
     const {
       enabled: dappSwapEnabled,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       bridge_quote_fees: bridgeQuoteFees,
       origins,
     } = dappSwapMetricsFlag;
@@ -145,8 +144,9 @@ export function getQuotesForConfirmation({
                 error: `Error fetching bridge quotes: ${error.message}`,
                 commands,
               });
-              log.error('Error fetching dapp swap quotes', error);
-              captureException(error);
+              captureException(
+                createSentryError('Error fetching dapp swap quotes', error),
+              );
             });
         }
       }

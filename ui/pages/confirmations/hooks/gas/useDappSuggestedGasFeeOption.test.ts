@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { UserFeeLevel } from '@metamask/transaction-controller';
 
 import { useConfirmContext } from '../../context/confirm';
@@ -21,7 +21,7 @@ jest.mock('../transactions/useTransactionNativeTicker', () => ({
   useTransactionNativeTicker: () => 'ETH',
 }));
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../store/actions/update-transaction-gas-fees', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
 

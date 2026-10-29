@@ -55,7 +55,9 @@ describe('Permit Trade Order Tests', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '4' },
+        'LegacyBackgroundApiService:getTokenStandardAndDetails': {
+          decimals: '4',
+        },
       }),
     );
   });
@@ -68,10 +70,10 @@ describe('Permit Trade Order Tests', () => {
     await renderTradeOrderSignature();
 
     expect(
-      await screen.findByText(tEn('confirmTitleSignature') as string),
+      await screen.findByText(tEn('confirmTitleSignature')),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(tEn('confirmTitleDescSign') as string),
+      await screen.findByText(tEn('confirmTitleDescSign')),
     ).toBeInTheDocument();
   });
 

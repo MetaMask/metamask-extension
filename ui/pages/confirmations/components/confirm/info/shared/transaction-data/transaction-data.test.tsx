@@ -26,7 +26,15 @@ import {
   DecodedTransactionDataMethod,
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { TransactionData } from './transaction-data';
+
+jest.mock(
+  '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: () => ({ trackInlineAlertClicked: jest.fn() }),
+  }),
+);
 
 const DATA_MOCK = '0x123456';
 const DATA_2_MOCK = '0xabcdef';
@@ -267,8 +275,8 @@ describe('TransactionData', () => {
 
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
-      expect(getByText('Spender')).toBeInTheDocument();
-      expect(getByText('Amount')).toBeInTheDocument();
+      expect(getByText(messages.spender.message)).toBeInTheDocument();
+      expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
   });

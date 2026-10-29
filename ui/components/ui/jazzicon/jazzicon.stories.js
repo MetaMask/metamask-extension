@@ -1,16 +1,10 @@
 import React from 'react';
-import README from './README.mdx';
 import Jazzicon from './jazzicon.component';
 
 export default {
   title: 'Components/UI/Jazzicon',
 
   component: Jazzicon,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     address: { control: 'text' },
     className: { control: 'text' },

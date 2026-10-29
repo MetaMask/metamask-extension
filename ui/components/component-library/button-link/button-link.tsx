@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   BackgroundColor,
   Color,
@@ -11,7 +11,19 @@ import type { ButtonLinkProps } from './button-link.types';
 import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
 
 /**
- * @deprecated Please update your code to use `TextButton` from `@metamask/design-system-react`
+ * @deprecated ButtonLink is deprecated.
+ * - Use `TextButton` from `@metamask/design-system-react` for inline links within text.
+ * - For standalone link-style actions, use `Button` from `@metamask/design-system-react`
+ * with `variant={ButtonVariant.Tertiary}` (e.g., for "Forgot password?" on unlock).
+ *
+ * Examples:
+ * Inline: `<TextButton>Learn more</TextButton>`
+ * Standalone: `<Button variant={ButtonVariant.Tertiary}>Forgot password?</Button>`
+ *
+ * This component will be removed in a future release.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#button-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-textbutton--docs | TextButton Storybook Documentation}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-button--docs | Button Storybook Documentation}
  */
 export const ButtonLink: ButtonLinkComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -43,8 +55,6 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
         paddingRight={0}
         size={size === ButtonLinkSize.Inherit ? null : size}
         backgroundColor={BackgroundColor.transparent}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         color={color || (danger ? Color.errorDefault : Color.primaryDefault)}
         borderRadius={null}
         startIconProps={{
@@ -54,8 +64,6 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
           className:
             size === ButtonLinkSize.Inherit
               ? `mm-button-link--size-inherit__icon ${
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                   startIconProps?.className || ''
                 }`
               : '',
@@ -67,8 +75,6 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
           className:
             size === ButtonLinkSize.Inherit
               ? `mm-button-link--size-inherit__icon ${
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                   endIconProps?.className || ''
                 }`
               : '',
@@ -76,8 +82,6 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
         iconLoadingProps={{
           size:
             size === ButtonLinkSize.Inherit ? IconSize.Inherit : IconSize.Md,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           color: color || (danger ? Color.errorDefault : Color.primaryDefault),
         }}
         ref={ref}

@@ -1,0 +1,122 @@
+import React from 'react';
+import { act, fireEvent } from '@testing-library/react';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import {
+  MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID,
+  MoneyAssetOverviewBalanceApy,
+  MoneyAssetOverviewBalanceCta,
+  MoneyAssetOverviewBalanceCtaSkeleton,
+  MoneyAssetOverviewBalanceDescription,
+  MoneyAssetOverviewBalanceDescriptionSkeleton,
+} from './money-asset-overview-balance-cta';
+
+const render = (component: React.ReactElement) =>
+  renderWithProvider(component, configureStore(mockState));
+
+describe('MoneyAssetOverviewBalanceDescription', () => {
+  const props = {
+    tokenSymbol: 'USDC',
+    apyPercent: 6.2,
+    projectedEarnings: '+$74.34',
+    privacyMode: false,
+    onTooltipOpen: jest.fn(),
+  };
+
+  it('renders the projected earnings for the token', () => {
+    const { getByTestId } = render(
+      <MoneyAssetOverviewBalanceDescription {...props} />,
+    );
+
+    expect(
+      getByTestId(`${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-description`),
+    ).toHaveTextContent(
+      messages.moneyEarnBalanceDescription.message
+        .replace('$1', 'USDC')
+        .replace('$2', '+$74.34'),
+    );
+  });
+
+  it('hides the projected earnings in privacy mode', () => {
+    const { getByTestId } = render(
+      <MoneyAssetOverviewBalanceDescription {...props} privacyMode />,
+    );
+
+    expect(
+      getByTestId(
+        `${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-earnings-trigger`,
+      ),
+    ).not.toHaveTextContent('+$74.34');
+  });
+
+  it('reports the tooltip opening', async () => {
+    const onTooltipOpen = jest.fn();
+    const { getByTestId } = render(
+      <MoneyAssetOverviewBalanceDescription
+        {...props}
+        onTooltipOpen={onTooltipOpen}
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.mouseEnter(
+        getByTestId(
+          `${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-earnings-trigger`,
+        ),
+      );
+    });
+
+    expect(onTooltipOpen).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('MoneyAssetOverviewBalanceApy', () => {
+  it('renders the APY', () => {
+    const { getByTestId } = render(<MoneyAssetOverviewBalanceApy apy="6.2%" />);
+
+    expect(
+      getByTestId(`${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-apy`),
+    ).toHaveTextContent(messages.moneyEarnApy.message.replace('$1', '6.2%'));
+  });
+});
+
+describe('MoneyAssetOverviewBalanceCta', () => {
+  it('calls onStartEarning when clicked', () => {
+    const onStartEarning = jest.fn();
+    const { getByTestId } = render(
+      <MoneyAssetOverviewBalanceCta onStartEarning={onStartEarning} />,
+    );
+
+    const button = getByTestId(
+      `${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-start-earning`,
+    );
+    fireEvent.click(button);
+
+    expect(button).toHaveTextContent(messages.moneyStartEarning.message);
+    expect(onStartEarning).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('loading skeletons', () => {
+  it('renders the description and button placeholders', () => {
+    const { getByTestId } = render(
+      <>
+        <MoneyAssetOverviewBalanceDescriptionSkeleton />
+        <MoneyAssetOverviewBalanceCtaSkeleton />
+      </>,
+    );
+
+    expect(
+      getByTestId(
+        `${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-description-skeleton`,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      getByTestId(
+        `${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-start-earning-skeleton`,
+      ),
+    ).toBeInTheDocument();
+  });
+});

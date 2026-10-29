@@ -1,10 +1,11 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   BITCOIN_ASSET,
   EVM_ASSET,
   SOLANA_ASSET,
+  STELLAR_NATIVE_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -13,17 +14,21 @@ import * as SendValidationUtils from '../../utils/sendValidations';
 import * as NameValidation from './useNameValidation';
 import { useSendType } from './useSendType';
 import { useRecipientValidation } from './useRecipientValidation';
+import { useSendAlerts } from './alerts/useSendAlerts';
 
 jest.mock('../../../../hooks/useI18nContext');
 jest.mock('../../context/send');
 jest.mock('./useSendType');
+jest.mock('./alerts/useSendAlerts');
 
 describe('useRecipientValidation', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockUseSendContext = jest.mocked(useSendContext);
   const mockUseSendType = jest.mocked(useSendType);
+  const mockUseSendAlerts = jest.mocked(useSendAlerts);
 
   const mockT = jest.fn((key) => key);
+  const mockAcknowledgeAlerts = jest.fn();
 
   function renderHook() {
     return renderHookWithProvider(useRecipientValidation, mockState);
@@ -31,7 +36,14 @@ describe('useRecipientValidation', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Ensure real timers are active; the debouncing suite toggles fake timers.
+    jest.useRealTimers();
     mockUseI18nContext.mockReturnValue(mockT);
+    mockUseSendAlerts.mockReturnValue({
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: mockAcknowledgeAlerts,
+    });
     mockUseSendContext.mockReturnValue({
       to: '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73',
       chainId: '0x1',
@@ -45,6 +57,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
   });
 
@@ -58,6 +71,10 @@ describe('useRecipientValidation', () => {
       recipientResolvedLookup: undefined,
       resolutionProtocol: undefined,
       toAddressValidated: undefined,
+      isRecipientValidationPending: true,
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: mockAcknowledgeAlerts,
     });
   });
 
@@ -77,14 +94,16 @@ describe('useRecipientValidation', () => {
     const { result } = renderHook();
 
     await waitFor(() => {
-      expect(result.current).toEqual({
-        recipientConfusableCharacters: undefined,
-        recipientError: 'invalidAddress',
-        recipientResolvedLookup: undefined,
-        recipientWarning: undefined,
-        resolutionProtocol: undefined,
-        toAddressValidated: '0x123',
-      });
+      expect(result.current).toEqual(
+        expect.objectContaining({
+          recipientConfusableCharacters: undefined,
+          recipientError: 'invalidAddress',
+          recipientResolvedLookup: undefined,
+          recipientWarning: undefined,
+          resolutionProtocol: undefined,
+          toAddressValidated: '0x123',
+        }),
+      );
       expect(mockT).toHaveBeenCalledWith('invalidAddress');
     });
   });
@@ -105,6 +124,38 @@ describe('useRecipientValidation', () => {
 
     await waitFor(() => {
       expect(result.current.recipientResolvedLookup).toBe('0x123');
+    });
+  });
+
+  it('clears the previous result when the recipient is cleared', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: 'vitalik.eth',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+      validateName: () =>
+        Promise.resolve({ resolvedLookup: '0x123', protocol: 'ens' }),
+    });
+
+    const { result, rerender } = renderHook();
+
+    await waitFor(() => {
+      expect(result.current.recipientResolvedLookup).toBe('0x123');
+    });
+
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: '',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+    rerender({});
+
+    await waitFor(() => {
+      expect(result.current.recipientResolvedLookup).toBeUndefined();
+      expect(result.current.toAddressValidated).toBeUndefined();
+      expect(result.current.isRecipientValidationPending).toBe(false);
     });
   });
 
@@ -147,14 +198,16 @@ describe('useRecipientValidation', () => {
     const { result } = renderHook();
 
     await waitFor(() => {
-      expect(result.current).toEqual({
-        recipientConfusableCharacters: undefined,
-        recipientError: undefined,
-        recipientResolvedLookup: undefined,
-        recipientWarning: undefined,
-        resolutionProtocol: undefined,
-        toAddressValidated: undefined,
-      });
+      expect(result.current).toEqual(
+        expect.objectContaining({
+          recipientConfusableCharacters: undefined,
+          recipientError: undefined,
+          recipientResolvedLookup: undefined,
+          recipientWarning: undefined,
+          resolutionProtocol: undefined,
+          toAddressValidated: undefined,
+        }),
+      );
     });
   });
 
@@ -168,14 +221,16 @@ describe('useRecipientValidation', () => {
     const { result } = renderHook();
 
     await waitFor(() => {
-      expect(result.current).toEqual({
-        recipientConfusableCharacters: undefined,
-        recipientError: undefined,
-        recipientResolvedLookup: undefined,
-        recipientWarning: undefined,
-        resolutionProtocol: undefined,
-        toAddressValidated: undefined,
-      });
+      expect(result.current).toEqual(
+        expect.objectContaining({
+          recipientConfusableCharacters: undefined,
+          recipientError: undefined,
+          recipientResolvedLookup: undefined,
+          recipientWarning: undefined,
+          resolutionProtocol: undefined,
+          toAddressValidated: undefined,
+        }),
+      );
     });
   });
 
@@ -183,11 +238,12 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: true,
       isSolanaSendType: false,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     const mockValidateHexAddress = jest
       .spyOn(SendValidationUtils, 'validateEvmHexAddress')
-      .mockResolvedValue({
+      .mockReturnValue({
         error: 'invalidAddress',
       });
 
@@ -203,6 +259,7 @@ describe('useRecipientValidation', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: true,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     mockUseSendContext.mockReturnValue({
@@ -232,11 +289,50 @@ describe('useRecipientValidation', () => {
     });
   });
 
+  it('validate stellar address for Stellar send type', async () => {
+    const validStellarAddress = `G${'A'.repeat(55)}`;
+
+    mockUseSendType.mockReturnValue({
+      isEvmSendType: false,
+      isSolanaSendType: false,
+      isBitcoinSendType: false,
+      isStellarSendType: true,
+      isTronSendType: false,
+    } as unknown as ReturnType<typeof useSendType>);
+
+    mockUseSendContext.mockReturnValue({
+      asset: STELLAR_NATIVE_ASSET,
+      to: validStellarAddress,
+      chainId: 'stellar:pubnet',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+      validateName: () =>
+        Promise.resolve({
+          error: 'nameResolutionFailedError',
+        }),
+    });
+
+    const mockValidateStellarAddress = jest
+      .spyOn(SendValidationUtils, 'validateStellarAddress')
+      .mockReturnValue({});
+
+    const { result } = renderHook();
+
+    await waitFor(() => {
+      expect(mockValidateStellarAddress).toHaveBeenCalledWith(
+        validStellarAddress,
+      );
+      expect(result.current.recipientError).toBeUndefined();
+    });
+  });
+
   it('validate bitcoin address for Bitcoin send type', async () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: false,
       isBitcoinSendType: true,
+      isStellarSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     mockUseSendContext.mockReturnValue({
@@ -272,6 +368,17 @@ describe('useRecipientValidation', () => {
     });
 
     afterEach(() => {
+      // Flush and clear pending timers before restoring real timers so later
+      // tests (lodash debounce + waitFor) are not stuck on fake timers.
+      // RTL's waitFor schedules its own timers while fake timers are active.
+      act(() => {
+        try {
+          jest.runOnlyPendingTimers();
+        } catch {
+          // Ignore if no fake timers are installed
+        }
+      });
+      jest.clearAllTimers();
       jest.useRealTimers();
     });
 
@@ -317,7 +424,9 @@ describe('useRecipientValidation', () => {
 
       expect(mockValidateName).not.toHaveBeenCalled();
 
-      jest.advanceTimersByTime(500);
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
 
       await waitFor(() => {
         expect(mockValidateName).toHaveBeenCalledTimes(1);
@@ -327,6 +436,38 @@ describe('useRecipientValidation', () => {
           expect.any(Object),
         );
       });
+    });
+
+    it('reports validation as pending until the debounced result commits', async () => {
+      const mockValidateName = jest.fn().mockResolvedValue({
+        resolvedLookup: '0x123',
+        protocol: 'ens',
+      });
+
+      jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+        validateName: mockValidateName,
+      });
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'vitalik.eth',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { result } = renderHook();
+
+      expect(result.current.isRecipientValidationPending).toBe(true);
+      expect(mockValidateName).not.toHaveBeenCalled();
+
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isRecipientValidationPending).toBe(false);
+      });
+      expect(result.current.recipientResolvedLookup).toBe('0x123');
+      expect(result.current.toAddressValidated).toBe('vitalik.eth');
     });
 
     it('discards validation results when chainId changes during validation', async () => {
@@ -354,7 +495,9 @@ describe('useRecipientValidation', () => {
       const { result, rerender } = renderHook();
 
       // Advance timers to trigger the debounced validation
-      jest.advanceTimersByTime(500);
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
 
       await waitFor(() => {
         expect(mockValidateName).toHaveBeenCalledWith(
@@ -373,19 +516,24 @@ describe('useRecipientValidation', () => {
       rerender();
 
       // Now resolve the original validation (for chainId 0x1)
-      if (resolveValidation) {
-        resolveValidation({
+      await act(async () => {
+        resolveValidation?.({
           resolvedLookup: '0xOldChainResult',
           protocol: 'ens',
         });
-      }
-
-      // Wait for any state updates
-      await jest.advanceTimersByTimeAsync(100);
+        await Promise.resolve();
+      });
 
       // The result from chainId 0x1 should be discarded
       // because chainId has changed to 0x89
       expect(result.current.recipientResolvedLookup).toBeUndefined();
+
+      // Flush the debounce scheduled for the new chainId so its setResult
+      // does not fire outside act during afterEach timer cleanup.
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+        await Promise.resolve();
+      });
     });
   });
 
@@ -410,14 +558,16 @@ describe('useRecipientValidation', () => {
 
       await waitFor(() => {
         expect(mockValidateName).not.toHaveBeenCalled();
-        expect(result.current).toEqual({
-          recipientConfusableCharacters: undefined,
-          recipientError: 'invalidAddress',
-          recipientResolvedLookup: undefined,
-          recipientWarning: undefined,
-          resolutionProtocol: undefined,
-          toAddressValidated: 'v.e',
-        });
+        expect(result.current).toEqual(
+          expect.objectContaining({
+            recipientConfusableCharacters: undefined,
+            recipientError: 'invalidAddress',
+            recipientResolvedLookup: undefined,
+            recipientWarning: undefined,
+            resolutionProtocol: undefined,
+            toAddressValidated: 'v.e',
+          }),
+        );
       });
     });
 
@@ -446,6 +596,33 @@ describe('useRecipientValidation', () => {
           expect.any(Object),
         );
         expect(result.current.recipientResolvedLookup).toBe('0x123');
+      });
+    });
+  });
+
+  describe('alerts passthrough', () => {
+    it('does not suppress a hard error when an unrelated alert is active', async () => {
+      jest.spyOn(SendValidationUtils, 'validateEvmHexAddress').mockReturnValue({
+        error: 'contractAddressError',
+      });
+
+      mockUseSendAlerts.mockReturnValue({
+        alerts: [
+          {
+            key: 'firstTimeInteraction',
+            title: 'First time',
+            message: 'First time sending to this address',
+          },
+        ],
+        hasUnacknowledgedAlerts: true,
+        acknowledgeAlerts: mockAcknowledgeAlerts,
+      });
+
+      const { result } = renderHook();
+
+      await waitFor(() => {
+        expect(result.current.recipientError).toBe('contractAddressError');
+        expect(result.current.hasUnacknowledgedAlerts).toBe(true);
       });
     });
   });

@@ -1,0 +1,19 @@
+{
+  "background": {
+    "scripts": ["background.js"],
+    "page": "background.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/contentscript.js", "scripts/inpage.js"]
+    },
+    {
+      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "js": ["vendor/trezor/content-script.js"]
+    }
+  ],
+  "description": "MV2 test manifest",
+  "manifest_version": 2,
+  "web_accessible_resources": ["images/icon.png", "testing.js"]
+}

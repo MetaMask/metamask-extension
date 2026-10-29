@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  AlignItems,
   BackgroundColor,
   BorderRadius,
-  Display,
   IconColor,
   TextColor,
   TextVariant,
@@ -12,7 +11,6 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -138,7 +136,7 @@ function PageNavigation({
     return null;
   }
   return (
-    <Box display={Display.Flex} alignItems={AlignItems.center}>
+    <Box className="flex" alignItems={BoxAlignItems.Center}>
       <PreviousButton
         selectedIndex={selectedIndex}
         onBackButtonClick={onBackButtonClick}
@@ -153,8 +151,6 @@ function PageNavigation({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MultipleAlertModal({
   alertKey,
   displayAllAlerts = false,
@@ -205,14 +201,16 @@ export function MultipleAlertModal({
     previousAlertKeyRef.current = alertKey;
 
     if (alertKeyExists && alertKey) {
-      if (alertKey !== currentAlertKey) {
-        setCurrentAlertKey(alertKey);
-      }
+      queueMicrotask(() => {
+        setCurrentAlertKey((current) =>
+          alertKey === current ? current : alertKey,
+        );
+      });
       pendingAlertKeyRef.current = undefined;
     } else {
       pendingAlertKeyRef.current = alertKey ?? undefined;
     }
-  }, [alertKey, alertsToDisplay, currentAlertKey]);
+  }, [alertKey, alertsToDisplay]);
 
   useEffect(() => {
     const pendingAlertKey = pendingAlertKeyRef.current;
@@ -229,11 +227,13 @@ export function MultipleAlertModal({
       return;
     }
 
-    if (pendingAlertKey !== currentAlertKey) {
-      setCurrentAlertKey(pendingAlertKey);
-    }
+    queueMicrotask(() => {
+      setCurrentAlertKey((current) =>
+        pendingAlertKey === current ? current : pendingAlertKey,
+      );
+    });
     pendingAlertKeyRef.current = undefined;
-  }, [alertsToDisplay, currentAlertKey]);
+  }, [alertsToDisplay]);
 
   useEffect(() => {
     const currentAlertStillExists = currentAlertKey
@@ -257,9 +257,11 @@ export function MultipleAlertModal({
       navigableAlertsToDisplay[0]?.key ??
       alertsToDisplay[0]?.key;
 
-    if (fallbackKey !== currentAlertKey) {
-      setCurrentAlertKey(fallbackKey);
-    }
+    queueMicrotask(() => {
+      setCurrentAlertKey((current) =>
+        fallbackKey === current ? current : fallbackKey,
+      );
+    });
 
     if (pendingAlertExists && fallbackKey === pendingAlertKey) {
       pendingAlertKeyRef.current = undefined;

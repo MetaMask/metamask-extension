@@ -20,7 +20,7 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
             style="height: 48px; opacity: 0.5; cursor: not-allowed;"
           >
             <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -240,7 +240,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
             style="height: 48px; opacity: 1; cursor: auto;"
           >
             <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
             >
               <div
                 class="flex [&>div]:!rounded-none"
@@ -337,7 +337,7 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
             class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
+              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"
             >
               <div
                 class="flex [&>div]:!rounded-none"

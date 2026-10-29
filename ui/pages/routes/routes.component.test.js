@@ -1,20 +1,35 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import {
+  createMemoryRouter,
+  matchRoutes,
+  RouterProvider,
+} from 'react-router-dom';
+import { render as rtlRender, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
-import Routes from '.';
+import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
+import Routes, {
+  routeConfig,
+  TokenManagementFeatureRoute,
+  PageNotFound,
+} from '.';
 
 const middlewares = [thunk];
 
@@ -32,20 +47,6 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-const mockIsMultichainAccountsFeatureEnabled = jest.fn();
-jest.mock(
-  '../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () =>
-      mockIsMultichainAccountsFeatureEnabled(),
-  }),
-);
-
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -58,8 +59,6 @@ jest.mock('../../store/actions', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
   setTokenNetworkFilter: jest.fn(),
 }));
 
@@ -85,6 +84,30 @@ jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock('../token-management/index.ts', () => ({
+  __esModule: true,
+  default: () => <div data-testid="token-management-route" />,
+}));
+
+// React 18 can defer React.lazy resolution in CI; resolve token-management synchronously.
+jest.mock('../../helpers/utils/mm-lazy', () => {
+  // eslint-disable-next-line n/global-require
+  const reactModule = require('react');
+
+  return {
+    mmLazy: (importFn) => {
+      if (importFn.toString().includes('token-management')) {
+        const { default: TokenManagementMock } = jest.requireMock(
+          '../token-management/index.ts',
+        );
+        return TokenManagementMock;
+      }
+
+      return reactModule.lazy(importFn);
+    },
+  };
+});
+
 jest.mock(
   '../../components/app/metamask-template-renderer/safe-component-list',
 );
@@ -93,6 +116,59 @@ jest.mock(
   '../../../shared/lib/fetch-with-cache',
   () => () => mockFetchWithCache,
 );
+
+jest.mock('../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
+    shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
+    isTokenWithCta: jest.fn().mockReturnValue(false),
+    getCtaKey: jest.fn().mockReturnValue(''),
+    isGeoBlocked: false,
+    isGeoBlockingLoading: false,
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+    totalMusdBalance: '0',
+    musdBalancesByChain: {},
+    isLoading: false,
+  }),
+  useMusdNetworkFilter: () => ({
+    isPopularNetworksFilterActive: false,
+    selectedChainId: null,
+    enabledChainIds: [],
+  }),
+  useMusdConversionTokens: () => ({
+    tokens: [],
+    isLoading: false,
+  }),
+  useMusdConversion: () => ({
+    startConversionFlow: jest.fn(),
+    educationSeen: false,
+  }),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+  useMusdConversionToastStatus: () => ({
+    shouldShowToast: false,
+    toastMessage: null,
+    dismissToast: jest.fn(),
+  }),
+  useCanBuyMusd: () => ({
+    canBuyMusd: false,
+  }),
+  useCustomAmount: () => ({
+    customAmount: null,
+    setCustomAmount: jest.fn(),
+  }),
+  isTokenInWildcardList: jest.fn().mockReturnValue(false),
+  checkTokenAllowed: jest.fn().mockReturnValue(false),
+}));
 
 jest.mock('../../hooks/useMultiPolling', () => ({
   __esModule: true,
@@ -127,8 +203,6 @@ describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
 
   beforeEach(() => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
-
     // Clear previous mock implementations
     useMultiPolling.mockClear();
 
@@ -153,6 +227,41 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
 
+  it('shows the missing-page screen for unknown routes', () => {
+    const fallbackRoute = matchRoutes(routeConfig, '/unknown-route')?.at(
+      -1,
+    )?.route;
+    expect(fallbackRoute).toMatchObject({
+      path: '*',
+      element: expect.objectContaining({
+        type: PageNotFound,
+      }),
+    });
+  });
+
+  it('registers the hardware wallet signing page outside guarded swap routes', () => {
+    const path = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
+    const matches = matchRoutes(routeConfig, path);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      path,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+  });
+
+  it('guards discover search with basic functionality', () => {
+    const matches = matchRoutes(routeConfig, DISCOVER_SEARCH_ROUTE);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      undefined,
+      DISCOVER_SEARCH_ROUTE,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+    expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
+  });
+
   describe('render during send flow', () => {
     it('should render when send transaction is not active', () => {
       const state = {
@@ -170,6 +279,7 @@ describe('Routes Component', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
           newPrivacyPolicyToastShownDate: new Date('0'),
           preferences: {
+            defaultAddressScope: 'eip155',
             tokenSortConfig: {
               key: 'token-sort-key',
               order: 'dsc',
@@ -207,33 +317,50 @@ describe('Routes Component', () => {
       expect(container.querySelector('.app')).toBeInTheDocument();
     });
   });
+
+  it('renders token management route when the legacy feature flag is disabled', async () => {
+    const store = configureMockStore(middlewares)({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          extensionUxTokenManagementFilter: { enabled: false },
+        },
+      },
+    });
+    const router = createMemoryRouter(
+      [
+        {
+          path: TOKEN_MANAGEMENT_ROUTE,
+          element: <TokenManagementFeatureRoute />,
+        },
+      ],
+      { initialEntries: [TOKEN_MANAGEMENT_ROUTE] },
+    );
+
+    rtlRender(
+      <Provider store={store}>
+        <React.Suspense fallback={null}>
+          <RouterProvider
+            router={router}
+            future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+          />
+        </React.Suspense>
+      </Provider>,
+    );
+
+    expect(
+      await screen.findByTestId('token-management-route'),
+    ).toBeInTheDocument();
+  });
 });
 
 describe('toast display', () => {
-  const mockAccount = createMockInternalAccount();
-  const mockAccount2 = createMockInternalAccount({
-    name: 'Account 2',
-    address: '0x1234567890123456789012345678901234567890',
-    id: '481d4435-23da-499a-8c18-fcebbb1eaf03',
-  });
-  const mockNonEvmAccount = createMockInternalAccount({
-    name: 'Snap Account 1',
-    type: BtcAccountType.P2wpkh,
-    id: '4174eb0c-0a73-4213-b807-a2e5a5c4ebfd',
-    address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-  });
-  const mockSolanaAccount = createMockInternalAccount({
-    name: 'Solana Account 1',
-    address: '2byhg1jregmqQx2VfLGLn7hb5mStJw2iVVU8sfM5xTYj',
-    id: 'xx-solana-account',
-    type: SolAccountType.DataAccount,
-  });
-  const mockOrigin = 'https://metamask.github.io';
-
   const getToastDisplayTestState = (date) => ({
     ...mockState,
     rewards: {
-      onboardingModalOpen: false,
+      rewardsModalOpen: false,
     },
     metamask: {
       ...mockState.metamask,
@@ -244,6 +371,7 @@ describe('toast display', () => {
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
+        defaultAddressScope: 'eip155',
         tokenSortConfig: {
           key: 'token-sort-key',
           order: 'dsc',
@@ -267,212 +395,20 @@ describe('toast display', () => {
     },
   });
 
-  const getToastConnectAccountDisplayTestState = (selectedAccountId) => ({
-    ...mockState,
-    rewards: {
-      onboardingModalOpen: false,
-    },
-    metamask: {
-      ...mockState.metamask,
-      announcements: {},
-      approvalFlows: [],
-      completedOnboarding: true,
-      pendingApprovals: {},
-      pendingApprovalCount: 0,
-      swapsState: { swapsFeatureIsLive: true },
-      newPrivacyPolicyToastShownDate: new Date(0),
-      isRampCardClosed: false,
-      newPrivacyPolicyToastClickedOrClosed: true,
-      preferences: {
-        tokenSortConfig: {
-          key: 'token-sort-key',
-          order: 'dsc',
-          sortCallback: 'stringNumeric',
-        },
-        tokenNetworkFilter: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-        },
-      },
-      surveyLinkLastClickedOrClosed: true,
-      showPrivacyPolicyToast: false,
-      showSurveyToast: false,
-      showAutoNetworkSwitchToast: false,
-      showNftEnablementToast: false,
-      alertEnabledness: {
-        unconnectedAccount: true,
-      },
-      termsOfUseLastAgreed: new Date(0).getTime(),
-      tokenBalances: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          '0x1': {
-            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
-            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
-          },
-        },
-      },
-      accountTree: {
-        wallets: {
-          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
-            id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
-            type: 'entropy',
-            groups: {
-              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
-                id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-                type: 'multichain-account',
-                accounts: [selectedAccountId],
-                metadata: {
-                  name: 'Account 1',
-                  entropy: {
-                    groupIndex: 0,
-                  },
-                  hidden: false,
-                  pinned: false,
-                },
-              },
-            },
-            metadata: {
-              name: 'Wallet 1',
-              entropy: {
-                id: '01JKAF3DSGM3AB87EM9N0K41AJ',
-              },
-            },
-          },
-        },
-        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
-      },
-      internalAccounts: {
-        accounts: {
-          [mockAccount.id]: mockAccount,
-          [mockNonEvmAccount.id]: mockNonEvmAccount,
-          [mockAccount2.id]: mockAccount2,
-          [mockSolanaAccount.id]: mockSolanaAccount,
-        },
-        selectedAccount: selectedAccountId ?? mockAccount.id,
-      },
-      accounts: {
-        ...mockState.metamask.accounts,
-        [mockAccount.address]: {
-          balance: '0x0',
-          address: mockAccount.address,
-        },
-        [mockAccount2.address]: {
-          balance: '0x0',
-          address: mockAccount2.address,
-        },
-        [mockNonEvmAccount.address]: {
-          balance: '0x0',
-          address: mockNonEvmAccount.address,
-        },
-        [mockSolanaAccount.address]: {
-          balance: '0x0',
-          address: mockSolanaAccount.address,
-        },
-      },
-      accountsAssets: {
-        [selectedAccountId ?? mockAccount.id]: [],
-      },
-      subjects: {
-        [mockOrigin]: {
-          permissions: {
-            'endowment:caip25': {
-              caveats: [
-                {
-                  type: 'authorizedScopes',
-                  value: {
-                    requiredScopes: {},
-                    optionalScopes: {
-                      'eip155:1': {
-                        accounts: [`eip155:1:${mockAccount.address}`],
-                      },
-                    },
-                    isMultichainOrigin: false,
-                  },
-                },
-              ],
-              date: 1719910288437,
-              invoker: 'https://metamask.github.io',
-              parentCapability: 'endowment:caip25',
-            },
-          },
-        },
-      },
-      conversionRates: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
-          conversionTime: 1745405595549,
-          currency: 'swift:0/iso4217:USD',
-          expirationTime: 1745409195549,
-          rate: '151.36',
-        },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-          {
-            conversionTime: 1745405595549,
-            currency: 'swift:0/iso4217:USD',
-            expirationTime: 1745409195549,
-            rate: '1.00',
-          },
-      },
-      shieldEndingToastLastClickedOrClosed: null,
-      shieldPausedToastLastClickedOrClosed: null,
-    },
-    activeTab: {
-      id: 2143026027,
-      title: 'E2E Test Dapp',
-      origin: mockOrigin,
-      protocol: 'https:',
-      url: 'https://metamask.github.io/test-dapp/',
-    },
-  });
-
   it('renders toastContainer on default route', () => {
     render(DEFAULT_ROUTE, getToastDisplayTestState(new Date('9999')));
     const toastContainer = document.querySelector('.toasts-container');
     expect(toastContainer).toBeInTheDocument();
   });
 
-  it('does not render toastContainer on confirmation route', () => {
+  // The container is always mounted outside the home/perps/settings screens so
+  // the Basic Functionality migration toast can surface on confirmation routes,
+  // but it stays empty while no toast is scheduled.
+  it('renders an bft toastContainer on confirmation route', () => {
     render(CONFIRMATION_V_NEXT_ROUTE, getToastDisplayTestState(new Date(0)));
     const toastContainer = document.querySelector('.toasts-container');
 
-    expect(toastContainer).not.toBeInTheDocument();
-  });
-
-  it('does not render toastContainer if the account is connected', () => {
-    const { queryByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockNonEvmAccount.id),
-    );
-    const toastContainer = queryByTestId('connect-account-toast');
-    expect(toastContainer).not.toBeInTheDocument();
-  });
-
-  it('does not render toastContainer if the unconnected account is non-EVM', () => {
-    const { queryByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockNonEvmAccount.id),
-    );
-    const toastContainer = queryByTestId('connect-account-toast');
-    expect(toastContainer).not.toBeInTheDocument();
-  });
-
-  it('does render toastContainer if the unconnected selected account is EVM', () => {
-    const { getByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockAccount2.id),
-    );
-    const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();
-  });
-
-  // Probably not applicable anymore since BIP-44 account groups?
-  it('does render toastContainer if the unconnected selected account is Solana', () => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
-
-    const { getByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
-    );
-    const toastContainer = getByTestId('connect-account-toast');
-    expect(toastContainer).toBeInTheDocument();
+    expect(toastContainer).toBeEmptyDOMElement();
   });
 });

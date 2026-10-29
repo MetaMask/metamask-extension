@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import NicknamePopover from './nickname-popover.component';
@@ -18,7 +19,7 @@ describe('NicknamePopover', () => {
       store,
     );
 
-    expect(screen.getByText('Add a nickname')).toBeInTheDocument();
+    expect(screen.getByText(messages.addANickname.message)).toBeInTheDocument();
   });
 
   it('renders NicknamePopover component and shows Edit nickname text', () => {
@@ -30,6 +31,8 @@ describe('NicknamePopover', () => {
       store,
     );
 
-    expect(screen.getByText('Edit nickname')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.editANickname.message),
+    ).toBeInTheDocument();
   });
 });

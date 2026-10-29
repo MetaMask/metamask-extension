@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { formatSwapsValueForDisplay } from '../swaps.util';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import Box from '../../../components/ui/box';

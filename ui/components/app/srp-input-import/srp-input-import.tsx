@@ -1,32 +1,36 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { isValidMnemonic } from '@ethersproject/hdnode';
-
-import { Textarea, TextareaResize } from '../../component-library/textarea';
+import browser from 'webextension-polyfill';
 import {
   Box,
   Button,
   ButtonVariant,
+  ButtonSize,
   Text,
-  TextField,
-  TextFieldType,
-} from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import { TextField, TextFieldType } from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  PLATFORM_FIREFOX,
+} from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const SRP_LENGTHS = [12, 15, 18, 21, 24];
@@ -45,13 +49,15 @@ type ListOfTextFieldRefs = {
 type SrpInputImportProps = {
   onChange: (srp: string) => void;
   onClearCallback?: () => void;
+  onClearClipboardRetry?: () => void;
+  onClipboardClearFailed?: () => void;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SrpInputImport({
   onChange,
   onClearCallback,
+  onClearClipboardRetry,
+  onClipboardClearFailed,
 }: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
@@ -59,6 +65,7 @@ export default function SrpInputImport({
   const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const onChangeRef = useRef(onChange);
 
   // Keep the ref updated with the latest onChange callback
@@ -125,6 +132,16 @@ export default function SrpInputImport({
     setDraftSrp(newDraftSrp);
   };
 
+  const handleAcceptedSrpPaste = async (rawSrp: string) => {
+    onSrpPaste(rawSrp);
+
+    try {
+      await navigator.clipboard.writeText('');
+    } catch {
+      onClipboardClearFailed?.();
+    }
+  };
+
   const setWordActive = (srp: DraftSrp[], wordId: string) => {
     const newDraftSrp = [...srp];
     newDraftSrp.forEach((word) => {
@@ -159,11 +176,7 @@ export default function SrpInputImport({
         checkForInvalidWords();
       }
 
-      if (
-        (SRP_LENGTHS.includes(draftSrp.length) &&
-          isValidMnemonic(draftSrp.map((word) => word.word).join(' '))) ||
-        draftSrp.length === MAX_SRP_LENGTH
-      ) {
+      if (draftSrp.length === MAX_SRP_LENGTH) {
         return;
       }
 
@@ -219,14 +232,13 @@ export default function SrpInputImport({
     }
   };
 
-  const handleOnPaste = (
+  const handleOnPaste = async (
     clipBoardEvent: React.ClipboardEvent<HTMLTextAreaElement>,
   ) => {
     clipBoardEvent.preventDefault();
     const newSrp = clipBoardEvent.clipboardData.getData('text');
     if (newSrp.trim().match(/\s/u)) {
-      clipBoardEvent.preventDefault();
-      onSrpPaste(newSrp);
+      await handleAcceptedSrpPaste(newSrp);
     }
   };
 
@@ -252,17 +264,29 @@ export default function SrpInputImport({
     [draftSrp],
   );
 
-  // in firefox, we do need to request permission explicitly, to read the clipboard
-  const requestPermissionAndTriggerPasteFireFox = async () => {
+  // Request clipboardRead extension permission explicitly and then read clipboard.
+  // This is needed for Firefox (always) and Chrome side panel (where the web
+  // Clipboard API permission prompt is not displayed to the user, causing
+  // navigator.clipboard.readText() to throw "permission denied").
+  //
+  // In Chrome's side panel, document.hasFocus() may return false when the main
+  // browser view was last focused, causing navigator.clipboard.readText() to
+  // throw "Document is not focused". Focusing the textarea (via textareaRef)
+  // before reading ensures the side panel document has focus.
+  const requestPermissionAndReadClipboard = async () => {
     try {
       const permissionGranted = await browser.permissions.request({
         permissions: ['clipboardRead'],
       });
-      if (permissionGranted) {
-        const newSrp = await navigator.clipboard.readText();
-        if (newSrp.trim().match(/\s/u)) {
-          onSrpPaste(newSrp);
-        }
+      if (!permissionGranted) {
+        throw new Error('`ClipboardRead` permission not granted');
+      }
+
+      window.focus();
+      textareaRef.current?.focus();
+      const newSrp = await navigator.clipboard.readText();
+      if (newSrp.trim().match(/\s/u)) {
+        await handleAcceptedSrpPaste(newSrp);
       }
     } catch (error) {
       console.error('Error requesting clipboard permission', error);
@@ -271,25 +295,56 @@ export default function SrpInputImport({
 
   const onTriggerPaste = async () => {
     setMisSpelledWords([]);
-    if (getBrowserName() === PLATFORM_FIREFOX) {
-      await requestPermissionAndTriggerPasteFireFox();
+
+    // Firefox and Chrome side panel both need to request the clipboardRead
+    // extension permission explicitly before reading the clipboard.
+    // In the side panel, the web Clipboard API permission prompt is never
+    // shown to the user, so navigator.clipboard.readText() fails without
+    // the extension-level permission being granted first.
+    const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+    if (getBrowserName() === PLATFORM_FIREFOX || isSidePanel) {
+      await requestPermissionAndReadClipboard();
       return;
     }
 
-    const permissionResult = await navigator.permissions.query({
-      name: 'clipboard-read' as PermissionName,
-    });
+    try {
+      const permissionResult = await navigator.permissions.query({
+        name: 'clipboard-read' as PermissionName,
+      });
 
-    if (
-      permissionResult.state === 'granted' ||
-      permissionResult.state === 'prompt'
-    ) {
-      const newSrp = await navigator.clipboard.readText();
-      if (newSrp.trim().match(/\s/u)) {
-        onSrpPaste(newSrp);
+      if (
+        permissionResult.state === 'granted' ||
+        permissionResult.state === 'prompt'
+      ) {
+        const newSrp = await navigator.clipboard.readText();
+        if (newSrp.trim().match(/\s/u)) {
+          await handleAcceptedSrpPaste(newSrp);
+        }
       }
+    } catch (error) {
+      console.error('Error reading clipboard', error);
     }
   };
+
+  const hasInvalidChecksum = useMemo(() => {
+    if (
+      !SRP_LENGTHS.includes(draftSrp.length) ||
+      draftSrp.some((word) => word.word.length === 0)
+    ) {
+      return false;
+    }
+
+    const hasInvalidWords = draftSrp.some(
+      (word) => word.word !== '' && !wordlist.includes(word.word),
+    );
+    if (hasInvalidWords) {
+      return false;
+    }
+
+    const stringSrp = draftSrp.map((word) => word.word).join(' ');
+    return !isValidMnemonic(stringSrp);
+  }, [draftSrp]);
 
   useEffect(() => {
     const activeWord = draftSrp.find((word) => word.active);
@@ -310,7 +365,12 @@ export default function SrpInputImport({
         onChangeRef.current('');
       } else {
         const stringSrp = draftSrp.map((word) => word.word).join(' ');
-        onChangeRef.current(stringSrp);
+        // Only pass valid mnemonic (with correct checksum) to parent
+        if (isValidMnemonic(stringSrp)) {
+          onChangeRef.current(stringSrp);
+        } else {
+          onChangeRef.current('');
+        }
       }
     } else {
       onChangeRef.current('');
@@ -324,21 +384,17 @@ export default function SrpInputImport({
 
   return (
     <>
-      <Box>
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.LG}
-          className="srp-input-import__container"
+          flexDirection={BoxFlexDirection.Column}
+          backgroundColor={
+            draftSrp.length > 0 ? undefined : BoxBackgroundColor.BackgroundMuted
+          }
+          className="srp-input-import__container rounded-lg"
         >
           {draftSrp.length > 0 ? (
-            <Box padding={4} style={{ flex: 1 }}>
-              <Box
-                display={Display.Grid}
-                className="srp-input-import__words-list"
-                gap={2}
-              >
+            <Box style={{ flex: 1 }}>
+              <Box className="srp-input-import__words-list grid" gap={2}>
                 {draftSrp.map((word, index) => {
                   return (
                     <TextField
@@ -349,6 +405,7 @@ export default function SrpInputImport({
                           }
                         },
                       }}
+                      backgroundColor={BackgroundColor.backgroundMuted}
                       testId={`import-srp__srp-word-${index}`}
                       key={word.id}
                       error={
@@ -363,7 +420,7 @@ export default function SrpInputImport({
                       }
                       startAccessory={
                         <Text
-                          color={TextColor.textAlternative}
+                          color={TextColor.TextAlternative}
                           textAlign={TextAlign.Left}
                           className="srp-input-import__word-index"
                         >
@@ -402,23 +459,17 @@ export default function SrpInputImport({
           ) : (
             <Box
               padding={4}
-              className="srp-input-import__srp-note"
+              className="srp-input-import__srp-note rounded-lg"
               style={{ flex: 1 }}
-              borderRadius={BorderRadius.LG}
             >
-              <Textarea
+              <textarea
+                id="first-word-input-text-area"
+                ref={textareaRef}
                 data-testid="srp-input-import__srp-note"
-                borderColor={BorderColor.transparent}
-                backgroundColor={BackgroundColor.transparent}
-                width={BlockSize.Full}
+                className="srp-input-import__initial-input"
                 placeholder={t('onboardingSrpInputPlaceholder')}
-                rows={7}
-                resize={TextareaResize.None}
+                rows={5}
                 value={firstWord}
-                paddingTop={0}
-                paddingBottom={0}
-                paddingLeft={0}
-                paddingRight={0}
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}
                 onPaste={handleOnPaste}
@@ -428,27 +479,29 @@ export default function SrpInputImport({
           )}
         </Box>
         <Box
-          display={Display.Flex}
           className="srp-input-import__actions"
-          justifyContent={JustifyContent.flexEnd}
-          paddingRight={2}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.End}
         >
           {draftSrp.length > 0 ? (
             <Button
-              variant={ButtonVariant.Link}
+              variant={ButtonVariant.Tertiary}
               onClick={async () => {
                 setDraftSrp([]);
                 setMisSpelledWords([]);
                 onClearCallback?.();
+                onClearClipboardRetry?.();
               }}
+              size={ButtonSize.Md}
             >
               {t('onboardingSrpInputClearAll')}
             </Button>
           ) : (
             <Button
               data-testid="srp-input-import__paste-button"
-              variant={ButtonVariant.Link}
+              variant={ButtonVariant.Tertiary}
               onClick={onTriggerPaste}
+              size={ButtonSize.Md}
             >
               {t('paste')}
             </Button>
@@ -457,8 +510,19 @@ export default function SrpInputImport({
       </Box>
       {misSpelledWords.length > 0 && (
         <Box marginTop={2}>
-          <Text color={TextColor.errorDefault} variant={TextVariant.bodySm}>
+          <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
             {t('onboardingSrpImportError')}
+          </Text>
+        </Box>
+      )}
+      {hasInvalidChecksum && misSpelledWords.length === 0 && (
+        <Box marginTop={2}>
+          <Text
+            color={TextColor.ErrorDefault}
+            variant={TextVariant.BodySm}
+            data-testid="srp-input-import__invalid-checksum-error"
+          >
+            {t('invalidSeedPhraseNotFound')}
           </Text>
         </Box>
       )}

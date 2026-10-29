@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import React from 'react';
 import { Provider } from 'react-redux';
 import {
@@ -19,9 +19,7 @@ function getStore() {
   return configureStore(
     getMockConfirmStateForTransaction(confirmation, {
       metamask: {
-        preferences: {
-          petnamesEnabled: true,
-        },
+        preferences: {},
         userOperations: {
           [confirmation.id]: {
             userOperation: {

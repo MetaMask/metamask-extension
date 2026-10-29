@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import configureStore from '../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { PriorityFeeInput } from './priority-fee-input';
@@ -51,13 +52,13 @@ describe('PriorityFeeInput', () => {
     const { getByTestId, getByText } = render();
 
     expect(getByTestId('priority-fee-input')).toBeInTheDocument();
-    expect(getByText('Priority fee')).toBeInTheDocument();
+    expect(getByText(messages.priorityFee.message)).toBeInTheDocument();
   });
 
   it('renders the GWEI unit', () => {
     const { getByText } = render();
 
-    expect(getByText('GWEI')).toBeInTheDocument();
+    expect(getByText(messages.gwei.message)).toBeInTheDocument();
   });
 
   it('calls onChange when value changes', () => {

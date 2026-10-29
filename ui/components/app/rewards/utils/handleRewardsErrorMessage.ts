@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
 export const handleRewardsErrorMessage = (error: unknown, t: Function) => {
   if (typeof error !== 'object' || error === null) {
     return t('rewardsErrorMessagesSomethingWentWrong');

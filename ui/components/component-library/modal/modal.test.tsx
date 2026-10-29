@@ -1,7 +1,5 @@
-/* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-
 import { Modal } from './modal';
 
 describe('Modal', () => {
@@ -70,11 +68,11 @@ describe('Modal', () => {
     const { getByText } = render(
       <Modal isOpen={true} onClose={onClose}>
         <div>modal content</div>
-        <button onClick={() => onClose()}>Close</button>
+        <button onClick={() => onClose()}>Close modal</button>
       </Modal>,
     );
 
-    const closeButton = getByText('Close');
+    const closeButton = getByText('Close modal');
     fireEvent.click(closeButton);
 
     expect(onClose).toHaveBeenCalledTimes(1);

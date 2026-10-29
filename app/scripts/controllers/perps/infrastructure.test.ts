@@ -1,0 +1,1018 @@
+import { it } from '@jest/globals';
+import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+  PerpsAnalyticsEvent,
+} from '../../../../shared/constants/perps-events';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+
+import {
+  createPerpsInfrastructure,
+  type InfrastructureDeps,
+} from './infrastructure';
+
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../analytics', () => {
+  const actual = jest.requireActual('../analytics');
+  return {
+    ...actual,
+    trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+  };
+});
+
+jest.mock('@metamask/perps-controller', () => {
+  const stub = jest.requireActual(
+    '../../../../test/mocks/metamask-perps-controller.js',
+  );
+  return {
+    ...stub,
+    formatPerpsFiat: jest.fn((value: number) =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value),
+    ),
+    formatPercentage: jest.fn((percent: number) => `+${percent.toFixed(2)}%`),
+    PRICE_RANGES_UNIVERSAL: [{ threshold: 0, decimals: 2 }],
+  };
+});
+
+const mockCaptureException = jest.fn();
+jest.mock('../../../../shared/lib/sentry', () => ({
+  captureException: (...args: unknown[]) => mockCaptureException(...args),
+  sentryLogger: { extend: () => jest.fn() },
+}));
+
+function setupSentryScope() {
+  const mockScope = {
+    setTag: jest.fn(),
+    setContext: jest.fn(),
+    setExtras: jest.fn(),
+  };
+  const withScope = jest.fn((cb: (scope: typeof mockScope) => void) =>
+    cb(mockScope),
+  );
+  (globalThis as Record<string, unknown>).sentry = { withScope };
+  return mockScope;
+}
+
+describe('createPerpsInfrastructure', () => {
+  const mockGetStorageItem = jest.fn();
+  const mockSetStorageItem = jest.fn();
+  const mockRemoveStorageItem = jest.fn();
+  const mockGetPerpsDiscountForAccount = jest.fn();
+
+  function getDeps(
+    overrides?: Partial<InfrastructureDeps>,
+  ): InfrastructureDeps {
+    return {
+      getStorageItem: mockGetStorageItem,
+      setStorageItem: mockSetStorageItem,
+      removeStorageItem: mockRemoveStorageItem,
+      getPerpsDiscountForAccount: mockGetPerpsDiscountForAccount,
+      ...overrides,
+    };
+  }
+
+  beforeEach(() => {
+    mockTrackEvent.mockClear();
+    mockGetStorageItem.mockReset().mockResolvedValue({});
+    mockSetStorageItem.mockReset().mockResolvedValue(undefined);
+    mockRemoveStorageItem.mockReset().mockResolvedValue(undefined);
+    mockGetPerpsDiscountForAccount.mockReset().mockResolvedValue(0);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    delete (globalThis as Record<string, unknown>).sentry;
+  });
+
+  it('returns a valid PerpsPlatformDependencies object', () => {
+    const infrastructure = createPerpsInfrastructure(getDeps());
+
+    expect(infrastructure.logger).toBeDefined();
+    expect(infrastructure.debugLogger).toBeDefined();
+    expect(infrastructure.metrics).toBeDefined();
+    expect(infrastructure.performance).toBeDefined();
+    expect(infrastructure.tracer).toBeDefined();
+    expect(infrastructure.streamManager).toBeDefined();
+    expect(infrastructure.featureFlags).toBeDefined();
+    expect(infrastructure.marketDataFormatters).toBeDefined();
+    expect(infrastructure.cacheInvalidator).toBeDefined();
+    expect(infrastructure.diskCache).toBeDefined();
+    expect(infrastructure.rewards).toBeDefined();
+    expect(infrastructure.terminalApiUrl).toBeDefined();
+  });
+
+  describe('terminalApiUrl', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    it('returns dev URL for development environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'development';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns dev URL for testing environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'testing';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.dev-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for beta build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'beta';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns prd URL for production environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'production';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns prd URL for release-candidate environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'release-candidate';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for staging environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for pull-request environment', () => {
+      process.env.METAMASK_ENVIRONMENT = 'pull-request';
+      process.env.METAMASK_BUILD_TYPE = 'main';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for flask build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'flask';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+
+    it('returns uat URL for experimental build type', () => {
+      process.env.METAMASK_ENVIRONMENT = 'staging';
+      process.env.METAMASK_BUILD_TYPE = 'experimental';
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.terminalApiUrl).toBe(
+        'https://terminal.uat-api.cx.metamask.io/v1/perpetuals',
+      );
+    });
+  });
+
+  describe('metrics', () => {
+    it('trackPerpsEvent forwards to trackEvent with Perps category and timestamp', () => {
+      const infrastructure = createPerpsInfrastructure(getDeps());
+
+      infrastructure.metrics.trackPerpsEvent(PerpsAnalyticsEvent.ScreenViewed, {
+        [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+          PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: PerpsAnalyticsEvent.ScreenViewed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
+              PERPS_EVENT_VALUE.SCREEN_TYPE.MARKET_LIST,
+            [PERPS_EVENT_PROPERTY.TIMESTAMP]: expect.any(Number),
+          }),
+        }),
+      );
+    });
+
+    it('merges attribution context into trackPerpsEvent properties when provided', () => {
+      const mergeAttributionContext = jest.fn(
+        (properties?: Record<string, unknown>) => ({
+          ...properties,
+          [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'campaign-a',
+        }),
+      );
+      const infrastructure = createPerpsInfrastructure(
+        getDeps({ mergeAttributionContext }),
+      );
+
+      infrastructure.metrics.trackPerpsEvent(
+        PerpsAnalyticsEvent.TradeTransaction,
+        {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+        },
+      );
+
+      expect(mergeAttributionContext).toHaveBeenCalledWith({
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUBMITTED,
+            [PERPS_EVENT_PROPERTY.UTM_SOURCE]: 'campaign-a',
+          }),
+        }),
+      );
+    });
+
+    it('reports metrics as enabled', () => {
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(infrastructure.metrics.isEnabled()).toBe(true);
+    });
+  });
+
+  describe('logger', () => {
+    describe('when sentry.withScope is not available', () => {
+      it('falls back to captureException without scope', () => {
+        const { logger } = createPerpsInfrastructure(getDeps());
+        const error = new Error('test error');
+
+        logger.error(error);
+
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+
+      it('does not throw when options are provided but withScope is unavailable', () => {
+        const { logger } = createPerpsInfrastructure(getDeps());
+        const error = new Error('test error');
+
+        expect(() =>
+          logger.error(error, {
+            tags: { provider: 'hyperliquid' },
+            context: {
+              name: 'PerpsController',
+              data: { method: 'placeOrder' },
+            },
+            extras: { orderId: '123' },
+          }),
+        ).not.toThrow();
+      });
+    });
+
+    describe('when sentry.withScope is available', () => {
+      it('always sets the feature:perps tag', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'));
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('feature', 'perps');
+      });
+
+      it('forwards errors to captureException inside the scope', () => {
+        setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        const error = new Error('test error');
+        logger.error(error);
+
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+
+      it('sets extra tags from options on the scope', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), {
+          tags: { provider: 'hyperliquid', network: 'mainnet' },
+        });
+
+        expect(mockScope.setTag).toHaveBeenCalledWith(
+          'provider',
+          'hyperliquid',
+        );
+        expect(mockScope.setTag).toHaveBeenCalledWith('network', 'mainnet');
+      });
+
+      it('forwards the shared Perps dashboard tags to Sentry', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), {
+          tags: {
+            operation: 'order_management',
+            action: 'place_order',
+            component: 'PerpsConnectionManager',
+          },
+        });
+
+        expect(mockScope.setTag).toHaveBeenCalledWith(
+          'operation',
+          'order_management',
+        );
+        expect(mockScope.setTag).toHaveBeenCalledWith('action', 'place_order');
+        expect(mockScope.setTag).toHaveBeenCalledWith(
+          'component',
+          'PerpsConnectionManager',
+        );
+      });
+
+      it('converts numeric tag values to strings', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), { tags: { retryCount: 3 } });
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('retryCount', '3');
+      });
+
+      it('sets Sentry context from options', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), {
+          context: {
+            name: 'PerpsController',
+            data: { method: 'placeOrder', orderId: 'abc123' },
+          },
+        });
+
+        expect(mockScope.setContext).toHaveBeenCalledWith('PerpsController', {
+          method: 'placeOrder',
+          orderId: 'abc123',
+        });
+      });
+
+      it('sets Sentry extras from options', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        logger.error(new Error('test'), {
+          extras: { requestPayload: '{"coin":"ETH"}' },
+        });
+
+        expect(mockScope.setExtras).toHaveBeenCalledWith({
+          requestPayload: '{"coin":"ETH"}',
+        });
+      });
+
+      it('works correctly when options are omitted', () => {
+        const mockScope = setupSentryScope();
+
+        const { logger } = createPerpsInfrastructure(getDeps());
+        const error = new Error('bare error');
+        logger.error(error);
+
+        expect(mockScope.setTag).toHaveBeenCalledWith('feature', 'perps');
+        expect(mockScope.setContext).not.toHaveBeenCalled();
+        expect(mockScope.setExtras).not.toHaveBeenCalled();
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+    });
+
+    describe('when error is a benign disconnect race', () => {
+      function makeBenignError() {
+        return Object.assign(new Error('reconnect error'), {
+          name: 'ReconnectingWebSocketError',
+          code: 'TERMINATED_BY_USER',
+        });
+      }
+
+      describe('while disconnect is in progress (isDisconnecting = true)', () => {
+        function getDisconnectingDeps() {
+          return getDeps({ isDisconnecting: () => true });
+        }
+
+        it('does not call captureException for a direct TERMINATED_BY_USER code', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          const error = Object.assign(new Error('reconnect error'), {
+            name: 'ReconnectingWebSocketError',
+            code: 'TERMINATED_BY_USER',
+          });
+
+          logger.error(error);
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('does not call captureException when TERMINATED_BY_USER is nested via cause', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          // Real-world shape: WebSocketRequestError { cause: ReconnectingWebSocketError { code } }
+          const cause = Object.assign(
+            new Error('Error when reconnecting WebSocket: TERMINATED_BY_USER'),
+            {
+              name: 'ReconnectingWebSocketError',
+              code: 'TERMINATED_BY_USER',
+            },
+          );
+          const error = Object.assign(
+            new Error('Failed to establish WebSocket connection'),
+            {
+              name: 'WebSocketRequestError',
+              cause,
+            },
+          );
+
+          logger.error(error);
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('does not call captureException when matched by ReconnectingWebSocketError name alone', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          const error = Object.assign(new Error('reconnect error'), {
+            name: 'ReconnectingWebSocketError',
+          });
+
+          logger.error(error);
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('does not call captureException for WebSocketRequestError("WebSocket connection closed")', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          // Shape produced when the HL SDK drains its pending request queue on socket close
+          const error = Object.assign(
+            new Error('WebSocket connection closed'),
+            {
+              name: 'WebSocketRequestError',
+            },
+          );
+
+          logger.error(error);
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('does not touch Sentry scope when suppressing', () => {
+          const mockScope = setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+
+          const cause = Object.assign(new Error('TERMINATED_BY_USER'), {
+            name: 'ReconnectingWebSocketError',
+            code: 'TERMINATED_BY_USER',
+          });
+          const error = Object.assign(new Error('WS error'), {
+            name: 'WebSocketRequestError',
+            cause,
+          });
+
+          logger.error(error, { tags: { feature: 'perps' } });
+
+          expect(mockScope.setTag).not.toHaveBeenCalled();
+          expect(mockScope.setContext).not.toHaveBeenCalled();
+          expect(mockScope.setExtras).not.toHaveBeenCalled();
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+
+        it('suppresses regardless of the error context (write or read)', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDisconnectingDeps());
+          const error = makeBenignError();
+
+          // Even a write context like placeOrder is suppressed during disconnect
+          logger.error(error, {
+            context: { name: 'TradingService', data: { method: 'placeOrder' } },
+          });
+
+          expect(mockCaptureException).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('while disconnect is NOT in progress (isDisconnecting = false)', () => {
+        it('still calls captureException for errors with a different ReconnectingWebSocket code', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDeps());
+
+          const cause = Object.assign(
+            new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'),
+            {
+              name: 'ReconnectingWebSocketError',
+              code: 'UNKNOWN_ERROR',
+            },
+          );
+          const error = Object.assign(
+            new Error('Failed to establish WebSocket connection'),
+            {
+              name: 'WebSocketRequestError',
+              cause,
+            },
+          );
+
+          logger.error(error);
+
+          expect(mockCaptureException).toHaveBeenCalledWith(error);
+        });
+
+        it('still calls captureException for WebSocketRequestError with a different message', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDeps());
+
+          const error = Object.assign(
+            new Error('Failed to close WebSocket connection'),
+            {
+              name: 'WebSocketRequestError',
+            },
+          );
+
+          logger.error(error);
+
+          expect(mockCaptureException).toHaveBeenCalledWith(error);
+        });
+
+        it('reports benign-shaped errors to Sentry when no disconnect is active', () => {
+          setupSentryScope();
+          const { logger } = createPerpsInfrastructure(getDeps());
+          const error = makeBenignError();
+
+          logger.error(error);
+
+          expect(mockCaptureException).toHaveBeenCalledWith(error);
+        });
+
+        it('reports benign-shaped errors to Sentry when isDisconnecting is not provided', () => {
+          setupSentryScope();
+          const deps = getDeps();
+          delete deps.isDisconnecting;
+          const { logger } = createPerpsInfrastructure(deps);
+          const error = makeBenignError();
+
+          logger.error(error);
+
+          expect(mockCaptureException).toHaveBeenCalledWith(error);
+        });
+      });
+    });
+  });
+
+  describe('performance', () => {
+    it('returns a numeric timestamp', () => {
+      const { performance: perf } = createPerpsInfrastructure(getDeps());
+
+      expect(typeof perf.now()).toBe('number');
+    });
+  });
+
+  describe('tracer', () => {
+    it.each([
+      TraceName.PerpsConnectionEstablishment,
+      TraceName.PerpsMarketDataPreload,
+      TraceName.PerpsUserDataPreload,
+      TraceName.PerpsPlaceOrder,
+    ] as const)('routes %s through shared tracing', (name) => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      const request = {
+        name,
+        id: 'operation',
+        op: 'perps.operation',
+        tags: { source: 'test' },
+      };
+
+      tracer.trace(request);
+      tracer.endTrace({
+        name,
+        id: 'operation',
+        status: 'ok',
+        data: { success: true },
+      });
+
+      expect(trace).toHaveBeenCalledWith(request);
+      expect(endTrace).toHaveBeenCalledWith({
+        name,
+        id: 'operation',
+        status: 'ok',
+        data: { success: true },
+      });
+    });
+
+    it.each(['normal', 'superseded', 'capacity'] as const)(
+      'retains initial trade data in shared Sentry span attributes on %s completion',
+      (ending) => {
+        const sharedTracing = jest.requireActual<
+          typeof import('../../../../shared/lib/trace')
+        >('../../../../shared/lib/trace');
+        jest.mocked(trace).mockImplementation(sharedTracing.trace);
+        jest.mocked(endTrace).mockImplementation(sharedTracing.endTrace);
+        const spans: { attributes: Record<string, unknown>; end: jest.Mock }[] =
+          [];
+        globalThis.sentry = {
+          withIsolationScope: (
+            callback: (scope: { setTag: jest.Mock }) => unknown,
+          ) => callback({ setTag: jest.fn() }),
+          startSpanManual: (
+            options: { attributes?: Record<string, unknown> },
+            callback: (span: unknown) => unknown,
+          ) => {
+            const attributes = { ...options.attributes };
+            const span = {
+              attributes,
+              end: jest.fn(),
+              setAttribute: (key: string, value: unknown) => {
+                attributes[key] = value;
+              },
+            };
+            spans.push(span);
+            return callback(span);
+          },
+        };
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        const request = {
+          name: TraceName.PerpsPlaceOrder as const,
+          id: `trade-data-${ending}`,
+          op: 'perps.operation',
+          data: { isBuy: true, orderPrice: '123.45', success: false },
+        };
+        tracer.trace(request);
+        if (ending === 'normal') {
+          tracer.endTrace({
+            name: request.name,
+            id: request.id,
+            data: { success: true },
+          });
+        } else if (ending === 'superseded') {
+          tracer.trace(request);
+          tracer.endTrace(request);
+        } else {
+          for (let index = 0; index < 50; index += 1) {
+            tracer.trace({ ...request, id: `${request.id}-${index}` });
+          }
+          for (let index = 0; index < 50; index += 1) {
+            tracer.endTrace({
+              name: request.name,
+              id: `${request.id}-${index}`,
+            });
+          }
+        }
+        expect(spans[0].attributes).toEqual({
+          isBuy: true,
+          orderPrice: '123.45',
+          success: ending === 'normal',
+          ...(ending === 'normal' ? {} : { reason: ending }),
+        });
+        expect(spans[0].end).toHaveBeenCalledTimes(1);
+        jest.mocked(trace).mockReset();
+        jest.mocked(endTrace).mockReset();
+      },
+    );
+
+    it('does not end an unknown or already completed operation', () => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      const request = {
+        name: TraceName.PerpsMarketDataPreload as const,
+        id: 'operation',
+      };
+      tracer.endTrace(request);
+      expect(endTrace).not.toHaveBeenCalled();
+
+      tracer.trace({ ...request, op: 'perps.operation' });
+      tracer.endTrace(request);
+      tracer.endTrace(request);
+
+      expect(endTrace).toHaveBeenCalledTimes(1);
+    });
+
+    it('ends a duplicate operation before replacing it', () => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      const request = {
+        name: TraceName.PerpsMarketDataPreload as const,
+        id: 'operation',
+        op: 'perps.operation',
+      };
+      tracer.trace(request);
+
+      tracer.trace(request);
+
+      expect(endTrace).toHaveBeenCalledWith({
+        name: request.name,
+        id: request.id,
+        data: { success: false, reason: 'superseded' },
+      });
+      expect(trace).toHaveBeenCalledTimes(2);
+    });
+
+    it('ends the oldest operation when the pending buffer is full', () => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      for (let i = 0; i < 50; i += 1) {
+        tracer.trace({
+          name: TraceName.PerpsMarketDataPreload,
+          id: String(i),
+          op: 'perps.operation',
+        });
+      }
+      expect(endTrace).not.toHaveBeenCalled();
+
+      tracer.trace({
+        name: TraceName.PerpsMarketDataPreload as const,
+        id: '50',
+        op: 'perps.operation',
+      });
+
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.PerpsMarketDataPreload as const,
+        id: '0',
+        data: { success: false, reason: 'capacity' },
+      });
+    });
+
+    it('keeps measurement and breadcrumb forwarding', () => {
+      const setMeasurement = jest.fn();
+      const addBreadcrumb = jest.fn();
+      globalThis.sentry = { setMeasurement, addBreadcrumb };
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      const breadcrumb = {
+        category: 'perps',
+        message: 'connected',
+        level: 'info' as const,
+      };
+
+      tracer.setMeasurement('perps.latency', 42, 'millisecond');
+      tracer.addBreadcrumb(breadcrumb);
+
+      expect(setMeasurement).toHaveBeenCalledWith(
+        'perps.latency',
+        42,
+        'millisecond',
+      );
+      expect(addBreadcrumb).toHaveBeenCalledWith(breadcrumb);
+    });
+
+    it('tolerates missing optional Sentry measurement APIs', () => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+
+      expect(() =>
+        tracer.setMeasurement('perps.latency', 42, 'millisecond'),
+      ).not.toThrow();
+      expect(() =>
+        tracer.addBreadcrumb({
+          category: 'perps',
+          message: 'connected',
+          level: 'info',
+        }),
+      ).not.toThrow();
+    });
+  });
+
+  describe('streamManager', () => {
+    it('does not throw on pauseChannel', () => {
+      const { streamManager } = createPerpsInfrastructure(getDeps());
+
+      expect(() => streamManager.pauseChannel('test')).not.toThrow();
+    });
+
+    it('does not throw on resumeChannel', () => {
+      const { streamManager } = createPerpsInfrastructure(getDeps());
+
+      expect(() => streamManager.resumeChannel('test')).not.toThrow();
+    });
+
+    it('does not throw on clearAllChannels', () => {
+      const { streamManager } = createPerpsInfrastructure(getDeps());
+
+      expect(() => streamManager.clearAllChannels()).not.toThrow();
+    });
+  });
+
+  describe('featureFlags', () => {
+    it('validateVersionGated returns true as default stub', () => {
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      const result = infrastructure.featureFlags.validateVersionGated({
+        enabled: true,
+        minimumVersion: '1.0.0',
+      });
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('marketDataFormatters', () => {
+    it('formats volume as compact USD', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
+      const formatted = marketDataFormatters.formatVolume(1_200_000_000);
+      expect(formatted).toContain('1.2');
+      expect(formatted).toContain('B');
+    });
+
+    it('formats fiat using adaptive significant-digit rules', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
+      // The published controller formatter currently preserves this value at
+      // two decimals in the universal range configuration.
+      const formatted = marketDataFormatters.formatPerpsFiat(50000.123);
+      expect(formatted).toContain('50,000');
+      expect(formatted).toContain('50,000.12');
+    });
+
+    it('formats percentage', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
+      const formatted = marketDataFormatters.formatPercentage(2.5);
+      expect(formatted).toContain('+2.50');
+      expect(formatted).toContain('%');
+    });
+
+    it('exposes shared universal price ranges', () => {
+      const { marketDataFormatters } = createPerpsInfrastructure(getDeps());
+      expect(marketDataFormatters.priceRangesUniversal.length).toBeGreaterThan(
+        0,
+      );
+    });
+  });
+
+  describe('rewards', () => {
+    it('delegates to the injected getPerpsDiscountForAccount with the perps base fee', async () => {
+      mockGetPerpsDiscountForAccount.mockResolvedValueOnce(5000);
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
+        'eip155:42161:0x1234',
+        10,
+      );
+
+      expect(discount).toBe(5000);
+      // Base fee bips comes from the perps package constants
+      // (BUILDER_FEE_CONFIG.MaxFeeDecimal * BASIS_POINTS_DIVISOR = 0.001 * 10000 = 10).
+      expect(mockGetPerpsDiscountForAccount).toHaveBeenCalledWith(
+        'eip155:42161:0x1234',
+        10,
+      );
+    });
+
+    it('returns 0 when the injected getPerpsDiscountForAccount throws', async () => {
+      mockGetPerpsDiscountForAccount.mockRejectedValueOnce(new Error('boom'));
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
+        'eip155:42161:0x1234',
+        10,
+      );
+      expect(discount).toBe(0);
+    });
+
+    it('collapses a null discount to 0 so the core perps-controller never sees null', async () => {
+      mockGetPerpsDiscountForAccount.mockResolvedValueOnce(null);
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
+        'eip155:42161:0x1234',
+        0,
+      );
+      expect(discount).toBe(0);
+    });
+  });
+
+  describe('cacheInvalidator', () => {
+    it('does not throw on invalidate', () => {
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(() =>
+        infrastructure.cacheInvalidator.invalidate({
+          cacheType: 'positions',
+        }),
+      ).not.toThrow();
+    });
+
+    it('does not throw on invalidateAll', () => {
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      expect(() =>
+        infrastructure.cacheInvalidator.invalidateAll(),
+      ).not.toThrow();
+    });
+  });
+
+  describe('diskCache', () => {
+    it('supports async cache access without sync hydration support', async () => {
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      expect(diskCache.getItemSync).toBeUndefined();
+
+      await expect(diskCache.getItem('missing-key')).resolves.toBeNull();
+
+      await diskCache.setItem('perps-test-key', 'value');
+
+      await expect(diskCache.getItem('perps-test-key')).resolves.toBe('value');
+
+      await diskCache.removeItem('perps-test-key');
+      await expect(diskCache.getItem('perps-test-key')).resolves.toBeNull();
+    });
+
+    it('stores perps disk cache through StorageService namespaced keys', async () => {
+      mockGetStorageItem
+        .mockResolvedValueOnce({ result: 'persisted-value' })
+        .mockResolvedValueOnce({ result: 'persisted-value' });
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      expect(diskCache.getItemSync).toBeUndefined();
+
+      await diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value');
+
+      expect(mockSetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'persisted-value',
+      );
+
+      const { diskCache: hydratedDiskCache } =
+        createPerpsInfrastructure(getDeps());
+      await expect(
+        hydratedDiskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
+      ).resolves.toBe('persisted-value');
+      expect(mockGetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+
+      await hydratedDiskCache.removeItem('PERPS_DISK_CACHE_MARKETS');
+      expect(mockRemoveStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+    });
+
+    it('returns null when StorageService misses or returns non-string values', async () => {
+      mockGetStorageItem
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ result: { unexpected: true } });
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+      await expect(diskCache.getItem('arbitraryKey')).resolves.toBeNull();
+      await expect(diskCache.getItem('anotherKey')).resolves.toBeNull();
+
+      expect(mockGetStorageItem).toHaveBeenNthCalledWith(
+        1,
+        'diskCache:arbitraryKey',
+      );
+      expect(mockGetStorageItem).toHaveBeenNthCalledWith(
+        2,
+        'diskCache:anotherKey',
+      );
+    });
+
+    it('does not update memory cache when setItem persistence fails', async () => {
+      mockSetStorageItem.mockRejectedValueOnce(new Error('write failed'));
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+
+      await expect(
+        diskCache.setItem('PERPS_DISK_CACHE_MARKETS', 'persisted-value'),
+      ).rejects.toThrow('write failed');
+
+      await expect(
+        diskCache.getItem('PERPS_DISK_CACHE_MARKETS'),
+      ).resolves.toBeNull();
+      expect(mockGetStorageItem).toHaveBeenCalledWith(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+    });
+
+    it('does not clear memory cache when removeItem persistence fails', async () => {
+      mockGetStorageItem.mockResolvedValueOnce({ result: 'persisted-value' });
+      mockRemoveStorageItem.mockRejectedValueOnce(new Error('delete failed'));
+
+      const { diskCache } = createPerpsInfrastructure(getDeps());
+
+      await expect(diskCache.getItem('PERPS_DISK_CACHE_MARKETS')).resolves.toBe(
+        'persisted-value',
+      );
+
+      await expect(
+        diskCache.removeItem('PERPS_DISK_CACHE_MARKETS'),
+      ).rejects.toThrow('delete failed');
+
+      await expect(diskCache.getItem('PERPS_DISK_CACHE_MARKETS')).resolves.toBe(
+        'persisted-value',
+      );
+      expect(mockGetStorageItem).toHaveBeenCalledTimes(1);
+    });
+  });
+});

@@ -1,29 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, cleanup } from '@testing-library/react';
 import { CaipAssetId } from '@metamask/keyring-api';
-import { Asset } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { CaipChainId } from '@metamask/utils';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { TRON_RESOURCE } from '../../../../shared/constants/multichain/assets';
+import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 import * as assetsSelectors from '../../../selectors/assets';
-import * as multichainSelectors from '../../../selectors/multichain';
 import { useTronResources } from './useTronResources';
 
-// Mock the selectors
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
-  getAssetsBySelectedAccountGroupWithTronResources: jest.fn(),
+  getAssetsBalance: jest.fn(),
 }));
 
-jest.mock('../../../selectors/multichain', () => ({
-  ...jest.requireActual('../../../selectors/multichain'),
-  getMultichainBalances: jest.fn(),
-}));
-
-// Mock react-redux
 jest.mock('react-redux', () => ({
-  useSelector: (selector: any) => selector(),
+  useSelector: <State, Result>(selector: (state: State) => Result): Result =>
+    selector({} as State),
 }));
+
+const renderTronResourcesHook = (
+  account: InternalAccount | undefined,
+  chainId: CaipChainId,
+) => renderHook(() => useTronResources(account, chainId));
 
 describe('useTronResources', () => {
   const mockAccount: InternalAccount = {
@@ -38,60 +35,228 @@ describe('useTronResources', () => {
     methods: [],
   } as unknown as InternalAccount;
 
-  const chainId = MultichainNetworks.TRON;
+  const chainId = MultichainNetworks.TRON as CaipChainId;
 
-  const createTronResourceAsset = (
-    symbol: string,
-    assetId: CaipAssetId,
-  ): Asset =>
-    ({
-      assetId,
-      symbol,
-      name: symbol,
-      decimals: 0,
-      image: '',
-      isNative: false,
-    }) as Asset;
+  const specialAssetIds = {
+    energy: `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetId,
+    maxEnergy:
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY}` as CaipAssetId,
+    bandwidth:
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH}` as CaipAssetId,
+    maxBandwidth:
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH}` as CaipAssetId,
+    stakedForEnergy:
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.STAKED_FOR_ENERGY}` as CaipAssetId,
+    readyForWithdrawal:
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.READY_FOR_WITHDRAWAL}` as CaipAssetId,
+    stakingRewards:
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.STAKING_REWARDS}` as CaipAssetId,
+    inLockPeriod:
+      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.IN_LOCK_PERIOD}` as CaipAssetId,
+  };
+
+  const nativeAssetId = `${chainId}/slip44:195` as CaipAssetId;
+
+  const mockAssetsBalance = (
+    assetsControllerBalances: Record<
+      string,
+      Record<string, Record<string, unknown>>
+    > = {},
+  ) => {
+    (assetsSelectors.getAssetsBalance as jest.Mock).mockReturnValue(
+      assetsControllerBalances,
+    );
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('when account and chainId are provided', () => {
-    it('returns energy and bandwidth resources with correct percentages', () => {
-      const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
-      const maxEnergyAssetId = `${chainId}/resource:max-energy` as CaipAssetId;
-      const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
-      const maxBandwidthAssetId =
-        `${chainId}/resource:max-bandwidth` as CaipAssetId;
+  afterEach(() => {
+    cleanup();
+  });
 
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [
-          createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
-          createTronResourceAsset(TRON_RESOURCE.MAX_ENERGY, maxEnergyAssetId),
-          createTronResourceAsset(TRON_RESOURCE.BANDWIDTH, bandwidthAssetId),
-          createTronResourceAsset(
-            TRON_RESOURCE.MAX_BANDWIDTH,
-            maxBandwidthAssetId,
-          ),
-        ],
-      });
-
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
+  describe('when reading resources from TRX balance metadata', () => {
+    it('returns energy and bandwidth from the metadata path', () => {
+      mockAssetsBalance({
         [mockAccount.id]: {
-          [energyAssetId]: { amount: '500', unit: 'energy' },
-          [maxEnergyAssetId]: { amount: '1000', unit: 'energy' },
-          [bandwidthAssetId]: { amount: '300', unit: 'bandwidth' },
-          [maxBandwidthAssetId]: { amount: '600', unit: 'bandwidth' },
+          [nativeAssetId]: {
+            amount: '583379269',
+            metadata: {
+              bandwidth: { limit: '34851', available: '34851' },
+              energy: { limit: '422103', available: '422103' },
+            },
+          },
         },
       });
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
+      expect(result.current.dataState).toBe('available');
+      expect(result.current.energy).toEqual({
+        type: 'energy',
+        current: 422103,
+        max: 422103,
+        percentage: 100,
+      });
+      expect(result.current.bandwidth).toEqual({
+        type: 'bandwidth',
+        current: 34851,
+        max: 34851,
+        percentage: 100,
+      });
+    });
+
+    it('keeps real zero values from metadata distinct from unavailable values', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [nativeAssetId]: {
+            amount: '0',
+            metadata: {
+              bandwidth: { limit: '34851', available: '0' },
+              energy: { limit: '422103', available: '0' },
+            },
+          },
+        },
+      });
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.dataState).toBe('available');
+      expect(result.current.energy).toEqual({
+        type: 'energy',
+        current: 0,
+        max: 422103,
+        percentage: 0,
+      });
+      expect(result.current.bandwidth).toEqual({
+        type: 'bandwidth',
+        current: 0,
+        max: 34851,
+        percentage: 0,
+      });
+    });
+
+    it('reports unavailable when a metadata value is null', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [nativeAssetId]: {
+            amount: '0',
+            metadata: {
+              bandwidth: { limit: '34851', available: null },
+              energy: { limit: '422103', available: '422103' },
+            },
+          },
+        },
+      });
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.dataState).toBe('unavailable');
+    });
+
+    it('reports unavailable when a metadata value is malformed', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [nativeAssetId]: {
+            amount: '0',
+            metadata: {
+              bandwidth: { limit: '34851', available: 'invalid' },
+              energy: { limit: '422103', available: '422103' },
+            },
+          },
+        },
+      });
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.dataState).toBe('unavailable');
+    });
+
+    it('reports loading when the TRX balance exists without resource metadata yet', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [nativeAssetId]: {
+            amount: '583379269',
+          },
+        },
+      });
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.dataState).toBe('loading');
+    });
+
+    it('falls back to special-asset balances for values the metadata lacks', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [nativeAssetId]: {
+            amount: '0',
+            metadata: {
+              bandwidth: { limit: '34851', available: '34851' },
+            },
+          },
+          [specialAssetIds.energy]: { amount: '500' },
+          [specialAssetIds.maxEnergy]: { amount: '1000' },
+        },
+      });
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.dataState).toBe('available');
+      expect(result.current.energy).toEqual({
+        type: 'energy',
+        current: 500,
+        max: 1000,
+        percentage: 50,
+      });
+      expect(result.current.bandwidth).toEqual({
+        type: 'bandwidth',
+        current: 34851,
+        max: 34851,
+        percentage: 100,
+      });
+    });
+
+    it('prefers metadata values over special-asset balances', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [nativeAssetId]: {
+            amount: '0',
+            metadata: {
+              energy: { limit: '422103', available: '422103' },
+            },
+          },
+          [specialAssetIds.energy]: { amount: '500' },
+          [specialAssetIds.maxEnergy]: { amount: '1000' },
+        },
+      });
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.energy).toEqual({
+        type: 'energy',
+        current: 422103,
+        max: 422103,
+        percentage: 100,
+      });
+    });
+  });
+
+  describe('when reading resources from special-asset balances', () => {
+    it('returns energy and bandwidth resources with correct percentages', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [specialAssetIds.energy]: { amount: '500' },
+          [specialAssetIds.maxEnergy]: { amount: '1000' },
+          [specialAssetIds.bandwidth]: { amount: '300' },
+          [specialAssetIds.maxBandwidth]: { amount: '600' },
+        },
+      });
+
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
+
+      expect(result.current.dataState).toBe('available');
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 500,
@@ -107,289 +272,121 @@ describe('useTronResources', () => {
       });
     });
 
-    it('returns zero values with max of 0 when no balances exist', () => {
-      const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
-      const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
-
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [
-          createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
-          createTronResourceAsset(TRON_RESOURCE.BANDWIDTH, bandwidthAssetId),
-        ],
-      });
-
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
-        [mockAccount.id]: {},
-      });
-
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-    });
-
-    it('handles only current values without max values', () => {
-      const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
-      const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
-
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [
-          createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
-          createTronResourceAsset(TRON_RESOURCE.BANDWIDTH, bandwidthAssetId),
-        ],
-      });
-
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
+    it('reports unavailable when only current values exist without max values', () => {
+      mockAssetsBalance({
         [mockAccount.id]: {
-          [energyAssetId]: { amount: '250', unit: 'energy' },
-          [bandwidthAssetId]: { amount: '150', unit: 'bandwidth' },
+          [specialAssetIds.energy]: { amount: '250' },
+          [specialAssetIds.bandwidth]: { amount: '150' },
         },
       });
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 250,
-        max: 0, // Actual max is 0 when not provided
-        percentage: 25000, // 250 / 1 * 100 (divisor is Math.max(1, 0) = 1)
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 150,
-        max: 0,
-        percentage: 15000,
-      });
+      expect(result.current.dataState).toBe('unavailable');
+      expect(result.current.energy.current).toBe(250);
+      expect(result.current.energy.max).toBe(0);
     });
 
-    it('handles only max values without current values', () => {
-      const maxEnergyAssetId = `${chainId}/resource:max-energy` as CaipAssetId;
-      const maxBandwidthAssetId =
-        `${chainId}/resource:max-bandwidth` as CaipAssetId;
-
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [
-          createTronResourceAsset(TRON_RESOURCE.MAX_ENERGY, maxEnergyAssetId),
-          createTronResourceAsset(
-            TRON_RESOURCE.MAX_BANDWIDTH,
-            maxBandwidthAssetId,
-          ),
-        ],
-      });
-
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
+    it('reports unavailable when only max values exist without current values', () => {
+      mockAssetsBalance({
         [mockAccount.id]: {
-          [maxEnergyAssetId]: { amount: '2000', unit: 'energy' },
-          [maxBandwidthAssetId]: { amount: '1500', unit: 'bandwidth' },
+          [specialAssetIds.maxEnergy]: { amount: '2000' },
+          [specialAssetIds.maxBandwidth]: { amount: '1500' },
         },
       });
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 2000,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 1500,
-        percentage: 0,
-      });
+      expect(result.current.dataState).toBe('unavailable');
+      expect(result.current.energy.current).toBe(0);
+      expect(result.current.energy.max).toBe(2000);
     });
 
-    it('filters out non-Tron resource assets', () => {
-      const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
-      const tokenAssetId =
-        `${chainId}/token:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t` as CaipAssetId;
-
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [
-          createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
-          {
-            assetId: tokenAssetId,
-            symbol: 'USDT',
-            name: 'Tether USD',
-            decimals: 6,
-            image: '',
-            isNative: false,
-          } as Asset,
-        ],
-      });
-
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
+    it('reports unavailable when a balance amount is malformed', () => {
+      mockAssetsBalance({
         [mockAccount.id]: {
-          [energyAssetId]: { amount: '100', unit: 'energy' },
-          [tokenAssetId]: { amount: '1000', unit: 'USDT' },
+          [specialAssetIds.energy]: { amount: 'invalid' },
         },
       });
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      // Should only process the energy resource, not the USDT token
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 100,
-        max: 0,
-        percentage: 10000,
-      });
-
-      // Bandwidth should be zero since no bandwidth assets exist
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
+      expect(result.current.dataState).toBe('unavailable');
+      expect(result.current.energy.current).toBe(0);
     });
 
-    it('handles empty assets array', () => {
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [],
+    it('ignores non-resource asset balances when computing resources', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [specialAssetIds.energy]: { amount: '100' },
+          [specialAssetIds.maxEnergy]: { amount: '200' },
+          [specialAssetIds.bandwidth]: { amount: '50' },
+          [specialAssetIds.maxBandwidth]: { amount: '100' },
+          [`${chainId}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t` as CaipAssetId]:
+            {
+              amount: '1000',
+            },
+        },
       });
 
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
-        [mockAccount.id]: {},
-      });
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
+      expect(result.current.dataState).toBe('available');
+      expect(result.current.energy.current).toBe(100);
+      expect(result.current.bandwidth.current).toBe(50);
     });
 
-    it('handles chainId with no assets', () => {
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({});
-
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
-        [mockAccount.id]: {},
+    it('ignores staking state assets when computing resources', () => {
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [specialAssetIds.energy]: { amount: '500' },
+          [specialAssetIds.maxEnergy]: { amount: '1000' },
+          [specialAssetIds.bandwidth]: { amount: '300' },
+          [specialAssetIds.maxBandwidth]: { amount: '600' },
+          [specialAssetIds.readyForWithdrawal]: { amount: '100' },
+          [specialAssetIds.stakingRewards]: { amount: '50' },
+          [specialAssetIds.inLockPeriod]: { amount: '200' },
+        },
       });
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
+      expect(result.current.dataState).toBe('available');
+      expect(result.current.energy.current).toBe(500);
+      expect(result.current.bandwidth.current).toBe(300);
     });
 
     it('calculates percentage correctly with full resources', () => {
-      const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
-      const maxEnergyAssetId = `${chainId}/resource:max-energy` as CaipAssetId;
-      const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
-      const maxBandwidthAssetId =
-        `${chainId}/resource:max-bandwidth` as CaipAssetId;
-
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [
-          createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
-          createTronResourceAsset(TRON_RESOURCE.MAX_ENERGY, maxEnergyAssetId),
-          createTronResourceAsset(TRON_RESOURCE.BANDWIDTH, bandwidthAssetId),
-          createTronResourceAsset(
-            TRON_RESOURCE.MAX_BANDWIDTH,
-            maxBandwidthAssetId,
-          ),
-        ],
-      });
-
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
+      mockAssetsBalance({
         [mockAccount.id]: {
-          [energyAssetId]: { amount: '1000', unit: 'energy' },
-          [maxEnergyAssetId]: { amount: '1000', unit: 'energy' },
-          [bandwidthAssetId]: { amount: '800', unit: 'bandwidth' },
-          [maxBandwidthAssetId]: { amount: '800', unit: 'bandwidth' },
+          [specialAssetIds.energy]: { amount: '1000' },
+          [specialAssetIds.maxEnergy]: { amount: '1000' },
+          [specialAssetIds.bandwidth]: { amount: '800' },
+          [specialAssetIds.maxBandwidth]: { amount: '800' },
         },
       });
 
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
+      expect(result.current.dataState).toBe('available');
       expect(result.current.energy.percentage).toBe(100);
       expect(result.current.bandwidth.percentage).toBe(100);
     });
   });
 
-  describe('when account is undefined', () => {
-    it('returns default values', () => {
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({});
+  describe('data state', () => {
+    it('reports loading when no balances exist', () => {
+      mockAssetsBalance({ [mockAccount.id]: {} });
 
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue(
-        {},
-      );
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      const { result } = renderHook(() => useTronResources(undefined, chainId));
-
+      expect(result.current.dataState).toBe('loading');
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
         max: 0,
         percentage: 0,
       });
-
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
@@ -397,98 +394,32 @@ describe('useTronResources', () => {
         percentage: 0,
       });
     });
-  });
 
-  describe('when chainId is empty', () => {
-    it('returns default values', () => {
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({});
+    it('reports loading when the account balances entry is missing', () => {
+      mockAssetsBalance({});
 
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
-        [mockAccount.id]: {},
-      });
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      const { result } = renderHook(() => useTronResources(mockAccount, ''));
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
+      expect(result.current.dataState).toBe('loading');
     });
-  });
 
-  describe('when account balances are undefined', () => {
-    it('returns default values', () => {
-      const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
-      const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
+    it('reports loading when the account is undefined', () => {
+      mockAssetsBalance({});
 
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [
-          createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
-          createTronResourceAsset(TRON_RESOURCE.BANDWIDTH, bandwidthAssetId),
-        ],
-      });
+      const { result } = renderTronResourcesHook(undefined, chainId);
 
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue(
-        {},
-      );
-
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
-      );
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
+      expect(result.current.dataState).toBe('loading');
     });
-  });
 
-  describe('when balance amount is invalid', () => {
-    it('handles NaN values gracefully', () => {
-      const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
+    it('reports loading when the chainId is empty', () => {
+      mockAssetsBalance({ [mockAccount.id]: {} });
 
-      (
-        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
-      ).mockReturnValue({
-        [chainId]: [
-          createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
-        ],
-      });
-
-      (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
-        [mockAccount.id]: {
-          [energyAssetId]: { amount: 'invalid', unit: 'energy' },
-        },
-      });
-
-      const { result } = renderHook(() =>
-        useTronResources(mockAccount, chainId),
+      const { result } = renderTronResourcesHook(
+        mockAccount,
+        '' as CaipChainId,
       );
 
-      expect(result.current.energy.current).toBeNaN();
-      expect(result.current.energy.percentage).toBeNaN();
+      expect(result.current.dataState).toBe('loading');
     });
   });
 });

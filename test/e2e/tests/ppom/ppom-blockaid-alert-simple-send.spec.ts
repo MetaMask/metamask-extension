@@ -1,22 +1,22 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { WINDOW_TITLES } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
 const mockBenignAddress = '0x50587E46C5B96a3F6f9792922EC647F13E6EFAE4';
 
-const expectedMaliciousTitle = 'This is a deceptive request';
+const expectedMaliciousTitle = 'High-risk transfer';
 const expectedMaliciousDescription =
-  'If you approve this request, a third party known for scams will take all your assets.';
+  "You're sending assets to an address flagged by security partners. If this is a scam, your funds can't be recovered.";
 
 const SEND_REQUEST_BASE_MOCK = {
   method: 'eth_sendTransaction',
@@ -143,11 +143,8 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -155,11 +152,14 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithBenignResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { expectedBalance: '20 ETH' });
         const homePage = new HomePage(driver);
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
@@ -190,13 +190,11 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
-          })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+            chainIds: [1],
           })
           .withEnabledNetworks({
             eip155: {
@@ -205,11 +203,14 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { expectedBalance: '20 ETH' });
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
         await new HomePage(driver).checkExpectedBalanceIsDisplayed('20 ETH');
@@ -231,15 +232,12 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
     );
   });
 
-  it('should show "Be careful" if the PPOM request fails to check transaction', async function () {
+  it('should show "Security check unavailable" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
-          })
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -247,11 +245,14 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
           })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: '20',
+        },
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { expectedBalance: '20 ETH' });
         const homePage = new HomePage(driver);
 
         // We validate custom balance as it doesn't come from the local node but it's mocked
@@ -266,7 +267,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
         const transactionConfirmationPage = new TransactionConfirmation(driver);
         await transactionConfirmationPage.checkPageIsLoaded();
 
-        const expectedTitle = 'Be careful';
+        const expectedTitle = 'Security check unavailable';
         await transactionConfirmationPage.checkAlertMessageIsDisplayed(
           expectedTitle,
         );

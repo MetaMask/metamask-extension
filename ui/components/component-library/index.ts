@@ -40,8 +40,6 @@ export { ButtonPrimary, ButtonPrimarySize } from './button-primary';
 export type { ButtonPrimaryProps } from './button-primary';
 export { ButtonSecondary, ButtonSecondarySize } from './button-secondary';
 export type { ButtonSecondaryProps } from './button-secondary';
-export { Checkbox } from './checkbox';
-export type { CheckboxProps } from './checkbox';
 export { Container, ContainerMaxWidth } from './container';
 export type { ContainerProps } from './container';
 export { FormTextField, FormTextFieldSize } from './form-text-field';
@@ -58,8 +56,8 @@ export { PickerNetwork } from './picker-network';
 export type { PickerNetworkProps } from './picker-network';
 export { Tag } from './tag';
 export type { TagProps } from './tag';
-export { TagUrl } from './tag-url';
-export type { TagUrlProps } from './tag-url';
+export { SuccessPill } from './success-pill';
+export type { SuccessPillProps } from './success-pill';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export type { TextProps } from './text';
 export { SensitiveText, SensitiveTextLength } from './sensitive-text';
@@ -68,8 +66,6 @@ export { Input, InputType } from './input';
 export type { InputProps } from './input';
 export { TextField, TextFieldType, TextFieldSize } from './text-field';
 export type { TextFieldProps } from './text-field';
-export { TextFieldSearch, TextFieldSearchSize } from './text-field-search';
-export type { TextFieldSearchProps } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export type { ModalContentProps } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
@@ -96,6 +92,13 @@ export { Popover, PopoverPosition, PopoverRole } from './popover';
 export type { PopoverProps } from './popover';
 export { ModalHeader } from './modal-header';
 export type { ModalHeaderProps } from './modal-header';
+export { HeaderSearch, HeaderSearchVariant } from './header-search';
+export type {
+  HeaderSearchProps,
+  HeaderSearchTextFieldSearchProps,
+  HeaderSearchScreenProps,
+  HeaderSearchInlineProps,
+} from './header-search';
 export { SelectButton, SelectButtonSize } from './select-button';
 export type { SelectButtonProps } from './select-button';
 export { SelectOption } from './select-option';

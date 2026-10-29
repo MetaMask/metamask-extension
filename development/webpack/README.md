@@ -18,11 +18,13 @@ yarn webpack
 
 This will create a `dist/chrome` directory containing the built extension. See usage for more options.
 
-To watch for changes and rebuild the extension automatically, run the following command:
+### Dev server
 
 ```bash
-yarn webpack --watch
+yarn start
 ```
+
+`yarn start` rebuilds on file changes and starts a [webpack dev server](https://webpack.js.org/configuration/dev-server/) on `localhost:8080` that auto-reloads the extension's UI pages (popup, home, notification, sidepanel). The service worker, background page, and content scripts are not auto-reloaded — reload the extension manually for changes to those.
 
 ### Set options using a `config.json` file
 
@@ -65,16 +67,26 @@ Run `yarn webpack --help` for the list of options.
 
 Note: multiple array options cannot be set this way, due to this bug in yargs: https://github.com/yargs/yargs/issues/821
 
+[`SOURCE_DATE_EPOCH`](https://reproducible-builds.org/specs/source-date-epoch/) is also supported for reproducible zip
+artifacts. It is the standard unprefixed environment variable, specified as a Unix timestamp in seconds:
+
+```bash
+SOURCE_DATE_EPOCH=1711141205 yarn webpack --zip
+```
+
+When `--zip` is used, zip entry modification times are resolved from `SOURCE_DATE_EPOCH` when set, then the latest git
+commit timestamp, then a deterministic fallback.
+
 ## CLI Arguments
 
-### `--targetEnvironment`
+### `--env` (alias: `-e`)
 
 Explicitly sets the build environment for Sentry reporting and feature flags. If not specified, it is auto-detected from git.
 
 | Value               | When Used                                    |
 | ------------------- | -------------------------------------------- |
 | `production`        | Must be explicitly set (never auto-detected) |
-| `development`       | `--env development`                          |
+| `development`       | `--mode development`                         |
 | `testing`           | `--test` flag                                |
 | `staging`           | `main` branch on CI                          |
 | `release-candidate` | `release/*` branch on CI                     |
@@ -85,13 +97,13 @@ Explicitly sets the build environment for Sentry reporting and feature flags. If
 
 ```bash
 # Local development (auto-detects as 'other')
-yarn webpack --env production
+yarn webpack --mode production
 
 # Explicit production (for actual releases only)
-yarn webpack --env production --targetEnvironment production
+yarn webpack --mode production --env production
 
 # Check what environment will be used
-yarn webpack --env production --dry-run
+yarn webpack --mode production --dry-run
 ```
 
 You can also combine environment variables with `--config` and CLI options:

@@ -6,27 +6,27 @@ import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
+import { buildEvmCaip19AssetId } from '../../shared/lib/multichain/buildEvmCaip19AssetId';
+import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 import mockState from '../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getDomainResolutions } from '../ducks/domains';
 import { IconName } from '../components/component-library';
 import { IconColor } from '../helpers/constants/design-system';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
-import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useTrustSignals, TrustSignalDisplayState } from './useTrustSignals';
+import { useTokensData, type TokenAsset } from './useTokensData';
 
 jest.mock('./useName');
 jest.mock('./useTrustSignals');
+jest.mock('./useTokensData');
 jest.mock('../ducks/domains', () => ({
   getDomainResolutions: jest.fn(),
 }));
 jest.mock('../pages/confirmations/selectors/accounts', () => ({
   selectAccountGroupNameByInternalAccount: jest.fn(),
-}));
-jest.mock('../selectors/multichain-accounts/feature-flags', () => ({
-  getIsMultichainAccountsState2Enabled: jest.fn(),
 }));
 
 const VALUE_MOCK = 'testvalue';
@@ -44,6 +44,7 @@ const GROUP_NAME_MOCK = 'My Account Group';
 describe('useDisplayName', () => {
   const useNamesMock = jest.mocked(useNames);
   const useTrustSignalsMock = jest.mocked(useTrustSignals);
+  const useTokensDataMock = jest.mocked(useTokensData);
   const domainResolutionsMock = jest.mocked(getDomainResolutions);
   const selectAccountGroupNameByInternalAccountMock = jest.mocked(
     selectAccountGroupNameByInternalAccount,
@@ -82,17 +83,15 @@ describe('useDisplayName', () => {
     symbol: string,
     image: string,
   ) {
-    state.metamask.tokensChainsCache = {
-      [variation]: {
-        data: {
-          [value]: {
-            name,
-            symbol,
-            iconUrl: image,
-          },
-        },
-      },
-    };
+    const assetId = buildEvmCaip19AssetId(value, variation as Hex);
+    useTokensDataMock.mockReturnValue({
+      [assetId]: {
+        assetId,
+        name,
+        symbol,
+        iconUrl: image,
+      } as TokenAsset,
+    });
   }
 
   function mockWatchedNFTName(value: string, variation: string, name: string) {
@@ -145,6 +144,8 @@ describe('useDisplayName', () => {
         label: null,
       },
     ]);
+
+    useTokensDataMock.mockReturnValue({});
 
     state = cloneDeep(mockState);
 
@@ -236,6 +237,28 @@ describe('useDisplayName', () => {
         icon: null,
         subtitle: null,
       });
+    });
+
+    it('derives the token icon URL when the API omits iconUrl', () => {
+      const ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+      const CHAIN_ID = CHAIN_IDS.MAINNET;
+
+      mockERC20Token(ADDRESS, CHAIN_ID, ERC20_TOKEN_NAME_MOCK, SYMBOL_MOCK, '');
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: ADDRESS,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: CHAIN_ID,
+          }),
+        state,
+      );
+
+      expect(result.current.image).toBe(getAssetImageUrl(ADDRESS, CHAIN_ID));
+      expect(result.current.image).toBe(
+        `https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/${ADDRESS}.png`,
+      );
     });
 
     it('returns ERC-20 token symbol', () => {
@@ -731,13 +754,9 @@ describe('useDisplayName', () => {
   });
 
   describe('Account Group Names', () => {
-    it('returns account group name when multichain accounts state 2 is enabled', () => {
+    it('returns account group name', () => {
       mockPetname(PETNAME_MOCK);
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
-        multichainAccountsState2: true,
-      });
 
       const { result } = renderHookWithProvider(
         () =>
@@ -768,9 +787,6 @@ describe('useDisplayName', () => {
     it(`does not use group name when overridden by user's custom name`, () => {
       mockPetname(PETNAME_MOCK, NameOrigin.API);
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
-        multichainAccountsState2: true,
-      });
 
       const { result } = renderHookWithProvider(
         () =>
@@ -793,43 +809,6 @@ describe('useDisplayName', () => {
         isAccount: false,
         name: PETNAME_MOCK,
         displayState: TrustSignalDisplayState.Petname,
-        icon: null,
-        subtitle: null,
-      });
-    });
-
-    it('does not use account group name when multichain accounts state 2 is disabled', () => {
-      mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-      mockERC20Token(
-        VALUE_MOCK,
-        VARIATION_MOCK,
-        ERC20_TOKEN_NAME_MOCK,
-        SYMBOL_MOCK,
-        ERC20_IMAGE_MOCK,
-      );
-
-      const { result } = renderHookWithProvider(
-        () =>
-          useDisplayName({
-            value: VALUE_MOCK,
-            type: NameType.ETHEREUM_ADDRESS,
-            variation: VARIATION_MOCK,
-          }),
-        state,
-      );
-
-      expect(selectAccountGroupNameByInternalAccountMock).toHaveBeenCalledWith(
-        expect.any(Object),
-        VALUE_MOCK,
-      );
-
-      expect(result.current).toStrictEqual({
-        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
-        hasPetname: false,
-        image: ERC20_IMAGE_MOCK,
-        isAccount: false,
-        name: ERC20_TOKEN_NAME_MOCK,
-        displayState: TrustSignalDisplayState.Recognized,
         icon: null,
         subtitle: null,
       });
@@ -869,7 +848,6 @@ describe('useDisplayName', () => {
 
     it('returns null when type is not ethereum address', () => {
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
 
       const { result } = renderHookWithProvider(
         () =>
@@ -898,8 +876,6 @@ describe('useDisplayName', () => {
 
     it('handles empty group name', () => {
       mockAccountGroupName(VALUE_MOCK, '');
-
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
 
       const { result } = renderHookWithProvider(
         () =>

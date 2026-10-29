@@ -13,18 +13,6 @@ export async function isAtomicBatchSupported(
   );
 }
 
-export async function startIncomingTransactionPolling() {
-  return await submitRequestToBackground<void>(
-    'startIncomingTransactionPolling',
-  );
-}
-
-export async function stopIncomingTransactionPolling() {
-  return await submitRequestToBackground<void>(
-    'stopIncomingTransactionPolling',
-  );
-}
-
 export async function updateAtomicBatchData(
   request: Parameters<TransactionController['updateAtomicBatchData']>[0],
 ) {

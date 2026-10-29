@@ -3,12 +3,11 @@ import { keccak256 } from 'ethereum-cryptography/keccak';
 import { bytesToHex } from '@metamask/utils';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { Anvil } from '../seeder/anvil';
-import { Ganache } from '../seeder/ganache';
 
 describe('eth_call', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -16,7 +15,7 @@ describe('eth_call', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: {
@@ -31,11 +30,11 @@ describe('eth_call', function () {
         contractRegistry,
       }: {
         driver: Driver;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
         contractRegistry: ContractAddressRegistry;
       }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);

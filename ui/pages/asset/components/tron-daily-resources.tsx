@@ -1,34 +1,40 @@
 import React from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
-  Text,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Text,
   TextColor,
   TextVariant,
-  IconColor,
-  BackgroundColor,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import type { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useFreshTronAssets } from '../hooks/useFreshTronAssets';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
 
 type TronDailyResourcesProps = {
   account: InternalAccount;
-  chainId: string;
+  chainId: CaipChainId;
+  t: ReturnType<typeof useI18nContext>;
 };
 
 type ResourceCircleProps = {
   resource: TronResource;
   iconName: IconName;
 };
+
+const ENERGY_PER_TRC20_TRANSFER_BASELINE = 65000;
+const BANDWIDTH_PER_TRX_TRANSFER_BASELINE = 280;
 
 const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
   const percentage = Math.min(resource.percentage, 100);
@@ -80,10 +86,10 @@ const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
       </svg>
       {/* Icon in the center */}
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        className="flex"
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundAlternative}
         style={{
           position: 'absolute',
           top: '50%',
@@ -96,7 +102,7 @@ const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
       >
         <Icon
           name={iconName}
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           size={IconSize.Sm}
         />
       </Box>
@@ -111,6 +117,8 @@ type ResourceRowProps = {
   description: string;
   currentValue: string;
   maxValue: string;
+  testId: string;
+  descriptionTestId: string;
 };
 
 const ResourceRow = ({
@@ -120,43 +128,47 @@ const ResourceRow = ({
   description,
   currentValue,
   maxValue,
+  testId,
+  descriptionTestId,
 }: ResourceRowProps) => {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      className="flex"
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       marginTop={3}
+      data-testid={testId}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={4}
       >
         <ResourceCircle resource={resource} iconName={iconName} />
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={1}
-        >
+        <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text
-            variant={TextVariant.bodyLgMedium}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyLg}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
           >
             {label}
           </Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid={descriptionTestId}
+          >
             {description}
           </Text>
         </Box>
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+      <Box className="flex" flexDirection={BoxFlexDirection.Row}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
           {currentValue}
         </Text>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           /{maxValue}
         </Text>
       </Box>
@@ -171,17 +183,15 @@ const ResourceRow = ({
  * @param options0
  * @param options0.account
  * @param options0.chainId
+ * @param options0.t
  */
 export const TronDailyResources = ({
   account,
   chainId,
+  t,
 }: TronDailyResourcesProps) => {
-  const t = useI18nContext();
-  const { energy, bandwidth } = useTronResources(account, chainId);
-
-  // Constants for resource calculations
-  const ENERGY_PER_TRC20_TRANSFER_BASELINE = 65000;
-  const BANDWIDTH_PER_TRX_TRANSFER_BASELINE = 280;
+  useFreshTronAssets(account, chainId);
+  const { energy, bandwidth, dataState } = useTronResources(account, chainId);
 
   // Calculate how many transfers can be covered
   const usdtTransfersCovered = Math.floor(
@@ -198,56 +208,90 @@ export const TronDailyResources = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      className="flex"
+      flexDirection={BoxFlexDirection.Column}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={1}
       paddingBottom={3}
+      data-testid="tron-daily-resources"
+      aria-busy={dataState === 'loading' || undefined}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        className="flex"
+        flexDirection={BoxFlexDirection.Column}
         gap={2}
         marginBottom={3}
       >
-        <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
+        <Text
+          variant={TextVariant.HeadingSm}
+          color={TextColor.TextDefault}
+          data-testid="tron-daily-resources-title"
+        >
           {t('tronDailyResources')}
         </Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-          {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
-        </Text>
+        {dataState === 'available' && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid="tron-daily-resources-description"
+          >
+            {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
+          </Text>
+        )}
       </Box>
 
-      <ResourceRow
-        resource={energy}
-        iconName={IconName.Flash}
-        label={t('tronEnergy')}
-        description={
-          usdtTransfersCovered === 1
-            ? t('tronEnergyCoverageDescriptionSingular')
-            : t('tronEnergyCoverageDescriptionPlural', [
-                usdtTransfersCovered.toString(),
-              ])
-        }
-        currentValue={formatValue(energy.current)}
-        maxValue={formatValue(energy.max)}
-      />
+      {dataState === 'loading' && (
+        <output className="sr-only">{t('tronDailyResourcesLoading')}</output>
+      )}
 
-      <ResourceRow
-        resource={bandwidth}
-        iconName={IconName.Connect}
-        label={t('tronBandwidth')}
-        description={
-          trxTransfersCovered === 1
-            ? t('tronBandwidthCoverageDescriptionSingular')
-            : t('tronBandwidthCoverageDescriptionPlural', [
-                trxTransfersCovered.toString(),
-              ])
-        }
-        currentValue={formatValue(bandwidth.current)}
-        maxValue={formatValue(bandwidth.max)}
-      />
+      {dataState === 'unavailable' ? (
+        <BannerAlert
+          severity={BannerAlertSeverity.Warning}
+          title={t('tronDailyResourcesUnavailableTitle')}
+          description={t('tronDailyResourcesUnavailableDescription')}
+          marginTop={3}
+          data-testid="tron-daily-resources-error-banner"
+        />
+      ) : (
+        dataState === 'available' && (
+          <>
+            <ResourceRow
+              resource={energy}
+              iconName={IconName.Flash}
+              label={t('tronEnergy')}
+              description={
+                usdtTransfersCovered === 1
+                  ? t('tronEnergyCoverageDescriptionSingular')
+                  : t('tronEnergyCoverageDescriptionPlural', [
+                      usdtTransfersCovered.toString(),
+                    ])
+              }
+              currentValue={formatValue(energy.current)}
+              maxValue={formatValue(energy.max)}
+              testId="tron-daily-resources-energy"
+              descriptionTestId="tron-daily-resources-energy-description"
+            />
+
+            <ResourceRow
+              resource={bandwidth}
+              iconName={IconName.Connect}
+              label={t('tronBandwidth')}
+              description={
+                trxTransfersCovered === 1
+                  ? t('tronBandwidthCoverageDescriptionSingular')
+                  : t('tronBandwidthCoverageDescriptionPlural', [
+                      trxTransfersCovered.toString(),
+                    ])
+              }
+              currentValue={formatValue(bandwidth.current)}
+              maxValue={formatValue(bandwidth.max)}
+              testId="tron-daily-resources-bandwidth"
+              descriptionTestId="tron-daily-resources-bandwidth-description"
+            />
+          </>
+        )
+      )}
     </Box>
   );
 };

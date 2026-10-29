@@ -24,7 +24,6 @@ import {
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -36,7 +35,7 @@ const backgroundConnectionMocked = {
 const mockedBackgroundRequests = {
   setSwapsTokens: TOKENS_API_MOCK_RESULT,
   setSwapsFeatureFlags: FEATURE_FLAGS_API_MOCK_RESULT,
-  fetchSmartTransactionsLiveness: true,
+  'SmartTransactionsController:fetchLiveness': true,
   getTransactions: [],
 };
 

@@ -1,10 +1,10 @@
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { mockJsxSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap JSX', function () {
@@ -14,20 +14,20 @@ describe('Test Snap JSX', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockJsxSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
 
         // Open the test snaps page
-        await openTestSnapClickButtonAndInstall(driver, 'connectjsxButton');
-        await testSnaps.checkInstallationComplete(
-          'connectjsxButton',
-          'Reconnect to JSX Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectjsxButton', {
+          expectedMessage: 'Reconnect to JSX Snap',
+        });
 
         await testSnaps.clickButton('displayJsxButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

@@ -1,0 +1,50 @@
+import {
+  MUSD_EVENTS_CONSTANTS,
+  musdConversionFlowEntryPointToCtaEventLocation,
+  resolveMusdConversionCtaRedirectsTo,
+  TOKEN_LIST_CELL_MUSD_OPTIONS,
+} from './musd-events';
+
+describe('resolveMusdConversionCtaRedirectsTo', () => {
+  it('returns buy_screen for buy intent', () => {
+    expect(resolveMusdConversionCtaRedirectsTo({ intent: 'buy' })).toBe(
+      MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.BUY_SCREEN,
+    );
+  });
+
+  it('returns custom_amount_screen for conversion intent', () => {
+    expect(
+      resolveMusdConversionCtaRedirectsTo({
+        intent: 'conversion',
+      }),
+    ).toBe(MUSD_EVENTS_CONSTANTS.REDIRECT_DESTINATIONS.CUSTOM_AMOUNT_SCREEN);
+  });
+});
+
+describe('musdConversionFlowEntryPointToCtaEventLocation', () => {
+  it('maps home to home_screen', () => {
+    expect(musdConversionFlowEntryPointToCtaEventLocation('home')).toBe(
+      MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.HOME_SCREEN,
+    );
+  });
+
+  it('maps token_list to token_list_item', () => {
+    expect(musdConversionFlowEntryPointToCtaEventLocation('token_list')).toBe(
+      MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.TOKEN_LIST_ITEM,
+    );
+  });
+
+  it('maps asset_overview to asset_overview', () => {
+    expect(
+      musdConversionFlowEntryPointToCtaEventLocation('asset_overview'),
+    ).toBe(MUSD_EVENTS_CONSTANTS.EVENT_LOCATIONS.ASSET_OVERVIEW);
+  });
+});
+
+describe('TokenCell musd presets', () => {
+  it('TOKEN_LIST_CELL_MUSD_OPTIONS matches home token list surfaces', () => {
+    expect(TOKEN_LIST_CELL_MUSD_OPTIONS).toStrictEqual({
+      convert: { entryPoint: 'token_list' },
+    });
+  });
+});

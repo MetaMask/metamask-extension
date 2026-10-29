@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Content-Security-Policy', function (this: Suite) {
   // TODO: Re-enable this after fixing the CSP override feature. See #31094
@@ -29,11 +29,11 @@ describe('Content-Security-Policy', function (this: Suite) {
             },
           ],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         const isExtensionLoaded: boolean = await driver.executeScript(

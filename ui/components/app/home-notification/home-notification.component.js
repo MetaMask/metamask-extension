@@ -1,11 +1,29 @@
 import React, { useState } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
-import { Button, ButtonVariant, Icon, IconName } from '../../component-library';
-import Checkbox from '../../ui/check-box';
+import {
+  Button,
+  ButtonVariant,
+  Checkbox,
+  Icon,
+  IconName,
+  TextVariant,
+} from '@metamask/design-system-react';
 import Tooltip from '../../ui/tooltip';
 import { IconColor } from '../../../helpers/constants/design-system';
 
+/**
+ * @param {object} props
+ * @param {import('react').ReactNode} [props.acceptText]
+ * @param {import('react').ReactNode} [props.checkboxText]
+ * @param {import('react').ReactNode} [props.checkboxTooltipText]
+ * @param {string[]} [props.classNames]
+ * @param {import('react').ReactNode} props.descriptionText
+ * @param {import('react').ReactNode} [props.ignoreText]
+ * @param {import('react').ReactNode} [props.infoText]
+ * @param {() => void} [props.onAccept]
+ * @param {(disable: boolean) => void} [props.onIgnore]
+ */
 const HomeNotification = ({
   acceptText,
   checkboxText,
@@ -22,9 +40,10 @@ const HomeNotification = ({
   const checkboxElement = checkboxText && (
     <Checkbox
       id="homeNotification_checkbox"
-      checked={checkboxState}
-      className="home-notification__checkbox"
-      onClick={() => setCheckBoxState((checked) => !checked)}
+      label={checkboxText}
+      labelProps={{ variant: TextVariant.BodySm }}
+      isSelected={checkboxState}
+      onChange={setCheckBoxState}
     />
   );
 
@@ -78,12 +97,6 @@ const HomeNotification = ({
             ) : (
               checkboxElement
             )}
-            <label
-              className="home-notification__checkbox-label"
-              htmlFor="homeNotification_checkbox"
-            >
-              {checkboxText}
-            </label>
           </div>
         ) : null}
       </div>

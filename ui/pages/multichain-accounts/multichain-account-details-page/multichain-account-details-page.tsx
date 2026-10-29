@@ -1,28 +1,35 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
-import classnames from 'classnames';
-import { AvatarAccountSize } from '@metamask/design-system-react';
-
-import { KeyringTypes } from '@metamask/keyring-controller';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import {
+  AccountGroupId,
+  AccountWalletId,
+  AccountWalletType,
+} from '@metamask/account-api';
+import classnames from 'clsx';
 import {
   Box,
   ButtonIcon,
-  ButtonIconSize,
   IconName,
-} from '../../../components/component-library';
+  AvatarAccountSize,
+  TextColor,
+  IconColor,
+  ButtonIconSize,
+} from '@metamask/design-system-react';
+
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { PreferredAvatar } from '../../../components/app/preferred-avatar';
 import {
   Content,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import {
-  IconColor,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
 import {
@@ -35,6 +42,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { extractWalletIdFromGroupId } from '../../../selectors/multichain-accounts/utils';
 import {
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
@@ -47,32 +55,32 @@ import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo'
 import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
 import { removeAccount } from '../../../store/actions';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MetaMetricsAccountRemovedLocation } from '../../../../shared/constants/metametrics';
+import { captureException } from '../../../../shared/lib/sentry';
+import { useTrackAccountRemoved } from '../../../components/multichain-accounts/hooks/useTrackAccountRemoved';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { useDispatch } from '../../../store/hooks';
 
 export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-  const { id } = useParams();
+  const trackAccountRemoved = useTrackAccountRemoved();
+  const [searchParams] = useSearchParams();
 
-  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
+  const accountGroupId = (searchParams.get('accountGroupId') ??
+    '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
 
-  const walletId = extractWalletIdFromGroupId(accountGroupId);
+  const walletId = accountGroupId
+    ? extractWalletIdFromGroupId(accountGroupId)
+    : ('' as AccountWalletId);
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
-  const walletRoute = `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`;
-  const isRemovable =
-    wallet?.type !== AccountWalletType.Entropy &&
-    wallet?.type !== AccountWalletType.Snap;
+
+  const isRemovable = wallet?.type !== AccountWalletType.Entropy;
   const addressCount = useSelector((state) =>
     getNetworkAddressCount(state, accountGroupId),
   );
@@ -96,19 +104,24 @@ export const MultichainAccountDetailsPage = () => {
   );
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
+  const evmKeyringType = evmInternalAccount?.metadata?.keyring?.type;
+  const isEip7702SupportedKeyring =
+    evmKeyringType &&
+    KEYRING_TYPES_SUPPORTING_7702.includes(evmKeyringType as KeyringTypes);
+
   const handleAddressesClick = () => {
     trace({
       name: TraceName.ShowAccountAddressList,
       op: TraceOperation.AccountUi,
     });
     navigate(
-      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`,
     );
   };
 
   const handlePrivateKeysClick = () => {
     navigate(
-      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
+      `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`,
     );
   };
 
@@ -125,38 +138,51 @@ export const MultichainAccountDetailsPage = () => {
     setIsAccountRenameModalOpen(true);
   };
 
-  const handleAccountRemoveAction = useCallback(() => {
+  const handleAccountRemoveAction = useCallback(async () => {
     const firstAccountAddress = accountsWithAddresses[0]?.address;
     if (firstAccountAddress) {
       // Don't want to blindly call removeAccount without an invalid or empty parameter
-      dispatch(removeAccount(firstAccountAddress));
-      trackEvent({
-        event: MetaMetricsEventName.AccountRemoved,
-        category: MetaMetricsEventCategory.Accounts,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: wallet?.type,
-        },
-      });
-
+      const removal = dispatch(removeAccount(firstAccountAddress));
+      // Leave the page straight away, as this account is about to disappear.
       navigate(DEFAULT_ROUTE);
+
+      try {
+        await removal;
+      } catch (error) {
+        // Still reported to Sentry, but the account is still there, so there is
+        // no removal to track.
+        captureException(error);
+        return;
+      }
+      // Resolved before the removal, so it still describes the removed account.
+      trackAccountRemoved(
+        wallet,
+        MetaMetricsAccountRemovedLocation.AccountDetails,
+      );
     }
-  }, [dispatch, trackEvent, navigate, wallet?.type, accountsWithAddresses]);
+  }, [dispatch, navigate, trackAccountRemoved, wallet, accountsWithAddresses]);
 
   const handleWalletAction = () => {
-    navigate(walletRoute);
+    navigate({
+      pathname: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+      search: createSearchParams({
+        id: walletId,
+      }).toString(),
+    });
   };
 
   useEffect(() => {
     // Redirect if account doesn't exist
-    if (!id || !multichainAccount) {
+    if (!accountGroupId || !multichainAccount) {
       navigate(DEFAULT_ROUTE);
     }
-  }, [id, multichainAccount, navigate]);
+  }, [accountGroupId, multichainAccount, navigate]);
 
-  return id && multichainAccount ? (
-    <Page className="multichain-account-details-page">
+  return accountGroupId && multichainAccount ? (
+    <Page
+      className="multichain-account-details-page"
+      data-testid="parent-selector-multichain-account-details-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -192,11 +218,11 @@ export const MultichainAccountDetailsPage = () => {
             onClick={handleAccountNameAction}
             endAccessory={
               <ButtonIcon
+                className="ml-2"
                 iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
+                iconProps={{ color: IconColor.IconAlternative }}
                 size={ButtonIconSize.Sm}
                 ariaLabel={t('accountName')}
-                marginLeft={2}
                 data-testid="account-name-action"
               />
             }
@@ -207,11 +233,11 @@ export const MultichainAccountDetailsPage = () => {
             onClick={handleAddressesClick}
             endAccessory={
               <ButtonIcon
+                className="ml-2"
                 iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
+                iconProps={{ color: IconColor.IconAlternative }}
                 size={ButtonIconSize.Sm}
                 ariaLabel={t('addresses')}
-                marginLeft={2}
                 data-testid="network-addresses-link"
               />
             }
@@ -223,31 +249,33 @@ export const MultichainAccountDetailsPage = () => {
               onClick={handlePrivateKeysClick}
               endAccessory={
                 <ButtonIcon
+                  className="ml-2"
                   iconName={IconName.ArrowRight}
-                  color={IconColor.iconAlternative}
+                  iconProps={{ color: IconColor.IconAlternative }}
                   size={ButtonIconSize.Sm}
                   ariaLabel={t('privateKeys')}
-                  marginLeft={2}
                   data-testid="private-keys-action"
                 />
               }
             />
           )}
-          <AccountDetailsRow
-            label={t('smartAccountLabel')}
-            value={t('setUp')}
-            onClick={handleSmartAccountClick}
-            endAccessory={
-              <ButtonIcon
-                iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('smartAccountLabel')}
-                marginLeft={2}
-                data-testid="smart-account-action"
-              />
-            }
-          />
+          {isEip7702SupportedKeyring && (
+            <AccountDetailsRow
+              label={t('smartAccountLabel')}
+              value={t('setUp')}
+              onClick={handleSmartAccountClick}
+              endAccessory={
+                <ButtonIcon
+                  className="ml-2"
+                  iconName={IconName.ArrowRight}
+                  iconProps={{ color: IconColor.IconAlternative }}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('smartAccountLabel')}
+                  data-testid="smart-account-action"
+                />
+              }
+            />
+          )}
         </Box>
         <Box className="multichain-account-details-page__section">
           <AccountDetailsRow
@@ -256,11 +284,11 @@ export const MultichainAccountDetailsPage = () => {
             onClick={handleWalletAction}
             endAccessory={
               <ButtonIcon
+                className="ml-2"
                 iconName={IconName.ArrowRight}
-                color={IconColor.iconAlternative}
+                iconProps={{ color: IconColor.IconAlternative }}
                 size={ButtonIconSize.Sm}
                 ariaLabel={t('wallet')}
-                marginLeft={2}
                 data-testid="wallet-details-link"
               />
             }
@@ -273,6 +301,7 @@ export const MultichainAccountDetailsPage = () => {
               )}
               shouldShowBackupReminder={shouldShowBackupReminder}
               keyringId={keyringId}
+              backupFlowReturnRoute={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?${searchParams.toString()}`}
             />
           ) : null}
         </Box>
@@ -280,16 +309,16 @@ export const MultichainAccountDetailsPage = () => {
           <Box className="multichain-account-details-page__section">
             <AccountDetailsRow
               label={t('removeAccount')}
-              labelColor={TextColor.errorDefault}
+              labelColor={TextColor.ErrorDefault}
               value={''}
               onClick={() => setIsAccountRemoveModalOpen(true)}
               endAccessory={
                 <ButtonIcon
+                  className="ml-2"
                   iconName={IconName.ArrowRight}
-                  color={IconColor.iconAlternative}
+                  iconProps={{ color: IconColor.IconAlternative }}
                   size={ButtonIconSize.Md}
                   ariaLabel={t('removeAccount')}
-                  marginLeft={2}
                   data-testid="account-remove-action"
                 />
               }

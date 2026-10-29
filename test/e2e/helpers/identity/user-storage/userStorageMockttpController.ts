@@ -5,7 +5,11 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
+import { USER_STORAGE_RAMPS_ORDERS_FEATURE } from '../../../tests/identity/constants';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
+
+const { getE2EIdentifierFromJwt } = AuthenticationController.Mocks;
 
 const baseUrl =
   'https://user-storage\\.api\\.cx\\.metamask\\.io\\/api\\/v1\\/userstorage';
@@ -29,6 +33,10 @@ export const pathRegexps = {
   ),
   [USER_STORAGE_GROUPS_FEATURE_KEY]: new RegExp(
     `${baseUrl}/${USER_STORAGE_GROUPS_FEATURE_KEY}`,
+    'u',
+  ),
+  [USER_STORAGE_RAMPS_ORDERS_FEATURE]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_RAMPS_ORDERS_FEATURE}`,
     'u',
   ),
 };
@@ -69,10 +77,11 @@ const determineIfFeatureEntryFromURL = (url: string) =>
 
 const getSrpIdentifierFromHeaders = (headers: Record<string, unknown>) => {
   const authHeader = headers.authorization;
-  return (
+  const token =
     authHeader?.toString()?.split(' ')[1] ||
-    `${MOCK_SRP_E2E_IDENTIFIER_BASE_KEY}_1`
-  );
+    `${MOCK_SRP_E2E_IDENTIFIER_BASE_KEY}_1`;
+
+  return getE2EIdentifierFromJwt(token);
 };
 
 export class UserStorageMockttpController {

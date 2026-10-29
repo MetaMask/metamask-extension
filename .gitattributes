@@ -22,3 +22,9 @@ app/_locales/** linguist-generated
 /.yarn/plugins/** binary
 
 app/*.html linguist-language=EJS
+
+# Force LF for shell scripts so they run in WSL on Windows.
+# `* text=auto` above otherwise lets git rewrite to CRLF on Windows checkouts,
+# breaking bash with `$'\r': command not found` and `set: invalid option`.
+*.sh text eol=lf
+

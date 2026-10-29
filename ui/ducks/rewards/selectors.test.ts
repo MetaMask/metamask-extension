@@ -1,7 +1,5 @@
 import {
-  selectOnboardingModalOpen,
-  selectOnboardingActiveStep,
-  selectOnboardingReferralCode,
+  selectRewardsModalOpen,
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoLoading,
   selectOptinAllowedForGeoError,
@@ -13,7 +11,6 @@ import {
   selectRewardsEnabled,
   selectRewardsBadgeHidden,
 } from './selectors';
-import { OnboardingStep } from './types';
 import { initialState as rewardsInitialState } from '.';
 
 describe('rewards selectors', () => {
@@ -42,25 +39,11 @@ describe('rewards selectors', () => {
   };
 
   describe('simple state selectors', () => {
-    it('selectOnboardingModalOpen returns modal open state', () => {
+    it('selectRewardsModalOpen returns modal open state', () => {
       const state = buildState({
-        rewards: { onboardingModalOpen: true },
+        rewards: { rewardsModalOpen: true },
       });
-      expect(selectOnboardingModalOpen(state)).toBe(true);
-    });
-
-    it('selectOnboardingActiveStep returns active step', () => {
-      const state = buildState({
-        rewards: { onboardingActiveStep: OnboardingStep.STEP1 },
-      });
-      expect(selectOnboardingActiveStep(state)).toBe(OnboardingStep.STEP1);
-    });
-
-    it('selectOnboardingReferralCode returns referral code', () => {
-      const state = buildState({
-        rewards: { onboardingReferralCode: ' ABC123 ' },
-      });
-      expect(selectOnboardingReferralCode(state)).toBe(' ABC123 ');
+      expect(selectRewardsModalOpen(state)).toBe(true);
     });
 
     it('selectOptinAllowedForGeo returns geo eligibility', () => {
@@ -134,59 +117,22 @@ describe('rewards selectors', () => {
   });
 
   describe('selectRewardsEnabled', () => {
-    it('returns false when external services disabled regardless of flag', () => {
+    it('returns false when basic functionality is disabled', () => {
       const state = buildState({
         metamask: {
           useExternalServices: false,
-          remoteFeatureFlags: { rewardsEnabled: true },
         },
       });
       expect(selectRewardsEnabled(state)).toBe(false);
     });
 
-    it('returns true when flag true and external services enabled', () => {
+    it('returns true when basic functionality is enabled', () => {
       const state = buildState({
         metamask: {
           useExternalServices: true,
-          remoteFeatureFlags: { rewardsEnabled: true },
         },
       });
       expect(selectRewardsEnabled(state)).toBe(true);
-    });
-
-    it('returns false when flag false and external services enabled', () => {
-      const state = buildState({
-        metamask: {
-          useExternalServices: true,
-          remoteFeatureFlags: { rewardsEnabled: false },
-        },
-      });
-      expect(selectRewardsEnabled(state)).toBe(false);
-    });
-
-    it('supports version-gated flag when minimum version satisfied', () => {
-      const state = buildState({
-        metamask: {
-          useExternalServices: true,
-          remoteFeatureFlags: {
-            rewardsEnabled: { enabled: true, minimumVersion: '0.0.0' },
-          },
-        },
-      });
-      expect(selectRewardsEnabled(state)).toBe(true);
-    });
-
-    it('returns false for invalid version-gated flag shape', () => {
-      const state = buildState({
-        metamask: {
-          useExternalServices: true,
-          remoteFeatureFlags: {
-            // minimumVersion null yields hasMinimumRequiredVersion=false
-            rewardsEnabled: { enabled: true, minimumVersion: null },
-          },
-        },
-      });
-      expect(selectRewardsEnabled(state)).toBe(false);
     });
   });
 });

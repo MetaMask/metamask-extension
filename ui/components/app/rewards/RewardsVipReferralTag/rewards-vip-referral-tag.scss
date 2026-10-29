@@ -1,0 +1,52 @@
+// Registered angle so the conic gradient can be animated (an unregistered
+// custom property cannot be interpolated by the browser).
+@property --rewards-vip-referral-tag-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rewards-vip-referral-tag-border-spin {
+  to {
+    --rewards-vip-referral-tag-angle: 360deg;
+  }
+}
+
+.rewards-vip-referral-tag {
+  position: relative;
+
+  // Continuously rotating gold gradient stroke around the tag's rounded-rect
+  // border. Drawn on a pseudo-element and masked down to a 1.5px ring so it
+  // sits on the edge without affecting layout. The gradient colors come from
+  // the --rewards-vip-referral-tag-head/-tail CSS variables set on the element.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1.5px;
+    border-radius: inherit;
+    background:
+      conic-gradient(
+        from var(--rewards-vip-referral-tag-angle),
+        var(--rewards-vip-referral-tag-tail),
+        var(--rewards-vip-referral-tag-head),
+        var(--rewards-vip-referral-tag-tail)
+      );
+    mask:
+      linear-gradient(white 0 0) content-box,
+      linear-gradient(white 0 0);
+    -webkit-mask:
+      linear-gradient(white 0 0) content-box,
+      linear-gradient(white 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: rewards-vip-referral-tag-border-spin 2500ms linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::before {
+      animation: none;
+    }
+  }
+}

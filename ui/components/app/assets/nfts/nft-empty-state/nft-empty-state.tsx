@@ -1,52 +1,82 @@
-import React, { useContext, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { twMerge } from '@metamask/design-system-react';
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getTheme } from '../../../../../selectors';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  getTheme,
+  getIsEvmMultichainNetworkSelected,
+} from '../../../../../selectors';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { showImportNftsModal } from '../../../../../store/actions';
+import { IMPORT_NFTS_ROUTE } from '../../../../../helpers/constants/routes';
 
-export type NftEmptyStateProps = {
-  className?: string;
-};
+const EMPTY_STATE_CLASSNAME = 'mx-auto mt-5 mb-6 max-w-64';
 
-export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
+const NftEmptyStateIcon = () => {
   const t = useI18nContext();
   const theme = useSelector(getTheme);
-  const trackEvent = useContext(MetaMetricsContext);
-  const dispatch = useDispatch();
 
-  // Theme-aware icon
   const nftIcon =
     theme === ThemeType.dark
       ? './images/empty-state-nfts-dark.png'
       : './images/empty-state-nfts-light.png';
 
-  const handleImportNfts = useCallback(() => {
-    dispatch(showImportNftsModal({}));
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.EmptyNFTTabButtonClicked,
-      properties: {
-        location: 'NFT_Empty_State',
-      },
-    });
-  }, [dispatch, trackEvent]);
+  return <img src={nftIcon} alt={t('nfts')} width={72} height={72} />;
+};
+
+export const NftUnsupportedEmptyState = () => {
+  const t = useI18nContext();
 
   return (
     <TabEmptyState
-      icon={<img src={nftIcon} alt={t('nfts')} width={72} height={72} />}
+      icon={<NftEmptyStateIcon />}
+      description={t('nftUnsupportedEmptyDescription')}
+      data-testid="nft-tab-unsupported-empty-state"
+      className={EMPTY_STATE_CLASSNAME}
+    />
+  );
+};
+
+const NftDefaultEmptyState = () => {
+  const t = useI18nContext();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const navigate = useNavigate();
+
+  const handleImportNfts = useCallback(() => {
+    navigate(IMPORT_NFTS_ROUTE);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.EmptyNFTTabButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'NFT_Empty_State',
+        })
+        .build(),
+    );
+  }, [createEventBuilder, navigate, trackEvent]);
+
+  return (
+    <TabEmptyState
+      icon={<NftEmptyStateIcon />}
       description={t('nftEmptyDescription')}
       actionButtonText={t('importNFT')}
       onAction={handleImportNfts}
       data-testid="nft-tab-empty-state"
-      className={twMerge('max-w-64', className)}
+      className={EMPTY_STATE_CLASSNAME}
     />
   );
+};
+
+export const NftEmptyState = () => {
+  const isEvmNetworkSelected = useSelector(getIsEvmMultichainNetworkSelected);
+
+  if (!isEvmNetworkSelected) {
+    return <NftUnsupportedEmptyState />;
+  }
+
+  return <NftDefaultEmptyState />;
 };

@@ -1,8 +1,12 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ButtonIcon, ButtonIconSize } from '../../component-library';
-import { IconName } from '../../component-library/icon';
-import { IconColor } from '../../../helpers/constants/design-system';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconColor,
+  IconName,
+} from '@metamask/design-system-react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountDetailsRow } from './account-details-row';
 
 describe('AccountDetailsRow', () => {
@@ -24,9 +28,9 @@ describe('AccountDetailsRow', () => {
       const endAccessory = (
         <ButtonIcon
           iconName={IconName.Edit}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
-          ariaLabel="Edit"
+          ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"
         />
       );
@@ -38,7 +42,7 @@ describe('AccountDetailsRow', () => {
       expect(screen.getByText('Test Label')).toBeInTheDocument();
       expect(screen.getByText('Test Value')).toBeInTheDocument();
       expect(screen.getByTestId('end-accessory-button')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit')).toBeInTheDocument();
+      expect(screen.getByLabelText(messages.edit.message)).toBeInTheDocument();
     });
 
     it('should render without endAccessory', () => {
@@ -86,34 +90,11 @@ describe('AccountDetailsRow', () => {
   });
 
   describe('End Accessory Variations', () => {
-    it('should render with edit button accessory', () => {
-      const editButton = (
-        <ButtonIcon
-          iconName={IconName.Edit}
-          color={IconColor.iconAlternative}
-          size={ButtonIconSize.Md}
-          ariaLabel="Edit account name"
-          data-testid="edit-button"
-        />
-      );
-
-      render(
-        <AccountDetailsRow
-          label="Account Name"
-          value="My Account"
-          endAccessory={editButton}
-        />,
-      );
-
-      expect(screen.getByTestId('edit-button')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit account name')).toBeInTheDocument();
-    });
-
     it('should render with arrow button accessory', () => {
       const arrowButton = (
         <ButtonIcon
           iconName={IconName.ArrowRight}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel="View details"
           data-testid="arrow-button"
@@ -137,9 +118,9 @@ describe('AccountDetailsRow', () => {
       const endAccessory = (
         <ButtonIcon
           iconName={IconName.Edit}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
-          ariaLabel="Edit"
+          ariaLabel={messages.edit.message}
           data-testid="end-accessory-button"
           onClick={mockButtonClick}
         />

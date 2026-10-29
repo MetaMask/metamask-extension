@@ -4,10 +4,11 @@ import React, {
   FunctionComponent,
   memo,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { FormTextField, FormTextFieldProps } from '../../../component-library';
 
@@ -41,7 +42,7 @@ const clamp = (inputValue: number, minimum?: number, maximum?: number) => {
 };
 
 export const SnapUIInput: FunctionComponent<
-  SnapUIInputProps & FormTextFieldProps<'div'>
+  React.PropsWithChildren<SnapUIInputProps & FormTextFieldProps<'div'>>
 > = memo(
   ({
     name,
@@ -58,7 +59,7 @@ export const SnapUIInput: FunctionComponent<
     const {
       handleInputChange,
       getValue,
-      focusedInput,
+      getFocusedInput,
       setCurrentFocusedInput,
     } = useSnapInterfaceContext();
 
@@ -78,11 +79,11 @@ export const SnapUIInput: FunctionComponent<
      * Focus input if the last focused input was this input
      * This avoids losing the focus when the UI is re-rendered
      */
-    useEffect(() => {
-      if (inputRef.current && name === focusedInput) {
+    useLayoutEffect(() => {
+      if (inputRef.current && name === getFocusedInput()) {
         (inputRef.current.querySelector('input') as HTMLInputElement).focus();
       }
-    }, [inputRef]);
+    }, [getFocusedInput, name]);
 
     /**
      * Get the input value, replacing commas with dots for number inputs.

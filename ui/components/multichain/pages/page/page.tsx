@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useLocation } from 'react-router-dom';
 import { Box } from '../../../component-library';
 import {
@@ -52,7 +52,7 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundDefault}
-        className={classnames('multichain-page__inner-container', className)}
+        className={className}
         {...props}
       >
         {children}

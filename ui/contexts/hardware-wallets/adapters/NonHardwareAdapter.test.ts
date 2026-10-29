@@ -19,7 +19,7 @@ describe('NonHardwareAdapter', () => {
 
   describe('connect', () => {
     it('resolves successfully without calling any callbacks', async () => {
-      await expect(adapter.connect('test-device-id')).resolves.toBeUndefined();
+      await expect(adapter.connect()).resolves.toBeUndefined();
 
       expect(mockOptions.onDisconnect).not.toHaveBeenCalled();
       expect(mockOptions.onAwaitingConfirmation).not.toHaveBeenCalled();
@@ -55,13 +55,11 @@ describe('NonHardwareAdapter', () => {
 
   describe('ensureDeviceReady', () => {
     it('resolves to true', async () => {
-      await expect(adapter.ensureDeviceReady('test-device-id')).resolves.toBe(
-        true,
-      );
+      await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
     });
 
     it('does not call any callbacks', async () => {
-      await adapter.ensureDeviceReady('test-device-id');
+      await adapter.ensureDeviceReady();
 
       expect(mockOptions.onDisconnect).not.toHaveBeenCalled();
       expect(mockOptions.onAwaitingConfirmation).not.toHaveBeenCalled();

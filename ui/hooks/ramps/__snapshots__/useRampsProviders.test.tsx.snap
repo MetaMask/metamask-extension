@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRampsProviders matches snapshot 1`] = `
+{
+  "error": null,
+  "isLoading": false,
+  "providers": [],
+  "selectedProvider": null,
+  "setSelectedProvider": [Function],
+}
+`;

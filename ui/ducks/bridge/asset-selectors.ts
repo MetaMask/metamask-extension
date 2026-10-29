@@ -17,7 +17,14 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import { ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { toAssetId } from '../../../shared/lib/asset-utils';
+import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
+  getTokenBalancesControllerTokenBalances,
+  getTokenRatesControllerMarketData,
+  getTokensControllerAllTokens,
+} from '../../../shared/lib/selectors/assets-migration';
 import { getMultichainBalances } from '../../selectors/multichain';
 import {
   getAccountAssets,
@@ -25,9 +32,10 @@ import {
   getAssetsRates,
 } from '../../selectors/assets';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
-import { getMaybeHexChainId, isTronEnergyOrBandwidthResource } from './utils';
+import { getMaybeHexChainId } from './utils';
 
 const createSelector = untypedCreateSelector.withTypes<BridgeAppState>();
 
@@ -65,14 +73,18 @@ const getERC20AssetsWithBalance = createSelector(
   [
     getEvmAccountAddress,
     getAllowedHexChainIds,
-    ({ metamask: { tokenBalances } }) => tokenBalances,
-    ({ metamask: { tokensChainsCache } }) => tokensChainsCache,
+    getTokenBalancesControllerTokenBalances,
+    // `TokenListController` is no longer initialized, so `tokensChainsCache`
+    // is absent from state.
+    ({ metamask: { tokensChainsCache } }) => tokensChainsCache ?? EMPTY_OBJECT,
+    getTokensControllerAllTokens,
   ],
   (
     accountAddress,
     hexChainIds,
     balancesByAccountAddress,
     tokensByChainIdByAddress,
+    allTokensByChainIdByAccount,
   ) => {
     const assetsWithBalance: BridgeToken[] = [];
     if (!accountAddress || !isStrictHexString(accountAddress)) {
@@ -94,21 +106,34 @@ const getERC20AssetsWithBalance = createSelector(
         return;
       }
       const caipChainId = formatChainIdToCaip(chainId);
+      const tokenDataByAddress = tokensByChainIdByAddress[chainId]?.data;
+
+      const allTokensForAccount =
+        allTokensByChainIdByAccount[chainId]?.[lowercasedAddress] ??
+        allTokensByChainIdByAccount[chainId]?.[normalizedAddress] ??
+        [];
+      const fallbackTokenByAddress = allTokensForAccount.reduce<
+        Record<string, (typeof allTokensForAccount)[number]>
+      >((acc, token) => {
+        acc[token.address.toLowerCase()] = token;
+        return acc;
+      }, {});
+
       Object.entries(balanceByAddress).forEach(([address, balance]) => {
-        const tokenDataByAddress = tokensByChainIdByAddress[chainId]?.data;
-        if (!tokenDataByAddress) {
+        const lowercasedTokenAddress = address.toLowerCase();
+        const assetId = toAssetId(lowercasedTokenAddress, caipChainId);
+        if (!assetId) {
           return;
         }
-        const lowercasedTokenAddress = address.toLowerCase();
-        const token =
-          tokenDataByAddress[address] ??
-          tokenDataByAddress[lowercasedTokenAddress] ??
+
+        const cacheToken =
+          tokenDataByAddress?.[address] ??
+          tokenDataByAddress?.[lowercasedTokenAddress] ??
           (isStrictHexString(address)
-            ? tokenDataByAddress[getChecksumAddress(address)]
+            ? tokenDataByAddress?.[getChecksumAddress(address)]
             : undefined);
-        const assetId = toAssetId(lowercasedTokenAddress, caipChainId);
-        if (token && assetId) {
-          const { decimals, symbol, name, rwaData } = token;
+        if (cacheToken) {
+          const { decimals, symbol, name, rwaData, iconUrl } = cacheToken;
           assetsWithBalance.push({
             rwaData,
             balance: convertHexBalanceToDecimal(balance, decimals),
@@ -117,6 +142,23 @@ const getERC20AssetsWithBalance = createSelector(
             symbol,
             name,
             decimals,
+            iconUrl,
+          });
+          return;
+        }
+
+        const fallbackToken = fallbackTokenByAddress[lowercasedTokenAddress];
+        if (fallbackToken) {
+          const { decimals, symbol, name, image, rwaData } = fallbackToken;
+          assetsWithBalance.push({
+            rwaData,
+            balance: convertHexBalanceToDecimal(balance, decimals),
+            chainId: caipChainId,
+            assetId,
+            symbol,
+            name: name ?? symbol,
+            decimals,
+            iconUrl: image,
           });
         }
       });
@@ -130,7 +172,7 @@ const getNativeAssetsWithBalance = createSelector(
   [
     getEvmAccountAddress,
     getAllowedHexChainIds,
-    ({ metamask }) => metamask.accountsByChainId,
+    getAccountTrackerControllerAccountsByChainId,
   ],
   (accountAddress, hexChainIds, balanceByChainIdByAccountAddress) => {
     const assetsWithBalance: BridgeToken[] = [];
@@ -176,8 +218,8 @@ const getEvmAssetsWithBalance = createSelector(
 // Calculates the exchange rate for each asset with a balance
 const getEvmExchangeRates = createSelector(
   [
-    ({ metamask }) => metamask.marketData,
-    ({ metamask }) => metamask.currencyRates,
+    getTokenRatesControllerMarketData,
+    getCurrencyRateControllerCurrencyRates,
     getERC20AssetsWithBalance,
     getNativeAssetsWithBalance,
   ],
@@ -311,17 +353,23 @@ const getNonEvmAssetsWithBalance = createSelector(
 // Combines EVM and non-EVM assets and appends tokenFiatAmount to each asset
 const getBridgeAssetsForAccountGroupId = createSelector(
   [
+    (_: BridgeAppState, id?: AccountGroupId) => id,
     getEvmAssetsWithBalance,
     getEvmExchangeRates,
     getNonEvmAssetsWithBalance,
     getAssetsRates,
   ],
   (
+    id,
     evmAssetsWithBalance,
     evmExchangeRatesByAssetId,
     nonEvmAssetsWithBalance,
     nonEvmExchangeRatesByAssetId,
   ): BridgeToken[] => {
+    if (!id) {
+      return EMPTY_ARRAY as unknown as BridgeToken[];
+    }
+
     const evmAssetsWithFiatBalances = evmAssetsWithBalance.map((asset) => ({
       ...asset,
       tokenFiatAmount: new BigNumber(asset.balance ?? '0')
@@ -330,11 +378,8 @@ const getBridgeAssetsForAccountGroupId = createSelector(
     }));
 
     const nonEvmAssetsWithFiatBalances = nonEvmAssetsWithBalance
-      // Filter out Tron Energy and Bandwidth resources
-      .filter(
-        ({ chainId, symbol }: BridgeToken) =>
-          !isTronEnergyOrBandwidthResource(chainId, symbol),
-      )
+      // Filter out Tron special assets (resources, staking state, etc.)
+      .filter((token: BridgeToken) => !isTronSpecialAsset(token.assetId))
       .map((asset) => ({
         ...asset,
         tokenFiatAmount: new BigNumber(asset.balance ?? '0')

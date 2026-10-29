@@ -10,15 +10,36 @@ import {
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { BasicConfigurationModal } from './basic-configuration-modal';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../store/actions', () => ({
   setDataCollectionForMarketing: jest.fn(),
   setParticipateInMetaMetrics: jest.fn(),
+  toggleBasicFunctionality: jest.fn(),
   toggleExternalServices: jest.fn(),
 }));
 
 jest.mock('../../../ducks/app/app', () => ({
   hideBasicFunctionalityModal: jest.fn(),
   onboardingToggleBasicFunctionalityOff: jest.fn(),
+}));
+
+jest.mock('../../../selectors/multichain/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/multichain/feature-flags'),
+  getIsBasicFunctionalityConsolidationEnabled: () => false,
 }));
 
 const mockDispatch = jest.fn();
@@ -77,13 +98,13 @@ const arrangeMocks = <T extends boolean>({
   const store = configureStore({
     ...stateOverrides,
   });
-  const { getByTestId, getByTitle } = renderWithProvider(
+  const { getByTestId, getByRole } = renderWithProvider(
     <BasicConfigurationModal />,
     store,
   );
 
   const agreementCheckbox = stateOverrides?.metamask.useExternalServices
-    ? getByTitle('basic-configuration-checkbox')
+    ? getByRole('checkbox')
     : null;
   const toggleBasicFunctionalityButton = getByTestId(
     'basic-configuration-modal-toggle-button',
@@ -139,9 +160,7 @@ describe('BasicConfigurationModal', () => {
           },
         });
 
-      fireEvent.click(agreementCheckbox, {
-        target: { checked: true },
-      });
+      fireEvent.click(agreementCheckbox);
 
       expect(toggleBasicFunctionalityButton).toBeEnabled();
 
@@ -186,9 +205,7 @@ describe('BasicConfigurationModal', () => {
           },
         });
 
-      fireEvent.click(agreementCheckbox, {
-        target: { checked: true },
-      });
+      fireEvent.click(agreementCheckbox);
 
       waitFor(() => {
         expect(toggleBasicFunctionalityButton).toBeEnabled();

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 
 export default class HexToDecimal extends PureComponent {
   static propTypes = {

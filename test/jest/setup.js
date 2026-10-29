@@ -5,9 +5,50 @@ jest.mock('webextension-polyfill', () => {
   return {
     runtime: {
       getManifest: () => ({ manifest_version: 2 }),
+      sendMessage: jest.fn(() => Promise.resolve()),
+      onMessage: {
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      },
     },
   };
 });
+
+/**
+ * Mock the BrowserStorageAdapter to use an InMemoryStorageAdapter globally for all unit tests.
+ * This is necessary because the BrowserStorageAdapter uses the browser.storage.local API,
+ * which is not available in the test environment.
+ * The InMemoryStorageAdapter is a simple in-memory storage adapter that can be used in the test environment.
+ *
+ * Note: Tests that specifically need to test BrowserStorageAdapter itself should use
+ * jest.unmock() or jest.requireActual() to access the real implementation.
+ */
+jest.mock('../../shared/lib/stores/browser-storage-adapter', () => {
+  const { InMemoryStorageAdapter } = jest.requireActual(
+    '@metamask/storage-service',
+  );
+
+  // Return InMemoryStorageAdapter as the BrowserStorageAdapter
+  return {
+    BrowserStorageAdapter: InMemoryStorageAdapter,
+  };
+});
+
+/**
+ * Globally force the assets-unify-state feature flag helper to return `true`
+ * for all unit tests. Fixtures and selectors have migrated to AssetsController
+ * state; individual tests can still override this by re-mocking the module
+ * locally with `jest.mock(...)`.
+ *
+ * Use a plain function (not `jest.fn`) so `jest.resetAllMocks()` in individual
+ * tests cannot clear the implementation and silently disable unify mode.
+ */
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
 
 const UNRESOLVED = Symbol('timedOut');
 

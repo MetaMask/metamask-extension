@@ -5,14 +5,14 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getPreferences,
   getMarketData,
   getAllTokens,
   getChainIdsToPoll,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 jest.mock('react-redux', () => ({
@@ -32,7 +32,6 @@ jest.mock('../../../ducks/locale/locale', () => ({
 
 jest.mock('../../../selectors', () => ({
   getSelectedAccount: jest.fn(),
-  getPreferences: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getMarketData: jest.fn(),
   getAllTokens: jest.fn(),
@@ -40,11 +39,16 @@ jest.mock('../../../selectors', () => ({
   selectAnyEnabledNetworksAreAvailable: jest.fn(),
 }));
 
+jest.mock('../../../../shared/lib/selectors/preferences', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/preferences'),
+  getPreferences: jest.fn(),
+}));
+
 jest.mock('../../../ducks/metamask/metamask', () => ({
   getCurrentCurrency: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/selectors/networks', () => ({
+jest.mock('../../../../shared/lib/selectors/networks', () => ({
   getNetworkConfigurationsByChainId: jest.fn(),
 }));
 

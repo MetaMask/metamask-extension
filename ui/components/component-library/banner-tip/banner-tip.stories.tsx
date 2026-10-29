@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import { BannerTip } from './banner-tip';
 import { BannerTipLogoType } from './banner-tip.types';
 import { Box } from '../box';
@@ -15,12 +14,7 @@ import { ButtonPrimary } from '../button-primary';
 export default {
   title: 'Components/ComponentLibrary/BannerTip',
   component: BannerTip,
-  parameters: {
-    docs: {
-      page: README,
-    },
-    backgrounds: { default: 'alternative' },
-  },
+  tags: ['autodocs'],
   argTypes: {
     logoType: {
       options: Object.values(BannerTipLogoType),
@@ -28,6 +22,11 @@ export default {
     },
     className: {
       control: 'text',
+    },
+  },
+  globals: {
+    backgrounds: {
+      value: 'alternative',
     },
   },
 } as Meta<typeof BannerTip>;

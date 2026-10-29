@@ -1,0 +1,31 @@
+name: Publish AMO reviewer artifacts
+description: >-
+  Package Firefox reviewer source + approval notes (firefox-bundle-script) and
+  upload to PRD private S3 via OIDC for production and flask AMO submission.
+  Requires caller job env RELEASE_TAG, FIREFOX_BUNDLE_SCRIPT_TOKEN, and
+  id-token write for AWS OIDC. Tooling SHA is pinned in
+  publish-firefox-reviewer-artifacts.sh (INFRA-3753).
+
+# PRD platform contract (va-mmc-extension-submission-infra amo_reviewer_source.tf):
+#   bucket: prd-va-mmc-extension-submission-amo-reviewer-source
+#   role:   arn:aws:iam::363762752069:role/amo-reviewer-publisher
+
+runs:
+  using: composite
+  steps:
+    - name: Package Firefox reviewer artifacts
+      shell: bash
+      run: bash "${GITHUB_WORKSPACE}/.github/scripts/publish-firefox-reviewer-artifacts.sh" package
+
+    - name: Configure AWS credentials (PRD reviewer publisher)
+      uses: aws-actions/configure-aws-credentials@acca2b1b2070338fb9fd1ca27ecee81d687e58e5 # v6.1.2
+      with:
+        role-to-assume: arn:aws:iam::363762752069:role/amo-reviewer-publisher
+        aws-region: us-east-2
+
+    - name: Upload Firefox reviewer artifacts (PRD)
+      shell: bash
+      env:
+        AMO_REVIEWER_BUCKET: prd-va-mmc-extension-submission-amo-reviewer-source
+        AWS_DEFAULT_REGION: us-east-2
+      run: bash "${GITHUB_WORKSPACE}/.github/scripts/publish-firefox-reviewer-artifacts.sh" upload

@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   AlignItems,
   BorderColor,
@@ -34,8 +34,6 @@ export const BannerTip: BannerTipComponent = React.forwardRef(
     <BannerBase
       ref={ref}
       startAccessory={
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         startAccessory || (
           <Box
             display={Display.Flex}

@@ -35,8 +35,14 @@ describe('Permit Confirmation', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
-        getTokenStandardAndDetailsByChain: { decimals: '2', standard: 'ERC20' },
+        'LegacyBackgroundApiService:getTokenStandardAndDetails': {
+          decimals: '2',
+          standard: 'ERC20',
+        },
+        'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain': {
+          decimals: '2',
+          standard: 'ERC20',
+        },
       }),
     );
   });
@@ -58,8 +64,11 @@ describe('Permit Confirmation', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
-          participateInMetaMetrics: true,
-          dataCollectionForMarketing: false,
+          analyticsId: 'test-metametrics-id',
+          consentDecisionMade: true,
+          optedIn: true,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -96,21 +105,21 @@ describe('Permit Confirmation', () => {
       confirmAccountDetailsModalMetricsEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            (call[1] as unknown as Record<string, unknown>[])[0]?.event ===
+            call[0] === 'trackAnalyticsEvent' &&
+            (call[1] as unknown as Record<string, unknown>[])[0]?.name ===
               MetaMetricsEventName.AccountDetailsOpened,
         );
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
-        'trackMetaMetricsEvent',
+        'trackAnalyticsEvent',
       );
     });
 
     expect(confirmAccountDetailsModalMetricsEvent?.[1]).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Confirmations,
-          event: MetaMetricsEventName.AccountDetailsOpened,
-          properties: {
+          name: MetaMetricsEventName.AccountDetailsOpened,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Confirmations,
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -119,8 +128,9 @@ describe('Permit Confirmation', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
-          },
+          }),
         }),
+        expect.anything(),
       ]),
     );
 
@@ -160,6 +170,42 @@ describe('Permit Confirmation', () => {
         screen.getByText('This site wants permission to spend your tokens.'),
       ).toBeInTheDocument();
     });
+  });
+
+  it('ignores unsigned fields and displays the signed unlimited ERC-20 permit', async () => {
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+
+    const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
+      account.address,
+      'PermitUnsignedFields',
+    );
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    expect(await screen.findByText('Spending cap request')).toBeInTheDocument();
+    expect(
+      screen.getByText('This site wants permission to spend your tokens.'),
+    ).toBeInTheDocument();
+
+    const simulationSection = await screen.findByTestId(
+      'confirmation__simulation_section',
+    );
+    expect(simulationSection).toHaveTextContent(
+      "You're giving the spender permission to spend this many tokens from your account.",
+    );
+    expect(simulationSection).toHaveTextContent('Spending cap');
+    expect(simulationSection).toHaveTextContent('Unlimited');
+    expect(simulationSection).not.toHaveTextContent('Revoke');
+    expect(simulationSection).not.toHaveTextContent(
+      "You're removing someone's permission to spend tokens from your account.",
+    );
+    expect(simulationSection).not.toHaveTextContent('#0');
+    expect(screen.queryByText('Remove permission')).not.toBeInTheDocument();
   });
 
   it('displays the simulation section', async () => {
@@ -268,8 +314,8 @@ describe('Permit Confirmation', () => {
       });
     });
 
-    const headingText = tEn('blockaidTitleDeceptive') as string;
-    const bodyText = tEn('blockaidDescriptionApproveFarming') as string;
+    const headingText = tEn('blockaidTitleHighRiskApproval');
+    const bodyText = tEn('blockaidDescriptionApproveFarming');
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();
   });
@@ -300,8 +346,9 @@ describe('Permit Confirmation', () => {
     expect(
       mockedBackgroundConnection.submitRequestToBackground,
     ).toHaveBeenCalledWith(
-      'updateEventFragment',
+      'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
       expect.arrayContaining([
+        expect.any(String),
         expect.objectContaining({
           properties: expect.objectContaining({
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

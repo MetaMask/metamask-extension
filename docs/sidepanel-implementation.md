@@ -13,8 +13,9 @@ The MetaMask extension supports Chrome's Side Panel API, allowing users to acces
 5. [UI Implementation](#ui-implementation)
 6. [State Management](#state-management)
 7. [User Preferences](#user-preferences)
-8. [Browser Compatibility](#browser-compatibility)
-9. [Key Files](#key-files)
+8. [Product Decisions](#product-decisions)
+9. [Browser Compatibility](#browser-compatibility)
+10. [Key Files](#key-files)
 
 ---
 
@@ -42,7 +43,7 @@ The sidepanel feature is controlled by the `IS_SIDEPANEL` environment variable, 
 
 ### Browser Support Detection
 
-The `getIsSidePanelFeatureEnabled()` function (located in `shared/modules/environment.ts`) performs comprehensive browser support detection:
+The `getIsSidePanelFeatureEnabled()` function (located in `shared/lib/environment.ts`) performs comprehensive browser support detection:
 
 1. **Build Flag Check**: Verifies `IS_SIDEPANEL === 'true'`
 2. **API Existence Check**: Checks if `chrome.sidePanel` API exists (Firefox and Opera don't have it)
@@ -50,7 +51,7 @@ The `getIsSidePanelFeatureEnabled()` function (located in `shared/modules/enviro
 
 **Supported Browsers:**
 
-- ✅ Chrome 115+ (Manifest V3)
+- ✅ Chrome 123+ (Manifest V3)
 - ✅ Edge (Chromium-based)
 - ✅ Brave (Chromium-based)
 
@@ -75,12 +76,12 @@ The `useBrowserSupportsSidePanel()` hook (located in `ui/hooks/useBrowserSupport
 The sidepanel is configured in the Chrome Manifest V3 (`app/manifest/v3/chrome.json`) with `side_panel.default_path` set to `"sidepanel.html"`. This configuration:
 
 - Defines `sidepanel.html` as the entry point
-- Requires Chrome 115+ (specified by `minimum_chrome_version`)
+- Requires Chrome 123+ (specified by `minimum_chrome_version`)
 - Only applies to Manifest V3 builds (Chrome/Edge/Brave, not Opera)
 
 ### Sidepanel HTML Entry Point
 
-The sidepanel HTML file (`app/html/pages/sidepanel.html`) is minimal and uses the same structure as other MetaMask pages, including standard head and body partials.
+The sidepanel HTML file (`app/html/ui/sidepanel.html`) is minimal and uses the same structure as other MetaMask pages, including standard head and body partials.
 
 ---
 
@@ -140,7 +141,7 @@ During onboarding (in `ui/pages/onboarding-flow/creation-successful/creation-suc
 
 ### Sidepanel-Specific Styling
 
-The routes component applies `app--sidepanel` CSS class when running in sidepanel context. The settings page (`ui/pages/settings/index.scss`) includes sidepanel-specific styles that apply popup layout regardless of viewport width and handle back button, close button, and logo display.
+The routes component applies `app--sidepanel` CSS class when running in sidepanel context.
 
 ---
 
@@ -192,6 +193,16 @@ When `useSidePanelAsDefault` is `false`:
 
 ---
 
+## Product Decisions
+
+### Dapp Connection Requests During Swaps
+
+Dapp connection requests do not render on top of an active Swaps flow in sidepanel. This is intentional product behavior.
+
+Do not change request routing, z-index, modal priority, or sidepanel navigation to force dapp connection requests above Swaps unless Product explicitly changes this decision.
+
+---
+
 ## Browser Compatibility
 
 ### Type Definitions
@@ -210,7 +221,7 @@ Since `webextension-polyfill` doesn't include sidePanel API types yet, custom ty
 
 - Uses a different extension API model despite being Chromium-based
 - **Uses `chrome.sidebarAction` API instead of `chrome.sidePanel` API**
-- MetaMask currently only checks for `chrome.sidePanel` API (see `shared/modules/environment.ts`)
+- MetaMask currently only checks for `chrome.sidePanel` API (see `shared/lib/environment.ts`)
 - Since Opera's `sidebarAction` API hasn't been implemented in MetaMask, sidepanel doesn't work for Opera
 - Detected via user agent string containing `'OPR'` (see `app/scripts/lib/util.ts`)
 - Feature automatically disabled via API check (fails because `chrome.sidePanel` doesn't exist)
@@ -234,14 +245,14 @@ Since `webextension-polyfill` doesn't include sidePanel API types yet, custom ty
 
 ### Core Implementation Files
 
-| File                            | Purpose                                                  |
-| ------------------------------- | -------------------------------------------------------- |
-| `app/manifest/v3/chrome.json`   | Manifest configuration for sidepanel                     |
-| `app/html/pages/sidepanel.html` | Sidepanel HTML entry point                               |
-| `app/scripts/background.js`     | Background script initialization and preference handling |
-| `shared/modules/environment.ts` | Browser support detection                                |
-| `shared/types/sidepanel.ts`     | TypeScript type definitions                              |
-| `app/scripts/lib/util.ts`       | Environment type detection                               |
+| File                          | Purpose                                                  |
+| ----------------------------- | -------------------------------------------------------- |
+| `app/manifest/v3/chrome.json` | Manifest configuration for sidepanel                     |
+| `app/html/ui/sidepanel.html`  | Sidepanel HTML entry point                               |
+| `app/scripts/background.js`   | Background script initialization and preference handling |
+| `shared/lib/environment.ts`   | Browser support detection                                |
+| `shared/types/sidepanel.ts`   | TypeScript type definitions                              |
+| `app/scripts/lib/util.ts`     | Environment type detection                               |
 
 ### UI Components
 

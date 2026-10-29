@@ -13,7 +13,6 @@ export default {
     isSwapsChain: true,
     isSigningEnabled: true,
     isBridgeChain: true,
-    isBuyableChain: true,
     defaultSwapsToken: {
       symbol: 'ETH',
       name: 'Ether',

@@ -261,13 +261,13 @@ exports[`CurrencyInput Component rendering should render properly without a suff
 exports[`CurrencyInput Component rendering should show skeleton state 1`] = `
 <div>
   <div
-    class="mm-box currency-input__skeleton-container mm-box--padding-right-4"
+    class="pr-4 currency-input__skeleton-container"
   >
     <div
-      class="mm-box currency-input__pulsing-bar mm-box--width-1/2"
+      class="w-1/2 currency-input__pulsing-bar"
     />
     <div
-      class="mm-box currency-input__pulsing-bar mm-box--width-1/3"
+      class="w-1/3 currency-input__pulsing-bar"
     />
   </div>
 </div>

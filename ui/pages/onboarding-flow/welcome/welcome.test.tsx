@@ -2,10 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, fireEvent, act } from '@testing-library/react';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
-import * as Environment from '../../../../shared/modules/environment';
-import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime.utils';
+import * as Environment from '../../../../shared/lib/environment';
+import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventAccountType,
@@ -14,7 +15,25 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { OAuthErrorMessages } from '../../../../shared/lib/error';
+import { TraceName } from '../../../../shared/lib/trace';
 import Welcome from './welcome';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 
@@ -39,10 +58,25 @@ jest.mock('./metamask-wordmark-animation', () => ({
   }: {
     setIsAnimationComplete: (isAnimationComplete: boolean) => void;
   }) => {
-    // Simulate animation completion immediately using setTimeout
-    setTimeout(() => setIsAnimationComplete(true), 0);
+    const reactModule = jest.requireActual('react');
+
+    reactModule.useEffect(() => {
+      // Simulate animation completion immediately while cleaning up on unmount
+      const timeoutId = setTimeout(() => setIsAnimationComplete(true), 0);
+
+      return () => clearTimeout(timeoutId);
+    }, [setIsAnimationComplete]);
+
     return <div data-testid="metamask-wordmark-animation" />;
   },
+}));
+
+jest.mock('./login-error-modal', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: ({ loginError }: { loginError: string }) => (
+    <div data-testid="login-error-modal" data-login-error={loginError} />
+  ),
 }));
 
 const mockIntersectionObserver = jest.fn();
@@ -53,6 +87,13 @@ mockIntersectionObserver.mockReturnValue({
 });
 window.IntersectionObserver = mockIntersectionObserver;
 
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
+
 describe('Welcome Page', () => {
   const mockState = {
     metamask: {
@@ -60,16 +101,22 @@ describe('Welcome Page', () => {
         accounts: {},
         selectedAccount: '',
       },
-      metaMetricsId: '0x00000000',
+      analyticsId: '0x00000000',
     },
   };
   const mockStore = configureMockStore([thunk])(mockState);
-  const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: jest.fn(),
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
   let startOAuthLoginSpy: jest.SpyInstance;
   let enabledMetricsSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetAllMocks();
+    setBackgroundConnection(backgroundConnectionMock as never);
     startOAuthLoginSpy = jest
       .spyOn(Actions, 'startOAuthLogin')
       .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
@@ -86,8 +133,12 @@ describe('Welcome Page', () => {
   it('render buttons', async () => {
     const { getByText } = renderWithProvider(<Welcome />, mockStore);
     await waitFor(() => {
-      expect(getByText('Create a new wallet')).toBeInTheDocument();
-      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingImportWallet.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -106,10 +157,12 @@ describe('Welcome Page', () => {
     );
 
     await waitFor(() => {
-      expect(getByText('Create a new wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('Create a new wallet');
+    const createButton = getByText(messages.onboardingCreateWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -140,17 +193,19 @@ describe('Welcome Page', () => {
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
       .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <Welcome />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
 
     await waitFor(() => {
-      expect(getByText('Create a new wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('Create a new wallet');
+    const createButton = getByText(messages.onboardingCreateWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -173,28 +228,38 @@ describe('Welcome Page', () => {
 
     await waitFor(() => {
       expect(startOAuthLoginSpy).toHaveBeenCalled();
+      expect(startOAuthLoginSpy.mock.calls[0][4]).toEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _name: TraceName.OnboardingSocialLoginAttempt,
+      });
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       // should track wallet import started
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletSetupStarted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletSetupStarted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Default}_google`,
+          }),
+        }),
+      );
 
       // should track wallet import completed
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.SocialLoginCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SocialLoginCompleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Default}_google`,
+          }),
+        }),
+      );
 
       // should set setParticipateInMetaMetrics to true and send the queued events to Segment
       expect(enabledMetricsSpy).toHaveBeenCalledWith(true);
@@ -206,17 +271,19 @@ describe('Welcome Page', () => {
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
       .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <Welcome />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
 
     await waitFor(() => {
-      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingImportWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('I have an existing wallet');
+    const createButton = getByText(messages.onboardingImportWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -243,24 +310,30 @@ describe('Welcome Page', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       // should track wallet import started
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletImportStarted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletImportStarted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Imported}_google`,
+          }),
+        }),
+      );
 
       // should track wallet import completed
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.SocialLoginCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SocialLoginCompleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Imported}_google`,
+          }),
+        }),
+      );
 
       // should set Metametrics optin status for social login import
       expect(enabledMetricsSpy).toHaveBeenCalledWith(true);
@@ -276,17 +349,19 @@ describe('Welcome Page', () => {
       .mockReturnValue(PLATFORM_FIREFOX);
 
     const { getByText, getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <Welcome />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
 
     await waitFor(() => {
-      expect(getByText('I have an existing wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingImportWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('I have an existing wallet');
+    const createButton = getByText(messages.onboardingImportWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -313,24 +388,30 @@ describe('Welcome Page', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(2);
 
       // should track wallet import started
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletImportStarted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletImportStarted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Imported}_google`,
+          }),
+        }),
+      );
 
       // should track wallet import completed
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.SocialLoginCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Imported}_google`,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SocialLoginCompleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Imported}_google`,
+          }),
+        }),
+      );
 
       expect(getBrowserNameSpy).toHaveBeenCalled();
 
@@ -344,17 +425,19 @@ describe('Welcome Page', () => {
       .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
       .mockReturnValue(true);
     const { getByText, getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <Welcome />
       </MetaMetricsContext.Provider>,
       mockStore,
     );
 
     await waitFor(() => {
-      expect(getByText('Create a new wallet')).toBeInTheDocument();
+      expect(
+        getByText(messages.onboardingCreateWallet.message),
+      ).toBeInTheDocument();
     });
 
-    const createButton = getByText('Create a new wallet');
+    const createButton = getByText(messages.onboardingCreateWallet.message);
 
     await act(async () => {
       fireEvent.click(createButton);
@@ -379,14 +462,17 @@ describe('Welcome Page', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
 
       // should track wallet import started
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletSetupStarted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Default,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: MetaMetricsEventName.WalletSetupStarted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: MetaMetricsEventAccountType.Default,
+          }),
+        }),
+      );
 
       // should not set Metametrics optin status for SPR user
       expect(enabledMetricsSpy).not.toHaveBeenCalledWith(true);
@@ -394,6 +480,136 @@ describe('Welcome Page', () => {
       // should navigate to create password page
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
+      );
+    });
+  });
+
+  describe('Telegram-outdated error routing', () => {
+    const triggerTelegramCreateFailure = async (errorMessage: string) => {
+      jest
+        .spyOn(Environment, 'getIsSeedlessOnboardingFeatureEnabled')
+        .mockReturnValue(true);
+      const noopThunk = () => Promise.resolve();
+      jest
+        .spyOn(Actions, 'setParticipateInMetaMetrics')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockReturnValue(noopThunk as any);
+      jest
+        .spyOn(Actions, 'setFirstTimeFlowType')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .mockReturnValue(noopThunk as any);
+      // Override the success mock from beforeEach with a rejection. We have
+      // to clear the existing queued return value first; otherwise the success
+      // thunk from beforeEach would be consumed instead of our rejection.
+      startOAuthLoginSpy.mockReset();
+      startOAuthLoginSpy.mockReturnValueOnce(
+        jest.fn().mockRejectedValueOnce(new Error(errorMessage)),
+      );
+
+      const utils = renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <Welcome />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(
+          utils.getByText(messages.onboardingCreateWallet.message),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(
+          utils.getByText(messages.onboardingCreateWallet.message),
+        );
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      });
+
+      await waitFor(() => {
+        expect(
+          utils.getByTestId('onboarding-create-with-telegram-button'),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(
+          utils.getByTestId('onboarding-create-with-telegram-button'),
+        );
+      });
+
+      return utils;
+    };
+
+    const expectOutdatedAppEventTracked = () => {
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.SocialLoginFailed,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: `${MetaMetricsEventAccountType.Default}_telegram`,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_rehydration: 'unknown',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_type: 'outdated_app',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            error_category: 'telegram_app',
+          }),
+        }),
+      );
+    };
+
+    it('routes to TELEGRAM_OUTDATED when verify rejects with 403', async () => {
+      const { findByTestId } = await triggerTelegramCreateFailure(
+        'Telegram verify failed: 403 Forbidden',
+      );
+
+      const modal = await findByTestId('login-error-modal');
+      expect(modal).toHaveAttribute('data-login-error', 'telegram_outdated');
+      expectOutdatedAppEventTracked();
+    });
+
+    it('routes to TELEGRAM_OUTDATED when verify rejects with 404', async () => {
+      const { findByTestId } = await triggerTelegramCreateFailure(
+        'Telegram verify failed: 404 Not Found',
+      );
+
+      const modal = await findByTestId('login-error-modal');
+      expect(modal).toHaveAttribute('data-login-error', 'telegram_outdated');
+      expectOutdatedAppEventTracked();
+    });
+
+    it('routes to TELEGRAM_OUTDATED when the OAuth flow returns no redirect URL', async () => {
+      const { findByTestId } = await triggerTelegramCreateFailure(
+        OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR,
+      );
+
+      const modal = await findByTestId('login-error-modal');
+      expect(modal).toHaveAttribute('data-login-error', 'telegram_outdated');
+    });
+
+    it('does NOT route to TELEGRAM_OUTDATED for non-403/404 verify failures', async () => {
+      const { findByTestId } = await triggerTelegramCreateFailure(
+        'Telegram verify failed: 500 Internal Server Error',
+      );
+
+      const modal = await findByTestId('login-error-modal');
+      expect(modal).not.toHaveAttribute(
+        'data-login-error',
+        'telegram_outdated',
+      );
+
+      // The outdated_app heuristic must NOT be reported for unrelated 5xx failures.
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_type: 'outdated_app',
+          }),
+        }),
       );
     });
   });

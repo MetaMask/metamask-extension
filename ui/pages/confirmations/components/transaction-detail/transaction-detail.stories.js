@@ -3,18 +3,12 @@ import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../gas-timing/gas-timing.component';
 import { Icon, IconName } from '../../../../components/component-library';
-import README from './README.mdx';
 import TransactionDetail from '.';
 
 export default {
   title: 'Confirmations/Components/TransactionDetail',
 
   component: TransactionDetail,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     rows: { control: 'array' },
     onEdit: { action: 'onEdit' },
@@ -26,7 +20,7 @@ const rows = [
     key="line-1"
     detailTitle={
       <>
-        Estimated gas fee
+        Estimated network fee
         <InfoTooltip contentText="This is the tooltip text" position="top">
           <Icon name={IconName.Info} />
         </InfoTooltip>
@@ -46,7 +40,7 @@ const rows = [
     detailTitle="Total"
     detailText=".0312 ETH"
     detailTotal="$15.77"
-    subTitle="Amount + gas fee"
+    subTitle="Amount + network fee"
     subText={
       <>
         Up to <strong>$19.85</strong>

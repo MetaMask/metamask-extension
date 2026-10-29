@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import {
   Caip25EndowmentPermissionName,
@@ -17,7 +17,7 @@ export default {
     docs: {
       description: {
         component:
-          'A page for reviewing and managing multichain account permissions for a connected site',
+          'A page for editing which account groups a connected site can use',
       },
     },
     path: '/review-permissions/:origin',
@@ -96,33 +96,37 @@ DefaultStory.args = {
   store: storeWithNoAccounts,
 };
 DefaultStory.parameters = {
-  initialEntries: [`/review-permissions/${encodeURIComponent('https://test.dapp')}`],
-}
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
+};
 
 export const WithOneConnectedAccount = Template.bind({});
-WithOneConnectedAccount.storyName = 'With One Connected Account';
 WithOneConnectedAccount.args = {
   store: storeWithOneAccount,
 };
 WithOneConnectedAccount.parameters = {
   docs: {
     description: {
-      story: 'Shows the page with one connected account group',
+      story: 'Shows the edit accounts page with one connected account group',
     },
   },
-  initialEntries: [`/review-permissions/${encodeURIComponent('https://test.dapp')}`],
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
 };
 
 export const NoConnectedAccounts = Template.bind({});
-NoConnectedAccounts.storyName = 'No Connected Accounts';
 NoConnectedAccounts.args = {
   store: storeWithNoAccounts,
 };
 NoConnectedAccounts.parameters = {
   docs: {
     description: {
-      story: 'Shows the page with no connected account groups',
+      story: 'Shows the edit accounts page with no connected account groups',
     },
   },
-  initialEntries: [`/review-permissions/${encodeURIComponent('https://test.dapp')}`],
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
 };

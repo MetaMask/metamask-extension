@@ -16,7 +16,7 @@ import { NftItem } from '../../../../multichain/nft-item';
 import { Content, Header, Page } from '../../../../multichain/pages/page';
 
 import { getAllNfts } from '../../../../../ducks/metamask/metamask';
-import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../../../shared/lib/string-utils';
 import {
   Display,
   IconColor,
@@ -25,18 +25,14 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { isWebUrl } from '../../../../../../app/scripts/lib/util';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { isWebUrl } from '../../../../../../shared/lib/url-utils';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import {
   ASSET_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../../../helpers/constants/routes';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftFullImage() {
   const t = useI18nContext();
   const { asset, id } = useParams<{ asset: string; id: string }>();
@@ -76,8 +72,6 @@ export default function NftFullImage() {
   const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
 
   const isImageHosted =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
   const navigationType = useNavigationType();
@@ -86,7 +80,11 @@ export default function NftFullImage() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setVisible(true);
+    // Async so the initial opacity:0 paint can occur before fading in.
+    const frameId = requestAnimationFrame(() => {
+      setVisible(true);
+    });
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   const onClose = useCallback(() => {
@@ -108,7 +106,7 @@ export default function NftFullImage() {
           endAccessory={
             <ButtonIcon
               color={IconColor.iconAlternative}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Md}
               ariaLabel={t('back')}
               iconName={IconName.Close}
               onClick={onClose}
@@ -128,12 +126,9 @@ export default function NftFullImage() {
           >
             <Box>
               <NftItem
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                 src={isImageHosted ? image || imageFromTokenURI : nftImageURL}
                 alt={nftImageAlt}
                 name={name ?? ''}
-                tokenId={tokenId}
                 networkName={nftChainNetwork?.name ?? ''}
                 networkSrc={nftChainImage}
                 isIpfsURL={isIpfsURL}

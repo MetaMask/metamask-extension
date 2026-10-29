@@ -1,11 +1,11 @@
 import { DAPP_HOST_ADDRESS } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
+import EditConnectedAccountsPage from '../../page-objects/pages/permission/edit-connected-accounts-page';
 import GatorPermissionsPage from '../../page-objects/pages/permission/gator-permissions-page';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 
 describe('Permissions Page', function () {
@@ -13,50 +13,45 @@ describe('Permissions Page', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openPermissionsPage();
+        await login(driver, { validateBalance: false });
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
 
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-        await new SitePermissionPage(driver).checkPageIsLoaded(
+        await new EditConnectedAccountsPage(driver).checkPageIsLoaded(
           DAPP_HOST_ADDRESS,
         );
       },
     );
   });
 
-  it('should navigate back through Gator Permissions page to home route', async function () {
+  it('should navigate back from Permissions page to home route', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openPermissionsPage();
+        await login(driver, { validateBalance: false });
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
-        const gatorPermissionsPage = new GatorPermissionsPage(driver);
         const homePage = new HomePage(driver);
         await permissionListPage.checkPageIsLoaded();
 
-        // Click back from Permissions Page - goes to Gator Permissions Page
+        // Click back from Permissions Page - goes directly to Home
+        // (When only dapp connections exist without gator permissions,
+        // the Gator Permissions page auto-redirects, so back goes to Home)
         await permissionListPage.clickBackButton();
-        await gatorPermissionsPage.checkPageIsLoaded();
-
-        // Click back from Gator Permissions Page - goes to Home
-        await gatorPermissionsPage.clickBackButton();
         await homePage.checkPageIsLoaded();
       },
     );

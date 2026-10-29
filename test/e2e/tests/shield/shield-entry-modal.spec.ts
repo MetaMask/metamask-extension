@@ -1,17 +1,22 @@
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
+import { NETWORK_CLIENT_ID } from '../../constants';
+import {
+  getLocalhost25EthAssetsControllerPatch,
+  getMainnet25EthAssetsControllerPatch,
+} from '../tokens/utils/mocks';
 
 describe('Shield Entry Modal', function () {
   it('should show the shield entry modal if user does not have a shield subscription and has a balance greater than the minimum fiat balance threshold', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -32,9 +37,7 @@ describe('Shield Entry Modal', function () {
               },
             },
           })
-          .withAppStateController({
-            showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
-          })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
@@ -43,7 +46,7 @@ describe('Shield Entry Modal', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
 
@@ -59,17 +62,12 @@ describe('Shield Entry Modal', function () {
   it('should not show the shield entry modal if external services are disabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withPreferencesController({
             useExternalServices: false,
           })
-          .withAppStateController({
-            showShieldEntryModalOnce: null,
-          })
+          .withAssetsController(getLocalhost25EthAssetsControllerPatch())
           .build(),
-        manifestFlags: {
-          useExternalServices: false,
-        },
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           const shieldMockttpService = new ShieldMockttpService();
@@ -77,7 +75,7 @@ describe('Shield Entry Modal', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -91,8 +89,8 @@ describe('Shield Entry Modal', function () {
   it('should not show the shield entry modal if eligibility request returns false', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -113,9 +111,7 @@ describe('Shield Entry Modal', function () {
               },
             },
           })
-          .withAppStateController({
-            showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
-          })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
@@ -124,7 +120,7 @@ describe('Shield Entry Modal', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

@@ -2,6 +2,9 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 
 /**
@@ -24,6 +27,71 @@ export function isWebUsbAvailable(): boolean {
     typeof window.navigator !== 'undefined' &&
     'usb' in window.navigator
   );
+}
+
+/**
+ * Check if camera APIs are available in the current browser.
+ */
+export function isCameraAvailable(): boolean {
+  if (globalThis.window === undefined) {
+    return false;
+  }
+  const { navigator } = globalThis;
+  return (
+    navigator.mediaDevices !== undefined &&
+    typeof navigator.mediaDevices.getUserMedia === 'function'
+  );
+}
+
+/**
+ * Query the Permissions API for `camera` and return the live `PermissionStatus` (for `change`
+ * listeners). Matches legacy QR `WebcamUtils` behavior: on unsupported APIs or thrown `query`,
+ * returns `prompt` with a null status.
+ */
+export async function queryCameraPermissionWithStatus(): Promise<{
+  state: PermissionState;
+  permissionStatus: PermissionStatus | null;
+}> {
+  try {
+    const permissionStatus = await globalThis.navigator.permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return {
+      state: permissionStatus.state,
+      permissionStatus,
+    };
+  } catch {
+    return { state: 'prompt', permissionStatus: null };
+  }
+}
+
+/** Message for the error thrown by {@link checkCameraPermission} when the probe fails. */
+const CAMERA_PERMISSION_PROBE_FAILED_MESSAGE =
+  'Unable to determine camera permission state';
+
+/**
+ * Shared probe for the browser camera permission. Returns `null` when
+ * `permissions.query` throws so callers can map to `Unknown` vs surface an error.
+ */
+async function queryCameraPermissionDomState(): Promise<PermissionState | null> {
+  if (!isCameraAvailable()) {
+    return CameraPermissionState.Denied;
+  }
+
+  try {
+    const { navigator } = globalThis;
+    const { permissions } = navigator;
+    if (!permissions?.query) {
+      return CameraPermissionState.Prompt;
+    }
+
+    const result = await permissions.query({
+      name: 'camera' as PermissionName,
+    });
+    return result.state;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -84,8 +152,29 @@ export async function checkHardwareWalletPermission(
       return await checkWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
       return await checkWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return await checkCameraPermissionState();
     default:
       return HardwareConnectionPermissionState.Denied;
+  }
+}
+
+/**
+ * Check camera permission state for hardware-wallet permission UI.
+ */
+export async function checkCameraPermissionState(): Promise<HardwareConnectionPermissionState> {
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    return HardwareConnectionPermissionState.Unknown;
+  }
+
+  switch (domState) {
+    case CameraPermissionState.Granted:
+      return HardwareConnectionPermissionState.Granted;
+    case CameraPermissionState.Denied:
+      return HardwareConnectionPermissionState.Denied;
+    default:
+      return HardwareConnectionPermissionState.Prompt;
   }
 }
 
@@ -165,22 +254,82 @@ export async function requestHardwareWalletPermission(
       return requestWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
       return requestWebUsbPermission(walletType);
+    case HardwareWalletType.Qr:
+      return requestCameraPermission();
     default:
       return false;
   }
 }
 
 /**
- * Request WebHID permission from the user
- * This will show the browser's device selection dialog
+ * Opens a temporary video stream for permission or capability checks.
+ * Call {@link stopMediaStreamTracks} when finished.
+ *
+ * @returns Stream from `getUserMedia({ video: true })`.
+ * @throws When camera APIs are unavailable or `getUserMedia` rejects (e.g. `NotAllowedError`).
+ */
+export async function openCameraVideoStream(): Promise<MediaStream> {
+  if (!isCameraAvailable()) {
+    throw new Error('Camera capture is not available in this context');
+  }
+  const { navigator } = globalThis;
+  return await navigator.mediaDevices.getUserMedia({ video: true });
+}
+
+/**
+ * Stops every track on a media stream (e.g. after a probe or permission request).
+ *
+ * @param stream - Stream returned from {@link openCameraVideoStream}.
+ */
+export function stopMediaStreamTracks(stream: MediaStream): void {
+  stream.getTracks().forEach((track) => track.stop());
+}
+
+/**
+ * Request camera permission from the user.
+ */
+export async function requestCameraPermission(): Promise<boolean> {
+  try {
+    const stream = await openCameraVideoStream();
+    stopMediaStreamTracks(stream);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Return browser camera permission state for adapter readiness checks.
+ *
+ * @throws {Error} When the permission probe fails (equivalent to
+ * `HardwareConnectionPermissionState.Unknown` from `checkCameraPermissionState`).
+ */
+export async function checkCameraPermission(): Promise<PermissionState> {
+  const domState = await queryCameraPermissionDomState();
+  if (domState === null) {
+    throw new Error(CAMERA_PERMISSION_PROBE_FAILED_MESSAGE);
+  }
+  return domState;
+}
+
+/**
+ * Canonical WebHID grant entry point: requests permission and returns the
+ * granted devices. Must be called from a user gesture (`requestDevice` needs
+ * transient activation); the offscreen document sees the grant via
+ * `getDevices()` instead.
+ *
+ * Filters by vendor only, so the picker still matches the device when it
+ * re-enumerates with a different productId (e.g. BOLOS vs bootloader).
  *
  * @param walletType - The hardware wallet type to request permission for
+ * @returns Granted devices matching `walletType`, or `[]` when unavailable,
+ * cancelled, or no matching device is selected.
  */
-export async function requestWebHidPermission(
+export async function requestWebHidDevices(
   walletType: HardwareWalletType,
-): Promise<boolean> {
+): Promise<HIDDevice[]> {
   if (!isWebHidAvailable()) {
-    return false;
+    return [];
   }
 
   try {
@@ -188,15 +337,27 @@ export async function requestWebHidPermission(
       filters: getDeviceFilters(walletType) as HIDDeviceFilter[],
     });
 
-    // Check if user selected a device matching the wallet type
-    const hasDevice = devices.some((device) =>
+    return devices.filter((device) =>
       isHardwareWalletDevice(device, walletType),
     );
-
-    return hasDevice;
   } catch {
-    return false;
+    return [];
   }
+}
+
+/**
+ * Request WebHID permission from the user, showing the browser's device
+ * selection dialog.
+ *
+ * Boolean wrapper over {@link requestWebHidDevices}.
+ *
+ * @param walletType - The hardware wallet type to request permission for
+ */
+export async function requestWebHidPermission(
+  walletType: HardwareWalletType,
+): Promise<boolean> {
+  const devices = await requestWebHidDevices(walletType);
+  return devices.length > 0;
 }
 
 /**
@@ -281,78 +442,6 @@ export async function getConnectedDevices(
 }
 
 /**
- * Check if a specific device is connected (Ledger-specific, for backward compatibility)
- *
- * @param deviceId - Optional device ID to check for a specific device
- * @returns true if the device is connected
- */
-export async function isDeviceConnected(deviceId?: string): Promise<boolean> {
-  const devices = await getConnectedLedgerDevices();
-
-  if (!deviceId) {
-    // If no specific device ID, just check if any Ledger is connected
-    return devices.length > 0;
-  }
-
-  // Check for specific device
-  return devices.some((device) => device.productId.toString() === deviceId);
-}
-
-/**
- * Check if a hardware wallet is connected
- *
- * @param walletType - The type of hardware wallet to check
- * @param deviceId - Optional specific device ID to check
- * @returns true if the device is connected
- */
-export async function isHardwareWalletConnected(
-  walletType: HardwareWalletType,
-  deviceId?: string,
-): Promise<boolean> {
-  const devices = await getConnectedDevices(walletType);
-
-  if (!deviceId) {
-    return devices.length > 0;
-  }
-
-  return devices.some((device) => device.productId.toString() === deviceId);
-}
-
-/**
- * Get a device ID from a connected device (returns product ID)
- * Ledger-specific for backward compatibility
- */
-export async function getDeviceId(): Promise<string | null> {
-  const devices = await getConnectedLedgerDevices();
-
-  if (devices.length === 0) {
-    return null;
-  }
-
-  // Return the product ID of the first device
-  return devices[0].productId.toString();
-}
-
-/**
- * Get a device ID for a specific hardware wallet type
- *
- * @param walletType - The type of hardware wallet
- * @returns Device ID (product ID as string) or null if no device found
- */
-export async function getHardwareWalletDeviceId(
-  walletType: HardwareWalletType,
-): Promise<string | null> {
-  const devices = await getConnectedDevices(walletType);
-
-  if (devices.length === 0) {
-    return null;
-  }
-
-  // Return the product ID of the first device
-  return devices[0].productId.toString();
-}
-
-/**
  * Subscribe to native WebHID connect/disconnect events
  *
  * @param walletType - The hardware wallet type to filter events for
@@ -399,7 +488,7 @@ export function subscribeToWebHidEvents(
  * Subscribe to native WebUSB connect/disconnect events
  *
  * @param walletType - The hardware wallet type to filter events for
- * @param onConnect - Callback when a device is connected
+ * @param onConnect - Synchronous callback when a device is connected; schedule async work inside the callback and attach `.catch()` as needed (no Promise return).
  * @param onDisconnect - Callback when a device is disconnected
  * @returns Unsubscribe function to clean up event listeners
  */
@@ -461,4 +550,68 @@ export function subscribeToHardwareWalletEvents(
         // No-op cleanup
       };
   }
+}
+
+/**
+ * Returns `true` when the extension is running in an environment where the
+ * native browser camera-permission prompt cannot appear (side panel only).
+ */
+export function isRestrictedCameraEnvironment(): boolean {
+  return getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+}
+
+/**
+ * Opens the current page in a fullscreen tab, preserving the hash route so
+ * the user lands on the exact same confirmation / transaction screen.
+ *
+ * For most flows (e.g. Send) transaction parameters live in background
+ * controller state and survive the context switch automatically. Flows whose
+ * form data is stored in UI-only Redux (e.g. Swap / Bridge) must supply a
+ * `queryString` so the fullscreen tab can restore the values via deep-link
+ * query parameters.
+ *
+ * @param queryString - Optional query string appended to the fullscreen URL.
+ */
+export function redirectToFullscreen(queryString?: string | null): void {
+  const currentUrl = new URL(globalThis.location.href);
+  const currentHash = currentUrl.hash;
+  const currentRoute = currentHash ? currentHash.substring(1) : null;
+  globalThis.platform.openExtensionInBrowser(currentRoute, queryString ?? null);
+}
+
+/**
+ * Resolves the Continue action within QR recovery flow
+ * based on the current camera permission state and the extension environment.
+ *
+ * @param onRetry - The default retry handler (e.g. calls `ensureDeviceReady`).
+ * @param redirectQueryString - Optional query string forwarded to the
+ * fullscreen tab so flows with UI-only state (Swap / Bridge) can restore
+ * their form parameters via deep-link query params.
+ */
+export async function handleContinueWithPermissionCheck(
+  onRetry: () => Promise<void>,
+  redirectQueryString?: string | null,
+): Promise<void> {
+  let permissionState: PermissionState;
+  try {
+    permissionState = await checkCameraPermission();
+  } catch {
+    await onRetry();
+    return;
+  }
+
+  if (permissionState === CameraPermissionState.Granted) {
+    await onRetry();
+    return;
+  }
+
+  if (permissionState === CameraPermissionState.Prompt) {
+    if (isRestrictedCameraEnvironment()) {
+      redirectToFullscreen(redirectQueryString);
+    } else {
+      await onRetry();
+    }
+  }
+
+  // Permission is still denied — user hasn't changed settings yet.
 }

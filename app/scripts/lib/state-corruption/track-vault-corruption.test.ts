@@ -1,10 +1,10 @@
 import { segment } from '../segment';
-import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import { CriticalErrorType } from '../../../../shared/constants/critical-error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import type { Backup } from '../stores/persistence-manager';
+import type { Backup } from '../../../../shared/lib/stores/persistence-manager';
 import { trackVaultCorruptionEvent } from './track-vault-corruption';
 
 jest.mock('../segment', () => ({
@@ -25,16 +25,17 @@ describe('trackVaultCorruptionEvent', () => {
     const backup: Backup = {
       KeyringController: { vault: 'encrypted-vault-data' },
       AppMetadataController: {},
-      MetaMetricsController: {
-        participateInMetaMetrics: true,
-        metaMetricsId: 'test-metrics-id-123',
+      AnalyticsController: {
+        optedIn: true,
+        analyticsId: 'test-metrics-id-123',
+        consentDecisionMade: true,
       },
     };
 
     trackVaultCorruptionEvent(
       backup,
       MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.InaccessibleDatabase,
+      CriticalErrorType.InaccessibleDatabase,
     );
 
     expect(mockSegment.track).toHaveBeenCalledWith({
@@ -42,7 +43,7 @@ describe('trackVaultCorruptionEvent', () => {
       event: MetaMetricsEventName.VaultCorruptionDetected,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_type: VaultCorruptionType.InaccessibleDatabase,
+        error_type: CriticalErrorType.InaccessibleDatabase,
         category: MetaMetricsEventCategory.Error,
       },
       context: {
@@ -50,6 +51,7 @@ describe('trackVaultCorruptionEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
@@ -58,34 +60,27 @@ describe('trackVaultCorruptionEvent', () => {
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['backup is null', null],
-    ['MetaMetricsController is missing', { KeyringController: {} }],
+    ['AnalyticsController is missing', { KeyringController: {} }],
     [
-      'participateInMetaMetrics is false',
+      'optedIn is false',
       {
-        MetaMetricsController: {
-          participateInMetaMetrics: false,
-          metaMetricsId: 'id',
+        AnalyticsController: {
+          optedIn: false,
+          analyticsId: 'id',
         },
       },
     ],
     [
-      'participateInMetaMetrics is null',
+      'analyticsId is missing',
       {
-        MetaMetricsController: {
-          participateInMetaMetrics: null,
-          metaMetricsId: 'id',
-        },
+        AnalyticsController: { optedIn: true },
       },
-    ],
-    [
-      'metaMetricsId is missing',
-      { MetaMetricsController: { participateInMetaMetrics: true } },
     ],
   ])('does not track when %s', (_: string, backup: Backup | null) => {
     trackVaultCorruptionEvent(
       backup,
       MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.MissingVaultInDatabase,
+      CriticalErrorType.MissingVaultInDatabase,
     );
 
     expect(mockSegment.track).not.toHaveBeenCalled();

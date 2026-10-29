@@ -23,6 +23,18 @@ describe(`migration #${VERSION} - remove transaction history`, () => {
     expect(oldState.meta.version).toBe(VERSION);
   });
 
+  it('skips migration with warning if TransactionController is missing from state', async () => {
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {},
+    };
+    const originalData = structuredClone(oldState.data);
+
+    await migrate(oldState, new Set());
+
+    expect(oldState.data).toEqual(originalData);
+  });
+
   it('skips migration if TransactionController.transactions is missing', async () => {
     const oldState = {
       meta: { version: oldVersion },

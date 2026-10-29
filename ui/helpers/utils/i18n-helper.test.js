@@ -1,10 +1,10 @@
 import React from 'react';
 import { captureException } from '../../../shared/lib/sentry';
-import { getMessage as getMessageShared } from '../../../shared/modules/i18n';
+import { getMessage as getMessageShared } from '../../../shared/lib/i18n';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { getMessage } from './i18n-helper';
 
-jest.mock('../../../shared/modules/i18n');
+jest.mock('../../../shared/lib/i18n');
 jest.mock('../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
   sentryLogger: jest.requireActual('../../../shared/lib/sentry').sentryLogger,

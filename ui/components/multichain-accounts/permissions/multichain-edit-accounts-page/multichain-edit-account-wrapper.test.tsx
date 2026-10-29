@@ -18,7 +18,7 @@ import {
   InternalAccountsState,
 } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
-import { PermissionsRequest } from '../../../../pages/permissions-connect/connect-page/utils';
+import { PermissionsRequest } from '../../../../helpers/utils/caip25-permissions';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 import { MultichainEditAccountsPageWrapper } from './multichain-edit-account-wrapper';
@@ -72,6 +72,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -96,6 +97,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 1,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -110,7 +112,6 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
 
 const createMockState = (overrides = {}) => {
   const accountTreeState = {
-    selectedAccountGroup: MOCK_GROUP_ID_1,
     wallets: {
       [MOCK_WALLET_ID]: {
         id: MOCK_WALLET_ID,
@@ -132,6 +133,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 0,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount1.id, mockSolAccount1.id],
           },
@@ -145,6 +147,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 1,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount2.id],
           },
@@ -174,6 +177,8 @@ const createMockState = (overrides = {}) => {
   const mockMultichainState = createMockMultichainAccountsState(
     accountTreeState as unknown as AccountTreeState,
     internalAccountsState as unknown as InternalAccountsState,
+    undefined,
+    MOCK_GROUP_ID_1,
   );
 
   return {

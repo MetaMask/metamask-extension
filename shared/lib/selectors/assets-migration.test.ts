@@ -1,0 +1,2368 @@
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
+import type { FungibleAssetPrice } from '@metamask/assets-controller';
+import type { CaipAssetType, Hex } from '@metamask/utils';
+import {
+  ASSETS_UNIFY_STATE_FLAG,
+  ASSETS_UNIFY_STATE_VERSION_1,
+} from '../assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokensControllerAllTokens,
+  getTokensControllerAllIgnoredTokens,
+  getTokenBalancesControllerTokenBalances,
+  getMultiChainAssetsControllerAccountsAssets,
+  getMultiChainAssetsControllerAssetsMetadata,
+  getMultiChainAssetsControllerAllIgnoredAssets,
+  getMultiChainBalancesControllerBalances,
+  getCurrencyRateControllerCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates,
+  getTokenRatesControllerMarketData,
+  getMultichainAssetsRatesControllerConversionRates,
+  getRatesControllerRates,
+  getRatesControllerFiatCurrency,
+} from './assets-migration';
+
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking all "when disabled" test cases).
+jest.mock('../assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual('../assets-unify-state/remote-feature-flag'),
+  isAssetsUnifyStateFeatureEnabled: jest.fn(
+    (
+      featureFlag:
+        | { enabled: boolean; featureVersion: string }
+        | undefined
+        | null,
+      featureVersion: string,
+    ) =>
+      Boolean(featureFlag?.enabled) &&
+      featureFlag?.featureVersion === featureVersion,
+  ),
+}));
+
+jest.mock('../environment', () => ({
+  ...jest.requireActual('../environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
+}));
+
+const mockAccountId = 'mock-account-id-1';
+const mockAccountId2 = 'mock-account-id-2';
+
+const mockAccountAddressLowercase: Hex =
+  '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
+const mockAccountAddressChecksummed = toChecksumHexAddress(
+  mockAccountAddressLowercase,
+) as Hex;
+
+const nativeEthAssetId = 'eip155:1/slip44:60';
+const erc20AssetAddressLowercase: Hex =
+  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const erc20AssetAddressChecksummed = toChecksumHexAddress(
+  erc20AssetAddressLowercase,
+) as Hex;
+const erc20AssetId = `eip155:1/erc20:${erc20AssetAddressLowercase}`;
+const solanaTokenAssetId =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+const solanaNativeAssetId =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+
+const tempoChainId = '0x1079';
+const tempoPathUsdAddressLowercase: Hex =
+  '0x20c0000000000000000000000000000000000000';
+const tempoPathUsdAssetId = `eip155:4217/erc20:${tempoPathUsdAddressLowercase}`;
+const tempoBridgedUsdcAddressLowercase: Hex =
+  '0x20c0000000000000000000000000000000000001';
+const tempoBridgedUsdcAssetId = `eip155:4217/erc20:${tempoBridgedUsdcAddressLowercase}`;
+const tempoNetworkConfigurationsByChainId = {
+  [tempoChainId]: { nativeCurrency: 'USD' },
+};
+
+const nativePolygonAssetId = 'eip155:137/slip44:966';
+const bitcoinNativeAssetId = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
+const mockAccountId3 = 'mock-account-id-3';
+const mockAccountAddressLowercase2: Hex =
+  '0x1234567890abcdef1234567890abcdef12345678';
+const enabledFlags = {
+  remoteFeatureFlags: {
+    [ASSETS_UNIFY_STATE_FLAG]: {
+      enabled: true,
+      featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
+    },
+  },
+};
+
+type MakeMockPriceOverrides = {
+  // Allow `null` so edge-case fixtures can exercise non-finite market data.
+  [K in keyof Omit<FungibleAssetPrice, 'assetPriceType'>]?:
+    | FungibleAssetPrice[K]
+    | null;
+};
+
+function makeMockPrice(
+  overrides: MakeMockPriceOverrides = {},
+): FungibleAssetPrice {
+  return {
+    assetPriceType: 'fungible',
+    id: 'mock-price',
+    price: 1,
+    usdPrice: 1,
+    lastUpdated: 1700000000000,
+    marketCap: 0,
+    allTimeHigh: 0,
+    allTimeLow: 0,
+    totalVolume: 0,
+    high1d: 0,
+    low1d: 0,
+    circulatingSupply: 0,
+    dilutedMarketCap: 0,
+    marketCapPercentChange1d: 0,
+    priceChange1d: 0,
+    pricePercentChange1h: 0,
+    pricePercentChange1d: 0,
+    pricePercentChange7d: 0,
+    pricePercentChange14d: 0,
+    pricePercentChange30d: 0,
+    pricePercentChange200d: 0,
+    pricePercentChange1y: 0,
+    ...overrides,
+  } as FungibleAssetPrice;
+}
+
+describe('getAccountTrackerControllerAccountsByChainId', () => {
+  it('derives accountsByChainId from new state structure', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        accountsByChainId: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          [erc20AssetId]: { type: 'erc20', decimals: 6 },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '1.23456789' },
+            [erc20AssetId]: { amount: '1' },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+            [mockAccountId2]: {
+              id: mockAccountId2,
+              type: 'solana:data-account',
+            },
+          },
+        },
+      },
+    };
+    const result = getAccountTrackerControllerAccountsByChainId(state);
+
+    expect(result).toStrictEqual({
+      '0x1': {
+        [mockAccountAddressChecksummed]: {
+          balance: '0x112210f4768db400', // 1234567890000000000
+        },
+      },
+    });
+  });
+
+  describe('edge cases', () => {
+    it('handles multiple chains for the same EVM account', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [nativePolygonAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [nativePolygonAssetId]: { amount: '2' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(result['0x1']).toBeDefined();
+      expect(result['0x89']).toBeDefined();
+      expect(Object.keys(result)).toHaveLength(2);
+    });
+
+    it('handles balance with 0 decimals', () => {
+      const zeroDecNativeId = 'eip155:42/slip44:60';
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [zeroDecNativeId]: { type: 'native', decimals: 0 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [zeroDecNativeId]: { amount: '42' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(result['0x2a'][mockAccountAddressChecksummed].balance).toBe(
+        '0x2a',
+      );
+    });
+
+    it('skips balance entries without metadata in assetsInfo', () => {
+      const unknownAssetId =
+        'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [unknownAssetId]: { amount: '500' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(Object.keys(result)).toStrictEqual(['0x1']);
+    });
+
+    it('skips non-native assets (ERC-20) from accountsByChainId', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [erc20AssetId]: { type: 'erc20', decimals: 6 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '5' },
+              [erc20AssetId]: { amount: '1000' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      expect(Object.keys(result['0x1'])).toStrictEqual([
+        mockAccountAddressChecksummed,
+      ]);
+    });
+
+    it('truncates fractional digits exceeding decimals in parseBalanceWithDecimals', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 2 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1.23456' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+
+      // 1.23456 with 2 decimals → truncated to 1.23 → 123
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x7b');
+    });
+
+    it('does not crash when amount is in scientific notation (e.g. "1e-18")', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1e-18' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // Should not throw — 1e-18 ETH = 1 wei = 0x1
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x1');
+    });
+
+    it('does not crash when amount has absurd scientific notation exponent (e.g. "1e-18000000000000000000")', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1e-18000000000000000000' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // Should not throw — value is sub-unit, rounds to 0x0
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe('0x0');
+    });
+
+    it('correctly parses positive scientific notation (e.g. "1.5e2" with 2 decimals)', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 2 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1.5e2' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      // 1.5e2 = 150 human-readable, with 2 decimals → 15000 base units = 0x3a98
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result['0x1'][mockAccountAddressChecksummed].balance).toBe(
+        '0x3a98',
+      );
+    });
+
+    it('skips a non-EVM native asset stored under an EVM account', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsByChainId: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [solanaNativeAssetId]: { type: 'native', decimals: 9 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [solanaNativeAssetId]: { amount: '2' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      expect(() =>
+        getAccountTrackerControllerAccountsByChainId(state),
+      ).not.toThrow();
+      const result = getAccountTrackerControllerAccountsByChainId(state);
+      expect(result).toStrictEqual({
+        '0x1': {
+          [mockAccountAddressChecksummed]: {
+            balance: '0xde0b6b3a7640000',
+          },
+        },
+      });
+    });
+  });
+});
+
+describe('getTokensControllerAllTokens', () => {
+  it('derives allTokens from new state structure', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        allTokens: {},
+        allIgnoredTokens: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          [erc20AssetId]: {
+            type: 'erc20',
+            decimals: 6,
+            symbol: 'USDC',
+            name: 'USD Coin',
+          },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '1' },
+            [erc20AssetId]: { amount: '1000000' },
+          },
+        },
+        customAssets: {},
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+            [mockAccountId2]: {
+              id: mockAccountId2,
+              type: 'solana:data-account',
+            },
+          },
+        },
+      },
+    };
+    const result = getTokensControllerAllTokens(state);
+
+    expect(result).toStrictEqual({
+      '0x1': {
+        [mockAccountAddressLowercase]: [
+          {
+            address: erc20AssetAddressChecksummed,
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USD Coin',
+            image: undefined,
+          },
+        ],
+      },
+    });
+  });
+
+  describe('edge cases', () => {
+    it('includes tokens from customAssets not present in assetsBalance', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allTokens: {},
+          allIgnoredTokens: {},
+          assetsInfo: {
+            [erc20AssetId]: {
+              type: 'erc20',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+              image: 'https://example.com/usdc.png',
+            },
+          },
+          assetsBalance: {},
+          customAssets: {
+            [mockAccountId]: [erc20AssetId as CaipAssetType],
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokensControllerAllTokens(state);
+
+      expect(result['0x1'][mockAccountAddressLowercase]).toStrictEqual([
+        {
+          address: erc20AssetAddressChecksummed,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+          image: 'https://example.com/usdc.png',
+        },
+      ]);
+    });
+
+    it('deduplicates tokens present in both assetsBalance and customAssets', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allTokens: {},
+          allIgnoredTokens: {},
+          assetsInfo: {
+            [erc20AssetId]: {
+              type: 'erc20',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+            },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [erc20AssetId]: { amount: '1' },
+            },
+          },
+          customAssets: {
+            [mockAccountId]: [erc20AssetId as CaipAssetType],
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokensControllerAllTokens(state);
+
+      expect(result['0x1'][mockAccountAddressLowercase]).toHaveLength(1);
+    });
+
+    it('skips assets with no metadata in assetsInfo', () => {
+      const unknownAssetId =
+        'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef' as CaipAssetType;
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allTokens: {},
+          allIgnoredTokens: {},
+          assetsInfo: {},
+          assetsBalance: {
+            [mockAccountId]: {
+              [unknownAssetId]: { amount: '1' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokensControllerAllTokens(state);
+
+      expect(result).toStrictEqual({});
+    });
+
+    it('skips native assets from allTokens (only ERC-20s)', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allTokens: {},
+          allIgnoredTokens: {},
+          assetsInfo: {
+            [nativeEthAssetId]: {
+              type: 'native',
+              decimals: 18,
+              symbol: 'ETH',
+              name: 'Ether',
+            },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokensControllerAllTokens(state);
+
+      expect(result).toStrictEqual({});
+    });
+
+    it('skips a non-EVM token stored under an EVM account', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allTokens: {},
+          allIgnoredTokens: {},
+          assetsInfo: {
+            [erc20AssetId]: {
+              type: 'erc20',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+            },
+            [solanaTokenAssetId]: {
+              type: 'spl',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+            },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [erc20AssetId]: { amount: '1' },
+              [solanaTokenAssetId]: { amount: '2' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      expect(() => getTokensControllerAllTokens(state)).not.toThrow();
+      const result = getTokensControllerAllTokens(state);
+      expect(result).toStrictEqual({
+        '0x1': {
+          [mockAccountAddressLowercase]: [
+            {
+              address: erc20AssetAddressChecksummed,
+              symbol: 'USDC',
+              decimals: 6,
+              name: 'USD Coin',
+              image: undefined,
+            },
+          ],
+        },
+      });
+    });
+  });
+});
+
+describe('getTokensControllerAllIgnoredTokens', () => {
+  it('derives allIgnoredTokens from new state structure', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        allIgnoredTokens: {},
+        allTokens: {},
+        assetPreferences: {
+          [erc20AssetId]: { hidden: true },
+          [solanaTokenAssetId]: { hidden: true },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+            [mockAccountId2]: {
+              id: mockAccountId2,
+              type: 'solana:data-account',
+            },
+          },
+        },
+      },
+    };
+    const result = getTokensControllerAllIgnoredTokens(state);
+
+    expect(result).toStrictEqual({
+      '0x1': {
+        [mockAccountAddressLowercase]: [erc20AssetAddressLowercase],
+      },
+    });
+  });
+
+  describe('edge cases', () => {
+    it('skips preferences with hidden set to false', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allIgnoredTokens: {},
+          allTokens: {},
+
+          assetPreferences: {
+            [erc20AssetId]: { hidden: false },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokensControllerAllIgnoredTokens(state);
+
+      expect(result).toStrictEqual({});
+    });
+
+    it('applies hidden tokens to all EVM accounts', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allIgnoredTokens: {},
+          allTokens: {},
+          assetPreferences: {
+            [erc20AssetId]: { hidden: true },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+              [mockAccountId3]: {
+                id: mockAccountId3,
+                address: mockAccountAddressLowercase2,
+                type: 'eip155:eoa',
+              },
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokensControllerAllIgnoredTokens(state);
+
+      expect(result['0x1'][mockAccountAddressLowercase]).toStrictEqual([
+        erc20AssetAddressLowercase,
+      ]);
+      expect(result['0x1'][mockAccountAddressLowercase2]).toStrictEqual([
+        erc20AssetAddressLowercase,
+      ]);
+    });
+  });
+});
+
+describe('getTokenBalancesControllerTokenBalances', () => {
+  const baseInternalAccounts = {
+    accounts: {
+      [mockAccountId]: {
+        id: mockAccountId,
+        address: mockAccountAddressLowercase,
+        type: 'eip155:eoa',
+      },
+      [mockAccountId2]: {
+        id: mockAccountId2,
+        type: 'solana:data-account',
+      },
+    },
+  };
+
+  it('derives tokenBalances from new state structure', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        tokenBalances: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          [erc20AssetId]: { type: 'erc20', decimals: 6 },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '1.23456789' },
+            [erc20AssetId]: { amount: '1' },
+          },
+        },
+        customAssets: {},
+        internalAccounts: baseInternalAccounts,
+      },
+    };
+    const result = getTokenBalancesControllerTokenBalances(state);
+
+    const nativeAddress = getNativeAssetForChainId('0x1').address;
+    expect(result).toStrictEqual({
+      [mockAccountAddressLowercase]: {
+        '0x1': {
+          [nativeAddress]: '0x112210f4768db400', // 1.23456789 ETH (18 decimals)
+          [erc20AssetAddressChecksummed]: '0xf4240', // 1 USDC (6 decimals)
+        },
+      },
+    });
+  });
+
+  it('adds zero-balance placeholder for custom EVM token not yet in assetsBalance', () => {
+    const customTokenAddress: Hex =
+      '0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8';
+    const customTokenAssetId = `eip155:1/erc20:${customTokenAddress}`;
+    const customTokenAddressChecksummed = toChecksumHexAddress(
+      customTokenAddress,
+    ) as Hex;
+
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        tokenBalances: {},
+        assetsInfo: {
+          [customTokenAssetId]: {
+            type: 'erc20',
+            decimals: 18,
+            symbol: 'aEthWETH',
+            name: 'Aave Ethereum WETH',
+          },
+        },
+        assetsBalance: {},
+        customAssets: {
+          [mockAccountId]: [customTokenAssetId],
+        },
+        internalAccounts: baseInternalAccounts,
+      },
+    };
+    const result = getTokenBalancesControllerTokenBalances(state);
+
+    expect(result).toStrictEqual({
+      [mockAccountAddressLowercase]: {
+        '0x1': {
+          [customTokenAddressChecksummed]: '0x0',
+        },
+      },
+    });
+  });
+
+  it('does not overwrite real balance with zero placeholder', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        tokenBalances: {},
+        assetsInfo: {
+          [erc20AssetId]: { type: 'erc20', decimals: 6 },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [erc20AssetId]: { amount: '1' },
+          },
+        },
+        customAssets: {
+          [mockAccountId]: [erc20AssetId],
+        },
+        internalAccounts: baseInternalAccounts,
+      },
+    };
+    const result = getTokenBalancesControllerTokenBalances(state);
+
+    expect(result[mockAccountAddressLowercase]['0x1']).toStrictEqual({
+      [erc20AssetAddressChecksummed]: '0xf4240', // real balance, not 0x0
+    });
+  });
+
+  it('skips custom non-EVM tokens', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        tokenBalances: {},
+        assetsInfo: {
+          [solanaTokenAssetId]: {
+            type: 'token',
+            decimals: 6,
+            symbol: 'USDC',
+          },
+        },
+        assetsBalance: {},
+        customAssets: {
+          [mockAccountId2]: [solanaTokenAssetId],
+        },
+        internalAccounts: baseInternalAccounts,
+      },
+    };
+    const result = getTokenBalancesControllerTokenBalances(state);
+
+    expect(result).toStrictEqual({});
+  });
+
+  describe('edge cases', () => {
+    it('skips balance entries without metadata in assetsInfo', () => {
+      const unknownAssetId =
+        'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [unknownAssetId]: { amount: '999' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      const nativeAddress = getNativeAssetForChainId('0x1').address;
+      expect(
+        Object.keys(result[mockAccountAddressLowercase]['0x1']),
+      ).toStrictEqual([nativeAddress]);
+    });
+
+    it('skips a non-EVM asset stored under an EVM account', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [nativeEthAssetId]: { type: 'native', decimals: 18 },
+            [solanaNativeAssetId]: { type: 'native', decimals: 9 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [solanaNativeAssetId]: { amount: '2' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+
+      expect(() =>
+        getTokenBalancesControllerTokenBalances(state),
+      ).not.toThrow();
+      const result = getTokenBalancesControllerTokenBalances(state);
+      const nativeAddress = getNativeAssetForChainId('0x1').address;
+      expect(Object.keys(result[mockAccountAddressLowercase])).toStrictEqual([
+        '0x1',
+      ]);
+      expect(
+        Object.keys(result[mockAccountAddressLowercase]['0x1']),
+      ).toStrictEqual([nativeAddress]);
+    });
+
+    it('handles multiple EVM accounts', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [erc20AssetId]: { type: 'erc20', decimals: 6 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [erc20AssetId]: { amount: '10' },
+            },
+            [mockAccountId3]: {
+              [erc20AssetId]: { amount: '20' },
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+              [mockAccountId3]: {
+                id: mockAccountId3,
+                address: mockAccountAddressLowercase2,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      expect(result[mockAccountAddressLowercase]).toBeDefined();
+      expect(result[mockAccountAddressLowercase2]).toBeDefined();
+      expect(
+        result[mockAccountAddressLowercase]['0x1'][
+          erc20AssetAddressChecksummed
+        ],
+      ).toBe('0x989680'); // 10 * 10^6
+      expect(
+        result[mockAccountAddressLowercase2]['0x1'][
+          erc20AssetAddressChecksummed
+        ],
+      ).toBe('0x1312d00'); // 20 * 10^6
+    });
+
+    it('maps non-mainnet native assets to zero address to match TokenBalancesController behavior', () => {
+      const zeroAddress: Hex = '0x0000000000000000000000000000000000000000';
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          tokenBalances: {},
+          assetsInfo: {
+            [nativePolygonAssetId]: { type: 'native', decimals: 18 },
+          },
+          assetsBalance: {
+            [mockAccountId]: {
+              [nativePolygonAssetId]: { amount: '2' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: baseInternalAccounts,
+        },
+      };
+      const result = getTokenBalancesControllerTokenBalances(state);
+
+      expect(result[mockAccountAddressLowercase]['0x89']).toStrictEqual({
+        [zeroAddress]: '0x1bc16d674ec80000', // 2 MATIC (18 decimals)
+      });
+    });
+  });
+});
+
+describe('getMultiChainAssetsControllerAccountsAssets', () => {
+  it('derives accountsAssets from new state structure for non-EVM accounts only', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        accountsAssets: {},
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '1' },
+            [erc20AssetId]: { amount: '1' },
+          },
+          [mockAccountId2]: {
+            [solanaTokenAssetId]: { amount: '100' },
+          },
+        },
+        customAssets: {},
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+            [mockAccountId2]: {
+              id: mockAccountId2,
+              type: 'solana:data-account',
+            },
+          },
+        },
+      },
+    };
+    const result = getMultiChainAssetsControllerAccountsAssets(state);
+
+    expect(result).toStrictEqual({
+      [mockAccountId2]: [solanaTokenAssetId],
+    });
+  });
+
+  describe('edge cases', () => {
+    it('merges and deduplicates assetsBalance and customAssets', () => {
+      const extraSolAssetId =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112' as CaipAssetType;
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsAssets: {},
+          assetsBalance: {
+            [mockAccountId2]: {
+              [solanaTokenAssetId]: { amount: '100' },
+            },
+          },
+          customAssets: {
+            [mockAccountId2]: [
+              solanaTokenAssetId as CaipAssetType,
+              extraSolAssetId,
+            ],
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAccountsAssets(state);
+
+      expect(result[mockAccountId2]).toHaveLength(2);
+      expect(result[mockAccountId2]).toContain(solanaTokenAssetId);
+      expect(result[mockAccountId2]).toContain(extraSolAssetId);
+    });
+
+    it('filters out EIP155 assets for non-EVM accounts', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsAssets: {},
+          assetsBalance: {
+            [mockAccountId2]: {
+              [nativeEthAssetId]: { amount: '1' },
+              [solanaTokenAssetId]: { amount: '100' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAccountsAssets(state);
+
+      expect(result[mockAccountId2]).toStrictEqual([solanaTokenAssetId]);
+    });
+
+    it('returns empty array when non-EVM account has only EIP155 assets', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          accountsAssets: {},
+          assetsBalance: {
+            [mockAccountId2]: {
+              [nativeEthAssetId]: { amount: '1' },
+            },
+          },
+          customAssets: {},
+          internalAccounts: {
+            accounts: {
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAccountsAssets(state);
+
+      expect(result[mockAccountId2]).toStrictEqual([]);
+    });
+  });
+});
+
+describe('getMultiChainAssetsControllerAssetsMetadata', () => {
+  it('derives assetsMetadata from assetsInfo for non-EIP155 assets only', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        assetsMetadata: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          [erc20AssetId]: {
+            type: 'erc20',
+            decimals: 6,
+            symbol: 'USDC',
+            name: 'USD Coin',
+          },
+          [solanaTokenAssetId]: {
+            type: 'token',
+            decimals: 6,
+            symbol: 'USDC',
+            name: 'USD Coin',
+            image: 'https://example.com/sol-usdc.png',
+          },
+        },
+      },
+    };
+    const result = getMultiChainAssetsControllerAssetsMetadata(state);
+
+    expect(result).toStrictEqual({
+      [solanaTokenAssetId]: {
+        fungible: true,
+        iconUrl: 'https://example.com/sol-usdc.png',
+        units: [
+          {
+            decimals: 6,
+            symbol: 'USDC',
+            name: 'USD Coin',
+          },
+        ],
+        symbol: 'USDC',
+        name: 'USD Coin',
+      },
+    });
+  });
+
+  describe('edge cases', () => {
+    it('defaults iconUrl to empty string when image is undefined', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          assetsMetadata: {},
+          assetsInfo: {
+            [solanaTokenAssetId]: {
+              type: 'token',
+              decimals: 9,
+              symbol: 'SOL',
+              name: 'Solana',
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAssetsMetadata(state);
+
+      expect(result[solanaTokenAssetId as CaipAssetType].iconUrl).toBe('');
+    });
+
+    it('excludes EIP155 assets from multichain metadata', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          assetsMetadata: {},
+          assetsInfo: {
+            [nativeEthAssetId]: {
+              type: 'native',
+              decimals: 18,
+              symbol: 'ETH',
+              name: 'Ether',
+            },
+            [erc20AssetId]: {
+              type: 'erc20',
+              decimals: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAssetsMetadata(state);
+
+      expect(result).toStrictEqual({});
+    });
+  });
+});
+
+describe('getMultiChainAssetsControllerAllIgnoredAssets', () => {
+  it('derives allIgnoredAssets from assetPreferences for non-EVM accounts only', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        allIgnoredAssets: {},
+        assetPreferences: {
+          [erc20AssetId]: { hidden: true },
+          [solanaTokenAssetId]: { hidden: true },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+            [mockAccountId2]: {
+              id: mockAccountId2,
+              type: 'solana:data-account',
+            },
+          },
+        },
+      },
+    };
+    const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
+
+    expect(result).toStrictEqual({
+      [mockAccountId2]: [solanaTokenAssetId],
+    });
+  });
+
+  describe('edge cases', () => {
+    it('skips preferences with hidden set to false', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allIgnoredAssets: {},
+          assetPreferences: {
+            [solanaTokenAssetId]: { hidden: false },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
+
+      expect(result[mockAccountId2]).toStrictEqual([]);
+    });
+
+    it('skips EIP155 assets from ignored assets list', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allIgnoredAssets: {},
+          assetPreferences: {
+            [erc20AssetId]: { hidden: true },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId2]: {
+                id: mockAccountId2,
+                type: 'solana:data-account',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
+
+      expect(result[mockAccountId2]).toStrictEqual([]);
+    });
+
+    it('skips EVM accounts entirely', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          allIgnoredAssets: {},
+          assetPreferences: {
+            [solanaTokenAssetId]: { hidden: true },
+          },
+          internalAccounts: {
+            accounts: {
+              [mockAccountId]: {
+                id: mockAccountId,
+                address: mockAccountAddressLowercase,
+                type: 'eip155:eoa',
+              },
+            },
+          },
+        },
+      };
+      const result = getMultiChainAssetsControllerAllIgnoredAssets(state);
+
+      expect(result).toStrictEqual({});
+    });
+  });
+});
+
+describe('getMultiChainBalancesControllerBalances', () => {
+  it('derives balances from new state structure for non-EVM accounts only', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        balances: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+          [erc20AssetId]: { type: 'erc20', decimals: 6, symbol: 'USDC' },
+          [solanaTokenAssetId]: {
+            type: 'token',
+            decimals: 6,
+            symbol: 'USDC',
+          },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '1' },
+            [erc20AssetId]: { amount: '1' },
+          },
+          [mockAccountId2]: {
+            [solanaTokenAssetId]: { amount: '250.5' },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+            [mockAccountId2]: {
+              id: mockAccountId2,
+              type: 'solana:data-account',
+            },
+          },
+        },
+      },
+    };
+    const result = getMultiChainBalancesControllerBalances(state);
+
+    expect(result).toStrictEqual({
+      [mockAccountId2]: {
+        [solanaTokenAssetId]: { amount: '250.5', unit: 'USDC' },
+      },
+    });
+  });
+});
+
+describe('getCurrencyRateControllerCurrentCurrency', () => {
+  it('returns selectedCurrency from new state', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        currentCurrency: 'eur',
+        selectedCurrency: 'usd' as const,
+      },
+    };
+    const result = getCurrencyRateControllerCurrentCurrency(state);
+
+    expect(result).toBe('usd');
+  });
+});
+
+describe('getCurrencyRateControllerCurrencyRates', () => {
+  it('derives currencyRates from assetsInfo and assetsPrice for native EVM assets', () => {
+    const lastUpdated = 1700000000000; // ms
+    const mockNonFungibleAssetId = 'eip155:137/slip44:987654321';
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        currentCurrency: 'eur',
+        selectedCurrency: 'eur',
+        currencyRates: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
+          [erc20AssetId]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
+          },
+          [mockNonFungibleAssetId]: {
+            type: 'something',
+            symbol: 'SMT',
+          },
+        },
+        assetsPrice: {
+          [nativeEthAssetId]: {
+            assetPriceType: 'fungible',
+            id: 'eth-price',
+            price: 2500,
+            usdPrice: 3000,
+            lastUpdated,
+            marketCap: 300000000000,
+            allTimeHigh: 4000,
+            allTimeLow: 500,
+            totalVolume: 1000000,
+            high1d: 2600,
+            low1d: 2400,
+            circulatingSupply: 120000000,
+            dilutedMarketCap: 300000000000,
+            marketCapPercentChange1d: 2,
+            priceChange1d: 50,
+            pricePercentChange1h: 0.5,
+            pricePercentChange1d: 2,
+            pricePercentChange7d: 5,
+            pricePercentChange14d: 8,
+            pricePercentChange30d: 10,
+            pricePercentChange200d: 20,
+            pricePercentChange1y: 30,
+          },
+          [mockNonFungibleAssetId]: {
+            assetPriceType: 'something',
+            id: 'smt-price',
+            price: 0.5,
+            lastUpdated,
+          },
+        },
+      },
+    };
+    const result = getCurrencyRateControllerCurrencyRates(state);
+
+    expect(result).toStrictEqual({
+      ETH: {
+        conversionDate: lastUpdated / 1000,
+        conversionRate: 2500,
+        usdConversionRate: 3000,
+      },
+    });
+  });
+
+  it('derives the USD rate from the most recently updated price on a USD-native chain', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        currencyRates: {},
+        assetsInfo: {
+          [tempoPathUsdAssetId]: {
+            type: 'erc20',
+            symbol: 'pathUSD',
+            decimals: 6,
+          },
+          [tempoBridgedUsdcAssetId]: {
+            type: 'erc20',
+            symbol: 'USDC.e',
+            decimals: 6,
+          },
+        },
+        assetsPrice: {
+          [tempoPathUsdAssetId]: makeMockPrice({
+            id: 'pathusd',
+            price: 0.9,
+            usdPrice: 1,
+            lastUpdated: 1700000000000,
+          }),
+          [tempoBridgedUsdcAssetId]: makeMockPrice({
+            id: 'bridged-usdc',
+            price: 0.9108,
+            usdPrice: 0.99,
+            lastUpdated: 1700000001000,
+          }),
+        },
+      },
+    };
+
+    const result = getCurrencyRateControllerCurrencyRates(state);
+
+    expect(result.USD?.conversionRate).toBeCloseTo(0.92);
+    expect(result.USD?.usdConversionRate).toBe(1);
+    expect(result.USD?.conversionDate).toBe(1700000001);
+  });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    { price: 0, usdPrice: 1 },
+    { price: -1, usdPrice: 1 },
+    { price: 1, usdPrice: 0 },
+    { price: 1, usdPrice: -1 },
+  ])(
+    'does not derive a USD rate from an invalid price (price $price, usdPrice $usdPrice)',
+    ({ price, usdPrice }: { price: number; usdPrice: number }) => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          currencyRates: {},
+          assetsInfo: {
+            [tempoPathUsdAssetId]: {
+              type: 'erc20',
+              symbol: 'pathUSD',
+              decimals: 6,
+            },
+          },
+          assetsPrice: {
+            [tempoPathUsdAssetId]: makeMockPrice({
+              id: 'pathusd',
+              price,
+              usdPrice,
+            }),
+          },
+        },
+      };
+
+      const result = getCurrencyRateControllerCurrencyRates(state);
+
+      expect(result.USD).toBeUndefined();
+    },
+  );
+
+  it('does not derive a USD rate from a price outside Tempo', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        currencyRates: {},
+        assetsInfo: {
+          [erc20AssetId]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
+          },
+        },
+        assetsPrice: {
+          [erc20AssetId]: makeMockPrice({
+            id: 'usdc',
+            price: 0.9,
+            usdPrice: 1,
+          }),
+        },
+      },
+    };
+
+    const result = getCurrencyRateControllerCurrencyRates(state);
+
+    expect(result.USD).toBeUndefined();
+  });
+});
+
+describe('getTokenRatesControllerMarketData', () => {
+  it('derives marketData from assetsPrice with prices converted to native currency', () => {
+    const lastUpdated = 1700000000000;
+    const ethPriceInUsd = 2000;
+    const usdcPriceInUsd = 1;
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        marketData: {},
+        currentCurrency: 'usd',
+        selectedCurrency: 'usd',
+        currencyRates: {},
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
+          [erc20AssetId]: {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
+          },
+        },
+        assetsPrice: {
+          [nativeEthAssetId]: {
+            assetPriceType: 'fungible',
+            id: 'eth-price',
+            price: ethPriceInUsd,
+            usdPrice: ethPriceInUsd,
+            lastUpdated,
+            marketCap: 300e9,
+            allTimeHigh: 4000,
+            allTimeLow: 500,
+            totalVolume: 1e9,
+            high1d: 2100,
+            low1d: 1900,
+            circulatingSupply: 120e6,
+            dilutedMarketCap: 300e9,
+            marketCapPercentChange1d: 2,
+            priceChange1d: 50,
+            pricePercentChange1h: 0.5,
+            pricePercentChange1d: 2,
+            pricePercentChange7d: 5,
+            pricePercentChange14d: 8,
+            pricePercentChange30d: 10,
+            pricePercentChange200d: 20,
+            pricePercentChange1y: 30,
+          },
+          [erc20AssetId]: {
+            assetPriceType: 'fungible',
+            id: 'usdc-price',
+            price: usdcPriceInUsd,
+            usdPrice: usdcPriceInUsd,
+            lastUpdated,
+            marketCap: 30e9,
+            allTimeHigh: 1.1,
+            allTimeLow: 0.9,
+            totalVolume: 100e9,
+            high1d: 1.01,
+            low1d: 0.99,
+            circulatingSupply: 30e9,
+            dilutedMarketCap: 30e9,
+            marketCapPercentChange1d: 0,
+            priceChange1d: 0,
+            pricePercentChange1h: 0,
+            pricePercentChange1d: 0,
+            pricePercentChange7d: 0,
+            pricePercentChange14d: 0,
+            pricePercentChange30d: 0,
+            pricePercentChange200d: 0,
+            pricePercentChange1y: 0,
+          },
+        },
+        networkConfigurationsByChainId: {
+          '0x1': { nativeCurrency: 'ETH' },
+        },
+      },
+    };
+    const result = getTokenRatesControllerMarketData(state);
+
+    // ETH native rate is 2000 USD; USDC price 1 USD -> 1/2000 ETH
+    const marketData = result['0x1'][erc20AssetAddressChecksummed];
+    expect(marketData.price).toBe(usdcPriceInUsd / ethPriceInUsd);
+    expect(marketData.currency).toBe('ETH');
+    expect(marketData.tokenAddress).toBe(erc20AssetAddressChecksummed);
+  });
+
+  it('prices tokens on a USD-native chain with no native asset in USD', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        marketData: {},
+        currentCurrency: 'eur',
+        selectedCurrency: 'eur',
+        currencyRates: {},
+        assetsInfo: {
+          [tempoPathUsdAssetId]: {
+            type: 'erc20',
+            symbol: 'pathUSD',
+            decimals: 6,
+          },
+          [tempoBridgedUsdcAssetId]: {
+            type: 'erc20',
+            symbol: 'USDC.e',
+            decimals: 6,
+          },
+        },
+        assetsPrice: {
+          [tempoPathUsdAssetId]: makeMockPrice({
+            id: 'pathusd',
+            price: 0.9,
+            usdPrice: 1,
+            lastUpdated: 1700000000000,
+          }),
+          [tempoBridgedUsdcAssetId]: makeMockPrice({
+            id: 'bridged-usdc',
+            price: 0.9108,
+            usdPrice: 0.99,
+            lastUpdated: 1700000001000,
+          }),
+        },
+        networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
+      },
+    };
+    const result = getTokenRatesControllerMarketData(state);
+
+    const pathUsdMarketData =
+      result[tempoChainId][
+        toChecksumHexAddress(tempoPathUsdAddressLowercase) as Hex
+      ];
+    const bridgedUsdcMarketData =
+      result[tempoChainId][
+        toChecksumHexAddress(tempoBridgedUsdcAddressLowercase) as Hex
+      ];
+    expect(
+      getCurrencyRateControllerCurrencyRates(state).USD?.conversionRate,
+    ).toBeCloseTo(0.92);
+    expect(pathUsdMarketData.price).toBeCloseTo(0.9 / 0.92);
+    expect(pathUsdMarketData.currency).toBe('USD');
+    expect(bridgedUsdcMarketData.price).toBeCloseTo(0.99);
+    expect(bridgedUsdcMarketData.currency).toBe('USD');
+  });
+
+  describe('edge cases', () => {
+    it('skips non-EIP155 assets from marketData', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          marketData: {},
+          currentCurrency: 'usd',
+          selectedCurrency: 'usd',
+          currencyRates: {},
+          assetsInfo: {
+            [nativeEthAssetId]: {
+              type: 'native',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            [solanaTokenAssetId]: {
+              type: 'token',
+              symbol: 'USDC',
+              decimals: 6,
+            },
+          },
+          assetsPrice: {
+            [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: 2000 }),
+            [solanaTokenAssetId]: makeMockPrice({
+              id: 'sol-usdc',
+              price: 1,
+            }),
+          },
+          networkConfigurationsByChainId: {
+            '0x1': { nativeCurrency: 'ETH' },
+          },
+        },
+      };
+      const result = getTokenRatesControllerMarketData(state);
+
+      expect(result['0x1']).toBeDefined();
+      expect(Object.keys(result).every((key) => key.startsWith('0x'))).toBe(
+        true,
+      );
+    });
+
+    it('skips assets without metadata in assetsInfo', () => {
+      const unknownAssetId =
+        'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          marketData: {},
+          currentCurrency: 'usd',
+          selectedCurrency: 'usd',
+          currencyRates: {},
+          assetsInfo: {
+            [nativeEthAssetId]: {
+              type: 'native',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+          },
+          assetsPrice: {
+            [nativeEthAssetId]: makeMockPrice({
+              id: 'eth',
+              price: 2000,
+            }),
+            [unknownAssetId]: makeMockPrice({
+              id: 'unknown',
+              price: 42,
+            }),
+          },
+          networkConfigurationsByChainId: {
+            '0x1': { nativeCurrency: 'ETH' },
+          },
+        },
+      };
+      const result = getTokenRatesControllerMarketData(state);
+
+      expect(Object.keys(result['0x1'])).toHaveLength(1);
+    });
+
+    it('skips assets when native currency conversion rate is unavailable', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          marketData: {},
+          currentCurrency: 'usd',
+          selectedCurrency: 'usd',
+          currencyRates: {},
+          assetsInfo: {
+            [erc20AssetId]: {
+              type: 'erc20',
+              symbol: 'USDC',
+              decimals: 6,
+            },
+          },
+          assetsPrice: {
+            [erc20AssetId]: makeMockPrice({ id: 'usdc', price: 1 }),
+          },
+          networkConfigurationsByChainId: {
+            '0x1': { nativeCurrency: 'ETH' },
+          },
+        },
+      };
+      const result = getTokenRatesControllerMarketData(state);
+
+      expect(result).toStrictEqual({});
+    });
+
+    it('places native slip44 asset at getNativeTokenAddress', () => {
+      const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          marketData: {},
+          currentCurrency: 'usd',
+          selectedCurrency: 'usd',
+          currencyRates: {},
+          assetsInfo: {
+            [nativeEthAssetId]: {
+              type: 'native',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+          },
+          assetsPrice: {
+            [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: 2000 }),
+          },
+          networkConfigurationsByChainId: {
+            '0x1': { nativeCurrency: 'ETH' },
+          },
+        },
+      };
+      const result = getTokenRatesControllerMarketData(state);
+
+      expect(result['0x1'][nativeTokenAddress]).toBeDefined();
+      expect(result['0x1'][nativeTokenAddress].tokenAddress).toBe(
+        nativeTokenAddress,
+      );
+      expect(result['0x1'][nativeTokenAddress].price).toBe(1);
+    });
+
+    it('converts all price fields to native currency denomination', () => {
+      const ethPrice = 2500;
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          marketData: {},
+          currentCurrency: 'usd',
+          selectedCurrency: 'usd',
+          currencyRates: {},
+          assetsInfo: {
+            [nativeEthAssetId]: {
+              type: 'native',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            [erc20AssetId]: {
+              type: 'erc20',
+              symbol: 'USDC',
+              decimals: 6,
+            },
+          },
+          assetsPrice: {
+            [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: ethPrice }),
+            [erc20AssetId]: makeMockPrice({
+              id: 'usdc',
+              price: 1,
+              marketCap: 30e9,
+              allTimeHigh: 1.1,
+              allTimeLow: 0.9,
+              totalVolume: 100e9,
+              high1d: 1.01,
+              low1d: 0.99,
+              dilutedMarketCap: 30e9,
+              circulatingSupply: 30e9,
+            }),
+          },
+          networkConfigurationsByChainId: {
+            '0x1': { nativeCurrency: 'ETH' },
+          },
+        },
+      };
+      const result = getTokenRatesControllerMarketData(state);
+      const md = result['0x1'][erc20AssetAddressChecksummed];
+
+      expect(md.price).toBe(1 / ethPrice);
+      expect(md.marketCap).toBe(30e9 / ethPrice);
+      expect(md.allTimeHigh).toBe(1.1 / ethPrice);
+      expect(md.allTimeLow).toBe(0.9 / ethPrice);
+      expect(md.totalVolume).toBe(100e9 / ethPrice);
+      expect(md.high1d).toBe(1.01 / ethPrice);
+      expect(md.low1d).toBe(0.99 / ethPrice);
+      expect(md.dilutedMarketCap).toBe(30e9 / ethPrice);
+      // circulatingSupply is NOT converted
+      expect(md.circulatingSupply).toBe(30e9);
+    });
+
+    it('does not use slip44 fallback for ERC-20 assets missing from assetsInfo', () => {
+      const ethPrice = 2000;
+      const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
+      const orphanErc20AssetId =
+        'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          marketData: {},
+          currentCurrency: 'usd',
+          selectedCurrency: 'usd',
+          currencyRates: {},
+          assetsInfo: {
+            [nativeEthAssetId]: {
+              type: 'native',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+          },
+          assetsPrice: {
+            [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: ethPrice }),
+            [orphanErc20AssetId]: makeMockPrice({
+              id: 'orphan',
+              price: 999,
+            }),
+          },
+          networkConfigurationsByChainId: {
+            '0x1': { nativeCurrency: 'ETH' },
+          },
+        },
+      };
+      const result = getTokenRatesControllerMarketData(state);
+
+      // The native entry should still be the native price, not overwritten
+      expect(result['0x1'][nativeTokenAddress].price).toBe(1);
+      // The orphan ERC-20 should be skipped entirely (no metadata)
+      const checksumOrphan = toChecksumHexAddress(
+        '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+      ) as Hex;
+      expect(result['0x1'][checksumOrphan]).toBeUndefined();
+    });
+  });
+});
+
+describe('getMultichainAssetsRatesControllerConversionRates', () => {
+  it('derives conversionRates from assetsPrice for non-EVM assets only', () => {
+    const lastUpdated = 1700000000000;
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        assetsPrice: {
+          [nativeEthAssetId]: {
+            assetPriceType: 'fungible' as const,
+            id: 'eth-price',
+            price: 2000,
+            usdPrice: 2000,
+            lastUpdated,
+            marketCap: 300e9,
+            allTimeHigh: 4000,
+            allTimeLow: 500,
+            totalVolume: 1e9,
+            high1d: 2100,
+            low1d: 1900,
+            circulatingSupply: 120e6,
+            dilutedMarketCap: 300e9,
+            marketCapPercentChange1d: 2,
+            priceChange1d: 50,
+            pricePercentChange1h: 0.5,
+            pricePercentChange1d: 2,
+            pricePercentChange7d: 5,
+            pricePercentChange14d: 8,
+            pricePercentChange30d: 10,
+            pricePercentChange200d: 20,
+            pricePercentChange1y: 30,
+          },
+          [solanaTokenAssetId]: {
+            assetPriceType: 'fungible' as const,
+            id: 'sol-usdc-price',
+            price: 1.02,
+            usdPrice: 1.02,
+            lastUpdated,
+            marketCap: 30e9,
+            allTimeHigh: 1.1,
+            allTimeLow: 0.95,
+            totalVolume: 100e9,
+            high1d: 1.03,
+            low1d: 1.01,
+            circulatingSupply: 30e9,
+            dilutedMarketCap: 30e9,
+            marketCapPercentChange1d: 0.5,
+            priceChange1d: 0.01,
+            pricePercentChange1h: 0.1,
+            pricePercentChange1d: 0.5,
+            pricePercentChange7d: 1,
+            pricePercentChange14d: 1.5,
+            pricePercentChange30d: 2,
+            pricePercentChange200d: 3,
+            pricePercentChange1y: 5,
+          },
+        },
+      },
+    };
+    const result = getMultichainAssetsRatesControllerConversionRates(state);
+
+    expect(result[nativeEthAssetId]).toBeUndefined();
+    expect(result[solanaTokenAssetId]).toStrictEqual({
+      rate: '1.02',
+      conversionTime: lastUpdated,
+      expirationTime: undefined,
+      marketData: {
+        fungible: true,
+        allTimeHigh: '1.1',
+        allTimeLow: '0.95',
+        circulatingSupply: '30000000000',
+        marketCap: '30000000000',
+        totalVolume: '100000000000',
+        pricePercentChange: {
+          PT1H: 0.1,
+          P1D: 0.5,
+          P7D: 1,
+          P14D: 1.5,
+          P30D: 2,
+          P200D: 3,
+          P1Y: 5,
+        },
+      },
+    });
+  });
+
+  describe('edge cases', () => {
+    it('returns empty result when only EVM assets exist in assetsPrice', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          assetsPrice: {
+            [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: 2000 }),
+            [erc20AssetId]: makeMockPrice({ id: 'usdc', price: 1 }),
+          },
+        },
+      };
+      const result = getMultichainAssetsRatesControllerConversionRates(state);
+
+      expect(result).toStrictEqual({});
+    });
+
+    it('converts all market data fields to strings', () => {
+      const lastUpdated = 1700000000000;
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          assetsPrice: {
+            [solanaTokenAssetId]: makeMockPrice({
+              id: 'sol-usdc',
+              price: 1.5,
+              lastUpdated,
+              allTimeHigh: 2.0,
+              allTimeLow: 0.8,
+              circulatingSupply: 1e9,
+              marketCap: 1.5e9,
+              totalVolume: 5e8,
+            }),
+          },
+        },
+      };
+      const result = getMultichainAssetsRatesControllerConversionRates(state);
+
+      const entry = result[solanaTokenAssetId];
+      expect(entry.rate).toBe('1.5');
+      expect(entry.conversionTime).toBe(lastUpdated);
+      expect(entry.expirationTime).toBeUndefined();
+      expect(entry.marketData?.allTimeHigh).toBe('2');
+      expect(entry.marketData?.allTimeLow).toBe('0.8');
+      expect(entry.marketData?.circulatingSupply).toBe('1000000000');
+      expect(entry.marketData?.marketCap).toBe('1500000000');
+      expect(entry.marketData?.totalVolume).toBe('500000000');
+    });
+
+    it('omits non-finite market data fields instead of stringifying them', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          assetsPrice: {
+            [solanaTokenAssetId]: {
+              ...makeMockPrice({
+                id: 'sol-usdc',
+                price: 1.5,
+              }),
+              allTimeHigh: null,
+              allTimeLow: undefined,
+              circulatingSupply: NaN,
+              marketCap: null,
+              totalVolume: Infinity,
+            } as unknown as FungibleAssetPrice,
+          },
+        },
+      };
+      const result = getMultichainAssetsRatesControllerConversionRates(state);
+
+      const { marketData } = result[solanaTokenAssetId];
+      expect(marketData?.allTimeHigh).toBeUndefined();
+      expect(marketData?.allTimeLow).toBeUndefined();
+      expect(marketData?.circulatingSupply).toBeUndefined();
+      expect(marketData?.marketCap).toBeUndefined();
+      expect(marketData?.totalVolume).toBeUndefined();
+    });
+
+    it('handles empty assetsPrice', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          assetsPrice: {},
+        },
+      };
+      const result = getMultichainAssetsRatesControllerConversionRates(state);
+
+      expect(result).toStrictEqual({});
+    });
+  });
+});
+
+describe('getRatesControllerRates', () => {
+  const solanaSplMissingSymbolAssetId =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:2NzMQx8TiDFbw5p3oMNVBh59UkKAPLHoa62YV6vXNmmG';
+
+  it('derives rates from assetsInfo and assetsPrice for non-EVM native assets', () => {
+    const lastUpdated = 1700000000000;
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        rates: {},
+        assetsInfo: {
+          [nativeEthAssetId]: {
+            type: 'native',
+            symbol: 'ETH',
+            decimals: 18,
+          },
+          [bitcoinNativeAssetId]: {
+            type: 'native',
+            symbol: 'BTC',
+            decimals: 8,
+          },
+          [solanaNativeAssetId]: {
+            type: 'native',
+            symbol: 'SOL',
+            decimals: 9,
+          },
+        },
+        assetsPrice: {
+          [nativeEthAssetId]: makeMockPrice({
+            id: 'eth',
+            price: 2000,
+            usdPrice: 2000,
+            lastUpdated,
+          }),
+          [bitcoinNativeAssetId]: makeMockPrice({
+            id: 'btc',
+            price: 71052.43,
+            usdPrice: 71052.43,
+            lastUpdated,
+          }),
+          [solanaNativeAssetId]: makeMockPrice({
+            id: 'sol',
+            price: 91.69,
+            usdPrice: 91.69,
+            lastUpdated,
+          }),
+        },
+      },
+    };
+    const result = getRatesControllerRates(state);
+
+    expect(result.eth).toBeUndefined();
+    expect(result).toStrictEqual({
+      btc: {
+        conversionDate: lastUpdated,
+        conversionRate: 71052.43,
+        usdConversionRate: 71052.43,
+      },
+      sol: {
+        conversionDate: lastUpdated,
+        conversionRate: 91.69,
+        usdConversionRate: 91.69,
+      },
+    });
+  });
+
+  it('skips assetsInfo entries with missing symbol without throwing', () => {
+    const lastUpdated = 1700000000000;
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        rates: {},
+        assetsInfo: {
+          [solanaSplMissingSymbolAssetId]: {
+            decimals: 9,
+            type: 'spl',
+          },
+          [bitcoinNativeAssetId]: {
+            type: 'native',
+            symbol: 'BTC',
+            decimals: 8,
+          },
+        },
+        assetsPrice: {
+          [bitcoinNativeAssetId]: makeMockPrice({
+            id: 'btc',
+            price: 71052.43,
+            usdPrice: 71052.43,
+            lastUpdated,
+          }),
+        },
+      },
+    };
+
+    expect(() => getRatesControllerRates(state)).not.toThrow();
+    expect(getRatesControllerRates(state)).toStrictEqual({
+      btc: {
+        conversionDate: lastUpdated,
+        conversionRate: 71052.43,
+        usdConversionRate: 71052.43,
+      },
+    });
+  });
+});
+
+describe('getRatesControllerFiatCurrency', () => {
+  it('returns selectedCurrency from new state', () => {
+    const state = {
+      metamask: {
+        ...enabledFlags,
+        fiatCurrency: 'eur',
+        selectedCurrency: 'usd' as const,
+      },
+    };
+    const result = getRatesControllerFiatCurrency(state);
+
+    expect(result).toBe('usd');
+  });
+});

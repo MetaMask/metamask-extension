@@ -1,12 +1,16 @@
-'use no memo';
-
 import React from 'react';
-import { ButtonLink, Text } from '../../../../../components/component-library';
 import {
+  Text,
+  TextButton,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useSubscriptionMetrics } from '../../../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  ShieldCtaActionClickedEnum,
+  ShieldMetricsSourceEnum,
+} from '../../../../../../shared/constants/subscriptions';
 
 const SHIELD_LEARN_HOW_COVERAGE_WORKS_URL =
   'https://metamask.io/transaction-shield';
@@ -19,24 +23,33 @@ export const ShieldCoverageAlertMessage = ({
   modalBodyStr: string;
 }) => {
   const t = useI18nContext();
+  const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
+
+  const handleLearnHowCoverageWorksClick = () => {
+    captureShieldCtaClickedEvent({
+      source: ShieldMetricsSourceEnum.PostTransaction,
+      ctaActionClicked: ShieldCtaActionClickedEnum.WhatsCovered,
+      redirectToUrl: SHIELD_LEARN_HOW_COVERAGE_WORKS_URL,
+    });
+  };
 
   return (
     <Text
-      variant={TextVariant.bodyMd}
-      color={TextColor.textDefault}
+      variant={TextVariant.BodyMd}
+      color={TextColor.TextDefault}
       data-testid="alert-modal__selected-alert"
     >
       {t(modalBodyStr, [
-        <ButtonLink
-          href={SHIELD_LEARN_HOW_COVERAGE_WORKS_URL}
-          key="link"
-          target="_blank"
-          rel="noreferrer noopener"
-          color={TextColor.primaryDefault}
-          style={{ verticalAlign: 'baseline' }}
-        >
-          {t('shieldCoverageAlertMessageLearnHowCoverageWorks')}
-        </ButtonLink>,
+        <TextButton asChild key="link" className="inline">
+          <a
+            href={SHIELD_LEARN_HOW_COVERAGE_WORKS_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+            onClick={handleLearnHowCoverageWorksClick}
+          >
+            {t('shieldCoverageAlertMessageLearnHowCoverageWorks')}
+          </a>
+        </TextButton>,
         COVERAGE_AMOUNT,
       ])}
     </Text>

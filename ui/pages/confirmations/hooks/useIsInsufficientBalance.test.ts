@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { useIsInsufficientBalance } from './useIsInsufficientBalance';
 import * as alertsModule from './alerts/transactions/useInsufficientBalanceAlerts';

@@ -25,7 +25,6 @@ exports[`SnapsSection renders section for typed sign request 1`] = `
               >
                 BIP-32 Test Snap
               </span>
-              
                
             </span>
           </p>
@@ -87,7 +86,6 @@ exports[`SnapsSection renders section personal sign request 1`] = `
               >
                 BIP-32 Test Snap
               </span>
-              
                
             </span>
           </p>

@@ -6,9 +6,10 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import { PublicInterface } from '@metamask/utils';
+import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import type { DataDeletionService } from '../../services/data-deletion-service';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
-import { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
+import { MetaMetricsDataDeletionControllerMethodActions } from './metametrics-data-deletion-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsDataDeletionController';
@@ -63,26 +64,18 @@ const metadata: StateMetadata<MetaMetricsDataDeletionState> = {
   },
 };
 
-// Describes the action creating the delete regulation task
-export type CreateMetaMetricsDataDeletionTaskAction = {
-  type: `${typeof controllerName}:createMetaMetricsDataDeletionTask`;
-  handler: MetaMetricsDataDeletionController['createMetaMetricsDataDeletionTask'];
-};
+const MESSENGER_EXPOSED_METHODS = [
+  'createMetaMetricsDataDeletionTask',
+  'updateDataDeletionTaskStatus',
+] as const;
 
-// Describes the action to check the existing regulation status
-export type UpdateDataDeletionTaskStatusAction = {
-  type: `${typeof controllerName}:updateDataDeletionTaskStatus`;
-  handler: MetaMetricsDataDeletionController['updateDataDeletionTaskStatus'];
-};
+export type MetaMetricsDataDeletionControllerGetStateAction =
+  ControllerGetStateAction<typeof controllerName, MetaMetricsDataDeletionState>;
 
 // Union of all possible actions for the messenger
 export type MetaMetricsDataDeletionControllerMessengerActions =
-  | ControllerGetStateAction<
-      typeof controllerName,
-      MetaMetricsDataDeletionState
-    >
-  | CreateMetaMetricsDataDeletionTaskAction
-  | UpdateDataDeletionTaskStatusAction;
+  | MetaMetricsDataDeletionControllerGetStateAction
+  | MetaMetricsDataDeletionControllerMethodActions;
 
 export type MetaMetricsDataDeletionControllerMessengerEvents =
   ControllerStateChangeEvent<
@@ -93,7 +86,7 @@ export type MetaMetricsDataDeletionControllerMessengerEvents =
 /**
  * Actions that this controller is allowed to call.
  */
-export type AllowedActions = MetaMetricsControllerGetStateAction;
+export type AllowedActions = AnalyticsControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -143,22 +136,9 @@ export class MetaMetricsDataDeletionController extends BaseController<
       state: { ...getDefaultState(), ...state },
     });
     this.#dataDeletionService = dataDeletionService;
-    this.#registerMessageHandlers();
-  }
-
-  /**
-   * Constructor helper for registering this controller's messaging system
-   * actions.
-   */
-  #registerMessageHandlers(): void {
-    this.messenger.registerActionHandler(
-      `${controllerName}:createMetaMetricsDataDeletionTask`,
-      this.createMetaMetricsDataDeletionTask.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:updateDataDeletionTaskStatus`,
-      this.updateDataDeletionTaskStatus.bind(this),
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -167,16 +147,14 @@ export class MetaMetricsDataDeletionController extends BaseController<
    *
    */
   async createMetaMetricsDataDeletionTask(): Promise<void> {
-    const { metaMetricsId } = this.messenger.call(
-      'MetaMetricsController:getState',
-    );
-    if (!metaMetricsId) {
+    const { analyticsId } = this.messenger.call('AnalyticsController:getState');
+    if (!analyticsId) {
       throw new Error('MetaMetrics ID not found');
     }
 
     const deleteRegulateId =
       await this.#dataDeletionService.createDataDeletionRegulationTask(
-        metaMetricsId,
+        analyticsId,
       );
     this.update((state) => {
       state.metaMetricsDataDeletionId = deleteRegulateId ?? null;

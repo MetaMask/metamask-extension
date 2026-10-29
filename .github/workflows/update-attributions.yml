@@ -5,18 +5,18 @@ on:
     types: created
 
 jobs:
-  is-fork-pull-request:
-    name: Determine whether this issue comment was on a pull request from a fork
+  is-cross-repo-pr:
+    name: Determine whether this PR is cross-repo
     if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-attributions') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
-      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+      IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Determine whether this PR is from a fork
-        id: is-fork
-        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v6
+      - name: Determine whether this PR is cross-repo
+        id: is-cross-repo
+        run: echo "IS_CROSS_REPO_PR=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
@@ -25,12 +25,19 @@ jobs:
     name: React to the comment
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: is-fork-pull-request
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    needs: is-cross-repo-pr
+    # Skip cross-repo PRs — later steps need write access to push commits.
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
+    permissions:
+      id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
       - name: React to the comment
         run: |
           gh api \
@@ -41,32 +48,31 @@ jobs:
             -f content='+1'
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           REPO: ${{ github.repository }}
 
   prepare:
     name: Prepare dependencies
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: is-fork-pull-request
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    needs: is-cross-repo-pr
+    # Skip cross-repo PRs — later steps need write access to push commits.
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -77,30 +83,31 @@ jobs:
     timeout-minutes: 30
     needs:
       - prepare
-      - is-fork-pull-request
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+      - is-cross-repo-pr
+    # Skip cross-repo PRs — later steps need write access to push commits.
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
       - name: Generate Attributions
         run: yarn attributions:generate
-      - name: Cache attributions file
-        uses: actions/cache/save@v4
+      - name: Upload attributions file
+        uses: actions/upload-artifact@v7
         with:
+          name: attributions-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: attribution.txt
-          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          retention-days: 1
+          if-no-files-found: 'error'
 
   commit-updated-attributions:
     name: Commit the updated Attributions
@@ -108,15 +115,26 @@ jobs:
     timeout-minutes: 30
     needs:
       - prepare
-      - is-fork-pull-request
+      - is-cross-repo-pr
       - update-attributions
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
         with:
-          # Use PAT to ensure that the commit later can trigger status check workflows
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: write
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.token.outputs.token }}
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
@@ -125,12 +143,10 @@ jobs:
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-      - name: Restore attributions file
-        uses: actions/cache/restore@v4
+      - name: Download attributions file
+        uses: actions/download-artifact@v8
         with:
-          path: attribution.txt
-          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          name: attributions-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Check whether there are attributions changes
         id: attributions-changes
         run: |
@@ -143,8 +159,8 @@ jobs:
       - name: Commit the updated attributions
         if: steps.attributions-changes.outputs.HAS_CHANGES == 'true'
         run: |
-          git config --global user.name 'MetaMask Bot'
-          git config --global user.email 'metamaskbot@users.noreply.github.com'
+          git config --global user.name 'metamask-ci[bot]'
+          git config --global user.email '271559518+metamask-ci[bot]@users.noreply.github.com'
           git commit -am "Update Attributions"
           git push
       - name: Post comment
@@ -157,7 +173,7 @@ jobs:
           fi
         env:
           HAS_CHANGES: ${{ steps.attributions-changes.outputs.HAS_CHANGES }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
   check-status:
@@ -166,9 +182,9 @@ jobs:
     timeout-minutes: 30
     needs:
       - commit-updated-attributions
-      - is-fork-pull-request
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+      - is-cross-repo-pr
+    # Skip cross-repo PRs — later steps need write access to push commits.
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
@@ -178,14 +194,24 @@ jobs:
 
   failure-comment:
     name: Comment about the attributions update failure
-    if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ !cancelled() && needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
-      - is-fork-pull-request
+      - is-cross-repo-pr
       - check-status
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Post comment if the update failed
@@ -195,6 +221,6 @@ jobs:
             gh pr comment "${PR_NUMBER}" --body "Attributions update failed. You can [review the logs or retry the attributions update here](${ACTION_RUN_URL})"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'

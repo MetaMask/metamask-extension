@@ -7,10 +7,19 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import * as Actions from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import AccountNotFound from './account-not-found';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const mockUseNavigate = jest.fn();
 
@@ -22,8 +31,8 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('Account Not Found Seedless Onboarding View', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
+  beforeEach(() => {
+    setBackgroundConnection(backgroundConnectionMock as never);
   });
 
   afterEach(() => {
@@ -45,11 +54,12 @@ describe('Account Not Found Seedless Onboarding View', () => {
       customMockStore,
     );
 
-    expect(getByText('Wallet not found')).toBeInTheDocument();
+    expect(
+      getByText(messages.accountNotFoundTitle.message),
+    ).toBeInTheDocument();
     // should show the correct button
-    const loginButton = getByText('Yes, create a new wallet');
+    const loginButton = getByText(messages.accountNotFoundCreateOne.message);
     expect(loginButton).toBeInTheDocument();
-    expect(loginButton.nodeName).toBe('BUTTON');
   });
 
   it('should navigate to the create-password route when the button is clicked', async () => {
@@ -58,7 +68,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
       customMockStore,
     );
 
-    const loginButton = getByText('Yes, create a new wallet');
+    const loginButton = getByText(messages.accountNotFoundCreateOne.message);
     fireEvent.click(loginButton);
 
     await waitFor(() => {
@@ -76,7 +86,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.socialImport,
+        firstTimeFlowType: FirstTimeFlowType.import,
       },
     });
 

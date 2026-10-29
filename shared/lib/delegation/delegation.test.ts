@@ -1,23 +1,21 @@
+import { ROOT_AUTHORITY, ANY_BENEFICIARY } from '@metamask/delegation-core';
 import {
   toDelegationStruct,
   type Delegation,
   type DelegationStruct,
-  ROOT_AUTHORITY,
   createDelegation,
   createOpenDelegation,
   resolveAuthority,
-  ANY_BENEFICIARY,
   encodeDisableDelegation,
   encodeRedeemDelegations,
 } from './delegation';
-import { type Caveat } from './caveat';
-import { type CaveatBuilder, resolveCaveats } from './caveatBuilder';
 import { type Hex, toFunctionSelector } from './utils';
 import {
   ExecutionMode,
   type ExecutionStruct,
   SINGLE_DEFAULT_MODE,
 } from './execution';
+import { type Caveat } from '.';
 
 const mockDelegate = '0x1234567890123456789012345678901234567890' as Hex;
 const mockDelegator = '0x0987654321098765432109876543210987654321' as Hex;
@@ -259,51 +257,6 @@ describe('createOpenDelegation', () => {
       salt: '0x',
       signature: '0x',
     });
-  });
-});
-
-describe('resolveCaveats', () => {
-  it('should return the same array when given a Caveat array', () => {
-    const caveats: Caveat[] = [
-      {
-        enforcer: '0x1111111111111111111111111111111111111111',
-        terms: '0x',
-        args: '0x',
-      },
-    ];
-
-    const result = resolveCaveats(caveats);
-    expect(result).toBe(caveats);
-    expect(result).toStrictEqual(caveats);
-  });
-
-  it('should call build() and return result when given a CaveatBuilder', () => {
-    const mockCaveats: Caveat[] = [
-      {
-        enforcer: '0x1111111111111111111111111111111111111111',
-        terms: '0x',
-        args: '0x',
-      },
-    ];
-
-    const mockBuilder = {
-      build: () => mockCaveats,
-    };
-
-    const result = resolveCaveats(mockBuilder as unknown as CaveatBuilder);
-    expect(result).toStrictEqual(mockCaveats);
-  });
-
-  it('should handle build() throwing an error', () => {
-    const mockBuilder = {
-      build: () => {
-        throw new Error('Build failed');
-      },
-    };
-
-    expect(() =>
-      resolveCaveats(mockBuilder as unknown as CaveatBuilder),
-    ).toThrow('Build failed');
   });
 });
 

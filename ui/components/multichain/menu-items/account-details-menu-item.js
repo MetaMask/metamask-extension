@@ -1,15 +1,16 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
+import { IconName } from '@metamask/design-system-react';
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { IconName, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { getHDEntropyIndex } from '../../../selectors';
 import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
@@ -20,26 +21,30 @@ export const AccountDetailsMenuItem = ({
   textProps,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const accountGroupId = useSelector(getSelectedAccountGroup);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const navigate = useNavigate();
 
   const LABEL = t('accountDetails');
 
   const handleNavigation = useCallback(() => {
-    trackEvent({
-      event: MetaMetricsEventName.AccountDetailsOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: metricsLocation,
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
-
-    navigate(
-      `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}`,
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AccountDetailsOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: metricsLocation,
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
     );
+
+    navigate({
+      pathname: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+      search: createSearchParams({
+        accountGroupId,
+      }).toString(),
+    });
 
     closeMenu?.();
   }, [
@@ -47,8 +52,9 @@ export const AccountDetailsMenuItem = ({
     hdEntropyIndex,
     navigate,
     metricsLocation,
-    selectedAccountGroup,
+    accountGroupId,
     trackEvent,
+    createEventBuilder,
   ]);
 
   return (

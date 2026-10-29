@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Hex } from '@metamask/utils';
 
-import { getNetworkIcon } from '../../../../../../../shared/modules/network.utils';
+import { getNetworkIcon } from '../../../../../../../shared/lib/network.utils';
 import Preloader from '../../../../../../components/ui/icon/preloader';
 import {
   AvatarNetwork,
@@ -112,8 +112,6 @@ export const AccountNetwork = ({
           <Preloader size={12} />
         </Box>
       ) : (
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         <ButtonLink onClick={onSwitch} data-testid={`switch_account-${name}`}>
           {addressSupportSmartAccount ? t('switchBack') : t('switch')}
         </ButtonLink>

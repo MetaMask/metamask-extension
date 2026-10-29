@@ -1,8 +1,7 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import React from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   MetaMetricsEventName,
@@ -10,6 +9,38 @@ import {
 } from '../../../shared/constants/metametrics';
 import { OptInStatusDto } from '../../../shared/types/rewards';
 import { useLinkAccountAddress } from './useLinkAccountAddress';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+      createEventBuilder,
+    }),
+  };
+});
+
+// Mock useMultichainSelector hook
+jest.mock('../useMultichainSelector', () => ({
+  useMultichainSelector: jest.fn(() => '0x1'), // Return mainnet chain ID
+}));
+
+// Mock usePrimaryWalletGroupAccounts hook
+const mockPrimaryWalletGroupAccounts = {
+  current: {
+    accounts: [] as InternalAccount[],
+    accountGroupId: undefined as string | undefined,
+  },
+};
+
+jest.mock('./usePrimaryWalletGroupAccounts', () => ({
+  usePrimaryWalletGroupAccounts: () => mockPrimaryWalletGroupAccounts.current,
+}));
 
 // Mock store actions used by the hook
 jest.mock('../../store/actions', () => ({
@@ -24,6 +55,7 @@ jest.mock('../../store/actions', () => ({
         success: boolean;
       }[],
   ),
+  getRewardsHasAccountOptedIn: jest.fn(() => async () => false),
 }));
 
 jest.mock('../../ducks/rewards', () => ({
@@ -40,14 +72,22 @@ jest.mock(
   }),
 );
 
+jest.mock('../../helpers/utils/rewards-utils', () => ({
+  formatAccountToCaipAccountId: jest.fn(
+    (address: string, chainId: string) => `eip155:${chainId}:${address}`,
+  ),
+}));
+
 const {
   rewardsIsOptInSupported,
   rewardsGetOptInStatus,
   rewardsLinkAccountsToSubscriptionCandidate,
+  getRewardsHasAccountOptedIn,
 } = jest.requireMock('../../store/actions') as {
   rewardsIsOptInSupported: jest.Mock;
   rewardsGetOptInStatus: jest.Mock;
   rewardsLinkAccountsToSubscriptionCandidate: jest.Mock;
+  getRewardsHasAccountOptedIn: jest.Mock;
 };
 
 const { setRewardsAccountLinkedTimestamp } = jest.requireMock(
@@ -56,13 +96,27 @@ const { setRewardsAccountLinkedTimestamp } = jest.requireMock(
   setRewardsAccountLinkedTimestamp: jest.Mock;
 };
 
-// MetaMetrics provider container
-const mockTrackEvent = jest.fn();
-const Container = ({ children }: { children: React.ReactNode }) => (
-  <MetaMetricsContext.Provider value={mockTrackEvent}>
-    {children}
-  </MetaMetricsContext.Provider>
-);
+const { getAccountTypeCategory } = jest.requireMock(
+  '../../pages/multichain-accounts/account-details/account-type-utils',
+) as {
+  getAccountTypeCategory: jest.Mock;
+};
+
+const mockSoftwareAccounts: InternalAccount[] = [
+  {
+    id: 'acc-1',
+    address: '0x111',
+    metadata: {
+      name: 'Account 1',
+      keyring: { type: 'HD Key Tree' },
+      importTime: Date.now(),
+    },
+    options: {},
+    methods: [],
+    type: 'eip155:eoa',
+    scopes: ['eip155:1'],
+  },
+];
 
 describe('useLinkAccountAddress', () => {
   let mockAccount: InternalAccount;
@@ -75,9 +129,18 @@ describe('useLinkAccountAddress', () => {
       name: 'Test Account',
     });
 
+    // Reset mutable mock values
+    mockPrimaryWalletGroupAccounts.current = {
+      accounts: mockSoftwareAccounts,
+      accountGroupId: 'entropy:test/0',
+    };
+
     (rewardsIsOptInSupported as jest.Mock).mockImplementation(() => () => true);
     (rewardsGetOptInStatus as jest.Mock).mockImplementation(
       () => async () => ({ ois: [false], sids: [null] }) as OptInStatusDto,
+    );
+    (getRewardsHasAccountOptedIn as jest.Mock).mockImplementation(
+      () => async () => false,
     );
     (
       rewardsLinkAccountsToSubscriptionCandidate as jest.Mock
@@ -88,6 +151,7 @@ describe('useLinkAccountAddress', () => {
           success: boolean;
         }[],
     );
+    (getAccountTypeCategory as jest.Mock).mockReturnValue('evm');
   });
 
   describe('Initial State', () => {
@@ -96,7 +160,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       expect(result.current.isLoading).toBe(false);
@@ -111,7 +175,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       let linkResult: boolean | undefined;
@@ -130,12 +194,13 @@ describe('useLinkAccountAddress', () => {
       expect(rewardsGetOptInStatus).toHaveBeenCalledWith({
         addresses: [mockAccount.address],
       });
-      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith([
-        mockAccount,
-      ]);
+      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith(
+        [mockAccount],
+        mockSoftwareAccounts,
+      );
 
       // Verify events were tracked
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).toContain(
         MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
@@ -146,14 +211,18 @@ describe('useLinkAccountAddress', () => {
       // Verify event properties
       const startedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].event === MetaMetricsEventName.RewardsAccountLinkingStarted,
+          call[0].name === MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
       expect(startedEvent).toBeDefined();
-      expect(startedEvent[0].category).toBe(MetaMetricsEventCategory.Rewards);
-      expect(startedEvent[0].properties).toEqual({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: 'evm',
-      });
+      expect(startedEvent[0].properties.category).toBe(
+        MetaMetricsEventCategory.Rewards,
+      );
+      expect(startedEvent[0].properties).toEqual(
+        expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'evm',
+        }),
+      );
 
       // Verify timestamp was set
       expect(setRewardsAccountLinkedTimestamp).toHaveBeenCalled();
@@ -176,7 +245,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       let linkPromise: Promise<boolean> | undefined;
@@ -208,16 +277,15 @@ describe('useLinkAccountAddress', () => {
 
   describe('Account already opted in', () => {
     it('returns success immediately when account is already opted in', async () => {
-      (rewardsGetOptInStatus as jest.Mock).mockImplementation(
-        () => async () =>
-          ({ ois: [true], sids: ['sub-123'] }) as OptInStatusDto,
+      (getRewardsHasAccountOptedIn as jest.Mock).mockImplementation(
+        () => async () => true,
       );
 
       const { result } = renderHookWithProvider(
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       let linkResult: boolean | undefined;
@@ -232,10 +300,11 @@ describe('useLinkAccountAddress', () => {
       // Should check opt-in status but not link
       expect(rewardsIsOptInSupported).toHaveBeenCalled();
       expect(rewardsGetOptInStatus).toHaveBeenCalled();
+      expect(getRewardsHasAccountOptedIn).toHaveBeenCalled();
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
 
       // Should not track linking events
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).not.toContain(
         MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
@@ -255,7 +324,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       let linkResult: boolean | undefined;
@@ -273,7 +342,7 @@ describe('useLinkAccountAddress', () => {
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
 
       // Should not track events
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events.length).toBe(0);
     });
   });
@@ -294,7 +363,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       let linkResult: boolean | undefined;
@@ -307,7 +376,7 @@ describe('useLinkAccountAddress', () => {
       expect(result.current.isError).toBe(true);
 
       // Verify failure event was tracked
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).toContain(
         MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
@@ -334,7 +403,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       let linkResult: boolean | undefined;
@@ -347,7 +416,7 @@ describe('useLinkAccountAddress', () => {
       expect(result.current.isError).toBe(true);
 
       // Verify failure event was tracked
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events).toContain(
         MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
@@ -371,7 +440,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       let linkResult: boolean | undefined;
@@ -387,7 +456,7 @@ describe('useLinkAccountAddress', () => {
       expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
 
       // Should not track events
-      const events = mockTrackEvent.mock.calls.map((args) => args[0].event);
+      const events = mockTrackEvent.mock.calls.map((args) => args[0].name);
       expect(events.length).toBe(0);
     });
 
@@ -403,7 +472,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       let linkResult: boolean | undefined;
@@ -427,7 +496,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -436,23 +505,27 @@ describe('useLinkAccountAddress', () => {
 
       const startedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].event === MetaMetricsEventName.RewardsAccountLinkingStarted,
+          call[0].name === MetaMetricsEventName.RewardsAccountLinkingStarted,
       );
       expect(startedEvent).toBeDefined();
-      expect(startedEvent[0].properties).toEqual({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: 'evm',
-      });
+      expect(startedEvent[0].properties).toEqual(
+        expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'evm',
+        }),
+      );
 
       const completedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].event === MetaMetricsEventName.RewardsAccountLinkingCompleted,
+          call[0].name === MetaMetricsEventName.RewardsAccountLinkingCompleted,
       );
       expect(completedEvent).toBeDefined();
-      expect(completedEvent[0].properties).toEqual({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: 'evm',
-      });
+      expect(completedEvent[0].properties).toEqual(
+        expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'evm',
+        }),
+      );
     });
 
     it('tracks failure event with correct account type', async () => {
@@ -470,7 +543,7 @@ describe('useLinkAccountAddress', () => {
         () => useLinkAccountAddress(),
         {},
         undefined,
-        Container,
+        undefined,
       );
 
       await act(async () => {
@@ -479,13 +552,105 @@ describe('useLinkAccountAddress', () => {
 
       const failedEvent = mockTrackEvent.mock.calls.find(
         (call) =>
-          call[0].event === MetaMetricsEventName.RewardsAccountLinkingFailed,
+          call[0].name === MetaMetricsEventName.RewardsAccountLinkingFailed,
       );
       expect(failedEvent).toBeDefined();
-      expect(failedEvent[0].properties).toEqual({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: 'evm',
+      expect(failedEvent[0].properties).toEqual(
+        expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'evm',
+        }),
+      );
+    });
+  });
+
+  describe('Invalid CAIP account ID handling', () => {
+    it('returns false and sets error when caipAccountId is invalid', async () => {
+      const { formatAccountToCaipAccountId } = jest.requireMock(
+        '../../helpers/utils/rewards-utils',
+      ) as { formatAccountToCaipAccountId: jest.Mock };
+
+      formatAccountToCaipAccountId.mockReturnValueOnce(null);
+
+      const { result } = renderHookWithProvider(
+        () => useLinkAccountAddress(),
+        {},
+        undefined,
+        undefined,
+      );
+
+      let linkResult: boolean | undefined;
+      await act(async () => {
+        linkResult = await result.current.linkAccountAddress(mockAccount);
       });
+
+      expect(linkResult).toBe(false);
+      expect(result.current.isError).toBe(true);
+      expect(rewardsLinkAccountsToSubscriptionCandidate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Primary wallet group accounts', () => {
+    it('passes primary wallet group accounts to linking function', async () => {
+      const primaryAccounts: InternalAccount[] = [
+        {
+          id: 'primary-acc-1',
+          address: '0xPrimary111',
+          metadata: {
+            name: 'Primary Account 1',
+            keyring: { type: 'HD Key Tree' },
+            importTime: Date.now(),
+          },
+          options: {},
+          methods: [],
+          type: 'eip155:eoa',
+          scopes: ['eip155:1'],
+        },
+      ];
+
+      mockPrimaryWalletGroupAccounts.current = {
+        accounts: primaryAccounts,
+        accountGroupId: 'entropy:primary/0',
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useLinkAccountAddress(),
+        {},
+        undefined,
+        undefined,
+      );
+
+      await act(async () => {
+        await result.current.linkAccountAddress(mockAccount);
+      });
+
+      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith(
+        [mockAccount],
+        primaryAccounts,
+      );
+    });
+
+    it('handles empty primary wallet group accounts', async () => {
+      mockPrimaryWalletGroupAccounts.current = {
+        accounts: [],
+        accountGroupId: undefined,
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useLinkAccountAddress(),
+        {},
+        undefined,
+        undefined,
+      );
+
+      await act(async () => {
+        await result.current.linkAccountAddress(mockAccount);
+      });
+
+      expect(rewardsLinkAccountsToSubscriptionCandidate).toHaveBeenCalledWith(
+        [mockAccount],
+        [],
+      );
     });
   });
 });

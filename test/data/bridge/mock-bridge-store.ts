@@ -5,18 +5,24 @@ import {
   BridgeControllerState,
   getNativeAssetForChainId,
   ChainId,
+  GenericQuoteRequest,
+  DEFAULT_BRIDGE_CONTROLLER_STATE,
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { zeroAddress } from 'ethereumjs-util';
-import { type CaipChainId } from '@metamask/utils';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
-import type { SmartTransactionsNetworks } from '../../../shared/modules/selectors/feature-flags';
+import type { SmartTransactionsNetworks } from '../../../shared/lib/selectors/feature-flags';
+import type { ChainValueOrderOverride } from '../../../shared/lib/bridge/chain-value-order';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
+import type {
+  BridgeAppState,
+  getValidationErrors,
+} from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
 import { mockNetworkState } from '../../stub/networks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
@@ -24,6 +30,161 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bri
 import { KeyringType } from '../../../shared/constants/keyring';
 import { mockTokenData } from './mock-token-data';
 
+const DEFAULT_ETH_CONVERSION_RATE = 2524.25;
+/** Legacy marketData native price; UI effective rate = this * DEFAULT_ETH_CONVERSION_RATE. */
+const DEFAULT_ETH_NATIVE_MARKET_PRICE = 0.9999852655257913;
+const DEFAULT_ETH_EFFECTIVE_RATE =
+  DEFAULT_ETH_CONVERSION_RATE * DEFAULT_ETH_NATIVE_MARKET_PRICE;
+
+const NATIVE_ASSET_BY_CHAIN: Record<
+  string,
+  { assetId: string; symbol: string; decimals: number }
+> = {
+  '0x1': { assetId: 'eip155:1/slip44:60', symbol: 'ETH', decimals: 18 },
+  '0xa': { assetId: 'eip155:10/slip44:60', symbol: 'ETH', decimals: 18 },
+  '0xe708': {
+    assetId: 'eip155:59144/slip44:60',
+    symbol: 'ETH',
+    decimals: 18,
+  },
+  '0x89': { assetId: 'eip155:137/slip44:966', symbol: 'POL', decimals: 18 },
+};
+
+const NATIVE_ASSET_BY_SYMBOL: Record<
+  string,
+  { assetId: string; decimals: number }
+> = {
+  ETH: { assetId: 'eip155:1/slip44:60', decimals: 18 },
+  POL: { assetId: 'eip155:137/slip44:966', decimals: 18 },
+};
+
+type FungiblePrice = {
+  assetPriceType: 'fungible';
+  price: number;
+  usdPrice?: number;
+  lastUpdated: number;
+  marketCap?: number;
+  allTimeHigh?: number;
+  allTimeLow?: number;
+  totalVolume?: number;
+  circulatingSupply?: number;
+  pricePercentChange1h?: number;
+  pricePercentChange1d?: number;
+  pricePercentChange7d?: number;
+  pricePercentChange14d?: number;
+  pricePercentChange30d?: number;
+  pricePercentChange200d?: number;
+  pricePercentChange1y?: number;
+};
+
+const toFungiblePrice = (
+  price: number,
+  extras: Partial<FungiblePrice> = {},
+): FungiblePrice => ({
+  assetPriceType: 'fungible',
+  price,
+  usdPrice: extras.usdPrice ?? price,
+  lastUpdated: extras.lastUpdated ?? Date.now(),
+  ...extras,
+});
+
+/**
+ * Converts legacy marketData (+ rates) overrides into AssetsController price/info.
+ * @param marketData
+ * @param rateBySymbol
+ */
+const convertMarketDataToAssets = (
+  marketData: Record<string, Record<string, { price?: number }>>,
+  rateBySymbol: Record<string, number>,
+) => {
+  const assetsInfo: Record<string, Record<string, unknown>> = {};
+  const assetsPrice: Record<string, FungiblePrice> = {};
+
+  for (const [chainId, addressToData] of Object.entries(marketData)) {
+    const native = NATIVE_ASSET_BY_CHAIN[chainId];
+    if (!native) {
+      continue;
+    }
+    const nativeRate = rateBySymbol[native.symbol];
+    if (!nativeRate) {
+      continue;
+    }
+
+    for (const [address, data] of Object.entries(addressToData ?? {})) {
+      if (data?.price === undefined) {
+        continue;
+      }
+      const checksummed = toChecksumHexAddress(address);
+      const isNative =
+        checksummed.toLowerCase() === zeroAddress().toLowerCase();
+      const assetId = isNative
+        ? native.assetId
+        : (`eip155:${Number.parseInt(chainId, 16)}/erc20:${checksummed}` as string);
+
+      // Native conversionRate is assetsPrice.price; skip marketData native
+      // entries so they do not overwrite currencyRates-derived prices.
+      if (isNative) {
+        continue;
+      }
+
+      // Metadata comes from token fixtures / prior assetsInfo; only price is required here.
+      assetsPrice[assetId] = toFungiblePrice(data.price * nativeRate);
+    }
+  }
+
+  return { assetsPrice };
+};
+
+const convertCurrencyRatesToAssets = (
+  currencyRates: Record<
+    string,
+    {
+      conversionRate?: number;
+      usdConversionRate?: number;
+      conversionDate?: number;
+    }
+  >,
+) => {
+  const assetsInfo: Record<string, Record<string, unknown>> = {};
+  const assetsPrice: Record<string, FungiblePrice> = {};
+
+  for (const [symbol, rates] of Object.entries(currencyRates)) {
+    const native = NATIVE_ASSET_BY_SYMBOL[symbol];
+    if (!native || rates?.conversionRate === undefined) {
+      continue;
+    }
+    assetsInfo[native.assetId] = {
+      type: 'native',
+      decimals: native.decimals,
+      symbol,
+    };
+    assetsPrice[native.assetId] = toFungiblePrice(rates.conversionRate, {
+      usdPrice: rates.usdConversionRate ?? rates.conversionRate,
+      lastUpdated: (rates.conversionDate ?? Date.now() / 1000) * 1000,
+    });
+  }
+
+  return { assetsInfo, assetsPrice };
+};
+
+export const DEFAULT_VALIDATION_ERRORS: ReturnType<typeof getValidationErrors> =
+  {
+    isNoQuotesAvailable: false,
+    isInsufficientGasForQuote: false,
+    isInsufficientBalance: false,
+    isStockMarketClosed: false,
+    isInOffHoursTrading: false,
+    isQuoteExpired: false,
+    isPriceImpactWarning: false,
+    isPriceImpactError: false,
+    isInsufficientGasBalance: false,
+    isInsufficientNativeReserve: false,
+    isTxAlertPresent: false,
+    isTxAlertLoading: false,
+    isNetworkFeeUnavailable: false,
+    isEstimatedReturnLow: false,
+    isDestAssetRequireActivate: false,
+  };
 export const MOCK_LEDGER_ACCOUNT = {
   id: 'bf588376-0492-4a35-b653-0f1304a6c5f1',
   address: '0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
@@ -169,8 +330,14 @@ export const MOCK_BITCOIN_ACCOUNT = {
   },
 };
 
+export const MOCK_EXTERNAL_SOLANA_ADDRESS =
+  '8sKQHfjNhvmAw94PhfvfMcytmqW6jmxvwieYyzXCCPu';
+
 export const createBridgeMockStore = ({
-  featureFlagOverrides = { bridgeConfig: {} },
+  featureFlagOverrides = {
+    bridgeConfig: {},
+    gasFeesSponsoredNetwork: {},
+  },
   bridgeSliceOverrides = {},
   bridgeStateOverrides = {},
   bridgeStatusStateOverrides = {},
@@ -178,12 +345,20 @@ export const createBridgeMockStore = ({
   stateOverrides = {},
 }: {
   featureFlagOverrides?: {
-    bridgeConfig: Partial<Omit<FeatureFlagResponse, 'chainRanking'>> & {
+    bridgeConfig?: Partial<Omit<FeatureFlagResponse, 'chainRanking'>> & {
       chainRanking?: { chainId: CaipChainId; name?: string }[];
     };
     smartTransactionsNetworks?: SmartTransactionsNetworks;
+    gasFeesSponsoredNetwork?: { [chainId: Hex]: boolean };
+    swapsChainValueOrderOverride?: ChainValueOrderOverride;
   };
-  bridgeStateOverrides?: Partial<BridgeControllerState>;
+  bridgeStateOverrides?: Partial<
+    Omit<BridgeControllerState, 'quoteRequest'>
+  > & {
+    quoteRequest?:
+      | Partial<GenericQuoteRequest>[]
+      | Partial<GenericQuoteRequest>;
+  };
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
   // TODO replace these with correct types
@@ -207,16 +382,156 @@ export const createBridgeMockStore = ({
     internalAccounts: internalAccountsOverrides,
     accountTree: accountTreeOverrides,
     marketData,
+    currencyRates: currencyRatesOverride,
+    currentCurrency,
+    selectedCurrency: selectedCurrencyOverride,
+    balances: balancesOverride,
+    conversionRates: conversionRatesOverride,
+    assetsInfo: assetsInfoOverride,
+    assetsPrice: assetsPriceOverride,
+    assetsBalance: assetsBalanceOverride,
+    customAssets: customAssetsOverride,
+    assetPreferences: assetPreferencesOverride,
     ...metamaskStateOverridesWithoutAccounts
   } = metamaskStateOverrides;
-  // Checksum the addresses in the marketData object
-  // Also add a price for the zero address if not provided
-  const marketDataOverrides = Object.fromEntries(
+
+  const defaultRateBySymbol: Record<string, number> = {
+    ETH: DEFAULT_ETH_EFFECTIVE_RATE,
+  };
+
+  const rateBySymbolFromOverride: Record<string, number> =
+    currencyRatesOverride === undefined
+      ? defaultRateBySymbol
+      : Object.fromEntries(
+          (
+            Object.entries(currencyRatesOverride) as [
+              string,
+              {
+                conversionRate?: number;
+                usdConversionRate?: number;
+                conversionDate?: number;
+              },
+            ][]
+          ).flatMap(([symbol, rates]) =>
+            rates?.conversionRate === undefined
+              ? []
+              : [[symbol, rates.conversionRate]],
+          ),
+        );
+
+  const defaultNativeAssets = convertCurrencyRatesToAssets({
+    ETH: {
+      conversionRate: DEFAULT_ETH_EFFECTIVE_RATE,
+      usdConversionRate: DEFAULT_ETH_EFFECTIVE_RATE,
+    },
+  });
+
+  // Default ERC20 market prices from the former marketData fixture (P * ETH rate).
+  const defaultTokenMarketAssets = convertMarketDataToAssets(
+    {
+      '0x1': {
+        [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
+          price: 2.3,
+        },
+        [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]: {
+          price: 1.2,
+        },
+        [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]: {
+          price: 1.2,
+        },
+      },
+      '0xe708': {
+        [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
+          price: 0.0023,
+        },
+        [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]: {
+          price: 0.00012,
+        },
+        [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]: {
+          price: 1.2,
+        },
+      },
+      '0xa': {
+        [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
+          price: 0.0023,
+        },
+        [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]: {
+          price: 0.00012,
+        },
+        [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]: {
+          price: 1.2,
+        },
+      },
+    },
+    { ETH: DEFAULT_ETH_CONVERSION_RATE },
+  );
+
+  const defaultLegacyMarketData = {
+    '0x1': {
+      [zeroAddress()]: {
+        currency: 'ETH',
+        price: DEFAULT_ETH_NATIVE_MARKET_PRICE,
+      },
+      [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
+        currency: 'ETH',
+        price: 2.3,
+      },
+      [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]: {
+        currency: 'ETH',
+        price: 1.2,
+      },
+      [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]: {
+        currency: 'ETH',
+        price: 1.2,
+      },
+    },
+    '0xe708': {
+      [zeroAddress()]: {
+        currency: 'ETH',
+        price: DEFAULT_ETH_NATIVE_MARKET_PRICE,
+      },
+      [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
+        currency: 'ETH',
+        price: 0.0023,
+      },
+      [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]: {
+        currency: 'ETH',
+        price: 0.00012,
+      },
+      [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]: {
+        currency: 'ETH',
+        price: 1.2,
+      },
+    },
+    '0xa': {
+      [zeroAddress()]: {
+        currency: 'ETH',
+        price: DEFAULT_ETH_NATIVE_MARKET_PRICE,
+      },
+      [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
+        currency: 'ETH',
+        price: 0.0023,
+      },
+      [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]: {
+        currency: 'ETH',
+        price: 0.00012,
+      },
+      [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]: {
+        currency: 'ETH',
+        price: 1.2,
+      },
+    },
+  };
+
+  // bridge-controller selectBridgeQuotes still reads currencyRates/marketData
+  // directly from metamask state (not via migration selectors).
+  const legacyMarketDataOverrides = Object.fromEntries(
     Object.entries(marketData ?? {}).map(([chainId, addressToData]) => {
       const dataForChain = Object.fromEntries(
-        Object.entries(addressToData ?? {}).map(([address, data]) => {
-          return [toChecksumHexAddress(address), data];
-        }),
+        Object.entries(addressToData ?? {}).map(([address, data]) => [
+          toChecksumHexAddress(address),
+          data,
+        ]),
       );
       if (!dataForChain[zeroAddress()]) {
         dataForChain[zeroAddress()] = { price: 1 };
@@ -225,18 +540,277 @@ export const createBridgeMockStore = ({
     }),
   );
 
+  const finalLegacyCurrencyRates =
+    currencyRatesOverride === undefined
+      ? { ETH: { conversionRate: DEFAULT_ETH_CONVERSION_RATE } }
+      : currencyRatesOverride;
+
+  const finalLegacyMarketData =
+    marketData === undefined
+      ? defaultLegacyMarketData
+      : { ...defaultLegacyMarketData, ...legacyMarketDataOverrides };
+
+  const overrideNativeAssets =
+    currencyRatesOverride === undefined
+      ? null
+      : convertCurrencyRatesToAssets(currencyRatesOverride);
+
+  const overrideMarketAssets =
+    marketData === undefined
+      ? null
+      : convertMarketDataToAssets(
+          Object.fromEntries(
+            Object.entries(marketData ?? {}).map(([chainId, addressToData]) => {
+              const dataForChain = Object.fromEntries(
+                Object.entries(addressToData ?? {}).map(([address, data]) => [
+                  toChecksumHexAddress(address),
+                  data,
+                ]),
+              );
+              return [chainId, dataForChain];
+            }),
+          ),
+          rateBySymbolFromOverride,
+        );
+
+  const solNativeAssetId = getNativeAssetForChainId(ChainId.SOLANA)?.assetId;
+  const btcNativeAssetId = getNativeAssetForChainId(ChainId.BTC)?.assetId;
+  const solUsdcAssetId =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+
+  const defaultNonEvmAssetsInfo = {
+    ...(solNativeAssetId
+      ? {
+          [solNativeAssetId]: {
+            type: 'native',
+            symbol: 'SOL',
+            name: 'Solana',
+            decimals: 9,
+          },
+        }
+      : {}),
+    [solUsdcAssetId]: {
+      type: 'token',
+      symbol: 'USDC',
+      name: 'USDC',
+      decimals: 6,
+    },
+    ...(btcNativeAssetId
+      ? {
+          [btcNativeAssetId]: {
+            type: 'native',
+            symbol: 'BTC',
+            name: 'Bitcoin',
+            decimals: 8,
+          },
+        }
+      : {}),
+  };
+
+  const defaultNonEvmAssetsBalance = {
+    [MOCK_SOLANA_ACCOUNT.id]: {
+      ...(solNativeAssetId ? { [solNativeAssetId]: { amount: '1.530' } } : {}),
+      [solUsdcAssetId]: { amount: '2.043238' },
+    },
+    [MOCK_BITCOIN_ACCOUNT.id]: {
+      ...(btcNativeAssetId ? { [btcNativeAssetId]: { amount: '.001' } } : {}),
+    },
+  };
+
+  const defaultNonEvmAssetsBalanceAsLegacy = {
+    [MOCK_SOLANA_ACCOUNT.id]: {
+      ...(solNativeAssetId
+        ? { [solNativeAssetId]: { amount: '1.530', unit: 'SOL' } }
+        : {}),
+      [solUsdcAssetId]: { amount: '2.043238', unit: 'USDC' },
+    },
+    [MOCK_BITCOIN_ACCOUNT.id]: {
+      ...(btcNativeAssetId
+        ? { [btcNativeAssetId]: { amount: '.001', unit: 'BTC' } }
+        : {}),
+    },
+  };
+
+  const defaultNonEvmAssetsPrice: Record<string, FungiblePrice> = {
+    ...(btcNativeAssetId
+      ? {
+          [btcNativeAssetId]: toFungiblePrice(91238, {
+            lastUpdated: 1764366649,
+            allTimeHigh: 126080,
+            allTimeLow: 67.81,
+            circulatingSupply: 19954975,
+            marketCap: 1820846090334,
+            totalVolume: 63233490221,
+            pricePercentChange1h: 0.14674079482116037,
+            pricePercentChange1d: -0.3266459857373634,
+            pricePercentChange7d: 8.041646444018049,
+            pricePercentChange14d: -4.64281981432302,
+            pricePercentChange30d: -17.6114540675602,
+            pricePercentChange200d: -10.394045992482502,
+            pricePercentChange1y: -4.028695322822178,
+          }),
+        }
+      : {}),
+    ...(solNativeAssetId
+      ? {
+          [solNativeAssetId]: toFungiblePrice(137.81, {
+            lastUpdated: 1764366649784,
+            marketCap: 77113923709,
+            totalVolume: 5381048463,
+            circulatingSupply: 559406666.005579,
+            allTimeHigh: 293.31,
+            allTimeLow: 0.500801,
+            pricePercentChange1h: 0.1717946873740562,
+            pricePercentChange1d: -3.1063493477666846,
+            pricePercentChange7d: 8.322669902409686,
+            pricePercentChange14d: -3.558605681511118,
+            pricePercentChange30d: -28.69964485595587,
+            pricePercentChange200d: -19.402511945384653,
+            pricePercentChange1y: -41.43017825170346,
+          }),
+        }
+      : {}),
+    [solUsdcAssetId]: toFungiblePrice(0.99981, {
+      lastUpdated: 1764366649785,
+      marketCap: 76526787463,
+      totalVolume: 4518890812,
+      circulatingSupply: 76541337540.76373,
+      allTimeHigh: 1.17,
+      allTimeLow: 0.877647,
+      pricePercentChange1h: -0.0005365195173000486,
+      pricePercentChange1d: 0.006027885139514154,
+      pricePercentChange7d: 0.009664272754267057,
+      pricePercentChange14d: 0.0008506382418247201,
+      pricePercentChange30d: -0.0032161834673792035,
+      pricePercentChange200d: -0.009267417253211431,
+      pricePercentChange1y: 0.0033493407010139233,
+    }),
+  };
+
+  const balancesAsAssets = balancesOverride
+    ? {
+        assetsBalance: Object.fromEntries(
+          Object.entries(balancesOverride).map(([accountId, assets]) => [
+            accountId,
+            Object.fromEntries(
+              Object.entries(assets as Record<string, { amount: string }>).map(
+                ([assetId, balance]) => [assetId, { amount: balance.amount }],
+              ),
+            ),
+          ]),
+        ),
+        assetsInfo: Object.fromEntries(
+          Object.entries(balancesOverride).flatMap(([, assets]) =>
+            Object.entries(
+              assets as Record<string, { amount: string; unit?: string }>,
+            ).map(([assetId, balance]) => [
+              assetId,
+              {
+                type: assetId.includes('slip44') ? 'native' : 'token',
+                symbol: balance.unit ?? 'TOKEN',
+                decimals: 18,
+              },
+            ]),
+          ),
+        ),
+      }
+    : null;
+
+  const conversionRatesAsAssets = conversionRatesOverride
+    ? {
+        assetsPrice: Object.fromEntries(
+          (
+            Object.entries(conversionRatesOverride) as [
+              string,
+              { rate?: string; conversionTime?: number },
+            ][]
+          ).map(([assetId, rate]) => [
+            assetId,
+            toFungiblePrice(Number(rate.rate ?? 0), {
+              lastUpdated: rate.conversionTime ?? Date.now(),
+            }),
+          ]),
+        ),
+      }
+    : null;
+
+  // When currencyRates is explicitly overridden (including {}), replace default
+  // native EVM prices so empty rates correctly clear exchange-rate-dependent UI.
+  const mergedAssetsInfo = {
+    ...tokenData.assetsInfo,
+    ...defaultNonEvmAssetsInfo,
+    ...(overrideNativeAssets
+      ? overrideNativeAssets.assetsInfo
+      : defaultNativeAssets.assetsInfo),
+    ...(balancesAsAssets?.assetsInfo ?? {}),
+    // Ensure market-data-only override tokens have metadata for derived marketData.
+    ...Object.fromEntries(
+      Object.keys(overrideMarketAssets?.assetsPrice ?? {}).map((assetId) => [
+        assetId,
+        {
+          type: 'erc20',
+          decimals: 18,
+          symbol: 'TOKEN',
+        },
+      ]),
+    ),
+    // tokenData / native metadata win over stubs
+    ...tokenData.assetsInfo,
+    ...(overrideNativeAssets
+      ? overrideNativeAssets.assetsInfo
+      : defaultNativeAssets.assetsInfo),
+    ...(assetsInfoOverride ?? {}),
+  };
+
+  const mergedAssetsPrice = {
+    ...defaultTokenMarketAssets.assetsPrice,
+    ...defaultNonEvmAssetsPrice,
+    ...(overrideNativeAssets
+      ? overrideNativeAssets.assetsPrice
+      : defaultNativeAssets.assetsPrice),
+    ...(overrideMarketAssets?.assetsPrice ?? {}),
+    ...(conversionRatesAsAssets?.assetsPrice ?? {}),
+    ...(assetsPriceOverride ?? {}),
+  };
+
+  // Drop default native ETH price when currencyRates override is {}.
+  if (
+    currencyRatesOverride &&
+    Object.keys(currencyRatesOverride).length === 0
+  ) {
+    for (const native of Object.values(NATIVE_ASSET_BY_CHAIN)) {
+      if (native.symbol === 'ETH') {
+        delete mergedAssetsPrice[native.assetId];
+      }
+    }
+  }
+
+  const mergedAssetsBalance = {
+    ...tokenData.assetsBalance,
+    ...defaultNonEvmAssetsBalance,
+    ...(balancesAsAssets?.assetsBalance ?? {}),
+    ...(assetsBalanceOverride ?? {}),
+  };
+
+  const internalAccountsAccounts = {
+    ...(internalAccountsOverrides?.accounts ?? {}),
+    [MOCK_LEDGER_ACCOUNT.id]: MOCK_LEDGER_ACCOUNT,
+    [MOCK_SOLANA_ACCOUNT.id]: MOCK_SOLANA_ACCOUNT,
+    [MOCK_BITCOIN_ACCOUNT.id]: MOCK_BITCOIN_ACCOUNT,
+    [MOCK_EVM_ACCOUNT.id]: MOCK_EVM_ACCOUNT,
+    [MOCK_EVM_ACCOUNT_2.id]: MOCK_EVM_ACCOUNT_2,
+  };
   const internalAccounts = {
     selectedAccount:
       internalAccountsOverrides?.selectedAccount ?? MOCK_EVM_ACCOUNT.id,
-    accounts: {
-      ...(internalAccountsOverrides?.accounts ?? {}),
-      [MOCK_LEDGER_ACCOUNT.id]: MOCK_LEDGER_ACCOUNT,
-      [MOCK_SOLANA_ACCOUNT.id]: MOCK_SOLANA_ACCOUNT,
-      [MOCK_BITCOIN_ACCOUNT.id]: MOCK_BITCOIN_ACCOUNT,
-      [MOCK_EVM_ACCOUNT.id]: MOCK_EVM_ACCOUNT,
-      [MOCK_EVM_ACCOUNT_2.id]: MOCK_EVM_ACCOUNT_2,
-    },
+    accounts: internalAccountsAccounts,
   };
+  const accountIdByAddress = (
+    Object.values(internalAccountsAccounts) as { address: string; id: string }[]
+  ).reduce<Record<string, string>>(
+    (acc, account) => ({ ...acc, [account.address]: account.id }),
+    {},
+  );
   return {
     activeTab: {
       origin: 'https://github.com',
@@ -248,6 +822,7 @@ export const createBridgeMockStore = ({
       topAssets: [],
     },
     bridge: {
+      isSlippageUserOverride: false,
       sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
@@ -300,218 +875,40 @@ export const createBridgeMockStore = ({
       selectedMultichainNetworkChainId: 'eip155:1',
       isEvmSelected: true,
       completedOnboarding: true,
-      gasFeeEstimates: {
-        estimatedBaseFee: '0.00010456',
-        medium: {
-          suggestedMaxFeePerGas: '0.00018456',
-          suggestedMaxPriorityFeePerGas: '0.0001',
-        },
-        high: {
-          suggestedMaxFeePerGas: '0.00018456',
-          suggestedMaxPriorityFeePerGas: '0.0001',
-        },
-      },
-      currencyRates: {
-        ETH: { conversionRate: 2524.25 },
-      },
-      marketData: {
+      gasFeeEstimatesByChainId: {
         '0x1': {
-          '0x0000000000000000000000000000000000000000': {
-            currency: 'ETH',
-            price: 0.9999852655257913,
+          gasFeeEstimates: {
+            estimatedBaseFee: '0.00010456',
+            medium: {
+              suggestedMaxFeePerGas: '0.00018456',
+              suggestedMaxPriorityFeePerGas: '0.0001',
+            },
+            high: {
+              suggestedMaxFeePerGas: '0.00018456',
+              suggestedMaxPriorityFeePerGas: '0.0001',
+            },
           },
-          [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]:
-            {
-              currency: 'ETH',
-              price: 2.3,
-            },
-          [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]:
-            {
-              currency: 'ETH',
-              price: 1.2,
-            },
-          [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]:
-            {
-              currency: 'ETH',
-              price: 1.2,
-            },
-        },
-        '0xe708': {
-          '0x0000000000000000000000000000000000000000': {
-            currency: 'ETH',
-            price: 0.9999852655257913,
-          },
-          [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]:
-            {
-              currency: 'ETH',
-              price: 0.0023,
-            },
-          [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]:
-            {
-              currency: 'ETH',
-              price: 0.00012,
-            },
-          [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]:
-            {
-              currency: 'ETH',
-              price: 1.2,
-            },
         },
         '0xa': {
-          '0x0000000000000000000000000000000000000000': {
-            currency: 'ETH',
-            price: 0.9999852655257913,
-          },
-          [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]:
-            {
-              currency: 'ETH',
-              price: 0.0023,
+          gasFeeEstimates: {
+            estimatedBaseFee: '0.00010456',
+            medium: {
+              suggestedMaxFeePerGas: '0.00018456',
+              suggestedMaxPriorityFeePerGas: '0.0001',
             },
-          [toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca')]:
-            {
-              currency: 'ETH',
-              price: 0.00012,
-            },
-          [toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888')]:
-            {
-              currency: 'ETH',
-              price: 1.2,
-            },
-        },
-        ...marketDataOverrides,
-      },
-      slides: [],
-      accountTree: {
-        wallets: {
-          'entropy:01K2FF18CTTXJYD34R78X4N1N1': {
-            type: 'entropy',
-            id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1',
-            metadata: {
-              name: 'Wallet 1',
-              entropy: {
-                id: '01K2FF18CTTXJYD34R78X4N1N1',
-              },
-            },
-            groups: {
-              'entropy:01K2FF18CTTXJYD34R78X4N1N1/0': {
-                type: 'multichain-account',
-                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-                metadata: {
-                  name: 'Account 1',
-                  pinned: false,
-                  hidden: false,
-                  entropy: {
-                    groupIndex: 0,
-                  },
-                },
-                accounts: [
-                  MOCK_EVM_ACCOUNT.id,
-                  MOCK_SOLANA_ACCOUNT.id,
-                  MOCK_BITCOIN_ACCOUNT.id,
-                ],
-              },
-              'entropy:01K2FF18CTTXJYD34R78X4N1N1/1': {
-                type: 'multichain-account',
-                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/1',
-                metadata: {
-                  name: 'Account 2',
-                  pinned: false,
-                  hidden: false,
-                  entropy: {
-                    groupIndex: 1,
-                  },
-                },
-                accounts: [MOCK_EVM_ACCOUNT_2.id],
-              },
+            high: {
+              suggestedMaxFeePerGas: '0.00018456',
+              suggestedMaxPriorityFeePerGas: '0.0001',
             },
           },
-          'keyring:Ledger Hardware': {
-            type: 'keyring',
-            id: 'keyring:Ledger Hardware',
-            metadata: {
-              name: 'Ledger',
-              keyring: {
-                type: 'Ledger Hardware',
-              },
-            },
-            status: 'ready',
-            groups: {
-              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82':
-                {
-                  type: 'single-account',
-                  id: 'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
-                  metadata: {
-                    name: 'Ledger Account 1',
-                    pinned: false,
-                    hidden: false,
-                  },
-                  accounts: [MOCK_LEDGER_ACCOUNT.id],
-                },
-            },
-          },
-        },
-        selectedAccountGroup:
-          accountTreeOverrides?.selectedAccountGroup ??
-          'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
-      },
-      ...tokenData,
-      ...metamaskStateOverridesWithoutAccounts,
-      internalAccounts,
-      accountsAssets: {
-        [MOCK_SOLANA_ACCOUNT.id]: [
-          getNativeAssetForChainId(ChainId.SOLANA)?.assetId,
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
-        [MOCK_BITCOIN_ACCOUNT.id]: [
-          getNativeAssetForChainId(ChainId.BTC)?.assetId,
-        ],
-      },
-      assetsMetadata: {
-        [getNativeAssetForChainId(ChainId.SOLANA)?.assetId]: {
-          symbol: 'SOL',
-          name: 'Solana',
-          units: [{ decimals: 18, symbol: 'SOL', name: 'Solana' }],
-        },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-          {
-            fungible: true,
-            name: 'USDC',
-            symbol: 'USDC',
-            units: [
-              {
-                decimals: 6,
-                name: 'USDC',
-                symbol: 'USDC',
-              },
-            ],
-          },
-        [getNativeAssetForChainId(ChainId.BTC)?.assetId]: {
-          symbol: 'BTC',
-          name: 'Bitcoin',
-          units: [{ decimals: 18, symbol: 'BTC', name: 'Bitcoin' }],
         },
       },
-      balances: {
-        [MOCK_SOLANA_ACCOUNT.id]: {
-          [getNativeAssetForChainId(ChainId.SOLANA)?.assetId]: {
-            amount: '1.530',
-            unit: 'SOL',
-          },
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-            {
-              amount: '2.043238',
-              unit: 'USDC',
-            },
-        },
-        [MOCK_BITCOIN_ACCOUNT.id]: {
-          [getNativeAssetForChainId(ChainId.BTC)?.assetId]: {
-            amount: '.001',
-            unit: 'BTC',
-          },
-        },
-        ...(metamaskStateOverrides?.balances ?? {}),
-      },
-      conversionRates: {
+      selectedCurrency: selectedCurrencyOverride ?? currentCurrency ?? 'usd',
+      // Legacy fields still read directly by @metamask/bridge-controller
+      // selectBridgeQuotes (not via assets-migration selectors).
+      currencyRates: finalLegacyCurrencyRates,
+      marketData: finalLegacyMarketData,
+      conversionRates: conversionRatesOverride ?? {
         'bip122:000000000019d6689c085ae165831e93/slip44:0': {
           currency: 'swift:0/iso4217:USD',
           rate: '91238',
@@ -558,31 +955,120 @@ export const createBridgeMockStore = ({
             },
           },
         },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-          {
-            currency: 'swift:0/iso4217:USD',
-            rate: '0.99981',
-            conversionTime: 1764366649785,
-            expirationTime: 1764366709785,
-            marketData: {
-              fungible: true,
-              marketCap: '76526787463',
-              totalVolume: '4518890812',
-              circulatingSupply: '76541337540.76373',
-              allTimeHigh: '1.17',
-              allTimeLow: '0.877647',
-              pricePercentChange: {
-                PT1H: -0.0005365195173000486,
-                P1D: 0.006027885139514154,
-                P7D: 0.009664272754267057,
-                P14D: 0.0008506382418247201,
-                P30D: -0.0032161834673792035,
-                P200D: -0.009267417253211431,
-                P1Y: 0.0033493407010139233,
+        [solUsdcAssetId]: {
+          currency: 'swift:0/iso4217:USD',
+          rate: '0.99981',
+          conversionTime: 1764366649785,
+          expirationTime: 1764366709785,
+          marketData: {
+            fungible: true,
+            marketCap: '76526787463',
+            totalVolume: '4518890812',
+            circulatingSupply: '76541337540.76373',
+            allTimeHigh: '1.17',
+            allTimeLow: '0.877647',
+            pricePercentChange: {
+              PT1H: -0.0005365195173000486,
+              P1D: 0.006027885139514154,
+              P7D: 0.009664272754267057,
+              P14D: 0.0008506382418247201,
+              P30D: -0.0032161834673792035,
+              P200D: -0.009267417253211431,
+              P1Y: 0.0033493407010139233,
+            },
+          },
+        },
+      },
+      balances: {
+        ...defaultNonEvmAssetsBalanceAsLegacy,
+        ...(balancesOverride ?? {}),
+      },
+      assetsInfo: mergedAssetsInfo,
+      assetsPrice: mergedAssetsPrice,
+      assetsBalance: mergedAssetsBalance,
+      customAssets: customAssetsOverride ?? tokenData.customAssets,
+      assetPreferences: assetPreferencesOverride ?? {},
+      slides: [],
+      selectedAccountGroup:
+        accountTreeOverrides?.selectedAccountGroup ??
+        'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+      accountTree: {
+        wallets: {
+          'entropy:01K2FF18CTTXJYD34R78X4N1N1': {
+            type: 'entropy',
+            id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1',
+            metadata: {
+              name: 'Wallet 1',
+              entropy: {
+                id: '01K2FF18CTTXJYD34R78X4N1N1',
+              },
+            },
+            groups: {
+              'entropy:01K2FF18CTTXJYD34R78X4N1N1/0': {
+                type: 'multichain-account',
+                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+                metadata: {
+                  name: 'Account 1',
+                  pinned: false,
+                  hidden: false,
+                  entropy: {
+                    groupIndex: 0,
+                  },
+                  lastSelected: 0,
+                },
+                accounts: [
+                  MOCK_EVM_ACCOUNT.id,
+                  MOCK_SOLANA_ACCOUNT.id,
+                  MOCK_BITCOIN_ACCOUNT.id,
+                ],
+              },
+              'entropy:01K2FF18CTTXJYD34R78X4N1N1/1': {
+                type: 'multichain-account',
+                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/1',
+                metadata: {
+                  name: 'Account 2',
+                  pinned: false,
+                  hidden: false,
+                  entropy: {
+                    groupIndex: 1,
+                  },
+                  lastSelected: 0,
+                },
+                accounts: [MOCK_EVM_ACCOUNT_2.id],
               },
             },
           },
+          'keyring:Ledger Hardware': {
+            type: 'keyring',
+            id: 'keyring:Ledger Hardware',
+            metadata: {
+              name: 'Ledger',
+              keyring: {
+                type: 'Ledger Hardware',
+              },
+            },
+            status: 'ready',
+            groups: {
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82':
+                {
+                  type: 'single-account',
+                  id: 'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+                  metadata: {
+                    name: 'Ledger Account 1',
+                    pinned: false,
+                    hidden: false,
+                    lastSelected: 0,
+                  },
+                  accounts: [MOCK_LEDGER_ACCOUNT.id],
+                },
+            },
+          },
+        },
       },
+      tokensChainsCache: tokenData.tokensChainsCache,
+      ...metamaskStateOverridesWithoutAccounts,
+      internalAccounts,
+      accountIdByAddress,
       keyrings: [
         {
           type: KeyringType.hdKeyTree,
@@ -688,10 +1174,23 @@ export const createBridgeMockStore = ({
               name: 'Ethereum',
             },
           ],
+          priceImpactThreshold: {
+            gasless: 0.055,
+            normal: 0.055,
+            warning: 0.055,
+            error: 0.251,
+          },
         },
       },
       ...bridgeStateOverrides,
       ...bridgeStatusStateOverrides,
+      ...(bridgeStateOverrides?.quoteRequest
+        ? {
+            quoteRequest: Array.isArray(bridgeStateOverrides?.quoteRequest)
+              ? bridgeStateOverrides?.quoteRequest
+              : [bridgeStateOverrides?.quoteRequest],
+          }
+        : { quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest }),
     },
     DNS: {
       resolutions: [],

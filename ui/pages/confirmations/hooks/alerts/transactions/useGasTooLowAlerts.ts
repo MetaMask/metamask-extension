@@ -1,9 +1,7 @@
-'use no memo';
-
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { MIN_GAS_LIMIT_DEC } from '../../../send-utils/send.constants';
-import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../../shared/lib/conversion.utils';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -38,10 +36,10 @@ export function useGasTooLowAlerts(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'gasTooLow',
-        message: t('alertMessageGasTooLow'),
+        message: t('alertMessageGasLimitBelowMinimum'),
         reason: t('alertReasonGasTooLow'),
         severity: Severity.Warning,
       },
     ];
-  }, [gasTooLow]);
+  }, [gasTooLow, t]);
 }

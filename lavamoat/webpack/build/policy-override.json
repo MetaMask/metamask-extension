@@ -1,4 +1,9 @@
 {
+  "resolutions": {
+    "sass-embedded": {
+      "@bufbuild/protobuf/codegenv2": "./node_modules/@bufbuild/protobuf/dist/commonjs/codegenv2/index.js"
+    }
+  },
   "resources": {
     "chokidar": {
       "packages": {
@@ -11,6 +16,17 @@
         "process.platform": true
       },
       "native": true
+    },
+    "copy-webpack-plugin": {
+      "packages": {
+        "copy-webpack-plugin>serialize-javascript": true
+      }
+    },
+    "copy-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true,
+        "crypto.getRandomValues": true
+      }
     },
     "@swc/core": {
       "packages": {
@@ -92,10 +108,11 @@
         "postcss-loader": true,
         "sass-loader": true,
         "@lavamoat/webpack": true,
-        "react-compiler-webpack": true
+        "react-compiler-webpack": true,
+        "thread-loader": true
       }
     },
-    "webpack>loader-runner": {
+    "thread-loader>loader-runner": {
       "packages": {
         "$root$": true,
         "html-bundler-webpack-plugin": true,
@@ -103,16 +120,38 @@
         "postcss-loader": true,
         "sass-loader": true,
         "@lavamoat/webpack": true,
-        "react-compiler-webpack": true
+        "react-compiler-webpack": true,
+        "thread-loader": true
+      }
+    },
+    "thread-loader": {
+      "builtin": {
+        "os": true,
+        "child_process": true,
+        "path": true
+      },
+      "globals": {
+        "process": true,
+        "setTimeout": true,
+        "clearTimeout": true,
+        "setInterval": true,
+        "clearInterval": true
+      },
+      "packages": {
+        "thread-loader>neo-async": true,
+        "webpack": true,
+        "thread-loader>loader-runner": true,
+        "thread-loader>json-parse-better-errors": true,
+        "thread-loader>schema-utils": true
       }
     },
     "html-bundler-webpack-plugin": {
       "packages": {
-        "eta": true,
+        "html-bundler-webpack-plugin>eta": true,
         "css-loader": true
       }
     },
-    "eta": {
+    "html-bundler-webpack-plugin>eta": {
       "builtin": {
         "node:fs": true,
         "node:path": true
@@ -219,7 +258,7 @@
       "packages": {
         "sass-embedded>immutable": true,
         "sass-embedded>@bufbuild/protobuf": true,
-        "wait-on>rxjs": true,
+        "rxjs": true,
         "mocha>supports-color": true,
         "sass-embedded>varint": true,
         "sass-embedded>buffer-builder": true
@@ -243,7 +282,7 @@
         "Buffer": true
       }
     },
-    "wait-on>rxjs": {
+    "rxjs": {
       "globals": {
         "setTimeout": true
       }
@@ -330,6 +369,20 @@
         "@babel/code-frame": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true
+      }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
+      }
+    },
+    "@metamask/react-data-query>@metamask/base-data-service>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": false,
+        "addEventListener": false
       }
     }
   }

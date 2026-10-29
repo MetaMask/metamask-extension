@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import InvalidCustomNetworkAlert from './invalid-custom-network-alert';
@@ -16,7 +16,6 @@ const store = mockStore({
 const meta: Meta<typeof InvalidCustomNetworkAlert> = {
   title: 'Components/App/Alerts/InvalidCustomNetworkAlert',
   component: InvalidCustomNetworkAlert,
-  parameters: {},
   decorators: [
     (Story) => (
       <Provider store={store}>

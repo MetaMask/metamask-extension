@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AddEthereumChain } from './add-ethereum-chain';
 
 const mockConfirmation = {
@@ -50,10 +51,46 @@ describe('AddEthereumChain', () => {
 
     render(<AddEthereumChain />, mockState);
 
-    expect(screen.getByText('Add Test Network')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.addNetworkConfirmationTitle.message.replace(
+          '$1',
+          'Test Network',
+        ),
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
+  });
+
+  it('renders punycode RPC hostname for IDN homograph URLs', () => {
+    const spoofedRpcUrl = 'https://iոfura.io/v3/abc';
+
+    jest.requireMock('../../hooks/useCurrentConfirmation').mockReturnValue({
+      currentConfirmation: {
+        ...mockConfirmation,
+        requestData: {
+          ...mockConfirmation.requestData,
+          rpcUrl: spoofedRpcUrl,
+        },
+      },
+    });
+
+    const mockState = {
+      confirmAlerts: {
+        alerts: {},
+      },
+      metamask: {
+        networkConfigurationsByChainId: {},
+        subjectMetadata: {},
+      },
+    };
+
+    render(<AddEthereumChain />, mockState);
+
+    expect(screen.getByText('xn--ifura-dig.io/v3/abc')).toBeInTheDocument();
+    expect(screen.queryByText(/iոfura/iu)).not.toBeInTheDocument();
   });
 
   it('renders update network title when network exists', () => {
@@ -71,6 +108,13 @@ describe('AddEthereumChain', () => {
 
     render(<AddEthereumChain />, mockState);
 
-    expect(screen.getByText('Update Existing Network')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.updateNetworkConfirmationTitle.message.replace(
+          '$1',
+          'Existing Network',
+        ),
+      ),
+    ).toBeInTheDocument();
   });
 });

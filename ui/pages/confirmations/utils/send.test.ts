@@ -1,10 +1,7 @@
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import { EVM_NATIVE_ASSET } from '../../../../test/data/send/assets';
-import {
-  findNetworkClientIdByChainId,
-  getLayer1GasFeeValue,
-} from '../../../store/actions';
+import { findNetworkClientIdByChainId } from '../../../store/actions';
 import { Asset } from '../types/send';
 import {
   prepareEVMTransaction,
@@ -14,19 +11,18 @@ import {
   formatToFixedDecimals,
   convertedCurrency,
   navigateToSendRoute,
-  getLayer1GasFees,
   trimTrailingZeros,
   removeAdditionalDecimalPlaces,
   getFractionLength,
   addLeadingZeroIfNeeded,
   isValidPositiveNumericString,
+  normalizeAmount,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
     findNetworkClientIdByChainId: jest.fn().mockResolvedValue('mainnet'),
-    getLayer1GasFeeValue: jest.fn(),
   };
 });
 
@@ -235,21 +231,6 @@ describe('Send - utils', () => {
     });
   });
 
-  describe('getLayer1GasFees', () => {
-    it('call action getLayer1GasFeeValue with correct parameters', () => {
-      getLayer1GasFees({
-        asset: EVM_NATIVE_ASSET,
-        chainId: '0x1',
-        from: '0x123',
-        value: '0x64',
-      });
-      expect(getLayer1GasFeeValue).toHaveBeenCalledWith({
-        chainId: '0x1',
-        transactionParams: { from: '0x123', value: '0x56bc75e2d63100000' },
-      });
-    });
-  });
-
   describe('getFractionLength', () => {
     it('return width of fractional part', () => {
       expect(getFractionLength('.1')).toEqual(1);
@@ -266,6 +247,34 @@ describe('Send - utils', () => {
       expect(addLeadingZeroIfNeeded('.001')).toEqual('0.001');
       expect(addLeadingZeroIfNeeded('0.001')).toEqual('0.001');
       expect(addLeadingZeroIfNeeded('100')).toEqual('100');
+    });
+  });
+
+  describe('normalizeAmount', () => {
+    it('returns "0" for falsy values', () => {
+      expect(normalizeAmount(undefined)).toEqual('0');
+      expect(normalizeAmount('')).toEqual('0');
+    });
+
+    it('returns "0" for a standalone decimal point', () => {
+      expect(normalizeAmount('.')).toEqual('0');
+    });
+
+    it('strips trailing dot from intermediate inputs', () => {
+      expect(normalizeAmount('0.')).toEqual('0');
+      expect(normalizeAmount('5.')).toEqual('5');
+      expect(normalizeAmount('123.')).toEqual('123');
+    });
+
+    it('passes through valid numeric strings unchanged', () => {
+      expect(normalizeAmount('0')).toEqual('0');
+      expect(normalizeAmount('5.25')).toEqual('5.25');
+      expect(normalizeAmount('10')).toEqual('10');
+      expect(normalizeAmount('.01')).toEqual('.01');
+    });
+
+    it('coerces non-string values to string', () => {
+      expect(normalizeAmount(10 as unknown as string)).toEqual('10');
     });
   });
 });

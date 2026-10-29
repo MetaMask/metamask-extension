@@ -1,0 +1,13 @@
+{
+  "base_property": "from_base",
+  "description": "Base v3 manifest description",
+  "icons": {
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "manifest_version": 3,
+  "name": "MetaMask",
+  "permissions": ["storage", "tabs"],
+  "version": "1.0.0"
+}

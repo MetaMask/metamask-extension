@@ -1,29 +1,36 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   selectIsAccountSyncingEnabled,
   selectIsContactSyncingEnabled,
+  selectIsRampsSyncingEnabled,
   selectIsBackupAndSyncEnabled,
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
-import { Box, Icon, IconName, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 
 export const backupAndSyncFeaturesTogglesTestIds = {
   container: 'backup-and-sync-features-toggles-container',
@@ -31,6 +38,8 @@ export const backupAndSyncFeaturesTogglesTestIds = {
   accountSyncingToggleButton: 'account-syncing-toggle-button',
   contactSyncingToggleContainer: 'contact-syncing-toggle-container',
   contactSyncingToggleButton: 'contact-syncing-toggle-button',
+  rampsSyncingToggleContainer: 'ramps-syncing-toggle-container',
+  rampsSyncingToggleButton: 'ramps-syncing-toggle-button',
 };
 
 export const backupAndSyncFeaturesTogglesSections = [
@@ -56,6 +65,17 @@ export const backupAndSyncFeaturesTogglesSections = [
     toggleButtonTestId:
       backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleButton,
   },
+  {
+    id: 'ramps',
+    titleI18NKey: 'backupAndSyncFeatureRamps',
+    iconName: IconName.Card,
+    backupAndSyncfeatureKey: BACKUPANDSYNC_FEATURES.rampsSyncing,
+    featureReduxSelector: selectIsRampsSyncingEnabled,
+    toggleContainerTestId:
+      backupAndSyncFeaturesTogglesTestIds.rampsSyncingToggleContainer,
+    toggleButtonTestId:
+      backupAndSyncFeaturesTogglesTestIds.rampsSyncingToggleButton,
+  },
 ];
 
 const FeatureToggle = ({
@@ -68,33 +88,34 @@ const FeatureToggle = ({
   isBackupAndSyncEnabled: boolean;
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
   const isFeatureEnabled = useSelector(section.featureReduxSelector);
 
   const trackBackupAndSyncToggleEvent = useCallback(
     (newValue: boolean) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SettingsUpdated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_group: 'backup_and_sync',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          settings_type: section.id,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          old_value: isFeatureEnabled,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_value: newValue,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_group: 'backup_and_sync',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            settings_type: section.id,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: isFeatureEnabled,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: newValue,
+          })
+          .build(),
+      );
     },
-    [trackEvent, isFeatureEnabled, section.id],
+    [trackEvent, createEventBuilder, isFeatureEnabled, section.id],
   );
 
   const handleToggleFeature = async () => {
@@ -107,15 +128,24 @@ const FeatureToggle = ({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
       marginBottom={4}
       id={`backup-and-sync-features-toggles-${section.id}`}
     >
-      <Box display={Display.Flex} gap={4}>
-        <Icon name={section.iconName} />
-        <Text variant={TextVariant.bodyMdMedium}>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={4}
+      >
+        <Icon
+          name={section.iconName}
+          size={IconSize.Md}
+          color={IconColor.IconAlternative}
+          className="shrink-0"
+        />
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t(section.titleI18NKey)}
         </Text>
       </Box>
@@ -132,8 +162,6 @@ const FeatureToggle = ({
             value={isFeatureEnabled}
             disabled={!isBackupAndSyncEnabled}
             onToggle={handleToggleFeature}
-            offLabel={t('off')}
-            onLabel={t('on')}
             dataTestId={section.toggleButtonTestId}
           />
         </div>
@@ -151,6 +179,7 @@ export const BackupAndSyncFeaturesToggles = () => {
   );
   const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
   const isContactSyncingEnabled = useSelector(selectIsContactSyncingEnabled);
+  const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
 
   const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
@@ -158,7 +187,9 @@ export const BackupAndSyncFeaturesToggles = () => {
   // Guard against race conditions by not running while updates are in progress
   useEffect(() => {
     const allSubFeaturesDisabled =
-      !isAccountSyncingEnabled && !isContactSyncingEnabled;
+      !isAccountSyncingEnabled &&
+      !isContactSyncingEnabled &&
+      !isRampsSyncingEnabled;
 
     if (
       isBackupAndSyncEnabled &&
@@ -180,6 +211,7 @@ export const BackupAndSyncFeaturesToggles = () => {
     isBackupAndSyncEnabled,
     isAccountSyncingEnabled,
     isContactSyncingEnabled,
+    isRampsSyncingEnabled,
     isBackupAndSyncUpdateLoading,
     setIsBackupAndSyncFeatureEnabled,
   ]);
@@ -188,20 +220,23 @@ export const BackupAndSyncFeaturesToggles = () => {
     <Box
       marginTop={4}
       marginBottom={4}
+      paddingLeft={4}
+      paddingRight={4}
       className="privacy-settings__setting__wrapper"
       data-testid={backupAndSyncFeaturesTogglesTestIds.container}
     >
-      <Text variant={TextVariant.bodyMdMedium}>
+      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {t('backupAndSyncManageWhatYouSync')}
       </Text>
-      <Text
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
-        as="div"
-        marginBottom={4}
-      >
-        {t('backupAndSyncManageWhatYouSyncDescription')}
-      </Text>
+      <Box marginBottom={4}>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          asChild
+        >
+          <div>{t('backupAndSyncManageWhatYouSyncDescription')}</div>
+        </Text>
+      </Box>
 
       {backupAndSyncFeaturesTogglesSections.map((section) => (
         <FeatureToggle

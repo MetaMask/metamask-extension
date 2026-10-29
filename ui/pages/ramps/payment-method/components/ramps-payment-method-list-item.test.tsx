@@ -1,0 +1,314 @@
+/**
+ * @jest-environment jsdom
+ */
+import React from 'react';
+import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
+import { fireEvent, waitFor } from '@testing-library/react';
+import configureStore from '../../../../store/store';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import RampsPaymentMethodListItem from './ramps-payment-method-list-item';
+
+const createStore = () =>
+  configureStore({
+    metamask: {
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {
+        '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
+      },
+      currentCurrency: 'usd',
+      internalAccounts: {
+        selectedAccount: 'account-1',
+        accounts: {
+          'account-1': {
+            id: 'account-1',
+            address: '0xabc123',
+            metadata: { name: 'Account 1' },
+          },
+        },
+      },
+    },
+  });
+
+const debitCard: PaymentMethod = {
+  id: 'debit-credit-card',
+  paymentType: 'debit-credit-card',
+  name: 'Debit card',
+  score: 1,
+  icon: 'card',
+  delay: [5, 10],
+};
+
+const bankTransfer: PaymentMethod = {
+  id: 'bank-transfer',
+  paymentType: 'bank-transfer',
+  name: 'Bank transfer',
+  score: 0,
+  icon: 'bank',
+  delay: [0, 0],
+};
+
+const mockQuote: Quote = {
+  provider: '/providers/test',
+  quote: {
+    amountIn: 500,
+    amountOut: '0.10596',
+    paymentMethod: debitCard.id,
+    amountOutInFiat: 499.97,
+  },
+};
+
+describe('RampsPaymentMethodListItem', () => {
+  it('matches snapshot with delay and limits', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        limitText="$2,000 limit"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot with instant delay and no limits', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={bankTransfer}
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot with quote amounts', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        showQuote
+        quote={mockQuote}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('hides the check icon when quote info is displayed', () => {
+    const { queryByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        showQuote
+        quote={mockQuote}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(queryByTestId('ramps-payment-method-item-selected')).toBeNull();
+  });
+
+  it('shows the check icon when selected without quote info', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(
+      getByTestId('ramps-payment-method-item-selected'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows the check icon when selected and no quote info is displayed', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        showQuote
+        quote={null}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(
+      getByTestId('ramps-payment-method-item-selected'),
+    ).toBeInTheDocument();
+  });
+
+  it('matches snapshot while quote is loading', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quoteLoading
+        quote={null}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot with quote error', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quoteError
+        quoteErrorMessage="Minimum purchase is $25.00"
+        quote={null}
+        isDisabled
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot when showQuote with no matched quote amounts', () => {
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quote={null}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('shows the quote error message when hovering the warning icon', async () => {
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quoteError
+        quoteErrorMessage="Minimum purchase is $25.00"
+        quote={null}
+        isDisabled
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    const trigger = getByTestId('ramps-quote-display-warning-trigger');
+
+    expect(trigger).not.toHaveAttribute('interestfor');
+    expect(queryByTestId('ramps-quote-display-warning-tooltip')).toBeNull();
+
+    fireEvent.focus(trigger);
+
+    const tooltip = await waitFor(() =>
+      getByTestId('ramps-quote-display-warning-tooltip'),
+    );
+    expect(tooltip).toHaveTextContent('Minimum purchase is $25.00');
+    expect(trigger).toHaveAttribute('aria-describedby', tooltip.id);
+  });
+
+  it('activates on click, Enter keydown, and Space keyup but not while disabled', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={onClick}
+      />,
+      createStore(),
+    );
+
+    const row = getByTestId('ramps-payment-method-item-debit-credit-card');
+
+    fireEvent.click(row);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    fireEvent.keyDown(row, { key: 'Enter' });
+    expect(onClick).toHaveBeenCalledTimes(2);
+
+    fireEvent.keyDown(row, { key: ' ' });
+    expect(onClick).toHaveBeenCalledTimes(2);
+    fireEvent.keyUp(row, { key: ' ' });
+    expect(onClick).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not activate while disabled', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isDisabled
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={onClick}
+      />,
+      createStore(),
+    );
+
+    const row = getByTestId('ramps-payment-method-item-debit-credit-card');
+
+    expect(row).toHaveAttribute('aria-disabled', 'true');
+    expect(row).toHaveAttribute('tabindex', '-1');
+
+    fireEvent.click(row);
+    fireEvent.keyDown(row, { key: 'Enter' });
+    fireEvent.keyUp(row, { key: ' ' });
+
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('does not activate the row from keys pressed on the warning trigger', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        showQuote
+        quoteError
+        quoteErrorMessage="Minimum purchase is $25.00"
+        quote={null}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={onClick}
+      />,
+      createStore(),
+    );
+
+    const trigger = getByTestId('ramps-quote-display-warning-trigger');
+
+    fireEvent.click(trigger);
+    fireEvent.keyDown(trigger, { key: 'Enter' });
+    fireEvent.keyUp(trigger, { key: ' ' });
+
+    expect(onClick).not.toHaveBeenCalled();
+  });
+});

@@ -1,4 +1,3 @@
-/* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import 'jest-canvas-mock';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -28,7 +27,7 @@ const render = (props = {}, state = {}) => {
 
 describe('AccountPicker', () => {
   it('renders properly', () => {
-    const { container } = render({}, { useBlockie: true });
+    const { container } = render({});
     expect(container).toMatchSnapshot();
   });
 

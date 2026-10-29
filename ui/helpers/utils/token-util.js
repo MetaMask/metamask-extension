@@ -1,15 +1,15 @@
 import log from 'loglevel';
+import { ERC20 } from '@metamask/controller-utils';
 import {
   getTokenStandardAndDetails,
   getTokenStandardAndDetailsByChain,
 } from '../../store/actions';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { TokenStandard } from '../../../shared/constants/transaction';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { Numeric } from '../../../shared/lib/Numeric';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -154,19 +154,6 @@ export async function getSymbolAndDecimalsAndName(tokenAddress, tokenList) {
   };
 }
 
-export function tokenInfoGetter() {
-  const tokens = {};
-
-  return async (address, tokenList) => {
-    if (tokens[address.toLowerCase()]) {
-      return tokens[address.toLowerCase()];
-    }
-
-    tokens[address] = await getSymbolAndDecimalsAndName(address, tokenList);
-    return tokens[address];
-  };
-}
-
 /**
  * Attempts to get the address parameter of the given token transaction data
  * (i.e. function call) per the Human Standard Token ABI, in the following
@@ -208,7 +195,7 @@ export function getTokenIdParam(tokenData = {}) {
  * Get the token balance converted to fiat and optionally formatted for display
  *
  * @param {number} [contractExchangeRate] - The exchange rate between the current token and the native currency
- * @param {number} conversionRate - The exchange rate between the current fiat currency and the native currency
+ * @param {number|undefined} conversionRate - The exchange rate between the current fiat currency and the native currency
  * @param {string} currentCurrency - The currency code for the user's chosen fiat currency
  * @param {string} [tokenAmount] - The current token balance
  * @param {string} [tokenSymbol] - The token symbol
@@ -229,6 +216,7 @@ export function getTokenFiatAmount(
   // is currently unknown, the fiat amount cannot be calculated so it is not
   // shown to the user
   if (
+    conversionRate === undefined ||
     conversionRate <= 0 ||
     !contractExchangeRate ||
     tokenAmount === undefined ||
@@ -345,7 +333,7 @@ export async function getAssetDetails(
 
   const decimals = tokenDecimals && Number(tokenDecimals?.toString(10));
 
-  if (tokenDetails?.standard === TokenStandard.ERC20) {
+  if (tokenDetails?.standard === ERC20) {
     tokenId = undefined;
   }
 

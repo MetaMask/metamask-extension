@@ -11,8 +11,8 @@ import { PendingApproval } from './util';
 
 /**
  * A standard error confirmation to be reused across confirmation flows with minimal code.<br/><br/>
- * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.error` method.<br/><br/>
- * The below arguments are properties in the `ApprovalController.error` request.
+ * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.showError` method.<br/><br/>
+ * The below arguments are properties in the `ApprovalController.showError` request.
  */
 export default {
   title: 'Pages/ConfirmationPage/ResultError',

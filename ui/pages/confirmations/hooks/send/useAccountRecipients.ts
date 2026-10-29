@@ -6,6 +6,7 @@ import {
   isBitcoinAccountForSend,
   isEVMAccountForSend,
   isSolanaAccountForSend,
+  isStellarAccountForSend,
   isTronAccountForSend,
 } from '../../utils/account';
 import { useSendContext } from '../../context/send';
@@ -14,8 +15,13 @@ import { useSendType } from './useSendType';
 import { useAccountAddressSeedIconMap } from './useAccountAddressSeedIconMap';
 
 export const useAccountRecipients = (): Recipient[] => {
-  const { isEvmSendType, isSolanaSendType, isBitcoinSendType, isTronSendType } =
-    useSendType();
+  const {
+    isEvmSendType,
+    isSolanaSendType,
+    isBitcoinSendType,
+    isTronSendType,
+    isStellarSendType,
+  } = useSendType();
   const { from } = useSendContext();
   const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
 
@@ -39,7 +45,8 @@ export const useAccountRecipients = (): Recipient[] => {
             (isEvmSendType && isEVMAccountForSend(account)) ||
             (isSolanaSendType && isSolanaAccountForSend(account)) ||
             (isBitcoinSendType && isBitcoinAccountForSend(account)) ||
-            (isTronSendType && isTronAccountForSend(account));
+            (isTronSendType && isTronAccountForSend(account)) ||
+            (isStellarSendType && isStellarAccountForSend(account));
 
           if (shouldInclude) {
             recipients.push({
@@ -63,6 +70,7 @@ export const useAccountRecipients = (): Recipient[] => {
     isSolanaSendType,
     isBitcoinSendType,
     isTronSendType,
+    isStellarSendType,
     accountAddressSeedIconMap,
     walletsWithAccounts,
   ]);

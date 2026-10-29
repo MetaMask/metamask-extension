@@ -1,0 +1,269 @@
+import { useEffect, useMemo, useState, useRef } from 'react';
+import type {
+  FeeCalculationResult,
+  OrderType,
+} from '@metamask/perps-controller';
+
+import { PERPS_FALLBACK_FEE_RATES } from '../../../shared/constants/perps';
+import { submitRequestToBackground } from '../../store/background-connection';
+import { usePerpsMetamaskFeeDiscountBips } from './usePerpsMetamaskFeeDiscountBips';
+import {
+  applyPerpsFallbackDiscount,
+  BASIS_POINTS_DIVISOR,
+} from './perps-fee-utils';
+
+type UsePerpsOrderFeesOptions = {
+  /** Asset symbol (e.g. 'BTC', 'ETH', 'xyz:TSLA') */
+  symbol: string;
+  /** Order type */
+  orderType: OrderType;
+  /** Notional amount in USD as a string (passed to calculateFees for fee amount) */
+  amount?: string;
+  /** Whether this is a maker order (limit order resting on book). Defaults to false. */
+  isMaker?: boolean;
+};
+
+type UsePerpsOrderFeesReturn = {
+  /**
+   * Combined fee rate (protocol + MetaMask) **after** any VIP discount.
+   * `undefined` during the initial load. Refetches retain the last resolved rate
+   * until the replacement request completes.
+   * When the call succeeds, the provider's own internal fallback to base rates
+   * guarantees a numeric value even if the fee-tier API is down.
+   */
+  feeRate: number | undefined;
+  /**
+   * Combined fee rate **before** the MetaMask VIP discount is applied.
+   * Equals `feeRate` when no discount is in effect. Consumers use this to
+   * display a struck-through "original" fee alongside the discounted one.
+   */
+  undiscountedFeeRate: number | undefined;
+  /** Protocol (exchange) fee rate, if available */
+  protocolFeeRate?: number;
+  /** MetaMask builder fee rate, if available */
+  metamaskFeeRate?: number;
+  /** MetaMask builder fee rate before any VIP discount, if available */
+  originalMetamaskFeeRate?: number;
+  /**
+   * Fee discount in whole percentage points .
+   * `undefined` when no discount is in effect or when the lookup hasn't completed yet,
+   * so callers can skip rendering the badge entirely.
+   */
+  metamaskFeeRateDiscountPercentage: number | undefined;
+  /** Full result from the controller, if available */
+  feeResult?: FeeCalculationResult;
+  /** Whether the async fee fetch is in progress */
+  isLoading: boolean;
+  /** True when the calculateFees call failed at the RPC/controller level */
+  hasError: boolean;
+};
+
+/**
+ * Un-discounted MetaMask builder fee expressed in basis points. Derived from
+ * the shared fallback rate so the two stay in sync (0.001 decimal = 10 bps).
+ */
+export const ORIGINAL_METAMASK_FEE_BIPS =
+  PERPS_FALLBACK_FEE_RATES.metamaskFeeRate * BASIS_POINTS_DIVISOR;
+
+/**
+ * Format a decimal fee rate as a percentage, matching Mobile's perps tooltip.
+ *
+ * @param rate - Decimal fee rate, e.g. 0.00045 for 0.045%.
+ * @returns Formatted percentage or "N/A" when no valid rate is available.
+ */
+export function formatPerpsFeeRate(rate: number | undefined | null): string {
+  if (rate === undefined || rate === null || Number.isNaN(rate)) {
+    return 'N/A';
+  }
+  return `${(rate * 100).toFixed(3)}%`;
+}
+
+function createFallbackFeeResult(amount?: string): FeeCalculationResult {
+  const parsedAmount = Number.parseFloat(amount ?? '');
+  const notional = Number.isFinite(parsedAmount) ? parsedAmount : 0;
+
+  return {
+    ...PERPS_FALLBACK_FEE_RATES,
+    feeAmount: notional * PERPS_FALLBACK_FEE_RATES.feeRate,
+    protocolFeeAmount: notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
+    metamaskFeeAmount: notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
+  };
+}
+
+/**
+ * Fetches dynamic fee rates from the controller's calculateFees pipeline.
+ *
+ * Mirrors mobile's usePerpsOrderFees: calls PerpsController.calculateFees
+ * through the background, which routes to HyperLiquidProvider.calculateFees.
+ * That method fetches user-specific rates (volume tiers, referral/staking
+ * discounts, HIP-3 multipliers) and adds the MetaMask builder fee. If the
+ * fee-tier API is unreachable, the *provider* falls back to base rates
+ * internally (0.00045 taker + 0.001 builder = 0.00145), so a successful
+ * RPC response always contains a usable feeRate.
+ *
+ * If the entire calculateFees RPC call fails (background unreachable,
+ * controller throws, etc.) the hook returns a local base-rate estimate with
+ * `hasError: true`. Only that local estimate receives the UI rewards discount.
+ *
+ * @param options - Fee calculation parameters
+ * @param options.symbol - Asset symbol (e.g. 'BTC', 'ETH', 'xyz:TSLA')
+ * @param options.orderType - Order type ('market' or 'limit')
+ * @param options.amount - Notional amount in USD as a string
+ * @param options.isMaker - Whether this is a maker order. Defaults to false.
+ * @returns Fee rates, loading state, and error flag
+ */
+export function usePerpsOrderFees({
+  symbol,
+  orderType,
+  amount,
+  isMaker = false,
+}: UsePerpsOrderFeesOptions): UsePerpsOrderFeesReturn {
+  const [feeQuote, setFeeQuote] = useState<{
+    result: FeeCalculationResult;
+    isFallback: boolean;
+  }>();
+  const feeResult = feeQuote?.result;
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  const requestIdRef = useRef(0);
+  const feeRequestKey = `${symbol}|${orderType}|${amount ?? ''}|${isMaker}`;
+  const [prevFeeRequestKey, setPrevFeeRequestKey] = useState(feeRequestKey);
+
+  if (feeRequestKey !== prevFeeRequestKey) {
+    setPrevFeeRequestKey(feeRequestKey);
+    setIsLoading(true);
+    setHasError(false);
+  }
+
+  useEffect(() => {
+    requestIdRef.current += 1;
+    const currentRequestId = requestIdRef.current;
+    let cancelled = false;
+    const fallbackTimeout = window.setTimeout(() => {
+      if (!cancelled && currentRequestId === requestIdRef.current) {
+        setFeeQuote({
+          result: createFallbackFeeResult(amount),
+          isFallback: true,
+        });
+        setIsLoading(false);
+      }
+    }, 1500);
+
+    submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
+      { orderType, isMaker, amount, symbol },
+    ])
+      .then((result) => {
+        if (!cancelled && currentRequestId === requestIdRef.current) {
+          window.clearTimeout(fallbackTimeout);
+          setFeeQuote({ result, isFallback: false });
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled && currentRequestId === requestIdRef.current) {
+          window.clearTimeout(fallbackTimeout);
+          setFeeQuote({
+            result: createFallbackFeeResult(amount),
+            isFallback: true,
+          });
+          setHasError(true);
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(fallbackTimeout);
+    };
+  }, [symbol, orderType, amount, isMaker]);
+
+  const metamaskFeeDiscountBips = usePerpsMetamaskFeeDiscountBips(
+    ORIGINAL_METAMASK_FEE_BIPS,
+  );
+
+  // Controller quotes already include rewards/subscription resolution.
+  // Only locally manufactured fallback quotes need the rewards factor.
+  const discountedFeeResult = useMemo<FeeCalculationResult | undefined>(() => {
+    if (!feeResult) {
+      return feeResult;
+    }
+    if (
+      !feeQuote?.isFallback ||
+      metamaskFeeDiscountBips === undefined ||
+      metamaskFeeDiscountBips <= 0 ||
+      feeResult.metamaskFeeRate === undefined
+    ) {
+      return feeResult;
+    }
+    const discountedMetamaskFeeRate = applyPerpsFallbackDiscount(
+      feeResult.metamaskFeeRate,
+      metamaskFeeDiscountBips,
+    );
+    const discountedMetamaskFeeAmount =
+      feeResult.metamaskFeeAmount === undefined
+        ? undefined
+        : applyPerpsFallbackDiscount(
+            feeResult.metamaskFeeAmount,
+            metamaskFeeDiscountBips,
+          );
+    const discountedFeeRate =
+      feeResult.protocolFeeRate === undefined
+        ? discountedMetamaskFeeRate
+        : feeResult.protocolFeeRate + discountedMetamaskFeeRate;
+    const discountedFeeAmount =
+      feeResult.protocolFeeAmount !== undefined &&
+      discountedMetamaskFeeAmount !== undefined
+        ? feeResult.protocolFeeAmount + discountedMetamaskFeeAmount
+        : discountedMetamaskFeeAmount;
+    return {
+      ...feeResult,
+      feeRate: discountedFeeRate,
+      feeAmount: discountedFeeAmount,
+      metamaskFeeRate: discountedMetamaskFeeRate,
+      metamaskFeeAmount: discountedMetamaskFeeAmount,
+    };
+  }, [feeResult, feeQuote?.isFallback, metamaskFeeDiscountBips]);
+
+  const originalMetamaskFeeRate = feeQuote?.isFallback
+    ? feeResult?.metamaskFeeRate
+    : (feeResult?.undiscountedMetamaskFeeRate ?? feeResult?.metamaskFeeRate);
+  const undiscountedFeeRate =
+    feeResult?.protocolFeeRate !== undefined &&
+    originalMetamaskFeeRate !== undefined &&
+    originalMetamaskFeeRate !== feeResult.metamaskFeeRate
+      ? feeResult.protocolFeeRate + originalMetamaskFeeRate
+      : feeResult?.feeRate;
+
+  let discountBips: number | undefined;
+  if (feeQuote?.isFallback) {
+    discountBips = metamaskFeeDiscountBips;
+  } else if (
+    feeResult?.feeSource === 'rewards' ||
+    feeResult?.feeSource === 'subscription'
+  ) {
+    discountBips = feeResult.metamaskFeeDiscountBips;
+  }
+  // A winning source alone is not a reduction. Use the quote's metadata and
+  // rates together; a separate rewards lookup may disagree with this preview.
+  const metamaskFeeRateDiscountPercentage =
+    discountBips !== undefined &&
+    discountBips > 0 &&
+    originalMetamaskFeeRate !== undefined &&
+    discountedFeeResult?.metamaskFeeRate !== undefined &&
+    discountedFeeResult.metamaskFeeRate < originalMetamaskFeeRate
+      ? discountBips / 100
+      : undefined;
+
+  return {
+    feeRate: discountedFeeResult?.feeRate,
+    undiscountedFeeRate,
+    protocolFeeRate: discountedFeeResult?.protocolFeeRate,
+    metamaskFeeRate: discountedFeeResult?.metamaskFeeRate,
+    originalMetamaskFeeRate,
+    metamaskFeeRateDiscountPercentage,
+    feeResult: discountedFeeResult,
+    isLoading,
+    hasError,
+  };
+}

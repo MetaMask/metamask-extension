@@ -8,47 +8,73 @@ module.exports = {
   core: {
     disableTelemetry: true,
   },
-  features: {
-    buildStoriesJson: true,
-  },
-  stories: [
-    '../ui/**/*.stories.js',
-    '../ui/**/*.stories.tsx',
-    '../ui/**/*.stories.mdx',
-    './*.stories.mdx',
-  ],
+  stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.tsx'],
   addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-actions',
     '@storybook/addon-a11y',
-    './i18n-party-addon/register.js',
+    '@storybook/addon-docs',
+    '@storybook/addon-webpack5-compiler-babel',
   ],
   staticDirs: ['../app', './images'],
   env: (config) => ({
     ...config,
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
-  }),
-  // Uses babel.config.js settings and prevents "Missing class properties transform" error
-  babel: async (options) => ({
-    overrides: options.overrides,
+    ENABLE_ENFORCED_SIMULATIONS: process.env.ENABLE_ENFORCED_SIMULATIONS || '',
   }),
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {
       __filename: true,
     };
-    config.resolve.alias['webextension-polyfill'] = require.resolve(
-      '../ui/__mocks__/webextension-polyfill.js',
-    );
-    config.resolve.alias['../../../../store/actions'] = require.resolve(
-      '../ui/__mocks__/actions.js',
-    );
-    config.resolve.alias['../../../../../../store/actions'] = require.resolve(
-      '../ui/__mocks__/actions.js',
-    );
-    config.resolve.alias['../../../store/actions'] = require.resolve(
-      '../ui/__mocks__/actions.js',
-    );
+
+    config.resolve.alias['webextension-polyfill'] =
+      require.resolve('../ui/__mocks__/webextension-polyfill.js');
+    config.resolve.alias['../../../../store/actions$'] =
+      require.resolve('../ui/__mocks__/actions.js');
+    config.resolve.alias['../../../../../../store/actions$'] =
+      require.resolve('../ui/__mocks__/actions.js');
+    config.resolve.alias['../../../store/actions$'] =
+      require.resolve('../ui/__mocks__/actions.js');
+    config.resolve.alias['../../hooks/useAnalytics$'] =
+      require.resolve('../ui/__mocks__/useAnalytics.ts');
+    config.resolve.alias['../../../hooks/useAnalytics$'] =
+      require.resolve('../ui/__mocks__/useAnalytics.ts');
+    config.resolve.alias['../../../../hooks/useAnalytics$'] =
+      require.resolve('../ui/__mocks__/useAnalytics.ts');
+
+    const hwSwapHooksMock =
+      require.resolve('../ui/__mocks__/hardware-wallet-swap/hooks.ts');
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapQuoteData$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapSubmission$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapConnectionMonitoring$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapConfirmationMonitoring$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapQrState$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapNavigation$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSwapActions$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/hardware-wallets/useHwSignTracker$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias[
+      '../../../../hooks/bridge/useSubmitBridgeTransaction$'
+    ] = hwSwapHooksMock;
+    config.resolve.alias['../../../../hooks/bridge/useBridgeNavigation$'] =
+      hwSwapHooksMock;
+    config.resolve.alias['@metamask/scure-bip39/dist/wordlists/english.js'] =
+      require.resolve('./shims/scure-bip39-english.js');
+
     config.resolve.fallback = {
       child_process: false,
       constants: false,
@@ -58,11 +84,11 @@ module.exports = {
       https: false,
       os: false,
       path: false,
+      process: require.resolve('process/browser'),
       stream: require.resolve('stream-browserify'),
       zlib: false,
-      _stream_transform: require.resolve(
-        'readable-stream/lib/_stream_transform.js',
-      ),
+      _stream_transform:
+        require.resolve('readable-stream/lib/_stream_transform.js'),
     };
     config.module.strictExportPresence = true;
     config.module.rules.push({
@@ -81,6 +107,7 @@ module.exports = {
           loader: 'postcss-loader',
           options: {
             postcssOptions: {
+              config: false,
               plugins: ['tailwindcss', 'autoprefixer'],
             },
           },
@@ -90,8 +117,16 @@ module.exports = {
           options: {
             sourceMap: true,
             implementation: require('sass-embedded'),
+            api: 'modern-compiler',
+            webpackImporter: false,
             sassOptions: {
-              includePaths: ['ui/css/', 'node_modules/'],
+              quietDeps: true,
+              // TODO: Remove after https://github.com/MetaMask/metamask-extension/issues/44725
+              silenceDeprecations: ['import'],
+              loadPaths: [
+                path.resolve(__dirname, '../ui/css'),
+                path.resolve(__dirname, '../node_modules'),
+              ],
             },
           },
         },
@@ -113,25 +148,27 @@ module.exports = {
             ),
             to: path.join('fonts', 'fontawesome'),
           },
+          {
+            from: path.join('node_modules', '@rive-app', 'canvas', 'rive.wasm'),
+            to: path.join('images', 'rive.wasm'),
+          },
         ],
       }),
     );
     config.plugins.push(
       new ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
+        process: 'process/browser',
       }),
     );
     return config;
   },
-  docs: {
-    autodocs: true,
-  },
   framework: {
     name: '@storybook/react-webpack5',
-    options: {
-      builder: {
-        useSWC: true,
-      },
-    },
+    options: {},
+  },
+  typescript: {
+    reactDocgen: false,
+    check: false,
   },
 };

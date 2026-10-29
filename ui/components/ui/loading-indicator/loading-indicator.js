@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box } from '../../component-library';
+import { Box } from '@metamask/design-system-react';
 
 export default function LoadingIndicator({
   alt,

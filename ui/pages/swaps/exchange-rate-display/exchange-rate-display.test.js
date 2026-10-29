@@ -1,6 +1,6 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { fireEvent } from '../../../../test/jest';
 import ExchangeRateDisplay from '.';
 
 const createProps = (customProps = {}) => {

@@ -1,5 +1,5 @@
 diff --git a/rive.js b/rive.js
-index 03eeff276d0495d77ce0c4715160db4b80a5fc87..79d6a4b12d62a12a4005e2d7f6f9249ce2ddeb55 100644
+index 03eeff276d0495d77ce0c4715160db4b80a5fc87..f8c63241e1e5e39f0aa8c8a82fa062399acc3549 100644
 --- a/rive.js
 +++ b/rive.js
 @@ -5418,7 +5418,7 @@ var RiveFile = /** @class */ (function () {
@@ -52,3 +52,32 @@ index 03eeff276d0495d77ce0c4715160db4b80a5fc87..79d6a4b12d62a12a4005e2d7f6f9249c
          }
          // List of animations that should be initialized.
          var startingAnimationNames = mapToStringArray(animations);
+@@ -5749,7 +5749,7 @@ var Rive = /** @class */ (function () {
+             this.eventCleanup();
+         }
+         if (!this.shouldDisableRiveListeners) {
+-            var activeStateMachines = (this.animator.stateMachines || [])
++            var activeStateMachines = ((this.animator && this.animator.stateMachines) || [])
+                 .filter(function (sm) { return sm.playing && _this.runtime.hasListeners(sm.instance); })
+                 .map(function (sm) { return sm.instance; });
+             var touchScrollEnabledOption = this.isTouchScrollEnabled;
+@@ -5941,6 +5941,10 @@ var Rive = /** @class */ (function () {
+         var _a;
+         // Clear the frameRequestId, as we're now rendering a fresh frame
+         this.frameRequestId = null;
++        // createRoot unmount can cleanup mid-rAF; avoid touching freed animator/runtime
++        if (!this.animator || !this.artboard || !this.renderer) {
++            return;
++        }
+         var before = performance.now();
+         // On the first pass, make sure lastTime has a valid value
+         if (!this.lastRenderTime) {
+@@ -6419,7 +6423,7 @@ var Rive = /** @class */ (function () {
+      */
+     Rive.prototype.stateMachineInputs = function (name) {
+         // If the file's not loaded, early out, nothing to pause
+-        if (!this.loaded) {
++        if (!this.loaded || !this.animator) {
+             return;
+         }
+         var stateMachine = this.animator.stateMachines.find(function (m) { return m.name === name; });

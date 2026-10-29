@@ -2,14 +2,31 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import { QuoteResponse, SortOrder } from '@metamask/bridge-controller';
+import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
+import { SortOrder } from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 const storybook = {
   title: 'Pages/Bridge/BridgeQuotesModal',
   component: BridgeQuotesModal,
 };
+
+const mockQuotes = mockBridgeQuotesErc20Erc20.map((quote) => ({
+  ...quote,
+  quote: {
+    ...quote.quote,
+    protocols: ['across (via Socket)'],
+    dest: {
+      ...quote.quote.dest,
+      amount: '1',
+      asset: {
+        ...quote.quote.dest.asset,
+        decimals: 7,
+        symbol: 'USDC.E',
+      },
+    },
+  },
+}));
 
 export const NoTokenPricesAvailableStory = () => {
   return <BridgeQuotesModal onClose={() => {}} isOpen={true} />;
@@ -21,7 +38,7 @@ NoTokenPricesAvailableStory.decorators = [
       store={configureStore(
         createBridgeMockStore({
           bridgeStateOverrides: {
-            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+            quotes: mockQuotes,
           },
         }),
       )}
@@ -45,7 +62,7 @@ DefaultStory.decorators = [
             sortOrder: SortOrder.COST_ASC,
           },
           bridgeStateOverrides: {
-            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+            quotes: mockQuotes,
           },
           metamaskStateOverrides: {
             currencyRates: {
@@ -81,7 +98,7 @@ PositiveArbitrage.decorators = [
             fromTokenExchangeRate: 0.99,
           },
           bridgeStateOverrides: {
-            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+            quotes: mockQuotes,
           },
           metamaskStateOverrides: {
             currencyRates: {

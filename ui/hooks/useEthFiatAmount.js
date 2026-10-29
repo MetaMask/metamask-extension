@@ -3,11 +3,9 @@ import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { getShouldShowFiat } from '../selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../ducks/metamask/metamask';
-import { decEthToConvertedCurrency } from '../../shared/modules/conversion.utils';
+import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
+import { decEthToConvertedCurrency } from '../../shared/lib/conversion.utils';
 
 /**
  * Get an Eth amount converted to fiat and formatted for display
@@ -42,7 +40,9 @@ export function useEthFiatAmount(
     return undefined;
   }
 
-  const fiatAmount = new BigNumber(ethAmount.toString()).times(conversionRate);
+  const fiatAmount = new BigNumber(ethAmount.toString()).times(
+    String(conversionRate),
+  );
   if (
     ethAmount &&
     fiatAmount.lt(new BigNumber(0.01)) &&

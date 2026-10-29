@@ -1,13 +1,21 @@
 import React from 'react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { act, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
-  createBridgeMockStore,
-  MOCK_EVM_ACCOUNT,
-} from '../../../../test/data/bridge/mock-bridge-store';
+  FeatureId,
+  RequestStatus,
+  UnifiedSwapBridgeEventName,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { CaipAssetType } from '@metamask/utils';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../test/lib/render-helpers-navigate';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import {
   getFromChains,
   getFromToken,
@@ -16,14 +24,44 @@ import {
 } from '../../../ducks/bridge/selectors';
 import * as actions from '../../../ducks/bridge/actions';
 import configureStore from '../../../store/store';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
+import BridgeAssetPickerPage from '../asset-picker';
 import { BridgeInputGroup } from './bridge-input-group';
 
-const mockHandleFetch = jest.fn();
 const mockUseVirtualizer = jest.fn();
+const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 
-jest.mock('@metamask/controller-utils', () => ({
-  ...jest.requireActual('@metamask/controller-utils'),
-  handleFetch: (...args: unknown[]) => mockHandleFetch(...args),
+const mockTrackUnifiedSwapBridgeEvent = jest.fn();
+
+/**
+ * Bridge fixtures seed AssetsController fields via createBridgeMockStore.
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
+
+jest.mock('lodash/debounce', () => ({
+  ...jest.requireActual('lodash/debounce'),
+  debounce: (fn: (...args: unknown[]) => void) => fn,
 }));
 
 jest.mock('@tanstack/react-virtual', () => {
@@ -39,21 +77,24 @@ const tokens = [
     name: 'USD Coin',
     symbol: 'USDC',
     chainId: 'eip155:1',
-    assetId: 'eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    assetId:
+      'eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as CaipAssetType,
     decimals: 6,
   },
   {
     name: 'USDT',
     symbol: 'USDT',
     chainId: 'eip155:1',
-    assetId: 'eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832',
+    assetId:
+      'eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5832' as CaipAssetType,
     decimals: 6,
   },
   {
     name: 'USDC',
     symbol: 'USDC',
     chainId: 'eip155:59144',
-    assetId: 'eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833',
+    assetId:
+      'eip155:59144/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5833' as CaipAssetType,
     decimals: 6,
   },
 ];
@@ -64,33 +105,53 @@ const tokensWithBalance = [
     symbol: 'UNI',
     name: 'Uniswap',
     chainId: 'eip155:1',
-    assetId: 'eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+    assetId:
+      'eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984' as CaipAssetType,
+    balance: '.0000001',
+    tokenFiatAmount: '0',
   },
   {
     decimals: 9,
     symbol: 'LINK',
     name: 'Link',
     chainId: 'eip155:1',
-    assetId: 'eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA',
+    assetId:
+      'eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA' as CaipAssetType,
+    balance: '1',
+    tokenFiatAmount: 100,
   },
 ];
 
+const mockUsePopularTokens = jest
+  .fn()
+  .mockReturnValue({ popularTokensList: tokensWithBalance, isLoading: false });
+
+const mockUseTokenSearchResults = jest.fn().mockReturnValue({
+  searchResults: [],
+  isSearchResultsLoading: false,
+  onFetchMoreResults: jest.fn(),
+  hasMoreResults: false,
+});
+
+jest.mock('../../../hooks/bridge/usePopularTokens', () => ({
+  usePopularTokens: (...args: unknown[]) => mockUsePopularTokens(...args),
+}));
+jest.mock('../../../hooks/bridge/useTokenSearchResults', () => ({
+  useTokenSearchResults: (...args: unknown[]) =>
+    mockUseTokenSearchResults(...args),
+}));
+
 const ASSET_PICKER_BUTTON_TEST_ID = 'asset-picker-button';
 
-const renderBridgeInputGroup = (
-  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
-  props: Partial<React.ComponentProps<typeof BridgeInputGroup>> = {},
-) => {
-  const mockState = createBridgeMockStore({ ...stateOverrides });
-  return renderWithProvider(
+const InputGroup = ({
+  mockState,
+  ...props
+}: {
+  mockState: ReturnType<typeof createBridgeMockStore>;
+} & Partial<React.ComponentProps<typeof BridgeInputGroup>>) => {
+  return (
     <BridgeInputGroup
-      header={'Swap'}
       token={getFromToken(mockState)}
-      onAssetChange={(asset) => {
-        actions.setFromToken(asset);
-      }}
-      networks={getFromChains(mockState)}
-      accountAddress={MOCK_EVM_ACCOUNT.address}
       buttonProps={{ testId: ASSET_PICKER_BUTTON_TEST_ID }}
       amountFieldProps={{
         testId: 'from-amount',
@@ -98,8 +159,51 @@ const renderBridgeInputGroup = (
         value: '1',
       }}
       isDestination={false}
+      setIsAssetPickerOpen={jest.fn()}
       {...props}
-    />,
+    />
+  );
+};
+
+const renderBridgeInputGroup = (
+  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
+  props: Partial<React.ComponentProps<typeof BridgeInputGroup>> = {},
+) => {
+  const mockState = createBridgeMockStore(stateOverrides);
+
+  return renderWithProvider(
+    <InputGroup mockState={mockState} {...props} />,
+    configureStore(mockState),
+  );
+};
+
+// When the network management feature flag is enabled, token selection happens
+// on a dedicated page instead of the modal. This renders that page directly,
+// mirroring how `BridgeInputGroup` navigates to it. The picker's "source vs
+// destination" mode is derived from the bridge slice flags.
+const renderAssetPickerPage = (
+  stateOverrides: Parameters<typeof createBridgeMockStore>[0] = {},
+  {
+    isDestination = false,
+    isSrcAssetPickerOpen,
+    isDestAssetPickerOpen,
+  }: {
+    isDestination?: boolean;
+    isSrcAssetPickerOpen?: boolean;
+    isDestAssetPickerOpen?: boolean;
+  } = {},
+) => {
+  const mockState = createBridgeMockStore({
+    ...stateOverrides,
+    bridgeSliceOverrides: {
+      ...stateOverrides.bridgeSliceOverrides,
+      isSrcAssetPickerOpen: isSrcAssetPickerOpen ?? !isDestination,
+      isDestAssetPickerOpen: isDestAssetPickerOpen ?? isDestination,
+    },
+  });
+
+  return renderWithProvider(
+    <BridgeAssetPickerPage />,
     configureStore(mockState),
   );
 };
@@ -109,44 +213,40 @@ const setupFetchMock = (
   hasNextPage = false,
   popularResults = tokens.slice(0, 2),
 ) => {
-  mockHandleFetch.mockImplementation((url) =>
-    url.includes('search')
-      ? {
-          data: searchResults,
-          pageInfo: {
-            hasNextPage,
-            endCursor: undefined,
-          },
-        }
-      : popularResults,
-  );
-};
-
-const openAssetPicker = async () => {
-  await act(async () => {
-    await userEvent.click(screen.getByTestId(ASSET_PICKER_BUTTON_TEST_ID));
+  mockUsePopularTokens.mockReturnValue({
+    popularTokensList: popularResults.map((token) => toBridgeToken(token)),
+    isLoading: false,
   });
-  await waitFor(() => {
-    expect(screen.getByTestId('bridge-asset-picker-modal')).toBeVisible();
+  mockUseTokenSearchResults.mockReturnValue({
+    searchResults: searchResults.map((token) => toBridgeToken(token)),
+    isSearchResultsLoading: false,
+    onFetchMoreResults: jest.fn(),
+    hasMoreResults: hasNextPage,
   });
 };
 
-const fillSearchInput = async (searchQuery: string) => {
+const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
   const searchInput = screen.getByTestId('bridge-asset-picker-search-input');
   await act(async () => {
     await searchInput.focus();
     await userEvent.keyboard(searchQuery);
   });
-};
-
-const expectAssetListToMatch = (stringifiedSnapshot: string) => {
-  expect(
-    screen.getAllByTestId('bridge-asset').map(({ textContent }) => textContent),
-  ).toMatchInlineSnapshot(stringifiedSnapshot);
+  await waitFor(() => {
+    expect(screen.getByTestId('bridge-asset-picker-search-input')).toHaveValue(
+      expectedValue ?? searchQuery,
+    );
+  });
 };
 
 describe('BridgeInputGroup', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    mockTrackUnifiedSwapBridgeEvent.mockResolvedValue(undefined);
+    setBackgroundConnection({
+      trackUnifiedSwapBridgeEvent: mockTrackUnifiedSwapBridgeEvent,
+      getStatePatches: jest.fn(),
+    } as never);
     mockUseVirtualizer.mockReturnValue({
       getVirtualItems: () =>
         tokens.map((token, index) => ({
@@ -157,157 +257,245 @@ describe('BridgeInputGroup', () => {
       getTotalSize: () => 78 * tokens.length,
       measureElement: () => 78,
     });
-    jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'default',
+    });
   });
 
-  it('should search for tokens', async () => {
+  // @ts-expect-error - each is a valid test function
+  it.each([
+    [false, 'source'],
+    [true, 'destination'],
+  ] as const)(
+    'tracks opening the %s asset picker',
+    async (isDestination: boolean, assetLocation: 'source' | 'destination') => {
+      renderBridgeInputGroup({}, { isDestination });
+
+      await act(async () => {
+        await userEvent.click(screen.getByTestId(ASSET_PICKER_BUTTON_TEST_ID));
+      });
+      await flushPromises();
+
+      expect(mockTrackUnifiedSwapBridgeEvent).toHaveBeenCalledWith(
+        UnifiedSwapBridgeEventName.AssetPickerOpened,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          asset_location: assetLocation,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+        },
+      );
+    },
+  );
+
+  it('passes fetched security metadata to the selected asset button', () => {
+    const { getByTestId } = renderBridgeInputGroup(
+      {},
+      { tokenSecurityData: { isVerified: true } },
+    );
+
+    expect(getByTestId('security-badge')).toBeInTheDocument();
+  });
+
+  it('leaves the selected asset button unchanged without fetched metadata', () => {
+    const { queryByTestId } = renderBridgeInputGroup();
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
+  });
+
+  it('moves the caret only when the input denomination changes', () => {
+    const mockState = createBridgeMockStore();
+    const view = renderWithProvider(
+      <InputGroup mockState={mockState} />,
+      configureStore(mockState),
+    );
+    const input = view.getByTestId('from-amount') as HTMLInputElement;
+    const setSelectionRangeSpy = jest.spyOn(input, 'setSelectionRange');
+
+    act(() => {
+      view.rerender(
+        <InputGroup
+          mockState={mockState}
+          amountFieldProps={{
+            testId: 'from-amount',
+            autoFocus: true,
+            value: '12',
+          }}
+        />,
+      );
+    });
+
+    expect(setSelectionRangeSpy).not.toHaveBeenCalled();
+
+    act(() => {
+      view.rerender(<InputGroup mockState={mockState} amountInputPrefix="$" />);
+    });
+
+    expect(setSelectionRangeSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders a destination amount skeleton while the quote is loading', () => {
     setupFetchMock();
-    const { getByTestId } = renderBridgeInputGroup();
 
-    expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent('ETH');
-
-    await openAssetPicker();
-    expect(getByTestId('bridge-asset-picker-modal')).toMatchSnapshot();
-    expectAssetListToMatch(
-      `
-      [
-        "USDCUSD Coin",
-        "USDTUSDT",
-      ]
-    `,
+    const { getByTestId, queryByTestId, queryByText } = renderBridgeInputGroup(
+      {
+        bridgeStateOverrides: {
+          quotesLoadingStatus: RequestStatus.LOADING,
+        },
+      },
+      {
+        isDestination: true,
+        showAmountSkeleton: true,
+        amountFieldProps: {
+          testId: 'to-amount',
+          autoFocus: false,
+          value: '0',
+          readOnly: true,
+          disabled: true,
+          className: 'amount-input',
+        },
+      },
     );
 
-    await fillSearchInput('U');
-    await waitFor(() => {
-      expectAssetListToMatch(
-        `
-        [
-          "UNI$0.00Uniswap<0.000001 UNI",
-        ]
-      `,
-      );
-    });
-
-    await fillSearchInput('SD');
-    await waitFor(() => {
-      expectAssetListToMatch(
-        `
-        [
-          "USDCUSD Coin",
-          "USDTUSDT",
-          "USDCUSDC",
-        ]
-      `,
-      );
-    });
-
-    expect(mockHandleFetch.mock.calls.map((call) => [call[0], call[1].body]))
-      .toMatchInlineSnapshot(`
-      [
-        [
-          "https://bridge.api.cx.metamask.io/getTokens/popular",
-          "{"chainIds":["eip155:1"],"includeAssets":[{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png","assetId":"eip155:1/slip44:60","balance":"0.01","tokenFiatAmount":25.242128065034784},{"decimals":10,"symbol":"UNI","name":"Uniswap","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png","assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","balance":"0.0000001848","tokenFiatAmount":0.0010728914112762384},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"0.000000001","tokenFiatAmount":0.0000030290553678041743}]}",
-        ],
-        [
-          "https://bridge.api.cx.metamask.io/getTokens/search",
-          "{"chainIds":["eip155:1"],"includeAssets":[],"query":"USD"}",
-        ],
-      ]
-    `);
-
-    expect(getByTestId('bridge-asset-picker-modal')).toMatchSnapshot();
-    expect(mockUseVirtualizer).toHaveBeenCalledWith({
-      count: 3,
-      gap: 0,
-      estimateSize: expect.any(Function),
-      overscan: 10,
-      getScrollElement: expect.any(Function),
-      initialOffset: expect.any(Number),
-      onChange: expect.any(Function),
-    });
+    expect(getByTestId('to-amount-loading-skeleton')).toBeInTheDocument();
+    expect(queryByTestId('to-amount')).not.toBeInTheDocument();
+    expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });
 
-  it('should search for tokens with hasNextPage', async () => {
-    setupFetchMock(tokens.slice(0, 1), true);
+  it('returns to the previous page when closing the picker', async () => {
+    setupFetchMock();
 
-    const { getByTestId, getAllByTestId } = renderBridgeInputGroup();
-    expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent('ETH');
+    renderAssetPickerPage();
 
-    await openAssetPicker();
-    expectAssetListToMatch(
-      `
-      [
-        "USDCUSD Coin",
-        "USDTUSDT",
-      ]
-      `,
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('bridge-asset-picker-search-input'),
+      ).toBeVisible();
+    });
+
+    await userEvent.click(screen.getByLabelText(messages.back.message));
+
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('shows only the native representation of Arc USDC', async () => {
+    const nativeArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId: 'eip155:5042/slip44:5042' as CaipAssetType,
+      decimals: 18,
+    };
+    const erc20ArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId:
+        'eip155:5042/erc20:0x3600000000000000000000000000000000000000' as CaipAssetType,
+      decimals: 6,
+    };
+    setupFetchMock([], false, [nativeArcUsdc, erc20ArcUsdc]);
+    mockUseVirtualizer.mockReturnValue({
+      getVirtualItems: () =>
+        [nativeArcUsdc, erc20ArcUsdc].map((token, index) => ({
+          index,
+          start: index * 78,
+          key: token.assetId,
+        })),
+      getTotalSize: () => 156,
+      measureElement: () => 78,
+    });
+
+    renderAssetPickerPage();
+
+    expect(
+      await screen.findByTestId(`bridge-asset--${nativeArcUsdc.assetId}`),
+    ).toBeVisible();
+    expect(
+      screen.queryByTestId(`bridge-asset--${erc20ArcUsdc.assetId}`),
+    ).not.toBeInTheDocument();
+  });
+
+  it('clears picker flags when browser navigation unmounts the page', async () => {
+    setupFetchMock();
+    const setDestinationPickerOpenSpy = jest.spyOn(
+      actions,
+      'setIsDestAssetPickerOpen',
+    );
+    const setSourcePickerOpenSpy = jest.spyOn(
+      actions,
+      'setIsSrcAssetPickerOpen',
     );
 
-    await fillSearchInput('USD');
-    await waitFor(() => {
-      expectAssetListToMatch(
-        `
-        [
-          "USDCUSD Coin",
-        ]
-        `,
-      );
-    });
-    expect(mockHandleFetch).toHaveBeenCalledTimes(2);
-    expect(getAllByTestId('bridge-asset-loading-skeleton')).toHaveLength(2);
+    const { unmount } = renderAssetPickerPage(
+      {},
+      {
+        isSrcAssetPickerOpen: true,
+        isDestAssetPickerOpen: false,
+      },
+    );
 
-    expect(mockUseVirtualizer).toHaveBeenCalledWith({
-      count: 2,
-      gap: 0,
-      estimateSize: expect.any(Function),
-      overscan: 10,
-      getScrollElement: expect.any(Function),
-      initialOffset: expect.any(Number),
-      onChange: expect.any(Function),
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('bridge-asset-picker-search-input'),
+      ).toBeVisible();
     });
+
+    unmount();
+
+    expect(setDestinationPickerOpenSpy).not.toHaveBeenCalled();
+    expect(setSourcePickerOpenSpy).not.toHaveBeenCalled();
+    setDestinationPickerOpenSpy.mockRestore();
+    setSourcePickerOpenSpy.mockRestore();
   });
 
-  it('should render popular tokens', async () => {
+  it('uses the source picker when both picker flags are stale-open', async () => {
     setupFetchMock(
       undefined,
       false,
       tokens.slice(0, 2).concat(tokensWithBalance),
     );
 
-    const { getByTestId } = renderBridgeInputGroup();
+    const stateOverrides = {
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: MultichainNetworks.SOLANA },
+            { chainId: MultichainNetworks.BITCOIN },
+            { chainId: formatChainIdToCaip(1) },
+            { chainId: formatChainIdToCaip(10) },
+            { chainId: formatChainIdToCaip(137) },
+            { chainId: formatChainIdToCaip(56) },
+            { chainId: MultichainNetworks.TRON },
+          ],
+        },
+      },
+    };
 
-    expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent('ETH');
-
-    await openAssetPicker();
-    expectAssetListToMatch(
-      `
-      [
-        "USDCUSD Coin",
-        "USDTUSDT",
-        "UNI$0.00Uniswap<0.000001 UNI",
-      ]
-    `,
-    );
-
-    expect(mockHandleFetch.mock.calls.map((call) => [call[0], call[1].body]))
-      .toMatchInlineSnapshot(`
-      [
-        [
-          "https://bridge.api.cx.metamask.io/getTokens/popular",
-          "{"chainIds":["eip155:1"],"includeAssets":[{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png","assetId":"eip155:1/slip44:60","balance":"0.01","tokenFiatAmount":25.242128065034784},{"decimals":10,"symbol":"UNI","name":"Uniswap","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png","assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","balance":"0.0000001848","tokenFiatAmount":0.0010728914112762384},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"0.000000001","tokenFiatAmount":0.0000030290553678041743}]}",
-        ],
-      ]
-    `);
-
-    expect(mockUseVirtualizer).toHaveBeenCalledWith({
-      count: 4,
-      gap: 0,
-      estimateSize: expect.any(Function),
-      overscan: 10,
-      getScrollElement: expect.any(Function),
-      initialOffset: expect.any(Number),
-      onChange: expect.any(Function),
+    const { getByTestId } = renderAssetPickerPage(stateOverrides, {
+      isSrcAssetPickerOpen: true,
+      isDestAssetPickerOpen: true,
     });
+
+    await waitFor(() => {
+      expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
+    });
+
+    await act(async () => {
+      await getByTestId('multichain-asset-picker__network').click();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('bridge-network-picker-popover')).toBeVisible();
+    });
+
+    expect(
+      screen.getAllByTestId(/bridge-network-picker-popover-item-/u),
+    ).toHaveLength(6);
   });
 
   // @ts-expect-error - each is a valid test function
@@ -318,7 +506,7 @@ describe('BridgeInputGroup', () => {
       undefined,
       getFromChains,
       false,
-      { expectedDefaultToken: 'ETH', expectedNetworkCount: 5 },
+      { expectedDefaultToken: 'ETH', expectedNetworkCount: 6 },
     ],
     [
       'destination',
@@ -330,7 +518,7 @@ describe('BridgeInputGroup', () => {
       },
       getToChains,
       true,
-      { expectedDefaultToken: 'mUSD', expectedNetworkCount: 8 },
+      { expectedDefaultToken: 'mUSD', expectedNetworkCount: 7 },
     ],
   ])(
     'should render %s networks',
@@ -338,7 +526,7 @@ describe('BridgeInputGroup', () => {
       _description: string,
       getToken: typeof getFromToken,
       enabledNetworkMap: Record<string, Record<string, boolean>>,
-      getChains: typeof getFromChains,
+      _getChains: typeof getFromChains,
       isDestination: boolean,
       {
         expectedDefaultToken,
@@ -351,6 +539,13 @@ describe('BridgeInputGroup', () => {
         tokens.slice(0, 2).concat(tokensWithBalance),
       );
 
+      mockUseLocation.mockReturnValue({
+        pathname: '/',
+        search: isDestination ? '?field=dest' : '',
+        hash: '',
+        state: null,
+        key: 'default',
+      });
       const stateOverrides = {
         metamaskStateOverrides: {
           enabledNetworkMap,
@@ -370,28 +565,17 @@ describe('BridgeInputGroup', () => {
         },
       };
       const mockState = createBridgeMockStore(stateOverrides);
-      const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+      // Ensure the default token is what we expect for this picker mode.
+      expect(getToken(mockState).symbol).toBe(expectedDefaultToken);
 
-      const { getByTestId } = renderBridgeInputGroup(stateOverrides, {
+      const { getByTestId } = renderAssetPickerPage(stateOverrides, {
         isDestination,
-        token: getToken(mockState),
-        networks: getChains(mockState),
       });
 
-      expect(getByTestId(ASSET_PICKER_BUTTON_TEST_ID)).toHaveTextContent(
-        expectedDefaultToken,
-      );
-
-      await openAssetPicker();
-      expectAssetListToMatch(
-        `
-        [
-          "USDCUSD Coin",
-          "USDTUSDT",
-          "UNI$0.00Uniswap<0.000001 UNI",
-        ]
-      `,
-      );
+      await waitFor(() => {
+        expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
+      });
+      await flushPromises();
 
       const networkPicker = getByTestId('multichain-asset-picker__network');
       await fillSearchInput('SD');
@@ -404,36 +588,109 @@ describe('BridgeInputGroup', () => {
       );
       await waitFor(() => {
         expect(networkPickerPopover).toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(4);
       });
 
       expect(networkPickerPopover).toMatchSnapshot();
-      expect(
-        networkPickerPopover.getElementsByTagName('p').length,
-      ).toStrictEqual(expectedNetworkCount);
 
-      await act(async () => {
-        await userEvent.click(
-          networkPickerPopover.getElementsByTagName('p')[1],
-        );
-      });
+      const networkItems = screen.getAllByTestId(
+        /bridge-network-picker-popover-item-/u,
+      );
+      expect(networkItems).toHaveLength(expectedNetworkCount);
+
+      const solanaNetworkItem = screen.getByTestId(
+        'network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+      // `mousedown` reproduces the real-browser sequence: the asset picker's
+      // outside-click handler runs on `mousedown` (before `click`) and must not
+      // close the asset picker when selecting a network.
+      fireEvent.mouseDown(solanaNetworkItem);
+      fireEvent.click(solanaNetworkItem);
       await waitFor(() => {
-        expect(networkPickerPopover).not.toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(7);
+        // The asset picker stays open; only the network picker closes.
+        expect(getByTestId('bridge-asset-picker-search-input')).toBeVisible();
+        expect(
+          screen.queryByTestId('bridge-network-picker-popover'),
+        ).not.toBeInTheDocument();
+        expect(mockUsePopularTokens.mock.lastCall).toStrictEqual([
+          expect.objectContaining({
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+            assetsToInclude: [
+              {
+                accountType: 'solana:data-account',
+                assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+                balance: '1.530',
+                chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                decimals: 9,
+                iconUrl:
+                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+                name: 'Solana',
+                rwaData: undefined,
+                symbol: 'SOL',
+                tokenFiatAmount: 210.8493,
+                isVerified: undefined,
+                securityData: undefined,
+              },
+              {
+                accountType: 'solana:data-account',
+                assetId:
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                balance: '2.043238',
+                chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                decimals: 6,
+                iconUrl:
+                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+                name: 'USDC',
+                rwaData: undefined,
+                symbol: 'USDC',
+                tokenFiatAmount: 2.04284978478,
+                isVerified: undefined,
+                securityData: undefined,
+              },
+            ],
+            fetchTokens: expect.any(Function),
+          }),
+        ]);
+        expect(mockUseTokenSearchResults.mock.lastCall).toStrictEqual([
+          expect.objectContaining({
+            accountGroupId: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+            assetsToInclude: [
+              {
+                accountType: 'solana:data-account',
+                assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+                balance: '1.530',
+                chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                decimals: 9,
+                iconUrl:
+                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
+                name: 'Solana',
+                rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
+                symbol: 'SOL',
+                tokenFiatAmount: 210.8493,
+              },
+              {
+                accountType: 'solana:data-account',
+                assetId:
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                balance: '2.043238',
+                chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                decimals: 6,
+                iconUrl:
+                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+                name: 'USDC',
+                rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
+                symbol: 'USDC',
+                tokenFiatAmount: 2.04284978478,
+              },
+            ],
+            chainIds: new Set(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']),
+            searchQuery: 'SD',
+          }),
+        ]);
       });
-
-      expect(mockHandleFetch.mock.calls).toMatchSnapshot();
-      expect(mockHandleFetch).toHaveBeenCalledTimes(3);
-
-      expect(abortSpy.mock.calls.flat()).toStrictEqual([
-        'Search query changed',
-        'Search query changed',
-        'Search query changed',
-        'Page unmounted',
-        'Search query changed',
-        'Asset balances changed',
-        'Asset balances changed',
-      ]);
     },
   );
 });

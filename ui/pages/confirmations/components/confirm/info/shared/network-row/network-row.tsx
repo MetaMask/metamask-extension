@@ -3,7 +3,7 @@ import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
-import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   AvatarNetwork,

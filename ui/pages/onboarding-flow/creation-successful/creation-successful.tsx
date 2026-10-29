@@ -1,103 +1,80 @@
-import React, {
-  useCallback,
-  useMemo,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import browser from 'webextension-polyfill';
+import React, { useCallback, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
-} from '../../../components/component-library/button';
-import {
-  TextVariant,
-  Display,
-  AlignItems,
-  JustifyContent,
-  FlexDirection,
-  BorderRadius,
-  BlockSize,
-  FontWeight,
-  TextColor,
-  IconColor,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
-import {
-  Box,
   Text,
-  IconName,
-  IconSize,
-  Icon,
-  ButtonLink,
-  ButtonLinkSize,
-} from '../../../components/component-library';
+  TextVariant,
+  TextColor,
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  TextButton,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   DEFAULT_ROUTE,
-  SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getExternalServicesOnboardingToggleState,
-  getFirstTimeFlowType,
-  getPreferences,
-} from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import {
-  getCompletedOnboarding,
-  getIsPrimarySeedPhraseBackedUp,
+  getIsInitialized,
+  getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
-import {
-  toggleExternalServices,
-  setCompletedOnboarding,
-  setCompletedOnboardingWithSidepanel,
-  setUseSidePanelAsDefault,
-} from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-import type { BrowserWithSidePanel } from '../../../../shared/types';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { useOnboardingCompletion } from '../hooks/useOnboardingCompletion';
 import WalletReadyAnimation from './wallet-ready-animation';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CreationSuccessful() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const t = useI18nContext();
-  const { search } = useLocation();
-  const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
-  const externalServicesOnboardingToggleState = useSelector(
-    getExternalServicesOnboardingToggleState,
-  );
-  const trackEvent = useContext(MetaMetricsContext);
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
-  const preferences = useSelector(getPreferences);
-  const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
-  const isOnboardingCompleted = useSelector(getCompletedOnboarding);
+  const isInitialized = useSelector(getIsInitialized);
+  const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
+  const {
+    completeOnboarding: completeOnboardingFromCompletionPage,
+    markCompletionPageSeen,
+    isSidePanelOpen,
+    setIsSidePanelOpen,
+  } = useOnboardingCompletion();
 
-  const learnMoreLink =
-    'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
+  const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
-  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
-  const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
+  const { isFromReminder } = useOnboardingSearchParams();
+  const isFromSettingsSRPBackup = Boolean(isFromReminder);
 
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
+  // Guard: redirect if wallet is not properly set up.
+  // Prevents users from skipping onboarding steps by navigating directly to the completion route.
+  useEffect(() => {
+    if (isFromReminder) {
+      return;
+    }
+    if (!isInitialized || isResetWalletInProgress) {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    }
+  }, [isInitialized, isFromReminder, navigate, isResetWalletInProgress]);
 
   useEffect(() => {
-    const browserWithSidePanel = browser as BrowserWithSidePanel;
-    const handleSidePanelClosed = (_args: unknown) => {
+    if (isFromReminder || isResetWalletInProgress || !isInitialized) {
+      return;
+    }
+
+    markCompletionPageSeen();
+  }, [
+    isFromReminder,
+    isInitialized,
+    isResetWalletInProgress,
+    markCompletionPageSeen,
+  ]);
+
+  useEffect(() => {
+    const browserWithSidePanel = chrome;
+    const handleSidePanelClosed = () => {
       setIsSidePanelOpen(false);
     };
 
@@ -122,7 +99,7 @@ export default function CreationSuccessful() {
         );
       }
     };
-  }, [isSidePanelEnabled]);
+  }, [isSidePanelEnabled, setIsSidePanelOpen]);
 
   const renderDetails1 = useMemo(() => {
     if (isFromReminder) {
@@ -142,221 +119,109 @@ export default function CreationSuccessful() {
     );
   }, []);
 
-  const renderSettingsActions = useMemo(() => {
-    return (
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        justifyContent={JustifyContent.flexStart}
-        className="creation-successful__settings-actions"
-        gap={4}
-      >
-        <Button
-          variant={ButtonVariant.Secondary}
-          data-testid="manage-default-settings"
-          borderRadius={BorderRadius.LG}
-          width={BlockSize.Full}
-          onClick={() =>
-            navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
-          }
-        >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <Icon
-              name={IconName.Setting}
-              size={IconSize.Md}
-              marginInlineEnd={3}
-            />
-            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-              {t('manageDefaultSettings')}
-            </Text>
-          </Box>
-          <Icon
-            name={IconName.ArrowRight}
-            color={IconColor.iconAlternative}
-            size={IconSize.Sm}
-          />
-        </Button>
-      </Box>
-    );
-  }, [navigate, t]);
-
   const onDone = useCallback(async () => {
     if (isFromReminder) {
-      navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
       return;
     }
 
-    // Track onboarding completion event
-    if (!isOnboardingCompleted) {
-      const isNewWallet =
-        firstTimeFlowType === FirstTimeFlowType.create ||
-        firstTimeFlowType === FirstTimeFlowType.socialCreate;
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.OnboardingCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type: firstTimeFlowType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: isNewWallet,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        },
-      });
+    if (isResetWalletInProgress) {
+      // if the wallet reset is in progress, we navigate to the default route (i.e. onboarding start page)
+      navigate(DEFAULT_ROUTE);
+      return;
     }
 
-    await dispatch(
-      toggleExternalServices(externalServicesOnboardingToggleState),
-    );
-
-    // Side Panel - only if feature flag is enabled
-    if (isSidePanelEnabled) {
-      // If useSidePanelAsDefault is already true, side panel is already set up
-      // Just complete onboarding and redirect to home page
-      if (isSidePanelSetAsDefault) {
-        await dispatch(setCompletedOnboarding());
-        navigate(DEFAULT_ROUTE);
-        return;
-      }
-
-      try {
-        // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
-        const browserWithSidePanel = browser as BrowserWithSidePanel;
-        if (browserWithSidePanel?.sidePanel?.open) {
-          const tabs = await browser.tabs.query({
-            active: true,
-            currentWindow: true,
-          });
-          if (tabs && tabs.length > 0) {
-            await browserWithSidePanel.sidePanel.open({
-              windowId: tabs[0].windowId,
-            });
-            await dispatch(setUseSidePanelAsDefault(true));
-            // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
-            await dispatch(setCompletedOnboardingWithSidepanel());
-            setIsSidePanelOpen(true);
-            return;
-          }
-        }
-      } catch (error) {
-        console.error('Error opening side panel:', error);
-        // Fall through to regular onboarding
-      }
-    }
-    // Fallback to regular onboarding completion
-    await dispatch(setCompletedOnboarding());
-    navigate(DEFAULT_ROUTE);
+    await completeOnboardingFromCompletionPage();
   }, [
-    isOnboardingCompleted,
+    completeOnboardingFromCompletionPage,
     isFromReminder,
-    dispatch,
-    externalServicesOnboardingToggleState,
+    isResetWalletInProgress,
     navigate,
-    trackEvent,
-    firstTimeFlowType,
-    isFromSettingsSecurity,
-    isSidePanelEnabled,
-    isSidePanelSetAsDefault,
   ]);
+
+  let doneButtonLabel = t('done');
+  if (isFromSettingsSRPBackup) {
+    doneButtonLabel = t('backToWallet');
+  } else if (isSidePanelEnabled) {
+    doneButtonLabel = t('openWallet');
+  }
 
   const renderDoneButton = () => {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
       >
         <Button
           data-testid="onboarding-complete-done"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          width={BlockSize.Full}
+          className="w-full"
           onClick={onDone}
-          disabled={isSidePanelEnabled && isSidePanelOpen}
+          disabled={
+            !isFromSettingsSRPBackup && isSidePanelEnabled && isSidePanelOpen
+          }
         >
-          {isSidePanelEnabled ? t('openWallet') : t('done')}
+          {doneButtonLabel}
         </Button>
       </Box>
     );
   };
 
+  const handleLearnMoreClick = () => {
+    global.platform.openTab({
+      url: learnMoreLink,
+    });
+  };
+
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
       gap={6}
-      className="creation-successful"
-      data-testid="wallet-ready"
+      className="creation-successful h-full"
+      data-testid="parent-selector-onboarding-complete"
     >
       {isFromSettingsSRPBackup && (
         <Box>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.flexStart}
+            flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Start}
           >
             <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              justifyContent={JustifyContent.center}
-              style={{
-                alignSelf: AlignItems.flexStart,
-              }}
-              marginBottom={4}
+              variant={TextVariant.HeadingLg}
+              className="self-start mb-4 flex justify-center"
             >
               {t('yourWalletIsReadyFromReminder')}
             </Text>
-            <Box
-              width={BlockSize.Full}
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              marginBottom={6}
-            >
-              <Box
-                display={Display.Flex}
-                style={{ width: '144px', height: '144px' }}
-              >
-                {renderFox}
-              </Box>
+            <Box className="w-full mb-6">
+              <Box className="w-36 h-36 mx-auto">{renderFox}</Box>
             </Box>
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              marginBottom={6}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              className="mb-6"
             >
               {renderDetails1}
             </Text>
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              marginBottom={6}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              className="mb-6"
             >
               {t('walletReadyLearn', [
-                <ButtonLink
+                <TextButton
                   key="walletReadyLearn"
-                  size={ButtonLinkSize.Inherit}
-                  textProps={{
-                    variant: TextVariant.bodyMd,
-                    alignItems: AlignItems.flexStart,
-                  }}
-                  as="a"
-                  href={learnMoreLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  className="hover:bg-transparent active:bg-transparent w-fit"
+                  onClick={handleLearnMoreClick}
                 >
                   {t('learnHow')}
-                </ButtonLink>,
+                </TextButton>,
               ])}
             </Text>
           </Box>
-          {renderSettingsActions}
         </Box>
       )}
       {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
@@ -365,17 +230,16 @@ export default function CreationSuccessful() {
       )}
       {renderDoneButton()}
       {!isFromSettingsSRPBackup && (
-        <Box>
-          <Button
-            variant={ButtonVariant.Link}
-            onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
-            textAlign={TextAlign.Center}
-            width={BlockSize.Full}
-            data-testid="manage-default-settings"
-          >
-            {t('manageDefaultSettings')}
-          </Button>
-        </Box>
+        <Button
+          variant={ButtonVariant.Tertiary}
+          size={ButtonSize.Lg}
+          className="w-full"
+          data-testid="manage-default-settings"
+          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          disabled={isSidePanelEnabled && isSidePanelOpen}
+        >
+          {t('manageDefaultSettings')}
+        </Button>
       )}
     </Box>
   );

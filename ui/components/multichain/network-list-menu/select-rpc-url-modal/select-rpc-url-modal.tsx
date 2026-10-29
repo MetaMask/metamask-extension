@@ -2,15 +2,14 @@ import React from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { type CaipChainId } from '@metamask/utils';
-import classnames from 'classnames';
-import { useDispatch, useSelector } from 'react-redux';
+import classnames from 'clsx';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../component-library';
+} from '@metamask/design-system-react';
+import { Box, Text } from '../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,6 +22,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constan
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
+import { useDispatch } from '../../../../store/hooks';
 
 export const SelectRpcUrlModal = ({
   networkConfiguration,
@@ -66,7 +66,7 @@ export const SelectRpcUrlModal = ({
               src={image}
               name={networkConfigurationToUse.name}
               size={AvatarNetworkSize.Sm}
-              marginRight={1}
+              className="mr-1"
             />
           )}
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
@@ -76,12 +76,10 @@ export const SelectRpcUrlModal = ({
       </Box>
 
       {networkConfigurationToUse.rpcEndpoints.map((rpcEndpoint, index) => (
-        <Box
-          alignItems={AlignItems.center}
-          paddingLeft={4}
-          paddingRight={4}
-          display={Display.Flex}
+        <button
+          type="button"
           key={rpcEndpoint.url}
+          data-testid={`network-rpc-option-${rpcEndpoint.name ?? String(index)}`}
           onClick={() => {
             const network = {
               ...networkConfigurationToUse,
@@ -94,10 +92,13 @@ export const SelectRpcUrlModal = ({
               rpcEndpoint.networkClientId,
             );
           }}
-          className={classnames('select-rpc-url__item', {
-            'select-rpc-url__item--selected':
-              index === networkConfigurationToUse.defaultRpcEndpointIndex,
-          })}
+          className={classnames(
+            'select-rpc-url__item flex w-full items-center px-4 text-left',
+            {
+              'select-rpc-url__item--selected':
+                index === networkConfigurationToUse.defaultRpcEndpointIndex,
+            },
+          )}
         >
           {index === networkConfigurationToUse.defaultRpcEndpointIndex && (
             <Box
@@ -107,7 +108,7 @@ export const SelectRpcUrlModal = ({
             />
           )}
           <RpcListItem rpcEndpoint={rpcEndpoint} />
-        </Box>
+        </button>
       ))}
     </Box>
   );

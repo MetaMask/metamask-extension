@@ -1,29 +1,37 @@
-import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 import TransactionConfirmation from './transaction-confirmation';
 
+/**
+ * Token / native transfer confirmation on the redesigned confirm screen.
+ *
+ * Screen: `#/confirmation` for token or native send approvals.
+ * Owns: transfer amount/symbol heading, interacting-with / network /
+ * network-fee paragraphs, and loaded-state checks tied to expected fee.
+ * Boundaries: inherits advanced details and gas entry from
+ * `TransactionConfirmation`. Gas estimate editing is `GasFeeModal`; fee
+ * token selection is `GasFeeTokenModal`.
+ * Related: `TransactionConfirmation`, `GasFeeModal`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/token-transfer/token-transfer.tsx
+ * @see ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.tsx
+ */
 class TokenTransferTransactionConfirmation extends TransactionConfirmation {
   private readonly confirmButton = '[data-testid="confirm-footer-button"]';
 
   private readonly interactingWithParagraph = {
-    css: 'p',
-    text: tEn('interactingWith') as string,
+    testId: 'transaction-details-recipient-row',
   };
 
   private readonly networkFee = '[data-testid="first-gas-field"]';
 
-  private readonly networkFeeParagraph = {
-    css: 'p',
-    text: tEn('networkFee') as string,
-  };
+  private readonly networkFeeParagraph = { testId: 'edit-gas-fees-row' };
 
   private readonly networkParagraph = {
-    css: 'p',
-    text: tEn('transactionFlowNetwork') as string,
+    testId: 'confirmation__details-network-name',
   };
 
   private readonly networkTextElement = (networkText: string) => ({
-    css: 'p',
+    testId: 'confirmation__details-network-name',
     text: networkText,
   });
 
@@ -32,16 +40,19 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
     this.driver = driver;
   }
 
-  // Action Methods
-
-  async clickConfirmButton(): Promise<void> {
-    console.log('Click confirm button to confirm transaction');
-    await this.driver.clickElement(this.confirmButton);
-  }
-
   // Check Methods
   async checkInteractingWithParagraph() {
     await this.driver.waitForSelector(this.interactingWithParagraph);
+  }
+
+  /**
+   * Check if network text is displayed
+   *
+   * @param networkText - The expected network text to verify
+   */
+  async checkNetwork(networkText: string): Promise<void> {
+    console.log(`Checking for network text: ${networkText}`);
+    await this.driver.waitForSelector(this.networkTextElement(networkText));
   }
 
   async checkNetworkFeeParagraph() {
@@ -91,14 +102,11 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
     }
   }
 
-  /**
-   * Check if network text is displayed
-   *
-   * @param networkText - The expected network text to verify
-   */
-  async checkNetwork(networkText: string): Promise<void> {
-    console.log(`Checking for network text: ${networkText}`);
-    await this.driver.waitForSelector(this.networkTextElement(networkText));
+  // Action Methods
+
+  async clickConfirmButton(): Promise<void> {
+    console.log('Click confirm button to confirm transaction');
+    await this.driver.clickElement(this.confirmButton);
   }
 }
 

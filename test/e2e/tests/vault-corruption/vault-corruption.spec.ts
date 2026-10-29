@@ -1,20 +1,30 @@
 import assert from 'node:assert/strict';
+import { MockedEndpoint, MockttpServer } from 'mockttp';
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { WALLET_PASSWORD } from '../../constants';
-import { withFixtures } from '../../helpers';
+import { sentryRegEx, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeVaultRecoveryOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import {
+  getBackupVault,
   getFirstAddress,
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
-import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
-import { getConfig } from './helpers';
+import CriticalErrorPage from '../../page-objects/pages/vault/critical-error-page';
+import { pausePersistence, readStorage } from '../state-persistence/helpers';
+import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
+
+  // The missing-vault Sentry event is sent asynchronously: captureException runs
+  // in the background, then the metaMetricsIntegration's async opt-in resolution
+  // (which reads persisted/backup state) must complete before the event is
+  // transmitted. Under CI load this can take a while, so we allow a generous wait.
+  const WAIT_FOR_SENTRY_MS = 30000;
 
   /**
    * Script template to simulate a broken database.
@@ -52,13 +62,28 @@ describe('Vault Corruption', function () {
     reloadAndCallbackScript,
   );
 
+  async function mockSentryMissingVaultError(
+    mockServer: MockttpServer,
+  ): Promise<MockedEndpoint> {
+    return await mockServer
+      .forPost(sentryRegEx)
+      .withBodyIncluding('{"type":"event"')
+      .withBodyIncluding(MISSING_VAULT_ERROR)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {},
+        };
+      });
+  }
+
   /**
-   * Script to break both the primary and backup databases.
+   * Script to break the primary database and delete one backup key.
    *
    * @param backupKeyToDelete - The key to delete from the backup database.
    */
-  const breakAllDatabasesScript = (
-    backupKeyToDelete: 'meta' | 'KeyringController',
+  const breakPrimaryDatabaseAndDeleteBackupKeyScript = (
+    backupKeyToDelete: 'AnalyticsController' | 'KeyringController' | 'meta',
   ) => {
     return createCorruptionScript(`
       // indexedDB is not scuttled in test builds, so we can use it to access the
@@ -80,25 +105,46 @@ describe('Vault Corruption', function () {
       };`);
   };
 
-  it('recovers metamask vault when primary database is broken but backup is intact', async function () {
+  it('preserves primary controller state omitted from the recovery backup', async function () {
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakPrimaryDatabaseOnlyScript,
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('AnalyticsController'),
         );
+        const backupVault = await getBackupVault(driver);
+        assert.ok(backupVault, 'Expected backup vault to exist');
+
+        // Disable debounced writes so this test verifies that recovery itself
+        // persists the restored vault before initialization completes.
+        await pausePersistence(driver);
+        const storageBeforeRecovery = await readStorage(driver);
+        assert.ok(
+          'AnalyticsController' in storageBeforeRecovery,
+          'AnalyticsController should exist in primary storage before recovery',
+        );
+        const analyticsStateBeforeRecovery =
+          storageBeforeRecovery.AnalyticsController;
 
         // start recovery
-        const vaultRecoveryPage = new VaultRecoveryPage(driver);
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // onboard again
         await completeVaultRecoveryOnboardingFlow({
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
 
         // make sure the address is the same as before
         assert.equal(
@@ -106,22 +152,118 @@ describe('Vault Corruption', function () {
           initialFirstAddress,
           'Addresses should match',
         );
+        const storageAfterRecovery = await readStorage(driver);
+        assert.ok(
+          'AnalyticsController' in storageAfterRecovery,
+          'AnalyticsController should remain in primary storage after recovery',
+        );
+        assert.deepStrictEqual(
+          storageAfterRecovery.AnalyticsController,
+          analyticsStateBeforeRecovery,
+          'AnalyticsController should remain unchanged after recovery',
+        );
+        assert.equal(
+          (
+            storageAfterRecovery.KeyringController as
+              | { vault?: unknown }
+              | undefined
+          )?.vault,
+          backupVault,
+          'Recovered vault should be persisted to primary storage',
+        );
+      },
+    );
+  });
+
+  it('does not serialize backup data in Sentry captureException payload', async function () {
+    const config = getConfig(this.test?.title);
+    await withFixtures(
+      {
+        ...config,
+        manifestFlags: {
+          ...config.manifestFlags,
+          sentry: {
+            ...(config.manifestFlags?.sentry ?? {}),
+            forceEnable: false,
+          },
+        },
+        testSpecificMock: mockSentryMissingVaultError,
+      },
+      async ({
+        driver,
+        mockedEndpoint,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint;
+      }) => {
+        await onboardThenTriggerCorruptionFlow(
+          driver,
+          breakPrimaryDatabaseOnlyScript,
+          {
+            consentDecisionMade: true,
+            optedIn: true,
+          },
+        );
+
+        const backupVault = await getBackupVault(driver);
+        assert.ok(backupVault, 'Expected backup vault to exist');
+
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === false;
+        }, WAIT_FOR_SENTRY_MS);
+
+        const [mockedRequest] = await mockedEndpoint.getSeenRequests();
+        const mockTextBody = ((await mockedRequest.body.getText()) ?? '').split(
+          '\n',
+        );
+        const mockJsonBody = JSON.parse(mockTextBody[2]);
+        const mockPayload = JSON.stringify(mockJsonBody);
+        const escapedBackupVault = JSON.stringify(backupVault).slice(1, -1);
+
+        // check both escaped and unescaped versions of the vault
+        assert.equal(
+          mockPayload.includes(backupVault) ||
+            mockPayload.includes(escapedBackupVault),
+          false,
+          'Expected Sentry payload to exclude backup vault data',
+        );
+
+        // a smell test for bits of the vault structure:
+        assert.equal(
+          mockPayload.includes('keyMetadata'),
+          false,
+          'Expected Sentry payload to exclude vault property',
+        );
+        // make sure `keyMetadata` is a real property and we aren't using it in
+        // our test for no reason
+        assert.equal(
+          backupVault.includes('keyMetadata'),
+          true,
+          'Expected backup vault to include vault property',
+        );
       },
     );
   });
 
   it('resets metamask state when both primary and backup databases are broken', async function () {
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakAllDatabasesScript('KeyringController'),
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('KeyringController'),
         );
 
         // start reset
-        const vaultRecoveryPage = new VaultRecoveryPage(driver);
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // Now onboard again, like a first-time user :-(
         await completeCreateNewWalletOnboardingFlow({
@@ -131,7 +273,9 @@ describe('Vault Corruption', function () {
         });
 
         // make sure the account is different than the first time we onboarded
-        const newFirstAddress = await getFirstAddress(driver);
+        const newFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
         assert.notEqual(
           newFirstAddress,
           initialFirstAddress,
@@ -147,19 +291,22 @@ describe('Vault Corruption', function () {
     // test verifies that not recovering, then trying to recovering again later
     // works too.
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
 
-        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+        const criticalErrorPage = new CriticalErrorPage(driver);
 
         // click recover but dismiss the prompt
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
+        await criticalErrorPage.clickRepairButton({ confirm: false });
         // make sure the button can be clicked yet again; dismiss again
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
+        await criticalErrorPage.clickRepairButton({ confirm: false });
 
         // reload to make sure the UI is still in the same Vault Corrupted state
         await driver.navigate(PAGES.HOME, {
@@ -167,17 +314,22 @@ describe('Vault Corruption', function () {
         });
 
         // make sure the button can be clicked yet again; dismiss the prompt
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
+        await criticalErrorPage.clickRepairButton({ confirm: false });
         // actually recover the vault this time just to make sure
         // it all still works after dismissing the prompt previously
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // verify that the UI has completed recovery this time
         await completeVaultRecoveryOnboardingFlow({
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
         assert.equal(
           restoredFirstAddress,
           initialFirstAddress,
@@ -190,23 +342,31 @@ describe('Vault Corruption', function () {
   it('restores a backup that is missing its `meta` property successfully', async function () {
     // this test will run all migrations
     await withFixtures(
-      getConfig(this.test?.title),
+      {
+        ...getConfig(this.test?.title),
+        testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
+      },
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakAllDatabasesScript('meta'),
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('meta'),
         );
 
         // start recovery
-        const vaultRecoveryPage = new VaultRecoveryPage(driver);
-        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
+        const criticalErrorPage = new CriticalErrorPage(driver);
+        await criticalErrorPage.clickRepairButton({
+          confirm: true,
+          expectsExtensionReload: false,
+        });
 
         // onboard again
         await completeVaultRecoveryOnboardingFlow({
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
 
         // make sure the address is the same as before
         assert.equal(

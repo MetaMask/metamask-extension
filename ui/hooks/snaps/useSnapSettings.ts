@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../../store/hooks';
 import {
   forceUpdateMetamaskState,
   handleSnapRequest,
 } from '../../store/actions';
 
-export function useSnapSettings({ snapId }: { snapId?: string }) {
+export function useSnapSettings({ snapId }: { snapId?: string | null }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<{ id: string } | undefined>(undefined);
@@ -49,7 +49,7 @@ export function useSnapSettings({ snapId }: { snapId?: string }) {
     return () => {
       cancelled = true;
     };
-  }, [snapId]);
+  }, [snapId, dispatch]);
 
   return { data, error, loading };
 }

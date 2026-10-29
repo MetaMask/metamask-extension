@@ -1,7 +1,7 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import { login } from '../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockGetFileSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -18,20 +18,24 @@ describe('Test Snap Get File', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockGetFileSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectGetFileButton');
-        await testSnaps.checkInstallationComplete(
+        await openTestSnapClickButtonAndInstall(
+          driver,
           'connectGetFileButton',
-          'Reconnect to Get File Snap',
+          {
+            expectedMessage: 'Reconnect to Get File Snap',
+          },
         );
 
         // click on get file and check correct result

@@ -1,16 +1,22 @@
 // TODO: Remove restricted import
-/* eslint-disable import/no-restricted-paths */
+/* eslint-disable import-x/no-restricted-paths */
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 
 export {
+  ASSET_ROUTE,
   DEFAULT_ROUTE,
   DEEP_LINK_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
+  MONEY_HOME_ROUTE,
   NOTIFICATIONS_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
   SHIELD_PLAN_ROUTE,
   SETTINGS_ROUTE,
+  PRIVACY_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 

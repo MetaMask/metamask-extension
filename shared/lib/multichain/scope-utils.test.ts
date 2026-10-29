@@ -3,13 +3,12 @@ import { EthScope } from '@metamask/keyring-api';
 import { KnownCaipNamespace, CaipChainId } from '@metamask/utils';
 
 // Import the actual type to avoid linting issues with restricted paths
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { AccountGroupWithInternalAccounts } from '../../../ui/selectors/multichain-accounts/account-tree.types';
 
 import {
   anyScopesMatch,
   getCaip25AccountIdsFromAccountGroupAndScope,
-  scopeMatches,
 } from './scope-utils';
 
 const createMockFactory = () => {
@@ -26,6 +25,7 @@ const createMockFactory = () => {
     pinned: false,
     hidden: false,
     entropy: { groupIndex },
+    lastSelected: 0,
   });
 
   // Account factory with common defaults
@@ -334,24 +334,6 @@ describe('scope-utils', () => {
         expect(anyScopesMatch(accountScopes, 'eip155')).toBe(false);
         expect(anyScopesMatch(accountScopes, '')).toBe(false);
       });
-    });
-  });
-
-  describe('scopeMatches', () => {
-    it('returns true for matching single scope', () => {
-      expect(scopeMatches('eip155:1', 'eip155:1')).toBe(true);
-      expect(scopeMatches('solana:mainnet', 'solana:mainnet')).toBe(true);
-    });
-
-    it('returns false for non-matching single scope', () => {
-      expect(scopeMatches('eip155:1', 'eip155:137')).toBe(false);
-      expect(scopeMatches('solana:mainnet', 'eip155:1')).toBe(false);
-    });
-
-    it('handles eip155:0 wildcard correctly', () => {
-      expect(scopeMatches('eip155:1', 'eip155:0')).toBe(true);
-      expect(scopeMatches('eip155:0', 'eip155:1')).toBe(true);
-      expect(scopeMatches('solana:mainnet', 'eip155:0')).toBe(false);
     });
   });
 

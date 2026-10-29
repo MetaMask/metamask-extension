@@ -1,29 +1,22 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../constants';
+import { WINDOW_TITLES, DAPP_HOST_ADDRESS } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApprovedWithDecoding,
   mockSignatureRejectedWithDecoding,
-  scrollAndConfirmAndAssertConfirm,
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import { login } from '../../../page-objects/flows/login.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertPastedAddress,
-  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  initializePages,
-  openDappAndTriggerDeploy,
-  SignatureType,
-  triggerSignature,
 } from './signature-helpers';
 
 describe('Confirmation Signature - NFT Permit', function (this: Suite) {
@@ -37,26 +30,32 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
-        await initializePages(driver);
+        const testDapp = new TestDapp(driver);
+        const confirmation = new PermitConfirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await openDappAndTriggerDeploy(driver);
-        await driver.delay(1000);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await scrollAndConfirmAndAssertConfirm(driver);
+        await login(driver);
+        await testDapp.openTestDappAndTriggerDeploy();
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.delay(1000);
-        await triggerSignature(SignatureType.NFTPermit);
+        await testDapp.triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await clickHeaderInfoBtn(driver);
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.checkPageIsLoaded();
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
         await assertInfoValues(driver);
-        await scrollAndConfirmAndAssertConfirm(driver);
-        await driver.delay(1000);
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await assertAccountDetailsMetrics(
           driver,
@@ -76,7 +75,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
-        await assertVerifiedResults(driver, publicAddress);
+        await assertVerifiedResults(driver, testDapp, publicAddress);
       },
       mockSignatureApprovedWithDecoding,
     );
@@ -89,23 +88,29 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new PermitConfirmation(driver);
-        await openDappAndTriggerDeploy(driver);
-        await driver.delay(1000);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
+        const testDapp = new TestDapp(driver);
+
+        await login(driver);
+        await testDapp.openTestDappAndTriggerDeploy();
+        await confirmation.clickScrollToBottomButton();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.delay(1000);
-        await triggerSignature(SignatureType.NFTPermit);
+        await testDapp.triggerSignature(SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -127,33 +132,44 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
 
 async function assertInfoValues(driver: Driver) {
   const confirmation = new PermitConfirmation(driver);
+  const contractAddress = '0x581c3...45947';
+  const title = 'Withdrawal request';
+  const description = 'This site wants permission to withdraw your NFTs';
+  const tokenId = '3606393';
+  const nonce = '0';
+  const deadline = '23 December 2024, 23:03';
+
   await confirmation.clickCollapseSectionButton();
-  await confirmation.verifyOrigin();
-  await confirmation.verifyNftContractPetName();
-  await confirmation.verifyNftTitle();
-  await confirmation.verifyNftDescription();
-  await confirmation.verifyNftPrimaryType();
-  await confirmation.verifyNftSpender();
-  await confirmation.verifyNftTokenId();
-  await confirmation.verifyNftNonce();
-  await confirmation.verifyNftDeadline();
+  await confirmation.checkOrigin(DAPP_HOST_ADDRESS);
+  await confirmation.checkAddressValue(contractAddress);
+  await confirmation.checkTitle(title);
+  await confirmation.checkDescription(description);
+  await confirmation.checkPrimaryType('Permit');
+  await confirmation.checkAddressValue(contractAddress);
+  await confirmation.checkDataTreeField('tokenId', tokenId);
+  await confirmation.checkDataTreeField('nonce', nonce);
+  await confirmation.checkDataTreeField('deadline', deadline);
 }
 
-async function assertVerifiedResults(driver: Driver, publicAddress: string) {
-  const testDapp = new TestDapp(driver);
+async function assertVerifiedResults(
+  driver: Driver,
+  testDapp: TestDapp,
+  publicAddress: string,
+) {
+  const expectedSignature =
+    '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b03600e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec27801c';
+  const expectedR =
+    '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b0360';
+  const expectedS =
+    '0x0e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec2780';
+  const expectedV = '28';
+
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
   await testDapp.checkSuccessSign721Permit(publicAddress);
-  await testDapp.verifySign721PermitResult(
-    '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b03600e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec27801c',
-  );
-  await testDapp.verifySign721PermitResultR(
-    '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b0360',
-  );
-  await testDapp.verifySign721PermitResultS(
-    '0x0e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec2780',
-  );
-  await testDapp.verifySign721PermitResultV('28');
-  await driver.clickElement('#sign721PermitVerify');
+  await testDapp.verifySign721PermitResult(expectedSignature);
+  await testDapp.verifySign721PermitResultR(expectedR);
+  await testDapp.verifySign721PermitResultS(expectedS);
+  await testDapp.verifySign721PermitResultV(expectedV);
 }

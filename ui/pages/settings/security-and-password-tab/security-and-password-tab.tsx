@@ -1,0 +1,99 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import type { SettingItemConfig, SettingItemProps } from '../types';
+import { SettingsTab, createSelectItem, createToggleItem } from '../shared';
+import { getUsePhishDetect } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { setUsePhishDetect } from '../../../store/actions';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
+import {
+  AUTO_LOCK_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
+  MFA_SETTINGS_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+} from '../../../helpers/constants/routes';
+import { getIsMfaUiKitEnabled } from '../../../selectors/identity/mfa-ui-kit';
+import { MfaSettingsTestIds } from '../mfa-settings/test-ids';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import { SECURITY_ITEMS } from '../search-config';
+import ManageWalletRecoveryItem from './manage-wallet-recovery-item';
+import { formatAutoLockLabel } from './auto-lock-utils';
+import PasskeyItem from './passkey-item';
+
+const PhishingDetectionItem = createToggleItem({
+  name: 'PhishingDetectionItem',
+  titleKey: SECURITY_ITEMS['phishing-detection'],
+  descriptionKey: 'usePhishingDetectionDescription',
+  selector: (state) => Boolean(getUsePhishDetect(state)),
+  action: setUsePhishDetect,
+  dataTestId: 'security-phishing-detection-toggle',
+});
+
+const PasswordItem = createSelectItem({
+  name: 'PasswordItem',
+  titleKey: SECURITY_ITEMS.password,
+  valueSelector: () => '',
+  route: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  dataTestId: 'change-password-button',
+});
+
+export const AutoLockItem = createSelectItem({
+  name: 'AutoLockItem',
+  titleKey: SECURITY_ITEMS['auto-lock'],
+  valueSelector: (state) => {
+    const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
+      getPreferences(state);
+    return String(autoLockTimeLimit);
+  },
+  formatValue: (autoLockTimeLimit, t) =>
+    formatAutoLockLabel(
+      Number(autoLockTimeLimit),
+      t as (key: string, substitutions?: string[]) => string,
+    ),
+  route: AUTO_LOCK_ROUTE,
+  dataTestId: 'auto-lock-button',
+});
+
+const MfaSelectItem = createSelectItem({
+  name: 'MfaItem',
+  titleKey: SECURITY_ITEMS.mfa,
+  valueSelector: () => '',
+  route: MFA_SETTINGS_ROUTE,
+  dataTestId: MfaSettingsTestIds.ENTRY,
+});
+
+// Settings items are listed when the module loads, before flags arrive.
+const MfaItem = (props: SettingItemProps) =>
+  useSelector(getIsMfaUiKitEnabled) ? <MfaSelectItem {...props} /> : null;
+
+const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
+  {
+    id: 'manage-wallet-recovery',
+    component: () => (
+      <ManageWalletRecoveryItem route={MANAGE_WALLET_RECOVERY_ROUTE} />
+    ),
+  },
+  { id: 'password', component: PasswordItem },
+  { id: 'passkey', component: PasskeyItem },
+  { id: 'mfa', component: MfaItem },
+  { id: 'auto-lock', component: AutoLockItem },
+  { id: 'phishing-detection', component: PhishingDetectionItem },
+];
+
+const CONSOLIDATED_BASIC_FUNCTIONALITY_SECURITY_AND_PASSWORD_ITEMS =
+  SECURITY_AND_PASSWORD_SETTING_ITEMS.filter(
+    ({ id }) => id !== 'phishing-detection',
+  );
+
+const SecurityAndPasswordTab = () => {
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
+  const items = isBasicFunctionalityConsolidationEnabled
+    ? CONSOLIDATED_BASIC_FUNCTIONALITY_SECURITY_AND_PASSWORD_ITEMS
+    : SECURITY_AND_PASSWORD_SETTING_ITEMS;
+
+  return <SettingsTab items={items} />;
+};
+
+export default SecurityAndPasswordTab;

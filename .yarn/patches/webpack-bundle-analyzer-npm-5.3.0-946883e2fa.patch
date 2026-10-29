@@ -1,0 +1,30 @@
+diff --git a/lib/template.js b/lib/template.js
+index 7e52a73bb5885a5beb4dd486954323f1f8bb1f84..6d604304cb4cceda2f50d0addb8a7ca00cd6084f 100644
+--- a/lib/template.js
++++ b/lib/template.js
+@@ -33,7 +33,14 @@ function getAssetContent(filename) {
+   if (!assetPath.startsWith(assetsRoot)) {
+     throw new Error(`"${filename}" is outside of the assets root`);
+   }
+-  return fs.readFileSync(assetPath, "utf8");
++  const content = fs.readFileSync(assetPath, "utf8");
++  if (filename === "viewer.js") {
++    return content.replace(
++      "this.handleSelectedChunksChange=e=>{Ar.setSelectedSize(e)}",
++      "this.handleSelectedChunksChange=e=>{Ar.setSelectedChunks(e)}"
++    );
++  }
++  return content;
+ }
+ 
+ /**
+@@ -53,8 +60,7 @@ function html(strings, ...values) {
+  */
+ function getScript(filename, mode) {
+   if (mode === "static") {
+-    return `<!-- ${escape(filename)} -->
+-<script>${getAssetContent(filename)}</script>`;
++    return `<script>${getAssetContent(filename)}</script>`;
+   }
+   return `<script src="${escape(filename)}"></script>`;
+ }

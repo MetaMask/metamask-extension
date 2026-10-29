@@ -1,8 +1,8 @@
 import React from 'react';
-import { act, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { fireEvent } from '../../../../test/jest';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
@@ -12,18 +12,62 @@ import { waitForElementById } from '../../../../test/integration/helpers';
 import { setSlippage } from '../../../ducks/bridge/actions';
 import { sanitizeAmountInput } from '../utils/quote';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+  HardwareWalletProvider,
+} from '../../../contexts/hardware-wallets';
+
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
+
+jest.mock('../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../contexts/hardware-wallets'),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
+
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
+
+const messengerCallMock = jest.fn((actionType: string) => {
+  switch (actionType) {
+    case 'LegacyBackgroundApiService:isSendBundleSupported':
+    case 'LegacyBackgroundApiService:isRelaySupported':
+      return Promise.resolve(true);
+    case 'NetworkController:getNetworkConfigurationByNetworkClientId':
+      return Promise.resolve({ chainId: '0x1' });
+    case 'AuthenticationController:getBearerToken':
+      return Promise.resolve('mock-bearer-token-for-tests');
+    default:
+      return Promise.resolve(undefined);
+  }
+});
 
 setBackgroundConnection({
   // @ts-expect-error - setSlippage is valid
   setSlippage,
   setSwapsLiveness: jest.fn(),
   getStatePatches: jest.fn(),
-  isSendBundleSupported: jest.fn(),
-  isRelaySupported: jest.fn(),
+  messengerCall: messengerCallMock,
   resetState: jest.fn(),
-  getNetworkConfigurationByNetworkClientId: jest.fn(),
   gasFeeStartPolling: jest.fn(),
-  addPollingTokenToAppState: jest.fn(),
   trackUnifiedSwapBridgeEvent: jest.fn(),
   updateBridgeQuoteRequestParams: jest.fn(),
 });
@@ -40,7 +84,9 @@ const renderModal = (initialSlippage?: number) => {
   const mockStore = createBridgeMockStore();
   const store = configureStore(mockStore);
   const renderResult = renderWithProvider(
-    <CrossChainSwap />,
+    <HardwareWalletProvider>
+      <CrossChainSwap />
+    </HardwareWalletProvider>,
     store,
     PREPARE_SWAP_ROUTE,
   );
@@ -59,17 +105,13 @@ const interactWithCustomInput = async (
   getByTestId: (id: string) => HTMLElement,
   action?: (input: HTMLElement) => void | Promise<void>,
 ) => {
-  await act(async () => {
-    userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-  });
+  await userEvent.click(screen.getByTestId(TX_MODAL.customButton));
   await waitForElementById(TX_MODAL.customInput);
   const input = getByTestId(TX_MODAL.customInput);
-  await act(async () => {
-    if (action) {
-      await action(input);
-    }
-    fireEvent.blur(input);
-  });
+  if (action) {
+    await action(input);
+  }
+  fireEvent.blur(input);
 };
 
 const submitUpdate = async (getByTestId: (id: string) => HTMLElement) => {
@@ -84,9 +126,12 @@ const expectButtonStates = (
   halfPercentState: string,
   twoPercentState: string,
   customState: string,
-  customLabel = 'Custom',
+  customLabel = messages.customSlippage.message,
 ) => {
-  autoState && expect(screen.getByText('Auto')).toHaveClass(autoState);
+  autoState &&
+    expect(screen.getByText(messages.slippageAuto.message)).toHaveClass(
+      autoState,
+    );
   expect(screen.getByText('0.5%').parentElement).toHaveClass(halfPercentState);
   expect(screen.getByText('2%').parentElement).toHaveClass(twoPercentState);
   expect(screen.getByText(customLabel)).toHaveClass(customState);
@@ -99,6 +144,20 @@ describe('BridgeTransactionSettingsModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(bridgeSelectors, 'getIsSolanaSwap').mockReturnValue(true);
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: false,
+      walletType: null,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
+      isWebHidAvailable: false,
+      isWebUsbAvailable: false,
+    });
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
   });
 
   it('should render the component, with initial state', async () => {
@@ -108,8 +167,10 @@ describe('BridgeTransactionSettingsModal', () => {
     act(() => {
       fireEvent.click(getByTestId(TX_MODAL.refElement));
     });
-    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
-    expectButtonStates(null, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
+    await waitFor(() => {
+      expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+      expectButtonStates(null, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
+    });
 
     // Click and blur Custom button
     await interactWithCustomInput(getByTestId);
@@ -120,12 +181,16 @@ describe('BridgeTransactionSettingsModal', () => {
   it('should render the component, with initial Solana state', async () => {
     const { getByTestId, baseElement } = renderModal();
 
-    openModal(getByTestId);
+    await openModal(getByTestId);
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expectButtonStates(DEFAULT_CLASS, MUTED_CLASS, MUTED_CLASS, MUTED_CLASS);
 
     // Click and blur Custom button
     await interactWithCustomInput(getByTestId, () => {
+      expect(getByTestId(TX_MODAL.customInput)).toHaveAttribute(
+        'inputmode',
+        'decimal',
+      );
       expect(baseElement.childNodes[2]).toMatchSnapshot();
     });
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
@@ -179,6 +244,23 @@ describe('BridgeTransactionSettingsModal', () => {
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
   });
 
+  it('allows submitting the currently selected slippage preset as a user override', async () => {
+    const { getByTestId, store } = renderModal(2);
+
+    await openModal(getByTestId);
+    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+    expect(store.getState().bridge.isSlippageUserOverride).toBeFalsy();
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('2%'));
+    });
+    expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
+
+    await submitUpdate(getByTestId);
+    expect(store.getState().bridge.slippage).toBe(2);
+    expect(store.getState().bridge.isSlippageUserOverride).toBe(true);
+  });
+
   it('should render hardcoded slippage amount (0.5)', async () => {
     const initialSlippage = 0.5;
     const finalSlippage = '2';
@@ -188,11 +270,12 @@ describe('BridgeTransactionSettingsModal', () => {
     expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
     expectButtonStates(MUTED_CLASS, DEFAULT_CLASS, MUTED_CLASS, MUTED_CLASS);
 
-    // Click and blur Custom button
+    // Click and blur Custom button with the current value still marks dirty so
+    // Submit can lock in a user override for the hydrated/default slippage.
     await interactWithCustomInput(getByTestId);
-    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+    expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
 
-    // Change custom input to .5
+    // Change custom input to .5 (same as current slippage) — still dirty/enabled
     await interactWithCustomInput(getByTestId, async (input) => {
       input.focus();
       await userEvent.keyboard('{backspace}');
@@ -200,7 +283,7 @@ describe('BridgeTransactionSettingsModal', () => {
       await userEvent.keyboard('.');
       await userEvent.keyboard('5');
     });
-    expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+    expect(getByTestId(TX_MODAL.submitButton)).toBeEnabled();
     expect(store.getState().bridge.slippage).toBe(initialSlippage);
 
     // Change custom input to 2
@@ -237,7 +320,8 @@ describe('BridgeTransactionSettingsModal', () => {
   const ACTIONS = [
     [
       'paste',
-      async (_input: HTMLElement, value: string) => {
+      async (input: HTMLElement, value: string) => {
+        await userEvent.click(input);
         await userEvent.paste(value);
       },
     ],
@@ -261,20 +345,24 @@ describe('BridgeTransactionSettingsModal', () => {
     ) => {
       // @ts-expect-error - each is a valid test function
       it.each([
-        ['1234', '1234'],
-        ['12.34', '12.34'],
-        ['fas23.43', '23.43'],
-        ['fas23 ,43', '2343'],
-        ['!23', '23'],
-        ['23.4.3', '23.43'],
-        ['23.4a,3', '23.43'],
-        ['0.', '0.'],
-        ['0.1', '0.1'],
-        ['.0', '.0'],
-        ['.05', '.05'],
+        ['1234', '1234', '100'],
+        ['12.34', '12.34', '12.34'],
+        ['fas23.43', '23.43', '23.43'],
+        ['fas23 ,43', '2343', '100'],
+        ['!23', '23', '23'],
+        ['23.4.3', '23.43', '23.43'],
+        ['23.4a,3', '23.43', '23.43'],
+        ['0.', '0.', '0'],
+        ['0.1', '0.1', '0.1'],
+        ['.0', '.0', '0'],
+        ['.05', '.05', '0.05'],
       ])(
         `should enable submit button: %s`,
-        async (value: string, expectedDisplayValue: string) => {
+        async (
+          value: string,
+          expectedDisplayValue: string,
+          expectedSlippage: string,
+        ) => {
           const initialSlippage = undefined;
           const { getByTestId, store } = renderModal(initialSlippage);
 
@@ -287,13 +375,18 @@ describe('BridgeTransactionSettingsModal', () => {
               expectedDisplayValue,
             );
           });
-          await act(async () => {
-            userEvent.click(getByTestId(TX_MODAL.submitButton));
-          });
+          if (Number(expectedDisplayValue) > 100) {
+            expect(getByTestId(TX_MODAL.customButton)).toHaveTextContent(
+              '100%',
+            );
+            expect(
+              screen.getByText(messages.swapSlippageCappedDescription.message),
+            ).toBeInTheDocument();
+          }
 
           await submitUpdate(getByTestId);
           expect(store.getState().bridge.slippage).toBe(
-            Number(expectedDisplayValue),
+            Number(expectedSlippage),
           );
         },
       );

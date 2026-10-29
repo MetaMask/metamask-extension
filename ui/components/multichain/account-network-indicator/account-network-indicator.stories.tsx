@@ -7,8 +7,7 @@ const defaultStory = {
   argTypes: {
     scopes: {
       control: { type: 'array' },
-      description:
-        'Array of network scopes in CAIP format',
+      description: 'Array of network scopes in CAIP format',
       table: {
         type: { summary: 'string[]' },
         defaultValue: { summary: '["eip155:0"]' },

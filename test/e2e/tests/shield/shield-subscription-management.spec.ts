@@ -1,8 +1,8 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
@@ -18,23 +18,16 @@ import {
   MOCK_CLAIMS_3_PENDING,
 } from '../../helpers/shield/constants';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
+import { NETWORK_CLIENT_ID } from '../../constants';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
 // Local fixture for this spec file
 function createShieldFixture() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-      },
-    })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
-        },
       },
     })
     .withTokensController({
@@ -52,15 +45,19 @@ function createShieldFixture() {
         },
       },
     })
-    .withAppStateController({
-      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+        },
+      },
     });
 }
 
 // Local fixture for cancelled subscription test - prevents entry modal from showing
 function createShieldFixtureCancelled() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -82,35 +79,22 @@ function createShieldFixtureCancelled() {
       },
     })
     .withAppStateController({
-      showShieldEntryModalOnce: {
-        show: false,
-        hasUserInteractedWithModal: true,
-      }, // Prevent entry modal from showing since subscription exists (even if cancelled)
+      showShieldEntryModalOnce: true, // Prevent entry modal from showing since subscription exists (even if cancelled)
     });
 }
 
 // Local fixture for crypto payment tests with USDC and USDT
 function createShieldFixtureCrypto() {
-  return new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
+  return new FixtureBuilderV2()
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
       },
     })
-    .withAccountTracker({
-      accountsByChainId: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-            balance: '0x15af1d78b58c40000', // 25 ETH
-          },
-        },
-      },
-    })
     .withTokensController({
       allTokens: {
         '0x1': {
-          // USDC and USDT tokens on Mainnet
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -130,9 +114,60 @@ function createShieldFixtureCrypto() {
         },
       },
     })
-    .withAppStateController({
-      showShieldEntryModalOnce: null,
+    .withAssetsController({
+      customAssets: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': [
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        ],
+      },
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
+            amount: '100',
+          },
+          'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
+            amount: '100',
+          },
+        },
+      },
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          symbol: 'ETH',
+          name: 'Ether',
+          decimals: 18,
+        },
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
+          type: 'erc20',
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 6,
+          image: 'https://assets.metamask.io/usdc.png',
+        },
+        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7': {
+          type: 'erc20',
+          symbol: 'USDT',
+          name: 'Tether USD',
+          decimals: 6,
+          image: 'https://assets.metamask.io/usdt.png',
+        },
+      },
     });
+}
+
+/**
+ * Accounts API mocks for the crypto payment flow.
+ *
+ * @param server - Mockttp server.
+ */
+async function shieldCryptoPaymentMock(server: Mockttp) {
+  const shieldMockttpService = new ShieldMockttpService();
+  await shieldMockttpService.setup(server, {
+    isActiveUser: true,
+    defaultPaymentMethod: 'crypto',
+  });
 }
 
 describe('Shield Plan Stripe Integration', function () {
@@ -150,7 +185,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -218,7 +253,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -310,7 +345,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -377,9 +412,13 @@ describe('Shield Plan Stripe Integration', function () {
               claimErrorCode: 'E102', // TRANSACTION_NOT_ELIGIBLE
             });
           },
+          ignoredConsoleErrors: [
+            'Failed to submit shield claim',
+            'SubmitClaimError: This transaction is not done within MetaMask, hence it is not eligible for claims',
+          ],
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -433,9 +472,13 @@ describe('Shield Plan Stripe Integration', function () {
               claimErrorCode: 'E203', // DUPLICATE_CLAIM_EXISTS
             });
           },
+          ignoredConsoleErrors: [
+            'Failed to submit shield claim',
+            'SubmitClaimError: A claim has already been submitted for this transaction hash.',
+          ],
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -491,7 +534,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -532,7 +575,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -595,7 +638,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -638,7 +681,7 @@ describe('Shield Plan Stripe Integration', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -669,30 +712,13 @@ describe('Shield Plan Stripe Integration', function () {
   });
 
   it('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
+    const cryptoPaymentFixtures = createShieldFixtureCrypto().build();
+
     await withFixtures(
       {
-        fixtures: createShieldFixtureCrypto()
-          .withTokenBalancesController({
-            tokenBalances: {
-              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-                '0x1': {
-                  // 1000 USDT (6 decimals)
-                  '0xdac17f958d2ee523a2206206994597c13d831ec7': '0x3B9ACA00',
-                  // 1000 USDC (6 decimals)
-                  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '0x3B9ACA00',
-                },
-              },
-            },
-          })
-          .build(),
+        fixtures: cryptoPaymentFixtures,
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(server, {
-            isActiveUser: true,
-            defaultPaymentMethod: 'crypto',
-          });
-        },
+        testSpecificMock: shieldCryptoPaymentMock,
         localNodeOptions: [
           {
             type: 'anvil',
@@ -703,13 +729,31 @@ describe('Shield Plan Stripe Integration', function () {
             },
           },
         ],
+        unifiedEvmAccountsApiBalances: {
+          mainnetAdditionalBalances: [
+            {
+              assetId:
+                'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              balance: '100',
+            },
+            {
+              assetId:
+                'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7',
+              balance: '100',
+            },
+          ],
+        },
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.waitForNetworkAndDOMReady();
+
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkTokenExistsInList('USD Coin');
+        await tokensTab.checkTokenExistsInList('Tether USD');
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -734,7 +778,9 @@ describe('Shield Plan Stripe Integration', function () {
           'USDT',
         );
 
-        await shieldSubscriptionApprovePage.clickFooterConfirmButton();
+        await shieldSubscriptionApprovePage.clickFooterButton({
+          button: 'confirm',
+        });
         await shieldDetailPage.checkPageIsLoaded();
 
         await shieldDetailPage.clickManagePlanButton();
@@ -758,7 +804,7 @@ describe('Shield Plan Stripe Integration', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

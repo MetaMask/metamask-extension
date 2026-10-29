@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { Box } from '../../component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
 import {
@@ -13,10 +12,10 @@ import {
 import {
   getProviderConfig,
   getCurrentChainId,
-} from '../../../../shared/modules/selectors/networks';
+} from '../../../../shared/lib/selectors/networks';
 import { getShouldShowFiat } from '../../../selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import useTokenExchangeRate from './hooks/useTokenExchangeRate';
@@ -130,7 +129,8 @@ export default function CurrencyInput({
   };
 
   const timeoutRef = useRef(null);
-  // align input to upstream value
+
+  // Align input to upstream value when deps change.
   useEffect(() => {
     const decimalizedHexValue = new Numeric(hexValue, 16)
       .toBase(10)
@@ -154,15 +154,6 @@ export default function CurrencyInput({
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
 
-    // timeout intentionally not cleared after render so this always runs
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(
-      () => inputRef.current?.updateIsOverflowing?.(),
-      500,
-    );
-
     // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
   }, [
     hexValue,
@@ -171,6 +162,25 @@ export default function CurrencyInput({
     isTokenPrimary,
     assetDecimals,
     isDisabled,
+  ]);
+
+  useEffect(() => {
+    // timeout intentionally not cleared after render so this always runs
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(
+      () => inputRef.current?.updateIsOverflowing?.(),
+      500,
+    );
+  }, [
+    hexValue,
+    asset?.address,
+    isTokenPrimary,
+    assetDecimals,
+    isDisabled,
+    tokenDecimalValue,
+    fiatDecimalValue,
   ]);
 
   const renderSwapButton = () => {
@@ -237,8 +247,8 @@ export default function CurrencyInput({
 
   return isSkeleton ? (
     <Box paddingRight={4} className="currency-input__skeleton-container">
-      <Box width={BlockSize.Half} className="currency-input__pulsing-bar" />
-      <Box width={BlockSize.OneThird} className="currency-input__pulsing-bar" />
+      <Box className="w-1/2 currency-input__pulsing-bar" />
+      <Box className="w-1/3 currency-input__pulsing-bar" />
     </Box>
   ) : (
     <UnitInput

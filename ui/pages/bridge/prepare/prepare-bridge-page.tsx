@@ -1,24 +1,36 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import classnames from 'classnames';
+import { useSelector } from 'react-redux';
+import classnames from 'clsx';
+import { BigNumber } from 'bignumber.js';
 import { debounce } from 'lodash';
 import {
+  FeatureId,
   formatChainIdToCaip,
   isValidQuoteRequest,
   isNativeAddress,
+  isSolanaChainId,
   UnifiedSwapBridgeEventName,
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
-import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
+import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+  Box,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import { toast, ToastContent } from '#ui/components/ui/toast/toast';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToToken,
   updateQuoteRequestParams,
-  resetBridgeState,
   trackUnifiedSwapBridgeEvent,
+  setIsSrcAssetPickerOpen,
+  setIsDestAssetPickerOpen,
+  setToTokenSecurityData,
+  setWasTxDeclined,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -28,173 +40,207 @@ import {
   getFromToken,
   getQuoteRequest,
   getSlippage,
+  getIsSlippageUserOverride,
   getToChain,
-  getToChains,
   getToToken,
   getWasTxDeclined,
   getFromAmountInCurrency,
-  getValidationErrors,
+  getFromTokenConversionRate,
+  getIsFiatToggleEnabled,
   getIsToOrFromNonEvm,
-  getHardwareWalletName,
-  getIsQuoteExpired,
-  BridgeAppState,
-  getTxAlerts,
   getFromAccount,
   getIsStxEnabled,
-  getIsGasIncluded,
   getValidatedFromValue,
+  getQuoteRequestInsufficientBal,
+  getFromTokenBalance,
+  getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
-import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
-  ButtonIcon,
-  IconName,
-  Text,
-} from '../../../components/component-library';
+import { ButtonIcon, IconName } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  Display,
   IconColor,
   JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatTokenAmount,
-  isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
-} from '../utils/quote';
-import { getDefaultToToken, isNetworkAdded } from '../../../ducks/bridge/utils';
-import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Column } from '../layout';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import { getCurrentKeyring } from '../../../selectors';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import {
-  getMultichainNativeCurrency,
-  getMultichainProviderConfig,
-} from '../../../selectors/multichain';
-import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
-import { TokenFeatureType } from '../../../../shared/types/security-alerts-api';
-import { useTokenAlerts } from '../../../hooks/bridge/useTokenAlerts';
-import { useDestinationAccount } from '../hooks/useDestinationAccount';
-import { Toast, ToastContainer } from '../../../components/multichain';
-import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import { getMultichainProviderConfig } from '../../../selectors/multichain';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
-import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
-import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
-import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
+import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
+import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
+import {
+  MultichainBridgeQuoteCard,
+  MultichainBridgeQuoteCardSkeleton,
+} from '../quotes/multichain-bridge-quote-card';
+import { useDestinationAccount } from '../hooks/useDestinationAccount';
+import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
+import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
+import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
+import { getTokenSecurityAssetKey } from '../utils/token-security';
+import { calculateMaxAmountWithReserve } from '../utils/minimum-reserve';
+import { useDispatch } from '../../../store/hooks';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencySymbol } from '../../../helpers/utils/common.util';
+import { useSourceInputAmount } from '../../../hooks/bridge/useSourceInputAmount';
+import { swapQuoteFetchTrace } from '../utils/swap-quote-fetch-trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
+import { BridgeAlertModal } from './components/bridge-alert-modal';
+import { BridgeAlertBannerList } from './components/bridge-alert-banner-list';
 
 const PrepareBridgePage = ({
   onOpenSettings,
+  swapViewTrace = { id: '', prefilledAmount: false },
 }: {
   onOpenSettings: () => void;
+  swapViewTrace?: {
+    id: string;
+    prefilledAmount: boolean;
+  };
 }) => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();
+  const { formatCurrency } = useFormatters();
 
   const fromChain = useSelector(getFromChain);
 
-  const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
-  const gasIncluded = useSelector((state) =>
-    getIsGasIncluded(state, isSendBundleSupportedForChain),
-  );
-
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
+  const selectedTokenSecurityData = useSelectedTokenSecurityData(
+    fromToken,
+    toToken,
+  );
+  const toTokenSecurityData =
+    selectedTokenSecurityData[getTokenSecurityAssetKey(toToken.assetId)];
+
+  useEffect(() => {
+    if (toTokenSecurityData) {
+      dispatch(
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          ...toTokenSecurityData,
+        }),
+      );
+    }
+  }, [dispatch, toTokenSecurityData, toToken.assetId]);
 
   const fromChains = useSelector(getFromChains);
-  const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
-
-  const isSwap = fromToken.chainId === toToken.chainId;
 
   const fromAmount = useSelector(getFromAmount);
   const validatedFromValue = useSelector(getValidatedFromValue);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+  const fromTokenConversionRate = useSelector(
+    getFromTokenConversionRate,
+  ).valueInCurrency;
+  const isFiatToggleEnabled = useSelector(getIsFiatToggleEnabled);
+  const currency = useSelector(getCurrentCurrency);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
     isLoading,
+    quoteFetchError,
     // This quote may be older than the refresh rate, but we keep it for display purposes
     activeQuote: unvalidatedQuote,
   } = useSelector(getBridgeQuotes);
-
-  const isQuoteExpired = useSelector((state) =>
-    getIsQuoteExpired(state as BridgeAppState, Date.now()),
-  );
+  const fromTokenBalance = useSelector(getFromTokenBalance);
+  const quoteStreamComplete = useSelector(getQuoteStreamComplete);
+  const { dest } = unvalidatedQuote?.quote ?? {};
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  // Determine if the current quote is expired or does not match the currently
-  // selected destination asset/chain.
-  const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
-    activeQuote: unvalidatedQuote,
-    toToken,
-    isQuoteExpired,
-  });
-
-  const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
+  const isQuoteRequestInsufficientBal = useSelector(
+    getQuoteRequestInsufficientBal,
+  );
+  const { securityWarnings } = useSecurityAlerts(toToken);
+  const { confirmationAlerts, alertsById } = useBridgeAlerts();
 
   const selectedAccount = useSelector(getFromAccount);
 
-  const gasIncluded7702 = useGasIncluded7702({
-    isSwap,
-    isSendBundleSupportedForChain,
-    selectedAccount,
-    fromChain,
-  });
+  const { gasIncluded, gasIncluded7702, nativeGasIncluded } =
+    useGasIncludedSupport();
 
   const shouldShowMaxButton =
     fromToken && isNativeAddress(fromToken.assetId)
-      ? gasIncluded || gasIncluded7702
+      ? !isSolanaChainId(fromToken.chainId) &&
+        (gasIncluded || gasIncluded7702 || nativeGasIncluded)
       : true;
-
-  const keyring = useSelector(getCurrentKeyring);
-  const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
-  const hardwareWalletName = useSelector(getHardwareWalletName);
-  const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
 
-  const ticker = useMultichainSelector(getMultichainNativeCurrency);
-  const {
-    isNoQuotesAvailable,
-    isInsufficientGasForQuote,
-    isInsufficientBalance,
-  } = useSelector(getValidationErrors);
-  const txAlert = useSelector(getTxAlerts);
-  const { openBuyCryptoInPdapp } = useRamps();
+  const sourceInputAmount = useSourceInputAmount({
+    enabled: isFiatToggleEnabled,
+    sourceAmount: fromAmount,
+    conversionRate: fromTokenConversionRate,
+    sourceToken: fromToken,
+    destinationToken: toToken,
+    onSourceAmountChange: (value) => dispatch(setFromTokenInputValue(value)),
+  });
 
-  const { tokenAlert } = useTokenAlerts();
-  const securityWarnings: string[] = useMemo(() => {
-    const warnings: string[] = [];
-    if (tokenAlert?.description) {
-      warnings.push(tokenAlert.description);
-    }
-    if (txAlert?.description) {
-      warnings.push(txAlert.description);
-    }
-    return warnings;
-  }, [tokenAlert?.description, txAlert?.description]);
+  let sourceSecondaryDisplay: string | undefined;
+  if (sourceInputAmount.isFiatPrimary && fromToken) {
+    sourceSecondaryDisplay = formatTokenAmount(
+      locale,
+      sourceInputAmount.tokenAmount || '0',
+      fromToken.symbol,
+      BigNumber.ROUND_DOWN,
+    );
+  } else if (fromTokenConversionRate) {
+    sourceSecondaryDisplay = fromAmountInCurrency.valueInCurrency.isZero()
+      ? formatCurrency('0', currency, {
+          currencyDisplay: 'narrowSymbol',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        })
+      : formatCurrencyAmount(
+          fromAmountInCurrency.valueInCurrency.toString(),
+          currency,
+          2,
+        );
+  }
+
+  const destinationTokenAmount = dest?.normalizedAmount;
+  const destinationFiatAmount = dest?.valueInCurrency;
+  const isDestinationFiatPrimary =
+    sourceInputAmount.isFiatPrimary && Boolean(destinationFiatAmount);
+  let destinationAmount = '0';
+  if (isDestinationFiatPrimary) {
+    destinationAmount = destinationFiatAmount
+      ? new BigNumber(destinationFiatAmount).toFixed(2)
+      : '0';
+  } else if (destinationTokenAmount) {
+    destinationAmount = formatTokenAmount(locale, destinationTokenAmount);
+  }
+
+  let destinationSecondaryDisplay: string | undefined;
+  if (isDestinationFiatPrimary && destinationTokenAmount) {
+    destinationSecondaryDisplay = formatTokenAmount(
+      locale,
+      destinationTokenAmount,
+      toToken.symbol,
+      BigNumber.ROUND_DOWN,
+    );
+  } else if (destinationFiatAmount) {
+    destinationSecondaryDisplay = formatCurrencyAmount(
+      destinationFiatAmount,
+      currency,
+      2,
+    );
+  }
 
   const {
     selectedDestinationAccount,
@@ -203,19 +249,24 @@ const PrepareBridgePage = ({
     setIsDestinationAccountPickerOpen,
   } = useDestinationAccount();
 
-  const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
+  useLatestBalance();
 
-  // Resets the banner visibility when new alerts found
-  const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
-  useEffect(() => setIsTokenAlertBannerOpen(true), [tokenAlert]);
+  const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
   // Background updates are debounced when the switch button is clicked
   // To prevent putting the frontend in an unexpected state, prevent the user
   // from switching tokens within the debounce period
   const [isSwitchingTemporarilyDisabled, setIsSwitchingTemporarilyDisabled] =
     useState(false);
+  const isFirstRotateEffectRef = useRef(true);
   useEffect(() => {
-    setIsSwitchingTemporarilyDisabled(true);
+    if (isFirstRotateEffectRef.current) {
+      isFirstRotateEffectRef.current = false;
+      return undefined;
+    }
+    queueMicrotask(() => {
+      setIsSwitchingTemporarilyDisabled(true);
+    });
     const switchButtonTimer = setTimeout(() => {
       setIsSwitchingTemporarilyDisabled(false);
     }, SECOND);
@@ -225,75 +276,68 @@ const PrepareBridgePage = ({
     };
   }, [rotateSwitchTokens]);
 
-  // Scroll to bottom of the page when banners are shown
-  const alertBannersRef = useRef<HTMLDivElement>(null);
+  // Scroll to CTA of the page after quotes load
+  const footerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    // If quotes are still loading, don't scroll to the warning area
+    // If quotes are still loading, don't scroll to the footer area
     if (isLoading) {
       return;
     }
-    if (
-      isInsufficientGasForQuote ||
-      tokenAlert ||
-      txAlert ||
-      isUsingHardwareWallet
-    ) {
-      alertBannersRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-      });
-    }
-  }, [
-    isInsufficientGasForQuote,
-    tokenAlert,
-    txAlert,
-    isUsingHardwareWallet,
-    isLoading,
-  ]);
+    footerRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
+  }, [isLoading]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
-
+  const fromTokenAssetId = fromToken?.assetId;
+  const toTokenAssetId = toToken?.assetId;
+  const fromTokenChainId = fromToken?.chainId;
+  const toTokenChainId = toToken?.chainId;
+  const selectedAccountAddress = selectedAccount?.address;
+  const selectedDestinationAccountAddress = selectedDestinationAccount?.address;
+  const providerConfigRpcUrl = providerConfig?.rpcUrl;
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(() => {
-    if (!selectedAccount?.address) {
+    if (!selectedAccountAddress) {
       return undefined;
     }
     return {
-      srcTokenAddress: fromToken?.assetId
-        ? formatAddressToCaipReference(fromToken.assetId)
+      srcTokenAddress: fromTokenAssetId
+        ? formatAddressToCaipReference(fromTokenAssetId)
         : undefined,
-      destTokenAddress: toToken?.assetId
-        ? formatAddressToCaipReference(toToken.assetId)
+      destTokenAddress: toTokenAssetId
+        ? formatAddressToCaipReference(toTokenAssetId)
         : undefined,
       srcTokenAmount: validatedFromValue,
-      srcChainId: fromToken?.chainId,
-      destChainId: toToken?.chainId,
+      srcChainId: fromTokenChainId,
+      destChainId: toTokenChainId,
       // This override allows quotes to be returned when the rpcUrl is a forked network
       // Otherwise quotes get filtered out by the bridge-api when the wallet's real
       // balance is less than the tenderly balance
-      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+      insufficientBal: providerConfigRpcUrl?.includes('localhost')
         ? true
-        : isInsufficientBalance,
-      slippage,
-      walletAddress: selectedAccount.address,
-      destWalletAddress: selectedDestinationAccount?.address,
-      gasIncluded: gasIncluded || gasIncluded7702,
+        : isQuoteRequestInsufficientBal,
+      ...(slippage === undefined ? {} : { slippage }),
+      walletAddress: selectedAccountAddress,
+      destWalletAddress: selectedDestinationAccountAddress,
+      gasIncluded,
       gasIncluded7702,
     };
   }, [
-    fromToken?.assetId,
-    toToken?.assetId,
+    fromTokenAssetId,
+    toTokenAssetId,
     validatedFromValue,
-    fromToken?.chainId,
-    toToken?.chainId,
+    fromTokenChainId,
+    toTokenChainId,
     slippage,
-    selectedAccount?.address,
-    selectedDestinationAccount?.address,
-    providerConfig?.rpcUrl,
+    selectedAccountAddress,
+    selectedDestinationAccountAddress,
+    providerConfigRpcUrl,
     gasIncluded,
     gasIncluded7702,
-    isInsufficientBalance,
+    isQuoteRequestInsufficientBal,
   ]);
 
   // `useRef` is used here to manually memoize a function reference.
@@ -301,23 +345,47 @@ const PrepareBridgePage = ({
   // The function contains reactive dependencies, but they are `dispatch` and an action,
   // making it safe not to worry about recreating this function on dependency updates.
   const debouncedUpdateQuoteRequestInController = useRef(
-    debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
-      dispatch(updateQuoteRequestParams(...args));
-    }, 300),
+    debounce(
+      (
+        params: Parameters<typeof updateQuoteRequestParams>[0],
+        eventProperties: Parameters<typeof updateQuoteRequestParams>[1],
+        isRefresh = false,
+      ) => {
+        if (isValidQuoteRequest(params)) {
+          swapQuoteFetchTrace.start({
+            srcChainId: params.srcChainId,
+            destChainId: params.destChainId,
+            isRefresh,
+          });
+        } else {
+          swapQuoteFetchTrace.finish('cancelled');
+        }
+        dispatch(updateQuoteRequestParams(params, eventProperties));
+      },
+      300,
+    ),
   );
+  const previousSlippageRef = useRef(slippage);
 
   useEffect(() => {
-    return () => {
-      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
-      debouncedUpdateQuoteRequestInController.current.cancel();
-    };
-  }, []);
+    const previousSlippage = previousSlippageRef.current;
+    previousSlippageRef.current = slippage;
 
-  useEffect(() => {
-    dispatch(setSelectedQuote(null));
     if (!quoteParams) {
+      swapQuoteFetchTrace.finish('cancelled');
       return;
     }
+
+    const isHydrationOnlySlippageChange =
+      !isSlippageUserOverride &&
+      previousSlippage === undefined &&
+      slippage !== undefined;
+
+    if (isHydrationOnlySlippageChange) {
+      return;
+    }
+
+    dispatch(setSelectedQuote(null));
     const eventProperties = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -330,47 +398,90 @@ const PrepareBridgePage = ({
       token_symbol_destination: toToken?.symbol ?? '',
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_security_type_destination: toToken?.securityData?.type ?? null,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       security_warnings: securityWarnings,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       usd_amount_source: fromAmountInCurrency.usd.toNumber(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      custom_slippage: isSlippageUserOverride,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
     };
     debouncedUpdateQuoteRequestInController.current(
       quoteParams,
       eventProperties,
     );
-  }, [quoteParams]);
+  }, [dispatch, isSlippageUserOverride, quoteParams, slippage]);
 
-  // Use smart slippage defaults
-  useSmartSlippage();
+  const isQuoteSurfaceReady = Boolean(
+    quoteFetchError || (quoteStreamComplete && !isLoading),
+  );
+  const isPageLoadReady = Boolean(
+    fromToken &&
+    toToken &&
+    fromTokenBalance !== null &&
+    (!swapViewTrace.prefilledAmount || isQuoteSurfaceReady),
+  );
+  const hasCompletedPageLoadTraceRef = useRef(false);
 
-  // Trace swap/bridge view loaded
   useEffect(() => {
+    if (
+      !isPageLoadReady ||
+      !fromToken ||
+      !toToken ||
+      hasCompletedPageLoadTraceRef.current
+    ) {
+      return;
+    }
+
     endTrace({
       name: TraceName.SwapViewLoaded,
+      id: swapViewTrace.id,
       timestamp: Date.now(),
+      data: {
+        result: 'success',
+        /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */
+        src_chain_id: formatChainIdToCaip(fromToken.chainId),
+        dest_chain_id: formatChainIdToCaip(toToken.chainId),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
     });
+    hasCompletedPageLoadTraceRef.current = true;
+  }, [fromToken, fromTokenBalance, isPageLoadReady, swapViewTrace.id, toToken]);
 
-    if (!activeQuote) {
-      // Reset controller and inputs on load if there's no restored active quote
-      dispatch(resetBridgeState());
-    }
-  }, []);
+  useEffect(
+    () => () => {
+      // This `ref` is safe from unintended mutations, because it points to a function reference, not any reactive node or element.
+      debouncedUpdateQuoteRequestInController.current.cancel();
+    },
+    [],
+  );
 
-  useBridgeQueryParams();
+  const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
 
-  const [showBlockExplorerToast, setShowBlockExplorerToast] = useState(false);
-  const [blockExplorerToken, setBlockExplorerToken] =
-    useState<BridgeToken | null>(null);
-  const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
-
-  const getFromInputHeader = () => {
-    return t('swapSelectToken');
+  const handleBlockExplorerClick = (token: BridgeToken) => {
+    toast.success(<ToastContent title={t('bridgeBlockExplorerLinkCopied')} />, {
+      icon: (
+        <AvatarFavicon
+          name={token.symbol}
+          size={AvatarFaviconSize.Sm}
+          src={token.iconUrl ?? undefined}
+        />
+      ),
+    });
   };
 
-  const getToInputHeader = () => {
-    return t('swapSelectToken');
-  };
+  const [alertModalProps, setAlertModalProps] = useState<
+    Pick<
+      React.ComponentProps<typeof BridgeAlertModal>,
+      'variant' | 'isOpen' | 'alertId'
+    >
+  >({});
+
+  const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
 
   return (
     <>
@@ -383,53 +494,73 @@ const PrepareBridgePage = ({
         selectedAccount={selectedDestinationAccount}
         onClose={() => setIsDestinationAccountPickerOpen(false)}
       />
+      <BridgeAlertModal
+        {...alertModalProps}
+        onClose={() => setAlertModalProps({})}
+      />
 
-      <Column className="prepare-bridge-page" gap={4}>
+      <MarketClosedModal
+        isOpen={isMarketClosedModalOpen}
+        onClose={() => setIsMarketClosedModalOpen(false)}
+      />
+
+      <Column
+        className="prepare-bridge-page flex-1"
+        gap={4}
+        data-testid="parent-selector-bridge-quote"
+      >
         <BridgeInputGroup
-          header={getFromInputHeader()}
+          setIsAssetPickerOpen={(isOpen) =>
+            dispatch(setIsSrcAssetPickerOpen(isOpen))
+          }
           token={fromToken}
-          accountAddress={selectedAccount?.address}
-          onAmountChange={(e) => {
-            dispatch(setFromTokenInputValue(e));
-          }}
-          onAssetChange={(token) => {
-            dispatch(setFromToken(token));
-          }}
-          networks={fromChains}
+          tokenSecurityData={
+            selectedTokenSecurityData[
+              getTokenSecurityAssetKey(fromToken.assetId)
+            ]
+          }
+          onAmountChange={sourceInputAmount.handleAmountChange}
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
-                  dispatch(setFromTokenInputValue(value));
+                  dispatch(
+                    setFromTokenInputValue(
+                      calculateMaxAmountWithReserve({
+                        balanceAmount: value,
+                        caipAssetId: fromToken?.assetId,
+                        decimals: fromToken?.decimals ?? 0,
+                      }),
+                    ),
+                  );
                 }
               : undefined
           }
           // Hides fiat amount string before a token quantity is entered.
-          amountInFiat={
-            fromAmountInCurrency.valueInCurrency.gt(0)
-              ? fromAmountInCurrency.valueInCurrency.toString()
+          secondaryDisplay={sourceSecondaryDisplay}
+          amountInputPrefix={
+            sourceInputAmount.isFiatPrimary
+              ? getCurrencySymbol(currency)
+              : undefined
+          }
+          onAmountTypeToggle={
+            sourceInputAmount.canToggle
+              ? sourceInputAmount.togglePrimaryDenomination
               : undefined
           }
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            value: fromAmount || undefined,
+            value: sourceInputAmount.amount,
           }}
           containerProps={{
             paddingInline: 4,
           }}
           buttonProps={{ testId: 'bridge-source-button' }}
-          onBlockExplorerClick={(token) => {
-            setBlockExplorerToken(token);
-            setShowBlockExplorerToast(true);
-            setToastTriggerCounter((prev) => prev + 1);
-          }}
+          onBlockExplorerClick={handleBlockExplorerClick}
           isDestination={false}
         />
 
         <Column
-          height={BlockSize.Full}
           padding={4}
           gap={4}
           backgroundColor={BackgroundColor.backgroundDefault}
@@ -438,9 +569,8 @@ const PrepareBridgePage = ({
           }}
         >
           <Box
-            className="prepare-bridge-page__switch-tokens"
-            display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundSection}
+            className="prepare-bridge-page__switch-tokens flex"
+            backgroundColor={BoxBackgroundColor.BackgroundSection}
             style={{
               position: 'absolute',
               top: '-20px',
@@ -475,8 +605,7 @@ const PrepareBridgePage = ({
                 (toChain && !isNetworkAdded(fromChains, toChain.chainId))
               }
               onClick={() => {
-                const previousDestAmount =
-                  unvalidatedQuote?.toTokenAmount?.amount;
+                const previousDestAmount = dest?.normalizedAmount;
                 dispatch(setSelectedQuote(null));
                 if (!toChain || !fromToken || !toToken) {
                   return;
@@ -508,7 +637,13 @@ const PrepareBridgePage = ({
                         : null,
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                       // eslint-disable-next-line @typescript-eslint/naming-convention
+                      token_security_type_destination:
+                        toToken?.securityData?.type ?? null,
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: securityWarnings,
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
+                      feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
                     },
                   ),
                 );
@@ -522,13 +657,12 @@ const PrepareBridgePage = ({
                       formatTokenAmount(locale, previousDestAmount),
                     ),
                   );
-                dispatch(setToToken(fromToken));
               }}
             />
           </Box>
 
           <Box
-            paddingInline={4}
+            className="px-4"
             style={{
               borderTop: '1px solid var(--color-border-muted)',
               marginTop: '-16px',
@@ -536,120 +670,83 @@ const PrepareBridgePage = ({
           />
 
           <BridgeInputGroup
-            header={getToInputHeader()}
-            accountAddress={
-              selectedDestinationAccount?.address ?? selectedAccount.address
+            setIsAssetPickerOpen={(isOpen) =>
+              dispatch(setIsDestAssetPickerOpen(isOpen))
             }
             token={toToken}
-            // If the fromChain is a bridge-only chain, disable it in the toChain picker
-            disabledChainId={
-              fromChain?.chainId &&
-              BRIDGE_ONLY_CHAINS.includes(fromChain.chainId)
-                ? fromChain.chainId
-                : undefined
-            }
-            onAssetChange={(newToToken) => {
-              const currentFromAmount = fromAmount;
-              // If the new toToken is the same as the current fromToken
-              // try to set the fromToken to the old toToken
-              if (
-                fromToken?.assetId.toLowerCase() ===
-                newToToken.assetId.toLowerCase()
-              ) {
-                let fromTokenToUse = toToken;
-
-                // If the old toToken's chain is disabled, it can't be set as the fromToken
-                // So reset fromToken to a fallback value (either native or default)
-                if (
-                  fromChains.every(
-                    ({ chainId }) => chainId !== fromTokenToUse.chainId,
-                  )
-                ) {
-                  // If the new toToken is native, use default as the new fromToken
-                  // otherwise use the native asset
-                  fromTokenToUse = getDefaultToToken(
-                    fromToken.chainId,
-                    fromToken.assetId,
-                  );
-                }
-                dispatch(setFromToken(fromTokenToUse));
-              }
-
-              dispatch(setToToken(newToToken));
-              dispatch(setFromTokenInputValue(currentFromAmount));
-            }}
-            networks={toChains}
-            amountInFiat={
-              activeQuote?.toTokenAmount?.valueInCurrency ?? undefined
+            tokenSecurityData={toTokenSecurityData}
+            secondaryDisplay={destinationSecondaryDisplay}
+            amountInputPrefix={
+              isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined
             }
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,
               disabled: true,
-              value: activeQuote?.toTokenAmount?.amount
-                ? formatTokenAmount(locale, activeQuote.toTokenAmount.amount)
-                : '0',
+              value: destinationAmount,
               autoFocus: false,
-              className: activeQuote?.toTokenAmount?.amount
+              className: destinationTokenAmount
                 ? 'amount-input defined'
                 : 'amount-input',
             }}
+            showAmountSkeleton={isInitialQuoteLoading}
             buttonProps={{ testId: 'bridge-destination-button' }}
-            onBlockExplorerClick={(token) => {
-              setBlockExplorerToken(token);
-              setShowBlockExplorerToast(true);
-              setToastTriggerCounter((prev) => prev + 1);
-            }}
+            onBlockExplorerClick={handleBlockExplorerClick}
             isDestination={true}
           />
+        </Column>
 
-          <Column
-            justifyContent={
-              isLoading && !unvalidatedQuote
-                ? JustifyContent.center
-                : JustifyContent.flexEnd
-            }
-            width={BlockSize.Full}
-            height={BlockSize.Full}
-            gap={3}
-          >
-            {!wasTxDeclined && unvalidatedQuote && (
+        {/** Alert banners */}
+        {quoteParams && <BridgeAlertBannerList quoteParams={quoteParams} />}
+
+        {/* Quote details - displayed below the swap form */}
+        {(isInitialQuoteLoading || (!wasTxDeclined && unvalidatedQuote)) && (
+          <Column paddingInline={4} gap={2}>
+            {isInitialQuoteLoading ? (
+              <MultichainBridgeQuoteCardSkeleton />
+            ) : (
               <MultichainBridgeQuoteCard
                 onOpenRecipientModal={() =>
                   setIsDestinationAccountPickerOpen(true)
+                }
+                onOpenPriceImpactWarningModal={() =>
+                  alertsById['price-impact'] &&
+                  setAlertModalProps({
+                    isOpen: true,
+                    variant: 'alert-details',
+                    alertId: 'price-impact',
+                  })
                 }
                 onOpenSlippageModal={onOpenSettings}
                 selectedDestinationAccount={selectedDestinationAccount}
               />
             )}
-            {isNoQuotesAvailable &&
-              !isQuoteExpired &&
-              quoteParams &&
-              // Only show banner if quoteParams (inputs) are valid
-              isValidQuoteRequest(quoteParams, true) && (
-                <BannerAlert
-                  severity={BannerAlertSeverity.Danger}
-                  description={t('noOptionsAvailableMessage')}
-                  textAlign={TextAlign.Left}
-                />
-              )}
-            {isLoading && !unvalidatedQuote ? (
-              <>
-                <Text
-                  textAlign={TextAlign.Center}
-                  color={TextColor.textAlternative}
-                >
-                  {t('swapFetchingQuotes')}
-                </Text>
-                <MascotBackgroundAnimation height="64" width="64" />
-              </>
-            ) : (
-              <PrepareBridgePageFooter
-                onFetchNewQuotes={() => {
-                  if (!quoteParams) {
-                    return;
-                  }
-                  debouncedUpdateQuoteRequestInController.current(quoteParams, {
+          </Column>
+        )}
+
+        {!isInitialQuoteLoading && (
+          <Column
+            className="sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 cta-footer"
+            justifyContent={JustifyContent.flexEnd}
+            width={BlockSize.Full}
+            gap={3}
+            paddingInline={4}
+            paddingTop={4}
+            paddingBottom={4}
+            backgroundColor={BackgroundColor.backgroundDefault}
+          >
+            <PrepareBridgePageFooter
+              onFetchNewQuotes={() => {
+                if (wasTxDeclined) {
+                  dispatch(setWasTxDeclined(false));
+                }
+                if (!quoteParams) {
+                  return;
+                }
+                setAlertModalProps({});
+                debouncedUpdateQuoteRequestInController.current(
+                  quoteParams,
+                  {
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     stx_enabled: smartTransactionsEnabled,
@@ -661,132 +758,42 @@ const PrepareBridgePage = ({
                     token_symbol_destination: toToken?.symbol ?? '',
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                     // eslint-disable-next-line @typescript-eslint/naming-convention
+                    token_security_type_destination:
+                      toToken?.securityData?.type ?? null,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     security_warnings: securityWarnings,
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     usd_amount_source: fromAmountInCurrency.usd.toNumber(),
-                  });
-                }}
-                needsDestinationAddress={
-                  isToOrFromNonEvm && !selectedDestinationAccount
-                }
-                onOpenRecipientModal={() =>
-                  setIsDestinationAccountPickerOpen(true)
-                }
-              />
-            )}
-          </Column>
-        </Column>
-      </Column>
-
-      {/** Alert banners */}
-      <Column
-        paddingInline={4}
-        gap={4}
-        backgroundColor={BackgroundColor.backgroundDefault}
-      >
-        {isUsingHardwareWallet &&
-          isTxSubmittable &&
-          hardwareWalletName &&
-          activeQuote && (
-            <BannerAlert
-              title={t('hardwareWalletSubmissionWarningTitle')}
-              textAlign={TextAlign.Left}
-            >
-              <ul style={{ listStyle: 'disc' }}>
-                <li>
-                  <Text variant={TextVariant.bodyMd}>
-                    {t('hardwareWalletSubmissionWarningStep1', [
-                      hardwareWalletName,
-                    ])}
-                  </Text>
-                </li>
-                <li>
-                  <Text variant={TextVariant.bodyMd}>
-                    {t('hardwareWalletSubmissionWarningStep2', [
-                      hardwareWalletName,
-                    ])}
-                  </Text>
-                </li>
-              </ul>
-            </BannerAlert>
-          )}
-        {txAlert && activeQuote && (
-          <BannerAlert
-            severity={BannerAlertSeverity.Danger}
-            title={t(txAlert.titleId)}
-            description={`${txAlert.description} ${t(txAlert.descriptionId)}`}
-            textAlign={TextAlign.Left}
-          />
-        )}
-        {tokenAlert && isTokenAlertBannerOpen && (
-          <BannerAlert
-            title={tokenAlert.titleId ? t(tokenAlert.titleId) : ''}
-            severity={
-              tokenAlert.type === TokenFeatureType.MALICIOUS
-                ? BannerAlertSeverity.Danger
-                : BannerAlertSeverity.Warning
-            }
-            description={
-              tokenAlert.descriptionId
-                ? t(tokenAlert.descriptionId)
-                : tokenAlert.description
-            }
-            textAlign={TextAlign.Left}
-            onClose={() => setIsTokenAlertBannerOpen(false)}
-          />
-        )}
-        {!isLoading &&
-          activeQuote &&
-          !isInsufficientBalance &&
-          isInsufficientGasForQuote && (
-            <BannerAlert
-              title={t('bridgeValidationInsufficientGasTitle', [ticker])}
-              severity={BannerAlertSeverity.Danger}
-              description={t(
-                isSwap
-                  ? 'swapValidationInsufficientGasMessage'
-                  : 'bridgeValidationInsufficientGasMessage',
-                [ticker],
-              )}
-              textAlign={TextAlign.Left}
-              actionButtonLabel={t('buyMoreAsset', [ticker])}
-              actionButtonOnClick={() => openBuyCryptoInPdapp()}
-            />
-          )}
-        <div ref={alertBannersRef} />
-      </Column>
-
-      {showBlockExplorerToast && blockExplorerToken && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 50,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 1000,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <ToastContainer>
-            <Toast
-              key={toastTriggerCounter}
-              text={t('bridgeBlockExplorerLinkCopied')}
-              onClose={() => setShowBlockExplorerToast(false)}
-              autoHideTime={2500}
-              startAdornment={
-                <AvatarFavicon
-                  name={blockExplorerToken.symbol}
-                  size={AvatarFaviconSize.Sm}
-                  src={toToken.image ?? undefined}
-                />
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+                  },
+                  true,
+                );
+              }}
+              needsDestinationAddress={
+                isToOrFromNonEvm && !selectedDestinationAccount
               }
+              inputPrimaryDenomination={sourceInputAmount.selectedDenomination}
+              onOpenRecipientModal={() =>
+                setIsDestinationAccountPickerOpen(true)
+              }
+              onOpenAlertModals={
+                confirmationAlerts.length > 0
+                  ? () =>
+                      setAlertModalProps({
+                        isOpen: true,
+                        variant: 'submit-cta',
+                      })
+                  : undefined
+              }
+              onOpenMarketClosedModal={() => setIsMarketClosedModalOpen(true)}
             />
-          </ToastContainer>
-        </div>
-      )}
+          </Column>
+        )}
+        <div ref={footerRef} />
+      </Column>
     </>
   );
 };

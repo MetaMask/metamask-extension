@@ -21,12 +21,20 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
+ */
 export const ToastContainer = ({
   children,
 }: {
   children: React.ReactNode | string;
 }) => <Box className="toasts-container">{children}</Box>;
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
+ */
 export const Toast = ({
   startAdornment,
   text,
@@ -37,6 +45,7 @@ export const Toast = ({
   onClose,
   borderRadius,
   textVariant,
+  textClassName,
   autoHideTime,
   onAutoHideToast,
   dataTestId,
@@ -44,14 +53,18 @@ export const Toast = ({
   contentProps,
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
-  text: string;
-  description?: string;
+  /** Plain string or rich content (e.g. inline `TextButton` via `t(key, [nodes])`). */
+  text: React.ReactNode;
+  /** Plain string or rich content (e.g. inline link via `t(key, [nodes])`). */
+  description?: React.ReactNode;
   descriptionVariant?: TextVariant;
   actionText?: string;
   onActionClick?: () => void;
   onClose: () => void;
   borderRadius?: BorderRadius;
   textVariant?: TextVariant;
+  /** Tailwind classes for the message text (e.g. "text-base") */
+  textClassName?: string;
   autoHideTime?: number;
   onAutoHideToast?: () => void;
   dataTestId?: string;
@@ -107,8 +120,14 @@ export const Toast = ({
         )}
         <Box>
           <Text
-            className="toast-text"
-            variant={textVariant || TextVariant.bodyMdMedium}
+            className={
+              textClassName ? `toast-text ${textClassName}` : 'toast-text'
+            }
+            variant={
+              textClassName
+                ? undefined
+                : textVariant || TextVariant.bodyMdMedium
+            }
           >
             {text}
           </Text>
@@ -129,7 +148,7 @@ export const Toast = ({
                 variant: DsTextVariant.BodySm,
               }}
               onClick={onActionClick}
-              className="mt-2 rounded-lg"
+              className="mt-2"
             >
               {actionText}
             </Button>

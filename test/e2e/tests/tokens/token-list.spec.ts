@@ -2,16 +2,18 @@ import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { zeroAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   mockEmptyHistoricalPrices,
   mockEmptyPrices,
   mockHistoricalPrices,
+  mockTokenMetadataApis,
   mockSpotPrices,
 } from './utils/mocks';
 
@@ -21,9 +23,25 @@ describe('Token List', function () {
   const symbol = 'foo';
 
   const fixtures = {
-    fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
+    fixtures: new FixtureBuilderV2()
+      .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+      .withEnabledNetworks({ eip155: { [chainId]: true } })
+      .build(),
     localNodeOptions: {
       chainId: parseInt(chainId, 16),
+    },
+    unifiedEvmAccountsApiBalances: {
+      mainnetAdditionalBalances: [
+        {
+          assetId: `eip155:1/erc20:${tokenAddress.toLowerCase()}`,
+          balance: '1',
+        },
+      ],
+    },
+    manifestFlags: {
+      remoteFeatureFlags: {
+        extensionUxTokenManagementFilter: true,
+      },
     },
   };
 
@@ -33,34 +51,38 @@ describe('Token List', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            {
+              address: tokenAddress,
+              symbol,
+              name: symbol,
+              decimals: 18,
+              chainId: 1,
+              balance: '1',
+            },
+          ])),
           await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-        );
 
-        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
+        await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
         );
-        await assetListPage.checkTokenGeneralChangePercentageNotPresent(
+        await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           tokenAddress,
         );
       },
     );
   });
   it('shows percentage increase for an ERC20 token with prices available', async function () {
-    const ethConversionInUsd = 10000;
     const marketData = {
       price: 0.123,
       marketCap: 12,
@@ -76,8 +98,17 @@ describe('Token List', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
-        ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockTokenMetadataApis(mockServer, [
+            {
+              address: tokenAddress,
+              symbol,
+              name: symbol,
+              decimals: 18,
+              chainId: 1,
+              balance: '1',
+            },
+          ])),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': marketDataNative,
             [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
@@ -94,23 +125,17 @@ describe('Token List', function () {
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
-        const assetListPage = new AssetListPage(driver);
+        const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await assetListPage.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-        );
-
-        await assetListPage.checkTokenGeneralChangePercentage(
+        await tokensTab.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',
         );
-        await assetListPage.checkTokenGeneralChangePercentage(
+        await tokensTab.checkTokenGeneralChangePercentage(
           tokenAddress,
           '+0.05%',
         );

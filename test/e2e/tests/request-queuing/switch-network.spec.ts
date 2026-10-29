@@ -1,10 +1,10 @@
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 describe('Request Queuing - Extension and Dapp on different networks.', function () {
@@ -14,7 +14,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -33,7 +33,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // Open dapp
         const testDapp = new TestDapp(driver);
@@ -44,11 +44,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         );
 
         // Switch to second network
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8546',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -60,7 +56,10 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         // Confirm transaction
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         // Switch back to the extension
         await driver.switchToWindowWithTitle(

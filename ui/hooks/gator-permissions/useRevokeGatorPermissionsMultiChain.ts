@@ -5,10 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -30,7 +27,7 @@ export type RevokeGatorPermissionsMultiChainResults = Record<
   Hex,
   {
     revoked: TransactionMeta[];
-    skipped: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[];
+    skipped: PermissionInfoWithMetadata[];
     errors: Error[];
   }
 >;
@@ -61,10 +58,7 @@ export function useRevokeGatorPermissionsMultiChain({
    */
   const revokeGatorPermissionsBatchMultiChain = useCallback(
     async (
-      permissionsByChain: Record<
-        Hex,
-        StoredGatorPermissionSanitized<PermissionTypesWithCustom>[]
-      >,
+      permissionsByChain: Record<Hex, PermissionInfoWithMetadata[]>,
     ): Promise<RevokeGatorPermissionsMultiChainResults> => {
       const results: RevokeGatorPermissionsMultiChainResults = {};
       const allTransactionIds: string[] = [];

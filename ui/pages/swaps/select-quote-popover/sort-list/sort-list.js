@@ -1,7 +1,7 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import BigNumber from 'bignumber.js';
 import SunCheckIcon from '../../../../components/ui/icon/sun-check-icon.component';
 import { I18nContext } from '../../../../contexts/i18n';

@@ -1,6 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import React from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import configureMockStore from 'redux-mock-store';
 import {
   getMockApproveConfirmState,
@@ -16,7 +17,9 @@ import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmat
 import {
   permitNFTSignatureMsg,
   permitSignatureMsg,
+  permitSignatureMsgWithUnsignedFields,
 } from '../../../../../../test/data/confirmations/typed_sign';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import { upgradeAccountConfirmationOnly } from '../../../../../../test/data/confirmations/batch-transaction';
@@ -26,14 +29,17 @@ import {
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { Confirmation } from '../../../types/confirm';
+import { useApproveTokenSimulation } from '../info/approve/hooks/use-approve-token-simulation';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import ConfirmTitle from './title';
 
 jest.mock('../info/approve/hooks/use-approve-token-simulation', () => ({
   useApproveTokenSimulation: jest.fn(() => ({
+    isUnlimitedSpendingCap: false,
     spendingCap: '1000',
     formattedSpendingCap: '1000',
     value: '1000',
+    pending: false,
   })),
 }));
 
@@ -69,20 +75,41 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="confirm-title-skeleton"]'),
+    ).toBeInTheDocument();
+  });
+
+  it('should not render title skeleton when loader is send', () => {
+    const mockStateWithNoConfirmation = {
+      ...getMockPersonalSignConfirmState(),
+      metamask: {
+        ...getMockPersonalSignConfirmState().metamask,
+        pendingApprovals: {},
+        unapprovedPersonalMsgs: {},
+      },
+    };
+    const mockStore = configureMockStore([])(mockStateWithNoConfirmation);
+    const { container } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+      '/confirm-transaction?loader=send',
+    );
+
+    expect(
+      container.querySelector('[data-testid="confirm-title-skeleton"]'),
+    ).not.toBeInTheDocument();
   });
 
   it('should render the title and description for a personal signature', () => {
-    const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
+    const mockStore = configureMockStore([])(getMockPersonalSignConfirmState());
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,
     );
 
-    expect(getByText('Signature request')).toBeInTheDocument();
-    expect(
-      getByText('Review request details before you confirm.'),
-    ).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleSignature'))).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleDescSign'))).toBeInTheDocument();
   });
 
   it('should render the title and description for a permit signature', () => {
@@ -94,10 +121,33 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Spending cap request')).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitlePermitTokens'))).toBeInTheDocument();
     expect(
-      getByText('This site wants permission to spend your tokens.'),
+      getByText(tEn('confirmTitleDescPermitSignature')),
     ).toBeInTheDocument();
+  });
+
+  it('ignores unsigned permit fields when rendering the title', () => {
+    const mockStore = configureMockStore([])(
+      getMockTypedSignConfirmStateForRequest(
+        permitSignatureMsgWithUnsignedFields,
+      ),
+    );
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(getByText(tEn('confirmTitlePermitTokens'))).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescPermitSignature')),
+    ).toBeInTheDocument();
+    expect(
+      queryByText(tEn('confirmTitleRevokeApproveTransaction')),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(tEn('confirmTitleApproveTransactionNFT')),
+    ).not.toBeInTheDocument();
   });
 
   it('should render the title and description for a NFT permit signature', () => {
@@ -109,9 +159,11 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Withdrawal request')).toBeInTheDocument();
     expect(
-      getByText('This site wants permission to withdraw your NFTs'),
+      getByText(tEn('confirmTitleApproveTransactionNFT')),
+    ).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -126,9 +178,9 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Account update')).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleAccountTypeSwitch'))).toBeInTheDocument();
     expect(
-      getByText("You're switching to a smart account."),
+      getByText(tEn('confirmTitleDescDelegationUpgrade')),
     ).toBeInTheDocument();
   });
 
@@ -139,10 +191,8 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Signature request')).toBeInTheDocument();
-    expect(
-      getByText('Review request details before you confirm.'),
-    ).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleSignature'))).toBeInTheDocument();
+    expect(getByText(tEn('confirmTitleDescSign'))).toBeInTheDocument();
   });
 
   it('should render the title and description for a contract interaction transaction', () => {
@@ -154,9 +204,52 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
+    expect(getByText(tEn('confirmTitleTransaction'))).toBeInTheDocument();
+  });
+
+  it('does not render the generic batch title or nested transaction count for a money account deposit', () => {
+    const transaction = {
+      ...genUnapprovedContractInteractionConfirmation(),
+      type: TransactionType.batch,
+      nestedTransactions: [
+        { type: TransactionType.tokenMethodApprove },
+        { type: TransactionType.moneyAccountDeposit },
+      ],
+    } as Confirmation;
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(transaction),
+    );
+
+    const { queryByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(queryByText(tEn('confirmTitleTransaction'))).not.toBeInTheDocument();
     expect(
-      getByText(tEn('confirmTitleTransaction') as string),
-    ).toBeInTheDocument();
+      queryByText(tEn('includesXTransactions', ['2'])),
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps the contract interaction title while spending-cap data is pending', () => {
+    jest.mocked(useApproveTokenSimulation).mockReturnValueOnce({
+      isUnlimitedSpendingCap: false,
+      spendingCap: '0',
+      formattedSpendingCap: '0',
+      value: new BigNumber(0),
+      pending: true,
+    });
+    const mockStore = configureMockStore([])(
+      getMockContractInteractionConfirmState(),
+    );
+
+    const { getByText, queryByTestId } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(getByText(tEn('confirmTitleTransaction'))).toBeInTheDocument();
+    expect(queryByTestId('confirm-title-skeleton')).not.toBeInTheDocument();
   });
 
   it('should render the title and description for a approval transaction for NFTs', () => {
@@ -167,10 +260,10 @@ describe('ConfirmTitle', () => {
     );
 
     expect(
-      getByText(tEn('confirmTitleApproveTransactionNFT') as string),
+      getByText(tEn('confirmTitleApproveTransactionNFT')),
     ).toBeInTheDocument();
     expect(
-      getByText(tEn('confirmTitleDescApproveTransaction') as string),
+      getByText(tEn('confirmTitleDescApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -188,11 +281,9 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
+    expect(getByText(tEn('confirmTitlePermitTokens'))).toBeInTheDocument();
     expect(
-      getByText(tEn('confirmTitlePermitTokens') as string),
-    ).toBeInTheDocument();
-    expect(
-      getByText(tEn('confirmTitleDescERC20ApproveTransaction') as string),
+      getByText(tEn('confirmTitleDescERC20ApproveTransaction')),
     ).toBeInTheDocument();
   });
 
@@ -207,11 +298,11 @@ describe('ConfirmTitle', () => {
 
     await waitFor(() => {
       expect(
-        getByText(tEn('setApprovalForAllRedesignedTitle') as string),
+        getByText(tEn('setApprovalForAllRedesignedTitle')),
       ).toBeInTheDocument();
 
       expect(
-        getByText(tEn('confirmTitleDescApproveTransaction') as string),
+        getByText(tEn('confirmTitleDescApproveTransaction')),
       ).toBeInTheDocument();
     });
   });
@@ -276,8 +367,10 @@ describe('ConfirmTitle', () => {
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
+      TransactionType.musdClaim,
       TransactionType.musdConversion,
       TransactionType.perpsDeposit,
+      TransactionType.perpsWithdraw,
       TransactionType.predictDeposit,
       TransactionType.predictWithdraw,
     ])('hides alert banner for %s transaction type', (type: string) => {

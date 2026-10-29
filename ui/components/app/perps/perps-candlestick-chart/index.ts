@@ -1,8 +1,12 @@
 export { default as PerpsCandlestickChart } from './perps-candlestick-chart';
-export type { PerpsCandlestickChartRef } from './perps-candlestick-chart';
-export type { CandleData } from './mock-candle-data';
+export type {
+  PerpsCandlestickChartRef,
+  ChartPriceLine,
+} from './perps-candlestick-chart';
 export {
-  mockCandleData,
   formatCandleDataForChart,
   formatVolumeDataForChart,
-} from './mock-candle-data';
+  formatSingleCandleForChart,
+  formatSingleVolumeForChart,
+} from './chart-utils';
+export type { CandlestickData, HistogramData, Time } from './chart-utils';

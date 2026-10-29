@@ -7,11 +7,10 @@ import {
   JsonRpcNotification,
   isObject,
   hasProperty,
+  JsonRpcParams,
 } from '@metamask/utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
-import getNextId from '../../../shared/modules/random-id';
-// It *is* used: in TypeDoc comment, you silly goose.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import getNextId from '../../../shared/lib/random-id';
 import type MetamaskController from '../metamask-controller';
 
 const JSON_RPC_VERSION = '2.0' as const;
@@ -188,8 +187,21 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
    *
    * @param handler - The handler to call when a notification is received.
    */
-  onNotification = (handler: (data: JsonRpcNotification) => void) => {
+  onNotification = <Params extends JsonRpcParams>(
+    handler: (data: JsonRpcNotification<Params>) => void,
+  ) => {
     this.#notificationChannel.addListener('notification', handler);
+  };
+
+  /**
+   * Remove a listener for JSON-RPC notifications.
+   *
+   * @param handler - The handler to remove.
+   */
+  removeOnNotification = <Params extends JsonRpcParams>(
+    handler: (data: JsonRpcNotification<Params>) => void,
+  ) => {
+    this.#notificationChannel.removeListener('notification', handler);
   };
 
   /**

@@ -1,27 +1,29 @@
 import {
+  parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
-  parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
-  ChainId,
   BridgeClientId,
   getNativeAssetForChainId,
   isNonEvmChainId,
   formatChainIdToHex,
   formatAddressToCaipReference,
+  ChainId,
+  assetIdsMatch,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
-import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { Numeric } from '../../../shared/lib/Numeric';
 import {
-  TRON_RESOURCE_SYMBOLS_SET,
-  type TronResourceSymbol,
-} from '../../../shared/constants/multichain/assets';
+  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
+  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
+} from '../../../shared/constants/bridge';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
@@ -29,23 +31,6 @@ export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
 // Re-export isTronChainId from confirmations utils for consistency
 export { isTronChainId } from '../../pages/confirmations/utils/network';
-
-/**
- * Checks if a token is a Tron Energy or Bandwidth resource (not tradeable assets)
- *
- * @param chainId - The chain ID to check
- * @param symbol - The token symbol to check
- * @returns true if the token is a Tron Energy/Bandwidth resource
- */
-export const isTronEnergyOrBandwidthResource = (
-  chainId: ChainId | Hex | CaipChainId | string | undefined,
-  symbol: string | undefined,
-): boolean => {
-  return (
-    Boolean(chainId?.toString()?.includes('tron:')) &&
-    TRON_RESOURCE_SYMBOLS_SET.has(symbol?.toLowerCase() as TronResourceSymbol)
-  );
-};
 
 /**
  *
@@ -57,6 +42,25 @@ export const getMaybeHexChainId = (chainId?: string) => {
     return undefined;
   }
   return isNonEvmChainId(chainId) ? undefined : formatChainIdToHex(chainId);
+};
+
+/**
+ * Safely gets the native asset for a given chainId.
+ * Returns undefined if the chainId is not supported by the bridge controller.
+ * This wrapper prevents errors for custom networks that aren't in the swaps map.
+ *
+ * @param chainId - The chain ID to get the native asset for
+ * @returns The native asset, or undefined if not supported
+ */
+export const getNativeAssetForChainIdSafe = (
+  chainId: string | number | Hex | CaipChainId,
+) => {
+  try {
+    return getNativeAssetForChainId(chainId);
+  } catch {
+    // Return undefined for unsupported chains (e.g., custom networks, test chains)
+    return undefined;
+  }
 };
 
 /**
@@ -82,29 +86,6 @@ export const getHexMaxGasLimit = (gasLimit: number) => {
     10,
   ).toPrefixedHexString() as Hex;
 };
-/**
- * Converts basis points (BPS) to percentage
- * 1 BPS = 0.01%
- *
- * @param bps - The value in basis points (e.g., "87.5" or 87.5)
- * @returns The percentage value as a string (e.g., "0.875")
- */
-export const bpsToPercentage = (
-  bps: string | number | undefined,
-): string | undefined => {
-  if (bps === undefined || bps === null) {
-    return undefined;
-  }
-
-  const bpsValue = typeof bps === 'string' ? parseFloat(bps) : bps;
-
-  if (isNaN(bpsValue)) {
-    return undefined;
-  }
-
-  // BPS to percentage: divide by 100
-  return (bpsValue / 100).toString();
-};
 
 const fetchTokenExchangeRates = async (
   currency: string,
@@ -119,8 +100,6 @@ const fetchTokenExchangeRates = async (
     includeMarketData: 'true',
     vsCurrency: currency,
   });
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
   const tokenV3PriceResponse = (await handleFetch(url, {
     method: 'GET',
@@ -210,6 +189,8 @@ export const toBridgeToken = (
     tokenFiatAmount,
     accountType,
     rwaData,
+    isVerified,
+    securityData,
   } = payload;
   const { chainId } = parseCaipAssetType(assetId);
   return {
@@ -217,13 +198,31 @@ export const toBridgeToken = (
     symbol,
     name: name ?? symbol,
     chainId,
-    image: getAssetImageUrl(assetId, chainId),
+    iconUrl: payload.iconUrl || getAssetImageUrl(assetId, chainId),
     assetId,
     balance: tokenMetadata?.balance ?? balance ?? '0',
     tokenFiatAmount: tokenMetadata?.tokenFiatAmount ?? tokenFiatAmount,
     accountType: tokenMetadata?.accountType ?? accountType,
     rwaData: tokenMetadata?.rwaData ?? rwaData,
+    isVerified:
+      (tokenMetadata?.securityData?.type ===
+        BridgeAssetSecurityDataType.VERIFIED ||
+        tokenMetadata?.isVerified) ??
+      isVerified,
+    securityData: tokenMetadata?.securityData ?? securityData,
   };
+};
+
+export const getDefaultFromToken = (fromChainId: CaipChainId) => {
+  const defaultFromTokenForChain =
+    BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN[fromChainId];
+  // If commonPair is defined and is not the same as the fromToken, return it
+  if (defaultFromTokenForChain) {
+    return toBridgeToken(defaultFromTokenForChain);
+  }
+
+  // Last resort: native token
+  return toBridgeToken(getNativeAssetForChainId(fromChainId));
 };
 
 export const getDefaultToToken = (
@@ -232,13 +231,37 @@ export const getDefaultToToken = (
 ) => {
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[toChainId];
   // If commonPair is defined and is not the same as the fromToken, return it
-  if (
-    commonPair &&
-    fromAssetId.toLowerCase() !== commonPair.assetId.toLowerCase()
-  ) {
+  if (commonPair && !assetIdsMatch(fromAssetId, commonPair.assetId)) {
     return toBridgeToken(commonPair);
   }
 
-  // Last resort: native token
-  return toBridgeToken(getNativeAssetForChainId(toChainId));
+  /**
+   * Our current "from" asset is our default "to" token.
+   * Hence we can make our "to" token be the default "from" token.
+   * It will still fallback to native (original behavior).
+   * We know fromChainId === toChainId because of the assetId clash.
+   */
+  return getDefaultFromToken(toChainId);
+};
+
+/**
+ * Returns true when the chain is in the set of chains MetaMask supports for
+ * bridge/swap, false for any malformed, unknown, or unsupported chain ID.
+ *
+ * ALL_ALLOWED_BRIDGE_CHAIN_IDS contains chain IDs in three forms:
+ * - hex strings      ("0x1", "0xa4b1", …)       from ALLOWED_EVM_BRIDGE_CHAIN_IDS
+ * - CAIP strings     ("eip155:1", "solana:…", …) from ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP
+ * - numeric ChainId  (1, 1151111081099710, …)     from Object.values(ChainId)
+ *
+ * getNativeAssetForChainId returns tokens whose chainId is a numeric ChainId enum value
+ * (e.g. ChainId.SOLANA = 1151111081099710), so we must check direct inclusion first
+ * before attempting any hex conversion — otherwise the numeric value gets converted to an
+ * obscure hex string that is absent from the list and the check incorrectly returns false.
+ *
+ * @param caipChainId - Chain ID to validate in any supported form.
+ */
+export const isSupportedBridgeChain = (
+  caipChainId: string | ChainId,
+): boolean => {
+  return ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(caipChainId);
 };

@@ -1,11 +1,29 @@
-import React, { useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
-import classnames from 'classnames';
-import log from 'loglevel';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import classnames from 'clsx';
+import {
+  Box,
+  Text,
+  IconName,
+  AvatarNetwork,
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconSize,
+  TextColor,
+  TextVariant,
+  IconColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  FontWeight,
+  TextButton,
+  TextAlign,
+} from '@metamask/design-system-react';
+import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { TextField } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -17,39 +35,18 @@ import {
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
+import { getIsBasicFunctionalityForcedOnDuringOnboarding } from '../../../selectors/multichain/basic-functionality';
 
-import {
-  Box,
-  Text,
-  TextField,
-  IconName,
-  ButtonLink,
-  AvatarNetwork,
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-} from '../../../components/component-library';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Display,
-  TextAlign,
-  TextColor,
-  TextVariant,
-  IconColor,
-  AlignItems,
-  JustifyContent,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
   getIsSocialLoginFlow,
-  getDataCollectionForMarketing,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
@@ -61,8 +58,6 @@ import {
   setUseTransactionSimulations,
   setUseExternalNameSources,
   setEditedNetwork,
-  setDataCollectionForMarketing,
-  setMarketingConsent,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -70,30 +65,33 @@ import {
 } from '../../../ducks/app/app';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  IPFS_FORBIDDEN_GATEWAYS,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
-import DeleteMetaMetricsDataButton from '../../settings/security-tab/delete-metametrics-data-button';
-import MetametricsToggle from '../../settings/security-tab/metametrics-toggle/metametrics-toggle';
-import { MetaMaskReduxState } from '../../../store/store';
+import MetametricsToggle from '../../../components/app/metametrics-toggle/metametrics-toggle';
+import type { MetaMaskReduxState } from '../../../store/types';
+import { useDispatch } from '../../../store/hooks';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
+const IPFS_GATEWAY_ERROR_ID = 'onboarding-ipfs-gateway-error';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+type SettingsCategory = {
+  id: 'privacy' | 'backup-and-sync' | 'networks';
+  title: string;
+};
+
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [showDetail, setShowDetail] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<{
-    id: number;
-    title: string;
-    subtitle: string;
-  } | null>(null);
+  const [selectedItem, setSelectedItem] = useState<SettingsCategory | null>(
+    null,
+  );
   const [hiddenClass, setHiddenClass] = useState(true);
 
   const defaultState = useSelector(
@@ -110,8 +108,11 @@ export default function PrivacySettings() {
   } = defaultState;
   const useExternalNameSources = useSelector(getUseExternalNameSources);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-
+  const isBasicFunctionalityConsolidationEnabled =
+    getIsBasicFunctionalityConsolidationEnabledInBuild();
+  const isBasicFunctionalityForcedOn = useSelector(
+    getIsBasicFunctionalityForcedOnDuringOnboarding,
+  );
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -134,7 +135,7 @@ export default function PrivacySettings() {
     useExternalNameSources,
   );
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   const externalServicesOnboardingToggleState = useSelector(
@@ -143,40 +144,45 @@ export default function PrivacySettings() {
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
-  const isFromReminder = searchParams.get('isFromReminder');
+  const { isFromReminder } = useOnboardingSearchParams();
 
   const handleSubmit = () => {
-    dispatch(setUse4ByteResolution(turnOn4ByteResolution));
-    dispatch(setUseTokenDetection(turnOnTokenDetection));
-    dispatch(
-      setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
-    );
-    dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
-    dispatch(setUseAddressBarEnsResolution(addressBarResolution));
-    setUseTransactionSimulations(isTransactionSimulationsEnabled);
-    setUseExternalNameSources(turnOnExternalNameSources);
+    // When consolidation is on, child prefs are owned by Basic Functionality
+    // and applied at onboarding completion via toggleBasicFunctionality.
+    if (!isBasicFunctionalityConsolidationEnabled) {
+      dispatch(setUse4ByteResolution(turnOn4ByteResolution));
+      dispatch(setUseTokenDetection(turnOnTokenDetection));
+      dispatch(
+        setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
+      );
+      dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
+      dispatch(setUseAddressBarEnsResolution(addressBarResolution));
+      setUseTransactionSimulations(isTransactionSimulationsEnabled);
+      setUseExternalNameSources(turnOnExternalNameSources);
+    }
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL) as string);
       dispatch(setIpfsGateway(host));
     }
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.SettingsUpdated,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        settings_group: 'onboarding_advanced_configuration',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_profile_syncing_enabled: isBackupAndSyncEnabled,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_basic_functionality_enabled: externalServicesOnboardingToggleState,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        turnon_token_detection: turnOnTokenDetection,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          settings_group: 'onboarding_advanced_configuration',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_profile_syncing_enabled: isBackupAndSyncEnabled,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          turnon_token_detection: isBasicFunctionalityConsolidationEnabled
+            ? externalServicesOnboardingToggleState
+            : turnOnTokenDetection,
+        })
+        .build(),
+    );
     if (isFromReminder) {
       navigate(`${ONBOARDING_COMPLETION_ROUTE}?isFromReminder=true`, {
         replace: true,
@@ -190,7 +196,7 @@ export default function PrivacySettings() {
     setIPFSURL(url);
     try {
       const { host } = new URL(addUrlProtocolPrefix(url) as string);
-      if (!host || host === 'gateway.ipfs.io') {
+      if (!host || IPFS_FORBIDDEN_GATEWAYS.includes(host)) {
         throw new Error();
       }
       setIPFSError(null);
@@ -199,11 +205,7 @@ export default function PrivacySettings() {
     }
   };
 
-  const handleItemSelected = (item: {
-    id: number;
-    title: string;
-    subtitle: string;
-  }) => {
+  const handleItemSelected = (item: SettingsCategory) => {
     setSelectedItem(item);
     setShowDetail(true);
 
@@ -219,357 +221,222 @@ export default function PrivacySettings() {
     }, ANIMATION_TIME);
   };
 
-  const items = [
-    { id: 1, title: t('general'), subtitle: t('generalDescription') },
-    { id: 2, title: t('assets'), subtitle: t('assetsDescription') },
+  const items: SettingsCategory[] = [
     {
-      id: 3,
-      title: isSocialLoginFlow
-        ? t('securityDefaultSettingsSocialLogin')
-        : t('security'),
-      subtitle: isSocialLoginFlow
-        ? t('securitySocialLoginDefaultSettingsDescription')
-        : t('securityDescription'),
+      id: 'privacy',
+      title: t('privacy'),
+    },
+    {
+      id: 'backup-and-sync',
+      title: t('backupAndSync'),
+    },
+    {
+      id: 'networks',
+      title: t('networks'),
     },
   ];
 
-  const handleDataCollectionForMarketing = async (value: boolean) => {
-    try {
-      dispatch(setMarketingConsent(value));
-    } catch (error) {
-      log.error('Error setting marketing consent in default settings', error);
-    }
-    dispatch(setDataCollectionForMarketing(value));
-  };
-
   return (
     <>
-      <div className="privacy-settings" data-testid="privacy-settings">
-        <div
+      <Box
+        className="privacy-settings"
+        data-testid="parent-selector-onboarding-privacy-settings"
+      >
+        <Box
           className={classnames('container', {
             'show-detail': showDetail,
             'show-list': !showDetail,
           })}
         >
-          <div className="list-view">
+          <Box className="list-view">
             <Box
               className="privacy-settings__header"
-              marginTop={6}
+              marginTop={2}
               marginBottom={6}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              justifyContent={JustifyContent.flexStart}
+              flexDirection={BoxFlexDirection.Column}
+              justifyContent={BoxJustifyContent.Start}
             >
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                flexDirection={FlexDirection.Row}
-                justifyContent={JustifyContent.spaceBetween}
+                alignItems={BoxAlignItems.Center}
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
               >
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
                   ariaLabel="Back"
-                  size={ButtonIconSize.Lg}
+                  size={ButtonIconSize.Md}
                   data-testid="privacy-settings-back-button"
                   onClick={handleSubmit}
                 />
                 <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.center}
-                  width={BlockSize.Full}
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  justifyContent={BoxJustifyContent.Center}
+                  className="w-full"
                 >
-                  <Text variant={TextVariant.headingMd} as="h3">
+                  <Text
+                    variant={TextVariant.HeadingSm}
+                    textAlign={TextAlign.Center}
+                  >
                     {t('defaultSettingsTitle')}
                   </Text>
                 </Box>
                 <Box className="privacy-settings__empty-space" />
               </Box>
-              <Text variant={TextVariant.bodyLgMedium} marginTop={5}>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                className="mt-4"
+              >
                 {t('defaultSettingsSubTitle')}
               </Text>
-              <a
-                href="https://support.metamask.io/privacy-and-security/privacy-best-practices"
-                target="_blank"
-                rel="noreferrer"
-                key="learnMoreAboutPrivacy"
-                style={{
-                  fontSize: 'var(--font-size-5)',
-                }}
-              >
-                {t('learnMoreAboutPrivacy')}
-              </a>
+              <TextButton asChild className="mt-1 self-start">
+                <a
+                  href={ZENDESK_URLS.PRIVACY_BEST_PRACTICES}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t('learnMoreAboutPrivacy')}
+                </a>
+              </TextButton>
             </Box>
             <Box>
               <Box
-                as="ul"
-                marginTop={4}
-                marginBottom={4}
-                style={{ listStyleType: 'none' }}
-                className="privacy-settings__categories-list"
+                className="privacy-settings__categories-list list-none"
+                gap={6}
+                flexDirection={BoxFlexDirection.Column}
+                asChild
               >
-                {items.map((item) => (
-                  <Box
-                    marginTop={5}
-                    marginBottom={5}
-                    key={item.id}
-                    className="categories-item"
-                    onClick={() => handleItemSelected(item)}
-                  >
+                <ul>
+                  {items.map((item) => (
                     <Box
-                      display={Display.Flex}
-                      alignItems={AlignItems.flexStart}
-                      justifyContent={JustifyContent.spaceBetween}
-                      data-testid={`category-item-${item.title}`}
+                      asChild
+                      key={item.id}
+                      className="categories-item w-full border-0 bg-transparent p-0 text-left"
                     >
-                      <Text variant={TextVariant.bodyLgMedium}>
-                        {item.title}
-                      </Text>
-                      <ButtonIcon
-                        iconName={IconName.ArrowRight}
-                        ariaLabel="Next"
-                        size={ButtonIconSize.Lg}
-                        color={IconColor.iconDefault}
+                      <button
+                        type="button"
+                        aria-label={item.title}
+                        data-testid={`category-item-${item.title}`}
                         onClick={() => handleItemSelected(item)}
-                      />
+                      >
+                        <Box
+                          flexDirection={BoxFlexDirection.Row}
+                          alignItems={BoxAlignItems.Start}
+                          justifyContent={BoxJustifyContent.Between}
+                        >
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                          >
+                            {item.title}
+                          </Text>
+                          <Icon
+                            name={IconName.ArrowRight}
+                            size={IconSize.Md}
+                            color={IconColor.IconDefault}
+                            aria-hidden
+                          />
+                        </Box>
+                      </button>
                     </Box>
-                    <Text
-                      className="description"
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textAlternative}
-                    >
-                      {item.subtitle}
-                    </Text>
-                  </Box>
-                ))}
+                  ))}
+                </ul>
               </Box>
             </Box>
-          </div>
+          </Box>
 
-          <div
+          <Box
             className={classnames('detail-view', {
               hidden: !showDetail && hiddenClass,
             })}
           >
             <Box
               className="privacy-settings__header"
-              marginTop={6}
-              marginBottom={5}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.spaceBetween}
+              marginTop={2}
+              marginBottom={4}
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
             >
               <ButtonIcon
                 data-testid="category-back-button"
                 iconName={IconName.ArrowLeft}
                 ariaLabel="Back"
-                size={ButtonIconSize.Lg}
+                size={ButtonIconSize.Md}
                 onClick={handleBack}
               />
               <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
-                width={BlockSize.Full}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.Center}
+                className="w-full"
               >
-                <Text variant={TextVariant.headingLg} as="h2">
+                <Text
+                  variant={TextVariant.HeadingSm}
+                  textAlign={TextAlign.Center}
+                >
                   {selectedItem?.title}
                 </Text>
               </Box>
               <Box className="privacy-settings__empty-space" />
             </Box>
 
-            <div
+            <Box
               className="privacy-settings__settings"
               data-testid="privacy-settings-settings"
             >
-              {selectedItem?.id === 1 ? (
+              {selectedItem?.id === 'privacy' ? (
                 <>
-                  <Setting
-                    dataTestId="basic-functionality-toggle"
-                    value={externalServicesOnboardingToggleState}
-                    setValue={(toggledValue) => {
-                      if (toggledValue) {
-                        dispatch(onboardingToggleBasicFunctionalityOn());
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Onboarding,
-                          event: MetaMetricsEventName.SettingsUpdated,
-                          properties: {
-                            // eslint-disable-next-line @typescript-eslint/naming-convention
-                            settings_group: 'onboarding_advanced_configuration',
-                            // eslint-disable-next-line @typescript-eslint/naming-convention
-                            settings_type: 'basic_functionality',
-                            // eslint-disable-next-line @typescript-eslint/naming-convention
-                            old_value: false,
-                            // eslint-disable-next-line @typescript-eslint/naming-convention
-                            new_value: true,
-                            // eslint-disable-next-line @typescript-eslint/naming-convention
-                            was_profile_syncing_on: false,
-                          },
-                        });
-                      } else {
-                        dispatch(openBasicFunctionalityModal());
-                      }
-                    }}
-                    title={t('basicConfigurationLabel')}
-                    description={t('basicConfigurationDescription', [
-                      <a
-                        href="https://consensys.io/privacy-policy"
-                        key="link"
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        {t('privacyMsg')}
-                      </a>,
-                    ])}
-                  />
+                  <Box className="w-full" marginBottom={3}>
+                    <Setting
+                      dataTestId="basic-functionality-toggle"
+                      value={externalServicesOnboardingToggleState}
+                      disabled={isBasicFunctionalityForcedOn}
+                      setValue={(toggledValue) => {
+                        if (isBasicFunctionalityForcedOn) {
+                          return;
+                        }
+                        if (toggledValue) {
+                          dispatch(onboardingToggleBasicFunctionalityOn());
+                          trackEvent(
+                            createEventBuilder(
+                              MetaMetricsEventName.SettingsUpdated,
+                            )
+                              .addCategory(MetaMetricsEventCategory.Onboarding)
+                              .addProperties({
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                settings_group:
+                                  'onboarding_advanced_configuration',
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                settings_type: 'basic_functionality',
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                old_value: false,
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                new_value: true,
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
+                                was_profile_syncing_on: false,
+                              })
+                              .build(),
+                          );
+                        } else {
+                          dispatch(openBasicFunctionalityModal());
+                        }
+                      }}
+                      title={t('basicConfigurationLabel')}
+                      description={t('basicConfigurationDescription', [
+                        <a
+                          href="https://metamask.com/privacy-notice"
+                          key="link"
+                          target="_blank"
+                          rel="noreferrer noopener"
+                        >
+                          {t('privacyMsg')}
+                        </a>,
+                      ])}
+                    />
+                  </Box>
 
-                  <BackupAndSyncToggle />
-
-                  <Setting
-                    title={t('onboardingAdvancedPrivacyNetworkTitle')}
-                    showToggle={false}
-                    enableMarginBottom={false}
-                    description={
-                      <>
-                        {t('onboardingAdvancedPrivacyNetworkDescription', [
-                          <a
-                            href="https://consensys.io/privacy-policy/"
-                            key="link"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {t('privacyMsg')}
-                          </a>,
-                          <a
-                            href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}
-                            key="link"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {t(
-                              'onboardingAdvancedPrivacyNetworkDescriptionCallToAction',
-                            )}
-                          </a>,
-                        ])}
-
-                        <Box paddingTop={4}>
-                          <Box
-                            display={Display.Flex}
-                            flexDirection={FlexDirection.Column}
-                            gap={5}
-                          >
-                            {Object.values(networkConfigurations)
-                              .filter(
-                                ({ chainId }) => !TEST_CHAINS.includes(chainId),
-                              )
-                              .map((network) => (
-                                <Box
-                                  key={network.chainId}
-                                  className="privacy-settings__customizable-network"
-                                  onClick={() => {
-                                    dispatch(
-                                      setEditedNetwork({
-                                        chainId: network.chainId,
-                                      }),
-                                    );
-                                    dispatch(toggleNetworkMenu());
-                                  }}
-                                  display={Display.Flex}
-                                  alignItems={AlignItems.center}
-                                  justifyContent={JustifyContent.spaceBetween}
-                                >
-                                  <Box
-                                    display={Display.Flex}
-                                    alignItems={AlignItems.center}
-                                  >
-                                    <AvatarNetwork
-                                      src={
-                                        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                          network.chainId
-                                        ]
-                                      }
-                                      name={network.name}
-                                    />
-                                    <Box
-                                      textAlign={TextAlign.Left}
-                                      marginLeft={3}
-                                    >
-                                      <Text variant={TextVariant.bodySmMedium}>
-                                        {network.name}
-                                      </Text>
-                                      <Text
-                                        variant={TextVariant.bodyXs}
-                                        color={TextColor.textAlternative}
-                                      >
-                                        {
-                                          // Get just the protocol + domain, not the infura key in path
-                                          new URL(
-                                            network?.rpcEndpoints[
-                                              network?.defaultRpcEndpointIndex
-                                            ]?.url,
-                                          )?.origin
-                                        }
-                                      </Text>
-                                    </Box>
-                                  </Box>
-                                  <ButtonIcon
-                                    iconName={IconName.ArrowRight}
-                                    size={ButtonIconSize.Md}
-                                    ariaLabel="Next"
-                                  />
-                                </Box>
-                              ))}
-                            <ButtonLink
-                              onClick={() => {
-                                dispatch(
-                                  toggleNetworkMenu({
-                                    isAddingNewNetwork: true,
-                                  }),
-                                );
-                              }}
-                              justifyContent={JustifyContent.flexStart}
-                            >
-                              <Box
-                                display={Display.Flex}
-                                alignItems={AlignItems.center}
-                              >
-                                <Icon name={IconName.Add} marginRight={3} />
-                                <Text color={TextColor.primaryDefault}>
-                                  {t('addANetwork')}
-                                </Text>
-                              </Box>
-                            </ButtonLink>
-                          </Box>
-                        </Box>
-                      </>
-                    }
-                  />
-                </>
-              ) : null}
-              {selectedItem?.id === 2 ? (
-                <>
-                  <Setting
-                    value={turnOnTokenDetection}
-                    setValue={setTurnOnTokenDetection}
-                    title={t('turnOnTokenDetection')}
-                    description={t('useTokenDetectionPrivacyDesc')}
-                  />
-                  <Setting
-                    value={isTransactionSimulationsEnabled}
-                    setValue={setTransactionSimulationsEnabled}
-                    title={t('simulationsSettingSubHeader')}
-                    description={t('simulationsSettingDescription', [
-                      <a
-                        key="learn_more_link"
-                        href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('learnMoreUpperCase')}
-                      </a>,
-                    ])}
-                  />
                   <Setting
                     title={t('onboardingAdvancedPrivacyIPFSTitle')}
                     showToggle={false}
@@ -580,131 +447,299 @@ export default function PrivacySettings() {
                           <TextField
                             value={ipfsURL}
                             style={{ width: '100%' }}
-                            inputProps={{ 'data-testid': 'ipfs-input' }}
+                            inputProps={{
+                              'data-testid': 'ipfs-input',
+                              ...(ipfsError
+                                ? {
+                                    'aria-invalid': true,
+                                    'aria-describedby': IPFS_GATEWAY_ERROR_ID,
+                                  }
+                                : {}),
+                            }}
                             onChange={(e) => {
                               handleIPFSChange(e.target.value);
                             }}
                           />
-                          {ipfsURL ? (
+                          {ipfsError ? (
                             <Text
-                              variant={TextVariant.bodySm}
-                              color={
-                                ipfsError
-                                  ? TextColor.errorDefault
-                                  : TextColor.successDefault
-                              }
+                              variant={TextVariant.BodyMd}
+                              color={TextColor.ErrorDefault}
+                              asChild
                             >
-                              {ipfsError ||
-                                t('onboardingAdvancedPrivacyIPFSValid')}
+                              <p id={IPFS_GATEWAY_ERROR_ID}>{ipfsError}</p>
                             </Text>
                           ) : null}
                         </Box>
                       </>
                     }
                   />
-                  <Setting
-                    value={turnOnCurrencyRateCheck}
-                    setValue={setTurnOnCurrencyRateCheck}
-                    title={t('currencyRateCheckToggle')}
-                    dataTestId="currency-rate-check-toggle"
-                    description={t('currencyRateCheckToggleDescription', [
-                      <a
-                        key="coingecko_link"
-                        href={COINGECKO_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('coingecko')}
-                      </a>,
-                      <a
-                        key="cryptocompare_link"
-                        href={CRYPTOCOMPARE_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('cryptoCompare')}
-                      </a>,
-                      <a
-                        key="privacy_policy_link"
-                        href={PRIVACY_POLICY_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('privacyMsg')}
-                      </a>,
-                    ])}
-                  />
-                  <Setting
-                    value={addressBarResolution}
-                    setValue={setAddressBarResolution}
-                    title={t('ensDomainsSettingTitle')}
-                    description={
-                      <>
-                        <Text variant={TextVariant.inherit}>
-                          {t('ensDomainsSettingDescriptionIntroduction')}
-                        </Text>
-                        <Box
-                          as="ul"
-                          marginTop={4}
-                          marginBottom={4}
-                          paddingInlineStart={4}
-                          style={{ listStyleType: 'circle' }}
-                        >
-                          <Text variant={TextVariant.inherit} as="li">
-                            {t('ensDomainsSettingDescriptionPart1')}
-                          </Text>
-                          <Text variant={TextVariant.inherit} as="li">
-                            {t('ensDomainsSettingDescriptionPart2')}
-                          </Text>
-                        </Box>
-                        <Text variant={TextVariant.inherit}>
-                          {t('ensDomainsSettingDescriptionOutroduction')}
-                        </Text>
-                      </>
-                    }
-                  />
-                  <Setting
-                    value={isMultiAccountBalanceCheckerEnabled}
-                    setValue={setMultiAccountBalanceCheckerEnabled}
-                    title={t('useMultiAccountBalanceChecker')}
-                    description={t(
-                      'useMultiAccountBalanceCheckerSettingDescription',
-                    )}
-                  />
-                </>
-              ) : null}
-              {selectedItem?.id === 3 ? (
-                <>
-                  <Setting
-                    value={turnOn4ByteResolution}
-                    setValue={setTurnOn4ByteResolution}
-                    title={t('use4ByteResolution')}
-                    description={t('toggleDecodeDescription')}
-                  />
-                  <Setting
-                    value={turnOnExternalNameSources}
-                    setValue={setTurnOnExternalNameSources}
-                    title={t('externalNameSourcesSetting')}
-                    description={t('externalNameSourcesSettingDescription')}
-                  />
-                  {isSocialLoginFlow && (
-                    <>
-                      <MetametricsToggle
-                        dataCollectionForMarketing={dataCollectionForMarketing}
-                        setDataCollectionForMarketing={
-                          handleDataCollectionForMarketing
-                        }
-                        fromDefaultSettings
+                  {!isBasicFunctionalityConsolidationEnabled && (
+                    <Box
+                      data-testid="legacy-basic-functionality-settings"
+                      flexDirection={BoxFlexDirection.Column}
+                    >
+                      <Setting
+                        value={turnOnTokenDetection}
+                        setValue={setTurnOnTokenDetection}
+                        title={t('turnOnTokenDetection')}
+                        description={t('useTokenDetectionPrivacyDesc')}
                       />
-                      <DeleteMetaMetricsDataButton defaultPrivacySettings />
-                    </>
+                      <Setting
+                        value={isTransactionSimulationsEnabled}
+                        setValue={setTransactionSimulationsEnabled}
+                        title={t('simulationsSettingSubHeader')}
+                        description={t('simulationsSettingDescription', [
+                          <a
+                            key="learn_more_link"
+                            href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('learnMoreUpperCase')}
+                          </a>,
+                        ])}
+                      />
+                      <Setting
+                        value={turnOnCurrencyRateCheck}
+                        setValue={setTurnOnCurrencyRateCheck}
+                        title={t('currencyRateCheckToggle')}
+                        dataTestId="currency-rate-check-toggle"
+                        description={t('currencyRateCheckToggleDescription', [
+                          <a
+                            key="coingecko_link"
+                            href={COINGECKO_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('coingecko')}
+                          </a>,
+                          <a
+                            key="cryptocompare_link"
+                            href={CRYPTOCOMPARE_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('cryptoCompare')}
+                          </a>,
+                          <a
+                            key="privacy_policy_link"
+                            href={PRIVACY_POLICY_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('privacyMsg')}
+                          </a>,
+                        ])}
+                      />
+                      <Setting
+                        value={addressBarResolution}
+                        setValue={setAddressBarResolution}
+                        title={t('ensDomainsSettingTitle')}
+                        description={
+                          <>
+                            <Text
+                              variant={TextVariant.BodyMd}
+                              color={TextColor.TextAlternative}
+                            >
+                              {t('ensDomainsSettingDescriptionIntroduction')}
+                            </Text>
+                            <Box
+                              marginTop={4}
+                              marginBottom={4}
+                              className="pl-4"
+                              style={{ listStyleType: 'circle' }}
+                              asChild
+                            >
+                              <ul>
+                                <Text
+                                  variant={TextVariant.BodyMd}
+                                  asChild
+                                  color={TextColor.TextAlternative}
+                                >
+                                  <li>
+                                    {t('ensDomainsSettingDescriptionPart1')}
+                                  </li>
+                                </Text>
+                                <Text
+                                  variant={TextVariant.BodyMd}
+                                  asChild
+                                  color={TextColor.TextAlternative}
+                                >
+                                  <li>
+                                    {t('ensDomainsSettingDescriptionPart2')}
+                                  </li>
+                                </Text>
+                              </ul>
+                            </Box>
+                            <Text
+                              variant={TextVariant.BodyMd}
+                              color={TextColor.TextAlternative}
+                            >
+                              {t('ensDomainsSettingDescriptionOutroduction')}
+                            </Text>
+                          </>
+                        }
+                      />
+                      <Setting
+                        value={isMultiAccountBalanceCheckerEnabled}
+                        setValue={setMultiAccountBalanceCheckerEnabled}
+                        title={t('useMultiAccountBalanceChecker')}
+                        description={t(
+                          'useMultiAccountBalanceCheckerSettingDescription',
+                        )}
+                      />
+                      <Setting
+                        value={turnOn4ByteResolution}
+                        setValue={setTurnOn4ByteResolution}
+                        title={t('use4ByteResolution')}
+                        description={t('toggleDecodeDescription')}
+                      />
+                      <Setting
+                        value={turnOnExternalNameSources}
+                        setValue={setTurnOnExternalNameSources}
+                        title={t('externalNameSourcesSetting')}
+                        description={t('externalNameSourcesSettingDescription')}
+                      />
+                    </Box>
+                  )}
+                  {isSocialLoginFlow && (
+                    <MetametricsToggle fromDefaultSettings />
                   )}
                 </>
               ) : null}
-            </div>
-          </div>
-        </div>
-      </div>
+              {selectedItem?.id === 'backup-and-sync' ? (
+                <BackupAndSyncToggle isOnboarding />
+              ) : null}
+              {selectedItem?.id === 'networks' ? (
+                <Setting
+                  title={t('onboardingAdvancedPrivacyNetworkTitle')}
+                  showToggle={false}
+                  enableMarginBottom={false}
+                  description={
+                    <>
+                      {t('onboardingAdvancedPrivacyNetworkDescription', [
+                        <a
+                          href="https://metamask.com/privacy-notice"
+                          key="privacy-policy-link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t('privacyMsg')}
+                        </a>,
+                        <a
+                          href={ZENDESK_URLS.ADD_SOLANA_ACCOUNTS}
+                          key="add-solana-accounts-link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {t(
+                            'onboardingAdvancedPrivacyNetworkDescriptionCallToAction',
+                          )}
+                        </a>,
+                      ])}
+
+                      <Box paddingTop={4}>
+                        <Box flexDirection={BoxFlexDirection.Column} gap={5}>
+                          {Object.values(networkConfigurations)
+                            .filter(
+                              ({ chainId }) => !TEST_CHAINS.includes(chainId),
+                            )
+                            .map((network) => (
+                              <Box
+                                asChild
+                                key={network.chainId}
+                                className="privacy-settings__customizable-network w-full border-0 bg-transparent p-0 text-left"
+                              >
+                                <button
+                                  type="button"
+                                  aria-label={network.name}
+                                  onClick={() => {
+                                    dispatch(
+                                      setEditedNetwork({
+                                        chainId: network.chainId,
+                                      }),
+                                    );
+                                    dispatch(toggleNetworkMenu());
+                                  }}
+                                >
+                                  <Box
+                                    flexDirection={BoxFlexDirection.Row}
+                                    alignItems={BoxAlignItems.Center}
+                                    justifyContent={BoxJustifyContent.Between}
+                                    className="w-full"
+                                  >
+                                    <Box
+                                      flexDirection={BoxFlexDirection.Row}
+                                      alignItems={BoxAlignItems.Center}
+                                    >
+                                      <AvatarNetwork
+                                        src={
+                                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                            network.chainId
+                                          ]
+                                        }
+                                        name={network.name}
+                                      />
+                                      <Box className="text-left" marginLeft={3}>
+                                        <Text
+                                          variant={TextVariant.BodyMd}
+                                          fontWeight={FontWeight.Medium}
+                                        >
+                                          {network.name}
+                                        </Text>
+                                        <Text
+                                          variant={TextVariant.BodyMd}
+                                          color={TextColor.TextAlternative}
+                                        >
+                                          {
+                                            // Get just the protocol + domain, not the infura key in path
+                                            new URL(
+                                              network?.rpcEndpoints[
+                                                network?.defaultRpcEndpointIndex
+                                              ]?.url,
+                                            )?.origin
+                                          }
+                                        </Text>
+                                      </Box>
+                                    </Box>
+                                    <Icon
+                                      name={IconName.ArrowRight}
+                                      size={IconSize.Md}
+                                      color={IconColor.IconDefault}
+                                      aria-hidden
+                                    />
+                                  </Box>
+                                </button>
+                              </Box>
+                            ))}
+                          <TextButton
+                            onClick={() => {
+                              dispatch(
+                                toggleNetworkMenu({
+                                  isAddingNewNetwork: true,
+                                }),
+                              );
+                            }}
+                            className="justify-start flex"
+                          >
+                            <Box
+                              flexDirection={BoxFlexDirection.Row}
+                              alignItems={BoxAlignItems.Center}
+                            >
+                              <Icon name={IconName.Add} className="mr-3" />
+                              <Text>{t('addANetwork')}</Text>
+                            </Box>
+                          </TextButton>
+                        </Box>
+                      </Box>
+                    </>
+                  }
+                />
+              ) : null}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 }

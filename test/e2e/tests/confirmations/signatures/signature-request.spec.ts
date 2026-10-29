@@ -1,14 +1,15 @@
 import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   WINDOW_TITLES,
 } from '../../../constants';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
+import { SIGN_TYPED_DATA_EXPECTED } from './sign-typed-data-expected';
 
 const signatureRequestType = {
   signTypedData: 'Sign Typed Data',
@@ -34,7 +35,7 @@ describe('Sign Typed Data Signature Request', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
@@ -42,7 +43,7 @@ describe('Sign Typed Data Signature Request', function () {
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
           const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
@@ -82,14 +83,14 @@ describe('Sign Typed Data Signature Request', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
@@ -133,17 +134,23 @@ async function triggerSignatureRequest(driver: Driver, type: string) {
     case signatureRequestType.signTypedData:
       await testDapp.clickSignTypedData();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await confirmation.verifyConfirmationHeadingTitle();
+      await confirmation.verifySignatureHeadingTitle(
+        SIGN_TYPED_DATA_EXPECTED.heading,
+      );
       break;
     case signatureRequestType.signTypedDataV3:
       await testDapp.clickSignTypedDatav3();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await confirmation.verifyConfirmationHeadingTitle();
+      await confirmation.verifySignatureHeadingTitle(
+        SIGN_TYPED_DATA_EXPECTED.heading,
+      );
       break;
     case signatureRequestType.signTypedDataV4:
       await testDapp.clickSignTypedDatav4();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await confirmation.verifyConfirmationHeadingTitle();
+      await confirmation.verifySignatureHeadingTitle(
+        SIGN_TYPED_DATA_EXPECTED.heading,
+      );
       break;
     default:
       throw new Error(`Unsupported signature type: ${type}`);
@@ -201,16 +208,20 @@ async function verifyAndAssertRedesignedSignTypedData(
   type: string,
 ) {
   const confirmation = new SignTypedData(driver);
-  await confirmation.verifyConfirmationHeadingTitle();
-  await confirmation.verifyOrigin();
+  await confirmation.verifySignatureHeadingTitle(
+    SIGN_TYPED_DATA_EXPECTED.heading,
+  );
+  await confirmation.verifyOrigin(SIGN_TYPED_DATA_EXPECTED.origin);
 
   switch (type) {
     case signatureRequestType.signTypedData:
-      await confirmation.verifySignTypedDataMessage();
+      await confirmation.verifySignTypedDataMessage(
+        SIGN_TYPED_DATA_EXPECTED.v1Message,
+      );
       break;
     case signatureRequestType.signTypedDataV3:
     case signatureRequestType.signTypedDataV4:
-      await confirmation.verifyContents();
+      await confirmation.verifyContents(SIGN_TYPED_DATA_EXPECTED.contents);
       break;
     default:
       throw new Error(`Unsupported signature type: ${type}`);
@@ -222,9 +233,9 @@ async function finalizeSignatureRequest(driver: Driver, action: string) {
   await confirmation.clickScrollToBottomButton();
 
   if (action === 'Confirm') {
-    await confirmation.clickFooterConfirmButton();
+    await confirmation.clickFooterButton({ button: 'confirm' });
   } else if (action === 'Reject') {
-    await confirmation.clickFooterCancelButton();
+    await confirmation.clickFooterButton({ button: 'cancel' });
   } else {
     throw new Error(`Unsupported action: ${action}`);
   }

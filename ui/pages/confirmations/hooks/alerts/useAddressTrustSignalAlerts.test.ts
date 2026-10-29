@@ -15,15 +15,6 @@ import { RowAlertKey } from '../../../../components/app/confirm/info/row/constan
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useAddressTrustSignalAlerts } from './useAddressTrustSignalAlerts';
 
-jest.mock('../../../../hooks/useTrustSignals', () => ({
-  useTrustSignal: jest.fn(),
-  TrustSignalDisplayState: {
-    Malicious: 'malicious',
-    Warning: 'warning',
-    Unknown: 'unknown',
-  },
-}));
-
 jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
   isSecurityAlertsAPIEnabled: jest.fn(),
 }));
@@ -32,9 +23,18 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(() => (key: string) => key),
 }));
 
-const mockUseTrustSignal = jest.requireMock(
+jest.mock('../../../../hooks/useTrustSignals', () => ({
+  useTrustSignals: jest.fn(),
+  TrustSignalDisplayState: {
+    Malicious: 'malicious',
+    Warning: 'warning',
+    Unknown: 'unknown',
+  },
+}));
+
+const mockUseTrustSignals = jest.requireMock(
   '../../../../hooks/useTrustSignals',
-).useTrustSignal;
+).useTrustSignals;
 const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
   '../../../../../app/scripts/lib/ppom/security-alerts-api',
 ).isSecurityAlertsAPIEnabled;
@@ -48,8 +48,8 @@ const expectedMaliciousAlert = {
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
   key: 'trustSignalMalicious',
-  message: 'alertMessageAddressTrustSignalMalicious',
-  reason: 'nameModalTitleMalicious',
+  message: 'alertMessageAddressTrustSignalMaliciousWithAddress',
+  reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
 
@@ -58,8 +58,8 @@ const expectedWarningAlert = {
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
   key: 'trustSignalWarning',
-  message: 'alertMessageAddressTrustSignal',
-  reason: 'nameModalTitleWarning',
+  message: 'alertMessageAddressTrustSignalWarningWithAddress',
+  reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
 
@@ -71,9 +71,11 @@ describe('useTrustSignalAlerts', () => {
 
   it('returns an empty array when security alerts API is disabled', () => {
     mockIsSecurityAlertsAPIEnabled.mockReturnValue(false);
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Malicious,
-    });
+    mockUseTrustSignals.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Malicious,
+      },
+    ]);
 
     const currentConfirmation = genUnapprovedContractInteractionConfirmation({
       chainId: CHAIN_IDS.GOERLI,
@@ -89,10 +91,49 @@ describe('useTrustSignalAlerts', () => {
   });
 
   describe('transaction confirmations', () => {
+    it('returns an indexed alert only for the malicious nested transaction', () => {
+      mockUseTrustSignals.mockReturnValue([
+        { state: TrustSignalDisplayState.Unknown },
+        { state: TrustSignalDisplayState.Unknown },
+        { state: TrustSignalDisplayState.Unknown },
+        { state: TrustSignalDisplayState.Malicious },
+      ]);
+
+      const baseConfirmation = genUnapprovedContractInteractionConfirmation({
+        chainId: CHAIN_IDS.GOERLI,
+      }) as TransactionMeta;
+      const currentConfirmation: TransactionMeta = {
+        ...baseConfirmation,
+        txParams: { ...baseConfirmation.txParams, to: SAFE_ADDRESS },
+        nestedTransactions: [
+          { to: SAFE_ADDRESS },
+          { to: WARNING_ADDRESS },
+          { to: MALICIOUS_ADDRESS },
+        ],
+      };
+
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useAddressTrustSignalAlerts(),
+        getMockConfirmStateForTransaction(currentConfirmation),
+      );
+
+      expect(result.current).toEqual([
+        {
+          ...expectedMaliciousAlert,
+          field: `${RowAlertKey.InteractingWith}-2`,
+          key: 'trustSignalMalicious-2',
+          message: 'alertMessageNestedAddressTrustSignalMaliciousWithAddress',
+          reason: 'alertReasonNestedAddressTrustSignalMalicious',
+        },
+      ]);
+    });
+
     it('returns malicious alert for transaction with malicious to address', () => {
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-      });
+      mockUseTrustSignals.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Malicious,
+        },
+      ]);
 
       const contractInteraction = genUnapprovedContractInteractionConfirmation({
         chainId: CHAIN_IDS.GOERLI,
@@ -110,17 +151,58 @@ describe('useTrustSignalAlerts', () => {
       );
 
       expect(result.current).toEqual([expectedMaliciousAlert]);
-      expect(mockUseTrustSignal).toHaveBeenCalledWith(
-        MALICIOUS_ADDRESS,
-        NameType.ETHEREUM_ADDRESS,
-        CHAIN_IDS.GOERLI,
+      expect(mockUseTrustSignals).toHaveBeenCalledWith([
+        {
+          value: MALICIOUS_ADDRESS,
+          type: NameType.ETHEREUM_ADDRESS,
+          chainId: CHAIN_IDS.GOERLI,
+        },
+      ]);
+    });
+
+    it('uses the original address when the transaction is wrapped', () => {
+      mockUseTrustSignals.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Malicious,
+        },
+      ]);
+
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        chainId: CHAIN_IDS.GOERLI,
+      }) as TransactionMeta;
+      const currentConfirmation = {
+        ...contractInteraction,
+        txParams: {
+          ...contractInteraction.txParams,
+          to: SAFE_ADDRESS,
+        },
+        txParamsOriginal: {
+          ...contractInteraction.txParams,
+          to: MALICIOUS_ADDRESS,
+        },
+      } as TransactionMeta;
+
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useAddressTrustSignalAlerts(),
+        getMockConfirmStateForTransaction(currentConfirmation),
       );
+
+      expect(result.current).toEqual([expectedMaliciousAlert]);
+      expect(mockUseTrustSignals).toHaveBeenCalledWith([
+        {
+          value: MALICIOUS_ADDRESS,
+          type: NameType.ETHEREUM_ADDRESS,
+          chainId: CHAIN_IDS.GOERLI,
+        },
+      ]);
     });
 
     it('returns warning alert for transaction with warning to address', () => {
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Warning,
-      });
+      mockUseTrustSignals.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Warning,
+        },
+      ]);
 
       const contractInteraction = genUnapprovedContractInteractionConfirmation({
         chainId: CHAIN_IDS.GOERLI,
@@ -138,17 +220,21 @@ describe('useTrustSignalAlerts', () => {
       );
 
       expect(result.current).toEqual([expectedWarningAlert]);
-      expect(mockUseTrustSignal).toHaveBeenCalledWith(
-        WARNING_ADDRESS,
-        NameType.ETHEREUM_ADDRESS,
-        CHAIN_IDS.GOERLI,
-      );
+      expect(mockUseTrustSignals).toHaveBeenCalledWith([
+        {
+          value: WARNING_ADDRESS,
+          type: NameType.ETHEREUM_ADDRESS,
+          chainId: CHAIN_IDS.GOERLI,
+        },
+      ]);
     });
 
     it('returns empty array for transaction with safe to address', () => {
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Unknown,
-      });
+      mockUseTrustSignals.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Unknown,
+        },
+      ]);
 
       const contractInteraction = genUnapprovedContractInteractionConfirmation({
         chainId: CHAIN_IDS.GOERLI,
@@ -171,9 +257,11 @@ describe('useTrustSignalAlerts', () => {
 
   describe('signature confirmations', () => {
     it('returns malicious alert for signature with malicious verifying contract', () => {
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-      });
+      mockUseTrustSignals.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Malicious,
+        },
+      ]);
 
       const signatureRequest = {
         ...unapprovedPersonalSignMsg,
@@ -193,17 +281,21 @@ describe('useTrustSignalAlerts', () => {
       );
 
       expect(result.current).toEqual([expectedMaliciousAlert]);
-      expect(mockUseTrustSignal).toHaveBeenCalledWith(
-        MALICIOUS_ADDRESS,
-        NameType.ETHEREUM_ADDRESS,
-        CHAIN_IDS.GOERLI,
-      );
+      expect(mockUseTrustSignals).toHaveBeenCalledWith([
+        {
+          value: MALICIOUS_ADDRESS,
+          type: NameType.ETHEREUM_ADDRESS,
+          chainId: CHAIN_IDS.GOERLI,
+        },
+      ]);
     });
 
     it('returns warning alert for signature with warning verifying contract', () => {
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Warning,
-      });
+      mockUseTrustSignals.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Warning,
+        },
+      ]);
       const signatureRequest = {
         ...unapprovedPersonalSignMsg,
         msgParams: {
@@ -223,9 +315,11 @@ describe('useTrustSignalAlerts', () => {
     });
 
     it('returns empty array for signature without verifying contract', () => {
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Unknown,
-      });
+      mockUseTrustSignals.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Unknown,
+        },
+      ]);
       const signatureRequest = {
         ...unapprovedPersonalSignMsg,
         msgParams: {
@@ -241,17 +335,15 @@ describe('useTrustSignalAlerts', () => {
       );
       expect(result.current).toEqual([]);
       // Since there's no verifying contract, useTrustSignal should be called with empty string
-      expect(mockUseTrustSignal).toHaveBeenCalledWith(
-        '',
-        NameType.ETHEREUM_ADDRESS,
-        CHAIN_IDS.GOERLI,
-      );
+      expect(mockUseTrustSignals).toHaveBeenCalledWith([]);
     });
 
     it('handles malformed signature data gracefully', () => {
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Unknown,
-      });
+      mockUseTrustSignals.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Unknown,
+        },
+      ]);
       const signatureRequest = {
         ...unapprovedPersonalSignMsg,
         msgParams: {
@@ -265,11 +357,7 @@ describe('useTrustSignalAlerts', () => {
       );
       expect(result.current).toEqual([]);
       // Should call with empty string when parsing fails
-      expect(mockUseTrustSignal).toHaveBeenCalledWith(
-        '',
-        NameType.ETHEREUM_ADDRESS,
-        CHAIN_IDS.GOERLI,
-      );
+      expect(mockUseTrustSignals).toHaveBeenCalledWith([]);
     });
   });
 });

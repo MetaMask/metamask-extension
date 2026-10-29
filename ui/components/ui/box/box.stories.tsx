@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { ComponentStory, ComponentMeta } from '@storybook/react-webpack5';
 
 import {
   BlockSize,
@@ -19,8 +19,6 @@ import {
 import { Text } from '../../component-library';
 
 import Box from './box';
-
-import README from './README.mdx';
 
 const sizeControlOptions = [
   undefined,
@@ -43,11 +41,6 @@ const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 export default {
   title: 'Components/UI/Box (deprecated)',
   component: Box,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     children: {
       table: { category: 'children' },

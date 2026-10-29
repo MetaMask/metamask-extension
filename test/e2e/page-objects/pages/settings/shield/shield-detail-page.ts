@@ -1,9 +1,23 @@
-// ShieldDetailPage class for interacting with the Shield Detail page
 import { Driver } from '../../../../webdriver/driver';
 
+/**
+ * Transaction Shield membership detail: status, billing, manage plan.
+ *
+ * Screen: `#/settings/transaction-shield`, reached from
+ * `SettingsPage.goToTransactionShieldPage`.
+ * Owns: membership status/billing/payment assertions, cancel membership,
+ * manage-plan / payment-method entry, claims navigation, notification banner,
+ * and add-funds modal when shown.
+ * Boundaries: membership detail only. Plan selection belongs to
+ * `ShieldPlanPage`; claims list/form to `ShieldClaimsListPage` /
+ * `ShieldClaimPage`; crypto approve confirmation to
+ * `ShieldSubscriptionApprovePage`.
+ * Related: `SettingsPage`, `ShieldPlanPage`, `ShieldClaimsListPage`,
+ * `ShieldSubscriptionApprovePage`.
+ *
+ * @see ui/pages/shield/transaction-shield/transaction-shield.tsx
+ */
 export default class ShieldDetailPage {
-  private readonly driver: Driver;
-
   private readonly addFundsModal = '[data-testid="add-funds-modal"]';
 
   private readonly billingAccount =
@@ -13,9 +27,6 @@ export default class ShieldDetailPage {
     css: '[data-testid="shield-detail-billing-details-title"]',
     text,
   });
-
-  private readonly managePlanButton =
-    '[data-testid="shield-detail-manage-plan-button"]';
 
   private readonly cancelButton =
     '[data-testid="shield-tx-membership-cancel-button"]';
@@ -35,6 +46,11 @@ export default class ShieldDetailPage {
     css: '[data-testid="shield-detail-customer-id"]',
     text,
   });
+
+  private readonly driver: Driver;
+
+  private readonly managePlanButton =
+    '[data-testid="shield-detail-manage-plan-button"]';
 
   private readonly membershipErrorBanner =
     '[data-testid="membership-error-banner"]';
@@ -67,31 +83,35 @@ export default class ShieldDetailPage {
     tag: 'h4',
   };
 
+  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
+
+  private readonly paymentMethodButton =
+    '[data-testid="shield-detail-payment-method-button"]';
+
   private readonly paymentMethodElement = (text: string) => ({
     css: '[data-testid="shield-detail-payment-method"]',
     text,
   });
-
-  private readonly paymentMethodButton =
-    '[data-testid="shield-detail-payment-method-button"]';
 
   private readonly paymentMethodTokenButtonByText = (text: string) => ({
     css: '[data-testid="shield-payment-method-token-button"]',
     text,
   });
 
-  private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
-
-  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
-
   private readonly renewButton =
     '[data-testid="shield-tx-membership-uncancel-button"]';
+
+  private readonly renewButtonWhenCancelled =
+    '[data-testid="shield-detail-renew-button"]';
 
   private readonly resubscribeButton =
     '[data-testid="shield-detail-resubscribe-button"]';
 
-  private readonly renewButtonWhenCancelled =
-    '[data-testid="shield-detail-renew-button"]';
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
+  private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
 
   private readonly submitCaseButton =
     '[data-testid="shield-detail-submit-case-button"]';
@@ -109,108 +129,6 @@ export default class ShieldDetailPage {
   }
 
   /**
-   * Check if the Shield Detail page is loaded
-   */
-  async checkPageIsLoaded(): Promise<void> {
-    console.log('Checking Shield Detail page is loaded with selectors:', [
-      this.pageContainer,
-      this.membershipStatus,
-    ]);
-    await this.driver.waitForMultipleSelectors([
-      this.pageContainer,
-      this.membershipStatus,
-    ]);
-    console.log('Shield Detail page is loaded');
-  }
-
-  /**
-   * Check if membership status contains expected text
-   *
-   * @param expectedText - The expected text to verify
-   */
-  async checkMembershipStatus(expectedText: string): Promise<void> {
-    console.log(`Checking membership status contains: ${expectedText}`);
-    await this.driver.waitForSelector(
-      this.membershipStatusElement(expectedText),
-    );
-  }
-
-  /**
-   * Check if customer ID contains expected text
-   *
-   * @param expectedText - The expected text to verify
-   */
-  async checkCustomerId(expectedText: string): Promise<void> {
-    console.log(`Checking customer ID contains: ${expectedText}`);
-    await this.driver.waitForSelector(this.customerIdElement(expectedText));
-  }
-
-  /**
-   * Check if trial tag is displayed
-   */
-  async checkTrialTagDisplayed(): Promise<void> {
-    console.log('Checking trial tag is displayed');
-    await this.driver.waitForSelector(this.trialTag);
-  }
-
-  /**
-   * Check if paused tag is displayed
-   */
-  async checkPausedTagDisplayed(): Promise<void> {
-    console.log('Checking paused tag is displayed');
-    await this.driver.waitForSelector(this.pausedTag);
-  }
-
-  /**
-   * Click the View Full Benefits button
-   */
-  async clickViewBenefitsButton(): Promise<void> {
-    console.log('Clicking View Full Benefits button');
-    await this.driver.clickElement(this.viewBenefitsButton);
-  }
-
-  /**
-   * Click the Manage Plan button
-   */
-  async clickManagePlanButton(): Promise<void> {
-    console.log('Clicking Manage Plan button');
-    await this.driver.clickElement(this.managePlanButton);
-  }
-
-  /**
-   * Click the Submit Case button
-   */
-  async clickSubmitCaseButton(): Promise<void> {
-    console.log('Clicking Submit Case button');
-    await this.driver.clickElement(this.submitCaseButton);
-  }
-
-  /**
-   * Click the Resubscribe button (when cancelAtPeriodEnd is true)
-   */
-  async clickResubscribeButton(): Promise<void> {
-    console.log('Clicking Resubscribe button');
-    await this.driver.clickElement(this.resubscribeButton);
-  }
-
-  /**
-   * Click the Renew button (when subscription is fully cancelled)
-   * This navigates to the shield plan page
-   */
-  async clickRenewButtonWhenCancelled(): Promise<void> {
-    console.log('Clicking Renew button when subscription is cancelled');
-    await this.driver.clickElement(this.renewButtonWhenCancelled);
-  }
-
-  /**
-   * Click the Cancel Membership button
-   */
-  async clickCancelButton(): Promise<void> {
-    console.log('Clicking Cancel Membership button');
-    await this.driver.clickElement(this.cancelButton);
-  }
-
-  /**
    * Click the Cancel Membership button
    */
   async cancelSubscription(): Promise<void> {
@@ -219,22 +137,6 @@ export default class ShieldDetailPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.cancelMembershipButton,
     );
-  }
-
-  /**
-   * Click the Renew Membership button
-   */
-  async clickRenewButton(): Promise<void> {
-    console.log('Clicking Renew Membership button');
-    await this.driver.clickElement(this.renewButton);
-  }
-
-  /**
-   * Click the View Billing History button
-   */
-  async clickViewBillingHistoryButton(): Promise<void> {
-    console.log('Clicking View Billing History button');
-    await this.driver.clickElement(this.viewBillingHistoryButton);
   }
 
   /**
@@ -250,16 +152,6 @@ export default class ShieldDetailPage {
   }
 
   /**
-   * Check if next billing date contains expected text
-   *
-   * @param expectedText - The expected text to verify
-   */
-  async checkNextBillingDate(expectedText: string): Promise<void> {
-    console.log(`Checking next billing date contains: ${expectedText}`);
-    await this.driver.waitForSelector(this.nextBillingElement(expectedText));
-  }
-
-  /**
    * Check if charges contain expected text
    *
    * @param expectedText - The expected text to verify
@@ -270,13 +162,35 @@ export default class ShieldDetailPage {
   }
 
   /**
-   * Check if payment method contains expected text
+   * Check if customer ID contains expected text
    *
    * @param expectedText - The expected text to verify
    */
-  async checkPaymentMethod(expectedText: string): Promise<void> {
-    console.log(`Checking payment method contains: ${expectedText}`);
-    await this.driver.waitForSelector(this.paymentMethodElement(expectedText));
+  async checkCustomerId(expectedText: string): Promise<void> {
+    console.log(`Checking customer ID contains: ${expectedText}`);
+    await this.driver.waitForSelector(this.customerIdElement(expectedText));
+  }
+
+  /**
+   * Check if membership status contains expected text
+   *
+   * @param expectedText - The expected text to verify
+   */
+  async checkMembershipStatus(expectedText: string): Promise<void> {
+    console.log(`Checking membership status contains: ${expectedText}`);
+    await this.driver.waitForSelector(
+      this.membershipStatusElement(expectedText),
+    );
+  }
+
+  /**
+   * Check if next billing date contains expected text
+   *
+   * @param expectedText - The expected text to verify
+   */
+  async checkNextBillingDate(expectedText: string): Promise<void> {
+    console.log(`Checking next billing date contains: ${expectedText}`);
+    await this.driver.waitForSelector(this.nextBillingElement(expectedText));
   }
 
   /**
@@ -299,6 +213,135 @@ export default class ShieldDetailPage {
   async checkNotificationShieldBannerRemoved(): Promise<void> {
     console.log('Checking notification shield banner is removed');
     await this.driver.assertElementNotPresent(this.notificationShieldBanner);
+  }
+
+  /**
+   * Check if the Shield Detail page is loaded
+   */
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Checking Shield Detail page is loaded with selectors:', [
+      this.pageContainer,
+      this.membershipStatus,
+    ]);
+    await this.driver.waitForMultipleSelectors([
+      this.pageContainer,
+      this.membershipStatus,
+      this.settingsPage,
+    ]);
+    console.log('Shield Detail page is loaded');
+  }
+
+  /**
+   * Check if paused tag is displayed
+   */
+  async checkPausedTagDisplayed(): Promise<void> {
+    console.log('Checking paused tag is displayed');
+    await this.driver.waitForSelector(this.pausedTag);
+  }
+
+  /**
+   * Check if payment method contains expected text
+   *
+   * @param expectedText - The expected text to verify
+   */
+  async checkPaymentMethod(expectedText: string): Promise<void> {
+    console.log(`Checking payment method contains: ${expectedText}`);
+    await this.driver.waitForSelector(this.paymentMethodElement(expectedText));
+  }
+
+  /**
+   * Check if trial tag is displayed
+   */
+  async checkTrialTagDisplayed(): Promise<void> {
+    console.log('Checking trial tag is displayed');
+    await this.driver.waitForSelector(this.trialTag);
+  }
+
+  /**
+   * Click the Cancel Membership button
+   */
+  async clickCancelButton(): Promise<void> {
+    console.log('Clicking Cancel Membership button');
+    await this.driver.clickElement(this.cancelButton);
+  }
+
+  /**
+   * Click the Manage Plan button
+   */
+  async clickManagePlanButton(): Promise<void> {
+    console.log('Clicking Manage Plan button');
+    await this.driver.clickElement(this.managePlanButton);
+  }
+
+  /**
+   * Click on the payment method button to open the payment modal
+   */
+  async clickPaymentMethod(): Promise<void> {
+    console.log('Clicking on payment method button');
+    await this.driver.waitForSelector(this.paymentMethodButton);
+    await this.driver.clickElement(this.paymentMethodButton);
+    await this.driver.waitForSelector(this.shieldPaymentModal);
+  }
+
+  /**
+   * Click the Renew Membership button
+   */
+  async clickRenewButton(): Promise<void> {
+    console.log('Clicking Renew Membership button');
+    await this.driver.clickElement(this.renewButton);
+  }
+
+  /**
+   * Click the Renew button (when subscription is fully cancelled)
+   * This navigates to the shield plan page
+   */
+  async clickRenewButtonWhenCancelled(): Promise<void> {
+    console.log('Clicking Renew button when subscription is cancelled');
+    await this.driver.clickElement(this.renewButtonWhenCancelled);
+  }
+
+  /**
+   * Click the Resubscribe button (when cancelAtPeriodEnd is true)
+   */
+  async clickResubscribeButton(): Promise<void> {
+    console.log('Clicking Resubscribe button');
+    await this.driver.clickElement(this.resubscribeButton);
+  }
+
+  /**
+   * Click the Submit Case button
+   */
+  async clickSubmitCaseButton(): Promise<void> {
+    console.log('Clicking Submit Case button');
+    await this.driver.clickElement(this.submitCaseButton);
+  }
+
+  /**
+   * Click the View Full Benefits button
+   */
+  async clickViewBenefitsButton(): Promise<void> {
+    console.log('Clicking View Full Benefits button');
+    await this.driver.clickElement(this.viewBenefitsButton);
+  }
+
+  /**
+   * Click the View Billing History button
+   */
+  async clickViewBillingHistoryButton(): Promise<void> {
+    console.log('Clicking View Billing History button');
+    await this.driver.clickElement(this.viewBillingHistoryButton);
+  }
+
+  /**
+   * Select payment method token in the payment modal
+   *
+   * @param paymentMethodText - The full payment method text to select (e.g., 'Pay with USDT', 'Pay with USDC')
+   */
+  async selectPaymentMethodInModal(paymentMethodText: string): Promise<void> {
+    console.log(`Selecting payment method: ${paymentMethodText}`);
+    await this.driver.clickElement(
+      this.paymentMethodTokenButtonByText(paymentMethodText),
+    );
   }
 
   async validateShieldDetailPage(options?: {
@@ -333,27 +376,5 @@ export default class ShieldDetailPage {
     await this.checkCharges(charges);
 
     await this.checkPaymentMethod(paymentMethod);
-  }
-
-  /**
-   * Click on the payment method button to open the payment modal
-   */
-  async clickPaymentMethod(): Promise<void> {
-    console.log('Clicking on payment method button');
-    await this.driver.waitForSelector(this.paymentMethodButton);
-    await this.driver.clickElement(this.paymentMethodButton);
-    await this.driver.waitForSelector(this.shieldPaymentModal);
-  }
-
-  /**
-   * Select payment method token in the payment modal
-   *
-   * @param paymentMethodText - The full payment method text to select (e.g., 'Pay with USDT', 'Pay with USDC')
-   */
-  async selectPaymentMethodInModal(paymentMethodText: string): Promise<void> {
-    console.log(`Selecting payment method: ${paymentMethodText}`);
-    await this.driver.clickElement(
-      this.paymentMethodTokenButtonByText(paymentMethodText),
-    );
   }
 }

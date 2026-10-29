@@ -1,10 +1,12 @@
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { Box } from '@metamask/design-system-react';
 import React from 'react';
 import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
-import { Tag } from '../../../../component-library';
-import { ACCOUNT_TYPE_LABELS } from '../../constants';
+import { AssetInactiveBadge } from '../../asset-inactive-badge/asset-inactive-badge';
+import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
+import { StockBadge } from '../../stock-badge/stock-badge';
+import { SecurityBadge } from '../../../security-trust/security-trust-inline-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
@@ -12,20 +14,43 @@ type TokenCellTitleProps = {
 
 export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
-    const label = token.accountType
-      ? ACCOUNT_TYPE_LABELS[token.accountType]
-      : undefined;
+    const { isStockToken, isTokenTradingOpen } = useRWAToken();
+    const tokenIsStock = isStockToken(token);
+
     return (
-      <Box flexDirection={BoxFlexDirection.Row} className="min-w-0">
-        <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
-          <AssetCellTitle title={token.title} />
-          {label && <Tag label={label} />}
-        </Box>
+      <Box className="flex items-center gap-1 min-w-0">
+        <AssetCellTitle title={token.title} />
+        <SecurityBadge value={token.safetyResult} />
+        {token.tokenRequireActivate && <AssetInactiveBadge />}
+        {tokenIsStock && (
+          <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
+        )}
         {token.isStakeable && (
           <StakeableLink chainId={token.chainId} symbol={token.symbol} />
         )}
       </Box>
     );
   },
-  (prevProps, nextProps) => prevProps.token.title === nextProps.token.title, // Only rerender if the title changes
+  (prevProps, nextProps) =>
+    prevProps.token.title === nextProps.token.title &&
+    prevProps.token.rwaData?.instrumentType ===
+      nextProps.token.rwaData?.instrumentType &&
+    prevProps.token.rwaData?.market?.nextOpen ===
+      nextProps.token.rwaData?.market?.nextOpen &&
+    prevProps.token.rwaData?.market?.nextClose ===
+      nextProps.token.rwaData?.market?.nextClose &&
+    prevProps.token.rwaData?.nextPause?.start ===
+      nextProps.token.rwaData?.nextPause?.start &&
+    prevProps.token.rwaData?.nextPause?.end ===
+      nextProps.token.rwaData?.nextPause?.end &&
+    prevProps.token.rwaData?.offhours?.nextOpen ===
+      nextProps.token.rwaData?.offhours?.nextOpen &&
+    prevProps.token.rwaData?.offhours?.nextClose ===
+      nextProps.token.rwaData?.offhours?.nextClose &&
+    prevProps.token.address === nextProps.token.address &&
+    prevProps.token.chainId === nextProps.token.chainId &&
+    prevProps.token.symbol === nextProps.token.symbol &&
+    prevProps.token.tokenRequireActivate ===
+      nextProps.token.tokenRequireActivate &&
+    prevProps.token.safetyResult === nextProps.token.safetyResult,
 );

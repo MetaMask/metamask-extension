@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRampsController matches snapshot 1`] = `
+{
+  "addOrder": [Function],
+  "addPrecreatedOrder": [Function],
+  "countries": [],
+  "countriesError": null,
+  "countriesLoading": false,
+  "getBuyWidgetData": [Function],
+  "getOrderById": [Function],
+  "getOrderFromCallback": [Function],
+  "getQuotes": [Function],
+  "orders": [],
+  "paymentMethods": [],
+  "paymentMethodsError": null,
+  "paymentMethodsFetching": false,
+  "paymentMethodsLoading": false,
+  "paymentMethodsStatus": "idle",
+  "providers": [],
+  "providersError": null,
+  "providersLoading": true,
+  "refreshOrder": [Function],
+  "removeOrder": [Function],
+  "selectedPaymentMethod": null,
+  "selectedProvider": null,
+  "selectedToken": null,
+  "setSelectedPaymentMethod": [Function],
+  "setSelectedProvider": [Function],
+  "setSelectedToken": [Function],
+  "setUserRegion": [Function],
+  "tokens": {
+    "allTokens": [],
+    "topTokens": [],
+  },
+  "tokensError": null,
+  "tokensLoading": false,
+  "userRegion": {
+    "country": {
+      "currency": "USD",
+      "isoCode": "US",
+      "name": "United States",
+    },
+    "regionCode": "us-ca",
+  },
+}
+`;

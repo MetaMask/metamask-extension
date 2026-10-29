@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import type { Store } from 'redux';
 import { Hex, Json } from '@metamask/utils';
@@ -11,10 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
-import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import {
   addTransaction,
@@ -27,8 +24,8 @@ import {
 import {
   getInternalAccounts,
   getInternalAccountByAddress,
-  selectDefaultRpcEndpointByChainId,
 } from '../../selectors';
+import { selectDefaultRpcEndpointByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addPendingRevocation,
   checkDelegationDisabled,
@@ -73,7 +70,6 @@ jest.mock('../../../shared/lib/delegation', () => ({
 jest.mock('../../selectors', () => ({
   getInternalAccounts: jest.fn(),
   getInternalAccountByAddress: jest.fn(),
-  selectDefaultRpcEndpointByChainId: jest.fn(),
 }));
 
 // Mock useConfirmationNavigation hook
@@ -85,6 +81,10 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
     confirmations: mockConfirmations,
     navigateToId: mockNavigateToId,
   }),
+}));
+jest.mock('../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/networks'),
+  selectDefaultRpcEndpointByChainId: jest.fn(),
 }));
 
 const mockAddTransaction = addTransaction as jest.MockedFunction<
@@ -139,41 +139,40 @@ describe('useRevokeGatorPermissions', () => {
     '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
   const mockNetworkClientId = 'mock-network-client-id';
 
-  const mockGatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
-    {
-      permissionResponse: {
-        chainId: mockChainId,
-        from: mockSelectedAccountAddress,
-        // expiry: 1750291200,
-        permission: {
-          type: 'native-token-stream',
-          isAdjustmentAllowed: false,
-          data: {
-            maxAmount: '0x22b1c8c1227a0000',
-            initialAmount: '0x6f05b59d3b20000',
-            amountPerSecond: '0x6f05b59d3b20000',
-            startTime: 1747699200,
-            justification:
-              'This is a very important request for streaming allowance for some very important thing',
-          },
+  const mockGatorPermission: PermissionInfoWithMetadata = {
+    permissionResponse: {
+      chainId: mockChainId,
+      from: mockSelectedAccountAddress,
+      // expiry: 1750291200,
+      permission: {
+        type: 'native-token-stream',
+        isAdjustmentAllowed: false,
+        data: {
+          maxAmount: '0x22b1c8c1227a0000',
+          initialAmount: '0x6f05b59d3b20000',
+          amountPerSecond: '0x6f05b59d3b20000',
+          startTime: 1747699200,
+          justification:
+            'This is a very important request for streaming allowance for some very important thing',
         },
-        context: mockPermissionContext,
-        delegationManager: mockDelegationManagerAddress,
       },
-      siteOrigin: 'http://localhost:8000',
-    };
+      context: mockPermissionContext,
+      delegationManager: mockDelegationManagerAddress,
+    },
+    siteOrigin: 'http://localhost:8000',
+    status: 'Active',
+  };
 
-  const mockGatorPermissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[] =
-    [
-      mockGatorPermission,
-      {
-        ...mockGatorPermission,
-        permissionResponse: {
-          ...mockGatorPermission.permissionResponse,
-          context: mockPermissionContext2,
-        },
+  const mockGatorPermissions: PermissionInfoWithMetadata[] = [
+    mockGatorPermission,
+    {
+      ...mockGatorPermission,
+      permissionResponse: {
+        ...mockGatorPermission.permissionResponse,
+        context: mockPermissionContext2,
       },
-    ];
+    },
+  ];
 
   // Type the mock delegation to match what decodeDelegations returns from @metamask/delegation-core'
   const mockDelegation = {
@@ -306,7 +305,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -347,7 +346,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -371,7 +370,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -403,7 +402,9 @@ describe('useRevokeGatorPermissions', () => {
       };
 
       // Return undefined for the different address that doesn't exist
-      mockGetInternalAccountByAddress.mockReturnValue(undefined);
+      mockGetInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () =>
@@ -411,7 +412,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -450,7 +451,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -477,7 +478,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -500,7 +501,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -530,7 +531,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -556,7 +557,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -589,7 +590,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -623,7 +624,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -652,7 +653,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -678,7 +679,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -705,7 +706,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -729,7 +730,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -769,7 +770,9 @@ describe('useRevokeGatorPermissions', () => {
       };
 
       // Return undefined for the different address that doesn't exist
-      mockGetInternalAccountByAddress.mockReturnValue(undefined);
+      mockGetInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () =>
@@ -777,7 +780,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -807,7 +810,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -837,7 +840,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -861,7 +864,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -900,7 +903,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -923,7 +926,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -955,7 +958,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -983,7 +986,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -1008,7 +1011,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -1041,7 +1044,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },

@@ -1,4 +1,5 @@
 import type { Hex } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 export const PERPS_CURRENCY = 'usd';
 export const PERPS_MINIMUM_DEPOSIT = 0.01;
@@ -8,6 +9,7 @@ export const ARBITRUM_USDC = {
   decimals: 6,
   name: 'USD Coin',
   symbol: 'USDC',
+  chainId: CHAIN_IDS.ARBITRUM,
 };
 
 /**

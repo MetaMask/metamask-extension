@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getAllChainsToPoll,
@@ -10,11 +10,14 @@ import {
   setOpenSeaEnabled,
   setUseNftDetection,
 } from '../../../../../store/actions';
+import { SECOND } from '../../../../../../shared/constants/time';
+import { toast, ToastContent } from '../../../../ui/toast/toast';
 import { BannerAlert } from '../../../../component-library';
-import { setShowNftDetectionEnablementToast } from '../../../toast-master/utils';
+import { useDispatch } from '../../../../../store/hooks';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+const nftDetectionEnabledToastId = 'enabled-nft-auto-detection';
+const autoHideToastDelay = 5 * SECOND;
+
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -31,8 +34,16 @@ export default function NFTsDetectionNoticeNFTsTab() {
           dispatch(setOpenSeaEnabled(true));
         }
         dispatch(setUseNftDetection(true));
-        // Show toast
-        dispatch(setShowNftDetectionEnablementToast(true));
+        toast.success(
+          <ToastContent
+            dataTestId={nftDetectionEnabledToastId}
+            title={t('nftAutoDetectionEnabled')}
+          />,
+          {
+            id: nftDetectionEnabledToastId,
+            duration: autoHideToastDelay,
+          },
+        );
         // dispatch action to detect nfts
         dispatch(detectNfts(allChainIds));
       }}

@@ -1,12 +1,9 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { useSelector } from 'react-redux';
+import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
 import {
   HardwareTransportStates,
-  LEDGER_USB_VENDOR_ID,
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
@@ -22,7 +19,7 @@ import {
   getLedgerWebHidConnectedStatus,
   setLedgerWebHidConnectedStatus,
 } from '../../../../../ducks/app/app';
-import { getLedgerTransportType } from '../../../../../ducks/metamask/metamask';
+import { getLedgerTransportType } from '../../../../../ducks/metamask/base-selectors';
 import {
   FontWeight,
   TextAlign,
@@ -30,14 +27,17 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useLedgerConnection from '../../../hooks/useLedgerConnection';
+import { useDispatch } from '../../../../../store/hooks';
+import { isInE2eTest } from '../../../../../../shared/lib/environment';
+import { requestWebHidDevices } from '../../../../../contexts/hardware-wallets/webConnectionUtils';
+import { HardwareWalletType } from '../../../../../contexts/hardware-wallets/types';
 
-const LedgerInfo: React.FC = () => {
+const LedgerInfo = () => {
   const { isLedgerWallet } = useLedgerConnection();
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const inE2eTest =
-    process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
+  const inE2eTest = isInE2eTest();
   const ledgerWebHidConnectedStatus = useSelector(
     getLedgerWebHidConnectedStatus,
   );
@@ -78,8 +78,6 @@ const LedgerInfo: React.FC = () => {
           variant={ButtonVariant.Link}
           textAlign={TextAlign.Left}
           fontWeight={FontWeight.Normal}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             if (environmentTypeIsFullScreen) {
               window.location.reload();
@@ -97,25 +95,14 @@ const LedgerInfo: React.FC = () => {
             variant={ButtonVariant.Link}
             textAlign={TextAlign.Left}
             fontWeight={FontWeight.Normal}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
-                let connectedDevices: HIDDevice[] = [];
-                if (!inE2eTest) {
-                  connectedDevices = await window.navigator.hid.requestDevice({
-                    filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
-                  });
-                }
-                const webHidIsConnected =
-                  inE2eTest ||
-                  connectedDevices.some(
-                    (device) =>
-                      device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-                  );
+                const connectedDevices = inE2eTest
+                  ? []
+                  : await requestWebHidDevices(HardwareWalletType.Ledger);
                 dispatch(
                   setLedgerWebHidConnectedStatus(
-                    webHidIsConnected
+                    inE2eTest || connectedDevices.length > 0
                       ? WebHIDConnectedStatuses.connected
                       : WebHIDConnectedStatuses.notConnected,
                   ),

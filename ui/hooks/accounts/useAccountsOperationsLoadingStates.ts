@@ -1,8 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useMemo, useEffect } from 'react';
 import { AccountTreeController } from '@metamask/account-tree-controller';
 import { useI18nContext } from '../useI18nContext';
 import { forceUpdateMetamaskState } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
 
 type AppState = {
   metamask: AccountTreeController['state'];

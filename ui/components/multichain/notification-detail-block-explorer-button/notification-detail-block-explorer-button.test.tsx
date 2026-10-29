@@ -1,11 +1,28 @@
 import React from 'react';
 import { createMockNotificationERC20Sent } from '@metamask/notification-services-controller/notification-services/mocks';
-import { processNotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  isOnChainNotification,
+  isOnChainRawNotification,
+  processNotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { NotificationDetailBlockExplorerButton } from './notification-detail-block-explorer-button';
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockStore = configureStore();
 const store = mockStore({
@@ -13,10 +30,14 @@ const store = mockStore({
 });
 
 const mockNotification = processNotification(createMockNotificationERC20Sent());
+if (!isOnChainRawNotification(mockNotification)) {
+  throw new Error('Mock notification is not an on-chain notification');
+}
+
 if (
   'notification_type' in mockNotification &&
-  mockNotification.notification_type === 'on-chain' &&
-  mockNotification.payload?.tx_hash
+  isOnChainNotification(mockNotification) &&
+  mockNotification.payload.tx_hash
 ) {
   mockNotification.payload.tx_hash =
     '0xf8d58eb524e9ac1ba924599adef1df3b75a3dfa1de68d20918979934db4eb379';

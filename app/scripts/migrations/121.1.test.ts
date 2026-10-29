@@ -1,4 +1,3 @@
-import { AccountsControllerState } from '@metamask/accounts-controller';
 import { cloneDeep } from 'lodash';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { migrate, version } from './121.1';
@@ -12,7 +11,7 @@ global.sentry = {
 const oldVersion = 121;
 
 const mockInternalAccount = createMockInternalAccount();
-const mockAccountsControllerState: AccountsControllerState = {
+const mockAccountsControllerState = {
   internalAccounts: {
     accounts: {
       [mockInternalAccount.id]: mockInternalAccount,

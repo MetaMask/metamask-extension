@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import type { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
-  AccountsState,
+  type AccountsState,
   getMaybeSelectedInternalAccount,
-} from '../../selectors';
+} from '../../../shared/lib/selectors/accounts';
 import {
   HardwareConnectionPermissionState,
   HardwareWalletType,
@@ -18,7 +19,6 @@ import { ConnectionState } from './connectionState';
  */
 export type HardwareWalletState = {
   // Basic state
-  deviceId: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   connectionState: HardwareWalletConnectionState;
 
@@ -34,14 +34,58 @@ export type HardwareWalletState = {
 export type HardwareWalletRefs = {
   adapterRef: React.MutableRefObject<HardwareWalletAdapter | null>;
   abortControllerRef: React.MutableRefObject<AbortController | null>;
+  /**
+   * Stores the pending connection promise. When not null, a connection is in progress
+   * and concurrent callers should await this promise instead of starting a new connection.
+   */
+  connectingPromiseRef: React.MutableRefObject<Promise<HardwareWalletError | null> | null>;
+  /**
+   * Stores pending ensureDeviceReady promises keyed by a dedup key derived
+   * from requireBlindSigning and preflightMessageBytes. This prevents duplicate
+   * checks for the same option combination while allowing different option
+   * sets to run independently.
+   */
+  ensureDeviceReadyPromiseRef: React.MutableRefObject<
+    Map<string, Promise<HardwareWalletError | null>>
+  >;
+  /**
+   * Flag to prevent concurrent connection attempts.
+   * Used to synchronously check-and-set before any async work.
+   */
   isConnectingRef: React.MutableRefObject<boolean>;
   hasAutoConnectedRef: React.MutableRefObject<boolean>;
   lastConnectedAccountRef: React.MutableRefObject<string | null>;
+  isEnsuringDeviceReadyRef: React.MutableRefObject<boolean>;
   currentConnectionIdRef: React.MutableRefObject<number | null>;
-  connectRef: React.MutableRefObject<(() => Promise<void>) | null>;
-  deviceIdRef: React.MutableRefObject<string | null>;
+  connectRef: React.MutableRefObject<
+    (() => Promise<HardwareWalletError | null>) | null
+  >;
   walletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
   previousWalletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
+  /**
+   * WORKAROUND: Trezor-specific flag indicating that a hardware wallet signing
+   * operation is in flight.
+   *
+   * The Trezor Connect SDK (running in the offscreen document) closes its
+   * WebUSB transport after signing, which fires a native `navigator.usb`
+   * disconnect event. This event is structurally identical to a physical
+   * unplug — `navigator.usb.getDevices()` already reflects the device as
+   * gone, so re-enumeration cannot distinguish the two cases.
+   *
+   * When this flag is true, the native WebUSB disconnect handler in
+   * `useHardwareWalletAutoConnect` skips teardown. Real physical disconnects
+   * during signing will cause the signing operation itself to fail, which
+   * the tracker (`useHwSignTracker` in batch mode) handles via
+   * `TransactionFailed`.
+   *
+   * This flag is set by the bridge signing page
+   * (`hardware-wallet-signatures.tsx`) for the duration between submission
+   * and the state machine reaching a terminal state.
+   *
+   * TODO: Remove if the Trezor Connect SDK adds a way to suppress or
+   * differentiate its session-close disconnect from physical unplug.
+   */
+  isSigningInProgressRef: React.MutableRefObject<boolean>;
 };
 
 /**
@@ -63,7 +107,6 @@ export const useHardwareWalletStateManager = () => {
   const accountAddress = accountInfo.address;
 
   // State declarations
-  const [deviceId, setDeviceId] = useState<string | null>(null);
   const [
     hardwareConnectionPermissionState,
     setHardwareConnectionPermissionState,
@@ -76,29 +119,30 @@ export const useHardwareWalletStateManager = () => {
   // Ref declarations
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const connectingPromiseRef =
+    useRef<Promise<HardwareWalletError | null> | null>(null);
+  const ensureDeviceReadyPromiseRef = useRef<
+    Map<string, Promise<HardwareWalletError | null>>
+  >(new Map());
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
+  const isEnsuringDeviceReadyRef = useRef(false);
   const currentConnectionIdRef = useRef<number | null>(null);
-  const connectRef = useRef<(() => Promise<void>) | null>(null);
-  const deviceIdRef = useRef<string | null>(null);
+  const connectRef = useRef<(() => Promise<HardwareWalletError | null>) | null>(
+    null,
+  );
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
   const previousWalletTypeRef = useRef<HardwareWalletType | null>(null);
+  const isSigningInProgressRef = useRef(false);
 
-  // Sync deviceId with deviceIdRef
+  // Track previous wallet type for detecting wallet type changes (e.g., Trezor -> Ledger)
   useEffect(() => {
-    deviceIdRef.current = deviceId;
-  }, [deviceId]);
-
-  // Sync walletType with walletTypeRef
-  useEffect(() => {
-    // Keep the previous reference so we know when to reset event subscriptions (e.g Trezor -> Ledger).
     previousWalletTypeRef.current = walletTypeRef.current;
     walletTypeRef.current = walletType;
   }, [walletType]);
 
   const state: HardwareWalletState = {
-    deviceId,
     hardwareConnectionPermissionState,
     connectionState,
     walletType,
@@ -110,21 +154,23 @@ export const useHardwareWalletStateManager = () => {
     () => ({
       adapterRef,
       abortControllerRef,
+      connectingPromiseRef,
+      ensureDeviceReadyPromiseRef,
       isConnectingRef,
       hasAutoConnectedRef,
       lastConnectedAccountRef,
+      isEnsuringDeviceReadyRef,
       currentConnectionIdRef,
       connectRef,
-      deviceIdRef,
       walletTypeRef,
       previousWalletTypeRef,
+      isSigningInProgressRef,
     }),
     [],
   );
 
   const setters = useMemo(
     () => ({
-      setDeviceId,
       setHardwareConnectionPermissionState,
       setConnectionState,
       /**
@@ -151,11 +197,30 @@ export const useHardwareWalletStateManager = () => {
        * Resets connection-related refs to their initial state
        */
       resetConnectionRefs: () => {
-        isConnectingRef.current = false;
+        connectingPromiseRef.current = null;
+        ensureDeviceReadyPromiseRef.current.clear();
         currentConnectionIdRef.current = null;
+        isConnectingRef.current = false;
+        isSigningInProgressRef.current = false;
+      },
+      /**
+       * Resets auto-connect state, allowing auto-connect to run again
+       */
+      resetAutoConnectState: () => {
+        hasAutoConnectedRef.current = false;
+        lastConnectedAccountRef.current = null;
+      },
+      /**
+       * Marks auto-connect as completed for an account
+       *
+       * @param connectedAccountAddress - The account address that was auto-connected
+       */
+      setAutoConnected: (connectedAccountAddress: string | null) => {
+        hasAutoConnectedRef.current = true;
+        lastConnectedAccountRef.current = connectedAccountAddress;
       },
     }),
-    [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],
+    [setHardwareConnectionPermissionState, setConnectionState],
   );
 
   return {

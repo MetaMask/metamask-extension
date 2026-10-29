@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { AddMultichainAccount } from './add-multichain-account';
 import { AddMultichainAccountProps } from './add-multichain-account';
 
@@ -36,7 +36,6 @@ const Template: StoryFn<typeof AddMultichainAccount> = (
 );
 
 export const Default = Template.bind({});
-Default.storyName = 'Default';
 Default.parameters = {
   docs: {
     description: {

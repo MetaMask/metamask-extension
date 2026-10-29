@@ -55,6 +55,22 @@ export const STABLECOIN_ASSET_IDS = new Set(
       '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C', // USDT
     ].map((address) => toAssetId(address, CHAIN_IDS.ZKSYNC_ERA)),
     toAssetId('0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392', CHAIN_IDS.SEI), // USDC
+    ...[
+      '0x754704Bc059F8C67012fEd69BC8A327a5aafb603', // USDC
+    ].map((address) => toAssetId(address, CHAIN_IDS.MONAD)),
+    ...[
+      '0xb88339CB7199b77E23DB6E890353E22632Ba630f', // USDC
+      '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb', // USD₮0
+    ].map((address) => toAssetId(address, CHAIN_IDS.HYPE)),
+    toAssetId(
+      '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb',
+      CHAIN_IDS.MEGAETH_MAINNET,
+    ), // USDT0
+    toAssetId('0x3600000000000000000000000000000000000000', CHAIN_IDS.ARC), // USDC (ERC20)
+    ...[
+      '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34', // USDe
+      '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168', // USDG
+    ].map((address) => toAssetId(address, CHAIN_IDS.ROBINHOOD_CHAIN)),
   ]
     .filter((assetId) => assetId !== undefined)
     .map((assetId) => assetId.toLowerCase()),

@@ -3,13 +3,18 @@ import { screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { EthMethod } from '@metamask/keyring-api';
+import {
+  BtcMethod,
+  EthMethod,
+  SolMethod,
+  TrxAccountType,
+} from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import * as useMultichainSelectorHook from '../../../hooks/useMultichainSelector';
+import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import {
   TransactionActivityEmptyState,
   type TransactionActivityEmptyStateProps,
@@ -17,6 +22,16 @@ import {
 
 // Mock the useBridging hook
 jest.mock('../../../hooks/bridge/useBridging');
+
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  selectAccountGroupBalanceForEmptyState: jest.fn(),
+}));
+
+const mockSelectAccountGroupBalanceForEmptyState =
+  selectAccountGroupBalanceForEmptyState as jest.MockedFunction<
+    typeof selectAccountGroupBalanceForEmptyState
+  >;
 
 const createAccount = (
   overrides: Partial<InternalAccount> = {},
@@ -47,41 +62,37 @@ const mockAccount = createAccount();
 const createStateOverrides = (
   metamaskOverrides: Record<string, unknown> = {},
 ) => ({
-  metamask: {
-    ...mockState.metamask,
-    ...metamaskOverrides,
-  },
+  metamask: metamaskOverrides,
 });
-
-const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
-  createStateOverrides({
-    useExternalServices: true,
-    selectedNetworkClientId: 'goerli',
-    networkConfigurationsByChainId: {
-      ...mockState.metamask.networkConfigurationsByChainId,
-      '0x5': {
-        // Goerli testnet - not in allowed swaps chains
-        chainId: '0x5',
-        name: 'Goerli',
-        nativeCurrency: 'ETH',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            type: 'infura',
-            url: 'https://goerli.infura.io/v3/test',
-            networkClientId: 'goerli',
-          },
-        ],
-        blockExplorerUrls: [],
-      },
-    },
-  });
 
 const createStateWithoutExternalServices = (): ReturnType<
   typeof createStateOverrides
 > =>
   createStateOverrides({
     useExternalServices: false,
+  });
+
+const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
+  createStateOverrides({
+    useExternalServices: true,
+    selectedNetworkClientId: 'sepolia',
+    networkConfigurationsByChainId: {
+      ...mockState.metamask.networkConfigurationsByChainId,
+      '0xaa36a7': {
+        chainId: '0xaa36a7',
+        name: 'Sepolia',
+        nativeCurrency: 'ETH',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            type: 'infura',
+            url: 'https://sepolia.infura.io/v3/test',
+            networkClientId: 'sepolia',
+          },
+        ],
+        blockExplorerUrls: [],
+      },
+    },
   });
 
 const createValidSwapState = (): ReturnType<typeof createStateOverrides> =>
@@ -91,7 +102,9 @@ const createValidSwapState = (): ReturnType<typeof createStateOverrides> =>
   });
 
 const expectSwapButtonState = (enabled: boolean): HTMLElement => {
-  const swapButton = screen.getByRole('button', { name: 'Swap tokens' });
+  const swapButton = screen.getByRole('button', {
+    name: messages.swapTokens.message,
+  });
   if (enabled) {
     expect(swapButton).not.toBeDisabled();
   } else {
@@ -114,14 +127,6 @@ const setupMocks = (): {
     openBridgeExperience: mockOpenBridgeExperience,
   });
 
-  // Mock useMultichainSelector to return EVM network by default
-  jest
-    .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
-    .mockReturnValue({
-      chainId: '0x1', // Default to mainnet (EVM)
-      isEvmNetwork: true,
-    });
-
   return { mockOpenBridgeExperience, mockUseBridging };
 };
 
@@ -131,19 +136,37 @@ describe('TransactionActivityEmptyState', () => {
 
   beforeEach(() => {
     ({ mockOpenBridgeExperience } = setupMocks());
+    mockSelectAccountGroupBalanceForEmptyState.mockReturnValue(true);
   });
 
   const renderComponent = (
     props: Partial<TransactionActivityEmptyStateProps> = {},
-    stateOverrides = {},
+    stateOverrides: Record<string, unknown> = {},
+    account = mockAccount,
   ) => {
-    const store = configureMockStore(middleware)({
+    const state = {
       ...mockState,
       ...stateOverrides,
-    });
+      metamask: {
+        ...mockState.metamask,
+        ...(('metamask' in stateOverrides
+          ? stateOverrides.metamask
+          : {}) as Record<string, unknown>),
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          selectedAccount: account.id,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            [account.id]: account,
+          },
+        },
+      },
+    };
+
+    const store = configureMockStore(middleware)(state);
 
     return renderWithProvider(
-      <TransactionActivityEmptyState account={mockAccount} {...props} />,
+      <TransactionActivityEmptyState {...props} />,
       store,
     );
   };
@@ -153,11 +176,26 @@ describe('TransactionActivityEmptyState', () => {
     expect(screen.getByTestId('activity-tab-empty-state')).toBeInTheDocument();
   });
 
-  it('renders description text', () => {
+  it('renders swap description when the account has tokens', () => {
+    mockSelectAccountGroupBalanceForEmptyState.mockReturnValue(true);
     renderComponent();
     expect(
-      screen.getByText('Nothing to see yet. Swap your first token today.'),
+      screen.getByText(messages.activityEmptyDescription.message),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.activityEmptyNoFundsDescription.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders add funds description when the account has no tokens', () => {
+    mockSelectAccountGroupBalanceForEmptyState.mockReturnValue(false);
+    renderComponent();
+    expect(
+      screen.getByText(messages.activityEmptyNoFundsDescription.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.activityEmptyDescription.message),
+    ).not.toBeInTheDocument();
   });
 
   it('applies custom className', () => {
@@ -197,75 +235,55 @@ describe('TransactionActivityEmptyState', () => {
       methods: [EthMethod.SignTransaction, 'personal_sign'],
     });
 
-    // TODO: Our jest describe is typed as Mocha this should be fixed
-    (describe as unknown as jest.Describe).each<
-      [
-        string,
-        Partial<TransactionActivityEmptyStateProps>,
-        ReturnType<typeof createStateOverrides> | Record<string, never>,
-      ]
-    >([
-      [
-        'not a swaps chain',
-        { account: accountWithSigning },
-        createTestnetState(),
-      ],
-      [
-        'external services are disabled',
-        { account: accountWithSigning },
-        createStateWithoutExternalServices(),
-      ],
-      [
-        'account cannot sign transactions',
-        { account: accountWithoutSigning },
+    it('disables swap button when external services are disabled', () => {
+      renderComponent(
         {},
-      ],
-    ])(
-      'disables swap button when %s',
-      (
-        _condition: string,
-        props: Partial<TransactionActivityEmptyStateProps>,
-        stateOverrides:
-          | ReturnType<typeof createStateOverrides>
-          | Record<string, never>,
-      ) => {
-        it(`should disable swap button`, () => {
-          renderComponent(props, stateOverrides);
-          expectSwapButtonState(false);
-        });
-      },
-    );
+        createStateWithoutExternalServices(),
+        accountWithSigning,
+      );
+      expectSwapButtonState(false);
+    });
 
-    it('enables swap button when all conditions are met', () => {
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
-      const stateOverrides = createValidSwapState();
-      renderComponent(props, stateOverrides);
+    it('disables swap button when the account cannot sign transactions', () => {
+      renderComponent({}, {}, accountWithoutSigning);
+      expectSwapButtonState(false);
+    });
+
+    it('enables swap button for an EVM account that can sign', () => {
+      renderComponent({}, createValidSwapState(), accountWithSigning);
       expectSwapButtonState(true);
     });
 
-    it('enables swap button for Solana networks even when isSwapsChain is false', () => {
-      jest
-        .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
-        .mockReturnValue({
-          chainId: MultichainNetworks.SOLANA,
-          isEvmNetwork: false,
-        });
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
-      const stateOverrides = createTestnetState();
-      renderComponent(props, stateOverrides);
-      expectSwapButtonState(true); // Should be enabled due to Solana logic
+    it('enables swap button for a Solana account that can sign', () => {
+      renderComponent(
+        {},
+        createValidSwapState(),
+        createAccount({ methods: [SolMethod.SignTransaction] }),
+      );
+      expectSwapButtonState(true);
+    });
+
+    it('enables swap button for a Bitcoin account that can sign', () => {
+      renderComponent(
+        {},
+        createValidSwapState(),
+        createAccount({ methods: [BtcMethod.SignPsbt] }),
+      );
+      expectSwapButtonState(true);
+    });
+
+    it('enables swap button for a Tron account that can sign', () => {
+      renderComponent(
+        {},
+        createValidSwapState(),
+        createAccount({ type: TrxAccountType.Eoa, methods: [] }),
+      );
+      expectSwapButtonState(true);
     });
 
     it('calls openBridgeExperience when swap button is clicked', () => {
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
       const stateOverrides = createValidSwapState();
-      renderComponent(props, stateOverrides);
+      renderComponent({}, stateOverrides, accountWithSigning);
       const swapButton = expectSwapButtonState(true);
 
       fireEvent.click(swapButton);
@@ -273,6 +291,30 @@ describe('TransactionActivityEmptyState', () => {
         'Activity Tab Empty State',
         undefined, // No specific token
       );
+    });
+  });
+
+  describe('Add funds button functionality', () => {
+    beforeEach(() => {
+      mockSelectAccountGroupBalanceForEmptyState.mockReturnValue(false);
+    });
+
+    it('renders add funds button when the account has no tokens', () => {
+      renderComponent();
+      expect(
+        screen.getByRole('button', { name: messages.addFunds.message }),
+      ).toBeInTheDocument();
+    });
+
+    it('opens funding modal when add funds button is clicked', () => {
+      renderComponent();
+      fireEvent.click(
+        screen.getByRole('button', { name: messages.addFunds.message }),
+      );
+
+      expect(
+        screen.getByTestId('activity-tab-empty-state-funding-modal'),
+      ).toBeInTheDocument();
     });
   });
 });

@@ -12,6 +12,7 @@ import {
 } from '../../../../../../test/data/confirmations/contract-interaction';
 import { ApprovalType } from '@metamask/controller-utils';
 
+import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
 
 const CHAIN_ID_MOCK = '0x5';
@@ -32,7 +33,7 @@ const createMockState = (hasPaymentToken = true) => {
         [transaction.id]: {
           id: transaction.id,
           type: ApprovalType.Transaction,
-          time: transaction.time, // Required for sorting in oldestPendingConfirmationSelector
+          time: transaction.time, // Required for sorting in firstPendingConfirmationSelector
         },
       },
       transactions: [transaction],
@@ -117,6 +118,11 @@ export default Story;
 export const DefaultStory = () => <PayWithRow />;
 DefaultStory.storyName = 'Default';
 
+export const SmallStory = () => (
+  <PayWithRow variant={ConfirmInfoRowSize.Small} />
+);
+SmallStory.storyName = 'Small';
+
 export const SkeletonStory = () => <PayWithRowSkeleton />;
 SkeletonStory.storyName = 'Skeleton';
 
@@ -130,4 +136,4 @@ export const LoadingStory = () => {
     </Provider>
   );
 };
-LoadingStory.storyName = 'Loading (No Payment Token)';
+LoadingStory.storyName = 'Loading';

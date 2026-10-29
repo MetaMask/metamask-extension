@@ -33,6 +33,7 @@ import { addressInput } from './address-input';
 import { assetSelector } from './asset-selector';
 import { accountSelector } from './account-selector';
 import { dateTimePicker } from './date-time-picker';
+import { collapsibleSection } from './collapsible-section';
 
 export const COMPONENT_MAPPING = {
   AssetSelector: assetSelector,
@@ -70,6 +71,7 @@ export const COMPONENT_MAPPING = {
   Skeleton: skeleton,
   AccountSelector: accountSelector,
   DateTimePicker: dateTimePicker,
+  CollapsibleSection: collapsibleSection,
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

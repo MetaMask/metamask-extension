@@ -1,34 +1,36 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Add-network confirmation for `wallet_addEthereumChain` when the chain is new.
+ *
+ * Screen: `#/confirmation` with add-network info (title like "Add {name}"; not
+ * a dedicated networks hash route).
+ * Owns: approve/cancel footer, approve enabled check, page-loaded by network
+ * name, and opening/dismissing warning alerts via inline-alert.
+ * Boundaries: alert modal dismiss uses the shared alert button here; deeper
+ * alert assertions can use `AlertModal`. Updating an existing chain is
+ * `UpdateNetworkConfirmation`. Switching networks is
+ * `SwitchNetworkConfirmation`.
+ * Related: `UpdateNetworkConfirmation`, `AlertModal`.
+ *
+ * @see ui/pages/confirmations/external/add-ethereum-chain/add-ethereum-chain.tsx
+ * @see ui/pages/confirmations/confirm/confirm.tsx
+ */
 class AddNetworkConfirmation {
-  private readonly driver: Driver;
+  private readonly alertModalButton = { testId: 'alert-modal-button' };
 
   private readonly approveButton = { testId: 'confirm-footer-button' };
 
   private readonly cancelButton = { testId: 'confirm-footer-cancel-button' };
 
-  private readonly alertModalButton = { testId: 'alert-modal-button' };
+  private readonly driver: Driver;
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-confirmation-page',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  /**
-   * @param networkName - The name of the network to check for in the confirmation page
-   */
-  async checkPageIsLoaded(networkName: string): Promise<void> {
-    try {
-      await this.driver.waitForSelector({
-        text: `Add ${networkName}`,
-      });
-    } catch (e) {
-      console.log(
-        `Timeout while waiting for Add network ${networkName} confirmation page to be loaded`,
-        e,
-      );
-      throw e;
-    }
-    console.log(`Add network ${networkName} confirmation page is loaded`);
   }
 
   /**
@@ -64,6 +66,27 @@ class AddNetworkConfirmation {
     }
     console.log('Approve button is enabled');
     return true;
+  }
+
+  /**
+   * @param networkName - The name of the network to check for in the confirmation page
+   */
+  async checkPageIsLoaded(networkName: string): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        {
+          text: `Add ${networkName}`,
+        },
+      ]);
+    } catch (e) {
+      console.log(
+        `Timeout while waiting for Add network ${networkName} confirmation page to be loaded`,
+        e,
+      );
+      throw e;
+    }
+    console.log(`Add network ${networkName} confirmation page is loaded`);
   }
 
   async checkWarningMessageIsDisplayed(key: string, message: string) {

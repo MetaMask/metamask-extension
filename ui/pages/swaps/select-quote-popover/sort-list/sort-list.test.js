@@ -1,6 +1,6 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { fireEvent } from '../../../../../test/jest';
 import MockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import SortList from './sort-list';

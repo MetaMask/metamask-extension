@@ -1,24 +1,33 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import RestoreVaultPage from './restore-vault';
 
 const mockStore = configureStore([]);
 const store = mockStore({
+  confirmTransaction: {
+    txData: {},
+  },
   appState: {
     isLoading: false,
   },
   metamask: {
     isSignedIn: true,
     sessionData: undefined,
-  }
+  },
 });
 
 const meta: Meta<typeof RestoreVaultPage> = {
   title: 'Pages/Keychains/RestoreVaultPage',
   component: RestoreVaultPage,
-  decorators: [(Story) => <Provider store={store}><Story /></Provider>],
+  decorators: [
+    (Story) => (
+      <Provider store={store}>
+        <Story />
+      </Provider>
+    ),
+  ],
   argTypes: {
     createNewVaultAndRestore: { action: 'createNewVaultAndRestore' },
     leaveImportSeedScreenState: { action: 'leaveImportSeedScreenState' },

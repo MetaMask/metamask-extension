@@ -1,40 +1,34 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import NetworkManager from '../../page-objects/pages/network-manager';
+import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { mockTronApis } from './mocks/common-tron';
 
 describe('Check balance', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) =>
           mockTronApis(mockServer, true),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
-
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '0 TRX' });
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '0 TRX',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
@@ -42,28 +36,28 @@ describe('Check balance', function (this: Suite) {
   it('For a non 0 balance account - USD balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
-        const homePage = new NonEvmHomepage(driver);
-        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
-        await homePage.checkPageIsLoaded({ amount: '$10.18' });
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+
+        // TRX_BALANCE = 106072392 SUN = ~106.07 TRX * $0.29469 = ~$31.26
+        // Total Fiat = TRX $31.26, HTX DAO $5.30, USDT $2.80, USDD $0.29 = $39.65
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '$39.65',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
@@ -71,26 +65,24 @@ describe('Check balance', function (this: Suite) {
   it('For a non 0 balance account - TRX balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectTab('Popular');
-        await networkManager.selectNetworkByNameWithWait('Tron');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
 
-        const homePage = new NonEvmHomepage(driver);
-        // TRX_BALANCE = 6072392 SUN = ~6.07 TRX
-        await homePage.checkPageIsLoaded({ amount: '6.072 TRX' });
+        // TRX_BALANCE = 106072392 SUN = ~106.07 TRX
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '106.072 TRX',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });

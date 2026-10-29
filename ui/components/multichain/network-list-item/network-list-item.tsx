@@ -5,40 +5,34 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
-import { CaipChainId } from '@metamask/utils';
-import { useSelector } from 'react-redux';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  ButtonIcon as DsButtonIcon,
+  ButtonIconSize as DsButtonIconSize,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
-  IconColor,
-  FlexDirection,
   TextVariant,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../component-library';
+import { Box, SuccessPill, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors';
-import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { useIsNetworkGasSponsored } from '../../../hooks/useIsNetworkGasSponsored';
+import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
@@ -57,6 +51,7 @@ export const NetworkListItem = ({
   focus = true,
   onClick,
   onDeleteClick,
+  deleteMenuLabel = 'delete',
   onEditClick,
   onDiscoverClick,
   onRpcEndpointClick,
@@ -76,6 +71,7 @@ export const NetworkListItem = ({
   onClick: () => void;
   onRpcEndpointClick?: () => void;
   onDeleteClick?: () => void;
+  deleteMenuLabel?: 'disable' | 'delete';
   onEditClick?: () => void;
   onDiscoverClick?: () => void;
   focus?: boolean;
@@ -117,48 +113,26 @@ export const NetworkListItem = ({
     setIsMenuClosing(true);
   }, []);
 
-  // This selector provides the indication if the "Gas sponsored" label
-  // is enabled based on the remote feature flag.
-  const isGasFeesSponsoredNetworkEnabled = useSelector(
-    getGasFeesSponsoredNetworkEnabled,
-  );
-
-  // Check if a network has gas sponsorship enabled
-  const isNetworkGasSponsored = useCallback(
-    (networkChainId: string | undefined): boolean => {
-      if (!networkChainId) {
-        return false;
+  const handleMenuItemClick = useCallback(
+    (callback?: () => void) => {
+      if (!callback) {
+        return undefined;
       }
-
-      // Convert chainId to hex if it's in CAIP format, otherwise use as-is
-      let hexChainId: string;
-      try {
-        // Check if it's in CAIP format (contains ':')
-        if (networkChainId.includes(':')) {
-          hexChainId = convertCaipToHexChainId(networkChainId as CaipChainId);
-        } else {
-          // Already in hex format
-          hexChainId = networkChainId;
-        }
-      } catch (error) {
-        // If conversion fails, use the original chainId
-        hexChainId = networkChainId;
-      }
-
-      return Boolean(
-        isGasFeesSponsoredNetworkEnabled?.[
-          hexChainId as keyof typeof isGasFeesSponsoredNetworkEnabled
-        ],
-      );
+      return () => {
+        prepareMenuClose();
+        setNetworkOptionsMenuOpen(false);
+        setTimeout(() => setIsMenuClosing(false), 0);
+        callback();
+      };
     },
-    [isGasFeesSponsoredNetworkEnabled],
+    [prepareMenuClose],
   );
+
+  const { isNetworkGasSponsored } = useIsNetworkGasSponsored(chainId);
 
   const renderButton = useCallback(() => {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return onDeleteClick || onEditClick || onDiscoverClick ? (
-      <ButtonIcon
+      <DsButtonIcon
         iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
@@ -180,7 +154,7 @@ export const NetworkListItem = ({
             setIsMenuClosing(false);
           }
         }}
-        size={ButtonIconSize.Sm}
+        size={DsButtonIconSize.Md}
       />
     ) : null;
   }, [
@@ -197,11 +171,15 @@ export const NetworkListItem = ({
 
   // Safety: Reset closing flag whenever menu opens
   // (handles edge cases like rapid toggling)
-  useEffect(() => {
+  const [prevNetworkOptionsMenuOpen, setPrevNetworkOptionsMenuOpen] = useState(
+    networkOptionsMenuOpen,
+  );
+  if (networkOptionsMenuOpen !== prevNetworkOptionsMenuOpen) {
+    setPrevNetworkOptionsMenuOpen(networkOptionsMenuOpen);
     if (networkOptionsMenuOpen) {
       setIsMenuClosing(false);
     }
-  }, [networkOptionsMenuOpen]);
+  }
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -224,7 +202,7 @@ export const NetworkListItem = ({
       paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
       backgroundColor={
-        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
@@ -239,22 +217,15 @@ export const NetworkListItem = ({
       onClick={disabled ? undefined : onClick}
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
-      {selected && (
-        <Box
-          className="multichain-network-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
-        />
-      )}
       {isIconSrc(iconSrc) ? (
         <Icon name={iconSrc} size={iconSize as IconSize} />
       ) : (
         <AvatarNetwork
-          borderColor={BorderColor.backgroundDefault}
-          backgroundColor={getAvatarNetworkColor(name)}
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
+          className="rounded-md"
+          style={getAvatarNetworkStyle(name)}
         />
       )}
       <Box
@@ -268,7 +239,9 @@ export const NetworkListItem = ({
         <Box
           width={BlockSize.Full}
           display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
+          gap={2}
           data-testid={name}
         >
           <Tooltip
@@ -289,12 +262,13 @@ export const NetworkListItem = ({
               {name}
             </Text>
           </Tooltip>
+          {isNetworkGasSponsored && (
+            <SuccessPill
+              label={t('noNetworkFee')}
+              display={Display.InlineFlex}
+            />
+          )}
         </Box>
-        {isNetworkGasSponsored(chainId) && (
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {t('noNetworkFee')}
-          </Text>
-        )}
         {rpcEndpoint && (
           <Box
             className="multichain-network-list-item__rpc-endpoint"
@@ -317,8 +291,8 @@ export const NetworkListItem = ({
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
             <Icon
-              marginLeft={1}
-              color={IconColor.iconAlternative}
+              className="ml-1"
+              color={IconColor.IconAlternative}
               name={IconName.ArrowDown}
               size={IconSize.Xs}
             />
@@ -332,9 +306,10 @@ export const NetworkListItem = ({
             <NetworkListItemMenu
               anchorElement={networkListItemMenuElement}
               isOpen={networkOptionsMenuOpen}
-              onDeleteClick={onDeleteClick}
-              onEditClick={onEditClick}
-              onDiscoverClick={onDiscoverClick}
+              onDeleteClick={handleMenuItemClick(onDeleteClick)}
+              deleteMenuLabel={deleteMenuLabel}
+              onEditClick={handleMenuItemClick(onEditClick)}
+              onDiscoverClick={handleMenuItemClick(onDiscoverClick)}
               onClose={() => {
                 // When closing via click-outside: prepare close and update state
                 prepareMenuClose();
@@ -376,6 +351,10 @@ NetworkListItem.propTypes = {
    * Executes when the delete icon is clicked
    */
   onDeleteClick: PropTypes.func,
+  /**
+   * Locale key for the delete/disable menu item label
+   */
+  deleteMenuLabel: PropTypes.oneOf(['delete', 'disable']),
   /**
    * Executes when the edit icon is clicked
    */

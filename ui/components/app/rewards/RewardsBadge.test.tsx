@@ -1,8 +1,14 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { IconName } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useDispatch } from '../../../store/hooks';
 import { RewardsBadge } from './RewardsBadge';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 // Mock dependencies
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -163,6 +169,32 @@ describe('RewardsBadge', () => {
       const textElement = screen.getByTestId('rewards-points-balance-value');
       expect(textElement).toBeInTheDocument();
       expect(textElement).toHaveTextContent('2,500 points');
+    });
+  });
+
+  describe('startIconName prop', () => {
+    it('should render Icon instead of image when startIconName is provided', () => {
+      render(
+        <RewardsBadge
+          formattedPoints="1,000"
+          startIconName={IconName.Refresh}
+        />,
+      );
+
+      // Image should NOT be rendered when startIconName is set
+      expect(
+        screen.queryByAltText('Rewards Points Icon'),
+      ).not.toBeInTheDocument();
+      // Points text should still be visible
+      expect(
+        screen.getByTestId('rewards-points-balance-value'),
+      ).toHaveTextContent('1,000 points');
+    });
+
+    it('should render image when startIconName is not provided', () => {
+      render(<RewardsBadge formattedPoints="1,000" />);
+
+      expect(screen.getByAltText('Rewards Points Icon')).toBeInTheDocument();
     });
   });
 

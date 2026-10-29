@@ -2,26 +2,26 @@ name: Build storybook
 
 on:
   workflow_call:
-    secrets:
-      STORYBOOK_TOKEN:
-        required: true
 
 jobs:
   build-storybook:
     name: Build storybook
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
+    permissions:
+      id-token: write
+      contents: read
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
-      - name: Checkout and setup high risk environment
-        uses: MetaMask/action-checkout-and-setup@v1
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
-          is-high-risk-environment: true
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Build storybook
         run: yarn storybook:build
@@ -35,10 +35,20 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/storybook-build
           path: storybook-build
 
+      - name: Get token
+        id: token
+        if: ${{ env.BRANCH == 'main' }}
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/metamask-storybook
+          permissions: |
+            contents: write
+
       - name: Deploy storybook
-        if: ${{ env.BRANCH == 'main' && env.STORYBOOK_TOKEN }}
+        if: ${{ env.BRANCH == 'main' }}
         env:
-          STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
+          STORYBOOK_TOKEN: ${{ steps.token.outputs.token }}
         run: |
-          git remote add storybook "https://${STORYBOOK_TOKEN}@github.com/MetaMask/metamask-storybook.git"
+          git remote add storybook "https://x-access-token:${STORYBOOK_TOKEN}@github.com/MetaMask/metamask-storybook.git"
           yarn storybook:deploy

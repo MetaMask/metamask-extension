@@ -1,9 +1,11 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { fireEvent, createSwapsMockStore } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest';
 import { Slippage } from '../../../../shared/constants/swaps';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import TransactionSettings from './transaction-settings';
 
 jest.mock('react-redux', () => {
@@ -43,7 +45,7 @@ describe('TransactionSettings', () => {
     );
     expect(getByText('2%')).toBeInTheDocument();
     expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('custom')).toBeInTheDocument();
+    expect(getByText(messages.swapCustom.message)).toBeInTheDocument();
     expect(
       document.querySelector('.transaction-settings__button-group'),
     ).toMatchSnapshot();
@@ -104,5 +106,25 @@ describe('TransactionSettings', () => {
     fireEvent.change(input, { target: { value: 5 } });
     fireEvent.click(document);
     expect(input).toHaveAttribute('value', '5');
+    expect(input).toHaveAttribute('inputmode', 'decimal');
+  });
+
+  it('caps custom slippage at 100 on blur and displays feedback', () => {
+    const { getByTestId, getByText } = renderWithProvider(
+      <TransactionSettings {...createProps()} />,
+      store,
+    );
+    fireEvent.click(getByTestId('button-group__button2'));
+    const input = getByTestId('transaction-settings-custom-slippage');
+
+    fireEvent.change(input, { target: { value: '101' } });
+    expect(input).toHaveValue('101');
+
+    fireEvent.blur(input);
+
+    expect(getByText('100')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapSlippageCappedDescription.message),
+    ).toBeInTheDocument();
   });
 });

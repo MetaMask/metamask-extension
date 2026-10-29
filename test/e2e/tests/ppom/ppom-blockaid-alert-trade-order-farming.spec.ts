@@ -1,12 +1,22 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { WINDOW_TITLES } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
+import { login } from '../../page-objects/flows/login.flow';
+import {
+  PPOM_MOCK_ETH_BALANCE_DISPLAY,
+  PPOM_MOCK_ETH_BALANCE_HEX,
+  PPOM_MOCK_ETH_BALANCE_HUMAN,
+  SECURITY_ALERTS_PROD_API_BASE_URL,
+} from './constants';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 
 const CONTRACT_ADDRESS = {
@@ -107,7 +117,7 @@ async function mockSecurityAlertsRequest(server: MockttpServer): Promise<void> {
   };
 
   await server
-    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
+    .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x1`)
     .withJsonBodyIncluding(request)
     .thenJson(response.statusCode ?? 201, response.body);
 }
@@ -119,36 +129,56 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,
-          })
-          .withNetworkController({
-            selectedNetworkClientId: 'networkConfigurationId',
+            chainIds: [1],
           })
           .withEnabledNetworks({
             eip155: {
-              '0x539': true,
+              '0x1': true,
             },
           })
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+          .withAccountTracker({
+            accountsByChainId: {
+              '0x1': {
+                [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
+                  balance: PPOM_MOCK_ETH_BALANCE_HEX,
+                  stakedBalance: '0x0',
+                },
+              },
+            },
           })
-          // .withNetworkControllerOnMainnet()
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1/slip44:60': {
+                  amount: PPOM_MOCK_ETH_BALANCE_HUMAN,
+                },
+              },
+            },
+          })
           .build(),
+        unifiedEvmAccountsApiBalances: {
+          mainnetNativeEthHuman: PPOM_MOCK_ETH_BALANCE_HUMAN,
+        },
         testSpecificMock: mockInfura,
         title: this.test?.fullTitle(),
       },
 
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver, {
+          expectedBalance: PPOM_MOCK_ETH_BALANCE_DISPLAY,
+          waitForNonEvmAccounts: false,
+        });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();
 
-        const expectedTitle = 'This is a deceptive request';
+        const expectedTitle = 'High-risk transfer';
         const expectedDescription =
-          'If you approve this request, a third party known for scams will take all your assets.';
+          "You're sending assets to an address flagged by security partners. If this is a scam, your funds can't be recovered.";
 
         // Click TestDapp button to send JSON-RPC request
         await testDapp.clickMaliciousTradeOrderButton();

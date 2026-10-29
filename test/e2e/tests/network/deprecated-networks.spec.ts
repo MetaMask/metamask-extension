@@ -1,21 +1,27 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import DappBarNetworkSelectorPopover from '../../page-objects/pages/dialog/dapp-bar-network-selector-popover';
+import { login } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('Deprecated networks', function (this: Suite) {
   it('User should not find goerli network when clicking on the network selector', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         // Navigate to extension home screen
-        await loginWithBalanceValidation(driver);
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
         // Open the first dapp which starts on chain '0x539
         await driver.openNewPage(DAPP_URL);
         await driver.clickElement({
@@ -25,10 +31,7 @@ describe('Deprecated networks', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.openNewPage(
           `${driver.extensionUrl}/popup.html?activeTabOrigin=${DAPP_URL}`,
@@ -40,18 +43,11 @@ describe('Deprecated networks', function (this: Suite) {
           .window()
           .setRect({ width: 400, height: 600 });
 
-        await driver.clickElement('.multichain-connected-site-menu ');
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          tag: 'button',
-        });
+        await headerNavbar.openDappNetworkMenu();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkNetworkOptionIsDisplayed(
-          'Goerli',
-          false,
-        );
+        const dappNetworkPopover = new DappBarNetworkSelectorPopover(driver);
+        await dappNetworkPopover.checkPageIsLoaded();
+        await dappNetworkPopover.checkNetworkOptionIsDisplayed('Goerli', false);
       },
     );
   });

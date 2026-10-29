@@ -1,5 +1,4 @@
-import { readdirSync } from 'node:fs';
-import { parse, join, sep } from 'node:path';
+import { join, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
 
@@ -7,15 +6,6 @@ export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
 export type ManifestV3 = chrome.runtime.ManifestV3;
 export type EntryDescription = Exclude<EntryObject[string], string | string[]>;
-
-// HMR (Hot Module Reloading) can't be used until all circular dependencies in
-// the codebase are removed
-// See: https://github.com/MetaMask/metamask-extension/issues/22450
-// TODO: remove this variable when HMR is ready. The env var is for tests and
-// must also be removed everywhere.
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 
 /**
  * Target browsers
@@ -64,11 +54,45 @@ export const UI_DIR_RE = new RegExp(
 );
 
 /**
+ * Regular expression to match UI component source files, excluding test files,
+ * stories, container files, type declarations, mocks, and spec files.
+ * Used with `UI_DIR_RE` to scope thread-loader and React Compiler to UI components.
+ */
+export const UI_COMPONENT_RE = new RegExp(
+  `^(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
+  'u',
+);
+
+export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
+
+export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
+
+/**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`
  */
 export const noop = () => undefined;
+
+/**
+ * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
+ * filesystem cache.
+ *
+ * In the forked build path, the parent exits before `compiler.close()`
+ * completes so webpack can persist the cache in the background. During that
+ * handoff the parent can still forward shutdown signals to the child: Ctrl+C
+ * becomes 'SIGINT', and process managers or CI can send 'SIGTERM'. Node's
+ * default behavior would terminate the child and can leave the cache partially
+ * written.
+ *
+ * @param process - The process to install signal listeners on.
+ * @returns A cleanup function that removes the installed listeners.
+ */
+export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
+  const signals = ['SIGINT', 'SIGTERM'] as const;
+  signals.forEach((signal) => process.on(signal, noop));
+  return () => signals.forEach((signal) => process.off(signal, noop));
+}
 
 /**
  * @param filename
@@ -78,122 +102,46 @@ export const extensionToJs = (filename: string) =>
   filename.replace(/\.(ts|tsx|mjs)$/u, '.js');
 
 /**
- * Collects all entry files for use with webpack.
- *
- * TODO: move this logic into the ManifestPlugin
- *
- * @param manifest - Base manifest file
- * @param appRoot - Absolute directory to search for entry files listed in the
- * base manifest
- * @returns an `entry` object containing html and JS entry points for use with
- * webpack, and an array, `manifestScripts`, list of filepaths of all scripts
- * that were added to it.
- */
-export function collectEntries(manifest: Manifest, appRoot: string) {
-  const htmlPages = join(appRoot, 'html', 'pages');
-  const entry: EntryObject = {};
-  /**
-   * Scripts that must be self-contained and not split into chunks.
-   */
-  const selfContainedScripts: Set<string> = new Set([
-    // Snow shouldn't be chunked
-    'snow.prod',
-    'use-snow',
-    'bootstrap',
-  ]);
-
-  function addManifestScript(
-    filename: string,
-    opts?: Partial<EntryDescription>,
-  ) {
-    selfContainedScripts.add(filename);
-    entry[filename] = {
-      chunkLoading: false,
-      filename: extensionToJs(filename), // output filename with .js extension
-      import: join(appRoot, filename), // the path to the file to use as an entry
-      ...opts,
-    };
-  }
-
-  function addHtml(filename: string) {
-    const parsedFileName = parse(filename).name;
-    entry[parsedFileName] = join(htmlPages, filename);
-  }
-
-  // add content_scripts to entries
-  for (const contentScript of manifest.content_scripts ?? []) {
-    for (const script of contentScript.js ?? []) {
-      addManifestScript(script);
-    }
-  }
-
-  if (manifest.manifest_version === 2) {
-    if (manifest.background?.page) {
-      addHtml(manifest.background.page);
-    }
-    for (const resource of manifest.web_accessible_resources ?? []) {
-      if (resource.endsWith('.js')) {
-        addManifestScript(resource);
-      }
-    }
-    for (const script of manifest.background?.scripts ?? []) {
-      addManifestScript(script);
-    }
-  } else if (manifest.manifest_version === 3) {
-    if (manifest.background?.service_worker) {
-      addManifestScript(manifest.background.service_worker, {
-        chunkLoading: 'import-scripts',
-      });
-    }
-    for (const resource of manifest.web_accessible_resources ?? []) {
-      for (const filename of resource.resources) {
-        if (filename.endsWith('.js')) {
-          addManifestScript(filename);
-        }
-      }
-    }
-  }
-
-  for (const filename of readdirSync(htmlPages)) {
-    // ignore non-htm/html files
-    if (/\.html?$/iu.test(filename)) {
-      // ignore background.html for MV2 as it was already handled above.
-      // we also ignore it for MV3 as there is no background page.
-      if (filename === 'background.html') {
-        continue;
-      }
-      // ignore offscreen.html for MV2 extensions
-      if (manifest.manifest_version === 2 && filename === 'offscreen.html') {
-        continue;
-      }
-      addHtml(filename);
-    }
-  }
-
-  /**
-   * Ignore scripts that were found in the manifest, as these are only loaded by
-   * the browser extension platform itself.
-   *
-   * @param entrypoint - The entrypoint to check.
-   * @param entrypoint.name - The name of the entrypoint.
-   * @returns
-   */
-  function canBeChunked({ name }: { name?: string | null }): boolean {
-    return !name || !selfContainedScripts.has(name);
-  }
-  return { entry, canBeChunked };
-}
-
-/**
  * It gets minimizers for the webpack build.
+ *
+ * SWC mangling can still produce different `runtime.[contenthash].js` output
+ * across Linux rebuilds (short-name swaps such as `c`/`l`), even with
+ * TerserPlugin `parallel: false`. That breaks Firefox AMO reviewer `mtree`
+ * comparisons. Disabling mangling for the runtime chunk keeps it
+ * content-stable while leaving mangling ON for all other chunks.
  */
 export function getMinimizers() {
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
+  // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
+  const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [
     new TerserPlugin({
       // use SWC to minify (about 7x faster than Terser)
       minify: TerserPlugin.swcMinify,
-      // do not minify snow.
+      // terser-webpack-plugin defaults this to `true`, and since 5.6 it
+      // forwards it to `swc.minify()`, which our pinned `@swc/core` rejects as
+      // an unknown field. Earlier versions ignored it for `swcMinify`, so no
+      // comments were ever extracted here; `false` keeps that behavior.
+      extractComments: false,
+      parallel: false,
+      terserOptions: {
+        mangle: true,
+      },
+      // do not minify snow or the runtime chunk (handled below).
+      exclude: [/snow\.prod/u, runtimeChunkRe],
+    }),
+    new TerserPlugin({
+      // use SWC to minify (about 7x faster than Terser)
+      minify: TerserPlugin.swcMinify,
+      // see the note on the minimizer above
+      extractComments: false,
+      parallel: false,
+      terserOptions: {
+        // Disable mangling for the runtime chunk so AMO Linux rebuilds stay
+        // content-stable.
+        mangle: false,
+      },
+      include: runtimeChunkRe,
       exclude: /snow\.prod/u,
     }),
   ];

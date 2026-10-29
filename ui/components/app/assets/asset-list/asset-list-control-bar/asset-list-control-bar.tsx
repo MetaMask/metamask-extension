@@ -1,46 +1,34 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-  useMemo,
-  useCallback,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  isStrictHexString,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
-  getIsMultichainAccountsState2Enabled,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
-  getSelectedMultichainNetworkChainId,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../../../../selectors/multichain/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {
-  getAllNetworkConfigurationsByCaipChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
-  Icon,
-  IconName,
-  IconSize,
   Popover,
   PopoverPosition,
   Text,
@@ -57,64 +45,84 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  TEST_CHAINS,
-} from '../../../../../../shared/constants/network';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { useBoolean } from '../../../../../hooks/useBoolean';
+import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../../shared/constants/app';
-import NetworkFilter from '../network-filter';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
-  detectTokens,
+  refreshAssetsForSelectedAccount,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
-  showImportNftsModal,
-  showImportTokensModal,
-  showModal,
-  updateBalancesFoAccounts,
 } from '../../../../../store/actions';
+import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
 import {
   getMultichainIsEvm,
   getMultichainNetwork,
 } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
-import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  ASSETS_ROUTE,
+  IMPORT_NFTS_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
+} from '../../../../../helpers/constants/routes';
+import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
+import {
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
+import { useDispatch } from '../../../../../store/hooks';
+import { HomeNetworkFilterModal } from './home-network-filter-modal';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
-  showTokenFiatBalance?: boolean;
   showImportTokenButton?: boolean;
   showSortControl?: boolean;
+  onNetworkSelect?: (networks: string[]) => void;
+  /**
+   * When provided with `showImportTokenButton={false}`, shows the more-options
+   * menu containing only a "Refresh list" action that invokes this callback.
+   */
+  onRefresh?: () => void;
+  'data-testid'?: string;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
-  showTokenFiatBalance,
   showImportTokenButton = true,
   showSortControl = true,
+  onNetworkSelect,
+  onRefresh,
+  'data-testid': dataTestId,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const [sortReferenceElement, setSortReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const [importReferenceElement, setImportReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const setSortButtonRef = useCallback((node: HTMLButtonElement | null) => {
+    setSortReferenceElement(node);
+  }, []);
+  const setImportButtonRef = useCallback((node: HTMLButtonElement | null) => {
+    setImportReferenceElement(node);
+  }, []);
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -122,29 +130,46 @@ const AssetListControlBar = ({
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
+  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
+  const isEvmOnlySelectedAccountGroup = useSelector(
+    (state: MetaMaskReduxState) => {
+      const multichainAccountsState =
+        state as unknown as MultichainAccountsState;
+      const selectedAccountGroup = getSelectedAccountGroup(
+        multichainAccountsState,
+      );
+      const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+        multichainAccountsState,
+        selectedAccountGroup,
+      );
+
+      return (
+        selectedAccountGroupAccounts.length > 0 &&
+        selectedAccountGroupAccounts.every((account) =>
+          isEvmAccountType(account.type),
+        )
+      );
+    },
+  );
 
   const { collections } = useNftsCollections();
-
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
+  const selectedCaipChainIds = useSelector(selectEnabledNetworksAsCaipChainIds);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const [isNetworkFilterModalOpen, setIsNetworkFilterModalOpen] =
+    useState(false);
+  const { value: isNetworkSwitchPending, setValue: setIsNetworkSwitchPending } =
+    useBoolean();
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
-  const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
-    useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
-
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-  const { namespace } = parseCaipChainId(currentMultichainChainId);
+  const [isRefreshListPopoverOpen, setIsRefreshListPopoverOpen] =
+    useState(false);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -161,6 +186,8 @@ const AssetListControlBar = ({
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
+  const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
+  const networkButtonText = useNetworkFilterButtonLabel();
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -173,6 +200,13 @@ const AssetListControlBar = ({
     () => !shouldShowRefreshButtons && !useNftDetection,
     [shouldShowRefreshButtons, useNftDetection],
   );
+
+  useEffect(() => {
+    if (!onNetworkSelect) {
+      return;
+    }
+    onNetworkSelect(selectedCaipChainIds);
+  }, [onNetworkSelect, selectedCaipChainIds]);
 
   const isTestNetwork = useMemo(() => {
     return (TEST_CHAINS as string[]).includes(
@@ -218,10 +252,19 @@ const AssetListControlBar = ({
   ]);
 
   useEffect(() => {
-    if (!accountSupportsEnabledNetworks && totalEnabledNetworkCount > 0) {
+    if (
+      isEvmOnlySelectedAccountGroup &&
+      !accountSupportsEnabledNetworks &&
+      totalEnabledNetworkCount > 0
+    ) {
       dispatch(setEnabledAllPopularNetworks());
     }
-  }, [accountSupportsEnabledNetworks, totalEnabledNetworkCount, dispatch]);
+  }, [
+    accountSupportsEnabledNetworks,
+    dispatch,
+    isEvmOnlySelectedAccountGroup,
+    totalEnabledNetworkCount,
+  ]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
@@ -229,65 +272,97 @@ const AssetListControlBar = ({
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
   const toggleTokenSortPopover = () => {
-    setIsNetworkFilterPopoverOpen(false);
+    setIsNetworkFilterModalOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
   };
 
   const toggleImportTokensPopover = () => {
+    setIsNetworkFilterModalOpen(false);
     setIsTokenSortPopoverOpen(false);
-    setIsNetworkFilterPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsImportTokensPopoverOpen(!isImportTokensPopoverOpen);
   };
 
   const toggleImportNftPopover = () => {
+    setIsNetworkFilterModalOpen(false);
     setIsTokenSortPopoverOpen(false);
-    setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
     setIsImportNftPopoverOpen(!isImportNftPopoverOpen);
   };
 
-  const closePopover = () => {
+  const toggleRefreshListPopover = () => {
+    setIsNetworkFilterModalOpen(false);
     setIsTokenSortPopoverOpen(false);
-    setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(!isRefreshListPopoverOpen);
   };
 
-  const handleTokenImportModal = () => {
-    dispatch(showImportTokensModal());
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.TokenImportButtonClicked,
-      properties: {
-        location: 'HOME',
+  const closePopover = () => {
+    setIsNetworkFilterModalOpen(false);
+    setIsTokenSortPopoverOpen(false);
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
+  };
+
+  const handleNetworkFilterClick = () => {
+    setIsTokenSortPopoverOpen(false);
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
+    setIsRefreshListPopoverOpen(false);
+    setIsNetworkFilterModalOpen(!isNetworkFilterModalOpen);
+  };
+
+  const handleOpenTokenManagement = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TokenImportButtonClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'HOME',
+        })
+        .build(),
+    );
+    setIsTokenSortPopoverOpen(false);
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
+    navigate(TOKEN_MANAGEMENT_ROUTE, {
+      state: {
+        globalMenuTransition: 'forward',
       },
     });
-    closePopover();
-  };
+  }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {
-    dispatch(showImportNftsModal({}));
+    navigate(IMPORT_NFTS_ROUTE);
     closePopover();
   };
 
   const handleRefresh = () => {
-    dispatch(
-      updateBalancesFoAccounts(Object.keys(enabledNetworksByNamespace), false),
-    );
-    dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
+    if (selectedInternalAccount) {
+      dispatch(
+        refreshAssetsForSelectedAccount([selectedInternalAccount], {
+          chainIds: selectedCaipChainIds,
+          assetTypes: ['token', 'price', 'metadata'],
+        }),
+      );
+    }
+    closePopover();
+  };
+
+  const handleRefreshListOnly = () => {
+    onRefresh?.();
     closePopover();
   };
 
   const onEnableAutoDetect = () => {
-    navigate(SECURITY_ROUTE);
+    navigate(`${ASSETS_ROUTE}#autodetect-tokens`);
   };
-
-  const handleNetworkManager = useCallback(() => {
-    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-  }, [dispatch]);
 
   const handleNftRefresh = () => {
     if (isMainnet || isLineaMainnet) {
@@ -297,116 +372,64 @@ const AssetListControlBar = ({
     allNetworkClientIds.forEach((networkClientId) => {
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
+    closePopover();
   };
-  const networkButtonText = useMemo(() => {
-    if (currentNamespaceNetworkCount === 1) {
-      const chainId = Object.keys(enabledNetworksByNamespace)[0];
-      return isStrictHexString(chainId)
-        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
-        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
-    }
 
-    if (
-      namespace !== KnownCaipNamespace.Eip155 &&
-      currentNamespaceNetworkCount > 1
-    ) {
-      return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
-    }
-
-    // > 1 network selected, show "all networks"
-    if (currentNamespaceNetworkCount > 1) {
-      return t('allNetworks');
-    }
-
-    if (currentNamespaceNetworkCount === 0) {
-      return t('noNetworksSelected');
-    }
-
-    return t('popularNetworks');
-  }, [
-    enabledNetworksByNamespace,
-    currentNamespaceNetworkCount,
-    currentMultichainNetwork.network.nickname,
-    t,
-    allNetworks,
-    namespace,
-  ]);
-
-  const networkButtonTextEnabledAccountState2 = useMemo(() => {
-    if (totalEnabledNetworkCount === 1) {
-      const chainId = allEnabledNetworksForAllNamespaces[0];
-      const caipChainId = isStrictHexString(chainId)
-        ? toEvmCaipChainId(chainId)
-        : chainId;
-      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
-    }
-
-    // > 1 network selected, show "all networks"
-    if (totalEnabledNetworkCount > 1) {
-      return t('allPopularNetworks');
-    }
-
-    if (totalEnabledNetworkCount === 0) {
-      return t('noNetworksSelected');
-    }
-
-    return t('popularNetworks');
-  }, [
-    allEnabledNetworksForAllNamespaces,
-    totalEnabledNetworkCount,
-    t,
-    allCaipNetworks,
-  ]);
-
-  const singleNetworkIconUrl = useMemo(() => {
-    const chainIds = allEnabledNetworksForAllNamespaces;
-
-    if (totalEnabledNetworkCount !== 1) {
-      return undefined;
-    }
-
-    const singleEnabledChainId = chainIds[0];
-    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [allEnabledNetworksForAllNamespaces, totalEnabledNetworkCount]);
+  let networkFilterTextColor = TextColor.textDefault;
+  if (isNetworkSwitchPending) {
+    networkFilterTextColor = TextColor.transparent;
+  } else if (isSingleNetworkFilterSelected) {
+    networkFilterTextColor = TextColor.primaryDefault;
+  }
 
   return (
     <Box
       className="asset-list-control-bar"
       marginLeft={4}
       marginRight={4}
-      ref={popoverRef}
+      data-testid={dataTestId}
     >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <ButtonBase
           data-testid="sort-by-networks"
           variant={TextVariant.bodySmMedium}
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
-          onClick={handleNetworkManager}
+          onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Sm}
-          endIconName={IconName.ArrowDown}
+          loading={isNetworkSwitchPending}
+          disabled={isNetworkSwitchPending}
           backgroundColor={
-            isNetworkFilterPopoverOpen
+            isNetworkFilterModalOpen
               ? BackgroundColor.backgroundPressed
               : BackgroundColor.backgroundDefault
           }
-          color={TextColor.textDefault}
+          color={
+            isSingleNetworkFilterSelected
+              ? TextColor.primaryDefault
+              : TextColor.textDefault
+          }
           marginRight={isFullScreen ? 2 : null}
           borderColor={BorderColor.borderMuted}
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {singleNetworkIconUrl && (
-              <AvatarNetwork
-                name={currentMultichainNetwork.nickname}
-                src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Xs}
-                borderWidth={0}
+            {!isNetworkSwitchPending && (
+              <Icon
+                name={IconName.Filter}
+                size={IconSize.Md}
+                color={
+                  isSingleNetworkFilterSelected
+                    ? IconColor.PrimaryDefault
+                    : IconColor.IconDefault
+                }
               />
             )}
-            <Text variant={TextVariant.bodySmMedium} ellipsis>
-              {isMultichainAccountsState2Enabled
-                ? networkButtonTextEnabledAccountState2
-                : networkButtonText}
+            <Text
+              variant={TextVariant.bodySmMedium}
+              color={networkFilterTextColor}
+              ellipsis
+            >
+              {networkButtonText}
             </Text>
           </Box>
         </ButtonBase>
@@ -415,6 +438,7 @@ const AssetListControlBar = ({
           className="asset-list-control-bar__buttons"
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
+          alignItems={AlignItems.center}
         >
           {showSortControl && (
             <Tooltip
@@ -423,27 +447,25 @@ const AssetListControlBar = ({
               distance={20}
               disabled={isTokenSortPopoverOpen}
             >
-              <ButtonBase
+              <ButtonIcon
+                ref={setSortButtonRef}
                 data-testid="sort-by-popover-toggle"
-                className="asset-list-control-bar__button"
+                className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
+                  isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
+                } hover:bg-hover active:bg-pressed`}
                 onClick={toggleTokenSortPopover}
-                size={ButtonBaseSize.Sm}
-                startIconName={IconName.Filter}
-                startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                backgroundColor={
-                  isTokenSortPopoverOpen
-                    ? BackgroundColor.backgroundPressed
-                    : BackgroundColor.backgroundDefault
-                }
-                color={TextColor.textDefault}
-                marginRight={isFullScreen ? 2 : null}
+                size={ButtonIconSize.Sm}
+                iconName={IconName.ListArrow}
+                ariaLabel={t('sortBy')}
               />
             </Tooltip>
           )}
 
           {showImportTokenButton &&
-            (isEvm ? (
+            (isEvm || showTokensLinks ? (
+              // Tokens (EVM and non-EVM) and EVM NFT: overflow menu with Refresh list
               <ImportControl
+                ref={setImportButtonRef}
                 showTokensLinks={showTokensLinks}
                 onClick={
                   showTokensLinks
@@ -452,56 +474,45 @@ const AssetListControlBar = ({
                 }
               />
             ) : (
+              // Non-EVM NFT: no Refresh list
               <Tooltip
-                title={t('importTokensCamelCase')}
+                title={t('manageTokens')}
                 position="bottom"
                 distance={20}
               >
-                <ButtonBase
+                <ButtonIcon
+                  ref={setImportButtonRef}
                   data-testid="importTokens-button"
-                  className="asset-list-control-bar__button"
-                  onClick={handleTokenImportModal}
-                  size={ButtonBaseSize.Sm}
-                  startIconName={IconName.Add}
-                  startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                  backgroundColor={
-                    isTokenSortPopoverOpen
-                      ? BackgroundColor.backgroundPressed
-                      : BackgroundColor.backgroundDefault
-                  }
-                  color={TextColor.textDefault}
-                  marginRight={isFullScreen ? 2 : null}
+                  className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
+                  onClick={handleOpenTokenManagement}
+                  size={ButtonIconSize.Sm}
+                  iconName={IconName.MoreVertical}
+                  ariaLabel={t('manageTokens')}
                 />
               </Tooltip>
             ))}
+
+          {!showImportTokenButton && onRefresh ? (
+            <ImportControl
+              ref={setImportButtonRef}
+              showTokensLinks
+              onClick={toggleRefreshListPopover}
+            />
+          ) : null}
         </Box>
       </Box>
 
-      {/* Network Filter Popover */}
-      <Popover
-        onClickOutside={closePopover}
-        isOpen={isNetworkFilterPopoverOpen}
-        position={PopoverPosition.BottomStart}
-        referenceElement={popoverRef.current}
-        matchWidth={false}
-        style={{
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          minWidth: isFullScreen ? '250px' : '',
-        }}
-      >
-        <NetworkFilter
-          handleClose={closePopover}
-          showTokenFiatBalance={showTokenFiatBalance}
-        />
-      </Popover>
+      <HomeNetworkFilterModal
+        isOpen={isNetworkFilterModalOpen}
+        onClose={closePopover}
+        onPendingChange={setIsNetworkSwitchPending}
+      />
+
       <Popover
         onClickOutside={closePopover}
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={popoverRef.current}
+        referenceElement={sortReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -519,7 +530,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={popoverRef.current}
+        referenceElement={importReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -530,18 +541,15 @@ const AssetListControlBar = ({
         }}
       >
         <SelectableListItem
-          onClick={handleTokenImportModal}
-          testId="importTokens"
+          onClick={handleOpenTokenManagement}
+          testId="manageTokens"
+          className="min-h-12"
         >
-          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
-          {t('importTokensCamelCase')}
+          <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
+          {t('manageTokens')}
         </SelectableListItem>
         <SelectableListItem onClick={handleRefresh} testId="refreshList">
-          <Icon
-            name={IconName.Refresh}
-            size={IconSize.Sm}
-            marginInlineEnd={2}
-          />
+          <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
           {t('refreshList')}
         </SelectableListItem>
       </Popover>
@@ -551,7 +559,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isImportNftPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={popoverRef.current}
+        referenceElement={importReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -562,7 +570,7 @@ const AssetListControlBar = ({
         }}
       >
         <SelectableListItem onClick={handleNftImportModal} testId="import-nfts">
-          <Icon name={IconName.Add} size={IconSize.Sm} marginInlineEnd={2} />
+          <Icon name={IconName.Add} size={IconSize.Sm} className="mr-2" />
 
           {t('importNFT')}
         </SelectableListItem>
@@ -576,7 +584,7 @@ const AssetListControlBar = ({
               <Icon
                 name={IconName.Refresh}
                 size={IconSize.Sm}
-                marginInlineEnd={2}
+                className="mr-2"
               />
 
               {t('refreshList')}
@@ -590,13 +598,37 @@ const AssetListControlBar = ({
               <Icon
                 name={IconName.Setting}
                 size={IconSize.Sm}
-                marginInlineEnd={2}
+                className="mr-2"
               />
 
               {t('enableAutoDetect')}
             </SelectableListItem>
           )}
         </Box>
+      </Popover>
+
+      {/* Refresh-only Popover (e.g. DeFi) */}
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isRefreshListPopoverOpen}
+        position={PopoverPosition.BottomEnd}
+        referenceElement={importReferenceElement}
+        matchWidth={false}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '158px' : '',
+        }}
+      >
+        <SelectableListItem
+          onClick={handleRefreshListOnly}
+          testId="refreshList"
+        >
+          <Icon name={IconName.Refresh} size={IconSize.Sm} className="mr-2" />
+          {t('refreshList')}
+        </SelectableListItem>
       </Popover>
     </Box>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -9,16 +9,37 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import useMultiPolling from '../../../hooks/useMultiPolling';
-import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+const mockOpenBatchSellExperience = jest.fn();
+
+jest.mock('../../../hooks/batch-sell/useBatchSell', () => ({
+  useBatchSell: () => ({
+    openBatchSellExperience: mockOpenBatchSellExperience,
+  }),
+}));
 
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
@@ -38,19 +59,33 @@ jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock('../../../hooks/rewards/useRewardsModal', () => ({
+  useRewardsModal: jest.fn(),
+}));
+
 jest.mock('../../../ducks/locale/locale', () => ({
+  ...jest.requireActual('../../../ducks/locale/locale'),
   getIntlLocale: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
   startNewDraftTransaction: jest.fn(),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
+}));
+
+const mockOpenBuyCryptoInPdapp = jest.fn();
+jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
+  })),
+  RampsMetaMaskEntry: {
+    BuySellButton: 'ext_buy_sell_button',
+  },
 }));
 
 const mockGetIntlLocale = getIntlLocale;
@@ -73,6 +108,7 @@ describe('EthOverview', () => {
     options: {},
     methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
+    scopes: ['eip155:0'],
   };
 
   const mockEvmAccount2 = {
@@ -87,34 +123,87 @@ describe('EthOverview', () => {
     options: {},
     methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
+    scopes: ['eip155:0'],
   };
 
   const mockStore = {
     appState: {
       confirmationExchangeRates: {},
     },
+    localeMessages: {
+      currentLocale: 'en-US',
+    },
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      selectedAccountGroup: 'entropy:wallet1/group1',
       accountTree: {
-        wallets: {},
-        selectedAccountGroup: null,
+        wallets: {
+          'entropy:wallet1': {
+            id: 'entropy:wallet1',
+            groups: {
+              'entropy:wallet1/group1': {
+                id: 'entropy:wallet1/group1',
+                type: 'multichain-account',
+                accounts: [mockEvmAccount1.id],
+                metadata: {
+                  name: 'Account 1',
+                  hidden: false,
+                  pinned: false,
+                  lastSelected: 0,
+                },
+              },
+            },
+          },
+        },
       },
       remoteFeatureFlags: {
+        batchSell: { enabled: true },
         bridgeConfig: {
           support: true,
         },
       },
-      accountsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          '0x1': { address: mockEvmAccount1.address, balance: '0x1F4' },
-        },
-        [CHAIN_IDS.SEPOLIA]: {
-          '0x1': {
-            address: mockEvmAccount1.address,
-            balance: '0x24da51d247e8b8',
-          },
+      assetsBalance: {
+        [mockEvmAccount1.id]: {
+          'eip155:1/slip44:60': { amount: '0.0000000000000005' },
+          'eip155:11155111/slip44:60': { amount: '0.010373144116717752' },
         },
       },
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        'eip155:5/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        'eip155:11155111/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        'eip155:43114/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'AVAX',
+        },
+        'eip155:137/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'POL',
+        },
+      },
+      assetsPrice: {
+        'eip155:1/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 2,
+          usdPrice: 2,
+          lastUpdated: 0,
+        },
+      },
+      selectedCurrency: 'usd',
       tokenList: [],
       cachedBalances: {
         '0x1': {
@@ -132,12 +221,6 @@ describe('EthOverview', () => {
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,
-      currentCurrency: 'usd',
-      currencyRates: {
-        ETH: {
-          conversionRate: 2,
-        },
-      },
       accounts: {
         [mockEvmAccount1.address]: {
           address: mockEvmAccount1.address,
@@ -161,14 +244,10 @@ describe('EthOverview', () => {
           accounts: [],
         },
       ],
-      balances: {},
       isEvmSelected: true,
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
-    },
-    ramps: {
-      buyableChains: defaultBuyableChains,
     },
   };
 
@@ -179,9 +258,13 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_SWAP = 'eth-overview-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
+  const ETH_OVERVIEW_BALANCE_EMPTY_STATE = 'coin-overview-balance-empty-state';
+  const ETH_OVERVIEW_BALANCE_SKELETON = 'coin-overview-balance-skeleton';
 
   afterEach(() => {
+    jest.useRealTimers();
     store.clearActions();
+    mockOpenBatchSellExperience.mockClear();
   });
 
   describe('EthOverview', () => {
@@ -224,8 +307,130 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('<0.000001ETH');
+      expect(primaryBalance).toHaveTextContent('0 ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
+    });
+
+    it('should show a balance skeleton instead of the empty state while balance records are loading', async () => {
+      const mockedStoreWithLoadingBalance = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsBalance: {},
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithLoadingBalance,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should temporarily show a balance skeleton when funded account aggregate fiat balance is still zero', async () => {
+      jest.useFakeTimers();
+      const mockedStoreWithStartupZeroBalance = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          preferences: {
+            ...mockStore.metamask.preferences,
+            showNativeTokenAsMainBalance: false,
+          },
+          assetsPrice: {},
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithStartupZeroBalance,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+
+      act(() => {
+        jest.advanceTimersByTime(1500);
+      });
+
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show the empty state when mainnet balance records loaded and confirm zero balance', async () => {
+      const mockedStoreWithZeroBalance = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:1/slip44:60': { amount: '0' },
+            },
+          },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithZeroBalance,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show a balance skeleton instead of the empty state while assets are first loading', async () => {
+      // Unify-on Jest derives balances from assetsBalance (not accountsByChainId).
+      const mockedStoreWithAssetsLoading = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:1/slip44:60': { amount: '0' },
+            },
+          },
+          tokenBalances: {},
+          balances: {},
+          assetsLoadingStatus: { [mockEvmAccount1.id]: 'loading' },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithAssetsLoading,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
     });
 
     it('should show the cached primary balance', async () => {
@@ -238,9 +443,9 @@ describe('EthOverview', () => {
               address: '0x1',
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:1/slip44:60': { amount: '0.010373144116717752' },
             },
           },
         },
@@ -256,7 +461,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('0.0104ETH');
+      expect(primaryBalance).toHaveTextContent('0.0104 ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
@@ -266,9 +471,17 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: '0xa86a' }),
-          accountsByChainId: {
-            [CHAIN_IDS.AVALANCHE]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:43114/slip44:60': { amount: '0.010373144116717752' },
+            },
+          },
+          assetsPrice: {
+            'eip155:43114/slip44:60': {
+              assetPriceType: 'fungible',
+              price: 2,
+              usdPrice: 2,
+              lastUpdated: 0,
             },
           },
         },
@@ -306,16 +519,57 @@ describe('EthOverview', () => {
       expect(bridgeButton).not.toBeInTheDocument();
     });
 
-    it('should always show the Receive button', () => {
+    it('should show the Receive button inside the more-options dropdown', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const receiveButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
-      expect(receiveButton).toBeInTheDocument();
+
+      // Receive moved into the "More" dropdown – it is hidden until the dropdown is opened
+      expect(queryByTestId(ETH_OVERVIEW_RECEIVE)).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+
+      expect(queryByTestId(ETH_OVERVIEW_RECEIVE)).toBeInTheDocument();
     });
 
-    it('should always show the Portfolio button', () => {
+    it('should show the Batch Sell button inside the more-options dropdown', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const portfolioButton = queryByTestId('portfolio-link');
-      expect(portfolioButton).toBeInTheDocument();
+
+      expect(queryByTestId('eth-overview-batchSell')).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+
+      expect(queryByTestId('eth-overview-batchSell')).toBeInTheDocument();
+    });
+
+    it('should call openBatchSellExperience when Batch Sell button is clicked', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+      fireEvent.click(queryByTestId('eth-overview-batchSell'));
+
+      expect(mockOpenBatchSellExperience).toHaveBeenCalledTimes(1);
+    });
+
+    it('should show Receive as a direct button when Batch Sell is disabled', () => {
+      const disabledBatchSellStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          remoteFeatureFlags: {
+            ...mockStore.metamask.remoteFeatureFlags,
+            batchSell: { enabled: false },
+          },
+        },
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        disabledBatchSellStore,
+      );
+
+      // Only one action enabled → renders as a direct button, not a dropdown
+      expect(queryByTestId('eth-overview-more')).not.toBeInTheDocument();
+      expect(queryByTestId('eth-overview-default')).toBeInTheDocument();
+      expect(queryByTestId('eth-overview-batchSell')).not.toBeInTheDocument();
     });
 
     it('should always show the Buy button regardless of current chain Id', () => {
@@ -324,41 +578,15 @@ describe('EthOverview', () => {
       expect(buyButton).toBeInTheDocument();
     });
 
-    it('should have the Buy native token button disabled if chain id is not part of supported buyable chains', () => {
+    it('should keep the Buy native token button enabled on unsupported chains', () => {
       const mockedStoreWithUnbuyableChainId = {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
-            },
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithUnbuyableChainId,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <EthOverview />,
-        mockedStore,
-      );
-      const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
-      expect(buyButton).toBeInTheDocument();
-      expect(buyButton).toBeDisabled();
-    });
-
-    it('should have the Buy native token enabled if chain id is part of supported buyable chains', () => {
-      const mockedStoreWithUnbuyableChainId = {
-        ...mockStore,
-        metamask: {
-          ...mockStore.metamask,
-          ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
-          accountsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:5/slip44:60': { amount: '0.010373144116717752' },
             },
           },
         },
@@ -376,15 +604,23 @@ describe('EthOverview', () => {
       expect(buyButton).not.toBeDisabled();
     });
 
-    it('should open the Buy native token URI when clicking on Buy button for a buyable chain ID', async () => {
+    it('should open the in-extension buy flow when clicking on Buy button', async () => {
       const mockedStoreWithBuyableChainId = {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
-          accountsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:137/slip44:60': { amount: '0.010373144116717752' },
+            },
+          },
+          assetsPrice: {
+            'eip155:137/slip44:60': {
+              assetPriceType: 'fungible',
+              price: 2,
+              usdPrice: 2,
+              lastUpdated: 0,
             },
           },
         },
@@ -403,47 +639,60 @@ describe('EthOverview', () => {
       expect(buyButton).not.toBeDisabled();
 
       fireEvent.click(buyButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
       await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(
-            `/buy?metamaskEntry=ext_buy_sell_button`,
-          ),
-        }),
+        expect(mockOpenBuyCryptoInPdapp).toHaveBeenCalledTimes(1),
       );
     });
   });
 
-  it('sends an event when clicking the Buy button: %s', () => {
-    const mockTrackEvent = jest.fn();
+  it('sends an event when clicking the Buy button: %s', async () => {
+    mockTrackEvent.mockClear();
 
     const mockedStore = configureMockStore([thunk])(mockStore);
-    const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <EthOverview />
-      </MetaMetricsContext.Provider>,
-      mockedStore,
-    );
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
 
     const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
     expect(buyButton).toBeInTheDocument();
     expect(buyButton).not.toBeDisabled();
     fireEvent.click(buyButton);
 
-    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        account_type: mockEvmAccount1.type,
-        chain_id: CHAIN_IDS.MAINNET,
-        location: 'Home',
-        text: 'Buy',
-        // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
-        token_symbol: expect.any(Object),
-      },
-    });
+    // handleBuyAndSellOnClick awaits the async goToBuy gate before tracking.
+    await waitFor(() => expect(mockTrackEvent).toHaveBeenCalledTimes(1));
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NavBuyButtonClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Navigation,
+          account_type: mockEvmAccount1.type,
+          chain_id: CHAIN_IDS.MAINNET,
+          location: 'Home',
+          text: 'Buy',
+          token_symbol: expect.any(Object),
+        }),
+      }),
+    );
+  });
+
+  it('sends an event when clicking the Batch Sell button', () => {
+    mockTrackEvent.mockClear();
+
+    const mockedStore = configureMockStore([thunk])(mockStore);
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
+
+    fireEvent.click(queryByTestId('eth-overview-more'));
+    fireEvent.click(queryByTestId('eth-overview-batchSell'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NavBatchSellButtonClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Navigation,
+          text: 'Batch Sell',
+          location: 'home',
+          chain_id: CHAIN_IDS.MAINNET,
+        }),
+      }),
+    );
   });
 
   describe('Disabled buttons when an account cannot sign transactions', () => {
@@ -501,7 +750,7 @@ describe('EthOverview', () => {
     // the right `token_symbol`.
     CHAIN_IDS.SEPOLIA,
   ])('sends an event when clicking the Send button: %s', (chainId) => {
-    const mockTrackEvent = jest.fn();
+    mockTrackEvent.mockClear();
     const mockedStoreWithSpecificChainId = {
       ...mockStore,
       metamask: {
@@ -513,12 +762,7 @@ describe('EthOverview', () => {
     const mockedStore = configureMockStore([thunk])(
       mockedStoreWithSpecificChainId,
     );
-    const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <EthOverview />
-      </MetaMetricsContext.Provider>,
-      mockedStore,
-    );
+    const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
 
     const sendButton = queryByTestId(ETH_OVERVIEW_SEND);
     expect(sendButton).toBeInTheDocument();
@@ -527,18 +771,17 @@ describe('EthOverview', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
-      {
-        event: MetaMetricsEventName.SendStarted,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
+      expect.objectContaining({
+        name: MetaMetricsEventName.SendStarted,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Navigation,
           account_type: mockEvmAccount1.type,
           chain_id: chainId,
           location: 'Home',
           text: 'Send',
           token_symbol: 'ETH',
-        },
-      },
-      expect.any(Object),
+        }),
+      }),
     );
   });
 });

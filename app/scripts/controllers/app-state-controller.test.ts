@@ -29,9 +29,10 @@ type RootMessenger = Messenger<
 >;
 
 jest.mock('webextension-polyfill');
+jest.mock('../../../shared/lib/deep-links/utils');
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
-jest.mock('../../../shared/modules/mv3.utils', () => ({
+jest.mock('../../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },
@@ -48,9 +49,58 @@ const extensionMock = {
   },
 } as unknown as jest.Mocked<Browser>;
 
-const TRANSACTION_ID_MOCK = '123-456';
-
 describe('AppStateController', () => {
+  describe('updateNftDropDownState', () => {
+    it('updates the NFT dropdown state', async () => {
+      await withController(({ controller }) => {
+        const nftsDropdownState = {
+          account: {
+            '0x1': true,
+          },
+        };
+
+        controller.updateNftDropDownState(nftsDropdownState);
+
+        expect(controller.state.nftsDropdownState).toStrictEqual(
+          nftsDropdownState,
+        );
+      });
+    });
+  });
+
+  describe('setPasskeyAutoUnlockSuppressed', () => {
+    it('updates passkeyAutoUnlockSuppressed', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          false,
+        );
+        controller.setPasskeyAutoUnlockSuppressed(true);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          true,
+        );
+        controller.setPasskeyAutoUnlockSuppressed(false);
+        expect(controller.state.passkeyAutoUnlockSuppressed).toStrictEqual(
+          false,
+        );
+      });
+    });
+  });
+
+  describe('setLastShownPrfMigrationReminderAt', () => {
+    it('sets lastShownPrfMigrationReminderAt', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBeNull();
+
+        const timestamp = Date.now();
+        controller.setLastShownPrfMigrationReminderAt(timestamp);
+
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBe(
+          timestamp,
+        );
+      });
+    });
+  });
+
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
       await withController(({ controller }) => {
@@ -200,6 +250,49 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setLastVisitedRoute', () => {
+    it('stores the route namespace, path, and current timestamp', async () => {
+      await withController(({ controller }) => {
+        const before = Date.now();
+        controller.setLastVisitedRoute('perps', '/perps/market/BTC');
+        const after = Date.now();
+
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
+        expect(controller.state.lastVisitedRoute?.name).toBe('perps');
+        expect(controller.state.lastVisitedRoute?.path).toBe(
+          '/perps/market/BTC',
+        );
+        const { timestamp } = controller.state.lastVisitedRoute ?? {
+          timestamp: 0,
+        };
+        expect(timestamp).toBeGreaterThanOrEqual(before);
+        expect(timestamp).toBeLessThanOrEqual(after);
+      });
+    });
+
+    it('clears the stored route when passed null', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedRoute('perps', '/perps/trade/ETH');
+        expect(controller.state.lastVisitedRoute).not.toBeNull();
+
+        controller.setLastVisitedRoute('perps', null);
+        expect(controller.state.lastVisitedRoute).toBeNull();
+      });
+    });
+
+    it('does not clear a route stored for another namespace', async () => {
+      await withController(({ controller }) => {
+        controller.setLastVisitedRoute('bridge', '/bridge');
+
+        controller.setLastVisitedRoute('perps', null);
+
+        expect(controller.state.lastVisitedRoute).toStrictEqual(
+          expect.objectContaining({ name: 'bridge', path: '/bridge' }),
+        );
+      });
+    });
+  });
+
   describe('setConnectedStatusPopoverHasBeenShown', () => {
     it('sets connected status popover as shown', async () => {
       await withController(({ controller }) => {
@@ -322,34 +415,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setShowTestnetMessageInDropdown', () => {
-    it('sets whether the testnet dismissal link should be shown in the network dropdown', async () => {
-      await withController(({ controller }) => {
-        controller.setShowTestnetMessageInDropdown(true);
-
-        expect(controller.state.showTestnetMessageInDropdown).toBe(true);
-
-        controller.setShowTestnetMessageInDropdown(false);
-
-        expect(controller.state.showTestnetMessageInDropdown).toBe(false);
-      });
-    });
-  });
-
-  describe('setShowBetaHeader', () => {
-    it('sets whether the beta notification heading on the home page', async () => {
-      await withController(({ controller }) => {
-        controller.setShowBetaHeader(true);
-
-        expect(controller.state.showBetaHeader).toBe(true);
-
-        controller.setShowBetaHeader(false);
-
-        expect(controller.state.showBetaHeader).toBe(false);
-      });
-    });
-  });
-
   describe('setCurrentPopupId', () => {
     it('sets the currentPopupId in the appState', async () => {
       await withController(({ controller }) => {
@@ -358,6 +423,15 @@ describe('AppStateController', () => {
         controller.setCurrentPopupId(popupId);
 
         expect(controller.state.currentPopupId).toBe(popupId);
+      });
+    });
+
+    it('clears the currentPopupId when undefined is passed', async () => {
+      await withController(({ controller }) => {
+        controller.setCurrentPopupId(12345);
+        controller.setCurrentPopupId(undefined);
+
+        expect(controller.state.currentPopupId).toBeUndefined();
       });
     });
   });
@@ -411,16 +485,12 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setSurveyLinkLastClickedOrClosed', () => {
-    it('set the surveyLinkLastClickedOrClosed time', async () => {
+  describe('setPerpsTabBadgeSeen', () => {
+    it('updates whether the Perps tab New badge has been seen', async () => {
       await withController(({ controller }) => {
-        const mockParams = Date.now();
+        controller.setPerpsTabBadgeSeen(true);
 
-        controller.setSurveyLinkLastClickedOrClosed(mockParams);
-
-        expect(controller.state.surveyLinkLastClickedOrClosed).toStrictEqual(
-          mockParams,
-        );
+        expect(controller.state.perpsTabBadgeSeen).toStrictEqual(true);
       });
     });
   });
@@ -446,16 +516,6 @@ describe('AppStateController', () => {
         controller.setLastViewedUserSurvey(mockParams);
 
         expect(controller.state.lastViewedUserSurvey).toStrictEqual(mockParams);
-      });
-    });
-  });
-
-  describe('setRampCardClosed', () => {
-    it('set isRampCardClosed to true', async () => {
-      await withController(({ controller }) => {
-        controller.setRampCardClosed();
-
-        expect(controller.state.isRampCardClosed).toStrictEqual(true);
       });
     });
   });
@@ -486,6 +546,22 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setArcUsageNoticeShown', () => {
+    it('defaults arcUsageNoticeShown to false', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.arcUsageNoticeShown).toBe(false);
+      });
+    });
+
+    it('sets arcUsageNoticeShown to true', async () => {
+      await withController(({ controller }) => {
+        controller.setArcUsageNoticeShown();
+
+        expect(controller.state.arcUsageNoticeShown).toBe(true);
+      });
+    });
+  });
+
   describe('setShieldPausedToastLastClickedOrClosed', () => {
     it('set the shieldPausedToastLastClickedOrClosed time', async () => {
       await withController(({ controller }) => {
@@ -512,19 +588,111 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('isUpdateAvailable', () => {
-    it('defaults to false', async () => {
+  describe('setShieldSubscriptionError', () => {
+    it('sets the error object with message and code', async () => {
       await withController(({ controller }) => {
-        expect(controller.state.isUpdateAvailable).toStrictEqual(false);
+        controller.setShieldSubscriptionError({
+          message: 'payer address is already used',
+          code: 'payer_address_already_used',
+        });
+        expect(controller.state.shieldSubscriptionError).toStrictEqual({
+          message: 'payer address is already used',
+          code: 'payer_address_already_used',
+        });
+      });
+    });
+
+    it('sets the error object with message only', async () => {
+      await withController(({ controller }) => {
+        controller.setShieldSubscriptionError({
+          message: 'some error',
+        });
+        expect(controller.state.shieldSubscriptionError).toStrictEqual({
+          message: 'some error',
+        });
+      });
+    });
+
+    it('clears the error when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setShieldSubscriptionError({ message: 'some error' });
+        expect(controller.state.shieldSubscriptionError).not.toBeNull();
+
+        controller.setShieldSubscriptionError(null);
+        expect(controller.state.shieldSubscriptionError).toBeNull();
+      });
+    });
+
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.shieldSubscriptionError).toBeNull();
       });
     });
   });
 
-  describe('setIsUpdateAvailable', () => {
-    it('sets isUpdateAvailable', async () => {
+  describe('setPendingRedirectRoute', () => {
+    it('defaults to null', async () => {
       await withController(({ controller }) => {
-        controller.setIsUpdateAvailable(true);
-        expect(controller.state.isUpdateAvailable).toStrictEqual(true);
+        expect(controller.state.pendingRedirectRoute).toBeNull();
+      });
+    });
+
+    it('sets a route with only path', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({ path: '/shield-plan' });
+        expect(controller.state.pendingRedirectRoute).toStrictEqual({
+          path: '/shield-plan',
+        });
+      });
+    });
+
+    it('sets a route with path, search, and environmentType', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({
+          path: '/shield-plan',
+          search: '?source=checkout',
+          environmentType: ENVIRONMENT_TYPE_POPUP,
+        });
+        expect(controller.state.pendingRedirectRoute).toStrictEqual({
+          path: '/shield-plan',
+          search: '?source=checkout',
+          environmentType: ENVIRONMENT_TYPE_POPUP,
+        });
+      });
+    });
+
+    it('clears the route when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingRedirectRoute({ path: '/shield-plan' });
+        expect(controller.state.pendingRedirectRoute).not.toBeNull();
+
+        controller.setPendingRedirectRoute(null);
+        expect(controller.state.pendingRedirectRoute).toBeNull();
+      });
+    });
+  });
+
+  describe('pendingExtensionVersion', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.pendingExtensionVersion).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setPendingExtensionVersion', () => {
+    it('sets pendingExtensionVersion', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingExtensionVersion('1.2.3');
+        expect(controller.state.pendingExtensionVersion).toStrictEqual('1.2.3');
+      });
+    });
+
+    it('clears pendingExtensionVersion when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setPendingExtensionVersion('1.2.3');
+        controller.setPendingExtensionVersion(null);
+        expect(controller.state.pendingExtensionVersion).toStrictEqual(null);
       });
     });
   });
@@ -647,88 +815,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setEnableEnforcedSimulations', () => {
-    it('updates the enableEnforcedSimulations state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnableEnforcedSimulations(false);
-        expect(controller.state.enableEnforcedSimulations).toBe(false);
-
-        controller.setEnableEnforcedSimulations(true);
-        expect(controller.state.enableEnforcedSimulations).toBe(true);
-      });
-    });
-  });
-
-  describe('setEnableEnforcedSimulationsForTransaction', () => {
-    it('updates the enableEnforcedSimulationsForTransactions state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnableEnforcedSimulationsForTransaction(
-          TRANSACTION_ID_MOCK,
-          true,
-        );
-
-        expect(
-          controller.state.enableEnforcedSimulationsForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: true,
-        });
-
-        controller.setEnableEnforcedSimulationsForTransaction(
-          TRANSACTION_ID_MOCK,
-          false,
-        );
-
-        expect(
-          controller.state.enableEnforcedSimulationsForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: false,
-        });
-      });
-    });
-  });
-
-  describe('setEnforcedSimulationsSlippage', () => {
-    it('updates the enforcedSimulationsSlippage state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnforcedSimulationsSlippage(23);
-        expect(controller.state.enforcedSimulationsSlippage).toBe(23);
-      });
-    });
-  });
-
-  describe('setEnforcedSimulationsSlippageForTransaction', () => {
-    it('updates the enforcedSimulationsSlippageForTransactions state', async () => {
-      await withController(({ controller }) => {
-        controller.setEnforcedSimulationsSlippageForTransaction(
-          TRANSACTION_ID_MOCK,
-          25,
-        );
-
-        expect(
-          controller.state.enforcedSimulationsSlippageForTransactions,
-        ).toStrictEqual({
-          [TRANSACTION_ID_MOCK]: 25,
-        });
-      });
-    });
-  });
-
-  describe('setCanTrackWalletFundsObtained', () => {
-    it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
-      await withController(({ controller }) => {
-        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
-
-        controller.setCanTrackWalletFundsObtained(false);
-
-        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
-
-        controller.setCanTrackWalletFundsObtained(true);
-
-        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
-      });
-    });
-  });
-
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
@@ -760,21 +846,15 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
-              "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -782,18 +862,28 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
+              "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
-              "nftsDetectionNoticeDismissed": false,
               "nftsDropdownState": {},
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
+              "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -801,19 +891,14 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
-              "showAccountBanner": true,
-              "showBetaHeader": false,
+              "shieldSubscriptionError": null,
               "showDownloadMobileAppSlide": true,
-              "showNetworkBanner": true,
-              "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
-              "showStorageErrorToast": false,
-              "showTestnetMessageInDropdown": true,
               "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
-              "surveyLinkLastClickedOrClosed": null,
+              "storageWriteErrorType": null,
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "timeoutMinutes": 0,
@@ -854,21 +939,15 @@ describe('AppStateController', () => {
             {
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
-              "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -876,18 +955,26 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
-              "nftsDetectionNoticeDismissed": false,
               "nftsDropdownState": {},
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
+              "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -895,19 +982,14 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
-              "showAccountBanner": true,
-              "showBetaHeader": false,
+              "shieldSubscriptionError": null,
               "showDownloadMobileAppSlide": true,
-              "showNetworkBanner": true,
-              "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
-              "showStorageErrorToast": false,
-              "showTestnetMessageInDropdown": true,
               "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
-              "surveyLinkLastClickedOrClosed": null,
+              "storageWriteErrorType": null,
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "timeoutMinutes": 0,
@@ -946,15 +1028,12 @@ describe('AppStateController', () => {
             ),
           ).toMatchInlineSnapshot(`
             {
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
-              "isRampCardClosed": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -962,31 +1041,30 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
-              "nftsDetectionNoticeDismissed": false,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
-              "showAccountBanner": true,
-              "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
-              "showNetworkBanner": true,
-              "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
-              "showTestnetMessageInDropdown": true,
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
-              "surveyLinkLastClickedOrClosed": null,
               "termsOfUseLastAgreed": 1000,
               "timeoutMinutes": 0,
               "trezorModel": null,
@@ -1027,20 +1105,15 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
               "dappSwapComparisonData": {},
               "defaultHomeActiveTabName": null,
-              "enableEnforcedSimulations": true,
-              "enableEnforcedSimulationsForTransactions": {},
-              "enforcedSimulationsSlippage": 10,
-              "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hasShownMultichainAccountsIntroModal": false,
-              "isRampCardClosed": false,
-              "isUpdateAvailable": false,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -1048,20 +1121,28 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
+              "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
-              "networkConnectionBanner": {
-                "status": "unknown",
-              },
+              "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
+              "musdConversionDismissedCtaKeys": [],
+              "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDropdownState": {},
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "passkeyAutoUnlockSuppressed": false,
+              "pendingExtensionVersion": null,
+              "pendingRedirectRoute": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "perpsTabBadgeSeen": false,
               "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
@@ -1069,23 +1150,214 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
-              "showAccountBanner": true,
-              "showBetaHeader": false,
+              "shieldSubscriptionError": null,
               "showDownloadMobileAppSlide": true,
-              "showNetworkBanner": true,
-              "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
-              "showStorageErrorToast": false,
               "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
-              "surveyLinkLastClickedOrClosed": null,
+              "storageWriteErrorType": null,
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "updateModalLastDismissedAt": null,
             }
           `);
+        },
+      );
+    });
+  });
+
+  describe('addMoneyEarnBannerDismissedTokenKey', () => {
+    it('adds each token key once', async () => {
+      await withController(async ({ controller }) => {
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+        controller.addMoneyEarnBannerDismissedTokenKey('0xe708:0xdef');
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+
+        expect(
+          controller.state.moneyEarnBannerDismissedTokenKeys,
+        ).toStrictEqual(['0x1:0xabc', '0xe708:0xdef']);
+      });
+    });
+  });
+
+  describe('setDeferredDeepLink', () => {
+    it('updates the state when deferred deep link is available', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+
+        expect(controller.state.deferredDeepLink).toStrictEqual(
+          mockDeepLinkData,
+        );
+      });
+    });
+  });
+
+  describe('removeDeferredDeepLink', () => {
+    it('removes the deferred deep link data from state', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+        controller.removeDeferredDeepLink();
+
+        expect(controller.state.deferredDeepLink).toBeUndefined();
+      });
+    });
+  });
+
+  describe('QR code scan (lastQrScanCompletedSuccessfully)', () => {
+    const mockQrScanRequest = {
+      requestId: 'test-request-id',
+      type: 'sign' as const,
+      payload: { cbor: 'test-cbor', type: 'test-type' },
+    };
+    const mockScannedData = { type: 'test-type', cbor: 'scanned-cbor' };
+
+    it('sets lastQrScanCompletedSuccessfully to true when completeQrCodeScan is called', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
+          expect(controller.state.activeQrCodeScanRequest).toStrictEqual(
+            mockQrScanRequest,
+          );
+
+          controller.completeQrCodeScan(mockScannedData);
+
+          expect(controller.state.activeQrCodeScanRequest).toBeNull();
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBe(true);
+          await expect(scanPromise).resolves.toStrictEqual(mockScannedData);
+        },
+      );
+    });
+
+    it('rejects with UserCancelled when cancelQrCodeScan is called without an error', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
+
+          controller.cancelQrCodeScan();
+
+          expect(controller.state.activeQrCodeScanRequest).toBeNull();
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBe(false);
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            message: 'Scan cancelled',
+            code: 2001,
+          });
+        },
+      );
+    });
+
+    it('rejects with a HardwareWalletError when cancelQrCodeScan receives a string', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          controller.cancelQrCodeScan('Camera permission denied');
+
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            message: 'Camera permission denied',
+          });
+        },
+      );
+    });
+
+    it('rejects with a HardwareWalletError when cancelQrCodeScan receives a serialized hardware wallet error', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const scanPromise = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call('AppStateController:requestQrCodeScan', mockQrScanRequest);
+
+          controller.cancelQrCodeScan({
+            name: 'HardwareWalletError',
+            message: 'Camera permission blocked by the browser',
+            code: 7301,
+            severity: 'Error',
+            category: 'Configuration',
+            userMessage:
+              'To continue, allow camera access in your browser settings.',
+          });
+
+          await expect(scanPromise).rejects.toMatchObject({
+            name: 'HardwareWalletError',
+            code: 7301,
+            userMessage:
+              'To continue, allow camera access in your browser settings.',
+          });
+        },
+      );
+    });
+
+    it('sets lastQrScanCompletedSuccessfully to null when a new scan is requested', async () => {
+      await withController(
+        { state: {} },
+        async ({ controller, appStateMessenger }) => {
+          const call = (
+            appStateMessenger as unknown as {
+              call: (action: string, request: unknown) => Promise<unknown>;
+            }
+          ).call.bind(appStateMessenger);
+
+          const firstScanPromise = call(
+            'AppStateController:requestQrCodeScan',
+            mockQrScanRequest,
+          );
+          await new Promise((r) => setTimeout(r, 0));
+
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
+
+          controller.completeQrCodeScan(mockScannedData);
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBe(true);
+          await expect(firstScanPromise).resolves.toStrictEqual(
+            mockScannedData,
+          );
+
+          const secondScanPromise = call(
+            'AppStateController:requestQrCodeScan',
+            { ...mockQrScanRequest, requestId: 'second-request' },
+          );
+          await new Promise((r) => setTimeout(r, 0));
+
+          expect(controller.state.lastQrScanCompletedSuccessfully).toBeNull();
+          controller.completeQrCodeScan({
+            ...mockScannedData,
+            cbor: 'second-scanned',
+          });
+          await expect(secondScanPromise).resolves.toBeDefined();
         },
       );
     });
@@ -1101,9 +1373,11 @@ type WithControllerOptions = {
 type WithControllerCallback<ReturnValue> = ({
   controller,
   messenger,
+  appStateMessenger,
 }: {
   controller: AppStateController;
   messenger: RootMessenger;
+  appStateMessenger: RootMessenger;
 }) => ReturnValue;
 
 type WithControllerArgs<ReturnValue> =
@@ -1135,6 +1409,7 @@ async function withController<ReturnValue>(
       'ApprovalController:acceptRequest',
       'KeyringController:getState',
       'PreferencesController:getState',
+      'LegacyBackgroundApiService:setLocked',
     ],
     events: ['PreferencesController:stateChange', 'KeyringController:unlock'],
   });
@@ -1150,19 +1425,22 @@ async function withController<ReturnValue>(
 
   rootMessenger.registerActionHandler(
     'ApprovalController:addRequest',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     addRequestMock || jest.fn().mockResolvedValue(undefined),
+  );
+
+  rootMessenger.registerActionHandler(
+    'LegacyBackgroundApiService:setLocked',
+    jest.fn(),
   );
 
   return fn({
     controller: new AppStateController({
-      onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
       state,
       ...options,
     }),
     messenger: rootMessenger,
+    appStateMessenger,
   });
 }

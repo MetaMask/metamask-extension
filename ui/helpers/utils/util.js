@@ -1,7 +1,6 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -16,26 +15,22 @@ import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { logErrorWithMessage } from '../../../shared/modules/error';
+import { logErrorWithMessage } from '../../../shared/lib/error';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/lib/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 // formatData :: ( date: <Unix Timestamp> ) -> String
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -97,28 +92,6 @@ function getOrdinalSuffix(day) {
       return 'th';
   }
 }
-/**
- * Determines if the provided chainId is a default MetaMask chain
- *
- * @param {string} chainId - chainId to check
- */
-export function isDefaultMetaMaskChain(chainId) {
-  if (
-    !chainId ||
-    chainId === CHAIN_IDS.MAINNET ||
-    chainId === CHAIN_IDS.LINEA_MAINNET ||
-    chainId === CHAIN_IDS.GOERLI ||
-    chainId === CHAIN_IDS.SEPOLIA ||
-    chainId === CHAIN_IDS.LINEA_GOERLI ||
-    chainId === CHAIN_IDS.LINEA_SEPOLIA ||
-    chainId === CHAIN_IDS.LOCALHOST
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
 export function valuesFor(obj) {
   if (!obj) {
     return [];
@@ -126,26 +99,6 @@ export function valuesFor(obj) {
   return Object.keys(obj).map(function (key) {
     return obj[key];
   });
-}
-
-export function addressSummary(
-  address,
-  firstSegLength = 10,
-  lastSegLength = 4,
-  includeHex = true,
-) {
-  if (!address) {
-    return '';
-  }
-  let checked = normalizeSafeAddress(address);
-  if (!includeHex) {
-    checked = stripHexPrefix(checked);
-  }
-  return checked
-    ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-        checked.length - lastSegLength,
-      )}`
-    : '...';
 }
 
 export function isValidDomainName(address) {
@@ -235,20 +188,18 @@ export function isResolvableName(name) {
   return false;
 }
 
-export function isOriginContractAddress(to, sendTokenAddress) {
-  if (!to || !sendTokenAddress) {
-    return false;
-  }
-  return to.toLowerCase() === sendTokenAddress.toLowerCase();
-}
-
-// Takes wei Hex, returns wei BN, even if input is null
+// Takes wei hex, returns wei bigint, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new BN(0, 16);
+    return 0n;
   }
+
   const stripped = stripHexPrefix(balance);
-  return new BN(stripped, 16);
+  if (!stripped) {
+    return 0n;
+  }
+
+  return BigInt(`0x${stripped}`);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -311,20 +262,6 @@ export function getContractAtAddress(tokenAddress) {
   );
 }
 
-export function getRandomFileName() {
-  let fileName = '';
-  const charBank = [
-    ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-  ];
-  const fileNameLength = Math.floor(Math.random() * 7 + 6);
-
-  for (let i = 0; i < fileNameLength; i++) {
-    fileName += charBank[Math.floor(Math.random() * charBank.length)];
-  }
-
-  return fileName;
-}
-
 /**
  * Shortens the given string, preserving the beginning and end.
  * Returns the string it is no longer than truncatedCharLimit.
@@ -361,23 +298,28 @@ export function shortenString(
 }
 
 /**
- * Shortens an Ethereum address for display, preserving the beginning and end.
+ * Shortens an address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
- * Shortened addresses are 13 characters long.
+ * Shortened addresses are 13 characters long for EVM.
  *
  * Example output: 0xabcde...12345
+ * Example output: bc1qn...5eker
  *
  * @param {string} address - The address to shorten.
  * @returns {string} The shortened address, or the original if it was no longer
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  return shortenString(address, {
+  const isEvmAddress = address.startsWith('0x');
+  const addressWithoutPrefix = isEvmAddress ? address.slice(2) : address;
+  const shortenedAddress = shortenString(addressWithoutPrefix, {
     truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
     truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
     truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
     skipCharacterInEnd: false,
   });
+
+  return isEvmAddress ? `0x${shortenedAddress}` : shortenedAddress;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -472,20 +414,6 @@ export function checkExistingAddresses(address, list = []) {
   return list.some(matchesAddress);
 }
 
-export function checkExistingAllTokens(
-  address,
-  chainId,
-  accountAddress,
-  list = {},
-) {
-  if (!address) {
-    return false;
-  }
-  return list?.[chainId]?.[accountAddress]?.some(
-    (obj) => obj.address.toLowerCase() === address.toLowerCase(),
-  );
-}
-
 export function bnGreaterThan(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
@@ -544,6 +472,12 @@ export const toHumanReadableTime = (t, milliseconds) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
+
+  if (milliseconds < 1000) {
+    const decimalSeconds = (milliseconds / 1000).toFixed(1);
+    return t('gasTimingSecondsShort', [decimalSeconds]);
+  }
+
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);
@@ -741,7 +675,7 @@ export const getSnapName = (snapsMetadata) => {
 };
 
 export const getSnapRoute = (snapId) => {
-  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
+  return `${SNAPS_VIEW_ROUTE}?snapId=${encodeURIComponent(snapId)}`;
 };
 
 export const getDedupedSnaps = (request, permissions) => {

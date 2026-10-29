@@ -1,16 +1,16 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import NFTListPage from '../../../page-objects/pages/home/nft-list';
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../../confirmations/transactions/shared';
@@ -21,7 +21,7 @@ describe('Trezor Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
@@ -35,7 +35,10 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         );
-        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
 
         // deploy action
         const testDappPage = new TestDappPage(driver);
@@ -58,7 +61,7 @@ describe('Trezor Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
@@ -72,7 +75,10 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
           '0x100000000000000000000',
         );
-        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
 
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
@@ -88,19 +94,21 @@ describe('Trezor Hardware', function (this: Suite) {
         await testDappPage.clickERC721MintButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const mintConfirmation = new TransactionConfirmation(driver);
-        await mintConfirmation.clickFooterConfirmButton();
+        await mintConfirmation.clickFooterButton({ button: 'confirm' });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTransactionActivityByText('Deposit');
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTransactionActivityByText(
+          'Contract interaction',
+        );
+        await activityTab.checkWaitForTransactionStatus('confirmed');
         await homePage.goToNftTab();
-        const nftListPage = new NFTListPage(driver);
+        const nftsTab = new NftsTab(driver);
         // Check that NFT image is displayed in NFT tab on homepagexp
-        await nftListPage.checkNftImageIsDisplayed();
+        await nftsTab.checkNftImageIsDisplayed();
       },
     );
   });
@@ -109,7 +117,7 @@ describe('Trezor Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
@@ -135,12 +143,11 @@ describe('Trezor Hardware', function (this: Suite) {
         const balance = await localNodes?.[0]?.getBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        );
+        await login(driver, {
+          expectedBalance:
+            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          waitForNonEvmAccounts: false,
+        });
 
         const contractAddress =
           await contractRegistry?.getContractAddress(smartContract);
@@ -152,18 +159,18 @@ describe('Trezor Hardware', function (this: Suite) {
         await testDappPage.clickERC721ApproveButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const approveConfirmation = new TransactionConfirmation(driver);
-        await approveConfirmation.clickFooterConfirmButton();
+        await approveConfirmation.clickFooterButton({ button: 'confirm' });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
         const homePage = new HomePage(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
         await homePage.goToActivityList();
-        await activityListPage.checkTransactionActivityByText(
-          'Approve TDN spending cap',
+        await activityTab.checkTransactionActivityByText(
+          'Approved spending cap',
         );
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkWaitForTransactionStatus('confirmed');
       },
     );
   });
@@ -172,7 +179,7 @@ describe('Trezor Hardware', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
@@ -191,12 +198,11 @@ describe('Trezor Hardware', function (this: Suite) {
         const balance = await localNodes?.[0]?.getBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        );
+        await login(driver, {
+          expectedBalance:
+            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+          waitForNonEvmAccounts: false,
+        });
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
@@ -214,18 +220,20 @@ describe('Trezor Hardware', function (this: Suite) {
         await setApprovalForAllConfirmation.checkSetApprovalForAllTitle();
         await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
         await setApprovalForAllConfirmation.clickScrollToBottomButton();
-        await setApprovalForAllConfirmation.clickFooterConfirmButton();
+        await setApprovalForAllConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
         const homePage = new HomePage(driver);
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
         await homePage.goToActivityList();
-        await activityListPage.checkTransactionActivityByText(
-          'Approve TDN with no spend limit',
+        await activityTab.checkTransactionActivityByText(
+          'Approved spending cap',
         );
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkWaitForTransactionStatus('confirmed');
       },
     );
   });

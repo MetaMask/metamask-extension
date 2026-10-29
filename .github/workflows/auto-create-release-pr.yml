@@ -1,18 +1,24 @@
 name: Auto Create Release PR
 
 on:
-  create:
+  push:
+    branches:
+      # Glob, not regex. Same pattern as update-release-changelog.yml: three
+      # dot-separated segments that each start with a digit, e.g. release/13.53.0.
+      - 'release/[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   extract:
-    if: ${{ github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/release/') }}
+    # Push also fires for later commits on release/X.Y.Z. Run only when this
+    # push creates the branch, so those commits do not open another release PR.
+    if: github.event.created
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
       semver: ${{ steps.out.outputs.semver }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - id: out
         shell: bash

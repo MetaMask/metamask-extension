@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
 import {
@@ -6,7 +6,8 @@ import {
   getUse4ByteResolution,
 } from '../../../../../../selectors';
 import { getContractMethodData } from '../../../../../../store/actions';
-import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
+import { hasTransactionData } from '../../../../../../../shared/lib/transaction.utils';
+import { useDispatch } from '../../../../../../store/hooks';
 
 export const useFourByte = ({ to, data }: { to?: Hex; data?: Hex }) => {
   const dispatch = useDispatch();

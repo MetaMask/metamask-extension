@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import {
   AccountGroupId,
@@ -57,6 +57,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
       hidden: false,
       pinned: false,
+      lastSelected: 0,
     },
     accounts: [
       {

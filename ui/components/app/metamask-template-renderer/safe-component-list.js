@@ -1,5 +1,4 @@
 import ConfirmationNetworkSwitch from '../../../pages/confirmations/confirmation/components/confirmation-network-switch';
-import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
 import {
   AvatarIcon,
   BannerAlert,
@@ -27,7 +26,6 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,
 } from '../confirm/info/row';
-import MetaMaskTranslation from '../metamask-translation';
 import { Copyable } from '../snaps/copyable';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
@@ -52,7 +50,6 @@ import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 import { SnapUIAccountSelector } from '../snaps/snap-ui-account-selector';
 import { SnapUIDateTimePicker } from '../snaps/snap-ui-date-time-picker';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
@@ -62,9 +59,11 @@ import {
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
+import MetaMaskTranslation from '../metamask-translation/metamask-translation';
 import { Skeleton } from '../../component-library/skeleton';
-///: END:ONLY_INCLUDE_IF
 import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
+import { HyperliquidDepositPrompt } from '../hyperliquid-deposit-prompt/hyperliquid-deposit-prompt';
+import { Delineator } from '../../ui/delineator';
 
 export const safeComponentList = {
   a: 'a',
@@ -85,8 +84,8 @@ export const safeComponentList = {
   DefinitionList,
   div: 'div',
   FormTextField,
+  HyperliquidDepositPrompt,
   i: 'i',
-  MetaMaskTranslation,
   OriginPill,
   p: 'p',
   Popover,
@@ -123,9 +122,7 @@ export const safeComponentList = {
   Tooltip,
   TruncatedDefinitionList,
   Typography,
-  SmartTransactionStatusPage,
   UrlIcon,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAccountCard,
@@ -133,5 +130,6 @@ export const safeComponentList = {
   SnapAccountRedirect,
   SnapAccountSuccessMessage,
   SnapAuthorshipHeader,
-  ///: END:ONLY_INCLUDE_IF
+  MetaMaskTranslation,
+  Delineator,
 };

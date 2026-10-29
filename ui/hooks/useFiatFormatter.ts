@@ -34,9 +34,16 @@ type FiatFormatter = (
   options?: FiatFormatterOptions,
 ) => string;
 
-export const useFiatFormatter = (): FiatFormatter => {
+type UseFiatFormatterOptions = {
+  overrideCurrency?: string;
+};
+
+export const useFiatFormatter = (
+  hookOptions?: UseFiatFormatterOptions,
+): FiatFormatter => {
   const locale = useSelector(getIntlLocale);
-  const fiatCurrency = useSelector(getCurrentCurrency);
+  const reduxCurrency = useSelector(getCurrentCurrency);
+  const fiatCurrency = hookOptions?.overrideCurrency ?? reduxCurrency;
 
   return (fiatAmount: number, options: FiatFormatterOptions = {}) => {
     const { shorten, truncatedCharLimit, truncatedStartChars } = options;

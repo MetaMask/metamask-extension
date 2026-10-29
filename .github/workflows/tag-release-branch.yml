@@ -58,7 +58,7 @@ jobs:
           echo "Using version: ${VERSION}"
 
       - name: Checkout release branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ steps.determine-branch.outputs.branch }}
           fetch-depth: 0
@@ -232,8 +232,8 @@ jobs:
           gh api \
             --method POST \
             -H "Accept: application/vnd.github.v3+json" \
-            "/repos/${{ github.repository }}/statuses/${TAG_SHA}" \
+            "/repos/${GITHUB_REPOSITORY}/statuses/${TAG_SHA}" \
             -f state='success' \
-            -f target_url="${{ github.server_url }}/${{ github.repository }}/releases/tag/${TAG_NAME}" \
+            -f target_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG_NAME}" \
             -f description='Release has been tagged' \
             -f context='release/tagged'

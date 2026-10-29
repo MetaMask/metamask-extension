@@ -1,35 +1,40 @@
-import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../app/scripts/lib/util';
+import { getEnvironmentType } from '../shared/lib/environment-type';
 import { AlertTypes } from '../shared/constants/alerts';
-import { maskObject } from '../shared/modules/object.utils';
+import { maskObject } from '../shared/lib/object.utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
+// TODO: Remove restricted import
+// eslint-disable-next-line import-x/no-restricted-paths
+import { sanitizeStateLogs } from '../app/scripts/lib/state-utils';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
-import { getBrowserName } from '../shared/modules/browser-runtime.utils';
-import { COPY_OPTIONS } from '../shared/constants/copy';
+import { getBrowserName } from '../shared/lib/browser-runtime.utils';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
-import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../shared/lib/selectors/networks';
+import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
+import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
+import {
+  setupLongTaskObserver,
+  setupLongTaskSentryReporting,
+  exposeLongTaskMetricsForTesting,
+} from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
-  getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
@@ -38,16 +43,27 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
-  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
+import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { setBackgroundConnection } from './store/background-connection';
+import {
+  setBackgroundConnection,
+  submitRequestToBackground,
+} from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { initWebVitals } from './helpers/utils/web-vitals';
+import { getPerpsStreamManager } from './providers/perps';
+import {
+  primePerpsLifecycleContext,
+  markPerpsLifecycleWarm,
+} from './helpers/perps/entry-trace';
+import { createUIMessenger } from './messengers/ui-messenger';
 
+export { trackDocumentPageClose } from './helpers/utils/useful-screen-ready';
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
   displayCriticalErrorMessage,
@@ -55,6 +71,17 @@ export {
 } from './helpers/utils/display-critical-error';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+const reactRoots = new WeakMap();
+
+function renderUi(element, container) {
+  let root = reactRoots.get(container);
+  if (!root) {
+    root = createRoot(container);
+    reactRoots.set(container, root);
+  }
+  root.render(element);
+}
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -78,18 +105,24 @@ export const connectToBackground = (
       const store = await reduxStore.promise;
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
+      primePerpsLifecycleContext();
       await handleStartUISync(data.params[0]);
-    } else {
+    } else if (method === 'perpsStreamUpdate') {
+      const payload = data.params[0];
+      if (payload.channel === 'lifecycleContext' && payload.data === 'warm') {
+        markPerpsLifecycleWarm();
+      } else {
+        getPerpsStreamManager().handleBackgroundUpdate(payload);
+      }
+    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
-        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
-          data,
-        )}`,
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(data)}`,
       );
     }
   });
 };
 
-export default async function launchMetamaskUi(opts) {
+export async function launchMetamaskUi(opts) {
   const { backgroundConnection, initialState } = opts;
 
   const store = await startApp(initialState, opts);
@@ -203,6 +236,9 @@ export async function setupInitialStore(metamaskState, activeTab) {
 async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
 
+  // Initialize Core Web Vitals (INP, LCP, CLS) measurement
+  initWebVitals();
+
   const tags = getStartupTraceTags({ metamask: metamaskState });
 
   const store = await trace(
@@ -229,14 +265,19 @@ async function startApp(metamaskState, opts) {
     () => runInitialActions(store),
   );
 
+  // UI messenger is created here in preparation for completely replacing
+  // `submitRequestToBackground` with it.
+  const uiMessenger = createUIMessenger();
+  // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
+  // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} />, opts.container),
+    renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
 
   return store;
 }
 
-async function runInitialActions(store) {
+export async function runInitialActions(store) {
   const initialState = store.getState();
 
   // Update browser environment with accurate browser detection from UI
@@ -279,7 +320,9 @@ async function runInitialActions(store) {
     const validateSeedlessPasswordOutdated = async (state) => {
       const isUnlocked = getIsUnlocked(state);
       if (isUnlocked) {
-        await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
+        await store.dispatch(
+          actions.checkIsSeedlessPasswordOutdated(false, false), // don't skip cache, don't capture sentry error, we don't want to report to sentry if the check fails
+        );
       }
     };
     await validateSeedlessPasswordOutdated(initialState);
@@ -309,10 +352,10 @@ export async function getCleanAppState(store) {
   state.browser = window.navigator.userAgent;
 
   // when JSON.stringiy, `undefined` value will be left out.
-  state.metamask = {
+  state.metamask = sanitizeStateLogs({
     ...state.metamask,
     socialLoginEmail: undefined,
-  };
+  });
 
   return state;
 }
@@ -390,7 +433,13 @@ function setupStateHooks(store) {
   };
   window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
-    return maskObject(reduxState, SENTRY_UI_STATE);
+    return maskObject(
+      {
+        ...reduxState,
+        metamask: sanitizeStateLogs(reduxState.metamask),
+      },
+      SENTRY_UI_STATE,
+    );
   };
   window.stateHooks.getLogs = function () {
     // These logs are logged by LoggingController
@@ -403,33 +452,48 @@ function setupStateHooks(store) {
 
     return logsArray;
   };
+
+  // Long Task observer: 100% in test/debug, 10% sampled in production
+  const longTaskSampleRate =
+    process.env.IN_TEST || process.env.METAMASK_DEBUG ? 1 : 0.1;
+  setupLongTaskObserver(longTaskSampleRate);
+
+  // Report TBT to Sentry when popup becomes hidden (production + debug).
+  // Sentry's browserTracingIntegration already creates per-task ui.long-task
+  // spans; this adds aggregate TBT as a custom measurement alongside them.
+  if (!process.env.IN_TEST) {
+    setupLongTaskSentryReporting();
+  }
+
+  // Expose metrics APIs for E2E benchmark harness
+  if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
+    exposeLongTaskMetricsForTesting();
+  }
+
+  // Agentic dev hooks — expose internals for CDP automation
+  if (process.env.METAMASK_DEBUG) {
+    globalThis.stateHooks.store = store;
+    globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
+    globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
+  }
+
+  if (process.env.IN_TEST) {
+    // Load conditionally so this test-only package is excluded from production builds and policies.
+    window.stateHooks.hasConsoleAccess = () =>
+      // eslint-disable-next-line n/global-require
+      require('@metamask/dummy-package').hasConsoleAccess();
+  }
 }
 
-window.logStateString = async function (cb) {
+/**
+ * Returns the extension state as a formatted JSON string for debugging.
+ * Includes app state, logs, and platform info.
+ *
+ * @returns {Promise<string>} The state as a JSON string
+ */
+window.logStateString = async function () {
   const state = await window.stateHooks.getCleanAppState();
-  const logs = window.stateHooks.getLogs();
-  browser.runtime
-    .getPlatformInfo()
-    .then((platform) => {
-      state.platform = platform;
-      state.logs = logs;
-      const stateString = JSON.stringify(state, null, 2);
-      cb(null, stateString);
-    })
-    .catch((err) => {
-      cb(err);
-    });
-};
-
-window.logState = function (toClipboard) {
-  return window.logStateString((err, result) => {
-    if (err) {
-      console.error(err.message);
-    } else if (toClipboard) {
-      copyToClipboard(result, COPY_OPTIONS);
-      console.log('State log copied');
-    } else {
-      console.log(result);
-    }
-  });
+  state.logs = window.stateHooks.getLogs();
+  state.platform = await browser.runtime.getPlatformInfo();
+  return JSON.stringify(state, null, 2);
 };

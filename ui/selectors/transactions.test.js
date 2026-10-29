@@ -27,7 +27,9 @@ import {
   getTransactions,
   getUnapprovedTransactions,
   getTransactionsByChainId,
+  getCurrentNetworkTransactions,
   incomingTxListSelectorAllChains,
+  incomingTxListSelector,
   selectedAddressTxListSelectorAllChain,
   selectedAddressTxListSelector,
   transactionSubSelectorAllChains,
@@ -949,6 +951,45 @@ describe('Transaction Selectors', () => {
     });
   });
 
+  describe('incomingTxListSelector', () => {
+    it('returns an empty array when provider configuration is missing', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.incoming,
+              txParams: { to: '0xSelectedAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          selectedNetworkClientId: 'missingNetworkClientId',
+          networkConfigurationsByChainId: {},
+        },
+      };
+
+      expect(incomingTxListSelector(state)).toStrictEqual([]);
+    });
+  });
+
   describe('selectedAddressTxListSelectorAllChain', () => {
     it('returns an empty array if there are no transactions or smart transactions', () => {
       const state = {
@@ -1367,6 +1408,46 @@ describe('Transaction Selectors', () => {
       const result = selectedAddressTxListSelector(state);
 
       expect(result).toStrictEqual([state.metamask.transactions[1]]);
+    });
+
+    it('returns an empty array when provider configuration is missing', () => {
+      const state = {
+        metamask: {
+          transactions: [
+            {
+              id: 1,
+              chainId: '0x1',
+              type: TransactionType.simpleSend,
+              txParams: { from: '0xSelectedAddress', to: '0xAnotherAddress' },
+            },
+          ],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xSelectedAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          smartTransactionsState: {
+            smartTransactions: [],
+          },
+          selectedNetworkClientId: 'missingNetworkClientId',
+          networkConfigurationsByChainId: {},
+        },
+      };
+
+      expect(selectedAddressTxListSelector(state)).toStrictEqual([]);
     });
   });
 
@@ -2056,6 +2137,71 @@ describe('Transaction Selectors', () => {
 
       // Should return same reference (memoized)
       expect(result1).toBe(result2);
+    });
+  });
+
+  describe('getCurrentNetworkTransactions', () => {
+    it('returns transactions for the current network', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      expect(getCurrentNetworkTransactions(state)).toStrictEqual([mainnetTx]);
+    });
+
+    it('returns cached reference when non-current-network transactions change', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state1 = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx],
+        },
+      };
+
+      const result1 = getCurrentNetworkTransactions(state1);
+
+      const state2 = {
+        ...state1,
+        metamask: {
+          ...state1.metamask,
+          transactions: [
+            mainnetTx,
+            {
+              id: 2,
+              chainId: CHAIN_IDS.GOERLI,
+              time: 200,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const result2 = getCurrentNetworkTransactions(state2);
+
+      expect(result2).toBe(result1);
+      expect(result2).toStrictEqual([mainnetTx]);
     });
   });
 });

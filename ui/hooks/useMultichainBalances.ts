@@ -10,10 +10,9 @@ import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
 import {
-  SLIP44_ASSET_NAMESPACE,
-  TRON_RESOURCE_SYMBOLS_SET,
-  type TronResourceSymbol,
-} from '../../shared/constants/multichain/assets';
+  isNativeCaipAssetId,
+  isTronSpecialAsset,
+} from '../../shared/lib/asset-utils';
 import {
   getAccountAssets,
   getAssetsMetadata,
@@ -65,7 +64,7 @@ const useNonEvmAssetsWithBalances = (
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
           address: assetReference,
-          isNative: assetNamespace === SLIP44_ASSET_NAMESPACE,
+          isNative: isNativeCaipAssetId(caipAssetId),
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
@@ -153,16 +152,17 @@ export const useMultichainBalances = (
     tronAccount?.type,
   );
 
+  // Filter out Tron special assets (resources, staking state, etc.) once
+  const filteredTronBalances = useMemo(
+    () =>
+      tronBalancesWithFiat.filter(
+        (token) => !isTronSpecialAsset(token.assetId),
+      ),
+    [tronBalancesWithFiat],
+  );
+
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
-    // Filter out Tron energy/bandwidth resources before combining
-    const filteredTronBalances = tronBalancesWithFiat.filter(
-      (token) =>
-        !TRON_RESOURCE_SYMBOLS_SET.has(
-          token.symbol.toLowerCase() as TronResourceSymbol,
-        ),
-    );
-
     return [
       ...evmBalancesWithFiatByChainId,
       ...solanaBalancesWithFiat,
@@ -178,19 +178,11 @@ export const useMultichainBalances = (
     evmBalancesWithFiatByChainId,
     solanaBalancesWithFiat,
     bitcoinBalancesWithFiat,
-    tronBalancesWithFiat,
+    filteredTronBalances,
   ]);
 
   // return total fiat balances by chainId/caipChainId
   const balanceByChainId = useMemo(() => {
-    // Filter out Tron energy/bandwidth resources
-    const filteredTronBalances = tronBalancesWithFiat.filter(
-      (token) =>
-        !TRON_RESOURCE_SYMBOLS_SET.has(
-          token.symbol.toLowerCase() as TronResourceSymbol,
-        ),
-    );
-
     return [
       ...evmBalancesWithFiatByChainId,
       ...solanaBalancesWithFiat,
@@ -208,7 +200,7 @@ export const useMultichainBalances = (
     evmBalancesWithFiatByChainId,
     solanaBalancesWithFiat,
     bitcoinBalancesWithFiat,
-    tronBalancesWithFiat,
+    filteredTronBalances,
   ]);
 
   return { assetsWithBalance, balanceByChainId };

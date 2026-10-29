@@ -1,28 +1,34 @@
 import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
-import { isSignatureTransactionType } from '../../utils';
+import {
+  isEip712PrimaryTypeField,
+  isSignatureTransactionType,
+  parseSanitizeTypedDataMessage,
+} from '../../utils';
 import { SignatureRequestType } from '../../types/confirm';
 import {
-  parseTypedDataMessage,
   parseApprovalTransactionData,
-} from '../../../../../shared/modules/transaction.utils';
+  parseTypedDataMessage,
+} from '../../../../../shared/lib/transaction.utils';
 import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
-import { Severity } from '../../../../helpers/constants/design-system';
-import {
-  useTrustSignal,
-  TrustSignalDisplayState,
-} from '../../../../hooks/useTrustSignals';
+import { useTrustSignals } from '../../../../hooks/useTrustSignals';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
 import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
+import {
+  buildTrustSignalAlerts,
+  buildTrustSignalRequests,
+  TrustSignalAlertTarget,
+} from './utils';
 
 function isZeroAmount(amount: string | number | undefined): boolean {
   return amount === '0' || amount === 0;
@@ -70,19 +76,34 @@ function getAlertSkipReason(
     return AlertSkipReason.None;
   }
 
-  const { primaryType, message, domain } = parseTypedDataMessage(msgData);
+  const { primaryType } = parseTypedDataMessage(msgData);
   const isPermit = PRIMARY_TYPES_PERMIT.some((type) => type === primaryType);
   if (!isPermit) {
     return AlertSkipReason.None;
   }
 
+  const { message, domain, types } = parseSanitizeTypedDataMessage(msgData);
   const isDaiPermit =
-    domain?.verifyingContract?.toLowerCase() ===
-    DAI_CONTRACT_ADDRESS.toLowerCase();
+    isEip712PrimaryTypeField(types, primaryType, 'allowed', 'bool') &&
+    isEip712PrimaryTypeField(
+      types,
+      'EIP712Domain',
+      'verifyingContract',
+      'address',
+    ) &&
+    typeof domain.verifyingContract === 'string' &&
+    domain.verifyingContract.toLowerCase() ===
+      DAI_CONTRACT_ADDRESS.toLowerCase();
+  const hasErc2612Value = isEip712PrimaryTypeField(
+    types,
+    primaryType,
+    'value',
+    'uint256',
+  );
 
   const isZeroValuePermit = isDaiPermit
-    ? message?.allowed === false // DAI uses `allowed` boolean
-    : isZeroAmount(message?.value); // Standard EIP-2612 uses `value`
+    ? message.allowed === false // DAI uses `allowed` boolean
+    : hasErc2612Value && isZeroAmount(message.value); // Standard EIP-2612 uses `value`
 
   return isZeroValuePermit ? AlertSkipReason.ZeroValue : AlertSkipReason.None;
 }
@@ -163,10 +184,12 @@ export function useSpenderAlerts(): Alert[] {
     isNFTPendingFromTxTo,
   ]);
 
-  const spenderAddress = useMemo(() => {
+  const spenderAddresses = useMemo(() => {
     if (!currentConfirmation) {
-      return null;
+      return [];
     }
+
+    const addresses: TrustSignalAlertTarget[] = [];
 
     // Handle approval transactions
     const txMeta = currentConfirmation as TransactionMeta;
@@ -177,11 +200,26 @@ export function useSpenderAlerts(): Alert[] {
         txData as `0x${string}`,
       );
       if (approvalData?.spender) {
-        return approvalData.spender;
+        addresses.push({ address: approvalData.spender });
       }
     }
+
+    txMeta?.nestedTransactions?.forEach((nested, index) => {
+      if (nested.data) {
+        const nestedApprovalData = parseApprovalTransactionData(
+          nested.data as `0x${string}`,
+        );
+        if (nestedApprovalData?.spender) {
+          addresses.push({
+            address: nestedApprovalData.spender,
+            nestedTransactionIndex: index,
+          });
+        }
+      }
+    });
+
     // Handle permit signatures
-    else if (
+    if (
       isSignatureTransactionType(currentConfirmation) &&
       currentConfirmation.type === 'eth_signTypedData'
     ) {
@@ -189,53 +227,48 @@ export function useSpenderAlerts(): Alert[] {
       const msgData = signatureRequest.msgParams?.data as string;
 
       if (msgData) {
-        const typedDataMessage = parseTypedDataMessage(msgData);
-        const { primaryType } = typedDataMessage;
+        const { primaryType } = parseTypedDataMessage(msgData);
 
         if (PRIMARY_TYPES_PERMIT.some((type) => type === primaryType)) {
-          return typedDataMessage.message?.spender || null;
+          const { message, types } = parseSanitizeTypedDataMessage(msgData);
+          if (
+            isEip712PrimaryTypeField(
+              types,
+              primaryType,
+              'spender',
+              'address',
+            ) &&
+            message.spender
+          ) {
+            addresses.push({ address: message.spender });
+          }
         }
       }
     }
 
-    return null;
+    return addresses;
   }, [currentConfirmation]);
 
-  const { state: trustSignalDisplayState } = useTrustSignal(
-    spenderAddress || '',
-    NameType.ETHEREUM_ADDRESS,
-    currentConfirmation?.chainId,
-  );
+  const trustSignalsRequests = useMemo(() => {
+    return buildTrustSignalRequests(
+      spenderAddresses,
+      currentConfirmation?.chainId as Hex | undefined,
+    );
+  }, [spenderAddresses, currentConfirmation?.chainId]);
+
+  const trustSignals = useTrustSignals(trustSignalsRequests);
 
   return useMemo(() => {
-    if (!spenderAddress || isSafeToSkipAlert) {
+    if (spenderAddresses.length === 0 || isSafeToSkipAlert) {
       return [];
     }
 
-    const alerts: Alert[] = [];
-
-    if (trustSignalDisplayState === TrustSignalDisplayState.Malicious) {
-      alerts.push({
-        actions: [],
-        field: RowAlertKey.Spender,
-        isBlocking: false,
-        key: 'spenderTrustSignalMalicious',
-        message: t('alertMessageAddressTrustSignalMalicious'),
-        reason: t('nameModalTitleMalicious'),
-        severity: Severity.Danger,
-      });
-    } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
-      alerts.push({
-        actions: [],
-        field: RowAlertKey.Spender,
-        isBlocking: false,
-        key: 'spenderTrustSignalWarning',
-        message: t('alertMessageAddressTrustSignal'),
-        reason: t('nameModalTitleWarning'),
-        severity: Severity.Warning,
-      });
-    }
-
-    return alerts;
-  }, [spenderAddress, isSafeToSkipAlert, trustSignalDisplayState, t]);
+    return buildTrustSignalAlerts({
+      targets: spenderAddresses,
+      trustSignals,
+      field: RowAlertKey.Spender,
+      keyPrefix: 'spenderTrustSignal',
+      t,
+    });
+  }, [spenderAddresses, isSafeToSkipAlert, trustSignals, t]);
 }

@@ -1,24 +1,106 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import * as browserRuntime from '../../../../shared/modules/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import * as browserRuntime from '../../../../shared/lib/browser-runtime.utils';
+import {
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  PLATFORM_FIREFOX,
+} from '../../../../shared/constants/app';
+import { TEST_SEED_PHRASE } from '../../../../test/e2e/constants';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SrpInputImport from './srp-input-import';
 
+const mockPermissionsRequest = jest.fn().mockResolvedValue(true);
+
+jest.mock('webextension-polyfill', () => ({
+  permissions: {
+    request: (...args: unknown[]) => mockPermissionsRequest(...args),
+  },
+}));
+
+const mockGetEnvironmentType = jest.fn().mockReturnValue('popup');
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  getEnvironmentType: () => mockGetEnvironmentType(),
+}));
+
 const mockClipboardReadText = jest.fn().mockResolvedValue('some mock text');
+const mockClipboardWriteText = jest.fn().mockResolvedValue(undefined);
+
+const COLLIDING_24_WORD_SRP =
+  'tumble heart quit undo right legal salute lizard tape unveil art lava filter fee snack fragile duck impact oven come cram tourist casino sort';
+const CHECKSUM_INVALID_SRP = `${TEST_SEED_PHRASE.split(' ')
+  .slice(0, -1)
+  .join(' ')} abandon`;
 
 Object.defineProperty(navigator, 'clipboard', {
   value: {
     readText: mockClipboardReadText,
+    writeText: mockClipboardWriteText,
   },
 });
 
 describe('SrpInputImport', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetEnvironmentType.mockReturnValue('popup');
+    mockClipboardWriteText.mockResolvedValue(undefined);
+    jest.spyOn(window, 'focus').mockImplementation(() => undefined);
+  });
+
   it('should render', () => {
     const { getByTestId } = renderWithProvider(
       <SrpInputImport onChange={jest.fn()} />,
     );
     expect(getByTestId('srp-input-import__srp-note')).toBeInTheDocument();
+  });
+
+  it('allows entry to continue when a valid SRP is a prefix of a longer SRP', async () => {
+    const onChange = jest.fn();
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <SrpInputImport onChange={onChange} />,
+    );
+    const words = COLLIDING_24_WORD_SRP.split(' ');
+    const firstTwelveWords = words.slice(0, 12).join(' ');
+
+    const initialInput = getByTestId('srp-input-import__srp-note');
+    fireEvent.change(initialInput, { target: { value: words[0] } });
+    fireEvent.keyDown(initialInput, { key: ' ' });
+
+    for (let index = 1; index < 12; index += 1) {
+      const input = getByTestId(`import-srp__srp-word-${index}`);
+      fireEvent.change(input, { target: { value: words[index] } });
+      if (index < 11) {
+        fireEvent.keyDown(input, { key: ' ' });
+      }
+    }
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenLastCalledWith(firstTwelveWords);
+    });
+
+    fireEvent.keyDown(getByTestId('import-srp__srp-word-11'), { key: ' ' });
+
+    expect(getByTestId('import-srp__srp-word-12')).toBeInTheDocument();
+    expect(onChange).toHaveBeenLastCalledWith('');
+
+    for (let index = 12; index < words.length; index += 1) {
+      const input = getByTestId(`import-srp__srp-word-${index}`);
+      fireEvent.change(input, { target: { value: words[index] } });
+      if (index < words.length - 1) {
+        fireEvent.keyDown(input, { key: ' ' });
+      }
+    }
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenLastCalledWith(COLLIDING_24_WORD_SRP);
+    });
+
+    fireEvent.keyDown(getByTestId('import-srp__srp-word-23'), { key: ' ' });
+
+    expect(getByTestId('import-srp__srp-word-23')).toBeInTheDocument();
+    expect(queryByTestId('import-srp__srp-word-24')).not.toBeInTheDocument();
   });
 
   it('should ask for explicit permission to read the clipboard in firefox', async () => {
@@ -33,10 +115,136 @@ describe('SrpInputImport', () => {
     fireEvent.click(pasteButton);
 
     await waitFor(() => {
-      expect(browser.permissions.request).toHaveBeenCalledWith({
+      expect(mockPermissionsRequest).toHaveBeenCalledWith({
         permissions: ['clipboardRead'],
       });
       expect(mockClipboardReadText).toHaveBeenCalled();
     });
+  });
+
+  it('should ask for explicit permission and focus textarea before reading clipboard in Chrome side panel', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport onChange={jest.fn()} />,
+    );
+    const textarea = getByTestId('srp-input-import__srp-note');
+    const focusSpy = jest.spyOn(textarea, 'focus');
+
+    const pasteButton = getByTestId('srp-input-import__paste-button');
+    fireEvent.click(pasteButton);
+
+    await waitFor(() => {
+      expect(mockPermissionsRequest).toHaveBeenCalledWith({
+        permissions: ['clipboardRead'],
+      });
+      expect(focusSpy).toHaveBeenCalled();
+      expect(mockClipboardReadText).toHaveBeenCalled();
+    });
+  });
+
+  it('clears the clipboard after accepting an SRP paste', async () => {
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport onChange={jest.fn()} />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => TEST_SEED_PHRASE,
+      },
+    });
+
+    await waitFor(() => {
+      expect(mockClipboardWriteText).toHaveBeenCalledWith('');
+    });
+  });
+
+  it('clears the clipboard after truncating an overlong SRP paste', async () => {
+    const onChange = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport onChange={onChange} />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => `${COLLIDING_24_WORD_SRP} abandon`,
+      },
+    });
+
+    await waitFor(() => {
+      expect(mockClipboardWriteText).toHaveBeenCalledWith('');
+      expect(onChange).toHaveBeenLastCalledWith(COLLIDING_24_WORD_SRP);
+    });
+  });
+
+  it('reports a failed clear after accepting an SRP paste', async () => {
+    mockClipboardWriteText.mockRejectedValueOnce(new Error('Clipboard denied'));
+    const onClipboardClearFailed = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport
+        onChange={jest.fn()}
+        onClipboardClearFailed={onClipboardClearFailed}
+      />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => TEST_SEED_PHRASE,
+      },
+    });
+
+    await waitFor(() => {
+      expect(onClipboardClearFailed).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('reports a failed clear after accepting a checksum-invalid SRP paste', async () => {
+    mockClipboardWriteText.mockRejectedValueOnce(new Error('Clipboard denied'));
+    const onClipboardClearFailed = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <SrpInputImport
+        onChange={jest.fn()}
+        onClipboardClearFailed={onClipboardClearFailed}
+      />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => CHECKSUM_INVALID_SRP,
+      },
+    });
+
+    await waitFor(() => {
+      expect(mockClipboardWriteText).toHaveBeenCalledWith('');
+      expect(onClipboardClearFailed).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('only clears a clipboard cleanup retry when the phrase is cleared', async () => {
+    const onClearClipboardRetry = jest.fn();
+    const { getByTestId, getByText } = renderWithProvider(
+      <SrpInputImport
+        onChange={jest.fn()}
+        onClearClipboardRetry={onClearClipboardRetry}
+      />,
+    );
+
+    fireEvent.paste(getByTestId('srp-input-import__srp-note'), {
+      clipboardData: {
+        getData: () => TEST_SEED_PHRASE,
+      },
+    });
+
+    await waitFor(() => {
+      expect(
+        getByText(messages.onboardingSrpInputClearAll.message),
+      ).toBeInTheDocument();
+    });
+
+    expect(onClearClipboardRetry).not.toHaveBeenCalled();
+
+    fireEvent.click(getByText(messages.onboardingSrpInputClearAll.message));
+
+    expect(onClearClipboardRetry).toHaveBeenCalledTimes(1);
   });
 });

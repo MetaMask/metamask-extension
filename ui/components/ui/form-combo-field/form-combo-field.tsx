@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import { I18nContext } from '../../../contexts/i18n';
@@ -57,7 +57,7 @@ function Option({
   onClick: (option: FormComboFieldOption) => void;
 }) {
   const handleClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
       e.nativeEvent.stopImmediatePropagation();
@@ -147,8 +147,6 @@ function Dropdown<Option extends FormComboFieldOption>({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function FormComboField<Option extends FormComboFieldOption>({
   hideDropdownIfNoOptions = false,
   maxDropdownHeight,

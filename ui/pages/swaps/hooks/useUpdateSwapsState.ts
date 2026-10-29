@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -12,13 +12,14 @@ import {
   setTopAssets,
 } from '../../../ducks/swaps/swaps';
 import { setSwapsTokens } from '../../../store/actions';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
+import { useDispatch } from '../../../store/hooks';
 
 export default function useUpdateSwapsState() {
   const dispatch = useDispatch();

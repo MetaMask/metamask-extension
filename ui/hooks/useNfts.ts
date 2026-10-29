@@ -1,37 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
-import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
-import { getAllChainsToPoll, getSelectedInternalAccount } from '../selectors';
+import { getAllNfts } from '../ducks/metamask/metamask';
 import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { usePrevious } from './usePrevious';
-import { useI18nContext } from './useI18nContext';
 
-export function useNfts({
-  overridePopularNetworkFilter = false,
-}: {
-  overridePopularNetworkFilter?: boolean;
-} = {}) {
-  const t = useI18nContext();
-
+export function useNfts() {
   const allUserNfts = useSelector(getAllNfts);
-
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const chainId = useSelector(getCurrentChainId);
-
-  const allChainIds = useSelector(getAllChainsToPoll);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
-  const nfts = useMemo(() => {
-    // Filter NFTs to only include those from enabled networks
+  const { currentlyOwnedNfts, previouslyOwnedNfts } = useMemo(() => {
     const nftsFromEnabledNetworks: Record<string, NFT[]> = {};
-
-    if (overridePopularNetworkFilter) {
-      return allUserNfts?.[chainId] ?? [];
-    }
-
     Object.entries(allUserNfts ?? {}).forEach(
       ([networkChainId, networkNfts]) => {
         if (
@@ -43,70 +21,20 @@ export function useNfts({
       },
     );
 
-    return nftsFromEnabledNetworks;
-  }, [
-    overridePopularNetworkFilter,
-    allUserNfts,
-    chainId,
-    enabledNetworksByNamespace,
-  ]);
+    const allNfts: NFT[] = Object.values(nftsFromEnabledNetworks).flat();
+    const current: NFT[] = [];
+    const previous: NFT[] = [];
 
-  const nftContracts = useSelector(getNftContracts);
-
-  const previouslyOwnedText = t('nftsPreviouslyOwned');
-  const unknownCollectionText = t('unknownCollection');
-
-  const [currentlyOwnedNfts, setCurrentlyOwnedNfts] = useState<NFT[]>([]);
-  const [previouslyOwnedNfts, setPreviouslyOwnedNfts] = useState<NFT[]>([]);
-  const [loading, setNftsLoading] = useState(true);
-  const prevNfts = usePrevious(nfts);
-  const prevChainId = usePrevious(allChainIds);
-  const prevSelectedAddress = usePrevious(selectedAddress);
-
-  useEffect(() => {
-    const selectNfts = () => {
-      setNftsLoading(true);
-      if (selectedAddress === undefined || allChainIds === undefined) {
-        return;
+    allNfts.forEach((nft) => {
+      if (nft?.isCurrentlyOwned === false) {
+        previous.push(nft);
+      } else {
+        current.push(nft);
       }
+    });
 
-      const previousNfts: NFT[] = [];
-      const currentNfts: NFT[] = [];
+    return { currentlyOwnedNfts: current, previouslyOwnedNfts: previous };
+  }, [allUserNfts, enabledNetworksByNamespace]);
 
-      const allNfts: NFT[] = Object.values(nfts).flat() as NFT[];
-
-      allNfts.forEach((nft: NFT) => {
-        if (nft?.isCurrentlyOwned === false) {
-          previousNfts.push(nft);
-        } else {
-          currentNfts.push(nft);
-        }
-      });
-      setPreviouslyOwnedNfts(previousNfts);
-      setCurrentlyOwnedNfts(currentNfts);
-      setNftsLoading(false);
-    };
-
-    if (
-      !isEqual(prevNfts, nfts) ||
-      !isEqual(prevSelectedAddress, selectedAddress) ||
-      !isEqual(prevChainId, chainId)
-    ) {
-      selectNfts();
-    }
-  }, [
-    nfts,
-    prevNfts,
-    nftContracts,
-    setNftsLoading,
-    chainId,
-    prevChainId,
-    selectedAddress,
-    prevSelectedAddress,
-    previouslyOwnedText,
-    unknownCollectionText,
-    allChainIds,
-  ]);
-
-  return { loading, currentlyOwnedNfts, previouslyOwnedNfts };
+  return { currentlyOwnedNfts, previouslyOwnedNfts };
 }

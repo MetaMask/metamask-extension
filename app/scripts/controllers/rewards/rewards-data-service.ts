@@ -1,21 +1,19 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 // TODO: find similar functionality in extession
 // import { getSubscriptionToken } from '../utils/multi-subscription-token-vault';
 import log from 'loglevel';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import ExtensionPlatform from '../../platforms/extension';
 import {
   REWARDS_API_URL,
   REWARDS_ERROR_MESSAGES,
 } from '../../../../shared/constants/rewards';
-import type { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
-import { FALLBACK_LOCALE } from '../../../../shared/modules/i18n';
 import {
   EstimatePointsDto,
   EstimatedPointsDto,
   OptInStatusDto,
   OptInStatusInputDto,
 } from '../../../../shared/types/rewards';
+import { getNormalizedLocale } from '../../../../shared/constants/locales';
 import type {
   LoginResponseDto,
   MobileLoginDto,
@@ -24,7 +22,13 @@ import type {
   SeasonStateDto,
   SeasonMetadataDto,
   DiscoverSeasonsDto,
+  ChallengeDto,
+  SiweLoginDto,
+  SiweJoinDto,
+  VipFeesResponseDto,
 } from './rewards-controller.types';
+import { RewardsDataServiceMethodActions } from './rewards-data-service-method-action-types';
+import { RewardsDataServiceMessenger } from './rewards-data-service-types';
 
 /**
  * Custom error for invalid timestamps
@@ -63,6 +67,24 @@ export class SeasonNotFoundError extends Error {
   }
 }
 
+const MESSENGER_EXPOSED_METHODS = [
+  'login',
+  'siweLogin',
+  'estimatePoints',
+  'mobileOptin',
+  'getSeasonStatus',
+  'fetchGeoLocation',
+  'mobileJoin',
+  'siweJoin',
+  'getOptInStatus',
+  'getSeasonMetadata',
+  'getDiscoverSeasons',
+  'generateChallenge',
+  'getVipFees',
+] as const;
+
+export type RewardsDataServiceActions = RewardsDataServiceMethodActions;
+
 /**
  * Custom error for account already registered (409 conflict)
  */
@@ -83,17 +105,6 @@ const GEOLOCATION_URLS = {
   DEV: 'https://on-ramp.dev-api.cx.metamask.io/geolocation',
   PROD: 'https://on-ramp.api.cx.metamask.io/geolocation',
 };
-
-/**
- * Normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
- *
- * @param locale - extension locale
- * @returns normalised locale
- */
-export const getNormalisedLocale = (locale: string): string =>
-  Intl.getCanonicalLocales(
-    locale ? locale.replace(/_/gu, '-') : FALLBACK_LOCALE,
-  )[0];
 
 /**
  * Data service for rewards API endpoints
@@ -118,46 +129,9 @@ export class RewardsDataService {
     this.#fetch = fetchFunction;
     this.#rewardsApiUrl = this.getRewardsApiBaseUrl();
 
-    // Register all action handlers
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:login`,
-      this.login.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:estimatePoints`,
-      this.estimatePoints.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:mobileOptin`,
-      this.mobileOptin.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getSeasonStatus`,
-      this.getSeasonStatus.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:fetchGeoLocation`,
-      this.fetchGeoLocation.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:validateReferralCode`,
-      this.validateReferralCode.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:mobileJoin`,
-      this.mobileJoin.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getOptInStatus`,
-      this.getOptInStatus.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getSeasonMetadata`,
-      this.getSeasonMetadata.bind(this),
-    );
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getDiscoverSeasons`,
-      this.getDiscoverSeasons.bind(this),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -187,7 +161,7 @@ export class RewardsDataService {
       const hasRegionCode = /^[a-z]{2}[-_][a-z]{2}$/iu.test(currentLocale);
 
       // Only normalize if locale doesn't already have a region code
-      return hasRegionCode ? currentLocale : getNormalisedLocale(currentLocale);
+      return hasRegionCode ? currentLocale : getNormalizedLocale(currentLocale);
     } catch (error) {
       log.warn('Failed to get locale from PreferencesController:', error);
       try {
@@ -226,8 +200,17 @@ export class RewardsDataService {
       const version = extensionPlatform.getVersion();
       headers['rewards-client-id'] = `extension-${version}`;
     } catch (error) {
-      // Continue without client header if version retrieval fails
-      console.warn('Failed to retrieve app version for client header:', error);
+      // Unit tests and other non-extension runtimes have no browser manifest.
+      // The build-time version is set in those environments.
+      const fallbackVersion = process.env.METAMASK_VERSION;
+      if (fallbackVersion) {
+        headers['rewards-client-id'] = `extension-${fallbackVersion}`;
+      } else {
+        console.warn(
+          'Failed to retrieve app version for client header:',
+          error,
+        );
+      }
     }
 
     // Add bearer token for authenticated requests
@@ -261,6 +244,13 @@ export class RewardsDataService {
       });
 
       clearTimeout(timeoutId);
+
+      if (response.status === 403 && subscriptionToken) {
+        throw new AuthorizationFailedError(
+          `Authorization failed: ${response.status}`,
+        );
+      }
+
       return response;
     } catch (error) {
       clearTimeout(timeoutId);
@@ -331,6 +321,32 @@ export class RewardsDataService {
       this.checkForAccountAlreadyRegisteredError(response, errorData);
 
       throw new Error(`Login failed: ${response.status}`);
+    }
+
+    return (await response.json()) as LoginResponseDto;
+  }
+
+  /**
+   * Perform login via SIWE (Sign-In with Ethereum) signature.
+   *
+   * @param body - The SIWE login request body containing challengeId, signature, and optional referralCode.
+   * @param body.challengeId - The unique identifier of the challenge
+   * @param body.signature - The signature of the SIWE message
+   * @param body.referralCode - Optional referral code provided by referrer
+   * @returns The login response DTO.
+   */
+  async siweLogin(body: SiweLoginDto): Promise<LoginResponseDto> {
+    const response = await this.makeRequest('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      this.checkForAccountAlreadyRegisteredError(response, errorData);
+
+      throw new Error(`SIWE login failed: ${response.status}`);
     }
 
     return (await response.json()) as LoginResponseDto;
@@ -408,9 +424,6 @@ export class RewardsDataService {
 
     if (!response.ok) {
       const errorData = await response.json();
-      if (errorData?.message?.includes('Rewards authorization failed')) {
-        throw new AuthorizationFailedError();
-      }
 
       if (errorData?.message?.includes('Season not found')) {
         throw new SeasonNotFoundError();
@@ -453,29 +466,6 @@ export class RewardsDataService {
   }
 
   /**
-   * Validate a referral code.
-   *
-   * @param code - The referral code to validate.
-   * @returns Promise<{valid: boolean}> - Object indicating if the code is valid.
-   */
-  async validateReferralCode(code: string): Promise<{ valid: boolean }> {
-    const response = await this.makeRequest(
-      `/referral/validate?code=${encodeURIComponent(code)}`,
-      {
-        method: 'GET',
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to validate referral code. Please try again shortly.`,
-      );
-    }
-
-    return (await response.json()) as { valid: boolean };
-  }
-
-  /**
    * Join an account to a subscription via mobile login.
    *
    * @param body - The mobile login request body containing account, timestamp, and signature.
@@ -511,6 +501,40 @@ export class RewardsDataService {
 
       throw new Error(
         `Mobile join failed: ${response.status} ${errorData?.message || ''}`,
+      );
+    }
+
+    return (await response.json()) as SubscriptionDto;
+  }
+
+  /**
+   * Join an account to a subscription via SIWE (Sign-In with Ethereum) signature.
+   *
+   * @param body - The SIWE join request body containing challengeId and signature.
+   * @param subscriptionToken - The subscription token to join the account to.
+   * @returns Promise<SubscriptionDto> - The updated subscription information.
+   */
+  async siweJoin(
+    body: SiweJoinDto,
+    subscriptionToken: string,
+  ): Promise<SubscriptionDto> {
+    const response = await this.makeRequest(
+      '/wr/subscriptions/join',
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+      subscriptionToken,
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      log.error('RewardsDataService: siweJoin errorData', errorData);
+
+      this.checkForAccountAlreadyRegisteredError(response, errorData);
+
+      throw new Error(
+        `SIWE join failed: ${response.status} ${errorData?.message || ''}`,
       );
     }
 
@@ -580,6 +604,19 @@ export class RewardsDataService {
       }
     }
 
+    // If current season's end date has already passed, coerce it to previous
+    if (data.current?.endDate) {
+      const endDate =
+        data.current.endDate instanceof Date
+          ? data.current.endDate
+          : new Date(data.current.endDate);
+
+      if (endDate <= new Date()) {
+        data.previous = data.current;
+        data.current = null;
+      }
+    }
+
     return data as DiscoverSeasonsDto;
   }
 
@@ -611,6 +648,59 @@ export class RewardsDataService {
       data.endDate = new Date(data.endDate);
     }
 
+    if (!Array.isArray(data.activityTypes)) {
+      data.activityTypes = [];
+    }
+
     return data as SeasonMetadataDto;
+  }
+
+  /**
+   * Get the VIP fee table for the current subscription.
+   *
+   * @param subscriptionToken - The subscription token used for authentication.
+   * @returns The VIP fee response (tier 0 will have `fees=null`).
+   */
+  async getVipFees(subscriptionToken: string): Promise<VipFeesResponseDto> {
+    const response = await this.makeRequest(
+      '/vip/fees',
+      {
+        method: 'GET',
+      },
+      subscriptionToken,
+    );
+
+    if (!response.ok) {
+      throw new Error(`Get VIP fees failed: ${response.status}`);
+    }
+
+    return (await response.json()) as VipFeesResponseDto;
+  }
+
+  /**
+   * Generate a challenge for SIWE (Sign-In with Ethereum) authentication.
+   *
+   * @param body - The challenge generation request body containing address.
+   * @param body.address
+   * @returns The challenge DTO.
+   */
+  async generateChallenge(body: { address: string }): Promise<ChallengeDto> {
+    const response = await this.makeRequest('/auth/challenge/generate', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Generate challenge failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Convert nonce string to bigint if needed
+    if (typeof data.nonce === 'string') {
+      data.nonce = BigInt(data.nonce);
+    }
+
+    return data as ChallengeDto;
   }
 }

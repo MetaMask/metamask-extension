@@ -1,18 +1,16 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
+import type { Position } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import type { Position } from '../types';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PositionCard } from './position-card';
 
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
-    formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
-      `$${value.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`,
+    formatPercentWithMinThreshold: (value: number) =>
+      `${(value * 100).toFixed(2)}%`,
   }),
 }));
 
@@ -22,8 +20,19 @@ const mockStore = configureStore({
   },
 });
 
+// Store with the perpsShowFullAssetNames flag enabled so full asset names render.
+const mockStoreWithFullNames = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsShowFullAssetNames: { enabled: true, minimumVersion: '0.0.0' },
+    },
+  },
+});
+
 const createMockPosition = (overrides: Partial<Position> = {}): Position => ({
-  coin: 'ETH',
+  symbol: 'ETH',
   size: '2.5',
   entryPrice: '2850.00',
   positionValue: '7125.00',
@@ -35,8 +44,8 @@ const createMockPosition = (overrides: Partial<Position> = {}): Position => ({
     rawUsd: '2375.00',
   },
   liquidationPrice: '2400.00',
-  maxLeverage: 50,
-  returnOnEquity: '15.79',
+  maxLeverage: 20,
+  returnOnEquity: '0.1579',
   cumulativeFunding: {
     allTime: '12.50',
     sinceOpen: '8.30',
@@ -51,24 +60,55 @@ const createMockPosition = (overrides: Partial<Position> = {}): Position => ({
 
 describe('PositionCard', () => {
   it('renders the position card with correct data-testid', () => {
-    const position = createMockPosition({ coin: 'ETH' });
+    const position = createMockPosition({ symbol: 'ETH' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByTestId('position-card-ETH')).toBeInTheDocument();
   });
 
   it('displays the correct coin name', () => {
-    const position = createMockPosition({ coin: 'BTC' });
+    const position = createMockPosition({ symbol: 'BTC' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByText('BTC')).toBeInTheDocument();
   });
 
   it('displays HIP-3 coin without prefix', () => {
-    const position = createMockPosition({ coin: 'xyz:TSLA' });
+    const position = createMockPosition({ symbol: 'xyz:TSLA' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByText('TSLA')).toBeInTheDocument();
+  });
+
+  it('displays the full asset name as the title while keeping the ticker next to the size when the flag is enabled', () => {
+    const position = createMockPosition({ symbol: 'BTC', size: '2.5' });
+    renderWithProvider(
+      <PositionCard position={position} assetName="Bitcoin" />,
+      mockStoreWithFullNames,
+    );
+
+    // Title shows the full name
+    expect(
+      screen.getByText(messages.networkNameBitcoin.message),
+    ).toBeInTheDocument();
+    // Size line keeps the ticker as its unit
+    expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
+  });
+
+  it('shows only the ticker as the title when the full asset names flag is disabled', () => {
+    const position = createMockPosition({ symbol: 'BTC', size: '2.5' });
+    renderWithProvider(
+      <PositionCard position={position} assetName="Bitcoin" />,
+      mockStore,
+    );
+
+    // Full name is not rendered when the flag is off
+    expect(
+      screen.queryByText(messages.networkNameBitcoin.message),
+    ).not.toBeInTheDocument();
+    // Ticker is used as the title instead
+    expect(screen.getByText('BTC')).toBeInTheDocument();
+    expect(screen.getByText('2.5 BTC')).toBeInTheDocument();
   });
 
   it('displays long direction for positive size', () => {
@@ -92,18 +132,18 @@ describe('PositionCard', () => {
   });
 
   it('displays the absolute position size', () => {
-    const position = createMockPosition({ coin: 'SOL', size: '-50.0' });
+    const position = createMockPosition({ symbol: 'SOL', size: '-50.0' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     // Should display absolute value without negative sign
     expect(screen.getByText('50 SOL')).toBeInTheDocument();
   });
 
-  it('displays the entry price', () => {
-    const position = createMockPosition({ entryPrice: '45000.00' });
+  it('displays the position value', () => {
+    const position = createMockPosition({ positionValue: '7125.00' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
-    expect(screen.getByText('$45000.00')).toBeInTheDocument();
+    expect(screen.getByText('$7,125')).toBeInTheDocument();
   });
 
   it('displays positive P&L with + prefix', () => {
@@ -121,7 +161,7 @@ describe('PositionCard', () => {
   });
 
   it('renders the token logo', () => {
-    const position = createMockPosition({ coin: 'ARB' });
+    const position = createMockPosition({ symbol: 'ARB' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByTestId('perps-token-logo-ARB')).toBeInTheDocument();
@@ -150,5 +190,86 @@ describe('PositionCard', () => {
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByText('+$0.00')).toBeInTheDocument();
+  });
+
+  it('displays ROE percentage for a profitable position', () => {
+    const position = createMockPosition({
+      symbol: 'ETH',
+      returnOnEquity: '0.1579',
+    });
+    renderWithProvider(<PositionCard position={position} />, mockStore);
+
+    expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
+      '(15.79%)',
+    );
+    expect(screen.getByTestId('position-card-roe-ETH')).toHaveClass(
+      'text-success-default',
+    );
+  });
+
+  it('displays ROE percentage for a losing position', () => {
+    const position = createMockPosition({
+      symbol: 'BTC',
+      unrealizedPnl: '-250.00',
+      returnOnEquity: '-0.1667',
+    });
+    renderWithProvider(<PositionCard position={position} />, mockStore);
+
+    expect(screen.getByTestId('position-card-roe-BTC')).toHaveTextContent(
+      '(-16.67%)',
+    );
+    expect(screen.getByTestId('position-card-roe-BTC')).toHaveClass(
+      'text-error-default',
+    );
+  });
+
+  it('does not render ROE when returnOnEquity is not a number', () => {
+    const position = createMockPosition({
+      symbol: 'ETH',
+      returnOnEquity: 'not-a-number',
+    });
+    renderWithProvider(<PositionCard position={position} />, mockStore);
+
+    expect(
+      screen.queryByTestId('position-card-roe-ETH'),
+    ).not.toBeInTheDocument();
+  });
+
+  describe('privacy mode', () => {
+    const privacyStore = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          privacyMode: true,
+        },
+      },
+    });
+
+    it('masks size, value, P&L and RoE when privacy mode is enabled', () => {
+      const position = createMockPosition({ symbol: 'ETH', size: '2.5' });
+      renderWithProvider(<PositionCard position={position} />, privacyStore);
+
+      expect(screen.queryByText('2.5 ETH')).not.toBeInTheDocument();
+      expect(screen.queryByText('$7,125')).not.toBeInTheDocument();
+      expect(screen.queryByText('+$375.00')).not.toBeInTheDocument();
+      expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
+        '••••••',
+      );
+      expect(screen.getAllByText('••••••')).toHaveLength(4);
+    });
+
+    it('uses the default text color instead of green/red for P&L and RoE when privacy mode is enabled', () => {
+      const position = createMockPosition({
+        symbol: 'ETH',
+        unrealizedPnl: '375.00',
+      });
+      renderWithProvider(<PositionCard position={position} />, privacyStore);
+
+      const roe = screen.getByTestId('position-card-roe-ETH');
+      expect(roe).toHaveClass('text-default');
+      expect(roe).not.toHaveClass('text-success-default');
+      expect(roe).not.toHaveClass('text-error-default');
+    });
   });
 });

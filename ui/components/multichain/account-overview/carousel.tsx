@@ -1,21 +1,17 @@
-import React, { useContext, useState, useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { removeSlide, setSelectedAccount } from '../../../store/actions';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { removeSlide } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import { CarouselWithEmptyState } from '../carousel';
-import {
-  getAppIsLoading,
-  getRemoteFeatureFlags,
-  hasCreatedSolanaAccount,
-} from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getAppIsLoading } from '../../../selectors';
+import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
-import { CreateSolanaAccountModal } from '../create-solana-account-modal';
-import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
 
 export const Carousel = () => {
@@ -25,13 +21,8 @@ export const Carousel = () => {
   const isCarouselEnabled = Boolean(
     remoteFeatureFlags && remoteFeatureFlags.carouselBanners,
   );
-  const trackEvent = useContext(MetaMetricsContext);
-  const [hasRendered, setHasRendered] = useState(false);
-
-  const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
-    useState(false);
-  const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
-  const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const displayedSlideIds = useRef<Set<string>>(new Set());
 
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
@@ -51,59 +42,67 @@ export const Carousel = () => {
   const handleCarouselClick = (id: string) => {
     const slide = slideById.get(id);
     const key = slide?.variableName ?? id;
-
-    if (key === 'solana') {
-      if (hasSolanaAccount && selectedSolanaAccount) {
-        dispatch(setSelectedAccount(selectedSolanaAccount.address));
-      } else {
-        setShowCreateSolanaAccountModal(true);
-      }
-    }
+    let clickHandled = false;
 
     if (key === 'downloadMobileApp') {
       setShowDownloadMobileAppModal(true);
+      clickHandled = true;
     }
 
-    trackEvent({
-      event: MetaMetricsEventName.BannerSelect,
-      category: MetaMetricsEventCategory.Banner,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        banner_name: key,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.BannerSelect)
+        .addCategory(MetaMetricsEventCategory.Banner)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          banner_name: key,
+        })
+        .build(),
+    );
+
+    return clickHandled;
   };
 
   const handleRemoveSlide = (slideId: string, isLastSlide: boolean) => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.BannerDismissed)
+        .addCategory(MetaMetricsEventCategory.Banner)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          banner_name: slideId,
+        })
+        .build(),
+    );
+
     if (isLastSlide) {
-      trackEvent({
-        event: MetaMetricsEventName.BannerCloseAll,
-        category: MetaMetricsEventCategory.Banner,
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.BannerCloseAll)
+          .addCategory(MetaMetricsEventCategory.Banner)
+          .build(),
+      );
     }
 
     dispatch(removeSlide(slideId));
   };
 
-  const handleRenderSlides = useCallback(
-    (renderedSlides: CarouselSlide[]) => {
-      if (!hasRendered) {
-        for (const slide of renderedSlides) {
-          trackEvent({
-            event: MetaMetricsEventName.BannerDisplay,
-            category: MetaMetricsEventCategory.Banner,
-            properties: {
+  const handleActiveSlideChange = useCallback(
+    (slide: CarouselSlide) => {
+      if (!displayedSlideIds.current.has(slide.id)) {
+        displayedSlideIds.current.add(slide.id);
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.BannerDisplay)
+            .addCategory(MetaMetricsEventCategory.Banner)
+            .addProperties({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               banner_name: slide.id,
-            },
-          });
-        }
-        setHasRendered(true);
+            })
+            .build(),
+        );
       }
     },
-    [hasRendered, trackEvent],
+    [createEventBuilder, trackEvent],
   );
 
   if (!isCarouselEnabled) {
@@ -117,13 +116,8 @@ export const Carousel = () => {
         isLoading={isLoading}
         onSlideClick={handleCarouselClick}
         onSlideClose={handleRemoveSlide}
-        onRenderSlides={handleRenderSlides}
+        onActiveSlideChange={handleActiveSlideChange}
       />
-      {showCreateSolanaAccountModal && (
-        <CreateSolanaAccountModal
-          onClose={() => setShowCreateSolanaAccountModal(false)}
-        />
-      )}
       {showDownloadMobileAppModal && (
         <DownloadMobileAppModal
           onClose={() => setShowDownloadMobileAppModal(false)}

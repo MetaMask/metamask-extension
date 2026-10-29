@@ -1,4 +1,3 @@
-import { DefaultRootState } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import type { SetURLSearchParams } from 'react-router-dom';
 
@@ -23,7 +22,7 @@ jest.mock('./useSendAssets', () => {
   };
 });
 
-function renderHook(args: DefaultRootState = {}) {
+function renderHook(args: Record<string, unknown> = {}) {
   const { result } = renderHookWithProvider(useSendQueryParams, {
     ...mockState,
     metamask: { ...mockState.metamask, ...args },

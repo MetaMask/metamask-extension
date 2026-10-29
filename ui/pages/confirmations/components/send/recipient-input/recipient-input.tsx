@@ -52,9 +52,12 @@ export const RecipientInput = ({
   const {
     recipientConfusableCharacters,
     recipientError,
+    hasUnacknowledgedAlerts,
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
+  const isHardError = Boolean(recipientError);
+  const isWarning = !isHardError && Boolean(hasUnacknowledgedAlerts);
   const avatarSeedAddress =
     accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
     recipientResolvedLookup ||
@@ -62,8 +65,8 @@ export const RecipientInput = ({
     '';
 
   const onToChange = useCallback(
-    (e) => {
-      if (e.nativeEvent.inputType === 'insertFromPaste') {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if ((e.nativeEvent as InputEvent).inputType === 'insertFromPaste') {
         setRecipientInputMethodPasted();
       } else {
         setRecipientInputMethodManual();
@@ -149,7 +152,9 @@ export const RecipientInput = ({
         </Box>
       ) : (
         <TextField
-          error={Boolean(recipientError)}
+          error={isHardError}
+          // TODO: @MetaMask/design-system-engineers: This seems to be the only current use case for a TextField warning state; align on whether TextField should support warning styling (or if there’s a preferred DS pattern).
+          className={isWarning ? '!border-warning-default' : undefined}
           endAccessory={
             recipients.length > 0 ? (
               <ButtonIcon
@@ -163,6 +168,7 @@ export const RecipientInput = ({
           }
           onChange={onToChange}
           placeholder={t('recipientPlaceholderText')}
+          testId="recipient-address-input"
           ref={recipientInputRef}
           value={to}
           width={BlockSize.Full}

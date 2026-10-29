@@ -24,8 +24,8 @@ describe('EstimatedChanges', () => {
       mockStore,
     );
 
-    expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
-    expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
+    expect(getByText(tEn('estimatedChanges'))).toBeInTheDocument();
+    expect(getByText(tEn('youApprove'))).toBeInTheDocument();
     expect(getByText('96')).toBeInTheDocument();
     expect(getByText('0xToken')).toBeInTheDocument();
   });
@@ -42,8 +42,8 @@ describe('EstimatedChanges', () => {
       mockStore,
     );
 
-    expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
-    expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
+    expect(getByText(tEn('estimatedChanges'))).toBeInTheDocument();
+    expect(getByText(tEn('youApprove'))).toBeInTheDocument();
     expect(getByText('80')).toBeInTheDocument();
     expect(getByText('0xToken')).toBeInTheDocument();
   });

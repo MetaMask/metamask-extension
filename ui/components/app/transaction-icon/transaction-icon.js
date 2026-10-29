@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import {
@@ -8,6 +7,8 @@ import {
 } from '../../../../shared/constants/transaction';
 import { captureSingleException } from '../../../store/actions';
 import { AvatarIcon, AvatarIconSize, IconName } from '../../component-library';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   BackgroundColor,
   IconColor,
@@ -23,6 +24,8 @@ const ICON_MAP = {
   [TransactionGroupCategory.swapAndSend]: IconName.Arrow2UpRight,
   [TransactionGroupCategory.bridge]: IconName.Bridge,
   [TransactionGroupCategory.redeposit]: IconName.Refresh,
+  'stake:deposit': IconName.Stake,
+  'stake:withdraw': IconName.Stake,
 };
 
 const COLOR_MAP = {
@@ -63,8 +66,10 @@ export default function TransactionIcon({ status, category }) {
     );
     return (
       <AvatarIcon
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={backgroundColor}
+        iconName={IconName.Question}
         size={AvatarIconSize.Md}
+        color={color}
       />
     );
   }
@@ -100,5 +105,7 @@ TransactionIcon.propTypes = {
     TransactionGroupCategory.swap,
     TransactionGroupCategory.swapAndSend,
     TransactionGroupCategory.bridge,
+    'stake:deposit',
+    'stake:withdraw',
   ]).isRequired,
 };

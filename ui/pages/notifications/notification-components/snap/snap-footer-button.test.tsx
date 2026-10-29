@@ -3,6 +3,9 @@ import { processNotification } from '@metamask/notification-services-controller/
 import { fireEvent, waitFor } from '@testing-library/react';
 import { createMockSnapNotification } from '@metamask/notification-services-controller/notification-services/mocks';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { SnapFooterButton } from './snap-footer-button';
 import { DetailedViewData, SnapNotification } from './types';
@@ -23,6 +26,8 @@ jest.mock('react-router-dom', () => {
 type MockVar = any;
 
 describe('SnapFooterButton', () => {
+  const store = configureStore(mockState);
+
   const arrangeMocks = () => {
     const notification = processNotification(
       createMockSnapNotification(),
@@ -43,6 +48,7 @@ describe('SnapFooterButton', () => {
 
     const { container } = renderWithProvider(
       <SnapFooterButton notification={notification} />,
+      store,
     );
     expect(container).toBeEmptyDOMElement();
   });
@@ -56,6 +62,7 @@ describe('SnapFooterButton', () => {
 
     const { getByText } = renderWithProvider(
       <SnapFooterButton notification={notification} />,
+      store,
     );
     const button = getByText('Go Home');
     expect(button).toBeInTheDocument();
@@ -72,6 +79,7 @@ describe('SnapFooterButton', () => {
 
     const { getByText } = renderWithProvider(
       <SnapFooterButton notification={notification} />,
+      store,
     );
 
     // Click Button
@@ -80,8 +88,8 @@ describe('SnapFooterButton', () => {
 
     // Confirm Leave
     await waitFor(() => {
-      const leaveModalTitle = getByText('Leave MetaMask?');
-      const leaveModalButton = getByText('Visit site');
+      const leaveModalTitle = getByText(messages.leaveMetaMask.message);
+      const leaveModalButton = getByText(messages.visitSite.message);
       expect(leaveModalTitle).toBeInTheDocument();
       expect(leaveModalButton).toBeInTheDocument();
     });
