@@ -41,6 +41,9 @@ INFURA_STORYBOOK_PROJECT_ID=
 ; Override the Bridge API base URL (e.g. to point at a local server or a
 ; one-off environment). Takes precedence over the environment-based mapping.
 ;BRIDGE_USE_CUSTOM_BASE_URL=
+; Override the Rewards Money API base URL. Takes precedence over the
+; environment mapping in getRewardsMoneyApiBaseUrl.
+;REWARDS_MONEY_API_URL=
 ;ANALYTICS_DATA_DELETION_SOURCE_ID=
 ;ANALYTICS_DATA_DELETION_ENDPOINT=
 ;SWAPS_USE_DEV_APIS=
