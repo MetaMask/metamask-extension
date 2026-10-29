@@ -344,7 +344,7 @@ class TransactionConfirmation extends Confirmation {
         }
         return false;
       },
-      { interval: 200, timeout: 20000 },
+      { interval: 200, timeout: 10000 },
     );
   }
 
