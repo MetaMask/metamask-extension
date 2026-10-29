@@ -218,3 +218,111 @@ export function prepareAbBuilds({
     ...(injection && { injection }),
   };
 }
+
+export type PairBuildsSummary = {
+  browser: string;
+  directories: Record<AbBuild, string>;
+  manifestHashes: Record<AbBuild, string>;
+  markerKey: string;
+  // A is the base build and B is the head build.
+  builds: Record<
+    AbBuild,
+    { source: string; fileCount: number; contentHash: string; version: string }
+  >;
+  differingFiles: number;
+};
+
+/**
+ * Hash of each file's relative path, excluding manifest.json.
+ *
+ * @param root - Directory to hash.
+ */
+function hashFiles(root: string): Map<string, string> {
+  const hashes = new Map<string, string>();
+  for (const file of listFiles(root)) {
+    if (file !== 'manifest.json') {
+      hashes.set(
+        file.split(path.sep).join('/'),
+        hashFile(path.join(root, file)),
+      );
+    }
+  }
+  return hashes;
+}
+
+/**
+ * Copies a base and a head build into the A and B directories and stamps each
+ * with its manifest marker. The builds are expected to differ, so nothing is
+ * asserted about their contents; the summary records what differs.
+ *
+ * @param options - Browser and the two unpacked builds.
+ * @param options.browser - `chrome` or `firefox`.
+ * @param options.baseSource - Unpacked base build, copied to the A directory.
+ * @param options.headSource - Unpacked head build, copied to the B directory.
+ * @param options.baseDirectory - Working directory the output paths are under.
+ */
+export function preparePairBuilds({
+  browser,
+  baseSource,
+  headSource,
+  baseDirectory = process.cwd(),
+}: {
+  browser: string;
+  baseSource: string;
+  headSource: string;
+  baseDirectory?: string;
+}): PairBuildsSummary {
+  const markerKey = getMarkerKey(browser);
+  const sources: Record<AbBuild, string> = { A: baseSource, B: headSource };
+  const directories = {} as Record<AbBuild, string>;
+  const manifestHashes = {} as Record<AbBuild, string>;
+  const builds = {} as PairBuildsSummary['builds'];
+  const fileHashes = {} as Record<AbBuild, Map<string, string>>;
+
+  for (const build of ['A', 'B'] as AbBuild[]) {
+    const source = path.resolve(baseDirectory, sources[build]);
+    const manifest = JSON.parse(
+      fs.readFileSync(path.join(source, 'manifest.json'), 'utf8'),
+    );
+    if (!fs.existsSync(path.join(source, 'home.html'))) {
+      throw new Error(`No home.html in ${sources[build]}`);
+    }
+    const relative = getBuildDirectory(browser, build);
+    const target = path.resolve(baseDirectory, relative);
+    fs.rmSync(target, { recursive: true, force: true });
+    fs.cpSync(source, target, { recursive: true });
+    const text = JSON.stringify(
+      { ...manifest, [markerKey]: getMarkerValue(build) },
+      null,
+      2,
+    );
+    fs.writeFileSync(path.join(target, 'manifest.json'), text);
+    directories[build] = relative;
+    manifestHashes[build] = createHash('sha256').update(text).digest('hex');
+    const content = hashContent(target, ['manifest.json']);
+    fileHashes[build] = hashFiles(target);
+    builds[build] = {
+      source: sources[build],
+      fileCount: content.files.length,
+      contentHash: content.hash,
+      version: manifest.version,
+    };
+  }
+
+  const names = new Set([...fileHashes.A.keys(), ...fileHashes.B.keys()]);
+  let differingFiles = 0;
+  for (const name of names) {
+    if (fileHashes.A.get(name) !== fileHashes.B.get(name)) {
+      differingFiles += 1;
+    }
+  }
+
+  return {
+    browser,
+    directories,
+    manifestHashes,
+    markerKey,
+    builds,
+    differingFiles,
+  };
+}

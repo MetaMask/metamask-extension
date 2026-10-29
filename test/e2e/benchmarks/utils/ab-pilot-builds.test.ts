@@ -8,6 +8,7 @@ import {
   getInjectionSnippet,
   INJECTION_MARK,
   prepareAbBuilds,
+  preparePairBuilds,
 } from './ab-pilot-builds';
 
 describe('prepareAbBuilds', () => {
@@ -197,5 +198,86 @@ describe('prepareAbBuilds', () => {
       fs.readFileSync(path.join(workDir, 'dist/chrome/manifest.json'), 'utf8'),
     );
     expect(original).toStrictEqual({ name: 'MetaMask', version: '1.0.0' });
+  });
+});
+
+describe('preparePairBuilds', () => {
+  let workDir: string;
+
+  const writeBuild = (dir: string, app: string, version: string) => {
+    const root = path.join(workDir, dir);
+    fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
+    fs.writeFileSync(
+      path.join(root, 'manifest.json'),
+      JSON.stringify({ name: 'MetaMask', version }),
+    );
+    fs.writeFileSync(path.join(root, 'scripts', 'app.js'), app);
+    fs.writeFileSync(
+      path.join(root, 'home.html'),
+      '<script src="scripts/app.js"></script>',
+    );
+  };
+
+  beforeEach(() => {
+    workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ab-pair-'));
+    writeBuild('base', 'console.log(1)', '1.0.0');
+    writeBuild('head', 'console.log(2)', '1.0.1');
+  });
+
+  afterEach(() => {
+    fs.rmSync(workDir, { recursive: true, force: true });
+  });
+
+  it('copies the base build to A and the head build to B with their markers', () => {
+    const summary = preparePairBuilds({
+      browser: 'chrome',
+      baseSource: 'base',
+      headSource: 'head',
+      baseDirectory: workDir,
+    });
+
+    const read = (dir: string, file: string) =>
+      fs.readFileSync(path.join(workDir, dir, file), 'utf8');
+    expect(read('dist/chrome-a', 'scripts/app.js')).toBe('console.log(1)');
+    expect(read('dist/chrome-b', 'scripts/app.js')).toBe('console.log(2)');
+    expect(JSON.parse(read('dist/chrome-a', 'manifest.json'))).toStrictEqual({
+      name: 'MetaMask',
+      version: '1.0.0',
+      [getMarkerKey('chrome')]: 'pilot-A',
+    });
+    expect(
+      JSON.parse(read('dist/chrome-b', 'manifest.json')).version_name,
+    ).toBe('pilot-B');
+    expect(summary.builds.A.version).toBe('1.0.0');
+    expect(summary.builds.B.version).toBe('1.0.1');
+    expect(summary.differingFiles).toBe(1);
+    expect(summary.builds.A.contentHash).not.toBe(summary.builds.B.contentHash);
+  });
+
+  it('reports no differing files for two identical builds', () => {
+    writeBuild('head', 'console.log(1)', '1.0.0');
+
+    const summary = preparePairBuilds({
+      browser: 'chrome',
+      baseSource: 'base',
+      headSource: 'head',
+      baseDirectory: workDir,
+    });
+
+    expect(summary.differingFiles).toBe(0);
+    expect(summary.builds.A.contentHash).toBe(summary.builds.B.contentHash);
+  });
+
+  it('throws when a build has no home.html', () => {
+    fs.rmSync(path.join(workDir, 'head', 'home.html'));
+
+    expect(() =>
+      preparePairBuilds({
+        browser: 'chrome',
+        baseSource: 'base',
+        headSource: 'head',
+        baseDirectory: workDir,
+      }),
+    ).toThrow('No home.html in head');
   });
 });

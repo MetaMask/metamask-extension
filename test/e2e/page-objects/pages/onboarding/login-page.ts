@@ -33,9 +33,11 @@ class LoginPage {
     text: 'Incorrect password. Try again.',
   };
 
-  private readonly parentSelector: object = {
-    testId: 'parent-selector-login-page',
-  };
+  // TEMPORARY (2/2): pilot builds older than 2026-08-28 lack the
+  // parent-selector-login-page test id and use unlock-page. Restore the single
+  // test id when the pilot's real-pair round is removed.
+  private readonly parentSelector: string =
+    '[data-testid="parent-selector-login-page"], [data-testid="unlock-page"]';
 
   private readonly passkeyUnlockButton: object = {
     testId: 'unlock-passkey-button',

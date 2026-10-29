@@ -28,6 +28,12 @@ name: Pilot A/B benchmarks
 # sessions per job instead of 10, both browsers, default 100 shards per
 # browser, order alternating by shard. Compares the noise of one 20-session
 # job with two 10-session jobs from round 1.
+#
+# Round 6 (branches trigger-ci-pilot-r6*): a real base and head pair, chosen by
+# R6_PAIR from R6_PAIRS. Build A is the base and build B is the head, both
+# test builds of main runs downloaded from CloudFront, so the two differ in
+# real code and layout. StandardHome only, default 100 shards per browser,
+# order alternating by shard. To run the next pair, change R6_PAIR and push.
 
 on:
   push:
@@ -44,6 +50,11 @@ env:
   BENCHMARK_AB_PILOT: '1'
   # Session order; a random per-job flip swaps which build goes first.
   BENCHMARK_AB_SEQUENCE: ABBABAABAB
+  # Round 6 pairs: CloudFront run IDs of each base and head test build and
+  # their shared manifest version; R6_PAIR is the index of the pair to run.
+  R6_PAIRS: '[{"name": "sentry", "base": "29574057765", "head": "29575217436", "version": "13.41.0"}, {"name": "root", "base": "30680260931", "head": "30706359178", "version": "13.44.0"}, {"name": "widget", "base": "37674909662", "head": "37674913209", "version": "13.53.0"}]'
+  R6_PAIR: '0'
+  R6_HOST: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension'
   # Round 2 busy-wait milliseconds per arm, about 2, 4 and 8% of median
   # uiStartup (arm 0 is the hook with no work).
   R2_INJECT_MS: '{"chrome": [0, 19, 38, 76], "firefox": [0, 31, 62, 125]}'
@@ -58,6 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
+      round: ${{ steps.matrix.outputs.round }}
     steps:
       - name: Build the shard matrix
         id: matrix
@@ -77,6 +89,9 @@ jobs:
             default=100
           elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r5* ]]; then
             round=5
+            default=100
+          elif [[ "$BRANCH_NAME" == trigger-ci-pilot-r6* ]]; then
+            round=6
             default=100
           fi
           if [[ "$BRANCH_NAME" =~ -smoke$ ]]; then
@@ -145,6 +160,18 @@ jobs:
                    browserLoads: 20, suffix: "-aa20"}
               ]}')
             echo "Round 5: $shards shards per browser, 20 sessions per job"
+          elif (( round == 6 )); then
+            matrix=$(jq -nc --argjson s "$shards" --argjson pairs "$R6_PAIRS" \
+              --argjson i "$R6_PAIR" '
+              {include: [
+                ("chrome", "firefox") as $browser
+                | range(1; $s + 1) as $shard
+                | {browser: $browser, pageType: "startupStandardHome",
+                   shard: $shard, flip: (($shard - 1) % 2),
+                   suffix: "-pair-\($pairs[$i].name)",
+                   sourceArg: "--base-source pair/base --head-source pair/head"}
+              ]}')
+            echo "Round 6: $shards shards per browser, pair $R6_PAIR"
           else
             journey=$(( shards / 2 ))
             (( journey < 1 )) && journey=1
@@ -159,6 +186,7 @@ jobs:
             echo "Shards per browser: $shards (journey $journey)"
           fi
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "round=$round" >> "$GITHUB_OUTPUT"
 
   pilot:
     needs: plan
@@ -194,11 +222,35 @@ jobs:
           command: yarn mm-foundryup
 
       - name: Download donor build artifact
+        if: ${{ needs.plan.outputs.round != '6' }}
         uses: actions/download-artifact@v7
         with:
           name: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-webpack
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ env.BENCHMARK_BUILDS_FROM_RUN }}
+
+      - name: Download the base and head builds
+        if: ${{ needs.plan.outputs.round == '6' }}
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: |
+          set -euo pipefail
+          pair=$(jq -c ".[$R6_PAIR]" <<< "$R6_PAIRS")
+          version=$(jq -r .version <<< "$pair")
+          if [[ "$BROWSER" == firefox ]]; then
+            path="build-test-mv2-webpack/builds/metamask-firefox-$version.zip"
+          else
+            path="build-test-webpack/builds/metamask-chrome-$version.zip"
+          fi
+          for side in base head; do
+            run=$(jq -r ".$side" <<< "$pair")
+            curl --fail --silent --show-error --retry 5 --retry-all-errors \
+              --output "$side.zip" "$R6_HOST/$run/$path"
+            mkdir -p "pair/$side"
+            unzip -q "$side.zip" -d "pair/$side"
+          done
+          mkdir -p test-artifacts/benchmarks
+          echo "$pair" > "test-artifacts/benchmarks/pair-$BROWSER.json"
 
       - name: Pin geckodriver 0.36.0 (Firefox only)
         if: ${{ matrix.browser == 'firefox' }}
@@ -208,7 +260,7 @@ jobs:
         run: >-
           yarn tsx test/e2e/benchmarks/prepare-ab-builds.ts
           --browser ${{ matrix.browser }}
-          --source dist/${{ matrix.browser }}
+          ${{ matrix.sourceArg || format('--source dist/{0}', matrix.browser) }}
           --out test-artifacts/benchmarks/ab-builds-${{ matrix.browser }}-${{ matrix.pageType }}-s${{ matrix.shard }}.json
           ${{ matrix.injectArg }}
 

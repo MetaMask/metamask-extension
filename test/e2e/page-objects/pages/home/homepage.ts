@@ -111,9 +111,11 @@ class HomePage {
     testId: 'account-overview__nfts-tab',
   };
 
-  private readonly page = {
-    testId: 'parent-selector-home',
-  };
+  // TEMPORARY (1/2): pilot builds older than 2026-08-27 lack the
+  // parent-selector-home test id. Restore the single test id when the pilot's
+  // real-pair round is removed.
+  private readonly page =
+    '[data-testid="parent-selector-home"], .wallet-overview__balance';
 
   private readonly popoverBackground = '.popover-bg';
 
