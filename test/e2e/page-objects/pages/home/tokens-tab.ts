@@ -110,8 +110,6 @@ class TokensTab extends HomePage {
 
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
-  private readonly toastCloseButton = '[data-testid="toast-close-button"]';
-
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
@@ -135,6 +133,8 @@ class TokensTab extends HomePage {
 
   private readonly sortByPopoverToggle =
     '[data-testid="sort-by-popover-toggle"]';
+
+  private readonly toastCloseButton = '[data-testid="toast-close-button"]';
 
   private readonly tokenAddressInDetails =
     '[data-testid="address-copy-button-text"]';
@@ -733,6 +733,24 @@ class TokensTab extends HomePage {
   }
 
   /**
+   * Closes any visible toasts. Transaction toasts render a full-cover link
+   * that intercepts clicks on token list rows behind them.
+   */
+  private async dismissToastsIfPresent(): Promise<void> {
+    const maxToasts = 3;
+    for (let i = 0; i < maxToasts; i++) {
+      const toastVisible = await this.driver.isElementPresentAndVisible(
+        this.toastCloseButton,
+        500,
+      );
+      if (!toastVisible) {
+        return;
+      }
+      await this.driver.clickElementSafe(this.toastCloseButton, 1000);
+    }
+  }
+
+  /**
    * Dismisses the "Token imported" success message by clicking the close button
    */
   async dismissTokenImportedMessage(): Promise<void> {
@@ -769,24 +787,6 @@ class TokensTab extends HomePage {
     await this.dismissToastsIfPresent();
     await this.driver.clickElement(this.lowValueAssetsToggle);
     await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
-  }
-
-  /**
-   * Closes any visible toasts. Transaction toasts render a full-cover link
-   * that intercepts clicks on token list rows behind them.
-   */
-  private async dismissToastsIfPresent(): Promise<void> {
-    const maxToasts = 3;
-    for (let i = 0; i < maxToasts; i++) {
-      const toastVisible = await this.driver.isElementPresentAndVisible(
-        this.toastCloseButton,
-        500,
-      );
-      if (!toastVisible) {
-        return;
-      }
-      await this.driver.clickElementSafe(this.toastCloseButton, 1000);
-    }
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
