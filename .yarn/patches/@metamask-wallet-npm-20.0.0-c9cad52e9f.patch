@@ -1,0 +1,12 @@
+diff --git a/dist/initialization/instances/transaction-controller/transaction-controller.js b/dist/initialization/instances/transaction-controller/transaction-controller.js
+index 94d12628965825f6446a9ef7b5c781afe6921a06..1dca4d55ba0b9de43017c265b75d30f97331a35a 100644
+--- a/dist/initialization/instances/transaction-controller/transaction-controller.js
++++ b/dist/initialization/instances/transaction-controller/transaction-controller.js
+@@ -33,6 +33,7 @@ export const transactionController = {
+                 'NetworkController:getNetworkClientRegistry',
+                 'NetworkController:getState',
+                 'RemoteFeatureFlagController:getState',
++                'SentinelApiService:simulateTransactions',
+             ],
+             events: [
+                 'AccountActivityService:transactionUpdated',
