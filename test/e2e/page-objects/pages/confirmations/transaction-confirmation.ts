@@ -306,48 +306,6 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector(this.inlineAlert);
   }
 
-  /**
-   * Waits until the confirmation heading shows a native max amount that is
-   * positive and strictly below the available balance, so gas was reserved.
-   *
-   * @param availableBalance - Available native balance in the same decimal units as the heading.
-   */
-  async checkNativeMaxAmountBelowBalance(
-    availableBalance: string,
-  ): Promise<void> {
-    const maximum = Number(availableBalance);
-    console.log(
-      `Checking native max send amount is below available balance ${availableBalance}`,
-    );
-    await this.driver.waitUntil(
-      async () => {
-        // Read every heading in one script. Holding WebElement references
-        // across getText() fails on Firefox when the confirmation re-renders.
-        const headingTexts = (await this.driver.executeScript(() =>
-          Array.from(
-            document.querySelectorAll('h2'),
-            (heading) => heading.textContent ?? '',
-          ),
-        )) as string[];
-        for (const text of headingTexts) {
-          if (!/[A-Za-z]/u.test(text)) {
-            continue;
-          }
-          const match = text.replace(/,/gu, '').match(/(\d+(?:\.\d+)?)/u);
-          if (!match?.[1]) {
-            continue;
-          }
-          const amount = Number(match[1]);
-          if (Number.isFinite(amount) && amount > 0 && amount < maximum) {
-            return true;
-          }
-        }
-        return false;
-      },
-      { interval: 200, timeout: 10000 },
-    );
-  }
-
   async checkNetworkIsDisplayed(network: string): Promise<void> {
     console.log(
       `Checking network ${network} is displayed on transaction confirmation page.`,

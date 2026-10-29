@@ -6,7 +6,6 @@ import type { AccountTreeControllerState } from '@metamask/account-tree-controll
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
-import type { GasFeeState } from '@metamask/gas-fee-controller';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -288,18 +287,6 @@ class FixtureBuilderV2 {
    */
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
-    return this;
-  }
-
-  /**
-   * Merges persisted GasFeeController state. Native Max reads
-   * `gasFeeEstimatesByChainId` and does not wait for a gas poll, so estimates
-   * for the send's chain id must already be present.
-   *
-   * @param data - Subset of GasFeeController state to deep-merge.
-   */
-  withGasFeeController(data: Partial<GasFeeState>): this {
-    merge(this.fixture.data.GasFeeController, data);
     return this;
   }
 
