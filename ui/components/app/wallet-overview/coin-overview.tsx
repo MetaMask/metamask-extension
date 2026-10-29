@@ -105,7 +105,7 @@ const BalanceOverviewSkeleton = () => {
           getBalanceAlignmentClassName(),
         )}
       >
-        <Skeleton className="h-[50px] w-full rounded-lg" />
+        <Skeleton className="h-14 w-full rounded-lg md:h-[75px]" />
         <Skeleton className="h-6 w-[180px] rounded-lg" />
       </Box>
     </Box>
