@@ -430,6 +430,7 @@
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
     "eventsConfigEtag": "null",
+    "excludedRegions": "null",
     "eventsConfig": {
       "events": {},
       "schemaVersion": "string",
@@ -1338,7 +1339,6 @@
   },
   "rewards": {
     "rewardsModalOpen": "boolean",
-    "onboardingReferralCode": "string",
     "geoLocation": "null",
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",
@@ -1357,6 +1357,10 @@
       "isOpen": "boolean",
       "title": "string"
     }
+  },
+  "rewardsMoney": {
+    "referralMe": "null",
+    "referralMeSettled": "boolean"
   },
   "sendMaxValue": {
     "maxValueMode": {}

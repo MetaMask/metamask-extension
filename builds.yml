@@ -233,6 +233,9 @@ env:
   - MM_BACKEND_TOKEN_API_URL
   - MM_BACKEND_TOKENS_API_URL
   - MM_BACKEND_DISABLE_AUTH
+  # Optional override for the Rewards Money API. Unset uses the
+  # environment mapping in getRewardsMoneyApiBaseUrl.
+  - REWARDS_MONEY_API_URL: null
 
   ###
   # Notifications Feature

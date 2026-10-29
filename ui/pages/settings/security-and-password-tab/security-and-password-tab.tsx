@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { SettingItemConfig } from '../types';
+import type { SettingItemConfig, SettingItemProps } from '../types';
 import { SettingsTab, createSelectItem, createToggleItem } from '../shared';
 import { getUsePhishDetect } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -12,7 +12,7 @@ import {
   MFA_SETTINGS_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
-import { isMfaKitEnabled } from '../../../hooks/identity/mfa/isMfaKitEnabled';
+import { getIsMfaUiKitEnabled } from '../../../selectors/identity/mfa-ui-kit';
 import { MfaSettingsTestIds } from '../mfa-settings/test-ids';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { SECURITY_ITEMS } from '../search-config';
@@ -54,13 +54,17 @@ export const AutoLockItem = createSelectItem({
   dataTestId: 'auto-lock-button',
 });
 
-const MfaItem = createSelectItem({
+const MfaSelectItem = createSelectItem({
   name: 'MfaItem',
   titleKey: SECURITY_ITEMS.mfa,
   valueSelector: () => '',
   route: MFA_SETTINGS_ROUTE,
   dataTestId: MfaSettingsTestIds.ENTRY,
 });
+
+// Settings items are listed when the module loads, before flags arrive.
+const MfaItem = (props: SettingItemProps) =>
+  useSelector(getIsMfaUiKitEnabled) ? <MfaSelectItem {...props} /> : null;
 
 const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
   {
@@ -71,7 +75,7 @@ const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
   },
   { id: 'password', component: PasswordItem },
   { id: 'passkey', component: PasskeyItem },
-  ...(isMfaKitEnabled() ? [{ id: 'mfa', component: MfaItem }] : []),
+  { id: 'mfa', component: MfaItem },
   { id: 'auto-lock', component: AutoLockItem },
   { id: 'phishing-detection', component: PhishingDetectionItem },
 ];
