@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.56.0]
+
+### Added
+
+- Added sponsor names to sponsored network fees in transaction confirmations (#47350)
+- Enabled Rewards for Bitcoin and Tron accounts when basic functionality is enabled (#46963)
+
+### Changed
+
+- Updated the stablecoin education, wallet-ready, and Transaction Shield screens to use the shared marketing layout (#47423, #47424, #47425)
+- Recorded account hide and removal metrics from the Manage Accounts screen (#46403)
+- Set OUSD as the default gas token on Tempo when available (#47342)
+- Updated self-onboarding to accept a vault password (#47201)
+- Updated the Stellar wallet integration from version 1.3.0 to 2.0.0 (#47381)
+- Updated the hero typeface to Grotzec Cond Bold (#47128)
+- Updated Terms of Use, Privacy Policy, and related legal links to use metamask.com instead of consensys.io (#46389)
+- Improved authenticator app setup and one-time-code verification feedback (#47257)
+
+### Removed
+
+- Removed the Discover link from the home balance header (#47458)
+- Removed the referral code field from Rewards onboarding (#46957)
+
+### Fixed
+
+- Automatically removed detected NFTs when they are identified as spam, while preserving manually imported and dapp-added NFTs (#47436)
+- Hid inaccurate "No fee" labels for Money Account deposits from hardware wallet accounts (#47276)
+- Fixed the OUSD icon in Tempo network fee errors (#47396)
+- Fixed missing asset icons in asset details headers (#47376)
+- Fixed NFTs not appearing when switching from a non-EVM network to All networks (#47320)
+- Fixed Money Account deposits on Monad being incorrectly blocked by a reserve balance alert (#47395)
+- Fixed Perps withdrawals not finding a quote when Money Account was preselected as the receive option (#47383)
+- Fixed a typo in the hardware wallet error modal (#47253)
+- Fixed malicious nested transactions not displaying transaction warnings (#47236)
+
 ## [13.55.0]
 
 ### Added
@@ -3599,7 +3634,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.54.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.56.0...HEAD
+[13.56.0]: https://github.com/MetaMask/metamask-extension/compare/v13.55.0...v13.56.0
 [13.55.0]: https://github.com/MetaMask/metamask-extension/compare/v13.54.0...v13.55.0
 [13.54.0]: https://github.com/MetaMask/metamask-extension/compare/v13.53.0...v13.54.0
 [13.53.0]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...v13.53.0
