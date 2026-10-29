@@ -23,6 +23,7 @@ import {
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
+  setToTokenSecurityData,
   setWasTxDeclined,
 } from '../../../ducks/bridge/actions';
 import {
@@ -118,6 +119,19 @@ const PrepareBridgePage = ({
     fromToken,
     toToken,
   );
+  const toTokenSecurityData =
+    selectedTokenSecurityData[getTokenSecurityAssetKey(toToken.assetId)];
+
+  useEffect(() => {
+    if (toTokenSecurityData) {
+      dispatch(
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          ...toTokenSecurityData,
+        }),
+      );
+    }
+  }, [dispatch, toTokenSecurityData, toToken.assetId]);
 
   const fromChains = useSelector(getFromChains);
   const toChain = useSelector(getToChain);
@@ -656,11 +670,7 @@ const PrepareBridgePage = ({
               dispatch(setIsDestAssetPickerOpen(isOpen))
             }
             token={toToken}
-            tokenSecurityData={
-              selectedTokenSecurityData[
-                getTokenSecurityAssetKey(toToken.assetId)
-              ]
-            }
+            tokenSecurityData={toTokenSecurityData}
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
               isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined

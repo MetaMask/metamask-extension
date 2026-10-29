@@ -833,7 +833,22 @@ export class PlaywrightDriver {
   ): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
     await locator.click();
-    await this.page.keyboard.insertText(contentToPaste);
+    // Mirrors a real paste: fields such as the SRP import read the text from
+    // the `paste` event, and only an unhandled paste inserts it.
+    const pasteHandled = await locator.evaluate((element, text) => {
+      const clipboardData = new DataTransfer();
+      clipboardData.setData('text/plain', text);
+      return !element.dispatchEvent(
+        new ClipboardEvent('paste', {
+          clipboardData,
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+    }, contentToPaste);
+    if (!pasteHandled) {
+      await this.page.keyboard.insertText(contentToPaste);
+    }
   }
 
   async holdMouseDownOnElement(

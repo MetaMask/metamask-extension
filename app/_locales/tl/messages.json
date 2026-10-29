@@ -1738,6 +1738,9 @@
     "message": "Inaprubahan sa $1 para sa $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Welcome sa Arc! Upang mapadali at ma-verify ang paggamit mo ng Arc chain, maaari naming ibahagi ang impormasyon sa team ng Arc."
+  },
   "arcUsageNoticeTitle": {
     "message": "Abiso"
   },
@@ -1783,9 +1786,6 @@
   },
   "assets": {
     "message": "Mga Asset"
-  },
-  "assetsDescription": {
-    "message": "Mag-auto detect ng mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
   },
   "asterdexReferralSubtitle": {
     "message": "Makakuha ng 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
@@ -1844,6 +1844,9 @@
   },
   "backToSafety": {
     "message": "Bumalik sa ligtas"
+  },
+  "backToWallet": {
+    "message": "Bumalik sa wallet"
   },
   "backUpIncomplete": {
     "message": "Hindi nakumpleto ang pag-back up"
@@ -1942,6 +1945,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "Naka-on ang basic functionality"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "In-update namin ang mga setting namin"
@@ -2619,6 +2625,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Ang simbolo ng token na ito ay hindi tugma sa pangalan ng network o chain ID na inilagay. Maraming popular na token ang gumagamit ng magkakatulad ng simbolo, na maaaring gamitin ng mga scammer para lokohin ka na magpadala ka ng mas mahalagang token bilang kapalit. Beripikahin ang lahat bago ka magpatuloy."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "Manwal na ilagay ang mga detalye ng network",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "Manwal na ilagay ang mga detalye ng RPC",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "Matuto kung paano manatiling ligtas.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2630,6 +2644,22 @@
   "chainlistNetworkDetails": {
     "message": "Simbolo: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "Walang katugma mula sa Chainlist",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "Nagmumula ang RPC data mula  sa ChainList. Laging mag-verify bago magdagdag. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "Gamitin ang \"$1\" bilang pangalan ng network",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "Gamitin ang \"$1\" bilang RPC URL",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "Pagbabago sa Mga setting"
@@ -3300,6 +3330,9 @@
   "dataCollectionForMarketing": {
     "message": "Koleksyon ng data para sa marketing"
   },
+  "dataCollectionForMarketingDescription": {
+    "message": "Mangongolekta kami ng datos kung paano ka nakikipag-ugnayan sa aming komunikasyon sa marketing, para maibahagi namin ang mga nauugnay na balita (tulad ng mga feature ng produkto at iba pang materyal)."
+  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Tumanggap ng mga update ng produkto, tip at balita - kabilang sa pamamagitan ng email. Maaari naming gamitin ang mga interaksyon mo para mapahusay ang mga ibinabahagi namin."
   },
@@ -3349,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "Buksan ang batch na bentahan sa mobile"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "Available ang mga limit order sa MetaMask mbile. I-scan ang code na ito gamit ang iyong mobile device para gamitin ang mga ito."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Buksan ang mga Limit Order sa mobile"
   },
   "deepLinkQrPredictDescription": {
     "message": "Para ma-access ang mga Prediction Markets ng MetaMask, i-scan ang QR code gamit ang iyong mobile device."
@@ -3434,6 +3473,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "ang pahina ng mga notipikasyon"
+  },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "ang pahina ng mga setting ng notipikasyon"
   },
   "deepLink_theOnboardingPage": {
     "message": "ang page para sa onboarding"
@@ -4253,6 +4295,10 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "Saklaw ang MetaMask ang bayad sa network para sa transaksyong ito. Kabilang dito ang isang beses na pag-activate sa smart account."
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "Kailangang panatilihin ng network na ito ang hindi bababa sa $1 $2 sa iyong account pagkatapos ng transaksyon. Hindi dapat mas mababa ang mga smart account sa reserbang ito.",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
   "gasTimingHoursShort": {
     "message": "$1 oras",
     "description": "$1 represents a number of hours"
@@ -4385,9 +4431,6 @@
   },
   "generalCameraErrorTitle": {
     "message": "Mayroong nang mali...."
-  },
-  "generalDescription": {
-    "message": "I-sync ang mga setting sa lahat ng device, pumili ng mga preference sa network, at i-track ang data ng token"
   },
   "generateNewQrCode": {
     "message": "Gumawa ng bagong QR code"
@@ -4531,7 +4574,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Patuloy na tiyaking:"
+    "message": "Upang magpatuloy siguruhin na:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Na-unlock ang iyong $1 na device",
@@ -5437,17 +5480,59 @@
   "mfaEmailEntryContinue": {
     "message": "Magpatuloy"
   },
+  "mfaEmailEntryDescription": {
+    "message": "Gagamitin namin ang iyong email para i-verify ang iyong account at ipadala sa iyo ang mga update ng account paminsan-minsan."
+  },
   "mfaEmailEntryInvalid": {
     "message": "Ilagay ang wastong email address."
   },
   "mfaEmailEntryPlaceholder": {
     "message": "Email address"
   },
+  "mfaEmailEntryTitle": {
+    "message": "I-verify ang iyong email"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Nag-expire ang verification code mo, kumuha ng bagong code."
+  },
   "mfaErrorCooldown": {
     "message": "Masyado nang maraming kahilingan. Maghintay sandali at subukan muli."
   },
+  "mfaErrorEmailTaken": {
+    "message": "Ginagamit na ang email na ito. Subukan ang iba pa."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "Isinasagawa na ang iba pang beripikasyon."
+  },
   "mfaErrorGeneric": {
     "message": "Nagkaproblema. Subukan muli."
+  },
+  "mfaErrorInvalidPasskey": {
+    "message": "Hindi ma-verify ang passkey mo. Subukan ulit."
+  },
+  "mfaErrorLimitReached": {
+    "message": "Naabot mo na ang limit para sa pamamaraang ito."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "Kinansela ang kahilingan sa passkey."
+  },
+  "mfaErrorSignedOut": {
+    "message": "Mag-sign in para magpatuloy."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "Napakaraming pagtatangka. Humiling ng bagong code."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "Masyadong matagal ang paghihintay. Ilagay ang kasalukuyang code mula sa iyong app."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "Naka-set up na ang authenticator app para sa account na ito."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "Napakaraming pagtatangka. Maghintay ng bagong code sa iyong app at subukan ulit."
+  },
+  "mfaErrorUnsupported": {
+    "message": "Hindi sinusuportahan ang pamamaraang ito sa device na ito."
   },
   "mfaFailureClose": {
     "message": "Isara"
@@ -5461,17 +5546,173 @@
   "mfaIntroContinue": {
     "message": "Magsimula"
   },
+  "mfaIntroDescription": {
+    "message": "Magse-set up kami ng ilang paraan para makumpirma ang iyong pagkakakilanlan. Kung mawalan ka ng access sa isang paraan, maaari mong gamitin ang iba pa."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "Kunin ang 6 na digit code na ipinadala sa iyong inbox"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Kumpirmahin ang iyong device o password manager"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Naka-save sa device na ito"
+  },
+  "mfaIntroTitle": {
+    "message": "Magtakda ng 2-step verification"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Kunin ang 6 digit code mula sa app tulad ng Google Authenticator"
+  },
+  "mfaIntroTotpDone": {
+    "message": "Mag-set up ng iyong authenticator app"
+  },
   "mfaMethodEmail": {
     "message": "Email"
   },
-  "mfaOtpPaste": {
-    "message": "I-paste"
+  "mfaMethodPasskey": {
+    "message": "Passkey"
+  },
+  "mfaMethodTotp": {
+    "message": "Authenticator app"
+  },
+  "mfaOtpDescription": {
+    "message": "Nagpadala kami ng 6 digit code sa iyong email. Ilagay ito sa ibaba para i-verify ang email mo."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "Buksan ang iyong authenticator app at ilagay ang 6 digit code."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "Nagpadala kami ng 6 digit code sa $1. Ilagay ito sa ibaba para i-verify ang email mo.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Kumuha ng bagong code"
   },
   "mfaOtpResend": {
     "message": "Ipadala muli ang code"
   },
+  "mfaOtpResendIn": {
+    "message": "Ipadalang muli ang code sa $1s",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "Nagpadala kami sa iyo ng bagong code."
+  },
+  "mfaOtpRetry": {
+    "message": "Subukang muli"
+  },
+  "mfaOtpRetryIn": {
+    "message": "Subukan muli sa $1s"
+  },
+  "mfaOtpSendIn": {
+    "message": "Nagpapadala ng bagong code sa $1s",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "Nagpapadala ng code..."
+  },
+  "mfaOtpTitle": {
+    "message": "Ilagay ang iyong code ng pag-verify"
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "Gumawa ng passkey"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "Gamitin ang iyong passkey"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "Kumuha ng code ng pag-verify"
+  },
   "mfaPickerOr": {
     "message": "o"
+  },
+  "mfaPickerPasskey": {
+    "message": "I-verify gamit ang Passkey"
+  },
+  "mfaPickerTitle": {
+    "message": "Kumpirmahin ang 2-step verification"
+  },
+  "mfaPickerTotp": {
+    "message": "Gamitin ang authenticator app"
+  },
+  "mfaSettingsAdd": {
+    "message": "Idagdag"
+  },
+  "mfaSettingsAddedOn": {
+    "message": "Nagdagdag ng $1"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "Tinanggal ang email verification"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "Ang email na ito ay ang tanging paraan ng seguridad para sa account na ito. Magdagdag ng bagong paraan bago ito tanggalin."
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "Hindi puwedeng tanggalin ang email"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "Ang authenticator app na ito ay ang nag-iisang paraan ng seguridad para sa acccount na ito. Magdagdag ng pangalawang paraan bago tanggalin ito."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "Hindi puwedeng tanggalinang authenticator app"
+  },
+  "mfaSettingsNotice": {
+    "message": "Ang mga pamamaraang ito ay nagdadagdag ng proteksyon sa mga transaksyon ng Money account. Hindi nila mababawi ang wallet mo."
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "Gumagana lamang ang ibang mga paraan mo sa MetaMask mobile app. Tanggalin ang email mo mula rito."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "Hind puwedeng alisin ang email dito"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "Alisin ang email"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "HIndi ka na makakapag-log in o makakapag-verify ng mga transaksyon sa pamamagitan ng pagtanggap ng code sa pamamagitan ng email."
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "Hindi maalis ang paraang ito. Subukan ulit mamaya."
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "Alisin ang authenticator app"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "Hindi mo na mave-verify ang mga transaksyong Money gamit ang mga code mula sa iyong authenticator app."
+  },
+  "mfaSettingsTitle": {
+    "message": "2-step na pag-verify"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "Gumagana lamang ang ibang mga paraan m sa MetaMask mobile app. Alisin ang iyong authenticator app mula rito."
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "Hindi puwedeng alisin ang authenticator app mula rito"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "Inalis ang authenticator app"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "Ginamit para sa"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "I-verify ang mga transaksyong Money"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Magpatuloy"
+  },
+  "mfaTotpSetupKey": {
+    "message": "I-set up ang key"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "QR code para magdagdag ng MetaMask sa iyong authenticator app"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "Masyadong matagal ang paghihintay kaya gumawa kami ng bagong setup key. Alisin ang naunang entry ng MetaMask sa iyong authenticator app, pagkatapos ay idagdag ang bago."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "I-set up ang authenticator app"
   },
   "minimumReceivedExplanation": {
     "message": "Ang pinakamababang halaga na iyong matatanggap kapag nagbago ang presyo habang pinoproseso ang iyong transaksyon, batay sa setting ng iyong slippage. Mula sa pagtatantiya ang mga liquidity provider, kaya psibleng mag-iba ang huling halaga."
@@ -5682,12 +5923,24 @@
   "moneyConvertYourCrypto": {
     "message": "I-convert ang iyong crypto"
   },
+  "moneyEarnApy": {
+    "message": "Kumita ang $1 APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Kumita ng hanggang $1 APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Magdagdag ng iyong $1 sa iyong account ng Money at kumita nang hanggang $2 sa isang taon.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
   },
   "moneyEarnBannerCta": {
     "message": "Magdagdag ng $1",
     "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Magdagdag ng $1 sa iyong Money account—walang mga lockup o minimum.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerTitleNoApy": {
     "message": "Kumita gamit ang Money account mo",
@@ -5729,6 +5982,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Pondohan ang iyong Money account at panoorin na lumaki ang balanse mo ng hanggang $1 APY."
+  },
+  "moneyGetApy": {
+    "message": "Kunin ang $1 APY",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "Ang ipinapakitang rate ay ang kasalukuyang Annual Percentage Yield (APY). Nagbabago ang APY at hindi garantisado."
@@ -6301,6 +6558,9 @@
   "networkNameSolana": {
     "message": "Solana"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -6365,6 +6625,10 @@
   },
   "newCustomTokenAdded": {
     "message": "Ang “$1” matagumpay na naidagdag!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "Para gamitin ang OpenSea para gamitin ang iyong mga NFT, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Mga Asset"
@@ -6787,9 +7051,6 @@
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Magdagdag ng custom na IPFS Gateway"
-  },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "Ang URL ng IPFS gateway ay wasto"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Kapag ginamit mo ang mga default na setting at configuration namin, ginagamit namin ang Infura bilang default na remote procedure call (RPC) provider namin para mag-alok ng pinakamaaasahan at pribadong access sa data ng Etheeum hangga’t kaya namin. Sa mga limitadong kaso, posibleng gumamit kami ng ibang RPC provider para maibigay ang pinakamagandang experience sa mga user namin. Puwede kang pumili ng sarili mong RPC, pero tandaan na matatanggap ng sinumang RPC ang IP address at Ethereum wallet mo para para makagawa ng mga transaksyon. Para matuto pa kung paano nangangasiwa ang Infura ng data para sa mga EVM account, basahin ang $1; para sa mga Solana account, $2."
@@ -7520,6 +7781,10 @@
   "perpsAbout": {
     "message": "Tungkol Dito"
   },
+  "perpsAboutAsset": {
+    "message": "Tungkol sa $1",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "Aktibidad"
   },
@@ -7860,6 +8125,13 @@
   "perpsInsufficientMargin": {
     "message": "Hindi sapat ang margin para mailagay ang order na ito."
   },
+  "perpsIocCancel": {
+    "message": "Hindi ma-fill ang iyong order sa loob ng iyong $1% slippage tolerance. Subukan ang limit order o ayusin ang iyong slippage.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Hindi ma-fill ang iyong order sa loob ng iyong slippage tolerance. Subukan ang limit order o ayusin ang iyong slippage."
+  },
   "perpsKeepPositions": {
     "message": "Panatilihin ang mga posisyon"
   },
@@ -8115,6 +8387,10 @@
   "perpsPositions": {
     "message": "Mga Posisyon"
   },
+  "perpsPriceMoved": {
+    "message": "Gumalaw ang presyo ng $1%, na lumampas sa iyong $2% slippage tolerance. Suriin ang na-update na presyo at subukan muli.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
   "perpsProducts": {
     "message": "Mga Produkto",
     "description": "Heading of the Perps tab section listing market categories as chips"
@@ -8124,6 +8400,10 @@
   },
   "perpsReadMore": {
     "message": "Magbasa pa"
+  },
+  "perpsReadMoreAbout": {
+    "message": "Magbasa pa tungkol sa $1",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "Kamakailang aktibidad"
@@ -8175,6 +8455,10 @@
   "perpsServiceInterruptionContactSupport": {
     "message": "makipag-ugnayan sa suporta",
     "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "Pansamantalang hindi available ang ilang serbisyo.$1, o $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Tingnan ang iyong mga opsyon sa Mga FAQ",
@@ -9696,21 +9980,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Nai-save ang bagong password"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Seguridad at pagkapribado"
-  },
-  "securityDescription": {
-    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account"
-  },
   "securityMessageLinkForNetworks": {
     "message": "mga panloloko sa network at panganib sa seguridad"
   },
   "securityProviderPoweredBy": {
     "message": "Pinapagana ng $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account at data"
   },
   "securitySocialLoginEnabled": {
     "message": "Pinagana"
@@ -12156,6 +12431,18 @@
   "tronDailyResourcesDescription": {
     "message": "Ito ang pang-araw-araw na allowance mo batay sa naka-stake mong TRX. Makakakuha ka ng $1 bandwidth nang libre araw-araw.",
     "description": "$1 is the maximum bandwidth value"
+  },
+  "tronDailyResourcesLoading": {
+    "message": "Naglo-load ng araw-araw na paggamit ng resource...",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "Pansamantalang hindi magagamit ang impormasyon ng iyong enerhiya at bandwidth. Awtomatiko itong mag-u-update.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "Hindi mai-load ang mga mapagkukunan",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
   },
   "tronEnergy": {
     "message": "Enerhiya"
