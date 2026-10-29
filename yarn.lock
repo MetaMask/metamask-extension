@@ -7396,9 +7396,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^20.0.0, @metamask/assets-controller@npm:^20.0.1":
-  version: 20.0.1
-  resolution: "@metamask/assets-controller@npm:20.0.1"
+"@metamask/assets-controller@npm:^20.0.0, @metamask/assets-controller@npm:^20.0.1, @metamask/assets-controller@npm:^20.0.2":
+  version: 20.0.2
+  resolution: "@metamask/assets-controller@npm:20.0.2"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -7431,7 +7431,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/fae1794ac51bf1edc90b8791a7010d49cd66905f4a570b72c3050067799aa584de7738348f714875e343d5906ed709cab640a8736d39fa4d800dae30f059f934
+  checksum: 10/d863a181ce122d7c9b3da50a89fb93e491e2b853957ceda9cbb56c4248878b5567ed888b14606347157e5ed707bdf0f7449b69b47baead50c03ba77c410aae20
   languageName: node
   linkType: hard
 
@@ -35535,7 +35535,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^20.0.1"
+    "@metamask/assets-controller": "npm:^20.0.2"
     "@metamask/assets-controllers": "npm:^113.0.0"
     "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
