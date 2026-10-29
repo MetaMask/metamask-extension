@@ -21,9 +21,11 @@ describe('prepareAbBuilds', () => {
       JSON.stringify({ name: 'MetaMask', version: '1.0.0' }),
     );
     fs.writeFileSync(path.join(source, 'scripts', 'app.js'), 'console.log(1)');
+    fs.writeFileSync(path.join(source, 'scripts', 'boot.js'), 'console.log(0)');
     fs.writeFileSync(
       path.join(source, 'home.html'),
-      '<script src="scripts/app.js" defer="defer"></script>',
+      '<script src="scripts/boot.js" defer="defer"></script>' +
+        '<script src="scripts/app.js" defer="defer"></script>',
     );
   });
 
@@ -56,12 +58,12 @@ describe('prepareAbBuilds', () => {
       [getMarkerKey('chrome')]: 'pilot-A',
     });
     expect(manifestB.version_name).toBe('pilot-B');
-    expect(summary.fileCount).toBe(3);
+    expect(summary.fileCount).toBe(4);
     expect(summary.manifestHashes.A).not.toBe(summary.manifestHashes.B);
     expect(summary.injection).toBeUndefined();
   });
 
-  it('injects the busy-wait into the first home.html script of B only', () => {
+  it('injects the busy-wait into the last home.html script of B only', () => {
     const summary = prepareAbBuilds({
       browser: 'chrome',
       sourceDirectory: 'dist/chrome',
@@ -72,6 +74,12 @@ describe('prepareAbBuilds', () => {
     const read = (dir: string) =>
       fs.readFileSync(path.join(workDir, dir, 'scripts/app.js'), 'utf8');
     expect(read('dist/chrome-a')).toBe('console.log(1)');
+    expect(
+      fs.readFileSync(
+        path.join(workDir, 'dist/chrome-b/scripts/boot.js'),
+        'utf8',
+      ),
+    ).toBe('console.log(0)');
     expect(read('dist/chrome-b')).toBe(
       `${getInjectionSnippet(40)}console.log(1)`,
     );

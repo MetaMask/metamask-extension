@@ -45,17 +45,19 @@ export function getInjectionSnippet(targetMs: number): string {
 }
 
 /**
- * First script home.html loads, so the work runs before the UI starts.
+ * Last script home.html loads (the UI entry point), so the work runs once every
+ * script has loaded. Work in the first script overlaps Firefox's loading of the
+ * later scripts and barely moves uiStartup.
  *
  * @param directory - Unpacked build.
  */
-export function getFirstHomeScript(directory: string): string {
+export function getLastHomeScript(directory: string): string {
   const html = fs.readFileSync(path.join(directory, 'home.html'), 'utf8');
-  const match = html.match(/<script[^>]*\ssrc="([^"]+)"/u);
-  if (!match) {
+  const sources = [...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/gu)];
+  if (sources.length === 0) {
     throw new Error('No script found in home.html');
   }
-  return match[1];
+  return sources[sources.length - 1][1];
 }
 
 function listFiles(root: string, dir = ''): string[] {
@@ -103,7 +105,7 @@ function hashContent(
  * @param options.browser - `chrome` or `firefox`.
  * @param options.sourceDirectory - Unpacked donor build, for example `dist/chrome`.
  * @param options.baseDirectory - Working directory the output paths are under.
- * @param options.injectMs - When set, B's first home.html script gets a
+ * @param options.injectMs - When set, B's last home.html script gets a
  * busy-wait of this many milliseconds, and that file may also differ.
  */
 export function prepareAbBuilds({
@@ -144,7 +146,7 @@ export function prepareAbBuilds({
   const exclude = ['manifest.json'];
   let injection: AbInjection | undefined;
   if (injectMs !== undefined) {
-    const file = getFirstHomeScript(source);
+    const file = getLastHomeScript(source);
     const targetB = path.resolve(baseDirectory, directories.B, file);
     const original = fs.readFileSync(targetB, 'utf8');
     fs.writeFileSync(targetB, getInjectionSnippet(injectMs) + original);
