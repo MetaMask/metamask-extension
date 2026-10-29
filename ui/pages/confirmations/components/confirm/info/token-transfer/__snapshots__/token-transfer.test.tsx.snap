@@ -29,11 +29,12 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             style="display: inline;"
             tabindex="0"
           >
-            <span
+            <h2
               class="text-inherit text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block pb-1"
+              data-testid="confirm-send-amount"
             >
               &lt;0.000001 Unknown
-            </span>
+            </h2>
           </div>
         </div>
       </div>

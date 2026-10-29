@@ -69,22 +69,24 @@ const SendHeading = () => {
   const TokenValue =
     pending || displayTransferValue === decodedTransferValue ? (
       <Text
+        asChild
         variant={TextVariant.AmountDisplayLg}
         fontFamily={FontFamily.Hero}
         color={TextColor.Inherit}
         className="block pb-1"
       >
-        {TokenValueContent}
+        <h2 data-testid="confirm-send-amount">{TokenValueContent}</h2>
       </Text>
     ) : (
       <Tooltip title={decodedTransferValue} position="right">
         <Text
+          asChild
           variant={TextVariant.AmountDisplayLg}
           fontFamily={FontFamily.Hero}
           color={TextColor.Inherit}
           className="block pb-1"
         >
-          {TokenValueContent}
+          <h2 data-testid="confirm-send-amount">{TokenValueContent}</h2>
         </Text>
       </Tooltip>
     );

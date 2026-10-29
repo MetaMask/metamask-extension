@@ -92,22 +92,28 @@ const NativeSendHeading = () => {
     roundedTransferValue === transferValue ? (
       <Box paddingBottom={1}>
         <Text
+          asChild
           variant={TextVariant.AmountDisplayLg}
           fontFamily={FontFamily.Hero}
           color={TextColor.Inherit}
         >
-          {`${roundedTransferValue} ${nativeCurrency}`}
+          <h2 data-testid="confirm-send-amount">
+            {`${roundedTransferValue} ${nativeCurrency}`}
+          </h2>
         </Text>
       </Box>
     ) : (
       <Tooltip title={transferValue} position="right">
         <Box paddingBottom={1}>
           <Text
+            asChild
             variant={TextVariant.AmountDisplayLg}
             fontFamily={FontFamily.Hero}
             color={TextColor.Inherit}
           >
-            {`${roundedTransferValue} ${nativeCurrency}`}
+            <h2 data-testid="confirm-send-amount">
+              {`${roundedTransferValue} ${nativeCurrency}`}
+            </h2>
           </Text>
         </Box>
       </Tooltip>
