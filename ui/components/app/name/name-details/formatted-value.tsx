@@ -2,27 +2,17 @@ import React, { memo } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { NameType } from '@metamask/name-controller';
 import { Text } from '../../../component-library';
-import { shortenAddress, shortenString } from '../../../../helpers/utils/util';
+import { shortenAddress } from '../../../../helpers/utils/util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 
-function formatValue(
-  value: string,
-  type: NameType,
-  addressSideLength?: number,
-): string {
+function formatValue(value: string, type: NameType): string {
   if (!value.length) {
     return value;
   }
 
   switch (type) {
     case NameType.ETHEREUM_ADDRESS:
-      return addressSideLength
-        ? shortenString(toChecksumAddress(value), {
-            truncatedCharLimit: addressSideLength * 2 + 1,
-            truncatedStartChars: addressSideLength,
-            truncatedEndChars: addressSideLength,
-          })
-        : shortenAddress(toChecksumAddress(value));
+      return shortenAddress(toChecksumAddress(value));
 
     default:
       return value;
@@ -32,12 +22,11 @@ function formatValue(
 export type FormattedValueProps = {
   value: string;
   type: NameType;
-  addressSideLength?: number;
 };
 
 const FormattedValue = memo(
-  ({ value, type, addressSideLength, ...props }: FormattedValueProps) => {
-    const formattedValue = formatValue(value, type, addressSideLength);
+  ({ value, type, ...props }: FormattedValueProps) => {
+    const formattedValue = formatValue(value, type);
     return (
       <Text className="name__value" variant={TextVariant.bodyMd} {...props}>
         {formattedValue}

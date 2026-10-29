@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import React, {
   useCallback,
   useEffect,
@@ -417,7 +419,6 @@ export default function NameDetails({
                 type={type}
                 variation={variation}
                 showFullName
-                addressSideLength={10}
               />
               {subtitle && (
                 <Text
@@ -433,6 +434,7 @@ export default function NameDetails({
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
               {instructions}
             </Text>
+            {/* @ts-ignore */}
             <FormTextField
               id="address"
               className="name-details__address"
