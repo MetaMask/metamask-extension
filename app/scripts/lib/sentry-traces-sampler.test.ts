@@ -163,6 +163,13 @@ describe('createTracesSampler', () => {
     }
   });
 
+  it('samples Background Poll transactions at 0.1%', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name: TraceName.BackgroundPoll })).toBe(0.001);
+  });
+
   it('pins the SwapBridge quote-fetch transaction to its own budget', () => {
     delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
     const sampler = createTracesSampler({ defaultSampleRate });
