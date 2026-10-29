@@ -633,6 +633,8 @@ const PerpsCandlestickChart = forwardRef<
         prevCount > 0 &&
         currentCount === prevCount + 1;
 
+      let appliedIncrementally = false;
+
       if (isLiveTick || isAppend) {
         // Incremental update — only update the last candle
         const lastCandle = candles[currentCount - 1];
@@ -643,17 +645,25 @@ const PerpsCandlestickChart = forwardRef<
           volumeDownColor,
         );
 
-        if (formattedCandle && seriesRef.current) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          seriesRef.current.update(formattedCandle as any);
-        }
-        if (formattedVolume && volumeSeriesRef.current) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          volumeSeriesRef.current.update(formattedVolume as any);
-        }
+        try {
+          if (formattedCandle && seriesRef.current) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            seriesRef.current.update(formattedCandle as any);
+          }
+          if (formattedVolume && volumeSeriesRef.current) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            volumeSeriesRef.current.update(formattedVolume as any);
+          }
 
-        dataLengthRef.current = currentCount;
-      } else {
+          dataLengthRef.current = currentCount;
+          appliedIncrementally = true;
+        } catch {
+          // lightweight-charts throws "Cannot update oldest data" when the
+          // candle is older than the series' newest bar; rebuild with setData.
+        }
+      }
+
+      if (!appliedIncrementally) {
         // Full data replacement
         const formattedData = formatCandleDataForChart(candleData);
 

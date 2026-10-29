@@ -315,6 +315,38 @@ describe('PerpsCandlestickChart visible candle persistence', () => {
     mockUseTheme.mockReturnValue('light');
   });
 
+  it('falls back to setData when an incremental update is rejected by the chart', () => {
+    const candleData = buildCandleData(40);
+    const { rerender } = renderWithProvider(
+      <PerpsCandlestickChart candleData={candleData as never} />,
+      mockStore,
+    );
+
+    const candlestickSeries = getCandlestickSeries() as unknown as {
+      setData: jest.Mock;
+      update: jest.Mock;
+    };
+    candlestickSeries.update.mockImplementation(() => {
+      throw new Error('Cannot update oldest data');
+    });
+    candlestickSeries.setData.mockClear();
+
+    const liveTick = {
+      ...candleData,
+      candles: candleData.candles.map((candle, index) =>
+        index === candleData.candles.length - 1
+          ? { ...candle, close: '106' }
+          : candle,
+      ),
+    };
+
+    expect(() =>
+      rerender(<PerpsCandlestickChart candleData={liveTick as never} />),
+    ).not.toThrow();
+    expect(candlestickSeries.update).toHaveBeenCalledTimes(1);
+    expect(candlestickSeries.setData).toHaveBeenCalledTimes(1);
+  });
+
   it('applies the persisted visible candle count on initial data', () => {
     const candleData = {
       symbol: 'ETH',
