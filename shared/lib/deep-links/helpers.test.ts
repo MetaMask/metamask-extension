@@ -46,6 +46,7 @@ describe('helpers', () => {
       jest.spyOn(Uint8Array, 'fromBase64', undefined);
 
       // Re-import so that module-scope check for `Uint8Array.fromBase64` is re-evaluated
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { sigToBytes: reimportedSigToBytes } = require('./helpers');
 
       // 64 bytes = 86 base64url chars (no padding)
