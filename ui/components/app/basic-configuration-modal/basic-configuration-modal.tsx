@@ -20,7 +20,6 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
   toggleBasicFunctionality,
   toggleExternalServices,
@@ -114,8 +113,9 @@ export function BasicConfigurationModal() {
     );
 
     if (isExternalServicesEnabled || onboardingFlow) {
+      // Marketing consent syncs across devices, so a device-local Basic
+      // Functionality switch only turns MetaMetrics off and never revokes it.
       dispatch(setParticipateInMetaMetrics(false));
-      dispatch(setDataCollectionForMarketing(false));
     }
 
     if (onboardingFlow) {

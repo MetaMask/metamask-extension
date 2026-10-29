@@ -190,6 +190,9 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   LoggingController: {
     logs: false,
   },
+  MarketingConsentController: {
+    pendingMarketingConsent: false,
+  },
   MoneyAccountController: {
     moneyAccounts: false,
   },

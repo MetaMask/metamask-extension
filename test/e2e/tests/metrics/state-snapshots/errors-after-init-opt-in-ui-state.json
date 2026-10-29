@@ -296,6 +296,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object",
     "pendingExtensionVersion": null,
+    "pendingMarketingConsent": null,
     "pendingRedirectRoute": null,
     "pendingRevocations": "object",
     "pendingShieldCohortTxType": null,

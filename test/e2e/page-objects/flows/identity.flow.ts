@@ -15,12 +15,16 @@ import { waitUntilAccountTreeSyncIdle } from './add-account.flow';
 
 export const completeOnboardFlowIdentity = async (
   driver: Driver,
-  seedPhrase?: string,
+  {
+    seedPhrase = IDENTITY_TEAM_SEED_PHRASE,
+    dataCollectionForMarketing = false,
+  }: { seedPhrase?: string; dataCollectionForMarketing?: boolean } = {},
 ) => {
   await completeImportSRPOnboardingFlow({
     driver,
-    seedPhrase: seedPhrase ?? IDENTITY_TEAM_SEED_PHRASE,
+    seedPhrase,
     password: IDENTITY_TEAM_PASSWORD,
+    dataCollectionForMarketing,
   });
 
   const homePage = new HomePage(driver);

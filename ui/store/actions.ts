@@ -4549,6 +4549,7 @@ export function setDataCollectionForMarketing(
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setDataCollectionForMarketing`);
+    // MarketingConsentController picks up the change and saves it to AUS.
     await submitRequestToBackground('setDataCollectionForMarketing', [
       dataCollectionPreference,
     ]);

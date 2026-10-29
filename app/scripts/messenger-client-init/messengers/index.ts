@@ -185,6 +185,7 @@ import {
   getMoneyAccountUpgradeControllerMessenger,
   getMoneyAccountUpgradeControllerInitMessenger,
 } from './money-account-upgrade-controller-messenger';
+import { getMarketingConsentControllerMessenger } from './marketing-consent-controller-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -253,6 +254,7 @@ export {
   getMoneyAccountUpgradeControllerMessenger,
   getMoneyAccountUpgradeControllerInitMessenger,
 } from './money-account-upgrade-controller-messenger';
+export { getMarketingConsentControllerMessenger } from './marketing-consent-controller-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -436,6 +438,10 @@ export const MESSENGER_FACTORIES = {
   },
   MoneyAccountBalanceService: {
     getMessenger: getMoneyAccountBalanceServiceMessenger,
+    getInitMessenger: noop,
+  },
+  MarketingConsentController: {
+    getMessenger: getMarketingConsentControllerMessenger,
     getInitMessenger: noop,
   },
   MoneyAccountController: {
