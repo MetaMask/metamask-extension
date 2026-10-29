@@ -33,9 +33,9 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
  * shield entry modal, survey and SRP toasts, and page-ready waits.
  * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
  * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
- * `CarouselPage`. Non-EVM account-specific helpers live on `NonEvmHomepage`.
+ * `CarouselPage`.
  * Related: `HeaderNavbar`, `TokensTab` / `NftsTab` / `DeFiTab` /
- * `ActivityTab` / `PerpsTab` / `CarouselPage` / `NonEvmHomepage`.
+ * `ActivityTab` / `PerpsTab` / `CarouselPage`.
  *
  * @see ui/pages/home/home.tsx
  */
@@ -116,8 +116,6 @@ class HomePage {
   };
 
   private readonly popoverBackground = '.popover-bg';
-
-  private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
   private readonly privacyBalanceToggle = {
     testId: 'account-value-and-suffix',
@@ -427,11 +425,6 @@ class HomePage {
     });
   }
 
-  async checkPortfolioLinkIsDisplayed(): Promise<void> {
-    console.log('Check if portfolio link is displayed on homepage');
-    await this.driver.waitForSelector(this.portfolioLink);
-  }
-
   async checkSendButtonIsClickable(clickable: boolean = true): Promise<void> {
     console.log(`Check Send button is ${clickable ? 'enabled' : 'disabled'}`);
     await this.driver.waitForSelector(this.sendButton, {
@@ -646,11 +639,6 @@ class HomePage {
     console.log('Navigate to home.html so the current route is left');
     await this.driver.navigate();
     await this.checkPageIsLoaded();
-  }
-
-  async openPortfolioPage(): Promise<void> {
-    console.log(`Open portfolio page on homepage`);
-    await this.driver.clickElement(this.portfolioLink);
   }
 
   async startBridgeFlow(): Promise<void> {

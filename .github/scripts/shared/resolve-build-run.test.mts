@@ -1,4 +1,5 @@
 /** @jest-environment node */
+import { describe, it } from '@jest/globals';
 import { resolveBuildRun } from './resolve-build-run.mts';
 
 const commit = 'a'.repeat(40);
@@ -144,7 +145,10 @@ describe('resolveBuildRun', () => {
     {
       name: 'another repository',
       referencedWorkflows: [
-        { ...buildWorkflow, path: 'other/repo/.github/workflows/run-build.yml@main' },
+        {
+          ...buildWorkflow,
+          path: 'other/repo/.github/workflows/run-build.yml@main',
+        },
       ],
     },
     {

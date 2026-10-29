@@ -459,6 +459,13 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
  * a series of requests to various mozilla.net or mozilla.com domains. These
  * are not requests that the extension itself makes.
  */
+/**
+ * `SENTRY_DSN_PERFORMANCE` envelope endpoint. Only targeted when the `ci`
+ * manifest flag is enabled, so it is CI test infrastructure, not user traffic.
+ */
+const SENTRY_PERFORMANCE_ENVELOPE_URL =
+  'https://sentry.io/api/4510302346608640/envelope/';
+
 const browserAPIRequestDomains =
   /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|mozilla\.org|gvt1\.com)$/iu;
 
@@ -1021,19 +1028,17 @@ async function setupMocking(
   // hundreds of performance envelopes per test, and the real-network
   // round-trips starve startup, flake the non-EVM account render, and consume
   // the `metamask-performance` quota from CI.
-  await server
-    .forPost('https://sentry.io/api/4510302346608640/envelope/')
-    .thenCallback((req) => {
-      console.log(
-        'Request going to Sentry metamask-performance ============',
-        req.url,
-        false,
-      );
-      return {
-        statusCode: 200,
-        json: {},
-      };
-    });
+  await server.forPost(SENTRY_PERFORMANCE_ENVELOPE_URL).thenCallback((req) => {
+    console.log(
+      'Request going to Sentry metamask-performance ============',
+      req.url,
+      false,
+    );
+    return {
+      statusCode: 200,
+      json: {},
+    };
+  });
 
   await server
     .forGet('https://www.4byte.directory/api/v1/signatures/')
@@ -2952,4 +2957,11 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking, emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES };
+module.exports = {
+  setupMocking,
+  emptyHtmlPage,
+  MOCK_SUGGESTED_GAS_FEES,
+  browserAPIRequestDomains,
+  getWellKnownTokenAssetMetadata,
+  SENTRY_PERFORMANCE_ENVELOPE_URL,
+};

@@ -10,6 +10,7 @@ import {
 } from '../../../shared/constants/network';
 import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { getAnalyticsControllerInstanceOptions } from './instance-options/analytics-controller';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
@@ -21,6 +22,7 @@ import {
   getTransactionControllerInstanceOptions,
   setupTransactionControllerListeners,
 } from './instance-options/transaction-controller';
+import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getTransactionControllerInitMessenger } from './messengers/transaction-controller-messenger';
 import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controller-messenger';
@@ -28,6 +30,7 @@ import type { InitializeWalletRequest } from './types';
 import { getPasskeyControllerInstanceOptions } from './instance-options/passkey-controller';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getGeolocationApiServiceInstanceOptions } from './instance-options/geolocation-api-service';
 import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
 import {
   getShieldApiServiceInstanceOptions,
@@ -74,7 +77,25 @@ export function initializeWallet(request: InitializeWalletRequest) {
   });
 
   const wallet = new Wallet({
+    // The AssetsController wallet preview also registers
+    // NetworkEnablementController by default. This extension still builds that
+    // controller in messenger-client-init, after MultichainNetworkController
+    // exists, with extension-specific state and subscriptions. Override the
+    // wallet default so the two constructors do not share one messenger
+    // namespace.
+    initializationConfigurations: [
+      {
+        name: 'NetworkEnablementController',
+        init: () => ({}),
+        getMessenger: () => ({}),
+      },
+    ],
     instanceOptions: {
+      analyticsController: getAnalyticsControllerInstanceOptions({
+        initMessenger: getAnalyticsControllerInitMessenger(messenger),
+        state,
+        platform,
+      }),
       approvalController: getApprovalControllerInstanceOptions({
         showApprovalRequest,
       }),
@@ -86,6 +107,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
       gasFeeController: getGasFeeControllerInstanceOptions({
         initMessenger: getGasFeeControllerInitMessenger(messenger),
       }),
+      geolocationApiService: getGeolocationApiServiceInstanceOptions(),
       keyringController: getKeyringControllerInstanceOptions({
         encryptor,
         messenger,

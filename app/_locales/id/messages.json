@@ -1738,6 +1738,9 @@
     "message": "Disetujui pada $1 untuk $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Selamat datang di Arc! Untuk memfasilitasi dan memverifikasi penggunaan Anda atas chain Arc, kami akan membagikan informasi kepada tim Arc."
+  },
   "arcUsageNoticeTitle": {
     "message": "Pemberitahuan"
   },
@@ -1916,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask menawarkan fitur dasar seperti detail token dan pengaturan gas melalui layanan internet. Alamat IP dibagikan saat menggunakan layanan internet, dalam hal ini kepada MetaMask. Ini sama seperti saat Anda mengunjungi situs web mana pun. MetaMask menggunakan data ini untuk sementara dan tidak akan pernah menjual data Anda. Anda dapat menggunakan VPN atau menonaktifkan layanan ini, akan tetapi hal ini dapat memengaruhi pengalaman dalam menggunakan MetaMask. Untuk selengkapnya, baca $1 kami.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Mencakup fitur dasar seperti detail token dan pengaturan gas. Aktifkan fitur ini untuk menikmati pengalaman terbaik. Baca panduan $1 kami untuk mempelajari selengkapnya.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Fungsionalitas dasar"
@@ -1942,6 +1945,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Aktifkan fungsionalitas dasar"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "Fungsionalitas dasar aktif"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "Kami telah memperbarui pengaturan kami"
@@ -2619,6 +2625,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Simbol token ini tidak cocok dengan nama jaringan atau ID chain yang dimasukkan. Banyak token populer menggunakan simbol serupa, yang dapat digunakan penipu untuk mengelabui Anda agar mengirimkan token yang lebih berharga sebagai gantinya. Pastikan untuk memverifikasi semuanya sebelum melanjutkan."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "Masukkan detail jaringan secara manual",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "Masukkan detail RPC secara manual",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "Pelajari cara agar tetap aman.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2630,6 +2644,22 @@
   "chainlistNetworkDetails": {
     "message": "Simbol: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "Tidak ada yang cocok dari ChainList",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "Data RPC berasal dari ChainList. Selalu verifikasi sebelum menambahkan. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "Gunakan \"$1\" sebagai nama jaringan",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "Gunakan \"$1\" sebagai URL RPC",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "Ubah di Pengaturan"
@@ -3300,6 +3330,9 @@
   "dataCollectionForMarketing": {
     "message": "Pengumpulan data untuk pemasaran"
   },
+  "dataCollectionForMarketingDescription": {
+    "message": "Kami akan mengumpulkan data mengenai cara Anda berinteraksi dengan komunikasi pemasaran kami, agar kami dapat membagikan informasi yang relevan (seperti fitur produk dan materi lainnya)."
+  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Dapatkan pembaruan produk, kiat, dan berita - termasuk melalui email. Kami dapat menggunakan interaksi Anda untuk meningkatkan konten yang kami bagikan."
   },
@@ -3349,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "Buka penjualan massal di ponsel"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "Order Limit tersedia di MetaMask seluler. Pindai kode ini dengan perangkat seluler untuk menggunakannya."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Buka Order Limit di ponsel"
   },
   "deepLinkQrPredictDescription": {
     "message": "Untuk mengakses Pasar MetaMask Prediction, pindai kode QR dengan perangkat seluler Anda."
@@ -3434,6 +3473,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "halaman notifikasi"
+  },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "halaman pengaturan notifikasi"
   },
   "deepLink_theOnboardingPage": {
     "message": "halaman orientasi"
@@ -3840,9 +3882,6 @@
   },
   "enableSmartContractAccountDescription": {
     "message": "Buka transaksi yang lebih cepat, biaya jaringan yang lebih rendah, dan keamanan tambahan pada jaringan yang didukung."
-  },
-  "enableSnap": {
-    "message": "Aktifkan"
   },
   "enableToken": {
     "message": "aktifkan $1",
@@ -4253,6 +4292,14 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask menanggung biaya jaringan untuk transaksi ini. Ini termasuk aktivasi akun cerdas satu kali."
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "Jaringan ini mengharuskan Anda untuk menyisakan minimal $1 $2 di akun Anda setelah transaksi dilakukan. Akun cerdas tidak diperbolehkan memiliki saldo di bawah jumlah cadangan tersebut.",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 menanggung biaya jaringan untuk transaksi ini. Ini termasuk aktivasi akun cerdas satu kali.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1 jam",
     "description": "$1 represents a number of hours"
@@ -4532,7 +4579,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Lanjut untuk memastikan:"
+    "message": "Untuk melanjutkan, pastikan:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Perangkat $1 Anda telah dibuka",
@@ -5208,9 +5255,6 @@
   "loading": {
     "message": "Memuat..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Selesaikan transaksi di Snap."
-  },
   "loadingTokenList": {
     "message": "Memuat daftar token"
   },
@@ -5438,20 +5482,68 @@
   "mfaEmailEntryContinue": {
     "message": "Lanjutkan"
   },
+  "mfaEmailEntryDescription": {
+    "message": "Kami akan menggunakan alamat email Anda untuk memverifikasi akun Anda dan mengirimkan pembaruan akun sesekali."
+  },
   "mfaEmailEntryInvalid": {
     "message": "Masukkan alamat email yang valid."
   },
   "mfaEmailEntryPlaceholder": {
     "message": "Alamat email"
   },
+  "mfaEmailEntryTitle": {
+    "message": "Verifikasi email Anda"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Kode verifikasi Anda telah kedaluwarsa, dapatkan kode baru."
+  },
   "mfaErrorCooldown": {
     "message": "Terlalu banyak permintaan. Tunggu sebentar dan coba lagi."
+  },
+  "mfaErrorEmailTaken": {
+    "message": "Email ini sudah digunakan. Coba gunakan email lain."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "Verifikasi lain sedang berlangsung."
   },
   "mfaErrorGeneric": {
     "message": "Terjadi kesalahan. Coba lagi."
   },
+  "mfaErrorInvalidPasskey": {
+    "message": "Kode sandi tidak dapat diverifikasi. Coba lagi."
+  },
+  "mfaErrorLimitReached": {
+    "message": "Anda telah mencapai batas maksimal untuk metode ini."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "Permintaan kode sandi dibatalkan."
+  },
+  "mfaErrorSignedOut": {
+    "message": "Masuk untuk melanjutkan."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "Terlalu banyak percobaan. Minta kode baru."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "Prosesnya terlalu lama. Masukkan kode saat ini dari aplikasi Anda."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "Aplikasi autentikator sudah diatur untuk akun ini."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "Terlalu banyak percobaan. Tunggu kode baru di aplikasi Anda, lalu coba lagi."
+  },
+  "mfaErrorUnsupported": {
+    "message": "Metode ini tidak didukung di perangkat ini."
+  },
   "mfaFailureClose": {
     "message": "Tutup"
+  },
+  "mfaFailureContactSupport": {
+    "message": "Hubungi dukungan"
+  },
+  "mfaFailureDone": {
+    "message": "Selesai"
   },
   "mfaFailureRetry": {
     "message": "Coba lagi"
@@ -5462,29 +5554,176 @@
   "mfaIntroContinue": {
     "message": "Mulai"
   },
+  "mfaIntroDescription": {
+    "message": "Kami akan menyiapkan beberapa cara untuk memastikan bahwa itu memang Anda. Jika Anda kehilangan akses ke salah satu metode, Anda dapat menggunakan metode lainnya."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "Dapatkan kode 6 digit yang dikirim ke kotak masuk Anda"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Konfirmasikan melalui perangkat atau pengelola kata sandi Anda"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Disimpan ke perangkat ini"
+  },
+  "mfaIntroTitle": {
+    "message": "Atur verifikasi 2 langkah"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Dapatkan kode 6 digit dari aplikasi seperti Google Authenticator"
+  },
+  "mfaIntroTotpDone": {
+    "message": "Atur di aplikasi autentikator Anda"
+  },
   "mfaMethodEmail": {
     "message": "Email"
   },
-  "mfaOtpPaste": {
-    "message": "Tempel"
+  "mfaMethodPasskey": {
+    "message": "Kode sandi"
+  },
+  "mfaMethodTotp": {
+    "message": "Aplikasi autentikator"
+  },
+  "mfaOtpDescription": {
+    "message": "Kami telah mengirimkan kode 6 digit ke email Anda. Masukkan kode tersebut di bawah ini untuk memverifikasi email Anda."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "Buka aplikasi autentikator Anda dan masukkan kode 6 digit tersebut."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "Kami telah mengirimkan kode 6 digit ke $1. Masukkan kode tersebut di bawah ini untuk memverifikasi email Anda.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Dapatkan kode baru"
   },
   "mfaOtpResend": {
     "message": "Kirim ulang kode"
   },
+  "mfaOtpResendIn": {
+    "message": "Kirim ulang kode dalam $1 detik",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "Kami telah mengirimkan kode baru kepada Anda."
+  },
   "mfaOtpRetry": {
     "message": "Coba lagi"
   },
-  "mfaOtpVerify": {
-    "message": "Verifikasikan"
+  "mfaOtpRetryIn": {
+    "message": "Coba lagi dalam $1 detik"
+  },
+  "mfaOtpSendIn": {
+    "message": "Mengirim kode baru dalam $1 detik",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "Mengirim kode..."
+  },
+  "mfaOtpTitle": {
+    "message": "Masukkan kode verifikasi Anda"
+  },
+  "mfaOtpVerifying": {
+    "message": "Memverifikasi kode"
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "Buat kode sandi"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "Gunakan kode sandi Anda"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "Dapatkan kode verifikasi"
   },
   "mfaPickerOr": {
     "message": "atau"
   },
+  "mfaPickerPasskey": {
+    "message": "Verifikasi dengan Kode sandi"
+  },
+  "mfaPickerTitle": {
+    "message": "Konfirmasikan dengan verifikasi 2 langkah"
+  },
+  "mfaPickerTotp": {
+    "message": "Gunakan aplikasi autentikator"
+  },
   "mfaSettingsAdd": {
     "message": "Tambah"
   },
+  "mfaSettingsAddedOn": {
+    "message": "Menambahkan $1"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "Verifikasi email dihapus"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "Email ini merupakan satu-satunya metode keamanan untuk akun ini. Tambahkan metode kedua sebelum menghapusnya."
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "Email tidak dapat dihapus"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "Aplikasi autentikator ini merupakan satu-satunya metode keamanan untuk akun ini. Tambahkan metode kedua sebelum menghapusnya."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "Aplikasi autentikator tidak dapat dihapus"
+  },
+  "mfaSettingsNotice": {
+    "message": "Metode-metode ini memberikan perlindungan tambahan untuk transaksi Money account. Metode tersebut tidak dapat memulihkan dompet Anda."
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "Metode-metode Anda yang lain hanya berfungsi di aplikasi seluler MetaMask. Hapus alamat email Anda dari sana."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "Email tidak dapat dihapus di sini"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "Hapus email"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "Anda tidak akan bisa lagi masuk atau memverifikasi transaksi dengan menerima kode melalui email."
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "Tidak dapat menghapus metode ini. Coba lagi nanti."
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "Hapus aplikasi autentikator"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "Anda tidak akan bisa lagi memverifikasi transaksi Money menggunakan kode dari aplikasi autentikator."
+  },
+  "mfaSettingsTitle": {
+    "message": "Verifikasi 2 langkah"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "Metode-metode Anda yang lain hanya berfungsi di aplikasi seluler MetaMask. Hapus aplikasi autentikator Anda dari sana."
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "Aplikasi autentikator tidak dapat dihapus di sini"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "Aplikasi autentikator dihapus"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "Digunakan untuk"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Memverifikasi transaksi Money"
+  },
   "mfaTotpSetupContinue": {
     "message": "Lanjutkan"
+  },
+  "mfaTotpSetupKey": {
+    "message": "Kunci pengaturan"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "Kode QR untuk menambahkan MetaMask ke aplikasi autentikator"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "Prosesnya terlalu lama, jadi kami membuat kunci pengaturan yang baru. Hapus entri MetaMask yang lama dari aplikasi autentikator Anda, lalu tambahkan yang baru ini."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "Atur aplikasi autentikator"
   },
   "minimumReceivedExplanation": {
     "message": "Nilai minimum yang akan Anda dapatkan jika harga berubah selama proses transaksi, berdasarkan pengaturan selip. Estimasi ini berasal dari penyedia likuiditas, sehingga jumlah akhirnya dapat berbeda."
@@ -5695,12 +5934,24 @@
   "moneyConvertYourCrypto": {
     "message": "Konversikan kripto Anda"
   },
+  "moneyEarnApy": {
+    "message": "Dapatkan APY $1",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Dapatkan hingga $1 APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Tambahkan $1 ke Money account dan dapatkan hingga $2 dalam satu tahun.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
   },
   "moneyEarnBannerCta": {
     "message": "Tambahkan $1",
     "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Tambahkan $1 ke Money account Anda—tanpa penguncian atau saldo minimum.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerTitleNoApy": {
     "message": "Dapatkan penghasilan dengan Money account",
@@ -5742,6 +5993,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Danai Money account dan lihat saldo Anda bertambah hingga $1 APY."
+  },
+  "moneyGetApy": {
+    "message": "Dapatkan APY $1",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "Nilai yang ditampilkan adalah Persentase Hasil Tahunan (APY) saat ini. APY bersifat variabel dan tidak dijamin."
@@ -6314,6 +6569,9 @@
   "networkNameSolana": {
     "message": "Solana"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -6378,6 +6636,10 @@
   },
   "newCustomTokenAdded": {
     "message": "“$1” berhasil ditambahkan!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "Untuk menggunakan OpenSea untuk melihat NFT Anda, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Pengaturan > Aset"
@@ -7530,6 +7792,10 @@
   "perpsAbout": {
     "message": "Tentang"
   },
+  "perpsAboutAsset": {
+    "message": "Tentang $1",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "Aktivitas"
   },
@@ -7870,6 +8136,13 @@
   "perpsInsufficientMargin": {
     "message": "Margin tidak cukup untuk membuat order ini."
   },
+  "perpsIocCancel": {
+    "message": "Order Anda tidak dapat terpenuhi dalam batas toleransi selip sebesar $1%. Cobalah menggunakan order limit atau sesuaikan pengaturan selip Anda.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Order Anda tidak dapat terpenuhi dalam batas toleransi selip yang ditetapkan. Cobalah menggunakan order limit atau sesuaikan pengaturan selip Anda."
+  },
   "perpsKeepPositions": {
     "message": "Pertahankan posisi"
   },
@@ -8125,6 +8398,10 @@
   "perpsPositions": {
     "message": "Posisi"
   },
+  "perpsPriceMoved": {
+    "message": "Harga bergerak $1%, melampaui toleransi selip Anda $2%. Tinjau harga yang telah diperbarui, lalu coba lagi.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
   "perpsProducts": {
     "message": "Produk",
     "description": "Heading of the Perps tab section listing market categories as chips"
@@ -8134,6 +8411,10 @@
   },
   "perpsReadMore": {
     "message": "Baca selengkapnya"
+  },
+  "perpsReadMoreAbout": {
+    "message": "Baca selengkapnya tentang $1",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "Aktivitas terbaru"
@@ -8185,6 +8466,10 @@
   "perpsServiceInterruptionContactSupport": {
     "message": "hubungi dukungan",
     "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "Beberapa layanan tidak tersedia untuk sementara waktu. $1, atau $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Lihat pilihan Anda di bagian Pertanyaan Umum",
@@ -9403,6 +9688,33 @@
   "rewardsLinkAccountError": {
     "message": "Gagal menambahkan akun"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Anda tidak dapat dirujuk karena aktivitas perdagangan baru-baru ini."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Anda telah dirujuk oleh pengguna lain."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Kode referensi tidak valid"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Kode referensi"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Kode referensi tidak dapat divalidasi."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Anda tidak dapat menggunakan kode referensi milik Anda sendiri."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Anda tidak dapat dirujuk oleh orang lain."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Terjadi kesalahan. Coba lagi nanti."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Terlalu banyak percobaan. Tunggu sebentar."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Memeriksa wilayah..."
   },
@@ -9440,24 +9752,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Gagal berpartisipasi"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Kode referensi tidak valid"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Kode referensi (opsional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Kode referensi tidak dapat divalidasi."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Periksa koneksi Anda dan coba lagi."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Sembunyikan kode"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Punya kode referensi?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Gabung dengan Reward"
   },
@@ -9466,10 +9760,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Mulai dapatkan reward"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Memverifikasi kode referensi...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 poin",
@@ -12161,6 +12451,18 @@
   "tronDailyResourcesDescription": {
     "message": "Ini adalah jatah harian Anda berdasarkan TRX yang Anda stake. Anda mendapatkan $1 bandwidth gratis setiap hari.",
     "description": "$1 is the maximum bandwidth value"
+  },
+  "tronDailyResourcesLoading": {
+    "message": "Memuat penggunaan sumber daya harian…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "Informasi energi dan bandwidth Anda tidak tersedia untuk sementara waktu. Informasi tersebut akan diperbarui secara otomatis.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "Tidak dapat memuat sumber daya",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
   },
   "tronEnergy": {
     "message": "Energi"

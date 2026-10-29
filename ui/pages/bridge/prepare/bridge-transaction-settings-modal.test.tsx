@@ -46,20 +46,30 @@ jest.mock(
   }),
 );
 
+const messengerCallMock = jest.fn((actionType: string) => {
+  switch (actionType) {
+    case 'LegacyBackgroundApiService:isSendBundleSupported':
+    case 'LegacyBackgroundApiService:isRelaySupported':
+      return Promise.resolve(true);
+    case 'NetworkController:getNetworkConfigurationByNetworkClientId':
+      return Promise.resolve({ chainId: '0x1' });
+    case 'AuthenticationController:getBearerToken':
+      return Promise.resolve('mock-bearer-token-for-tests');
+    default:
+      return Promise.resolve(undefined);
+  }
+});
+
 setBackgroundConnection({
   // @ts-expect-error - setSlippage is valid
   setSlippage,
   setSwapsLiveness: jest.fn(),
   getStatePatches: jest.fn(),
-  isSendBundleSupported: jest.fn(),
-  isRelaySupported: jest.fn(),
+  messengerCall: messengerCallMock,
   resetState: jest.fn(),
-  getNetworkConfigurationByNetworkClientId: jest.fn(),
   gasFeeStartPolling: jest.fn(),
-  addPollingTokenToAppState: jest.fn(),
   trackUnifiedSwapBridgeEvent: jest.fn(),
   updateBridgeQuoteRequestParams: jest.fn(),
-  getBearerToken: jest.fn(),
 });
 
 const TX_MODAL = {

@@ -1738,6 +1738,9 @@
     "message": "$2 관련하여 $1에 승인됨",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Arc에 오신 것을 환영합니다! Arc 체인의 원활한 이용과 이용 내역 확인을 위해 Arc 팀과 정보를 공유할 수 있습니다."
+  },
   "arcUsageNoticeTitle": {
     "message": "알림"
   },
@@ -1916,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 MetaMask 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "토큰 세부 정보와 가스 설정 같은 기본 기능이 포함됩니다. 최고의 사용 경험을 원한다면 이 기능을 켜 두세요. 자세한 내용은 $1을(를) 참고하세요.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "기본 기능"
@@ -1942,6 +1945,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "기본 기능 켜기"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "기본 기능 켜짐"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "설정이 업데이트되었습니다"
@@ -2619,6 +2625,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "이 토큰 심볼이 입력한 네트워크 이름 또는 체인 ID와 일치하지 않습니다. 여러 인기 토큰이 비슷한 심볼을 사용합니다. 사기꾼은 이를 이용해 더 가격이 높은 토큰을 보내도록 속일 수 있습니다. 계속하기 전에 모든 사항을 확인하세요."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "네트워크 정보 직접 입력",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "RPC 정보 직접 입력",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "안전을 지키는 방법을 알아보세요.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2630,6 +2644,22 @@
   "chainlistNetworkDetails": {
     "message": "심볼: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "ChainList에 일치하는 항목 없음",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "RPC 데이터는 ChainList에서 제공됩니다. 추가하기 전에 항상 확인하세요. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "네트워크 이름으로 '$1' 사용",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "RPC URL로 '$1' 사용",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "설정에서 변경"
@@ -3300,6 +3330,9 @@
   "dataCollectionForMarketing": {
     "message": "마케팅 목적의 데이터 수집"
   },
+  "dataCollectionForMarketingDescription": {
+    "message": "제품 기능과 기타 자료 등에 대한 관련 소식을 전해드릴 수 있도록 사용자가 마케팅 메시지를 어떻게 확인하고 이용하는지에 관한 데이터를 수집합니다."
+  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "이메일 등을 통해 제품 업데이트, 팁, 뉴스를 받아보세요. 당사는 알림 내용을 개선하기 위해 상호작용을 사용할 수 있습니다."
   },
@@ -3349,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "모바일에서 일괄 매도 열기"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "MetaMask 모바일에서 지정가 주문 기능을 사용할 수 있습니다. 모바일 장치로 이 코드를 스캔하여 사용하세요."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "모바일에서 지정가 주문 열기"
   },
   "deepLinkQrPredictDescription": {
     "message": "MetaMask 예측 시장을 이용하려면 모바일 장치로 QR 코드를 스캔하세요."
@@ -3434,6 +3473,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "알림 페이지"
+  },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "알림 설정 페이지"
   },
   "deepLink_theOnboardingPage": {
     "message": "온보딩 페이지"
@@ -3840,9 +3882,6 @@
   },
   "enableSmartContractAccountDescription": {
     "message": "지원되는 네트워크에서 빠른 트랜잭션, 낮은 네트워크 수수료, 강화된 보안과 같은 혜택을 누려보세요."
-  },
-  "enableSnap": {
-    "message": "활성화"
   },
   "enableToken": {
     "message": "$1 활성화",
@@ -4253,6 +4292,14 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask는 스마트 계정을 활성화하는 1회성 비용과 이 거래의 네트워크 수수료를 부담합니다."
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "이 네트워크를 이용하려면 거래 후 계정에 최소 $1 $2의 잔액을 유지해야 합니다. 스마트 계정의 잔액은 이 금액보다 적어질 수 없습니다.",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1는 스마트 계정을 활성화하는 1회성 비용과 이 거래의 네트워크 수수료를 부담합니다.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
+  },
   "gasTimingHoursShort": {
     "message": "$1 시간",
     "description": "$1 represents a number of hours"
@@ -4532,7 +4579,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "이어서 다음 사항을 확인하세요."
+    "message": "계속하려면 다음 사항을 확인하세요."
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "$1 기기가 잠금 해제되었습니다",
@@ -5208,9 +5255,6 @@
   "loading": {
     "message": "로딩 중..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Snap에서 트랜잭션을 완료하세요."
-  },
   "loadingTokenList": {
     "message": "토큰 목록 불러오는 중"
   },
@@ -5438,20 +5482,68 @@
   "mfaEmailEntryContinue": {
     "message": "계속"
   },
+  "mfaEmailEntryDescription": {
+    "message": "이메일 주소는 계정 인증과 비정기적인 계정 관련 안내에 사용됩니다."
+  },
   "mfaEmailEntryInvalid": {
     "message": "유효한 이메일 주소를 입력하세요."
   },
   "mfaEmailEntryPlaceholder": {
     "message": "이메일 주소"
   },
+  "mfaEmailEntryTitle": {
+    "message": "이메일 인증"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "인증 코드가 만료되었습니다. 새 코드를 받으세요."
+  },
   "mfaErrorCooldown": {
     "message": "요청이 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요."
+  },
+  "mfaErrorEmailTaken": {
+    "message": "이 이메일 주소는 이미 사용 중입니다. 다른 이메일 주소를 사용해 보세요."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "다른 인증 과정이 이미 진행 중입니다."
   },
   "mfaErrorGeneric": {
     "message": "문제가 발생했습니다. 다시 시도해 주세요."
   },
+  "mfaErrorInvalidPasskey": {
+    "message": "패스키를 인증할 수 없습니다. 다시 시도하세요."
+  },
+  "mfaErrorLimitReached": {
+    "message": "이 수단으로 시도할 수 있는 횟수를 초과했습니다."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "패스키 요청이 취소되었습니다."
+  },
+  "mfaErrorSignedOut": {
+    "message": "계속 진행하려면 로그인하세요."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "시도 횟수가 너무 많습니다. 새 코드를 요청하세요."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "입력 시간이 초과되었습니다. 앱에 표시된 현재 코드를 입력하세요."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "이 계정에는 인증 앱이 이미 등록되어 있습니다."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "시도 횟수가 너무 많습니다. 앱에 새 코드가 표시되면 다시 시도하세요."
+  },
+  "mfaErrorUnsupported": {
+    "message": "이 장치에서 지원되지 않는 수단입니다."
+  },
   "mfaFailureClose": {
     "message": "닫기"
+  },
+  "mfaFailureContactSupport": {
+    "message": "지원팀에 문의"
+  },
+  "mfaFailureDone": {
+    "message": "완료"
   },
   "mfaFailureRetry": {
     "message": "다시 시도"
@@ -5462,29 +5554,176 @@
   "mfaIntroContinue": {
     "message": "시작하기"
   },
+  "mfaIntroDescription": {
+    "message": "본인 확인 방법을 몇 가지 설정하겠습니다. 그러면 한 가지 방법을 사용할 수 없게 되더라도 다른 방법으로 본인 여부를 확인할 수 있습니다."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "이메일로 6자리 코드 받기"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "장치 또는 비밀번호 매니저를 통해 확인하기"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "이 장치에 저장됨"
+  },
+  "mfaIntroTitle": {
+    "message": "2단계 인증 설정"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Google Authenticator와 같은 앱에서 6자리 코드 받기"
+  },
+  "mfaIntroTotpDone": {
+    "message": "인증 앱에서 설정하기"
+  },
   "mfaMethodEmail": {
     "message": "이메일"
   },
-  "mfaOtpPaste": {
-    "message": "붙여넣기"
+  "mfaMethodPasskey": {
+    "message": "패스키"
+  },
+  "mfaMethodTotp": {
+    "message": "인증 앱"
+  },
+  "mfaOtpDescription": {
+    "message": "이메일로 6자리 코드를 보냈습니다. 이메일 주소를 인증하려면 해당 코드를 아래에 입력하세요."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "인증 앱을 열어 6자리 코드를 입력하세요."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "$1에 6자리 코드를 보냈습니다. 이메일 주소를 인증하려면 해당 코드를 아래에 입력하세요.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "새 코드 받기"
   },
   "mfaOtpResend": {
     "message": "코드 다시 보내기"
   },
+  "mfaOtpResendIn": {
+    "message": "$1초 후 코드 다시 전송",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "새 코드를 보냈습니다."
+  },
   "mfaOtpRetry": {
     "message": "다시 시도"
   },
-  "mfaOtpVerify": {
-    "message": "인증"
+  "mfaOtpRetryIn": {
+    "message": "$1초 후 다시 시도"
+  },
+  "mfaOtpSendIn": {
+    "message": "$1초 후 새 코드 전송",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "코드 전송 중..."
+  },
+  "mfaOtpTitle": {
+    "message": "인증 코드 입력"
+  },
+  "mfaOtpVerifying": {
+    "message": "코드 확인 중"
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "패스키 생성"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "패스키 사용"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "인증 코드 받기"
   },
   "mfaPickerOr": {
     "message": "또는"
   },
+  "mfaPickerPasskey": {
+    "message": "패스키로 인증"
+  },
+  "mfaPickerTitle": {
+    "message": "2단계 인증으로 컨펌"
+  },
+  "mfaPickerTotp": {
+    "message": "인증 앱 사용"
+  },
   "mfaSettingsAdd": {
     "message": "추가"
   },
+  "mfaSettingsAddedOn": {
+    "message": "$1 추가함"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "이메일 인증 제거됨"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "해당 이메일 주소는 이 계정의 유일한 보안 수단입니다. 삭제하려면 먼저 다른 보안 수단을 추가하세요."
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "이메일 주소를 제거할 수 없습니다"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "해당 인증 앱은 이 계정의 유일한 보안 수단입니다. 삭제하려면 먼저 다른 보안 수단을 추가하세요."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "인증 앱을 제거할 수 없습니다"
+  },
+  "mfaSettingsNotice": {
+    "message": "이 보안 수단은 Money account 거래의 보안을 강화합니다. 지갑을 복구하는 데는 사용할 수 없습니다."
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "다른 보안 수단은 MetaMask 모바일 앱에서만 사용할 수 있습니다. 모바일 앱에서 이메일 주소를 제거하세요."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "여기에서 이메일 주소를 제거할 수 없습니다"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "이메일 주소 제거"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "더 이상 이메일로 코드를 받아 로그인하거나 거래를 인증할 수 없습니다."
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "이 수단을 제거할 수 없습니다. 나중에 다시 시도하세요."
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "인증 앱 제거"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "더 이상 인증 앱의 코드로 Money 거래를 인증할 수 없습니다."
+  },
+  "mfaSettingsTitle": {
+    "message": "2단계 인증"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "다른 보안 수단은 MetaMask 모바일 앱에서만 사용할 수 있습니다. 모바일 앱에서 인증 앱을 제거하세요."
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "여기에서 인증 앱을 제거할 수 없습니다"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "인증 앱 제거됨"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "사용 용도"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Money 거래 인증"
+  },
   "mfaTotpSetupContinue": {
     "message": "계속"
+  },
+  "mfaTotpSetupKey": {
+    "message": "설정 키"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "MetaMask를 인증 앱에 추가하는 QR 코드"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "시간이 초과되어 새 설정 키를 생성했습니다. 인증 앱에서 이전에 등록한 MetaMask 항목을 삭제한 후 새 설정 키를 추가하세요."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "인증 앱 설정"
   },
   "minimumReceivedExplanation": {
     "message": "슬리피지 설정에 따라 거래가 처리되는 동안 가격이 변동하는 경우 받을 수 있는 최소 금액입니다. 이 예상치는 유동성 공급자로부터 제공되며 최종 금액은 다를 수 있습니다."
@@ -5695,12 +5934,24 @@
   "moneyConvertYourCrypto": {
     "message": "암호자산 전환"
   },
+  "moneyEarnApy": {
+    "message": "$1 APY 수익 적립",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "최대 $1 APY 수익 적립"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Money account에 $1을(를) 추가하면 연간 최대 $2 수익을 올릴 수 있습니다.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
   },
   "moneyEarnBannerCta": {
     "message": "$1 추가",
     "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Money account에 $1을(를) 추가하세요. 예치 기간이나 최소 금액 제한이 없습니다.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerTitleNoApy": {
     "message": "Money account로 수익 창출",
@@ -5742,6 +5993,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "머니 계정에 자금을 추가하면 최대 $1 APY로 잔액이 늘어납니다."
+  },
+  "moneyGetApy": {
+    "message": "$1 APY 수익 얻기",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "표시된 수치는 현재 연간수익률(APY)입니다. APY는 변동될 수 있으며 보장되지 않습니다."
@@ -6314,6 +6569,9 @@
   "networkNameSolana": {
     "message": "솔라나"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -6378,6 +6636,10 @@
   },
   "newCustomTokenAdded": {
     "message": "“$1”(을)를 성공적으로 추가했습니다!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "OpenSea를 사용하여 NFT를 확인하려면 $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "설정 > 자산"
@@ -7530,6 +7792,10 @@
   "perpsAbout": {
     "message": "정보"
   },
+  "perpsAboutAsset": {
+    "message": "$1 정보",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "활동"
   },
@@ -7870,6 +8136,13 @@
   "perpsInsufficientMargin": {
     "message": "이 주문을 제출하기에 마진이 부족합니다."
   },
+  "perpsIocCancel": {
+    "message": "설정한 슬리피지 허용 범위($1%) 내에서 주문을 체결할 수 없습니다. 지정가 주문을 이용하거나 슬리피지를 조정하세요.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "설정한 슬리피지 허용 범위에서 주문을 체결할 수 없습니다. 지정가 주문을 이용하거나 슬리피지를 조정하세요."
+  },
   "perpsKeepPositions": {
     "message": "포지션 유지"
   },
@@ -8125,6 +8398,10 @@
   "perpsPositions": {
     "message": "포지션"
   },
+  "perpsPriceMoved": {
+    "message": "가격이 $1% 변동하여 설정한 슬리피지 허용 범위인 $2%를 초과했습니다. 변경된 가격을 확인하고 다시 시도하세요.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
   "perpsProducts": {
     "message": "상품",
     "description": "Heading of the Perps tab section listing market categories as chips"
@@ -8134,6 +8411,10 @@
   },
   "perpsReadMore": {
     "message": "자세히 보기"
+  },
+  "perpsReadMoreAbout": {
+    "message": "$1에 대해 더 알아보기",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "최근 활동"
@@ -8185,6 +8466,10 @@
   "perpsServiceInterruptionContactSupport": {
     "message": "지원팀에 연락하여",
     "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "일부 서비스를 일시적으로 이용할 수 없습니다. $1 또는 $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "FAQ에서 이용 가능한 옵션을 확인하세요",
@@ -9403,6 +9688,33 @@
   "rewardsLinkAccountError": {
     "message": "계정 추가 실패"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "최근 거래 활동으로 인해 추천을 받을 수 없습니다."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "이미 다른 사용자의 추천을 받았습니다."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "잘못된 추천 코드"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "추천 코드"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "추천 코드를 확인할 수 없습니다."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "본인의 추천 코드는 사용할 수 없습니다."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "다른 사람의 추천을 받을 수 없습니다."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "시도 횟수가 너무 많습니다. 잠시 기다리세요."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "지역 확인 중..."
   },
@@ -9440,24 +9752,6 @@
   "rewardsOnboardingOptInError": {
     "message": "참여 실패"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "잘못된 추천 코드"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "추천 코드(선택 사항)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "추천 코드를 확인할 수 없습니다."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "연결 상태를 확인하고 다시 시도하세요."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "코드 숨기기"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "추천 코드가 있으세요?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "보상 프로그램 가입"
   },
@@ -9466,10 +9760,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "보상 적립 시작하기"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "추천인 코드 확인 중...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1포인트",
@@ -12161,6 +12451,18 @@
   "tronDailyResourcesDescription": {
     "message": "스테이킹한 TRX에 따른 일일 할당량입니다. 매일 $1 대역폭을 무료로 받습니다.",
     "description": "$1 is the maximum bandwidth value"
+  },
+  "tronDailyResourcesLoading": {
+    "message": "일일 리소스 사용량을 불러오는 중…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "에너지 및 대역폭 정보를 일시적으로 이용할 수 없습니다. 정보는 자동으로 업데이트됩니다.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "리소스를 불러올 수 없음",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
   },
   "tronEnergy": {
     "message": "에너지"
