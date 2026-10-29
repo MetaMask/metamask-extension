@@ -1,6 +1,14 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, ButtonVariant } from '@metamask/design-system-react';
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalContentSize,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '@metamask/design-system-react';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -8,14 +16,6 @@ import {
   type SafeChain,
 } from '../../../multichain/networks-form/use-safe-chains';
 import { setEditedNetwork } from '../../../../store/actions';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../component-library';
 import { useDispatch } from '../../../../store/hooks';
 import { type TokenWithFiatAmount } from '../types';
 
@@ -50,29 +50,30 @@ export const NativeTokenScamWarningModal = ({
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader onClose={onClose}>
+      <ModalContent size={ModalContentSize.Sm}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           {t('nativeTokenScamWarningTitle')}
         </ModalHeader>
-        <ModalBody marginTop={4} marginBottom={4}>
+        <ModalBody className="py-4">
           {t('nativeTokenScamWarningDescription', [
             token.symbol,
             nativeCurrencySymbol ||
               t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
           ])}
         </ModalBody>
-        <ModalFooter>
-          <Button
-            variant={ButtonVariant.Secondary}
-            onClick={() => {
+        <ModalFooter
+          secondaryButtonProps={{
+            children: t('nativeTokenScamWarningConversion'),
+            isFullWidth: true,
+            onClick: () => {
               dispatch(setEditedNetwork({ chainId: token.chainId }));
               navigate(NETWORKS_ROUTE);
-            }}
-            isFullWidth
-          >
-            {t('nativeTokenScamWarningConversion')}
-          </Button>
-        </ModalFooter>
+            },
+          }}
+        />
       </ModalContent>
     </Modal>
   );
