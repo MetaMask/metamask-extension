@@ -1725,7 +1725,7 @@ This section captures non-obvious, durable caveats for running this repo inside 
 
 ### Node version gotcha (important)
 
-- The repo requires Node `>=24.22.1` (`.nvmrc` → `v24.22.1`), but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 24 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v24.22.1/bin:$PATH"` before the command. `corepack enable` must run under Node 24 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
+- The repo requires Node `>=26.12.1`, but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 26 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v26.12.1/bin:$PATH"` before the command. `corepack enable` must run under Node 26 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
 
 ### Running / building the extension
 

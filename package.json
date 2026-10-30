@@ -728,7 +728,7 @@
     "@types/madge": "^5.0.3",
     "@types/micromatch": "^4",
     "@types/mocha": "^10.0.3",
-    "@types/node": "24.10.13",
+    "@types/node": "^26.6.5",
     "@types/path-browserify": "^1.0.2",
     "@types/pify": "^5.0.1",
     "@types/react": "18.2.0",
@@ -891,7 +891,7 @@
     "yazl": "^3.3.1"
   },
   "engines": {
-    "node": ">=24.22.1",
+    "node": ">=26.12.1",
     "yarn": "^4.14.1"
   },
   "lavamoat": {
