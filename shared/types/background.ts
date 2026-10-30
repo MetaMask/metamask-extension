@@ -7,7 +7,6 @@ import type {
   TokenBalancesControllerState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
   MultichainBalancesControllerState,
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
@@ -75,6 +74,7 @@ import type { DecryptMessageControllerState } from '../../app/scripts/controller
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
+import type { RewardsMoneyControllerState } from '../../app/scripts/controllers/rewards-money/rewards-money-controller-types';
 
 export type ControllerStatePropertiesEnumerated = {
   assetsInfo: AssetsControllerState['assetsInfo'];
@@ -317,7 +317,6 @@ export type ControllerStatePropertiesEnumerated = {
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
-  marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
@@ -339,6 +338,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
   rewardsVipPerpsFees: RewardsControllerState['rewardsVipPerpsFees'];
+  excludedRegions: RewardsMoneyControllerState['excludedRegions'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
@@ -404,11 +404,11 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   Pick<TokenBalancesControllerState, 'tokenBalances'> &
   TokensControllerState &
   TokenListState &
-  TokenRatesControllerState &
   TransactionControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
+  RewardsMoneyControllerState &
   ConnectivityControllerState &
   NetworkConnectionBannerControllerState;
 

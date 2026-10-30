@@ -50,7 +50,7 @@ const ShieldIllustrationAnimation = ({
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
-      alignment: Alignment.Center,
+      alignment: Alignment.BottomCenter,
     }),
   });
 
