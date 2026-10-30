@@ -713,22 +713,32 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
     // Candle subscription — return a single candle so `chartCurrentPrice` is > 0
     // in the market detail page. Without this the close-position modal submit
     // stays disabled (isPriceValid = false).
+    //
+    // The candle is built when the subscription arrives, not when this module
+    // is imported. The candleSnapshot mocks (here and in mock-e2e.js) put their
+    // last bar at request time minus 5m, so a module-load timestamp is tens of
+    // seconds older than that bar. The live candle then lands before the last
+    // snapshot bar and lightweight-charts throws "Cannot update oldest data",
+    // which crashes the market detail / order entry page.
     messageIncludes: ['"method":"subscribe"', '"type":"candle"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: {
-      channel: 'candle',
-      data: {
-        t: Date.now() - 300000,
-        T: Date.now() - 1,
-        s: 'AVAX',
-        i: '5m',
-        o: '25',
-        c: '25',
-        h: '25',
-        l: '25',
-        v: '1000.0',
-        n: 10,
-      },
+    dynamicFollowUp: () => {
+      const now = Date.now();
+      return {
+        channel: 'candle',
+        data: {
+          t: now,
+          T: now + 300000 - 1,
+          s: 'AVAX',
+          i: '5m',
+          o: '25',
+          c: '25',
+          h: '25',
+          l: '25',
+          v: '1000.0',
+          n: 10,
+        },
+      };
     },
     followUpDelay: 50,
     delay: 50,
