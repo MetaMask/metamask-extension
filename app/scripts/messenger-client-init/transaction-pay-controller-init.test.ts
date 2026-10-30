@@ -1011,76 +1011,65 @@ describe('TransactionPayControllerInit', () => {
     });
   });
 
-  describe('api.updateTransactionPaymentToken', () => {
-    const REQUEST = {
-      transactionId: 'tx-1',
-      tokenAddress: '0x123' as const,
-      chainId: '0x1' as const,
-    };
+  describe('payment token changes', () => {
+    const PAYMENT_TOKEN = { address: '0x123', chainId: '0x1' };
 
-    function initApi() {
-      const { api, messengerClient } =
-        TransactionPayControllerInit(getInitRequestMock());
-      if (!api) {
-        throw new Error('Expected init result to expose an api');
-      }
-      (
-        messengerClient as {
-          state: {
-            transactionData: Record<
-              string,
-              {
-                accountOverride: string;
-                paymentToken: { address: string; chainId: string };
-              }
-            >;
-          };
-        }
-      ).state = {
-        transactionData: {
-          'tx-1': {
-            accountOverride: '0xabc',
-            paymentToken: { address: '0x123', chainId: '0x1' },
-          },
-        },
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    function init() {
+      const request = getInitRequestMock();
+      const { messengerClient } = TransactionPayControllerInit(request);
+      const transactionData = {
+        'tx-1': { accountOverride: '0xabc', paymentToken: PAYMENT_TOKEN },
       };
-      return { api, messengerClient };
+      (messengerClient as { state: unknown }).state = { transactionData };
+      const publishState = (data: Record<string, unknown>) =>
+        request.controllerMessenger.publish(
+          'TransactionPayController:stateChange',
+          { transactionData: data } as never,
+          [],
+        );
+      return { publishState, transactionData };
     }
 
-    it('updates the payment token, then syncs the withdraw transfer', async () => {
-      const { api, messengerClient } = initApi();
-      const callOrder: string[] = [];
-      jest.mocked(messengerClient.updatePaymentToken).mockImplementation(() => {
-        callOrder.push('update');
-      });
-      syncWithdrawTransferMock.mockImplementation(async () => {
-        callOrder.push('sync');
-        return true;
+    it('syncs the withdraw transfer when the payment token changes', () => {
+      const { publishState, transactionData } = init();
+
+      publishState(transactionData);
+      publishState(transactionData);
+      publishState({
+        'tx-1': {
+          ...transactionData['tx-1'],
+          paymentToken: { address: '0x456', chainId: '0x1' },
+        },
       });
 
-      await api.updateTransactionPaymentToken(REQUEST);
-
-      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith(REQUEST);
-      expect(syncWithdrawTransferMock).toHaveBeenCalledWith(
+      expect(syncWithdrawTransferMock).toHaveBeenCalledTimes(2);
+      expect(syncWithdrawTransferMock).toHaveBeenNthCalledWith(
+        1,
         expect.anything(),
         'tx-1',
         '0xabc',
-        { address: '0x123', chainId: '0x1' },
+        PAYMENT_TOKEN,
       );
-      expect(callOrder).toEqual(['update', 'sync']);
     });
 
     it('does not throw when the withdraw transfer sync fails', async () => {
-      const { api } = initApi();
+      const { publishState, transactionData } = init();
       const consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
       syncWithdrawTransferMock.mockRejectedValue(new Error('encode failed'));
 
-      await expect(
-        api.updateTransactionPaymentToken(REQUEST),
-      ).resolves.toBeUndefined();
-      expect(consoleErrorSpy).toHaveBeenCalled();
+      expect(() => publishState(transactionData)).not.toThrow();
+      await new Promise(process.nextTick);
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Money Account withdraw: transfer sync failed',
+        expect.any(Error),
+      );
       consoleErrorSpy.mockRestore();
     });
   });

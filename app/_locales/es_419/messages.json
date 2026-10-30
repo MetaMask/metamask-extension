@@ -6381,7 +6381,7 @@
     "message": "Comenzar"
   },
   "musdEducationHeadline": {
-    "message": "OBTÉN $1 % EN\nMONEDAS ESTABLES",
+    "message": "Obtén $1 % en\nmonedas estables",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {

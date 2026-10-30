@@ -365,6 +365,47 @@ describe('NFTs options', () => {
     ).toHaveTextContent(messages.allDefaultNetworks.message);
   });
 
+  it('keeps the current EVM network when All networks is selected', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const setActiveNetworkSpy = jest.spyOn(actions, 'setActiveNetwork');
+    const setEnabledAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    state.metamask.isEvmSelected = true;
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+    fireEvent.click(await findByTestId('home-network-filter-all-default'));
+
+    expect(setEnabledAllPopularNetworksSpy).toHaveBeenCalled();
+    expect(setActiveNetworkSpy).not.toHaveBeenCalled();
+  });
+
+  it('activates an EVM network when All networks is selected from a non-EVM network', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const setActiveNetworkSpy = jest.spyOn(actions, 'setActiveNetwork');
+    const setEnabledAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    state.metamask.isEvmSelected = false;
+    state.metamask.selectedMultichainNetworkChainId = SOLANA_CHAIN_ID;
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+    fireEvent.click(await findByTestId('home-network-filter-all-default'));
+
+    expect(setEnabledAllPopularNetworksSpy).toHaveBeenCalled();
+    expect(setActiveNetworkSpy).toHaveBeenCalledWith('selectedNetworkClientId');
+  });
+
   it('calls onNetworkSelect with CAIP IDs when one network is enabled', async () => {
     const onNetworkSelect = jest.fn();
     const state = createMockState();

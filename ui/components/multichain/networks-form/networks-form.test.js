@@ -49,7 +49,7 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../store/background-connection', () => ({
   ...jest.requireActual('../../../store/background-connection'),
   submitRequestToBackground: jest.fn().mockImplementation((method, args) => {
-    if (method === 'isPublicEndpointUrl') {
+    if (method === 'LegacyBackgroundApiService:isPublicEndpointUrl') {
       const url = args[0];
       // Return true for Infura URLs, false for everything else
       return Promise.resolve(url?.includes('infura.io') ?? false);

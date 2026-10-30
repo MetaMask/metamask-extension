@@ -83,6 +83,11 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
   });
 
   subscribePersistPayMetadata(controllerMessenger);
+  subscribeWithdrawTransferSync(
+    controllerMessenger,
+    messengerClient,
+    initMessenger as MoneyPayMessenger,
+  );
 
   const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 
@@ -291,19 +296,52 @@ function getApi(
         }
       });
     },
-    updateTransactionPaymentToken: async (
-      request: Parameters<TransactionPayController['updatePaymentToken']>[0],
-    ) => {
-      messengerClient.updatePaymentToken(request);
-
-      // A withdraw transfer target depends on whether the new token is quoted.
-      await syncWithdrawTransfer(
-        messengerClient,
-        moneyPayMessenger,
-        request.transactionId,
-      );
-    },
   };
+}
+
+/**
+ * Re-encodes a withdraw transfer whenever its payment token changes, since
+ * the target depends on whether the new token is quoted.
+ *
+ * @param controllerMessenger - Transaction Pay controller messenger.
+ * @param messengerClient - TransactionPayController to read config from.
+ * @param moneyPayMessenger - Messenger used to encode and commit.
+ */
+function subscribeWithdrawTransferSync(
+  controllerMessenger: TransactionPayControllerMessenger,
+  messengerClient: TransactionPayController,
+  moneyPayMessenger: MoneyPayMessenger,
+): void {
+  const paymentTokenKeys = new Map<string, string | undefined>();
+
+  controllerMessenger.subscribe(
+    'TransactionPayController:stateChange',
+    ({ transactionData }: TransactionPayController['state']) => {
+      for (const transactionId of paymentTokenKeys.keys()) {
+        if (!transactionData[transactionId]) {
+          paymentTokenKeys.delete(transactionId);
+        }
+      }
+
+      for (const [transactionId, { paymentToken }] of Object.entries(
+        transactionData,
+      )) {
+        const key = paymentToken
+          ? `${paymentToken.chainId}:${paymentToken.address.toLowerCase()}`
+          : undefined;
+
+        if (
+          paymentTokenKeys.has(transactionId) &&
+          paymentTokenKeys.get(transactionId) === key
+        ) {
+          continue;
+        }
+
+        paymentTokenKeys.set(transactionId, key);
+        syncWithdrawTransfer(messengerClient, moneyPayMessenger, transactionId);
+      }
+    },
+  );
 }
 
 function getWithdrawPaymentToken(
