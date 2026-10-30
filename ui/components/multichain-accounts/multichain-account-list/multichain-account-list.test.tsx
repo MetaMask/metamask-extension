@@ -499,6 +499,27 @@ describe('MultichainAccountList', () => {
     });
   });
 
+  it('switches account without navigating when shouldNavigateOnSelect is false', async () => {
+    renderComponent({ shouldNavigateOnSelect: false });
+
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
+
+    expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
+      walletTwoGroupId,
+    );
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.NavAccountSwitched,
+      }),
+    );
+  });
+
   it('does not wrap custom handleAccountClick in the default switch transition gate', async () => {
     const customHandleAccountClick = jest.fn();
     renderComponent({
