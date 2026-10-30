@@ -32,6 +32,7 @@ type PersistedLastActivity = {
   lastWriteAt?: number;
   lastUiOpenAt?: number;
   lastUiClosedAt?: number;
+  lastUiInteractionAt?: number;
   lastWindowEventAt?: number;
   serviceWorkerReloadCount?: number;
 };
@@ -41,6 +42,7 @@ export type LastActivityContext = {
   msSinceLastWrite?: number;
   msSinceLastUiOpen?: number;
   msSinceLastUiClosed?: number;
+  msSinceLastUiInteraction?: number;
   msSinceLastWindowEvent?: number;
   msSinceLastServiceWorkerReload?: number;
   serviceWorkerReloadCount?: number;
@@ -58,6 +60,7 @@ let appStartedAt = serviceWorkerStartedAt;
 let lastWriteAt: number | undefined;
 let lastUiOpenAt: number | undefined;
 let lastUiClosedAt: number | undefined;
+let lastUiInteractionAt: number | undefined;
 let lastWindowEventAt: number | undefined;
 let serviceWorkerReloadCount: number | undefined;
 
@@ -149,6 +152,9 @@ async function setSessionLastActivity(): Promise<void> {
   if (lastUiClosedAt !== undefined) {
     value.lastUiClosedAt = lastUiClosedAt;
   }
+  if (lastUiInteractionAt !== undefined) {
+    value.lastUiInteractionAt = lastUiInteractionAt;
+  }
   if (lastWindowEventAt !== undefined) {
     value.lastWindowEventAt = lastWindowEventAt;
   }
@@ -191,6 +197,10 @@ async function hydrateFromSession(): Promise<void> {
       lastUiClosedAt = keepNewer(
         lastUiClosedAt,
         readNumber(record, 'lastUiClosedAt'),
+      );
+      lastUiInteractionAt = keepNewer(
+        lastUiInteractionAt,
+        readNumber(record, 'lastUiInteractionAt'),
       );
       lastWindowEventAt = keepNewer(
         lastWindowEventAt,
@@ -263,10 +273,21 @@ export function recordWindowEvent(): void {
 }
 
 /**
+ * Marks a click or keypress inside a MetaMask UI.
+ *
+ * The elapsed time stays reportable after every UI has closed.
+ */
+export function recordUiInteraction(): void {
+  lastUiInteractionAt = Date.now();
+  setSessionLastActivity().catch(() => undefined);
+}
+
+/**
  * Current elapsed-time snapshot. Unset signals are omitted.
  *
  * `msSinceLastUiOpen` is only set while at least one UI is open.
  * `msSinceLastUiClosed` is only set while every UI is closed.
+ * `msSinceLastUiInteraction` stays set after the UI closes.
  * `msSinceLastServiceWorkerReload` is only set after at least one reload
  * (`serviceWorkerReloadCount > 0`).
  *
@@ -300,6 +321,11 @@ export function getLastActivityContext(
   const msSinceLastWindowEvent = msSince(lastWindowEventAt, now);
   if (msSinceLastWindowEvent !== undefined) {
     context.msSinceLastWindowEvent = msSinceLastWindowEvent;
+  }
+
+  const msSinceLastUiInteraction = msSince(lastUiInteractionAt, now);
+  if (msSinceLastUiInteraction !== undefined) {
+    context.msSinceLastUiInteraction = msSinceLastUiInteraction;
   }
 
   if (serviceWorkerReloadCount !== undefined) {
