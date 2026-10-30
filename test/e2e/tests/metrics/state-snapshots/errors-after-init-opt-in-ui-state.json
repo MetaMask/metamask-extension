@@ -124,6 +124,7 @@
     "country": "string",
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
+    "currencyRates": "object",
     "currentAppVersion": "string",
     "currentExtensionPopupId": "number",
     "currentLocale": "en",
