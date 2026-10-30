@@ -27,6 +27,10 @@ const ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   totp_already_enrolled: 'mfaErrorTotpTaken',
 };
 
+const ERROR_LINKS: Partial<Record<MfaFlowErrorCode, string>> = {
+  email_claimed: 'https://support.metamask.io/configure/wallet/email-in-use',
+};
+
 /**
  * Wording for authenticator app codes, which the app shows rather than an
  * email: a new code is in the app, not requested.
@@ -38,6 +42,15 @@ const TOTP_ERROR_KEYS: Partial<Record<MfaFlowErrorCode, string>> = {
   too_many_attempts: 'mfaErrorTotpTooManyAttempts',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
+
+/**
+ * The help article for an error, if it has one.
+ *
+ * @param code - The error code.
+ * @returns The article URL.
+ */
+export const getErrorLink = (code: MfaFlowErrorCode): string | undefined =>
+  ERROR_LINKS[code];
 
 export const getMethodLabelKey = (method: MfaMethod): string =>
   METHOD_KEYS[method];
@@ -54,6 +67,36 @@ export const getSpecificErrorMessageKey = (
   method?: MfaMethod,
 ): string | undefined =>
   (method === 'totp' ? TOTP_ERROR_KEYS[code] : undefined) ?? ERROR_KEYS[code];
+
+/**
+ * Errors whose failure screen has its own title and description, rather than
+ * "Something went wrong" and the error's message.
+ */
+const FAILURE_KEYS: Partial<
+  Record<MfaFlowErrorCode, { title: string; description: string }>
+> = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- the server's code
+  multi_primary_srp: {
+    title: 'mfaFailureSupportTitle',
+    description: 'mfaFailureSupportDescription',
+  },
+};
+
+/**
+ * The failure screen's message keys for an error.
+ *
+ * @param code - The error's code.
+ * @returns The title key, and a description key when there is more to say.
+ */
+export const getFailureCopyKeys = (
+  code: MfaFlowErrorCode,
+): { title: string; description?: string } =>
+  FAILURE_KEYS[code] ?? {
+    title: 'mfaFailureTitle',
+    // The title already says something went wrong; only a specific reason
+    // adds to it.
+    description: getSpecificErrorMessageKey(code),
+  };
 
 export const getErrorMessageKey = (
   code: MfaFlowErrorCode,

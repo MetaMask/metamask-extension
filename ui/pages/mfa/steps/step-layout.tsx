@@ -4,6 +4,7 @@ import {
   BoxFlexDirection,
   FontWeight,
   Text,
+  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -16,7 +17,7 @@ import type {
   MfaMethod,
   MfaReason,
 } from '../../../hooks/identity/mfa/engine/types';
-import { getErrorMessageKey } from '../labels';
+import { getErrorLink, getErrorMessageKey } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
 
 /**
@@ -61,13 +62,17 @@ export const INPUT_A11Y_PROPS = {
  * @param props - The message's props.
  * @param props.isError - Whether it is an error, rather than a status.
  * @param props.children - The message.
+ * @param props.link - A link after the message, kept out of what the input's
+ * description reads.
  */
 export const StepMessage = ({
   isError = false,
   children,
+  link,
 }: {
   isError?: boolean;
   children: ReactNode;
+  link?: ReactNode;
 }) => (
   <Text
     asChild
@@ -76,11 +81,11 @@ export const StepMessage = ({
     color={isError ? TextColor.ErrorDefault : TextColor.TextAlternative}
   >
     <p
-      id={STEP_MESSAGE_ID}
       role={isError ? 'alert' : 'status'}
       data-testid={isError ? MfaFlowTestIds.ERROR : undefined}
     >
-      {children}
+      <span id={STEP_MESSAGE_ID}>{children}</span>
+      {link ? <> {link}</> : null}
     </p>
   </Text>
 );
@@ -140,8 +145,27 @@ export const StepError = ({
   method?: MfaMethod;
 }) => {
   const t = useI18nContext();
+  const link = getErrorLink(code);
   return (
-    <StepMessage isError>{t(getErrorMessageKey(code, method))}</StepMessage>
+    <StepMessage
+      isError
+      link={
+        link ? (
+          <TextButton asChild color={TextColor.PrimaryDefault}>
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid={MfaFlowTestIds.ERROR_LINK}
+            >
+              {t('learnMoreUpperCase')}
+            </a>
+          </TextButton>
+        ) : undefined
+      }
+    >
+      {t(getErrorMessageKey(code, method))}
+    </StepMessage>
   );
 };
 

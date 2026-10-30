@@ -60,7 +60,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // currentCurrency: DONE
 //
 // TokenRatesController
-// marketData: DONE
+// marketData: DONE (via AssetsController.assetsPrice when unify enabled; controller removed)
 //
 // MultichainAssetsController
 // accountsAssets: DONE
@@ -847,9 +847,8 @@ export const getTokenRatesControllerMarketData = createDeepEqualSelector(
 
     return result;
   },
-) as unknown as ControllerStateSelector<
-  TokenRatesControllerState,
-  'marketData'
+) as unknown as MigratingControllerStateSelector<
+  TokenRatesControllerState['marketData']
 >;
 
 export const getMultichainAssetsRatesControllerConversionRates =

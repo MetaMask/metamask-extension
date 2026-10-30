@@ -278,8 +278,6 @@ function getApi(
         }
       });
     },
-    updateTransactionPaymentToken:
-      messengerClient.updatePaymentToken.bind(messengerClient),
   };
 }
 

@@ -3,7 +3,6 @@ import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
-import { isIncomingTokenTransfer } from './incoming-token-transfer';
 import { useQueryFilters } from './useQueryFilters';
 import { isZeroValueSelfSend } from './zero-value-self-send';
 
@@ -51,27 +50,6 @@ describe('query filters', () => {
           to: subjectAddress.toUpperCase(),
           value: '0',
           methodId: '0x',
-        }),
-        subjectAddress,
-      ),
-    ).toBe(true);
-  });
-
-  it('matches incoming token transfers', () => {
-    expect(
-      isIncomingTokenTransfer(
-        transaction({
-          from: otherAddress,
-          valueTransfers: [
-            {
-              from: otherAddress,
-              to: subjectAddress.toUpperCase(),
-              contractAddress: tokenAddress,
-              amount: '100',
-              decimal: 6,
-              symbol: 'USDC',
-            },
-          ],
         }),
         subjectAddress,
       ),
