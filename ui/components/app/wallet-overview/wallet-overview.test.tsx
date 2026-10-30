@@ -2,6 +2,7 @@ import React from 'react';
 import { it } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
+import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -15,7 +16,10 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useFullScreenDesign');
+
 const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
+const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 
 const renderWalletOverview = (className?: string) => {
   const { container } = render(
@@ -35,6 +39,7 @@ const renderWalletOverview = (className?: string) => {
 describe('WalletOverview', () => {
   beforeEach(() => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+    mockUseFullScreenDesign.mockReturnValue(false);
   });
 
   it('renders the balance and the buttons', () => {
@@ -80,4 +85,18 @@ describe('WalletOverview', () => {
       }
     },
   );
+
+  it('left-aligns the content and removes max-width on the buttons in the fullscreen design', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+    mockUseFullScreenDesign.mockReturnValue(true);
+
+    const { root, balanceContainer } = renderWalletOverview();
+
+    expect(root).toHaveClass('items-start');
+    expect(balanceContainer).toHaveClass('items-start');
+    expect(screen.getByTestId('buttons').parentElement).not.toHaveClass(
+      'max-w-[458px]',
+      'self-center',
+    );
+  });
 });

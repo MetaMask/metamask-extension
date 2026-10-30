@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
+import classnames from 'clsx';
 import {
   matchPath,
   useLocation,
@@ -11,14 +12,12 @@ import {
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
 import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
+import { useFullScreenDesign } from '#ui/hooks/useFullScreenDesign';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
@@ -48,6 +47,8 @@ import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
 import { useDispatch } from '../../../store/hooks';
 import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
+import { AccountName } from './account-name';
+import { DiscoverSearchBar } from './discover-search-bar';
 
 type AppHeaderUnlockedContentProps = {
   menuRef: React.RefObject<HTMLButtonElement>;
@@ -62,6 +63,7 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const showNavbar = useBottomNavBar();
+  const isFullScreenDesign = useFullScreenDesign();
   const [searchParams, setSearchParams] = useSearchParams();
   const disableAccountPicker = Boolean(
     matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname) ||
@@ -133,13 +135,15 @@ export const AppHeaderUnlockedContent = ({
 
   const multichainAccountAppContent = useMemo(() => {
     return (
-      <Box style={{ overflow: 'hidden' }}>
-        {/* Prevent overflow of account picker by long account names */}
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Start}
-          className="min-w-0"
-        >
+      <Box
+        className={classnames(
+          'min-w-0 flex-1 overflow-hidden',
+          isFullScreenDesign && 'max-w-lg',
+        )}
+      >
+        {isFullScreenDesign ? (
+          <AccountName name={accountName} />
+        ) : (
           <AccountPicker
             address={''} // No address shown in multichain mode
             name={accountName}
@@ -172,7 +176,7 @@ export const AppHeaderUnlockedContent = ({
             paddingLeft={2}
             paddingRight={2}
           />
-        </Box>
+        )}
         {selectedMultichainAccountId && (
           <Box
             className="ml-2 mt-1 w-fit"
@@ -198,6 +202,7 @@ export const AppHeaderUnlockedContent = ({
     );
   }, [
     accountName,
+    isFullScreenDesign,
     disableAccountPicker,
     selectedMultichainAccountId,
     navigate,
@@ -208,66 +213,53 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={2}
-        className="min-w-0"
+      {multichainAccountAppContent}
+
+      {isDiscoverSearchEnabled &&
+        (isFullScreenDesign ? (
+          <DiscoverSearchBar
+            className="ml-auto"
+            onOpen={handleOpenDiscoverSearch}
+          />
+        ) : (
+          <ButtonIcon
+            iconName={IconName.Search}
+            data-testid="discover-search-button"
+            ariaLabel={t('searchTokens')}
+            onClick={handleOpenDiscoverSearch}
+            size={ButtonIconSize.Md}
+          />
+        ))}
+
+      <BadgeWrapper
+        badge={
+          accountOptionsMenuOpen ? null : <NotificationsTagCounter noLabel />
+        }
+        position={BadgeWrapperPosition.TopRight}
+        badgeContainerProps={{
+          onClick: handleMainMenuToggle,
+          className: 'cursor-pointer',
+        }}
+        className="self-center"
       >
-        {multichainAccountAppContent}
-      </Box>
-      <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.End}
-        className="ml-auto"
-      >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.End}
-          className="w-full"
-          gap={2}
-        >
-          {isDiscoverSearchEnabled && (
-            <ButtonIcon
-              iconName={IconName.Search}
-              data-testid="discover-search-button"
-              ariaLabel={t('searchTokens')}
-              onClick={handleOpenDiscoverSearch}
-              size={ButtonIconSize.Md}
-            />
-          )}
-          <BadgeWrapper
-            badge={
-              accountOptionsMenuOpen ? null : (
-                <NotificationsTagCounter noLabel />
-              )
-            }
-            position={BadgeWrapperPosition.TopRight}
-            badgeContainerProps={{
-              onClick: handleMainMenuToggle,
-              className: 'cursor-pointer',
-            }}
-            className="self-center"
-          >
-            <ButtonIcon
-              ref={menuRef}
-              iconName={IconName.Menu}
-              data-testid="account-options-menu-button"
-              ariaLabel={t('accountOptions')}
-              onClick={handleMainMenuToggle}
-              size={ButtonIconSize.Md}
-            />
-          </BadgeWrapper>
-        </Box>
-        <GlobalMenuDrawerWithList
-          isOpen={accountOptionsMenuOpen}
-          onClose={closeAccountOptionsMenu}
+        <ButtonIcon
+          ref={menuRef}
+          iconName={IconName.Menu}
+          data-testid="account-options-menu-button"
+          ariaLabel={t('accountOptions')}
+          onClick={handleMainMenuToggle}
+          size={isFullScreenDesign ? ButtonIconSize.Lg : ButtonIconSize.Md}
         />
-        <VisitSupportDataConsentModal
-          isOpen={showSupportDataConsentModal}
-          onClose={() => dispatch(setShowSupportDataConsentModal(false))}
-        />
-      </Box>
+      </BadgeWrapper>
+
+      <GlobalMenuDrawerWithList
+        isOpen={accountOptionsMenuOpen}
+        onClose={closeAccountOptionsMenu}
+      />
+      <VisitSupportDataConsentModal
+        isOpen={showSupportDataConsentModal}
+        onClose={() => dispatch(setShowSupportDataConsentModal(false))}
+      />
     </>
   );
 };

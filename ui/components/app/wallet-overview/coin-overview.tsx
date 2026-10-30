@@ -67,6 +67,7 @@ import {
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
+import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 import WalletOverview from './wallet-overview';
 import { getBalanceAlignmentClassName } from './wallet-overview-layout';
 import CoinButtons from './coin-buttons';
@@ -87,7 +88,9 @@ const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
 const BalanceOverviewSkeleton = () => {
   const environmentType = getEnvironmentType();
+  const isFullScreenDesign = useFullScreenDesign();
   const isFullscreenOrSidepanel =
+    isFullScreenDesign ||
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
@@ -102,7 +105,7 @@ const BalanceOverviewSkeleton = () => {
       <Box
         className={classnames(
           'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
-          getBalanceAlignmentClassName(),
+          getBalanceAlignmentClassName(isFullScreenDesign),
         )}
       >
         <Skeleton className="h-14 w-full rounded-lg md:h-[75px]" />
@@ -223,6 +226,7 @@ export const CoinOverview = ({
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
+  const isFullScreenDesign = useFullScreenDesign();
 
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -418,7 +422,7 @@ export const CoinOverview = ({
       <div
         className={classnames(
           `${classPrefix}-overview__balance`,
-          getBalanceAlignmentClassName(),
+          getBalanceAlignmentClassName(isFullScreenDesign),
         )}
       >
         <div className={`${classPrefix}-overview__primary-container`}>
@@ -437,7 +441,10 @@ export const CoinOverview = ({
   } else if (shouldShowBalanceEmptyState) {
     balanceContent = (
       <BalanceEmptyState
-        className="w-full max-w-[460px] self-center"
+        className={classnames('w-full max-w-[460px]', {
+          'self-center': !isFullScreenDesign,
+          'self-start max-w-none': isFullScreenDesign,
+        })}
         data-testid="coin-overview-balance-empty-state"
         onClickReceive={handleReceiveOnClick}
       />
@@ -458,6 +465,7 @@ export const CoinOverview = ({
             isBridgeChain,
             classPrefix,
           }}
+          showAsPills={isFullScreenDesign}
         />
       }
       className={className}

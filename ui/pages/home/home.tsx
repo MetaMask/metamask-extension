@@ -32,7 +32,6 @@ import { PasswordOutdatedModalContainer } from '../../components/app/password-ou
 import { ShieldEntryModalContainer } from '../../components/app/shield-entry-modal';
 import { RewardsModalContainer } from '../../components/app/rewards/onboarding/rewards-modal-container';
 import { Pna25ModalContainer } from '../../components/app/modals/pna25-modal/pna25-modal-container';
-import { AppHeader } from '../../components/multichain/app-header';
 import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSegmentContext } from '../../hooks/useSegmentContext';
@@ -235,7 +234,6 @@ export default function Home() {
   }, [setBasicFunctionalityModalOpen]);
 
   const showNavbar = useBottomNavBar();
-  const appHeader = showNavbar ? null : <AppHeader />;
 
   if (forgottenPassword) {
     return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
@@ -247,29 +245,23 @@ export default function Home() {
 
   if (location.pathname === CONNECTED_ROUTE) {
     return (
-      <>
-        {appHeader}
-        <div className="flex flex-col flex-1 min-h-0">
-          <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
-            <ConnectedSites navigate={navigate} />
-          </ScrollContainer>
-          <DappConnectionControlBar />
-        </div>
-      </>
+      <div className="flex flex-col flex-1 min-h-0">
+        <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
+          <ConnectedSites navigate={navigate} />
+        </ScrollContainer>
+        <DappConnectionControlBar />
+      </div>
     );
   }
 
   if (location.pathname === CONNECTED_ACCOUNTS_ROUTE) {
     return (
-      <>
-        {appHeader}
-        <div className="flex flex-col flex-1 min-h-0">
-          <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
-            <ConnectedAccounts navigate={navigate} />
-          </ScrollContainer>
-          <DappConnectionControlBar />
-        </div>
-      </>
+      <div className="flex flex-col flex-1 min-h-0">
+        <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
+          <ConnectedAccounts navigate={navigate} />
+        </ScrollContainer>
+        <DappConnectionControlBar />
+      </div>
     );
   }
 
@@ -309,7 +301,6 @@ export default function Home() {
 
   return (
     <>
-      {appHeader}
       {showNavbar ? (
         <div className="flex min-h-full flex-col">
           <div className="grow">{homeBody}</div>

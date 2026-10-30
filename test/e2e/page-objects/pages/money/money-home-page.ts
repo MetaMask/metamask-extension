@@ -16,7 +16,7 @@ const ACTIVITY_SETTLED_TIMEOUT = 90_000;
  * Boundaries: the deposit confirmation opened by Add belongs to
  * `MoneyAccountDepositConfirmation`; activity row details belong to
  * `MoneyTransactionDetailsPage`.
- * Related: `BottomNavBar` (how tests get here).
+ * Related: `MainNav` (how tests get here).
  *
  * @see ui/pages/money/money-home-page.tsx
  */

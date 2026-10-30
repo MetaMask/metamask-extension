@@ -7,7 +7,12 @@ import {
 } from '../../../../shared/constants/app';
 
 // Centered in fullscreen and side panel (left-aligned when the side panel is narrow).
-export const getBalanceAlignmentClassName = () => {
+// Always left-aligned in the fullscreen design.
+export const getBalanceAlignmentClassName = (isFullScreenDesign = false) => {
+  if (isFullScreenDesign) {
+    return 'items-start';
+  }
+
   const environmentType = getEnvironmentType();
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isFullscreenOrSidepanel =
