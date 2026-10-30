@@ -111,11 +111,13 @@ describe('trackSplitStateWrite', () => {
     );
   });
 
-  it('forces a transaction when an ambient active span exists', () => {
+  it('starts its own trace instead of joining an ambient active span', () => {
     const activeSpan = { spanContext: jest.fn() };
     const startSpan = jest.fn((_options, callback) => callback(null));
+    const startNewTrace = jest.fn((callback) => callback());
     globalThis.sentry = {
       getActiveSpan: jest.fn(() => activeSpan),
+      startNewTrace,
       startSpan,
       withIsolationScope: jest.fn((callback) =>
         callback({ setTag: jest.fn() }),
@@ -124,13 +126,17 @@ describe('trackSplitStateWrite', () => {
 
     trackSplitStateWrite(EVENT);
 
+    expect(startNewTrace).toHaveBeenCalledTimes(1);
     expect(startSpan).toHaveBeenCalledWith(
       expect.objectContaining({
-        forceTransaction: true,
         name: TraceName.StatePersist,
-        parentSpan: activeSpan,
+        parentSpan: null,
       }),
       expect.any(Function),
+    );
+    expect(startSpan.mock.calls[0][0]).not.toHaveProperty(
+      'forceTransaction',
+      true,
     );
   });
 });
