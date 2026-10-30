@@ -53,7 +53,7 @@ env:
   # Round 6 pairs: CloudFront run IDs of each base and head test build and
   # their shared manifest version; R6_PAIR is the index of the pair to run.
   R6_PAIRS: '[{"name": "sentry", "base": "29574057765", "head": "29575217436", "version": "13.41.0"}, {"name": "root", "base": "30680260931", "head": "30706359178", "version": "13.44.0"}, {"name": "widget", "base": "37674909662", "head": "37674913209", "version": "13.53.0"}]'
-  R6_PAIR: '1'
+  R6_PAIR: '2'
   R6_HOST: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension'
   # Round 2 busy-wait milliseconds per arm, about 2, 4 and 8% of median
   # uiStartup (arm 0 is the hook with no work).
