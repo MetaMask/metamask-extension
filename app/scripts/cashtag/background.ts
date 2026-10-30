@@ -22,6 +22,9 @@ const fullscreenFile = 'home.html';
 const popupResetDelayMs = 1000;
 
 let registered = false;
+// Routes saved before panel open, consumed on mount. Cleaned up when consumed,
+// when the window closes (windows.onRemoved), or when open() fails (identity
+// check). Close events are not used: they can arrive after a newer click.
 const pendingRoutes = new Map<
   number,
   { path: string; search?: `?${string}` }
@@ -629,14 +632,6 @@ export function registerCashtagBackgroundBridge({
   chrome.windows.onRemoved.addListener((windowId) => {
     pendingRoutes.delete(windowId);
   });
-
-  if (typeof chrome.sidePanel?.onClosed?.addListener === 'function') {
-    chrome.sidePanel.onClosed.addListener(
-      (info: { windowId: number; path: string; tabId?: number }) => {
-        pendingRoutes.delete(info.windowId);
-      },
-    );
-  }
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!isAllowedCashtagSender(message?.type, sender)) {

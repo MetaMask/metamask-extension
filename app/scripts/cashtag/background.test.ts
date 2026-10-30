@@ -608,27 +608,26 @@ describe('createCashtagResponse', () => {
     });
   });
 
-  it('clears pending route when side panel closes', async () => {
+  it('keeps a pending route when a side panel close event arrives after the click', async () => {
     const savedChrome = globalThis.chrome;
     const savedBrowser = globalThis.browser;
 
     try {
       jest.resetModules();
 
-      let onClosedListener:
-        | ((info: { windowId: number; path: string }) => void)
-        | undefined;
+      const onClosedListeners: ((info: {
+        windowId: number;
+        path: string;
+      }) => void)[] = [];
       const open = jest.fn().mockResolvedValue(undefined);
       globalThis.chrome = {
         ...savedChrome,
         sidePanel: {
           open,
           onClosed: {
-            addListener: jest.fn(
-              (cb: (info: { windowId: number; path: string }) => void) => {
-                onClosedListener = cb;
-              },
-            ),
+            addListener: jest.fn((cb) => {
+              onClosedListeners.push(cb);
+            }),
           } as unknown as typeof savedChrome.sidePanel.onClosed,
         } as unknown as typeof savedChrome.sidePanel,
         runtime: {
@@ -659,15 +658,21 @@ describe('createCashtagResponse', () => {
       } = await import('./background');
 
       registerCashtagBackgroundBridge({ getController });
-      expect(onClosedListener).toBeDefined();
 
-      await freshCreate(openSwapMessage, widgetSender, getController);
+      await freshCreate(
+        {
+          type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+          body: { page: 'asset', caipAssetId },
+        },
+        widgetSender,
+        getController,
+      );
 
-      if (onClosedListener) {
-        onClosedListener({ windowId: 7, path: '/sidepanel.html' });
+      for (const listener of onClosedListeners) {
+        listener({ windowId: 7, path: '/sidepanel.html' });
       }
 
-      const consumeAfterClose = await freshCreate(
+      const firstConsume = await freshCreate(
         {
           type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
           body: { windowId: 7 },
@@ -676,7 +681,22 @@ describe('createCashtagResponse', () => {
         getController,
       );
 
-      expect(consumeAfterClose).toEqual({
+      expect(firstConsume).toMatchObject({
+        body: {
+          path: expect.stringMatching(/^\/asset\//u),
+        },
+      });
+
+      const secondConsume = await freshCreate(
+        {
+          type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+          body: { windowId: 7 },
+        },
+        sidePanelSender(),
+        getController,
+      );
+
+      expect(secondConsume).toEqual({
         type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
         body: { path: null, search: null },
       });
