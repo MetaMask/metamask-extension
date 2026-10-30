@@ -67,6 +67,7 @@ export const PageHeaderWithSearch = ({
           autoFocus: true,
           inputProps: {
             'data-testid': 'page-header-search-input',
+            'aria-label': searchPlaceholder ?? t('search'),
           } as React.ComponentPropsWithoutRef<'input'>,
         }}
       />

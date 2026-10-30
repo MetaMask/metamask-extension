@@ -202,22 +202,21 @@ export const AccountList = () => {
         {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          paddingTop={1}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingBottom={2}
-        >
+        <search className="px-4 py-2">
           <TextFieldSearch
             className="w-full"
             clearButtonOnClick={clearSearch}
             data-testid="multichain-account-list-search"
+            inputProps={
+              {
+                'aria-label': t('searchYourAccounts'),
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
             onChange={onSearchBarChange}
             placeholder={t('searchYourAccounts')}
             value={searchPattern}
           />
-        </Box>
+        </search>
         <ScrollContainer className="multichain-account-menu-popover__list flex flex-col overflow-auto">
           {hasFilteredWallets ? (
             <MultichainAccountList

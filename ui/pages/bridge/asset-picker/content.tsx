@@ -157,7 +157,7 @@ export const BridgeAssetPickerContent = forwardRef<
     return (
       <>
         <div className="flex flex-col gap-4">
-          <Box className="mx-4">
+          <search className="mx-4">
             <TextFieldSearch
               autoFocus
               className="w-full"
@@ -165,13 +165,14 @@ export const BridgeAssetPickerContent = forwardRef<
               inputProps={
                 {
                   'data-testid': 'bridge-asset-picker-search-input',
+                  'aria-label': t('enterTokenNameOrAddress'),
                 } as React.ComponentPropsWithoutRef<'input'>
               }
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder={t('enterTokenNameOrAddress')}
               value={searchQuery}
             />
-          </Box>
+          </search>
           <ButtonBase
             onClick={() =>
               isNetworkPickerOpen

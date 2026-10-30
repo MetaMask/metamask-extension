@@ -1,7 +1,6 @@
 import React from 'react';
 import { TextFieldSearch } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box } from '../../../component-library';
 
 const NetworkListSearch = ({
   searchQuery,
@@ -15,19 +14,24 @@ const NetworkListSearch = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={0}>
+    <search className="px-4 pb-2">
       <TextFieldSearch
         autoFocus
         className="w-full"
         clearButtonOnClick={() => setSearchQuery('')}
         data-testid="search-list"
+        inputProps={
+          {
+            'aria-label': t('search'),
+          } as React.ComponentPropsWithoutRef<'input'>
+        }
         onBlur={() => setFocusSearch(false)}
         onFocus={() => setFocusSearch(true)}
         onChange={(event) => setSearchQuery(event.target.value)}
         placeholder={t('search')}
         value={searchQuery}
       />
-    </Box>
+    </search>
   );
 };
 

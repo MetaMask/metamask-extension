@@ -360,16 +360,21 @@ export const ChainlistNetworkPicker = ({
       style={isDropdown && maxHeight !== undefined ? { maxHeight } : undefined}
     >
       {showSearchField ? (
-        <Box className="px-4 pb-4">
+        <search className="px-4 pb-4">
           <TextFieldSearch
             className="w-full"
             clearButtonOnClick={() => setInternalSearchValue('')}
             data-testid="networks-page-chainlist-search"
+            inputProps={
+              {
+                'aria-label': t('searchNetworkNameOrChainId'),
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
             onChange={(event) => setInternalSearchValue(event.target.value)}
             placeholder={t('searchNetworkNameOrChainId')}
             value={searchValue}
           />
-        </Box>
+        </search>
       ) : null}
       <Box
         className={isDropdown ? undefined : 'min-h-0 flex-1 overflow-y-auto'}
