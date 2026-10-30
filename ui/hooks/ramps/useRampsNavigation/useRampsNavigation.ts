@@ -16,10 +16,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import {
-  getIsRampsEnabled,
-  getIsRampsServiceDisruptionActive,
-} from '../../../selectors/ramps-feature-flags';
+import { getIsRampsServiceDisruptionActive } from '../../../selectors/ramps-feature-flags';
 import { getIsRampRegionUnsupported } from '../../../selectors/ramps';
 import {
   selectRampsOrders,
@@ -121,8 +118,6 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * When the flag is off, everyone is redirected to Portfolio.
- *
  * @returns An object with `goToBuy`, an async callback taking an optional
  * {@link RampIntent}. It runs the gate and either shows a blocking modal or
  * opens the buy destination. Resolves to the destination when it proceeded and
@@ -133,7 +128,6 @@ export default function useRampsNavigation() {
   const navigate = useNavigate();
   const { openBuyCryptoInPdapp } = useRamps();
 
-  const isEnabled = useSelector(getIsRampsEnabled);
   const isDisruption = useSelector(getIsRampsServiceDisruptionActive);
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
@@ -146,14 +140,6 @@ export default function useRampsNavigation() {
 
   const goToBuy = useCallback(
     async (intent?: RampIntent): Promise<RampsNavigationResult> => {
-      // Rollout gate off → unchanged Portfolio behavior.
-      if (!isEnabled) {
-        // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
-        // just an over-tight annotation.
-        await openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
-        return 'portfolio';
-      }
-
       // Returning Portfolio users get one migration visit before native Buy.
       // This precedes native eligibility gates because Portfolio performs the
       // migration from its app shell, independently of native Buy support.
@@ -258,7 +244,6 @@ export default function useRampsNavigation() {
       return 'native';
     },
     [
-      isEnabled,
       isDisruption,
       isRegionUnsupported,
       providers,

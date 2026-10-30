@@ -1,7 +1,4 @@
-import React from 'react';
-import { Provider } from 'react-redux';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useRampsScreenViewed } from './useRampsScreenViewed';
 import { createRampsMockStore, createRampsTestWrapper } from './test-utils';
@@ -27,9 +24,7 @@ jest.mock('./useRampsUserRegion', () => ({
 }));
 
 function renderScreenViewed(location: string, waitForRegion?: boolean) {
-  const store = createRampsMockStore({
-    remoteFeatureFlags: { rampsEnabled: true },
-  });
+  const store = createRampsMockStore();
   return renderHook(() => useRampsScreenViewed(location, { waitForRegion }), {
     wrapper: createRampsTestWrapper(store),
   });
@@ -76,58 +71,5 @@ describe('useRampsScreenViewed', () => {
     const [built] = mockTrackEvent.mock.calls[0];
     expect(built.properties.location).toBe('Order Details');
     expect(built.properties.region).toBe('');
-  });
-
-  it('fires once after rampsEnabled becomes true on the same mount', () => {
-    mockUserRegion = { regionCode: 'us-ca', country: { currency: 'USD' } };
-    const setRampsEnabledRef: {
-      current: (enabled: boolean) => void;
-    } = { current: () => undefined };
-    const queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
-
-    // eslint-disable-next-line @typescript-eslint/naming-convention -- test-only component
-    function RampsEnabledTestWrapper({
-      children,
-    }: {
-      children: React.ReactNode;
-    }) {
-      const [rampsEnabled, setEnabled] = React.useState(false);
-      setRampsEnabledRef.current = setEnabled;
-      const store = React.useMemo(
-        () =>
-          createRampsMockStore({
-            remoteFeatureFlags: { rampsEnabled },
-          }),
-        [rampsEnabled],
-      );
-      return (
-        <Provider store={store}>
-          <QueryClientProvider client={queryClient}>
-            {children}
-          </QueryClientProvider>
-        </Provider>
-      );
-    }
-
-    const { rerender } = renderHook(
-      () => useRampsScreenViewed('Token Selection'),
-      { wrapper: RampsEnabledTestWrapper },
-    );
-
-    expect(mockTrackEvent).not.toHaveBeenCalled();
-
-    // Wrap the wrapper's state update so React doesn't warn about an update
-    // outside act().
-    act(() => {
-      setRampsEnabledRef.current(true);
-    });
-    rerender();
-
-    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-    expect(mockTrackEvent.mock.calls[0][0].properties.location).toBe(
-      'Token Selection',
-    );
   });
 });
