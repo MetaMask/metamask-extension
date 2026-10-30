@@ -18,7 +18,10 @@ import {
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
 import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
-import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
+import {
+  syncMoneyAccountWithdrawTransfer,
+  updateMoneyAccountWithdrawAmount,
+} from '../lib/money/pay/update-withdraw-amount';
 import { getDelegationTransaction } from '../lib/transaction/delegation';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -47,6 +50,7 @@ jest.mock('../lib/money/pay/payment-override-callback', () => ({
   getPaymentOverrideData: jest.fn(),
 }));
 jest.mock('../lib/money/pay/update-withdraw-amount', () => ({
+  syncMoneyAccountWithdrawTransfer: jest.fn(),
   updateMoneyAccountWithdrawAmount: jest.fn(),
 }));
 const createDepositTransactionMock = jest.mocked(
@@ -57,6 +61,7 @@ const createWithdrawTransactionMock = jest.mocked(
 );
 const updateDepositAmountMock = jest.mocked(updateMoneyAccountDepositAmount);
 const updateWithdrawAmountMock = jest.mocked(updateMoneyAccountWithdrawAmount);
+const syncWithdrawTransferMock = jest.mocked(syncMoneyAccountWithdrawTransfer);
 const getMoneyAccountAmountDataMock = jest.mocked(getMoneyAccountAmountData);
 const getPaymentOverrideDataMock = jest.mocked(getPaymentOverrideData);
 
@@ -376,24 +381,34 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.setTransactionPayAccountOverride', () => {
-    function initApi() {
-      const { api, messengerClient } =
-        TransactionPayControllerInit(getInitRequestMock());
+    const ACCOUNT_OVERRIDE =
+      '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    const WITHDRAW_TRANSACTION = {
+      id: 'tx-withdraw',
+      type: TransactionType.moneyAccountWithdraw,
+    } as TransactionMeta;
+
+    function initApi(transactions: TransactionMeta[] = []) {
+      const { api, messengerClient } = TransactionPayControllerInit(
+        getInitRequestMock(transactions),
+      );
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
       const setTransactionConfigMock = jest.mocked(
         messengerClient.setTransactionConfig,
       );
-      return { api, setTransactionConfigMock };
+      return { api, messengerClient, setTransactionConfigMock };
     }
 
-    it('writes the supplied address to config.accountOverride', () => {
-      const { api, setTransactionConfigMock } = initApi();
-      const accountOverride =
-        '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
 
-      api.setTransactionPayAccountOverride('tx-1', accountOverride);
+    it('writes the supplied address to config.accountOverride', async () => {
+      const { api, setTransactionConfigMock } = initApi();
+
+      await api.setTransactionPayAccountOverride('tx-1', ACCOUNT_OVERRIDE);
 
       expect(setTransactionConfigMock).toHaveBeenCalledWith(
         'tx-1',
@@ -404,7 +419,42 @@ describe('TransactionPayControllerInit', () => {
       const config: { accountOverride?: string } = {};
       updater(config as never);
 
-      expect(config).toEqual({ accountOverride });
+      expect(config).toEqual({ accountOverride: ACCOUNT_OVERRIDE });
+      expect(syncWithdrawTransferMock).not.toHaveBeenCalled();
+    });
+
+    it('sets the withdraw recipient, then syncs the transfer', async () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi([
+        WITHDRAW_TRANSACTION,
+      ]);
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<string, { accountOverride: string }>;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-withdraw': { accountOverride: ACCOUNT_OVERRIDE },
+        },
+      };
+
+      await api.setTransactionPayAccountOverride(
+        'tx-withdraw',
+        ACCOUNT_OVERRIDE,
+      );
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { accountOverride?: string } = {};
+      updater(config as never);
+
+      expect(config).toEqual({ accountOverride: ACCOUNT_OVERRIDE });
+      expect(syncWithdrawTransferMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-withdraw',
+        ACCOUNT_OVERRIDE,
+        undefined,
+      );
     });
   });
 
@@ -661,13 +711,14 @@ describe('TransactionPayControllerInit', () => {
     }
 
     beforeEach(() => {
+      jest.clearAllMocks();
       createWithdrawTransactionMock.mockResolvedValue({
         transactionId: 'tx-withdraw',
         batchId: '0x1234',
       });
     });
 
-    it('seeds the selected account as accountOverride after creating the batch', async () => {
+    it('seeds the recipient as the accountOverride after creating the batch', async () => {
       const { api, setTransactionConfigMock } = initApi();
 
       const result =
@@ -884,6 +935,40 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
         accountOverride,
+        undefined,
+      );
+    });
+
+    it('forwards the selected receive token', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<
+              string,
+              { paymentToken: { address: string; chainId: string } }
+            >;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': { paymentToken: { address: '0x123', chainId: '0x1' } },
+        },
+      };
+      updateWithdrawAmountMock.mockResolvedValue(false);
+
+      await api.updateMoneyAccountWithdrawAmount('tx-1', '10');
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-1',
+        '10',
+        undefined,
+        { address: '0x123', chainId: '0x1' },
       );
     });
 
@@ -921,7 +1006,71 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
         recipientOverride,
+        undefined,
       );
+    });
+  });
+
+  describe('payment token changes', () => {
+    const PAYMENT_TOKEN = { address: '0x123', chainId: '0x1' };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    function init() {
+      const request = getInitRequestMock();
+      const { messengerClient } = TransactionPayControllerInit(request);
+      const transactionData = {
+        'tx-1': { accountOverride: '0xabc', paymentToken: PAYMENT_TOKEN },
+      };
+      (messengerClient as { state: unknown }).state = { transactionData };
+      const publishState = (data: Record<string, unknown>) =>
+        request.controllerMessenger.publish(
+          'TransactionPayController:stateChange',
+          { transactionData: data } as never,
+          [],
+        );
+      return { publishState, transactionData };
+    }
+
+    it('syncs the withdraw transfer when the payment token changes', () => {
+      const { publishState, transactionData } = init();
+
+      publishState(transactionData);
+      publishState(transactionData);
+      publishState({
+        'tx-1': {
+          ...transactionData['tx-1'],
+          paymentToken: { address: '0x456', chainId: '0x1' },
+        },
+      });
+
+      expect(syncWithdrawTransferMock).toHaveBeenCalledTimes(2);
+      expect(syncWithdrawTransferMock).toHaveBeenNthCalledWith(
+        1,
+        expect.anything(),
+        'tx-1',
+        '0xabc',
+        PAYMENT_TOKEN,
+      );
+    });
+
+    it('does not throw when the withdraw transfer sync fails', async () => {
+      const { publishState, transactionData } = init();
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      syncWithdrawTransferMock.mockRejectedValue(new Error('encode failed'));
+
+      expect(() => publishState(transactionData)).not.toThrow();
+      await new Promise(process.nextTick);
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Money Account withdraw: transfer sync failed',
+        expect.any(Error),
+      );
+      consoleErrorSpy.mockRestore();
     });
   });
 

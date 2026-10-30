@@ -979,6 +979,30 @@ describe('useTransactionConfirm', () => {
       expect(approved.txParams.data).toBe('0xbatchdata');
     });
 
+    it('signs with the money account, not the hardware recipient', async () => {
+      const moneyAccount = TRANSACTION_META_MOCK.txParams.from;
+      mockPrepareWithdrawTransaction.mockResolvedValue({
+        ...TRANSACTION_META_MOCK,
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const { onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const result = await onTransactionConfirm();
+
+      expect(result).toBe(true);
+      expect(mockUseIsHardwareWalletAccount).toHaveBeenCalledWith(moneyAccount);
+      expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+        expect.any(Object),
+        true,
+        '',
+        moneyAccount,
+      );
+      expect(mockNavigateToHwSigningPage).not.toHaveBeenCalled();
+    });
+
     it('does not prepare a withdraw for other transaction types', async () => {
       const { onTransactionConfirm } = runHook();
 

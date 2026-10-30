@@ -1,11 +1,19 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { useCallback } from 'react';
 
+import { getMoneyAccountWithdrawTransferTarget } from '../../../../../shared/lib/money/withdraw-amount-commit';
+import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import {
   selectTransactionById,
   type TransactionState,
 } from '../../../../selectors/transactionController';
+import {
+  selectTransactionPayAccountOverrideByTransactionId,
+  selectTransactionPaymentTokenByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import {
   clearLastMoneyAccountWithdrawAmount,
@@ -18,9 +26,9 @@ import {
   applyWithdrawCalldata,
   asFundedWithdrawUpdate,
   doesWithdrawCalldataMatchAmount,
+  getMoneyAccountWithdrawTransferDetails,
   withFundedBatchCalldata,
 } from '../../utils/money-account-withdraw';
-import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 
 async function persistWithdrawTransaction(
   transaction: TransactionMeta,
@@ -62,14 +70,13 @@ function readTransactionFromStore(
  * the confirmation clone instead of requiring the IPC object to be funded.
  *
  * Funded nested calldata is reused only when it already encodes the latest
- * typed amount. Otherwise Send would approve a previous encode while the
- * footer shows a newer amount that has not finished committing.
+ * typed amount and pays the current transfer target. Otherwise Send could
+ * approve a previous encode for an older amount, recipient, or receive token.
  *
  * @returns An object with `prepareWithdrawTransaction`.
  */
 export function useMoneyAccountWithdrawConfirm() {
   const dispatch = useDispatch();
-  const accountOverride = useTransactionAccountOverride();
 
   /**
    * Encodes (when needed) and returns the funded withdraw transaction to
@@ -84,14 +91,47 @@ export function useMoneyAccountWithdrawConfirm() {
     ): Promise<TransactionMeta | null> => {
       const amountHuman = getLastMoneyAccountWithdrawAmount(transactionMeta.id);
       const fromStore = readTransactionFromStore(dispatch, transactionMeta.id);
+      const paymentToken = dispatch((_, getState) =>
+        selectTransactionPaymentTokenByTransactionId(
+          getState() as unknown as TransactionPayState,
+          transactionMeta.id,
+        ),
+      );
+      // Read at confirm time so a recipient picked after the last render is
+      // used. It never signs.
+      const recipient = dispatch((_, getState) =>
+        selectTransactionPayAccountOverrideByTransactionId(
+          getState() as unknown as TransactionPayState,
+          transactionMeta.id,
+        ),
+      );
 
       // Skip re-encode only when nested calldata already matches the amount
-      // on screen. A prior encode can still look "funded" after the user edits.
+      // on screen and pays the current target. Quoted tokens keep the mUSD on
+      // the money account.
+      const isReusable = (transaction: TransactionMeta | undefined) => {
+        if (
+          !transaction ||
+          !doesWithdrawCalldataMatchAmount(transaction, amountHuman)
+        ) {
+          return false;
+        }
+        const transferRecipient =
+          getMoneyAccountWithdrawTransferDetails(transaction).recipient;
+        if (!transferRecipient) {
+          return false;
+        }
+        const target = getMoneyAccountWithdrawTransferTarget({
+          moneyAccountAddress: transaction.txParams.from as Hex,
+          paymentToken,
+          recipient: recipient ?? (transferRecipient as Hex),
+          transaction,
+        });
+        return isEqualCaseInsensitive(transferRecipient, target);
+      };
       const ready =
-        (doesWithdrawCalldataMatchAmount(fromStore, amountHuman)
-          ? withFundedBatchCalldata(fromStore)
-          : null) ??
-        (doesWithdrawCalldataMatchAmount(transactionMeta, amountHuman)
+        (isReusable(fromStore) ? withFundedBatchCalldata(fromStore) : null) ??
+        (isReusable(transactionMeta)
           ? withFundedBatchCalldata(transactionMeta)
           : null);
 
@@ -114,7 +154,7 @@ export function useMoneyAccountWithdrawConfirm() {
       const rawUpdate = await updateMoneyAccountWithdrawAmount(
         transactionMeta.id,
         amountHuman as string,
-        accountOverride,
+        recipient,
       );
       const update = asFundedWithdrawUpdate(rawUpdate);
       if (update) {
@@ -132,7 +172,7 @@ export function useMoneyAccountWithdrawConfirm() {
       );
       // After encode, only accept store calldata that matches the typed amount.
       // A superseded commit can leave an older funded batch in the store.
-      if (doesWithdrawCalldataMatchAmount(fromStoreAfterEncode, amountHuman)) {
+      if (isReusable(fromStoreAfterEncode)) {
         const matching = withFundedBatchCalldata(fromStoreAfterEncode);
         if (matching) {
           return finalizePreparedWithdraw(matching);
@@ -159,7 +199,7 @@ export function useMoneyAccountWithdrawConfirm() {
       );
       return null;
     },
-    [accountOverride, dispatch],
+    [dispatch],
   );
 
   return { prepareWithdrawTransaction };
