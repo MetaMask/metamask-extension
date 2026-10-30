@@ -17,6 +17,7 @@ import {
 import { moneyFormatUsd } from '../../../../helpers/money/format';
 import { getMoneyAccountWithdrawTransferDetails } from '../../../../pages/confirmations/utils/money-account-withdraw';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import type { ToastStatus } from '../../toast-listener/shared';
 
 export type ToastLabel = { title: string; description?: string };
@@ -144,8 +145,10 @@ function getWithdrawRecipient(
   transactionMeta: TransactionMeta | undefined,
 ): string | undefined {
   const { recipient } = getMoneyAccountWithdrawTransferDetails(transactionMeta);
-  const from = transactionMeta?.txParams?.from;
-  if (recipient && from && recipient.toLowerCase() === from.toLowerCase()) {
+  if (
+    recipient &&
+    isEqualCaseInsensitive(recipient, transactionMeta?.txParams?.from ?? '')
+  ) {
     return undefined;
   }
   return recipient;
