@@ -21,7 +21,12 @@ import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permis
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { useConfirmationReady } from '../../../confirmation-performance';
 import Info from './info';
+
+jest.mock('../../../confirmation-performance', () => ({
+  useConfirmationReady: jest.fn(),
+}));
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -183,6 +188,9 @@ describe('Info', () => {
     const state = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(useConfirmationReady).toHaveBeenLastCalledWith(
+      expect.objectContaining({ msgParams: expect.any(Object) }),
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -230,6 +238,9 @@ describe('Info', () => {
     const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(useConfirmationReady).toHaveBeenLastCalledWith(
+      expect.objectContaining({ txParams: expect.any(Object) }),
+    );
     expect(container).toMatchSnapshot();
   });
 
@@ -307,6 +318,7 @@ describe('Info', () => {
       const mockStore = configureMockStore([])(state);
       renderWithConfirmContextProvider(<Info />, mockStore);
 
+      expect(useConfirmationReady).toHaveBeenLastCalledWith(undefined);
       expect(
         screen.getByTestId('confirmation__info_skeleton'),
       ).toBeInTheDocument();

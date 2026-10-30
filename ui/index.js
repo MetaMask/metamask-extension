@@ -48,6 +48,7 @@ import {
 } from './ducks/metamask/metamask';
 import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root, { router } from './pages';
+import { registerConfirmationMeasurement } from './pages/confirmations/confirmation-performance';
 import { registerUnlockMeasurement } from './pages/unlock-page/unlock-performance';
 import txHelper from './helpers/utils/tx-helper';
 import {
@@ -241,6 +242,7 @@ async function startApp(metamaskState, opts) {
   initWebVitals();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
+  registerConfirmationMeasurement(metamaskState, router);
   registerUnlockMeasurement(metamaskState, router);
 
   const store = await trace(
