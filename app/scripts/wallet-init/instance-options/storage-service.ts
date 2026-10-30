@@ -17,7 +17,9 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 // if a user turns `indexedDB` back on later, the old "missing" data comes
 // back like it was never missing in the first place.
 // So, on FireFox, we report `indexedDb` as unavailable.
-const Adapter = isFirefox ? BrowserStorageAdapter : IndexedDBStorageAdapter;
+export const StorageAdapter = isFirefox
+  ? BrowserStorageAdapter
+  : IndexedDBStorageAdapter;
 
 /**
  * Build the extension's `StorageService` instance options. The extension uses
@@ -27,6 +29,6 @@ const Adapter = isFirefox ? BrowserStorageAdapter : IndexedDBStorageAdapter;
  */
 export function getStorageServiceInstanceOptions(): StorageServiceInstanceOptions {
   return {
-    storage: new Adapter(),
+    storage: new StorageAdapter(),
   };
 }
