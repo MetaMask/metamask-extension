@@ -358,6 +358,8 @@
     "@metamask/base-controller": "^10.0.0",
     "@metamask/base-data-service": "^2.1.0",
     "@metamask/messenger": "^3.0.0",
+    "@metamask/network-enablement-controller@^6.0.0": "patch:@metamask/network-enablement-controller@npm%3A6.0.5#~/.yarn/patches/@metamask-network-enablement-controller-npm-6.0.5-network-access.patch",
+    "@metamask/network-enablement-controller@^6.0.3": "patch:@metamask/network-enablement-controller@npm%3A6.0.5#~/.yarn/patches/@metamask-network-enablement-controller-npm-6.0.5-network-access.patch",
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/profile-sync-controller": "^36.0.0",

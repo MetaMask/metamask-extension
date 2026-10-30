@@ -10,6 +10,8 @@ import {
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
 import { RootMessenger } from '../../../lib/messenger';
+import type { OnboardingControllerStateChangeEvent } from '../../../controllers/onboarding';
+import type { PreferencesControllerStateChangeEvent } from '../../../controllers/preferences-controller';
 
 export function getNetworkEnablementControllerMessenger(
   messenger: RootMessenger<
@@ -44,7 +46,9 @@ type AllowedInitializationActions =
 
 type AllowedInitializationEvents =
   | AccountsControllerSelectedAccountChangeEvent
-  | AccountTreeControllerSelectedAccountGroupChangeEvent;
+  | AccountTreeControllerSelectedAccountGroupChangeEvent
+  | OnboardingControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent;
 
 export type NetworkEnablementControllerInitMessenger = ReturnType<
   typeof getNetworkEnablementControllerInitMessenger
@@ -78,6 +82,8 @@ export function getNetworkEnablementControllerInitMessenger(
     events: [
       'AccountsController:selectedAccountChange',
       'AccountTreeController:selectedAccountGroupChange',
+      'OnboardingController:stateChange',
+      'PreferencesController:stateChange',
     ],
   });
   return controllerInitMessenger;
