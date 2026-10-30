@@ -7645,20 +7645,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-data-service@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/base-data-service@npm:2.1.0"
+"@metamask/base-data-service@npm:@metamask-previews/base-data-service@2.1.0-preview-9fd631f7d":
+  version: 2.1.0-preview-9fd631f7d
+  resolution: "@metamask-previews/base-data-service@npm:2.1.0-preview-9fd631f7d"
   dependencies:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/storage-service": "npm:^2.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.0"
-    "@tanstack/query-core": "npm:^5.89.0"
+    "@metamask/utils": "npm:^12.0.1"
+    "@tanstack/query-core": "npm:^5.103.2"
     cockatiel: "npm:^3.2.1"
     fast-deep-equal: "npm:^3.1.3"
     lodash-es: "npm:^4.18.1"
     uuid: "npm:^11.1.1"
-  checksum: 10/865458c39c98e2d4d0174c1ca093c91617658ea047b85b7e80a45da2c0ed2a5d40713dc982df138eb718b266d9774b237f1591ea273c8302dff9a444e78aca53
+  checksum: 10/64ced557c9cfa2f6861da00b5f7ef7299157021fd4dcd1058751533b79753c6e7e090c76a98f13bdbadd86a4121fdc7a5788eb2cd4f0766efcbf88d8684d03cb
   languageName: node
   linkType: hard
 
@@ -8875,14 +8875,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/geolocation-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/geolocation-controller@npm:2.0.0"
+"@metamask/geolocation-controller@npm:@metamask-previews/geolocation-controller@2.0.0-preview-9fd631f7d":
+  version: 2.0.0-preview-9fd631f7d
+  resolution: "@metamask-previews/geolocation-controller@npm:2.0.0-preview-9fd631f7d"
   dependencies:
-    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-  checksum: 10/e9d12ece560f51ea18df594f5176e4214346b5f1ac864efa61fa061234f38413934f2bf4069045e968c7da34129383e49ee92d720873e7dac5ff703d57bc0b11
+    "@metamask/superstruct": "npm:^3.4.1"
+  checksum: 10/ab6fc3d7c04d456a2d6d5aabe99f6c35f11ed77e4f9ffc3efcefa83c0f49b81fd3e43d10d8df5833775481f866a19a4f569302284dc25e4b643acab64b41d260
   languageName: node
   linkType: hard
 
@@ -10218,14 +10220,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/react-data-query@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/react-data-query@npm:1.0.0"
+"@metamask/react-data-query@npm:@metamask-previews/react-data-query@2.0.0-preview-9fd631f7d":
+  version: 2.0.0-preview-9fd631f7d
+  resolution: "@metamask-previews/react-data-query@npm:2.0.0-preview-9fd631f7d"
   dependencies:
-    "@metamask/base-data-service": "npm:^1.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^5.62.16"
-    "@tanstack/react-query": "npm:^5.62.16"
+    "@metamask/base-data-service": "npm:^2.1.0"
+    "@metamask/utils": "npm:^12.0.1"
+    "@tanstack/query-core": "npm:^5.103.2"
+    "@tanstack/react-query": "npm:^5.103.2"
+    uuid: "npm:^11.1.1"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -10235,7 +10238,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 10/f71b7b9ba40f9883191befac2909abe466366ac2fe3d42a3471eb618890b35a1f430cf7234e33569ee6590a9b65bf26dd7233d321a0ed332320053692c634eca
+  checksum: 10/9efd2ced1930adb1e4c96ffc1c1e4aecae5fdb56a76d4df3db219d901ae04c6f5c43c901fe27460abb0b4dbd167733782713f724cc5a4b0f4400faccff579ef5
   languageName: node
   linkType: hard
 
@@ -16861,7 +16864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.103.2, @tanstack/react-query@npm:^5.62.16":
+"@tanstack/react-query@npm:^5.103.2":
   version: 5.103.2
   resolution: "@tanstack/react-query@npm:5.103.2"
   dependencies:
