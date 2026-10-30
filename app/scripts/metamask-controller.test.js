@@ -61,6 +61,7 @@ import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
+import { TOKEN_TRANSFER_LOG_TOPIC_HASH } from '../../shared/lib/transactions-controller-utils';
 import * as utils from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
@@ -2271,6 +2272,83 @@ describe('MetaMaskController', () => {
           upgradeContractAddress: null,
         });
         expect(isAtomicBatchSupported).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('NFT source', () => {
+      const NFT_ADDRESS = '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d';
+      const NETWORK_CLIENT_ID = 'mainnet';
+
+      it('passes the custom source for addNft from the API', async () => {
+        const addNft = jest
+          .spyOn(metamaskController.nftController, 'addNft')
+          .mockResolvedValue(undefined);
+
+        await metamaskController
+          .getApi()
+          .addNft(NFT_ADDRESS, '1', NETWORK_CLIENT_ID);
+
+        expect(addNft).toHaveBeenCalledWith(
+          NFT_ADDRESS,
+          '1',
+          NETWORK_CLIENT_ID,
+          {
+            source: 'custom',
+          },
+        );
+      });
+
+      it('passes the custom source for addNftVerifyOwnership from the API', async () => {
+        const addNftVerifyOwnership = jest
+          .spyOn(metamaskController.nftController, 'addNftVerifyOwnership')
+          .mockResolvedValue(undefined);
+
+        await metamaskController
+          .getApi()
+          .addNftVerifyOwnership(NFT_ADDRESS, '1', NETWORK_CLIENT_ID);
+
+        expect(addNftVerifyOwnership).toHaveBeenCalledWith(
+          NFT_ADDRESS,
+          '1',
+          NETWORK_CLIENT_ID,
+          { source: 'custom' },
+        );
+      });
+
+      it('passes the detected source when adding an NFT found in transaction logs', async () => {
+        const addNft = jest
+          .spyOn(metamaskController.nftController, 'addNft')
+          .mockResolvedValue(undefined);
+        const { address: selectedAddress } =
+          metamaskController.accountsController.getSelectedAccount();
+        const pad = (hex) => `0x${hex.replace('0x', '').padStart(64, '0')}`;
+
+        await metamaskController._updateNFTOwnership({
+          type: 'contractInteraction',
+          chainId: '0x1',
+          txParams: { from: selectedAddress },
+          txReceipt: {
+            logs: [
+              {
+                address: NFT_ADDRESS,
+                data: '0x',
+                topics: [
+                  TOKEN_TRANSFER_LOG_TOPIC_HASH,
+                  pad('0x1'),
+                  pad(selectedAddress),
+                  pad('0x7'),
+                ],
+              },
+            ],
+          },
+        });
+
+        expect(addNft).toHaveBeenCalledWith(
+          NFT_ADDRESS,
+          '7',
+          expect.anything(),
+          { source: 'detected' },
+        );
       });
     });
 

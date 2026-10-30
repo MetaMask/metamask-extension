@@ -83,7 +83,7 @@ export const PerpsDetailPageSkeleton = () => {
           paddingRight={4}
           gap={2}
         >
-          <Skeleton className="h-7 w-32" />
+          <Skeleton className="h-14 w-32 md:h-[75px]" />
           <Skeleton className="h-4 w-16" />
         </Box>
       </Box>

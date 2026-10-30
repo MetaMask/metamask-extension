@@ -2,6 +2,7 @@ import { submitRequestToBackground } from '../../../store/background-connection'
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
+  setPna25Acknowledged,
   setShieldEndingToastLastClickedOrClosed,
   setShieldPausedToastLastClickedOrClosed,
 } from './utils';
@@ -10,11 +11,13 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
+const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
+
 describe('toast utilities', () => {
   it('updates the privacy policy toast shown date through the messenger', () => {
     setNewPrivacyPolicyToastShownDate(123);
 
-    expect(submitRequestToBackground).toHaveBeenCalledWith(
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'AppStateController:setNewPrivacyPolicyToastShownDate',
       [123],
     );
@@ -23,27 +26,36 @@ describe('toast utilities', () => {
   it('updates the privacy policy toast interaction through the messenger', () => {
     setNewPrivacyPolicyToastClickedOrClosed();
 
-    expect(submitRequestToBackground).toHaveBeenCalledWith(
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'AppStateController:setNewPrivacyPolicyToastClickedOrClosed',
       undefined,
     );
   });
 
   it('updates the Shield paused toast interaction through the messenger', () => {
-    setShieldPausedToastLastClickedOrClosed(456);
+    setShieldPausedToastLastClickedOrClosed(123);
 
-    expect(submitRequestToBackground).toHaveBeenCalledWith(
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'AppStateController:setShieldPausedToastLastClickedOrClosed',
-      [456],
+      [123],
     );
   });
 
   it('updates the Shield ending toast interaction through the messenger', () => {
-    setShieldEndingToastLastClickedOrClosed(789);
+    setShieldEndingToastLastClickedOrClosed(123);
 
-    expect(submitRequestToBackground).toHaveBeenCalledWith(
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'AppStateController:setShieldEndingToastLastClickedOrClosed',
-      [789],
+      [123],
+    );
+  });
+
+  it('updates PNA acknowledgement through the messenger', () => {
+    setPna25Acknowledged(true);
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'AppStateController:setPna25Acknowledged',
+      [true],
     );
   });
 });
