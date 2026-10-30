@@ -127,6 +127,8 @@ class TransactionConfirmation extends Confirmation {
     testId: 'inline-alert',
   };
 
+  private readonly nativeAmountHeadingSelector = 'h2';
+
   private readonly networkName: RawLocator =
     '[data-testid="confirmation__details-network-name"]';
 
@@ -539,6 +541,42 @@ class TransactionConfirmation extends Confirmation {
   }
 
   /**
+   * Reads the native amount shown on the confirmation heading.
+   *
+   * Prefers the heading tooltip title, which is the full-precision value when
+   * the heading itself is rounded. Waits until that value stops changing so a
+   * max-send gas refresh is included.
+   *
+   * @param symbol - Native symbol that must appear in the heading, such as ETH.
+   * @returns The displayed amount, either the tooltip title or the heading text.
+   */
+  async getDisplayedNativeAmount(symbol: string): Promise<string> {
+    console.log(`Reading displayed native amount for ${symbol}`);
+    let stableValue = '';
+    let stableReads = 0;
+    await this.driver.waitUntil(
+      async () => {
+        const current = await this.readDisplayedNativeAmount(symbol);
+        if (!current) {
+          stableValue = '';
+          stableReads = 0;
+          return false;
+        }
+        if (current === stableValue) {
+          stableReads += 1;
+        } else {
+          stableValue = current;
+          stableReads = 1;
+        }
+        return stableReads >= 3;
+      },
+      { interval: 400, timeout: 20000 },
+    );
+    console.log(`Displayed native amount is ${stableValue}`);
+    return stableValue;
+  }
+
+  /**
    * Gets the network name displayed on the transaction confirmation page.
    *
    * IMPORTANT: Make sure the transaction confirmation screen is fully loaded
@@ -582,6 +620,32 @@ class TransactionConfirmation extends Confirmation {
    */
   async openGasFeeModal(): Promise<void> {
     await this.driver.clickElement(this.editGasFeeIcon);
+  }
+
+  private async readDisplayedNativeAmount(
+    symbol: string,
+  ): Promise<string | null> {
+    const amount: unknown = await this.driver.executeScript(
+      `const symbol = ${JSON.stringify(symbol)};
+      const headings = Array.from(document.querySelectorAll(arguments[0]));
+      const heading = headings.find((node) =>
+        (node.textContent || '').includes(symbol),
+      );
+      if (!heading) {
+        return null;
+      }
+      let node = heading;
+      while (node) {
+        const title = node.getAttribute && node.getAttribute('title');
+        if (title && /\\d/.test(title)) {
+          return title;
+        }
+        node = node.parentElement;
+      }
+      return heading.textContent;`,
+      this.nativeAmountHeadingSelector,
+    );
+    return typeof amount === 'string' && amount.trim() !== '' ? amount : null;
   }
 
   async selectTokenFee(tokenSymbol: string): Promise<void> {
