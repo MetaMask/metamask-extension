@@ -97,7 +97,7 @@
     "upsertTransactionUIMetricsFragment"
   ],
   "MetamaskController.getApi": [
-    "addDetectedTokens",
+    "addImportedTokens",
     "addNft",
     "addNftVerifyOwnership",
     "addPendingRevocation",
@@ -126,6 +126,7 @@
     "fetchQuotes",
     "gasFeeStartPolling",
     "gasFeeStopPollingByPollingToken",
+    "getBalancesInSingleCall",
     "getBearerToken",
     "getClaimDrafts",
     "getGeolocation",
@@ -137,6 +138,7 @@
     "grantPermissions",
     "grantPermissionsIncremental",
     "handleSnapRequest",
+    "ignoreTokens",
     "isNftOwner",
     "isPublicEndpointUrl",
     "removeAndIgnoreNft",
