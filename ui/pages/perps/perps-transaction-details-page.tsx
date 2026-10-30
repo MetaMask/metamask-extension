@@ -8,6 +8,7 @@ import {
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
+  FontFamily,
   FontWeight,
   IconName,
   Text,
@@ -278,8 +279,8 @@ const PerpsTransactionDetailsPage = () => {
             size={AvatarTokenSize.Lg}
           />
           <Text
-            variant={TextVariant.HeadingLg}
-            fontWeight={FontWeight.Medium}
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
             data-testid="perps-transaction-details-hero-amount"
           >
             {transaction.type === 'funding' && transaction.fundingAmount

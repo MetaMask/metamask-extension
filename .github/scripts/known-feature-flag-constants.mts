@@ -9,9 +9,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import featureFlagsModule from '../../shared/lib/feature-flags';
-
-const { FeatureFlagNames } = featureFlagsModule;
+import { FeatureFlagNames } from '../../shared/lib/feature-flags';
 
 /** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
 const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
@@ -25,11 +23,11 @@ const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
  * Constants that must be resolved by reading their source file (because
  * importing them would pull in browser-only dependencies).
  */
-const FILE_SOURCES: Array<{
+const FILE_SOURCES: {
   key: string;
   file: string;
   exportName: string;
-}> = [
+}[] = [
   {
     key: 'ASSETS_UNIFY_STATE_FLAG',
     file: 'shared/lib/assets-unify-state/remote-feature-flag.ts',
@@ -139,6 +137,11 @@ const FILE_SOURCES: Array<{
     key: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
     file: 'app/scripts/lib/transaction/caveats.ts',
     exportName: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+  },
+  {
+    key: 'REWARDS_MONEY_CONTROLLER_FLAG',
+    file: 'app/scripts/messenger-client-init/rewards-money-controller-init.ts',
+    exportName: 'REWARDS_MONEY_CONTROLLER_FLAG',
   },
 ];
 

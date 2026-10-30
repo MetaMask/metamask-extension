@@ -77,7 +77,7 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
         | 'GeolocationController:getGeolocation'
         | 'GeolocationController:refreshGeolocation',
       options: { isCancelled: () => boolean },
-    ): Promise<string | null> => {
+    ) => {
       const shouldCommit = () => !options.isCancelled();
 
       if (!shouldCommit()) {
@@ -85,7 +85,7 @@ export function useMusdGeoBlocking(): UseMusdGeoBlockingResult {
       }
 
       try {
-        const location = await submitRequestToBackground<string>(action);
+        const location = await submitRequestToBackground(action);
         const resolved = location === UNKNOWN_LOCATION ? null : location;
         if (shouldCommit()) {
           setUserCountry(resolved);

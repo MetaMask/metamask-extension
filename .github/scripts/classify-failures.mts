@@ -72,23 +72,23 @@ import { partitionRetryableBlockerCascadeJobs } from './shared/failure-classific
 // Types
 // ---------------------------------------------------------------------------
 
-interface Job {
+type Job = {
   id: number;
   name: string;
   conclusion: string | null;
-}
+};
 
-interface Annotation {
+type Annotation = {
   annotation_level?: 'notice' | 'warning' | 'failure';
   message?: string;
   title?: string;
   path?: string;
   start_line?: number;
-}
+};
 
 type Category = 'alwaysRetryable' | 'retryableOnTransientError' | 'optional';
 
-interface JobClassification {
+type JobClassification = {
   jobName: string;
   jobId: number;
   category: Category;
@@ -97,19 +97,19 @@ interface JobClassification {
   errorSnippet?: string;
   unmatched?: boolean;
   deterministic?: boolean;
-}
+};
 
-interface CategoryConfig {
+type CategoryConfig = {
   patterns: string[];
-}
+};
 
-interface RetryConfig {
+type RetryConfig = {
   jobClassification: Record<Category, CategoryConfig>;
   blockerPatterns: string[];
   transientErrorPatterns: string[];
   deterministicErrorPatterns: string[];
   defaults: { unmatchedCategory: Category };
-}
+};
 
 // ---------------------------------------------------------------------------
 // CLI + Environment
@@ -173,7 +173,9 @@ const SENTRY_DSN = process.env.SENTRY_DSN_PERFORMANCE ?? '';
  * installs due to missing ESM export paths.
  */
 function initSentry(): typeof import('@sentry/node') | null {
-  if (!SENTRY_DSN) return null;
+  if (!SENTRY_DSN) {
+    return null;
+  }
   try {
     const require = createRequire(import.meta.url);
     const Sentry = require('@sentry/node') as typeof import('@sentry/node');
@@ -262,7 +264,9 @@ process.env.GH_TOKEN = GITHUB_TOKEN;
 
 let _headShaCache: string | undefined;
 function getRunHeadSha(): string {
-  if (_headShaCache !== undefined) return _headShaCache;
+  if (_headShaCache !== undefined) {
+    return _headShaCache;
+  }
   if (process.env.HEAD_SHA) {
     _headShaCache = process.env.HEAD_SHA;
   } else {
@@ -293,7 +297,9 @@ function getFailedJobs(): Job[] {
   const jobs: Job[] = [];
   for (const line of raw.split('\n')) {
     const trimmed = line.trim();
-    if (!trimmed) continue;
+    if (!trimmed) {
+      continue;
+    }
     try {
       jobs.push(JSON.parse(trimmed) as Job);
     } catch {
@@ -314,7 +320,9 @@ function getAnnotations(jobId: number): {
     });
     const annotations: Annotation[] = [];
     for (const line of raw.split('\n')) {
-      if (!line) continue;
+      if (!line) {
+        continue;
+      }
       try {
         annotations.push(JSON.parse(line) as Annotation);
       } catch {
@@ -372,7 +380,9 @@ function matchCategory(jobName: string): {
 } {
   for (const cat of categoryOrder) {
     for (const re of compiledPatterns[cat]) {
-      if (re.test(jobName)) return { category: cat, unmatched: false };
+      if (re.test(jobName)) {
+        return { category: cat, unmatched: false };
+      }
     }
   }
   return { category: config.defaults.unmatchedCategory, unmatched: true };
@@ -381,7 +391,9 @@ function matchCategory(jobName: string): {
 function findTransientError(text: string): string | undefined {
   for (const re of transientErrorRegexes) {
     const match = re.exec(text);
-    if (match) return match[0];
+    if (match) {
+      return match[0];
+    }
   }
   return undefined;
 }
@@ -714,11 +726,11 @@ if (WORKFLOW_EVENT === 'merge_group') {
   if (prNum) {
     try {
       const raw = ghApi(`${repoApi}/issues/${prNum}/events?per_page=100`);
-      const events = JSON.parse(raw) as Array<{
+      const events = JSON.parse(raw) as {
         event: string;
         actor: { login: string };
         created_at: string;
-      }>;
+      }[];
       const lastRemoval = events
         .filter((e) => e.event === 'removed_from_merge_queue')
         .pop();
@@ -913,10 +925,12 @@ console.log(`\nDecision: is-retryable=${isRetryable}`);
 // ---------------------------------------------------------------------------
 
 function checkRetryLabel(prNum: string): boolean {
-  if (!prNum) return false;
+  if (!prNum) {
+    return false;
+  }
   try {
     const labels = ghApi(`${repoApi}/issues/${prNum}/labels`);
-    return (JSON.parse(labels) as Array<{ name: string }>).some(
+    return (JSON.parse(labels) as { name: string }[]).some(
       (l) => l.name === 'retry-ci',
     );
   } catch {
@@ -943,12 +957,10 @@ const retryBudget = getRetryBudget({
   context: retryContext,
   hasRetryLabel,
   isRetryable,
-  automaticRetryLimit: hasMainTargetE2eFailure
-    ? 1
-    : DEFAULT_RETRY_MAX_ATTEMPT,
+  automaticRetryLimit: hasMainTargetE2eFailure ? 1 : DEFAULT_RETRY_MAX_ATTEMPT,
 });
 const atRetryCiLimit = retryBudget.labelRetryLimitReached;
-const willRetry = retryBudget.willRetry;
+const { willRetry } = retryBudget;
 
 // The retry decision depends on the classification result, whether the run
 // has an originating PR, and the active retry budget:
@@ -983,61 +995,71 @@ function resolveDecision(
       hasMainTargetE2eFailure &&
       budget.automaticRetryLimitReached &&
       !hasLabel
-    )
+    ) {
       return {
         key: 'e2e-retry-ci-required',
         label: `⏸️ Retryable E2E failure targeting main requires retry-ci on PR #${pr}`,
       };
-    if (hasPr && budget.willRetry && budget.retryMode === 'automatic')
+    }
+    if (hasPr && budget.willRetry && budget.retryMode === 'automatic') {
       return {
         key: 'will-retry',
         label: `♻️ Will retry automatically (default retry budget: attempt ${budget.attemptNumber} of ${DEFAULT_RETRY_MAX_ATTEMPT})`,
       };
-    if (hasPr && budget.willRetry && budget.retryMode === 'label')
+    }
+    if (hasPr && budget.willRetry && budget.retryMode === 'label') {
       return {
         key: 'will-retry',
         label: `♻️ Will retry (retry-ci label present; attempt ${budget.attemptNumber} of ${RETRY_CI_LABEL_MAX_ATTEMPT})`,
       };
-    if (hasPr && budget.labelRetryLimitReached)
+    }
+    if (hasPr && budget.labelRetryLimitReached) {
       return {
         key: 'max-attempts-reached',
         label: `🛑 Retryable, but attempt ${budget.attemptNumber} reached the retry-ci limit of ${budget.labelRetryLimit}`,
       };
-    if (hasPr && budget.automaticRetryLimitReached)
+    }
+    if (hasPr && budget.automaticRetryLimitReached) {
       return {
         key: 'retryable-no-label',
         label: `⏸️ Retryable, but the automatic retry budget ended at attempt ${budget.automaticRetryLimit}`,
       };
-    if (hasPr)
+    }
+    if (hasPr) {
       return {
         key: 'retryable-no-label',
         label: `⏸️ Retryable, but no retry-ci label on PR #${pr}`,
       };
-    if (budget.willRetry && budget.retryMode === 'automatic')
+    }
+    if (budget.willRetry && budget.retryMode === 'automatic') {
       return {
         key: 'will-retry',
         label: `♻️ Will retry automatically (default retry budget: attempt ${budget.attemptNumber} of ${DEFAULT_RETRY_MAX_ATTEMPT})`,
       };
-    if (budget.automaticRetryLimitReached)
+    }
+    if (budget.automaticRetryLimitReached) {
       return {
         key: 'retryable-no-pr',
         label: `⏸️ Retryable, but the automatic retry budget ended at attempt ${budget.automaticRetryLimit}`,
       };
+    }
     return {
       key: 'retryable-no-pr',
       label: '🔇 Retryable, but no originating PR (observation only)',
     };
   }
-  if (hasPr && hasLabel)
+  if (hasPr && hasLabel) {
     return {
       key: 'not-retryable-has-label',
       label: '⛔ Has retry-ci label but non-retryable failures',
     };
-  if (hasPr)
+  }
+  if (hasPr) {
     return {
       key: 'not-retryable-no-label',
       label: `❌ Non-retryable (PR #${pr}, no retry-ci label)`,
     };
+  }
   return {
     key: 'not-retryable-no-pr',
     label:
@@ -1098,9 +1120,9 @@ if (WORKFLOW_EVENT === 'merge_group' && !willRetry) {
     ? `Retry-ci limit reached (attempt ${retryBudget.attemptNumber} of ${retryBudget.labelRetryLimit})`
     : retryBudget.automaticRetryLimitReached
       ? `Automatic retry limit reached (attempt ${retryBudget.attemptNumber} of ${retryBudget.automaticRetryLimit})`
-    : isRetryable
-      ? 'Retryable failures, but no retry budget available'
-      : 'Non-retryable failures detected';
+      : isRetryable
+        ? 'Retryable failures, but no retry budget available'
+        : 'Non-retryable failures detected';
   try {
     ghApi(`${repoApi}/statuses/${headSha}`, {
       method: 'POST',
@@ -1123,7 +1145,7 @@ if (WORKFLOW_EVENT === 'merge_group' && !willRetry) {
 if (GITHUB_OUTPUT) {
   appendFileSync(
     GITHUB_OUTPUT,
-    [
+    `${[
       `is-retryable=${isRetryable}`,
       `has-retry-label=${hasRetryLabel}`,
       `will-retry=${willRetry}`,
@@ -1134,7 +1156,7 @@ if (GITHUB_OUTPUT) {
       `label-retry-limit=${retryBudget.labelRetryLimit}`,
       `label-retry-limit-reached=${retryBudget.labelRetryLimitReached}`,
       `pr-number=${prNumber}`,
-    ].join('\n') + '\n',
+    ].join('\n')}\n`,
   );
 }
 
@@ -1181,11 +1203,11 @@ if (retryBudget.labelRetryLimitReached && isRetryable && hasPR) {
 const report = reportLines.join('\n');
 
 if (GITHUB_STEP_SUMMARY) {
-  appendFileSync(GITHUB_STEP_SUMMARY, report + '\n');
+  appendFileSync(GITHUB_STEP_SUMMARY, `${report}\n`);
 }
 
 // Also print to console for non-GHA usage
-console.log('\n' + report);
+console.log(`\n${report}`);
 
 // ---------------------------------------------------------------------------
 // Create Check Run on the triggering commit

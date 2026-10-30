@@ -92,7 +92,6 @@ import {
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
-import { isMfaKitEnabled } from '../../hooks/identity/mfa';
 import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
@@ -442,14 +441,10 @@ export const routeConfig = [
             },
           ]
         : []),
-      ...(isMfaKitEnabled()
-        ? [
-            {
-              path: MFA_FLOW_ROUTE,
-              element: <MfaFlowHost />,
-            },
-          ]
-        : []),
+      {
+        path: MFA_FLOW_ROUTE,
+        element: <MfaFlowHost />,
+      },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
@@ -934,7 +929,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
-      {isUnlocked && isMfaKitEnabled() ? <MfaFlowLauncher /> : null}
+      {isUnlocked ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}

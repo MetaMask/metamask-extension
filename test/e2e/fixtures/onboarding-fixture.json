@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 233,
+      "currentMigrationVersion": 234,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -172,6 +172,7 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
       "moneyAccounts": {}
     },
     "MoneyAccountUpgradeController": {
@@ -2218,9 +2219,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenRatesController": {
-      "marketData": {}
-    },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
@@ -2246,6 +2244,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 233
+    "version": 234
   }
 }
