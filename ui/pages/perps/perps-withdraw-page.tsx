@@ -200,7 +200,7 @@ const PerpsWithdrawPage = () => {
   useEffect(() => {
     let cancelled = false;
 
-    submitRequestToBackground<AssetRoute[]>('perpsGetWithdrawalRoutes', [])
+    submitRequestToBackground('PerpsController:getWithdrawalRoutes', [])
       .then((routes) => {
         if (!cancelled) {
           setRoutesError(null);
@@ -438,7 +438,10 @@ const PerpsWithdrawPage = () => {
           : t('perpsWithdrawFailed'),
         fromStaleBalanceGuard: false,
       });
-      submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
+      submitRequestToBackground(
+        'PerpsController:clearWithdrawResult',
+        [],
+      ).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
     } catch (error) {
@@ -454,7 +457,10 @@ const PerpsWithdrawPage = () => {
           t('perpsWithdrawFailed'),
         fromStaleBalanceGuard: false,
       });
-      submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
+      submitRequestToBackground(
+        'PerpsController:clearWithdrawResult',
+        [],
+      ).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
     } finally {
