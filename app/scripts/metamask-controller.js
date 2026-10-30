@@ -222,6 +222,7 @@ import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddlewa
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
+import createExternalRpcActivityMiddleware from './lib/createExternalRpcActivityMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   createEventBuilder,
@@ -4274,6 +4275,9 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(createLoggerMiddleware({ origin }));
+    if (subjectType !== SubjectType.Internal) {
+      engine.push(createExternalRpcActivityMiddleware(subjectType));
+    }
     engine.push(this.permissionLogController.createMiddleware());
 
     engine.push(createTracingMiddleware());
@@ -4708,6 +4712,9 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(createLoggerMiddleware({ origin }));
+    if (subjectType !== SubjectType.Internal) {
+      engine.push(createExternalRpcActivityMiddleware(subjectType));
+    }
 
     engine.push((req, _res, next, end) => {
       const isSnap = isSnapId(origin);
