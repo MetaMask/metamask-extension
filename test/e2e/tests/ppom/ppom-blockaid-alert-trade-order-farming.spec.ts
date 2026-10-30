@@ -3,7 +3,6 @@ import { MockttpServer } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
-  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
@@ -13,7 +12,6 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import { login } from '../../page-objects/flows/login.flow';
 import {
   PPOM_MOCK_ETH_BALANCE_DISPLAY,
-  PPOM_MOCK_ETH_BALANCE_HEX,
   PPOM_MOCK_ETH_BALANCE_HUMAN,
   SECURITY_ALERTS_PROD_API_BASE_URL,
 } from './constants';
@@ -138,16 +136,6 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-            },
-          })
-          .withAccountTracker({
-            accountsByChainId: {
-              '0x1': {
-                [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: {
-                  balance: PPOM_MOCK_ETH_BALANCE_HEX,
-                  stakedBalance: '0x0',
-                },
-              },
             },
           })
           .withAssetsController({
