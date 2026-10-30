@@ -4110,10 +4110,43 @@
         "process": true
       }
     },
-    "@sentry/browser>@sentry-internal/browser-utils": {
+    "@sentry/browser": {
       "globals": {
+        "HTMLElement": true,
+        "Headers": true,
+        "PerformanceObserver.supportedEntryTypes.includes": true,
+        "Request": true,
+        "URL": true,
+        "WebAssembly": true,
+        "XMLHttpRequest.prototype": true,
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_RELEASE__": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "fetch": true,
+        "importScripts": true,
+        "indexedDB.open": true,
+        "queueMicrotask": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/browser-utils": true,
+        "@sentry/core>@sentry/conventions": true,
+        "@sentry/core": true,
+        "@sentry/browser>@sentry/feedback": true,
+        "@sentry/browser>@sentry/replay-canvas": true,
+        "@sentry/browser>@sentry/replay": true
+      }
+    },
+    "@sentry/browser>@sentry/browser-utils": {
+      "globals": {
+        "Element": true,
         "FormData": true,
-        "PerformanceEventTiming": true,
+        "HTMLElement": true,
+        "Node": true,
         "PerformanceObserver": true,
         "Request": true,
         "URL": true,
@@ -4122,23 +4155,52 @@
         "__SENTRY_DEBUG__": true,
         "addEventListener": true,
         "clearTimeout": true,
-        "performance": true,
+        "performance.getEntriesByType": true,
+        "performance.now": true
+      },
+      "packages": {
+        "@sentry/core>@sentry/conventions": true,
+        "@sentry/core": true,
+        "@sentry/browser>@sentry/browser-utils>web-vitals": true
+      }
+    },
+    "@sentry/core": {
+      "globals": {
+        "DOMException": true,
+        "EdgeRuntime": true,
+        "Element": true,
+        "ErrorEvent": true,
+        "Event": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "__SENTRY_BROWSER_BUNDLE__": true,
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_TRACING__": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "module": true,
+        "process": true,
         "setTimeout": true
       },
       "packages": {
-        "@sentry/core": true
+        "@sentry/core>@sentry/conventions": true,
+        "process": true
       }
     },
-    "@sentry/browser>@sentry-internal/feedback": {
+    "@sentry/browser>@sentry/feedback": {
       "globals": {
         "FormData": true,
         "HTMLFormElement": true,
         "__SENTRY_DEBUG__": true,
         "cancelAnimationFrame": true,
         "clearTimeout": true,
-        "document.createElement": true,
-        "document.createElementNS": true,
-        "document.createTextNode": true,
+        "document": true,
         "getComputedStyle": true,
         "isSecureContext": true,
         "matchMedia": true,
@@ -4149,7 +4211,7 @@
         "@sentry/core": true
       }
     },
-    "@sentry/browser>@sentry-internal/replay-canvas": {
+    "@sentry/browser>@sentry/replay-canvas": {
       "globals": {
         "Blob": true,
         "Float32Array": true,
@@ -4171,17 +4233,19 @@
         "@sentry/core": true
       }
     },
-    "@sentry/browser>@sentry-internal/replay": {
+    "@sentry/browser>@sentry/replay": {
       "globals": {
         "Blob": true,
         "CSSConditionRule": true,
         "CSSGroupingRule": true,
         "CSSMediaRule": true,
         "CSSRule": true,
+        "CSSStyleSheet": true,
         "CSSSupportsRule": true,
         "Document": true,
         "DragEvent": true,
         "Element": true,
+        "ErrorEvent": true,
         "FormData": true,
         "HTMLElement": true,
         "HTMLFormElement": true,
@@ -4217,67 +4281,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry-internal/browser-utils": true,
+        "@sentry/browser>@sentry/browser-utils": true,
         "@sentry/core": true
-      }
-    },
-    "@sentry/browser": {
-      "globals": {
-        "Headers": true,
-        "PerformanceObserver.supportedEntryTypes": true,
-        "Request": true,
-        "URL": true,
-        "WebAssembly": true,
-        "XMLHttpRequest.prototype": true,
-        "__SENTRY_DEBUG__": true,
-        "__SENTRY_RELEASE__": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "importScripts": true,
-        "indexedDB.open": true,
-        "performance.timeOrigin": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@sentry/browser>@sentry-internal/browser-utils": true,
-        "@sentry/browser>@sentry-internal/feedback": true,
-        "@sentry/browser>@sentry-internal/replay-canvas": true,
-        "@sentry/browser>@sentry-internal/replay": true,
-        "@sentry/core": true
-      }
-    },
-    "@sentry/core": {
-      "globals": {
-        "CustomEvent": true,
-        "DOMError": true,
-        "DOMException": true,
-        "EdgeRuntime": true,
-        "Element": true,
-        "ErrorEvent": true,
-        "Event": true,
-        "HTMLElement": true,
-        "Headers": true,
-        "Request": true,
-        "Response": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "__SENTRY_TRACING__": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "document": true,
-        "module": true,
-        "process": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "process": true
       }
     },
     "@metamask/wallet>@metamask/controller-utils>@signinwithethereum/siwe-parser": {
@@ -7919,6 +7924,26 @@
         "document.visibilityState": true,
         "document.wasDiscarded": true,
         "performance": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true,
+        "requestIdleCallback": true,
+        "setTimeout": true
+      }
+    },
+    "@sentry/browser>@sentry/browser-utils>web-vitals": {
+      "globals": {
+        "PerformanceEventTiming": true,
+        "PerformanceObserver": true,
+        "PerformanceSoftNavigation.prototype.getLargestInteractionContentfulPaint": true,
+        "addEventListener": true,
+        "cancelIdleCallback": true,
+        "clearTimeout": true,
+        "document.prerendering": true,
+        "document.readyState": true,
+        "document.visibilityState": true,
+        "document.wasDiscarded": true,
+        "performance": true,
+        "queueMicrotask": true,
         "removeEventListener": true,
         "requestAnimationFrame": true,
         "requestIdleCallback": true,
