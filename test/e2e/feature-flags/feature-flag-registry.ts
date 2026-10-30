@@ -3233,8 +3233,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'extensionUxChainlistV2',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '13.50.0',
+      enabled: true,
+      minimumVersion: '13.54.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3401,7 +3401,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'moneyAccountChompConfig',
     productionDefault: {
-      baseUrl: 'https://chomp.dev-api.cx.metamask.io',
+      baseUrl: 'https://chomp.api.cx.metamask.io',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3411,7 +3411,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'moneyAccountGeoBlockedCountries',
     productionDefault: {
-      blockedRegions: ['US', 'CA-ON'],
+      blockedRegions: ['GB'],
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3460,7 +3460,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'moneyEnableMoneyAccount',
     productionDefault: {
-      enabled: false,
+      enabled: true,
+      minimumVersion: '13.52.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3470,7 +3471,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'moneyHomeScreenCardEnabled',
     productionDefault: {
-      enabled: false,
+      enabled: true,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
