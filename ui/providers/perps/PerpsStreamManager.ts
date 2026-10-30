@@ -198,13 +198,20 @@ class PerpsStreamManager {
     this.positions = new PerpsDataChannel<Position[]>({
       connectFn: (push) => {
         let cancelled = false;
+        // A seeded snapshot may hold positions that have since closed, so it
+        // does not count as hydrated: fall back to REST like an empty cache.
+        const hasLivePositions = () =>
+          this.positions.hasCachedData() && !this.positions.isSeeded();
         const timer = setTimeout(() => {
-          if (cancelled || this.positions.hasCachedData()) {
+          if (cancelled || hasLivePositions()) {
             return;
           }
-          submitRequestToBackground<Position[]>('perpsGetPositions', [])
+          // Replace a seed with fresh REST data: the provider's WebSocket
+          // cache has not confirmed it either.
+          const params = this.positions.isSeeded() ? [{ skipCache: true }] : [];
+          submitRequestToBackground<Position[]>('perpsGetPositions', params)
             .then((data) => {
-              if (!cancelled && !this.positions.hasCachedData()) {
+              if (!cancelled && !hasLivePositions()) {
                 push(data ?? EMPTY_POSITIONS);
               }
             })
@@ -475,6 +482,24 @@ class PerpsStreamManager {
   pushPositionsWithOverrides(positions: Position[]): void {
     const withOverrides = this.applyOptimisticOverrides(positions, false);
     this.positions.pushData(withOverrides);
+  }
+
+  /**
+   * Refetch positions over REST, bypassing the WebSocket cache, and push them
+   * so views drop a position that closed outside the stream's latest update.
+   */
+  async refreshPositions(): Promise<void> {
+    const generation = this.positions.getGeneration();
+    const positions = await submitRequestToBackground<Position[]>(
+      'perpsGetPositions',
+      [{ skipCache: true }],
+    );
+    // The response belongs to the account and network it was requested for.
+    // Drop it if either changed (or the manager reset) while it was in flight.
+    if (generation !== this.positions.getGeneration()) {
+      return;
+    }
+    this.pushPositionsWithOverrides(positions);
   }
 
   /**
@@ -1120,7 +1145,7 @@ class PerpsStreamManager {
     }
 
     if (snapshot.positions?.length && !this.positions.hasCachedData()) {
-      this.positions.pushData(snapshot.positions);
+      this.positions.seedData(snapshot.positions);
     }
     if (snapshot.orders?.length && !this.orders.hasCachedData()) {
       this.orders.pushData(snapshot.orders);

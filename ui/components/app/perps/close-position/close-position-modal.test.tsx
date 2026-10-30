@@ -83,6 +83,7 @@ jest.mock('@metamask/perps-controller', () => ({
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
     POSITIONS_FAILED: 'POSITIONS_FAILED',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     ACCOUNT_STATE_FAILED: 'ACCOUNT_STATE_FAILED',
     MARKETS_FAILED: 'MARKETS_FAILED',
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
@@ -143,10 +144,16 @@ const PARTIAL_MIN_NOTIONAL_MESSAGE = tEn('perpsClosePartialMinNotional', [
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
+const mockRefreshPositions = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
     mockSubmitRequestToBackground(...args),
+}));
+
+jest.mock('../../../../providers/perps', () => ({
+  ...jest.requireActual('../../../../providers/perps'),
+  getPerpsStreamManager: () => ({ refreshPositions: mockRefreshPositions }),
 }));
 
 jest.mock('../../rewards/RewardsVipBadge', () => ({
@@ -213,6 +220,7 @@ jest.mock('../perps-toast', () => ({
     PARTIAL_CLOSE_IN_PROGRESS: 'perpsToastPartialCloseInProgress',
     PARTIAL_CLOSE_SUCCESS: 'perpsToastPartialCloseSuccess',
     PARTIAL_LIMIT_CLOSE_FAILED: 'perpsToastPartialLimitCloseFailed',
+    POSITION_ALREADY_CLOSED: 'perpsToastPositionAlreadyClosed',
     ORDER_PLACED: 'perpsToastOrderPlaced',
     ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
@@ -1215,6 +1223,36 @@ describe('ClosePositionModal', () => {
         expect(successCall).toBeDefined();
         expect(successCall[0].description).toBeDefined();
       });
+    });
+
+    it('reports an already-closed position and refreshes positions', async () => {
+      mockRefreshPositions.mockResolvedValue(undefined);
+      mockSubmitRequestToBackground.mockResolvedValue({
+        success: false,
+        error: 'POSITION_NOT_FOUND',
+      });
+
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('perps-close-position-modal-submit'));
+
+      await waitFor(() => {
+        expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith({
+          key: 'perpsToastPositionAlreadyClosed',
+        });
+      });
+      expect(mockRefreshPositions).toHaveBeenCalledTimes(1);
+      expect(mockReplacePerpsToastByKey).not.toHaveBeenCalledWith(
+        expect.objectContaining({ key: 'perpsToastCloseFailed' }),
+      );
     });
 
     it('emits close failed toast on full close background failure', async () => {

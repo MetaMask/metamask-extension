@@ -517,6 +517,31 @@ describe('PerpsStreamManager', () => {
       }
     });
 
+    it('replaces a seeded snapshot via REST after the WS grace period', async () => {
+      const ADDR = '0xABCDEF0000000000000000000000000000000001';
+      const livePositions = [makePosition('ETH')];
+      mockSubmitRequestToBackground.mockImplementation((method: string) =>
+        Promise.resolve(
+          method === 'perpsGetPositions' ? livePositions : undefined,
+        ),
+      );
+      manager.hydrateFromControllerCache(
+        { positions: [makePosition('BTC')], address: ADDR },
+        ADDR,
+      );
+
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
+      expect(cb).toHaveBeenLastCalledWith(livePositions);
+      expect(manager.positions.isSeeded()).toBe(false);
+    });
+
     it('notifies subscribers with empty positions when REST fallback fails', async () => {
       jest.useFakeTimers();
       const consoleErrorSpy = jest
@@ -1807,6 +1832,46 @@ describe('PerpsStreamManager', () => {
     });
   });
 
+  describe('refreshPositions', () => {
+    it('refetches positions without the WS cache and pushes them', async () => {
+      const freshPositions = [makePosition('xyz:GOLD')];
+      mockSubmitRequestToBackground.mockResolvedValue(freshPositions);
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      await manager.refreshPositions();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
+      expect(cb).toHaveBeenLastCalledWith(freshPositions);
+    });
+
+    it.each([
+      ['the account switches', (m: PerpsStreamManager) => m.init('0xaccountB')],
+      ['the network changes', (m: PerpsStreamManager) => m.clearAllCaches()],
+      ['the manager resets', (m: PerpsStreamManager) => m.reset()],
+    ])('drops a response that resolves after %s', async (_, transition) => {
+      manager.init('0xaccountA');
+      let resolveStale: (positions: Position[]) => void = () => undefined;
+      mockSubmitRequestToBackground.mockReturnValueOnce(
+        new Promise<Position[]>((resolve) => {
+          resolveStale = resolve;
+        }),
+      );
+      const refresh = manager.refreshPositions();
+      transition(manager);
+      const currentPositions = [makePosition('ETH')];
+      manager.positions.pushData(currentPositions);
+
+      resolveStale([makePosition('BTC')]);
+      await refresh;
+
+      expect(manager.positions.getCachedData()).toBe(currentPositions);
+    });
+  });
+
   describe('pushPositionsWithOverrides', () => {
     it('applies overrides to manually pushed positions', () => {
       manager.setOptimisticTPSL('BTC', '150', '90');
@@ -2234,6 +2299,7 @@ describe('PerpsStreamManager', () => {
 
       expect(manager.positions.hasCachedData()).toBe(true);
       expect(manager.positions.getCachedData()).toEqual(positions);
+      expect(manager.positions.isSeeded()).toBe(true);
     });
 
     it('refuses to hydrate user-scoped channels when the cache address does not match', () => {
