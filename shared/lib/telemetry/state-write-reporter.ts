@@ -51,6 +51,28 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
     data[`state.write.bytes.${controllerKey}`] = bytes;
   }
 
+  const msSinceSignals: [string, number | undefined][] = [
+    ['app_start', event.lastActivity.msSinceLastAppStart],
+    ['last_write', event.lastActivity.msSinceLastWrite],
+    ['ui_open', event.lastActivity.msSinceLastUiOpen],
+    ['ui_closed', event.lastActivity.msSinceLastUiClosed],
+    ['window_event', event.lastActivity.msSinceLastWindowEvent],
+    [
+      'last_service_worker_reload',
+      event.lastActivity.msSinceLastServiceWorkerReload,
+    ],
+  ];
+  for (const [signal, ms] of msSinceSignals) {
+    if (ms !== undefined) {
+      data[`state.write.ms_since_${signal}`] = ms;
+    }
+  }
+
+  if (event.lastActivity.serviceWorkerReloadCount !== undefined) {
+    data['state.write.service_worker_reload_count'] =
+      event.lastActivity.serviceWorkerReloadCount;
+  }
+
   trace(
     {
       data,
