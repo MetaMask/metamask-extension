@@ -605,5 +605,5 @@ export default function OnboardingFlow() {
 }
 
 function setOnboardingDate() {
-  submitRequestToBackgroundAndCatch('setOnboardingDate');
+  submitRequestToBackgroundAndCatch('AppStateController:setOnboardingDate');
 }
