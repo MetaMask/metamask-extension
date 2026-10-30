@@ -186,7 +186,7 @@ describe('createMetaRPCHandler', () => {
       expect(foo).toHaveBeenCalledWith('bar');
     });
 
-    it('includes controller name in span when _controllerName is set', async () => {
+    it('includes controller name in span when the method is not messengerCall and _controllerName is set on the method reference', async () => {
       const fn = jest
         .fn()
         .mockReturnValue('result') as unknown as TaggedApiMethod;
@@ -212,6 +212,65 @@ describe('createMetaRPCHandler', () => {
         }),
         expect.any(Function),
       );
+    });
+
+    it('uses the given messenger action to name the span instead of "messengerCall"', async () => {
+      const messengerCall = jest.fn().mockReturnValue({ isUnlocked: true });
+      const streamTest = createStream();
+      const handler = createMetaRPCHandler({ messengerCall }, streamTest);
+
+      await handler({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'messengerCall',
+        params: [
+          'AppStateController:getState',
+          [],
+          { _traceContext: { _traceId: 'trace123', _spanId: 'span456' } },
+        ],
+      });
+
+      expect(trace).toHaveBeenCalledWith(
+        {
+          name: 'Background RPC: AppStateController:getState',
+          parentContext: { _traceId: 'trace123', _spanId: 'span456' },
+          op: 'rpc.handler',
+          data: {
+            method: 'messengerCall',
+            action: 'AppStateController:getState',
+          },
+        },
+        expect.any(Function),
+      );
+      expect(messengerCall).toHaveBeenCalledWith(
+        'AppStateController:getState',
+        [],
+      );
+    });
+
+    it('returns an error and does not create a span if messengerCall was not passed an action string', async () => {
+      const messengerCall = jest.fn();
+      const streamTest = createStream();
+      const handler = createMetaRPCHandler({ messengerCall }, streamTest);
+
+      await handler({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'messengerCall',
+        params: [
+          [],
+          { _traceContext: { _traceId: 'trace123', _spanId: 'span456' } },
+        ],
+      });
+
+      streamTest.on('data', (data: PendingJsonRpcResponse) => {
+        const err = data.error as unknown as { message: string };
+        expect(err.message).toStrictEqual(
+          'messengerCall must be given an action type string',
+        );
+        streamTest.end();
+      });
+      expect(trace).not.toHaveBeenCalled();
     });
 
     it('continues trace context but skips rpc.handler span when shouldSampleWrappers rejects', async () => {

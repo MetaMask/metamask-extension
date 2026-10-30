@@ -24,7 +24,10 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     if (!isStreamWritable(outStream)) {
       return;
     }
-    if (!api[data.method]) {
+
+    const handler = api[data.method];
+
+    if (!handler) {
       outStream.write({
         jsonrpc: '2.0',
         error: rpcErrors.methodNotFound({
@@ -35,12 +38,34 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
       return;
     }
 
-    const { cleanParams, traceContext } = extractTraceContext(data.params);
-    const handler = api[data.method];
     const controller = handler._controllerName;
-    const spanName: `Background RPC: ${string}` = controller
-      ? `Background RPC: ${controller}.${data.method}`
-      : `Background RPC: ${data.method}`;
+    const { cleanParams, traceContext } = extractTraceContext(data.params);
+    let messengerAction;
+    let spanName: `Background RPC: ${string}`;
+
+    if (data.method === 'messengerCall') {
+      messengerAction =
+        Array.isArray(cleanParams) && typeof cleanParams[0] === 'string'
+          ? cleanParams[0]
+          : undefined;
+
+      if (messengerAction) {
+        spanName = `Background RPC: ${messengerAction}`;
+      } else {
+        outStream.write({
+          jsonrpc: '2.0',
+          error: rpcErrors.invalidRequest({
+            message: 'messengerCall must be given an action type string',
+          }),
+          id: data.id,
+        });
+        return;
+      }
+    } else if (controller) {
+      spanName = `Background RPC: ${controller}.${data.method}`;
+    } else {
+      spanName = `Background RPC: ${data.method}`;
+    }
 
     let result: unknown;
     let error: unknown;
@@ -59,7 +84,11 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
             name: spanName,
             parentContext: traceContext,
             op: 'rpc.handler',
-            data: { method: data.method, ...(controller && { controller }) },
+            data: {
+              method: data.method,
+              ...(controller && { controller }),
+              ...(messengerAction && { action: messengerAction }),
+            },
           },
           () => handler.call(api, ...cleanParams),
         );
