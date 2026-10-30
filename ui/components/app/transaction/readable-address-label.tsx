@@ -1,4 +1,5 @@
 import React from 'react';
+import { AddressScanResultType } from '@metamask/phishing-controller';
 import type { CaipChainId } from '@metamask/utils';
 import { useAddressLabel } from '#ui/hooks/useAddressLabel';
 import {
@@ -23,17 +24,19 @@ export function ReadableAddressLabel({
   const t = useI18nContext();
   const getDisplayName = useGetDisplayName();
   const displayName = getDisplayName(address);
-  const label = useAddressLabel({
-    address,
-    chainId,
-    enabled: !displayName,
-  });
+  const { data: scan } = useAddressLabel({ address, chainId });
+  const resultType = scan?.result_type;
+  const isMalicious = resultType === AddressScanResultType.Malicious;
+  const label =
+    isMalicious || resultType === AddressScanResultType.ErrorResult
+      ? ''
+      : (scan?.label ?? '');
 
   return (
-    <>
+    <span>
       {t(labelKey, [
         displayName || label || shortenDisplayAddress(address) || fallback,
       ])}
-    </>
+    </span>
   );
 }

@@ -181,6 +181,9 @@
   "activityEmptyNoFundsDescription": {
     "message": "Add funds to your wallet to get started."
   },
+  "activityUntrustedSenderWarning": {
+    "message": "You haven’t sent to this address on this install of MetaMask. Only send to addresses you trust."
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
