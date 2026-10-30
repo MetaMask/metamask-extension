@@ -1,13 +1,10 @@
-import {
-  IsAtomicBatchSupportedResult,
-  TransactionController,
-} from '@metamask/transaction-controller';
+import { TransactionController } from '@metamask/transaction-controller';
 import { submitRequestToBackground } from '../background-connection';
 
 export async function isAtomicBatchSupported(
   ...args: Parameters<TransactionController['isAtomicBatchSupported']>
 ) {
-  return await submitRequestToBackground<IsAtomicBatchSupportedResult>(
+  return await submitRequestToBackground(
     'TransactionController:isAtomicBatchSupported',
     args,
   );

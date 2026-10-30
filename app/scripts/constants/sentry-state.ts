@@ -191,6 +191,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     logs: false,
   },
   MoneyAccountController: {
+    defaultMoneyAccountId: false,
     moneyAccounts: false,
   },
   MoneyAccountUpgradeController: {
@@ -366,9 +367,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   // TokenDetectionController has no public controller state.
   TokenDetectionController: {},
-  TokenRatesController: {
-    marketData: false,
-  },
   TokensController: {
     allDetectedTokens: {
       [AllProperties]: false,
