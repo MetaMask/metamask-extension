@@ -8800,22 +8800,22 @@ __metadata:
   linkType: hard
 
 "@metamask/gator-permissions-controller@npm:^4.2.1":
-  version: 4.2.2
-  resolution: "@metamask/gator-permissions-controller@npm:4.2.2"
+  version: 4.2.3
+  resolution: "@metamask/gator-permissions-controller@npm:4.2.3"
   dependencies:
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/delegation-core": "npm:^2.2.1"
     "@metamask/delegation-deployments": "npm:^1.4.0"
-    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/messenger": "npm:^2.0.0"
     "@metamask/network-controller": "npm:^34.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^68.2.2"
+    "@metamask/transaction-controller": "npm:^69.0.0"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/de022266b3cc02e176338d3dc031fb9d17f248c9682230b939efe1ffde04e53b83d7015ef751e105b1592e3722370004ea3a75526c7177f8fdd1d05fd62f2b12
+  checksum: 10/b77ee249d6f6525080d0602d562973489743dee13b6ad7f1a2516927e2f80f97e00a8bebcdfb6cc12038b21d78024aeaaf0d5f8da800ee2e390a09c313c65b43
   languageName: node
   linkType: hard
 
@@ -8840,8 +8840,8 @@ __metadata:
   linkType: hard
 
 "@metamask/gator-permissions-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/gator-permissions-controller@npm:6.0.0"
+  version: 6.0.1
+  resolution: "@metamask/gator-permissions-controller@npm:6.0.1"
   dependencies:
     "@metamask/7715-permission-types": "npm:^1.0.0"
     "@metamask/abi-utils": "npm:^2.0.3"
@@ -8853,9 +8853,9 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^70.0.0"
-    "@metamask/utils": "npm:^11.12.0"
-  checksum: 10/49f1902538e91c71c3c2d63ff8ccea6489a9227e4a0b8486a6d18be4cb473cdf4298408f591af65215823677bd37d4e2dd9b5173bda1b6364025b17745f3973d
+    "@metamask/transaction-controller": "npm:^72.0.0"
+    "@metamask/utils": "npm:^12.0.0"
+  checksum: 10/ad70a5c01ea7fdcc28c89e103b8d3db4bc4371e89148693c5d9c3c922368cdae7224400184f14fc1a8e0a04623419e2627f403954df767f6a4a8beadfaa114a5
   languageName: node
   linkType: hard
 
