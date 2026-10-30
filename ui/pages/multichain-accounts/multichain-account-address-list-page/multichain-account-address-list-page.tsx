@@ -35,10 +35,14 @@ import {
 
 type MultichainAccountAddressListPageProps = {
   location?: RouterLocation;
+  accountGroupId?: AccountGroupId;
+  onBack?: () => void;
 };
 
 export const MultichainAccountAddressListPage = ({
   location: propsLocation,
+  accountGroupId: accountGroupIdProp,
+  onBack,
 }: MultichainAccountAddressListPageProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -48,9 +52,11 @@ export const MultichainAccountAddressListPage = ({
 
   const searchParams = new URLSearchParams(location.search);
   const accountGroupId = searchParams.get('accountGroupId');
-  const decodedAccountGroupId = accountGroupId
-    ? (decodeURIComponent(accountGroupId) as AccountGroupId)
-    : null;
+  const decodedAccountGroupId =
+    accountGroupIdProp ??
+    (accountGroupId
+      ? (decodeURIComponent(accountGroupId) as AccountGroupId)
+      : null);
 
   const accountGroup = useSelector((state) =>
     decodedAccountGroupId
@@ -99,8 +105,12 @@ export const MultichainAccountAddressListPage = ({
   }, []);
 
   const handleBack = useCallback(() => {
+    if (onBack) {
+      onBack();
+      return;
+    }
     transitionBack(() => navigate(PREVIOUS_ROUTE));
-  }, [navigate]);
+  }, [navigate, onBack]);
 
   return (
     <Page data-testid="parent-selector-multichain-account-address-list-page">

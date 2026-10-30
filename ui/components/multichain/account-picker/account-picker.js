@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { AvatarAccountSize } from '@metamask/design-system-react';
@@ -40,6 +40,22 @@ export const AccountPicker = ({
   showAvatarAccount = true,
   ...props
 }) => {
+  const { command, commandfor, ...buttonProps } = props;
+  const buttonRef = useRef(null);
+  useEffect(() => {
+    const button = buttonRef.current;
+    if (!button) {
+      return;
+    }
+    if (command && commandfor) {
+      button.setAttribute('command', command);
+      button.setAttribute('commandfor', commandfor);
+      return;
+    }
+    button.removeAttribute('command');
+    button.removeAttribute('commandfor');
+  }, [command, commandfor]);
+
   const shortenedAddress = address
     ? shortenAddress(toChecksumHexAddress(address))
     : '';
@@ -60,6 +76,7 @@ export const AccountPicker = ({
       className="w-full"
     >
       <ButtonBase
+        ref={buttonRef}
         className={classnames('multichain-account-picker', className)}
         data-testid="account-menu-icon"
         onClick={() => {
@@ -82,7 +99,7 @@ export const AccountPicker = ({
           color: IconColor.iconDefault,
           size: Size.SM,
         }}
-        {...props}
+        {...buttonProps}
         gap={1}
         style={AccountMenuStyle}
       >
@@ -175,4 +192,12 @@ AccountPicker.propTypes = {
    * Represents if the avatar account should display
    */
   showAvatarAccount: PropTypes.bool,
+  /**
+   * Invoker command for the account button, such as `show-modal`.
+   */
+  command: PropTypes.string,
+  /**
+   * Id of the dialog the invoker command targets.
+   */
+  commandfor: PropTypes.string,
 };

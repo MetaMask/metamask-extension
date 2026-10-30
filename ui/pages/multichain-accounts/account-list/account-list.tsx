@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useStore } from 'react-redux';
+import type { AccountGroupId } from '@metamask/account-api';
 
 import {
   Box,
@@ -59,7 +60,17 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 
-export const AccountList = () => {
+type AccountListProps = {
+  onClose?: () => void;
+  onShowDetails?: (accountGroupId: AccountGroupId) => void;
+  onShowAddresses?: (accountGroupId: AccountGroupId) => void;
+};
+
+export const AccountList = ({
+  onClose,
+  onShowDetails,
+  onShowAddresses,
+}: AccountListProps = {}) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -131,12 +142,17 @@ export const AccountList = () => {
       return;
     }
 
+    if (onClose) {
+      onClose();
+      return;
+    }
+
     if (isFreshTab) {
       navigate(DEFAULT_ROUTE, { replace: true });
     } else {
       transitionBack(() => navigate(PREVIOUS_ROUTE));
     }
-  }, [isEditMode, isFreshTab, navigate]);
+  }, [isEditMode, isFreshTab, navigate, onClose]);
 
   const handleEnterEditMode = useCallback(() => {
     setIsEditMode(true);
@@ -228,6 +244,9 @@ export const AccountList = () => {
               showConnectionStatus={permittedAccounts.length > 0}
               showDefaultAddress={showDefaultAddress}
               isEditMode={isEditMode}
+              onAccountSelected={onClose}
+              onShowDetails={onShowDetails}
+              onShowAddresses={onShowAddresses}
             />
           ) : (
             <Box
