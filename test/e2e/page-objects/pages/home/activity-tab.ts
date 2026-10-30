@@ -334,6 +334,22 @@ class ActivityTab extends HomePage {
     );
   }
 
+  /**
+   * Waits for a completed ramps order row, identified by its title and provider
+   * subtitle.
+   *
+   * @param providerName - Provider display name shown in the row subtitle.
+   * @param tokenSymbol - Token symbol shown in the row title, e.g. "ETH".
+   */
+  async checkRampsOrderIsDisplayed(
+    providerName: string,
+    tokenSymbol: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid="activity-list-item" and contains(., 'Bought ${tokenSymbol}') and contains(., '${providerName}')]`,
+    });
+  }
+
   async checkSpeedUpInlineButtonIsPresent(): Promise<void> {
     await this.driver.waitForSelector(this.speedupInlineButton);
   }
