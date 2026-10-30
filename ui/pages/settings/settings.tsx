@@ -30,6 +30,7 @@ import {
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
+import { useInAppBack } from '#ui/hooks/useInAppBack';
 import {
   DEFAULT_ROUTE,
   SETTINGS_ROUTE,
@@ -146,9 +147,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
     environmentType === ENVIRONMENT_TYPE_POPUP || isCompactSidepanel;
   const isOnSettingsRoot = normalizedPathname === SETTINGS_ROUTE;
   const showRootLandingPage = isOnSettingsRoot && usesCompactSettingsLayout;
-  const backRoute = isOnSettingsRoot
-    ? `${DEFAULT_ROUTE}?drawerOpen=true`
-    : (meta?.parentPath ?? SETTINGS_ROUTE);
+  const navigateBack = useInAppBack(DEFAULT_ROUTE);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -222,12 +221,11 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 
   const handleClose = useCallback(() => {
     if (isOnSettingsRoot) {
-      runCloseTransition(() => navigate(backRoute));
+      runCloseTransition(navigateBack);
       return;
     }
-
-    transitionBack(() => navigate(backRoute));
-  }, [backRoute, isOnSettingsRoot, navigate, runCloseTransition]);
+    transitionBack(navigateBack);
+  }, [isOnSettingsRoot, navigateBack, runCloseTransition]);
 
   // Header: "Settings" on fullscreen; tab or sub-page name on popup/sidepanel
   const headerTitle =

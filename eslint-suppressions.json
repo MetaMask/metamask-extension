@@ -913,7 +913,7 @@
   },
   "ui/pages/settings/settings.tsx": {
     "react-hooks/preserve-manual-memoization": {
-      "count": 3
+      "count": 1
     }
   },
   "ui/pages/shield/transaction-shield/shield-banner-animation.tsx": {
