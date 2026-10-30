@@ -1,11 +1,13 @@
 import type {
   BuyWidget,
+  Country,
   ExecuteRequestOptions,
   PaymentMethod,
   Provider,
   Quote,
   QuotesResponse,
   RampsOrder,
+  TokensResponse,
   UserRegion,
 } from '@metamask/ramps-controller';
 import { submitRequestToBackground } from '../background-connection';
@@ -39,10 +41,14 @@ export async function setRampsSelectedPaymentMethod(
   ]);
 }
 
+export function getRampsCountries(): Promise<Country[]> {
+  return submitRequestToBackground('getRampsCountries');
+}
+
 export async function getRampsTokens(
   region: string,
   action: 'buy' | 'sell' = 'buy',
-): Promise<void> {
+): Promise<TokensResponse> {
   return submitRequestToBackground('getRampsTokens', [region, action]);
 }
 

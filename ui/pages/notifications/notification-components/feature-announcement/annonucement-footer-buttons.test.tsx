@@ -379,7 +379,9 @@ describe('Feature announcement footer buttons', () => {
   });
 
   it('opens a deep link redirect URL in a new tab', async () => {
-    renderExternalLinkButton('https://link.metamask.io/buy?amount=100');
+    renderExternalLinkButton(
+      'https://link.metamask.io/card-onboarding?amount=100',
+    );
 
     const link = screen.getByRole('link', { name: linkText });
     await waitFor(() => expect(link).toHaveAttribute('target', '_blank'));
@@ -388,7 +390,7 @@ describe('Feature announcement footer buttons', () => {
 
     await waitFor(() =>
       expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: 'https://app.metamask.io/buy?amount=100',
+        url: 'https://metamask.io/card?amount=100',
       }),
     );
     expect(global.platform.openExtensionInBrowser).not.toHaveBeenCalled();

@@ -21,6 +21,7 @@ import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from '../../../shared/lib/deep-links/common';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
@@ -257,6 +258,18 @@ describe('Routes Component', () => {
       undefined,
       undefined,
       DISCOVER_SEARCH_ROUTE,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+    expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
+  });
+
+  it('puts the buy deep-link entry route behind the basic functionality guard', () => {
+    const matches = matchRoutes(routeConfig, RAMPS_BUY_DEEP_LINK_ENTRY_PATH);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      undefined,
+      RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
     ]);
     expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
     expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);

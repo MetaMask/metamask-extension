@@ -249,8 +249,8 @@ describe('Carousel', () => {
     },
     {
       testName: 'deep link that resolves to a redirect URL',
-      linkUrl: 'https://link.metamask.io/buy?amount=100',
-      expected: { openTab: 'https://app.metamask.io/buy?amount=100' },
+      linkUrl: 'https://link.metamask.io/card-onboarding?amount=100',
+      expected: { openTab: 'https://metamask.io/card?amount=100' },
     },
     {
       testName: 'external URL that only starts with the deep link host',
