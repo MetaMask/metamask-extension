@@ -202,7 +202,7 @@ function getApi(
         messengerClient,
         moneyPayMessenger,
         transactionId,
-      );
+      ).catch(logWithdrawSyncError);
     },
     updateMoneyAccountDepositAmount: async (
       transactionId: string,
@@ -338,7 +338,11 @@ function subscribeWithdrawTransferSync(
         }
 
         paymentTokenKeys.set(transactionId, key);
-        syncWithdrawTransfer(messengerClient, moneyPayMessenger, transactionId);
+        syncWithdrawTransfer(
+          messengerClient,
+          moneyPayMessenger,
+          transactionId,
+        ).catch(logWithdrawSyncError);
       }
     },
   );
@@ -363,16 +367,16 @@ async function syncWithdrawTransfer(
   const transactionData =
     messengerClient.state?.transactionData?.[transactionId];
 
-  try {
-    await syncMoneyAccountWithdrawTransfer(
-      moneyPayMessenger,
-      transactionId,
-      transactionData?.accountOverride,
-      getWithdrawPaymentToken(transactionData),
-    );
-  } catch (error) {
-    console.error('Money Account withdraw: transfer sync failed', error);
-  }
+  await syncMoneyAccountWithdrawTransfer(
+    moneyPayMessenger,
+    transactionId,
+    transactionData?.accountOverride,
+    getWithdrawPaymentToken(transactionData),
+  );
+}
+
+function logWithdrawSyncError(error: unknown): void {
+  console.error('Money Account withdraw: transfer sync failed', error);
 }
 
 /**
