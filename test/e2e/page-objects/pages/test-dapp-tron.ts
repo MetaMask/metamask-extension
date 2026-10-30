@@ -52,6 +52,11 @@ export class TestDappTron {
     text: 'MetaMask',
   };
 
+  private readonly metamaskReadySelector = {
+    xpath:
+      '//*[@data-testid="testpage.header.metamaskready" and normalize-space(text())="ready"]',
+  };
+
   private readonly signedMessageSelectorTestId = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`;
 
   private readonly tronChainDisplay = {
@@ -72,6 +77,7 @@ export class TestDappTron {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.tronChainDisplay);
+      await this.waitForMetaMaskReady();
     } catch (e) {
       console.log(
         'Timeout while waiting for Tron Test Dapp page to be loaded',
@@ -87,6 +93,16 @@ export class TestDappTron {
    */
   async connect() {
     await this.driver.clickElement(this.connectButtonSelector);
+  }
+
+  /**
+   * Connect to the tron test dapp via the wallet selection modal, selecting
+   * the MetaMask option.
+   */
+  async connectToMetaMaskWallet() {
+    await this.connect();
+    const modal = await this.getWalletModal();
+    await modal.connectToMetaMaskWallet();
   }
 
   /**
@@ -322,5 +338,13 @@ export class TestDappTron {
   async switchTo() {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
     await this.checkPageIsLoaded();
+  }
+
+  /**
+   * Wait until the dapp has registered the MetaMask adapter as ready, so
+   * connect actions never race the wallet injection.
+   */
+  async waitForMetaMaskReady(): Promise<void> {
+    await this.driver.waitForSelector(this.metamaskReadySelector);
   }
 }
