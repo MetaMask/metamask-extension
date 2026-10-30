@@ -10,9 +10,7 @@ import type {
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { merge } from 'lodash';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
-import { getManifestFlags } from '../../../../../shared/lib/manifestFlags';
 import { getIsPayAmountPrefillEnabled } from '../../../../../shared/lib/transaction/pay-prefill';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import type { TransactionMetricsRequest } from '../../../../../shared/types/metametrics';
@@ -207,15 +205,7 @@ function addPayTypeProperties(
   } else if (
     prefillType &&
     getIsPayAmountPrefillEnabled(
-      {
-        // Manifest flags take precedence, matching the UI's
-        // getRemoteFeatureFlags selector.
-        remoteFeatureFlags: merge(
-          {},
-          transactionMetricsRequest.getFeatureFlags(),
-          getManifestFlags().remoteFeatureFlags,
-        ),
-      },
+      { remoteFeatureFlags: transactionMetricsRequest.getFeatureFlags() },
       prefillType,
     )
   ) {

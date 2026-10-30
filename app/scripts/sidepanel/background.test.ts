@@ -1,6 +1,5 @@
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
-import * as manifestFlags from '../../../shared/lib/manifestFlags';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import type { RootMessenger } from '../lib/messenger';
 import {
@@ -57,13 +56,9 @@ describe('shouldUseSidepanel', () => {
     },
   });
 
-  let getManifestFlagsMock: jest.SpyInstance;
   let originalChrome: typeof globalThis.chrome;
 
   beforeEach(() => {
-    getManifestFlagsMock = jest
-      .spyOn(manifestFlags, 'getManifestFlags')
-      .mockReturnValue({});
     originalChrome = globalThis.chrome;
     globalThis.chrome = {
       sidePanel: {
@@ -73,7 +68,6 @@ describe('shouldUseSidepanel', () => {
   });
 
   afterEach(() => {
-    getManifestFlagsMock.mockRestore();
     globalThis.chrome = originalChrome;
   });
 

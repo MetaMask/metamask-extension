@@ -99,7 +99,7 @@ export function setupLedgerModeOffscreenBridge(
   controller.controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     () => {
-      // Resolve through the service so manifest overrides remain applied.
+      // Resolve through the service so all consumers use controller state.
       sendSwitchLedgerModeMessage(getLedgerMode());
     },
     (state) => isDmkFeatureEnabled(state.remoteFeatureFlags),

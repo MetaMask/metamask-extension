@@ -1,6 +1,5 @@
 import type { Json } from '@metamask/utils';
 
-import { getManifestFlags } from '../manifestFlags';
 import { BOTTOM_NAV_AB_TEST_ANALYTICS_MAPPING } from './configs/bottom-nav-bar';
 import { DEFI_REFERRAL_UI_AB_TEST_ANALYTICS_MAPPING } from './configs/defi-referral-ui';
 import {
@@ -57,15 +56,6 @@ export function hasABTestAnalyticsMappingForEvent(
   mappings: readonly ABTestAnalyticsMapping[] = AB_TEST_ANALYTICS_MAPPINGS,
 ): boolean {
   return mappings.some((mapping) => hasEventName(mapping, eventName));
-}
-
-export function getRemoteFeatureFlagsWithManifestOverrides(
-  remoteFeatureFlags: Record<string, unknown> | null | undefined,
-): Record<string, unknown> {
-  return {
-    ...remoteFeatureFlags,
-    ...getManifestFlags().remoteFeatureFlags,
-  };
 }
 
 const cloneEventWithAssignments = <TEvent extends ABTestAnalyticsEvent>(
