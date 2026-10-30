@@ -10365,38 +10365,38 @@ __metadata:
   linkType: hard
 
 "@metamask/shield-controller@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@metamask/shield-controller@npm:6.0.1"
+  version: 6.0.2
+  resolution: "@metamask/shield-controller@npm:6.0.2"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/base-data-service": "npm:^1.0.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^29.0.0"
+    "@metamask/profile-sync-controller": "npm:^30.0.0"
     "@metamask/signature-controller": "npm:^39.2.10"
-    "@metamask/transaction-controller": "npm:^69.6.1"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/transaction-controller": "npm:^69.8.1"
+    "@metamask/utils": "npm:^11.12.0"
     "@tanstack/query-core": "npm:^5.62.16"
     cockatiel: "npm:^3.1.2"
-  checksum: 10/cb5713bbc1555c3b6a5d3a4d126d8dbac9bbc8dd111987cb7b2c6f21a157d1addab514a085e736547145bbcf13ab8a2a884804e86645d2db8c885126ac9ca2ce
+  checksum: 10/75d5240819f0c586497bc444e6d544ba108b97b0cad6d5674f20c586c58709ba73522deecc7bacae4c81ff02b12487ec5a6366438078bd44720b7a00925cb722
   languageName: node
   linkType: hard
 
 "@metamask/shield-controller@npm:^7.0.5":
-  version: 7.0.5
-  resolution: "@metamask/shield-controller@npm:7.0.5"
+  version: 7.1.0
+  resolution: "@metamask/shield-controller@npm:7.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^35.0.0"
+    "@metamask/profile-sync-controller": "npm:^36.0.0"
     "@metamask/signature-controller": "npm:^40.0.0"
     "@metamask/transaction-controller": "npm:^72.2.1"
     "@metamask/utils": "npm:^12.0.0"
     "@tanstack/query-core": "npm:^5.103.2"
     cockatiel: "npm:^3.2.1"
-  checksum: 10/e4cd43903a1d90830d69065bb2eb1d3a145fc2112fbdb33f9ca69b744f8f53eb1cde2472c58e1cc80683654c2e80c60ecfacd47e7451710ea19605705049b1fc
+  checksum: 10/d6997c8ed7c7d24fe7ead1972d0ee6cafde48fdae66dbef2c0e720f7b439ecbb981e16281aa109036e2fdcb4ddb340c795942860ff5fbb1f4b0338187a7bd44b
   languageName: node
   linkType: hard
 
