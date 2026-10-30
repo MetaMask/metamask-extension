@@ -433,36 +433,10 @@ export async function setParticipateInMetaMetrics(
   participateInMetaMetrics: boolean | null,
 ): Promise<string | null> {
   const analyticsMessenger = getMessenger();
-  const { analyticsId } = analyticsMessenger.call(
-    'AnalyticsController:getState',
+  return await analyticsMessenger.call(
+    'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+    participateInMetaMetrics,
   );
-
-  if (participateInMetaMetrics === true) {
-    await analyticsMessenger.call('AnalyticsController:optIn');
-    analyticsMessenger.call(
-      'SentryTracingService:trackTracesAfterMetricsOptIn',
-    );
-    analyticsMessenger.call(
-      'SentryTracingService:clearTracesAfterMetricsOptIn',
-    );
-  } else if (participateInMetaMetrics === false) {
-    analyticsMessenger.call('AnalyticsController:optOut');
-    analyticsMessenger.call(
-      'SentryTracingService:clearTracesAfterMetricsOptIn',
-    );
-  } else {
-    analyticsMessenger.call('AnalyticsController:resetConsentDecision');
-  }
-
-  if (
-    isMain() &&
-    process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
-    participateInMetaMetrics !== null
-  ) {
-    updateExtensionUninstallUrl(participateInMetaMetrics === true, analyticsId);
-  }
-
-  return analyticsId;
 }
 
 export async function setDataCollectionForMarketing(

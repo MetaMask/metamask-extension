@@ -998,7 +998,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
 
     // sync marketing consent with metametrics
     const marketingConsent = await getMarketingConsent();
-    dispatch(setDataCollectionForMarketing(marketingConsent));
+    dispatch(marketingConsent ? optInToMarketing() : optOutOfMarketing());
 
     await trackEvent?.({
       category: MetaMetricsEventCategory.Onboarding,
@@ -4522,7 +4522,7 @@ export function setParticipateInMetaMetrics(
     log.debug(`background.setParticipateInMetaMetrics`);
     try {
       const metaMetricsId = await submitRequestToBackground<string>(
-        'setParticipateInMetaMetrics',
+        'LegacyBackgroundApiService:setParticipateInMetaMetrics',
         [participationPreference],
       );
 
@@ -4539,22 +4539,32 @@ export function setParticipateInMetaMetrics(
   };
 }
 
-export function setDataCollectionForMarketing(
-  dataCollectionPreference: boolean,
-): ThunkAction<
-  Promise<[boolean, string]>,
+export function optInToMarketing(): ThunkAction<
+  Promise<void>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setDataCollectionForMarketing`);
-    await submitRequestToBackground('setDataCollectionForMarketing', [
-      dataCollectionPreference,
-    ]);
+    await submitRequestToBackground('AnalyticsController:optInToMarketing');
     dispatch({
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-      value: dataCollectionPreference,
+      value: true,
+    });
+  };
+}
+
+export function optOutOfMarketing(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('AnalyticsController:optOutOfMarketing');
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: false,
     });
   };
 }

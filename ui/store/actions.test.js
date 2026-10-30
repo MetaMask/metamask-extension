@@ -142,7 +142,6 @@ describe('Actions', () => {
     background = {
       messengerCall: sinon.stub().resolves(),
       getStatePatches: sinon.stub().resolves([]),
-      setDataCollectionForMarketing: sinon.stub().resolves(),
     };
 
     // Make sure navigator.hid is defined for WebHID tests
@@ -231,12 +230,9 @@ describe('Actions', () => {
       messengerCallStub
         .withArgs('OAuthService:getMarketingConsent', [])
         .resolves(true);
-      background.setDataCollectionForMarketing = sinon.stub().resolves();
-
       setBackgroundConnection({
         ...background,
         getStatePatches: background.getStatePatches,
-        setDataCollectionForMarketing: background.setDataCollectionForMarketing,
         messengerCall: messengerCallStub,
       });
 
@@ -258,8 +254,11 @@ describe('Actions', () => {
         ),
       ).toBe(true);
       expect(
-        background.setDataCollectionForMarketing.calledOnceWith(true),
-      ).toStrictEqual(true);
+        messengerCallStub.calledWithExactly(
+          'AnalyticsController:optInToMarketing',
+          [],
+        ),
+      ).toBe(true);
       expect(background.getStatePatches.calledOnce).toStrictEqual(true);
       expect(store.getActions()).toStrictEqual([
         {
@@ -283,12 +282,9 @@ describe('Actions', () => {
         .withArgs('OAuthService:getMarketingConsent', [])
         .resolves(false);
 
-      background.setDataCollectionForMarketing = sinon.stub().resolves();
-
       setBackgroundConnection({
         ...background,
         getStatePatches: background.getStatePatches,
-        setDataCollectionForMarketing: background.setDataCollectionForMarketing,
         messengerCall: messengerCallStub,
       });
 
@@ -3423,16 +3419,72 @@ describe('Actions', () => {
   describe('#setParticipateInMetaMetrics', () => {
     it('calls background with true when opting in', async () => {
       const store = mockStore();
-      const setParticipateInMetaMetricsStub = jest.fn().mockResolvedValue();
+      const messengerCallStub = jest.fn().mockResolvedValue('analytics-id');
 
-      Object.assign(background, {
-        setParticipateInMetaMetrics: setParticipateInMetaMetricsStub,
+      setBackgroundConnection({
+        ...background,
+        messengerCall: messengerCallStub,
       });
 
-      setBackgroundConnection(background);
+      await expect(
+        store.dispatch(actions.setParticipateInMetaMetrics(true)),
+      ).resolves.toStrictEqual([true, 'analytics-id']);
+      expect(messengerCallStub).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+        [true],
+      );
+    });
+  });
 
-      await store.dispatch(actions.setParticipateInMetaMetrics(true));
-      expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(true);
+  describe('#optInToMarketing', () => {
+    it('calls the analytics controller directly to opt in to marketing', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({
+        ...background,
+        messengerCall: messengerCallStub,
+      });
+
+      await store.dispatch(actions.optInToMarketing());
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'AnalyticsController:optInToMarketing',
+          [],
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        {
+          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+          value: true,
+        },
+      ]);
+    });
+  });
+
+  describe('#optOutOfMarketing', () => {
+    it('calls the analytics controller directly to opt out of marketing', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({
+        ...background,
+        messengerCall: messengerCallStub,
+      });
+
+      await store.dispatch(actions.optOutOfMarketing());
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'AnalyticsController:optOutOfMarketing',
+          [],
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        {
+          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+          value: false,
+        },
+      ]);
     });
   });
 

@@ -9,8 +9,6 @@ import {
 import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
-// eslint-disable-next-line import-x/no-restricted-paths
-import { setParticipateInMetaMetrics } from '../../../app/scripts/controllers/analytics';
 import { getIsShieldSubscriptionActive } from './subscription-utils';
 import { loadShieldConfig } from './config';
 
@@ -125,6 +123,9 @@ export function getIsSubscriptionCancelNotAllowed(
  */
 export function updatePreferencesAndMetricsForShieldSubscription(
   preferencesController: PreferencesController,
+  setParticipateInMetaMetrics: (
+    participateInMetaMetrics: boolean,
+  ) => Promise<unknown>,
 ) {
   // shield subscribers have to turn on metametrics
   setParticipateInMetaMetrics(true);
