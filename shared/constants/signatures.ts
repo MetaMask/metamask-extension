@@ -27,4 +27,3 @@ export const PRIMARY_TYPES_ORDER: PrimaryTypeOrder[] =
   Object.values(PrimaryTypeOrder);
 export const PRIMARY_TYPES_PERMIT: PrimaryTypePermit[] =
   Object.values(PrimaryTypePermit);
-export const PRIMARY_TYPES: PrimaryType[] = Object.values(PrimaryType);
