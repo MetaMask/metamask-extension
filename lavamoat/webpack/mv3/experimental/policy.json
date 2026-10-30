@@ -1394,9 +1394,10 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/base-data-service": true,
+        "@metamask/compliance-controller>@metamask/controller-utils": true,
         "@metamask/superstruct": true,
-        "reselect": true
+        "@metamask/compliance-controller>reselect": true
       }
     },
     "@metamask/config-registry-controller": {
@@ -1530,6 +1531,23 @@
       }
     },
     "@metamask/chain-agnostic-permission>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/compliance-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
@@ -7488,6 +7506,12 @@
       }
     },
     "@metamask/bridge-controller>reselect": {
+      "globals": {
+        "WeakRef": true,
+        "console.warn": true
+      }
+    },
+    "@metamask/compliance-controller>reselect": {
       "globals": {
         "WeakRef": true,
         "console.warn": true
