@@ -20,16 +20,10 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
-} from '@metamask/design-system-react';
-import {
-  BackgroundColor,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import {
   ButtonBase,
   ButtonBaseSize,
-} from '../../../../components/component-library';
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
@@ -332,16 +326,16 @@ const AssetChart = ({
           {TIME_RANGES.map((timeRange) => (
             <ButtonBase
               key={timeRange}
-              className={classnames('time-range-button', {
-                'time-range-button__selected': timeRange === selectedTimeRange,
-              })}
+              className={classnames(
+                'h-6 px-2 bg-transparent text-alternative hover:bg-default-pressed',
+                {
+                  'bg-default-hover text-default':
+                    timeRange === selectedTimeRange,
+                },
+              )}
               onClick={() => setSelectedTimeRange(timeRange)}
-              variant={TextVariant.bodyXsMedium}
               size={ButtonBaseSize.Sm}
-              paddingLeft={2}
-              paddingRight={2}
-              backgroundColor={BackgroundColor.transparent}
-              color={TextColor.textAlternative}
+              textProps={{ variant: TextVariant.BodyXs }}
             >
               {getTranslatedTimeRangeLabel(
                 t as (key: string) => string,
