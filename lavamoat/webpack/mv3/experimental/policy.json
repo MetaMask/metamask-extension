@@ -7926,7 +7926,7 @@
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
         "react-markdown>vfile>is-buffer": true,
-        "mocha>yargs-unparser>is-plain-obj": true,
+        "react-markdown>unified>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
