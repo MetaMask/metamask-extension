@@ -133,6 +133,7 @@ import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
 import { DataDeletionService } from '../services/data-deletion-service';
+import { BrazeService } from '../services/braze-service';
 import { UserTraitsService } from '../services/user-traits-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 import { SentryTracingService } from '../services/sentry/sentry-tracing-service';
@@ -154,6 +155,7 @@ export type MessengerClient =
   | AssetsController
   | AuthenticationController
   | AuthenticatedUserStorageService
+  | BrazeService
   | BridgeController
   | BridgeStatusController
   | ChompApiService
