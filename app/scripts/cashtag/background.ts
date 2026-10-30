@@ -1,7 +1,7 @@
 import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import type { BridgeControllerMetricsLocation } from '@metamask/bridge-controller';
 import browser from 'webextension-polyfill';
-import { POPUP_FILE, SIDEPANEL_FILE } from '#shared/constants/app';
+import { POPUP_FILE } from '#shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -20,11 +20,15 @@ const xHosts = new Set(['x.com', 'www.x.com']);
 const widgetFramePath = 'cashtag-widget.html';
 const fullscreenFile = 'home.html';
 const popupResetDelayMs = 1000;
-// Retry delays for broadcasting OPEN_ROUTE after a cold open,
-// since the panel document may not have mounted
-const openRouteRetryDelaysMs = [0, 150, 400];
 
 let registered = false;
+// Routes saved before panel open, consumed on mount. Cleaned up when consumed,
+// when the window closes (windows.onRemoved), or when open() fails (identity
+// check). Close events are not used: they can arrive after a newer click.
+const pendingRoutes = new Map<
+  number,
+  { path: string; search?: `?${string}` }
+>();
 
 function parsedUrl(value: string | undefined) {
   if (!value) {
@@ -83,6 +87,17 @@ export function isAllowedCashtagSender(
     messageType === EXTENSION_MESSAGES.TRACK_EVENT
   ) {
     return isWidgetFrameSender(sender);
+  }
+  if (messageType === EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE) {
+    if (sender.id !== chrome.runtime.id || sender.tab) {
+      return false;
+    }
+    const url = parsedUrl(sender.url);
+    if (!url) {
+      return false;
+    }
+    const extensionOrigin = chrome.runtime.getURL('');
+    return url.href.startsWith(extensionOrigin);
   }
   return false;
 }
@@ -165,79 +180,40 @@ function isTickerWidgetEnabled(controller: Controller | undefined) {
   return isTickerWidgetFeatureEnabled(controller) && preferenceEnabled;
 }
 
-function broadcastOpenRoute(path: string, search?: `?${string}`) {
-  return browser.runtime
-    .sendMessage({
-      type: EXTENSION_MESSAGES.OPEN_ROUTE,
-      body: {
-        path,
-        ...(search ? { search } : {}),
-      },
-    })
-    .catch(() => undefined);
-}
-
-function delay(ms: number) {
-  return new Promise((resolve) => {
-    globalThis.setTimeout(resolve, ms);
-  });
-}
-
-async function broadcastOpenRouteWithRetries(
+async function openSidePanel(
+  sender: { tab?: { windowId?: number } },
   path: string,
   search?: `?${string}`,
 ) {
-  for (const delayMs of openRouteRetryDelaysMs) {
-    if (delayMs > 0) {
-      await delay(delayMs);
-    }
-    await broadcastOpenRoute(path, search);
-  }
-}
-
-function resetSidePanelPath(tabId?: number) {
   const sidePanel = globalThis.chrome?.sidePanel;
-  if (!sidePanel?.setOptions) {
-    return Promise.resolve();
-  }
-
-  // Tab-scoped options override the global default, so reset both to ensure
-  // the panel opens at SIDEPANEL_FILE rather than a path set by a prior open.
-  const updates = [
-    sidePanel.setOptions({ path: SIDEPANEL_FILE, enabled: true }),
-  ];
-  if (typeof tabId === 'number') {
-    updates.push(
-      sidePanel.setOptions({ tabId, path: SIDEPANEL_FILE, enabled: true }),
-    );
-  }
-  return Promise.all(updates);
-}
-
-function openSidePanel(sender: { tab?: { windowId?: number; id?: number } }) {
-  const sidePanel = globalThis.chrome?.sidePanel;
-  if (!sidePanel?.open || !sidePanel?.setOptions) {
+  if (!sidePanel?.open) {
     throw new Error('sidepanel-unavailable');
   }
 
-  const tabId = sender?.tab?.id;
   const windowId = sender?.tab?.windowId;
 
-  let openOptions: { windowId: number } | { tabId: number } | null = null;
-  if (typeof windowId === 'number') {
-    openOptions = { windowId };
-  } else if (typeof tabId === 'number') {
-    openOptions = { tabId };
-  }
-  if (!openOptions) {
+  if (typeof windowId !== 'number') {
     throw new Error('sidepanel-no-window');
   }
 
-  // Chrome only honours open() while the click that produced this message is
-  // still the current user gesture, so issue it before awaiting the reset.
-  const pathReset = resetSidePanelPath(tabId);
-  const opened = sidePanel.open(openOptions);
-  return Promise.all([pathReset, opened]);
+  const entry = { path, search };
+  pendingRoutes.set(windowId, entry);
+
+  try {
+    await sidePanel.open({ windowId });
+  } catch (error: unknown) {
+    if (pendingRoutes.get(windowId) === entry) {
+      pendingRoutes.delete(windowId);
+    }
+    throw error;
+  }
+
+  await browser.runtime
+    .sendMessage({
+      type: EXTENSION_MESSAGES.OPEN_ROUTE,
+      body: { windowId },
+    })
+    .catch(() => undefined);
 }
 
 function openPopupWithRoute(hash: string) {
@@ -272,16 +248,14 @@ async function openExtensionSurface({
   search,
 }: {
   controller: Controller | undefined;
-  sender: { tab?: { windowId?: number; id?: number } };
+  sender: { tab?: { windowId?: number } };
   hash: string;
   path: string;
   search?: `?${string}`;
 }) {
   if (shouldUseSidePanel(controller)) {
     try {
-      // Sidepanel: default path only + OPEN_ROUTE (retries cover cold mount).
-      await openSidePanel(sender);
-      await broadcastOpenRouteWithRetries(path, search);
+      await openSidePanel(sender, path, search);
       return;
     } catch {
       // Fall through to the popup, then a tab.
@@ -291,7 +265,6 @@ async function openExtensionSurface({
   try {
     // Popup is destroyed on close, so a one-shot hash deep link is safe.
     await openPopupWithRoute(hash);
-    await broadcastOpenRoute(path, search);
   } catch {
     // Firefox has neither sidePanel.open nor action.openPopup, and both reject
     // once the user gesture is gone, so open a tab, which needs no gesture.
@@ -307,14 +280,20 @@ async function openExtensionPage({
   caipAssetId,
 }: {
   controller: Controller | undefined;
-  sender: { tab?: { windowId?: number; id?: number } };
+  sender: { tab?: { windowId?: number } };
   path: string;
   search?: `?${string}`;
   caipAssetId: string | null;
 }) {
   const hash = routeHash(path, search);
 
-  await openExtensionSurface({ controller, sender, hash, path, search });
+  await openExtensionSurface({
+    controller,
+    sender,
+    hash,
+    path,
+    search,
+  });
 
   return {
     type: EXTENSION_MESSAGES.OPEN_EXTENSION,
@@ -571,6 +550,28 @@ function handleOpenExtension(
   return Promise.resolve(openExtensionFailure('invalid-page'));
 }
 
+function handleConsumePendingRoute(message: CashtagMessage) {
+  const windowId = message.body?.windowId;
+  const entry =
+    typeof windowId === 'number' ? pendingRoutes.get(windowId) : undefined;
+
+  if (typeof windowId === 'number') {
+    pendingRoutes.delete(windowId);
+  }
+
+  if (!entry) {
+    return Promise.resolve({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: null, search: null },
+    });
+  }
+
+  return Promise.resolve({
+    type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+    body: { path: entry.path, search: entry.search ?? null },
+  });
+}
+
 export function createCashtagResponse(
   message: CashtagMessage,
   sender: chrome.runtime.MessageSender,
@@ -585,6 +586,8 @@ export function createCashtagResponse(
       return handleGetData(message, getController);
     case EXTENSION_MESSAGES.OPEN_EXTENSION:
       return handleOpenExtension(message, sender, getController);
+    case EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE:
+      return handleConsumePendingRoute(message);
     case EXTENSION_MESSAGES.TRACK_EVENT:
       return handleTrackEvent(message);
     default:
@@ -625,6 +628,10 @@ export function registerCashtagBackgroundBridge({
   registered = true;
 
   bindTickerWidgetEnabledBroadcasts(getController);
+
+  chrome.windows.onRemoved.addListener((windowId) => {
+    pendingRoutes.delete(windowId);
+  });
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!isAllowedCashtagSender(message?.type, sender)) {
