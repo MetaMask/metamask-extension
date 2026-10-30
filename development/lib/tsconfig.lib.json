@@ -13,6 +13,7 @@
   "extends": "@tsconfig/node22/tsconfig.json",
   "include": [
     "build-type.ts",
+    "child-process-shutdown.ts",
     "get-manifest-flag.ts",
     "get-version.ts",
     "retry.ts",
