@@ -13,7 +13,7 @@
       "packages": {
         "@babel/types>@babel/helper-validator-identifier": true,
         "@babel/code-frame>js-tokens": true,
-        "postcss>picocolors": true
+        "mocha>picocolors": true
       }
     },
     "@babel/core": {
@@ -911,7 +911,7 @@
         "browserslist": true,
         "autoprefixer>caniuse-lite": true,
         "autoprefixer>fraction.js": true,
-        "postcss>picocolors": true,
+        "mocha>picocolors": true,
         "postcss": true,
         "stylelint>postcss-value-parser": true
       }
@@ -1309,7 +1309,7 @@
         "postcss-loader>cosmiconfig>env-paths": true,
         "stylelint>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
-        "mocha>js-yaml": true,
+        "eslint>@eslint/eslintrc>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
         "typescript": true
       }
@@ -2316,7 +2316,7 @@
         "process.versions.webcontainer": true
       },
       "packages": {
-        "postcss>picocolors": true,
+        "mocha>picocolors": true,
         "browserify>shell-quote": true
       }
     },
@@ -2649,7 +2649,7 @@
         "sinon>nise>path-to-regexp>isarray": true
       }
     },
-    "postcss>picocolors": {
+    "mocha>picocolors": {
       "globals": {
         "process": true
       }
@@ -2695,7 +2695,7 @@
       },
       "packages": {
         "nanoid": true,
-        "postcss>picocolors": true,
+        "mocha>picocolors": true,
         "postcss>source-map-js": true
       }
     },
@@ -2966,7 +2966,7 @@
       },
       "packages": {
         "nanoid": true,
-        "postcss>picocolors": true,
+        "mocha>picocolors": true,
         "postcss>source-map-js": true
       }
     },
@@ -2994,7 +2994,7 @@
       },
       "packages": {
         "nanoid": true,
-        "postcss>picocolors": true,
+        "mocha>picocolors": true,
         "postcss>source-map-js": true
       }
     },
@@ -3022,7 +3022,7 @@
       },
       "packages": {
         "nanoid": true,
-        "postcss>picocolors": true,
+        "mocha>picocolors": true,
         "postcss>source-map-js": true
       }
     },
@@ -3635,7 +3635,7 @@
         "micromatch": true,
         "chokidar>normalize-path": true,
         "tailwindcss>object-hash": true,
-        "postcss>picocolors": true,
+        "mocha>picocolors": true,
         "tailwindcss>postcss-js": true,
         "tailwindcss>postcss-nested": true,
         "stylelint>postcss-selector-parser": true,
@@ -4053,7 +4053,7 @@
         "jsdom>acorn": true,
         "webpack-bundle-analyzer>html-escaper": true,
         "http-server>opener": true,
-        "postcss>picocolors": true,
+        "mocha>picocolors": true,
         "webpack-bundle-analyzer>sirv": true,
         "ws": true
       }
