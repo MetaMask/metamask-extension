@@ -1358,7 +1358,7 @@ const PerpsMarketDetailPage = () => {
         data-testid="perps-market-detail-summary"
       >
         <Text
-          variant={TextVariant.DisplayMd}
+          variant={TextVariant.AmountDisplayLg}
           fontFamily={FontFamily.Hero}
           data-testid="perps-market-detail-price"
         >
