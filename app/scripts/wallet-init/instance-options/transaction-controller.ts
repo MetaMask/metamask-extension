@@ -282,9 +282,13 @@ async function getSimulationConfig(
       PRODUCT_TYPES.SHIELD,
     );
   const origin = opts?.txMeta?.origin;
-  return getShieldGatewayConfig(getToken, getShieldSubscription, url, {
-    origin,
-  });
+  const { newUrl } = await getShieldGatewayConfig(
+    getToken,
+    getShieldSubscription,
+    url,
+    { origin },
+  );
+  return { newUrl };
 }
 
 async function isEIP7702GasFeeTokensEnabled(

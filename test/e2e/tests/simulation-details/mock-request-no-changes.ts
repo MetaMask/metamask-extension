@@ -8,7 +8,7 @@ export const NO_CHANGES_TRANSACTION_MOCK = {
 
 export const NO_CHANGES_REQUEST_MOCK: MockRequestResponse = {
   request: {
-    id: '0',
+    id: '1',
     jsonrpc: '2.0',
     method: 'infura_simulateTransactions',
     params: [
