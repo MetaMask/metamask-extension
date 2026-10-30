@@ -49,7 +49,7 @@ import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 import { SnapUIAccountSelector } from '../snaps/snap-ui-account-selector';
-import { SnapUIDateTimePicker } from '../snaps/snap-ui-date-time-picker';
+import { mmLazy } from '../../../helpers/utils/mm-lazy';
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
@@ -64,6 +64,11 @@ import { Skeleton } from '../../component-library/skeleton';
 import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
 import { HyperliquidDepositPrompt } from '../hyperliquid-deposit-prompt/hyperliquid-deposit-prompt';
 import { Delineator } from '../../ui/delineator';
+
+// The owning screen suspends until all interface fields and actions are ready.
+const SnapUIDateTimePicker = mmLazy(
+  () => import('../snaps/snap-ui-date-time-picker'),
+);
 
 export const safeComponentList = {
   a: 'a',
