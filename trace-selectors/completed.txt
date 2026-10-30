@@ -1,0 +1,4 @@
+# Migrated files – one path per line (relative to repo root).
+# Add a path here after migrating that file; re-run the trace to get a report of remaining work.
+# Example:
+# ui/components/app/alerts/unconnected-account-alert/unconnected-account-alert.js
