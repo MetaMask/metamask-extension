@@ -464,6 +464,33 @@ describe('NFTs options', () => {
     await waitFor(() => expect(enableAllPopularNetworksSpy).toHaveBeenCalled());
   });
 
+  it('switches a non-EVM network filter to an EVM default when basic functionality is off', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const enableAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const setActiveNetworkSpy = jest.spyOn(actions, 'setActiveNetwork');
+    const state = createMockState();
+    addSolanaAccountToSelectedGroup(state);
+    Object.assign(state.metamask, { useExternalServices: false });
+    state.metamask.enabledNetworkMap = {
+      solana: {
+        [SOLANA_CHAIN_ID]: true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(<AssetListControlBar />, store);
+
+    await waitFor(() => {
+      expect(enableAllPopularNetworksSpy).toHaveBeenCalled();
+      expect(setActiveNetworkSpy).toHaveBeenCalledWith(
+        'selectedNetworkClientId',
+      );
+    });
+  });
+
   it('does not broaden an unsupported network filter when the selected account group supports that network', async () => {
     const enableAllPopularNetworksSpy = jest.spyOn(
       actions,
