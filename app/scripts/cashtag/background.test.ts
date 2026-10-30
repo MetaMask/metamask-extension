@@ -32,6 +32,16 @@ function sender(
   };
 }
 
+function sidePanelSender(
+  overrides?: Partial<chrome.runtime.MessageSender>,
+): chrome.runtime.MessageSender {
+  return {
+    id: extensionId,
+    url: `chrome-extension://${extensionId}/sidepanel.html`,
+    ...overrides,
+  };
+}
+
 describe('isAllowedCashtagSender', () => {
   beforeEach(() => {
     Object.assign(chrome.runtime, {
@@ -125,6 +135,37 @@ describe('isAllowedCashtagSender', () => {
       ),
     ).toBe(false);
   });
+
+  it('allows CONSUME_PENDING_ROUTE from extension pages (side panel)', () => {
+    expect(
+      isAllowedCashtagSender(
+        EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        sidePanelSender(),
+      ),
+    ).toBe(true);
+  });
+
+  it('rejects CONSUME_PENDING_ROUTE from content scripts', () => {
+    expect(
+      isAllowedCashtagSender(
+        EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        sender({
+          frameId: 0,
+          tab: xTab,
+          url: 'https://x.com/home',
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('rejects CONSUME_PENDING_ROUTE when sender has tab field', () => {
+    expect(
+      isAllowedCashtagSender(
+        EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        sidePanelSender({ tab: xTab }),
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('createCashtagResponse', () => {
@@ -171,6 +212,17 @@ describe('createCashtagResponse', () => {
       getURL: (path: string) => `chrome-extension://${extensionId}/${path}`,
       getManifest: () => ({}),
     });
+
+    [7, 8].forEach((windowId) => {
+      createCashtagResponse(
+        {
+          type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+          body: { windowId },
+        },
+        sidePanelSender(),
+        getController,
+      );
+    });
   });
 
   afterEach(() => {
@@ -178,15 +230,460 @@ describe('createCashtagResponse', () => {
     delete (globalThis.chrome as { action?: unknown }).action;
   });
 
-  it('opens the side panel without awaiting the path reset first', () => {
-    const open = jest.fn().mockResolvedValue(undefined);
+  it('sets pending route entry before calling open synchronously', async () => {
+    let consumeDuringOpen: Promise<unknown> | undefined;
+
+    const open = jest.fn().mockImplementation(() => {
+      consumeDuringOpen = createCashtagResponse(
+        {
+          type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+          body: { windowId: 7 },
+        },
+        sidePanelSender(),
+        getController,
+      );
+
+      return Promise.resolve(undefined);
+    });
     Object.assign(globalThis.chrome, {
-      sidePanel: { open, setOptions: jest.fn(pending) },
+      sidePanel: { open },
     });
 
-    createCashtagResponse(openSwapMessage, widgetSender, getController);
+    await createCashtagResponse(openSwapMessage, widgetSender, getController);
 
     expect(open).toHaveBeenCalledWith({ windowId: 7 });
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+      type: EXTENSION_MESSAGES.OPEN_ROUTE,
+      body: { windowId: 7 },
+    });
+
+    await expect(consumeDuringOpen).resolves.toMatchObject({
+      body: {
+        path: '/cross-chain/swaps/prepare-bridge-page',
+        search: '?to=eip155%3A1%2Fslip44%3A60',
+      },
+    });
+  });
+
+  it('deletes pending route entry when open rejects', async () => {
+    const open = jest.fn().mockRejectedValue(new Error('no gesture'));
+    Object.assign(globalThis.chrome, {
+      sidePanel: { open },
+    });
+
+    await createCashtagResponse(openSwapMessage, widgetSender, getController);
+
+    expect(open).toHaveBeenCalledWith({ windowId: 7 });
+    expect(browser.runtime.sendMessage).not.toHaveBeenCalledWith({
+      type: EXTENSION_MESSAGES.OPEN_ROUTE,
+      body: { windowId: 7 },
+    });
+
+    const consumeResponse = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { windowId: 7 },
+      },
+      sidePanelSender(),
+      getController,
+    );
+
+    expect(consumeResponse).toEqual({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: null, search: null },
+    });
+  });
+
+  it('preserves newer pending route when earlier open rejects', async () => {
+    let firstReject: ((error: Error) => void) | undefined;
+    let secondResolve: (() => void) | undefined;
+
+    const open = jest.fn().mockImplementation(() => {
+      return new Promise<void>((resolve, reject) => {
+        if (firstReject) {
+          secondResolve = resolve;
+        } else {
+          firstReject = reject;
+        }
+      });
+    });
+
+    Object.assign(globalThis.chrome, {
+      sidePanel: { open },
+    });
+
+    const firstOpen = createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      getController,
+    );
+    const secondOpen = createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+        body: { page: 'asset', caipAssetId },
+      },
+      widgetSender,
+      getController,
+    );
+
+    await Promise.resolve();
+
+    expect(open).toHaveBeenCalledTimes(2);
+    expect(firstReject).toBeDefined();
+    expect(secondResolve).toBeDefined();
+
+    if (firstReject) {
+      firstReject(new Error('no gesture'));
+    }
+    if (secondResolve) {
+      secondResolve();
+    }
+
+    await Promise.allSettled([firstOpen, secondOpen]);
+
+    const consumeResponse = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { windowId: 7 },
+      },
+      sidePanelSender(),
+      getController,
+    );
+
+    expect(consumeResponse).toMatchObject({
+      body: { path: expect.stringMatching(/^\/asset\//u) },
+    });
+  });
+
+  it('consumes pending route once and returns null after', async () => {
+    const consumeMessage = {
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { windowId: 7 },
+    };
+
+    const open = jest.fn().mockResolvedValue(undefined);
+    Object.assign(globalThis.chrome, {
+      sidePanel: { open },
+    });
+
+    await createCashtagResponse(openSwapMessage, widgetSender, getController);
+
+    const firstResponse = await createCashtagResponse(
+      consumeMessage,
+      sidePanelSender(),
+      getController,
+    );
+    expect(firstResponse).toEqual({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: {
+        path: '/cross-chain/swaps/prepare-bridge-page',
+        search: '?to=eip155%3A1%2Fslip44%3A60',
+      },
+    });
+
+    const secondResponse = await createCashtagResponse(
+      consumeMessage,
+      sidePanelSender(),
+      getController,
+    );
+    expect(secondResponse).toEqual({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: null, search: null },
+    });
+  });
+
+  it('isolates pending routes per window', async () => {
+    const open = jest.fn().mockResolvedValue(undefined);
+    Object.assign(globalThis.chrome, {
+      sidePanel: { open },
+    });
+
+    const window7Sender = sender({
+      frameId: 1,
+      tab: { ...xTab, windowId: 7 } as chrome.tabs.Tab,
+      url: widgetUrl,
+    });
+    const window8Sender = sender({
+      frameId: 1,
+      tab: { ...xTab, windowId: 8 } as chrome.tabs.Tab,
+      url: widgetUrl,
+    });
+
+    await createCashtagResponse(openSwapMessage, window7Sender, getController);
+    await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+        body: { page: 'asset', caipAssetId },
+      },
+      window8Sender,
+      getController,
+    );
+
+    const window7Response = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { windowId: 7 },
+      },
+      sidePanelSender(),
+      getController,
+    );
+    expect(window7Response).toMatchObject({
+      body: { path: '/cross-chain/swaps/prepare-bridge-page' },
+    });
+
+    const window8Response = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { windowId: 8 },
+      },
+      sidePanelSender(),
+      getController,
+    );
+    expect(window8Response).toMatchObject({
+      body: { path: expect.stringMatching(/^\/asset\//u) },
+    });
+  });
+
+  it('returns null when consuming with missing windowId', async () => {
+    const consumeResponse = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: {},
+      },
+      sidePanelSender(),
+      getController,
+    );
+
+    expect(consumeResponse).toEqual({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: null, search: null },
+    });
+  });
+
+  it('returns null when consuming with non-number windowId', async () => {
+    const consumeResponse = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { windowId: 'not-a-number' },
+      },
+      sidePanelSender(),
+      getController,
+    );
+
+    expect(consumeResponse).toEqual({
+      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+      body: { path: null, search: null },
+    });
+  });
+
+  it('clears pending route when window is removed', async () => {
+    const savedChrome = globalThis.chrome;
+    const savedBrowser = globalThis.browser;
+
+    try {
+      jest.resetModules();
+
+      let onRemovedListener: ((windowId: number) => void) | undefined;
+      const open = jest.fn().mockResolvedValue(undefined);
+      globalThis.chrome = {
+        ...savedChrome,
+        sidePanel: { open } as unknown as typeof savedChrome.sidePanel,
+        runtime: {
+          ...savedChrome.runtime,
+          onMessage: {
+            addListener: jest.fn(),
+          } as unknown as typeof savedChrome.runtime.onMessage,
+        },
+        windows: {
+          onRemoved: {
+            addListener: jest.fn((cb: (windowId: number) => void) => {
+              onRemovedListener = cb;
+            }),
+          } as unknown as typeof savedChrome.windows.onRemoved,
+        } as unknown as typeof savedChrome.windows,
+      };
+
+      globalThis.browser = {
+        runtime: {
+          sendMessage: jest.fn().mockResolvedValue(undefined),
+        } as unknown as typeof savedBrowser.runtime,
+        tabs: {
+          query: jest.fn().mockResolvedValue([]),
+        } as unknown as typeof savedBrowser.tabs,
+      } as unknown as typeof savedBrowser;
+
+      const {
+        createCashtagResponse: freshCreate,
+        registerCashtagBackgroundBridge,
+      } = await import('./background');
+
+      registerCashtagBackgroundBridge({ getController });
+      expect(onRemovedListener).toBeDefined();
+
+      await freshCreate(openSwapMessage, widgetSender, getController);
+
+      if (onRemovedListener) {
+        onRemovedListener(7);
+      }
+
+      const consumeAfterRemove = await freshCreate(
+        {
+          type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+          body: { windowId: 7 },
+        },
+        sidePanelSender(),
+        getController,
+      );
+
+      expect(consumeAfterRemove).toEqual({
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { path: null, search: null },
+      });
+    } finally {
+      globalThis.chrome = savedChrome;
+      globalThis.browser = savedBrowser;
+    }
+  });
+
+  it('preserves newer pending route when earlier open rejects (identity check)', async () => {
+    let firstReject: ((error: Error) => void) | undefined;
+    let secondResolve: (() => void) | undefined;
+
+    const open = jest.fn().mockImplementation(() => {
+      return new Promise<void>((resolve, reject) => {
+        if (firstReject) {
+          secondResolve = resolve;
+        } else {
+          firstReject = reject;
+        }
+      });
+    });
+
+    Object.assign(globalThis.chrome, {
+      sidePanel: { open },
+    });
+
+    const firstOpen = createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      getController,
+    );
+    const secondOpen = createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+        body: { page: 'asset', caipAssetId },
+      },
+      widgetSender,
+      getController,
+    );
+
+    await Promise.resolve();
+
+    expect(open).toHaveBeenCalledTimes(2);
+    expect(firstReject).toBeDefined();
+    expect(secondResolve).toBeDefined();
+
+    if (firstReject) {
+      firstReject(new Error('no gesture'));
+    }
+    if (secondResolve) {
+      secondResolve();
+    }
+
+    await Promise.allSettled([firstOpen, secondOpen]);
+
+    const consumeResponse = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { windowId: 7 },
+      },
+      sidePanelSender(),
+      getController,
+    );
+
+    expect(consumeResponse).toMatchObject({
+      body: {
+        path: expect.stringMatching(/^\/asset\//u),
+      },
+    });
+  });
+
+  it('clears pending route when side panel closes', async () => {
+    const savedChrome = globalThis.chrome;
+    const savedBrowser = globalThis.browser;
+
+    try {
+      jest.resetModules();
+
+      let onClosedListener:
+        | ((info: { windowId: number; path: string }) => void)
+        | undefined;
+      const open = jest.fn().mockResolvedValue(undefined);
+      globalThis.chrome = {
+        ...savedChrome,
+        sidePanel: {
+          open,
+          onClosed: {
+            addListener: jest.fn(
+              (cb: (info: { windowId: number; path: string }) => void) => {
+                onClosedListener = cb;
+              },
+            ),
+          } as unknown as typeof savedChrome.sidePanel.onClosed,
+        } as unknown as typeof savedChrome.sidePanel,
+        runtime: {
+          ...savedChrome.runtime,
+          onMessage: {
+            addListener: jest.fn(),
+          } as unknown as typeof savedChrome.runtime.onMessage,
+        },
+        windows: {
+          onRemoved: {
+            addListener: jest.fn(),
+          } as unknown as typeof savedChrome.windows.onRemoved,
+        } as unknown as typeof savedChrome.windows,
+      };
+
+      globalThis.browser = {
+        runtime: {
+          sendMessage: jest.fn().mockResolvedValue(undefined),
+        } as unknown as typeof savedBrowser.runtime,
+        tabs: {
+          query: jest.fn().mockResolvedValue([]),
+        } as unknown as typeof savedBrowser.tabs,
+      } as unknown as typeof savedBrowser;
+
+      const {
+        createCashtagResponse: freshCreate,
+        registerCashtagBackgroundBridge,
+      } = await import('./background');
+
+      registerCashtagBackgroundBridge({ getController });
+      expect(onClosedListener).toBeDefined();
+
+      await freshCreate(openSwapMessage, widgetSender, getController);
+
+      if (onClosedListener) {
+        onClosedListener({ windowId: 7, path: '/sidepanel.html' });
+      }
+
+      const consumeAfterClose = await freshCreate(
+        {
+          type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+          body: { windowId: 7 },
+        },
+        sidePanelSender(),
+        getController,
+      );
+
+      expect(consumeAfterClose).toEqual({
+        type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
+        body: { path: null, search: null },
+      });
+    } finally {
+      globalThis.chrome = savedChrome;
+      globalThis.browser = savedBrowser;
+    }
   });
 
   it('does not enable the widget when Basic Functionality is disabled', async () => {
