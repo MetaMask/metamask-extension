@@ -53,6 +53,12 @@ assemble_performance_data() {
     # "userJourneyAssets", "pageLoadBenchmark").
     local STARTUP_PRESETS=("startupStandardHome" "startupPowerUserHome")
 
+    # `del(.values)` below drops the per-iteration observations before a run joins
+    # the historical series. They belong in the per-run artifact, where an analysis
+    # reads one commit, and not here: this file accumulates one entry per commit and
+    # is already at GitHub's 100 MB blob limit (extension#45451). Projected over the
+    # 715 measurable artifacts of the 2026-09-11 window, retaining them grows a
+    # startup entry by a median 291% and a five-iteration flow by 41%.
     local presets_json="{}"
     local page_load_json="{}"
     local file_count=0
@@ -90,7 +96,7 @@ assemble_performance_data() {
             # The inner key is the camelCase filename (e.g. "standardHome"), NOT the preset name
             # (e.g. "startupStandardHome"), so we unwrap by checking for a single-key object.
             local preset_data startup_key
-            preset_data=$(jq 'if (keys | length) == 1 then .[keys[0]] else . end' "${file}")
+            preset_data=$(jq 'if (keys | length) == 1 then .[keys[0]] else . end | del(.values)' "${file}")
             startup_key="${browser}-${build_type}-${preset_name}"
             echo "  Adding startup preset '${startup_key}'" >&2
             page_load_json=$(echo "${page_load_json}" | jq \
@@ -101,7 +107,7 @@ assemble_performance_data() {
             # For interaction, user journey, and dapp page load presets, only store chrome-webpack —
             # that is what the PR comment displays.
             local preset_data
-            preset_data=$(jq . "${file}")
+            preset_data=$(jq 'map_values(if type == "object" then del(.values) else . end)' "${file}")
             echo "  Adding preset '${preset_name}' (chrome-webpack)" >&2
             presets_json=$(echo "${presets_json}" | jq \
                 --arg key "${preset_name}" \

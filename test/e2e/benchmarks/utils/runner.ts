@@ -6,6 +6,8 @@ import type {
   Persona,
   StatisticalResult,
   ThresholdConfig,
+  MetricSample,
+  MetricSamples,
   TimerStatistics,
   WebVitalsAggregated,
   WebVitalsMetrics,
@@ -178,7 +180,7 @@ export async function runBenchmarkWithIterations(
   }
 
   // Aggregate timer results and collect per-run web vitals
-  const timerMap = new Map<string, number[]>();
+  const timerMap = new Map<string, MetricSample[]>();
   const zeroAllowedTimers = new Set<string>();
   const webVitalsRuns: WebVitalsRun[] = [];
 
@@ -189,9 +191,9 @@ export async function runBenchmarkWithIterations(
         if (!timerMap.has(timer.id)) {
           timerMap.set(timer.id, []);
         }
-        const timerDurations = timerMap.get(timer.id);
-        if (timerDurations) {
-          timerDurations.push(timer.value);
+        const timerSamples = timerMap.get(timer.id);
+        if (timerSamples) {
+          timerSamples.push({ iteration: idx, value: timer.value });
         }
         if (timer.unit) {
           zeroAllowedTimers.add(timer.id);
@@ -207,8 +209,10 @@ export async function runBenchmarkWithIterations(
   const timerStats: TimerStatistics[] = [];
   let excludedDueToQuality = 0;
 
-  for (const [timerId, durations] of timerMap) {
+  for (const [timerId, samples] of timerMap) {
+    const durations = samples.map((sample) => sample.value);
     const stats = calculateTimerStatistics(timerId, durations, {
+      iterations: samples.map((sample) => sample.iteration),
       ...(zeroAllowedTimers.has(timerId) ? { minDurationMs: 0 } : {}),
     });
     timerStats.push(stats);
@@ -233,8 +237,9 @@ export async function runBenchmarkWithIterations(
 
   // Compute per-run total durations and derive total statistics from them
   // (min/max/percentiles are not additive across timers from different runs)
-  const perRunTotalDurations: number[] = [];
-  for (const result of allResults) {
+  const perRunTotals: MetricSample[] = [];
+  for (let idx = 0; idx < allResults.length; idx++) {
+    const result = allResults[idx];
     if (result.success && result.timers.length > 0) {
       // Exclude long task diagnostic metrics (tagged with unit) from the
       // per-run total. They represent blocking time already captured within
@@ -242,13 +247,18 @@ export async function runBenchmarkWithIterations(
       const runTotal = result.timers
         .filter((t) => !t.unit)
         .reduce((acc, t) => acc + t.value, 0);
-      perRunTotalDurations.push(runTotal);
+      perRunTotals.push({ iteration: idx, value: runTotal });
     }
   }
-  if (perRunTotalDurations.length > 0) {
-    const totalStats = calculateTimerStatistics('total', perRunTotalDurations, {
-      maxDurationMs: MAX_TOTAL_DURATION_MS,
-    });
+  if (perRunTotals.length > 0) {
+    const totalStats = calculateTimerStatistics(
+      'total',
+      perRunTotals.map((sample) => sample.value),
+      {
+        iterations: perRunTotals.map((sample) => sample.iteration),
+        maxDurationMs: MAX_TOTAL_DURATION_MS,
+      },
+    );
     timerStats.push(totalStats);
   }
 
@@ -319,6 +329,7 @@ export function convertTimerStatisticsToBenchmarkResults(
   const p95: StatisticalResult = {};
   const trimmedCount: StatisticalResult = {};
   const outliers: StatisticalResult = {};
+  const values: MetricSamples = {};
 
   // timers already includes promoted web vitals from runBenchmarkWithIterations
   for (const timer of timers) {
@@ -332,10 +343,14 @@ export function convertTimerStatisticsToBenchmarkResults(
       trimmedCount[timer.id] = timer.trimmedCount;
     }
     outliers[timer.id] = timer.outliers;
+    if (timer.values !== undefined) {
+      values[timer.id] = timer.values;
+    }
   }
 
   const hasTrimmedCounts = Object.keys(trimmedCount).length > 0;
   const hasOutliers = Object.keys(outliers).length > 0;
+  const hasValues = Object.keys(values).length > 0;
 
   return {
     testTitle,
@@ -351,6 +366,7 @@ export function convertTimerStatisticsToBenchmarkResults(
     p95,
     ...(hasTrimmedCounts && { trimmedCount }),
     ...(hasOutliers && { outliers }),
+    ...(hasValues && { values }),
     ...(webVitals && { webVitals }),
   };
 }
@@ -488,11 +504,19 @@ export async function runPageLoadBenchmark(
 
   const result: Record<string, number[]> = {};
   const trimmedCounts: StatisticalResult = {};
+  const values: MetricSamples = {};
   for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
     const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
     const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
     result[key] = [...filtered].sort((a, b) => a - b);
     trimmedCounts[key] = outlierCount;
+    // `result[key]` is filtered and sorted, so neither the discarded samples nor
+    // the order survives it. The iteration numbering matches `WebVitalsRun`'s:
+    // warm-up sessions are dropped, and the remainder keep their original index.
+    values[key] = rawSamples.map((value, index) => ({
+      iteration: warmupSize + index,
+      value,
+    }));
   }
 
   let webVitals: WebVitalsSummary | undefined;
@@ -535,6 +559,7 @@ export async function runPageLoadBenchmark(
     p95,
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
+    values,
     ...(webVitals && { webVitals }),
   };
 }
