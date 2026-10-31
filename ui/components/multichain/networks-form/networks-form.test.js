@@ -49,7 +49,7 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../store/background-connection', () => ({
   ...jest.requireActual('../../../store/background-connection'),
   submitRequestToBackground: jest.fn().mockImplementation((method, args) => {
-    if (method === 'isPublicEndpointUrl') {
+    if (method === 'LegacyBackgroundApiService:isPublicEndpointUrl') {
       const url = args[0];
       // Return true for Infura URLs, false for everything else
       return Promise.resolve(url?.includes('infura.io') ?? false);
@@ -644,6 +644,55 @@ describe('NetworkForm Component', () => {
     });
   });
 
+  it('does not select a network when saving edits to a different network', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      existingNetwork: {
+        chainId: '0x64',
+        rpcEndpoints: [
+          { networkClientId: 'other-client', url: 'https://other' },
+        ],
+      },
+    });
+
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({ chainId: '0x64' }),
+        { replacementSelectedRpcEndpointIndex: undefined },
+      );
+    });
+  });
+
+  it('keeps the replacement RPC index when saving edits to the selected network', async () => {
+    const metamask = buildMetamaskState();
+    const { getByText } = renderWithProvider(
+      <NetworksForm
+        {...propNetworkDisplay}
+        existingNetwork={{
+          chainId: '0x64',
+          rpcEndpoints: [
+            {
+              networkClientId: metamask.selectedNetworkClientId,
+              url: 'https://selected',
+            },
+          ],
+        }}
+      />,
+      configureMockStore([thunk])({ metamask }),
+    );
+
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() => {
+      expect(updateNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({ chainId: '0x64' }),
+        { replacementSelectedRpcEndpointIndex: 0 },
+      );
+    });
+  });
+
   it('should track RPC update event when trackRpcUpdateFromBanner is true', async () => {
     const { getByText } = renderComponent({
       ...propNetworkDisplay,
@@ -876,8 +925,7 @@ describe('NetworkForm Component', () => {
       rpcEndpoints: [
         {
           networkClientId: 'bsc',
-          // An Infura endpoint renders through RpcListItem rather than the
-          // inline custom branch.
+          // An Infura endpoint still shows the failover tag from shared config.
           type: 'infura',
           url: 'https://bsc-mainnet.infura.io/v3/test',
           failoverUrls: [],

@@ -142,8 +142,7 @@ export const BridgeControllerInit: MessengerClientInitFunction<
       );
     },
 
-    // @ts-expect-error: `trace` function type does not match the expected type.
-    traceFn: (...args) => trace(...args),
+    traceFn: trace,
 
     config: {
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,

@@ -33,9 +33,9 @@ describe('symbolFromCashtagAnchor', () => {
     expect(symbolFromCashtagAnchor(anchor)).toBe('BTC');
   });
 
-  it('reads the ticker from a decoded $ cashtag search href', () => {
+  it('normalizes a lowercase ticker from an encoded cashtag search href', () => {
     const anchor = makeCashtagAnchor(
-      '/search?q=$ETH&src=cashtag_click',
+      '/search?q=%24eth&src=cashtag_click',
       '$eth',
     );
 
@@ -55,7 +55,7 @@ describe('findCashtagAnchors', () => {
     root.innerHTML = `
       <article data-testid="tweet">
         <a href="/search?q=%24BTC&src=cashtag_click">$BTC</a>
-        <a href="/search?q=$ETH&src=cashtag_click">$ETH</a>
+        <a href="/search?q=%24ETH&src=cashtag_click">$ETH</a>
       </article>
       <a href="/search?q=%24DOGE&src=cashtag_click">$DOGE</a>
     `;

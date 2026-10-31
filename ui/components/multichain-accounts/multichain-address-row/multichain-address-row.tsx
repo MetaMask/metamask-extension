@@ -18,6 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { AccountTypeLabel } from '../account-type-label/account-type-label';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
@@ -56,6 +57,10 @@ type MultichainAddressRowProps = {
    */
   networkName: string;
   /**
+   * Account type used to show a Bitcoin address label beside the network name
+   */
+  accountType?: string;
+  /**
    * Address string to display (will be truncated)
    */
   address: string;
@@ -76,6 +81,7 @@ type MultichainAddressRowProps = {
 export const MultichainAddressRow = ({
   chainId,
   networkName,
+  accountType,
   address,
   copyActionParams,
   qrActionParams,
@@ -183,16 +189,24 @@ export const MultichainAddressRow = ({
         alignItems={BoxAlignItems.Start}
         className="min-w-0 flex-1"
       >
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.TextDefault}
-          data-testid="multichain-address-row-network-name"
-          ellipsis
-          className="w-full"
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          className="min-w-0 w-full"
         >
-          {networkName}
-        </Text>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
+            data-testid="multichain-address-row-network-name"
+            ellipsis
+            className="min-w-0"
+          >
+            {networkName}
+          </Text>
+          <AccountTypeLabel accountType={accountType} />
+        </Box>
         <Text
           variant={TextVariant.BodySm}
           color={

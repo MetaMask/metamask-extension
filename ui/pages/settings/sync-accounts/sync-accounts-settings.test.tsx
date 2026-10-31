@@ -10,6 +10,7 @@ import {
 } from '../../../../shared/constants/qr-sync';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { AddWallets } from './components';
 import SyncAccountsSettings from './sync-accounts-settings';
 
 const mockNavigate = jest.fn();
@@ -43,7 +44,7 @@ jest.mock('./components', () => {
         password
       </button>
     ),
-    AddWallets: () => <div data-testid="add-wallets" />,
+    AddWallets: jest.fn(() => <div data-testid="add-wallets" />),
     LoadingStep: () => <div data-testid="loading-step" />,
     Success: () => <div data-testid="success" />,
     SyncError: ({
@@ -163,12 +164,12 @@ describe('SyncAccountsSettings', () => {
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:cancelSync', []],
+        'QrSyncController:cancelSync',
+        [],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:createSession', []],
+        'QrSyncController:createSession',
+        [],
       );
     });
   });
@@ -185,12 +186,12 @@ describe('SyncAccountsSettings', () => {
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:cancelSync', []],
+        'QrSyncController:cancelSync',
+        [],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:createSession', []],
+        'QrSyncController:createSession',
+        [],
       );
     });
   });
@@ -301,15 +302,51 @@ describe('SyncAccountsSettings', () => {
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:cancelSync', []],
+        'QrSyncController:cancelSync',
+        [],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:createSession', []],
+        'QrSyncController:createSession',
+        [],
       );
     });
     expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('syncs the selected account groups using the entered password', async () => {
+    jest.mocked(AddWallets).mockImplementationOnce(({ onAddWallets }) => (
+      <button
+        data-testid="add-wallets"
+        type="button"
+        onClick={() =>
+          onAddWallets({
+            selectedAccountGroupIds: ['entropy:wallet/0'],
+            syncedAccountCount: 1,
+            syncedWalletCount: 1,
+          })
+        }
+      >
+        add wallets
+      </button>
+    ));
+    const store = configureMockStore([thunk])({
+      ...qrSyncState,
+      metamask: {
+        ...qrSyncState.metamask,
+        qrSyncPhase: QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
+      },
+    });
+    renderWithProvider(<SyncAccountsSettings />, store);
+
+    fireEvent.click(screen.getByTestId('enter-password'));
+    fireEvent.click(screen.getByTestId('add-wallets'));
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'QrSyncController:syncAccounts',
+        ['test-password', ['entropy:wallet/0']],
+      );
+    });
   });
 
   it('cancels and navigates away when cancel is clicked on the error step', async () => {
@@ -326,8 +363,8 @@ describe('SyncAccountsSettings', () => {
 
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'messengerCall',
-        ['QrSyncController:cancelSync', []],
+        'QrSyncController:cancelSync',
+        [],
       );
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });

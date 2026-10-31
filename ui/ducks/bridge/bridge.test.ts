@@ -10,12 +10,14 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import * as cacheUtils from '../../pages/bridge/utils/cache';
 import * as storeActions from '../../store/actions';
 import * as sentry from '../../../shared/lib/sentry';
+import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import bridgeReducer, { bridgeSlice, initialState } from './bridge';
 import { BridgeMissingNetworkConfigError } from './errors';
 import {
   setFromToken,
   setFromTokenInputValue,
   setToToken,
+  setToTokenSecurityData,
   updateQuoteRequestParams,
   setWasTxDeclined,
   setSlippage,
@@ -53,8 +55,7 @@ describe('Ducks - Bridge', () => {
   describe('setFromToken', () => {
     beforeEach(() => {
       setBackgroundConnection({
-        setActiveNetwork: jest.fn(),
-        setEnabledAllPopularNetworks: jest.fn(),
+        messengerCall: jest.fn(),
         getStatePatches: jest.fn(),
       } as never);
     });
@@ -214,6 +215,94 @@ describe('Ducks - Bridge', () => {
     });
   });
 
+  describe('setToTokenSecurityData', () => {
+    const toToken = {
+      assetId: 'eip155:56/erc20:0x0cf8e180350253271f4b917ccfb0accc4862f262',
+      symbol: 'BAD',
+      name: 'Bad Token',
+      decimals: 18,
+      chainId: 'eip155:56',
+    };
+    const maliciousSecurityData = {
+      type: BridgeAssetSecurityDataType.MALICIOUS,
+      metadata: { features: [] },
+    };
+
+    it('backfills security data on the matching toToken', () => {
+      const state = { ...initialState, toToken } as never;
+
+      const newState = bridgeReducer(
+        state,
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          isVerified: false,
+          securityData: maliciousSecurityData,
+        } as never),
+      );
+
+      expect(newState.toToken?.securityData).toStrictEqual(
+        maliciousSecurityData,
+      );
+      expect(newState.toToken?.isVerified).toBe(false);
+    });
+
+    it('backfills a toToken whose security data has no type', () => {
+      const state = {
+        ...initialState,
+        toToken: { ...toToken, securityData: {} },
+      } as never;
+
+      const newState = bridgeReducer(
+        state,
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          securityData: maliciousSecurityData,
+        } as never),
+      );
+
+      expect(newState.toToken?.securityData).toStrictEqual(
+        maliciousSecurityData,
+      );
+    });
+
+    it('ignores data for a different asset', () => {
+      const state = { ...initialState, toToken } as never;
+
+      const newState = bridgeReducer(
+        state,
+        setToTokenSecurityData({
+          assetId: 'eip155:56/erc20:0x0000000000000000000000000000000000000001',
+          securityData: maliciousSecurityData,
+        } as never),
+      );
+
+      expect(newState.toToken?.securityData).toBeUndefined();
+    });
+
+    it('does not overwrite existing security data', () => {
+      const existingSecurityData = {
+        type: BridgeAssetSecurityDataType.VERIFIED,
+        metadata: { features: [] },
+      };
+      const state = {
+        ...initialState,
+        toToken: { ...toToken, securityData: existingSecurityData },
+      } as never;
+
+      const newState = bridgeReducer(
+        state,
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          securityData: maliciousSecurityData,
+        } as never),
+      );
+
+      expect(newState.toToken?.securityData).toStrictEqual(
+        existingSecurityData,
+      );
+    });
+  });
+
   describe('setFromTokenInputValue', () => {
     it('calls the "bridge/setFromTokenInputValue" action', () => {
       const state = store.getState().bridge;
@@ -242,7 +331,7 @@ describe('Ducks - Bridge', () => {
     it('dispatches quote params to the bridge controller', () => {
       const mockUpdateParams = jest.fn();
       setBackgroundConnection({
-        updateBridgeQuoteRequestParams: mockUpdateParams,
+        messengerCall: mockUpdateParams,
         getStatePatches: jest.fn(),
       } as never);
 
@@ -254,63 +343,46 @@ describe('Ducks - Bridge', () => {
             srcTokenAddress: zeroAddress(),
             destTokenAddress: undefined,
           },
+          // These names are formatted this way intentionally.
+          /* eslint-disable @typescript-eslint/naming-convention */
           {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             stx_enabled: false,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_source: 'ETH',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol_destination: 'ETH',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_security_type_destination: null,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_warnings: [],
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_amount_source: 1000,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
           },
+          /* eslint-enable @typescript-eslint/naming-convention */
         ) as never,
       );
 
       expect(mockUpdateParams).toHaveBeenCalledTimes(1);
       expect(mockUpdateParams).toHaveBeenCalledWith(
-        {
-          walletAddress: '0x1234567890',
-          srcChainId: 1,
-          srcTokenAddress: zeroAddress(),
-          destTokenAddress: undefined,
-        },
-        {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          stx_enabled: false,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: 'ETH',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_destination: 'ETH',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_security_type_destination: null,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_warnings: [],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_amount_source: 1000,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-        },
-        0,
-        1,
+        'BridgeController:updateBridgeQuoteRequestParams',
+        [
+          {
+            walletAddress: '0x1234567890',
+            srcChainId: 1,
+            srcTokenAddress: zeroAddress(),
+            destTokenAddress: undefined,
+          },
+          // These names are formatted this way intentionally.
+          /* eslint-disable @typescript-eslint/naming-convention */
+          {
+            stx_enabled: false,
+            token_symbol_source: 'ETH',
+            token_symbol_destination: 'ETH',
+            token_security_type_destination: null,
+            security_warnings: [],
+            usd_amount_source: 1000,
+            feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+          },
+          /* eslint-enable @typescript-eslint/naming-convention */
+          0,
+          1,
+        ],
       );
     });
   });
@@ -330,13 +402,17 @@ describe('Ducks - Bridge', () => {
         'clearAllBridgeCacheItems',
       );
       setBackgroundConnection({
-        resetState: mockResetBridgeState,
+        messengerCall: mockResetBridgeState,
         getStatePatches: jest.fn(),
       } as never);
 
       await mockStore.dispatch((await resetBridgeController()) as never);
 
       expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+      expect(mockResetBridgeState).toHaveBeenCalledWith(
+        'BridgeController:resetState',
+        [],
+      );
       const actions = mockStore.getActions();
       expect(actions.map((action) => action.type)).not.toContain(
         'bridge/resetInputFields',

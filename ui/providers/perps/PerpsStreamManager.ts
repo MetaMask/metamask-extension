@@ -276,10 +276,17 @@ class PerpsStreamManager {
               }
             })
             .catch((err) => {
-              console.error(
-                '[PerpsStreamManager] Failed to fetch account',
-                err,
-              );
+              // Only report a failed fetch while the channel is still live. A
+              // rejection that lands after the last subscriber unsubscribes is
+              // teardown noise — the fetch started while it still mattered, and
+              // by the time it settles nobody is watching. Logging it anyway
+              // makes unrelated E2E suites fail on console errors (#46623).
+              if (!cancelled) {
+                console.error(
+                  '[PerpsStreamManager] Failed to fetch account',
+                  err,
+                );
+              }
               // Deliberately do NOT push here. `null` is this channel's own
               // initialValue, so pushing it leaves hasCachedData() false while
               // still notifying subscribers — usePerpsChannel then clears

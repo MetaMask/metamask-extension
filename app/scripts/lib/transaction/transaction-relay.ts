@@ -1,32 +1,32 @@
 import { AuthorizationList } from '@metamask/transaction-controller';
-import { type SentinelMeta } from '@metamask/smart-transactions-controller';
-import { Hex, createProjectLogger } from '@metamask/utils';
-import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
-import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import {
-  buildUrl,
-  getSentinelApiHeadersAsync,
+  SentinelSmartTransactionStatus,
+  type SentinelRelaySubmitRequest,
+  type SentinelRelaySubmitResponse,
+  type SentinelSmartTransactionRequest,
+} from '@metamask/sentinel-api-service';
+import { Hex, createProjectLogger } from '@metamask/utils';
+import {
+  getSentinelApiMessenger,
   getSentinelNetworkFlags,
 } from './sentinel-api';
 
 const log = createProjectLogger('transaction-relay');
 
-export type RelaySubmitRequest = {
+export const RelayStatus = {
+  Pending: SentinelSmartTransactionStatus.Pending,
+  Success: SentinelSmartTransactionStatus.Validated,
+} as const;
+
+export type RelaySubmitRequest = Omit<
+  SentinelRelaySubmitRequest,
+  'authorizationList'
+> & {
   authorizationList?: AuthorizationList;
-  chainId: Hex;
-  data: Hex;
-  to: Hex;
-  metadata?: SentinelMeta;
 };
 
-export type RelayWaitRequest = {
-  chainId: Hex;
+export type RelayWaitRequest = SentinelSmartTransactionRequest & {
   interval: number;
-  uuid: string;
-};
-
-export type RelaySubmitResponse = {
-  uuid: string;
 };
 
 export type RelayWaitResponse = {
@@ -34,31 +34,21 @@ export type RelayWaitResponse = {
   status: string;
 };
 
-export enum RelayStatus {
-  Pending = 'PENDING',
-  Success = 'VALIDATED',
-}
-
-export const RELAY_RPC_METHOD = 'eth_sendRelayTransaction';
-
 export async function submitRelayTransaction(
   request: RelaySubmitRequest,
-): Promise<RelaySubmitResponse> {
+): Promise<SentinelRelaySubmitResponse> {
   const { chainId } = request;
 
-  const url = await getRelayUrl(chainId);
-
-  if (!url) {
+  if (!(await isRelaySupported(chainId))) {
     throw new Error(`Chain not supported by transaction relay - ${chainId}`);
   }
 
-  log('Request', url, request);
+  log('Request', request);
 
-  const headers = await getSentinelApiHeadersAsync();
-
-  const response = (await jsonRpcRequest(url, RELAY_RPC_METHOD, [request], {
-    headers,
-  })) as RelaySubmitResponse;
+  const response = await getSentinelApiMessenger().call(
+    'SentinelApiService:submitRelayTransaction',
+    request as SentinelRelaySubmitRequest,
+  );
 
   log('Response', response);
 
@@ -70,19 +60,14 @@ export async function waitForRelayResult(
 ): Promise<RelayWaitResponse> {
   const { chainId, interval, uuid } = request;
 
-  const baseUrl = await getRelayUrl(chainId);
-
-  if (!baseUrl) {
+  if (!(await isRelaySupported(chainId))) {
     throw new Error(`Chain not supported by transaction relay - ${chainId}`);
   }
-
-  const url = `${baseUrl}smart-transactions/${uuid}`;
 
   return new Promise<RelayWaitResponse>((resolve, reject) => {
     const intervalId = setInterval(async () => {
       try {
-        const headers = await getSentinelApiHeadersAsync();
-        const result = await pollResult(url, headers);
+        const result = await pollResult(chainId, uuid);
 
         if (result.status !== RelayStatus.Pending) {
           clearInterval(intervalId);
@@ -97,44 +82,33 @@ export async function waitForRelayResult(
 }
 
 export async function isRelaySupported(chainId: Hex): Promise<boolean> {
-  return Boolean(await getRelayUrl(chainId));
-}
-
-async function pollResult(
-  url: string,
-  headers: HeadersInit = {},
-): Promise<RelayWaitResponse> {
-  log('Polling request', url);
-
-  const response = await getFetchWithTimeout()(url, { headers });
-
-  log('Polling response', response);
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-
-    throw new Error(
-      `Failed to fetch relay transaction status: ${response.status} - ${errorBody}`,
-    );
-  }
-
-  const data = await response.json();
-  const transaction = data?.transactions[0];
-  const { hash: transactionHash, status } = transaction || {};
-
-  return {
-    status,
-    transactionHash,
-  };
-}
-
-async function getRelayUrl(chainId: Hex): Promise<string | undefined> {
   const networkData = await getSentinelNetworkFlags(chainId);
 
   if (!networkData?.relayTransactions) {
     log('Chain is not supported', chainId);
-    return undefined;
+    return false;
   }
 
-  return buildUrl(networkData.network);
+  return true;
+}
+
+async function pollResult(
+  chainId: Hex,
+  uuid: string,
+): Promise<RelayWaitResponse> {
+  log('Polling request', chainId, uuid);
+
+  const { transactions } = await getSentinelApiMessenger().call(
+    'SentinelApiService:getSmartTransaction',
+    { chainId, uuid },
+  );
+
+  log('Polling response', transactions);
+
+  const transaction = transactions[0];
+
+  return {
+    status: transaction?.status as string,
+    transactionHash: transaction?.hash as Hex | undefined,
+  };
 }

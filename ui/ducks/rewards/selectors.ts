@@ -10,9 +10,6 @@ import {
 export const selectRewardsModalOpen = (state: MetaMaskReduxState) =>
   state.rewards.rewardsModalOpen;
 
-export const selectOnboardingReferralCode = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingReferralCode;
-
 export const selectOptinAllowedForGeo = (state: MetaMaskReduxState) =>
   state.rewards.optinAllowedForGeo;
 
@@ -35,27 +32,15 @@ export const selectSeasonStatus = (state: MetaMaskReduxState) =>
 export const selectSeasonStatusError = (state: MetaMaskReduxState) =>
   state.rewards.seasonStatusError;
 
+/**
+ * Whether rewards (including onboarding) is available.
+ *
+ * Matches mobile: rewards follows basic functionality (`useExternalServices`)
+ * and is not gated by a remote feature flag.
+ */
 export const selectRewardsEnabled = createSelector(
-  getRemoteFeatureFlags,
   getUseExternalServices,
-  (remoteFeatureFlags, useExternalServices): boolean => {
-    const rewardsFeatureFlag = remoteFeatureFlags?.rewardsEnabled as
-      | VersionGatedFeatureFlag
-      | boolean
-      | undefined;
-
-    const resolveFlag = (flag: unknown): boolean => {
-      if (typeof flag === 'boolean') {
-        return flag;
-      }
-      return Boolean(
-        validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
-      );
-    };
-
-    const featureFlagEnabled = resolveFlag(rewardsFeatureFlag);
-    return featureFlagEnabled && Boolean(useExternalServices);
-  },
+  (useExternalServices): boolean => Boolean(useExternalServices),
 );
 
 export const selectErrorToast = (state: MetaMaskReduxState) =>

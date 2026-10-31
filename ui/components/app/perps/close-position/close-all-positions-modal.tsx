@@ -88,21 +88,35 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   const symbolNotionalPairs = useMemo(() => {
     const map = new Map<string, number>();
     for (const pos of positions) {
-      const notional = getPerpsNotionalUsd({ usdAmount: pos.positionValue });
+      let notional: number;
+      try {
+        notional = getPerpsNotionalUsd({
+          usdAmount: pos.positionValue,
+          allowEmpty: false,
+        });
+      } catch (error) {
+        if (error instanceof RangeError) {
+          return undefined;
+        }
+        throw error;
+      }
       map.set(pos.symbol, (map.get(pos.symbol) ?? 0) + notional);
     }
     return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
   }, [positions]);
 
   const symbolNotionalKey = useMemo(
-    () => JSON.stringify(symbolNotionalPairs),
+    () => JSON.stringify(symbolNotionalPairs ?? []),
     [symbolNotionalPairs],
   );
+  const hasInvalidNotional = symbolNotionalPairs === undefined;
 
   const [rawProtocolFees, setRawProtocolFees] = useState(0);
   const [rawMetamaskFees, setRawMetamaskFees] = useState(0);
   const [fallbackMetamaskFees, setFallbackMetamaskFees] = useState(0);
-  const [isLoadingFees, setIsLoadingFees] = useState(positions.length > 0);
+  const [isLoadingFees, setIsLoadingFees] = useState(
+    !hasInvalidNotional && positions.length > 0,
+  );
   const feeRequestId = useRef(0);
   const feeFetchKey = isOpen ? symbolNotionalKey : '';
   const [prevFeeFetchKey, setPrevFeeFetchKey] = useState(feeFetchKey);
@@ -123,7 +137,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   );
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen || hasInvalidNotional) {
       return undefined;
     }
 
@@ -197,7 +211,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [isOpen, symbolNotionalKey]);
+  }, [isOpen, symbolNotionalKey, hasInvalidNotional]);
 
   const estimatedFees = useMemo(() => {
     // Controller rates are resolved; discount only local fallback estimates.
@@ -232,7 +246,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     [roundedMargin, roundedFees],
   );
 
-  const isSubmitDisabled = isSubmitting || positions.length === 0;
+  const isSubmitDisabled =
+    isSubmitting || positions.length === 0 || hasInvalidNotional;
+  const shouldShowFeePlaceholder = isLoadingFees || hasInvalidNotional;
 
   return (
     <Modal
@@ -332,7 +348,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-fees-value"
                 >
-                  {isLoadingFees ? '--' : `-${formatFiat(roundedFees)}`}
+                  {shouldShowFeePlaceholder
+                    ? '--'
+                    : `-${formatFiat(roundedFees)}`}
                 </Text>
               </Box>
 
@@ -354,7 +372,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-receive-value"
                 >
-                  {isLoadingFees
+                  {shouldShowFeePlaceholder
                     ? '--'
                     : formatFiat(Math.max(youWillReceive, 0))}
                 </Text>

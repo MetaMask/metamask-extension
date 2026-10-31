@@ -323,6 +323,18 @@ export type AppStateControllerAddMusdConversionDismissedCtaKeyAction = {
 };
 
 /**
+ * Adds a token whose Money earn banner on token details was dismissed, so
+ * the banner stays hidden for it.
+ *
+ * @param key - Key in `chainId:address` format, both lowercased (e.g.
+ * "0x1:0xa0b86991...").
+ */
+export type AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction = {
+  type: `AppStateController:addMoneyEarnBannerDismissedTokenKey`;
+  handler: AppStateController['addMoneyEarnBannerDismissedTokenKey'];
+};
+
+/**
  * Sets the product tour to be shown to the user
  *
  * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
@@ -626,6 +638,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPerpsTabBadgeSeenAction
   | AppStateControllerSetMusdConversionEducationSeenAction
   | AppStateControllerAddMusdConversionDismissedCtaKeyAction
+  | AppStateControllerAddMoneyEarnBannerDismissedTokenKeyAction
   | AppStateControllerSetProductTourAction
   | AppStateControllerSetCurrentExtensionPopupIdAction
   | AppStateControllerSetTrezorModelAction

@@ -77,10 +77,7 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
     }
 
     try {
-      await submitRequestToBackground<void>('messengerCall', [
-        'QrSyncController:submitOtp',
-        [joined],
-      ]);
+      await submitRequestToBackground('QrSyncController:submitOtp', [joined]);
     } catch {
       setIsError(true);
     }
