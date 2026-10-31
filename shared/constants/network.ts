@@ -3,6 +3,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { BtcScope, SolScope, TrxScope, XlmScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import {
+  CaipAssetType,
   CaipChainId,
   Hex,
   hexToNumber,
@@ -306,6 +307,8 @@ export const SOMNIA_DISPLAY_NAME = 'Somnia';
  */
 export const ARC_USDC_TOKEN_ADDRESS =
   '0x3600000000000000000000000000000000000000';
+export const ARC_NATIVE_ASSET_ID: CaipAssetType = 'eip155:5042/slip44:5042';
+export const ARC_ERC20_USDC_ASSET_ID: CaipAssetType = `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}`;
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
