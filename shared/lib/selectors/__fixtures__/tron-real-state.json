@@ -1,0 +1,288 @@
+{
+  "accountId": "9bd32610-79ae-48d1-9b87-8c55262317e0",
+  "account": {
+    "id": "9bd32610-79ae-48d1-9b87-8c55262317e0",
+    "address": "TFAmuhBHyxYmkEcLTKsP6Mh8oZWkMaZR27",
+    "type": "tron:eoa",
+    "options": {
+      "entropy": {
+        "type": "mnemonic",
+        "id": "01KQTCH2K3M6YVX450K1KC18KY",
+        "derivationPath": "m/44'/195'/0'/0/8",
+        "groupIndex": 8
+      },
+      "exportable": true,
+      "entropySource": "01KQTCH2K3M6YVX450K1KC18KY",
+      "index": 8,
+      "addressType": "tron:eoa",
+      "scope": "tron:728126428",
+      "groupIndex": 8
+    },
+    "scopes": [
+      "tron:728126428",
+      "tron:3448148188",
+      "tron:2494104990"
+    ],
+    "methods": [
+      "signMessage",
+      "signTransaction"
+    ],
+    "metadata": {
+      "name": "",
+      "importTime": 1777928284710,
+      "lastSelected": 0,
+      "keyring": {
+        "type": "snap"
+      },
+      "snap": {
+        "id": "npm:@metamask/tron-wallet-snap"
+      }
+    }
+  },
+  "unified": {
+    "assetsBalance": {
+      "tron:728126428/slip44:195": {
+        "amount": "100.436287"
+      },
+      "tron:728126428/slip44:195-in-lock-period": {
+        "amount": "0"
+      },
+      "tron:728126428/slip44:195-ready-for-withdrawal": {
+        "amount": "0"
+      },
+      "tron:728126428/slip44:195-staked-for-bandwidth": {
+        "amount": "0"
+      },
+      "tron:728126428/slip44:195-staked-for-energy": {
+        "amount": "2"
+      },
+      "tron:728126428/slip44:195-staking-rewards": {
+        "amount": "0.002938"
+      },
+      "tron:728126428/slip44:bandwidth": {
+        "amount": "332"
+      },
+      "tron:728126428/slip44:energy": {
+        "amount": "5"
+      },
+      "tron:728126428/slip44:maximum-bandwidth": {
+        "amount": "600"
+      },
+      "tron:728126428/slip44:maximum-energy": {
+        "amount": "19"
+      },
+      "tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t": {
+        "amount": "14.815299"
+      },
+      "tron:728126428/trc20:TUFonyWZ4Tza5MzgDj6g2u5rfdGoRVYG7g": {
+        "amount": "0"
+      }
+    },
+    "assetsInfo": {
+      "tron:728126428/slip44:195": {
+        "aggregators": [],
+        "decimals": 6,
+        "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png",
+        "name": "TRON",
+        "occurrences": 100,
+        "symbol": "TRX",
+        "type": "native"
+      },
+      "tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t": {
+        "decimals": 6,
+        "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png",
+        "name": "Tether",
+        "symbol": "USDT",
+        "type": "erc20"
+      },
+      "tron:728126428/trc20:TUFonyWZ4Tza5MzgDj6g2u5rfdGoRVYG7g": {
+        "aggregators": [
+          "coinGecko"
+        ],
+        "decimals": 18,
+        "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TUFonyWZ4Tza5MzgDj6g2u5rfdGoRVYG7g.png",
+        "name": "FoFar",
+        "occurrences": 1,
+        "symbol": "FOFAR",
+        "type": "erc20"
+      }
+    }
+  },
+  "legacy": {
+    "balances": {
+      "tron:728126428/slip44:195": {
+        "amount": "0",
+        "unit": "TRX"
+      },
+      "tron:728126428/slip44:195-staked-for-bandwidth": {
+        "amount": "0",
+        "unit": "sTRX-BANDWIDTH"
+      },
+      "tron:728126428/slip44:195-staked-for-energy": {
+        "amount": "0",
+        "unit": "sTRX-ENERGY"
+      },
+      "tron:728126428/slip44:bandwidth": {
+        "amount": "0",
+        "unit": "BANDWIDTH"
+      },
+      "tron:728126428/slip44:energy": {
+        "amount": "0",
+        "unit": "ENERGY"
+      },
+      "tron:728126428/slip44:maximum-bandwidth": {
+        "amount": "0",
+        "unit": "MAX-BANDWIDTH"
+      },
+      "tron:728126428/slip44:maximum-energy": {
+        "amount": "0",
+        "unit": "MAX-ENERGY"
+      }
+    },
+    "assetsMetadata": {
+      "tron:728126428/slip44:195": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Tron",
+        "symbol": "TRX",
+        "units": [
+          {
+            "decimals": 6,
+            "name": "Tron",
+            "symbol": "TRX"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-in-lock-period": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "In Lock Period",
+        "symbol": "trx-in-lock-period",
+        "units": [
+          {
+            "decimals": 6,
+            "name": "In Lock Period",
+            "symbol": "trx-in-lock-period"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-ready-for-withdrawal": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Ready for Withdrawal",
+        "symbol": "trx-ready-for-withdrawal",
+        "units": [
+          {
+            "decimals": 6,
+            "name": "Ready for Withdrawal",
+            "symbol": "trx-ready-for-withdrawal"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-staked-for-bandwidth": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Staked for Bandwidth",
+        "symbol": "sTRX-BANDWIDTH",
+        "units": [
+          {
+            "decimals": 6,
+            "name": "Staked for Bandwidth",
+            "symbol": "sTRX-BANDWIDTH"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-staked-for-energy": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Staked for Energy",
+        "symbol": "sTRX-ENERGY",
+        "units": [
+          {
+            "decimals": 6,
+            "name": "Staked for Energy",
+            "symbol": "sTRX-ENERGY"
+          }
+        ]
+      },
+      "tron:728126428/slip44:195-staking-rewards": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Staking Rewards",
+        "symbol": "trx-staking-rewards",
+        "units": [
+          {
+            "decimals": 6,
+            "name": "Staking Rewards",
+            "symbol": "trx-staking-rewards"
+          }
+        ]
+      },
+      "tron:728126428/slip44:bandwidth": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Bandwidth",
+        "symbol": "BANDWIDTH",
+        "units": [
+          {
+            "decimals": 0,
+            "name": "Bandwidth",
+            "symbol": "BANDWIDTH"
+          }
+        ]
+      },
+      "tron:728126428/slip44:energy": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Energy",
+        "symbol": "ENERGY",
+        "units": [
+          {
+            "decimals": 0,
+            "name": "Energy",
+            "symbol": "ENERGY"
+          }
+        ]
+      },
+      "tron:728126428/slip44:maximum-bandwidth": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Max Bandwidth",
+        "symbol": "MAX-BANDWIDTH",
+        "units": [
+          {
+            "decimals": 0,
+            "name": "Max Bandwidth",
+            "symbol": "MAX-BANDWIDTH"
+          }
+        ]
+      },
+      "tron:728126428/slip44:maximum-energy": {
+        "fungible": true,
+        "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png",
+        "name": "Max Energy",
+        "symbol": "MAX-ENERGY",
+        "units": [
+          {
+            "decimals": 0,
+            "name": "Max Energy",
+            "symbol": "MAX-ENERGY"
+          }
+        ]
+      },
+      "tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t": {
+        "name": "Tether",
+        "symbol": "USDT",
+        "fungible": true,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png",
+        "units": [
+          {
+            "name": "Tether",
+            "symbol": "USDT",
+            "decimals": 6
+          }
+        ]
+      }
+    }
+  }
+}
