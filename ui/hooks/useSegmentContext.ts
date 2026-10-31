@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
+import { useSelector, useStore } from 'react-redux';
 import { useLocation, matchPath } from 'react-router-dom';
 import {
   MetaMetricsPageObject,
@@ -80,4 +80,48 @@ export function useSegmentContext(): SegmentContext {
   );
 
   return useMemo(() => ({ page, referrer }), [page, referrer]);
+}
+
+/**
+ * Returns the current route pathname without subscribing to the router.
+ * The app uses a hash router, so the route lives in `window.location.hash`
+ * (e.g. `#/settings?foo=bar`).
+ *
+ * @returns The current pathname, or `/` when there is no hash route
+ */
+function getCurrentPathname(): string {
+  const [pathname] = window.location.hash.replace(/^#/u, '').split(/[?#]/u);
+  return pathname || '/';
+}
+
+/**
+ * Returns a stable function that reads the same context as `useSegmentContext`
+ * at call time, instead of subscribing the calling component to the router
+ * location and the transaction data.
+ *
+ * Prefer this in hooks that only need the context when an event is sent, so
+ * that navigating does not re-render every component that can track events.
+ *
+ * @returns A function returning the current page and referrer context
+ */
+export function useGetSegmentContext(): () => SegmentContext {
+  const store = useStore();
+
+  return useCallback(() => {
+    const matchedPath = findMatchingPath(getCurrentPathname());
+    const origin = txDataSelector(store.getState())?.origin as
+      | string
+      | undefined;
+
+    return {
+      page: matchedPath
+        ? {
+            path: matchedPath,
+            title: PATH_NAME_MAP.get(matchedPath),
+            url: matchedPath,
+          }
+        : undefined,
+      referrer: origin ? { url: origin } : undefined,
+    };
+  }, [store]);
 }
