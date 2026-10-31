@@ -6376,10 +6376,6 @@
   "musdEducationGetStarted": {
     "message": "Magsimula"
   },
-  "musdEducationHeadline": {
-    "message": "Makakuha ng $1% sa\nmga stablecoin",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "Hindi sa ngayon"
   },

@@ -6380,10 +6380,6 @@
   "musdEducationGetStarted": {
     "message": "시작하기"
   },
-  "musdEducationHeadline": {
-    "message": "스테이블 코인의\n$1% 받기",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "나중에"
   },
