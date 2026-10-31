@@ -6376,10 +6376,6 @@
   "musdEducationGetStarted": {
     "message": "Comece já"
   },
-  "musdEducationHeadline": {
-    "message": "Receba $1% em\nstablecoins",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "Agora não"
   },

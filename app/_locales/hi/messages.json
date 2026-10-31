@@ -6373,10 +6373,6 @@
   "musdEducationGetStarted": {
     "message": "शुरू करें"
   },
-  "musdEducationHeadline": {
-    "message": "स्टेबलकॉइन्स पर $1% पाएं",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "अभी नहीं"
   },

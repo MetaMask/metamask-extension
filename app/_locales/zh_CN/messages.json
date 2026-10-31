@@ -6373,10 +6373,6 @@
   "musdEducationGetStarted": {
     "message": "开始使用"
   },
-  "musdEducationHeadline": {
-    "message": "获得稳定币的 $1% 奖励",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "暂时不"
   },

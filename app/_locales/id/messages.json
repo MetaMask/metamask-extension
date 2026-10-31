@@ -6380,10 +6380,6 @@
   "musdEducationGetStarted": {
     "message": "Mulai"
   },
-  "musdEducationHeadline": {
-    "message": "Dapatkan $1% untuk\nstablecoin",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "Tidak sekarang"
   },

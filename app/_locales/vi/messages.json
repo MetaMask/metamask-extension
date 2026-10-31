@@ -6380,10 +6380,6 @@
   "musdEducationGetStarted": {
     "message": "Bắt đầu"
   },
-  "musdEducationHeadline": {
-    "message": "Nhận $1% trên\nsố lượng đồng ổn định",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "Không phải bây giờ"
   },

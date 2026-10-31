@@ -1738,6 +1738,9 @@
     "message": "$1に$2に対して承認済み",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Arcへようこそ！当社はArcチェーンのご利用を促進、確認するために、Arcチームと情報を共有する場合があります。"
+  },
   "arcUsageNoticeTitle": {
     "message": "お知らせ"
   },
@@ -1942,6 +1945,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "基本機能をオンにする"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "基本機能はオンになっています"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "設定を更新しました"
@@ -2619,6 +2625,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "このトークンシンボルは、入力されたネットワーク名またはチェーンIDと一致しません。人気のトークンの多くはシンボルが似ているため、詐欺師がそれを利用してより価値の高いトークンを送り返すように仕向ける可能性があります。続行する前にすべてを確認してください。"
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "ネットワーク情報を手動で入力",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "RPC情報を手動で入力",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "安全確保の方法をご確認ください。",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2630,6 +2644,22 @@
   "chainlistNetworkDetails": {
     "message": "シンボル：$1 · ID：$2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "ChainListには一致するものがありません",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "RPCのデータはChainListから取得します。追加する前に必ず検証を行ってください。$1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "「$1」をネットワーク名として使用する",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "「$1」をRPC URLとして使用する",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "設定で変更"
@@ -3300,6 +3330,9 @@
   "dataCollectionForMarketing": {
     "message": "マーケティング目的のデータ収集"
   },
+  "dataCollectionForMarketingDescription": {
+    "message": "当社は、関連ニュース (製品の機能、その他資料など) をお伝えできるように、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションに関するデータを収集します。"
+  },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "製品の最新情報やヒント、ニュースをメールでお届けします。最適な情報をお届けするため、お客様のやり取りに関するデータを利用する場合があります。"
   },
@@ -3349,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "モバイルで一括売却を開く"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "MetaMask Mobileではリミット注文が可能です。ご利用の際は、モバイルデバイスでこのコードをスキャンしてください。"
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "モバイルでリミット注文を開く"
   },
   "deepLinkQrPredictDescription": {
     "message": "MetaMask予測市場にアクセスするには、モバイルデバイスでQRコードをスキャンしてください。"
@@ -3434,6 +3473,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "通知ページ"
+  },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "通知設定ページ"
   },
   "deepLink_theOnboardingPage": {
     "message": "オンボーディングページ"
@@ -4250,6 +4292,10 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMaskは、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。"
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "このネットワークでは、トランザクション後もアカウントに$1 $2以上保持しておく必要があります。スマートアカウントの残高がこの準備金を下回ることはできません。",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
   "gasSponsorshipSponsorTooltip": {
     "message": "$1は、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。",
     "description": "$1 is the name of the party paying the network fee, such as a dapp."
@@ -4531,6 +4577,9 @@
   "hardwareWalletErrorRecoveryConnection4": {
     "message": "$1デバイスのロックが解除されています",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorRecoveryTitle": {
+    "message": "続行するには、以下の点をご確認ください。"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "$1デバイスのロックが解除されています",
@@ -5433,17 +5482,59 @@
   "mfaEmailEntryContinue": {
     "message": "続行"
   },
+  "mfaEmailEntryDescription": {
+    "message": "当社はメールアドレスを使用してアカウントの認証を行うほか、アカウントに関する最新情報を随時送信します。"
+  },
   "mfaEmailEntryInvalid": {
     "message": "有効なメールアドレスを入力してください."
   },
   "mfaEmailEntryPlaceholder": {
     "message": "メールアドレス"
   },
+  "mfaEmailEntryTitle": {
+    "message": "メールアドレスの認証"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "認証コードが期限切れです。新しいコードを取得してください。"
+  },
   "mfaErrorCooldown": {
     "message": "リクエストが多すぎます。少し時間をおいて、もう一度お試しください。"
   },
+  "mfaErrorEmailTaken": {
+    "message": "このアドレスはすでに使用されています。別のアドレスをお試しください。"
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "別の認証プロセスがすでに進行中です。"
+  },
   "mfaErrorGeneric": {
     "message": "問題が発生しました。もう一度お試しください。"
+  },
+  "mfaErrorInvalidPasskey": {
+    "message": "パスキーを認証できませんでした。もう一度お試しください。"
+  },
+  "mfaErrorLimitReached": {
+    "message": "この認証方法の上限回数に達しました。"
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "パスキーのリクエストがキャンセルされました。"
+  },
+  "mfaErrorSignedOut": {
+    "message": "続行するにはサインインしてください。"
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "試行回数が多すぎます。新しいコードをリクエストしてください。"
+  },
+  "mfaErrorTotpExpired": {
+    "message": "時間がかかりすぎています。アプリから最新のコードを入力してください。"
+  },
+  "mfaErrorTotpTaken": {
+    "message": "このアカウントに対する認証アプリの設定はすでに完了しています。"
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "試行回数が多すぎます。アプリに新しいコードが表示されるのを待って、もう一度お試しください。"
+  },
+  "mfaErrorUnsupported": {
+    "message": "このデバイスはこの認証方法に対応していません。"
   },
   "mfaFailureClose": {
     "message": "閉じる"
@@ -5463,26 +5554,176 @@
   "mfaIntroContinue": {
     "message": "開始"
   },
+  "mfaIntroDescription": {
+    "message": "本人確認の方法をいくつか設定します。どれかが使用できなくなっても別の方法を使用できます。"
+  },
+  "mfaIntroEmailDescription": {
+    "message": "受信箱に届く6桁のコードを取得します"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "デバイスまたはパスワードマネージャーを使って確認します"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "このデバイスに保存されました"
+  },
+  "mfaIntroTitle": {
+    "message": "2段階認証の設定"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Google認証システムなどのアプリから6桁のコードを取得します"
+  },
+  "mfaIntroTotpDone": {
+    "message": "認証アプリでの設定が完了しました"
+  },
   "mfaMethodEmail": {
     "message": "メールアドレス"
+  },
+  "mfaMethodPasskey": {
+    "message": "パスキー"
+  },
+  "mfaMethodTotp": {
+    "message": "認証アプリ"
+  },
+  "mfaOtpDescription": {
+    "message": "6桁のコードをメールで送信しました。コードをこの下に入力して、メールアドレスを認証してください。"
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "認証アプリを開き、6桁のコードを入力してください。"
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "6桁のコードを$1宛に送信しました。コードをこの下に入力して、メールアドレスを認証してください。",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "新しいコードを取得"
   },
   "mfaOtpResend": {
     "message": "コードを再送する"
   },
+  "mfaOtpResendIn": {
+    "message": "$1秒後にコードを再送信できます",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "新しいコードを送信しました。"
+  },
   "mfaOtpRetry": {
     "message": "もう一度お試しください"
+  },
+  "mfaOtpRetryIn": {
+    "message": "$1秒後にもう一度お試しください"
+  },
+  "mfaOtpSendIn": {
+    "message": "$1秒後に新しいコードを送信します",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "コードを送信しています..."
+  },
+  "mfaOtpTitle": {
+    "message": "認証コードを入力してください"
   },
   "mfaOtpVerifying": {
     "message": "コードを確認しています"
   },
+  "mfaPasskeyTitleSetup": {
+    "message": "パスキーの作成"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "パスキーを使用"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "認証コードを取得"
+  },
   "mfaPickerOr": {
     "message": "または"
+  },
+  "mfaPickerPasskey": {
+    "message": "パスキーで認証"
+  },
+  "mfaPickerTitle": {
+    "message": "2段階認証で本人確認"
+  },
+  "mfaPickerTotp": {
+    "message": "認証アプリを使用"
   },
   "mfaSettingsAdd": {
     "message": "追加"
   },
+  "mfaSettingsAddedOn": {
+    "message": "$1に追加"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "メール認証が削除されました"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "このメールアドレスは、このアカウントの唯一の認証方法です。削除する前に別の方法を追加してください。"
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "メールアドレスを削除することはできません"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "この認証アプリは、このアカウントの唯一の認証方法です。削除する前に別の方法を追加してください。"
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "認証アプリを削除することはできません"
+  },
+  "mfaSettingsNotice": {
+    "message": "これらの認証方法により、Money Accountのトランザクションに対する保護が強化されます。これらを使ってウォレットを復元することはできません。"
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "設定したその他の認証方法は、MetaMask Mobileアプリでのみ機能します。そちらからメールアドレスを削除してください。"
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "ここではメールアドレスを削除できません"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "メールアドレスを削除"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "メールでコードを受け取ってログインしたり、トランザクションを認証したりすることはできなくなります。"
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "この認証方法を削除できませんでした。後でもう一度お試しください。"
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "認証アプリを削除"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "認証アプリのコードを使ってMoneyのトランザクションを認証することはできなくなります。"
+  },
+  "mfaSettingsTitle": {
+    "message": "2段階認証"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "設定したその他の認証方法は、MetaMask Mobileアプリでのみ機能します。そちらから認証アプリを削除してください。"
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "ここでは認証アプリを削除できません"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "認証アプリが削除されました"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "使用目的"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Moneyのトランザクションの検証"
+  },
   "mfaTotpSetupContinue": {
     "message": "続行"
+  },
+  "mfaTotpSetupKey": {
+    "message": "セットアップキー"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "MetaMaskを認証アプリに追加するためのQRコード"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "時間がかかりすぎたため、新しいセットアップキーを作成しました。認証アプリから前のMetaMaskエントリを削除して、こちらを追加してください。"
+  },
+  "mfaTotpSetupTitle": {
+    "message": "認証アプリの設定"
   },
   "minimumReceivedExplanation": {
     "message": "トランザクションの処理中に価格が変動した場合に、お客様のスリッページ設定に基づいて受け取る最低額です。これは流動性プロバイダーから提供される見積もりであり、最終的な金額は異なる場合があります。"
@@ -5693,12 +5934,24 @@
   "moneyConvertYourCrypto": {
     "message": "仮想通貨を変換"
   },
+  "moneyEarnApy": {
+    "message": "$1%のAPYを獲得",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "最大$1のAPYを獲得"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Money Accountに$1を追加すると、1年間で最大$2の収益が得られます。",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
   },
   "moneyEarnBannerCta": {
     "message": "$1の追加",
     "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Money Accountに$1を追加しよう—ロックアップも最低要件もありません。",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
   },
   "moneyEarnBannerTitleNoApy": {
     "message": "Money Accountで収益化",
@@ -5740,6 +5993,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Money Accountに入金して、残高が最大$1のAPYで増えていく様子を眺めましょう。"
+  },
+  "moneyGetApy": {
+    "message": "$1のAPYを獲得",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "表示されている利率は、現在の年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
@@ -6123,10 +6380,6 @@
   "musdEducationGetStarted": {
     "message": "利用を開始する"
   },
-  "musdEducationHeadline": {
-    "message": "ステーブルコインで\n$1%をゲット",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "後で"
   },
@@ -6312,6 +6565,9 @@
   "networkNameSolana": {
     "message": "Solana"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkNameTron": {
     "message": "Tron"
   },
@@ -6376,6 +6632,10 @@
   },
   "newCustomTokenAdded": {
     "message": "「$1」が追加されました！"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "OpenSeaを使ってNFTを表示するには、$1。",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "設定 > 資産"
@@ -7528,6 +7788,10 @@
   "perpsAbout": {
     "message": "基本情報"
   },
+  "perpsAboutAsset": {
+    "message": "$1について",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "アクティビティ"
   },
@@ -7868,6 +8132,13 @@
   "perpsInsufficientMargin": {
     "message": "この注文に十分な証拠金がありません。"
   },
+  "perpsIocCancel": {
+    "message": "注文が$1%のスリッページ許容範囲内では約定しませんでした。リミット注文を試すか、スリッページを調整してください。",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "注文がスリッページ許容範囲内では約定しませんでした。リミット注文を試すか、スリッページを調整してください。"
+  },
   "perpsKeepPositions": {
     "message": "ポジションをキープ"
   },
@@ -8123,6 +8394,10 @@
   "perpsPositions": {
     "message": "ポジション"
   },
+  "perpsPriceMoved": {
+    "message": "価格が$1%変動し、$2%のスリッページ許容範囲を超過しました。更新された価格を確認し、もう一度お試しください。",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
   "perpsProducts": {
     "message": "商品",
     "description": "Heading of the Perps tab section listing market categories as chips"
@@ -8132,6 +8407,10 @@
   },
   "perpsReadMore": {
     "message": "続きを表示"
+  },
+  "perpsReadMoreAbout": {
+    "message": "$1について詳細を読む",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "最近のアクティビティ"
@@ -8183,6 +8462,10 @@
   "perpsServiceInterruptionContactSupport": {
     "message": "サポートにお問い合わせ",
     "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "現在、一部のサービスを一時的にご利用いただけません。$1または$2。",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "よくある質問 (FAQ)でオプションをご確認ください",
@@ -12160,6 +12443,18 @@
   "tronDailyResourcesDescription": {
     "message": "これは、ステーキングされたTRXに基づく1日の利用可能量です。毎日$1帯域幅を無料で利用できます。",
     "description": "$1 is the maximum bandwidth value"
+  },
+  "tronDailyResourcesLoading": {
+    "message": "日々のリソース使用状況を読み込んでいます…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "エネルギーと帯域幅の情報が一時的に利用できません。情報は自動で更新されます。",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "リソースを読み込めませんでした",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
   },
   "tronEnergy": {
     "message": "エネルギー"

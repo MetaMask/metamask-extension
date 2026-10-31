@@ -6373,10 +6373,6 @@
   "musdEducationGetStarted": {
     "message": "Erste Schritte"
   },
-  "musdEducationHeadline": {
-    "message": "Erhalten Sie $1 % \nauf Stablecoins",
-    "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
-  },
   "musdEducationNotNow": {
     "message": "Nicht jetzt"
   },
