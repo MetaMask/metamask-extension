@@ -14,6 +14,7 @@ import type {
 } from '../../../../shared/constants/benchmarks';
 import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
 import type { Driver } from '../../webdriver/driver';
+import { captureHostProvenance } from './host-provenance';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -336,6 +337,7 @@ export function convertTimerStatisticsToBenchmarkResults(
 
   const hasTrimmedCounts = Object.keys(trimmedCount).length > 0;
   const hasOutliers = Object.keys(outliers).length > 0;
+  const host = captureHostProvenance();
 
   return {
     testTitle,
@@ -351,6 +353,7 @@ export function convertTimerStatisticsToBenchmarkResults(
     p95,
     ...(hasTrimmedCounts && { trimmedCount }),
     ...(hasOutliers && { outliers }),
+    host,
     ...(webVitals && { webVitals }),
   };
 }
@@ -535,6 +538,7 @@ export async function runPageLoadBenchmark(
     p95,
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
+    host: captureHostProvenance(),
     ...(webVitals && { webVitals }),
   };
 }
