@@ -175,6 +175,9 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/ramps-controller@^26.0.1": "npm:@metamask-previews/ramps-controller@28.1.0-preview-72009a9",
+    "@metamask/ramps-controller@^27.2.0": "npm:@metamask-previews/ramps-controller@28.1.0-preview-72009a9",
+    "@metamask/base-data-service@^2.1.0": "npm:@metamask-previews/base-data-service@2.1.0-preview-72009a9",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^37.1.1",
