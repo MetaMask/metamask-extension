@@ -32,4 +32,21 @@ describe('rampsQuotesKeys', () => {
       rampsQuotesKeys.detail({ ...base, forceRefresh: true }),
     );
   });
+
+  it('changes when provider or payment method changes', () => {
+    const base = {
+      assetId: 'eip155:1/slip44:60',
+      amount: 100,
+      walletAddress: '0xabc',
+      paymentMethods: ['credit_debit_card'],
+      providers: ['transak'],
+    };
+
+    expect(rampsQuotesKeys.detail(base)).not.toEqual(
+      rampsQuotesKeys.detail({ ...base, providers: ['moonpay'] }),
+    );
+    expect(rampsQuotesKeys.detail(base)).not.toEqual(
+      rampsQuotesKeys.detail({ ...base, paymentMethods: ['bank_transfer'] }),
+    );
+  });
 });
