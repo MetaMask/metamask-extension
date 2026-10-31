@@ -7364,16 +7364,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/approval-controller@npm:10.0.0"
+"@metamask/approval-controller@npm:@metamask-previews/approval-controller@10.0.0-preview-35f016caa":
+  version: 10.0.0-preview-35f016caa
+  resolution: "@metamask-previews/approval-controller@npm:10.0.0-preview-35f016caa"
   dependencies:
-    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.12.0"
-    nanoid: "npm:^3.3.8"
-  checksum: 10/8a1a0ee2f449699e1d4050b88ff210fc00d393c671c252b2d610adbbe49c78f39e76ca86da598079ea732a1d191d9ab40eadac231550235c4f6cae9da5af7d1a
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/utils": "npm:^12.0.1"
+    nanoid: "npm:^6.0.2"
+  checksum: 10/1a08ab904a0e9c2b329389bc0c63fd3465452a082c0f421776bf664cad61a52bb9d7a03f2558e1ab6740f0abfefbe2e7e46a2eaf9f83370a2ef7f769226fa5bf
   languageName: node
   linkType: hard
 
@@ -8341,6 +8341,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-provider@npm:@metamask-previews/eth-json-rpc-provider@7.0.0-preview-35f016caa":
+  version: 7.0.0-preview-35f016caa
+  resolution: "@metamask-previews/eth-json-rpc-provider@npm:7.0.0-preview-35f016caa"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^11.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/utils": "npm:^12.0.1"
+    "@types/lodash": "npm:^4.17.27"
+    lodash-es: "npm:^4.18.1"
+    nanoid: "npm:^6.0.2"
+  checksum: 10/2b0d8a87055e6828284103701630501d917e9c9a4af9b8a51cfebc2136c38ca094986b051b5d69c1a9fa53b10e1ee97ccff89161f6b2e7a123eea7a8740def4c
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-provider@npm:^4.1.5":
   version: 4.1.8
   resolution: "@metamask/eth-json-rpc-provider@npm:4.1.8"
@@ -8376,20 +8390,6 @@ __metadata:
     "@metamask/utils": "npm:^11.9.0"
     nanoid: "npm:^3.3.8"
   checksum: 10/06078a9e43b02f35387a3ccfe09733c7eeac2a732dee1f1be53254fc05719e230776b8512b13702a178fb692088fc7da46f727c5064550d65f51ac59d44f9d83
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-provider@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/eth-json-rpc-provider@npm:7.0.0"
-  dependencies:
-    "@metamask/json-rpc-engine": "npm:^11.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.12.0"
-    "@types/lodash": "npm:^4.14.191"
-    lodash-es: "npm:^4.17.21"
-    nanoid: "npm:^3.3.8"
-  checksum: 10/77e270fffbafeb3742d17c382a5d24a315a1e2b218f5edf5fece0aea12c3ae120a1f2c9e230b5076979b45b44840734d935d5b6a5c50fbae56bc3d2d95063140
   languageName: node
   linkType: hard
 
@@ -9771,7 +9771,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^14.0.0, @metamask/permission-controller@npm:^14.1.0":
+"@metamask/permission-controller@npm:@metamask-previews/permission-controller@14.0.0-preview-35f016caa":
+  version: 14.0.0-preview-35f016caa
+  resolution: "@metamask-previews/permission-controller@npm:14.0.0-preview-35f016caa"
+  dependencies:
+    "@metamask/approval-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/json-rpc-engine": "npm:^11.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/utils": "npm:^12.0.1"
+    "@types/deep-freeze-strict": "npm:^1.1.0"
+    deep-freeze-strict: "npm:^1.1.1"
+    immer: "npm:^11.1.18"
+    nanoid: "npm:^6.0.2"
+  checksum: 10/1d9d61ba22f1b70a41767d7bf3707cb696699579108caf77c34b611075d9470be2fa3920b318dada5cbad1b903069a377e273b982744f7ec10ea1e4660d28ec4
+  languageName: node
+  linkType: hard
+
+"@metamask/permission-controller@npm:^14.0.0":
   version: 14.1.0
   resolution: "@metamask/permission-controller@npm:14.1.0"
   dependencies:
@@ -9791,15 +9810,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-log-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/permission-log-controller@npm:5.0.0"
+"@metamask/permission-log-controller@npm:@metamask-previews/permission-log-controller@6.0.0-preview-35f016caa":
+  version: 6.0.0-preview-35f016caa
+  resolution: "@metamask-previews/permission-log-controller@npm:6.0.0-preview-35f016caa"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/json-rpc-engine": "npm:^10.1.1"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.8.1"
-  checksum: 10/99d87eab0d2c35a3abdaaed5222af59b24f3a00091fa428b8fc0b8275a33d4e2ce085fc57c256bff9dc420fcefb8b7f1319749dd58a1919d89bf5fb38da29896
+    "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/json-rpc-engine": "npm:^11.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^12.0.1"
+  checksum: 10/41291df162b958a23f6b89b029d41b48aa0d517bd53c9952815a99b4ea26fbeb0bfe01ac7cffd13c84bd4641b7df35d6b550ebfbd2894a25845197572b0f3548
   languageName: node
   linkType: hard
 
@@ -18111,10 +18130,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.162, @types/lodash@npm:^4.14.191, @types/lodash@npm:^4.17.20":
+"@types/lodash@npm:^4.14.162, @types/lodash@npm:^4.17.20":
   version: 4.17.25
   resolution: "@types/lodash@npm:4.17.25"
   checksum: 10/f786e05664439cc8d327fd97c62c060d81b3c4ed52127d01fbc926139e1a669c1554bf3cd0dbb43f8fcc7d9b5c6c23c543cc36de8dc815c9f289ea852b26ebd6
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.17.27":
+  version: 4.17.27
+  resolution: "@types/lodash@npm:4.17.27"
+  checksum: 10/ae02ef86268664e5a024fd1a7d907b676fe7cd9b58b52bdddc7c42c7ffb3d05e869f6bd13e3e6cbb4001cac1d072f5e2a6e5deed2ef7dc62d7853fc735a077be
   languageName: node
   linkType: hard
 
@@ -37192,6 +37218,15 @@ __metadata:
   bin:
     nanoid: bin/nanoid.cjs
   checksum: 10/b19641487fc25325189175226a4b9fcc8da39989c6a39fd35921802158d6b1725d59d8454a4e30643d2bb4837382cac11ee129417282678a67f8394b31c228d9
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "nanoid@npm:6.0.2"
+  bin:
+    nanoid: bin/nanoid.js
+  checksum: 10/c555e99171c0988195d71ba22a7acd96f18c767b4a1db5c2a3d75ebf9c302a269fcda3c22e2d6022f3e5a345dcf7188a36f88c6d5fffc2828c68a1b7f9996daf
   languageName: node
   linkType: hard
 

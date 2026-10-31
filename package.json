@@ -175,6 +175,11 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/approval-controller@^10.0.0": "npm:@metamask-previews/approval-controller@10.0.0-preview-35f016caa",
+    "@metamask/eth-json-rpc-provider@^7.0.0": "npm:@metamask-previews/eth-json-rpc-provider@7.0.0-preview-35f016caa",
+    "@metamask/permission-controller@^14.0.0": "npm:@metamask-previews/permission-controller@14.0.0-preview-35f016caa",
+    "@metamask/permission-controller@^14.1.0": "npm:@metamask-previews/permission-controller@14.0.0-preview-35f016caa",
+    "@metamask/permission-log-controller@^5.0.0": "npm:@metamask-previews/permission-log-controller@6.0.0-preview-35f016caa",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^37.1.1",
