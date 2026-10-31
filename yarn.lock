@@ -10175,34 +10175,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:^26.0.1":
-  version: 26.1.0
-  resolution: "@metamask/ramps-controller@npm:26.1.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^10.0.0"
-    "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^33.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
-    bignumber.js: "npm:^9.1.2"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/001934849359917e1cebe8bc590f4159ece749bf20e94787b890ecbe10fdc4d7de9812a04910152fc288d2065681cf0b73963f9ce52d255c86a5012419285d6b
-  languageName: node
-  linkType: hard
-
-"@metamask/ramps-controller@npm:^27.2.0":
-  version: 27.2.0
-  resolution: "@metamask/ramps-controller@npm:27.2.0"
+"@metamask/ramps-controller@npm:@metamask-previews/ramps-controller@28.1.0-preview-c1f9a0f":
+  version: 28.1.0-preview-c1f9a0f
+  resolution: "@metamask-previews/ramps-controller@npm:28.1.0-preview-c1f9a0f"
   dependencies:
     "@metamask/base-controller": "npm:^10.1.0"
+    "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/profile-sync-controller": "npm:^36.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.1"
     bignumber.js: "npm:^9.1.2"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/a7de8100934b84cf3e7a8a747bc7f813bf835501c5db1ca4e0644cb10514b4263eb1c08bcca9534868a58a8c07d1b48c46ff72018eb4757d62ca6e9996d5f8e9
+  checksum: 10/3b380322855b81be1ad890078c6d4d77115fe47843095ca7d6b54ab371c00585ea5f7bdfda17d248de1e755fc618730b7c8c67ba76d042fff97bfee3424cdffd
   languageName: node
   linkType: hard
 

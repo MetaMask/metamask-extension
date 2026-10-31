@@ -180,6 +180,8 @@
     "@metamask/network-controller": "^37.1.1",
     "@metamask/transaction-controller": "72.3.0",
     "@metamask/bridge-controller@npm:^82.0.2": "82.0.2",
+    "@metamask/ramps-controller@npm:^26.0.1": "npm:@metamask-previews/ramps-controller@28.1.0-preview-c1f9a0f",
+    "@metamask/ramps-controller@npm:^27.2.0": "npm:@metamask-previews/ramps-controller@28.1.0-preview-c1f9a0f",
     "reselect@npm:^5.1.1": "5.1.1",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
     "follow-redirects": "^1.16.1",
