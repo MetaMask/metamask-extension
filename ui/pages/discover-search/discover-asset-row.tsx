@@ -12,7 +12,6 @@ import {
   BoxFlexDirection,
   ButtonBase,
   FontWeight,
-  IconName,
   Text,
   TextColor,
   TextVariant,
@@ -123,24 +122,8 @@ const getSecurityResultType = (securityData: TrendingAsset['securityData']) =>
   securityData?.resultType ??
   (securityData as { type?: SecurityResultType } | undefined)?.type;
 
-const getDiscoverSearchSecurityBadge = (
-  resultType: SecurityResultType | undefined,
-  t: SecurityTrustTranslate,
-) => {
-  const badge = getSecurityTrustBadgeConfig(resultType, t);
-
-  if (badge && (resultType === 'Warning' || resultType === 'Spam')) {
-    return {
-      ...badge,
-      icon: IconName.Danger,
-    };
-  }
-
-  return badge;
-};
-
 /**
- * Discover row for crypto / stocks: icon, name, security badge, cap·vol, price, 24h %.
+ * Discover row for crypto / stocks: icon, name, security badge, symbol·cap·vol, price, 24h %.
  * @param options0
  * @param options0.asset
  * @param options0.onPress
@@ -199,10 +182,13 @@ export const DiscoverAssetRow = ({
       ),
       displayCurrency,
     );
-    return `${cap} ${t('discoverSearchCap')} \u00B7 ${vol} ${t('discoverSearchVol')}`;
+    const metrics = `${cap} ${t('discoverSearchCap')} \u00B7 ${vol} ${t('discoverSearchVol')}`;
+
+    return asset.symbol ? `${asset.symbol} \u00B7 ${metrics}` : metrics;
   }, [
     asset.aggregatedUsdVolume,
     asset.marketCap,
+    asset.symbol,
     displayCurrency,
     shouldConvertUsd,
     t,
@@ -227,10 +213,7 @@ export const DiscoverAssetRow = ({
 
   const securityBadge = useMemo(
     () =>
-      getDiscoverSearchSecurityBadge(
-        getSecurityResultType(asset.securityData),
-        t,
-      ),
+      getSecurityTrustBadgeConfig(getSecurityResultType(asset.securityData), t),
     [asset.securityData, t],
   );
 

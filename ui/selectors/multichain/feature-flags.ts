@@ -150,6 +150,41 @@ export const getIsChainlistEnabled = createSelector(
 );
 
 /**
+ * Get the state of the `extensionUxChainlistV2` remote feature flag.
+ * LaunchDarkly key: `extension-ux-chainlist-v-2`.
+ *
+ * When enabled, the add-network name field suggests Chainlist networks.
+ * When disabled, Add from Chainlist stays the button behind
+ * `extensionUxChainlist`.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled, false otherwise.
+ */
+export const getIsChainlistV2Enabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(remoteFeatureFlags.extensionUxChainlistV2, false),
+);
+
+/**
+ * Get the state of the `extensionUxFullscreenRedesign` remote feature flag.
+ * LaunchDarkly key: `extension-ux-fullscreen-redesign`.
+ *
+ * When enabled, wide viewports use the fullscreen design (side nav).
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled, false otherwise.
+ */
+export const getIsFullscreenRedesignEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(
+      remoteFeatureFlags.extensionUxFullscreenRedesign,
+      false,
+    ),
+);
+
+/**
  * Get the state of the `extensionTrustAndSecurityTdp` remote feature flag.
  * LD key: `extension-trust-and-security-tdp` (camelCased in extension state).
  *

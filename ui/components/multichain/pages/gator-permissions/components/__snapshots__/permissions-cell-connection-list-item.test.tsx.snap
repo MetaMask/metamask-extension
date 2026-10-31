@@ -60,7 +60,7 @@ exports[`PermissionsCellConnectionListItem renders correctly with required props
               class="mm-box mm-box--display-flex mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--rounded-full"
+                class="mm-box mm-box--display-flex mm-box--rounded-full"
                 style="margin-left: 0px;"
               >
                 <div
@@ -74,7 +74,7 @@ exports[`PermissionsCellConnectionListItem renders correctly with required props
                 </div>
               </div>
               <div
-                class="mm-box mm-box--rounded-full"
+                class="mm-box mm-box--display-flex mm-box--rounded-full"
                 style="margin-left: -8px;"
               >
                 <div

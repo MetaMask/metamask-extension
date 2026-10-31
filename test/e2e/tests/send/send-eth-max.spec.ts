@@ -14,8 +14,8 @@ import { createInternalTransactionWithMaxAmount } from '../../page-objects/flows
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { login } from '../../page-objects/flows/login.flow';
-import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
 import { mockEthPrices } from '../tokens/utils/mocks';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -96,8 +96,14 @@ describe('Send ETH - Max Amount', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkGasFeeFiat('$0.75');
 
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
-        await validateTransaction(driver, '-24.99945808');
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
+        const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-24.99945808 ETH');
       },
     );
   });
@@ -143,9 +149,15 @@ describe('Send ETH - Max Amount', function () {
           await transactionConfirmation.checkSendAmountConversion('$42,494.90');
 
           // confirms the transaction
-          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'disappear',
+          });
 
-          await validateTransaction(driver, '-24.997');
+          const activityTab = new ActivityTab(driver);
+          await activityTab.goToActivityList();
+          await activityTab.checkTxAction({ action: 'Sent ETH' });
+          await activityTab.checkTxAmountInActivity('-24.997 ETH');
         },
       );
     });
@@ -187,9 +199,15 @@ describe('Send ETH - Max Amount', function () {
           await transactionConfirmation.checkSendAmountConversion('$42,499.27');
 
           // confirms the transaction
-          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'disappear',
+          });
 
-          await validateTransaction(driver, '-24.9996');
+          const activityTab = new ActivityTab(driver);
+          await activityTab.goToActivityList();
+          await activityTab.checkTxAction({ action: 'Sent ETH' });
+          await activityTab.checkTxAmountInActivity('-24.9996 ETH');
         },
       );
     });
@@ -261,8 +279,14 @@ describe('Send ETH - Max Amount', function () {
         await transactionConfirmation.checkSendAmountConversion('$42,498.19');
 
         // confirms the transaction
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
-        await validateTransaction(driver, '-24.9989');
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
+        const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-24.9989 ETH');
       },
     );
   });
@@ -299,9 +323,15 @@ describe('Send ETH - Max Amount', function () {
         await sendPage.pressContinueButton();
 
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'disappear',
+        });
 
-        await validateTransaction(driver, '-10');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-10 ETH');
       },
     );
   });

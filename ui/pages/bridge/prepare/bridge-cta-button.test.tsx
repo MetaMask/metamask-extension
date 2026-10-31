@@ -60,6 +60,24 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
+
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
+
 jest.mock(
   '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked',
 );
@@ -73,11 +91,16 @@ const baseHardwareWalletConfig = {
 };
 
 setBackgroundConnection({
-  submitTx: jest.fn(),
-  setEnabledAllPopularNetworks: jest.fn(),
+  messengerCall: jest.fn((actionType: string) => {
+    if (actionType === 'BridgeController:getLocation') {
+      return Promise.resolve('Main View');
+    }
+    if (actionType === 'BridgeController:resetState') {
+      return Promise.resolve(mockResetState());
+    }
+    return Promise.resolve(undefined);
+  }),
   getStatePatches: jest.fn(),
-  getLocation: jest.fn().mockResolvedValue('Main View'),
-  resetState: () => mockResetState(),
 } as never);
 
 describe('BridgeCTAButton', () => {
@@ -87,7 +110,7 @@ describe('BridgeCTAButton', () => {
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
@@ -899,7 +922,7 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
     expect(getByRole('button')).toMatchInlineSnapshot(`
       <button
-        class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+        class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
         data-testid="bridge-cta-button"
         role="button"
         style="box-shadow: none;"

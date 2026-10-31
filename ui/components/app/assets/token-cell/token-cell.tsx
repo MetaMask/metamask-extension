@@ -1,31 +1,16 @@
 import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useMusdCtaVisibility } from '../../../../hooks/musd';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getSafeNativeCurrencySymbol,
-  type SafeChain,
-} from '../../../multichain/networks-form/use-safe-chains';
-import { setEditedNetwork } from '../../../../store/actions';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../component-library';
+import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { MusdConvertLink } from '../../musd';
+import { MoneyTokenListCta } from '../../money/money-token-list-cta';
+import type { MoneyTokenListCta as MoneyTokenListCtaConfig } from '../../../../hooks/money/useMoneyTokenListCta';
 import type { MusdConvertLinkEntryPoint } from '../../musd/musd-events';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { useTokenDisplayInfo } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
-import { useDispatch } from '../../../../store/hooks';
 
 import {
   TokenCellPercentChange,
@@ -33,6 +18,7 @@ import {
   TokenCellSecondaryDisplay,
   TokenCellTitle,
 } from './cells';
+import { NativeTokenScamWarningModal } from './native-token-scam-warning-modal';
 
 export type TokenCellMusdOptions = {
   /** When set, enables footer convert link (subject to `useMusdCtaVisibility` / balance rules). */
@@ -47,6 +33,10 @@ export type TokenCellProps = {
   safeChains?: SafeChain[];
   /** mUSD convert surface; parent must pass an explicit analytics entry point. */
   musd?: TokenCellMusdOptions;
+  /** Money deposit CTA; takes priority over the mUSD convert link. */
+  moneyCta?: MoneyTokenListCtaConfig;
+  /** Replaces the price change, after any CTA. */
+  priceChangeOverride?: React.ReactNode;
 };
 
 export default function TokenCell({
@@ -56,15 +46,10 @@ export default function TokenCell({
   fixCurrencyToUSD = false,
   safeChains,
   musd,
+  moneyCta,
+  priceChangeOverride,
 }: TokenCellProps) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const t = useI18nContext();
   const isEvm = isEvmChainId(token.chainId);
-  const nativeCurrencySymbol = useMemo(
-    () => getSafeNativeCurrencySymbol(safeChains, token.chainId),
-    [safeChains, token.chainId],
-  );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
   const { shouldShowTokenListItemCta } = useMusdCtaVisibility();
@@ -86,6 +71,11 @@ export default function TokenCell({
     shouldShowTokenListItemCta,
   ]);
 
+  const showMoneyCta = useMemo(
+    () => Boolean(moneyCta?.shouldShow(token)),
+    [moneyCta, token],
+  );
+
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
     fixCurrencyToUSD,
@@ -104,6 +94,9 @@ export default function TokenCell({
   };
 
   const renderFooterLeft = () => {
+    if (showMoneyCta && moneyCta) {
+      return <MoneyTokenListCta cta={moneyCta} token={token} />;
+    }
     if (showMusdCta && musd?.convert) {
       return (
         <MusdConvertLink
@@ -114,7 +107,9 @@ export default function TokenCell({
         />
       );
     }
-    return <TokenCellPercentChange token={displayToken} />;
+    return (
+      priceChangeOverride ?? <TokenCellPercentChange token={displayToken} />
+    );
   };
 
   if (!token.chainId) {
@@ -151,33 +146,11 @@ export default function TokenCell({
         }
       />
       {isEvm && showScamWarningModal && (
-        <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
-              {t('nativeTokenScamWarningTitle')}
-            </ModalHeader>
-            <ModalBody marginTop={4} marginBottom={4}>
-              {t('nativeTokenScamWarningDescription', [
-                token.symbol,
-                nativeCurrencySymbol ||
-                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
-              ])}
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                variant={ButtonVariant.Secondary}
-                onClick={() => {
-                  dispatch(setEditedNetwork({ chainId: token.chainId }));
-                  navigate(NETWORKS_ROUTE);
-                }}
-                isFullWidth
-              >
-                {t('nativeTokenScamWarningConversion')}
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <NativeTokenScamWarningModal
+          token={token}
+          safeChains={safeChains}
+          onClose={() => setShowScamWarningModal(false)}
+        />
       )}
     </>
   );

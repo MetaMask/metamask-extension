@@ -6,7 +6,6 @@ import {
   ButtonVariant,
   FontWeight,
   Text,
-  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -23,7 +22,7 @@ export type MoneyActivityListProps = {
   onItemClick?: (item: MoneyActivityItem) => void;
   /** True when more Accounts API pages exist beyond the current preview. */
   hasMore?: boolean;
-  /** True while the preview is still filling and should not show empty copy. */
+  /** True while the preview is still filling and should show settling skeletons. */
   isSettling?: boolean;
 };
 
@@ -38,7 +37,10 @@ export function MoneyActivityList({
   const t = useI18nContext();
   const previewItems = items.slice(0, MAX_PREVIEW_ITEMS);
   const hasMoreItems = items.length > MAX_PREVIEW_ITEMS || hasMore;
-  const showEmptyCopy = items.length === 0 && !isSettling;
+
+  if (items.length === 0 && !isSettling) {
+    return null;
+  }
 
   return (
     <section
@@ -51,15 +53,6 @@ export function MoneyActivityList({
             {t('moneyActivity')}
           </Text>
         </div>
-        {showEmptyCopy ? (
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-            className="mt-1"
-          >
-            {t('moneyActivityPlaceholderDescription')}
-          </Text>
-        ) : null}
       </Box>
       {isSettling && items.length === 0 ? (
         <MoneyActivitySettlingSkeletons />

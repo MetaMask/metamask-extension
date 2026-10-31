@@ -57,7 +57,6 @@ export const VirtualizedList = <TItem,>({
     getItemKey: (index) =>
       keyExtractor ? keyExtractor(data[index], index) : index,
     overscan,
-    initialOffset: scrollContainerRef?.current?.scrollTop,
     ...(scrollToFn ? { scrollToFn } : {}),
     ...(enableScrollMargin ? { scrollMargin } : {}),
   });

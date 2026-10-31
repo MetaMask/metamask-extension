@@ -10,6 +10,8 @@ module.exports = {
     '<rootDir>/development/build/transforms/**/*.js',
     '<rootDir>/development/eslint-rules/**/*.js',
     '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts|mts)',
+    '<rootDir>/development/download-builds.ts',
+    '<rootDir>/development/download-builds-cli.ts',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
@@ -89,6 +91,7 @@ module.exports = {
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/release-testing-ai-analyzer/**/*.test.ts',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,
@@ -102,6 +105,10 @@ module.exports = {
   },
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    // ESM-only `@metamask` dependencies (e.g. `@metamask/eth-money-mpc-keyring`)
+    // ship only `.mjs` entry points, which Jest cannot load natively in CJS
+    // tests. Transpile them like the other transpiled ESM above.
+    '^.+\\.mjs$': 'babel-jest',
     '^.+\\.mts$': [
       'babel-jest',
       {

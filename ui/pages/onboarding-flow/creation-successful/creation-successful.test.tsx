@@ -86,7 +86,7 @@ jest.mock('../../../../shared/lib/environment', () => ({
     mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
 }));
 
-// Mock background connection to prevent "Background connection not initialized" warnings
+// Mock messenger actions to prevent "Background connection not initialized" warnings.
 const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
 const mockSetIsBackupAndSyncFeatureEnabled = jest
   .fn()
@@ -96,21 +96,22 @@ const mockSetPreference = jest.fn().mockResolvedValue(undefined);
 const mockSetUseMultiAccountBalanceChecker = jest
   .fn()
   .mockResolvedValue(undefined);
-const backgroundConnectionMock = new Proxy(
-  {
-    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
-    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
-    toggleExternalServices: mockToggleExternalServices,
-    setPreference: mockSetPreference,
-    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
-  },
-  {
-    get: (target, prop) => {
-      if (prop in target) {
-        return target[prop as keyof typeof target];
-      }
-      return jest.fn().mockResolvedValue(undefined);
-    },
+const messengerCallMock = jest.fn(
+  (actionType: string, args: unknown[] = []) => {
+    switch (actionType) {
+      case 'AppStateController:removeDeferredDeepLink':
+        return mockRemoveDeferredDeepLink(...args);
+      case 'UserStorageController:setIsBackupAndSyncFeatureEnabled':
+        return mockSetIsBackupAndSyncFeatureEnabled(...args);
+      case 'LegacyBackgroundApiService:toggleExternalServices':
+        return mockToggleExternalServices(...args);
+      case 'PreferencesController:setPreference':
+        return mockSetPreference(...args);
+      case 'PreferencesController:setUseMultiAccountBalanceChecker':
+        return mockSetUseMultiAccountBalanceChecker(...args);
+      default:
+        return Promise.resolve(undefined);
+    }
   },
 );
 
@@ -156,7 +157,10 @@ describe('Wallet Ready Page', () => {
     );
     mockUseNavigate.mockClear();
     mockTrackEvent.mockClear();
-    setBackgroundConnection(backgroundConnectionMock as never);
+    setBackgroundConnection({
+      getStatePatches: jest.fn().mockResolvedValue([]),
+      messengerCall: messengerCallMock,
+    } as never);
   });
 
   it('should render the wallet ready content if the seed phrase is backed up', () => {
@@ -189,6 +193,59 @@ describe('Wallet Ready Page', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
     );
+  });
+
+  it('renders the settings SRP backup reminder without flashing onboarding content while wallet state loads', () => {
+    const previousSearch = mockUseLocationSearch;
+    mockUseLocationSearch = '?isFromReminder=true';
+
+    try {
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: false,
+        },
+      });
+      const { queryByText, queryByTestId, getByText } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      expect(
+        getByText(messages.yourWalletIsReadyFromReminder.message),
+      ).toBeInTheDocument();
+      expect(
+        queryByText(messages.manageDefaultSettings.message),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByText(messages.yourWalletIsReady.message),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('manage-default-settings')).not.toBeInTheDocument();
+    } finally {
+      mockUseLocationSearch = previousSearch;
+    }
+  });
+
+  it('shows "Back to wallet" and navigates home from settings SRP backup reminder', async () => {
+    const previousSearch = mockUseLocationSearch;
+    mockUseLocationSearch = '?isFromReminder=true&isFromSettingsSecurity=true';
+
+    try {
+      const mockStore = configureMockStore([thunk])(mockState);
+      const { getByTestId, getByText } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      expect(getByText(messages.backToWallet.message)).toBeInTheDocument();
+      fireEvent.click(getByTestId('onboarding-complete-done'));
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    } finally {
+      mockUseLocationSearch = previousSearch;
+    }
   });
 
   it('opens learn more link in new tab when "Learn how" is clicked (from SRP backup reminder)', () => {
@@ -496,6 +553,41 @@ describe('Wallet Ready Page', () => {
           `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
         );
         expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('Side panel opened from the completion page', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockUseNavigate.mockClear();
+      (
+        useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
+      ).mockReturnValue(true);
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
+    });
+
+    it('disables the "Manage default settings" button once the side panel is open', async () => {
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])(mockState);
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      expect(getByTestId('manage-default-settings')).not.toBeDisabled();
+
+      fireEvent.click(getByTestId('onboarding-complete-done'));
+
+      await waitFor(() => {
+        expect(getByTestId('manage-default-settings')).toBeDisabled();
       });
     });
   });

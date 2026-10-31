@@ -24,7 +24,8 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           class="pb-1"
         >
           <h2
-            class="text-inherit text-s-heading-lg leading-s-heading-lg tracking-s-heading-lg md:text-l-heading-lg md:leading-l-heading-lg md:tracking-l-heading-lg font-bold font-default"
+            class="text-inherit text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            data-testid="confirm-send-amount"
           >
             0 ETH
           </h2>
@@ -498,7 +499,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
           >
             <button
               aria-label="Edit"
-              class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+              class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               data-testid="edit-gas-fee-icon"
             >
               <svg

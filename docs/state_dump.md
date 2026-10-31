@@ -7,9 +7,9 @@ In this case, a MetaMask developer will sometimes ask a user with a bug to perfo
 To take a state dump, follow these steps:
 
 1. Get the MetaMask popup to the point where it shows the bug (the developer will probably specify exactly where).
-2. Right click on the extension popup UI, and in the menu, click "Inspect". This will open the developer tools.
-3. In case it isn't already selected, click the "Console" tab in the new Developer Tools window.
-4. In the console, type this command exactly: `logState()`. This should print a bunch of JSON text into your console.
-5. Copy that printed JSON text
-6. _Optional_: Anonymize that text if you'd like (you may change all instances of an account address to another valid account address, for example) We may automate the anonymization in the future.
-7. Send that JSON text to the developer, ideally pasting it in the issue regarding the bug.
+2. Open the Hamburger menu ☰
+3. Open **Settings**, then **Privacy**.
+4. Select **Download state logs**.
+5. In the dialog, select **Download**. This downloads a JSON state-log file.
+6. _Optional_: Anonymize that file if you'd like (you may change all instances of an account address to another valid account address, for example) We may automate the anonymization in the future.
+7. Send that file to the developer, ideally attaching it to the issue regarding the bug.

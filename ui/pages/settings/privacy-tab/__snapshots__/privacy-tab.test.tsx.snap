@@ -60,7 +60,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
             Includes basic features like token details and gas settings. Keep this feature on for the best experience.  Read our 
             <a
               class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
-              href="https://consensys.io/privacy-policy/"
+              href="https://metamask.com/privacy-notice"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -171,7 +171,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
             class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"
@@ -404,13 +404,13 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
         <p
           class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          We'll use MetaMetrics to learn how you interact with our marketing communications. We may share relevant news (like product features and other materials).
+          We'll collect data on how you interact with our marketing communications, so we can share relevant news (like product features and other materials).
         </p>
       </div>
     </div>
     <div>
       <button
-        class="inline-flex items-center justify-center rounded-xl font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-error-default !bg-transparent p-0 text-left mx-4"
+        class="inline-flex items-center justify-center rounded-full font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-error-default !bg-transparent p-0 text-left mx-4"
         data-testid="delete-metametrics-data-button"
         disabled=""
         role="button"
@@ -427,7 +427,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
     />
     <div>
       <button
-        class="inline-flex items-center justify-center rounded-xl font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left mx-4"
+        class="inline-flex items-center justify-center rounded-full font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left mx-4"
         data-testid="advanced-setting-state-logs-button"
         role="button"
       >
@@ -443,7 +443,7 @@ exports[`PrivacyTab snapshot matches snapshot 1`] = `
         class="mx-4 mt-2"
       >
         <button
-          class="inline-flex items-center justify-center rounded-xl font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left"
+          class="inline-flex items-center justify-center rounded-full font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default text-text-default !bg-transparent p-0 text-left"
           data-testid="privacy-tab-export-your-data-button"
           role="button"
         >

@@ -10,6 +10,7 @@ import {
   MUSD_TOKEN,
   MUSD_TOKEN_ADDRESS,
 } from '../../../components/app/musd/constants';
+import type { AccountsApiActivity } from '../types/money-activity';
 
 /**
  * When set on mock {@link TransactionMeta}, overrides the default title from
@@ -49,6 +50,7 @@ function makeMoneyTx(config: {
   symbol?: string;
   moneySubtitle?: string;
   moneyActivityTitleKey?: MoneyActivityTitleKey;
+  metamaskPay?: TransactionMeta['metamaskPay'];
 }): MoneyActivityTransactionMeta {
   const {
     id,
@@ -59,6 +61,7 @@ function makeMoneyTx(config: {
     symbol = MUSD_TOKEN.symbol,
     moneySubtitle,
     moneyActivityTitleKey,
+    metamaskPay,
   } = config;
 
   const tx: MoneyActivityTransactionMeta = {
@@ -77,6 +80,7 @@ function makeMoneyTx(config: {
     },
     moneySubtitle,
     moneyActivityTitleKey,
+    metamaskPay,
   };
 
   return tx;
@@ -90,6 +94,11 @@ const MOCK_MONEY_TRANSACTIONS: MoneyActivityTransactionMeta[] = [
     amount: '1000000000',
     moneySubtitle: 'Transak',
     moneyActivityTitleKey: 'deposited',
+    metamaskPay: {
+      networkFeeFiat: '0.12',
+      bridgeFeeFiat: '0.04',
+      totalFiat: '1000.16',
+    },
   }),
   makeMoneyTx({
     id: 'money-tx-converted-eth',
@@ -184,3 +193,49 @@ const MOCK_MONEY_TRANSACTIONS: MoneyActivityTransactionMeta[] = [
 ];
 
 export default MOCK_MONEY_TRANSACTIONS;
+
+/**
+ * Mock Accounts API activity for local QA: a card spend, a cashback reward,
+ * and a refund. Merged into the activity list when mock data is enabled.
+ */
+export const MOCK_ACCOUNTS_API_ACTIVITY: AccountsApiActivity[] = [
+  {
+    kind: 'card',
+    hash: '0xca5d000000000000000000000000000000000000000000000000000000000001',
+    time: 1747005600 * 1000,
+    chainId: MOCK_CHAIN_ID,
+    token: {
+      address: MUSD_TOKEN_ADDRESS,
+      symbol: MUSD_TOKEN.symbol,
+      decimals: MUSD_TOKEN.decimals,
+    },
+    amount: '10000000', // 10.00 mUSD
+    paidTo: '0x8dFE562Cbb4E93D5029f39DA26BB6B501a8d1D3e',
+  },
+  {
+    kind: 'cashback',
+    hash: '0xca5b000000000000000000000000000000000000000000000000000000000001',
+    time: 1747002000 * 1000,
+    chainId: MOCK_CHAIN_ID,
+    token: {
+      address: MUSD_TOKEN_ADDRESS,
+      symbol: MUSD_TOKEN.symbol,
+      decimals: MUSD_TOKEN.decimals,
+    },
+    amount: '300000', // 0.30 mUSD
+    receivedFrom: '0x8dFE562Cbb4E93D5029f39DA26BB6B501a8d1D3e',
+  },
+  {
+    kind: 'refund',
+    hash: '0xca5f000000000000000000000000000000000000000000000000000000000001',
+    time: 1746813600 * 1000,
+    chainId: MOCK_CHAIN_ID,
+    token: {
+      address: MUSD_TOKEN_ADDRESS,
+      symbol: MUSD_TOKEN.symbol,
+      decimals: MUSD_TOKEN.decimals,
+    },
+    amount: '10000000', // 10.00 mUSD
+    receivedFrom: '0x8dFE562Cbb4E93D5029f39DA26BB6B501a8d1D3e',
+  },
+];

@@ -18,15 +18,17 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RevertReason } from '../../../components/revert-reason/revert-reason';
 import { useEstimationFailed } from '../../gas/useEstimationFailed';
 import { useIsGasSponsored } from '../../gas/useIsGasSponsored';
+import { useIsMonadReserveViolation } from './useIsMonadReserveViolation';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
   const estimationFailed = useEstimationFailed();
-
   const isGasSponsored = useIsGasSponsored();
+  const isMonadReserveViolation = useIsMonadReserveViolation();
 
   return useMemo(() => {
-    if (!estimationFailed || isGasSponsored) {
+    // Prefer the specific Monad reserve alert over a generic estimate-failed warning.
+    if (!estimationFailed || isGasSponsored || isMonadReserveViolation) {
       return [];
     }
 
@@ -45,7 +47,7 @@ export function useGasEstimateFailedAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [t, estimationFailed, isGasSponsored]);
+  }, [t, estimationFailed, isGasSponsored, isMonadReserveViolation]);
 }
 
 function GasEstimateFailedAlertMessage() {

@@ -22,17 +22,15 @@ import { Anvil } from '../../seeder/anvil';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
 import {
   openDappAndSwitchChain,
   openPopupWithActiveTabOrigin,
   selectDappClickSend,
   switchToDialogPopoverValidateDetailsRedesign,
 } from '../../page-objects/flows/test-dapp.flow';
-import {
-  validateBalanceAndActivity,
-  validateTransaction,
-} from '../../page-objects/flows/send-transaction.flow';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
 // due to OffscreenDocument.  Additionally Firefox continually bombs
@@ -119,7 +117,10 @@ describe('Request-queue UI changes', function () {
           originText: DAPP_URL,
         });
         const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         // Go to the second dapp, ensure it uses Ethereum
         await selectDappClickSend(driver, DAPP_ONE_URL);
@@ -128,7 +129,10 @@ describe('Request-queue UI changes', function () {
           networkText: 'Localhost 8546',
           originText: DAPP_ONE_URL,
         });
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
       },
     );
   });
@@ -207,7 +211,7 @@ describe('Request-queue UI changes', function () {
         });
 
         // Confirm transaction, wait for first confirmation window to close, second to display
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
         await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // Switch to the new Notification window, ensure second transaction showing
@@ -219,7 +223,7 @@ describe('Request-queue UI changes', function () {
 
         // Reject this transaction, wait for second confirmation window to close, third to display
         const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterCancelButton();
+        await confirmation.clickFooterButton({ button: 'cancel' });
 
         if (!IS_FIREFOX) {
           // Switch to the new Notification window, ensure third transaction showing
@@ -230,7 +234,9 @@ describe('Request-queue UI changes', function () {
           });
 
           // Confirm transaction
-          await transactionConfirmation.clickFooterConfirmButton();
+          await transactionConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
         }
 
         // With first and last confirmations confirmed, and second rejected,
@@ -243,22 +249,35 @@ describe('Request-queue UI changes', function () {
         await driver.waitForWindowWithTitleToBePresent(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await validateTransaction(driver, '-0');
+        const homePage = new HomePage(driver);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-0 ETH');
 
         if (!IS_FIREFOX) {
           // Start on the last joined network, whose send transaction was just confirmed
           await switchToNetworkFromNetworkSelect(driver, 'Localhost 7777');
-          await validateBalanceAndActivity(driver, '25');
+          await homePage.goToHomePage();
+          await homePage.checkExpectedBalanceIsDisplayed('25');
+          await homePage.goToActivityList();
+          await activityTab.checkTxAction({ action: 'Sent ETH' });
         }
 
         // Validate second network, where transaction was rejected
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
-        await validateBalanceAndActivity(driver, '25', 0);
+        await homePage.goToHomePage();
+        await homePage.checkExpectedBalanceIsDisplayed('25');
+        await homePage.goToActivityList();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(0);
 
         // Validate first network, where transaction was confirmed
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
-        await validateBalanceAndActivity(driver, '25');
-        await validateTransaction(driver, '-0');
+        await homePage.goToHomePage();
+        await homePage.checkExpectedBalanceIsDisplayed('25');
+        await homePage.goToActivityList();
+        await activityTab.checkTxAction({ action: 'Sent ETH' });
+        await activityTab.checkTxAmountInActivity('-0 ETH');
       },
     );
   });

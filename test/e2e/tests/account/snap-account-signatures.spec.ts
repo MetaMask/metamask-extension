@@ -18,8 +18,8 @@ import {
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
 import {
+  mockRewardsOptOut,
   mockSnapSimpleKeyringAndSite,
-  SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
 } from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
@@ -40,10 +40,13 @@ describe('Snap Account Signatures', function (this: Suite) {
           },
           fixtures: new FixtureBuilderV2()
             .withSnapsPrivacyWarningAlreadyShown()
+            // Leave basic functionality on. Turning it off disables snaps, and
+            // login then times out waiting for the Bitcoin account icon.
             .build(),
-          manifestFlags: SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
-          testSpecificMock: (mockServer: Mockttp) =>
-            mockSnapSimpleKeyringAndSite(mockServer, 8081),
+          testSpecificMock: async (mockServer: Mockttp) => [
+            ...(await mockSnapSimpleKeyringAndSite(mockServer, 8081)),
+            ...(await mockRewardsOptOut(mockServer)),
+          ],
           title,
         },
         async ({ driver }: { driver: Driver }) => {

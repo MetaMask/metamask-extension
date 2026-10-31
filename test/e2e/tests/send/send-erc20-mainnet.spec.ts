@@ -6,6 +6,7 @@
  */
 
 import { Mockttp } from 'mockttp';
+import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
@@ -15,7 +16,10 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
-import { NETWORK_CLIENT_ID } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
 import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
 
 const DAI_CAIP_ASSET =
@@ -70,6 +74,38 @@ async function mockSpotPriceV3ForDai(mockServer: Mockttp) {
             totalCount: data.length,
             pageInfo: { hasNextPage: false, endCursor: '' },
           },
+        };
+      }),
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v6/multiaccount/balances')
+      .always()
+      .thenCallback((request) => {
+        const requested = (
+          new URL(request.url).searchParams.get('accountIds') ?? ''
+        )
+          .split(',')
+          .map((accountId) => accountId.trim())
+          .filter((accountId) => accountId.split(':')[1] === '1');
+        const accountIds =
+          requested.length > 0
+            ? requested
+            : [`eip155:1:${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}`];
+        const balances = accountIds.flatMap((accountId) => [
+          {
+            accountId,
+            assetId: 'eip155:1/slip44:60',
+            balance: '25',
+          },
+          {
+            accountId,
+            assetId: DAI_CAIP_ASSET,
+            balance: '50',
+          },
+        ]);
+
+        return {
+          statusCode: 200,
+          json: v6AccountsApiBalancesJson(request.url, balances),
         };
       }),
   ];
@@ -135,7 +171,9 @@ describe('Send ERC20 - Mainnet', function () {
         await tokenTransferTransactionConfirmation.checkNetworkParagraph();
         await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
-        await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
+        await tokenTransferTransactionConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);

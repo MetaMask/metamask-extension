@@ -229,6 +229,8 @@ describe('useBridging', () => {
                     chainId: formatChainIdToCaip(expectedState.token.chainId),
                   }
                 : null,
+              swapViewTraceId: expect.any(String),
+              swapViewPrefilledAmount: false,
             },
           },
         );
@@ -583,6 +585,8 @@ describe('useBridging', () => {
                   chainId: formatChainIdToCaip(expectedState.token.chainId),
                 }
               : null,
+            swapViewTraceId: expect.any(String),
+            swapViewPrefilledAmount: false,
           },
         });
         expect(openTabSpy).not.toHaveBeenCalled();

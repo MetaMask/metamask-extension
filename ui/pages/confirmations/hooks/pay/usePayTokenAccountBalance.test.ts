@@ -58,6 +58,7 @@ describe('usePayTokenAccountBalance', () => {
       balanceUsd: '0',
       balanceRaw: '0',
       isLiveBalance: false,
+      isBalanceUsdKnown: false,
     });
   });
 
@@ -79,6 +80,7 @@ describe('usePayTokenAccountBalance', () => {
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
       isLiveBalance: false,
+      isBalanceUsdKnown: true,
     });
   });
 
@@ -93,6 +95,7 @@ describe('usePayTokenAccountBalance', () => {
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
       isLiveBalance: false,
+      isBalanceUsdKnown: true,
     });
   });
 
@@ -147,6 +150,7 @@ describe('usePayTokenAccountBalance', () => {
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
       isLiveBalance: false,
+      isBalanceUsdKnown: true,
     });
   });
 
@@ -244,6 +248,9 @@ describe('usePayTokenAccountBalance', () => {
       balanceUsd: '0',
       balanceRaw: '0',
       isLiveBalance: true,
+      // The funding account's own token list reports zero, so this is a real
+      // balance rather than missing data.
+      isBalanceUsdKnown: true,
     });
   });
 
@@ -264,6 +271,9 @@ describe('usePayTokenAccountBalance', () => {
       balanceUsd: '0',
       balanceRaw: '0',
       isLiveBalance: false,
+      // Neither a live nor a snapshot balance is available, so the zero above
+      // is a placeholder that callers must not read as "no funds".
+      isBalanceUsdKnown: false,
     });
   });
 });

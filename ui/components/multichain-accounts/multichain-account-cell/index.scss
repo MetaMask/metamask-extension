@@ -10,10 +10,6 @@
     flex-shrink: 0;
   }
 
-  &__edit-mode-action-icon {
-    margin-left: 8px;
-  }
-
   &:hover:not(.multichain-account-cell--no-hover):not(.is-selected) {
     background: var(--color-background-default-hover);
 
@@ -23,6 +19,12 @@
   }
 
   &--hidden {
-    opacity: 0.6;
+    // Opacity creates a stacking context that children cannot opt out of, so
+    // the muted styling is applied per child to spare the edit-mode icons.
+    > *:not(.multichain-account-cell__trailing),
+    .multichain-account-cell__trailing
+      > *:not(.multichain-account-cell__edit-mode-action-icon) {
+      opacity: 0.6;
+    }
   }
 }

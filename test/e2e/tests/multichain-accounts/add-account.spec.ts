@@ -3,7 +3,7 @@ import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
-import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
+import { sendTransaction } from '../../page-objects/flows/transaction.flow';
 import {
   login,
   lockAndWaitForLoginPage,
@@ -28,7 +28,7 @@ const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
 const CUSTOM_ACCOUNT_NAME = 'Custom 1';
 const TEST_PRIVATE_KEY =
   '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
-// Matches mock-e2e default `ethConversionInUsd`; 25 ETH × 3010 = $75,250.00
+// Matches mock-e2e `DEFAULT_ETH_USD_PRICE`; 25 ETH × 3010 = $75,250.00
 const ETH_USD_CONVERSION_RATE = 3010;
 
 const importedAccount = {
@@ -72,9 +72,9 @@ describe('Add account', function () {
         });
         await accountListPage.closeMultichainAccountsPage();
 
-        await sendRedesignedTransactionToAccount({
+        await sendTransaction({
           driver,
-          recipientAccount: SECOND_ACCOUNT_NAME,
+          recipientName: SECOND_ACCOUNT_NAME,
           amount: '2.8',
         });
 

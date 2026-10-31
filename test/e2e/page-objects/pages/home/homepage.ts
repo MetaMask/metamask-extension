@@ -10,6 +10,8 @@ import {
 } from '../../../tests/identity/account-syncing/helpers';
 import HeaderNavbar from './header-navbar';
 
+type ReceiveButton = 'default' | 'row';
+
 export type CheckExpectedBalanceOptions = {
   expectedBalance?: string;
   symbol?: string;
@@ -31,9 +33,9 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
  * shield entry modal, survey and SRP toasts, and page-ready waits.
  * Boundaries: tab content belongs to `TokensTab`, `NftsTab`, `DeFiTab`,
  * `ActivityTab`, and `PerpsTab`. The promotional carousel belongs to
- * `CarouselPage`. Non-EVM account-specific helpers live on `NonEvmHomepage`.
+ * `CarouselPage`.
  * Related: `HeaderNavbar`, `TokensTab` / `NftsTab` / `DeFiTab` /
- * `ActivityTab` / `PerpsTab` / `CarouselPage` / `NonEvmHomepage`.
+ * `ActivityTab` / `PerpsTab` / `CarouselPage`.
  *
  * @see ui/pages/home/home.tsx
  */
@@ -68,7 +70,7 @@ class HomePage {
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
-  protected readonly buySellButton = { css: 'button', text: 'Buy' };
+  protected readonly buySellButton = '[data-testid$="-overview-buy"]';
 
   private readonly closeSurveyToastBannerButton =
     '.toast-container button[aria-label="Close"]';
@@ -115,17 +117,15 @@ class HomePage {
 
   private readonly popoverBackground = '.popover-bg';
 
-  private readonly portfolioLink = '[data-testid="portfolio-link"]';
-
   private readonly privacyBalanceToggle = {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly receiveButton = { css: 'button', text: 'Receive' };
+  private readonly receiveOnRow = '[data-testid$="-overview-receive"]';
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
-  protected readonly sendButton = { css: 'button', text: 'Send' };
+  protected readonly sendButton = '[data-testid$="-overview-send"]';
 
   private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
 
@@ -134,6 +134,8 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
+
+  private readonly singleActionButton = '[data-testid$="-overview-default"]';
 
   private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
@@ -151,7 +153,7 @@ class HomePage {
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
-  protected readonly swapButton = { css: 'button', text: 'Swap' };
+  protected readonly swapButton = '[data-testid$="-overview-swap"]';
 
   protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -421,11 +423,6 @@ class HomePage {
     });
   }
 
-  async checkPortfolioLinkIsDisplayed(): Promise<void> {
-    console.log('Check if portfolio link is displayed on homepage');
-    await this.driver.waitForSelector(this.portfolioLink);
-  }
-
   async checkSendButtonIsClickable(clickable: boolean = true): Promise<void> {
     console.log(`Check Send button is ${clickable ? 'enabled' : 'disabled'}`);
     await this.driver.waitForSelector(this.sendButton, {
@@ -481,9 +478,10 @@ class HomePage {
     );
   }
 
-  async clickOnReceiveButton(): Promise<void> {
-    await this.driver.waitForSelector(this.receiveButton);
-    await this.driver.clickElement(this.receiveButton);
+  async clickOnReceiveButton(receiveButton: ReceiveButton): Promise<void> {
+    const selector =
+      receiveButton === 'default' ? this.singleActionButton : this.receiveOnRow;
+    await this.driver.clickElement(selector);
   }
 
   async clickOnSendButton(): Promise<void> {
@@ -557,6 +555,19 @@ class HomePage {
     await this.waitForLoadingOverlayToDisappear();
   }
 
+  /**
+   * Returns the primary balance text shown on the account overview.
+   *
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout`.
+   */
+  async getBalance(timeout?: number): Promise<string> {
+    const balance = await this.driver.waitForSelector(
+      this.balance,
+      timeout === undefined ? {} : { timeout },
+    );
+    return (await balance.getText()).trim();
+  }
+
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);
@@ -618,9 +629,14 @@ class HomePage {
     await this.driver.clickElement(this.tokensTab);
   }
 
-  async openPortfolioPage(): Promise<void> {
-    console.log(`Open portfolio page on homepage`);
-    await this.driver.clickElement(this.portfolioLink);
+  /**
+   * Navigates to home.html so the current route is left, even when in-page
+   * navigation elements are unavailable (e.g. header in search mode).
+   */
+  async navigateToHome(): Promise<void> {
+    console.log('Navigate to home.html so the current route is left');
+    await this.driver.navigate();
+    await this.checkPageIsLoaded();
   }
 
   async startBridgeFlow(): Promise<void> {

@@ -93,6 +93,12 @@ function sanitizeTestTitle(title: string): string {
   return title.replace(/[^a-zA-Z0-9-_]/gu, '_');
 }
 
+const DOWNLOADS_FOLDER = path.join(
+  process.cwd(),
+  'test-artifacts',
+  'downloads',
+);
+
 /**
  * Wraps a Playwright `Locator` with the same surface as the Selenium-flavored
  * elements returned by `wrapElementWithAPI` in `webdriver/driver.js`. Page
@@ -285,6 +291,16 @@ export class PlaywrightDriver {
     this.handleCounter += 1;
     const handle = `pw-handle-${this.handleCounter}`;
     this.pages.set(handle, page);
+    page.on('download', (download) => {
+      download
+        .saveAs(path.join(DOWNLOADS_FOLDER, download.suggestedFilename()))
+        .catch((error) => {
+          console.error(
+            `PlaywrightDriver: failed to save download '${download.suggestedFilename()}'`,
+            error,
+          );
+        });
+    });
     page.on('close', () => {
       this.pages.delete(handle);
       if (this.currentPage === page) {
@@ -409,6 +425,15 @@ export class PlaywrightDriver {
     if (typeof script === 'function' && source.includes('__name')) {
       source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
     }
+
+    // On Chrome extension pages, use CDP to bypass LavaMoat scuttling.
+    // Playwright's page.evaluate() internally uses Float32Array for serialization,
+    // which triggers scuttling errors. CDP Runtime.evaluate avoids this.
+    if (this.shouldUseCDPBypass()) {
+      return this.executeScriptViaCDPMainWorld<TResult>(source, args);
+    }
+
+    // Standard path for non-extension pages or Firefox
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -420,6 +445,46 @@ export class PlaywrightDriver {
       },
       { source, passedArgs: args },
     )) as TResult;
+  }
+
+  /**
+   * Executes a script via CDP in the MAIN world to:
+   * 1. Bypass LavaMoat scuttling (Playwright's serialization uses Float32Array)
+   * 2. Access main world variables like window.stateHooks
+   * @param source
+   * @param args
+   */
+  private async executeScriptViaCDPMainWorld<TResult>(
+    source: string,
+    args: unknown[],
+  ): Promise<TResult> {
+    const cdp = await this.page.context().newCDPSession(this.page);
+    try {
+      // Build expression that evaluates the function with args
+      const expression = `
+        (function() {
+          const fn = new Function('args', 'return (' + ${JSON.stringify(source)} + ').apply(null, args);');
+          return fn(${JSON.stringify(args)});
+        })()
+      `;
+
+      // Evaluate in the main world (no contextId = default execution context)
+      const { result, exceptionDetails } = await cdp.send('Runtime.evaluate', {
+        expression,
+        returnByValue: true,
+        awaitPromise: true,
+      });
+
+      if (exceptionDetails) {
+        throw new Error(
+          `CDP executeScript failed: ${exceptionDetails.exception?.description ?? exceptionDetails.text}`,
+        );
+      }
+
+      return result.value as TResult;
+    } finally {
+      await cdp.detach();
+    }
   }
 
   // Selenium's executeAsyncScript resolves when the script invokes its trailing
@@ -793,7 +858,6 @@ export class PlaywrightDriver {
 
   async findScrollToAndClickElement(rawLocator: RawLocator): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
-    await locator.scrollIntoViewIfNeeded();
     await locator.click();
   }
 
@@ -805,17 +869,159 @@ export class PlaywrightDriver {
     await element.locator.hover();
   }
 
-  async clickElementUsingMouseMove(_rawLocator: RawLocator): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.clickElementUsingMouseMove is not yet implemented.',
-    );
+  async clickElementUsingMouseMove(rawLocator: RawLocator): Promise<void> {
+    // `force: true`, which skips the receives-pointer-events actionability
+    // check while still waiting for the element to be visible and stable.
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.click({ force: true, timeout: this.timeout });
   }
 
   async pasteIntoField(
-    _rawLocator: RawLocator,
-    _content: string,
+    rawLocator: RawLocator,
+    contentToPaste: string,
   ): Promise<void> {
-    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.click();
+
+    if (this.shouldUseCDPBypass()) {
+      const pasteHandled = await this.pasteIntoFieldViaCDP(
+        locator,
+        contentToPaste,
+      );
+      if (!pasteHandled) {
+        await this.page.keyboard.insertText(contentToPaste);
+      }
+      return;
+    }
+
+    // Standard path for non-extension pages or Firefox (where CDP isn't available)
+    // Mirrors a real paste: fields such as the SRP import read the text from
+    // the `paste` event, and only an unhandled paste inserts it.
+    const pasteHandled = await locator.evaluate((element, text) => {
+      const clipboardData = new DataTransfer();
+      clipboardData.setData('text/plain', text);
+      return !element.dispatchEvent(
+        new ClipboardEvent('paste', {
+          clipboardData,
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+    }, contentToPaste);
+    if (!pasteHandled) {
+      await this.page.keyboard.insertText(contentToPaste);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // CDP Helpers — bypass LavaMoat scuttling on Chrome extension pages
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Checks if the current page is an extension page where LavaMoat scuttling
+   * may block Playwright from accessing globals.
+   */
+  private isExtensionPage(): boolean {
+    const currentUrl = this.page.url();
+    return (
+      currentUrl.startsWith('chrome-extension://') ||
+      currentUrl.startsWith('moz-extension://')
+    );
+  }
+
+  /**
+   * Returns true if we should use CDP to bypass LavaMoat scuttling.
+   */
+  private shouldUseCDPBypass(): boolean {
+    return this.browser === 'chrome' && this.isExtensionPage();
+  }
+
+  /**
+   * Evaluates a JavaScript expression via CDP in an isolated world to bypass LavaMoat scuttling.
+   * @param expression - JavaScript expression to evaluate (should be an IIFE)
+   * @param options - Configuration options
+   * @param options.awaitPromise - Whether to await the result if it's a Promise.
+   * @returns The result value, or undefined if evaluation failed.
+   */
+  private async evaluateViaCDP<TResult = unknown>(
+    expression: string,
+    options: { awaitPromise?: boolean } = {},
+  ): Promise<TResult | undefined> {
+    const { awaitPromise = false } = options;
+    const cdp = await this.page.context().newCDPSession(this.page);
+    try {
+      // Get the frame ID for the current page
+      const { frameTree } = await cdp.send('Page.getFrameTree');
+      const frameId = frameTree.frame.id;
+
+      // Create an isolated world - this gives us a fresh JS context with
+      // pristine globals that LavaMoat scuttling hasn't modified
+      const { executionContextId } = await cdp.send(
+        'Page.createIsolatedWorld',
+        {
+          frameId,
+          worldName: 'playwright-cdp-bypass',
+          // grantUniveralAccess allows the isolated world to access the DOM
+          grantUniveralAccess: true,
+        },
+      );
+
+      // Evaluate in the isolated world using the execution context ID
+      const { result, exceptionDetails } = await cdp.send('Runtime.evaluate', {
+        expression,
+        contextId: executionContextId,
+        returnByValue: true,
+        awaitPromise,
+      });
+
+      if (exceptionDetails) {
+        console.warn(
+          `[driver-playwright] CDP evaluation failed: ${exceptionDetails.exception?.description ?? exceptionDetails.text}`,
+        );
+        return undefined;
+      }
+
+      return result.value as TResult;
+    } finally {
+      await cdp.detach();
+    }
+  }
+
+  /**
+   * Executes paste via CDP to bypass LavaMoat scuttling on Chrome extension pages.
+   * @param locator
+   * @param contentToPaste
+   */
+  private async pasteIntoFieldViaCDP(
+    locator: Locator,
+    contentToPaste: string,
+  ): Promise<boolean> {
+    // Verify element exists before attempting paste
+    const boundingBox = await locator.boundingBox();
+    if (!boundingBox) {
+      throw new Error('Cannot find element bounding box for paste operation');
+    }
+
+    const expression = `
+      (function() {
+        const activeElement = document.activeElement;
+        if (!activeElement) {
+          return false;
+        }
+        const clipboardData = new DataTransfer();
+        clipboardData.setData('text/plain', ${JSON.stringify(contentToPaste)});
+        const pasteEvent = new ClipboardEvent('paste', {
+          clipboardData: clipboardData,
+          bubbles: true,
+          cancelable: true,
+        });
+        // dispatchEvent returns false if event was cancelled (i.e., handled)
+        return !activeElement.dispatchEvent(pasteEvent);
+      })()
+    `;
+
+    const result = await this.evaluateViaCDP<boolean>(expression);
+    return result ?? false;
   }
 
   async holdMouseDownOnElement(
@@ -879,9 +1085,10 @@ export class PlaywrightDriver {
 
   async openNewPage(url: string): Promise<string> {
     const page = await this.context.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
     this.currentPage = page;
-    return this.handleFor(page);
+    const handle = this.handleFor(page);
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    return handle;
   }
 
   async openNewURL(url: string): Promise<void> {
@@ -890,6 +1097,28 @@ export class PlaywrightDriver {
 
   async getCurrentUrl(): Promise<string> {
     return this.page.url();
+  }
+
+  /**
+   * Waits until the current page's URL equals the given URL. Mirrors the
+   * Selenium driver's `waitForUrl` (`until.urlIs`). Playwright treats a
+   * plain string (no glob characters) as an exact-match pattern.
+   *
+   * @param options - Parameters for the function.
+   * @param options.url - The URL to wait for.
+   * @param options.timeout - Optional timeout period, defaults to `this.timeout`.
+   */
+  async waitForUrl({
+    url,
+    timeout = this.timeout,
+  }: {
+    url: string;
+    timeout?: number;
+  }): Promise<void> {
+    await this.page.waitForURL((current) => current.href === url, {
+      timeout,
+      waitUntil: 'commit',
+    });
   }
 
   async refresh(): Promise<void> {
@@ -907,15 +1136,26 @@ export class PlaywrightDriver {
   }
 
   // -- Window / tab management ---------------------------------------------
-
-  async getAllWindowHandles(): Promise<string[]> {
-    throw new Error(
-      'PlaywrightDriver.getAllWindowHandles is not yet implemented.',
-    );
+  async getCurrentWindowHandle(): Promise<string> {
+    return this.handleFor(this.page);
   }
 
-  async switchToWindow(_handle: string): Promise<void> {
-    throw new Error('PlaywrightDriver.switchToWindow is not yet implemented.');
+  async getAllWindowHandles(): Promise<string[]> {
+    for (const page of this.context.pages()) {
+      this.registerPage(page);
+    }
+    return [...this.pages.keys()];
+  }
+
+  async switchToWindow(handle: string): Promise<void> {
+    const page = this.pages.get(handle);
+    if (!page || page.isClosed()) {
+      throw new Error(
+        `PlaywrightDriver.switchToWindow: no open window with handle '${handle}'`,
+      );
+    }
+    this.currentPage = page;
+    await page.bringToFront();
   }
 
   async switchToNewWindow(): Promise<void> {
@@ -960,10 +1200,14 @@ export class PlaywrightDriver {
     throw new Error('PlaywrightDriver.closeWindow is not yet implemented.');
   }
 
-  async closeWindowHandle(_handle: string): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.closeWindowHandle is not yet implemented.',
-    );
+  async closeWindowHandle(handle: string): Promise<void> {
+    const page = this.pages.get(handle);
+    if (!page) {
+      throw new Error(
+        `PlaywrightDriver.closeWindowHandle: no window with handle '${handle}'`,
+      );
+    }
+    await page.close();
   }
 
   async switchToFrame(frame: PlaywrightElement | string): Promise<void> {

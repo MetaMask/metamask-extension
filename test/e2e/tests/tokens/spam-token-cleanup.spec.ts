@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
+import { v6AccountsApiBalancesJson } from '../../helpers/accounts-api-v6-balances';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
@@ -170,10 +171,20 @@ function buildFixtures(title: string) {
           ),
         },
         assetsInfo: Object.fromEntries(
-          TRACKED_ASSETS.map(({ assetId, name, symbol, decimals }) => [
-            assetId,
-            { type: 'erc20' as const, aggregators: [], decimals, name, symbol },
-          ]),
+          TRACKED_ASSETS.map(
+            ({ assetId, name, symbol, decimals, occurrences }) => [
+              assetId,
+              {
+                type: 'erc20' as const,
+                aggregators: [],
+                decimals,
+                image: 'icon',
+                name,
+                occurrences,
+                symbol,
+              },
+            ],
+          ),
         ),
         customAssets: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: [CUSTOM_ASSET.assetId],
@@ -238,43 +249,56 @@ async function mockOccurrenceApis(
       }),
 
     // Mock balances as so it doesn't impact the original cleanup unlock logic.
-    await mockServer
-      .forGet(`https://accounts.api.cx.metamask.io/v5/multiaccount/balances`)
-      .always()
-      .thenCallback((request) => {
-        const accountIds = (
-          new URL(request.url).searchParams.get('accountIds') ?? ''
-        )
-          .split(',')
-          .filter(Boolean);
+    ...(await Promise.all(
+      (['v5', 'v6'] as const).map((version) =>
+        mockServer
+          .forGet(
+            `https://accounts.api.cx.metamask.io/${version}/multiaccount/balances`,
+          )
+          .always()
+          .thenCallback((request) => {
+            const accountIds = (
+              new URL(request.url).searchParams.get('accountIds') ?? ''
+            )
+              .split(',')
+              .filter(Boolean);
 
-        const keptAssets = failOccurrenceFloors
-          ? TRACKED_ASSETS
-          : [LEGITIMATE_ASSET, CUSTOM_ASSET];
-        const balances = [];
-        for (const accountId of accountIds) {
-          const chainRef = accountId.split(':')[1];
-          balances.push({
-            accountId,
-            assetId: `eip155:${chainRef}/slip44:60`,
-            balance: '25',
-          });
-          for (const { assetId, amount } of keptAssets) {
-            if (assetId.startsWith(`eip155:${chainRef}/`)) {
-              balances.push({ accountId, assetId, balance: amount });
+            const keptAssets = failOccurrenceFloors
+              ? TRACKED_ASSETS
+              : [LEGITIMATE_ASSET, CUSTOM_ASSET];
+            const balances = [];
+            for (const accountId of accountIds) {
+              const chainRef = accountId.split(':')[1];
+              balances.push({
+                accountId,
+                assetId: `eip155:${chainRef}/slip44:60`,
+                balance: '25',
+              });
+              for (const { assetId, amount } of keptAssets) {
+                if (assetId.startsWith(`eip155:${chainRef}/`)) {
+                  balances.push({ accountId, assetId, balance: amount });
+                }
+              }
             }
-          }
-        }
 
-        return {
-          statusCode: 200,
-          json: {
-            count: balances.length,
-            balances,
-            unprocessedNetworks: [],
-          },
-        };
-      }),
+            if (version === 'v6') {
+              return {
+                statusCode: 200,
+                json: v6AccountsApiBalancesJson(request.url, balances),
+              };
+            }
+
+            return {
+              statusCode: 200,
+              json: {
+                count: balances.length,
+                balances,
+                unprocessedNetworks: [],
+              },
+            };
+          }),
+      ),
+    )),
   ];
 }
 

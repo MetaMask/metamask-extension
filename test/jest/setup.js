@@ -35,15 +35,19 @@ jest.mock('../../shared/lib/stores/browser-storage-adapter', () => {
 });
 
 /**
- * Globally force the assets-unify-state feature flag helper to return `false`
- * for all unit tests. Individual tests can still override this by re-mocking
- * the module locally with `jest.mock(...)`.
+ * Globally force the assets-unify-state feature flag helper to return `true`
+ * for all unit tests. Fixtures and selectors have migrated to AssetsController
+ * state; individual tests can still override this by re-mocking the module
+ * locally with `jest.mock(...)`.
+ *
+ * Use a plain function (not `jest.fn`) so `jest.resetAllMocks()` in individual
+ * tests cannot clear the implementation and silently disable unify mode.
  */
 jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
   ...jest.requireActual(
     '../../shared/lib/assets-unify-state/remote-feature-flag',
   ),
-  isAssetsUnifyStateFeatureEnabled: jest.fn(() => false),
+  isAssetsUnifyStateFeatureEnabled: () => true,
 }));
 
 const UNRESOLVED = Symbol('timedOut');

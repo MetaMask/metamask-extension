@@ -42,15 +42,16 @@ export default function CountdownTimer({
 }) {
   const t = useContext(I18nContext);
   const intervalRef = useRef();
-  const initialTimeStartedRef = useRef();
+  const [initialTimeStarted, setInitialTimeStarted] = useState(null);
 
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const swapsQuotePrefetchingRefreshTime = useSelector(
     getSwapsQuotePrefetchingRefreshTime,
   );
-  const refreshTime = initialTimeStartedRef.current
-    ? swapsQuoteRefreshTime
-    : swapsQuotePrefetchingRefreshTime;
+  const refreshTime =
+    initialTimeStarted === null
+      ? swapsQuotePrefetchingRefreshTime
+      : swapsQuoteRefreshTime;
   const timerStart = Number(timerBase) || refreshTime;
 
   const [currentTime, setCurrentTime] = useState(() => Date.now());
@@ -70,14 +71,30 @@ export default function CountdownTimer({
     };
   }, []);
 
-  // Reset the timer that timer has hit '0:00' and the timeStarted prop has changed
+  const shouldResetTimer =
+    initialTimeStarted !== null &&
+    timer === 0 &&
+    timeStarted !== initialTimeStarted;
+
   useEffect(() => {
-    if (!initialTimeStartedRef.current) {
-      initialTimeStartedRef.current = timeStarted || Date.now();
+    if (initialTimeStarted !== null) {
+      return undefined;
     }
 
-    if (timer === 0 && timeStarted !== initialTimeStartedRef.current) {
-      initialTimeStartedRef.current = timeStarted;
+    queueMicrotask(() => {
+      setInitialTimeStarted(timeStarted || Date.now());
+    });
+
+    return undefined;
+  }, [initialTimeStarted, timeStarted]);
+
+  useEffect(() => {
+    if (!shouldResetTimer) {
+      return undefined;
+    }
+
+    queueMicrotask(() => {
+      setInitialTimeStarted(timeStarted);
       const newCurrentTime = Date.now();
       setCurrentTime(newCurrentTime);
       setTimer(getNewTimer(newCurrentTime, timeStarted, timerStart));
@@ -86,8 +103,10 @@ export default function CountdownTimer({
       intervalRef.current = setInterval(() => {
         setTimer(decreaseTimerByOne);
       }, SECOND);
-    }
-  }, [timeStarted, timer, timerStart]);
+    });
+
+    return undefined;
+  }, [shouldResetTimer, timeStarted, timerStart, initialTimeStarted]);
 
   const formattedTimer = Duration.fromMillis(timer).toFormat('m:ss');
   let time;

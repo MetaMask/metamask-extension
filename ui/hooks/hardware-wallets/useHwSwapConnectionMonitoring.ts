@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 
 import {
   ConnectionStatus,
-  isInE2eTest,
+  getHardwareWalletErrorCode,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets';
+import { isInE2eTest } from '../../../shared/lib/environment';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
@@ -87,7 +89,22 @@ export function useHwSwapConnectionMonitoring({
 
     handledConnectionErrorRef.current = connectionState.error;
 
+    // When the Ethereum app is closed on the device, connectionState is in
+    // ErrorState so HardwareWalletErrorProvider can show the "Open Ethereum App"
+    // modal. The swap signature flow must remain on the awaiting-app path
+    // rather than failing the transaction.
+    if (
+      getHardwareWalletErrorCode(connectionState.error) ===
+      ErrorCode.DeviceStateEthAppClosed
+    ) {
+      return;
+    }
+
     const event = getHardwareWalletSignatureErrorEvent(connectionState.error);
+
+    if (!event) {
+      return;
+    }
 
     if (event.type === HardwareWalletSignatureEvent.DeviceDisconnected) {
       isDeviceDisconnectedRef.current = true;

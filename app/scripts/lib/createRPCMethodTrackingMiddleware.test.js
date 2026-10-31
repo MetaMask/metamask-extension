@@ -24,7 +24,7 @@ import {
   configureAnalytics,
   setParticipateInMetaMetrics,
 } from '../controllers/analytics';
-import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
+import { getAnalyticsControllerInitMessenger } from '../wallet-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
 
@@ -210,23 +210,12 @@ const analyticsController = {
   },
 };
 
-messenger.registerActionHandler('MetaMetricsController:getState', () => ({
-  marketingCampaignCookieId: null,
-}));
 messenger.registerActionHandler(
-  'MetaMetricsController:trackTracesAfterMetricsOptIn',
+  'SentryTracingService:trackTracesAfterMetricsOptIn',
   () => undefined,
 );
 messenger.registerActionHandler(
-  'MetaMetricsController:clearTracesAfterMetricsOptIn',
-  () => undefined,
-);
-messenger.registerActionHandler(
-  'MetaMetricsController:setMarketingCampaignCookieId',
-  () => undefined,
-);
-messenger.registerActionHandler(
-  'MetaMetricsController:updateExtensionUninstallUrl',
+  'SentryTracingService:clearTracesAfterMetricsOptIn',
   () => undefined,
 );
 
@@ -1273,6 +1262,94 @@ describe('createRPCMethodTrackingMiddleware', () => {
         expect(getTrackedEventCall(0).properties).toMatchObject(properties);
       },
     );
+    describe('wallet_pay', () => {
+      const WALLET_PAY_PARAMS = [
+        { type: 'perpsDeposit', from: '0x1', amount: '10' },
+      ];
+
+      const runWalletPay = async ({ params = WALLET_PAY_PARAMS, error }) => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.WALLET_PAY,
+          origin: 'some.dapp',
+          params,
+        };
+        const res = { error };
+        const { next, executeMiddlewareStack } = getNext();
+        // A sample rate of 0 proves wallet_pay is never sampled out.
+        const handler = createHandler({ rateLimitSamplePercent: 0 });
+
+        await handler(req, res, next);
+        await executeMiddlewareStack();
+      };
+
+      it('tracks the request with the dapp, type and amount', async () => {
+        await runWalletPay({});
+
+        expect(getTrackedEventCall(0)).toMatchObject({
+          event: MetaMetricsEventName.WalletPayRequested,
+          properties: {
+            method: MESSAGE_TYPE.WALLET_PAY,
+            transaction_type: 'perpsDeposit',
+            has_amount: true,
+          },
+          referrer: { url: 'some.dapp' },
+        });
+        expect(getTrackedEventCall(0).properties.status).toBeUndefined();
+      });
+
+      it('reports a request without an amount', async () => {
+        await runWalletPay({
+          params: [{ type: 'perpsWithdraw', from: '0x1' }],
+        });
+
+        expect(getTrackedEventCall(0).properties).toMatchObject({
+          transaction_type: 'perpsWithdraw',
+          has_amount: false,
+        });
+      });
+
+      it.each([
+        ['confirmed', undefined],
+        ['rejected', { code: errorCodes.provider.userRejectedRequest }],
+        ['blocked_by_flags', { code: errorCodes.rpc.methodNotFound }],
+        ['invalid', { code: errorCodes.rpc.invalidParams }],
+        ['unauthorized', { code: errorCodes.provider.unauthorized }],
+        ['ineligible', { code: errorCodes.rpc.methodNotSupported }],
+        ['failed', { code: errorCodes.rpc.internal }],
+        ['failed', { code: -32000 }],
+      ])('tracks a %s status', async (status, error) => {
+        await runWalletPay({ error });
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(getTrackedEventCall(1)).toMatchObject({
+          event: MetaMetricsEventName.WalletPayCompleted,
+          properties: {
+            method: MESSAGE_TYPE.WALLET_PAY,
+            transaction_type: 'perpsDeposit',
+            has_amount: true,
+            status,
+          },
+          referrer: { url: 'some.dapp' },
+        });
+      });
+
+      it('omits the type when the params are malformed', async () => {
+        await runWalletPay({
+          params: ['not-an-object'],
+          error: { code: errorCodes.rpc.invalidParams },
+        });
+
+        expect(getTrackedEventCall(1).properties).toMatchObject({
+          has_amount: false,
+          status: 'invalid',
+        });
+        expect(
+          getTrackedEventCall(1).properties.transaction_type,
+        ).toBeUndefined();
+      });
+    });
+
     describe('iframe detection properties', () => {
       it('should include is_iframe=false when frameId is 0 (top-level frame)', async () => {
         const req = {
@@ -1527,7 +1604,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         });
       });
 
-      it('should track wallet_invokeMethod events with multichain_api category, api_source, and chain_id_caip properties', async () => {
+      it('tracks nested EIP-712 properties on requested and approved wallet_invokeMethod events', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1535,7 +1612,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           params: {
             request: {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-              params: [],
+              params: [undefined, permitSignatureMsg.msgParams.data],
             },
             scope: 'eip155:10',
           },
@@ -1556,6 +1633,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
             address_alert_response: ResultType.Loading,
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1567,12 +1652,20 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
       });
 
-      it('should track wallet_invokeMethod rejections with multichain_api category, api_source, and chain_id_caip properties', async () => {
+      it('tracks nested EIP-712 properties on requested and rejected wallet_invokeMethod events', async () => {
         const req = {
           id: MOCK_ID,
           method: MESSAGE_TYPE.WALLET_INVOKE_METHOD,
@@ -1580,7 +1673,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           params: {
             request: {
               method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-              params: [],
+              params: [undefined, permitSignatureMsg.msgParams.data],
             },
             scope: 'eip155:137',
           },
@@ -1606,6 +1699,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
             address_alert_response: ResultType.Loading,
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1617,6 +1718,14 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
+            eip712_primary_type: 'Permit',
+            ui_customizations: [MetaMetricsEventUiCustomization.Permit],
+          },
+          sensitiveProperties: {
+            eip712_verifyingContract:
+              '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+            eip712_domain_version: '1',
+            eip712_domain_name: 'MyToken',
           },
           referrer: { url: 'multichain.dapp' },
         });

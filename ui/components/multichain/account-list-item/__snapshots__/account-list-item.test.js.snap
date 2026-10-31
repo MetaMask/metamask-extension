@@ -179,7 +179,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
               data-testid="account-list-address"
             >
-              bc1qn3s...5eker
+              bc1qn...5eker
             </p>
           </div>
           <div
@@ -209,20 +209,6 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div
-          class="flex-row flex"
-        >
-          <div
-            class="flex-row items-center bg-muted inline-flex gap-0.5 self-start rounded-md pl-1.5 pr-1.5"
-            data-testid="account-list-item-tag-b7893c59-e376-4cc0-93ad-05ddaab574a6-Native SegWit"
-          >
-            <p
-              class="text-alternative text-s-body-xs leading-s-body-xs tracking-s-body-xs md:text-l-body-xs md:leading-l-body-xs md:tracking-l-body-xs font-medium font-default"
-            >
-              Native SegWit
-            </p>
           </div>
         </div>
       </div>
@@ -445,7 +431,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: 0px;"
                       >
                         <div
@@ -460,7 +446,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
@@ -475,7 +461,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
@@ -489,7 +475,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div

@@ -126,7 +126,6 @@ import {
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
-  GetTokenListState,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
@@ -184,6 +183,7 @@ import {
   SeedlessOnboardingControllerSubmitPasswordAction,
   SeedlessOnboardingControllerSyncLatestGlobalPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
+  SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction,
 } from '@metamask/seedless-onboarding-controller';
 import {
   CaveatSpecificationConstraint,
@@ -255,6 +255,7 @@ import {
   rpcErrors,
 } from '@metamask/rpc-errors';
 import {
+  AuthenticationControllerClearStateAction,
   AuthenticationControllerGetBearerTokenAction,
   AuthenticationControllerGetStateAction,
   AuthenticationControllerPerformSignOutAction,
@@ -289,10 +290,8 @@ import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
 } from '../lib/util';
-import {
-  getIsAssetsUnifiedStateIncludedInBuild,
-  getIsSeedlessOnboardingFeatureEnabled,
-} from '../../../shared/lib/environment';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
+import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
@@ -310,11 +309,6 @@ import {
 } from '../../../shared/lib/selectors/networks';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
-import {
-  ASSETS_UNIFY_STATE_VERSION_1,
-  AssetsUnifyStateFeatureFlag,
-  isAssetsUnifyStateFeatureEnabled as getIsAssetsUnifyStateFeatureEnabled,
-} from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 import { LedgerHandlerMode } from '../../../shared/constants/offscreen-communication';
 import { MINUTE } from '../../../shared/constants/time';
@@ -363,10 +357,6 @@ import {
   ReferralStatus,
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
-import {
-  MetaMetricsControllerBufferedEndTraceAction,
-  MetaMetricsControllerBufferedTraceAction,
-} from '../controllers/metametrics-controller-method-action-types';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import {
   DefiReferralPartner,
@@ -418,6 +408,10 @@ import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
 } from '../lib/offscreen-bridge/lattice-keyring-v2';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from './sentry/sentry-tracing-service-method-action-types';
 import { LegacyBackgroundApiServiceMethodActions } from './legacy-background-api-service-method-action-types';
 
 const serviceName = 'LegacyBackgroundApiService';
@@ -537,11 +531,11 @@ const MESSENGER_EXPOSED_METHODS = [
   'handleDefiReferralOnPermittedAccountsAdded',
   'importAccountWithStrategy',
   'importMnemonicToVault',
-  'isAssetsUnifyStateEnabled',
   'isPublicEndpointUrl',
   'isRelaySupported',
   'isSendBundleSupported',
   'lookupSelectedNetworks',
+  'closeNotificationPopup',
   'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
@@ -633,6 +627,7 @@ type AllowedActions =
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
+  | AuthenticationControllerClearStateAction
   | AuthenticationControllerGetBearerTokenAction
   | AuthenticationControllerGetStateAction
   | AuthenticationControllerPerformSignOutAction
@@ -663,8 +658,8 @@ type AllowedActions =
   | KeyringControllerSubmitPasswordAction
   | KeyringControllerVerifyPasswordAction
   | KeyringControllerWithKeyringAction
-  | MetaMetricsControllerBufferedTraceAction
-  | MetaMetricsControllerBufferedEndTraceAction
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction
   | MultichainAccountServiceAlignWalletsAction
   | MultichainAccountServiceCreateMultichainAccountWalletAction
   | MultichainAccountServiceGetMultichainAccountWalletAction
@@ -734,6 +729,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction
   | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | GetSignatureState
   | ShieldControllerClearStateAction
@@ -747,7 +743,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
   | TokensControllerAddTokenAction
@@ -797,6 +792,7 @@ type LegacyBackgroundApiServiceOptions = {
   getPermittedAccounts: (origin: string) => Promise<string[]>;
   getTabUrl: (tabId: number) => Promise<string | undefined>;
   updateTabUrl: (tabId: number, url: string) => Promise<void>;
+  closeNotificationPopup: () => Promise<void>;
   markNotificationPopupAsAutomaticallyClosed: () => void;
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
@@ -829,6 +825,8 @@ export class LegacyBackgroundApiService {
 
   readonly #updateTabUrl: (tabId: number, url: string) => Promise<void>;
 
+  readonly #closeNotificationPopup: () => Promise<void>;
+
   readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
 
   readonly #requestSafeReload: () => Promise<void>;
@@ -853,6 +851,7 @@ export class LegacyBackgroundApiService {
    * @param options.getPermittedAccounts - A function that returns the permitted accounts for an origin.
    * @param options.getTabUrl - A function that returns the current URL of a browser tab.
    * @param options.updateTabUrl - A function that navigates a browser tab to a URL.
+   * @param options.closeNotificationPopup - A function that closes the notification popup window.
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
@@ -866,6 +865,7 @@ export class LegacyBackgroundApiService {
     getPermittedAccounts,
     getTabUrl,
     updateTabUrl,
+    closeNotificationPopup,
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
@@ -879,6 +879,7 @@ export class LegacyBackgroundApiService {
     this.#getPermittedAccounts = getPermittedAccounts;
     this.#getTabUrl = getTabUrl;
     this.#updateTabUrl = updateTabUrl;
+    this.#closeNotificationPopup = closeNotificationPopup;
     this.#markNotificationPopupAsAutomaticallyClosed =
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
@@ -894,28 +895,7 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Checks if the assets unify state feature is enabled based on the remote feature flag and build configuration.
-   *
-   * @returns `true` if the assets unify state feature is enabled, `false` otherwise.
-   */
-  isAssetsUnifyStateEnabled(): boolean {
-    const featureFlagsState = this.#messenger.call(
-      'RemoteFeatureFlagController:getState',
-    );
-
-    const assetsUnifyState =
-      featureFlagsState.remoteFeatureFlags?.assetsUnifyState;
-
-    return (
-      getIsAssetsUnifyStateFeatureEnabled(
-        assetsUnifyState as AssetsUnifyStateFeatureFlag,
-        ASSETS_UNIFY_STATE_VERSION_1,
-      ) && getIsAssetsUnifiedStateIncludedInBuild()
-    );
-  }
-
-  /**
-   * Sets the current currency for the CurrencyRateController and AssetsController (if the assets unify state feature is enabled).
+   * Sets the current currency for the CurrencyRateController and AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
    */
@@ -925,34 +905,21 @@ export class LegacyBackgroundApiService {
       currencyCode,
     );
 
-    if (this.isAssetsUnifyStateEnabled()) {
-      this.#messenger.call(
-        'AssetsController:setSelectedCurrency',
-        currencyCode,
-      );
-    }
+    this.#messenger.call('AssetsController:setSelectedCurrency', currencyCode);
   }
 
   /**
    * Refreshes and returns the assets for the given accounts via the
    * AssetsController (force-updating from remote sources).
    *
-   * No-ops when the assets unify state feature is not enabled, since the
-   * AssetsController is not registered in that case.
-   *
    * @param accounts - The accounts to fetch assets for.
    * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
-   * @returns The assets for the given accounts, or `undefined` when the feature
-   * is not enabled.
+   * @returns The assets for the given accounts.
    */
   async getAssets(
     accounts: InternalAccount[],
     options?: Parameters<AssetsControllerGetAssetsAction['handler']>[1],
   ): Promise<Record<AccountId, Record<Caip19AssetId, Asset>> | undefined> {
-    if (!this.isAssetsUnifyStateEnabled()) {
-      return undefined;
-    }
-
     return await this.#messenger.call('AssetsController:getAssets', accounts, {
       ...options,
       forceUpdate: true,
@@ -960,13 +927,9 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Adds a token to the wallet.
-   *
-   * When the assets unify state feature is enabled, the token is added as a
-   * custom asset on the AssetsController for the currently selected account
-   * (resolving the chain ID from the given network client and building the
-   * CAIP-19 asset ID from the address). Otherwise, it is added via the
-   * TokensController.
+   * Adds a token to the wallet as a custom asset on the AssetsController for
+   * the currently selected account (resolving the chain ID from the given
+   * network client and building the CAIP-19 asset ID from the address).
    *
    * @param token - The token to add.
    * @param token.address - The token contract address.
@@ -988,44 +951,34 @@ export class LegacyBackgroundApiService {
     image?: string;
     networkClientId: string;
   }): Promise<void> {
-    if (getIsAssetsUnifiedStateIncludedInBuild()) {
-      const selectedAccount = this.#messenger.call(
-        'AccountsController:getSelectedAccount',
+    const selectedAccount = this.#messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+    const {
+      configuration: { chainId },
+    } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
+    const assetId = toAssetId(address, chainId);
+    if (!assetId) {
+      throw new Error(
+        `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
       );
-      const {
-        configuration: { chainId },
-      } = this.#messenger.call(
-        'NetworkController:getNetworkClientById',
-        networkClientId,
-      );
-      const assetId = toAssetId(address, chainId);
-      if (!assetId) {
-        throw new Error(
-          `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
-        );
-      }
-      await this.#messenger.call(
-        'AssetsController:addCustomAsset',
-        selectedAccount.id,
-        assetId,
-        {
-          address,
-          symbol,
-          name: symbol,
-          decimals,
-          chainId,
-          ...(image ? { iconUrl: image } : {}),
-        },
-      );
-    } else {
-      await this.#messenger.call('TokensController:addToken', {
+    }
+    await this.#messenger.call(
+      'AssetsController:addCustomAsset',
+      selectedAccount.id,
+      assetId,
+      {
         address,
         symbol,
+        name: symbol,
         decimals,
-        image,
-        networkClientId,
-      });
-    }
+        chainId,
+        ...(image ? { iconUrl: image } : {}),
+      },
+    );
   }
 
   /**
@@ -1097,6 +1050,14 @@ export class LegacyBackgroundApiService {
   }
 
   /**
+   * Closes the notification popup window if one is open.
+   * Marks it as automatically closed so triggerUi knows not to reopen it.
+   */
+  async closeNotificationPopup(): Promise<void> {
+    await this.#closeNotificationPopup();
+  }
+
+  /**
    * Marks the notification popup as having been automatically closed.
    *
    * This lets us differentiate between the cases where we close the
@@ -1129,13 +1090,13 @@ export class LegacyBackgroundApiService {
    * @param networkClientId - The ID of the network client to use for the request.
    * @returns The code of the contract at the given address.
    */
-  async getCode(address: Hex, networkClientId: string): Promise<Json> {
+  async getCode(address: Hex, networkClientId: string): Promise<Hex> {
     const { provider } = this.#messenger.call(
       'NetworkController:getNetworkClientById',
       networkClientId,
     );
 
-    return await provider.request({
+    return await provider.request<[Hex], Hex>({
       method: 'eth_getCode',
       params: [address],
     });
@@ -1537,8 +1498,8 @@ export class LegacyBackgroundApiService {
    * reset progress flag is set.
    */
   async resetWallet(restoreOnly = false): Promise<void> {
-    // sign out from Authentication service and clear the Session Data
-    this.#messenger.call('AuthenticationController:performSignOut');
+    // Sign out and re-arm profile/social pairing for the next wallet.
+    this.#messenger.call('AuthenticationController:clearState');
 
     // clear SeedlessOnboardingController state
     this.#messenger.call('SeedlessOnboardingController:clearState');
@@ -1607,20 +1568,12 @@ export class LegacyBackgroundApiService {
 
   /**
    * Returns the `TokensController.allTokens` map, reconstructed from the
-   * `AssetsController` state when the assets unify state feature is enabled.
+   * `AssetsController` state.
    *
    * @returns The `ChainId -> AccountAddress -> Token[]` map.
    */
   #getAllTokens(): ReturnType<typeof getTokensControllerAllTokens> {
     const { allTokens } = this.#messenger.call('TokensController:getState');
-
-    // When the assets unify state feature is disabled, the selector simply
-    // returns `TokensController.allTokens`; the additional slices are only
-    // needed to reconstruct the token list from the (conditionally registered)
-    // AssetsController state when the feature is enabled.
-    if (!this.isAssetsUnifyStateEnabled()) {
-      return allTokens;
-    }
 
     const { internalAccounts } = this.#messenger.call(
       'AccountsController:getState',
@@ -1663,17 +1616,18 @@ export class LegacyBackgroundApiService {
   ): Promise<TokenStandardAndDetails> {
     const currentChainId = this.getGlobalChainId();
 
-    const { tokensChainsCache } = this.#messenger.call(
-      'TokenListController:getState',
-    );
-    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
     const allTokens = this.#getAllTokens();
 
     const tokens = allTokens?.[currentChainId]?.[userAddress as string] || [];
 
-    const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
+    // Only consult the static mainnet list on mainnet. On other chains a
+    // matching address can belong to a different token, and must not short-
+    // circuit the on-chain lookup (same guard as getTokenStandardAndDetailsByChain).
+    let staticTokenListDetails = {};
+    if (currentChainId === CHAIN_IDS.MAINNET) {
+      staticTokenListDetails =
+        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    }
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
@@ -1681,7 +1635,6 @@ export class LegacyBackgroundApiService {
 
     const tokenDetails = {
       ...staticTokenListDetails,
-      ...tokenListDetails,
       ...userDefinedTokenDetails,
     } as MergedTokenDetails;
 
@@ -1806,11 +1759,6 @@ export class LegacyBackgroundApiService {
     tokenId?: string,
     chainId?: Hex,
   ): Promise<TokenStandardAndDetails> {
-    const { tokensChainsCache } = this.#messenger.call(
-      'TokenListController:getState',
-    );
-    const tokenList = (chainId && tokensChainsCache?.[chainId]?.data) || {};
-
     const allTokens = this.#getAllTokens();
     const selectedAccount = this.#messenger.call(
       'AccountsController:getSelectedAccount',
@@ -1824,14 +1772,12 @@ export class LegacyBackgroundApiService {
         STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
     }
 
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
       ) || {};
     const tokenDetails = {
       ...staticTokenListDetails,
-      ...tokenListDetails,
       ...userDefinedTokenDetails,
     } as MergedTokenDetails;
 
@@ -2446,7 +2392,7 @@ export class LegacyBackgroundApiService {
           },
         );
 
-        this.#messenger.call('MetaMetricsController:bufferedTrace', {
+        this.#messenger.call('SentryTracingService:bufferedTrace', {
           name: TraceName.OnboardingResetPassword,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -2471,6 +2417,16 @@ export class LegacyBackgroundApiService {
           .catch((err) => {
             log.error('error while revoking pending refresh tokens', err);
           });
+
+        // Asynchronously track incomplete metadata backup events
+        this.#messenger
+          .call(
+            'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+            password,
+          )
+          .catch((err) => {
+            log.error('error while tracking incomplete metadata backup', err);
+          });
       } catch (err) {
         this.#messenger?.captureException?.(
           createSentryError(TraceName.OnboardingResetPasswordError, err),
@@ -2481,7 +2437,7 @@ export class LegacyBackgroundApiService {
         await this.setLocked({ skipSeedlessOperationLock: true });
         throw err;
       } finally {
-        this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
           name: TraceName.OnboardingResetPassword,
           data: { success: changePasswordSuccess },
         });
@@ -3088,11 +3044,20 @@ export class LegacyBackgroundApiService {
    * and the shield service is stopped if applicable.
    *
    * @param useExternal - Whether external services should be enabled.
+   * @param ownedPreferences - Optional per-preference values forwarded to
+   * PreferencesController so enabling can preserve granular onboarding choices
+   * in one write.
    */
-  toggleExternalServices(useExternal: boolean): void {
+  toggleExternalServices(
+    useExternal: boolean,
+    ownedPreferences?: Partial<
+      Record<ExternalServicesOwnedPreference, boolean>
+    >,
+  ): void {
     this.#messenger.call(
       'PreferencesController:toggleExternalServices',
       useExternal,
+      ownedPreferences,
     );
 
     const subscriptionState = this.#messenger.call(
@@ -3367,7 +3332,7 @@ export class LegacyBackgroundApiService {
     index: number,
     hdPathDescription?: string,
   ): string {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
+    return `${name.charAt(0).toUpperCase()}${name.slice(1)} ${
       index + 1
     } ${hdPathDescription || ''}`.trim();
   }
@@ -3478,8 +3443,11 @@ export class LegacyBackgroundApiService {
         return {
           address: normalize(createdAccount.address) as string,
           label: this.#getAccountLabel(
+            // QR devices report a user-defined name that can be empty or
+            // missing (e.g. a Keystone wallet with no name), so fall back to
+            // the device name.
             deviceName === HardwareDeviceNames.qr
-              ? (keyring as QrKeyringV2).getName()
+              ? (keyring as QrKeyringV2).getName() || deviceName
               : deviceName,
             index,
             hdPathDescription,
@@ -3804,7 +3772,7 @@ export class LegacyBackgroundApiService {
   ): Promise<void> {
     let createSeedPhraseBackupSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3832,7 +3800,7 @@ export class LegacyBackgroundApiService {
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         data: { success: createSeedPhraseBackupSuccess },
       });
@@ -3848,7 +3816,7 @@ export class LegacyBackgroundApiService {
   async #fetchAllSecretData(password?: string): Promise<SecretMetadata[]> {
     let fetchAllSeedPhrasesSuccess = false;
     try {
-      this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingFetchSrps,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -3860,7 +3828,7 @@ export class LegacyBackgroundApiService {
 
       return allSeedPhrases;
     } finally {
-      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
         name: TraceName.OnboardingFetchSrps,
         data: { success: fetchAllSeedPhrasesSuccess },
       });
@@ -3957,7 +3925,7 @@ export class LegacyBackgroundApiService {
       await this.#seedlessOperationMutex.runExclusive(async () => {
         let addNewSeedPhraseBackupSuccess = false;
         try {
-          this.#messenger.call('MetaMetricsController:bufferedTrace', {
+          this.#messenger.call('SentryTracingService:bufferedTrace', {
             name: TraceName.OnboardingAddSrp,
             op: TraceOperation.OnboardingSecurityOp,
           });
@@ -3981,7 +3949,7 @@ export class LegacyBackgroundApiService {
 
           throw err;
         } finally {
-          this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+          this.#messenger.call('SentryTracingService:bufferedEndTrace', {
             name: TraceName.OnboardingAddSrp,
             data: { success: addNewSeedPhraseBackupSuccess },
           });

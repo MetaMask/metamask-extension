@@ -80,6 +80,7 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.WALLET_GET_CALLS_STATUS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.WALLET_GET_CAPABILITIES]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
+  [MESSAGE_TYPE.WALLET_PAY]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
 };
 
 /**
@@ -142,6 +143,27 @@ const EVENT_NAME_MAP = {
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: {
     REQUESTED: MetaMetricsEventName.Wallet5792Called,
   },
+  // `wallet_pay` reports every outcome on the completed event, through the
+  // `status` property, rather than splitting approved and rejected.
+  [MESSAGE_TYPE.WALLET_PAY]: {
+    APPROVED: MetaMetricsEventName.WalletPayCompleted,
+    REJECTED: MetaMetricsEventName.WalletPayCompleted,
+    REQUESTED: MetaMetricsEventName.WalletPayRequested,
+  },
+};
+
+/**
+ * How a `wallet_pay` request ended, reported as `status` on the completed
+ * event.
+ */
+const WALLET_PAY_STATUS = {
+  CONFIRMED: 'confirmed',
+  REJECTED: 'rejected',
+  FAILED: 'failed',
+  BLOCKED_BY_FLAGS: 'blocked_by_flags',
+  INVALID: 'invalid',
+  UNAUTHORIZED: 'unauthorized',
+  INELIGIBLE: 'ineligible',
 };
 
 /**
@@ -158,6 +180,7 @@ const TRANSFORM_PARAMS_MAP = {
 const CUSTOM_PROPERTIES_MAP = {
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: getWalletSendCallsProperties,
   [MESSAGE_TYPE.WALLET_CREATE_SESSION]: getWalletCreateSessionProperties,
+  [MESSAGE_TYPE.WALLET_PAY]: getWalletPayProperties,
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -264,10 +287,12 @@ export default function createRPCMethodTrackingMiddleware({
       : MetaMetricsEventCategory.InpageProvider;
 
     let invokedMethod = method;
+    let invokedMethodParams = params;
     let multichainApiRequestScope;
     // if the request is through the multichain api, the method is nested in the params
     if (method === MESSAGE_TYPE.WALLET_INVOKE_METHOD) {
       invokedMethod = params?.request?.method;
+      invokedMethodParams = params?.request?.params;
       multichainApiRequestScope = params?.scope;
     }
 
@@ -353,10 +378,10 @@ export default function createRPCMethodTrackingMiddleware({
         // In personal messages the first param is data while in typed messages second param is data
         // if condition below is added to ensure that the right params are captured as data and address.
         let data;
-        if (isValidAddress(req?.params?.[1])) {
-          data = req?.params?.[0];
+        if (isValidAddress(invokedMethodParams?.[1])) {
+          data = invokedMethodParams?.[0];
         } else {
-          data = req?.params?.[1];
+          data = invokedMethodParams?.[1];
         }
 
         if (req.securityAlertResponse?.providerRequestsCount) {
@@ -589,6 +614,56 @@ function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
 
   if (callCount) {
     eventProperties.batch_transaction_count = callCount;
+  }
+}
+
+/**
+ * Adds the transaction type and whether an amount was passed to every
+ * `wallet_pay` event, and the status to the completed event.
+ *
+ * @param {object} req - The JSON-RPC request.
+ * @param {object} [res] - The JSON-RPC response, once the request has ended.
+ * @param {string} stage - The event stage.
+ * @param {object} eventProperties - The event properties to add to.
+ */
+function getWalletPayProperties(req, res, stage, eventProperties) {
+  const request = req.params?.[0];
+
+  if (typeof request?.type === 'string') {
+    eventProperties.transaction_type = request.type;
+  }
+
+  eventProperties.has_amount = request?.amount !== undefined;
+
+  if (stage !== STAGE.REQUESTED) {
+    eventProperties.status = getWalletPayStatus(res?.error);
+  }
+}
+
+/**
+ * Maps a `wallet_pay` response error to a status.
+ *
+ * @param {object} [error] - The JSON-RPC error, if the request failed.
+ * @returns {string} The status.
+ */
+function getWalletPayStatus(error) {
+  if (!error) {
+    return WALLET_PAY_STATUS.CONFIRMED;
+  }
+
+  switch (error.code) {
+    case errorCodes.provider.userRejectedRequest:
+      return WALLET_PAY_STATUS.REJECTED;
+    case errorCodes.rpc.methodNotFound:
+      return WALLET_PAY_STATUS.BLOCKED_BY_FLAGS;
+    case errorCodes.rpc.invalidParams:
+      return WALLET_PAY_STATUS.INVALID;
+    case errorCodes.provider.unauthorized:
+      return WALLET_PAY_STATUS.UNAUTHORIZED;
+    case errorCodes.rpc.methodNotSupported:
+      return WALLET_PAY_STATUS.INELIGIBLE;
+    default:
+      return WALLET_PAY_STATUS.FAILED;
   }
 }
 

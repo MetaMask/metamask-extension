@@ -76,6 +76,12 @@ function emitJsonAsset(
   });
 }
 
+function webAccessibleResourcePaths(manifest: Manifest) {
+  return (manifest.web_accessible_resources ?? []).flatMap((entry) =>
+    typeof entry === 'string' ? [entry] : entry.resources,
+  );
+}
+
 function addToSetMap<TKey, TValue>(
   map: Map<TKey, Set<TValue>>,
   key: TKey,
@@ -112,6 +118,8 @@ export class ManifestPlugin<Z extends boolean> {
     BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 
+  private isolatedHtmlEntries: Set<string> = new Set();
+
   private bundleSizeCategoriesByEntrypoint: Map<
     string,
     Set<BundleSizeCategory>
@@ -134,6 +142,25 @@ export class ManifestPlugin<Z extends boolean> {
   canBeChunked = ({ name }: { name?: string | null }): boolean => {
     return !name || !this.selfContainedScripts.has(name);
   };
+
+  isIsolatedHtmlEntry = (name?: string | null) =>
+    Boolean(name && this.isolatedHtmlEntries.has(name));
+
+  getIsolatedHtmlEntryNames = () => [...this.isolatedHtmlEntries];
+
+  private isWebAccessibleHtml(filename: string) {
+    for (const manifest of this.manifests.values()) {
+      for (const resource of webAccessibleResourcePaths(manifest)) {
+        if (
+          /\.html?$/iu.test(resource) &&
+          (resource === filename || path.basename(resource) === filename)
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
@@ -243,6 +270,41 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   /**
+   * Returns the uncompressed size of the files included in a browser zip.
+   *
+   * @param compilation - The active compilation.
+   * @param browser - The browser whose unzipped assets should be measured.
+   * @returns The uncompressed zip contents size, if zip output is enabled.
+   */
+  private getBundleUnzippedSize(
+    compilation: Compilation,
+    browser: Browser,
+  ): number | undefined {
+    if (this.options.zip !== true) {
+      return undefined;
+    }
+
+    const { excludeExtensions, outFilePath } = (
+      this.options as ManifestPluginOptions<true>
+    ).zipOptions;
+    const browserPrefix = `${browser}/`;
+    const zipAssetPath = outFilePath.replaceAll('[browser]', browser);
+    let size = 0;
+
+    for (const [assetName, source] of Object.entries(compilation.assets)) {
+      if (
+        assetName.startsWith(browserPrefix) &&
+        assetName !== zipAssetPath &&
+        !excludeExtensions.includes(path.extname(assetName))
+      ) {
+        size += source.size();
+      }
+    }
+
+    return size;
+  }
+
+  /**
    * Collects bundle-size stats from the pre-fanout compilation assets.
    *
    * @param compilation - The active compilation.
@@ -312,9 +374,14 @@ export class ManifestPlugin<Z extends boolean> {
       const { outFile } = this.options.stats;
       for (const browser of this.options.browsers) {
         const statsFile = outFile.replaceAll('[browser]', browser);
+        const unzipped = this.getBundleUnzippedSize(compilation, browser);
         const zip = this.getBundleZipSize(compilation, browser);
         const { partSizes, timestamp, debugEntrypoints } = bundleSizeStats;
-        const summary = createBundleSizeSummary(partSizes, { zip, timestamp });
+        const summary = createBundleSizeSummary(partSizes, {
+          unzipped,
+          zip,
+          timestamp,
+        });
         emitJsonAsset(compilation, statsFile, summary);
 
         if (debugEntrypoints) {
@@ -707,6 +774,17 @@ export class ManifestPlugin<Z extends boolean> {
     );
     addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
+    if (this.isWebAccessibleHtml(filename)) {
+      this.isolatedHtmlEntries.add(parsedFileName);
+
+      // `cashtag-widget.html` is the web-accessible HTML entry, but HtmlBundler
+      // names its imported frame script `frame`. Both entries must be isolated so
+      // Webpack does not split the iframe bundle.
+      if (parsedFileName === 'cashtag-widget') {
+        this.selfContainedScripts.add('frame');
+        this.isolatedHtmlEntries.add('frame');
+      }
+    }
   };
 
   private collectEntrypoints(
@@ -714,6 +792,7 @@ export class ManifestPlugin<Z extends boolean> {
     entries: Record<string, EntryDescriptionNormalized>,
   ): void {
     this.resetBundleSizeEntrypointMetadata();
+    this.isolatedHtmlEntries.clear();
 
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
@@ -895,6 +974,28 @@ export class ManifestPlugin<Z extends boolean> {
     }
   }
 
+  private emitContentScriptCssAssets(compilation: Compilation) {
+    const cssPaths = new Set(
+      [...this.manifests.values()].flatMap((manifest) =>
+        (manifest.content_scripts ?? []).flatMap(
+          (contentScript: { css?: string[] }) => contentScript.css ?? [],
+        ),
+      ),
+    );
+
+    for (const cssPath of cssPaths) {
+      if (compilation.getAsset(cssPath)) {
+        continue;
+      }
+
+      const sourcePath = path.join(compilation.compiler.context, cssPath);
+      compilation.fileDependencies.add(sourcePath);
+      compilation.emitAsset(cssPath, new RawSource(readFileSync(sourcePath)), {
+        contentType: 'text/css',
+      });
+    }
+  }
+
   private hookIntoPipelines(compilation: Compilation): void {
     // hook into the processAssets hook to move/zip assets
     const tapOptions = { name: NAME, stage: Infinity };
@@ -903,6 +1004,7 @@ export class ManifestPlugin<Z extends boolean> {
       compilation.hooks.processAssets.tapPromise(
         tapOptions,
         async (assets: Assets) => {
+          this.emitContentScriptCssAssets(compilation);
           this.resolveEntrypoints(compilation);
           const bundleSizeStats = this.collectBundleSizeStats(compilation);
           await this.zipAndMoveAssets(compilation, assets, options);
@@ -912,6 +1014,7 @@ export class ManifestPlugin<Z extends boolean> {
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
+        this.emitContentScriptCssAssets(compilation);
         this.resolveEntrypoints(compilation);
         const bundleSizeStats = this.collectBundleSizeStats(compilation);
         this.moveAssets(compilation, assets, options);

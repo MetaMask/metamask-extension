@@ -6,6 +6,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
+import { USER_STORAGE_RAMPS_ORDERS_FEATURE } from '../../../tests/identity/constants';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
 
 const { getE2EIdentifierFromJwt } = AuthenticationController.Mocks;
@@ -32,6 +33,10 @@ export const pathRegexps = {
   ),
   [USER_STORAGE_GROUPS_FEATURE_KEY]: new RegExp(
     `${baseUrl}/${USER_STORAGE_GROUPS_FEATURE_KEY}`,
+    'u',
+  ),
+  [USER_STORAGE_RAMPS_ORDERS_FEATURE]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_RAMPS_ORDERS_FEATURE}`,
     'u',
   ),
 };

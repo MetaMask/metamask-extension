@@ -30,7 +30,8 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             tabindex="0"
           >
             <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--padding-bottom-1 mm-box--color-inherit"
+              class="text-inherit text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero block pb-1"
+              data-testid="confirm-send-amount"
             >
               &lt;0.000001 Unknown
             </h2>
@@ -38,9 +39,13 @@ exports[`TokenTransferInfo renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-token mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-muted mm-box--background-color-overlay-default mm-box--rounded-full"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-12 w-12 bg-overlay-default"
       >
-        ?
+        <span
+          class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+        >
+          ?
+        </span>
       </div>
     </div>
   </div>
@@ -501,7 +506,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
           >
             <button
               aria-label="Edit"
-              class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+              class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               data-testid="edit-gas-fee-icon"
             >
               <svg

@@ -21,7 +21,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
  */
@@ -31,7 +30,6 @@ export const ToastContainer = ({
   children: React.ReactNode | string;
 }) => <Box className="toasts-container">{children}</Box>;
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
  */
@@ -148,7 +146,7 @@ export const Toast = ({
                 variant: DsTextVariant.BodySm,
               }}
               onClick={onActionClick}
-              className="mt-2 rounded-lg"
+              className="mt-2"
             >
               {actionText}
             </Button>

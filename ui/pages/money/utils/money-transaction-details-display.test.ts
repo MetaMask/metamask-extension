@@ -3,13 +3,16 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
+import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
+import type { Hex } from '@metamask/utils';
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import {
   formatMoneyActivityDetailsDate,
+  getMoneyActivityAsset,
   getMoneyActivityErrorMessage,
   getMoneyActivityExplorerUrl,
   getMoneyActivityPaidWith,
+  getMoneyActivityTransactionHash,
   getMoneyTransactionDetailsHeroAmount,
   shortenMoneyActivityHex,
 } from './money-transaction-details-display';
@@ -21,6 +24,9 @@ function findMock(id: string) {
   }
   return tx;
 }
+
+const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex;
+const MAINNET_CHAIN_ID = '0x1' as Hex;
 
 describe('getMoneyTransactionDetailsHeroAmount', () => {
   it('signs incoming confirmed amounts in green', () => {
@@ -173,5 +179,157 @@ describe('getMoneyActivityExplorerUrl', () => {
     expect(getMoneyActivityExplorerUrl('0x8f', validHash)).toBe(
       `https://monadscan.com/tx/${validHash}`,
     );
+  });
+});
+
+describe('getMoneyActivityTransactionHash', () => {
+  const parentHash =
+    '0x1111111111111111111111111111111111111111111111111111111111111111';
+  const childHash =
+    '0x2222222222222222222222222222222222222222222222222222222222222222';
+  const sourceHash =
+    '0x3333333333333333333333333333333333333333333333333333333333333333';
+
+  function buildDeposit(overrides: Partial<TransactionMeta> = {}) {
+    return {
+      ...findMock('money-tx-deposited'),
+      chainId: '0x8f',
+      ...overrides,
+    } as TransactionMeta;
+  }
+
+  it('returns the transaction hash when it is valid', () => {
+    expect(
+      getMoneyActivityTransactionHash(buildDeposit({ hash: parentHash }), {
+        hash: childHash,
+        chainId: '0x8f',
+      } as unknown as TransactionMeta),
+    ).toStrictEqual({ hash: parentHash, chainId: '0x8f' });
+  });
+
+  it('falls back to the required transaction hash for the 0x0 Pay placeholder', () => {
+    expect(
+      getMoneyActivityTransactionHash(buildDeposit({ hash: '0x0' }), {
+        hash: childHash,
+        chainId: MAINNET_CHAIN_ID,
+      } as TransactionMeta),
+    ).toStrictEqual({ hash: childHash, chainId: MAINNET_CHAIN_ID });
+  });
+
+  it('falls back to the Pay source hash on the payment chain', () => {
+    expect(
+      getMoneyActivityTransactionHash(
+        buildDeposit({
+          hash: '0x0',
+          metamaskPay: { chainId: MAINNET_CHAIN_ID, sourceHash },
+        }),
+      ),
+    ).toStrictEqual({ hash: sourceHash, chainId: MAINNET_CHAIN_ID });
+  });
+
+  it('returns undefined when no valid hash is known', () => {
+    expect(
+      getMoneyActivityTransactionHash(buildDeposit({ hash: '0x0' }), {
+        hash: '0x0',
+        chainId: '0x8f',
+      } as unknown as TransactionMeta),
+    ).toBeUndefined();
+  });
+});
+
+describe('getMoneyActivityAsset', () => {
+  it('returns the MetaMask Pay token for a crypto deposit', () => {
+    expect(
+      getMoneyActivityAsset({
+        ...findMock('money-tx-deposited'),
+        metamaskPay: {
+          tokenAddress: USDC_ADDRESS,
+          chainId: MAINNET_CHAIN_ID,
+        },
+      } as TransactionMeta),
+    ).toStrictEqual({
+      chainId: MAINNET_CHAIN_ID,
+      tokenAddress: USDC_ADDRESS,
+      symbol: undefined,
+    });
+  });
+
+  it('returns the MetaMask Pay token for a conversion', () => {
+    expect(
+      getMoneyActivityAsset({
+        ...findMock('money-tx-converted'),
+        metamaskPay: {
+          tokenAddress: USDC_ADDRESS,
+          chainId: MAINNET_CHAIN_ID,
+        },
+      } as TransactionMeta),
+    ).toStrictEqual({
+      chainId: MAINNET_CHAIN_ID,
+      tokenAddress: USDC_ADDRESS,
+      symbol: undefined,
+    });
+  });
+
+  it('returns the destination MetaMask Pay token for a post-quote withdrawal', () => {
+    expect(
+      getMoneyActivityAsset({
+        ...findMock('money-tx-sent'),
+        metamaskPay: {
+          tokenAddress: USDC_ADDRESS,
+          chainId: MAINNET_CHAIN_ID,
+          isPostQuote: true,
+        },
+      } as TransactionMeta),
+    ).toStrictEqual({
+      chainId: MAINNET_CHAIN_ID,
+      tokenAddress: USDC_ADDRESS,
+      symbol: undefined,
+    });
+  });
+
+  it('skips the fiat deposit pay token and uses transfer metadata', () => {
+    const deposited = findMock('money-tx-deposited');
+    expect(
+      getMoneyActivityAsset({
+        ...deposited,
+        metamaskPay: {
+          tokenAddress: USDC_ADDRESS,
+          chainId: MAINNET_CHAIN_ID,
+          fiat: {
+            orderId: '/providers/transak/orders/abc',
+            provider: 'transak-native',
+          },
+        },
+      } as TransactionMeta),
+    ).toStrictEqual({
+      chainId: deposited.chainId,
+      tokenAddress: deposited.transferInformation?.contractAddress,
+      symbol: MUSD_TOKEN.symbol,
+    });
+  });
+
+  it('returns the transferred mUSD token for an incoming transfer', () => {
+    const received = findMock('money-tx-received');
+    expect(getMoneyActivityAsset(received)).toStrictEqual({
+      chainId: received.chainId,
+      tokenAddress: received.transferInformation?.contractAddress,
+      symbol: MUSD_TOKEN.symbol,
+    });
+  });
+
+  it('falls back to mUSD when pay and transfer metadata are missing', () => {
+    expect(
+      getMoneyActivityAsset({
+        id: 'bare-tx',
+        chainId: '0x8f',
+        status: TransactionStatus.confirmed,
+        type: TransactionType.moneyAccountDeposit,
+        txParams: { from: '0x1', to: '0x2', value: '0x0' },
+      } as unknown as TransactionMeta),
+    ).toStrictEqual({
+      chainId: '0x8f',
+      tokenAddress: MUSD_TOKEN_ADDRESS,
+      symbol: MUSD_TOKEN.symbol,
+    });
   });
 });

@@ -35,8 +35,14 @@ describe('Permit Confirmation', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
-        getTokenStandardAndDetailsByChain: { decimals: '2', standard: 'ERC20' },
+        'LegacyBackgroundApiService:getTokenStandardAndDetails': {
+          decimals: '2',
+          standard: 'ERC20',
+        },
+        'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain': {
+          decimals: '2',
+          standard: 'ERC20',
+        },
       }),
     );
   });
@@ -61,7 +67,8 @@ describe('Permit Confirmation', () => {
           analyticsId: 'test-metametrics-id',
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -339,7 +346,7 @@ describe('Permit Confirmation', () => {
     expect(
       mockedBackgroundConnection.submitRequestToBackground,
     ).toHaveBeenCalledWith(
-      'upsertTransactionUIMetricsFragment',
+      'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
       expect.arrayContaining([
         expect.any(String),
         expect.objectContaining({

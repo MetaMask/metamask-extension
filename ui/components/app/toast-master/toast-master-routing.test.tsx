@@ -3,11 +3,18 @@ import { screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ToastMaster } from './toast-master';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('../basic-functionality-migration-toast', () => ({
+  BasicFunctionalityMigrationToast: () => (
+    <div data-testid="mock-bft-migration-toast">
+      BasicFunctionalityMigrationToast
+    </div>
+  ),
 }));
 
 jest.mock('../perps/perps-withdraw-toast', () => ({
@@ -63,11 +70,22 @@ describe('ToastMaster routing', () => {
         screen.queryByTestId('mock-perps-withdraw-toast'),
       ).not.toBeInTheDocument();
     });
+
+    it('renders the Basic Functionality migration toast outside home', () => {
+      renderWithProvider(
+        <ToastMaster />,
+        createStore(),
+        '/confirm-transaction',
+      );
+      expect(
+        screen.getByTestId('mock-bft-migration-toast'),
+      ).toBeInTheDocument();
+    });
   });
 });
 
-const ARC_ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
-const NATIVE_ASSET = '0x0000000000000000000000000000000000000000';
+const ARC_ACCOUNT_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+const ARC_NATIVE_ASSET_ID = 'eip155:5042/slip44:5042';
 
 function createArcStore() {
   return configureStore({
@@ -75,9 +93,19 @@ function createArcStore() {
       ...mockState.metamask,
       isUnlocked: true,
       arcUsageNoticeShown: false,
-      tokenBalances: {
-        [ARC_ACCOUNT]: {
-          [CHAIN_IDS.ARC]: { [NATIVE_ASSET]: '0xde0b6b3a7640000' },
+      assetsBalance: {
+        ...mockState.metamask.assetsBalance,
+        [ARC_ACCOUNT_ID]: {
+          ...mockState.metamask.assetsBalance[ARC_ACCOUNT_ID],
+          [ARC_NATIVE_ASSET_ID]: { amount: '1' },
+        },
+      },
+      assetsInfo: {
+        ...mockState.metamask.assetsInfo,
+        [ARC_NATIVE_ASSET_ID]: {
+          type: 'native',
+          decimals: 18,
+          symbol: 'USDC',
         },
       },
     },

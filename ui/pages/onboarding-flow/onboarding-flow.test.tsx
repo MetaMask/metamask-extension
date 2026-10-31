@@ -5,6 +5,8 @@ import thunk from 'redux-thunk';
 import { Routes, Route } from 'react-router-dom';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
+import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -37,6 +39,39 @@ import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import OnboardingFlow from './onboarding-flow';
 
 const mockTrackEvent = jest.fn();
+const mockStartJourney = jest.fn();
+const mockEndJourney = jest.fn();
+const mockStartOnboardingJourney = jest.fn().mockResolvedValue('journey-id');
+const mockUpdateOnboardingJourney = jest.fn().mockResolvedValue(undefined);
+const mockEndOnboardingJourney = jest.fn().mockResolvedValue(undefined);
+
+jest.mock('../../contexts/onboarding-trace', () => {
+  const actual = jest.requireActual('../../contexts/onboarding-trace');
+  const { useMemo } = jest.requireActual('react');
+
+  return {
+    ...actual,
+    useOnboardingTrace: () => {
+      const trace = actual.useOnboardingTrace();
+
+      // Keep the callback identities stable so the start effect runs once,
+      // while still invoking the provider's real lifecycle.
+      return useMemo(
+        () => ({
+          startJourney: () => {
+            mockStartJourney();
+            trace.startJourney();
+          },
+          endJourney: (data: Parameters<typeof trace.endJourney>[0]) => {
+            mockEndJourney(data);
+            trace.endJourney(data);
+          },
+        }),
+        [trace],
+      );
+    },
+  };
+});
 
 jest.mock('../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -252,8 +287,28 @@ describe('Onboarding Flow', () => {
       },
     });
 
-  const renderUnlockPage = (metamaskState = {}) =>
+  const renderOnboarding = (
+    component: React.ReactElement,
+    storeToUse: ReturnType<typeof createStore>,
+    pathname: string,
+  ) =>
     renderWithProvider(
+      component,
+      storeToUse,
+      pathname,
+      undefined,
+      undefined,
+      createMockUIMessenger({
+        'OnboardingController:startOnboardingJourney':
+          mockStartOnboardingJourney,
+        'OnboardingController:updateOnboardingJourney':
+          mockUpdateOnboardingJourney,
+        'OnboardingController:endOnboardingJourney': mockEndOnboardingJourney,
+      } as never),
+    );
+
+  const renderUnlockPage = (metamaskState = {}) =>
+    renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       createStore(metamaskState),
       ONBOARDING_UNLOCK_ROUTE,
@@ -267,6 +322,9 @@ describe('Onboarding Flow', () => {
   };
 
   beforeEach(() => {
+    mockStartOnboardingJourney.mockResolvedValue('journey-id');
+    mockUpdateOnboardingJourney.mockResolvedValue(undefined);
+    mockEndOnboardingJourney.mockResolvedValue(undefined);
     (
       getIsSeedlessOnboardingFeatureEnabled as jest.MockedFunction<
         typeof getIsSeedlessOnboardingFeatureEnabled
@@ -279,6 +337,33 @@ describe('Onboarding Flow', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('starts the onboarding journey through the lifecycle hook', async () => {
+    renderOnboarding(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_WELCOME_ROUTE,
+    );
+
+    await waitFor(() => {
+      expect(mockStartOnboardingJourney).toHaveBeenCalledWith({
+        lastStep: 'welcome',
+      });
+    });
+    expect(mockStartJourney).toHaveBeenCalledTimes(1);
+  });
+
+  it('sets the onboarding date through the messenger', () => {
+    renderOnboarding(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_WELCOME_ROUTE,
+    );
+
+    expect(submitRequestToBackgroundAndCatch).toHaveBeenCalledWith(
+      'AppStateController:setOnboardingDate',
+    );
   });
 
   it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', async () => {
@@ -313,7 +398,7 @@ describe('Onboarding Flow', () => {
       completedOnboardingState,
     );
 
-    renderWithProvider(
+    renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       completedOnboardingStore,
       ONBOARDING_ROUTE,
@@ -324,11 +409,12 @@ describe('Onboarding Flow', () => {
         replace: true,
       });
     });
+    expect(mockStartJourney).not.toHaveBeenCalled();
   });
 
   describe('Create Password', () => {
     it('should render create password', () => {
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId } = renderOnboarding(
         <OnboardingFlowWithRouteContext />,
         store,
         ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -341,7 +427,7 @@ describe('Onboarding Flow', () => {
     });
 
     it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
-      const { queryByTestId, queryByText } = renderWithProvider(
+      const { queryByTestId, queryByText } = renderOnboarding(
         <OnboardingFlowWithRouteContext />,
         configureMockStore([thunk])({
           ...mockState,
@@ -378,7 +464,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('should redirect to reveal recovery phrase when going to review recovery phrase without srp', () => {
-    renderWithProvider(
+    renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_REVIEW_SRP_ROUTE,
@@ -394,7 +480,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('should redirect to reveal recovery phrase when going to confirm recovery phrase without srp', () => {
-    renderWithProvider(
+    renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -407,7 +493,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('should redirect setup passkey to onboarding unlock when unlocked without srp', () => {
-    renderWithProvider(
+    renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       createStore({
         isUnlocked: true,
@@ -423,7 +509,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render import seed phrase', () => {
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_IMPORT_WITH_SRP_ROUTE,
@@ -435,7 +521,7 @@ describe('Onboarding Flow', () => {
 
   describe('Unlock Screen', () => {
     it('should render unlock page', () => {
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId } = renderOnboarding(
         <OnboardingFlowWithRouteContext />,
         store,
         ONBOARDING_UNLOCK_ROUTE,
@@ -452,7 +538,14 @@ describe('Onboarding Flow', () => {
 
       submitUnlock(getByTestId);
 
-      await waitFor(() => expect(unlockAndGetSeedPhrase).toHaveBeenCalled());
+      await waitFor(() => {
+        expect(unlockAndGetSeedPhrase).toHaveBeenCalled();
+        expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
+        expect(mockEndOnboardingJourney).toHaveBeenCalledWith({
+          lastStep: 'unlock',
+          success: true,
+        });
+      });
     });
 
     it('keeps the loading overlay visible until social import sidepanel rehydration completes', async () => {
@@ -556,7 +649,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render privacy settings', () => {
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
@@ -569,7 +662,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding creation/completion successful', async () => {
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_COMPLETION_ROUTE,
@@ -584,7 +677,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('redirects locked return visits on the completion route to unlock', async () => {
-    renderWithProvider(
+    renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       createStore({
         hasSeenOnboardingCompletionPage: true,
@@ -623,7 +716,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding Login page screen', async () => {
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_WELCOME_ROUTE,
@@ -635,7 +728,7 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding metametrics screen', () => {
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_METAMETRICS,
@@ -651,7 +744,7 @@ describe('Onboarding Flow', () => {
     // Enable Flask mode for this test only
     process.env.METAMASK_BUILD_TYPE = 'flask';
 
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId } = renderOnboarding(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_EXPERIMENTAL_AREA,

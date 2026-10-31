@@ -115,7 +115,10 @@ describe('MM Connect-EVM', function (this: Suite) {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signingConfirmation = new Confirmation(driver);
           await signingConfirmation.checkPageIsLoaded();
-          await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await signingConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Back on the dapp: verify the response is a hex signature.
           await testDapp.switchTo();
@@ -151,7 +154,10 @@ describe('MM Connect-EVM', function (this: Suite) {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const txConfirmation = new Confirmation(driver);
           await txConfirmation.checkPageIsLoaded();
-          await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await txConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Back on the dapp: verify the response contains a tx hash.
           await testDapp.switchTo();
@@ -304,7 +310,10 @@ describe('MM Connect-EVM', function (this: Suite) {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signingConfirmation = new Confirmation(driver);
           await signingConfirmation.checkPageIsLoaded();
-          await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await signingConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Back on the dapp: verify the signature result element shows 0x...
           await testDapp.switchTo();
@@ -340,7 +349,10 @@ describe('MM Connect-EVM', function (this: Suite) {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const txConfirmation = new Confirmation(driver);
           await txConfirmation.checkPageIsLoaded();
-          await txConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await txConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Back on the dapp: verify the tx hash is shown.
           await testDapp.switchTo();

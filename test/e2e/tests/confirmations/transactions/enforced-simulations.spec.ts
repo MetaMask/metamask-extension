@@ -24,7 +24,7 @@ import { getMockAssetsPrice, mockSpotPrices } from '../../tokens/utils/mocks';
 
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const USDC_ASSET_ID = `eip155:1/erc20:${USDC_ADDRESS}`;
-// Matches mock-e2e's default `ethConversionInUsd`. Gas fiat ($15.05) is
+// Matches mock-e2e's `DEFAULT_ETH_USD_PRICE`. Gas fiat ($15.05) is
 // 0.005 ETH × this rate; CurrencyRateController no longer supplies it.
 const ETH_USD_CONVERSION_RATE = 3010;
 const ENFORCED_SIMULATIONS_SPOT_PRICES = {
@@ -397,13 +397,13 @@ async function confirmAndGetTransaction(
   expectedStatus: 'confirmed' | 'failed',
   acknowledgeDangerAlert = false,
 ) {
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterButton({ button: 'confirm' });
 
   if (acknowledgeDangerAlert) {
     const alertModal = new ConfirmAlertModal(driver);
     await alertModal.acknowledgeAlert();
     await alertModal.confirmFromAlertModal();
-    await confirmation.clickFooterConfirmButton();
+    await confirmation.clickFooterButton({ button: 'confirm' });
   }
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);

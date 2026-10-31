@@ -8,6 +8,7 @@ import {
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
+  FontFamily,
   FontWeight,
   IconName,
   Text,
@@ -141,8 +142,7 @@ const TradeDetailRows = ({
   const pnlNumber = fill.amountNumber;
   const showPnl =
     transaction.category === 'position_close' &&
-    !isNaN(pnlNumber) &&
-    pnlNumber !== 0;
+    (pnlNumber === undefined || (!isNaN(pnlNumber) && pnlNumber !== 0));
 
   return (
     <>
@@ -159,10 +159,14 @@ const TradeDetailRows = ({
         <Row
           label={t('perpsPnl')}
           value={
-            <SignedValue
-              value={formatPnl(pnlNumber)}
-              isPositive={pnlNumber >= 0}
-            />
+            pnlNumber === undefined ? (
+              t('unknown')
+            ) : (
+              <SignedValue
+                value={formatPnl(pnlNumber)}
+                isPositive={pnlNumber >= 0}
+              />
+            )
           }
         />
       )}
@@ -275,8 +279,8 @@ const PerpsTransactionDetailsPage = () => {
             size={AvatarTokenSize.Lg}
           />
           <Text
-            variant={TextVariant.HeadingLg}
-            fontWeight={FontWeight.Medium}
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
             data-testid="perps-transaction-details-hero-amount"
           >
             {transaction.type === 'funding' && transaction.fundingAmount

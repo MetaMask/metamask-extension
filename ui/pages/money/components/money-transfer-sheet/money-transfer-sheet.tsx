@@ -20,6 +20,13 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountWithdrawal } from '../../../../hooks/money/useMoneyAccountWithdrawal';
 import { useMoneyPerpsDeposit } from '../../../../hooks/money/useMoneyPerpsDeposit';
+import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../../../hooks/useTrackOnce';
+import {
+  MoneyBottomSheetName,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../constants/money-events';
 
 export const MONEY_TRANSFER_SHEET_TEST_IDS = {
   container: 'money-transfer-sheet',
@@ -65,9 +72,19 @@ export function MoneyTransferSheet({
     isLoading: isPerpsLoading,
   } = useMoneyPerpsDeposit();
 
+  const { trackBottomSheetViewed, trackSurfaceClicked } = useMoneyAnalytics({
+    bottomSheetName: MoneyBottomSheetName.TransferMoneySheet,
+  });
+
+  useTrackOnce(isOpen, trackBottomSheetViewed);
+
   const isBusy = isWithdrawLoading || isPerpsLoading;
 
   const handleBetweenAccounts = useCallback(() => {
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.TransferMoneySheetBetweenAccounts,
+      redirectTarget: MoneyScreenName.MoneyTransfer,
+    });
     onClose();
     initiateWithdrawal().catch((error: unknown) => {
       console.error(
@@ -75,9 +92,13 @@ export function MoneyTransferSheet({
         error,
       );
     });
-  }, [initiateWithdrawal, onClose]);
+  }, [initiateWithdrawal, onClose, trackSurfaceClicked]);
 
   const handlePerpsAccount = useCallback(() => {
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.TransferMoneySheetPerpsAccount,
+      redirectTarget: MoneyScreenName.MoneyTransfer,
+    });
     onClose();
     initiatePerpsDeposit().catch((error: unknown) => {
       console.error(
@@ -85,7 +106,7 @@ export function MoneyTransferSheet({
         error,
       );
     });
-  }, [initiatePerpsDeposit, onClose]);
+  }, [initiatePerpsDeposit, onClose, trackSurfaceClicked]);
 
   const options = useMemo((): MoneyTransferOption[] => {
     const rows: MoneyTransferOption[] = [

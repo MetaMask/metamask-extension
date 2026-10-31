@@ -14,7 +14,6 @@ import {
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
-import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import AssetListControlBar from './asset-list-control-bar';
 
 type TooltipProps = {
@@ -44,13 +43,6 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
-
-jest.mock('../../../../../selectors/assets-unify-state/feature-flags', () => ({
-  ...jest.requireActual(
-    '../../../../../selectors/assets-unify-state/feature-flags',
-  ),
-  getIsAssetsUnifyStateEnabled: jest.fn(() => false),
-}));
 
 const backgroundConnectionMock = new Proxy(
   {},
@@ -140,10 +132,9 @@ const selectSolanaAccount = (state: ReturnType<typeof createMockState>) => {
 describe('NFTs options', () => {
   afterEach(() => {
     jest.clearAllMocks();
-    jest.mocked(getIsAssetsUnifyStateEnabled).mockReturnValue(false);
   });
 
-  it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', async () => {
+  it('renders a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', async () => {
     const detectNftsSpy = jest.spyOn(actions, 'detectNfts');
     const checkAndUpdateAllNftsOwnershipStatusSpy = jest.spyOn(
       actions,
@@ -374,6 +365,47 @@ describe('NFTs options', () => {
     ).toHaveTextContent(messages.allDefaultNetworks.message);
   });
 
+  it('keeps the current EVM network when All networks is selected', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const setActiveNetworkSpy = jest.spyOn(actions, 'setActiveNetwork');
+    const setEnabledAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    state.metamask.isEvmSelected = true;
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+    fireEvent.click(await findByTestId('home-network-filter-all-default'));
+
+    expect(setEnabledAllPopularNetworksSpy).toHaveBeenCalled();
+    expect(setActiveNetworkSpy).not.toHaveBeenCalled();
+  });
+
+  it('activates an EVM network when All networks is selected from a non-EVM network', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const setActiveNetworkSpy = jest.spyOn(actions, 'setActiveNetwork');
+    const setEnabledAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    state.metamask.isEvmSelected = false;
+    state.metamask.selectedMultichainNetworkChainId = SOLANA_CHAIN_ID;
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+    fireEvent.click(await findByTestId('home-network-filter-all-default'));
+
+    expect(setEnabledAllPopularNetworksSpy).toHaveBeenCalled();
+    expect(setActiveNetworkSpy).toHaveBeenCalledWith('selectedNetworkClientId');
+  });
+
   it('calls onNetworkSelect with CAIP IDs when one network is enabled', async () => {
     const onNetworkSelect = jest.fn();
     const state = createMockState();
@@ -522,15 +554,12 @@ describe('NFTs options', () => {
     expect(await findByTestId('manageTokens__button')).toBeInTheDocument();
   });
 
-  it('refreshes via AssetsController when assets unify state is enabled', async () => {
+  it('refreshes via AssetsController', async () => {
     setBackgroundConnection(backgroundConnectionMock as never);
-    jest.mocked(getIsAssetsUnifyStateEnabled).mockReturnValue(true);
     const refreshAssetsSpy = jest.spyOn(
       actions,
       'refreshAssetsForSelectedAccount',
     );
-    const updateBalancesSpy = jest.spyOn(actions, 'updateBalancesFoAccounts');
-    const detectTokensSpy = jest.spyOn(actions, 'detectTokens');
 
     const state = createMockState();
     state.metamask.enabledNetworkMap = {
@@ -555,38 +584,6 @@ describe('NFTs options', () => {
         assetTypes: ['token', 'price', 'metadata'],
       },
     );
-    expect(updateBalancesSpy).not.toHaveBeenCalled();
-    expect(detectTokensSpy).not.toHaveBeenCalled();
-  });
-
-  it('refreshes via the legacy token controllers when assets unify state is disabled', async () => {
-    setBackgroundConnection(backgroundConnectionMock as never);
-    const refreshAssetsSpy = jest.spyOn(
-      actions,
-      'refreshAssetsForSelectedAccount',
-    );
-    const updateBalancesSpy = jest.spyOn(actions, 'updateBalancesFoAccounts');
-    const detectTokensSpy = jest.spyOn(actions, 'detectTokens');
-
-    const state = createMockState();
-    state.metamask.enabledNetworkMap = {
-      eip155: {
-        '0x1': true,
-      },
-    };
-    const store = configureMockStore([thunk])(state);
-
-    const { findByTestId } = renderWithProvider(
-      <AssetListControlBar showTokensLinks />,
-      store,
-    );
-
-    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
-    fireEvent.click(await findByTestId('refreshList__button'));
-
-    expect(updateBalancesSpy).toHaveBeenCalledWith(['0x1'], false);
-    expect(detectTokensSpy).toHaveBeenCalledWith(['0x1']);
-    expect(refreshAssetsSpy).not.toHaveBeenCalled();
   });
 
   it('keeps the original NFT overflow menu for non-EVM accounts', async () => {

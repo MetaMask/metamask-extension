@@ -3,7 +3,8 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { isStrictHexString } from '@metamask/utils';
+import { isStrictHexString, type Hex } from '@metamask/utils';
+import { ORIGIN_METAMASK } from '../constants/app';
 
 export function isValidTransactionHash(hash: string) {
   return hash.length === 66 && isStrictHexString(hash);
@@ -114,6 +115,31 @@ export function isPostQuoteWithdrawTransaction(
 }
 
 /**
+ * Address of the account that funds the transaction and signs its funding
+ * legs on-device.
+ *
+ * Most flows use `txParams.from`. Money Account deposits are signed by the
+ * money account but funded by the account in `accountOverride`. Post-quote
+ * withdraws keep `from` because their override is only the recipient.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param accountOverride - MetaMask Pay account override for the transaction.
+ * @returns The paying account address, if known.
+ */
+export function getTransactionPayingAccount(
+  transactionMeta: TransactionMeta | undefined,
+  accountOverride: Hex | undefined,
+): Hex | undefined {
+  const from = transactionMeta?.txParams?.from as Hex | undefined;
+
+  if (isPostQuoteWithdrawTransaction(transactionMeta)) {
+    return from;
+  }
+
+  return accountOverride ?? from;
+}
+
+/**
  * Checks whether the given transaction is a Perps withdraw, either directly
  * via `type` or via any `nestedTransactions` entry.
  *
@@ -130,4 +156,24 @@ export function isPerpsWithdrawTransaction(
   transactionMeta: TransactionMeta | undefined,
 ): boolean {
   return hasTransactionType(transactionMeta, PERPS_WITHDRAW_TYPES);
+}
+
+/**
+ * Checks whether the given transaction is a Perps deposit started in the
+ * wallet, either directly via `type` or via any `nestedTransactions` entry.
+ *
+ * In-wallet Perps deposits are tracked by the Perps controller and toasted by
+ * `PerpsDepositToast`. Deposits a dApp requests through `wallet_pay` have the
+ * dApp's origin instead.
+ *
+ * @param transactionMeta - The transaction metadata to check.
+ * @returns Whether the transaction is an in-wallet Perps deposit.
+ */
+export function isInWalletPerpsDepositTransaction(
+  transactionMeta: TransactionMeta | undefined,
+): boolean {
+  return (
+    transactionMeta?.origin === ORIGIN_METAMASK &&
+    hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
+  );
 }

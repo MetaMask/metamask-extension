@@ -29,6 +29,13 @@ import {
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { TransactionData } from './transaction-data';
 
+jest.mock(
+  '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
+  () => ({
+    useAlertMetrics: () => ({ trackInlineAlertClicked: jest.fn() }),
+  }),
+);
+
 const DATA_MOCK = '0x123456';
 const DATA_2_MOCK = '0xabcdef';
 const TO_MOCK = '0x1234';

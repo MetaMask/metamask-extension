@@ -766,17 +766,11 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
   );
 }
 
-// Helper to extract message from error (handles plain objects from RPC boundary)
+// Helper to extract message from error (handles plain objects from RPC boundary).
+// Delegates to `extractMessageFromUnknownError` so non-Error/non-message
+// objects are JSON-stringified instead of collapsing to `"[object Object]"`.
 const getErrorMessage = (err: unknown): string => {
-  if (err instanceof Error) {
-    return err.message;
-  }
-  // Handle plain objects with message property (from RPC boundary)
-  const errObj = err as { message?: string };
-  if (errObj?.message && typeof errObj.message === 'string') {
-    return errObj.message;
-  }
-  return String(err);
+  return extractMessageFromUnknownError(err);
 };
 
 /**

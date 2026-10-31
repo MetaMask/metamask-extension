@@ -1,7 +1,7 @@
 import { Token } from '@metamask/assets-controllers';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { CaipAssetType, Hex, isCaipChainId } from '@metamask/utils';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -10,14 +10,14 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
+import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
 import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
-import { showModal } from '../../../store/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { useDispatch } from '../../../store/hooks';
+import { HideTokenConfirmationModal } from '../../../components/app/modals/hide-token-confirmation-modal/hide-token-confirmation-modal';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -57,7 +57,7 @@ const TokenAsset = ({
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [isHideTokenModalOpen, setIsHideTokenModalOpen] = useState(false);
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   // Fetch token data from tokenList
@@ -72,8 +72,8 @@ const TokenAsset = ({
     address && erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
 
   const name = tokenData?.name || tokenDataFromChain?.name || symbol;
-  const iconUrl =
-    tokenData?.iconUrl || tokenDataFromChain?.iconUrl || image || '';
+
+  const iconUrl = getAssetImageUrl(address ?? '', chainId) ?? '';
 
   const aggregators = tokenData?.aggregators;
 
@@ -89,47 +89,55 @@ const TokenAsset = ({
     })?.url ?? '';
 
   return (
-    <AssetPage
-      asset={{
-        chainId,
-        type: AssetType.token,
-        address: address ?? '',
-        symbol,
-        name,
-        decimals: token.decimals,
-        image: iconUrl,
-        aggregators,
-        isERC721,
-      }}
-      optionsButton={
-        <AssetOptions
-          isNativeAsset={false}
-          onRemove={() =>
-            dispatch(
-              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
-            )
-          }
-          onClickBlockExplorer={() => {
-            trackEvent(
-              createEventBuilder('Clicked Block Explorer Link')
-                .addCategory(MetaMetricsEventCategory.Navigation)
-                .addProperties({
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  link_type: 'Token Tracker',
-                  action: 'Token Options',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  block_explorer_domain: getURLHostName(blockExplorerLink),
-                })
-                .build(),
-            );
-            global.platform.openTab({ url: blockExplorerLink });
-          }}
-          token={token}
-        />
-      }
-    />
+    <>
+      <AssetPage
+        asset={{
+          chainId,
+          type: AssetType.token,
+          address: address ?? '',
+          symbol,
+          name,
+          decimals: token.decimals,
+          image: iconUrl,
+          aggregators,
+          isERC721,
+        }}
+        optionsButton={
+          <AssetOptions
+            isNativeAsset={false}
+            onRemove={() => setIsHideTokenModalOpen(true)}
+            onClickBlockExplorer={() => {
+              trackEvent(
+                createEventBuilder('Clicked Block Explorer Link')
+                  .addCategory(MetaMetricsEventCategory.Navigation)
+                  .addProperties({
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    link_type: 'Token Tracker',
+                    action: 'Token Options',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    block_explorer_domain: getURLHostName(blockExplorerLink),
+                  })
+                  .build(),
+              );
+              global.platform.openTab({ url: blockExplorerLink });
+            }}
+            token={token}
+          />
+        }
+      />
+      <HideTokenConfirmationModal
+        token={{
+          ...token,
+          address: address ?? '',
+          image: iconUrl,
+        }}
+        isOpen={isHideTokenModalOpen}
+        onClose={() => setIsHideTokenModalOpen(false)}
+        navigate={navigate}
+      />
+    </>
   );
 };
 

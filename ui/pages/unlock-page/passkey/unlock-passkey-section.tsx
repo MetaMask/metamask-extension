@@ -40,22 +40,34 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
+  getIsPasskeyUserHandleBased,
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
+import { discardUnlockMeasurement, UnlockReady } from '../unlock-performance';
+
+export type PasskeyUnlockSuccessContext = {
+  /**
+   * Whether the unlocked passkey uses the legacy userHandle derivation and
+   * should be offered migration.
+   */
+  isPasskeyMigrationEligible: boolean;
+};
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
+  isUnlockReady: boolean;
   isPasskeyActive: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
   isPasswordInProgress: boolean;
-  onUnlockSuccess: () => Promise<void>;
+  onUnlockSuccess: (context: PasskeyUnlockSuccessContext) => Promise<void>;
   onUsePassword: () => void;
 };
 
 export const UnlockPasskeySection = ({
   logoSection,
+  isUnlockReady,
   isPasskeyActive,
   passkeyAutoUnlockSuppressed,
   mustDeferPasskeyToBrowserTab,
@@ -68,6 +80,7 @@ export const UnlockPasskeySection = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const unlockWithPasskey = usePasskeyUnlock();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+  const isPasskeyMigrationEligible = useSelector(getIsPasskeyUserHandleBased);
   const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
@@ -101,6 +114,12 @@ export const UnlockPasskeySection = ({
         return;
       }
 
+      // Automatic authentication never offers an idle form before user input.
+      // Exclude the whole document, including cancellation/password fallback.
+      if (isAutoPrompt) {
+        discardUnlockMeasurement();
+      }
+
       if (isMountedRef.current) {
         setPasskeyError(null);
         setPasskeyInProgress(true);
@@ -125,8 +144,11 @@ export const UnlockPasskeySection = ({
             .build(),
         );
 
-        await unlockWithPasskey();
-        await onUnlockSuccess();
+        const shouldShowMigrationNotice = await unlockWithPasskey();
+        await onUnlockSuccess({
+          isPasskeyMigrationEligible:
+            shouldShowMigrationNotice ?? isPasskeyMigrationEligible,
+        });
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.AppUnlocked)
@@ -212,6 +234,7 @@ export const UnlockPasskeySection = ({
       onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,
+      isPasskeyMigrationEligible,
       passkeyAuthenticatorId,
       t,
       trackEvent,
@@ -277,6 +300,9 @@ export const UnlockPasskeySection = ({
       gap={4}
       padding={4}
     >
+      <UnlockReady
+        ready={isUnlockReady && !passkeyInProgress && !showTroubleshootModal}
+      />
       {logoSection}
       {passkeyError ? (
         <Text

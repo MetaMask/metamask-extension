@@ -160,7 +160,7 @@ class SettingsPage {
         return;
       }
       await this.clickBackButton();
-      await this.driver.delay(1000);
+      await this.driver.delay(300);
     }
   }
 

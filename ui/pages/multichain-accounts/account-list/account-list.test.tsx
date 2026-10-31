@@ -7,7 +7,26 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsManageAccountsSource,
+} from '../../../../shared/constants/metametrics';
 import { AccountList } from './account-list';
+
+const mockTrackEvent = jest.fn();
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockUseNavigate = jest.fn();
 let mockLocationKey = 'default';
@@ -382,6 +401,100 @@ describe('AccountList', () => {
       fireEvent.click(screen.getByTestId(backButtonTestId));
 
       expect(mockUseNavigate).toHaveBeenCalled();
+    });
+
+    it('tracks Manage Accounts Viewed when entered', () => {
+      renderComponent();
+
+      fireEvent.click(screen.getByTestId(manageButtonTestId));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        name: MetaMetricsEventName.ManageAccountsViewed,
+        properties: {
+          category: MetaMetricsEventCategory.Accounts,
+          source: MetaMetricsManageAccountsSource.AccountList,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          total_accounts: 5,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          total_wallets: 5,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hidden_count: 0,
+        },
+        sensitiveProperties: {},
+      });
+    });
+
+    it('reports one account per rendered cell', () => {
+      // Each account group is one cell and one account, whatever wallet backs
+      // it — BIP-44, hardware or imported private key alike. The reported
+      // total has to match the cells the manage view lists, not the number of
+      // addresses underneath them.
+      const wallets = Object.values(mockState.metamask.accountTree.wallets) as {
+        groups: Record<string, unknown>;
+      }[];
+      const groupIds = wallets.flatMap((wallet) => Object.keys(wallet.groups));
+
+      renderComponent();
+      fireEvent.click(screen.getByTestId(manageButtonTestId));
+
+      const renderedCells = groupIds.filter((groupId) =>
+        screen.queryByTestId(`multichain-account-cell-${groupId}`),
+      );
+
+      expect(renderedCells).toHaveLength(groupIds.length);
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.ManageAccountsViewed,
+          properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            total_accounts: renderedCells.length,
+          }),
+        }),
+      );
+    });
+
+    it('tracks the view only once per entry into manage mode', () => {
+      renderComponent();
+
+      fireEvent.click(screen.getByTestId(manageButtonTestId));
+
+      expect(
+        mockTrackEvent.mock.calls.filter(
+          ([event]) => event.name === MetaMetricsEventName.ManageAccountsViewed,
+        ),
+      ).toHaveLength(1);
+    });
+
+    it('reports counts for the whole tree even when the list is filtered by a search', () => {
+      // The gear opens a management view over every account, so the counts must
+      // describe the whole wallet rather than whatever the search left on screen.
+      renderComponent();
+
+      fireEvent.change(
+        within(screen.getByTestId(searchContainerTestId)).getByRole(
+          'searchbox',
+        ),
+        { target: { value: 'Account 1' } },
+      );
+      fireEvent.click(screen.getByTestId(manageButtonTestId));
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.ManageAccountsViewed,
+          properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            total_accounts: 5,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            total_wallets: 5,
+          }),
+        }),
+      );
     });
   });
 });

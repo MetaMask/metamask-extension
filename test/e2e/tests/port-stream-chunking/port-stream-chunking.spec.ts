@@ -62,7 +62,7 @@ describe('Port Stream Chunking', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withTransactionController({ transactions: largeTransactions })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,

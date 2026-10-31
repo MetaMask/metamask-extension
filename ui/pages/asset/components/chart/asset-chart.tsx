@@ -11,17 +11,16 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import classnames from 'clsx';
-import { brandColor } from '@metamask/design-tokens';
-import { Hex } from '@metamask/utils';
+import { Hex, isCaipAssetType } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
   TextColor,
@@ -31,11 +30,11 @@ import {
   ButtonBase,
   ButtonBaseSize,
 } from '../../../../components/component-library';
-import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
-import { finiteFallback, loadingOpacity } from '../../util';
+import { finiteFallback, loadingOpacity, processAssetParams } from '../../util';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
@@ -50,23 +49,12 @@ Chart.register(
   CrosshairPlugin,
 );
 
-const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
+const initialChartOptions: ChartOptions<'line'> = {
   normalized: true,
   parsing: false,
   aspectRatio: 2.6,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
-  fill: true,
-  backgroundColor: ({ chart }) => {
-    const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    gradient.addColorStop(0, `${chart.options.borderColor}60`);
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    gradient.addColorStop(1, `${chart.options.borderColor}00`);
-    return gradient;
-  },
   elements: {
     line: { borderWidth: 1.5 },
     point: { pointStyle: false },
@@ -132,23 +120,33 @@ const getTranslatedTimeRangeLabel = (
 
 const TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P1000Y'];
 
+// Non-EVM routes carry the CAIP-19 id. `address` can be the selected
+// account's native asset on a different chain.
+const getChartAddress = (
+  chainId: Hex,
+  decodedAsset: string | undefined,
+  address: string,
+): string => {
+  if (!isEvmChainId(chainId) && decodedAsset && isCaipAssetType(decodedAsset)) {
+    return decodedAsset;
+  }
+  return address;
+};
+
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
   chainId,
   address,
   currentPrice,
   currency,
-  asset,
 }: {
   chainId: Hex;
   address: string;
   currentPrice?: number;
   currency: string;
-  asset?: TokenFiatDisplayInfo;
 }) => {
   const t = useI18nContext();
-  const theme = useTheme();
-
+  const { decodedAsset } = processAssetParams(useParams());
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     TIME_RANGES[0],
   );
@@ -163,7 +161,7 @@ const AssetChart = ({
     },
   } = useHistoricalPrices({
     chainId,
-    address,
+    address: getChartAddress(chainId, decodedAsset, address),
     currency,
     timeRange: selectedTimeRange,
   });
@@ -193,7 +191,10 @@ const AssetChart = ({
 
   const options = {
     ...initialChartOptions,
-    borderColor: theme === 'dark' ? brandColor.blue400 : brandColor.blue500,
+    borderColor: ({ chart }) =>
+      getComputedStyle(chart.canvas)
+        .getPropertyValue('--color-success-default')
+        .trim(),
     transitions: {
       active: { animation },
       default: { animation },
@@ -240,7 +241,6 @@ const AssetChart = ({
             ? undefined
             : prices?.[0]?.y
         }
-        asset={asset}
       />
 
       <Box
@@ -273,7 +273,7 @@ const AssetChart = ({
             >
               <Line
                 ref={chartRef}
-                data={{ datasets: [{ data: prices }] }}
+                data={{ datasets: [{ data: prices, fill: false }] }}
                 options={options}
                 // Update the price display on chart hover
                 onMouseMove={(event) => {

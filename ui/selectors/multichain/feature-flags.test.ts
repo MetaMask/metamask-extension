@@ -5,9 +5,12 @@ import {
   getIsAdvancedChartsEnabled,
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
+  getIsFullscreenRedesignEnabled,
   getIsNetworkManagementEnabled,
   getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
+  getShouldShowBasicFunctionalityMigrationModal,
+  getShouldShowBasicFunctionalityMigrationToast,
 } from './feature-flags';
 
 const buildState = (
@@ -271,6 +274,57 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
   });
 });
 
+describe('Basic Functionality migration notification selectors', () => {
+  it('shows a scheduled modal when the remote flag is disabled', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'modal' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(getShouldShowBasicFunctionalityMigrationModal(state)).toBe(true);
+  });
+
+  it('hides a scheduled toast while the wallet is locked', () => {
+    const state = {
+      metamask: {
+        isUnlocked: false,
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getShouldShowBasicFunctionalityMigrationToast(state as any),
+    ).toBe(false);
+  });
+
+  it('hides a dismissed notification', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: true,
+        },
+      },
+    };
+
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getShouldShowBasicFunctionalityMigrationToast(state as any),
+    ).toBe(false);
+  });
+});
+
 describe('getIsBasicFunctionalityConsolidationEnabled', () => {
   it('returns true for an all-on legacy BFT user when the remote flag is enabled', () => {
     expect(
@@ -461,6 +515,47 @@ describe('getIsAdvancedChartsEnabled', () => {
       getIsAdvancedChartsEnabled(
         buildState({
           [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: true,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+});
+
+describe('getIsFullscreenRedesignEnabled', () => {
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsFullscreenRedesignEnabled(buildState() as any),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is false', () => {
+    expect(
+      getIsFullscreenRedesignEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionUxFullscreenRedesign: false }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true when the flag is true', () => {
+    expect(
+      getIsFullscreenRedesignEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionUxFullscreenRedesign: true }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsFullscreenRedesignEnabled(
+        buildState({
+          extensionUxFullscreenRedesign: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any,
       ),

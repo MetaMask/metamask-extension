@@ -105,12 +105,12 @@ const getMetaMaskStateWithUnapprovedContractInteraction = ({
 };
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
-  decodeTransactionData: {
+  'LegacyBackgroundApiService:getNextNonce': '9',
+  'LegacyBackgroundApiService:decodeTransactionData': {
     data: [
       {
         name: 'mintNFTs',
@@ -125,7 +125,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'Sourcify',
   },
-  setPreference: {},
+  'PreferencesController:setPreference': {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -181,7 +181,8 @@ describe('Contract Interaction Confirmation', () => {
           analyticsId: 'test-metametrics-id',
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -359,7 +360,7 @@ describe('Contract Interaction Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('setPreference', [
+      ).toHaveBeenCalledWith('PreferencesController:setPreference', [
         'showConfirmationAdvancedDetails',
         true,
       ]);
@@ -389,20 +390,26 @@ describe('Contract Interaction Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('getNextNonce', expect.anything());
+      ).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:getNextNonce',
+        expect.anything(),
+      );
     });
 
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('decodeTransactionData', [
-        {
-          transactionData:
-            '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
-          contractAddress: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-          chainId: '0xaa36a7',
-        },
-      ]);
+      ).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:decodeTransactionData',
+        [
+          {
+            transactionData:
+              '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
+            contractAddress: '0x076146c765189d51be3160a2140cf80bfc73ad68',
+            chainId: '0xaa36a7',
+          },
+        ],
+      );
     });
 
     const gasFeesSection = await screen.findByTestId('gas-fee-section');
@@ -502,7 +509,7 @@ describe('Contract Interaction Confirmation', () => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
       ).toHaveBeenCalledWith(
-        'upsertTransactionUIMetricsFragment',
+        'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
         expect.arrayContaining([
           expect.any(String),
           expect.objectContaining({

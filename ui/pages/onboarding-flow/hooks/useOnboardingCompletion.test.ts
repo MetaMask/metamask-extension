@@ -79,28 +79,57 @@ const mockSetPreference = jest.fn().mockResolvedValue(undefined);
 const mockSetUseMultiAccountBalanceChecker = jest
   .fn()
   .mockResolvedValue(undefined);
+const mockSetUseTokenDetection = jest.fn().mockResolvedValue(undefined);
+const mockSetUseCurrencyRateCheck = jest.fn().mockResolvedValue(undefined);
+const mockSetUseAddressBarEnsResolution = jest
+  .fn()
+  .mockResolvedValue(undefined);
+const mockSetUsePhishDetect = jest.fn().mockResolvedValue(undefined);
+const mockSetOpenSeaEnabled = jest.fn().mockResolvedValue(undefined);
+const mockSetUseNftDetection = jest.fn().mockResolvedValue(undefined);
+const mockSetUseSafeChainsListValidation = jest
+  .fn()
+  .mockResolvedValue(undefined);
 const mockSetHasSeenOnboardingCompletionPage = jest
   .fn()
   .mockResolvedValue(undefined);
 const mockCompleteOnboarding = jest.fn().mockResolvedValue(true);
-const backgroundConnectionMock = new Proxy(
-  {
-    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
-    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
-    toggleExternalServices: mockToggleExternalServices,
-    toggleBasicFunctionality: mockToggleBasicFunctionality,
-    setPreference: mockSetPreference,
-    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
-    setHasSeenOnboardingCompletionPage: mockSetHasSeenOnboardingCompletionPage,
-    completeOnboarding: mockCompleteOnboarding,
-  },
-  {
-    get: (target, prop) => {
-      if (prop in target) {
-        return target[prop as keyof typeof target];
-      }
-      return jest.fn().mockResolvedValue(undefined);
-    },
+const messengerCallMock = jest.fn(
+  (actionType: string, args: unknown[] = []) => {
+    switch (actionType) {
+      case 'AppStateController:removeDeferredDeepLink':
+        return mockRemoveDeferredDeepLink(...args);
+      case 'UserStorageController:setIsBackupAndSyncFeatureEnabled':
+        return mockSetIsBackupAndSyncFeatureEnabled(...args);
+      case 'LegacyBackgroundApiService:toggleExternalServices':
+        return mockToggleExternalServices(...args);
+      case 'PreferencesController:toggleBasicFunctionality':
+        return mockToggleBasicFunctionality(...args);
+      case 'PreferencesController:setPreference':
+        return mockSetPreference(...args);
+      case 'PreferencesController:setUseMultiAccountBalanceChecker':
+        return mockSetUseMultiAccountBalanceChecker(...args);
+      case 'PreferencesController:setUseTokenDetection':
+        return mockSetUseTokenDetection(...args);
+      case 'PreferencesController:setUseCurrencyRateCheck':
+        return mockSetUseCurrencyRateCheck(...args);
+      case 'PreferencesController:setUseAddressBarEnsResolution':
+        return mockSetUseAddressBarEnsResolution(...args);
+      case 'PreferencesController:setUsePhishDetect':
+        return mockSetUsePhishDetect(...args);
+      case 'PreferencesController:setOpenSeaEnabled':
+        return mockSetOpenSeaEnabled(...args);
+      case 'PreferencesController:setUseNftDetection':
+        return mockSetUseNftDetection(...args);
+      case 'PreferencesController:setUseSafeChainsListValidation':
+        return mockSetUseSafeChainsListValidation(...args);
+      case 'OnboardingController:setHasSeenOnboardingCompletionPage':
+        return mockSetHasSeenOnboardingCompletionPage(...args);
+      case 'OnboardingController:completeOnboarding':
+        return mockCompleteOnboarding(...args);
+      default:
+        return Promise.resolve(undefined);
+    }
   },
 );
 
@@ -134,6 +163,13 @@ describe('useOnboardingCompletion', () => {
       completedOnboarding: false,
       hasSeenOnboardingCompletionPage: false,
       deferredDeepLink: null,
+      useTokenDetection: true,
+      useCurrencyRateCheck: true,
+      useAddressBarEnsResolution: true,
+      usePhishDetect: true,
+      openSeaEnabled: true,
+      useNftDetection: true,
+      useSafeChainsListValidation: true,
     },
     appState: {
       externalServicesOnboardingToggleState: true,
@@ -149,7 +185,10 @@ describe('useOnboardingCompletion', () => {
       false,
     );
     mockUseNavigate.mockClear();
-    setBackgroundConnection(backgroundConnectionMock as never);
+    setBackgroundConnection({
+      getStatePatches: jest.fn().mockResolvedValue([]),
+      messengerCall: messengerCallMock,
+    } as never);
     (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
       false,
     );
@@ -244,8 +283,9 @@ describe('useOnboardingCompletion', () => {
         'isBasicFunctionalityConsolidatedEnabled',
         true,
       );
-      expect(mockSetUseMultiAccountBalanceChecker).toHaveBeenCalledWith(true);
+      expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
     });
+    expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
   });
 
   it('forces Basic Functionality on for social-login users when consolidation is enabled', async () => {
@@ -269,9 +309,10 @@ describe('useOnboardingCompletion', () => {
     });
 
     await waitFor(() => {
-      expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
-      expect(mockSetUseMultiAccountBalanceChecker).toHaveBeenCalledWith(true);
+      expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
     });
+    expect(mockToggleExternalServices).not.toHaveBeenCalled();
+    expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
   });
 
   it('uses toggleExternalServices when the Basic Functionality build flag is disabled', async () => {
@@ -285,10 +326,147 @@ describe('useOnboardingCompletion', () => {
     });
 
     await waitFor(() => {
-      expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
+      expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+        useTokenDetection: true,
+        useCurrencyRateCheck: true,
+        usePhishDetect: true,
+        useAddressBarEnsResolution: true,
+        openSeaEnabled: true,
+        useNftDetection: true,
+        useSafeChainsListValidation: true,
+      });
     });
     expect(mockSetPreference).not.toHaveBeenCalled();
     expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
+  });
+
+  describe('onboarding privacy choices', () => {
+    it('applies every preference the user turned off in the same toggleExternalServices write', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+            useAddressBarEnsResolution: false,
+            usePhishDetect: false,
+            openSeaEnabled: false,
+            useNftDetection: false,
+            useSafeChainsListValidation: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+          useTokenDetection: true,
+          useCurrencyRateCheck: false,
+          usePhishDetect: false,
+          useAddressBarEnsResolution: false,
+          openSeaEnabled: false,
+          useNftDetection: false,
+          useSafeChainsListValidation: false,
+        });
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
+      expect(mockSetOpenSeaEnabled).not.toHaveBeenCalled();
+      expect(mockSetUseNftDetection).not.toHaveBeenCalled();
+      expect(mockSetUseSafeChainsListValidation).not.toHaveBeenCalled();
+      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+    });
+
+    it('does not follow that write with individual preference restores', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+          useTokenDetection: true,
+          useCurrencyRateCheck: false,
+          usePhishDetect: true,
+          useAddressBarEnsResolution: true,
+          openSeaEnabled: true,
+          useNftDetection: true,
+          useSafeChainsListValidation: true,
+        });
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+    });
+
+    it('does not pass owned preferences when Basic Functionality is turned off', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+            usePhishDetect: false,
+          },
+          appState: {
+            ...mockState.appState,
+            externalServicesOnboardingToggleState: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(false);
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
+    });
+
+    it('leaves the consolidated path to own them', async () => {
+      mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+        true,
+      );
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+            usePhishDetect: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
+    });
   });
 
   it('allows retrying completion after a failed attempt', async () => {

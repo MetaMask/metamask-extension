@@ -34,7 +34,11 @@
       "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "consentDecisionMade": true,
       "eventQueue": "object",
-      "optedIn": true
+      "eventsConfig": "object",
+      "marketingCampaignCookieId": null,
+      "marketingConsentDecisionMade": "boolean",
+      "optedIn": true,
+      "optedInToMarketing": "boolean"
     },
     "AnnouncementController": {
       "announcements": "object"
@@ -58,8 +62,10 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": "boolean",
       "isWalletResetInProgress": "boolean",
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": "object",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -102,8 +108,9 @@
     "ConfigRegistryController": {
       "configs": "object",
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
-      "version": null
+      "version": "0"
     },
     "CurrencyController": {},
     "DeFiPositionsControllerV2": "object",
@@ -121,20 +128,16 @@
     "LoggingController": {
       "logs": "object"
     },
-    "MetaMetricsController": {
-      "dataCollectionForMarketing": "boolean",
-      "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object"
-    },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountController": {
+      "defaultMoneyAccountId": null,
+      "moneyAccounts": "object"
+    },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {},
-    "MultichainAssetsRatesController": {},
-    "MultichainBalancesController": {},
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],
@@ -194,6 +197,7 @@
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
       "hasSeenOnboardingCompletionPage": true,
+      "onboardingJourneyEnded": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -236,6 +240,7 @@
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
         "gasSponsorshipOptOutByChainId": "object",
+        "hasLinkedSocialLoginProfile": "boolean",
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": "boolean",
         "privacyMode": "boolean",
@@ -276,7 +281,14 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": "boolean"
     },
-    "ProfileMetricsController": "object",
+    "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
+      "initialDelayEndTimestamp": "number",
+      "initialEnqueueCompleted": "boolean",
+      "proofBackfillEnqueued": "boolean",
+      "reportedAccounts": "object",
+      "syncQueue": "object"
+    },
     "RampsController": {
       "autoramps": "object",
       "orders": "object",
@@ -297,7 +309,7 @@
     },
     "RewardsController": {
       "rewardsAccounts": "object",
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": "object",
       "rewardsPointsEstimateHistory": "object",
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
@@ -328,8 +340,6 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenBalancesController": {},
-    "TokenRatesController": {},
     "TokensController": {},
     "TransactionController": {
       "lastFetchedBlockNumbers": "object",
@@ -351,6 +361,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 226
+    "version": 234
   }
 }

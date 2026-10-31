@@ -40,7 +40,8 @@ export type MetaMaskState = Pick<
   | 'allNfts'
   | 'allTokens'
   | 'theme'
-  | 'dataCollectionForMarketing'
+  | 'optedInToMarketing'
+  | 'marketingConsentDecisionMade'
   | 'useNftDetection'
   | 'openSeaEnabled'
   | 'securityAlertsEnabled'
@@ -108,9 +109,10 @@ export type UserTraitsServiceOptions = {
  * the analytics pipeline via `identify`. Also refreshes the cached profile
  * identity from SRP session data on every state update.
  *
- * This logic previously lived on `MetaMetricsController`. It is orchestration on
- * top of state, not controller state itself, so it lives in a service that the
- * background wiring drives from the `MetamaskController` `update` event.
+ * This logic previously lived on the legacy metrics controller, which was
+ * removed. It is orchestration on top of state, not controller state itself,
+ * so it lives in a service that the background wiring drives from the
+ * `MetamaskController` `update` event.
  */
 export class UserTraitsService {
   name: ServiceName = SERVICE_NAME;
@@ -248,7 +250,9 @@ export class UserTraitsService {
           ? metamaskState.optedIn === true
           : null,
       [MetaMetricsUserTrait.HasMarketingConsent]:
-        metamaskState.dataCollectionForMarketing,
+        metamaskState.marketingConsentDecisionMade === true
+          ? metamaskState.optedInToMarketing === true
+          : null,
       [MetaMetricsUserTrait.TokenSortPreference]:
         metamaskState.preferences?.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:

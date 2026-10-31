@@ -57,6 +57,7 @@ jest.mock('../../../../store/actions', () => ({
 
 const mockUseHardwareWalletState = jest.fn();
 const mockSetSigningInProgress = jest.fn();
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 const mockNavigate = jest.fn();
 
 jest.mock('../../../../contexts/hardware-wallets', () => ({
@@ -64,6 +65,7 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
   useHardwareWalletActions: () => ({
     setSigningInProgress: mockSetSigningInProgress,
+    ensureDeviceReady: mockEnsureDeviceReady,
   }),
 }));
 
@@ -304,6 +306,7 @@ describe('useHardwareWalletSignatures', () => {
     mockNavigateToBridgePage.mockReset();
     mockNavigate.mockReset();
     mockSetSigningInProgress.mockReset();
+    mockEnsureDeviceReady.mockReset().mockResolvedValue(true);
     mockCleanupPendingApproval.mockReset();
     mockUpdateAndApproveTx
       .mockReset()
@@ -560,6 +563,97 @@ describe('useHardwareWalletSignatures', () => {
       await waitFor(() => {
         expect(result.current.signatureStatus).toBe(
           HardwareWalletSignatureStatus.Disconnected,
+        );
+      });
+    });
+
+    it('keeps the flow awaiting and restarts the send once the device recovers from the eth app being closed', async () => {
+      // App closed: signing fails with a no-event error and the live
+      // readiness probe fails, so the restart stays gated.
+      mockUpdateAndApproveTx.mockReturnValue((() =>
+        Promise.reject({
+          code: ErrorCode.DeviceStateEthAppClosed,
+          message: 'Ethereum app is not open',
+        })) as never);
+      mockEnsureDeviceReady.mockResolvedValue(false);
+
+      const { result, rerender } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await act(async () => {
+        await flushPromises();
+      });
+
+      // The signing UI stays on the awaiting path (not failed/rejected)
+      // while the recovery modal prompts the user to open the app.
+      expect(result.current.signatureStatus).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+      expect(mockEnsureDeviceReady).toHaveBeenCalled();
+      // No restart is attempted while the device is not ready.
+      expect(mockCancelCurrentBatch).not.toHaveBeenCalled();
+
+      // The user opens the Ethereum app: the probe succeeds and the send is
+      // restarted through the retry path (cancel dead batch, recreate tx,
+      // re-approve).
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockUpdateAndApproveTx.mockReturnValue((() =>
+        Promise.resolve(undefined)) as never);
+      // Model the connection-state change that accompanies recovery (e.g.
+      // AppChanged → Ready): a new connectionState identity re-arms the
+      // dormant restart effect.
+      mockUseHardwareWalletState.mockImplementation(() => ({
+        connectionState: { status: ConnectionStatus.Ready },
+      }));
+
+      await act(async () => {
+        rerender();
+        await flushPromises();
+      });
+
+      expect(mockCancelCurrentBatch).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+    });
+
+    it('restarts the send even when connectionState lags behind a successful ensureDeviceReady check', async () => {
+      // App closed: first submit fails with a no-event error, triggering the
+      // auto-restart effect. The retry's resubmit then succeeds.
+      mockUpdateAndApproveTx
+        .mockReturnValueOnce((() =>
+          Promise.reject({
+            code: ErrorCode.DeviceStateEthAppClosed,
+            message: 'Ethereum app is not open',
+          })) as never)
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+      // Race: ensureDeviceReady() resolves true, but connectionState.status
+      // (read by handleRetry's closure) still lags at a non-retryable value.
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.AwaitingApp },
+      });
+      mockEnsureDeviceReady.mockResolvedValue(true);
+
+      const { result } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await act(async () => {
+        await flushPromises();
+      });
+
+      // Restart must actually happen, not silently no-op on the stale status.
+      expect(mockCancelCurrentBatch).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
         );
       });
     });
