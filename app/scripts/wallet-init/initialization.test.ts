@@ -100,6 +100,9 @@ jest.mock('./instance-options/seedless-onboarding-controller', () => ({
   ),
 }));
 jest.mock('./instance-options/remote-feature-flag-controller', () => ({
+  getClientConfigApiServiceInstanceOptions: jest.fn(
+    () => 'client-config-api-service-options',
+  ),
   getRemoteFeatureFlagControllerInstanceOptions: jest.fn(() => 'rffc-options'),
 }));
 jest.mock('./instance-options/storage-service', () => ({
@@ -169,6 +172,7 @@ describe('initializeWallet', () => {
         analyticsController: 'analytics-options',
         approvalController: 'approval-options',
         claimsService: 'claims-options',
+        clientConfigApiService: 'client-config-api-service-options',
         configRegistryApiService: 'config-registry-api-service-options',
         connectivityController: 'connectivity-options',
         gasFeeController: 'gas-fee-controller-options',

@@ -376,6 +376,16 @@
     "ses": "2.2.0",
     "@metamask/utils": "^12.0.0"
   },
+  "previewBuilds": {
+    "@metamask/remote-feature-flag-controller": {
+      "type": "non-breaking",
+      "previewVersion": "7.0.0-preview-01e391e"
+    },
+    "@metamask/wallet": {
+      "type": "breaking",
+      "previewVersion": "21.0.0-preview-01e391e"
+    }
+  },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
     "@blockaid/ppom_release": "^1.5.3",
