@@ -38,6 +38,7 @@ import {
   ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_SETUP_PASSKEY_ROUTE,
   ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+  ONBOARDING_REFERRAL_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
@@ -105,6 +106,7 @@ import SetupPasskey from './setup-passkey/setup-passkey';
 import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './setup-passkey/messenger';
 import { REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES } from './recovery-phrase/messenger';
 import PasskeyPrfMigration from './passkey-prf-migration/passkey-prf-migration';
+import OnboardingReferral from './referral/referral';
 import { PASSKEY_PRF_MIGRATION_ROUTE_CAPABILITIES } from './passkey-prf-migration/messenger';
 import { OnboardingTraceProvider } from './hooks/useOnboardingTrace';
 
@@ -566,6 +568,10 @@ const OnboardingFlowContent = () => {
               <Route
                 path={toRelativePath(ONBOARDING_METAMETRICS)}
                 element={<MetaMetricsComponent />}
+              />
+              <Route
+                path={toRelativePath(ONBOARDING_REFERRAL_ROUTE)}
+                element={<OnboardingReferral />}
               />
               <Route
                 path={toRelativePath(ONBOARDING_DOWNLOAD_APP_ROUTE)}
