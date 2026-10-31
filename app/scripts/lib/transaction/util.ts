@@ -42,7 +42,10 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getShieldGatewayConfig } from '../../../../shared/lib/shield/shield';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
 import { ScanAddressResponse } from '../../../../shared/lib/trust-signals';
-import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
+import {
+  getTransactionDataRecipient,
+  parseTransferTransactionData,
+} from '../../../../shared/lib/transaction.utils';
 import {
   AppStateControllerAddAddressSecurityAlertResponseAction,
   AppStateControllerGetAddressSecurityAlertResponseAction,
@@ -417,7 +420,7 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
   if (origin !== ORIGIN_METAMASK || !securityAlertsEnabled) {
     return;
   }
-  const { to } = transactionParams;
+  const { to, data } = transactionParams;
   if (typeof to !== 'string') {
     return;
   }
@@ -448,18 +451,31 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
       messenger.call('PhishingController:scanAddress', scanChainId, address),
   };
 
-  scanAddressAndAddToCache(
-    to,
-    getAddressSecurityAlertResponseWithChain,
-    addAddressSecurityAlertResponseWithChain,
-    chainId,
-    phishingControllerScanAdapter,
-  ).catch((error) => {
-    console.error(
-      '[scanAddressForTrustSignals] error scanning address for trust signals:',
-      error,
-    );
-  });
+  const addresses = [to];
+
+  // For token transfers `to` is only the token contract; the funds move to
+  // the recipient encoded in calldata, so scan that address as well.
+  const transferRecipient = data
+    ? parseTransferTransactionData(data as Hex)?.recipient
+    : undefined;
+  if (transferRecipient) {
+    addresses.push(transferRecipient);
+  }
+
+  for (const address of addresses) {
+    scanAddressAndAddToCache(
+      address,
+      getAddressSecurityAlertResponseWithChain,
+      addAddressSecurityAlertResponseWithChain,
+      chainId,
+      phishingControllerScanAdapter,
+    ).catch((error) => {
+      console.error(
+        '[scanAddressForTrustSignals] error scanning address for trust signals:',
+        error,
+      );
+    });
+  }
 }
 
 async function validateSecurity(request: AddTransactionRequest) {
