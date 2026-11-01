@@ -1214,7 +1214,7 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-data-service": true,
+        "@metamask/authenticated-user-storage>@metamask/base-data-service": true,
         "@metamask/authenticated-user-storage>@metamask/controller-utils": true,
         "@metamask/superstruct": true
       }
@@ -1237,6 +1237,39 @@
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true,
         "@metamask/base-data-service>uuid": true
+      }
+    },
+    "@metamask/authenticated-user-storage>@metamask/base-data-service": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "cockatiel": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true,
+        "@metamask/authenticated-user-storage>@metamask/base-data-service>uuid": true
+      }
+    },
+    "@metamask/chomp-api-service>@metamask/base-data-service": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "cockatiel": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true,
+        "@metamask/chomp-api-service>@metamask/base-data-service>uuid": true
+      }
+    },
+    "@metamask/shield-controller>@metamask/base-data-service": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@tanstack/react-query>@tanstack/query-core": true,
+        "cockatiel": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true,
+        "@metamask/shield-controller>@metamask/base-data-service>uuid": true
       }
     },
     "@metamask/bridge-controller": {
@@ -1344,7 +1377,7 @@
         ]
       },
       "packages": {
-        "@metamask/base-data-service": true,
+        "@metamask/chomp-api-service>@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1770,7 +1803,6 @@
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -3231,18 +3263,12 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/base-data-service": true,
         "@metamask/ramps-controller>@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
         "@metamask/ramps-controller>bignumber.js": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/transaction-pay-controller>@metamask/controller-utils": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -3341,7 +3367,7 @@
         ]
       },
       "packages": {
-        "@metamask/base-data-service": true,
+        "@metamask/shield-controller>@metamask/base-data-service": true,
         "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
         "cockatiel": true
@@ -3660,7 +3686,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -8046,6 +8072,22 @@
       }
     },
     "@metamask/base-data-service>uuid": {
+      "globals": {
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
+      }
+    },
+    "@metamask/authenticated-user-storage>@metamask/base-data-service>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/chomp-api-service>@metamask/base-data-service>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/shield-controller>@metamask/base-data-service>uuid": {
       "globals": {
         "crypto": true
       }
