@@ -5,5 +5,6 @@ export const ESM_DEPENDENCIES_TO_TRANSPILE = [
   '@metamask',
   '@signinwithethereum',
   'lodash-es',
+  'nanoid',
   'uuid',
 ];
