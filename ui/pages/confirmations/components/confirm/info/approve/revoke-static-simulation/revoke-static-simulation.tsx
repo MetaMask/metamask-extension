@@ -42,18 +42,15 @@ export const RevokeStaticSimulation = () => {
 
   const SpenderRow = (
     <ConfirmInfoRow label={t('spender')}>
-      <Box
-        display={Display.Flex}
-        className="confirm-info-row-address--truncate-start"
-      >
-        <Name
-          value={spender}
-          type={NameType.ETHEREUM_ADDRESS}
-          preferContractSymbol
-          variation={chainId}
-          truncateStart
-          className="overflow-hidden"
-        />
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        <Box display={Display.Flex}>
+          <Name
+            value={spender}
+            type={NameType.ETHEREUM_ADDRESS}
+            preferContractSymbol
+            variation={chainId}
+          />
+        </Box>
       </Box>
     </ConfirmInfoRow>
   );

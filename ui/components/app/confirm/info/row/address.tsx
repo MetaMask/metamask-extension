@@ -19,11 +19,6 @@ export type ConfirmInfoRowAddressProps = {
   chainId: string;
   isSnapUsingThis?: boolean;
   showFullName?: boolean;
-  /**
-   * Fill the row width with the full name or address on one line, shortening
-   * the start when space runs out.
-   */
-  truncateStart?: boolean;
 };
 
 export const ConfirmInfoRowAddress = memo(
@@ -32,7 +27,6 @@ export const ConfirmInfoRowAddress = memo(
     chainId,
     isSnapUsingThis,
     showFullName = false,
-    truncateStart = false,
   }: ConfirmInfoRowAddressProps) => {
     const hexAddress = toChecksumHexAddress(address);
     const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
@@ -44,9 +38,6 @@ export const ConfirmInfoRowAddress = memo(
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
-        className={
-          truncateStart ? 'confirm-info-row-address--truncate-start' : undefined
-        }
       >
         {
           // PetNames on this component are disabled for snaps until the `<Name />`
@@ -86,7 +77,6 @@ export const ConfirmInfoRowAddress = memo(
               preferContractSymbol
               variation={chainId}
               showFullName={showFullName}
-              truncateStart={truncateStart}
               className="overflow-hidden"
             />
           )

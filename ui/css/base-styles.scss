@@ -92,15 +92,3 @@ a:hover {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
-/* One line that keeps the end visible and shortens the start. Wrap text with
-   punctuation in a `dir="ltr"` child so it is not reordered. */
-.ellipsis-start {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
-
-  /*! rtl:ignore */
-  direction: rtl;
-}

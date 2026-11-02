@@ -143,7 +143,6 @@ export function BatchedApprovalFunction({
           <ConfirmInfoRowAddress
             address={value.spender ?? ''}
             chainId={chainId}
-            truncateStart
           />
         </ConfirmInfoAlertRow>
         {value.amount && (

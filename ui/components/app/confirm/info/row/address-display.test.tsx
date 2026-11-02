@@ -1,10 +1,23 @@
 import React from 'react';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../../shared/constants/app';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { ConfirmInfoRowAddressDisplay } from './address-display';
 import { TEST_ADDRESS } from './constants';
+
+const getEnvironmentType = jest.requireMock(
+  '../../../../../../shared/lib/environment-type',
+).getEnvironmentType as jest.Mock;
+
+jest.mock('../../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../../../shared/lib/environment-type'),
+  getEnvironmentType: jest.fn(),
+}));
 
 const defaultProps = {
   address: TEST_ADDRESS,
@@ -59,33 +72,30 @@ describe('ConfirmInfoRowAddressDisplay', () => {
     );
   });
 
-  it('renders the full address on one line that shortens from the start', () => {
-    const { getByTestId } = render();
-    const displayName = getByTestId('confirm-info-row-display-name');
+  it('renders full address in fullscreen mode', () => {
+    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
 
-    expect(displayName).toHaveTextContent(TEST_ADDRESS);
-    expect(displayName.querySelector('.ellipsis-start')).toHaveTextContent(
+    const { getByTestId } = render();
+    expect(getByTestId('confirm-info-row-display-name')).toHaveTextContent(
       TEST_ADDRESS,
     );
   });
 
-  it('renders the full address for a non-clickable address without a name', () => {
-    const { getByTestId } = render({ isAccount: true });
-    const displayName = getByTestId('confirm-info-row-display-name');
+  it('renders partially truncated address in side panel mode', () => {
+    getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
 
-    expect(displayName).toHaveTextContent(TEST_ADDRESS);
-    expect(displayName).toHaveClass('ellipsis-start');
+    const { getByTestId } = render();
+    const textContent = getByTestId('confirm-info-row-display-name')
+      .textContent as string;
+    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
   });
 
-  it('renders only the name for a known address', () => {
-    const { getByTestId, queryByText } = render({
-      name: 'Arbiscan: Donate',
-      displayState: TrustSignalDisplayState.Verified,
-    });
+  it('renders truncated address in popup mode', () => {
+    getEnvironmentType.mockReturnValue('popup');
 
-    expect(getByTestId('confirm-info-row-display-name')).toHaveTextContent(
-      'Arbiscan: Donate',
-    );
-    expect(queryByText(TEST_ADDRESS)).toBeNull();
+    const { getByTestId } = render();
+    const textContent = getByTestId('confirm-info-row-display-name')
+      .textContent as string;
+    expect(textContent).toBe('0x5CfE73b6021E…474086a7e1');
   });
 });

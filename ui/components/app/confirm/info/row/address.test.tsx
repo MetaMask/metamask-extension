@@ -39,21 +39,4 @@ describe('ConfirmInfoRowAddress', () => {
 
     expect(container).toMatchSnapshot();
   });
-
-  it('shows the full address that shortens from the start when truncateStart is set', () => {
-    const store = configureStore(mockState);
-    const { container, getByText } = renderWithProvider(
-      <ConfirmInfoRowAddress
-        address={TEST_ADDRESS}
-        chainId={CHAIN_ID_MOCK}
-        truncateStart
-      />,
-      store,
-    );
-
-    expect(
-      container.querySelector('.confirm-info-row-address--truncate-start'),
-    ).toBeInTheDocument();
-    expect(getByText(TEST_ADDRESS).parentElement).toHaveClass('ellipsis-start');
-  });
 });

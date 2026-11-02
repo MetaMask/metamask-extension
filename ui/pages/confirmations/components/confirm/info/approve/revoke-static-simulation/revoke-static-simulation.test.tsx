@@ -26,8 +26,6 @@ describe('<RevokeStaticSimulation />', () => {
 
     renderWithConfirmContextProvider(<RevokeStaticSimulation />, mockStore);
 
-    expect(
-      screen.getByText('0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('0x2e0D7...5d09B')).toBeInTheDocument();
   });
 });

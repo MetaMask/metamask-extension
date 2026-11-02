@@ -59,11 +59,7 @@ describe('TokenDetailsSection', () => {
       mockStore,
     );
 
-    expect(
-      getByText('0x076146c765189d51bE3160A2140cF80BFC73ad68'),
-    ).toBeInTheDocument();
-    expect(
-      queryByText('0x1111111111111111111111111111111111111111'),
-    ).not.toBeInTheDocument();
+    expect(getByText('0x07614...3ad68')).toBeInTheDocument();
+    expect(queryByText('0x11111...11111')).not.toBeInTheDocument();
   });
 });

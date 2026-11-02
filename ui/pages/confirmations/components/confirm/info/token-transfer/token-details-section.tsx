@@ -42,7 +42,6 @@ export const TokenDetailsSection = () => {
       <ConfirmInfoRowAddress
         address={tokenAddress as string}
         chainId={chainId}
-        truncateStart
       />
     </ConfirmInfoRow>
   );

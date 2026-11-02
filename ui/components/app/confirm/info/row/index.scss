@@ -16,13 +16,6 @@
   text-decoration: underline;
 }
 
-.confirm-info-row-address--truncate-start {
-  flex: 1 1 0;
-  justify-content: flex-end;
-  // Room for the icon, an ellipsis and the last 10 characters.
-  min-width: calc(12ch + 24px);
-}
-
 .address-display-clickable {
   display: inline-flex;
 

@@ -9,9 +9,12 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import SendPage from '../../page-objects/pages/send/send-page';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
 
 describe('ENS', function (this: Suite) {
-  const sampleAddress = '0x225f137127d9067788314bc7fcc1f36746a3c3B5';
+  const shortSampleAddress = shortenAddress(
+    '0x225f137127d9067788314bc7fcc1f36746a3c3B5',
+  );
   const chainId = 1;
 
   const UR_PROXY = '0xeeeeeeee14d718c2b47d9923deab1335e144eeee';
@@ -75,7 +78,7 @@ describe('ENS', function (this: Suite) {
         // Verify that ens is resolved to the correct address
         await sendToPage.checkEnsAddressResolution(
           sampleEnsDomain,
-          sampleAddress,
+          shortSampleAddress,
         );
       },
     );

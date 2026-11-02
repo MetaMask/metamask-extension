@@ -111,9 +111,7 @@ describe('Name lookup', function () {
         await sendPage.selectToken('0x1', 'ETH');
         await sendPage.fillRecipient({ recipientAddress: 'metamask.domain' });
 
-        await driver.findElement({
-          text: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
-        });
+        await driver.findElement({ text: '0xc0ffe...54979' });
       },
     );
   });

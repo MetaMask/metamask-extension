@@ -163,65 +163,6 @@ describe('RecipientInput', () => {
     expect(mockUpdateTo).toHaveBeenCalledWith('');
   });
 
-  it('shows the full address when it has no saved name', () => {
-    const address = '0x1234567890abcdef1234567890abcdef12345678';
-    mockUseSendContext.mockReturnValue({
-      to: address,
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    const { getByText, getByTestId, queryByTestId } = renderComponent({
-      recipientValidationResult: { toAddressValidated: address },
-    });
-
-    expect(getByText(address)).toHaveClass('break-all');
-    expect(queryByTestId('recipient-input-address')).toBeNull();
-    expect(getByTestId('clear-recipient-btn')).toBeInTheDocument();
-  });
-
-  it('shows the name and the full address on one line for a saved contact', () => {
-    const address = '0x1234567890abcdef1234567890abcdef12345678';
-    mockUseRecipients.mockReturnValue([
-      { address, contactName: 'Alice', isContact: true },
-    ]);
-    mockUseSendContext.mockReturnValue({
-      to: address,
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    const { getByText, getByTestId } = renderComponent({
-      recipientValidationResult: { toAddressValidated: address },
-    });
-
-    expect(getByText('Alice')).toBeInTheDocument();
-    const addressLine = getByTestId('recipient-input-address');
-    expect(addressLine).toHaveTextContent(address);
-    expect(addressLine).toHaveClass('ellipsis-start');
-  });
-
-  it('shows the ENS name and the full resolved address', () => {
-    const resolvedAddress = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
-    mockUseSendContext.mockReturnValue({
-      to: 'alice.eth',
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    const { getByText, getByTestId } = renderComponent({
-      recipientValidationResult: {
-        toAddressValidated: 'alice.eth',
-        recipientResolvedLookup: resolvedAddress,
-      },
-    });
-
-    expect(getByText('alice.eth')).toBeInTheDocument();
-    expect(getByTestId('recipient-input-address')).toHaveTextContent(
-      resolvedAddress,
-    );
-  });
-
   it('display confusable characters when they exist', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdefghijkl',

@@ -135,7 +135,7 @@ exports[`Transaction Details <TransactionDetails /> renders component for transa
         </div>
       </div>
       <div
-        class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
           class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -148,13 +148,9 @@ exports[`Transaction Details <TransactionDetails /> renders component for transa
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              <span
-                dir="ltr"
-              >
-                0x88AA6343307EC9a652CCddDa3646E62b2f1A5125
-              </span>
+              0x88AA6...A5125
             </p>
           </div>
         </div>
