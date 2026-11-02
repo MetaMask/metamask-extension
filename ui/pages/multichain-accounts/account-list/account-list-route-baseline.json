@@ -1,0 +1,1086 @@
+{
+  "boot": {
+    "api": [
+      {
+        "key": "POST https://api.hyperliquid.xyz/info",
+        "count": 18,
+        "failed": 0,
+        "bytes": 136585
+      },
+      {
+        "key": "GET https://price.api.cx.metamask.io/v3/spot-prices",
+        "count": 7,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "POST https://mainnet.infura.io/v3/:id",
+        "count": 6,
+        "failed": 0,
+        "bytes": 298
+      },
+      {
+        "key": "GET https://authentication.api.cx.metamask.io/api/v2/profile/lineage",
+        "count": 4,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "POST https://notification.api.cx.metamask.io/api/v4/notifications",
+        "count": 4,
+        "failed": 0,
+        "bytes": 8
+      },
+      {
+        "key": "GET https://user-storage.api.cx.metamask.io/api/v1/preferences/notifications",
+        "count": 3,
+        "failed": 0,
+        "bytes": 48
+      },
+      {
+        "key": "POST https://monad-mainnet.infura.io/v3/:id",
+        "count": 3,
+        "failed": 0,
+        "bytes": 2084
+      },
+      {
+        "key": "GET https://tokens.api.cx.metamask.io/v3/assets",
+        "count": 3,
+        "failed": 0,
+        "bytes": 11660
+      },
+      {
+        "key": "POST https://trigger.api.cx.metamask.io/api/v2/notifications/query",
+        "count": 3,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://chainid.network/chains.json",
+        "count": 2,
+        "failed": 0,
+        "bytes": 393256
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/lockdown-install.js",
+        "count": 2,
+        "failed": 0,
+        "bytes": 75306
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/lockdown-run.js",
+        "count": 2,
+        "failed": 0,
+        "bytes": 898
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/lockdown-more.js",
+        "count": 2,
+        "failed": 0,
+        "bytes": 2700
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/bundle.js",
+        "count": 2,
+        "failed": 0,
+        "bytes": 104846
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/design-tokens.css",
+        "count": 2,
+        "failed": 0,
+        "bytes": 5394
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/index.css",
+        "count": 2,
+        "failed": 0,
+        "bytes": 1830
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/warning-icon.svg",
+        "count": 2,
+        "failed": 0,
+        "bytes": 710
+      },
+      {
+        "key": "GET https://client-config.api.cx.metamask.io/v1/flags",
+        "count": 2,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "POST https://rewards.uat-api.cx.metamask.io/public/rewards/ois",
+        "count": 2,
+        "failed": 0,
+        "bytes": 91
+      },
+      {
+        "key": "GET https://acl.execution.metamask.io/latest/registry.json",
+        "count": 2,
+        "failed": 0,
+        "bytes": 1838
+      },
+      {
+        "key": "GET https://acl.execution.metamask.io/latest/signature.json",
+        "count": 2,
+        "failed": 0,
+        "bytes": 1838
+      },
+      {
+        "key": "GET https://accounts.api.cx.metamask.io/v6/multiaccount/balances",
+        "count": 2,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://tokens.api.cx.metamask.io/v2/supportedNetworks",
+        "count": 2,
+        "failed": 0,
+        "bytes": 778
+      },
+      {
+        "key": "POST https://linea-mainnet.infura.io/v3/:id",
+        "count": 2,
+        "failed": 0,
+        "bytes": 947
+      },
+      {
+        "key": "POST https://base-mainnet.infura.io/v3/:id",
+        "count": 2,
+        "failed": 0,
+        "bytes": 60
+      },
+      {
+        "key": "POST https://arbitrum-mainnet.infura.io/v3/:id",
+        "count": 2,
+        "failed": 0,
+        "bytes": 934
+      },
+      {
+        "key": "POST https://bsc-mainnet.infura.io/v3/:id",
+        "count": 2,
+        "failed": 0,
+        "bytes": 60
+      },
+      {
+        "key": "POST https://optimism-mainnet.infura.io/v3/:id",
+        "count": 2,
+        "failed": 0,
+        "bytes": 2096
+      },
+      {
+        "key": "POST https://polygon-mainnet.infura.io/v3/:id",
+        "count": 2,
+        "failed": 0,
+        "bytes": 60
+      },
+      {
+        "key": "GET https://user-storage.api.cx.metamask.io/api/v1/userstorage/addressBook",
+        "count": 2,
+        "failed": 0,
+        "bytes": 4
+      },
+      {
+        "key": "GET https://user-storage.api.cx.metamask.io/api/v1/userstorage/rampsOrders",
+        "count": 2,
+        "failed": 0,
+        "bytes": 4
+      },
+      {
+        "key": "POST https://trigger.api.cx.metamask.io/api/v2/notifications",
+        "count": 2,
+        "failed": 0,
+        "bytes": 4
+      },
+      {
+        "key": "PUT https://user-storage.api.cx.metamask.io/api/v1/preferences/notifications",
+        "count": 2,
+        "failed": 0,
+        "bytes": 4
+      },
+      {
+        "key": "GET https://terminal.dev-api.cx.metamask.io/v1/perpetuals",
+        "count": 2,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://accounts.api.cx.metamask.io/v1/users/:hex/surveys",
+        "count": 2,
+        "failed": 1,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://accounts.api.cx.metamask.io/v2/supportedNetworks",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/",
+        "count": 1,
+        "failed": 0,
+        "bytes": 1396
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/x-logo-white.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 103016
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/metamask-phishing-white.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 4887
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/fonts/CentraNo1-Bold.woff2",
+        "count": 1,
+        "failed": 0,
+        "bytes": 29340
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/fonts/CentraNo1-Book.woff2",
+        "count": 1,
+        "failed": 0,
+        "bytes": 43936
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/workbox-e6d70522.js",
+        "count": 1,
+        "failed": 0,
+        "bytes": 5161
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/index.html",
+        "count": 1,
+        "failed": 0,
+        "bytes": 1396
+      },
+      {
+        "key": "GET https://metamask.github.io/phishing-warning/v5.1.0/metamask-fox.svg",
+        "count": 1,
+        "failed": 0,
+        "bytes": 1030
+      },
+      {
+        "key": "GET https://geolocation.dev-api.cx.metamask.io/v2/geolocation",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://on-ramp.dev-api.cx.metamask.io/v2/regions/countries",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://authentication.api.cx.metamask.io/api/v2/nonce",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://defiadapters.api.cx.metamask.io/positions/:hex",
+        "count": 1,
+        "failed": 0,
+        "bytes": 11
+      },
+      {
+        "key": "GET https://client-config.api.cx.metamask.io/v1/config/networks",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://client-config.api.cx.metamask.io/v1/config/events-config",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://on-ramp.dev-api.cx.metamask.io/geolocation",
+        "count": 1,
+        "failed": 0,
+        "bytes": 5
+      },
+      {
+        "key": "POST https://authentication.api.cx.metamask.io/api/v2/srp/login",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "POST https://oidc.api.cx.metamask.io/oauth2/token",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://accounts.api.cx.metamask.io/v5/multiaccount/balances",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://price.api.cx.metamask.io/v2/supportedNetworks",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://bridge.api.cx.metamask.io/featureFlags",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://on-ramp.dev-api.cx.metamask.io/v2/regions/ca-on/providers",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://on-ramp.dev-api.cx.metamask.io/v2/regions/ca-on/topTokens",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://chomp.api.cx.metamask.io/v1/chomp",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://token.api.cx.metamask.io/v1/:id",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://user-storage.api.cx.metamask.io/api/v1/userstorage/:id/:id",
+        "count": 1,
+        "failed": 0,
+        "bytes": 28
+      },
+      {
+        "key": "GET https://user-storage.api.cx.metamask.io/api/v1/userstorage/:id",
+        "count": 1,
+        "failed": 0,
+        "bytes": 2
+      },
+      {
+        "key": "GET https://user-storage.api.cx.metamask.io/api/v1/userstorage/accounts_v2",
+        "count": 1,
+        "failed": 0,
+        "bytes": 2
+      },
+      {
+        "key": "GET https://api.sevenseas.capital/performance/monad/:hex",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://on-ramp.dev-api.cx.metamask.io/v2/regions/ca-on/payments",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "PUT https://user-storage.api.cx.metamask.io/api/v1/userstorage/:id/:id",
+        "count": 1,
+        "failed": 0,
+        "bytes": 2
+      },
+      {
+        "key": "PUT https://user-storage.api.cx.metamask.io/api/v1/userstorage/:id",
+        "count": 1,
+        "failed": 0,
+        "bytes": 2
+      },
+      {
+        "key": "GET https://phishing-detection.api.cx.metamask.io/v1/stalelist",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://client-side-detection.api.cx.metamask.io/v1/request-blocklist",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "GET https://phishing-detection.api.cx.metamask.io/v2/diffsSince/1792384620",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "POST https://authentication.api.cx.metamask.io/api/v2/nonce/batch",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      },
+      {
+        "key": "PUT https://authentication.api.cx.metamask.io/api/v2/profile/accounts",
+        "count": 1,
+        "failed": 0,
+        "bytes": 2
+      },
+      {
+        "key": "GET https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/:id/slip44/501.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 3600
+      },
+      {
+        "key": "GET https://static.cx.metamask.io/api/v2/tokenIcons/assets/bip122/:id/slip44/0.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 248177
+      },
+      {
+        "key": "GET https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 6527
+      },
+      {
+        "key": "GET https://static.cx.metamask.io/api/v2/tokenIcons/assets/stellar/pubnet/slip44/148.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 3387
+      },
+      {
+        "key": "GET https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 32849
+      },
+      {
+        "key": "GET https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 32849
+      },
+      {
+        "key": "GET https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/143/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png",
+        "count": 1,
+        "failed": 0,
+        "bytes": 62560
+      },
+      {
+        "key": "GET https://token.api.cx.metamask.io/assets",
+        "count": 1,
+        "failed": 0,
+        "bytes": 0
+      }
+    ],
+    "apiCount": 148,
+    "apiFailed": 1,
+    "extensionAssetCount": 151,
+    "websockets": [
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      },
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      },
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      },
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      },
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      },
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      },
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      },
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      },
+      {
+        "phase": "boot",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      }
+    ],
+    "commits": {
+      "commitCount": 94,
+      "top": [
+        {
+          "name": "Box",
+          "count": 3504
+        },
+        {
+          "name": "Icon",
+          "count": 1037
+        },
+        {
+          "name": "Slot.Slot",
+          "count": 926
+        },
+        {
+          "name": "Slot.SlotClone",
+          "count": 926
+        },
+        {
+          "name": "Text",
+          "count": 895
+        },
+        {
+          "name": "Skeleton",
+          "count": 731
+        },
+        {
+          "name": "PercentageChange",
+          "count": 375
+        },
+        {
+          "name": "SecurityBadge",
+          "count": 375
+        },
+        {
+          "name": "TokenCell",
+          "count": 351
+        },
+        {
+          "name": "GenericAssetCellLayout",
+          "count": 336
+        },
+        {
+          "name": "AssetCellTitle",
+          "count": 225
+        },
+        {
+          "name": "MenuItem",
+          "count": 225
+        },
+        {
+          "name": "RouteMessengerProvider",
+          "count": 191
+        },
+        {
+          "name": "ButtonBase",
+          "count": 160
+        },
+        {
+          "name": "Slottable.Slottable",
+          "count": 160
+        },
+        {
+          "name": "Link",
+          "count": 150
+        },
+        {
+          "name": "SecurityTrustInlineBadge",
+          "count": 150
+        },
+        {
+          "name": "ButtonIcon",
+          "count": 138
+        },
+        {
+          "name": "Button",
+          "count": 122
+        },
+        {
+          "name": "ButtonPrimary",
+          "count": 111
+        },
+        {
+          "name": "IconButton",
+          "count": 100
+        },
+        {
+          "name": "AvatarNetwork",
+          "count": 100
+        },
+        {
+          "name": "AvatarBase",
+          "count": 100
+        },
+        {
+          "name": "MoneyAccountToastListenerInner",
+          "count": 94
+        },
+        {
+          "name": "TransactionEventToastListenerInner",
+          "count": 94
+        },
+        {
+          "name": "Modal",
+          "count": 94
+        },
+        {
+          "name": "MetaFoxHorizontalLogo",
+          "count": 79
+        },
+        {
+          "name": "Tab",
+          "count": 75
+        },
+        {
+          "name": "BasicFunctionalityMigrationToast",
+          "count": 71
+        },
+        {
+          "name": "Routes",
+          "count": 70
+        },
+        {
+          "name": "MusdTelemetry",
+          "count": 64
+        },
+        {
+          "name": "RenderedRoute",
+          "count": 61
+        },
+        {
+          "name": "Tooltip",
+          "count": 50
+        },
+        {
+          "name": "NotificationsTagCounter",
+          "count": 50
+        },
+        {
+          "name": "Outlet",
+          "count": 46
+        },
+        {
+          "name": "NavTab",
+          "count": 45
+        },
+        {
+          "name": "E",
+          "count": 41
+        },
+        {
+          "name": "ButtonTertiary",
+          "count": 39
+        },
+        {
+          "name": "ConfirmationRouter",
+          "count": 37
+        },
+        {
+          "name": "NetworkHandler",
+          "count": 37
+        }
+      ]
+    },
+    "longTasks": {
+      "count": 2,
+      "totalMs": 619,
+      "maxMs": 551
+    }
+  },
+  "dismiss": {
+    "api": [
+      {
+        "key": "GET https://authentication.api.cx.metamask.io/api/v2/profile/lineage",
+        "count": 2,
+        "failed": 0,
+        "bytes": 0
+      }
+    ],
+    "apiCount": 2,
+    "apiFailed": 0,
+    "extensionAssetCount": 0,
+    "websockets": [
+      {
+        "phase": "dismiss",
+        "url": "ws://localhost:8080/ws",
+        "sent": 0,
+        "received": 0
+      }
+    ],
+    "commits": {
+      "commitCount": 12,
+      "top": [
+        {
+          "name": "Box",
+          "count": 1329
+        },
+        {
+          "name": "Icon",
+          "count": 540
+        },
+        {
+          "name": "Slot.Slot",
+          "count": 336
+        },
+        {
+          "name": "Slot.SlotClone",
+          "count": 336
+        },
+        {
+          "name": "Skeleton",
+          "count": 336
+        },
+        {
+          "name": "Text",
+          "count": 302
+        },
+        {
+          "name": "PercentageChange",
+          "count": 180
+        },
+        {
+          "name": "AssetCellTitle",
+          "count": 180
+        },
+        {
+          "name": "SecurityBadge",
+          "count": 180
+        },
+        {
+          "name": "SecurityTrustInlineBadge",
+          "count": 180
+        },
+        {
+          "name": "TokenCell",
+          "count": 156
+        },
+        {
+          "name": "GenericAssetCellLayout",
+          "count": 141
+        },
+        {
+          "name": "MenuItem",
+          "count": 108
+        },
+        {
+          "name": "Link",
+          "count": 72
+        },
+        {
+          "name": "ButtonIcon",
+          "count": 60
+        },
+        {
+          "name": "NavTab",
+          "count": 48
+        },
+        {
+          "name": "IconButton",
+          "count": 48
+        },
+        {
+          "name": "AvatarNetwork",
+          "count": 48
+        },
+        {
+          "name": "AvatarBase",
+          "count": 48
+        },
+        {
+          "name": "Tab",
+          "count": 36
+        },
+        {
+          "name": "RouteMessengerProvider",
+          "count": 25
+        },
+        {
+          "name": "Tooltip",
+          "count": 24
+        },
+        {
+          "name": "Button",
+          "count": 24
+        },
+        {
+          "name": "ButtonPrimary",
+          "count": 24
+        },
+        {
+          "name": "ButtonBase",
+          "count": 24
+        },
+        {
+          "name": "Slottable.Slottable",
+          "count": 24
+        },
+        {
+          "name": "Modal",
+          "count": 24
+        },
+        {
+          "name": "NotificationsTagCounter",
+          "count": 24
+        },
+        {
+          "name": "SeedPhraseBackupNotificationContainer",
+          "count": 12
+        },
+        {
+          "name": "StakeableLink",
+          "count": 12
+        },
+        {
+          "name": "ImportControl",
+          "count": 12
+        },
+        {
+          "name": "Add",
+          "count": 12
+        },
+        {
+          "name": "SensitiveText",
+          "count": 12
+        },
+        {
+          "name": "TooltipText",
+          "count": 12
+        },
+        {
+          "name": "CoinOverview",
+          "count": 12
+        },
+        {
+          "name": "CoinButtons",
+          "count": 12
+        },
+        {
+          "name": "MoreButtonsGroup",
+          "count": 12
+        },
+        {
+          "name": "BalanceEmptyState",
+          "count": 12
+        },
+        {
+          "name": "FundingMethodModal",
+          "count": 12
+        },
+        {
+          "name": "RewardsModal",
+          "count": 12
+        }
+      ]
+    },
+    "longTasks": {
+      "count": 1,
+      "totalMs": 52,
+      "maxMs": 52
+    }
+  },
+  "dismissMs": 1636,
+  "open": {
+    "api": [],
+    "apiCount": 0,
+    "apiFailed": 0,
+    "extensionAssetCount": 0,
+    "websockets": [],
+    "commits": {
+      "commitCount": 5,
+      "top": [
+        {
+          "name": "Box",
+          "count": 35
+        },
+        {
+          "name": "Icon",
+          "count": 27
+        },
+        {
+          "name": "Text",
+          "count": 12
+        },
+        {
+          "name": "RouteMessengerProvider",
+          "count": 10
+        },
+        {
+          "name": "ToastContainer",
+          "count": 5
+        },
+        {
+          "name": "BasicFunctionalityMigrationToast",
+          "count": 5
+        },
+        {
+          "name": "Button",
+          "count": 5
+        },
+        {
+          "name": "ButtonSecondary",
+          "count": 5
+        },
+        {
+          "name": "ButtonBase",
+          "count": 5
+        },
+        {
+          "name": "Slottable.Slottable",
+          "count": 5
+        },
+        {
+          "name": "TextFieldSearch",
+          "count": 5
+        },
+        {
+          "name": "TextField",
+          "count": 5
+        },
+        {
+          "name": "Input",
+          "count": 5
+        },
+        {
+          "name": "ButtonIcon",
+          "count": 5
+        },
+        {
+          "name": "Modal",
+          "count": 5
+        },
+        {
+          "name": "PerpsDepositToast",
+          "count": 5
+        },
+        {
+          "name": "MusdTelemetry",
+          "count": 5
+        },
+        {
+          "name": "MoneyAccountToastListenerInner",
+          "count": 5
+        },
+        {
+          "name": "TransactionEventToastListenerInner",
+          "count": 5
+        },
+        {
+          "name": "VirtualizedList",
+          "count": 4
+        },
+        {
+          "name": "RenderedRoute",
+          "count": 3
+        },
+        {
+          "name": "AddMultichainAccount",
+          "count": 3
+        },
+        {
+          "name": "MultichainAccountMenu",
+          "count": 3
+        },
+        {
+          "name": "MultichainTriggeredAddressRowsList",
+          "count": 3
+        },
+        {
+          "name": "Maskicon",
+          "count": 3
+        },
+        {
+          "name": "Outlet",
+          "count": 2
+        },
+        {
+          "name": "Page",
+          "count": 2
+        },
+        {
+          "name": "Header",
+          "count": 2
+        },
+        {
+          "name": "Footer",
+          "count": 2
+        },
+        {
+          "name": "ScrollContainer",
+          "count": 2
+        },
+        {
+          "name": "MultichainAccountList",
+          "count": 2
+        },
+        {
+          "name": "MultichainAccountCell",
+          "count": 2
+        },
+        {
+          "name": "ConnectedStatus",
+          "count": 2
+        },
+        {
+          "name": "BadgeStatus",
+          "count": 2
+        },
+        {
+          "name": "PreferredAvatar",
+          "count": 2
+        },
+        {
+          "name": "AvatarAccount",
+          "count": 2
+        },
+        {
+          "name": "AvatarBase",
+          "count": 2
+        },
+        {
+          "name": "RouterProvider",
+          "count": 1
+        },
+        {
+          "name": "Router",
+          "count": 1
+        },
+        {
+          "name": "DataRoutes",
+          "count": 1
+        }
+      ]
+    },
+    "longTasks": {
+      "count": 0,
+      "totalMs": 0,
+      "maxMs": 0
+    }
+  },
+  "openMs": 1574,
+  "serviceWorkerProbe": null
+}
