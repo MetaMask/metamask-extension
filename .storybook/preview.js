@@ -130,7 +130,10 @@ const metamaskDecorator = (story, context) => {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={initialEntries}>
+        <MemoryRouter
+          key={initialEntries.join('|')}
+          initialEntries={initialEntries}
+        >
           <AlertMetricsProvider
             metrics={{
               trackAlertActionClicked: () => undefined,
