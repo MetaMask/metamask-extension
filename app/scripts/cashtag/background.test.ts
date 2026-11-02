@@ -253,6 +253,26 @@ describe('createCashtagResponse', () => {
       'x_widget',
     );
   });
+
+  it('handles hover interaction type in track event message', async () => {
+    const response = await createCashtagResponse(
+      {
+        type: EXTENSION_MESSAGES.TRACK_EVENT,
+        body: {
+          interactionType: 'hover',
+          tokenSymbol: 'ETH',
+          caipAssetId,
+          chainId: 'eip155:1',
+          verified: true,
+          similarTokenCount: 0,
+        },
+      },
+      widgetSender,
+      getController,
+    );
+
+    expect(response).toBeUndefined();
+  });
 });
 
 describe('bindTickerWidgetEnabledBroadcasts', () => {

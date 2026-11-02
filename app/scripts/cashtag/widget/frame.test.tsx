@@ -60,7 +60,8 @@ describe('widget frame', () => {
     await waitFor(() => expect(mockRender).toHaveBeenCalledTimes(1));
     expect(document.documentElement.dataset.theme).toBe('dark');
 
-    const widget = mockRender.mock.calls[0][0];
+    const container = mockRender.mock.calls[0][0];
+    const widget = container.props.children;
     widget.props.onSwap(primary);
     widget.props.onViewDetails(primary);
     widget.props.onViewSimilar();
@@ -96,5 +97,33 @@ describe('widget frame', () => {
     expect(document.querySelector('link')).toBeNull();
     expect(mockSendMessage).not.toHaveBeenCalled();
     expect(mockRender).not.toHaveBeenCalled();
+  });
+
+  it('fires hover event with interaction_type on mouseenter', async () => {
+    window.history.replaceState({}, '', '?symbol=ETH&theme=dark');
+    mockSendMessage.mockImplementation(async (message) => {
+      if (message.type === EXTENSION_MESSAGES.GET_DATA) {
+        return { body: { asset: primary, similar: [] } };
+      }
+      return undefined;
+    });
+
+    await import('./frame');
+    document.querySelector('link')?.dispatchEvent(new Event('load'));
+
+    await waitFor(() => expect(mockRender).toHaveBeenCalledTimes(1));
+
+    const container = mockRender.mock.calls[0][0];
+    container.props.onMouseEnter();
+
+    await waitFor(() =>
+      expect(
+        mockSendMessage.mock.calls.some(
+          ([message]) =>
+            message.type === EXTENSION_MESSAGES.TRACK_EVENT &&
+            message.body?.interactionType === 'hover',
+        ),
+      ).toBe(true),
+    );
   });
 });

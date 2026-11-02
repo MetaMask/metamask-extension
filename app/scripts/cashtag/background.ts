@@ -393,6 +393,11 @@ function handleTrackEvent(message: CashtagMessage) {
   if (body?.action !== undefined && action === undefined) {
     return Promise.resolve();
   }
+  const interactionType =
+    body?.interactionType === 'hover' ? body.interactionType : undefined;
+  if (body?.interactionType !== undefined && interactionType === undefined) {
+    return Promise.resolve();
+  }
 
   const tokenSymbol = bodyString(message, 'tokenSymbol');
   const caipAssetId = bodyString(message, 'caipAssetId');
@@ -431,6 +436,24 @@ function handleTrackEvent(message: CashtagMessage) {
           source: 'x_widget',
           token_symbol: tokenSymbol,
           chain_id: chainId,
+        })
+        .build(),
+    );
+    return Promise.resolve();
+  }
+
+  if (interactionType === 'hover') {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.XWidgetInteracted)
+        .addCategory(MetaMetricsEventCategory.Tokens)
+        .addProperties({
+          domain: 'x.com',
+          interaction_type: interactionType,
+          token_symbol: tokenSymbol,
+          asset_id_caip: caipAssetId,
+          chain_id: chainId,
+          verified,
+          similar_token_count: similarTokenCount,
         })
         .build(),
     );

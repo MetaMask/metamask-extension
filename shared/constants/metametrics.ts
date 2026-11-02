@@ -1059,6 +1059,7 @@ export enum MetaMetricsEventName {
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
   WebWidgetViewed = 'Web Widget Viewed',
+  XWidgetInteracted = 'X Widget Interacted',
   TokenDetailsCtaClicked = 'Token Details CTA Clicked',
   ExploreSearchInteracted = 'Explore Search Interacted',
   TokenDetailsSecuritySectionClicked = 'token_details_security_section_clicked',
