@@ -10,6 +10,16 @@ type ConnectionTrustSignalGateProps = {
   onCancel: () => void;
 };
 
+function isXDotCom(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    const hostname = url.hostname.toLowerCase();
+    return hostname === 'x.com' || hostname.endsWith('.x.com');
+  } catch {
+    return false;
+  }
+}
+
 export function ConnectionTrustSignalGate({
   origin,
   children,
@@ -18,12 +28,26 @@ export function ConnectionTrustSignalGate({
   const { state } = useOriginTrustSignals(origin);
   const { value: dismissed, setTrue: dismiss } = useBoolean(false);
 
-  const showModal = !dismissed && state === TrustSignalDisplayState.Malicious;
+  const isMalicious = state === TrustSignalDisplayState.Malicious;
+  const isX = isXDotCom(origin);
+  const showModal = !dismissed && (isMalicious || isX);
 
   return (
     <>
       {showModal && (
-        <TrustSignalModal onContinue={dismiss} onCancel={onCancel} />
+        <TrustSignalModal
+          onContinue={dismiss}
+          onCancel={onCancel}
+          title={isMalicious ? 'continueAtYourOwnRisk' : undefined}
+          description={
+            isMalicious
+              ? 'trustSignalPhishingWarning'
+              : 'xDappConnectionWarning'
+          }
+          continueLabel={isMalicious ? 'connectAnyway' : 'continueAnyway'}
+          cancelLabel={isMalicious ? 'cancel' : 'backToSafety'}
+          isError={isMalicious}
+        />
       )}
       {children}
     </>

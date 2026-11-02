@@ -121,4 +121,107 @@ describe('ConnectionTrustSignalGate', () => {
     fireEvent.click(getByTestId('trust-signal-block-modal-cancel'));
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
+
+  it('renders X.com warning modal for x.com origin', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+
+    const { getByTestId, getByText } = render(
+      <ConnectionTrustSignalGate {...defaultProps} origin="https://x.com">
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    expect(getByTestId('trust-signal-block-modal')).toBeInTheDocument();
+    expect(getByText('xDappConnectionWarning')).toBeInTheDocument();
+  });
+
+  it('renders X.com warning modal for x.com subdomain', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+
+    const { getByTestId } = render(
+      <ConnectionTrustSignalGate {...defaultProps} origin="https://www.x.com">
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    expect(getByTestId('trust-signal-block-modal')).toBeInTheDocument();
+  });
+
+  it('renders X.com warning modal for mobile.x.com subdomain', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+
+    const { getByTestId } = render(
+      <ConnectionTrustSignalGate
+        {...defaultProps}
+        origin="https://mobile.x.com"
+      >
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    expect(getByTestId('trust-signal-block-modal')).toBeInTheDocument();
+  });
+
+  it('hides X.com warning modal after clicking Continue Anyway', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+
+    const { getByTestId, queryByTestId } = render(
+      <ConnectionTrustSignalGate {...defaultProps} origin="https://x.com">
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    fireEvent.click(getByTestId('trust-signal-block-modal-continue'));
+    expect(queryByTestId('trust-signal-block-modal')).not.toBeInTheDocument();
+  });
+
+  it('calls onCancel when Back to Safety is clicked in X.com warning', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+
+    const onCancel = jest.fn();
+
+    const { getByTestId } = render(
+      <ConnectionTrustSignalGate
+        {...defaultProps}
+        origin="https://x.com"
+        onCancel={onCancel}
+      >
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    fireEvent.click(getByTestId('trust-signal-block-modal-cancel'));
+    expect(onCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows malicious warning when both malicious and x.com', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Malicious,
+      label: null,
+    });
+
+    const { getByText } = render(
+      <ConnectionTrustSignalGate {...defaultProps} origin="https://x.com">
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    expect(getByText('continueAtYourOwnRisk')).toBeInTheDocument();
+    expect(getByText('trustSignalPhishingWarning')).toBeInTheDocument();
+  });
 });
