@@ -74,6 +74,8 @@ export async function openDappAndSwitchChain(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+    // Guard against a queued chain-switch notification appearing instead of this connect dialog.
+  await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();
 
   // Switch back to the dapp
@@ -102,23 +104,37 @@ export async function openDappAndSwitchChain(
 
     const isAlreadyPermitted = permittedChains.includes(chainId);
 
+    const chainIdRequest = JSON.stringify({ method: 'eth_chainId' });
+    const currentChainId = await driver.executeScript(
+      `return window.ethereum.request(${chainIdRequest})`,
+    );
+    const isAlreadyActive = currentChainId === chainId;
+
     const switchChainRequest = JSON.stringify({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }],
     });
 
-    await driver.executeScript(
-      `window.ethereum.request(${switchChainRequest})`,
-    );
-
     if (!isAlreadyPermitted) {
+      // Chain is not yet permitted — fire the switch and handle the review dialog.
+      await driver.executeScript(
+        `window.ethereum.request(${switchChainRequest})`,
+      );
+
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
       await reviewPermissionsConfirmation.clickConfirmReviewPermissionsButtonWithWaitForWindowToClose();
 
       // Switch back to the dapp
       await driver.switchToWindowWithUrl(dappUrl);
+    } else if (!isAlreadyActive) {
+      // Chain is permitted but not yet active for this dapp — switch silently
+      // (no review dialog is shown for already-permitted chains).
+      await driver.executeScript(
+        `window.ethereum.request(${switchChainRequest})`,
+      );
     }
+    // else: already permitted and active — skip to avoid queuing a stale notification.
   }
 }
 
