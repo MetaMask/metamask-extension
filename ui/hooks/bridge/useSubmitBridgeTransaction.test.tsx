@@ -245,8 +245,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       jest.clearAllMocks();
       submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
       submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
-      submitTxSpy.mockReturnValue(async () => undefined);
-      submitIntentSpy.mockReturnValue(async () => undefined);
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(null);
       captureExceptionSpy.mockReturnValue(undefined);

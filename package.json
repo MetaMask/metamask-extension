@@ -175,10 +175,13 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/assets-controller/@metamask/core-backend": "12.3.0",
+    "@metamask/assets-controllers/@metamask/core-backend": "12.3.0",
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "^37.1.1",
     "@metamask/transaction-controller": "72.3.0",
+    "@metamask/bridge-controller@npm:^82.0.2": "82.0.2",
     "reselect@npm:^5.1.1": "5.1.1",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
     "follow-redirects": "^1.16.1",
