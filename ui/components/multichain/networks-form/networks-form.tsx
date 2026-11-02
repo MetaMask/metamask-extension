@@ -611,8 +611,8 @@ export const NetworksForm = ({
               const chainIdAsDecimal = hexToNumber(chainIdHex);
 
               const sanitizeRpcUrl = async (url: string) => {
-                const isPublic = await submitRequestToBackground<boolean>(
-                  'isPublicEndpointUrl',
+                const isPublic = await submitRequestToBackground(
+                  'LegacyBackgroundApiService:isPublicEndpointUrl',
                   [url],
                 );
                 return isPublic ? onlyKeepHost(url) : 'custom';
