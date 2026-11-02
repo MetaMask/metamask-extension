@@ -267,6 +267,7 @@ class Confirmation {
   }): Promise<void> {
     if (value) {
       await this.driver.clickElement({
+        css: '.name',
         text: value,
       });
     } else {
