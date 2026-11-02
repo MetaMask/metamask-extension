@@ -1777,8 +1777,20 @@
       }
     },
     "@metamask/remote-feature-flag-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
       "packages": {
-        "cockatiel": true
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/sentinel-api-service>@metamask/controller-utils": {
@@ -2776,6 +2788,11 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/wallet>@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2861,6 +2878,17 @@
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/utils": true,
         "reselect": true
+      }
+    },
+    "@metamask/wallet>@metamask/network-enablement-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/config-registry-controller": true,
+        "@metamask/wallet>@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/wallet>@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/transaction-controller>@metamask/nonce-tracker": {
@@ -3268,9 +3296,11 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/base-data-service": true,
         "@metamask/remote-feature-flag-controller>@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "uuid": true
+        "@metamask/remote-feature-flag-controller>uuid": true
       }
     },
     "@metamask/rpc-errors": {
@@ -3739,6 +3769,7 @@
         "@metamask/logging-controller": true,
         "@metamask/messenger": true,
         "@metamask/network-controller": true,
+        "@metamask/wallet>@metamask/network-enablement-controller": true,
         "@metamask/passkey-controller": true,
         "@metamask/permission-controller": true,
         "@metamask/remote-feature-flag-controller": true,

@@ -1,12 +1,11 @@
 import type { Json } from '@metamask/utils';
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
-import { ClientConfigApiService } from '@metamask/remote-feature-flag-controller';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
 import { createMockMessenger } from '../test-utils';
 import {
   getConfigForRemoteFeatureFlagRequest,
-  getRemoteFeatureFlagClientConfigApiService,
+  getClientConfigApiServiceInstanceOptions,
   getRemoteFeatureFlagControllerInstanceOptions,
 } from './remote-feature-flag-controller';
 
@@ -69,12 +68,10 @@ describe('getRemoteFeatureFlagControllerInstanceOptions', () => {
     jest.clearAllMocks();
   });
 
-  it('builds the client config API service via the extension helper', () => {
+  it('does not set the client config API service on the controller options', () => {
     const options = buildOptions({});
 
-    expect(options.clientConfigApiService).toBeInstanceOf(
-      ClientConfigApiService,
-    );
+    expect(options).not.toHaveProperty('clientConfigApiService');
   });
 
   it('resolves the MetaMetrics id from AnalyticsController via the messenger', () => {
@@ -248,10 +245,28 @@ describe('getConfigForRemoteFeatureFlagRequest', () => {
   );
 });
 
-describe('getRemoteFeatureFlagClientConfigApiService', () => {
-  it('returns a configured ClientConfigApiService', () => {
-    expect(getRemoteFeatureFlagClientConfigApiService()).toBeInstanceOf(
-      ClientConfigApiService,
-    );
+describe('getClientConfigApiServiceInstanceOptions', () => {
+  const originalBuildType = process.env.METAMASK_BUILD_TYPE;
+  const originalEnvironment = process.env.METAMASK_ENVIRONMENT;
+
+  afterEach(() => {
+    process.env.METAMASK_BUILD_TYPE = originalBuildType;
+    process.env.METAMASK_ENVIRONMENT = originalEnvironment;
+  });
+
+  it('returns the fetch function and the extension client config', () => {
+    process.env.METAMASK_BUILD_TYPE = 'flask';
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+
+    const options = getClientConfigApiServiceInstanceOptions();
+
+    expect(options).toStrictEqual({
+      fetch: expect.any(Function),
+      config: {
+        client: 'extension',
+        distribution: 'flask',
+        environment: 'prod',
+      },
+    });
   });
 });

@@ -1,7 +1,6 @@
 import { assert, type Json } from '@metamask/utils';
 import type { WalletOptions } from '@metamask/wallet';
 import {
-  ClientConfigApiService,
   ClientType,
   DistributionType,
   EnvironmentType,
@@ -63,24 +62,24 @@ export function getConfigForRemoteFeatureFlagRequest() {
 }
 
 /**
- * Build the extension's `ClientConfigApiService`, configured for the extension
- * client type and the current build's distribution and environment. This is
- * injected into the wallet-owned `RemoteFeatureFlagController` via
- * `instanceOptions.remoteFeatureFlagController.clientConfigApiService`.
+ * Build the extension's `ClientConfigApiService` instance options, configured
+ * for the extension client type and the current build's distribution and
+ * environment. The wallet constructs the service from these and delegates its
+ * `fetchRemoteFeatureFlags` action to the `RemoteFeatureFlagController`.
  *
- * @returns The configured client config API service.
+ * @returns The client config API service instance options.
  */
-export function getRemoteFeatureFlagClientConfigApiService() {
+export function getClientConfigApiServiceInstanceOptions(): WalletOptions['instanceOptions']['clientConfigApiService'] {
   const { distribution, environment } = getConfigForRemoteFeatureFlagRequest();
 
-  return new ClientConfigApiService({
+  return {
     fetch: globalThis.fetch.bind(globalThis),
     config: {
       client: ClientType.Extension,
       distribution,
       environment,
     },
-  });
+  };
 }
 
 type RemoteFeatureFlagControllerInstanceOptions =
@@ -111,7 +110,6 @@ export function getRemoteFeatureFlagControllerInstanceOptions({
   state: Record<string, Record<string, Json>>;
 }): RemoteFeatureFlagControllerInstanceOptions {
   return {
-    clientConfigApiService: getRemoteFeatureFlagClientConfigApiService(),
     // Apply default feature flag values here.
     defaultFeatureFlags: {
       // Example:

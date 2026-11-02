@@ -15,7 +15,10 @@ import { getApprovalControllerInstanceOptions } from './instance-options/approva
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
 import { getKeyringControllerInstanceOptions } from './instance-options/keyring-controller';
-import { getRemoteFeatureFlagControllerInstanceOptions } from './instance-options/remote-feature-flag-controller';
+import {
+  getClientConfigApiServiceInstanceOptions,
+  getRemoteFeatureFlagControllerInstanceOptions,
+} from './instance-options/remote-feature-flag-controller';
 import { getStorageServiceInstanceOptions } from './instance-options/storage-service';
 import { getNetworkControllerInstanceOptions } from './instance-options/network-controller';
 import {
@@ -87,6 +90,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
         showApprovalRequest,
       }),
       claimsService: getClaimsServiceInstanceOptions(),
+      clientConfigApiService: getClientConfigApiServiceInstanceOptions(),
       configRegistryApiService: getConfigRegistryApiServiceInstanceOptions(),
       connectivityController: getConnectivityControllerInstanceOptions({
         connectivityAdapter,
