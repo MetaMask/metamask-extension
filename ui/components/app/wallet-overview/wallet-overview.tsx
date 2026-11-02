@@ -19,15 +19,11 @@ const WalletOverview = ({
     <div
       className={classnames(
         'flex min-w-0 w-full flex-1 flex-col justify-between gap-4',
-        !isFullScreenDesign ? 'items-center' : 'items-start',
+        isFullScreenDesign ? 'items-start' : 'items-center',
         className,
       )}
     >
-      <div
-        className={classnames(
-          'flex w-full flex-1 flex-col gap-1 max-[490px]:items-start',
-        )}
-      >
+      <div className="flex w-full flex-1 flex-col gap-1 max-[490px]:items-start">
         {balance}
       </div>
       {/* 458px = 490px - 32px */}

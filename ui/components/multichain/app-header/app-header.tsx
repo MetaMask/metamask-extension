@@ -9,7 +9,7 @@ import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 export const AppHeader = () => {
   const menuRef = useRef<HTMLButtonElement>(null);
   const isFullScreenDesign = useFullScreenDesign();
-  // The fullscreen design shows the logo in the side nav, not in the app header
+  // The fullscreen design shows the logo in the side nav instead.
   const showLegacyMMLogo =
     !isFullScreenDesign && getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
 
@@ -19,7 +19,7 @@ export const AppHeader = () => {
       data-testid="parent-selector-header-navbar"
     >
       {showLegacyMMLogo && (
-        <div className="m-2 hidden justify-center sm:flex">
+        <div className="m-2 hidden justify-center md:flex">
           <MultichainMetaFoxLogo />
         </div>
       )}

@@ -4,3 +4,19 @@
   view-transition-name: app-header;
   z-index: design-system.$header-z-index;
 }
+
+.app-header__metafox-logo {
+  &--icon {
+    height: 32px;
+
+    @include design-system.screen-sm-min {
+      display: none;
+    }
+  }
+
+  &--horizontal {
+    @include design-system.screen-sm-max {
+      display: none;
+    }
+  }
+}

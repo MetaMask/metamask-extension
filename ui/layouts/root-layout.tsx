@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'clsx';
 import { Outlet } from 'react-router-dom';
 import { useMainNavBars } from '../hooks/useMainNavBars';
 
@@ -7,11 +8,12 @@ export const RootLayout = () => {
 
   return (
     <div
-      className={
+      className={classnames(
+        'flex h-full w-full flex-col shadow-sm',
         showSideNav
-          ? 'flex h-full w-full max-w-[1200px] flex-col shadow-sm' // TODO: pick non-arbitrary value for max-width
-          : 'flex h-full w-full max-w-[var(--width-max)] flex-col shadow-sm'
-      }
+          ? 'max-w-[var(--width-max-fullscreen-redesign)]'
+          : 'max-w-[var(--width-max)]',
+      )}
     >
       <Outlet />
     </div>

@@ -52,21 +52,25 @@ const dialogClassNameBase = classnames(
   'max-[575px]:mx-0 max-[575px]:w-full max-[575px]:max-w-full',
 );
 
-// Aligns the drawer with the right edge of the centred, width-capped column.
-const dialogClassNameCappedColumn =
-  'me-[max(0px,calc((100vw-var(--width-max))/2))]';
+const dialogClassNamePlacement = classnames(
+  'me-[max(0px,calc((100vw-var(--drawer-column-width))/2))]',
+  'min-[576px]:top-[var(--drawer-header-height)] min-[576px]:h-[calc(100%-var(--drawer-header-height))] min-[576px]:max-h-[calc(100%-var(--drawer-header-height))]',
+);
 
-// Same, for the fullscreen design, where RootLayout caps the column at 1200px.
-// Keep in sync with the `max-w-[1200px]` in `ui/layouts/root-layout.tsx`.
-const dialogClassNameFullScreenDesignColumn =
-  'me-[max(0px,calc((100vw-1200px)/2))]';
-
-// Leaves the app header visible above the drawer.
-const dialogClassNameFullscreen =
-  'min-[576px]:top-[68px] min-[576px]:h-[calc(100%-68px)] min-[576px]:max-h-[calc(100%-68px)]';
-
-const dialogClassNameFullScreenDesignHeader =
-  'min-[576px]:top-[var(--header-height-fullscreen-design)] min-[576px]:h-[calc(100%-var(--header-height-fullscreen-design))] min-[576px]:max-h-[calc(100%-var(--header-height-fullscreen-design))]';
+const getDialogLayoutClassName = (
+  isFullScreenDesign: boolean,
+  isFullscreen: boolean,
+) => {
+  if (isFullScreenDesign) {
+    return '[--drawer-column-width:var(--width-max-fullscreen-redesign)] [--drawer-header-height:var(--header-height-fullscreen-design)]';
+  }
+  return classnames(
+    '[--drawer-column-width:var(--width-max)]',
+    isFullscreen
+      ? '[--drawer-header-height:var(--header-height)]'
+      : '[--drawer-header-height:0px]',
+  );
+};
 
 const frameClassName = classnames(
   'h-full w-full',
@@ -166,15 +170,8 @@ export const GlobalMenuDrawer = ({
   const titleId = 'global-menu-drawer-title';
   const dialogClassName = classnames(
     dialogClassNameBase,
-    isFullScreenDesign
-      ? [
-          dialogClassNameFullScreenDesignHeader,
-          dialogClassNameFullScreenDesignColumn,
-        ]
-      : [
-          isFullscreen && dialogClassNameFullscreen,
-          dialogClassNameCappedColumn,
-        ],
+    dialogClassNamePlacement,
+    getDialogLayoutClassName(isFullScreenDesign, isFullscreen),
   );
 
   const panel = (

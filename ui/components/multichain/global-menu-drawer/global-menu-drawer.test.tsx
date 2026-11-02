@@ -112,64 +112,39 @@ describe('GlobalMenuDrawer', () => {
     jest.mocked(useFullScreenDesign).mockReturnValue(false);
   });
 
-  describe('alignment', () => {
-    const cappedColumnClass = 'me-[max(0px,calc((100vw-var(--width-max))/2))]';
-    const fullScreenDesignColumnClass = 'me-[max(0px,calc((100vw-1200px)/2))]';
-
-    it('aligns with the right edge of the width-capped column', () => {
-      const { getByTestId } = renderWithProvider(
+  describe('placement', () => {
+    const renderDrawer = () =>
+      renderWithProvider(
         <GlobalMenuDrawer isOpen onClose={jest.fn()} data-testid="drawer">
           <span>Content</span>
         </GlobalMenuDrawer>,
         configureStore(mockState),
         '/',
-      );
+      ).getByTestId('drawer');
 
-      expect(getByTestId('drawer')).toHaveClass(cappedColumnClass);
+    it('aligns with the width-capped column and sits at the top in the popup', () => {
+      expect(renderDrawer()).toHaveClass(
+        '[--drawer-column-width:var(--width-max)]',
+        '[--drawer-header-height:0px]',
+      );
     });
 
-    it('aligns with the right edge of the 1200px column in the fullscreen design', () => {
+    it('leaves the app header visible in fullscreen', () => {
+      getEnvironmentType.mockReturnValue('fullscreen');
+
+      expect(renderDrawer()).toHaveClass(
+        '[--drawer-column-width:var(--width-max)]',
+        '[--drawer-header-height:var(--header-height)]',
+      );
+    });
+
+    it('aligns with the wider column and leaves the taller app header visible in the fullscreen design', () => {
       jest.mocked(useFullScreenDesign).mockReturnValue(true);
 
-      const { getByTestId } = renderWithProvider(
-        <GlobalMenuDrawer isOpen onClose={jest.fn()} data-testid="drawer">
-          <span>Content</span>
-        </GlobalMenuDrawer>,
-        configureStore(mockState),
-        '/',
+      expect(renderDrawer()).toHaveClass(
+        '[--drawer-column-width:var(--width-max-fullscreen-redesign)]',
+        '[--drawer-header-height:var(--header-height-fullscreen-design)]',
       );
-
-      expect(getByTestId('drawer')).toHaveClass(fullScreenDesignColumnClass);
-      expect(getByTestId('drawer')).not.toHaveClass(cappedColumnClass);
-    });
-
-    it('leaves the app header visible in the fullscreen design in any environment', () => {
-      jest.mocked(useFullScreenDesign).mockReturnValue(true);
-
-      const { getByTestId } = renderWithProvider(
-        <GlobalMenuDrawer isOpen onClose={jest.fn()} data-testid="drawer">
-          <span>Content</span>
-        </GlobalMenuDrawer>,
-        configureStore(mockState),
-        '/',
-      );
-
-      expect(getByTestId('drawer')).toHaveClass(
-        'min-[576px]:top-[var(--header-height-fullscreen-design)]',
-        'min-[576px]:h-[calc(100%-var(--header-height-fullscreen-design))]',
-      );
-    });
-
-    it('does not offset the drawer from the top outside the fullscreen design', () => {
-      const { getByTestId } = renderWithProvider(
-        <GlobalMenuDrawer isOpen onClose={jest.fn()} data-testid="drawer">
-          <span>Content</span>
-        </GlobalMenuDrawer>,
-        configureStore(mockState),
-        '/',
-      );
-
-      expect(getByTestId('drawer')).not.toHaveClass('min-[576px]:top-[68px]');
     });
   });
 

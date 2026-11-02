@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { SUPPORT_LINK } from '#shared/lib/ui-utils';
 import { openWindow } from '#ui/helpers/utils/window';
 import { useFullScreenDesign } from '#ui/hooks/useFullScreenDesign';
@@ -250,13 +250,13 @@ describe('Fullscreen design', () => {
     },
   };
 
-  const renderHeader = () => {
+  // Wait for the header's effects to settle so their updates run inside act.
+  const renderHeader = async () => {
     const store = configureStore(stateWithSearchEnabled);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
-    return renderWithProvider(
-      <AppHeaderUnlockedContent menuRef={menuRef} />,
-      store,
-    );
+    await act(async () => {
+      renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
+    });
   };
 
   beforeEach(() => {
@@ -272,8 +272,8 @@ describe('Fullscreen design', () => {
       mockUseFullScreenDesign.mockReturnValue(false);
     });
 
-    it('renders the account picker button and the search icon button', () => {
-      renderHeader();
+    it('renders the account picker button and the search icon button', async () => {
+      await renderHeader();
 
       expect(screen.getByTestId('account-menu-icon')).toBeInTheDocument();
       expect(
@@ -290,8 +290,8 @@ describe('Fullscreen design', () => {
       mockUseFullScreenDesign.mockReturnValue(true);
     });
 
-    it('renders the account name as plain text instead of the account picker', () => {
-      renderHeader();
+    it('renders the account name as plain text instead of the account picker', async () => {
+      await renderHeader();
 
       expect(screen.getByTestId('app-header-account-name')).toHaveTextContent(
         'Account 1',
@@ -302,8 +302,8 @@ describe('Fullscreen design', () => {
       ).toBe(null);
     });
 
-    it('renders an open search field instead of the search icon button', () => {
-      renderHeader();
+    it('renders an open search field instead of the search icon button', async () => {
+      await renderHeader();
 
       const searchInput = screen.getByTestId('discover-search-button');
       expect(searchInput.tagName).toBe('INPUT');
@@ -314,8 +314,8 @@ describe('Fullscreen design', () => {
       );
     });
 
-    it('opens the discover search page when the search field is clicked', () => {
-      renderHeader();
+    it('opens the discover search page when the search field is clicked', async () => {
+      await renderHeader();
 
       fireEvent.click(screen.getByTestId('discover-search-button'));
 
@@ -325,8 +325,8 @@ describe('Fullscreen design', () => {
       );
     });
 
-    it('opens the discover search page when Enter is pressed in the search field', () => {
-      renderHeader();
+    it('opens the discover search page when Enter is pressed in the search field', async () => {
+      await renderHeader();
 
       fireEvent.keyDown(screen.getByTestId('discover-search-button'), {
         key: 'Enter',
