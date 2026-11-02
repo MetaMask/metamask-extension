@@ -37,7 +37,7 @@ export default function GenericAssetCellLayout({
               onClick();
             }
           }}
-          className={`flex w-full flex-row py-2 px-4 ${onClick ? 'hover:bg-hover cursor-pointer' : ''}`}
+          className={`flex w-full flex-row overflow-hidden py-2 px-4 ${onClick ? 'hover:bg-hover cursor-pointer' : ''}`}
           style={{
             height: ASSET_CELL_HEIGHT,
           }}
@@ -52,19 +52,19 @@ export default function GenericAssetCellLayout({
             <Box
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
-              className="flex"
+              className="flex min-w-0"
             >
-              {headerLeftDisplay}
-              {headerRightDisplay}
+              <Box className="min-w-0 overflow-hidden">{headerLeftDisplay}</Box>
+              <Box className="shrink-0">{headerRightDisplay}</Box>
             </Box>
 
             <Box
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
-              className="flex"
+              className="flex min-w-0"
             >
-              {footerLeftDisplay}
-              {footerRightDisplay}
+              <Box className="min-w-0 overflow-hidden">{footerLeftDisplay}</Box>
+              <Box className="shrink-0">{footerRightDisplay}</Box>
             </Box>
           </Box>
         </a>

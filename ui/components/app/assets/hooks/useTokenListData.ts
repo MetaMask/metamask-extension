@@ -91,15 +91,25 @@ const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
   return undefined;
 };
 
+const selectSelectedAccountGroupId = (state: {
+  metamask?: { selectedAccountGroup?: string };
+}): string | undefined => state.metamask?.selectedAccountGroup;
+
 export const getTokenListItemKey = (
   item: TokenListDisplayItem,
   index: number,
+  accountGroupId?: string,
 ) => {
+  // The same chain/symbol/address exists on every account. Without the
+  // account in the key, switching accounts reuses the virtualizer's measured
+  // row and the previous account's tokens stay painted underneath.
+  const accountScope = accountGroupId ? `${accountGroupId}:` : '';
+
   if (item.type === 'low-value-toggle') {
-    return `low-value-assets-toggle-${index}`;
+    return `${accountScope}low-value-assets-toggle-${index}`;
   }
 
-  return `${item.token.chainId}-${item.token.symbol}-${item.token.address}`;
+  return `${accountScope}${item.token.chainId}-${item.token.symbol}-${item.token.address}`;
 };
 
 /**
@@ -129,6 +139,7 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
   const { isStockToken } = useRWAToken();
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const selectedAccountGroupId = useSelector(selectSelectedAccountGroupId);
 
   // Defer only the hide-zero-balance preference so Settings toggles stay
   // responsive while this list recomputes. Account assets must update
@@ -383,6 +394,7 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
     showLoadingSkeleton,
     hasBalance,
     privacyMode,
+    selectedAccountGroupId,
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,

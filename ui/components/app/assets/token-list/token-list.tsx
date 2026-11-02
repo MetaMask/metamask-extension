@@ -32,6 +32,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     showLoadingSkeleton,
     hasBalance,
     privacyMode,
+    selectedAccountGroupId,
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,
@@ -84,7 +85,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     return (
       <div className="token-list-non-virtualized">
         {tokenListItems.map((item, index) => (
-          <div key={getTokenListItemKey(item, index)}>
+          <div key={getTokenListItemKey(item, index, selectedAccountGroupId)}>
             {renderTokenListItem({ item })}
           </div>
         ))}
@@ -94,10 +95,16 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   return (
     <VirtualizedList
+      // Remount when the account changes so the previous account's absolute
+      // rows and measurement cache cannot stay on screen.
+      key={selectedAccountGroupId ?? 'unselected-account'}
       data={tokenListItems}
       estimatedItemSize={ASSET_CELL_HEIGHT}
       overscan={10}
-      keyExtractor={getTokenListItemKey}
+      enableScrollMargin
+      keyExtractor={(item, index) =>
+        getTokenListItemKey(item, index, selectedAccountGroupId)
+      }
       renderItem={renderTokenListItem}
     />
   );
