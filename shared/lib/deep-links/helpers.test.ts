@@ -42,7 +42,8 @@ describe('helpers', () => {
 
     it('should decode a valid base64url signature string to Uint8Array (old browsers fallback)', () => {
       // Simulate old browser by deleting Uint8Array.fromBase64
-      const orig = (Uint8Array as any).fromBase64;
+      // @ts-expect-error This method not supported by tsc until v6
+      const orig = Uint8Array.fromBase64;
       // @ts-expect-error This method not supported by tsc until v6
       delete Uint8Array.fromBase64;
       // Force Jest to re-evaluate the helpers module when it gets imported below
