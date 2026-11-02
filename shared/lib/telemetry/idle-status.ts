@@ -36,8 +36,7 @@ type ActiveReason =
   | 'pending_confirmation'
   | 'recent_ui_closed'
   | 'recent_ui_interaction'
-  | 'recent_dapp_rpc'
-  | 'recent_snap_rpc'
+  | 'recent_connected_dapp_rpc'
   | 'recent_external_extension_rpc';
 
 /**
@@ -80,10 +79,18 @@ function isRecent(ms: number | undefined, graceMs: number): boolean {
 /**
  * Classifies why a sampled State Persist write is or isn't "idle".
  *
- * Checks run in priority order; only the first match is reported. Lifecycle
- * transitions and a pending confirmation always win. `msSinceLastWindowEvent`
- * is deliberately not checked: window focus alone isn't evidence of
- * MetaMask-specific activity.
+ * Checks run in priority order. Only the first match is reported. Lifecycle
+ * transitions and a pending confirmation always win.
+ *
+ * `msSinceLastWindowEvent` is not checked. Window focus alone is not evidence
+ * of MetaMask-specific activity.
+ *
+ * `msSinceLastDappRpc` and `msSinceLastSnapRpc` are not checked. Unpermissioned
+ * pages probe the provider, and Snaps poll housekeeping methods, so both stay
+ * hot while the wallet is otherwise quiet. Those signals are still reported on
+ * the State Persist trace. Connected-dapp RPC is the dapp input. A user-facing
+ * Snap signal is a follow-up. External-extension RPC stays in the classifier
+ * because those callers are rare and high-intent.
  *
  * @param currentActivity - Snapshot of open UIs and startup phase.
  * @param lastActivity - Elapsed-time signals since the last occurrence of
@@ -120,12 +127,10 @@ export function getIdleStatus(
     return 'active_recent_ui_interaction';
   }
 
-  if (isRecent(lastActivity.msSinceLastDappRpc, EXTERNAL_RPC_GRACE_MS)) {
-    return 'active_recent_dapp_rpc';
-  }
-
-  if (isRecent(lastActivity.msSinceLastSnapRpc, EXTERNAL_RPC_GRACE_MS)) {
-    return 'active_recent_snap_rpc';
+  if (
+    isRecent(lastActivity.msSinceLastConnectedDappRpc, EXTERNAL_RPC_GRACE_MS)
+  ) {
+    return 'active_recent_connected_dapp_rpc';
   }
 
   if (
