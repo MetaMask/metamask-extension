@@ -16,10 +16,8 @@ import {
 import {
   getMultichainNativeTokenBalance,
   selectIsAssetsLoadingForSelectedAccountGroup,
-  selectIsAssetsRefreshingForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
-import Spinner from '../../../ui/spinner';
 
 import {
   getEnabledNetworksByNamespace,
@@ -67,10 +65,6 @@ export const AccountGroupBalance = ({
   const isAssetsLoading = useSelector(
     selectIsAssetsLoadingForSelectedAccountGroup,
   );
-  const isAssetsRefreshing = useSelector(
-    selectIsAssetsRefreshingForSelectedAccountGroup,
-  );
-  const showRefreshIndicator = isAssetsRefreshing && !isAssetsLoading;
 
   const caipChainId = useMemo(
     () => (isCaipChainId(chainId) ? chainId : formatChainIdToCaip(chainId)),
@@ -198,7 +192,6 @@ export const AccountGroupBalance = ({
         alignItems={BoxAlignItems.Center}
         flexWrap={BoxFlexWrap.Wrap}
         onClick={handleSensitiveToggle}
-        aria-busy={showRefreshIndicator}
       >
         <SensitiveText
           ellipsis
@@ -211,14 +204,6 @@ export const AccountGroupBalance = ({
           {/* We should always show something but the check is just to appease TypeScript */}
           {formattedTotal}
         </SensitiveText>
-        {showRefreshIndicator ? (
-          <span
-            className="ml-2 inline-flex h-4 w-4 shrink-0"
-            data-testid="account-group-balance-refreshing"
-          >
-            <Spinner className="h-4 w-4" />
-          </span>
-        ) : null}
       </Box>
     </Skeleton>
   );
