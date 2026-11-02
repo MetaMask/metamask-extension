@@ -24,6 +24,10 @@ import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
 const mockTrackEvent = jest.fn();
 
+beforeEach(() => {
+  mockTrackEvent.mockResolvedValue(undefined);
+});
+
 jest.mock('../../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../../shared/lib/analytics/create-event-builder',
@@ -507,6 +511,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     mockTrackEvent.mockImplementation(() => {
       callOrder.push('trackEvent');
+      return Promise.resolve();
     });
 
     (openWindow as jest.Mock).mockImplementation(() => {
@@ -529,6 +534,7 @@ describe('VisitSupportDataConsentModal', () => {
 
     mockTrackEvent.mockImplementation(() => {
       callOrder.push('trackEvent');
+      return Promise.resolve();
     });
 
     (openWindow as jest.Mock).mockImplementation(() => {
