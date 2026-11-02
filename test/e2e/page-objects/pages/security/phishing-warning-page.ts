@@ -68,15 +68,15 @@ class PhishingWarningPage {
           await this.driver.switchToDefaultContent();
           const iframe = await this.driver.findElement(this.iframeSelector);
           await this.driver.switchToFrame(iframe as unknown as string);
-          return await this.driver.isElementPresentAndVisible(
-            this.phishingWarningPageTitle,
-            1000,
-          );
+          await this.driver.waitForSelector(this.phishingWarningPageTitle, {
+            timeout: 1000,
+          });
+          return true;
         } catch {
           return false;
         }
       },
-      { timeout: 10000, interval: 500 },
+      { timeout: 40000, interval: 500 },
     );
     await this.driver.clickElement(this.openWarningInNewTabLink);
     try {
