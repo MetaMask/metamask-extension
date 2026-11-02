@@ -212,10 +212,13 @@ describe('AssetPageHeader', () => {
   });
 
   it('renders the token avatar with a network badge', () => {
-    renderHeader();
+    renderHeader({ name: 'Chainlink Token', symbol: 'LINK' });
 
-    expect(screen.getByTestId('asset-page-header-avatar')).toBeInTheDocument();
+    const avatar = screen.getByTestId('asset-page-header-avatar');
+    expect(avatar).toBeInTheDocument();
     expect(screen.getByAltText('Arbitrum One')).toBeInTheDocument();
+    expect(avatar.parentElement?.parentElement).toHaveClass('self-center');
+    expect(avatar.parentElement?.parentElement).not.toHaveClass('self-start');
   });
 
   it('renders badges passed as the title end accessory', () => {

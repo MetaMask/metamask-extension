@@ -174,6 +174,9 @@ export const AssetPageHeader = ({
   const avatar = useMemo(
     () => (
       <BadgeWrapper
+        // BadgeWrapper defaults to self-start, which pins the avatar to the
+        // top of the name and ticker. Center it on that text block instead.
+        className="self-center"
         badge={<BadgeNetwork name={networkName} src={networkImage} />}
       >
         <AvatarToken
