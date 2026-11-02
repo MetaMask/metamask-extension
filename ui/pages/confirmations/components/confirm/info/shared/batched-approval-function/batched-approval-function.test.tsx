@@ -105,7 +105,9 @@ describe('BatchedApprovalFunction', () => {
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
       expect(getByText(messages.spender.message)).toBeInTheDocument();
-      expect(getByText('0x1231D...F4EaE')).toBeInTheDocument();
+      expect(
+        getByText('0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE'),
+      ).toBeInTheDocument();
       expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
@@ -170,7 +172,7 @@ describe('BatchedApprovalFunction', () => {
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
       expect(getByText(messages.spender.message)).toBeInTheDocument();
-      expect(getByText('0x12345...67891')).toBeInTheDocument();
+      expect(getByText(ADDRESS_2_MOCK)).toBeInTheDocument();
       expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('0.000123 ETH')).toBeInTheDocument();
     });
@@ -200,7 +202,7 @@ describe('BatchedApprovalFunction', () => {
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
       expect(getByText(messages.spender.message)).toBeInTheDocument();
-      expect(getByText('0x12345...67890')).toBeInTheDocument();
+      expect(getByText(ADDRESS_MOCK)).toBeInTheDocument();
       expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText(messages.all.message)).toBeInTheDocument();
     });

@@ -80,7 +80,11 @@ const TypedSignInfo = () => {
               ownerId={currentConfirmation.id}
               label={t('spender')}
             >
-              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
+              <ConfirmInfoRowAddress
+                address={spender}
+                chainId={chainId}
+                truncateStart
+              />
             </ConfirmInfoAlertRow>
             <ConfirmInfoRowDivider />
           </>
@@ -104,6 +108,7 @@ const TypedSignInfo = () => {
             <ConfirmInfoRowAddress
               address={verifyingContract}
               chainId={chainId}
+              truncateStart
             />
           </ConfirmInfoAlertRow>
         )}

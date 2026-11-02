@@ -11,7 +11,17 @@ import {
   BackgroundColor,
 } from '../../../../../helpers/constants/design-system';
 import { type Recipient as RecipientType } from '../../../hooks/send/useRecipients';
-import { shortenAddress } from '../../../../../helpers/utils/util';
+import { shortenString } from '../../../../../helpers/utils/util';
+
+const ADDRESS_VISIBLE_CHARS = 10;
+
+const shortenRecipientAddress = (address: string) =>
+  shortenString(address, {
+    truncatedCharLimit: ADDRESS_VISIBLE_CHARS * 2 + 4,
+    truncatedStartChars: ADDRESS_VISIBLE_CHARS,
+    truncatedEndChars: ADDRESS_VISIBLE_CHARS,
+    skipCharacterInEnd: false,
+  });
 
 export const Recipient = ({
   isAccount,
@@ -61,7 +71,7 @@ export const Recipient = ({
           color={TextColor.textAlternative}
           ellipsis
         >
-          {shortenAddress(address)}
+          {shortenRecipientAddress(address)}
         </Text>
       </Box>
     </Box>

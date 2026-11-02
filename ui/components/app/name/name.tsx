@@ -54,6 +54,12 @@ export type NameProps = {
    * Whether to disable the onClick handler.
    */
   disableNameClick?: boolean;
+
+  /**
+   * Show the full name or address on one line, shortening the start when
+   * space runs out.
+   */
+  truncateStart?: boolean;
 };
 
 const Name = memo(

@@ -22,10 +22,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
-import {
-  isResolvableName,
-  shortenAddress,
-} from '../../../../../helpers/utils/util';
+import { isResolvableName } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipients } from '../../../hooks/send/useRecipients';
@@ -86,9 +83,7 @@ export const RecipientInput = ({
     const addressIsValid =
       to?.length && to === toAddressValidated && recipientError === undefined;
 
-    return addressIsValid
-      ? shortenAddress(recipientResolvedLookup ?? to)
-      : undefined;
+    return addressIsValid ? (recipientResolvedLookup ?? to) : undefined;
   }, [recipientError, recipientResolvedLookup, toAddressValidated, to]);
 
   const recipientName = useMemo(() => {
@@ -113,7 +108,12 @@ export const RecipientInput = ({
           borderRadius={BorderRadius.MD}
           padding={3}
         >
-          <Box alignItems={AlignItems.center} display={Display.Flex}>
+          <Box
+            alignItems={AlignItems.center}
+            display={Display.Flex}
+            minWidth={BlockSize.Zero}
+            className="flex-1"
+          >
             <PreferredAvatar
               address={avatarSeedAddress}
               size={AvatarAccountSize.Md}
@@ -122,6 +122,8 @@ export const RecipientInput = ({
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               marginLeft={3}
+              minWidth={BlockSize.Zero}
+              className="flex-1"
             >
               {recipientConfusableCharacters?.length ? (
                 <ConfusableRecipientName
@@ -136,6 +138,8 @@ export const RecipientInput = ({
                 <Text
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodySm}
+                  className="ellipsis-start"
+                  data-testid="recipient-input-address"
                 >
                   {resolvedAddress}
                 </Text>
@@ -148,6 +152,8 @@ export const RecipientInput = ({
             iconName={IconName.Close}
             onClick={clearRecipient}
             size={ButtonIconSize.Sm}
+            className="shrink-0"
+            marginLeft={2}
           />
         </Box>
       ) : (

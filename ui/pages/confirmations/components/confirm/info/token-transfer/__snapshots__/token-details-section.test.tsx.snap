@@ -131,7 +131,7 @@ exports[`TokenDetailsSection renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
           class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -144,9 +144,13 @@ exports[`TokenDetailsSection renders correctly 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
             >
-              0x07614...3ad68
+              <span
+                dir="ltr"
+              >
+                0x076146c765189d51bE3160A2140cF80BFC73ad68
+              </span>
             </p>
           </div>
         </div>

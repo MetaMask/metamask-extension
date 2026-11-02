@@ -538,7 +538,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -551,9 +551,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0x3fC91...b7FAD
+                      <span
+                        dir="ltr"
+                      >
+                        0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -682,7 +686,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -695,9 +699,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0x00000...78BA3
+                      <span
+                        dir="ltr"
+                      >
+                        0x000000000022D473030F116dDEE9F6B43aC78BA3
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -963,7 +971,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -976,9 +984,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0x3fC91...b7FAD
+                      <span
+                        dir="ltr"
+                      >
+                        0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -1107,7 +1119,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1120,9 +1132,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0x00000...78BA3
+                      <span
+                        dir="ltr"
+                      >
+                        0x000000000022D473030F116dDEE9F6B43aC78BA3
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -1454,7 +1470,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1467,9 +1483,13 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0xCcCCc...ccccC
+                      <span
+                        dir="ltr"
+                      >
+                        0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -2234,7 +2254,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -2247,9 +2267,13 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0x5B38D...eddC4
+                      <span
+                        dir="ltr"
+                      >
+                        0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -2378,7 +2402,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -2391,9 +2415,13 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0xCcCCc...ccccC
+                      <span
+                        dir="ltr"
+                      >
+                        0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -2623,7 +2651,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -2636,9 +2664,13 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0xDef1C...25EfF
+                      <span
+                        dir="ltr"
+                      >
+                        0xDef1C0ded9bec7F1a1670819833240f027b25EfF
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -3521,7 +3553,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="mm-box confirm-info-row-address--truncate-start mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -3534,9 +3566,13 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
-                      class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                      class="mm-box mm-text name__value ellipsis-start mm-text--body-md mm-box--color-text-default"
                     >
-                      0xCcCCc...ccccC
+                      <span
+                        dir="ltr"
+                      >
+                        0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC
+                      </span>
                     </p>
                   </div>
                 </div>

@@ -9,6 +9,7 @@ import classnames from 'clsx';
 import { Icon, IconSize, Text } from '../../../component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../preferred-avatar';
 import ShortenedName from './shortened-name';
@@ -29,6 +30,11 @@ export type NameDisplayProps = {
    * Whether to disable the onClick handler.
    */
   disableNameClick?: boolean;
+  /**
+   * Show the full name or address on one line, shortening the start when
+   * space runs out.
+   */
+  truncateStart?: boolean;
 };
 
 const NameDisplay = memo(
@@ -41,6 +47,7 @@ const NameDisplay = memo(
     showFullName = false,
     fallbackName,
     disableNameClick,
+    truncateStart = false,
     ...props
   }: NameDisplayProps) => {
     const { name, image, icon, displayState, isAccount } = useDisplayName({
@@ -80,6 +87,27 @@ const NameDisplay = memo(
 
     const renderName = () => {
       const nameWithFallbackValue = name || fallbackName;
+
+      if (truncateStart) {
+        const fullValue =
+          type === NameType.ETHEREUM_ADDRESS
+            ? toChecksumHexAddress(value)
+            : value;
+
+        return (
+          <Text
+            className={classnames(
+              nameWithFallbackValue ? 'name__name' : 'name__value',
+              'ellipsis-start',
+            )}
+            variant={TextVariant.bodyMd}
+            {...props}
+          >
+            <span dir="ltr">{nameWithFallbackValue || fullValue}</span>
+          </Text>
+        );
+      }
+
       if (!nameWithFallbackValue) {
         return <FormattedName value={value} type={type} {...props} />;
       }
