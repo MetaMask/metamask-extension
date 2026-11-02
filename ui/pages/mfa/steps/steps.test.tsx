@@ -762,38 +762,18 @@ describe('FailureStep', () => {
       screen.getByText(messages.mfaFailureTitle.message),
     ).toBeInTheDocument();
     expect(screen.queryByText(messages.mfaErrorGeneric.message)).toBeNull();
+    expect(screen.queryByTestId(MfaFlowTestIds.SECONDARY_BUTTON)).toBeNull();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
     expect(onAction).toHaveBeenCalledWith({ type: 'retry' });
-    fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
-    expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
 
   it('only offers to close for a final error', () => {
-    render(
-      <FailureStep
-        {...buildState({
-          name: 'failure',
-          code: 'max_identifiers_reached',
-          canRetry: false,
-        })}
-        reason={reason}
-        onAction={jest.fn()}
-      />,
-    );
-
-    expect(
-      screen.getByText(messages.mfaErrorLimitReached.message),
-    ).toBeInTheDocument();
-    expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
-  });
-
-  it('sends an error only support can fix to support', () => {
     const onAction = jest.fn();
     render(
       <FailureStep
         {...buildState({
           name: 'failure',
-          code: 'multi_primary_srp',
+          code: 'max_passkeys_reached',
           canRetry: false,
         })}
         reason={reason}
@@ -802,17 +782,45 @@ describe('FailureStep', () => {
     );
 
     expect(
-      screen.getByText(messages.mfaFailureSupportTitle.message),
+      screen.getByText(messages.mfaFailureTitle.message),
     ).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
-    const supportLink = new URL(
-      screen.getByTestId('support-modal').textContent ?? '',
-    );
-    expect(supportLink.searchParams.get('mfa_error')).toBe('multi_primary_srp');
-
+    expect(
+      screen.getByText(messages.mfaErrorLimitReached.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId(MfaFlowTestIds.PRIMARY_BUTTON)).toBeNull();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
     expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
   });
+
+  it.each(['multi_primary_srp', 'max_identifiers_reached'] as const)(
+    'sends %s to support',
+    (code) => {
+      const onAction = jest.fn();
+      render(
+        <FailureStep
+          {...buildState({
+            name: 'failure',
+            code,
+            canRetry: false,
+          })}
+          reason={reason}
+          onAction={onAction}
+        />,
+      );
+
+      expect(
+        screen.getByText(messages.mfaFailureSupportTitle.message),
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+      const supportLink = new URL(
+        screen.getByTestId('support-modal').textContent ?? '',
+      );
+      expect(supportLink.searchParams.get('mfa_error')).toBe(code);
+
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.SECONDARY_BUTTON));
+      expect(onAction).toHaveBeenCalledWith({ type: 'dismiss' });
+    },
+  );
 });
 
 describe('TotpSetupStep', () => {

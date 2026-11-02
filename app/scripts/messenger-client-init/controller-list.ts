@@ -25,7 +25,6 @@ import {
   NftDetectionController,
   RatesController,
   TokenDetectionController,
-  TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
 import { AssetsController } from '@metamask/assets-controller';
@@ -238,7 +237,6 @@ export type MessengerClient =
   | InstitutionalSnapController
   | UserOperationController
   | UserStorageController
-  | TokenRatesController
   | NftController
   | NftDetectionController
   | AssetsContractController
@@ -335,7 +333,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   TransactionPayController['state'] &
   UserOperationController['state'] &
   UserStorageController['state'] &
-  TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &
