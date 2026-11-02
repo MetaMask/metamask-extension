@@ -7,7 +7,7 @@ import {
   type TrendingAsset,
 } from '@metamask/assets-controllers';
 import type { CaipChainId } from '@metamask/utils';
-
+import { byMarketCap } from '#shared/lib/token-search/token-search-api';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getIsStellarSupportEnabled } from '../../selectors/multichain/feature-flags';
 import {
@@ -189,8 +189,8 @@ export const useDiscoverCryptoSearch = ({
       (asset) => !asset.rwaData && matchesSearchQuery(asset, trimmedQuery),
     );
     const sortedFirstPage = firstPage?.hasSearchResults
-      ? dedupeByAssetId([...trendingMatches, ...firstPageData]).sort(
-          (a, b) => (b.marketCap ?? 0) - (a.marketCap ?? 0),
+      ? dedupeByAssetId([...trendingMatches, ...firstPageData]).toSorted(
+          byMarketCap,
         )
       : [];
     const seenAssetIds = new Set(sortedFirstPage.map((asset) => asset.assetId));

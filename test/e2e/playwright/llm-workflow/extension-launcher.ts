@@ -15,6 +15,7 @@ import {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { validateExtensionBuilt } from './validate-extension';
 import type {
   LauncherLaunchOptions,
@@ -24,6 +25,7 @@ import type {
   NetworkConfig,
 } from './launcher-types';
 import { resolveRepoRoot } from './resolve-repo-root';
+import { finishOnboarding, runSelfOnboarding } from './self-onboarding';
 import { getE2EDriver, withTimeout } from './e2e-driver';
 import {
   LAUNCH_SCREEN_CHECKS,
@@ -56,6 +58,8 @@ type ResolvedOptions = {
   network: NetworkConfig;
   proxyServer?: string;
   manifestFlags?: Partial<ManifestFlags>;
+  selfOnboarding: boolean;
+  srp?: string;
 };
 
 export function buildChromiumLaunchArgs(
@@ -119,6 +123,8 @@ export class MetaMaskExtensionLauncher {
       },
       proxyServer: options.proxyServer,
       manifestFlags: options.manifestFlags,
+      selfOnboarding: options.selfOnboarding === true,
+      srp: options.srp,
     };
     this.userDataDir = '';
 
@@ -128,6 +134,18 @@ export class MetaMaskExtensionLauncher {
   private validateConfig(): void {
     this.ensureDependenciesInstalled();
     this.validateNetworkModeRequiresRpcUrl();
+    this.validateSelfOnboarding();
+  }
+
+  private validateSelfOnboarding(): void {
+    if (!this.options.selfOnboarding) {
+      return;
+    }
+    if (!this.options.srp) {
+      throw new Error(
+        'Configuration error: selfOnboarding requires a secret recovery phrase.',
+      );
+    }
   }
 
   private ensureDependenciesInstalled(): void {
@@ -251,6 +269,31 @@ export class MetaMaskExtensionLauncher {
       await this.waitForExtensionReady();
 
       this.ensureExtensionInitialized();
+
+      if (this.options.selfOnboarding) {
+        let phrase = this.options.srp ?? '';
+        this.options.srp = undefined;
+        try {
+          await runSelfOnboarding(
+            getE2EDriver(this.extensionPage as Page),
+            phrase,
+            DEFAULT_PASSWORD,
+          );
+        } finally {
+          phrase = '';
+        }
+        const driver = withTimeout(
+          getE2EDriver(this.extensionPage as Page),
+          UI_READY_TIMEOUT_MS,
+        );
+        // Reloading lets the UI route to unlock or the completion page from
+        // the real wallet state; Done never navigates the tab when it opens
+        // the side panel, so home is loaded again afterwards.
+        await this.navigateToHome();
+        await finishOnboarding(driver, DEFAULT_PASSWORD);
+        await this.navigateToHome();
+        await new HomePage(driver).checkPageIsLoaded();
+      }
 
       return {
         context: this.context as BrowserContext,

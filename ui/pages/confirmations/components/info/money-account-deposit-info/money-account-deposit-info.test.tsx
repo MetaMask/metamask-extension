@@ -67,6 +67,7 @@ describe('MoneyAccountDepositInfo', () => {
         currency: 'usd',
         displayAccountRow: true,
         displayPercentageButtons: true,
+        hasMax: true,
         hidePayTokenAmount: true,
       }),
       expect.anything(),

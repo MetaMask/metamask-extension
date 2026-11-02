@@ -100,6 +100,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   const secondsLeft = useSecondsUntil(state.resendAvailableAt);
   const { busy, error, codeResent, resendAvailableAt } = state;
   const { codeSent } = step;
+  // Authenticator app codes are on the user's app, so nothing is sent or
+  // resent.
+  const isTotp = step.method === 'totp';
   const isCoolingDown = secondsLeft > 0;
 
   const [clearedFor, setClearedFor] = useState({ error, codeResent });
@@ -116,12 +119,18 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     }
   }, [error, codeResent]);
 
-  // The first code of a flow can hit the cooldown left by the previous one.
+  // The first email code of a flow can hit the cooldown left by the previous
+  // one.
   useEffect(() => {
-    if (!codeSent && resendAvailableAt !== undefined && secondsLeft === 0) {
+    if (
+      !isTotp &&
+      !codeSent &&
+      resendAvailableAt !== undefined &&
+      secondsLeft === 0
+    ) {
       onAction({ type: 'resend' });
     }
-  }, [codeSent, resendAvailableAt, secondsLeft, onAction]);
+  }, [isTotp, codeSent, resendAvailableAt, secondsLeft, onAction]);
 
   useEffect(() => {
     if (codeSent) {
@@ -161,10 +170,11 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     }
   };
 
-  // A cooldown with a wait time shows as the countdown, also once it ended.
+  // An email cooldown with a wait time shows as the countdown on the resend
+  // button, also once it ended. Authenticator app errors always show.
   const showError =
     error !== undefined &&
-    !(resendAvailableAt !== undefined && COOLDOWN_CODES.has(error));
+    (isTotp || !(resendAvailableAt !== undefined && COOLDOWN_CODES.has(error)));
   // The code on screen can no longer be used: the main action is a new one.
   const needsNewCode =
     showError && error !== undefined && getErrorHandling(error) === 'restart';
@@ -179,27 +189,70 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
   };
   const canResend = !isCoolingDown && !busy;
 
+  const getDescription = () => {
+    if (isTotp) {
+      return t('mfaOtpDescriptionTotp');
+    }
+    return step.email
+      ? t('mfaOtpDescriptionWithEmail', [maskEmail(step.email)])
+      : t('mfaOtpDescription');
+  };
+
+  const renderTotpFooter = () =>
+    !codeSent && !busy ? (
+      // The verification failed to start: start it again, after any cooldown.
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Lg}
+        isFullWidth
+        isDisabled={isCoolingDown}
+        onClick={() => onAction({ type: 'resend' })}
+        data-testid={MfaFlowTestIds.RESEND_BUTTON}
+      >
+        {isCoolingDown
+          ? t('mfaOtpRetryIn', [String(secondsLeft)])
+          : t('mfaOtpRetry')}
+      </Button>
+    ) : (
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Lg}
+        isFullWidth
+        // A complete code is submitted as it is typed; this shows the
+        // verification starting or the code being checked, or submits it again
+        // after an error.
+        isLoading={busy}
+        isDisabled={!codeSent || code.length < CODE_LENGTH}
+        onClick={() => onAction({ type: 'submitCode', code })}
+        data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
+      >
+        {t('mfaOtpVerify')}
+      </Button>
+    );
+
   return (
     <StepLayout
       title={t('mfaOtpTitle')}
-      description={
-        step.email
-          ? t('mfaOtpDescriptionWithEmail', [maskEmail(step.email)])
-          : t('mfaOtpDescription')
-      }
+      description={getDescription()}
       footer={
-        <Button
-          variant={canResend ? ButtonVariant.Primary : ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          isFullWidth
-          // No submit button: this shows the code being checked.
-          isLoading={busy && codeSent}
-          isDisabled={!canResend}
-          onClick={() => onAction({ type: 'resend' })}
-          data-testid={MfaFlowTestIds.RESEND_BUTTON}
-        >
-          {needsNewCode ? t('mfaOtpGetNewCode') : getResendLabel()}
-        </Button>
+        isTotp ? (
+          renderTotpFooter()
+        ) : (
+          <Button
+            variant={
+              canResend ? ButtonVariant.Primary : ButtonVariant.Secondary
+            }
+            size={ButtonSize.Lg}
+            isFullWidth
+            // No submit button: this shows the code being checked.
+            isLoading={busy && codeSent}
+            isDisabled={!canResend}
+            onClick={() => onAction({ type: 'resend' })}
+            data-testid={MfaFlowTestIds.RESEND_BUTTON}
+          >
+            {needsNewCode ? t('mfaOtpGetNewCode') : getResendLabel()}
+          </Button>
+        )
       }
     >
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
@@ -250,7 +303,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             data-testid={MfaFlowTestIds.CODE_INPUT}
           />
         </Box>
-        {showError && error ? <StepError code={error} /> : null}
+        {showError && error ? (
+          <StepError code={error} method={step.method} />
+        ) : null}
         {codeResent && !error ? (
           <StepMessage>{t('mfaOtpResent')}</StepMessage>
         ) : null}

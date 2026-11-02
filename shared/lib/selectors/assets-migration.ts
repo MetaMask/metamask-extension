@@ -68,17 +68,17 @@ import { createDeepEqualSelector } from './selector-creators';
 // allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: DONE
+// balances: unused (controller removed)
 //
 // MultichainAssetsRatesController
-// conversionRates: DONE
-// historicalPrices: TODO (This state should be removed)
+// conversionRates: DONE (via AssetsController.assetsPrice when unify enabled)
+// historicalPrices: unused (controller removed; charts use Price API)
 //
 // RatesController
 // rates: DONE
 //
 // TokenListController
-// tokensChainsCache: TODO (There are no plans to port this state)
+// tokensChainsCache: unused (controller removed)
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration
@@ -690,7 +690,12 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
 
     return selectedCurrency;
   },
-) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
+  // Dual-path during migration: legacy `currentCurrency` or unified `selectedCurrency`.
+) as unknown as (state: {
+  metamask: Partial<Pick<CurrencyRateState, 'currentCurrency'>> &
+    Partial<Pick<AssetsControllerState, 'selectedCurrency'>> &
+    Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
+}) => CurrencyRateState['currentCurrency'];
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -907,10 +912,14 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsRatesControllerState,
-    'conversionRates'
-  >;
+    // Dual-path during migration: legacy `conversionRates` or unified `assetsPrice`.
+  ) as unknown as (state: {
+    metamask: Partial<
+      Pick<MultichainAssetsRatesControllerState, 'conversionRates'>
+    > &
+      Partial<Pick<AssetsControllerState, 'assetsPrice'>> &
+      Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
+  }) => MultichainAssetsRatesControllerState['conversionRates'];
 
 export const getRatesControllerRates = createDeepEqualSelector(
   [

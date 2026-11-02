@@ -48,6 +48,30 @@ export function clearPendingUserFills(): void {
   pendingUserFills = [];
 }
 
+/**
+ * Last clearing-house state broadcast by `pushPositionUpdate` /
+ * `pushPositionClosed`. Position mocks serve it on later subscribe follow-ups
+ * and REST/WS `clearinghouseState` reads, so a refetch after a simulated fill
+ * returns the new account state instead of the initial one.
+ */
+let pushedClearinghouseState: object | null = null;
+
+export function setPushedClearinghouseState(state: object): void {
+  pushedClearinghouseState = state;
+}
+
+export function clearPushedClearinghouseState(): void {
+  pushedClearinghouseState = null;
+}
+
+/**
+ * @param initialState - State served until a position push happens.
+ * @returns The last pushed clearing-house state, or `initialState`.
+ */
+export function getCurrentClearinghouseState(initialState: object): object {
+  return pushedClearinghouseState ?? initialState;
+}
+
 export function getResponsePayload(mock: WebSocketMessageMock): object | null {
   if (!mock.response) {
     return null;

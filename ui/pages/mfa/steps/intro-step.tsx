@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -19,12 +21,13 @@ import type { MfaMethod } from '../../../hooks/identity/mfa/engine/types';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { getMethodLabelKey } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
-import StepLayout, { MfaShield, type StepProps } from './step-layout';
+import StepLayout, { type StepProps } from './step-layout';
 
 /* eslint-disable @typescript-eslint/naming-convention -- the server's codes */
 const METHOD_ICONS: Record<MfaMethod, IconName> = {
   email_otp: IconName.Mail,
   passkey: IconName.Key,
+  totp: IconName.QrCode,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -45,6 +48,9 @@ const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
     if (method === 'passkey') {
       return t(isDone ? 'mfaIntroPasskeyDone' : 'mfaIntroPasskeyDescription');
     }
+    if (method === 'totp') {
+      return t(isDone ? 'mfaIntroTotpDone' : 'mfaIntroTotpDescription');
+    }
     if (isDone) {
       return step.email ? maskEmail(step.email) : undefined;
     }
@@ -53,7 +59,6 @@ const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
 
   return (
     <StepLayout
-      top={<MfaShield />}
       title={t('mfaIntroTitle')}
       description={reason.enrollDescription ?? t('mfaIntroDescription')}
       error={state.error}
@@ -70,57 +75,49 @@ const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
         </Button>
       }
     >
-      <Box flexDirection={BoxFlexDirection.Column} gap={3} paddingTop={3}>
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {t('mfaIntroListTitle')}
-        </Text>
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          className="bg-muted rounded-3xl"
-        >
-          {step.methods.map((method) => {
-            const isDone = !step.missing.includes(method);
-            const description = getDescription(method, isDone);
-            return (
-              <Box
-                key={method}
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={3}
-                paddingHorizontal={4}
-                paddingVertical={3}
-                className="min-h-14"
-                data-testid={`${MfaFlowTestIds.INTRO_METHOD}-${method}${
-                  isDone ? '-done' : ''
-                }`}
-              >
-                <Icon name={METHOD_ICONS[method]} />
-                <Box flexDirection={BoxFlexDirection.Column} className="flex-1">
+      <Box flexDirection={BoxFlexDirection.Column} className="-mx-4">
+        {step.methods.map((method) => {
+          const isDone = !step.missing.includes(method);
+          const description = getDescription(method, isDone);
+          return (
+            <Box
+              key={method}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={3}
+              paddingHorizontal={4}
+              paddingVertical={3}
+              className="min-h-14"
+              data-testid={`${MfaFlowTestIds.INTRO_METHOD}-${method}${
+                isDone ? '-done' : ''
+              }`}
+            >
+              <AvatarIcon
+                iconName={METHOD_ICONS[method]}
+                severity={AvatarIconSeverity.Neutral}
+              />
+              <Box flexDirection={BoxFlexDirection.Column} className="flex-1">
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t(getMethodLabelKey(method))}
+                </Text>
+                {description ? (
                   <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
                   >
-                    {t(getMethodLabelKey(method))}
+                    {description}
                   </Text>
-                  {description ? (
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.TextAlternative}
-                    >
-                      {description}
-                    </Text>
-                  ) : null}
-                </Box>
-                {isDone ? (
-                  <Icon
-                    name={IconName.Check}
-                    color={IconColor.SuccessDefault}
-                  />
                 ) : null}
               </Box>
-            );
-          })}
-        </Box>
+              {isDone ? (
+                <Icon name={IconName.Check} color={IconColor.SuccessDefault} />
+              ) : null}
+            </Box>
+          );
+        })}
       </Box>
     </StepLayout>
   );

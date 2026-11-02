@@ -11,6 +11,7 @@ import {
   PHISHING_CONFIG_BASE_URL,
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
+  RequestSourceFlow,
 } from '@metamask/phishing-controller';
 import {
   EthAccountType,
@@ -22,7 +23,6 @@ import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { TokenListController } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import {
   Caip25CaveatType,
@@ -610,8 +610,6 @@ describe('MetaMaskController', () => {
         .mockReturnValue(true);
 
       jest.spyOn(Messenger.prototype, 'subscribe');
-      jest.spyOn(TokenListController.prototype, 'start');
-      jest.spyOn(TokenListController.prototype, 'stop');
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
@@ -2902,7 +2900,19 @@ describe('MetaMaskController', () => {
           await waitForAllPromises();
           await new Promise((resolve) => setTimeout(resolve, 0));
 
-          expect(scanUrlSpy).toHaveBeenCalledWith('http://mycrypto.com');
+          expect(scanUrlSpy).toHaveBeenCalledWith(
+            'http://mycrypto.com',
+            RequestSourceFlow.DappConnection,
+          );
+
+          await localMetamaskController
+            .getApi()
+            .scanUrlForPhishing('http://mycrypto.com');
+
+          expect(scanUrlSpy).toHaveBeenCalledWith(
+            'http://mycrypto.com',
+            RequestSourceFlow.RevealSrp,
+          );
           streamTest.end();
         } finally {
           process.env.SECURITY_ALERTS_API_ENABLED =

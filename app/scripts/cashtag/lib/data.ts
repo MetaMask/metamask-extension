@@ -2,6 +2,7 @@ import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { priceApiBaseUrl } from '#shared/constants/price-api';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '#shared/constants/tokens';
 import { getCaipAssetImageUrl } from '#shared/lib/asset-utils';
+import { byMarketCap } from '#shared/lib/token-search/token-search-api';
 import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
@@ -138,7 +139,7 @@ export async function resolveTicker(
     return null;
   }
 
-  const assets = symbolMatches.map(toAssetData);
+  const assets = symbolMatches.map(toAssetData).toSorted(byMarketCap);
   return {
     primary: assets[0],
     similar: assets.slice(1),

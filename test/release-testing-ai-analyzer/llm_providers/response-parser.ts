@@ -93,6 +93,89 @@ function sortByRiskLevel(a: TestingScenario, b: TestingScenario): number {
 }
 
 /**
+ * Keeps a replacement's first letter aligned with the matched phrase.
+ *
+ * @param source
+ * @param replacement
+ */
+function matchLeadingCase(source: string, replacement: string): string {
+  const startsWithUppercase =
+    source[0] === source[0]?.toUpperCase() &&
+    source[0] !== source[0]?.toLowerCase();
+  if (!startsWithUppercase) {
+    return replacement;
+  }
+  return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+}
+
+/**
+ * Rewrites steps that tell testers to use settings toggles removed by Basic
+ * Functionality consolidation. NFT detection, token detection, and NFT media
+ * follow the Basic functionality toggle.
+ *
+ * @param text
+ * @returns text that refers to Basic functionality instead of the removed toggles
+ */
+export function rewriteRemovedSettingsToggles(text: string): string {
+  const replacePhrase = (pattern: RegExp, replacement: string) =>
+    text.replace(pattern, (match) => matchLeadingCase(match, replacement));
+
+  let rewritten = replacePhrase(
+    /\btoggle\s+nft\s+auto-?detection\s+off\s+and\s+on\b/giu,
+    'toggle Basic functionality OFF and ON',
+  );
+  rewritten = rewritten.replace(
+    /\btoggle\s+token\s+auto-?detection\s+off\s+and\s+on\b/giu,
+    (match) => matchLeadingCase(match, 'toggle Basic functionality OFF and ON'),
+  );
+  rewritten = rewritten.replace(
+    /\btoggle\s+auto-?detect\s+off\s+and\s+on\b/giu,
+    (match) => matchLeadingCase(match, 'toggle Basic functionality OFF and ON'),
+  );
+  rewritten = rewritten.replace(
+    /\bturn\s+(off|on)\s+nft\s+auto-?detection(\s+in\s+settings)?\b/giu,
+    (match, onOff: string, inSettings: string | undefined) => {
+      const state = onOff.toLowerCase() === 'off' ? 'OFF' : 'ON';
+      const where = inSettings ? ' in Settings → Security & privacy' : '';
+      return matchLeadingCase(
+        match,
+        `turn ${state} Basic functionality${where}`,
+      );
+    },
+  );
+  rewritten = rewritten.replace(/\bturn\s+on\s+nft\s+detection\b/giu, (match) =>
+    matchLeadingCase(match, 'turn ON Basic functionality'),
+  );
+  rewritten = rewritten.replace(
+    /\bnft\s+auto-?detection\s+remains\s+(off|on)\b/giu,
+    (_match, state: string) =>
+      `Basic functionality remains ${state.toUpperCase()} (NFT detection follows it)`,
+  );
+  rewritten = rewritten.replace(
+    /\b(nft\s+auto-?detect(?:ion)?|autodetect\s+nfts|token\s+auto-?detection|autodetect\s+tokens|display\s+nft\s+media)\s+toggle\b/giu,
+    'Basic functionality toggle',
+  );
+  rewritten = rewritten.replace(
+    /\btoggle\s+(?:the\s+)?(nft\s+auto-?detect(?:ion)?|autodetect\s+nfts|token\s+auto-?detection|autodetect\s+tokens|display\s+nft\s+media)\b/giu,
+    (match) => matchLeadingCase(match, 'toggle Basic functionality'),
+  );
+  rewritten = rewritten.replace(
+    /\b(?:nft\s+|token\s+)?auto-?detection\s+is\s+(off|on)\b/giu,
+    (_match, state: string) => `Basic functionality is ${state.toUpperCase()}`,
+  );
+  rewritten = rewritten.replace(
+    /\bnft\s+auto-?detection\b/giu,
+    'Basic functionality',
+  );
+  rewritten = rewritten.replace(
+    /\bnft\s+auto-?detect\b/giu,
+    'Basic functionality',
+  );
+
+  return rewritten;
+}
+
+/**
  * Normalizes test step numbering to ensure each step starts with "1. ", "2. ", etc.
  *
  * @param steps
@@ -126,7 +209,11 @@ function processScenarios(scenarios: TestingScenario[]): TestingScenario[] {
     .sort(sortByRiskLevel)
     .map((scenario) => ({
       ...scenario,
-      testSteps: normalizeTestSteps(scenario.testSteps),
+      area: rewriteRemovedSettingsToggles(scenario.area),
+      whyThisMatters: rewriteRemovedSettingsToggles(scenario.whyThisMatters),
+      testSteps: normalizeTestSteps(
+        scenario.testSteps.map(rewriteRemovedSettingsToggles),
+      ),
     }));
 }
 

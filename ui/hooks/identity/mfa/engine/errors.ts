@@ -7,6 +7,7 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   aal2_required: 'refresh',
   email_socially_verified: 'refresh',
   email_already_enrolled: 'refresh',
+  totp_already_enrolled: 'refresh',
   credential_not_enrolled: 'refresh',
   mfa_identity_missing: 'refresh',
   verification_token_invalid: 'refresh',

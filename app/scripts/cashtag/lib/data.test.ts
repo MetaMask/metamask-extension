@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe('resolveTicker', () => {
-  it('preserves the API order for the primary and similar assets', async () => {
+  it('sorts the primary and similar assets by market cap descending', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -46,9 +46,9 @@ describe('resolveTicker', () => {
 
     await expect(resolveTicker(' qqq ')).resolves.toMatchObject({
       primary: {
-        ticker: 'QQQ',
-        name: 'Lower QQQ',
-        caipAssetId: 'eip155:1/erc20:0xlow',
+        ticker: 'QQQX',
+        name: 'Other token',
+        caipAssetId: 'eip155:1/erc20:0xother',
       },
       similar: [
         expect.objectContaining({
@@ -57,9 +57,9 @@ describe('resolveTicker', () => {
           caipAssetId: 'eip155:1/erc20:0xhigh',
         }),
         expect.objectContaining({
-          ticker: 'QQQX',
-          name: 'Other token',
-          caipAssetId: 'eip155:1/erc20:0xother',
+          ticker: 'QQQ',
+          name: 'Lower QQQ',
+          caipAssetId: 'eip155:1/erc20:0xlow',
         }),
       ],
     });

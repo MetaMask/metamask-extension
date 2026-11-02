@@ -623,11 +623,6 @@
       "count": 1
     }
   },
-  "ui/pages/onboarding-flow/onboarding-flow.tsx": {
-    "react-hooks/immutability": {
-      "count": 1
-    }
-  },
   "ui/pages/onboarding-flow/welcome/welcome.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 3
@@ -640,16 +635,6 @@
   },
   "ui/pages/ramps/build-quote/hooks/useBuildQuoteAmount.ts": {
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/pages/ramps/build-quote/hooks/useRampsBuildQuote.ts": {
-    "react-hooks/preserve-manual-memoization": {
-      "count": 2
-    }
-  },
-  "ui/pages/ramps/provider-selection/provider-selection.tsx": {
-    "react-hooks/preserve-manual-memoization": {
       "count": 1
     }
   },

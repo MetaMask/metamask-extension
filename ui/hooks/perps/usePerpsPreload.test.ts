@@ -2,7 +2,13 @@ import { it } from '@jest/globals';
 import { useLayoutEffect } from 'react';
 import { act, renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { trace, endTrace, TraceName } from '../../../shared/lib/trace';
+import {
+  trace,
+  endTrace,
+  TraceName,
+  type TraceContext,
+  type TraceRequest,
+} from '../../../shared/lib/trace';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { CandlePeriod } from '../../components/app/perps/constants/chartConfig';
 import type { PerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
@@ -54,6 +60,10 @@ let mockCurrentManager: typeof mockManager | PerpsStreamManager = mockManager;
 jest.mock('../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => mockCurrentManager,
 }));
+
+const mockTrace = trace as jest.MockedFunction<
+  (request: TraceRequest) => TraceContext
+>;
 
 function deferred() {
   let resolve!: () => void;
@@ -193,7 +203,7 @@ describe('usePerpsPreload', () => {
       await act(async () => {
         ({ rerender } = renderHook(() => usePerpsPreload(true)));
       });
-      const firstId = jest.mocked(trace).mock.calls[0][0].id;
+      const firstId = mockTrace.mock.calls[0][0].id;
       if (change === 'account') {
         state = structuredClone(state);
         state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
@@ -217,12 +227,12 @@ describe('usePerpsPreload', () => {
         [firstId, true],
       );
       expect(trace).toHaveBeenCalledTimes(2);
-      expect(jest.mocked(trace).mock.calls[1][0].name).toBe(
+      expect(mockTrace.mock.calls[1][0].name).toBe(
         change === 'account'
           ? TraceName.PerpsAccountSwitchReconnection
           : TraceName.PerpsConnectionEstablishment,
       );
-      expect(jest.mocked(trace).mock.calls[1][0].id).not.toBe(firstId);
+      expect(mockTrace.mock.calls[1][0].id).not.toBe(firstId);
       if (change === 'terminal') {
         expect(mockManager.clearAllCaches).not.toHaveBeenCalled();
       } else {
@@ -249,7 +259,7 @@ describe('usePerpsPreload', () => {
     state = structuredClone(state);
     state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
     await act(async () => rerender());
-    const secondTrace = jest.mocked(trace).mock.calls[1][0];
+    const secondTrace = mockTrace.mock.calls[1][0];
     expect(secondTrace).toEqual(
       expect.objectContaining({
         name: TraceName.PerpsAccountSwitchReconnection,
@@ -278,7 +288,7 @@ describe('usePerpsPreload', () => {
     state = structuredClone(state);
     state.metamask.internalAccounts.accounts.selected.address = '0xfirst';
     await act(async () => rerender());
-    const thirdTrace = jest.mocked(trace).mock.calls[2][0];
+    const thirdTrace = mockTrace.mock.calls[2][0];
     expect(thirdTrace.name).toBe(TraceName.PerpsAccountSwitchReconnection);
     expect(thirdTrace.id).not.toBe(secondTrace.id);
     expect(endTrace).toHaveBeenCalledWith(
@@ -319,7 +329,7 @@ describe('usePerpsPreload', () => {
     state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
     await act(async () => rerender({ ready: true }));
     expect(trace).toHaveBeenCalledTimes(3);
-    for (const [request] of jest.mocked(trace).mock.calls) {
+    for (const [request] of mockTrace.mock.calls) {
       expect(request.name).toBe(TraceName.PerpsConnectionEstablishment);
     }
   });
@@ -334,7 +344,7 @@ describe('usePerpsPreload', () => {
       state = structuredClone(state);
       state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
       await act(async () => rerender());
-      const request = jest.mocked(trace).mock.calls[1][0];
+      const request = mockTrace.mock.calls[1][0];
       await act(async () => {
         if (outcome === 'failure') {
           init.reject(new Error('offline'));
