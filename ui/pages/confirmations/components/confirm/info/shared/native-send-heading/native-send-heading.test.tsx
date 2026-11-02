@@ -8,6 +8,10 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import NativeSendHeading from './native-send-heading';
 
+jest.mock('../../hooks/useSendingValueMetric', () => ({
+  useSendingValueMetric: jest.fn(),
+}));
+
 function getMockStore(conversionRate: number, value?: Hex) {
   const transaction = genUnapprovedContractInteractionConfirmation({
     chainId: CHAIN_IDS.GOERLI,
