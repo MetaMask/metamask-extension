@@ -31,9 +31,12 @@ describe('Petnames - Signatures', function (this: Suite) {
           value: '0xbBbBB...bBBbB',
           proposedName: 'test2.lens',
         });
-        await confirmation.checkNameIsDisplayed('0xCcCCc...ccccC', false);
+        await confirmation.checkNameIsDisplayed(
+          '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          false,
+        );
         await confirmation.saveName({
-          value: '0xCcCCc...ccccC',
+          value: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
           name: 'Custom Name',
         });
         await confirmation.checkPageIsLoaded();
@@ -74,9 +77,12 @@ describe('Petnames - Signatures', function (this: Suite) {
           value: '0xB0Bda...bEa57',
           proposedName: 'Test Token 2',
         });
-        await confirmation.checkNameIsDisplayed('0xCcCCc...ccccC', false);
+        await confirmation.checkNameIsDisplayed(
+          '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          false,
+        );
         await confirmation.saveName({
-          value: '0xCcCCc...ccccC',
+          value: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
           name: 'Custom Name',
         });
         await confirmation.checkPageIsLoaded();
