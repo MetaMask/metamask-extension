@@ -272,6 +272,20 @@ describe('AssetList', () => {
         screen.getByTestId('asset-list-control-bar-action-button'),
       ).toBeInTheDocument();
     });
+
+    it('puts the network filter button after the action buttons when the fullscreen design is on', async () => {
+      mockUseFullScreenDesign.mockReturnValue(true);
+
+      await act(async () => {
+        renderAssetList();
+      });
+
+      expect(
+        screen
+          .getByTestId('sort-by-popover-toggle')
+          .compareDocumentPosition(screen.getByTestId('sort-by-networks')),
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    });
   });
 
   describe('token interactions', () => {

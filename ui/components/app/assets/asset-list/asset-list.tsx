@@ -84,6 +84,7 @@ const AssetList = ({
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
+  const isFullScreenDesign = useFullScreenDesign();
 
   useScreenViewedEvent(MetaMetricsEventName.TokenScreenViewed, entryPoint);
 
@@ -91,6 +92,7 @@ const AssetList = ({
     <>
       <AssetListControlBar
         showTokensLinks={shouldShowTokensLinks}
+        showNetworkFilterAtEnd={isFullScreenDesign}
         data-testid="parent-selector-tokens-tab"
       />
       <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />

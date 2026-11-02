@@ -8,6 +8,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { CaipAssetType } from '@metamask/utils';
+import { TextAlign } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import type { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
@@ -41,7 +42,7 @@ export type TokenTableProps = {
 };
 
 const COLUMNS_CLASS_NAME =
-  'grid grid-cols-[minmax(0,1fr)_96px_minmax(0,160px)] lg:grid-cols-[minmax(0,1fr)_120px_96px_minmax(0,160px)] items-center gap-4 px-4';
+  'grid w-full grid-cols-[minmax(0,1.5fr)_repeat(2,minmax(0,1fr))] items-center gap-4 px-4 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))]';
 const PRICE_COLUMN_CLASS_NAME = 'hidden lg:block';
 
 const TokenTableHeader = () => {
@@ -79,7 +80,6 @@ const TokenTableHeader = () => {
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={TextColor.TextAlternative}
-        className="text-end"
       >
         {t('balance')}
       </Text>
@@ -144,10 +144,12 @@ const TokenTableRow = ({
               token={displayToken}
               handleScamWarningModal={setShowScamWarningModal}
               privacyMode={privacyMode}
+              textAlign={TextAlign.Left}
             />
             <TokenCellPrimaryDisplay
               token={displayToken}
               privacyMode={privacyMode}
+              textAlign={TextAlign.Left}
             />
           </Box>
         </a>

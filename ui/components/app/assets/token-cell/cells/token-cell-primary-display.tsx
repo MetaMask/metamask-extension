@@ -18,10 +18,15 @@ import { useFormatters } from '../../../../../hooks/useFormatters';
 type TokenCellPrimaryDisplayProps = {
   token: TokenFiatDisplayInfo;
   privacyMode: boolean;
+  textAlign?: TextAlign;
 };
 
 export const TokenCellPrimaryDisplay = React.memo(
-  ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
+  ({
+    token,
+    privacyMode,
+    textAlign = TextAlign.End,
+  }: TokenCellPrimaryDisplayProps) => {
     const { formatTokenQuantity } = useFormatters();
     const anyEnabledNetworksAreAvailable = useSelector(
       selectAnyEnabledNetworksAreAvailable,
@@ -37,7 +42,7 @@ export const TokenCellPrimaryDisplay = React.memo(
           data-testid="multichain-token-list-item-value"
           color={TextColor.textAlternative}
           variant={TextVariant.bodySmMedium}
-          textAlign={TextAlign.End}
+          textAlign={textAlign}
           isHidden={privacyMode}
           length={SensitiveTextLength.Short}
         >
@@ -48,5 +53,6 @@ export const TokenCellPrimaryDisplay = React.memo(
   },
   (prevProps, nextProps) =>
     prevProps.token.balance === nextProps.token.balance &&
-    prevProps.privacyMode === nextProps.privacyMode,
+    prevProps.privacyMode === nextProps.privacyMode &&
+    prevProps.textAlign === nextProps.textAlign,
 );
