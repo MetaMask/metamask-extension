@@ -1380,11 +1380,14 @@
       },
       "packages": {
         "@metamask/contract-metadata": true,
+        "@metamask/controller-utils": true,
         "@metamask/client-utils>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/transaction-controller": true,
+        "@metamask/utils": true,
         "@metamask/client-utils>@metamask/utils": true,
+        "eth-chainlist": true,
         "@metamask/client-utils>eth-chainlist": true
       }
     },
