@@ -66,6 +66,8 @@ jest.mock('../../hooks/bridge/useTokenSearchResults', () => ({
 
 const messengerCallMock = jest.fn((actionType: string) => {
   switch (actionType) {
+    case 'BridgeController:resetState':
+      return Promise.resolve(mockResetBridgeState());
     case 'NetworkController:getNetworkConfigurationByNetworkClientId':
       return Promise.resolve({ chainId: '0x1' });
     case 'LegacyBackgroundApiService:isRelaySupported':
@@ -86,9 +88,7 @@ setBackgroundConnection({
   setSwapsTxGasPrice: jest.fn(),
   gasFeeStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
-  trackUnifiedSwapBridgeEvent: jest.fn(),
   selectSrcNetwork: jest.fn(),
-  resetState: () => mockResetBridgeState(),
 } as never);
 
 const mockUseNavigate = jest.fn();
