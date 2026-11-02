@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import '@testing-library/jest-dom';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockState from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -10,7 +10,6 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getConsentDecisionMade, getOptedIn } from '../../selectors';
 import { getMessage } from '../../helpers/utils/i18n-helper';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { getUserSubscriptions } from '../../selectors/subscription';
 import mockState from '../../../test/data/mock-state.json';
 import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 import ErrorPage from './error-page.component';
@@ -26,6 +25,16 @@ jest.mock('../../helpers/utils/reload-extension-from-ui', () => ({
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
+}));
+
+jest.mock('../../hooks/subscription/useSubscription', () => ({
+  useUserSubscriptions: jest.fn(() => ({
+    customerId: 'test-shield-customer-id',
+    subscriptions: [],
+    trialedProducts: [],
+    loading: false,
+    error: null,
+  })),
 }));
 
 describe('ErrorPage', () => {
@@ -55,13 +64,6 @@ describe('ErrorPage', () => {
       }
       if (selector === getOptedIn) {
         return true;
-      }
-      if (selector === getUserSubscriptions) {
-        return {
-          customerId: 'test-shield-customer-id',
-          subscriptions: [],
-          trialedProducts: [],
-        };
       }
       return undefined;
     });
@@ -138,7 +140,9 @@ describe('ErrorPage', () => {
     expect(
       queryByTestId('error-page-sentry-feedback-success-modal'),
     ).toBeInTheDocument();
-    jest.advanceTimersByTime(5000);
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
     expect(
       queryByTestId('error-page-sentry-feedback-modal'),
     ).not.toBeInTheDocument();
