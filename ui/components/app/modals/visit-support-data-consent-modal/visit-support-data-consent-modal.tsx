@@ -20,7 +20,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useDispatch } from '../../../../store/hooks';
 import {
-  getCustomerServiceToken,
   setShouldShowSupportConsent,
   setSupportDataSharingPreference,
 } from '../../../../store/actions';
@@ -37,7 +36,11 @@ const VisitSupportDataConsentModal = ({
 }: VisitSupportDataConsentModalProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { openSupportLink, openSupportLinkWithoutUserData } = useSupportLinks();
+  const {
+    getCustomerServiceTokenForSupport,
+    openSupportLink,
+    openSupportLinkWithoutUserData,
+  } = useSupportLinks();
   const [isLoading, setIsLoading] = useState(false);
   const [savePreference, setSavePreference] = useState(true);
   const wasCancelledRef = useRef(false);
@@ -81,7 +84,7 @@ const VisitSupportDataConsentModal = ({
     wasCancelledRef.current = false;
     setIsLoading(true);
     try {
-      const customerServiceToken = await getCustomerServiceToken();
+      const customerServiceToken = await getCustomerServiceTokenForSupport();
       if (wasCancelledRef.current) {
         return;
       }
@@ -91,7 +94,13 @@ const VisitSupportDataConsentModal = ({
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, closeModal, openSupportLink, persistPreference]);
+  }, [
+    isLoading,
+    closeModal,
+    getCustomerServiceTokenForSupport,
+    openSupportLink,
+    persistPreference,
+  ]);
 
   const handleClickNoShare = useCallback(() => {
     if (isLoading) {

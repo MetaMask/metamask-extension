@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import log from 'loglevel';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -70,11 +71,18 @@ export const useSupportLinks = () => {
       const params: SupportLinkUserData = {
         version,
         customerServiceToken,
-        shieldCustomerId,
+        ...(customerServiceToken ? { shieldCustomerId } : {}),
       };
-      trackAndOpen(
-        buildSupportLinkWithUserData(SUPPORT_LINK as string, params),
+      const url = buildSupportLinkWithUserData(SUPPORT_LINK as string, params);
+      const redactedUrl = new URL(url);
+      if (redactedUrl.searchParams.has('customer_service_token')) {
+        redactedUrl.searchParams.set('customer_service_token', '[REDACTED]');
+      }
+      log.info(
+        '[SupportConsent] Opening enriched support URL',
+        redactedUrl.toString(),
       );
+      trackAndOpen(url);
     },
     [version, shieldCustomerId, trackAndOpen],
   );
@@ -83,7 +91,23 @@ export const useSupportLinks = () => {
     trackAndOpen(SUPPORT_LINK as string);
   }, [trackAndOpen]);
 
-  return { openSupportLink, openSupportLinkWithoutUserData };
+  const getCustomerServiceTokenForSupport = useCallback(async () => {
+    try {
+      return await getCustomerServiceToken();
+    } catch (error) {
+      log.info(
+        '[SupportConsent] Failed to fetch customer service token, falling back to plain URL',
+        error,
+      );
+      return undefined;
+    }
+  }, []);
+
+  return {
+    getCustomerServiceTokenForSupport,
+    openSupportLink,
+    openSupportLinkWithoutUserData,
+  };
 };
 
 /**
@@ -97,11 +121,15 @@ export const useSupportLinks = () => {
  */
 export const useOpenSupport = (showConsentModal: () => void) => {
   const savedPreference = useSelector(getSavedSupportDataSharingPreference);
-  const { openSupportLink, openSupportLinkWithoutUserData } = useSupportLinks();
+  const {
+    getCustomerServiceTokenForSupport,
+    openSupportLink,
+    openSupportLinkWithoutUserData,
+  } = useSupportLinks();
 
   return useCallback(async () => {
     if (savedPreference === true) {
-      openSupportLink(await getCustomerServiceToken());
+      openSupportLink(await getCustomerServiceTokenForSupport());
       return;
     }
     if (savedPreference === false) {
@@ -111,6 +139,7 @@ export const useOpenSupport = (showConsentModal: () => void) => {
     showConsentModal();
   }, [
     savedPreference,
+    getCustomerServiceTokenForSupport,
     openSupportLink,
     openSupportLinkWithoutUserData,
     showConsentModal,

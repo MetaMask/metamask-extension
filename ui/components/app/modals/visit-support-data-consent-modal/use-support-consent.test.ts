@@ -102,6 +102,38 @@ describe('useOpenSupport', () => {
     );
   });
 
+  it('opens support without personal data when retrieving the token fails', async () => {
+    jest
+      .mocked(getCustomerServiceToken)
+      .mockRejectedValue(new Error('Token service unavailable'));
+    const result = renderOpenSupport(false, true);
+
+    await act(() => result.current());
+
+    expect(mockShowConsentModal).not.toHaveBeenCalled();
+    expect(openWindow).toHaveBeenCalledWith(
+      expect.stringContaining('metamask_version=MOCK_VERSION'),
+    );
+    const openedUrl = jest.mocked(openWindow).mock.calls[0][0];
+    expect(openedUrl).not.toContain('customer_service_token');
+    expect(openedUrl).not.toContain('shield_id');
+  });
+
+  it('opens support without personal data when retrieving the token returns empty', async () => {
+    jest.mocked(getCustomerServiceToken).mockResolvedValue('');
+    const result = renderOpenSupport(false, true);
+
+    await act(() => result.current());
+
+    expect(mockShowConsentModal).not.toHaveBeenCalled();
+    expect(openWindow).toHaveBeenCalledWith(
+      expect.stringContaining('metamask_version=MOCK_VERSION'),
+    );
+    const openedUrl = jest.mocked(openWindow).mock.calls[0][0];
+    expect(openedUrl).not.toContain('customer_service_token');
+    expect(openedUrl).not.toContain('shield_id');
+  });
+
   it('opens support without user data when the saved choice is not to share', async () => {
     const result = renderOpenSupport(false, false);
 

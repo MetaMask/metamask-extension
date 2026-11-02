@@ -401,6 +401,29 @@ describe('VisitSupportDataConsentModal', () => {
     });
   });
 
+  it('falls back to support link without personal data when fetching the token fails', async () => {
+    getCustomerServiceTokenMock.mockRejectedValue(
+      new Error('Token service unavailable'),
+    );
+
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+    });
+
+    await waitFor(() => {
+      expect(mockOnClose).toHaveBeenCalled();
+      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+    });
+    expect(setSupportDataSharingPreference).toHaveBeenCalledWith(true);
+    expect(setShouldShowSupportConsent).toHaveBeenCalledWith(false);
+  });
+
   it('handles URL separator correctly when building support link', async () => {
     const { getByTestId } = renderModal();
 
