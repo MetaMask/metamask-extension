@@ -71,17 +71,11 @@ const MfaFlowHost = () => {
   const { step } = state;
   const isPicker = step.name === 'picker';
   const cancel = () => active.flow.dispatch({ type: 'cancel' });
-  const goBack = () => {
-    if (
-      step.name === 'otp' &&
-      step.method === 'totp' &&
-      step.purpose === 'setup'
-    ) {
-      active.flow.dispatch({ type: 'back' });
-      return;
-    }
-    cancel();
-  };
+  // Enrollment codes have their setup screen behind them.
+  const goBack = () =>
+    active.flow.dispatch({
+      type: step.name === 'otp' && step.purpose === 'setup' ? 'back' : 'cancel',
+    });
   const close = () => {
     const { returnTo } = (location.state ?? {}) as MfaFlowRouteState;
     closeToHome.current =

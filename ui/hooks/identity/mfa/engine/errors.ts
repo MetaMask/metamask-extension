@@ -29,7 +29,7 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
 
   max_passkeys_reached: 'failure',
   max_identifiers_reached: 'failure',
-  multi_primary_srp: 'failure',
+  multi_primary_srp: 'support',
   // Removal only, outside the flow: the settings page shows its own error.
   cross_type_step_up_required: 'failure',
   last_credential: 'failure',

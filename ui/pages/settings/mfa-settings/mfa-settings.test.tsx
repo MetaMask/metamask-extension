@@ -11,7 +11,7 @@ import messages from '../../../../app/_locales/en/messages.json';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
-import { isMfaKitEnabled } from '../../../hooks/identity/mfa/isMfaKitEnabled';
+import { isMfaDevBuild } from '../../../hooks/identity/mfa/isMfaDevBuild';
 import {
   MFA_SETTINGS_EMAIL_ROUTE,
   MFA_SETTINGS_TOTP_ROUTE,
@@ -41,8 +41,8 @@ jest.mock('../../../hooks/identity/mfa/bindings', () => ({
   },
 }));
 
-jest.mock('../../../hooks/identity/mfa/isMfaKitEnabled', () => ({
-  isMfaKitEnabled: jest.fn(),
+jest.mock('../../../hooks/identity/mfa/isMfaDevBuild', () => ({
+  isMfaDevBuild: jest.fn(),
 }));
 
 const mockGetIsSocialLoginFlow = jest.fn();
@@ -55,12 +55,19 @@ jest.mock('../../../selectors', () => ({
 const mockStartMfaFlow = jest.mocked(startMfaFlow);
 const mockAdapter = jest.mocked(extensionMfaControllerAdapter);
 
-const renderSettings = (enrolledCredentials: EnrolledCredential[] = []) =>
+const renderSettings = (
+  enrolledCredentials: EnrolledCredential[] = [],
+  remoteFeatureFlags = {},
+) =>
   renderWithProvider(
     <MfaSettings />,
     configureMockStore([thunk])({
       ...mockState,
-      metamask: { ...mockState.metamask, enrolledCredentials },
+      metamask: {
+        ...mockState.metamask,
+        enrolledCredentials,
+        remoteFeatureFlags,
+      },
     }),
   );
 
@@ -70,7 +77,7 @@ describe('MfaSettings', () => {
     mockAdapter.refreshEnrolledCredentials.mockResolvedValue([]);
     mockAdapter.clearVerificationSession.mockResolvedValue(undefined);
     mockStartMfaFlow.mockResolvedValue({ credentials: [] });
-    jest.mocked(isMfaKitEnabled).mockReturnValue(true);
+    jest.mocked(isMfaDevBuild).mockReturnValue(true);
     mockGetIsSocialLoginFlow.mockReturnValue(false);
   });
 
@@ -88,6 +95,21 @@ describe('MfaSettings', () => {
 
     expect(screen.queryByTestId(MfaSettingsTestIds.EMAIL_ROW)).toBeNull();
     expect(screen.getByTestId(MfaSettingsTestIds.TOTP_ROW)).toBeInTheDocument();
+  });
+
+  it('only offers to add the methods the flag allows', () => {
+    renderSettings([], {
+      mfaUiKit: {
+        enabled: true,
+        minimumVersion: '1.0.0',
+        methods: ['email_otp'],
+      },
+    });
+
+    expect(
+      screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId(MfaSettingsTestIds.TOTP_ROW)).toBeNull();
   });
 
   it('refreshes the methods and offers to add email', async () => {
@@ -190,7 +212,7 @@ describe('MfaSettings', () => {
   });
 
   it('hides the QA presets in production', () => {
-    jest.mocked(isMfaKitEnabled).mockReturnValue(false);
+    jest.mocked(isMfaDevBuild).mockReturnValue(false);
     renderSettings();
 
     expect(

@@ -1090,13 +1090,13 @@ export class LegacyBackgroundApiService {
    * @param networkClientId - The ID of the network client to use for the request.
    * @returns The code of the contract at the given address.
    */
-  async getCode(address: Hex, networkClientId: string): Promise<Json> {
+  async getCode(address: Hex, networkClientId: string): Promise<Hex> {
     const { provider } = this.#messenger.call(
       'NetworkController:getNetworkClientById',
       networkClientId,
     );
 
-    return await provider.request({
+    return await provider.request<[Hex], Hex>({
       method: 'eth_getCode',
       params: [address],
     });
