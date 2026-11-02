@@ -10,7 +10,7 @@ describe('formatAmount', () => {
     });
 
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([0.0000009, '0.000000001', -0.0000009])(
+    it.each([0.0000009, '0.0000009999999', '0.000000001', -0.0000009])(
       'returns "<0.000001" for non-zero amount below MIN_AMOUNT (%s)',
       (amount: number | string) => {
         expect(formatAmount(locale, new BigNumber(amount))).toBe('<0.000001');
@@ -57,6 +57,11 @@ describe('formatAmount', () => {
           roundingMode: BigNumber.ROUND_DOWN,
         }),
       ).toBe('1.12345678');
+      expect(
+        formatAmount(locale, new BigNumber('-1.123456789'), {
+          roundingMode: BigNumber.ROUND_DOWN,
+        }),
+      ).toBe('-1.12345678');
     });
   });
 
