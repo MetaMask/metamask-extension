@@ -125,17 +125,18 @@ function buildSizeRow({
   status,
 }: {
   label: string;
-  currentSize: number;
+  currentSize?: number;
   baselineSize?: number;
   status?: string;
 }): string {
-  const totalSize = getHumanReadableSize(currentSize);
+  const totalSize =
+    currentSize === undefined ? 'n/a' : getHumanReadableSize(currentSize);
   const diff =
-    baselineSize === undefined
+    currentSize === undefined || baselineSize === undefined
       ? 'n/a'
       : getHumanReadableDiffSize(currentSize - baselineSize);
   const change =
-    baselineSize === undefined
+    currentSize === undefined || baselineSize === undefined
       ? 'n/a'
       : getHumanReadablePercentageChange(
           getPercentageChange(baselineSize, currentSize),
@@ -148,10 +149,10 @@ function getRowStatus({
   currentSize,
   baselineSize,
 }: {
-  currentSize: number;
+  currentSize?: number;
   baselineSize?: number;
 }): string | undefined {
-  if (baselineSize === undefined) {
+  if (currentSize === undefined || baselineSize === undefined) {
     return undefined;
   }
 
@@ -160,7 +161,8 @@ function getRowStatus({
 
 function buildUnavailableComparisonContent(
   currentSizes: Record<BundlePart, number>,
-  currentZipSize: number,
+  currentUnzippedSize: number | undefined,
+  currentZipSize: number | undefined,
   reason: string,
 ): string {
   const currentSizeRows = bundleParts.map((part) =>
@@ -170,6 +172,10 @@ function buildUnavailableComparisonContent(
     }),
   );
   currentSizeRows.push(
+    buildSizeRow({
+      label: 'unzipped',
+      currentSize: currentUnzippedSize,
+    }),
     buildSizeRow({
       label: 'zip',
       currentSize: currentZipSize,
@@ -250,13 +256,15 @@ function buildBundleSizeSection({
   }
 
   const currentSizes = getBundlePartSizes(currentSummary);
-  const currentZipSize = currentSummary.zip ?? 0;
+  const currentUnzippedSize = currentSummary.unzipped;
+  const currentZipSize = currentSummary.zip;
 
   if (baselineCommitHashes.length === 0) {
     return buildCollapsibleSection({
       summary: 'Bundle Size Diffs',
       body: buildUnavailableComparisonContent(
         currentSizes,
+        currentUnzippedSize,
         currentZipSize,
         'No bundle-size baseline commit was available for this build, so diff values are omitted.',
       ),
@@ -268,6 +276,7 @@ function buildBundleSizeSection({
       summary: 'Bundle Size Diffs',
       body: buildUnavailableComparisonContent(
         currentSizes,
+        currentUnzippedSize,
         currentZipSize,
         'Bundle-size history data could not be loaded, so diff values are omitted.',
       ),
@@ -284,6 +293,7 @@ function buildBundleSizeSection({
       summary: 'Bundle Size Diffs',
       body: buildUnavailableComparisonContent(
         currentSizes,
+        currentUnzippedSize,
         currentZipSize,
         'No matching bundle-size baseline was found in the history data, so diff values are omitted.',
       ),
@@ -302,6 +312,15 @@ function buildBundleSizeSection({
     }),
   );
   sizeDiffRows.push(
+    buildSizeRow({
+      label: 'unzipped',
+      currentSize: currentUnzippedSize,
+      baselineSize: baselineSummary.unzipped,
+      status: getRowStatus({
+        currentSize: currentUnzippedSize,
+        baselineSize: baselineSummary.unzipped,
+      }),
+    }),
     buildSizeRow({
       label: 'zip',
       currentSize: currentZipSize,

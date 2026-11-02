@@ -82,6 +82,18 @@ $font-path: './fonts';
   font-style: italic;
 }
 
+// Hero: Grotzec Cond Bold is the only licensed cut.
+// TextVariant.DisplayXl + FontFamily.Hero computes to --font-weight-bold (600)
+// below md and --font-weight-medium (500) at md. Design-system bold is 600,
+// not 700. The range serves 400–700 from this file so the browser does not
+// synthesize a missing weight.
+@font-face {
+  font-family: 'Grotzec Cond';
+  font-style: normal;
+  font-weight: 400 700;
+  src: url('#{$font-path}/GrotzecCond/GrotzecCond-Bold.woff2') format('woff2');
+}
+
 @font-face {
   font-family: 'MMSans';
   src: url('#{$font-path}/MMSans/MM_Sans-Variable.woff2') format('woff2');

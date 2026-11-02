@@ -2,12 +2,15 @@ import React, { useMemo } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { MUSD_DECIMALS, MUSD_TOKEN } from '@metamask/money-account-utils';
 import { BigNumber } from 'bignumber.js';
-import { Text, Box } from '../../../../../components/component-library';
 import {
-  Display,
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontFamily,
+  Text,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { getMoneyAccountWithdrawTransferDetails } from '../../../utils/money-account-withdraw';
@@ -65,14 +68,16 @@ export function TransactionDetailsHero() {
 
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      style={{ justifyContent: 'center' }}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
       paddingTop={4}
       paddingBottom={4}
       data-testid="transaction-details-hero"
     >
-      <Text variant={TextVariant.displayMd}>{formattedAmount}</Text>
+      <Text variant={TextVariant.AmountDisplayLg} fontFamily={FontFamily.Hero}>
+        {formattedAmount}
+      </Text>
     </Box>
   );
 }

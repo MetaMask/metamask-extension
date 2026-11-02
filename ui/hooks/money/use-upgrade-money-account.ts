@@ -129,10 +129,7 @@ async function runUpgrade(address: Hex, signal: AbortSignal): Promise<void> {
 
 async function upgradeAccountInBackground(address: Hex): Promise<void> {
   try {
-    await submitRequestToBackground<void>('messengerCall', [
-      UPGRADE_ACCOUNT_ACTION,
-      [address],
-    ]);
+    await submitRequestToBackground(UPGRADE_ACCOUNT_ACTION, [address]);
   } catch (error) {
     throw restoreBackgroundError(error);
   }

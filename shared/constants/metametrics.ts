@@ -1189,6 +1189,7 @@ export enum MetaMetricsEventName {
   RewardsAccountLinkingStarted = 'REWARDS_ACCOUNT_LINKING_STARTED',
   RewardsAccountLinkingCompleted = 'REWARDS_ACCOUNT_LINKING_COMPLETED',
   RewardsAccountLinkingFailed = 'REWARDS_ACCOUNT_LINKING_FAILED',
+  RewardsMoneyReferralOfferInteracted = 'Rewards Money Referral Offer Interacted',
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
