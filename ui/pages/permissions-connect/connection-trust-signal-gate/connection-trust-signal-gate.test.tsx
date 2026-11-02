@@ -121,4 +121,19 @@ describe('ConnectionTrustSignalGate', () => {
     fireEvent.click(getByTestId('trust-signal-block-modal-cancel'));
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
+
+  it('renders X.com warning for x.com origin', () => {
+    mockUseOriginTrustSignals.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
+
+    const { getByText } = render(
+      <ConnectionTrustSignalGate {...defaultProps} origin="https://x.com">
+        <div>Child content</div>
+      </ConnectionTrustSignalGate>,
+    );
+
+    expect(getByText('xDappConnectionWarning')).toBeInTheDocument();
+  });
 });
