@@ -94,15 +94,22 @@ describe('AmountPill', () => {
     {
       amount: new BigNumber(-123.1234567),
       expected: {
-        text: '- 123.1',
+        text: '- 123.1234567',
         tooltip: '123.1234567',
       },
     },
     {
       amount: new BigNumber(789.412),
       expected: {
-        text: '+ 789.4',
+        text: '+ 789.412',
         tooltip: '789.412',
+      },
+    },
+    {
+      amount: new BigNumber('1034.123456789'),
+      expected: {
+        text: '+ 1,034.12345679',
+        tooltip: '1,034.123456789',
       },
     },
     {
@@ -262,7 +269,7 @@ describe('AmountPill', () => {
         ERC20_ASSET_MOCK,
         new BigNumber(123.45),
         {
-          text: '123.5',
+          text: '123.45',
           tooltip: '123.45',
         },
         { isApproval: true },

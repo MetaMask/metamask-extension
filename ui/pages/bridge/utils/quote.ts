@@ -20,11 +20,10 @@ export const formatTokenAmount = (
   if (!amount) {
     return '0';
   }
-  const stringifiedAmount = formatAmount(
-    locale,
-    new BigNumber(amount),
+  const stringifiedAmount = formatAmount(locale, new BigNumber(amount), {
     roundingMode,
-  );
+    compact: true,
+  });
 
   return [stringifiedAmount, symbol].join(' ').trim();
 };

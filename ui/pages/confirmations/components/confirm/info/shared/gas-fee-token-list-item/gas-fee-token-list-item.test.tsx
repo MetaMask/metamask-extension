@@ -1,4 +1,5 @@
 import React from 'react';
+import { toHex } from '@metamask/controller-utils';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
@@ -87,6 +88,41 @@ describe('GasFeeTokenListItem', () => {
     );
 
     expect(result.getByText('1 TEST')).toBeInTheDocument();
+  });
+
+  it('renders compact token amount and balance', () => {
+    const gasFeeToken = {
+      ...GAS_FEE_TOKEN_MOCK,
+      amount: toHex(1234567),
+      balance: toHex(1034123456),
+      decimals: 6,
+    };
+
+    const compactStore = configureStore(
+      getMockConfirmStateForTransaction(
+        genUnapprovedContractInteractionConfirmation({
+          address: FROM_MOCK,
+          gasFeeTokens: [gasFeeToken],
+          selectedGasFeeToken: gasFeeToken.tokenAddress,
+        }),
+        {
+          metamask: {
+            preferences: {
+              showFiatInTestnets: true,
+            },
+            useCurrencyRateCheck: false,
+          },
+        },
+      ),
+    );
+
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenListItem tokenAddress={gasFeeToken.tokenAddress} />,
+      compactStore,
+    );
+
+    expect(result.getByText('1.235 TEST')).toBeInTheDocument();
+    expect(result.getByText('Bal: 1,034 TEST')).toBeInTheDocument();
   });
 
   it('renders warning indicator if warning', () => {

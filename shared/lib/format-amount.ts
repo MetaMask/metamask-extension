@@ -6,7 +6,14 @@ const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 // The number of significant decimals places to show for amounts less than 1.
 const MAX_SIGNIFICANT_DECIMAL_PLACES = 3;
 
+const MAX_DECIMAL_PLACES = 8;
+
 const ZERO_DISPLAY = '0';
+
+export type FormatAmountOptions = {
+  roundingMode?: number;
+  compact?: boolean;
+};
 
 export function formatAmountMaxPrecision(
   locale: string,
@@ -27,44 +34,39 @@ export function formatAmountMaxPrecision(
 }
 
 /**
- * Formats a token amount with variable precision and significant digits.
+ * Formats a token amount.
  *
- * For |amount| < 1, displays up to 3 significant digits, rounded according to `roundingMode`.
+ * By default, displays up to 8 decimal places (rounded per `roundingMode`)
+ * without trailing zeros. Non-zero amounts below 0.000001 display as
+ * `<0.000001`.
+ *
+ * With `compact`, for |amount| < 1, displays up to 3 significant digits.
  * For |amount| >= 1, displays all integer digits and reduces decimal
- * precision as the integer grows (rounded per `roundingMode`), until only whole numbers are shown.
+ * precision as the integer grows, until only whole numbers are shown.
  *
- * The optional `roundingMode` controls how the last displayed digit is
- * determined. The default (ROUND_HALF_UP) rounds conventionally. Pass
- * ROUND_DOWN to truncate — useful for balance display where the shown
- * value must never exceed what the user actually holds.
- *
- * | Amount               | ROUND_HALF_UP (default) | ROUND_DOWN |
- * |----------------------|-------------------------|------------|
- * | 0                    | 0                       | 0          |
- * | 0.0000009            | <0.000001               | <0.000001  |
- * | 0.0000456            | 0.0000456               | 0.0000456  |
- * | 0.0004567            | 0.000457                | 0.000456   |
- * | 0.003456             | 0.00346                 | 0.00345    |
- * | 0.023456             | 0.0235                  | 0.0234     |
- * | 0.125456             | 0.125                   | 0.125      |
- * | 1.0034               | 1.003                   | 1.003      |
- * | 1.3034               | 1.303                   | 1.303      |
- * | 12.0345              | 12.03                   | 12.03      |
- * | 121.456              | 121.5                   | 121.4      |
- * | 1,034.123            | 1,034                   | 1,034      |
- * | 47,361,034.006       | 47,361,034              | 47,361,034 |
- * | 12,130,982,923,409.5 | 12,130,982,923,410      | 12,130,982,923,409 |
+ * | Amount               | Default                | compact            | compact + ROUND_DOWN |
+ * |----------------------|------------------------|--------------------|----------------------|
+ * | 0                    | 0                      | 0                  | 0                    |
+ * | 0.0000009            | <0.000001              | <0.000001          | <0.000001            |
+ * | 0.0004567            | 0.0004567              | 0.000457           | 0.000456             |
+ * | 0.123456789          | 0.12345679             | 0.123              | 0.123                |
+ * | 1.234567             | 1.234567               | 1.235              | 1.234                |
+ * | 12.0345              | 12.0345                | 12.03              | 12.03                |
+ * | 121.456              | 121.456                | 121.5              | 121.4                |
+ * | 1,034.123            | 1,034.123              | 1,034              | 1,034                |
+ * | 12,130,982,923,409.5 | 12,130,982,923,409.5   | 12,130,982,923,410 | 12,130,982,923,409   |
  *
  * @param locale
  * @param amount
- * @param roundingMode - BigNumber rounding mode (0–8). Defaults to
- * BigNumber.ROUND_HALF_UP. Pass BigNumber.ROUND_DOWN to truncate, e.g.
- * for balance display so values never appear larger than the user holds.
+ * @param options
+ * @param options.roundingMode - BigNumber rounding mode. Defaults to
+ * ROUND_HALF_UP. Pass ROUND_DOWN so balances never look larger than held.
+ * @param options.compact - Use 3 significant digits instead of 8 decimals.
  */
 export function formatAmount(
   locale: string,
   amount: BigNumber,
-  roundingMode?: number,
+  { roundingMode, compact = false }: FormatAmountOptions = {},
 ): string {
   if (amount.isZero()) {
     return ZERO_DISPLAY;
@@ -72,6 +74,14 @@ export function formatAmount(
 
   if (amount.abs().lessThan(MIN_AMOUNT)) {
     return `<${formatAmountMaxPrecision(locale, MIN_AMOUNT)}`;
+  }
+
+  if (!compact) {
+    return new Intl.NumberFormat(locale, {
+      maximumFractionDigits: MAX_DECIMAL_PLACES,
+    } as Intl.NumberFormatOptions).format(
+      amount.toFixed(MAX_DECIMAL_PLACES, roundingMode) as unknown as number,
+    );
   }
 
   if (amount.abs().lessThan(1)) {

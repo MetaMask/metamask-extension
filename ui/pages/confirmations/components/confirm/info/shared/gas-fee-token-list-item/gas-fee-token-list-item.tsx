@@ -68,6 +68,7 @@ export function GasFeeTokenListItem({
   const balanceFormatted = formatAmount(
     locale,
     new BigNumber(balance ?? '0x0').shift(-decimals),
+    { compact: true },
   );
 
   // Show fiat balance if available, otherwise show token balance
