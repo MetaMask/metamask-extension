@@ -1380,32 +1380,12 @@
       },
       "packages": {
         "@metamask/contract-metadata": true,
-        "@metamask/controller-utils": true,
         "@metamask/client-utils>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "@metamask/client-utils>@metamask/utils": true,
-        "eth-chainlist": true,
         "@metamask/client-utils>eth-chainlist": true
-      }
-    },
-    "@metamask/client-utils>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/client-utils>@metamask/controller-utils>@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/compliance-controller": {
@@ -1550,6 +1530,23 @@
       }
     },
     "@metamask/chain-agnostic-permission>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/client-utils>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
@@ -3722,13 +3719,6 @@
         "uuid": true
       }
     },
-    "@metamask/client-utils>@metamask/utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "lodash": true
-      }
-    },
     "@metamask/utils": {
       "globals": {
         "Buffer": true,
@@ -3745,13 +3735,6 @@
         "lodash": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
-      }
-    },
-    "@metamask/client-utils>@metamask/controller-utils>@metamask/utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "lodash": true
       }
     },
     "@metamask/wallet": {
