@@ -7,7 +7,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
-import { selectProtectedLocalTransactions } from '../../../selectors/activity';
+import { selectProtectedLocalTransactions } from '../../../selectors/activity/activity';
 import { selectRampsSettlementHashes } from '../../../selectors/rampsController';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';

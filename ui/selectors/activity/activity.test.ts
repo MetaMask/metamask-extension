@@ -8,12 +8,12 @@ import {
   TransactionType as EvmTransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import type { MetaMaskReduxState } from '../store/store';
-import { generateTokenCacheKey } from '../helpers/utils/token-scan';
-import mockState from '../../test/data/mock-state.json';
-import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../test/data/mock-accounts';
-import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import type { MetaMaskReduxState } from '../../store/store';
+import { generateTokenCacheKey } from '../../helpers/utils/token-scan';
+import mockState from '../../../test/data/mock-state.json';
+import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../test/data/mock-accounts';
+import type { MultichainAccountsState } from '../multichain-accounts/account-tree.types';
 import {
   selectLocalTransactions,
   selectNonEvmActivityItems,

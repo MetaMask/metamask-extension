@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { selectNonEvmActivityItems } from '../../selectors/activity';
+import { selectNonEvmActivityItems } from '../../selectors/activity/activity';
 import { selectRampsSettlementHashes } from '../../selectors/rampsController';
 import { activityMatchesAssetId, type ActivityListFilter } from './helpers';
 

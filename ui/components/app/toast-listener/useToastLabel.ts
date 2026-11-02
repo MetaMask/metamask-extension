@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { selectLocalActivityItemsByIdentifier } from '../../../selectors/activity';
+import { selectLocalActivityItemsByIdentifier } from '../../../selectors/activity/activity';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import type { ToastStatus } from './shared';
 

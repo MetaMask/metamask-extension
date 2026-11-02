@@ -12,7 +12,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 
 const mockItems = new Map<string, ActivityListItem>();
 
-jest.mock('../../../selectors/activity', () => ({
+jest.mock('../../../selectors/activity/activity', () => ({
   selectLocalActivityItemsByIdentifier: jest.fn(),
 }));
 

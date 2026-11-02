@@ -7,7 +7,7 @@ import type { CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
-import { selectLocalTransactionsByHash } from '../../selectors/activity';
+import { selectLocalTransactionsByHash } from '../../selectors/activity/activity';
 import {
   getStatusKey,
   QUEUED_PSEUDO_STATUS,

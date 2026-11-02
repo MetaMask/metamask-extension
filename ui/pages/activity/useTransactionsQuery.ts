@@ -12,7 +12,7 @@ import { getErrorBodyMessage } from '../../../shared/lib/error';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { apiClient } from '../../helpers/api-client';
 import { getUseExternalServices } from '../../selectors';
-import { selectEvmAddress } from '../../selectors/activity';
+import { selectEvmAddress } from '../../selectors/activity/activity';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListFilter } from './helpers';
 import { useQueryFilters } from './query-filters/useQueryFilters';
