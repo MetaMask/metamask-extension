@@ -25,7 +25,6 @@ import {
   NftDetectionController,
   RatesController,
   TokenDetectionController,
-  TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
 import { AssetsController } from '@metamask/assets-controller';
@@ -127,6 +126,8 @@ import { MetaMetricsDataDeletionController } from '../controllers/metametrics-da
 import { AppMetadataController } from '../controllers/app-metadata';
 import { DecryptMessageController } from '../controllers/decrypt-message';
 import { EncryptionPublicKeyController } from '../controllers/encryption-public-key';
+import { RewardsMoneyController } from '../controllers/rewards-money/rewards-money-controller';
+import { RewardsMoneyDataService } from '../controllers/rewards-money/rewards-money-data-service';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
@@ -212,6 +213,8 @@ export type MessengerClient =
   | RemoteFeatureFlagController
   | RewardsController
   | RewardsDataService
+  | RewardsMoneyController
+  | RewardsMoneyDataService
   | SeedlessOnboardingController<EncryptionKey>
   | SentryTracingService
   | SelectedNetworkController
@@ -234,7 +237,6 @@ export type MessengerClient =
   | InstitutionalSnapController
   | UserOperationController
   | UserStorageController
-  | TokenRatesController
   | NftController
   | NftDetectionController
   | AssetsContractController
@@ -313,6 +315,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   RewardsController['state'] &
+  RewardsMoneyController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
@@ -330,7 +333,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   TransactionPayController['state'] &
   UserOperationController['state'] &
   UserStorageController['state'] &
-  TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &

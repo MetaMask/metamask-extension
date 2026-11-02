@@ -10,6 +10,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { AssetType } from '../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
+import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
@@ -71,8 +72,8 @@ const TokenAsset = ({
     address && erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
 
   const name = tokenData?.name || tokenDataFromChain?.name || symbol;
-  const iconUrl =
-    tokenData?.iconUrl || tokenDataFromChain?.iconUrl || image || '';
+
+  const iconUrl = getAssetImageUrl(address ?? '', chainId) ?? '';
 
   const aggregators = tokenData?.aggregators;
 

@@ -38,7 +38,6 @@ export function getRewardsControllerMessenger(
       'RewardsDataService:getSeasonStatus',
       'RewardsDataService:fetchGeoLocation',
       'RewardsDataService:mobileOptin',
-      'RewardsDataService:validateReferralCode',
       'RewardsDataService:mobileJoin',
       'RewardsDataService:siweJoin',
       'RewardsDataService:getOptInStatus',

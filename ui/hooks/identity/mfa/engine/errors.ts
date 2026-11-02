@@ -28,8 +28,9 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
   rate_limited: 'cooldown',
 
   max_passkeys_reached: 'failure',
-  max_identifiers_reached: 'failure',
-  multi_primary_srp: 'failure',
+  // The profile has paired as many wallets as it can: only support can help.
+  max_identifiers_reached: 'support',
+  multi_primary_srp: 'support',
   // Removal only, outside the flow: the settings page shows its own error.
   cross_type_step_up_required: 'failure',
   last_credential: 'failure',
