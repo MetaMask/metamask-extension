@@ -5,7 +5,7 @@ import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
-} from '../../selectors/activity/activity';
+} from '../../selectors/activity';
 import { useRampsDetailsItem } from './templates/ramps/hooks';
 import { TransactionDetails } from './transaction-details';
 
@@ -39,7 +39,7 @@ jest.mock('./templates/template-loader', () => ({
   ),
 }));
 jest.mock('../../hooks/activity/useApiTransaction');
-jest.mock('../../selectors/activity/activity');
+jest.mock('../../selectors/activity');
 jest.mock('./templates/ramps/hooks');
 jest.mock('react-redux', () => ({
   useSelector: (selector: (state: unknown) => unknown) => selector(undefined),

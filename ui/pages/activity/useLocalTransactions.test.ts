@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import {
   selectLocalActivityItems,
   selectLocalTransactionsByHash,
-} from '#ui/selectors/activity/activity';
+} from '#ui/selectors/activity';
 import { selectRampsSettlementHashes } from '#ui/selectors/rampsController';
 import type { ActivityListItem } from '#shared/lib/activity/types';
 import { useLocalTransactions } from './useLocalTransactions';
@@ -10,7 +10,7 @@ import { useLocalTransactions } from './useLocalTransactions';
 jest.mock('react-redux', () => ({
   useSelector: (selector: () => unknown) => selector(),
 }));
-jest.mock('#ui/selectors/activity/activity', () => ({
+jest.mock('#ui/selectors/activity', () => ({
   selectLocalActivityItems: jest.fn(),
   selectLocalTransactionsByHash: jest.fn(),
 }));

@@ -20,7 +20,7 @@ import {
 } from '../../shared/constants/multichain/networks';
 import { decimalToPrefixedHex } from '../../shared/lib/conversion.utils';
 import { getCurrencyRates } from '../ducks/metamask/metamask';
-import { selectMarketRates } from '../selectors/activity/activity';
+import { selectMarketRates } from '../selectors/activity';
 import { getAssetsPrice, getAssetsRates } from '../selectors/assets';
 import { getShowFiatInTestnets, getUseCurrencyRateCheck } from '../selectors';
 import { getMultichainShouldShowFiat } from '../selectors/multichain';

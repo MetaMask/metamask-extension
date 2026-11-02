@@ -7,7 +7,7 @@ import {
 import {
   selectLocalActivityItems,
   selectLocalTransactionsByHash,
-} from '../../selectors/activity/activity';
+} from '../../selectors/activity';
 import { selectRampsSettlementHashes } from '../../selectors/rampsController';
 import { activityMatchesAssetId, type ActivityListFilter } from './helpers';
 

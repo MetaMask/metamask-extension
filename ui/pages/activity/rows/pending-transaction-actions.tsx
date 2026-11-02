@@ -9,7 +9,7 @@ import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { PendingTransactionActionButtons } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-action-buttons';
-import { selectBridgeHistoryItemForTx } from '../../../selectors/activity/activity';
+import { selectBridgeHistoryItemForTx } from '../../../selectors/activity';
 import type { MetaMaskReduxState } from '../../../store/store';
 
 type TransactionMetaWithSmartTransaction = TransactionMeta & {

@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
-import { selectBridgeHistoryItemForTx } from '../../../selectors/activity/activity';
+import { selectBridgeHistoryItemForTx } from '../../../selectors/activity';
 import { TransactionListItemPendingActions } from './pending-transaction-actions';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 jest.mock('../../../hooks/usePendingTransactionActions');
-jest.mock('../../../selectors/activity/activity', () => ({
+jest.mock('../../../selectors/activity', () => ({
   selectBridgeHistoryItemForTx: jest.fn(),
 }));
 

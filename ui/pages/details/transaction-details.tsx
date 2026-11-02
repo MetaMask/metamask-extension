@@ -6,7 +6,7 @@ import {
   selectEvmAddress,
   selectLocalActivityItemsByIdentifier,
   selectNonEvmActivityItemsById,
-} from '../../selectors/activity/activity';
+} from '../../selectors/activity';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import { useApiTransaction } from '../../hooks/activity/useApiTransaction';
 import { Header } from './components/header';

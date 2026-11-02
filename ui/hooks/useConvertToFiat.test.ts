@@ -27,7 +27,7 @@ jest.mock('../ducks/metamask/metamask', () => ({
   }) => state.metamask.currencyRates,
 }));
 
-jest.mock('../selectors/activity/activity', () => {
+jest.mock('../selectors/activity', () => {
   const emptyMarketRates = {};
   return { selectMarketRates: () => emptyMarketRates };
 });

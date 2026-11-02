@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isTransactionGasFeeSponsored } from '../../../shared/lib/transaction-gas-fee.utils';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
-import { selectLocalTransactionsByHash } from '../../selectors/activity/activity';
+import { selectLocalTransactionsByHash } from '../../selectors/activity';
 
 export function useIsGasFeeSponsored(hash: string | undefined) {
   const isHardwareWalletAccount = useSelector(isHardwareWallet);

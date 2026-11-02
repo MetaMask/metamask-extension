@@ -282,6 +282,7 @@ ui/selectors/money/                  @MetaMask/earn
 ui/components/app/money/             @MetaMask/earn
 
 # Activity
+ui/selectors/activity.ts                                        @MetaMask/core-extension-ux
 ui/selectors/activity/                                         @MetaMask/core-extension-ux
 ui/components/app/activity-list-item-avatar/                   @MetaMask/core-extension-ux
 ui/components/app/transaction-activity-empty-state/            @MetaMask/core-extension-ux

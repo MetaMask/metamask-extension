@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { selectLocalTransactionsByHash } from '../../selectors/activity/activity';
+import { selectLocalTransactionsByHash } from '../../selectors/activity';
 
 /**
  * Used for enriching activity items with local-only data e.g. `metamaskPay`

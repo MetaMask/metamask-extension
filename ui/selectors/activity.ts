@@ -17,62 +17,62 @@ import {
   mapKeyringTransaction,
   mapLocalTransaction,
 } from '@metamask/client-utils';
-import { ResultType } from '../../../shared/lib/trust-signals';
-import { EXCLUDED_TRANSACTION_TYPES } from '../../helpers/constants/transactions';
+import { ResultType } from '../../shared/lib/trust-signals';
+import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
 import {
   collectTransactionTokenScanKeys,
   filterMaliciousTransactions,
   type MultichainTokenScanKey,
-} from '../../helpers/utils/token-scan';
-import type { TransactionGroup } from '../../../shared/lib/multichain/types';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../../shared/constants/network';
-import { NATIVE_TOKEN_ADDRESS } from '../../../shared/constants/transaction';
-import type { MetaMaskReduxState } from '../../store/store';
-import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
-import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
-import { toAssetId } from '../../../shared/lib/asset-utils';
-import { getLocalTransactionFees } from '../../../shared/lib/activity/adapters/helpers';
-import { getTransactionPayingAccount } from '../../../shared/lib/transactions.utils';
+} from '../helpers/utils/token-scan';
+import type { TransactionGroup } from '../../shared/lib/multichain/types';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
+import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
+import type { MetaMaskReduxState } from '../store/store';
+import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
+import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
+import { toAssetId } from '../../shared/lib/asset-utils';
+import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
+import { getTransactionPayingAccount } from '../../shared/lib/transactions.utils';
 import {
   getMoneyAccountTransactionType,
   isProtectedByEnforcedSimulations,
-} from '../../pages/confirmations/utils/confirm';
-import { ActivityListItem, Status } from '../../../shared/lib/activity/types';
+} from '../pages/confirmations/utils/confirm';
+import { ActivityListItem, Status } from '../../shared/lib/activity/types';
 import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
-} from '../../ducks/bridge-status/selectors';
-import { isMnemonicMoneyAccount } from '../../../shared/lib/money/money-accounts';
-import { getInternalAccounts, getInternalAccountsObject } from '../accounts';
+} from '../ducks/bridge-status/selectors';
+import { isMnemonicMoneyAccount } from '../../shared/lib/money/money-accounts';
+import { getInternalAccounts, getInternalAccountsObject } from './accounts';
 import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getSelectedAccountGroup,
-} from '../multichain-accounts/account-tree';
-import type { MultichainAccountsState } from '../multichain-accounts/account-tree.types';
-import { extractWalletIdFromGroupId } from '../multichain-accounts/utils';
-import { enrichLocalActivity } from './enrich-local-activity';
+} from './multichain-accounts/account-tree';
+import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
+import { extractWalletIdFromGroupId } from './multichain-accounts/utils';
+import { enrichLocalActivity } from './activity/enrich-local-activity';
 import {
   selectPrimaryMoneyAccount,
   type PrimaryMoneyAccount,
-} from '../money-account';
-import { getAssetsMetadata } from '../assets';
+} from './money-account';
+import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
-} from '../transactions';
-import { selectCurrentAccountNonEvmTransactions } from '../multichain-transactions';
+} from './transactions';
+import { selectCurrentAccountNonEvmTransactions } from './multichain-transactions';
 import {
   selectOrderedTransactions,
   selectRequiredTransactionHashes,
   selectRequiredTransactionIds,
-} from '../transactionController';
-import type { TokenScanCacheResults } from '../token-scan';
+} from './transactionController';
+import type { TokenScanCacheResults } from './token-scan';
 import {
   getMarketData,
   getCurrencyRates,
   getTokenScanCache,
-} from '../selectors';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from '../shared';
+} from './selectors';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
