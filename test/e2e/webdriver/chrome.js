@@ -35,11 +35,22 @@ class ChromeDriver {
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
-      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad', // disable Crashpad to prevent orphaned crash-reporter processes
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,Crashpad,DisableLoadExtensionCommandLineSwitch,ExtensionDisableUnsupportedDeveloper', // Stop chrome from calling home so much (auto-downloads of AI models; time sync; omnibox AI Mode eligibility checks to www.google.com/async/folae); disable Crashpad to prevent orphaned crash-reporter processes; keep --load-extension working on Chrome 137+, including after `runtime.reload()` (otherwise the extension is disabled as an "unsupported developer extension")
       '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
       '--no-sandbox',
+      // Keep rendering windows that aren't in the foreground; otherwise CSS
+      // animations (e.g. modal fade-ins) stall and elements stay invisible
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding',
+      // Chrome 140 starts GCM for its FCM invalidation services, even with
+      // background networking and sync disabled. Point it at a closed
+      // loopback port (loopback bypasses the proxy) so its calls to
+      // android.clients.google.com don't show up in the privacy specs.
+      '--gcm-checkin-url=http://127.0.0.1:9/checkin',
+      '--gcm-registration-url=http://127.0.0.1:9/c2dm/register3',
+      '--gcm-mcs-endpoint=https://127.0.0.1:9',
     ];
 
     if (isBenchmark) {
@@ -77,34 +88,46 @@ class ChromeDriver {
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
       args.push('--headless=new');
+      // Unlike Chrome 126, Chrome 140 headless emulates an 800x600 screen,
+      // which shrinks the viewport to ~756x364 and clips modals and content
+      args.push('--screen-info={1920x1080}');
     }
 
-    const options = new chrome.Options().addArguments(args);
-    options.setAcceptInsecureCerts(true);
-    options.setUserPreferences({
-      'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
-      'profile.content_settings.exceptions.clipboard': {
-        '[*.]': {
-          last_modified: Date.now(),
-          setting: 1, // 1 = allow
+    // Build complete goog:chromeOptions object to avoid conflicts between
+    // setChromeOptions and withCapabilities overwriting each other.
+    // When both are used, withCapabilities overwrites goog:chromeOptions entirely,
+    // losing prefs, localState, etc. set by setChromeOptions.
+    const chromeOptions = {
+      args,
+      prefs: {
+        'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
+        // Allow clipboard access for paste operations in tests
+        'profile.content_settings.exceptions.clipboard': {
+          '[*.]': {
+            last_modified: Date.now(),
+            setting: 1, // 1 = allow
+          },
         },
       },
-    });
-
-    // Temporarily lock to version 126
-    options.setBrowserVersion('126');
+      // Chrome 136+ hides extension windows from window_handles by default.
+      // This flag makes extension target pages (like dialogs) available again.
+      enableExtensionTargets: true,
+    };
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
-      options.setLocalState({
+      chromeOptions.localState = {
         'dns_over_https.mode': 'off',
         'dns_over_https.templates': '',
-      });
+      };
     }
 
-    const builder = new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(options);
+    const builder = new Builder().forBrowser('chrome').withCapabilities({
+      browserName: 'chrome',
+      browserVersion: '140',
+      acceptInsecureCerts: true,
+      'goog:chromeOptions': chromeOptions,
+    });
     const service = new chrome.ServiceBuilder();
 
     // Enables Chrome logging. Default: enabled
@@ -214,7 +237,7 @@ class ChromeDriver {
 
           for (let i = 0; i < extensions.length; i++) {
             const extension = extensions[i].shadowRoot
-            const name = extension.querySelector('#name').textContent
+            const name = extension.querySelector('#name').textContent?.trim()
             if (name.startsWith("${extensionName}")) {
               return extensions[i].getAttribute("id")
             }

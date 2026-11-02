@@ -95,9 +95,14 @@ export const reloadExtension = async (driver: Driver): Promise<void> => {
 
   await driver.switchToWindow(extensionWindow);
   await pausePersistence(driver);
-  await driver.executeScript(
-    `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
-  );
+  // Resolve the script before the page is torn down by the reload; a
+  // synchronous script that is still pending when its page closes crashes
+  // ChromeDriver 140+.
+  await driver.executeAsyncScript(`
+    const callback = arguments[arguments.length - 1];
+    (globalThis.browser ?? globalThis.chrome).runtime.reload();
+    callback();
+  `);
 
   await driver.switchToWindow(blankWindow);
 

@@ -713,9 +713,12 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
     // Candle subscription — return a single candle so `chartCurrentPrice` is > 0
     // in the market detail page. Without this the close-position modal submit
     // stays disabled (isPriceValid = false).
+    // The timestamps are computed per subscription: a candle older than the
+    // last candleSnapshot bar makes lightweight-charts throw "Cannot update
+    // oldest data", which crashes the market detail page.
     messageIncludes: ['"method":"subscribe"', '"type":"candle"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: {
+    dynamicFollowUp: () => ({
       channel: 'candle',
       data: {
         t: Date.now() - 300000,
@@ -729,7 +732,7 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
         v: '1000.0',
         n: 10,
       },
-    },
+    }),
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Hyperliquid candle subscribe message received',

@@ -984,6 +984,15 @@ class TestDapp {
   async disconnectAccount(publicAddress: string) {
     console.log('Disconnect account from test dapp');
     await this.driver.clickElement(this.revokePermissionButton);
+    // Refreshing before the revoke request settles can abort it
+    await this.driver.wait(async () => {
+      const accounts = await this.driver.executeScript(
+        `return document.querySelector('${this.connectedAccount}')?.textContent ?? ''`,
+      );
+      return !String(accounts)
+        .toLowerCase()
+        .includes(publicAddress.toLowerCase());
+    });
     await this.driver.refresh();
     await this.checkPageIsLoaded();
     await this.checkConnectedAccounts(publicAddress, false);

@@ -30,6 +30,92 @@ const PAGES = {
   SIDEPANEL: 'sidepanel',
 };
 
+const MODIFIER_KEYS = new Set([Key.SHIFT, Key.CONTROL, Key.ALT, Key.META]);
+
+/**
+ * Types keys into an element using the Actions API, following WebDriver
+ * sendKeys semantics: modifier keys stay pressed until pressed again or until
+ * `Key.NULL`, and the caret is placed at the end of the existing value.
+ *
+ * @param {object} driver - The Driver instance
+ * @param {WebElement} element - Element to type into
+ * @param {Array<string|number>} keys - Keys to send
+ */
+async function sendKeysWithActions(driver, element, keys) {
+  await driver.driver.executeScript(
+    `
+    const el = arguments[0];
+    el.focus();
+    try {
+      const end = el.value?.length ?? 0;
+      el.setSelectionRange(end, end);
+    } catch (e) {
+      // Not a text field, or the input type doesn't support selection
+    }
+    `,
+    element,
+  );
+
+  const actions = driver.driver.actions();
+  const heldModifiers = [];
+  const releaseModifiers = () => {
+    while (heldModifiers.length) {
+      actions.keyUp(heldModifiers.pop());
+    }
+  };
+
+  for (const symbol of keys.join('')) {
+    if (symbol === Key.NULL) {
+      releaseModifiers();
+    } else if (MODIFIER_KEYS.has(symbol)) {
+      const index = heldModifiers.indexOf(symbol);
+      if (index === -1) {
+        heldModifiers.push(symbol);
+        actions.keyDown(symbol);
+      } else {
+        heldModifiers.splice(index, 1);
+        actions.keyUp(symbol);
+      }
+    } else {
+      actions.keyDown(symbol).keyUp(symbol);
+    }
+  }
+  releaseModifiers();
+  await actions.perform();
+}
+
+/**
+ * Sets the files of an `<input type="file">` through the DevTools protocol,
+ * which also dispatches the `input` and `change` events.
+ *
+ * @param {object} driver - The Driver instance
+ * @param {WebElement} element - The file input
+ * @param {Array<string>} keys - File paths, newline-separated as for sendKeys
+ */
+async function setFileInputFilesWithCdp(driver, element, keys) {
+  const files = keys.join('').split('\n').filter(Boolean);
+  const marker = `${Date.now()}-${Math.random()}`;
+  await driver.driver.executeScript(
+    'arguments[0].setAttribute("data-e2e-file-input", arguments[1])',
+    element,
+    marker,
+  );
+  const { result } = await driver.driver.sendAndGetDevToolsCommand(
+    'Runtime.evaluate',
+    {
+      expression: `document.querySelector('[data-e2e-file-input="${marker}"]')`,
+    },
+  );
+  await driver.driver.sendDevToolsCommand('DOM.setFileInputFiles', {
+    files,
+    objectId: result.objectId,
+  });
+  await driver.driver.executeScript(
+    'arguments[0].removeAttribute("data-e2e-file-input")',
+    element,
+  );
+}
+
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -39,35 +125,88 @@ const PAGES = {
  * @returns {object} modified Selenium Element
  */
 function wrapElementWithAPI(element, driver) {
-  element.press = (key) => element.sendKeys(key);
+  // Wrap findElement to ensure nested elements also get Chrome 140+ compatibility wrappers
+  if (!element.originalFindElement) {
+    element.originalFindElement = element.findElement;
+  }
+  element.findElement = async (locator) => {
+    const nestedElement = await element.originalFindElement(locator);
+    return wrapElementWithAPI(nestedElement, driver);
+  };
+
+  // Wrap findElements to ensure nested elements also get Chrome 140+ compatibility wrappers
+  if (!element.originalFindElements) {
+    element.originalFindElements = element.findElements;
+  }
+  element.findElements = async (locator) => {
+    const nestedElements = await element.originalFindElements(locator);
+    return nestedElements.map((el) => wrapElementWithAPI(el, driver));
+  };
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
     await driver.wait(until.elementIsVisible(element));
 
-    // Try 2 ways to clear input fields, first try with clear() method
-    // Use keyboard simulation if the input field is not empty
-    await element.sendKeys(
-      Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
+    // Use JavaScript with native value setter - works with React controlled components
+    // This approach avoids issues with Key.chord() and Actions API in Chrome 140+
+    await driver.driver.executeScript(
+      `
+      const el = arguments[0];
+      const value = arguments[1];
+      
+      // Get the native value setter from the appropriate prototype
+      // Use tagName check to avoid accessing globals that may be scuttled by LavaMoat
+      const isTextArea = el.tagName.toLowerCase() === 'textarea';
+      const prototype = isTextArea
+        ? Object.getPrototypeOf(document.createElement('textarea'))
+        : Object.getPrototypeOf(document.createElement('input'));
+      const nativeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
+      
+      el.focus();
+      nativeValueSetter.call(el, value);
+      
+      // Dispatch input event to notify React of the change
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      // Pages that only listen for key events (e.g. the test dapp's encrypt
+      // form enables its button on keyup) would otherwise never see the value
+      el.dispatchEvent(new Event('keyup', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      `,
+      element,
+      input,
     );
-
-    // Wait for DOM to update before checking if clearing worked
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
-    if ((await element.getProperty('value')) !== '') {
-      await driver.driver
-        .actions()
-        .click(element)
-        .keyDown(driver.Key.MODIFIER)
-        .sendKeys('a')
-        .keyUp(driver.Key.MODIFIER)
-        .perform();
-
-      // Wait for second clearing method to complete
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    }
-    await element.sendKeys(input);
   };
+
+  // Wrap sendKeys() with JavaScript fallback for Chrome 140+ compatibility
+  if (!element.originalSendKeys) {
+    element.originalSendKeys = element.sendKeys;
+  }
+  element.sendKeys = async (...keys) => {
+    // Check if this is a file input - file inputs need special handling
+    const inputType = await driver.driver.executeScript(
+      'return arguments[0].type',
+      element,
+    );
+    const isFileInput = inputType === 'file';
+
+    try {
+      await element.originalSendKeys(...keys);
+    } catch (e) {
+      if (e.name !== 'JavascriptError') {
+        throw e;
+      }
+      // ChromeDriver 140+ atoms rely on `arguments.callee.caller`, which SES
+      // lockdown removes, so element sendKeys fails on LavaMoat pages.
+      if (isFileInput) {
+        await setFileInputFilesWithCdp(driver, element, keys);
+      } else {
+        // The Actions API dispatches real key events without those atoms.
+        await sendKeysWithActions(driver, element, keys);
+      }
+    }
+  };
+
+  // Update press to use the wrapped sendKeys
+  element.press = (key) => element.sendKeys(key);
 
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
@@ -82,12 +221,98 @@ function wrapElementWithAPI(element, driver) {
     }
   };
 
+  // Wrap isSelected() with JavaScript fallback for Chrome 140+ compatibility
+  if (!element.originalIsSelected) {
+    element.originalIsSelected = element.isSelected;
+  }
+  element.isSelected = async () => {
+    try {
+      return await element.originalIsSelected();
+    } catch (e) {
+      if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver isSelected, fall back to JavaScript
+        return await driver.driver.executeScript(
+          'return arguments[0].checked || arguments[0].selected || false',
+          element,
+        );
+      }
+      throw e;
+    }
+  };
+
+  // Wrap getAttribute() with JavaScript fallback for Chrome 140+ compatibility
+  if (!element.originalGetAttribute) {
+    element.originalGetAttribute = element.getAttribute;
+  }
+  element.getAttribute = async (name) => {
+    try {
+      return await element.originalGetAttribute(name);
+    } catch (e) {
+      if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver getAttribute, fall back to JavaScript
+        return await driver.driver.executeScript(
+          'return arguments[0].getAttribute(arguments[1])',
+          element,
+          name,
+        );
+      }
+      throw e;
+    }
+  };
+
+  // Wrap getText() with JavaScript fallback for Chrome 140+ compatibility
+  if (!element.originalGetText) {
+    element.originalGetText = element.getText;
+  }
+  element.getText = async () => {
+    try {
+      return await element.originalGetText();
+    } catch (e) {
+      if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver getText, fall back to JavaScript
+        return await driver.driver.executeScript(
+          'return arguments[0].textContent',
+          element,
+        );
+      }
+      throw e;
+    }
+  };
+
+  // Wrap isDisplayed() with JavaScript fallback for Chrome 140+ compatibility
+  if (!element.originalIsDisplayed) {
+    element.originalIsDisplayed = element.isDisplayed;
+  }
+  element.isDisplayed = async () => {
+    try {
+      return await element.originalIsDisplayed();
+    } catch (e) {
+      if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver isDisplayed, fall back to JavaScript
+        return await driver.driver.executeScript(
+          `
+          const el = arguments[0];
+          const style = window.getComputedStyle(el);
+          return style.display !== 'none' && 
+                 style.visibility !== 'hidden' && 
+                 style.opacity !== '0' &&
+                 el.offsetWidth > 0 && 
+                 el.offsetHeight > 0;
+          `,
+          element,
+        );
+      }
+      throw e;
+    }
+  };
+
   // We need to hold a pointer to the original click() method so that we can call it in the replaced click() method
   if (!element.originalClick) {
     element.originalClick = element.click;
   }
 
   // This special click() method waits for the loading overlay to disappear before clicking
+  // Also handles Chrome 140+ compatibility issues by falling back to JavaScript click
   element.click = async () => {
     try {
       await element.originalClick();
@@ -106,6 +331,23 @@ function wrapElementWithAPI(element, driver) {
           );
         }
         await element.originalClick();
+      } else if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver click, fall back to JavaScript click.
+        // Clicking an <option> via JS doesn't select it, so select it explicitly.
+        await driver.driver.executeScript(
+          `
+          const el = arguments[0];
+          const select = el.tagName === 'OPTION' ? el.closest('select') : null;
+          if (select) {
+            el.selected = true;
+            select.dispatchEvent(new Event('input', { bubbles: true }));
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          } else {
+            el.click();
+          }
+          `,
+          element,
+        );
       } else {
         throw e; // If the error is not related to the loading overlay or modal backdrop, throw it
       }
@@ -855,6 +1097,24 @@ class Driver {
   }
 
   /**
+   * Moves the pointer off any toast and waits for toasts to auto-dismiss.
+   * react-hot-toast pauses its dismiss timer while hovered, so a toast that
+   * appears under the pointer would otherwise keep intercepting clicks.
+   * Best-effort: persistent toasts are left in place.
+   */
+  async #waitForToastsToDismiss() {
+    try {
+      await this.driver.actions().move({ x: 0, y: 0 }).perform();
+      await this.driver.wait(
+        until.elementIsNotPresent(By.css('.toast-container [role="status"]')),
+        5000,
+      );
+    } catch {
+      // The toast may be persistent; fall through to the regular retry.
+    }
+  }
+
+  /**
    * Function that aims to simulate a click action on a specified web element within a web page
    *
    * @param {string | object} rawLocator - Element locator
@@ -889,6 +1149,7 @@ class Driver {
           // scrolling it to the viewport center usually moves it clear of the
           // obstruction so the next attempt can succeed.
           if (error.name === 'ElementClickInterceptedError') {
+            await this.#waitForToastsToDismiss();
             try {
               const el = await this.findElement(rawLocator, timeout);
               await this.scrollToElement(el);
@@ -1298,11 +1559,15 @@ class Driver {
       'navigator.clipboard.writeText(arguments[0])',
       contentToPaste,
     );
-    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+    await this.pasteFromClipboardIntoField(rawLocator);
   }
 
   async pasteFromClipboardIntoField(rawLocator) {
-    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+    // A real paste keystroke is required: some fields (e.g. the SRP import
+    // textarea) only react to the `paste` event, which `fill()` doesn't fire.
+    await this.fill(rawLocator, '');
+    const element = await this.findElement(rawLocator);
+    await element.sendKeys(Key.chord(this.Key.MODIFIER, 'v'));
   }
 
   // Navigation
