@@ -160,14 +160,51 @@ describe('getIdleStatus', () => {
     ).toBe('active_pending_confirmation');
   });
 
-  it('reports the first matching signal when several are recent at once', () => {
+  it('returns the most recent activity still inside its grace window', () => {
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiInteraction: 2_000,
+        msSinceLastConnectedDappRpc: 1_000,
+      }),
+    ).toBe('active_recent_connected_dapp_rpc');
+
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiClosed: 1_000,
+        msSinceLastConnectedDappRpc: 4_000,
+      }),
+    ).toBe('active_recent_ui_closed');
+
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiClosed: 4_000,
+        msSinceLastConnectedDappRpc: 1_000,
+      }),
+    ).toBe('active_recent_connected_dapp_rpc');
+
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastConnectedDappRpc: 2_000,
+        msSinceLastExternalExtensionRpc: 500,
+      }),
+    ).toBe('active_recent_external_extension_rpc');
+  });
+
+  it('ignores a newer signal that is already outside its grace window', () => {
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiClosed: UI_CLOSE_GRACE_MS,
+        msSinceLastUiInteraction: 10_000,
+      }),
+    ).toBe('active_recent_ui_interaction');
+  });
+
+  it('breaks timestamp ties by signal order', () => {
     expect(
       getIdleStatus(steadyActivity(), {
         msSinceLastUiClosed: 0,
         msSinceLastUiInteraction: 0,
         msSinceLastConnectedDappRpc: 0,
-        msSinceLastDappRpc: 0,
-        msSinceLastSnapRpc: 0,
         msSinceLastExternalExtensionRpc: 0,
       }),
     ).toBe('active_recent_ui_closed');
@@ -176,16 +213,8 @@ describe('getIdleStatus', () => {
       getIdleStatus(steadyActivity(), {
         msSinceLastUiInteraction: 0,
         msSinceLastConnectedDappRpc: 0,
-        msSinceLastExternalExtensionRpc: 0,
       }),
     ).toBe('active_recent_ui_interaction');
-
-    expect(
-      getIdleStatus(steadyActivity(), {
-        msSinceLastConnectedDappRpc: 0,
-        msSinceLastExternalExtensionRpc: 0,
-      }),
-    ).toBe('active_recent_connected_dapp_rpc');
   });
 
   it('ignores msSinceLastWindowEvent', () => {

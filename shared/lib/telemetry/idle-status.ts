@@ -72,15 +72,85 @@ export const EXTERNAL_RPC_GRACE_MS = 30_000;
  * @returns Whether the signal fired within the grace period. `undefined`
  * (never fired) is never "recent".
  */
-function isRecent(ms: number | undefined, graceMs: number): boolean {
+function isRecent(ms: number | undefined, graceMs: number): ms is number {
   return ms !== undefined && ms < graceMs;
+}
+
+type RecentActivityStatus = Extract<
+  IdleStatus,
+  | 'active_recent_ui_closed'
+  | 'active_recent_ui_interaction'
+  | 'active_recent_connected_dapp_rpc'
+  | 'active_recent_external_extension_rpc'
+>;
+
+/**
+ * Elapsed-time signals that can mark a write active. Order is the tie-break
+ * when two signals share the same timestamp. The smaller elapsed time wins
+ * otherwise.
+ */
+const RECENT_ACTIVITY_CHECKS: {
+  status: RecentActivityStatus;
+  graceMs: number;
+  readMs: (lastActivity: LastActivityContext) => number | undefined;
+}[] = [
+  {
+    status: 'active_recent_ui_closed',
+    graceMs: UI_CLOSE_GRACE_MS,
+    readMs: (lastActivity) => lastActivity.msSinceLastUiClosed,
+  },
+  {
+    status: 'active_recent_ui_interaction',
+    graceMs: UI_INTERACTION_GRACE_MS,
+    readMs: (lastActivity) => lastActivity.msSinceLastUiInteraction,
+  },
+  {
+    status: 'active_recent_connected_dapp_rpc',
+    graceMs: EXTERNAL_RPC_GRACE_MS,
+    readMs: (lastActivity) => lastActivity.msSinceLastConnectedDappRpc,
+  },
+  {
+    status: 'active_recent_external_extension_rpc',
+    graceMs: EXTERNAL_RPC_GRACE_MS,
+    readMs: (lastActivity) => lastActivity.msSinceLastExternalExtensionRpc,
+  },
+];
+
+/**
+ * Picks the qualifying elapsed-time signal with the smallest elapsed time.
+ * A signal outside its own grace window does not qualify, even if it is the
+ * newest event overall.
+ *
+ * @param lastActivity - Elapsed-time signals since the last occurrence of
+ * each tracked event.
+ * @returns The matching active status, or `'idle'` when none qualify.
+ */
+function mostRecentActivityStatus(
+  lastActivity: LastActivityContext,
+): IdleStatus {
+  let mostRecentMs = Infinity;
+  let mostRecentStatus: IdleStatus = 'idle';
+
+  for (const check of RECENT_ACTIVITY_CHECKS) {
+    const ms = check.readMs(lastActivity);
+    if (!isRecent(ms, check.graceMs)) {
+      continue;
+    }
+    if (ms < mostRecentMs) {
+      mostRecentMs = ms;
+      mostRecentStatus = check.status;
+    }
+  }
+
+  return mostRecentStatus;
 }
 
 /**
  * Classifies why a sampled State Persist write is or isn't "idle".
  *
- * Checks run in priority order. Only the first match is reported. Lifecycle
- * transitions and a pending confirmation always win.
+ * A non-steady startup phase and an open confirmation describe the current
+ * state, so they win over elapsed-time signals. Among elapsed-time signals
+ * still inside their own grace window, the most recent one is reported.
  *
  * `msSinceLastWindowEvent` is not checked. Window focus alone is not evidence
  * of MetaMask-specific activity.
@@ -117,30 +187,5 @@ export function getIdleStatus(
     return 'active_pending_confirmation';
   }
 
-  if (isRecent(lastActivity.msSinceLastUiClosed, UI_CLOSE_GRACE_MS)) {
-    return 'active_recent_ui_closed';
-  }
-
-  if (
-    isRecent(lastActivity.msSinceLastUiInteraction, UI_INTERACTION_GRACE_MS)
-  ) {
-    return 'active_recent_ui_interaction';
-  }
-
-  if (
-    isRecent(lastActivity.msSinceLastConnectedDappRpc, EXTERNAL_RPC_GRACE_MS)
-  ) {
-    return 'active_recent_connected_dapp_rpc';
-  }
-
-  if (
-    isRecent(
-      lastActivity.msSinceLastExternalExtensionRpc,
-      EXTERNAL_RPC_GRACE_MS,
-    )
-  ) {
-    return 'active_recent_external_extension_rpc';
-  }
-
-  return 'idle';
+  return mostRecentActivityStatus(lastActivity);
 }
