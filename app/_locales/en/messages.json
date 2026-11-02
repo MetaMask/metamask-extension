@@ -3184,9 +3184,6 @@
   "continueAtYourOwnRisk": {
     "message": "Continue at your own risk"
   },
-  "continueAnyway": {
-    "message": "Continue Anyway"
-  },
   "contract": {
     "message": "Contract"
   },
@@ -13012,9 +13009,6 @@
   "wrongPassword": {
     "message": "Incorrect password. Try again.",
     "description": "Displayed when the user enters an incorrect password"
-  },
-  "xDappConnectionWarning": {
-    "message": "A dapp within X.com is asking to connect to MetaMask. This request is not coming from MetaMask or X."
   },
   "year": {
     "message": "year"

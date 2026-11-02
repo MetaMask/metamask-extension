@@ -1,4 +1,7 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { isXDotCom } from '../../../../shared/lib/x-dot-com';
+import { getIsXDappConnectionWarningEnabled } from '../../../selectors/x-dapp-connection-warning';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { TrustSignalModal } from '../../../components/app/trust-signal-modal/trust-signal-modal';
@@ -10,16 +13,6 @@ type ConnectionTrustSignalGateProps = {
   onCancel: () => void;
 };
 
-function isXDotCom(origin: string): boolean {
-  try {
-    const url = new URL(origin);
-    const hostname = url.hostname.toLowerCase();
-    return hostname === 'x.com' || hostname.endsWith('.x.com');
-  } catch {
-    return false;
-  }
-}
-
 export function ConnectionTrustSignalGate({
   origin,
   children,
@@ -27,27 +20,16 @@ export function ConnectionTrustSignalGate({
 }: Readonly<ConnectionTrustSignalGateProps>) {
   const { state } = useOriginTrustSignals(origin);
   const { value: dismissed, setTrue: dismiss } = useBoolean(false);
+  const isXWarningEnabled = useSelector(getIsXDappConnectionWarningEnabled);
 
   const isMalicious = state === TrustSignalDisplayState.Malicious;
-  const isX = isXDotCom(origin);
-  const showModal = !dismissed && (isMalicious || isX);
+  const showModal =
+    !dismissed && (isMalicious || (isXWarningEnabled && isXDotCom(origin)));
 
   return (
     <>
       {showModal && (
-        <TrustSignalModal
-          onContinue={dismiss}
-          onCancel={onCancel}
-          {...(isX && !isMalicious
-            ? {
-                title: null,
-                description: 'xDappConnectionWarning',
-                continueLabel: 'continueAnyway',
-                cancelLabel: 'backToSafety',
-                isError: false,
-              }
-            : {})}
-        />
+        <TrustSignalModal onContinue={dismiss} onCancel={onCancel} />
       )}
       {children}
     </>
