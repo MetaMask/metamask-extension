@@ -178,9 +178,9 @@ describe('usePrefillFromBridgeState', () => {
   });
 
   it('should not reset controller when there is no quote or navigation state', async () => {
-    const resetState = jest.fn();
+    const messengerCall = jest.fn();
     setBackgroundConnection({
-      resetState,
+      messengerCall,
       getStatePatches: jest.fn(),
     } as never);
 
@@ -220,6 +220,9 @@ describe('usePrefillFromBridgeState', () => {
     });
 
     renderUseBridgeQueryParams(mockStoreState);
-    expect(resetState).not.toHaveBeenCalled();
+    expect(messengerCall).not.toHaveBeenCalledWith(
+      'BridgeController:resetState',
+      expect.anything(),
+    );
   });
 });

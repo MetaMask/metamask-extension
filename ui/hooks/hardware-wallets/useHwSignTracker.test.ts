@@ -513,7 +513,7 @@ describe.each<string, boolean>([
         await result.current.cancelCurrentBatch();
       });
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'abortTransactionSigning',
+        'TransactionController:abortTransactionSigning',
         ['tx-1'],
       );
     });
@@ -548,7 +548,7 @@ describe.each<string, boolean>([
 
       expect(resolved).toBe(true);
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'abortTransactionSigning',
+        'TransactionController:abortTransactionSigning',
         ['tx-1'],
       );
       await cancelPromise;
@@ -633,11 +633,11 @@ describe.each<string, boolean>([
       mockSubmitRequestToBackground.mockClear();
       await cancelAndWait();
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'abortTransactionSigning',
+        'TransactionController:abortTransactionSigning',
         ['tx-approval'],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'abortTransactionSigning',
+        'TransactionController:abortTransactionSigning',
         ['tx-trade'],
       );
     });
@@ -1307,11 +1307,11 @@ describe('useHwSignTracker (batch mode specific)', () => {
       await cancelAndWait();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'abortTransactionSigning',
+        'TransactionController:abortTransactionSigning',
         ['tx-1a'],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'abortTransactionSigning',
+        'TransactionController:abortTransactionSigning',
         ['tx-2a'],
       );
     });
@@ -1327,7 +1327,7 @@ describe('useHwSignTracker (batch mode specific)', () => {
       await cancelAndWait();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'abortTransactionSigning',
+        'TransactionController:abortTransactionSigning',
         ['tx-rejected'],
       );
     });
@@ -1347,7 +1347,7 @@ describe('useHwSignTracker (batch mode specific)', () => {
       await cancelAndWait();
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'abortTransactionSigning',
+        'TransactionController:abortTransactionSigning',
         ['tx-finished'],
       );
     });
