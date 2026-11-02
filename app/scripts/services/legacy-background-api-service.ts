@@ -5503,13 +5503,13 @@ export class LegacyBackgroundApiService {
       this.#appEnvironment !== ENVIRONMENT.DEVELOPMENT &&
       participateInMetaMetrics !== null
     ) {
-      updateExtensionUninstallUrl(
+      updateExtensionUninstallUrl({
         participateInMetaMetrics,
         analyticsId,
-        this.#appVersion,
-        this.#appEnvironment,
-        this.#setUninstallURL,
-      );
+        appVersion: this.#appVersion,
+        appEnvironment: this.#appEnvironment,
+        setUninstallURL: this.#setUninstallURL,
+      });
     }
 
     return analyticsId;

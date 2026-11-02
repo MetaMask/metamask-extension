@@ -91,35 +91,45 @@ export function configureAnalytics({
  * Sets an uninstall URL ("Sorry to see you go!" page), which is opened if a
  * user uninstalls the extension. Call only after a MetaMetrics consent decision.
  *
- * @param participateInMetaMetrics - Whether the user opted into metrics.
- * @param analyticsId - The current analytics id.
+ * @param args - The arguments.
+ * @param args.participateInMetaMetrics - Whether the user opted into metrics.
+ * @param args.analyticsId - The current analytics id.
+ * @param args.appVersion - The current version of the extension.
+ * @param args.appEnvironment - The enviroment under which the extension is
+ * being loaded.
+ * @param args.setUninstallURL - Sets the uninstall URL.
  */
-function updateExtensionUninstallUrl(
-  participateInMetaMetrics: boolean,
-  analyticsId: string,
-): void {
-  const version = process.env.METAMASK_VERSION as string;
-  const environment = process.env.METAMASK_ENVIRONMENT as string;
-  const appVersion =
-    environment === 'production' ? version : `${version}-${environment}`;
+export function updateExtensionUninstallUrl({
+  participateInMetaMetrics,
+  analyticsId,
+  appVersion,
+  appEnvironment,
+  setUninstallURL,
+}: {
+  participateInMetaMetrics: boolean;
+  analyticsId: string;
+  appVersion: string;
+  appEnvironment: string;
+  setUninstallURL: (uninstallUrl: string) => void;
+}): void {
+  const fullAppVersion =
+    appEnvironment === 'production'
+      ? appVersion
+      : `${appVersion}-${appEnvironment}`;
   const query: {
     mmi?: string;
     env?: string;
     av: string;
   } = {
-    av: appVersion,
+    av: fullAppVersion,
   };
   if (participateInMetaMetrics) {
     query.mmi = Buffer.from(analyticsId).toString('base64');
-    query.env = environment;
+    query.env = appEnvironment;
   }
   const queryString = new URLSearchParams(query);
 
-  if (extension?.runtime) {
-    extension.runtime.setUninstallURL(
-      `${EXTENSION_UNINSTALL_URL}?${queryString}`,
-    );
-  }
+  setUninstallURL(`${EXTENSION_UNINSTALL_URL}?${queryString}`);
 }
 
 /**
