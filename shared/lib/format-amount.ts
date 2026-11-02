@@ -10,11 +10,6 @@ const MAX_DECIMAL_PLACES = 8;
 
 const ZERO_DISPLAY = '0';
 
-export type FormatAmountOptions = {
-  roundingMode?: number;
-  compact?: boolean;
-};
-
 export function formatAmountMaxPrecision(
   locale: string,
   num: number | BigNumber,
@@ -34,39 +29,48 @@ export function formatAmountMaxPrecision(
 }
 
 /**
- * Formats a token amount.
+ * Formats a token amount with up to 8 decimal places, without trailing zeros.
+ * Non-zero amounts below 0.000001 display as `<0.000001`.
  *
- * By default, displays up to 8 decimal places (rounded per `roundingMode`)
- * without trailing zeros. Non-zero amounts below 0.000001 display as
- * `<0.000001`.
- *
- * With `compact`, for |amount| < 1, displays up to 3 significant digits.
+ * With `compact`, for |amount| < 1, displays up to 3 significant digits, rounded according to `roundingMode`.
  * For |amount| >= 1, displays all integer digits and reduces decimal
- * precision as the integer grows, until only whole numbers are shown.
+ * precision as the integer grows (rounded per `roundingMode`), until only whole numbers are shown.
  *
- * | Amount               | Default                | compact            | compact + ROUND_DOWN |
- * |----------------------|------------------------|--------------------|----------------------|
- * | 0                    | 0                      | 0                  | 0                    |
- * | 0.0000009            | <0.000001              | <0.000001          | <0.000001            |
- * | 0.0004567            | 0.0004567              | 0.000457           | 0.000456             |
- * | 0.123456789          | 0.12345679             | 0.123              | 0.123                |
- * | 1.234567             | 1.234567               | 1.235              | 1.234                |
- * | 12.0345              | 12.0345                | 12.03              | 12.03                |
- * | 121.456              | 121.456                | 121.5              | 121.4                |
- * | 1,034.123            | 1,034.123              | 1,034              | 1,034                |
- * | 12,130,982,923,409.5 | 12,130,982,923,409.5   | 12,130,982,923,410 | 12,130,982,923,409   |
+ * The optional `roundingMode` controls how the last displayed digit is
+ * determined. The default (ROUND_HALF_UP) rounds conventionally. Pass
+ * ROUND_DOWN to truncate — useful for balance display where the shown
+ * value must never exceed what the user actually holds.
+ *
+ * | Amount               | compact (ROUND_HALF_UP) | compact + ROUND_DOWN |
+ * |----------------------|-------------------------|------------|
+ * | 0                    | 0                       | 0          |
+ * | 0.0000009            | <0.000001               | <0.000001  |
+ * | 0.0000456            | 0.0000456               | 0.0000456  |
+ * | 0.0004567            | 0.000457                | 0.000456   |
+ * | 0.003456             | 0.00346                 | 0.00345    |
+ * | 0.023456             | 0.0235                  | 0.0234     |
+ * | 0.125456             | 0.125                   | 0.125      |
+ * | 1.0034               | 1.003                   | 1.003      |
+ * | 1.3034               | 1.303                   | 1.303      |
+ * | 12.0345              | 12.03                   | 12.03      |
+ * | 121.456              | 121.5                   | 121.4      |
+ * | 1,034.123            | 1,034                   | 1,034      |
+ * | 47,361,034.006       | 47,361,034              | 47,361,034 |
+ * | 12,130,982,923,409.5 | 12,130,982,923,410      | 12,130,982,923,409 |
  *
  * @param locale
  * @param amount
- * @param options
- * @param options.roundingMode - BigNumber rounding mode. Defaults to
- * ROUND_HALF_UP. Pass ROUND_DOWN so balances never look larger than held.
- * @param options.compact - Use 3 significant digits instead of 8 decimals.
+ * @param roundingMode - BigNumber rounding mode (0–8). Defaults to
+ * BigNumber.ROUND_HALF_UP. Pass BigNumber.ROUND_DOWN to truncate, e.g.
+ * for balance display so values never appear larger than the user holds.
+ * @param options - Formatting options.
+ * @param options.compact - Show up to 3 significant digits instead of 8 decimal places.
  */
 export function formatAmount(
   locale: string,
   amount: BigNumber,
-  { roundingMode, compact = false }: FormatAmountOptions = {},
+  roundingMode?: number,
+  { compact = false }: { compact?: boolean } = {},
 ): string {
   if (amount.isZero()) {
     return ZERO_DISPLAY;

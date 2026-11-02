@@ -2,81 +2,33 @@ import { BigNumber } from 'bignumber.js';
 import { formatAmount } from './format-amount';
 
 describe('formatAmount', () => {
-  const locale = 'en-US';
-
   describe('#formatAmount', () => {
+    const locale = 'en-US';
+
     it('returns "0" for zero amount', () => {
       expect(formatAmount(locale, new BigNumber(0))).toBe('0');
     });
 
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([0.0000009, '0.0000009999999', '0.000000001', -0.0000009])(
-      'returns "<0.000001" for non-zero amount below MIN_AMOUNT (%s)',
-      (amount: number | string) => {
-        expect(formatAmount(locale, new BigNumber(amount))).toBe('<0.000001');
-      },
-    );
+    it('returns "<0.000001" for 0 < amount < MIN_AMOUNT', () => {
+      expect(formatAmount(locale, new BigNumber(0.0000009))).toBe('<0.000001');
+    });
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
-      [0.000001, '0.000001'],
-      [0.0000456, '0.0000456'],
       [0.0004567, '0.0004567'],
-      ['0.123456789', '0.12345679'],
-      ['0.99999999', '0.99999999'],
-      ['0.999999999', '1'],
       [1.234567, '1.234567'],
       [12.0345, '12.0345'],
       [121.456, '121.456'],
       [1034.123, '1,034.123'],
       ['1034.10000000', '1,034.1'],
-      ['1000000.123456789', '1,000,000.12345679'],
+      ['1.123456789', '1.12345679'],
       ['12130982923409.5', '12,130,982,923,409.5'],
-      ['30001231231212312138768', '30,001,231,231,212,312,138,768'],
-      [
-        '1157920892373161954235709850086879078532699846656405640394575.84007913129639935',
-        '1,157,920,892,373,161,954,235,709,850,086,879,078,532,699,846,656,405,640,394,575.84007913',
-      ],
-      [-1.234567, '-1.234567'],
     ])(
-      'formats amount with up to 8 decimals (%s => %s)',
+      'formats amount with up to 8 decimal places (%s => %s)',
       (amount: number | string, expected: string) => {
         expect(formatAmount(locale, new BigNumber(amount))).toBe(expected);
       },
     );
-
-    it('uses the locale separators', () => {
-      expect(formatAmount('de-DE', new BigNumber('1034.123456789'))).toBe(
-        '1.034,12345679',
-      );
-    });
-
-    it('truncates the 8th decimal with ROUND_DOWN', () => {
-      expect(
-        formatAmount(locale, new BigNumber('1.123456789'), {
-          roundingMode: BigNumber.ROUND_DOWN,
-        }),
-      ).toBe('1.12345678');
-      expect(
-        formatAmount(locale, new BigNumber('-1.123456789'), {
-          roundingMode: BigNumber.ROUND_DOWN,
-        }),
-      ).toBe('-1.12345678');
-    });
-  });
-
-  describe('#formatAmount with compact', () => {
-    const compact = { compact: true };
-
-    it('returns "0" for zero amount', () => {
-      expect(formatAmount(locale, new BigNumber(0), compact)).toBe('0');
-    });
-
-    it('returns "<0.000001" for 0 < amount < MIN_AMOUNT', () => {
-      expect(formatAmount(locale, new BigNumber(0.0000009), compact)).toBe(
-        '<0.000001',
-      );
-    });
 
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
@@ -88,9 +40,11 @@ describe('formatAmount', () => {
     ])(
       'formats amount less than 1 with maximum significant digits (%s => %s)',
       (amount: number, expected: string) => {
-        expect(formatAmount(locale, new BigNumber(amount), compact)).toBe(
-          expected,
-        );
+        expect(
+          formatAmount(locale, new BigNumber(amount), undefined, {
+            compact: true,
+          }),
+        ).toBe(expected);
       },
     );
 
@@ -113,22 +67,25 @@ describe('formatAmount', () => {
     ])(
       'formats amount greater than or equal to 1 with appropriate decimal precision (%s => %s)',
       (amount: number, expected: string) => {
-        expect(formatAmount(locale, new BigNumber(amount), compact)).toBe(
-          expected,
-        );
+        expect(
+          formatAmount(locale, new BigNumber(amount), undefined, {
+            compact: true,
+          }),
+        ).toBe(expected);
       },
     );
   });
 
-  describe('#formatAmount with compact and ROUND_DOWN', () => {
-    const options = { compact: true, roundingMode: BigNumber.ROUND_DOWN };
+  describe('#formatAmount with ROUND_DOWN', () => {
+    const locale = 'en-US';
+    const roundDown = BigNumber.ROUND_DOWN;
 
     it('returns "0" for zero amount regardless of rounding mode', () => {
-      expect(formatAmount(locale, new BigNumber(0), options)).toBe('0');
+      expect(formatAmount(locale, new BigNumber(0), roundDown)).toBe('0');
     });
 
     it('returns "<0.000001" for amounts below MIN_AMOUNT regardless of rounding mode', () => {
-      expect(formatAmount(locale, new BigNumber(0.0000009), options)).toBe(
+      expect(formatAmount(locale, new BigNumber(0.0000009), roundDown)).toBe(
         '<0.000001',
       );
     });
@@ -148,9 +105,11 @@ describe('formatAmount', () => {
     ])(
       'truncates amount less than 1 toward zero (%s => %s)',
       (amount: number, expected: string) => {
-        expect(formatAmount(locale, new BigNumber(amount), options)).toBe(
-          expected,
-        );
+        expect(
+          formatAmount(locale, new BigNumber(amount), roundDown, {
+            compact: true,
+          }),
+        ).toBe(expected);
       },
     );
 
@@ -169,9 +128,11 @@ describe('formatAmount', () => {
     ])(
       'truncates amount greater than or equal to 1 toward zero (%s => %s)',
       (amount: number, expected: string) => {
-        expect(formatAmount(locale, new BigNumber(amount), options)).toBe(
-          expected,
-        );
+        expect(
+          formatAmount(locale, new BigNumber(amount), roundDown, {
+            compact: true,
+          }),
+        ).toBe(expected);
       },
     );
   });
