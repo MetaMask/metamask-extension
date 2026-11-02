@@ -22,6 +22,7 @@ import {
   getAggregatedBalanceForAccount,
   getDefaultAssetsControllerState,
   getIsAssetsLoadingForSelectedAccountGroup,
+  getIsAssetsRefreshingForSelectedAccountGroup,
   type AccountGroupBalance,
   type EnabledNetworkMap,
 } from '@metamask/assets-controller';
@@ -276,6 +277,19 @@ export function getAssetsLoadingStatus(state: {
   metamask?: Pick<AssetsControllerState, 'assetsLoadingStatus'>;
 }) {
   return state.metamask?.assetsLoadingStatus;
+}
+
+/**
+ * Returns the per-account refresh status from AssetsController state.
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Refresh status by account id, or undefined when no forced fetch has started.
+ */
+export function getAssetsRefreshingStatus(state: {
+  metamask?: Pick<AssetsControllerState, 'assetsRefreshingStatus'>;
+}) {
+  return state.metamask?.assetsRefreshingStatus;
 }
 
 /**
@@ -1362,6 +1376,23 @@ export const selectIsAssetsLoadingForSelectedAccountGroup = createSelector(
   (assetsLoadingStatus, accountTreeState): boolean =>
     getIsAssetsLoadingForSelectedAccountGroup(
       { assetsLoadingStatus },
+      accountTreeState,
+    ),
+);
+
+/**
+ * Whether a forced asset fetch is in flight for the selected account group.
+ * This stays false during the first load's skeleton treatment; that case is
+ * `selectIsAssetsLoadingForSelectedAccountGroup`.
+ *
+ * @param state - Redux state containing the account tree and AssetsController state.
+ * @returns True while the selected account group is refreshing.
+ */
+export const selectIsAssetsRefreshingForSelectedAccountGroup = createSelector(
+  [getAssetsRefreshingStatus, selectAccountTreeStateForBalances],
+  (assetsRefreshingStatus, accountTreeState): boolean =>
+    getIsAssetsRefreshingForSelectedAccountGroup(
+      { assetsRefreshingStatus },
       accountTreeState,
     ),
 );

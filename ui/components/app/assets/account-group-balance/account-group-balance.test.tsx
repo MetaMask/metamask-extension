@@ -16,6 +16,7 @@ import { getPreferences } from '../../../../../shared/lib/selectors/preferences'
 import {
   getMultichainNativeTokenBalance,
   selectIsAssetsLoadingForSelectedAccountGroup,
+  selectIsAssetsRefreshingForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
@@ -52,6 +53,7 @@ describe('AccountGroupBalance', () => {
     showFiatInTestnets?: boolean;
     privacyMode?: boolean;
     isAssetsLoading?: boolean;
+    isAssetsRefreshing?: boolean;
   };
 
   const arrange = ({
@@ -62,6 +64,7 @@ describe('AccountGroupBalance', () => {
     showFiatInTestnets = false,
     privacyMode = false,
     isAssetsLoading = false,
+    isAssetsRefreshing = false,
   }: ArrangeOptions = {}) => {
     jest
       .mocked(selectUnifiedBalanceBySelectedAccountGroup)
@@ -70,6 +73,10 @@ describe('AccountGroupBalance', () => {
     jest
       .mocked(selectIsAssetsLoadingForSelectedAccountGroup)
       .mockReturnValue(isAssetsLoading);
+
+    jest
+      .mocked(selectIsAssetsRefreshingForSelectedAccountGroup)
+      .mockReturnValue(isAssetsRefreshing);
 
     jest
       .mocked(selectAnyEnabledNetworksAreAvailable)
@@ -271,6 +278,40 @@ describe('AccountGroupBalance', () => {
       queryByTestId('account-group-balance-skeleton'),
     ).not.toBeInTheDocument();
     expect(getByText(/123\.45/u)).toBeInTheDocument();
+  });
+
+  it('shows a spinner beside the visible balance while assets are refreshing', () => {
+    arrange({
+      isAssetsRefreshing: true,
+      selectedGroupBalance: createMockBalance(),
+    });
+
+    const { getByTestId, getByText } = renderComponent();
+
+    expect(getByTestId('account-group-balance-refreshing')).toBeInTheDocument();
+    expect(getByTestId('coin-overview__primary-currency')).toHaveAttribute(
+      'aria-busy',
+      'true',
+    );
+    expect(getByText(/123\.45/u)).toBeInTheDocument();
+  });
+
+  it('does not show the refresh spinner during the first-load skeleton', () => {
+    arrange({
+      isAssetsLoading: true,
+      isAssetsRefreshing: true,
+      selectedGroupBalance: {
+        ...createMockBalance(),
+        totalBalanceInUserCurrency: 0,
+      },
+    });
+
+    const { getByTestId, queryByTestId } = renderComponent();
+
+    expect(getByTestId('account-group-balance-skeleton')).toBeInTheDocument();
+    expect(
+      queryByTestId('account-group-balance-refreshing'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders skeleton when no networks available and no balance', () => {

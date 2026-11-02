@@ -45,6 +45,7 @@ import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
+  selectIsAssetsRefreshingForSelectedAccountGroup,
   getAssetsByAccountGroupId,
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
@@ -103,6 +104,37 @@ jest.mock('@metamask/assets-controller', () => ({
   getIsAssetsLoadingForSelectedAccountGroup: jest.requireActual(
     '@metamask/assets-controller',
   ).getIsAssetsLoadingForSelectedAccountGroup,
+  getIsAssetsRefreshingForSelectedAccountGroup:
+    jest.requireActual('@metamask/assets-controller')
+      .getIsAssetsRefreshingForSelectedAccountGroup ??
+    ((
+      state: {
+        assetsRefreshingStatus?: Record<string, 'refreshing' | 'idle'>;
+      },
+      accountTreeState: {
+        selectedAccountGroup?: string;
+        accountTree?: {
+          wallets?: Record<
+            string,
+            { groups?: Record<string, { accounts?: string[] }> }
+          >;
+        };
+      },
+    ) => {
+      const groupId = accountTreeState.selectedAccountGroup;
+      if (!groupId) {
+        return false;
+      }
+      const wallets = accountTreeState.accountTree?.wallets ?? {};
+      const accountIds = Object.values(wallets).flatMap((wallet) => {
+        const accounts = wallet?.groups?.[groupId]?.accounts;
+        return accounts ? [...accounts] : [];
+      });
+      return accountIds.some(
+        (accountId) =>
+          state.assetsRefreshingStatus?.[accountId] === 'refreshing',
+      );
+    }),
   // The getter selectors fall back to this default state; return empty maps so
   // the "missing → empty" getter expectations hold in tests.
   getDefaultAssetsControllerState: () => ({
@@ -1738,6 +1770,51 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     const state = createMockStateWithEVMNetworks();
 
     expect(selectIsAssetsLoadingForSelectedAccountGroup(state)).toBe(false);
+  });
+
+  it('returns true while an account in the selected group is refreshing', () => {
+    const state = createMockStateWithEVMNetworks();
+    const stateWithRefreshing = {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        assetsRefreshingStatus: { account1: 'refreshing' as const },
+      },
+    };
+
+    expect(
+      selectIsAssetsRefreshingForSelectedAccountGroup(stateWithRefreshing),
+    ).toBe(true);
+  });
+
+  it('returns false once the selected group refresh is idle', () => {
+    const state = createMockStateWithEVMNetworks();
+    const stateWithIdle = {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        assetsRefreshingStatus: { account1: 'idle' as const },
+      },
+    };
+
+    expect(selectIsAssetsRefreshingForSelectedAccountGroup(stateWithIdle)).toBe(
+      false,
+    );
+  });
+
+  it('returns false when only accounts outside the selected group are refreshing', () => {
+    const state = createMockStateWithEVMNetworks();
+    const stateWithOtherRefreshing = {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        assetsRefreshingStatus: { 'other-account': 'refreshing' as const },
+      },
+    };
+
+    expect(
+      selectIsAssetsRefreshingForSelectedAccountGroup(stateWithOtherRefreshing),
+    ).toBe(false);
   });
 
   it('should return true for loaded state when a non-EVM mainnet zero balance record exists', () => {
