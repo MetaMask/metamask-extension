@@ -1,8 +1,18 @@
 import type * as Sentry from '@sentry/browser';
-import { endTrace, getSerializedTraceContext, trace, TraceName } from './trace';
+import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
+import {
+  annotateTrace,
+  endTrace,
+  getSerializedTraceContext,
+  getTraceContext,
+  ONBOARDING_MACHINE_TIME_ATTRIBUTE,
+  trace,
+  TraceName,
+} from './trace';
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
+  withScope: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
   setMeasurement: jest.fn(),
@@ -15,6 +25,7 @@ const {
   startSpan,
   startSpanManual,
   withIsolationScope,
+  withScope,
   getActiveSpan,
   continueTrace,
 } = global.sentry as typeof Sentry;
@@ -41,6 +52,7 @@ describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const startSpanManualMock = jest.mocked(startSpanManual);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
+  const withScopeMock = jest.mocked(withScope);
   const setMeasurementMock = jest.mocked(setMeasurement);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
   const continueTraceMock = jest.mocked(continueTrace);
@@ -53,6 +65,7 @@ describe('Trace', () => {
       startSpan: startSpanMock,
       startSpanManual: startSpanManualMock,
       withIsolationScope: withIsolationScopeMock,
+      withScope: withScopeMock,
       setMeasurement: setMeasurementMock,
       getActiveSpan: getActiveSpanMock,
       continueTrace: continueTraceMock,
@@ -71,9 +84,21 @@ describe('Trace', () => {
     withIsolationScopeMock.mockImplementation((fn: any) =>
       fn({ setTag: setTagMock }),
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    withScopeMock.mockImplementation((fn: any) => fn({ setTag: setTagMock }));
   });
 
   describe('trace', () => {
+    it('defines the mobile-compatible onboarding machine-time trace names', () => {
+      expect(TraceName.OnboardingSRPAccountCreationTime).toBe(
+        'Onboarding SRP Account Creation Time',
+      );
+      expect(TraceName.OnboardingSRPAccountImportTime).toBe(
+        'Onboarding SRP Account Import Time',
+      );
+    });
+
     it('executes callback', () => {
       let callbackExecuted = false;
 
@@ -82,6 +107,33 @@ describe('Trace', () => {
       });
 
       expect(callbackExecuted).toBe(true);
+    });
+
+    it('retrieves and annotates a pending trace context', () => {
+      const setAttributeMock = jest.fn();
+      const spanMock = {
+        end: jest.fn(),
+        setAttribute: setAttributeMock,
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({ name: NAME_MOCK, id: ID_MOCK });
+
+      const context = getTraceContext({ name: NAME_MOCK, id: ID_MOCK });
+      annotateTrace(context, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: 'metamask',
+      });
+
+      expect(setAttributeMock).toHaveBeenCalledWith('account_type', 'metamask');
+
+      endTrace({ name: NAME_MOCK, id: ID_MOCK });
     });
 
     it('returns value from callback', () => {
@@ -100,7 +152,7 @@ describe('Trace', () => {
         () => true,
       );
 
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
 
       expect(startSpanMock).toHaveBeenCalledTimes(1);
       expect(startSpanMock).toHaveBeenCalledWith(
@@ -130,16 +182,16 @@ describe('Trace', () => {
         parentContext: PARENT_CONTEXT_MOCK,
       });
 
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
 
       expect(startSpanManualMock).toHaveBeenCalledTimes(1);
       expect(startSpanManualMock).toHaveBeenCalledWith(
-        {
+        expect.objectContaining({
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
           attributes: DATA_MOCK,
           op: 'custom',
-        },
+        }),
         expect.any(Function),
       );
 
@@ -161,7 +213,7 @@ describe('Trace', () => {
         startTime: 123,
       });
 
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+      expect(withScopeMock).toHaveBeenCalledTimes(1);
 
       expect(startSpanManualMock).toHaveBeenCalledTimes(1);
       expect(startSpanManualMock).toHaveBeenCalledWith(
@@ -181,6 +233,33 @@ describe('Trace', () => {
 
       expect(setMeasurementMock).toHaveBeenCalledTimes(1);
       expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
+    });
+
+    it('uses the performance timestamp for a default manual start time', () => {
+      const performanceNowSpy = jest
+        .spyOn(globalThis.performance, 'now')
+        .mockReturnValue(500);
+      const startTime = globalThis.performance.timeOrigin + 500;
+      const id = 'default-start-time';
+      const spanMock = {
+        end: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({ name: NAME_MOCK, id });
+
+      expect(startSpanManualMock).toHaveBeenCalledWith(
+        expect.objectContaining({ startTime }),
+        expect.any(Function),
+      );
+
+      endTrace({ name: NAME_MOCK, id, timestamp: startTime });
+      performanceNowSpy.mockRestore();
     });
 
     it('supports no global Sentry object', () => {
@@ -298,6 +377,34 @@ describe('Trace', () => {
       expect(spanEndMock).toHaveBeenCalledTimes(1);
     });
 
+    for (const [status, code] of [
+      ['ok', SPAN_STATUS_OK],
+      ['error', SPAN_STATUS_ERROR],
+    ] as const) {
+      it(`sets the Sentry span status to ${status} before ending it`, () => {
+        const spanEndMock = jest.fn();
+        const setStatusMock = jest.fn();
+        const spanMock = {
+          end: spanEndMock,
+          setStatus: setStatusMock,
+        } as unknown as Sentry.Span;
+
+        startSpanManualMock.mockImplementationOnce((_, fn) =>
+          fn(spanMock, () => {
+            // Intentionally empty
+          }),
+        );
+
+        trace({ name: NAME_MOCK, id: ID_MOCK });
+        endTrace({ name: NAME_MOCK, id: ID_MOCK, status });
+
+        expect(setStatusMock).toHaveBeenCalledWith({ code });
+        expect(setStatusMock.mock.invocationCallOrder[0]).toBeLessThan(
+          spanEndMock.mock.invocationCallOrder[0],
+        );
+      });
+    }
+
     it('ends Sentry span matching name and default ID', () => {
       const spanEndMock = jest.fn();
       const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
@@ -342,6 +449,34 @@ describe('Trace', () => {
 
       expect(spanEndMock).toHaveBeenCalledTimes(1);
       expect(spanEndMock).toHaveBeenCalledWith(123);
+    });
+
+    it('uses the performance timestamp for a default manual end time', () => {
+      const performanceNowSpy = jest
+        .spyOn(globalThis.performance, 'now')
+        .mockReturnValueOnce(100)
+        .mockReturnValueOnce(200);
+      const { timeOrigin } = globalThis.performance;
+      const startTime = timeOrigin + 100;
+      const endTime = timeOrigin + 200;
+      const spanEndMock = jest.fn();
+      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const id = 'default-end-time';
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({ name: NAME_MOCK, id });
+      endTrace({ name: NAME_MOCK, id });
+
+      expect(spanEndMock).toHaveBeenCalledWith(endTime);
+      expect(endTime).toBeGreaterThanOrEqual(startTime);
+      expect(performanceNowSpy).toHaveBeenCalledTimes(2);
+
+      performanceNowSpy.mockRestore();
     });
 
     it('does not end Sentry span if name and ID does not match', () => {
@@ -511,6 +646,270 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+    });
+  });
+
+  describe('onboarding machine time', () => {
+    const createSpanMock = () => {
+      const setAttributeMock = jest.fn();
+      const endMock = jest.fn();
+      const spanMock = {
+        end: endMock,
+        setAttribute: setAttributeMock,
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      return { endMock, setAttributeMock, spanMock };
+    };
+
+    const queueSpans = (spans: ReturnType<typeof createSpanMock>[]) => {
+      spans.forEach(({ spanMock }) => {
+        startSpanManualMock.mockImplementationOnce((_, fn) =>
+          fn(spanMock, () => {
+            // Intentionally empty
+          }),
+        );
+      });
+    };
+
+    const expectMachineTime = (
+      journey: ReturnType<typeof createSpanMock>,
+      expected: number,
+    ) => {
+      expect(journey.setAttributeMock).toHaveBeenCalledWith(
+        ONBOARDING_MACHINE_TIME_ATTRIBUTE,
+        expected,
+      );
+    };
+
+    it('sums successful machine spans before ending the journey', () => {
+      expect.assertions(2);
+      const journey = createSpanMock();
+      queueSpans([
+        journey,
+        createSpanMock(),
+        createSpanMock(),
+        createSpanMock(),
+        createSpanMock(),
+      ]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingFetchSrps,
+        startTime: 1_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingFetchSrps,
+        timestamp: 1_500,
+        data: { success: true },
+      });
+      trace({
+        name: TraceName.OnboardingSRPAccountImportTime,
+        startTime: 2_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingSRPAccountImportTime,
+        timestamp: 3_200,
+        data: { success: true },
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 4_000 });
+
+      expectMachineTime(journey, 1_700);
+      expect(journey.setAttributeMock.mock.invocationCallOrder[0]).toBeLessThan(
+        journey.endMock.mock.invocationCallOrder[0],
+      );
+    });
+
+    it('excludes failed and human-interaction spans', () => {
+      expect.assertions(1);
+      const journey = createSpanMock();
+      queueSpans([
+        journey,
+        createSpanMock(),
+        createSpanMock(),
+        createSpanMock(),
+      ]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        startTime: 1_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthSeedlessAuthenticate,
+        timestamp: 2_000,
+        data: { success: false },
+      });
+      trace({
+        name: TraceName.OnboardingPasswordSetupAttempt,
+        startTime: 2_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingPasswordSetupAttempt,
+        timestamp: 30_000,
+      });
+      trace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        startTime: 30_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        timestamp: 40_000,
+        data: { success: true },
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 50_000 });
+
+      expectMachineTime(journey, 0);
+    });
+
+    it('includes OAuth launch time but excludes provider wait', () => {
+      expect.assertions(1);
+      const journey = createSpanMock();
+      queueSpans([
+        journey,
+        createSpanMock(),
+        createSpanMock(),
+        createSpanMock(),
+      ]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingOAuthProviderLaunch,
+        startTime: 1_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderLaunch,
+        timestamp: 2_500,
+        data: { success: true },
+      });
+      trace({
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        startTime: 2_500,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        timestamp: 40_000,
+        data: { success: true },
+      });
+      trace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        startTime: 40_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        timestamp: 80_000,
+        data: { success: true },
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 90_000 });
+
+      expectMachineTime(journey, 1_500);
+    });
+
+    it('counts open machine spans at successful journey end', () => {
+      expect.assertions(1);
+      const journey = createSpanMock();
+      queueSpans([journey, createSpanMock()]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingSRPAccountCreationTime,
+        startTime: 1_000,
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 3_000 });
+
+      expectMachineTime(journey, 2_000);
+    });
+
+    it('does not double-count nested backup work', () => {
+      expect.assertions(1);
+      const journey = createSpanMock();
+      queueSpans([journey, createSpanMock(), createSpanMock()]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingSRPAccountCreationTime,
+        startTime: 1_000,
+      });
+      trace({
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        startTime: 1_200,
+      });
+      endTrace({
+        name: TraceName.OnboardingCreateKeyAndBackupSrp,
+        timestamp: 1_800,
+        data: { success: true },
+      });
+      endTrace({
+        name: TraceName.OnboardingSRPAccountCreationTime,
+        timestamp: 2_500,
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 3_000 });
+
+      expectMachineTime(journey, 1_500);
+    });
+
+    it('keeps only the latest successful duration for retried spans', () => {
+      expect.assertions(1);
+      const journey = createSpanMock();
+      queueSpans([journey, createSpanMock(), createSpanMock()]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        startTime: 1_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        timestamp: 1_500,
+      });
+      trace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        startTime: 2_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        timestamp: 2_700,
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 3_000 });
+
+      expectMachineTime(journey, 700);
+    });
+
+    it('rounds the aggregate to whole milliseconds and resets per journey', () => {
+      expect.assertions(2);
+      const firstJourney = createSpanMock();
+      const secondJourney = createSpanMock();
+      queueSpans([
+        firstJourney,
+        createSpanMock(),
+        secondJourney,
+        createSpanMock(),
+      ]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingSRPAccountCreationTime,
+        startTime: 1_000.25,
+      });
+      endTrace({
+        name: TraceName.OnboardingSRPAccountCreationTime,
+        timestamp: 1_900.9,
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 2_000 });
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 10_000 });
+      trace({
+        name: TraceName.OnboardingSRPAccountImportTime,
+        startTime: 10_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingSRPAccountImportTime,
+        timestamp: 10_100,
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 11_000 });
+
+      expectMachineTime(firstJourney, 901);
+      expectMachineTime(secondJourney, 100);
     });
   });
 

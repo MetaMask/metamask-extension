@@ -35,9 +35,10 @@ export {
  * "Reconnect your device and try again") rather than `Failed` ("Transaction
  * failed"), because the user can recover by reconnecting/unlocking the device.
  *
- * `DeviceStateEthAppClosed` is intentionally excluded: it is routed to
- * `AwaitingApp` (not `ErrorState`) by `getConnectionStateFromError`, so it
- * never reaches the signing-error path.
+ * `DeviceStateEthAppClosed` is handled separately: it maps to an error state
+ * so `HardwareWalletErrorProvider` can prompt the user to open the Ethereum app,
+ * but it must not fail or disconnect the swap signature flow so the signing
+ * UI stays on the awaiting-app path.
  */
 const DEVICE_UNAVAILABLE_ERROR_CODES = new Set<ErrorCode>([
   ErrorCode.AuthenticationDeviceLocked,
@@ -49,6 +50,11 @@ const DEVICE_UNAVAILABLE_ERROR_CODES = new Set<ErrorCode>([
   ErrorCode.ConnectionTimeout,
 ]);
 
+export type HardwareWalletSignatureErrorEvent =
+  | { type: typeof HardwareWalletSignatureEvent.TransactionRejected }
+  | { type: typeof HardwareWalletSignatureEvent.DeviceDisconnected }
+  | { type: typeof HardwareWalletSignatureEvent.TransactionFailed };
+
 /**
  * Maps a hardware-wallet signing error to its signature state-machine event.
  * This is the single source of truth used by both the connection monitor and
@@ -59,16 +65,22 @@ const DEVICE_UNAVAILABLE_ERROR_CODES = new Set<ErrorCode>([
  * `isUserRejectedHardwareWalletError` and `getHardwareWalletErrorCode`.
  *
  * @param error - The error from a signing attempt (may cross the RPC boundary).
- * @returns The state-machine event for the error.
+ * @returns The state-machine event for the error, or null if the error should not interrupt signing.
  */
-export function getHardwareWalletSignatureErrorEvent(error: unknown) {
+export function getHardwareWalletSignatureErrorEvent(
+  error: unknown,
+): HardwareWalletSignatureErrorEvent | null {
+  const errorCode = getHardwareWalletErrorCode(error);
+  if (errorCode === ErrorCode.DeviceStateEthAppClosed) {
+    return null;
+  }
+
   if (isUserRejectedHardwareWalletError(error)) {
     return {
       type: HardwareWalletSignatureEvent.TransactionRejected,
     } as const;
   }
 
-  const errorCode = getHardwareWalletErrorCode(error);
   if (errorCode !== null && DEVICE_UNAVAILABLE_ERROR_CODES.has(errorCode)) {
     return {
       type: HardwareWalletSignatureEvent.DeviceDisconnected,

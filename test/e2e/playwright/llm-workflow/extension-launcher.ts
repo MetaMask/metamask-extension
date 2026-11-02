@@ -5,9 +5,7 @@ import { chromium, type Page, type BrowserContext } from '@playwright/test';
 import {
   ConsoleErrorBuffer,
   resolveExtensionId,
-  waitForExtensionUiReady,
 } from '@metamask/client-mcp-core';
-import type { ExtensionReadinessConfig } from '@metamask/client-mcp-core';
 import type { ManifestFlags } from '../../../../shared/lib/manifestFlags';
 import {
   CONNECT_ROUTE,
@@ -17,6 +15,7 @@ import {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { validateExtensionBuilt } from './validate-extension';
 import type {
   LauncherLaunchOptions,
@@ -26,9 +25,16 @@ import type {
   NetworkConfig,
 } from './launcher-types';
 import { resolveRepoRoot } from './resolve-repo-root';
+import { finishOnboarding, runSelfOnboarding } from './self-onboarding';
+import { getE2EDriver, withTimeout } from './e2e-driver';
+import {
+  LAUNCH_SCREEN_CHECKS,
+  waitForAnyScreen,
+} from './launcher/state-inspector';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
+const UI_READY_TIMEOUT_MS = 30_000;
 const REPO_ROOT = resolveRepoRoot();
 
 // Routes that indicate a confirmation screen when matched against the sidepanel URL hash.
@@ -40,19 +46,6 @@ const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 ];
-const METAMASK_EXTENSION_READINESS_CONFIG: ExtensionReadinessConfig = {
-  readySelectors: [
-    '[data-testid="unlock-password"]',
-    '[data-testid="onboarding-create-wallet"]',
-    '[data-testid="onboarding-import-wallet"]',
-    '[data-testid="account-menu-icon"]',
-    '[data-testid="get-started"]',
-    '[data-testid="onboarding-terms-checkbox"]',
-    '[data-testid="onboarding-privacy-policy"]',
-  ],
-  expectedStatesDescription: 'unlock page, onboarding page, or home page',
-};
-
 type ResolvedOptions = {
   extensionPath: string;
   headless: boolean;
@@ -65,6 +58,9 @@ type ResolvedOptions = {
   network: NetworkConfig;
   proxyServer?: string;
   manifestFlags?: Partial<ManifestFlags>;
+  selfOnboarding: boolean;
+  srp?: string;
+  password?: string;
 };
 
 export function buildChromiumLaunchArgs(
@@ -128,6 +124,9 @@ export class MetaMaskExtensionLauncher {
       },
       proxyServer: options.proxyServer,
       manifestFlags: options.manifestFlags,
+      selfOnboarding: options.selfOnboarding === true,
+      srp: options.srp,
+      password: options.password,
     };
     this.userDataDir = '';
 
@@ -137,6 +136,18 @@ export class MetaMaskExtensionLauncher {
   private validateConfig(): void {
     this.ensureDependenciesInstalled();
     this.validateNetworkModeRequiresRpcUrl();
+    this.validateSelfOnboarding();
+  }
+
+  private validateSelfOnboarding(): void {
+    if (!this.options.selfOnboarding) {
+      return;
+    }
+    if (!this.options.srp) {
+      throw new Error(
+        'Configuration error: selfOnboarding requires a secret recovery phrase.',
+      );
+    }
   }
 
   private ensureDependenciesInstalled(): void {
@@ -261,6 +272,36 @@ export class MetaMaskExtensionLauncher {
 
       this.ensureExtensionInitialized();
 
+      if (this.options.selfOnboarding) {
+        let phrase = this.options.srp ?? '';
+        this.options.srp = undefined;
+        let password = this.options.password ?? DEFAULT_PASSWORD;
+        this.options.password = undefined;
+        try {
+          await runSelfOnboarding(
+            getE2EDriver(this.extensionPage as Page),
+            phrase,
+            password,
+          );
+          phrase = '';
+          const driver = withTimeout(
+            getE2EDriver(this.extensionPage as Page),
+            UI_READY_TIMEOUT_MS,
+          );
+          // Reloading lets the UI route to unlock or the completion page from
+          // the real wallet state; Done never navigates the tab when it opens
+          // the side panel, so home is loaded again afterwards.
+          await this.navigateToHome();
+          await finishOnboarding(driver, password);
+          password = '';
+          await this.navigateToHome();
+          await new HomePage(driver).checkPageIsLoaded();
+        } finally {
+          phrase = '';
+          password = '';
+        }
+      }
+
       return {
         context: this.context as BrowserContext,
         extensionPage: this.extensionPage as Page,
@@ -284,17 +325,12 @@ export class MetaMaskExtensionLauncher {
 
   private async waitForExtensionReady(): Promise<void> {
     // Extension initialization flow:
-    // 1. Get an existing page or create a new one (browser may have blank tab)
-    // 2. Resolve the extension ID from Chrome's extension management API
-    // 3. Navigate to home.html and wait for the UI to fully render
+    // 1. Resolve the extension ID from Chrome's extension management API
+    // 2. Check if an extension page already exists (dist builds auto-open one)
+    // 3. If not, get an existing blank page or create a new one
+    // 4. Navigate to home.html and wait for the UI to fully render
     if (!this.context) {
       throw new Error('Browser context not initialized');
-    }
-
-    const pages = (this.context as BrowserContext).pages();
-    let page = pages[0];
-    if (!page) {
-      page = await this.context.newPage();
     }
 
     this.extensionId = await resolveExtensionId({
@@ -310,24 +346,65 @@ export class MetaMaskExtensionLauncher {
       throw new Error('Could not find MetaMask extension ID');
     }
 
-    await page.goto(`chrome-extension://${this.extensionId}/home.html`);
+    const extensionPrefix = `chrome-extension://${this.extensionId}/`;
+
+    // Wait for the extension to open its own page (dist builds).
+    // Poll for up to 3 seconds to give the extension time to auto-open.
+    let page: Page | undefined;
+    const pollStart = Date.now();
+    const pollTimeout = 3000;
+
+    while (Date.now() - pollStart < pollTimeout) {
+      const pages = (this.context as BrowserContext).pages();
+      page = pages.find((p) => p.url().startsWith(extensionPrefix));
+      if (page) {
+        console.log('Reusing existing extension page:', page.url());
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+
+    // If no extension page appeared, create one
+    if (!page) {
+      const pages = (this.context as BrowserContext).pages();
+      page = pages.find((p) => p.url() === 'about:blank') ?? pages[0];
+      if (!page) {
+        page = await this.context.newPage();
+      }
+      await page.goto(`${extensionPrefix}home.html`);
+    }
+
     await page.waitForLoadState('domcontentloaded');
 
     this.attachConsoleListeners(page);
 
-    await waitForExtensionUiReady(
-      {
-        page,
-        screenshotDir: this.options.screenshotDir,
-        log: {
-          info: (message: string) => console.log(message),
-          error: (message: string) => console.error(message),
-        },
-      },
-      METAMASK_EXTENSION_READINESS_CONFIG,
-    );
-
     this.extensionPage = page;
+    await this.waitForUiReady(page);
+  }
+
+  private async waitForUiReady(page: Page): Promise<void> {
+    try {
+      const { description } = await waitForAnyScreen(
+        withTimeout(getE2EDriver(page), UI_READY_TIMEOUT_MS),
+        LAUNCH_SCREEN_CHECKS,
+      );
+      console.log(`Extension UI is ready (${description})`);
+    } catch {
+      const screenshotPath = path.join(
+        this.options.screenshotDir,
+        `ui-ready-failure-${Date.now()}.png`,
+      );
+      await page
+        .screenshot({ path: screenshotPath, fullPage: true })
+        .catch(() => undefined);
+      console.error(`Debug screenshot saved: ${screenshotPath}`);
+      throw new Error(
+        `Extension UI did not reach expected state within ${UI_READY_TIMEOUT_MS}ms. ` +
+          `Current URL: ${page.url()}. ` +
+          `Expected one of: ${LAUNCH_SCREEN_CHECKS.map(({ description }) => description).join(', ')}. ` +
+          `Debug screenshot saved to: ${screenshotPath}`,
+      );
+    }
   }
 
   private attachConsoleListeners(page: Page): void {

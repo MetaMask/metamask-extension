@@ -21,6 +21,7 @@ import {
   formatChainIdToHex,
   isNativeAddress,
   isNonEvmChainId,
+  SwapFeatureTag,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
@@ -136,6 +137,7 @@ export const startSwapViewLoadTrace = ({
   trace({
     name: TraceName.SwapViewLoaded,
     op: TraceOperation.BridgeScreenPerformance,
+    tags: { feature: SwapFeatureTag.SWAP },
     id,
     data: {
       /* eslint-disable @typescript-eslint/naming-convention -- Sentry trace attributes use snake_case */

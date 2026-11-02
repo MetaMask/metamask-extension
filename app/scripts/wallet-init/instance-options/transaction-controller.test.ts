@@ -5,6 +5,11 @@ import {
   TransactionType,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { EthAccountType } from '@metamask/keyring-api';
+import {
+  createCacheKey,
+  ResultType,
+} from '../../../../shared/lib/trust-signals';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
 import * as selectorsModule from '../../../../shared/lib/selectors';
 import { createMockMessenger } from '../test-utils';
@@ -155,6 +160,53 @@ describe('TransactionController wallet instance options', () => {
     });
 
     expect(isSimulationEnabled?.()).toBe(true);
+  });
+
+  it('determines transaction trust from current trust signals and accounts', () => {
+    const target = '0x0000000000000000000000000000000000000001';
+    const internalAddress = '0x0000000000000000000000000000000000000002';
+    let resultType: ResultType = ResultType.Loading;
+    const getFlatState = jest.fn(
+      () =>
+        ({
+          addressSecurityAlertResponses: {
+            [createCacheKey(CHAIN_ID_MOCK, target)]: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              result_type: resultType,
+              label: resultType.toLowerCase(),
+              timestamp: Date.now(),
+            },
+          },
+          internalAccounts: {
+            accounts: {
+              internal: {
+                address: internalAddress,
+                type: EthAccountType.Eoa,
+              },
+            },
+          },
+        }) as never,
+    );
+    const options = getTransactionControllerInstanceOptions({
+      initMessenger: getTransactionControllerInitMessenger(
+        createMockMessenger(),
+      ),
+      getFlatState,
+      getPermittedAccounts: jest.fn(() => []),
+      getTransactionMetricsRequest: jest.fn(() => ({}) as never),
+    });
+    const transactionMeta = {
+      chainId: CHAIN_ID_MOCK,
+      txParams: { to: target },
+      nestedTransactions: [{ to: internalAddress }],
+    } as unknown as TransactionMeta;
+
+    expect(options.isTransactionTrusted?.(transactionMeta)).toBe(false);
+
+    resultType = ResultType.Trusted;
+
+    expect(options.isTransactionTrusted?.(transactionMeta)).toBe(true);
+    expect(getFlatState).toHaveBeenCalledTimes(2);
   });
 
   describe('isAutomaticGasFeeUpdateEnabled', () => {

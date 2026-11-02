@@ -64,7 +64,18 @@ describe('AccountSelectModal', () => {
   });
 
   function renderModal(props = {}) {
-    const store = mockStore({ metamask: {} });
+    const store = mockStore({
+      metamask: {
+        internalAccounts: {
+          selectedAccount: 'ledger-account',
+          accounts: {
+            'ledger-account': {
+              address: LEDGER_ADDRESS,
+            },
+          },
+        },
+      },
+    });
     return renderWithProvider(
       <AccountSelectModal
         selectedAddress={ACCOUNT_1_ADDRESS}

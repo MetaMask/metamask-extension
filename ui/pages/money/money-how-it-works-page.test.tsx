@@ -2,12 +2,20 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../hooks/money/useMoneyAnalytics.mock';
+import { MoneyScreenName } from './constants/money-events';
 import { MoneyHowItWorksPage } from './money-how-it-works-page';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
 const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -15,6 +23,7 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
 }));
 
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
@@ -25,9 +34,17 @@ jest.mock('../../hooks/money/useMoneyAccountBalance', () => ({
   useMoneyAccountBalance: () => mockUseMoneyAccountBalance(),
 }));
 
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
+
 describe('MoneyHowItWorksPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({ key: 'ci9s3nlq' });
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
         isAvailable: true,
@@ -38,6 +55,26 @@ describe('MoneyHowItWorksPage', () => {
     mockUseMoneyAccountBalance.mockReturnValue({
       apyPercentFormatted: '4.2%',
     });
+  });
+
+  it('tracks the screen view once Money Account is available', () => {
+    renderWithLocalization(<MoneyHowItWorksPage />);
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyHowItWorks,
+    });
+    expect(mockMoneyAnalytics.trackScreenViewed).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not track the screen view while availability is resolving', () => {
+    mockUseMoneyAccountAvailability.mockReturnValue({
+      availability: { isAvailable: false },
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHowItWorksPage />);
+
+    expect(mockMoneyAnalytics.trackScreenViewed).not.toHaveBeenCalled();
   });
 
   it('redirects home when Money Account is unavailable', () => {
@@ -144,6 +181,19 @@ describe('MoneyHowItWorksPage', () => {
     fireEvent.click(screen.getByTestId('money-how-it-works-back-button'));
 
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('back button navigates to Money home when the page was opened directly by URL', () => {
+    mockUseLocation.mockReturnValue({ key: 'default' });
+
+    renderWithLocalization(<MoneyHowItWorksPage />);
+
+    fireEvent.click(screen.getByTestId('money-how-it-works-back-button'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+      state: { fromFreshTab: true },
+    });
   });
 
   it('falls back to an em dash when APY is unavailable', () => {

@@ -1,6 +1,7 @@
 import { merge } from 'lodash';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
@@ -181,6 +182,24 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
     });
 }
 
+async function mockDisabledRpcFailover(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        ...getProductionRemoteFlagApiResponse(),
+        { corePlatformRpcFailoverMode: 'disabled' },
+      ],
+    }));
+}
+
 /**
  * HTTP mocks for USDC → SOL swaps under unified assets.
  *
@@ -194,6 +213,7 @@ async function mockSwapUSDCtoSOL(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
+    await mockDisabledRpcFailover(mockServer),
     await mockAccountsApiV2WithSolana(mockServer),
     await mockAccountsApiV5WithSolana(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer),
@@ -235,6 +255,7 @@ async function mockSwapNoQuotes(
 ): Promise<MockedEndpoint[]> {
   const signatureHolder: SignatureHolder = { value: '' };
   return [
+    await mockDisabledRpcFailover(mockServer),
     await mockAccountsApiV2SupportedNetworks(mockServer),
     await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer, signatureHolder),
@@ -251,7 +272,7 @@ async function mockSwapNoQuotes(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }
@@ -262,6 +283,7 @@ async function mockSwapSOLtoUSDCFailed(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
+    await mockDisabledRpcFailover(mockServer),
     await mockAccountsApiV2SupportedNetworks(mockServer),
     await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockClientSideDetectionApi(mockServer),
@@ -285,7 +307,7 @@ async function mockSwapSOLtoUSDCFailed(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }
@@ -296,6 +318,7 @@ async function mockSwapSOLtoUSDC(
   const signatureHolder: SignatureHolder = { value: '' };
 
   return [
+    await mockDisabledRpcFailover(mockServer),
     await mockAccountsApiV2SupportedNetworks(mockServer),
     await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockClientSideDetectionApi(mockServer),
@@ -320,7 +343,7 @@ async function mockSwapSOLtoUSDC(
     await mockTokenApiAssets(mockServer),
     await mockBridgeGetTokens(mockServer),
     await mockBridgeSearchTokens(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }
@@ -576,7 +599,8 @@ describe('Swap on Solana', function () {
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
-        await activityTab.checkTxAmountInActivity('+0.1669 USDC', 1);
+        await activityTab.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkTransactionAmount('+0.1669 USDC');
       },
     );
   });
@@ -623,8 +647,8 @@ describe('Swap on Solana', function () {
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkTxAmountInActivity('+0.005904 SOL', 1);
         await activityTab.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkTransactionAmount('+0.005904 SOL');
         await activityTab.checkTransactionActivityByText('Swapped');
       },
     );

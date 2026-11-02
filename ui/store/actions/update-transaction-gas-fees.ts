@@ -19,8 +19,10 @@ export function updateTransactionGasFees(
   return async () => {
     let updatedTransaction: TransactionMeta;
     try {
+      // @ts-expect-error TODO: The type of `userEditedGasLimit` in `TxGasFees`
+      // is a string, but `updateTransactionGasFees` wants a boolean.
       updatedTransaction = await submitRequestToBackground(
-        'updateTransactionGasFees',
+        'TransactionController:updateTransactionGasFees',
         [txId, txGasFees],
       );
     } catch (error) {

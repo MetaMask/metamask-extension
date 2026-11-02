@@ -32,6 +32,7 @@ import {
   resolvePaymentMethodLabel,
 } from '../utils/build-quote';
 import { getProviderLimitMessage } from '../../utils/getProviderLimitMessage';
+import { getRampsTokenDisplaySymbol } from '../../utils/token-display';
 import { useBuildQuoteAmount } from './useBuildQuoteAmount';
 
 type BuildQuoteLocationState = {
@@ -284,7 +285,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           checkoutUrl: widget.url,
           providerName: selectedProvider?.name ?? '',
           amountOut: selectedQuote.quote?.amountOut,
-          tokenSymbol: selectedToken?.symbol ?? '',
+          tokenSymbol: getRampsTokenDisplaySymbol(selectedToken),
           tokenIconUrl: selectedToken?.iconUrl,
           tokenChainId: selectedToken?.chainId,
           walletAddress,
@@ -301,12 +302,11 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     getBuyWidgetData,
     isContinuing,
     navigate,
-    selectedProvider?.id,
-    selectedProvider?.name,
+    selectedProvider,
     selectedQuote,
     selectedToken,
     t,
-    userRegion?.regionCode,
+    userRegion,
     walletAddress,
   ]);
 
@@ -336,7 +336,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   return {
     kind: 'ready',
     pageTitle: selectedToken.symbol
-      ? t('rampsBuyToken', [selectedToken.symbol])
+      ? t('rampsBuyToken', [getRampsTokenDisplaySymbol(selectedToken)])
       : t('buy'),
     pageSubtitle: networkName ? t('rampsOnNetwork', [networkName]) : undefined,
     currencySymbol,

@@ -91,8 +91,6 @@ import {
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
 
-jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
-
 const mockToHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
@@ -161,168 +159,11 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('isAssetsUnifyStateEnabled', () => {
-    it('returns false when the feature flag is undefined', async () => {
-      await withService(({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({ RemoteFeatureFlags: {} }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns false when the feature flag is disabled', async () => {
-      await withService(({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: false, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns false when the feature flag has an unsupported version', async () => {
-      await withService(({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '2' },
-            },
-          }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns true when the feature flag is enabled with the correct version', async () => {
-      await withService(({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns false when the feature flag is enabled but the build gate is disabled', async () => {
-      await withService(({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(false);
-      });
-    });
-  });
-
   describe('setCurrentCurrency', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      // Clear the require cache and resets process.env before each test to ensure a clean environment.
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterEach(() => {
-      // Restore original environment
-      process.env = originalEnv;
-    });
-
-    it('sets the currency in the CurrencyRateController', async () => {
+    it('sets the currency in the AssetsController and CurrencyRateController', async () => {
       const currencyCode: SupportedCurrency = 'usd';
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: false, featureVersion: '1' },
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'CurrencyRateController:setCurrentCurrency',
-          jest.fn(),
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call(
-            'LegacyBackgroundApiService:setCurrentCurrency',
-            currencyCode,
-          ),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'CurrencyRateController:setCurrentCurrency',
-          currencyCode,
-        );
-      });
-    });
-
-    it('sets the currency in the AssetsController and CurrencyRateController when assets unify state is enabled', async () => {
-      const currencyCode: SupportedCurrency = 'usd';
-
-      await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
         rootMessenger.registerActionHandler(
           'CurrencyRateController:setCurrentCurrency',
           jest.fn(),
@@ -356,34 +197,12 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('getAssets', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterEach(() => {
-      process.env = originalEnv;
-    });
-
-    it('fetches assets from the AssetsController with forceUpdate when the feature is enabled', async () => {
+    it('fetches assets from the AssetsController with forceUpdate', async () => {
       const accounts = [{ id: 'account-1' }] as never;
       const options = { chainIds: ['eip155:1'] };
       const assets = { 'account-1': {} };
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
         const getAssetsHandler = jest.fn().mockResolvedValue(assets);
         rootMessenger.registerActionHandler(
           'AssetsController:getAssets',
@@ -410,56 +229,9 @@ describe('LegacyBackgroundApiService', () => {
         );
       });
     });
-
-    it('resolves to undefined and does not call the AssetsController when the feature is not enabled', async () => {
-      const accounts = [{ id: 'account-1' }] as never;
-
-      await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const getAssetsHandler = jest.fn();
-        rootMessenger.registerActionHandler(
-          'AssetsController:getAssets',
-          getAssetsHandler,
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call('LegacyBackgroundApiService:getAssets', accounts),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).not.toHaveBeenCalledWith(
-          'AssetsController:getAssets',
-          expect.anything(),
-          expect.anything(),
-        );
-        expect(getAssetsHandler).not.toHaveBeenCalled();
-      });
-    });
   });
 
   describe('addToken', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterEach(() => {
-      process.env = originalEnv;
-    });
-
     const token = {
       address: '0x6b175474e89094c44da98b954eedeac495271d0f',
       symbol: 'DAI',
@@ -468,19 +240,8 @@ describe('LegacyBackgroundApiService', () => {
       networkClientId: 'mainnet',
     };
 
-    it('adds the token as a custom asset via the AssetsController when assets unify state is enabled', async () => {
+    it('adds the token as a custom asset via the AssetsController', async () => {
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
         rootMessenger.registerActionHandler(
           'AccountsController:getSelectedAccount',
           jest.fn().mockReturnValue({ id: 'account-1' }),
@@ -521,17 +282,6 @@ describe('LegacyBackgroundApiService', () => {
 
     it('throws when an assetId cannot be built for the token', async () => {
       await withService(async ({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
         rootMessenger.registerActionHandler(
           'AccountsController:getSelectedAccount',
           jest.fn().mockReturnValue({ id: 'account-1' }),
@@ -557,45 +307,10 @@ describe('LegacyBackgroundApiService', () => {
         expect(addCustomAssetHandler).not.toHaveBeenCalled();
       });
     });
-
-    it('adds the token via the TokensController when assets unify state is not enabled', async () => {
-      await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: false, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const addTokenHandler = jest.fn().mockResolvedValue([]);
-        rootMessenger.registerActionHandler(
-          'TokensController:addToken',
-          addTokenHandler,
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call('LegacyBackgroundApiService:addToken', token),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith('TokensController:addToken', {
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image,
-          networkClientId: token.networkClientId,
-        });
-      });
-    });
   });
 
   describe('getTokenStandardAndDetails', () => {
-    it('gets token data from the token list and a balance retrieved via the global provider', async () => {
+    it('gets imported token data and a balance retrieved via the global provider', async () => {
       const providerResultStub = {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_getCode: '0x123',
@@ -608,12 +323,53 @@ describe('LegacyBackgroundApiService', () => {
         networkId: '5',
         chainId: '5',
       });
+      const accountAddress = '0xf0d172594caedee459b89ad44c94098e474571b6';
+      const accountId = 'test-account-id';
+      const tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+      const tokenAssetId =
+        'eip155:5/erc20:0x6b175474e89094c44da98b954eedeac495271d0f';
 
       await withService(async ({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
         rootMessenger.registerActionHandler(
           'RemoteFeatureFlagController:getState',
           jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({
+            internalAccounts: {
+              accounts: {
+                [accountId]: {
+                  id: accountId,
+                  address: accountAddress,
+                  type: EthAccountType.Eoa,
+                },
+              },
+            },
+          }),
+        );
+        // Unify mode reads imported tokens from AssetsController, not
+        // TokensController.allTokens.
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {
+              [tokenAssetId]: {
+                type: 'erc20',
+                symbol: 'DAI',
+                name: 'Dai Stablecoin',
+                decimals: 18,
+              },
+            },
+            assetsBalance: {
+              [accountId]: {
+                [tokenAssetId]: { amount: '3' },
+              },
+            },
+            customAssets: {
+              [accountId]: [tokenAssetId],
+            },
+          }),
         );
         rootMessenger.registerActionHandler(
           'NetworkController:getState',
@@ -626,29 +382,14 @@ describe('LegacyBackgroundApiService', () => {
             .mockReturnValue({ configuration: { chainId: '0x5' }, provider }),
         );
         rootMessenger.registerActionHandler(
-          'TokenListController:getState',
-          jest.fn().mockReturnValue({
-            tokensChainsCache: {
-              '0x5': {
-                data: {
-                  '0x6b175474e89094c44da98b954eedeac495271d0f': {
-                    decimals: 18,
-                    symbol: 'DAI',
-                  },
-                },
-              },
-            },
-          }),
-        );
-        rootMessenger.registerActionHandler(
           'TokensController:getState',
           jest.fn().mockReturnValue({ allTokens: {} }),
         );
 
         const result = await rootMessenger.call(
           'LegacyBackgroundApiService:getTokenStandardAndDetails',
-          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          tokenAddress,
+          accountAddress,
         );
 
         expect(result.standard).toStrictEqual('ERC20');
@@ -660,10 +401,21 @@ describe('LegacyBackgroundApiService', () => {
 
     it('falls back to the AssetsContractController when the token is not in any list', async () => {
       await withService(async ({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
         rootMessenger.registerActionHandler(
           'RemoteFeatureFlagController:getState',
           jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+          }),
         );
         rootMessenger.registerActionHandler(
           'NetworkController:getState',
@@ -672,10 +424,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'NetworkController:getNetworkClientById',
           jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokenListController:getState',
-          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
         );
         rootMessenger.registerActionHandler(
           'TokensController:getState',
@@ -704,6 +452,61 @@ describe('LegacyBackgroundApiService', () => {
         expect(result.balance).toStrictEqual('333');
       });
     });
+
+    it('does not apply STATIC_MAINNET_TOKEN_LIST metadata on non-mainnet chains', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x89' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+          standard: 'ERC20',
+          decimals: '6',
+          symbol: 'OTHER',
+          balance: 42,
+        });
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        // Mainnet DAI address — must not be treated as DAI on Polygon.
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalled();
+        expect(result.symbol).toStrictEqual('OTHER');
+        expect(result.decimals).toStrictEqual('6');
+        expect(result.balance).toStrictEqual('42');
+      });
+    });
   });
 
   describe('getTokenStandardAndDetailsByChain', () => {
@@ -716,10 +519,21 @@ describe('LegacyBackgroundApiService', () => {
       });
 
       await withService(async ({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
         rootMessenger.registerActionHandler(
           'RemoteFeatureFlagController:getState',
           jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+          }),
         );
         rootMessenger.registerActionHandler(
           'NetworkController:getState',
@@ -740,10 +554,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountsController:getSelectedAccount',
           jest.fn().mockReturnValue({ address: '0xabc' }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokenListController:getState',
-          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
         );
         rootMessenger.registerActionHandler(
           'TokensController:getState',
@@ -1923,6 +1733,50 @@ describe('LegacyBackgroundApiService', () => {
           );
         });
       });
+
+      // @ts-expect-error 'each' function is not recognized by TypeScript types
+      it.each([
+        ['an empty', ''],
+        ['a missing', undefined],
+      ])(
+        'creates the account for a QR device that reports %s name',
+        async (_description: string, name: string | undefined) => {
+          await withService(async ({ rootMessenger }) => {
+            const getName = jest.fn().mockReturnValue(name);
+            registerWithKeyringV2(rootMessenger, {
+              entropySource: 'entropy-1',
+              hdPath: "m/44'/60'/0'/0",
+              getMode: jest.fn().mockReturnValue('account'),
+              getName,
+              createAccounts: jest
+                .fn()
+                .mockResolvedValue([{ address: '0x333' }]),
+            });
+
+            rootMessenger.registerActionHandler(
+              'AccountsController:listAccounts',
+              jest.fn().mockReturnValue([{ id: 'qr-3', address: '0x333' }]),
+            );
+            rootMessenger.registerActionHandler(
+              'AccountsController:getAccountByAddress',
+              jest.fn().mockReturnValue({ id: 'qr-3', address: '0x333' }),
+            );
+            rootMessenger.registerActionHandler(
+              'AccountsController:setSelectedAccount',
+              jest.fn(),
+            );
+
+            const result = await rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              0,
+              'QR Hardware',
+            );
+
+            expect(getName).toHaveBeenCalled();
+            expect(result.unlockedAccount).toStrictEqual('0x333');
+          });
+        },
+      );
     });
 
     describe('attemptLedgerTransportCreation', () => {
@@ -5096,6 +4950,10 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:revokePendingRefreshTokens',
           jest.fn().mockResolvedValue(undefined),
         );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+          jest.fn().mockResolvedValue(undefined),
+        );
         registerUnlockSideEffectHandlers(rootMessenger);
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -5149,6 +5007,10 @@ describe('LegacyBackgroundApiService', () => {
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:revokePendingRefreshTokens',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+          'global-password',
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SentryTracingService:bufferedEndTrace',
@@ -8621,7 +8483,6 @@ function getMessenger(
       'AssetsController:getAssets',
       'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
-      'TokenListController:getState',
       'TokensController:addToken',
       'TokensController:getState',
       'KeyringController:exportSeedPhrase',
@@ -8693,6 +8554,7 @@ function getMessenger(
       'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:loadKeyringEncryptionKey',
       'SeedlessOnboardingController:revokePendingRefreshTokens',
+      'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
       'SeedlessOnboardingController:setLocked',
       'SeedlessOnboardingController:storeKeyringEncryptionKey',
       'SeedlessOnboardingController:submitGlobalPassword',

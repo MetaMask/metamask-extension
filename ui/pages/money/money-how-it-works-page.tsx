@@ -1,5 +1,5 @@
-import React, { useCallback, useLayoutEffect, useRef } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useLayoutEffect, useRef } from 'react';
+import { Navigate } from 'react-router-dom';
 import {
   ButtonIcon,
   FontWeight,
@@ -9,10 +9,17 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
+import { useInAppBack } from '../../hooks/useInAppBack';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../hooks/useTrackOnce';
+import { MoneyScreenName } from './constants/money-events';
 import { MoneyFaqItem } from './components/money-faq-item';
 import { MoneySectionDivider } from './components/money-section-divider';
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
@@ -164,8 +171,9 @@ const MoneyHowItWorksContent = ({
 
       <div className="flex flex-col gap-3 px-4 py-5">
         <Text
-          variant={TextVariant.HeadingMd}
+          variant={TextVariant.HeadingSm}
           fontWeight={FontWeight.Bold}
+          color={TextColor.TextAlternative}
           data-testid="money-how-it-works-disclosures-title"
         >
           {t('moneyHowItWorksDisclosuresTitle')}
@@ -188,7 +196,6 @@ const MoneyHowItWorksContent = ({
  * @returns The How it works page, or a redirect when Money is unavailable.
  */
 export function MoneyHowItWorksPage() {
-  const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
@@ -196,14 +203,20 @@ export function MoneyHowItWorksPage() {
     enabled: availability.isAvailable,
   });
   const apyDisplay = apyPercentFormatted ?? APY_FALLBACK;
+  const { trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHowItWorks,
+  });
+
+  useTrackOnce(
+    !isAvailabilityLoading && availability.isAvailable,
+    trackScreenViewed,
+  );
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);
   }, []);
 
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
+  const handleBack = useInAppBack(MONEY_HOME_ROUTE);
 
   if (isAvailabilityLoading) {
     return (

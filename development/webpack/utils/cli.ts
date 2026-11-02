@@ -7,7 +7,7 @@
 import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
-import type { BuildTypesConfig } from '../../lib/build-type';
+import type { BuildTypesConfig } from '../../lib/build-type.js';
 import {
   Browsers,
   type Manifest,

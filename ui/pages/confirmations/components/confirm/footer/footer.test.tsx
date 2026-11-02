@@ -859,6 +859,42 @@ describe('ConfirmFooter', () => {
       expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
     });
 
+    it('runs the hardware preflight for the paying account when it differs from the sender', () => {
+      const transaction = genUnapprovedContractInteractionConfirmation();
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+        accountAddress: HARDWARE_CONFIRMATION_SENDER,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+      mockUseHardwareWalletError.mockReturnValue({
+        showErrorModal: showHardwareWalletErrorModalMock,
+        dismissErrorModal: dismissHardwareWalletErrorModalMock,
+        setErrorModalSuppressed: setErrorModalSuppressedMock,
+        isDeviceConnected: false,
+      });
+
+      const { getByTestId, queryByTestId } = render(
+        getMockConfirmStateForTransaction(transaction, {
+          appState: {},
+          metamask: {
+            transactionData: {
+              [transaction.id]: {
+                accountOverride: HARDWARE_CONFIRMATION_SENDER,
+              },
+            },
+          },
+        }),
+      );
+
+      expect(
+        getByTestId('reconnect-hardware-wallet-button'),
+      ).toBeInTheDocument();
+      expect(queryByTestId('confirm-footer-button')).toBeNull();
+    });
+
     it('tracks hardware wallet recovery CTA when reconnect is clicked', async () => {
       const connectionState = {
         status: ConnectionStatus.Disconnected as const,
@@ -1487,6 +1523,7 @@ describe('ConfirmFooter', () => {
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
         goBackTo: '/asset/0x123',
+        suppressAutoExit: jest.fn(),
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();

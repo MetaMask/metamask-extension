@@ -132,6 +132,7 @@ export const MultichainAddressRowsList = ({
           key={`${item.account.address}-${item.scope}-${index}`}
           chainId={item.scope}
           networkName={item.networkName}
+          accountType={item.account.type}
           address={item.normalizedAddress}
           copyActionParams={{
             message: t('multichainAccountAddressCopied'),

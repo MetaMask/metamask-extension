@@ -26,11 +26,9 @@ describe('Test Snap Images', function () {
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectImagesButton');
-        await testSnaps.checkInstallationComplete(
-          'connectImagesButton',
-          'Reconnect to Images Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectImagesButton', {
+          expectedMessage: 'Reconnect to Images Snap',
+        });
 
         await testSnaps.clickButton('showSvgImageButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

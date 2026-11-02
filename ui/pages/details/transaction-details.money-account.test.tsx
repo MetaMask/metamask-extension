@@ -53,7 +53,13 @@ function buildStore(transaction: TransactionMeta) {
   state.metamask.moneyAccounts = {
     'money-account-1': {
       address: MONEY_ACCOUNT_ADDRESS,
-      options: { entropy: { id: PRIMARY_HD_KEYRING_ID } },
+      options: {
+        entropy: {
+          type: 'mnemonic',
+          id: PRIMARY_HD_KEYRING_ID,
+          groupIndex: 0,
+        },
+      },
     },
   };
   return configureStore(state as never);
