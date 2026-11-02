@@ -4276,7 +4276,15 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createLoggerMiddleware({ origin }));
     if (subjectType !== SubjectType.Internal) {
-      engine.push(createExternalRpcActivityMiddleware(subjectType));
+      engine.push(
+        createExternalRpcActivityMiddleware(subjectType, {
+          isConnected: () =>
+            this.permissionController.hasPermission(
+              origin,
+              Caip25EndowmentPermissionName,
+            ),
+        }),
+      );
     }
     engine.push(this.permissionLogController.createMiddleware());
 
@@ -4713,7 +4721,15 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createLoggerMiddleware({ origin }));
     if (subjectType !== SubjectType.Internal) {
-      engine.push(createExternalRpcActivityMiddleware(subjectType));
+      engine.push(
+        createExternalRpcActivityMiddleware(subjectType, {
+          isConnected: () =>
+            this.permissionController.hasPermission(
+              origin,
+              Caip25EndowmentPermissionName,
+            ),
+        }),
+      );
     }
 
     engine.push((req, _res, next, end) => {

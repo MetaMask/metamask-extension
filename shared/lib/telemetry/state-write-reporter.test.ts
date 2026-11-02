@@ -19,6 +19,7 @@ const EVENT: SplitStateWriteEvent = {
     msSinceLastUiInteraction: 4_000,
     msSinceLastWindowEvent: 3_000,
     msSinceLastDappRpc: 6_000,
+    msSinceLastConnectedDappRpc: 6_500,
     msSinceLastSnapRpc: 7_000,
     msSinceLastExternalExtensionRpc: 8_000,
   },
@@ -80,6 +81,7 @@ describe('trackSplitStateWrite', () => {
           'state.write.ms_since_ui_interaction': 4_000,
           'state.write.ms_since_window_event': 3_000,
           'state.write.ms_since_dapp_rpc': 6_000,
+          'state.write.ms_since_connected_dapp_rpc': 6_500,
           'state.write.ms_since_snap_rpc': 7_000,
           'state.write.ms_since_external_extension_rpc': 8_000,
           'state.write.sample_rate': 0.01,
@@ -155,6 +157,9 @@ describe('trackSplitStateWrite', () => {
     );
     expect(attributes).not.toHaveProperty('state.write.ms_since_window_event');
     expect(attributes).not.toHaveProperty('state.write.ms_since_dapp_rpc');
+    expect(attributes).not.toHaveProperty(
+      'state.write.ms_since_connected_dapp_rpc',
+    );
     expect(attributes).not.toHaveProperty('state.write.ms_since_snap_rpc');
     expect(attributes).not.toHaveProperty(
       'state.write.ms_since_external_extension_rpc',

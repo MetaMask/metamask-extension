@@ -175,6 +175,7 @@ describe('last-activity', () => {
 
       const context = getLastActivityContext(1_500);
       expect(context.msSinceLastDappRpc).toBeUndefined();
+      expect(context.msSinceLastConnectedDappRpc).toBeUndefined();
       expect(context.msSinceLastSnapRpc).toBeUndefined();
       expect(context.msSinceLastExternalExtensionRpc).toBeUndefined();
     });
@@ -184,6 +185,7 @@ describe('last-activity', () => {
       const {
         getLastActivityContext,
         hydrateLastActivity,
+        recordConnectedDappRpc,
         recordDappRpc,
         recordExternalExtensionRpc,
         recordSnapRpc,
@@ -192,6 +194,8 @@ describe('last-activity', () => {
 
       jest.setSystemTime(2_000);
       recordDappRpc();
+      jest.setSystemTime(2_500);
+      recordConnectedDappRpc();
       jest.setSystemTime(3_000);
       recordSnapRpc();
       jest.setSystemTime(4_000);
@@ -200,6 +204,7 @@ describe('last-activity', () => {
       expect(getLastActivityContext(4_500)).toStrictEqual(
         expect.objectContaining({
           msSinceLastDappRpc: 2_500,
+          msSinceLastConnectedDappRpc: 2_000,
           msSinceLastSnapRpc: 1_500,
           msSinceLastExternalExtensionRpc: 500,
         }),
@@ -211,6 +216,7 @@ describe('last-activity', () => {
       const {
         getLastActivityContext,
         hydrateLastActivity,
+        recordConnectedDappRpc,
         recordDappRpc,
         recordExternalExtensionRpc,
         recordSnapRpc,
@@ -219,14 +225,17 @@ describe('last-activity', () => {
 
       jest.setSystemTime(2_000);
       recordDappRpc();
+      recordConnectedDappRpc();
       jest.setSystemTime(2_500);
       recordDappRpc();
+      recordConnectedDappRpc();
       recordSnapRpc();
       recordExternalExtensionRpc();
 
       expect(getLastActivityContext(2_800)).toStrictEqual(
         expect.objectContaining({
           msSinceLastDappRpc: 800,
+          msSinceLastConnectedDappRpc: 800,
           msSinceLastSnapRpc: 300,
           msSinceLastExternalExtensionRpc: 300,
         }),
@@ -411,6 +420,8 @@ describe('last-activity', () => {
       await first.hydrateLastActivity();
       jest.setSystemTime(2_000);
       first.recordDappRpc();
+      jest.setSystemTime(2_500);
+      first.recordConnectedDappRpc();
       jest.setSystemTime(3_000);
       first.recordSnapRpc();
       jest.setSystemTime(4_000);
@@ -425,6 +436,7 @@ describe('last-activity', () => {
       expect(second.getLastActivityContext(9_200)).toStrictEqual(
         expect.objectContaining({
           msSinceLastDappRpc: 7_200,
+          msSinceLastConnectedDappRpc: 6_700,
           msSinceLastSnapRpc: 6_200,
           msSinceLastExternalExtensionRpc: 5_200,
         }),
@@ -441,6 +453,7 @@ describe('last-activity', () => {
                 lastActivity: {
                   appStartedAt: 10,
                   lastDappRpcAt: 50,
+                  lastConnectedDappRpcAt: 40,
                   lastSnapRpcAt: 50,
                   lastExternalExtensionRpcAt: 50,
                   serviceWorkerReloadCount: 4,
@@ -454,6 +467,7 @@ describe('last-activity', () => {
       const {
         getLastActivityContext,
         hydrateLastActivity,
+        recordConnectedDappRpc,
         recordDappRpc,
         recordExternalExtensionRpc,
         recordSnapRpc,
@@ -461,6 +475,7 @@ describe('last-activity', () => {
 
       jest.setSystemTime(2_000);
       recordDappRpc();
+      recordConnectedDappRpc();
       recordSnapRpc();
       recordExternalExtensionRpc();
       releaseGet?.();
@@ -469,6 +484,7 @@ describe('last-activity', () => {
       expect(getLastActivityContext(2_500)).toStrictEqual(
         expect.objectContaining({
           msSinceLastDappRpc: 500,
+          msSinceLastConnectedDappRpc: 500,
           msSinceLastSnapRpc: 500,
           msSinceLastExternalExtensionRpc: 500,
         }),

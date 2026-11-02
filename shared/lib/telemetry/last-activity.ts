@@ -35,6 +35,7 @@ type PersistedLastActivity = {
   lastUiInteractionAt?: number;
   lastWindowEventAt?: number;
   lastDappRpcAt?: number;
+  lastConnectedDappRpcAt?: number;
   lastSnapRpcAt?: number;
   lastExternalExtensionRpcAt?: number;
   serviceWorkerReloadCount?: number;
@@ -48,6 +49,7 @@ export type LastActivityContext = {
   msSinceLastUiInteraction?: number;
   msSinceLastWindowEvent?: number;
   msSinceLastDappRpc?: number;
+  msSinceLastConnectedDappRpc?: number;
   msSinceLastSnapRpc?: number;
   msSinceLastExternalExtensionRpc?: number;
   msSinceLastServiceWorkerReload?: number;
@@ -69,6 +71,7 @@ let lastUiClosedAt: number | undefined;
 let lastUiInteractionAt: number | undefined;
 let lastWindowEventAt: number | undefined;
 let lastDappRpcAt: number | undefined;
+let lastConnectedDappRpcAt: number | undefined;
 let lastSnapRpcAt: number | undefined;
 let lastExternalExtensionRpcAt: number | undefined;
 let serviceWorkerReloadCount: number | undefined;
@@ -173,6 +176,9 @@ async function setSessionLastActivity(): Promise<void> {
   if (lastDappRpcAt !== undefined) {
     value.lastDappRpcAt = lastDappRpcAt;
   }
+  if (lastConnectedDappRpcAt !== undefined) {
+    value.lastConnectedDappRpcAt = lastConnectedDappRpcAt;
+  }
   if (lastSnapRpcAt !== undefined) {
     value.lastSnapRpcAt = lastSnapRpcAt;
   }
@@ -230,6 +236,10 @@ async function hydrateFromSession(): Promise<void> {
       lastDappRpcAt = keepNewer(
         lastDappRpcAt,
         readNumber(record, 'lastDappRpcAt'),
+      );
+      lastConnectedDappRpcAt = keepNewer(
+        lastConnectedDappRpcAt,
+        readNumber(record, 'lastConnectedDappRpcAt'),
       );
       lastSnapRpcAt = keepNewer(
         lastSnapRpcAt,
@@ -340,6 +350,16 @@ export function recordDappRpc(): void {
   });
 }
 
+/**
+ * Marks a JSON-RPC request from a website that already has account access.
+ * Unpermissioned provider probes do not update this signal.
+ */
+export function recordConnectedDappRpc(): void {
+  recordThrottledRpc(lastConnectedDappRpcAt, (now) => {
+    lastConnectedDappRpcAt = now;
+  });
+}
+
 /** Marks a JSON-RPC request from a Snap (`SubjectType.Snap`). */
 export function recordSnapRpc(): void {
   recordThrottledRpc(lastSnapRpcAt, (now) => {
@@ -360,9 +380,9 @@ export function recordExternalExtensionRpc(): void {
  * `msSinceLastUiOpen` is only set while at least one UI is open.
  * `msSinceLastUiClosed` is only set while every UI is closed.
  * `msSinceLastUiInteraction` stays set after the UI closes.
- * `msSinceLastDappRpc`, `msSinceLastSnapRpc`, and
- * `msSinceLastExternalExtensionRpc` stay set once recorded. Each is updated
- * at most once per second.
+ * `msSinceLastDappRpc`, `msSinceLastConnectedDappRpc`, `msSinceLastSnapRpc`,
+ * and `msSinceLastExternalExtensionRpc` stay set once recorded. Each is
+ * updated at most once per second.
  * `msSinceLastServiceWorkerReload` is only set after at least one reload
  * (`serviceWorkerReloadCount > 0`).
  *
@@ -406,6 +426,11 @@ export function getLastActivityContext(
   const msSinceLastDappRpc = msSince(lastDappRpcAt, now);
   if (msSinceLastDappRpc !== undefined) {
     context.msSinceLastDappRpc = msSinceLastDappRpc;
+  }
+
+  const msSinceLastConnectedDappRpc = msSince(lastConnectedDappRpcAt, now);
+  if (msSinceLastConnectedDappRpc !== undefined) {
+    context.msSinceLastConnectedDappRpc = msSinceLastConnectedDappRpc;
   }
 
   const msSinceLastSnapRpc = msSince(lastSnapRpcAt, now);
