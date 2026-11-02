@@ -47,8 +47,8 @@ type SnapConfirmSendResult = {
  *
  * @returns True when the current route is the send screen.
  */
-const isRemainInSendScreen = (errorMessage: string) => {
-  const pathname = window.location.hash.replace(/^#/, '').split('?')[0];
+const isRemainInSendScreen = () => {
+  const pathname = window.location.hash.replace(/^#/u, '').split('?')[0];
   return pathname.startsWith(SEND_ROUTE);
 };
 
@@ -163,14 +163,12 @@ export const useSendActions = () => {
         if (isUserRejection) {
           // User deliberately cancelled - clear error and navigate back silently
           updateNonEVMSubmitError(undefined);
+        } else if (isRemainInSendScreen()) {
+          // Actual snap/internal error - display error message to user
+          updateNonEVMSubmitError(genericErrorMessage);
         } else {
-          if (isRemainInSendScreen()) {
-            // Actual snap/internal error - display error message to user
-            updateNonEVMSubmitError(genericErrorMessage);
-          } else {
-            // Show generic error message rather than error message from error code mapping
-            toast.error(genericErrorMessage);
-          }
+          // Show generic error message rather than error message from error code mapping
+          toast.error(genericErrorMessage);
         }
         navigate(PREVIOUS_ROUTE);
       }
