@@ -47,7 +47,9 @@ export const getSavedSupportDataSharingPreference = (
  * Opens the support site with or without the user's data, tracking the click.
  * Shared by the consent modal and by entry points that apply a saved choice.
  */
-export const useSupportLinks = (supportLink: string = SUPPORT_LINK as string) => {
+export const useSupportLinks = (
+  supportLink: string = SUPPORT_LINK as string,
+) => {
   const version = process.env.METAMASK_VERSION as string;
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
