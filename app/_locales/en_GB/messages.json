@@ -1,4 +1,8 @@
 {
+  "24hChange": {
+    "message": "24h change",
+    "description": "Title for the 24 hour change of the token price"
+  },
   "CSS_loadingTakingTooLongActionText": {
     "message": "Relaunch MetaMask if the problem persists.",
     "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
@@ -11220,6 +11224,9 @@
   "showExtensionInFullSizeViewDescription": {
     "message": "Turn this on to make full-size view your default when you click the extension icon."
   },
+  "showFewerNetworks": {
+    "message": "Show fewer networks"
+  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },
@@ -11238,6 +11245,10 @@
   },
   "showMore": {
     "message": "Show more"
+  },
+  "showMoreNetworks": {
+    "message": "Show $1 more networks",
+    "description": "$1 is the number of networks that are hidden"
   },
   "showNativeTokenAsMainBalance": {
     "message": "Show native token as main balance"

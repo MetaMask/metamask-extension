@@ -13,6 +13,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { trace } from '../../../../../shared/lib/trace';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
+import { useFullScreenDesign } from '../../../../hooks/useFullScreenDesign';
 import useMultiPolling from '../../../../hooks/useMultiPolling';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
@@ -129,6 +130,18 @@ jest.mock('../hooks', () => ({
   }),
 }));
 
+jest.mock('../token-table/token-table', () => ({
+  TokenTable: () => <div data-testid="token-table" />,
+}));
+
+jest.mock('../network-pill-selector/network-pill-selector', () => ({
+  NetworkPillSelector: () => <div data-testid="network-pill-selector" />,
+}));
+
+jest.mock('../../../../hooks/useFullScreenDesign');
+
+const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
+
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
@@ -188,6 +201,7 @@ describe('AssetList', () => {
     jest.clearAllMocks();
     mockOnClickAsset.mockClear();
     getMockTrackEvent().mockClear();
+    mockUseFullScreenDesign.mockReturnValue(false);
 
     (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
       const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
@@ -223,6 +237,37 @@ describe('AssetList', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('asset-list-control-bar-action-button'),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('fullscreen design', () => {
+    it('renders the token list when the fullscreen design is off', async () => {
+      await act(async () => {
+        renderAssetList();
+      });
+
+      expect(screen.getByTestId('mock-token-list-item')).toBeInTheDocument();
+      expect(screen.queryByTestId('token-table')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('network-pill-selector'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the token table instead of the token list when the fullscreen design is on', async () => {
+      mockUseFullScreenDesign.mockReturnValue(true);
+
+      await act(async () => {
+        renderAssetList();
+      });
+
+      expect(screen.getByTestId('token-table')).toBeInTheDocument();
+      expect(screen.getByTestId('network-pill-selector')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('mock-token-list-item'),
+      ).not.toBeInTheDocument();
       expect(
         screen.getByTestId('asset-list-control-bar-action-button'),
       ).toBeInTheDocument();
