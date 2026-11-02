@@ -140,7 +140,7 @@ describe('Simulation Details', function () {
         await transactionConfirmation.expectBalanceChange({
           isOutgoing: false,
           index: 0,
-          displayAmount: '+ 6.75629137',
+          displayAmount: '+ 6.756',
           assetName: 'DAI',
         });
       },

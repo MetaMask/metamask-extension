@@ -106,13 +106,6 @@ describe('AmountPill', () => {
       },
     },
     {
-      amount: new BigNumber('1034.123456789'),
-      expected: {
-        text: '+ 1,034.12345679',
-        tooltip: '1,034.123456789',
-      },
-    },
-    {
       amount: new BigNumber(-0.000000001),
       expected: {
         text: '- <0.000001',

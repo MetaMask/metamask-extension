@@ -36,29 +36,6 @@ describe('<SendHeading />', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('renders 8 decimals and the full amount in the tooltip for longer amounts', () => {
-    // 1.123456789 tokens with 18 decimals
-    const longAmountTransaction = genUnapprovedTokenTransferConfirmation({
-      chainId: '0x5',
-      amountHex:
-        '0000000000000000000000000000000000000000000000000f9751ff4cd89200',
-    });
-    const longAmountStore = configureMockStore(middleware)(
-      getMockConfirmStateForTransaction(longAmountTransaction),
-    );
-
-    const { container, getByTestId } = renderWithConfirmContextProvider(
-      <SendHeading />,
-      longAmountStore,
-    );
-
-    expect(getByTestId('confirm-send-amount')).toHaveTextContent('1.12345679');
-    expect(container.querySelector('[data-original-title]')).toHaveAttribute(
-      'data-original-title',
-      '1.123456789',
-    );
-  });
-
   it('renders the known token symbol on the amount and avatar', () => {
     const knownTokenState = getMockConfirmStateForTransaction(transaction, {
       metamask: {

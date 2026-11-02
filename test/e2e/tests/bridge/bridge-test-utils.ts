@@ -2462,10 +2462,7 @@ export function getExpectedQuoteTotalCosts(
     const networkFee = new BigNumber(metadata.totalNetworkFee?.amount ?? '0');
     return {
       amount: networkFee,
-      text: [
-        formatAmount(LOCALE, networkFee, { compact: true }),
-        nativeAsset.symbol,
-      ].join(' '),
+      text: [formatAmount(LOCALE, networkFee), nativeAsset.symbol].join(' '),
     };
   });
 

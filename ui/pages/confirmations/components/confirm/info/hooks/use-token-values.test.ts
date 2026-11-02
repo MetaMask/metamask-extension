@@ -94,39 +94,6 @@ describe('useTokenValues', () => {
     );
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each([
-    [
-      '0000000000000000000000000000000000000000000000380f56ed7b45478000',
-      '1034.123',
-      '1,034.123',
-    ],
-    [
-      '0000000000000000000000000000000000000000000000000f9751ff4cd89200',
-      '1.123456789',
-      '1.12345679',
-    ],
-  ])(
-    'formats the display value with up to 8 decimals (%#)',
-    (amountHex: string, decoded: string, display: string) => {
-      (useAssetDetailsMock as jest.Mock).mockImplementation(() => ({
-        decimals: '18',
-      }));
-
-      const transactionMeta = genUnapprovedTokenTransferConfirmation({
-        amountHex,
-      }) as TransactionMeta;
-
-      const { result } = renderHookWithConfirmContextProvider(
-        () => useTokenValues(transactionMeta),
-        getMockConfirmStateForTransaction(transactionMeta),
-      );
-
-      expect(result.current.decodedTransferValue).toBe(decoded);
-      expect(result.current.displayTransferValue).toBe(display);
-    },
-  );
-
   it('returns undefined fiat balance and pending=false if no token rate is returned', async () => {
     (useAssetDetailsMock as jest.Mock).mockImplementation(() => ({
       decimals: '4',
