@@ -31,6 +31,7 @@ import type {
   SentryTracingServiceTrackTracesAfterMetricsOptInAction,
 } from '../../services/sentry/sentry-tracing-service-method-action-types';
 import { getAnalyticsControllerInitMessenger } from '../../wallet-init/messengers/analytics-controller-messenger';
+import { LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction } from '../../services/legacy-background-api-service-method-action-types';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
@@ -40,7 +41,6 @@ import {
   trackEvent,
   updateProfileSessionData,
 } from './analytics';
-import { LegacyBackgroundApiServiceSetParticipateInMetaMetricsAction } from '../../services/legacy-background-api-service-method-action-types';
 
 const TEST_ANALYTICS_ID = 'analytics-id';
 const TEST_GA_COOKIE_ID = '123456.123455';
