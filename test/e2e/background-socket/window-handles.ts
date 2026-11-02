@@ -66,15 +66,18 @@ export class WindowHandles {
 
     let currentTitle, currentUrl;
 
-    // Wait 25 x 200ms = 5 seconds for the title and url to be set
-    for (let i = 0; i < 25 && !currentTitle && !currentUrl; i++) {
+    // Wait until both the title and url are set, up to 2 seconds.
+    const propertySettleTimeoutMs = 2000;
+    const propertySettleIntervalMs = 200;
+    const settleEndTime = Date.now() + propertySettleTimeoutMs;
+    do {
       currentTitle = await this.driver.getTitle();
       currentUrl = await this.driver.getCurrentUrl();
 
       if (!currentTitle || !currentUrl) {
-        await this.driver.sleep(200);
+        await this.driver.sleep(propertySettleIntervalMs);
       }
-    }
+    } while ((!currentTitle || !currentUrl) && Date.now() < settleEndTime);
 
     if (!currentTitle || !currentUrl) {
       log.debug(
@@ -143,20 +146,48 @@ export class WindowHandles {
       value,
     );
 
-    await this.getAllWindowHandles();
+    const switchTimeoutMs = 5000;
+    const switchIntervalMs = 250;
+    const endTime = Date.now() + switchTimeoutMs;
 
-    // See if we already know the handle by annotation
-    const handle = this.annotatedHandles.find((a) => a[property] === value);
-    let handleId = handle?.id;
-
-    // If there's exactly one un-annotated handle, we should try it
-    if (!handleId) {
-      if (this.countHandlesWithoutProperty(property) === 1) {
-        handleId = this.annotatedHandles.find((a) => !a[property])?.id;
-      }
+    let handleId = await this.#findHandleWithProperty(property, value);
+    while (!handleId && Date.now() < endTime) {
+      await this.driver.sleep(switchIntervalMs);
+      handleId = await this.#findHandleWithProperty(property, value);
     }
 
-    // Do the actual switching for the one we found
+    if (!handleId) {
+      throw new Error(`No window with ${property}: ${value}`);
+    }
+
+    return handleId;
+  }
+
+  /**
+   * Search open windows once for a handle whose title or url matches `value`.
+   *
+   * Tries an already annotated handle first, then the single handle that is
+   * still missing this property, then every open handle.
+   *
+   * @param property - 'title' or 'url'
+   * @param value - The value we're searching for and want to switch to
+   * @returns The matching handle, or undefined when none match on this pass
+   */
+  async #findHandleWithProperty(
+    property: WindowProperties,
+    value: string,
+  ): Promise<string | undefined> {
+    await this.getAllWindowHandles();
+
+    const annotatedHandle = this.annotatedHandles.find(
+      (handle) => handle[property] === value,
+    );
+    let handleId = annotatedHandle?.id;
+
+    if (!handleId && this.countHandlesWithoutProperty(property) === 1) {
+      handleId = this.annotatedHandles.find((handle) => !handle[property])?.id;
+    }
+
     if (handleId) {
       const matchesProperty = await this.switchToHandleAndCheckForProperty(
         handleId,
@@ -169,23 +200,19 @@ export class WindowHandles {
       }
     }
 
-    // We have not found it in the annotatedHandles, or the one we found was wrong, so we have to cycle through all
-    // handles and bring them into focus to get their titles/urls. There is no need for repeats or delays, because
-    // ServerMochaToBackground has already waited for the tab to be found
-    for (handleId of this.rawHandles) {
+    for (const candidateId of this.rawHandles) {
       const matchesProperty = await this.switchToHandleAndCheckForProperty(
-        handleId,
+        candidateId,
         property,
         value,
       );
 
       if (matchesProperty) {
-        return handleId;
+        return candidateId;
       }
     }
 
-    // If we still haven't found it, throw an error
-    throw new Error(`No window with ${property}: ${value}`);
+    return undefined;
   }
 
   /**
