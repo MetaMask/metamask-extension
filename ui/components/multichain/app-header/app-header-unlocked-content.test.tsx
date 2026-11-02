@@ -29,6 +29,14 @@ jest.mock('../../../store/actions', () => ({
   getCustomerServiceToken: jest
     .fn()
     .mockResolvedValue('test-customer-service-token'),
+  setShouldShowSupportConsent: jest.fn((value: boolean) => ({
+    type: 'SET_SHOULD_SHOW_SUPPORT_CONSENT',
+    value,
+  })),
+  setSupportDataSharingPreference: jest.fn((value: boolean) => ({
+    type: 'SET_SUPPORT_DATA_SHARING_PREFERENCE',
+    value,
+  })),
 }));
 
 jest.mock('#ui/helpers/utils/window', () => ({
