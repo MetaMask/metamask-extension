@@ -12,6 +12,7 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOME_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
@@ -30,6 +31,7 @@ import { formatMoneyActivityDetailsDate } from './utils/money-transaction-detail
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
 const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 const mockCopyToClipboard = jest.fn();
 const mockUseParams = jest.fn();
 const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
@@ -95,6 +97,7 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
   useParams: () => mockUseParams(),
 }));
 
@@ -145,6 +148,7 @@ const EXPLORER_TX_URL = `https://monadscan.com/tx/${VALID_TX_HASH}`;
 describe('MoneyTransactionDetailsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({ key: 'ci9s3nlq' });
     mockGetPrivacyMode.mockReturnValue(false);
     mockSelectMoneyActivityDetailsEnabled.mockReturnValue(true);
     mockGetInternalAccountByAddress.mockReturnValue({
@@ -332,7 +336,7 @@ describe('MoneyTransactionDetailsPage', () => {
     ).not.toHaveTextContent('$0.00');
   });
 
-  it('keeps the fee amount and states network sponsorship in the tooltip when source gas is zero', async () => {
+  it('keeps the fee amount and shows a zero network fee in the tooltip when source gas is zero', async () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: 0.14,
       totalUsd: 1000.14,
@@ -366,14 +370,12 @@ describe('MoneyTransactionDetailsPage', () => {
       );
     });
 
-    expect(
-      screen.getByTestId('money-transaction-details-fee-info'),
-    ).toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    const tooltip = screen.getByTestId('money-transaction-details-fee-info');
+    expect(tooltip).toHaveTextContent(`${messages.networkFee.message}: $0.00`);
+    expect(tooltip).not.toHaveTextContent(messages.paidByMetaMask.message);
   });
 
-  it('does not claim Paid by MetaMask for user-paid cross-chain source gas', async () => {
+  it('does not show a network fee tooltip line for user-paid cross-chain source gas', async () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: 0.34,
       totalUsd: 1000.34,
@@ -394,9 +396,7 @@ describe('MoneyTransactionDetailsPage', () => {
 
     expect(
       screen.getByTestId('money-transaction-details-fee-info'),
-    ).not.toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    ).not.toHaveTextContent(`${messages.networkFee.message}:`);
   });
 
   it('does not mention Paid by MetaMask when the fee is not sponsored', async () => {
@@ -414,9 +414,7 @@ describe('MoneyTransactionDetailsPage', () => {
 
     expect(
       screen.getByTestId('money-transaction-details-fee-info'),
-    ).not.toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    ).not.toHaveTextContent(messages.paidByMetaMask.message);
   });
 
   it('renders the origin address when it does not belong to an internal account', () => {
@@ -436,6 +434,20 @@ describe('MoneyTransactionDetailsPage', () => {
       screen.getByTestId('money-transaction-details-back-button'),
     );
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('navigates back to Money home when the page was opened directly by URL', () => {
+    mockUseLocation.mockReturnValue({ key: 'default' });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    fireEvent.click(
+      screen.getByTestId('money-transaction-details-back-button'),
+    );
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+      state: { fromFreshTab: true },
+    });
   });
 
   it('masks the hero amount in privacy mode', () => {
@@ -527,6 +539,65 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.getByTestId('money-transaction-details-explorer'),
     ).toBeInTheDocument();
+  });
+
+  it('shows the required source transaction hash when Pay published the 0x0 placeholder', () => {
+    const placeholder = onchainItem({
+      ...deposited.tx,
+      hash: '0x0',
+      requiredTransactionIds: ['source-tx'],
+    } as TransactionMeta);
+    mockUseParams.mockReturnValue({ transactionId: placeholder.id });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [placeholder],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+    mockSelectTransactionById.mockImplementation((_state, id) =>
+      id === 'source-tx'
+        ? ({
+            id: 'source-tx',
+            hash: VALID_TX_HASH,
+            chainId: placeholder.tx.chainId,
+          } as TransactionMeta)
+        : undefined,
+    );
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-hash'),
+    ).not.toHaveTextContent('0x0');
+    fireEvent.click(screen.getByTestId('money-transaction-details-copy-hash'));
+    expect(mockCopyToClipboard).toHaveBeenCalledWith(VALID_TX_HASH);
+    fireEvent.click(screen.getByTestId('money-transaction-details-explorer'));
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: EXPLORER_TX_URL,
+    });
+  });
+
+  it('hides the transaction id when only the 0x0 placeholder is known', () => {
+    const placeholder = onchainItem({
+      ...deposited.tx,
+      hash: '0x0',
+    } as TransactionMeta);
+    mockUseParams.mockReturnValue({ transactionId: placeholder.id });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [placeholder],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.queryByTestId('money-transaction-details-hash'),
+    ).not.toBeInTheDocument();
   });
 
   it('opens the block explorer when the explorer button is pressed', () => {

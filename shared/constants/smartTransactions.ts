@@ -50,8 +50,6 @@ export const DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS: string[] = [
   '.binance.org',
 ];
 
-export const CANCEL_GAS_LIMIT_DEC = 21000;
-
 export const SMART_TRANSACTIONS_LEARN_MORE_URL =
   'https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/?utm_source=extension';
 

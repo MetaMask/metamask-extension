@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import {
   Skeleton,
@@ -8,17 +7,13 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { formatPerpsFiat } from '../../../../../../shared/lib/perps-formatters';
 import { updateEditableParams } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { parsePerpsTotalBalance } from '../../../../../hooks/perps/perpsBalance';
 import { useTransactionMetadataRequestOptional } from '../../../hooks/transactions/useTransactionMetadataRequest';
-import {
-  PayWithOption,
-  useConfirmationNavigationOptions,
-} from '../../../hooks/useConfirmationNavigation';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 import {
   usePerpsSubAccounts,
   type SubAccountInfo,
@@ -119,12 +114,7 @@ const PerpsAccountPickerRowContent = () => {
  * `PerpsAccountPickerRow`) and writes the selection to `txParams.from`.
  */
 export function PerpsAccountPickerRow() {
-  const { payWithOption } = useConfirmationNavigationOptions();
-  const transactionMeta = useTransactionMetadataRequestOptional();
-
-  const isMoneyAccountPerpsDeposit =
-    payWithOption === PayWithOption.MoneyAccount &&
-    hasTransactionType(transactionMeta, [TransactionType.perpsDeposit]);
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
 
   if (!isMoneyAccountPerpsDeposit) {
     return null;

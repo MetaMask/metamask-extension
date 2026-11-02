@@ -400,9 +400,6 @@
     "message": "Privat nyckel",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Varning: Avslöja aldrig denna nyckel. Med dina privata nycklar kan vem som helst stjäla tillgångarna på ditt konto."
-  },
   "privateNetwork": {
     "message": "Privat nätverk"
   },

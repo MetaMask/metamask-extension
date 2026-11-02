@@ -127,7 +127,7 @@ const NotificationDetailNetworkFee_ = ({
   const handleClick = () => {
     if (!isOpen) {
       trackEvent(
-        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+        createEventBuilder(MetaMetricsEventName.NotificationDetailItemClicked)
           .addCategory(MetaMetricsEventCategory.NotificationInteraction)
           .addProperties({
             /* eslint-disable @typescript-eslint/naming-convention */

@@ -9,7 +9,8 @@ import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { renderWithProvider as renderWithBaseProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -22,7 +23,35 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts';
+import type { Asset } from '../types/asset';
+import {
+  useMoneyAssetOverviewBalanceCta,
+  useMoneyEarnBanner,
+} from '../../../hooks/money/use-money-asset-overview-ctas';
 import AssetPage from './asset-page';
+
+const mockUseMoneyEarnBanner = jest.mocked(useMoneyEarnBanner);
+const mockUseMoneyAssetOverviewBalanceCta = jest.mocked(
+  useMoneyAssetOverviewBalanceCta,
+);
+const mockOnStartEarning = jest.fn();
+const mockOnProjectionTooltipOpen = jest.fn();
+
+const renderWithProvider = (
+  component: React.ReactElement,
+  store: unknown,
+  pathname = '/',
+) =>
+  renderWithBaseProvider(
+    component,
+    store,
+    pathname,
+    undefined,
+    undefined,
+    undefined,
+    createMockRouteMessenger(),
+  );
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -52,8 +81,6 @@ jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../store/controller-actions/transaction-controller');
@@ -143,8 +170,21 @@ jest.mock('../../../hooks/musd', () => {
     }),
   };
 });
+jest.mock('../../../hooks/money/use-money-asset-overview-ctas', () => ({
+  ...jest.requireActual('../../../hooks/money/use-money-asset-overview-ctas'),
+  useMoneyEarnBanner: jest.fn(),
+  useMoneyAssetOverviewBalanceCta: jest.fn(),
+}));
+
 jest.mock('../../activity/activity-list', () => ({
   ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
+
+const mockUseParams = jest.fn((): Record<string, string | undefined> => ({}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: () => mockUseParams(),
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -249,32 +289,39 @@ describe('AssetPage', () => {
         },
       },
       tokenList: {},
-      tokenBalances: {
-        [selectedAccountAddress]: {
-          [CHAIN_IDS.MAINNET]: {},
-        },
-      },
-      marketData: {},
-      allTokens: {},
-      accountsByChainId: {
-        '0x1': {
-          [selectedAccountAddress]: {
-            address: selectedAccountAddress,
-            balance: '0x00',
-          },
-        },
-      },
-      currentCurrency: 'usd',
+      selectedCurrency: 'usd',
       accounts: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-      currencyRates: {
-        TEST: {
-          conversionRate: 123,
-          ticker: 'ETH',
+      // Native asset page uses symbol TEST; token marketData uses network nativeCurrency ETH.
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'TEST',
         },
-        ETH: {
-          conversionRate: 123,
-          ticker: 'ETH',
+        'eip155:10/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+      },
+      assetsPrice: {
+        'eip155:1/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 123,
+          usdPrice: 123,
+          lastUpdated: 0,
+        },
+        'eip155:10/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 123,
+          usdPrice: 123,
+          lastUpdated: 0,
+        },
+      },
+      assetsBalance: {
+        [selectedAccountAddress]: {
+          'eip155:1/slip44:60': { amount: '0' },
         },
       },
       useCurrencyRateCheck: true,
@@ -360,8 +407,12 @@ describe('AssetPage', () => {
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
-      getTokenSymbol: jest.fn(),
-      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
+      messengerCall: jest.fn((actionType: string) => {
+        if (actionType === 'AuthenticationController:getBearerToken') {
+          return Promise.resolve('mock-bearer-token');
+        }
+        return Promise.resolve(undefined);
+      }),
     } as never);
   });
 
@@ -387,6 +438,22 @@ describe('AssetPage', () => {
     });
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
+
+    mockUseParams.mockReturnValue({});
+
+    mockUseMoneyEarnBanner.mockReturnValue({
+      isVisible: false,
+      apyPercentFormatted: undefined,
+      onBannerClick: jest.fn(),
+      onCtaClick: jest.fn(),
+      onDismiss: jest.fn(),
+    });
+    mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
+      display: undefined,
+      isLoading: false,
+      onStartEarning: mockOnStartEarning,
+      onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
+    });
 
     mockUseAssetPerpsMarket.mockReturnValue({
       market: undefined,
@@ -749,6 +816,7 @@ describe('AssetPage', () => {
 
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
+    const assetId = `eip155:1/erc20:${address}`;
 
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,
@@ -756,11 +824,21 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          marketData: {
-            [CHAIN_IDS.MAINNET]: {
-              [address]: {
-                price: 123,
-              },
+          assetsInfo: {
+            ...mockStore.metamask.assetsInfo,
+            [assetId]: {
+              type: 'erc20',
+              decimals: 18,
+              symbol: 'TEST',
+            },
+          },
+          assetsPrice: {
+            ...mockStore.metamask.assetsPrice,
+            [assetId]: {
+              assetPriceType: 'fungible',
+              // price in native * native rate
+              price: 123 * 123,
+              lastUpdated: 0,
             },
           },
         },
@@ -776,7 +854,9 @@ describe('AssetPage', () => {
 
   it('should render an ERC20 token with prices', async () => {
     const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+    const assetId = `eip155:1/erc20:${address}`;
     const marketCap = 456;
+    const ethRate = 123;
 
     // Mock price history (v3 CAIP path; address must match checksummed segment from useHistoricalPrices)
     nock('https://price.api.cx.metamask.io')
@@ -792,13 +872,21 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          marketData: {
-            [CHAIN_IDS.MAINNET]: {
-              [address]: {
-                price: 123,
-                marketCap,
-                currency: 'ETH',
-              },
+          assetsInfo: {
+            ...mockStore.metamask.assetsInfo,
+            [assetId]: {
+              type: 'erc20',
+              decimals: 18,
+              symbol: 'TEST',
+            },
+          },
+          assetsPrice: {
+            ...mockStore.metamask.assetsPrice,
+            [assetId]: {
+              assetPriceType: 'fungible',
+              price: 123 * ethRate,
+              marketCap: marketCap * ethRate,
+              lastUpdated: 0,
             },
           },
         },
@@ -815,6 +903,167 @@ describe('AssetPage', () => {
     // Verify market data is rendered
     const marketCapElement = queryByTestId('asset-market-cap');
     expect(marketCapElement).toHaveTextContent('$56.09K');
+  });
+
+  describe('Money earn CTAs', () => {
+    it('does not render the Money earn CTAs when ineligible', () => {
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      expect(queryByTestId('money-earn-banner')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('money-asset-overview-balance-cta-description'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('money-asset-overview-balance-cta-start-earning'),
+      ).not.toBeInTheDocument();
+      expect(getByTestId('asset-name')).toBeInTheDocument();
+    });
+
+    it('evaluates eligibility for the page token', () => {
+      renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      const expectedToken = expect.objectContaining({
+        address: toChecksumHexAddress(token.address),
+        chainId: token.chainId,
+        symbol: token.symbol,
+      });
+      expect(mockUseMoneyEarnBanner).toHaveBeenCalledWith(expectedToken);
+      expect(mockUseMoneyAssetOverviewBalanceCta).toHaveBeenCalledWith(
+        expectedToken,
+        { enabled: true },
+      );
+    });
+
+    it('renders the earn banner when eligible', () => {
+      mockUseMoneyEarnBanner.mockReturnValue({
+        isVisible: true,
+        apyPercentFormatted: '6%',
+        onBannerClick: jest.fn(),
+        onCtaClick: jest.fn(),
+        onDismiss: jest.fn(),
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      expect(getByTestId('money-earn-banner-title')).toHaveTextContent(
+        messages.moneyEarnApyTitle.message.replace('$1', '6%'),
+      );
+    });
+
+    it('renders the earn banner above an unchanged balance section for an aToken', () => {
+      const aToken = {
+        ...token,
+        address: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+        symbol: 'AUSDC',
+        decimals: 6,
+      } as const;
+      mockUseMoneyEarnBanner.mockReturnValue({
+        isVisible: true,
+        apyPercentFormatted: '6%',
+        onBannerClick: jest.fn(),
+        onCtaClick: jest.fn(),
+        onDismiss: jest.fn(),
+      });
+
+      const { getByTestId, getByText } = renderWithProvider(
+        <AssetPage asset={aToken} optionsButton={null} />,
+        store,
+      );
+
+      expect(mockUseMoneyEarnBanner).toHaveBeenCalledWith(
+        expect.objectContaining({
+          address: toChecksumHexAddress(aToken.address),
+          chainId: aToken.chainId,
+          symbol: 'AUSDC',
+        }),
+      );
+      expect(getByTestId('money-earn-banner-source-image')).toHaveAttribute(
+        'src',
+        './images/money-earn-banner-ausdc.png',
+      );
+      expect(getByTestId('money-earn-banner-cta')).toHaveTextContent(
+        messages.moneyEarnBannerCta.message.replace('$1', 'AUSDC'),
+      );
+
+      const yourBalanceHeading = getByText(messages.yourBalance.message);
+      expect(
+        getByTestId('money-earn-banner').compareDocumentPosition(
+          yourBalanceHeading,
+        ),
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      expect(getByTestId('asset-token-decimals')).toHaveTextContent('6');
+    });
+
+    it('renders placeholders while the APY loads', () => {
+      mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
+        display: undefined,
+        isLoading: true,
+        onStartEarning: mockOnStartEarning,
+        onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
+      });
+
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      expect(
+        getByTestId('money-asset-overview-balance-cta-description-skeleton'),
+      ).toBeInTheDocument();
+      expect(
+        getByTestId('money-asset-overview-balance-cta-start-earning-skeleton'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('money-asset-overview-balance-cta-start-earning'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('money-asset-overview-balance-cta-apy'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the balance earn section when eligible', () => {
+      mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
+        display: {
+          apyPercent: 6.2,
+          apyPercentFormatted: '6.2%',
+          projectedEarningsFormatted: '+$74.34',
+        },
+        isLoading: false,
+        onStartEarning: mockOnStartEarning,
+        onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      expect(
+        getByTestId('money-asset-overview-balance-cta-description'),
+      ).toHaveTextContent(
+        messages.moneyEarnBalanceDescription.message
+          .replace('$1', 'TEST')
+          .replace('$2', '+$74.34'),
+      );
+      expect(
+        getByTestId('money-asset-overview-balance-cta-apy'),
+      ).toHaveTextContent(messages.moneyEarnApy.message.replace('$1', '6.2%'));
+
+      fireEvent.click(
+        getByTestId('money-asset-overview-balance-cta-start-earning'),
+      );
+
+      expect(mockOnStartEarning).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('mUSD asset page feature flags', () => {
@@ -875,6 +1124,151 @@ describe('AssetPage', () => {
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
+    });
+
+    it('disables the Money balance CTA when the position replaces the balance section', () => {
+      renderWithProvider(
+        <AssetPage asset={musdToken} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            remoteFeatureFlags: musdRemoteFlags({}),
+          },
+        }),
+      );
+
+      expect(mockUseMoneyAssetOverviewBalanceCta).toHaveBeenLastCalledWith(
+        expect.anything(),
+        { enabled: false },
+      );
+    });
+  });
+
+  describe('route CAIP asset id', () => {
+    const stellarChainId = 'stellar:pubnet';
+    const stellarUsdcAssetId =
+      'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+    const stellarXlmAssetId = 'stellar:pubnet/slip44:148';
+    const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+    const groupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+
+    const createStellarAssetPageStore = (
+      assetsBalance: Record<string, Record<string, unknown>> = {},
+    ) => {
+      const wallet = mockStore.metamask.accountTree.wallets[walletId];
+
+      return configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsInfo: {
+            ...mockStore.metamask.assetsInfo,
+            [stellarXlmAssetId]: {
+              type: 'native',
+              decimals: 7,
+              symbol: 'XLM',
+            },
+          },
+          assetsBalance,
+          accountTree: {
+            wallets: {
+              [walletId]: {
+                ...wallet,
+                groups: {
+                  ...wallet.groups,
+                  [groupId]: {
+                    ...wallet.groups[groupId],
+                    accounts: [
+                      selectedAccountAddress,
+                      MOCK_ACCOUNT_STELLAR_PUBNET.id,
+                    ],
+                  },
+                },
+              },
+            },
+          },
+          internalAccounts: {
+            ...mockStore.metamask.internalAccounts,
+            accounts: {
+              ...mockStore.metamask.internalAccounts.accounts,
+              [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+            },
+          },
+        },
+      });
+    };
+
+    beforeEach(() => {
+      // No account-group asset, so bip44Asset and assetId cannot supply the id.
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+        {},
+      );
+    });
+
+    it('shows the activate card when the route CAIP asset id requires activation', () => {
+      mockUseParams.mockReturnValue({
+        chainId: stellarChainId,
+        asset: stellarUsdcAssetId,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage
+          asset={
+            {
+              type: AssetType.token,
+              chainId: stellarChainId,
+              address: stellarUsdcAssetId,
+              symbol: 'USDC',
+              decimals: 7,
+              image: '',
+            } as unknown as Asset
+          }
+          optionsButton={null}
+        />,
+        createStellarAssetPageStore(),
+      );
+
+      expect(getByTestId('asset-activate-card')).toBeInTheDocument();
+    });
+
+    it('shows the XLM spendable balance when the route CAIP asset id is native XLM', () => {
+      mockUseParams.mockReturnValue({
+        chainId: stellarChainId,
+        asset: stellarXlmAssetId,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage
+          asset={
+            {
+              type: AssetType.native,
+              chainId: stellarChainId,
+              symbol: 'XLM',
+              image: '',
+              isOriginalNativeSymbol: true,
+              decimals: 7,
+            } as unknown as Asset
+          }
+          optionsButton={null}
+        />,
+        createStellarAssetPageStore({
+          [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+            [stellarXlmAssetId]: {
+              amount: '10',
+              metadata: {
+                minimumReserveBalance: '25000000',
+                spendableBalance: '75000000',
+              },
+            },
+          },
+        }),
+      );
+
+      expect(getByTestId('spendable-balance-section')).toBeInTheDocument();
+      expect(
+        getByTestId('spendable-balance-spendable-balance'),
+      ).toHaveTextContent('7.5 XLM');
     });
   });
 });

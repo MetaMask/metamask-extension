@@ -18,12 +18,15 @@ import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import {
+  getBackendApiUrlsOption,
+  isBackendAuthDisabled,
+} from '../../../../shared/lib/core-backend-api-urls';
+import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateTracesEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const ARC_CAIP_CHAIN_ID = toEvmCaipChainId(CHAIN_IDS.ARC);
@@ -42,6 +45,12 @@ let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
 async function safeGetBearerToken(
   initMessenger: AssetsControllerInitMessenger,
 ): Promise<string | undefined> {
+  // Same gate as the price and accounts API lanes. Fetching a token signs the
+  // SRP in to the identity APIs, so skip it while basic functionality is off
+  // or onboarding is incomplete. Requests still go out unauthenticated.
+  if (isBackendAuthDisabled() || !getIsBasicFunctionality(initMessenger)()) {
+    return undefined;
+  }
   try {
     return await initMessenger.call('AuthenticationController:getBearerToken');
   } catch {
@@ -72,7 +81,7 @@ function safeGetTokenDetectionEnabled(
  * Returns a getter for basic functionality (use external services) from preferences.
  * When true, token/price APIs are used; when false, only RPC is used.
  * Also returns false during onboarding (before the user has completed setup),
- * matching the behavior of the UI polling hooks (useCurrencyRatePolling, useTokenRatesPolling).
+ * matching the behavior of the UI polling hooks (useCurrencyRatePolling).
  *
  * @param initMessenger - The initialization messenger.
  * @returns Getter that returns whether basic functionality is enabled (defaults to true on error).
@@ -100,7 +109,7 @@ function getIsBasicFunctionality(
 
 /**
  * Whether AssetsController Sentry tracing is enabled via
- * `assetsUnifyState.tracesEnabled` (requires unify itself to be enabled).
+ * `assetsUnifyState.tracesEnabled`.
  *
  * @param initMessenger - The initialization messenger.
  * @returns True when tracing should run, false otherwise.
@@ -109,9 +118,6 @@ function isAssetsControllerTracesEnabled(
   initMessenger: AssetsControllerInitMessenger,
 ): boolean {
   try {
-    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-      return false;
-    }
     const { remoteFeatureFlags } = initMessenger.call(
       'RemoteFeatureFlagController:getState',
     );
@@ -161,6 +167,7 @@ function getApiClient(
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
+      ...getBackendApiUrlsOption(),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;
@@ -262,7 +269,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     );
     // When onboarding completes, re-evaluate basic functionality so price
     // subscriptions start (or stay stopped) based on the current preference.
-    // This mirrors how useCurrencyRatePolling and useTokenRatesPolling gate on completedOnboarding.
+    // This mirrors how useCurrencyRatePolling gates on completedOnboarding.
     initMessenger.subscribe(
       'OnboardingController:stateChange',
       (completedOnboarding: boolean) => {

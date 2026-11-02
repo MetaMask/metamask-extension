@@ -1,9 +1,16 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import * as environmentType from '../../../shared/lib/environment-type';
+import type { MetaMaskReduxState } from '../../store/types';
 import {
   OnboardingState,
   getIsBasicFunctionalitySocialLoginUser,
   getIsSocialLoginUserAuthenticated,
+  getOnboardingTabId,
   getSocialLoginEmail,
   getSocialLoginType,
 } from './onboarding';
@@ -41,6 +48,7 @@ const MOCK_STATE: OnboardingState = {
     firstTimeFlowType: FirstTimeFlowType.import,
     completedOnboarding: true,
     hasSeenOnboardingCompletionPage: true,
+    onboardingJourneyEnded: false,
     onboardingTabs: {
       welcome: 'welcome',
       createPassword: 'createPassword',
@@ -49,7 +57,50 @@ const MOCK_STATE: OnboardingState = {
   },
 };
 
+function createTabState(
+  activeTabId?: number | string,
+  appActiveTabId?: number,
+): MetaMaskReduxState {
+  return {
+    activeTab: { id: activeTabId, origin: '' },
+    metamask: {
+      appActiveTab:
+        appActiveTabId === undefined ? undefined : { id: appActiveTabId },
+    },
+  } as unknown as MetaMaskReduxState;
+}
+
 describe('social-sync selectors', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe('#getOnboardingTabId', () => {
+    it('returns the active tab ID outside of the sidepanel', () => {
+      jest
+        .spyOn(environmentType, 'getEnvironmentType')
+        .mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+      expect(getOnboardingTabId(createTabState(42, 7))).toBe('42');
+    });
+
+    it('returns the app active tab ID in the sidepanel', () => {
+      jest
+        .spyOn(environmentType, 'getEnvironmentType')
+        .mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+      expect(getOnboardingTabId(createTabState(42, 7))).toBe('7');
+    });
+
+    it('returns a string active tab ID outside of the sidepanel', () => {
+      jest
+        .spyOn(environmentType, 'getEnvironmentType')
+        .mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+      expect(getOnboardingTabId(createTabState('mock-site'))).toBe('mock-site');
+    });
+  });
+
   describe('#getIsBasicFunctionalitySocialLoginUser', () => {
     it('returns true for a social first-time flow without an auth connection', () => {
       expect(
@@ -66,6 +117,20 @@ describe('social-sync selectors', () => {
 
     it('returns true when an auth connection is present', () => {
       expect(getIsBasicFunctionalitySocialLoginUser(MOCK_STATE)).toBe(true);
+    });
+
+    it('returns true for an SRP import of a socially paired profile', () => {
+      expect(
+        getIsBasicFunctionalitySocialLoginUser({
+          ...MOCK_STATE,
+          metamask: {
+            ...MOCK_STATE.metamask,
+            authConnection: undefined,
+            firstTimeFlowType: FirstTimeFlowType.import,
+            preferences: { hasLinkedSocialLoginProfile: true },
+          },
+        }),
+      ).toBe(true);
     });
 
     it('returns false for a non-social flow without an auth connection', () => {

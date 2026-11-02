@@ -96,7 +96,7 @@ describe('getMoneyActivityDisplayInfo', () => {
       primaryAmount: '-0.00 mUSD',
       fiatAmount: '-$0.00',
       isIncoming: false,
-      icon: IconName.SwapHorizontal,
+      icon: IconName.Arrow2UpRight,
       status: 'failed',
     });
   });

@@ -28,14 +28,6 @@ export const NotificationsTagCounter = ({
     return (
       <Box
         display={Display.Block}
-        className="notification-list-item__unread-dot__wrapper"
-        style={{
-          position: 'absolute',
-          cursor: 'pointer',
-          top: 0,
-          left: '50%',
-          zIndex: 1,
-        }}
         backgroundColor={BackgroundColor.errorDefault}
         borderStyle={BorderStyle.none}
         borderRadius={BorderRadius.LG}

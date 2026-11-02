@@ -397,9 +397,6 @@
     "message": "Clau privada",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Atenció: No divulguis mai aquesta clau. Qualsevol amb les teves claus privades pot robar qualsevol actiu que tinguis al teu compte."
-  },
   "privateNetwork": {
     "message": "Xarxa privada"
   },

@@ -5,12 +5,13 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { Hex, isCaipChainId } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  getRpcPrefsForCurrentProvider,
-  getNativeCurrencyForChain,
-} from '../../../selectors';
+import { getNativeCurrencyForChain } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import { getProviderConfig } from '../../../../shared/lib/selectors/networks';
+import {
+  getProviderConfig,
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../shared/lib/selectors/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -29,7 +30,18 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const image = getNativeCurrencyForChain(chainId);
   const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const networkConfig = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  const blockExplorerUrl =
+    networkConfig?.defaultBlockExplorerUrlIndex === undefined
+      ? undefined
+      : networkConfig.blockExplorerUrls?.[
+          networkConfig.defaultBlockExplorerUrlIndex
+        ];
+  const rpcPrefs = blockExplorerUrl ? { blockExplorerUrl } : {};
 
   const caipChainId = isCaipChainId(chainId)
     ? chainId

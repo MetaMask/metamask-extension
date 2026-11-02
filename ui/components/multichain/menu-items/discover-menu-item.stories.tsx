@@ -11,7 +11,8 @@ const mockStore = configureStore({
     analyticsId: 'test-metrics-id',
     optedIn: true,
     consentDecisionMade: true,
-    dataCollectionForMarketing: false,
+    optedInToMarketing: false,
+    marketingConsentDecisionMade: true,
   },
 });
 

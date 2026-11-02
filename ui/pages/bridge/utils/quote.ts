@@ -263,6 +263,10 @@ export const getTotalNetworkFee = (quote?: QuoteResponse | null) => {
   );
 };
 
+export const getNativeReserve = (quote?: QuoteResponse | null) => {
+  return sumAmounts(quote?.quote.feeData.reserve);
+};
+
 export const getIncludedTxFees = (quote?: QuoteResponse | null) => {
   return sumAmounts(quote?.quote.feeData[FeeType.TX_FEE]);
 };

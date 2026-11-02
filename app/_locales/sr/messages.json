@@ -403,9 +403,6 @@
     "message": "Privatni ključ",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Upozorenje: Nikada ne otkrivajte ovaj ključ. Svako sa vašim privatnim ključevima može ukrasti bilo koju imovinu na vašem nalogu."
-  },
   "privateNetwork": {
     "message": "Privatna mreža"
   },

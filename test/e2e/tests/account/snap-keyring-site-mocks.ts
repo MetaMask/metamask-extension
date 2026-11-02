@@ -1,13 +1,40 @@
-import { Mockttp } from 'mockttp';
+import { CompletedRequest, Mockttp } from 'mockttp';
+import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
-/** Disables rewards flags that add background work during snap account E2E setup. */
-export const SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS = {
-  remoteFeatureFlags: {
-    rewardsEnabled: { enabled: false, minimumVersion: '13.32.0' },
-    rewardsOnboardingEnabled: { enabled: false, minimumVersion: '13.32.0' },
-  },
-};
+/**
+ * Prevents rewards silent authentication from competing with Snap dialogs.
+ *
+ * The response has one explicit opt-out result per requested address. An empty
+ * result lets the rewards controller proceed to silent authentication.
+ *
+ * @param mockServer - The E2E mock server.
+ */
+export async function mockRewardsOptOut(mockServer: Mockttp) {
+  const mockOptInStatus = async (request: CompletedRequest) => {
+    const body = (await request.body.getJson()) as {
+      addresses?: unknown[];
+    };
+    const addressCount = body.addresses?.length ?? 0;
+
+    return {
+      statusCode: 200,
+      json: {
+        ois: Array(addressCount).fill(false),
+        sids: Array(addressCount).fill(null),
+      },
+    };
+  };
+
+  return await Promise.all(
+    [REWARDS_API_URL.UAT, REWARDS_API_URL.PRD].map((apiUrl) =>
+      mockServer
+        .forPost(`${apiUrl}/public/rewards/ois`)
+        .always()
+        .thenCallback(mockOptInStatus),
+    ),
+  );
+}
 
 export async function serveSnapKeyRingFromLocalhost(
   mockServer: Mockttp,

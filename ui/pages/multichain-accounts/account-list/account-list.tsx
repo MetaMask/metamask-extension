@@ -36,7 +36,6 @@ import {
 import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   getAllPermittedAccountsForCurrentTab,
-  getIsDefaultAddressEnabled,
   getShowDefaultAddressPreference,
 } from '../../../selectors';
 import {
@@ -68,7 +67,6 @@ export const AccountList = () => {
   const { wallets } = accountTree;
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
   // The metrics counts below are read from the store at click time so they
   // reflect the moment the manage view opened. They are not used during render.
@@ -228,7 +226,7 @@ export const AccountList = () => {
               isInSearchMode={isInSearchMode}
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
-              showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+              showDefaultAddress={showDefaultAddress}
               isEditMode={isEditMode}
             />
           ) : (

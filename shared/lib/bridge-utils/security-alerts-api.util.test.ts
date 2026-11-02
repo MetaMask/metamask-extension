@@ -289,11 +289,11 @@ describe('Security alerts utils', () => {
       expect(result).toBe('ethereum');
     });
 
-    it('should return null for unsupported chain', () => {
+    it('should return undefined for unsupported chain', () => {
       const result = convertChainIdToBlockAidChainName(
         MultichainNetworks.SOLANA_TESTNET,
       );
-      expect(result).toBeNull();
+      expect(result).toBeUndefined();
     });
   });
 

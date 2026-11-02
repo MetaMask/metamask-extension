@@ -406,9 +406,6 @@
     "message": "Privaatvõti",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Hoiatus: ärge seda võtit kellelegi avaldage. Suvaline isik, kes teab teie privaatvõtmeid, võib teie kontolt varasid varastada."
-  },
   "privateNetwork": {
     "message": "Privaatvõrk"
   },

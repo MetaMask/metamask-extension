@@ -8,6 +8,8 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import {
+  BadgeWrapper,
+  BadgeWrapperPosition,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -27,7 +29,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
-import { getIsDefaultAddressEnabled } from '../../../selectors';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
@@ -74,7 +75,6 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const isDiscoverSearchEnabled = useSelector(getIsDiscoverSearchEnabled);
 
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
@@ -187,7 +187,6 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
-              showDefaultAddressSection={isDefaultAddressEnabled}
             >
               <MultichainAccountNetworkGroupWithCopyIcon
                 groupId={selectedMultichainAccountId}
@@ -200,7 +199,6 @@ export const AppHeaderUnlockedContent = ({
   }, [
     accountName,
     disableAccountPicker,
-    isDefaultAddressEnabled,
     selectedMultichainAccountId,
     navigate,
     trackEvent,
@@ -226,14 +224,9 @@ export const AppHeaderUnlockedContent = ({
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.End}
-          className="relative w-full"
+          className="w-full"
           gap={2}
         >
-          {!accountOptionsMenuOpen && (
-            <Box onClick={handleMainMenuToggle}>
-              <NotificationsTagCounter noLabel />
-            </Box>
-          )}
           {isDiscoverSearchEnabled && (
             <ButtonIcon
               iconName={IconName.Search}
@@ -243,14 +236,28 @@ export const AppHeaderUnlockedContent = ({
               size={ButtonIconSize.Md}
             />
           )}
-          <ButtonIcon
-            ref={menuRef}
-            iconName={IconName.Menu}
-            data-testid="account-options-menu-button"
-            ariaLabel={t('accountOptions')}
-            onClick={handleMainMenuToggle}
-            size={ButtonIconSize.Md}
-          />
+          <BadgeWrapper
+            badge={
+              accountOptionsMenuOpen ? null : (
+                <NotificationsTagCounter noLabel />
+              )
+            }
+            position={BadgeWrapperPosition.TopRight}
+            badgeContainerProps={{
+              onClick: handleMainMenuToggle,
+              className: 'cursor-pointer',
+            }}
+            className="self-center"
+          >
+            <ButtonIcon
+              ref={menuRef}
+              iconName={IconName.Menu}
+              data-testid="account-options-menu-button"
+              ariaLabel={t('accountOptions')}
+              onClick={handleMainMenuToggle}
+              size={ButtonIconSize.Md}
+            />
+          </BadgeWrapper>
         </Box>
         <GlobalMenuDrawerWithList
           isOpen={accountOptionsMenuOpen}

@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { CaipAccountId } from '@metamask/utils';
 import type { Funding } from '@metamask/perps-controller';
 import {
@@ -273,21 +280,8 @@ export function usePerpsTransactionHistory({
   }, [fetchAllTransactions, refetchUserHistory, coalesceKeys]);
 
   const scopeFingerprint = `${perpsScopeKey}:${accountId ?? ''}:${startTime ?? ''}:${endTime ?? ''}:${forceFreshOnMount ? '1' : '0'}`;
-  const [prevScopeFingerprint, setPrevScopeFingerprint] = useState<
-    string | undefined
-  >(undefined);
 
-  if (
-    !skipInitialFetch &&
-    scopeFingerprint !== prevScopeFingerprint &&
-    lastFetchedScopeRef.current !== scopeFingerprint
-  ) {
-    setPrevScopeFingerprint(scopeFingerprint);
-    setIsLoading(true);
-    setError(null);
-  }
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (skipInitialFetch) {
       return;
     }
@@ -300,6 +294,10 @@ export function usePerpsTransactionHistory({
       return;
     }
     lastFetchedScopeRef.current = scopeFingerprint;
+    fetchGenerationRef.current += 1;
+    setIsLoading(true);
+    setError(null);
+    setTransactions([]);
     // Activity surfaces that open on user intent (e.g. PerpsActivityPage)
     // must force a fresh fetch so they never surface a stale snapshot held
     // by a sibling consumer inside the TTL window. Passive previews (e.g.

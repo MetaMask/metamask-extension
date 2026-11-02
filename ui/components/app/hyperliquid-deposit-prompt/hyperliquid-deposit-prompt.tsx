@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { type Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
 import {
   Box,
@@ -31,6 +31,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -41,8 +42,7 @@ import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
-import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
-import { TokenIcon } from '../token-icon';
+import { TokenIcon } from '../token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/feature-flags';

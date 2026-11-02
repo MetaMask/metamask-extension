@@ -43,6 +43,7 @@ import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../../create-password-form';
 import { useDispatch } from '../../../store/hooks';
+import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;
@@ -58,15 +59,16 @@ export default function CreatePassword({
   importWithRecoveryPhrase,
   secretRecoveryPhrase,
 }: CreatePasswordProps) {
-  const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
-    useState(false);
+  const [walletSetupInProgress, setWalletSetupInProgress] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasCreationError, setHasCreationError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isFirefox = useIsFirefox();
   const resetOnboardingAndReturn = useOnboardingReset();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { endJourney } = useOnboardingTrace();
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
     useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -80,6 +82,29 @@ export default function CreatePassword({
   const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
+
+  const startOnboardingWalletSetupTrace = (traceName: TraceName) => {
+    bufferedTrace?.({
+      name: traceName,
+      op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
+      parentContext: onboardingParentContext?.current,
+    });
+  };
+
+  const endOnboardingWalletSetupTrace = useCallback(
+    (traceName: TraceName, success: boolean) => {
+      bufferedEndTrace?.({
+        name: traceName,
+        data: { success },
+      });
+    },
+    [bufferedEndTrace],
+  );
+
   const shouldInjectMetametricsIframe = Boolean(
     consentDecisionMade && isOptedIn && base64AnalyticsId,
   );
@@ -100,11 +125,7 @@ export default function CreatePassword({
   }, [dispatch, navigate]);
 
   useEffect(() => {
-    if (
-      currentKeyring &&
-      !newAccountCreationInProgress &&
-      !isWalletResetInProgress
-    ) {
+    if (currentKeyring && !walletSetupInProgress && !isWalletResetInProgress) {
       // route to passkey setup
       if (
         isPasskeyFeatureAvailable &&
@@ -149,7 +170,7 @@ export default function CreatePassword({
     isFirefox,
     navigate,
     firstTimeFlowType,
-    newAccountCreationInProgress,
+    walletSetupInProgress,
     secretRecoveryPhrase,
     consentDecisionMade,
     isWalletResetInProgress,
@@ -173,10 +194,29 @@ export default function CreatePassword({
         .build(),
     );
 
-    await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+    setWalletSetupInProgress(true);
+    startOnboardingWalletSetupTrace(TraceName.OnboardingSRPAccountImportTime);
+
+    try {
+      await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+      endOnboardingWalletSetupTrace(
+        TraceName.OnboardingSRPAccountImportTime,
+        true,
+      );
+    } catch (error) {
+      endOnboardingWalletSetupTrace(
+        TraceName.OnboardingSRPAccountImportTime,
+        false,
+      );
+      // reset wallet setup in progress state
+      // so that if the keyring creation succeeds,
+      // user can move on to the next step
+      setWalletSetupInProgress(false);
+      throw error;
+    }
 
     bufferedEndTrace?.({ name: TraceName.OnboardingExistingSrpImport });
-    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+    endJourney({ success: true });
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.WalletImported)
@@ -226,12 +266,26 @@ export default function CreatePassword({
         .build(),
     );
 
-    setNewAccountCreationInProgress(true);
-    await createNewAccount(password);
+    setWalletSetupInProgress(true);
+    startOnboardingWalletSetupTrace(TraceName.OnboardingSRPAccountCreationTime);
+
+    try {
+      await createNewAccount(password);
+      endOnboardingWalletSetupTrace(
+        TraceName.OnboardingSRPAccountCreationTime,
+        true,
+      );
+    } catch (error) {
+      endOnboardingWalletSetupTrace(
+        TraceName.OnboardingSRPAccountCreationTime,
+        false,
+      );
+      throw error;
+    }
 
     if (isSocialLoginFlow) {
       bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
-      bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+      endJourney({ success: true });
     }
 
     trackEvent(
@@ -276,8 +330,8 @@ export default function CreatePassword({
 
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
-        dispatch(setDataCollectionForMarketing(true));
       }
+      dispatch(setDataCollectionForMarketing(termsChecked));
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else if (isPasskeyFeatureAvailable) {
       navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
@@ -319,6 +373,7 @@ export default function CreatePassword({
     }
 
     setIsSubmitting(true);
+    setHasCreationError(false);
     try {
       // If secretRecoveryPhrase is defined we are in import wallet flow
       if (
@@ -338,7 +393,7 @@ export default function CreatePassword({
           .addCategory(MetaMetricsEventCategory.Onboarding)
           .build(),
       );
-      setNewAccountCreationInProgress(false);
+      setHasCreationError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -350,6 +405,7 @@ export default function CreatePassword({
         isSocialLoginFlow={isSocialLoginFlow}
         onSubmit={handleCreatePassword}
         onBack={handleBackClick}
+        error={hasCreationError}
         loading={isSubmitting}
       />
       {shouldInjectMetametricsIframe ? (

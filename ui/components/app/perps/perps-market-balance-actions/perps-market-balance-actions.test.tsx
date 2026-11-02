@@ -260,7 +260,7 @@ describe('PerpsMarketBalanceActions', () => {
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -316,7 +316,7 @@ describe('PerpsMarketBalanceActions', () => {
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -337,7 +337,7 @@ describe('PerpsMarketBalanceActions', () => {
         expect.objectContaining({
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -384,7 +384,7 @@ describe('PerpsMarketBalanceActions', () => {
       expect(mockTrack).toHaveBeenCalledWith(
         MetaMetricsEventName.PerpsUiInteraction,
         expect.objectContaining({
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
         }),
       );

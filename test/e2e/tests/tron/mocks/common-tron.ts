@@ -887,6 +887,29 @@ export async function mockFiatExchangeRates(
     }));
 }
 
+/**
+ * Assets-controller only prices chains listed in `spotPricesV3`. The default
+ * e2e mock omits Tron, so {@link mockTronSpotPrices} never runs and fiat stays
+ * at $0.00.
+ *
+ * @param mockServer - Mockttp server for this test.
+ * @returns The mocked supported-networks endpoint.
+ */
+export async function mockTronPriceSupportedNetworks(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet('https://price.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, {
+      fullSupport: [TRON_CHAIN_ID],
+      partialSupport: {
+        spotPricesV2: [TRON_CHAIN_ID],
+        spotPricesV3: [TRON_CHAIN_ID],
+      },
+    });
+}
+
 export async function mockTronSpotPrices(
   mockServer: Mockttp,
   tronNode?: Pick<TronNode, 'trc10Tokens' | 'trc20Tokens'>,
@@ -1591,8 +1614,18 @@ export async function mockAccountsApiV2WithTron(
     .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
-      fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
-      partialSupport: { balances: [42220, 43114] },
+      fullSupport: [
+        'eip155:1',
+        'eip155:137',
+        'eip155:56',
+        'eip155:59144',
+        'eip155:8453',
+        'eip155:10',
+        'eip155:42161',
+        'eip155:534352',
+        'eip155:1337',
+      ],
+      partialSupport: ['eip155:42220', 'eip155:43114'],
     });
 }
 
@@ -1642,7 +1675,7 @@ export async function mockTronApis(
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint[]> {
   return [
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
     await mockAccountsApiV2WithTron(mockServer),
     await mockAccountsApiV5WithTron(mockServer, mockZeroBalance),
@@ -1657,6 +1690,7 @@ export async function mockTronApis(
     await mockTronGetTransactions(mockServer),
     await mockExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
+    await mockTronPriceSupportedNetworks(mockServer),
     await mockTronSpotPrices(mockServer),
     await mockTronAssets(mockServer),
     await mockBroadTransaction(mockServer),

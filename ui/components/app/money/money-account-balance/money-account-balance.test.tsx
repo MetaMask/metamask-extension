@@ -5,6 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { MONEY_HOME_ROUTE } from '../../../../helpers/constants/routes';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import type { UseMoneyAccountBalanceResult } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
@@ -25,9 +26,11 @@ import {
   MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID,
   MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID,
   MONEY_ACCOUNT_BALANCE_APY_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID,
   MONEY_ACCOUNT_BALANCE_INFO_TEST_ID,
   MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID,
   MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID,
   MONEY_ACCOUNT_BALANCE_TEST_ID,
   MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID,
 } from './money-account-balance';
@@ -54,6 +57,15 @@ const mockUseMoneyAccountBalance = jest.mocked(useMoneyAccountBalance);
 const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
 const mockUseMoneyAccountDeposit = jest.mocked(useMoneyAccountDeposit);
 const mockInitiateDeposit = jest.fn();
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+const PRIMARY_BUTTON_CLASS = 'bg-icon-default';
+const SECONDARY_BUTTON_CLASS = 'bg-muted';
 
 const MONEY_ADDRESS = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B' as const;
 
@@ -173,9 +185,11 @@ describe('MoneyAccountBalance', () => {
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$2,384.34',
     );
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID),
+    ).not.toHaveTextContent(/mUSD/u);
     expect(getByText(tEn('money'))).toBeInTheDocument();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
   });
 
   it('hides the balance when privacy mode is on', () => {
@@ -265,62 +279,72 @@ describe('MoneyAccountBalance', () => {
     });
   });
 
-  it('shows Add instead of the figure when the live balance is zero', () => {
+  it('shows the figure alongside a primary Add when the live balance is zero', () => {
     arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
 
-    const { getByTestId, queryByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(
-      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
-    ).toHaveTextContent(tEn('moneyAdd'));
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$0.00',
+    );
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      PRIMARY_BUTTON_CLASS,
+    );
   });
 
-  it('shows Add instead of $0.00 when the live balance is sub-cent dust', () => {
+  it('shows a primary Add when the live balance is sub-cent dust', () => {
     arrange({
       tokenTotal: new BigNumber('0.004'),
       totalFiatFormatted: '$0.00',
     });
 
-    const { getByTestId, queryByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(
-      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
-    ).toHaveTextContent(tEn('moneyAdd'));
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
+      '$0.00',
+    );
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      PRIMARY_BUTTON_CLASS,
+    );
   });
 
-  it('shows the figure rather than Add once the live balance reaches one cent', () => {
+  it('shows a secondary Add once the live balance reaches one cent', () => {
     arrange({
       tokenTotal: new BigNumber('0.01'),
       totalFiatFormatted: '$0.01',
     });
 
-    const { getByTestId, queryByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$0.01',
     );
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      SECONDARY_BUTTON_CLASS,
+    );
   });
 
-  it('keeps the masked figure rather than Add when privacy mode hides a zero balance', () => {
+  it('shows the masked figure alongside Add when privacy mode hides a zero balance', () => {
     arrange({ tokenTotal: new BigNumber(0), totalFiatFormatted: '$0.00' });
 
-    const { getByTestId, queryByTestId } = render({ privacyMode: true });
+    const { getByTestId } = render({ privacyMode: true });
 
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toBeInTheDocument();
     expect(
       getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID),
     ).not.toHaveTextContent('$0.00');
   });
 
-  it('keeps the last-known label rather than Add when the stale figure is zero', () => {
+  it('shows the last-known label alongside a secondary Add when the stale figure is zero', () => {
     arrange({ lastKnownTotalFiatFormatted: '$0.00' });
 
-    const { getByTestId, queryByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toBeNull();
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID)).toHaveClass(
+      SECONDARY_BUTTON_CLASS,
+    );
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$0.00',
     );
@@ -350,6 +374,76 @@ describe('MoneyAccountBalance', () => {
       labelKey: 'moneyAdd',
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('opens Money Home when the summary section is clicked', () => {
+    arrange({ totalFiatFormatted: '$309.90' });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID));
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      state: { stayOnHomePage: true },
+    });
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
+      redirectTarget: MoneyScreenName.MoneyHome,
+    });
+  });
+
+  it('opens Money Home when the summary section is activated from the keyboard', () => {
+    arrange({ totalFiatFormatted: '$309.90' });
+
+    const { getByTestId } = render();
+
+    fireEvent.keyDown(getByTestId(MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID), {
+      key: 'Enter',
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      state: { stayOnHomePage: true },
+    });
+  });
+
+  it('starts a deposit when the Add section around the button is clicked', () => {
+    arrange({ totalFiatFormatted: '$309.90' });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID));
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+  });
+
+  it('does nothing when a click lands on the card itself rather than a section', () => {
+    arrange({ totalFiatFormatted: '$309.90' });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID));
+
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('does not start a second deposit from the Add section while one is in flight', () => {
+    arrange({ totalFiatFormatted: '$309.90', isDepositLoading: true });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID));
+
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
   });
 
   it('tracks the component as viewed once when it renders', () => {

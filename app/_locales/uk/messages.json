@@ -412,9 +412,6 @@
     "message": "Закритий ключ",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Увага: Ніколи не розкривайте цей ключ. Будь-хто з вашим секретним ключем може викрасти всі статки з вашого облікового запису."
-  },
   "privateNetwork": {
     "message": "Приватна мережа"
   },

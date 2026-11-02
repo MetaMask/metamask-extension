@@ -225,9 +225,6 @@
     "message": "คีย์ส่วนตัว",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "คำเตือน: ห้ามเปิดเผยคีย์นี้ ทุกคนที่มีคีย์ส่วนตัวสามารถขโมยข้อมูลใด ๆ ที่เก็บไว้ในบัญชีของคุณได้"
-  },
   "privateNetwork": {
     "message": "เครือข่ายส่วนตัว"
   },

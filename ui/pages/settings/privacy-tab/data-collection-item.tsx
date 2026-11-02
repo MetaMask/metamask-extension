@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getConsentDecisionMade,
   getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
@@ -34,7 +33,6 @@ export const DataCollectionToggleItem = () => {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
 
   // Match legacy Security tab: fetch remote marketing consent when the user is in
@@ -56,9 +54,6 @@ export const DataCollectionToggleItem = () => {
     };
   }, [socialLoginEnabled, dispatch]);
 
-  const isDisabled =
-    !useExternalServices || !(consentDecisionMade && isOptedIn);
-
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;
 
@@ -72,7 +67,7 @@ export const DataCollectionToggleItem = () => {
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: isOptedIn,
           [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
           location: 'Settings',
         })
@@ -88,11 +83,11 @@ export const DataCollectionToggleItem = () => {
     <SettingsToggleItem
       title={t(PRIVACY_ITEMS['data-collection'])}
       description={description}
-      value={dataCollectionForMarketing}
+      value={dataCollectionForMarketing === true}
       onToggle={handleToggle}
       dataTestId="data-collection-for-marketing-input"
       containerDataTestId="data-collection-for-marketing-toggle"
-      disabled={isDisabled}
+      disabled={!useExternalServices}
     />
   );
 };

@@ -18,7 +18,6 @@ import {
   getSubscriptionPricing as getSubscriptionPricingAction,
 } from '../../store/actions';
 import { getTokenBalancesEvm } from '../../selectors/assets';
-import { useTokenBalances as pollAndUpdateEvmBalances } from '../useTokenBalances';
 import {
   AssetWithDisplayData,
   ERC20Asset,
@@ -66,10 +65,6 @@ export const useAvailableTokenBalances = (params: {
 } => {
   const { paymentChains, price, productType } = params;
 
-  const paymentChainIds = useMemo(
-    () => paymentChains?.map((chain) => chain.chainId),
-    [paymentChains],
-  );
   const paymentChainTokenMap = useMemo(
     () =>
       paymentChains?.reduce(
@@ -96,9 +91,6 @@ export const useAvailableTokenBalances = (params: {
   const evmBalances = useSelector((state) =>
     getTokenBalancesEvm(state, evmAccount?.address),
   );
-
-  // Poll and update evm balances for payment chains
-  pollAndUpdateEvmBalances({ chainIds: paymentChainIds });
 
   const validTokenBalances = useMemo(() => {
     return evmBalances.filter((token) => {

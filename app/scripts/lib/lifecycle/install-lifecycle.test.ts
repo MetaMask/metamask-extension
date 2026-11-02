@@ -56,6 +56,9 @@ function createController(
       consentDecisionMade: overrides.consentDecisionMade ?? false,
       optedIn: overrides.optedIn ?? true,
     }),
+    remoteFeatureFlagController: {
+      state: { remoteFeatureFlags: {} },
+    },
     store: {} as MetaMaskController['store'],
   };
 }

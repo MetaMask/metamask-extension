@@ -400,9 +400,6 @@
     "message": "Zasebni lljuč",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Opozorilo: Nikoli ne razkrijte tega ključa. Kdorkoli lahko z njim ukrade vse vaše premoženje v računu."
-  },
   "privateNetwork": {
     "message": "Zasebno omrežje"
   },

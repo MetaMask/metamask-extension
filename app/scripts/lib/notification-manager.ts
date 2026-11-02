@@ -48,6 +48,19 @@ export default class NotificationManager extends EventEmitter {
   }
 
   /**
+   * Programmatically closes the notification popup window if one is open.
+   * Marks it as automatically closed so triggerUi knows not to reopen it.
+   */
+  async closePopup(): Promise<void> {
+    if (this._popup?.id) {
+      this.markAsAutomaticallyClosed();
+      await browser.windows.remove(this._popup.id).catch(() => {
+        // Window may already be closed
+      });
+    }
+  }
+
+  /**
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
    * notification windows are given a 'popup' type.
    *
