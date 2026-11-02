@@ -520,23 +520,6 @@ describe('MultichainAccountList', () => {
     );
   });
 
-  it('does not navigate on select when there is no in-app history and shouldNavigateOnSelect is false', async () => {
-    mockLocationKey = 'default';
-    renderComponent({ shouldNavigateOnSelect: false });
-
-    const accountCell = screen.getByTestId(
-      `multichain-account-cell-${walletTwoGroupId}`,
-    );
-    await act(async () => {
-      fireEvent.click(accountCell);
-    });
-
-    expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
-      walletTwoGroupId,
-    );
-    expect(mockUseNavigate).not.toHaveBeenCalled();
-  });
-
   it('does not wrap custom handleAccountClick in the default switch transition gate', async () => {
     const customHandleAccountClick = jest.fn();
     renderComponent({

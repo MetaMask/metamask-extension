@@ -169,6 +169,9 @@ describe('SideNavAccounts', () => {
       });
 
       expect(screen.queryByTestId(searchInputTestId)).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: searchButtonName }),
+      ).toHaveFocus();
     });
   });
 

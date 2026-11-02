@@ -104,11 +104,9 @@ export type MultichainAccountListProps = {
    */
   isEditMode?: boolean;
   /**
-   * When true, selecting an account with the default click handler navigates
-   * away from the list after switching account (back, or home when there is no
-   * in-app history). Set to false when the list is embedded in a persistent
-   * surface such as a side navigation, so the user stays on the current page.
-   * Has no effect when a custom `handleAccountClick` is provided.
+   * Whether selecting an account with the default click handler navigates away
+   * from the list. Set to false when embedded in a persistent surface such as a
+   * side navigation. Ignored when a custom `handleAccountClick` is provided.
    * @default true
    */
   shouldNavigateOnSelect?: boolean;
