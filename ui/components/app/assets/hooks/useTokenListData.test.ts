@@ -1,34 +1,41 @@
 import {
-  getTokenListItemKey,
+  getUniqueTokenListItemKeys,
   type TokenListDisplayItem,
 } from './useTokenListData';
 
-describe('getTokenListItemKey', () => {
-  const tokenItem = {
+const createTokenItem = (symbol: string, address: string) =>
+  ({
     type: 'token',
-    token: {
-      chainId: '0x1',
-      symbol: 'ETH',
-      address: '0x0000000000000000000000000000000000000000',
-    },
-  } as unknown as TokenListDisplayItem;
+    token: { chainId: '0x1', symbol, address },
+  }) as unknown as TokenListDisplayItem;
 
-  it('includes the account group so the same token on two accounts is a different row', () => {
-    const first = getTokenListItemKey(tokenItem, 0, 'entropy:wallet/0');
-    const second = getTokenListItemKey(tokenItem, 0, 'entropy:wallet/1');
+describe('getUniqueTokenListItemKeys', () => {
+  it('keeps the existing key for assets that appear once', () => {
+    const keys = getUniqueTokenListItemKeys([
+      createTokenItem('ETH', '0x0000000000000000000000000000000000000000'),
+      { type: 'low-value-toggle', count: 2 },
+    ]);
 
-    expect(first).not.toBe(second);
-    expect(first).toContain('entropy:wallet/0');
-    expect(second).toContain('entropy:wallet/1');
+    expect(keys).toStrictEqual([
+      '0x1-ETH-0x0000000000000000000000000000000000000000',
+      'low-value-assets-toggle-1',
+    ]);
   });
 
-  it('scopes the low value toggle to the account group', () => {
-    expect(
-      getTokenListItemKey(
-        { type: 'low-value-toggle', count: 3 },
-        4,
-        'entropy:wallet/0',
-      ),
-    ).toBe('entropy:wallet/0:low-value-assets-toggle-4');
+  it('returns a distinct key for each repeat of the same asset', () => {
+    const link = createTokenItem(
+      'LINK',
+      '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+    );
+
+    const keys = getUniqueTokenListItemKeys([
+      link,
+      createTokenItem('ETH', '0x0000000000000000000000000000000000000000'),
+      link,
+      link,
+    ]);
+
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(keys[0]).toBe('0x1-LINK-0x514910771AF9Ca656af840dff83E8264EcF986CA');
   });
 });

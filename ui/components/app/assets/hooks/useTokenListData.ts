@@ -91,25 +91,34 @@ const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
   return undefined;
 };
 
-const selectSelectedAccountGroupId = (state: {
-  metamask?: { selectedAccountGroup?: string };
-}): string | undefined => state.metamask?.selectedAccountGroup;
-
 export const getTokenListItemKey = (
   item: TokenListDisplayItem,
   index: number,
-  accountGroupId?: string,
 ) => {
-  // The same chain/symbol/address exists on every account. Without the
-  // account in the key, switching accounts reuses the virtualizer's measured
-  // row and the previous account's tokens stay painted underneath.
-  const accountScope = accountGroupId ? `${accountGroupId}:` : '';
-
   if (item.type === 'low-value-toggle') {
-    return `${accountScope}low-value-assets-toggle-${index}`;
+    return `low-value-assets-toggle-${index}`;
   }
 
-  return `${accountScope}${item.token.chainId}-${item.token.symbol}-${item.token.address}`;
+  return `${item.token.chainId}-${item.token.symbol}-${item.token.address}`;
+};
+
+/**
+ * Unique row keys for the token list. `getTokenListItemKey` alone can repeat
+ * because the selector can return the same asset more than once, and a
+ * repeated React key leaves a stale row painted on top of another one.
+ *
+ * @param items - The display items, in render order.
+ * @returns One key per item, suffixed with an occurrence count when repeated.
+ */
+export const getUniqueTokenListItemKeys = (items: TokenListDisplayItem[]) => {
+  const occurrences = new Map<string, number>();
+
+  return items.map((item, index) => {
+    const key = getTokenListItemKey(item, index);
+    const count = occurrences.get(key) ?? 0;
+    occurrences.set(key, count + 1);
+    return count === 0 ? key : `${key}-${count}`;
+  });
 };
 
 /**
@@ -139,7 +148,6 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
   const { isStockToken } = useRWAToken();
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
-  const selectedAccountGroupId = useSelector(selectSelectedAccountGroupId);
 
   // Defer only the hide-zero-balance preference so Settings toggles stay
   // responsive while this list recomputes. Account assets must update
@@ -304,6 +312,16 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
     visibleTokens,
   ]);
 
+  const tokenListItemKeys = useMemo(
+    () => getUniqueTokenListItemKeys(tokenListItems),
+    [tokenListItems],
+  );
+
+  const getItemKey = useCallback(
+    (_item: TokenListDisplayItem, index: number) => tokenListItemKeys[index],
+    [tokenListItemKeys],
+  );
+
   const displayedTokens = useMemo(
     () =>
       tokenListItems.flatMap((item) =>
@@ -390,11 +408,11 @@ export function useTokenListData({ onTokenClick }: UseTokenListDataOptions) {
 
   return {
     tokenListItems,
+    getItemKey,
     displayedTokens,
     showLoadingSkeleton,
     hasBalance,
     privacyMode,
-    selectedAccountGroupId,
     isLowValueAssetsExpanded,
     handleLowValueAssetsToggle,
     getTokenClickHandler,
