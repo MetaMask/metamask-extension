@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate, type Path } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import browser from 'webextension-polyfill';
 import { isObject } from '@metamask/utils';
 
@@ -24,7 +24,7 @@ async function consumePendingRoute(windowId: number) {
         return {
           pathname: path,
           search: typeof search === 'string' ? search : '',
-        } as Pick<Path, 'pathname' | 'search'>;
+        };
       }
     }
     return null;
@@ -51,6 +51,17 @@ export function useNavigateRouteListener(): void {
     let cancelled = false;
     let currentWindowId: number | null = null;
 
+    const navigateToPendingRoute = async (windowId: number) => {
+      try {
+        const route = await consumePendingRoute(windowId);
+        if (!cancelled && route) {
+          navigate(route);
+        }
+      } catch {
+        // Navigation failures are non-fatal; the panel stays on its current page.
+      }
+    };
+
     const onMessage = (message: unknown) => {
       if (
         isObject(message) &&
@@ -59,17 +70,11 @@ export function useNavigateRouteListener(): void {
         typeof message.body.windowId === 'number' &&
         message.body.windowId === currentWindowId
       ) {
-        consumePendingRoute(message.body.windowId)
-          .then((route) => {
-            if (!cancelled && route) {
-              navigate(route);
-            }
-          })
-          .catch(() => undefined);
+        navigateToPendingRoute(message.body.windowId);
       }
     };
 
-    (async () => {
+    const init = async () => {
       const currentWindow = await browser.windows.getCurrent();
       if (cancelled) {
         return;
@@ -83,11 +88,10 @@ export function useNavigateRouteListener(): void {
 
       browser.runtime.onMessage.addListener(onMessage);
 
-      const route = await consumePendingRoute(windowId);
-      if (!cancelled && route) {
-        navigate(route);
-      }
-    })().catch(() => undefined);
+      await navigateToPendingRoute(windowId);
+    };
+
+    init().catch(() => undefined);
 
     return () => {
       cancelled = true;

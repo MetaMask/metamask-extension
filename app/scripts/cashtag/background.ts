@@ -559,16 +559,13 @@ function handleConsumePendingRoute(message: CashtagMessage) {
     pendingRoutes.delete(windowId);
   }
 
-  if (!entry) {
-    return Promise.resolve({
-      type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
-      body: { path: null, search: null },
-    });
-  }
+  const body = entry
+    ? { path: entry.path, search: entry.search ?? null }
+    : { path: null, search: null };
 
   return Promise.resolve({
     type: EXTENSION_MESSAGES.CONSUME_PENDING_ROUTE,
-    body: { path: entry.path, search: entry.search ?? null },
+    body,
   });
 }
 
