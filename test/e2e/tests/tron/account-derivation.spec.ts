@@ -12,7 +12,7 @@ import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
-import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { base58AddressToHex } from '../../seeder/tron/assets';
 import {
   SUN_PER_TRX,
@@ -131,7 +131,7 @@ describe('Tron account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -192,7 +192,7 @@ describe('Tron account derivation', function (this: Suite) {
             ),
         });
 
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         await assertTronAddressesForAccounts(driver, 8);
       },
@@ -233,7 +233,7 @@ describe('Tron account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
         await addAccounts({
           driver,
           count: 7,
@@ -283,7 +283,7 @@ describe('Tron account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -319,7 +319,7 @@ describe('Tron account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
-        await selectTronNetwork(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Tron');
         await addAccounts({
           driver,
           count: 7,

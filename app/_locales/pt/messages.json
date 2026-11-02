@@ -1919,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "A MetaMask oferece recursos básicos como detalhes de token e configurações de gás por meio de serviços de internet. Quando você usa serviços de internet, seu endereço IP é compartilhado, neste caso com a MetaMask. É exatamente igual a quando você visita qualquer site. A MetaMask usa esses dados temporariamente e nunca os vende. Você pode usar uma VPN ou desligar esses serviços, mas isso poderá afetar sua experiência com a MetaMask. Para saber mais, leia nossa $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Inclui recursos básicos como detalhes do token e configurações de gas. Mantenha este recurso ativado para melhorar sua experiência. Leia nosso $1 para saber mais.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Funcionalidade básica"
@@ -3883,9 +3883,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Desbloqueie transações mais rápidas, taxas de rede mais baixas e segurança adicional em redes compatíveis."
   },
-  "enableSnap": {
-    "message": "Ativar"
-  },
   "enableToken": {
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4298,6 +4295,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "Esta rede exige que você mantenha pelo menos $1 $2 em sua conta após a transação. Contas inteligentes não podem ficar abaixo deste valor de reserva.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "A $1 cobre a taxa de rede desta transação. Isso inclui a ativação única da conta inteligente.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",
@@ -5250,9 +5251,6 @@
   "loading": {
     "message": "Carregando..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Por favor, conclua a transação no Snap."
-  },
   "loadingTokenList": {
     "message": "Carregando lista de tokens"
   },
@@ -5537,6 +5535,12 @@
   "mfaFailureClose": {
     "message": "Fechar"
   },
+  "mfaFailureContactSupport": {
+    "message": "Falar com o suporte"
+  },
+  "mfaFailureDone": {
+    "message": "Pronto"
+  },
   "mfaFailureRetry": {
     "message": "Tentar novamente"
   },
@@ -5614,6 +5618,9 @@
   },
   "mfaOtpTitle": {
     "message": "Insira seu código de verificação"
+  },
+  "mfaOtpVerifying": {
+    "message": "Verificando código"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Criar uma chave de acesso"
@@ -6370,7 +6377,7 @@
     "message": "Comece já"
   },
   "musdEducationHeadline": {
-    "message": "RECEBA $1% EM\nSTABLECOINS",
+    "message": "Receba $1% em\nstablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -9673,6 +9680,33 @@
   "rewardsLinkAccountError": {
     "message": "Falha ao adicionar a conta"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Você não pode ser indicado devido à sua atividade de negociação recente."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Você já foi indicado por outro usuário."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Código de indicação inválido"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Código de indicação"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Não foi possível validar o código de indicação."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Você não pode usar seu próprio código de indicação."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Você não pode ser indicado por outra pessoa."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Algo deu errado. Tente novamente em instantes."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Tentativas demais. Aguarde um momento."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Verificando região..."
   },
@@ -9710,24 +9744,6 @@
   "rewardsOnboardingOptInError": {
     "message": "A participação falhou"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Código de indicação inválido"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Código de indicação (opcional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Não foi possível validar o código de indicação."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Verifique sua conexão e tente novamente."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Ocultar código"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Tem um código de indicação?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Participe do programa de recompensas"
   },
@@ -9736,10 +9752,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Comece a ganhar recompensas"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Verificando código de indicação...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 pontos",

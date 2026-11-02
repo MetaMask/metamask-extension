@@ -1919,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask menawarkan fitur dasar seperti detail token dan pengaturan gas melalui layanan internet. Alamat IP dibagikan saat menggunakan layanan internet, dalam hal ini kepada MetaMask. Ini sama seperti saat Anda mengunjungi situs web mana pun. MetaMask menggunakan data ini untuk sementara dan tidak akan pernah menjual data Anda. Anda dapat menggunakan VPN atau menonaktifkan layanan ini, akan tetapi hal ini dapat memengaruhi pengalaman dalam menggunakan MetaMask. Untuk selengkapnya, baca $1 kami.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Mencakup fitur dasar seperti detail token dan pengaturan gas. Aktifkan fitur ini untuk menikmati pengalaman terbaik. Baca panduan $1 kami untuk mempelajari selengkapnya.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Fungsionalitas dasar"
@@ -3883,9 +3883,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Buka transaksi yang lebih cepat, biaya jaringan yang lebih rendah, dan keamanan tambahan pada jaringan yang didukung."
   },
-  "enableSnap": {
-    "message": "Aktifkan"
-  },
   "enableToken": {
     "message": "aktifkan $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4298,6 +4295,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "Jaringan ini mengharuskan Anda untuk menyisakan minimal $1 $2 di akun Anda setelah transaksi dilakukan. Akun cerdas tidak diperbolehkan memiliki saldo di bawah jumlah cadangan tersebut.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 menanggung biaya jaringan untuk transaksi ini. Ini termasuk aktivasi akun cerdas satu kali.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 jam",
@@ -5254,9 +5255,6 @@
   "loading": {
     "message": "Memuat..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Selesaikan transaksi di Snap."
-  },
   "loadingTokenList": {
     "message": "Memuat daftar token"
   },
@@ -5541,6 +5539,12 @@
   "mfaFailureClose": {
     "message": "Tutup"
   },
+  "mfaFailureContactSupport": {
+    "message": "Hubungi dukungan"
+  },
+  "mfaFailureDone": {
+    "message": "Selesai"
+  },
   "mfaFailureRetry": {
     "message": "Coba lagi"
   },
@@ -5618,6 +5622,9 @@
   },
   "mfaOtpTitle": {
     "message": "Masukkan kode verifikasi Anda"
+  },
+  "mfaOtpVerifying": {
+    "message": "Memverifikasi kode"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Buat kode sandi"
@@ -6374,7 +6381,7 @@
     "message": "Mulai"
   },
   "musdEducationHeadline": {
-    "message": "DAPATKAN $1% UNTUK\nSTABLECOIN",
+    "message": "Dapatkan $1% untuk\nstablecoin",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -9681,6 +9688,33 @@
   "rewardsLinkAccountError": {
     "message": "Gagal menambahkan akun"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Anda tidak dapat dirujuk karena aktivitas perdagangan baru-baru ini."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Anda telah dirujuk oleh pengguna lain."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Kode referensi tidak valid"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Kode referensi"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Kode referensi tidak dapat divalidasi."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Anda tidak dapat menggunakan kode referensi milik Anda sendiri."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Anda tidak dapat dirujuk oleh orang lain."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Terjadi kesalahan. Coba lagi nanti."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Terlalu banyak percobaan. Tunggu sebentar."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Memeriksa wilayah..."
   },
@@ -9718,24 +9752,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Gagal berpartisipasi"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Kode referensi tidak valid"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Kode referensi (opsional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Kode referensi tidak dapat divalidasi."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Periksa koneksi Anda dan coba lagi."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Sembunyikan kode"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Punya kode referensi?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Gabung dengan Reward"
   },
@@ -9744,10 +9760,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Mulai dapatkan reward"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Memverifikasi kode referensi...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 poin",

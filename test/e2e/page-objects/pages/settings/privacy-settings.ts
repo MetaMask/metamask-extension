@@ -45,6 +45,9 @@ class PrivacySettings {
   private readonly basicFunctionalityToggle =
     'label.toggle-button:has([data-testid="basic-functionality-toggle"])';
 
+  private readonly basicFunctionalityToggleOff =
+    '[data-testid="basic-functionality-toggle"][value="false"]';
+
   private readonly blockaidAlertsToggle =
     '[data-testid="securityAlert"] .toggle-button';
 
@@ -273,6 +276,11 @@ class PrivacySettings {
       },
       { interval: 500, timeout: this.driver.timeout },
     );
+  }
+
+  async checkBasicFunctionalityIsOff(): Promise<void> {
+    console.log('Check basic functionality is off on privacy settings page');
+    await this.driver.waitForSelector(this.basicFunctionalityToggleOff);
   }
 
   async checkDisplayedSrpCanBeCopied(): Promise<void> {

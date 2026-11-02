@@ -1919,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask इंटरनेट सेवाओं के ज़रिए टोकन की जानकारी और गैस सेटिंग्स जैसे बुनियादी फ़ीचर्स उपलब्ध कराता है। इंटरनेट सेवाओं का इस्तेमाल करते समय आपका IP एड्रेस MetaMask के साथ शेयर किया जाता है, ठीक वैसे ही जैसे किसी वेबसाइट को खोलते समय होता है। MetaMask इस डेटा को थोड़े समय के लिए इस्तेमाल करता है और इसे कभी बेचता नहीं है। ज़रूरत के मुताबिक VPN का इस्तेमाल किया जा सकता है या इन सेवाओं को बंद किया जा सकता है, लेकिन याद रहे इससे MetaMask के संबंध में आपके अनुभव पर असर पड़ सकता है। ज़्यादा जानकारी के लिए हमारी $1 पढ़ें।",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "इसमें टोकन डिटेल्स और गैस सेटिंग जैसे बेसिक फ़ीचर्स शामिल हैं। सबसे अच्छे अनुभव के लिए इस फ़ीचर को चालू रखें। ज़्यादा जानने के लिए हमारा $1 पढ़ें।",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "बुनियादी सुविधाएं"
@@ -3883,9 +3883,6 @@
   "enableSmartContractAccountDescription": {
     "message": "तेज़ ट्रांसेक्शन, कम नेटवर्क फीस, और सपोर्टेड नेटवर्क पर अतिरिक्त सुरक्षा अनलॉक करें।"
   },
-  "enableSnap": {
-    "message": "चालू करें"
-  },
   "enableToken": {
     "message": "$1 इनेबल करें",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4298,6 +4295,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "इस नेटवर्क के लिए ट्रांसेक्शन के बाद आपके अकाउंट में कम से कम $1 $2 रखना ज़रूरी है। स्मार्ट अकाउंट इस रिज़र्व से नीचे नहीं जा सकते।",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 इस ट्रांसेक्शन के लिए नेटवर्क फ़ीस कवर करता है। इसमें एक बार का स्मार्ट अकाउंट एक्टिवेशन शामिल है।",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
@@ -5250,9 +5251,6 @@
   "loading": {
     "message": "लोड हो रहा है..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "कृपया Snap पर ट्रांजेक्शन पूरा करें।"
-  },
   "loadingTokenList": {
     "message": "टोकन लिस्ट लोड हो रहा है"
   },
@@ -5536,6 +5534,12 @@
   },
   "mfaFailureClose": {
     "message": "बंद करें"
+  },
+  "mfaFailureContactSupport": {
+    "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
+  },
+  "mfaFailureDone": {
+    "message": "पूरा हुआ"
   },
   "mfaFailureRetry": {
     "message": "फिर से प्रयास करें"
@@ -9673,6 +9677,33 @@
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "आपको हाल की ट्रेडिंग एक्टिविटी की वजह से रेफ़र नहीं किया जा सकता।"
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "आप पहले ही किसी अन्य उपयोगकर्ता द्वारा रेफर किए जा चुके हैं।"
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "रेफरल कोड ग़लत है"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "रेफरल कोड"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "आप अपना स्वयं का रेफरल कोड उपयोग नहीं कर सकते।"
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "आपको कोई और रेफ़र नहीं कर सकता।"
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "कुछ गलत हो गया। थोड़ी देर में फिर से कोशिश करें।"
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "बहुत ज़्यादा कोशिशें की गईं। थोड़ा इंतज़ार करें।"
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "क्षेत्र की जांच की जा रही है…"
   },
@@ -9710,24 +9741,6 @@
   "rewardsOnboardingOptInError": {
     "message": "ऑप्ट-इन नहीं हो पाया"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "रेफरल कोड ग़लत है"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "रेफरल कोड (वैकल्पिक)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "कोड छिपाएँ"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "क्या आपके पास रेफ़रल कोड है?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "रिवॉर्ड में शामिल हों"
   },
@@ -9736,10 +9749,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "रिवॉर्ड कमाना शुरू करें"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "रेफरल कोड वेरीफाई किया जा रहा है…",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 पॉइंट",

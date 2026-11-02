@@ -91,8 +91,6 @@ jest.mock('../../../../store/actions', () => {
     setTokenNetworkFilter: jest.fn(() => ({
       type: 'TOKEN_NETWORK_FILTER',
     })),
-    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-    tokenBalancesStopPollingByPollingToken: jest.fn(),
     addImportedTokens: jest.fn(),
   };
 });

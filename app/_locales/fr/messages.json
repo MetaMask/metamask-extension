@@ -1919,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask offre des fonctionnalités de base telles que l’affichage des détails des jetons et des paramètres de gaz par le biais de services Internet. Lorsque vous utilisez des services Internet, votre adresse IP est partagée avec le fournisseur de ces services, dans ce cas MetaMask. C’est la même chose que lorsque vous visitez un site web. MetaMask conserve ces données temporairement et ne les vend jamais. Vous pouvez utiliser un VPN ou désactiver ces services, mais cela peut affecter votre expérience avec MetaMask. Pour en savoir plus, lisez notre $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Comprend des fonctionnalités de base telles que les informations détaillées sur les jetons et les paramètres de gaz. Activez cette fonctionnalité pour profiter d’une expérience utilisateur optimale. Lisez notre $1 pour en savoir plus.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Fonctionnalité de base"
@@ -3883,9 +3883,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Bénéficiez de transactions plus rapides, de frais de réseau réduits et d’une sécurité renforcée sur les réseaux pris en charge."
   },
-  "enableSnap": {
-    "message": "Activer"
-  },
   "enableToken": {
     "message": "activer $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4298,6 +4295,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "Ce réseau exige de conserver au moins $1 $2 sur votre compte après la transaction. Le solde des comptes intelligents ne peut pas descendre en dessous de cette réserve.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 prend en charge les frais de réseau liés à cette transaction. Cela inclut l'activation unique d'un compte intelligent.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",
@@ -5250,9 +5251,6 @@
   "loading": {
     "message": "Chargement…"
   },
-  "loadingScreenSnapMessage": {
-    "message": "Veuillez conclure la transaction sur le snap."
-  },
   "loadingTokenList": {
     "message": "Chargement de la liste des jetons"
   },
@@ -5536,6 +5534,12 @@
   },
   "mfaFailureClose": {
     "message": "Fermer"
+  },
+  "mfaFailureContactSupport": {
+    "message": "Contacter le service d’assistance"
+  },
+  "mfaFailureDone": {
+    "message": "Terminé"
   },
   "mfaFailureRetry": {
     "message": "Réessayer"
@@ -6370,7 +6374,7 @@
     "message": "Commencer"
   },
   "musdEducationHeadline": {
-    "message": "OBTENEZ UN BONUS DE $1 % SUR\nLES STABLECOINS",
+    "message": "Obtenez un bonus de $1 % sur\nles stablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -9673,6 +9677,33 @@
   "rewardsLinkAccountError": {
     "message": "Échec de l’ajout du compte"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Vous ne pouvez pas être parrainé en raison de votre activité de trading récente."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Vous avez déjà été parrainé par un autre utilisateur."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Code de parrainage non valide"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Code de parrainage"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Impossible de valider le code de parrainage."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Vous ne pouvez pas utiliser votre propre code de parrainage."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Vous ne pouvez pas être parrainé par quelqu’un d’autre."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Une erreur s’est produite. Veuillez réessayer dans quelques instants."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Trop de tentatives. Veuillez patienter un instant."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Vérification de la région…"
   },
@@ -9710,24 +9741,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Échec de l’inscription"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Code de parrainage non valide"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Code de parrainage (facultatif)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Impossible de valider le code de parrainage."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Vérifiez votre connexion et réessayez."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Masquer le code"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Vous avez un code de parrainage ?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Inscrivez-vous au programme de récompenses"
   },
@@ -9736,10 +9749,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Commencez à gagner des récompenses"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Vérification du code de parrainage…",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",

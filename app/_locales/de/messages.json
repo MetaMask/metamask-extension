@@ -1919,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask bietet grundlegende Funktionen wie Token-Details und Gas-Einstellungen über Internetdienste. Wenn Sie Internetdienste nutzen, wird Ihre IP-Adresse weitergegeben, in diesem Fall an MetaMask. Das ist genau so, wie wenn Sie eine beliebige Website besuchen. MetaMask verwendet diese Daten vorübergehend und verkauft Ihre Daten niemals. Sie können ein VPN verwenden oder diese Dienste abschalten, aber das kann Ihr MetaMask-Erlebnis beeinträchtigen. Um mehr zu erfahren, lesen Sie unsere $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Enthält grundlegende Funktionen wie Token-Details und Gaseinstellungen. Lassen Sie diese Funktion für ein optimales Erlebnis eingeschaltet.  Lesen Sie unsere $1, um mehr zu erfahren.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Grundfunktionalität"
@@ -3883,9 +3883,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Schalten Sie schnellere Transaktionen, niedrigere Netzwerkgebühren und zusätzliche Sicherheit in unterstützten Netzwerken frei."
   },
-  "enableSnap": {
-    "message": "Aktivieren"
-  },
   "enableToken": {
     "message": "$1 aktivieren",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4298,6 +4295,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "Für dieses Netzwerk müssen nach der Transaktion mindestens $1 $2 auf Ihrem Konto verbleiben. Bei Smart-Konten darf dieser Mindestbetrag nicht unterschritten werden.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 übernimmt die Netzwerkgebühr für diese Transaktion. Dies beinhaltet die einmalige Aktivierung des Smart-Kontos.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 Stunden",
@@ -5250,9 +5251,6 @@
   "loading": {
     "message": "Wird geladen ..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Bitte schließen Sie die Transaktion im Snap ab."
-  },
   "loadingTokenList": {
     "message": "Token-Liste wird geladen"
   },
@@ -5536,6 +5534,12 @@
   },
   "mfaFailureClose": {
     "message": "Schließen"
+  },
+  "mfaFailureContactSupport": {
+    "message": "Support kontaktieren"
+  },
+  "mfaFailureDone": {
+    "message": "Fertig"
   },
   "mfaFailureRetry": {
     "message": "Erneut versuchen"
@@ -6370,7 +6374,7 @@
     "message": "Erste Schritte"
   },
   "musdEducationHeadline": {
-    "message": "ERHALTEN SIE $1 % \nAUF STABLECOINS",
+    "message": "Erhalten Sie $1 % \nauf Stablecoins",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -9673,6 +9677,33 @@
   "rewardsLinkAccountError": {
     "message": "Hinzufügen des Kontos fehlgeschlagen"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Aufgrund Ihrer jüngsten Handelsaktivitäten können Sie nicht empfohlen werden."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Sie wurden bereits von einem anderen Nutzer empfohlen."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Ungültiger Empfehlungscode"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Empfehlungscode"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Empfehlungscode konnte nicht validiert werden."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Sie können nicht Ihren eigenen Empfehlungscode verwenden."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Sie können nicht von einer anderen Person empfohlen werden."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Etwas ist schiefgelaufen. Versuchen Sie es in Kürze erneut."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Zu viele Versuche. Einen Moment bitte."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Region wird überprüft ..."
   },
@@ -9710,24 +9741,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Anmeldung fehlgeschlagen"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Ungültiger Empfehlungscode"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Empfehlungscode (optional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Empfehlungscode konnte nicht validiert werden."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Code verbergen"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Sie haben einen Empfehlungscode?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Belohnungen beitreten"
   },
@@ -9736,10 +9749,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Beginnen Sie, Belohnungen zu sammeln"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Verifizierung des Empfehlungscodes läuft ...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 Punkte",

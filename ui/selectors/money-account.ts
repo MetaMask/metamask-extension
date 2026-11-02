@@ -5,6 +5,7 @@ import type {
   MoneyAccount,
   MoneyAccountControllerState,
 } from '@metamask/money-account-controller';
+import { isMnemonicMoneyAccount } from '../../shared/lib/money/money-accounts';
 
 /**
  * The Money Account as `MoneyAccountController` holds it, with the address
@@ -63,6 +64,9 @@ export const selectPrimaryMoneyAccount = createSelector(
 
     const account = Object.values(moneyAccounts).find(
       (moneyAccount) =>
+        // MPC-backed money accounts have no entropy source ID, so they can
+        // never be the primary (SRP-derived) money account.
+        isMnemonicMoneyAccount(moneyAccount) &&
         moneyAccount.options.entropy.id === primaryHdKeyring.metadata.id,
     );
 

@@ -1919,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае MetaMask. Это похоже на посещенеи вами любого веб-сайта. MetaMask временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с MetaMask. Чтобы узнать больше, прочитайте нашу $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Включает в себя основные функции, такие как информация о токене и настройки газа. Оставьте эту функцию включенной для удобства использования. Прочитайте нашу $1, чтобы узнать больше.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Базовый функционал"
@@ -3883,9 +3883,6 @@
   "enableSmartContractAccountDescription": {
     "message": "Разблокируйте более быстрые транзакции, более низкие комиссии сети и дополнительную безопасность в поддерживаемых сетях."
   },
-  "enableSnap": {
-    "message": "Включить"
-  },
   "enableToken": {
     "message": "активирует для $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -4298,6 +4295,10 @@
   "gasSponsorshipReserveBalanceWarning": {
     "message": "В этой сети требуется оставить не менее $1 $2 на вашем счете после транзакции. Баланс смарт-счета не может опускаться ниже этого резерва.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 покрывает комиссию сети за эту транзакцию. Сюда входит однократная активация смарт-счета.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 ч",
@@ -5250,9 +5251,6 @@
   "loading": {
     "message": "Загрузка..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Завершите транзакцию в Snap."
-  },
   "loadingTokenList": {
     "message": "Загружается список токенов"
   },
@@ -5537,6 +5535,12 @@
   "mfaFailureClose": {
     "message": "Закрыть"
   },
+  "mfaFailureContactSupport": {
+    "message": "Связаться с поддержкой"
+  },
+  "mfaFailureDone": {
+    "message": "Выполнено"
+  },
   "mfaFailureRetry": {
     "message": "Повторить попытку"
   },
@@ -5614,6 +5618,9 @@
   },
   "mfaOtpTitle": {
     "message": "Введите код подтверждения"
+  },
+  "mfaOtpVerifying": {
+    "message": "Отправить код"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Создать ключ доступа"
@@ -6370,7 +6377,7 @@
     "message": "С чего начать"
   },
   "musdEducationHeadline": {
-    "message": "ПОЛУЧИТЕ $1% НА\nСТЕЙБЛКОИНАХ",
+    "message": "Получите $1% на\nстейблкоинах",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -9673,6 +9680,33 @@
   "rewardsLinkAccountError": {
     "message": "Не удалось добавить счет"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Вы не можете воспользоваться приглашением из-за недавней торговой активности."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Вас уже направил другой пользователь."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Недействительный реферальный код"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Реферальный код"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Не удалось проверить реферальный код."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Вы не можете использовать собственный реферальный код."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Вы не можете воспользоваться приглашением другого пользователя."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Что-то пошло не так. Повторите попытку чуть позже."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Слишком много попыток. Подождите немного."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Проверка региона..."
   },
@@ -9710,24 +9744,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Не удалось согласиться"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Недействительный реферальный код"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Реферальный код (необязательно)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Не удалось проверить реферальный код."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Проверьте соединение и повторите попытку."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Скрыть код"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Есть реферальный код?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Присоединиться к Rewards"
   },
@@ -9736,10 +9752,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Начните получать награды"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Проверка реферального кода...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 балл",

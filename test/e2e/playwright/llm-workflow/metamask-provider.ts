@@ -371,9 +371,12 @@ export class MetaMaskSessionManager implements ISessionManager {
     const launchRequest = input as SessionLaunchInput & {
       selfOnboarding?: boolean;
       srp?: string;
+      password?: string;
     };
     const secretRecoveryPhrase = launchRequest.srp;
     launchRequest.srp = undefined;
+    const vaultPassword = launchRequest.password;
+    launchRequest.password = undefined;
 
     const { extensionPath } = input;
 
@@ -451,6 +454,7 @@ export class MetaMaskSessionManager implements ISessionManager {
         extensionPath,
         selfOnboarding: launchRequest.selfOnboarding === true,
         srp: secretRecoveryPhrase,
+        password: vaultPassword,
         manifestFlags: resolvedFixturePort
           ? {
               testing: {

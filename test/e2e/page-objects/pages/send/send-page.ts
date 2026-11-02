@@ -9,12 +9,12 @@ import { Driver } from '../../../webdriver/driver';
  * Boundaries: the send form through Continue. Confirmation / review screens
  * (including Bitcoin snap review) belong to confirmation or
  * `BitcoinReviewTxPage`.
- * Related: `BitcoinReviewTxPage`, `flows/send-transaction.flow.ts`,
+ * Related: `BitcoinReviewTxPage`, `flows/transaction.flow.ts`,
  * `flows/bitcoin-send.flow.ts`.
  *
  * @see ui/pages/confirmations/send/send.tsx
  * @see ui/pages/confirmations/send/send-inner.tsx
- * @see test/e2e/page-objects/flows/send-transaction.flow.ts
+ * @see test/e2e/page-objects/flows/transaction.flow.ts
  */
 class SendPage {
   private readonly amountBalance = { testId: 'send-amount-balance' };

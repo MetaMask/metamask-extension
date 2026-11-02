@@ -167,6 +167,24 @@ export const getIsChainlistV2Enabled = createSelector(
 );
 
 /**
+ * Get the state of the `extensionUxFullscreenRedesign` remote feature flag.
+ * LaunchDarkly key: `extension-ux-fullscreen-redesign`.
+ *
+ * When enabled, wide viewports use the fullscreen design (side nav).
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled, false otherwise.
+ */
+export const getIsFullscreenRedesignEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(
+      remoteFeatureFlags.extensionUxFullscreenRedesign,
+      false,
+    ),
+);
+
+/**
  * Get the state of the `extensionTrustAndSecurityTdp` remote feature flag.
  * LD key: `extension-trust-and-security-tdp` (camelCased in extension state).
  *
