@@ -42,27 +42,36 @@ describe('helpers', () => {
 
     it('should decode a valid base64url signature string to Uint8Array (old browsers fallback)', () => {
       // Simulate old browser by deleting Uint8Array.fromBase64
+      const orig = (Uint8Array as any).fromBase64;
       // @ts-expect-error This method not supported by tsc until v6
-      jest.spyOn(Uint8Array, 'fromBase64', undefined);
+      delete Uint8Array.fromBase64;
+      // Force Jest to re-evaluate the helpers module when it gets imported below
+      jest.resetModules();
 
-      // Re-import so that module-scope check for `Uint8Array.fromBase64` is re-evaluated
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { sigToBytes: reimportedSigToBytes } = require('./helpers');
+      try {
+        // Re-import so that module-scope check for `Uint8Array.fromBase64` is re-evaluated
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { sigToBytes: reimportedSigToBytes } = require('./helpers');
 
-      // 64 bytes = 86 base64url chars (no padding)
-      // Use a known 64-byte buffer, encode to base64url, then decode
-      // `i + 98`, because this causes both url-safe replacements to occur in
-      // the output.
-      const bytes = Array.from({ length: 64 }, (_, i) => i + 98);
+        // 64 bytes = 86 base64url chars (no padding)
+        // Use a known 64-byte buffer, encode to base64url, then decode
+        // `i + 98`, because this causes both url-safe replacements to occur in
+        // the output.
+        const bytes = Array.from({ length: 64 }, (_, i) => i + 98);
 
-      // @ts-expect-error This method not supported by tsc until v6
-      const base64url = new Uint8Array(bytes).toBase64({
-        alphabet: 'base64url',
-      });
-      const result = reimportedSigToBytes(base64url);
-      expect(result).toBeInstanceOf(Uint8Array);
-      expect(result).toHaveLength(64);
-      expect(Array.from(result)).toStrictEqual(bytes);
+        // @ts-expect-error This method not supported by tsc until v6
+        const base64url = new Uint8Array(bytes).toBase64({
+          alphabet: 'base64url',
+        });
+        const result = reimportedSigToBytes(base64url);
+        expect(result).toBeInstanceOf(Uint8Array);
+        expect(result).toHaveLength(64);
+        expect(Array.from(result)).toStrictEqual(bytes);
+      } finally {
+        // Restore the original method
+        // @ts-expect-error This method not supported by tsc until v6
+        Uint8Array.fromBase64 = orig;
+      }
     });
   });
 
