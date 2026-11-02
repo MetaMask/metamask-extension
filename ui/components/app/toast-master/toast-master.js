@@ -67,11 +67,13 @@ import {
   selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
   selectShowSidePanelMigrationToast,
+  selectShowXWidgetDeeplinkToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   setShowInfuraSwitchToast,
+  setShowXWidgetDeeplinkToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
   dismissSidePanelMigrationToast,
@@ -81,6 +83,7 @@ import {
 const MemoizedSurveyToast = memo(SurveyToast);
 const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
 const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
+const MemoizedXWidgetDeeplinkToast = memo(XWidgetDeeplinkToast);
 const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
 const MemoizedShieldEndingToast = memo(ShieldEndingToast);
@@ -118,6 +121,7 @@ export function ToastMaster() {
         <MemoizedPrivacyPolicyToast />
         <MemoizedArcUsageNoticeToast />
         <MemoizedInfuraSwitchToast />
+        <MemoizedXWidgetDeeplinkToast />
         <MemoizedPerpsWithdrawToast />
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />
@@ -209,6 +213,30 @@ function InfuraSwitchToast() {
         onClose={() => dispatch(setShowInfuraSwitchToast(false))}
         autoHideTime={autoHideDelay}
         onAutoHideToast={() => dispatch(setShowInfuraSwitchToast(false))}
+      />
+    )
+  );
+}
+
+function XWidgetDeeplinkToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showXWidgetDeeplinkToast = useSelector(selectShowXWidgetDeeplinkToast);
+  const autoHideDelay = 5 * SECOND;
+
+  return (
+    showXWidgetDeeplinkToast && (
+      <Toast
+        key="x-widget-deeplink-toast"
+        dataTestId="x-widget-deeplink-toast"
+        text={t('xWidgetDeeplinkToast')}
+        startAdornment={
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowXWidgetDeeplinkToast(false))}
+        autoHideTime={autoHideDelay}
+        onAutoHideToast={() => dispatch(setShowXWidgetDeeplinkToast(false))}
       />
     )
   );

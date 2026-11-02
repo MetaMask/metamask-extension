@@ -1,4 +1,8 @@
-import { SET_SHOW_INFURA_SWITCH_TOAST } from '../../../store/actionConstants';
+import {
+  SET_SHOW_INFURA_SWITCH_TOAST,
+  SET_SHOW_X_WIDGET_DEEPLINK_TOAST,
+} from '../../../store/actionConstants';
+
 import { submitRequestToBackground } from '../../../store/background-connection';
 
 /**
@@ -55,6 +59,13 @@ export function submitRequestToBackgroundAndCatch(
 export function setShowInfuraSwitchToast(value: boolean) {
   return {
     type: SET_SHOW_INFURA_SWITCH_TOAST,
+    payload: value,
+  };
+}
+
+export function setShowXWidgetDeeplinkToast(value: boolean) {
+  return {
+    type: SET_SHOW_X_WIDGET_DEEPLINK_TOAST,
     payload: value,
   };
 }

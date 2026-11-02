@@ -1,10 +1,13 @@
 import { renderHook, act } from '@testing-library/react';
 import browser from 'webextension-polyfill';
-import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
+
+import { EXTENSION_MESSAGES } from '#shared/constants/messages';
+
 import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import { useNavigateRouteListener } from './useNavigateRouteListener';
 
 const mockNavigate = jest.fn();
+const mockDispatch = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -18,6 +21,7 @@ jest.mock('../ducks/metamask/base-selectors', () => ({
 
 jest.mock('../store/hooks', () => ({
   useAppSelector: (selector: (state: unknown) => unknown) => selector({}),
+  useDispatch: () => mockDispatch,
 }));
 
 const mockGetIsUnlocked = jest.mocked(getIsUnlocked);
@@ -27,6 +31,7 @@ describe('useNavigateRouteListener', () => {
 
   beforeEach(() => {
     mockNavigate.mockReset();
+    mockDispatch.mockReset();
     messageListener = undefined;
     mockGetIsUnlocked.mockReturnValue(true);
     jest
@@ -59,6 +64,32 @@ describe('useNavigateRouteListener', () => {
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: '/cross-chain/swaps/prepare-bridge-page',
       search: '?to=eip155:1/slip44:60',
+      fromXWidget: false,
+    });
+  });
+
+  it('dispatches setShowXWidgetDeeplinkToast when fromXWidget is true', () => {
+    renderHook(() => useNavigateRouteListener());
+
+    act(() => {
+      messageListener?.({
+        type: EXTENSION_MESSAGES.OPEN_ROUTE,
+        body: {
+          path: '/cross-chain/swaps/prepare-bridge-page',
+          search: '?to=eip155:1/slip44:60',
+          fromXWidget: true,
+        },
+      });
+    });
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_SHOW_X_WIDGET_DEEPLINK_TOAST',
+      payload: true,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith({
+      pathname: '/cross-chain/swaps/prepare-bridge-page',
+      search: '?to=eip155:1/slip44:60',
+      fromXWidget: true,
     });
   });
 
