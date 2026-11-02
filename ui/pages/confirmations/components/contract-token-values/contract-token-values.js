@@ -13,7 +13,7 @@ import {
 } from '../../../../components/component-library';
 import {
   TextVariant,
-  DISPLAY,
+  Display,
   AlignItems,
   JustifyContent,
   TextColor,
@@ -36,7 +36,7 @@ export default function ContractTokenValues({
   return (
     <Box
       className="contract-token-values"
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
       gap={2}
@@ -64,7 +64,7 @@ export default function ContractTokenValues({
       </Tooltip>
       <Tooltip position="top" title={t('openInBlockExplorer')}>
         <ButtonIcon
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           iconName={IconName.Export}
           color={Color.iconMuted}
           onClick={() => {
