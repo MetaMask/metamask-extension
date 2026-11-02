@@ -98,20 +98,21 @@ describe('getIdleStatus', () => {
     ).toBe('idle');
   });
 
-  it('returns active_recent_dapp_rpc just inside the grace window', () => {
+  it('returns active_recent_connected_dapp_rpc just inside the grace window', () => {
     expect(
       getIdleStatus(steadyActivity(), {
-        msSinceLastDappRpc: EXTERNAL_RPC_GRACE_MS - 1,
+        msSinceLastConnectedDappRpc: EXTERNAL_RPC_GRACE_MS - 1,
       }),
-    ).toBe('active_recent_dapp_rpc');
+    ).toBe('active_recent_connected_dapp_rpc');
   });
 
-  it('returns active_recent_snap_rpc just inside the grace window', () => {
+  it('ignores unpermissioned dapp RPC and Snap RPC', () => {
     expect(
       getIdleStatus(steadyActivity(), {
-        msSinceLastSnapRpc: EXTERNAL_RPC_GRACE_MS - 1,
+        msSinceLastDappRpc: 0,
+        msSinceLastSnapRpc: 0,
       }),
-    ).toBe('active_recent_snap_rpc');
+    ).toBe('idle');
   });
 
   it('returns active_recent_external_extension_rpc just inside the grace window', () => {
@@ -125,8 +126,7 @@ describe('getIdleStatus', () => {
   it('returns idle once past every RPC grace window', () => {
     expect(
       getIdleStatus(steadyActivity(), {
-        msSinceLastDappRpc: EXTERNAL_RPC_GRACE_MS,
-        msSinceLastSnapRpc: EXTERNAL_RPC_GRACE_MS,
+        msSinceLastConnectedDappRpc: EXTERNAL_RPC_GRACE_MS,
         msSinceLastExternalExtensionRpc: EXTERNAL_RPC_GRACE_MS,
       }),
     ).toBe('idle');
@@ -137,8 +137,7 @@ describe('getIdleStatus', () => {
       getIdleStatus(steadyActivity(), {
         msSinceLastUiClosed: undefined,
         msSinceLastUiInteraction: undefined,
-        msSinceLastDappRpc: undefined,
-        msSinceLastSnapRpc: undefined,
+        msSinceLastConnectedDappRpc: undefined,
         msSinceLastExternalExtensionRpc: undefined,
       }),
     ).toBe('idle');
@@ -156,7 +155,7 @@ describe('getIdleStatus', () => {
   it('prioritizes a pending confirmation over recent activity signals', () => {
     expect(
       getIdleStatus(steadyActivity({ notificationIsOpen: true }), {
-        msSinceLastDappRpc: 0,
+        msSinceLastConnectedDappRpc: 0,
       }),
     ).toBe('active_pending_confirmation');
   });
@@ -166,6 +165,7 @@ describe('getIdleStatus', () => {
       getIdleStatus(steadyActivity(), {
         msSinceLastUiClosed: 0,
         msSinceLastUiInteraction: 0,
+        msSinceLastConnectedDappRpc: 0,
         msSinceLastDappRpc: 0,
         msSinceLastSnapRpc: 0,
         msSinceLastExternalExtensionRpc: 0,
@@ -175,26 +175,17 @@ describe('getIdleStatus', () => {
     expect(
       getIdleStatus(steadyActivity(), {
         msSinceLastUiInteraction: 0,
-        msSinceLastDappRpc: 0,
-        msSinceLastSnapRpc: 0,
+        msSinceLastConnectedDappRpc: 0,
         msSinceLastExternalExtensionRpc: 0,
       }),
     ).toBe('active_recent_ui_interaction');
 
     expect(
       getIdleStatus(steadyActivity(), {
-        msSinceLastDappRpc: 0,
-        msSinceLastSnapRpc: 0,
+        msSinceLastConnectedDappRpc: 0,
         msSinceLastExternalExtensionRpc: 0,
       }),
-    ).toBe('active_recent_dapp_rpc');
-
-    expect(
-      getIdleStatus(steadyActivity(), {
-        msSinceLastSnapRpc: 0,
-        msSinceLastExternalExtensionRpc: 0,
-      }),
-    ).toBe('active_recent_snap_rpc');
+    ).toBe('active_recent_connected_dapp_rpc');
   });
 
   it('ignores msSinceLastWindowEvent', () => {
