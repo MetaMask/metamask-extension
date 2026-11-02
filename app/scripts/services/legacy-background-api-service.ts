@@ -934,51 +934,6 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Sets the user's MetaMetrics participation preference.
-   *
-   * The UI calls this through the background API so consent changes can also
-   * update the extension uninstall URL and tracing behavior.
-   *
-   * @param participateInMetaMetrics - Whether the user wants to participate,
-   * or `null` to reset the consent decision.
-   * @returns The current analytics ID.
-   */
-  async setParticipateInMetaMetrics(
-    participateInMetaMetrics: boolean | null,
-  ): Promise<string> {
-    const { analyticsId } = this.#messenger.call(
-      'AnalyticsController:getState',
-    );
-
-    if (participateInMetaMetrics === true) {
-      await this.#messenger.call('AnalyticsController:optIn');
-      this.#messenger.call('SentryTracingService:trackTracesAfterMetricsOptIn');
-      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
-    } else if (participateInMetaMetrics === false) {
-      this.#messenger.call('AnalyticsController:optOut');
-      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
-    } else {
-      this.#messenger.call('AnalyticsController:resetConsentDecision');
-    }
-
-    if (
-      this.#appBuildType === 'main' &&
-      this.#appEnvironment !== ENVIRONMENT.DEVELOPMENT &&
-      participateInMetaMetrics !== null
-    ) {
-      updateExtensionUninstallUrl(
-        participateInMetaMetrics,
-        analyticsId,
-        this.#appVersion,
-        this.#appEnvironment,
-        this.#setUninstallURL,
-      );
-    }
-
-    return analyticsId;
-  }
-
-  /**
    * Sets the current currency for the CurrencyRateController and AssetsController.
    *
    * @param currencyCode - The currency code to set as the current currency.
@@ -5513,5 +5468,50 @@ export class LegacyBackgroundApiService {
         PermissionControllerGrantPermissionsAction['handler']
       >[0]['approvedPermissions'],
     });
+  }
+
+  /**
+   * Sets the user's MetaMetrics participation preference.
+   *
+   * The UI calls this through the background API so consent changes can also
+   * update the extension uninstall URL and tracing behavior.
+   *
+   * @param participateInMetaMetrics - Whether the user wants to participate,
+   * or `null` to reset the consent decision.
+   * @returns The current analytics ID.
+   */
+  async setParticipateInMetaMetrics(
+    participateInMetaMetrics: boolean | null,
+  ): Promise<string> {
+    const { analyticsId } = this.#messenger.call(
+      'AnalyticsController:getState',
+    );
+
+    if (participateInMetaMetrics === true) {
+      await this.#messenger.call('AnalyticsController:optIn');
+      this.#messenger.call('SentryTracingService:trackTracesAfterMetricsOptIn');
+      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else if (participateInMetaMetrics === false) {
+      this.#messenger.call('AnalyticsController:optOut');
+      this.#messenger.call('SentryTracingService:clearTracesAfterMetricsOptIn');
+    } else {
+      this.#messenger.call('AnalyticsController:resetConsentDecision');
+    }
+
+    if (
+      this.#appBuildType === 'main' &&
+      this.#appEnvironment !== ENVIRONMENT.DEVELOPMENT &&
+      participateInMetaMetrics !== null
+    ) {
+      updateExtensionUninstallUrl(
+        participateInMetaMetrics,
+        analyticsId,
+        this.#appVersion,
+        this.#appEnvironment,
+        this.#setUninstallURL,
+      );
+    }
+
+    return analyticsId;
   }
 }
