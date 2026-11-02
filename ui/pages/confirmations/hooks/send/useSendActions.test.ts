@@ -460,6 +460,7 @@ describe('useSendQueryParams', () => {
     });
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([
     {
       testcase: 'Snap Returned a Validation Error',
@@ -478,7 +479,11 @@ describe('useSendQueryParams', () => {
     },
   ])(
     'when the loader has left the send screen, handleSubmit shows a toast for a validation error when the loader has left the send screen - $testcase',
-    async ({ mockImp }) => {
+    async ({
+      mockImp,
+    }: {
+      mockImp: () => Promise<{ valid: boolean; errors: { code: string }[] }>;
+    }) => {
       window.location.hash = '#/confirmation/pending-send';
 
       const mockUpdateNonEVMSubmitError = jest.fn();
