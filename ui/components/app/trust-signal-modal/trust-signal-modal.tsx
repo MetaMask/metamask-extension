@@ -26,7 +26,7 @@ import {
 type TrustSignalModalProps = Readonly<{
   onContinue: () => void;
   onCancel: () => void;
-  title?: string;
+  title?: string | null;
   description?: string;
   continueLabel?: string;
   cancelLabel?: string;
@@ -36,10 +36,10 @@ type TrustSignalModalProps = Readonly<{
 export function TrustSignalModal({
   onContinue,
   onCancel,
-  title,
-  description,
-  continueLabel,
-  cancelLabel,
+  title = 'continueAtYourOwnRisk',
+  description = 'trustSignalPhishingWarning',
+  continueLabel = 'connectAnyway',
+  cancelLabel = 'cancel',
   isError = true,
 }: TrustSignalModalProps) {
   const t = useI18nContext();
@@ -69,7 +69,7 @@ export function TrustSignalModal({
             color={TextColor.TextAlternative}
             textAlign={title ? TextAlign.Left : TextAlign.Center}
           >
-            {t(description || 'trustSignalPhishingWarning')}
+            {t(description)}
           </Text>
         </Box>
 
@@ -88,7 +88,7 @@ export function TrustSignalModal({
             data-testid="trust-signal-block-modal-continue"
             isDanger={isError}
           >
-            {t(continueLabel || 'connectAnyway')}
+            {t(continueLabel)}
           </Button>
           <Button
             variant={ButtonVariant.Secondary}
@@ -97,7 +97,7 @@ export function TrustSignalModal({
             onClick={onCancel}
             data-testid="trust-signal-block-modal-cancel"
           >
-            {t(cancelLabel || 'cancel')}
+            {t(cancelLabel)}
           </Button>
         </Box>
       </ModalContent>

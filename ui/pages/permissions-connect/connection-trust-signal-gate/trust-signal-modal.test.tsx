@@ -32,21 +32,11 @@ describe('TrustSignalModal', () => {
     expect(getByTestId('trust-signal-block-modal')).toBeInTheDocument();
   });
 
-  it('shows "Continue at your own risk" title when provided', () => {
-    const { getByText } = render(
-      <TrustSignalModal {...defaultProps} title="continueAtYourOwnRisk" />,
-    );
-
-    expect(
-      getByText(messages.continueAtYourOwnRisk.message),
-    ).toBeInTheDocument();
-  });
-
-  it('shows description text', () => {
+  it('shows "Continue at your own risk" title', () => {
     const { getByText } = render(<TrustSignalModal {...defaultProps} />);
 
     expect(
-      getByText(messages.trustSignalPhishingWarning.message),
+      getByText(messages.continueAtYourOwnRisk.message),
     ).toBeInTheDocument();
   });
 

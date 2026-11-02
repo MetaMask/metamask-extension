@@ -38,15 +38,15 @@ export function ConnectionTrustSignalGate({
         <TrustSignalModal
           onContinue={dismiss}
           onCancel={onCancel}
-          title={isMalicious ? 'continueAtYourOwnRisk' : undefined}
-          description={
-            isMalicious
-              ? 'trustSignalPhishingWarning'
-              : 'xDappConnectionWarning'
-          }
-          continueLabel={isMalicious ? 'connectAnyway' : 'continueAnyway'}
-          cancelLabel={isMalicious ? 'cancel' : 'backToSafety'}
-          isError={isMalicious}
+          {...(isX && !isMalicious
+            ? {
+                title: null,
+                description: 'xDappConnectionWarning',
+                continueLabel: 'continueAnyway',
+                cancelLabel: 'backToSafety',
+                isError: false,
+              }
+            : {})}
         />
       )}
       {children}
