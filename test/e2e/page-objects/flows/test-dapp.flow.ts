@@ -1,13 +1,16 @@
-import { CaveatConstraint, PermissionConstraint } from "@metamask/permission-controller";
-import { Driver, PAGES } from "../../webdriver/driver";
-import { WINDOW_TITLES } from "../../constants";
-import TestDapp from "../pages/test-dapp";
-import ConnectAccountConfirmation from "../pages/confirmations/connect-account-confirmation";
-import ReviewPermissionsConfirmation from "../pages/confirmations/review-permissions-confirmation";
-import TransactionConfirmation from "../pages/confirmations/transaction-confirmation";
-import TokenTransferTransactionConfirmation from "../pages/confirmations/token-transfer-confirmation";
-import { CaveatTypes } from "../../../../shared/constants/permissions";
-import { PermissionNames } from "../../../../app/scripts/controllers/permissions";
+import {
+  CaveatConstraint,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
+import { Driver, PAGES } from '../../webdriver/driver';
+import { WINDOW_TITLES } from '../../constants';
+import TestDapp from '../pages/test-dapp';
+import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
+import ReviewPermissionsConfirmation from '../pages/confirmations/review-permissions-confirmation';
+import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
+import TokenTransferTransactionConfirmation from '../pages/confirmations/token-transfer-confirmation';
+import { CaveatTypes } from '../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 
 export type ConfirmationExpectedDetails = {
   chainId: string;
@@ -32,7 +35,7 @@ export const connectAccountToTestDapp = async (
     chainId?: string;
   } = {},
 ): Promise<void> => {
-  const { publicAddress, chainId = "0x539" } = options;
+  const { publicAddress, chainId = '0x539' } = options;
   const testDapp = new TestDapp(driver);
 
   // Step 1: Click connect account button in TestDApp
@@ -59,7 +62,9 @@ export async function openDappAndSwitchChain(
   // Open the dapp
   const testDapp = new TestDapp(driver);
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(driver);
+  const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
+    driver,
+  );
 
   // Open the dapp
   await driver.openNewPage(dappUrl);
@@ -80,7 +85,7 @@ export async function openDappAndSwitchChain(
   if (chainId) {
     await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.TestDApp);
     const getPermissionsRequest = JSON.stringify({
-      method: "wallet_getPermissions",
+      method: 'wallet_getPermissions',
     });
     const getPermissionsResult = await driver.executeScript(
       `return window.ethereum.request(${getPermissionsRequest})`,
@@ -93,25 +98,28 @@ export async function openDappAndSwitchChain(
             permission.parentCapability === PermissionNames.permittedChains,
         )
         ?.caveats.find(
-          (caveat: CaveatConstraint) => caveat.type === CaveatTypes.restrictNetworkSwitching,
+          (caveat: CaveatConstraint) =>
+            caveat.type === CaveatTypes.restrictNetworkSwitching,
         )?.value || [];
 
     const isAlreadyPermitted = permittedChains.includes(chainId);
 
-    const chainIdRequest = JSON.stringify({ method: "eth_chainId" });
+    const chainIdRequest = JSON.stringify({ method: 'eth_chainId' });
     const currentChainId = await driver.executeScript(
       `return window.ethereum.request(${chainIdRequest})`,
     );
     const isAlreadyActive = currentChainId === chainId;
 
     const switchChainRequest = JSON.stringify({
-      method: "wallet_switchEthereumChain",
+      method: 'wallet_switchEthereumChain',
       params: [{ chainId }],
     });
 
     if (!isAlreadyPermitted) {
       // Chain is not yet permitted — fire the switch and handle the review dialog.
-      await driver.executeScript(`window.ethereum.request(${switchChainRequest})`);
+      await driver.executeScript(
+        `window.ethereum.request(${switchChainRequest})`,
+      );
 
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -122,13 +130,18 @@ export async function openDappAndSwitchChain(
     } else if (!isAlreadyActive) {
       // Chain is permitted but not yet active for this dapp — switch silently
       // (no review dialog is shown for already-permitted chains).
-      await driver.executeScript(`window.ethereum.request(${switchChainRequest})`);
+      await driver.executeScript(
+        `window.ethereum.request(${switchChainRequest})`,
+      );
     }
     // else: already permitted and active — skip to avoid queuing a stale notification.
   }
 }
 
-export async function selectDappClickSend(driver: Driver, dappUrl: string): Promise<void> {
+export async function selectDappClickSend(
+  driver: Driver,
+  dappUrl: string,
+): Promise<void> {
   const testDapp = new TestDapp(driver);
   const transactionConfirmation = new TransactionConfirmation(driver);
 
@@ -145,10 +158,18 @@ export async function switchToDialogPopoverValidateDetailsRedesign(
 ): Promise<void> {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  const tokenTransferTransactionConfirmation = new TokenTransferTransactionConfirmation(driver);
-  await tokenTransferTransactionConfirmation.checkNetwork(expectedDetails.networkText);
+  const tokenTransferTransactionConfirmation =
+    new TokenTransferTransactionConfirmation(driver);
+  await tokenTransferTransactionConfirmation.checkNetwork(
+    expectedDetails.networkText,
+  );
 }
 
-export async function openPopupWithActiveTabOrigin(driver: Driver, origin: string): Promise<void> {
-  await driver.openNewPage(`${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`);
+export async function openPopupWithActiveTabOrigin(
+  driver: Driver,
+  origin: string,
+): Promise<void> {
+  await driver.openNewPage(
+    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
+  );
 }
