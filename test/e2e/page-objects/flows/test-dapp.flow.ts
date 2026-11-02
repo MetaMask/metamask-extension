@@ -128,10 +128,21 @@ export async function openDappAndSwitchChain(
       // Switch back to the dapp
       await driver.switchToWindowWithUrl(dappUrl);
     } else if (!isAlreadyActive) {
-      // Chain is permitted but not yet active for this dapp — switch silently
-      // (no review dialog is shown for already-permitted chains).
+      // Chain is permitted but not yet active — switch silently (no review dialog)
+      // and verify it took effect to catch any broken switch behaviour.
       await driver.executeScript(
         `window.ethereum.request(${switchChainRequest})`,
+      );
+      // Poll until the chain is active to confirm the switch completed.
+      // A silent switch on an already-permitted chain resolves quickly; 5 s is generous.
+      await driver.waitUntil(
+        async () => {
+          const activeChainId = await driver.executeScript(
+            `return window.ethereum.request(${chainIdRequest})`,
+          );
+          return activeChainId === chainId;
+        },
+        { interval: 100, timeout: 5000 },
       );
     }
     // else: already permitted and active — skip to avoid queuing a stale notification.
