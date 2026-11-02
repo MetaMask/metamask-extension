@@ -30,6 +30,7 @@ export function getMultichainTransactionsControllerMessenger(
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:accountTransactionsUpdated',
+      'AccountActivityService:transactionUpdated',
     ],
     actions: [
       'AccountsController:listMultichainAccounts',
