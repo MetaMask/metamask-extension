@@ -29,7 +29,6 @@ describe('ConnectionTrustSignalGate', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Mock useSelector to return true for the X.com warning flag
     mockUseSelector.mockReturnValue(true);
   });
 

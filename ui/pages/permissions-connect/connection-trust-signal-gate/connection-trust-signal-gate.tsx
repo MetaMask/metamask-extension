@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { isXDotCom } from '../../../../shared/lib/x-dot-com';
-import { getIsXDappConnectionWarningEnabled } from '../../../selectors/x-dapp-connection-warning';
+import { isXDotCom } from '#shared/lib/url-utils';
+import { getIsXDappConnectionWarningEnabled } from '#ui/selectors/dapp';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { TrustSignalModal } from '../../../components/app/trust-signal-modal/trust-signal-modal';
