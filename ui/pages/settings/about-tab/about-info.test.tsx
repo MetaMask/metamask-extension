@@ -7,6 +7,17 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AboutInfo from './about-info';
 
+jest.mock(
+  '../../../components/app/modals/visit-support-data-consent-modal',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: ({ isOpen }: { isOpen: boolean }) =>
+      isOpen ? <div data-testid="visit-support-data-consent-modal" /> : null,
+    useOpenSupport: (showConsentModal: () => void) => showConsentModal,
+  }),
+);
+
 describe('AboutInfo', () => {
   const mockStore = configureMockStore([thunk])(mockState);
   describe('validate links', () => {

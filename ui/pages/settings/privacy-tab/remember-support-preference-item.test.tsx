@@ -8,6 +8,33 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { setShouldShowSupportConsent } from '../../../store/actions';
 import { RememberSupportPreferenceToggleItem } from './remember-support-preference-item';
 
+jest.mock('../shared/settings-toggle-item', () => ({
+  SettingsToggleItem: ({
+    title,
+    description,
+    value,
+    onToggle,
+    dataTestId,
+  }: {
+    title: string;
+    description: string;
+    value: boolean;
+    onToggle: (value: boolean) => void;
+    dataTestId: string;
+  }) => (
+    <div>
+      <div>{title}</div>
+      <div>{description}</div>
+      <button
+        type="button"
+        data-testid={dataTestId}
+        value={value.toString()}
+        onClick={() => onToggle(value)}
+      />
+    </div>
+  ),
+}));
+
 jest.mock('../../../store/actions', () => ({
   setShouldShowSupportConsent: jest.fn((value: boolean) => ({
     type: 'SET_SHOULD_SHOW_SUPPORT_CONSENT',
