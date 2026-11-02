@@ -69,7 +69,6 @@ import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-c
 import { useDispatch } from '../../../store/hooks';
 import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 import WalletOverview from './wallet-overview';
-import { getBalanceAlignmentClassName } from './wallet-overview-layout';
 import CoinButtons from './coin-buttons';
 
 export type CoinOverviewProps = {
@@ -104,8 +103,7 @@ const BalanceOverviewSkeleton = () => {
     >
       <Box
         className={classnames(
-          'flex w-full max-w-[368px] flex-col justify-center gap-[2px]',
-          getBalanceAlignmentClassName(isFullScreenDesign),
+          'flex w-full max-w-[368px] flex-col justify-center gap-[2px] max-[490px]:items-start',
         )}
       >
         <Skeleton className="h-14 w-full rounded-lg md:h-[75px]" />
@@ -421,8 +419,8 @@ export const CoinOverview = ({
     >
       <div
         className={classnames(
-          `${classPrefix}-overview__balance`,
-          getBalanceAlignmentClassName(isFullScreenDesign),
+          `${classPrefix}-overview__balance max-[490px]:items-start`,
+          isFullScreenDesign ? 'items-start' : 'items-center',
         )}
       >
         <div className={`${classPrefix}-overview__primary-container`}>

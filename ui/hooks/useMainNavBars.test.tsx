@@ -17,7 +17,17 @@ const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 const renderUseMainNavBars = (pathname: string) =>
   renderHook(() => useMainNavBars(), {
     wrapper: ({ children }) => (
-      <MemoryRouter initialEntries={[pathname]}>{children}</MemoryRouter>
+      <MemoryRouter
+        initialEntries={[pathname]}
+        future={{
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          v7_startTransition: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          v7_relativeSplatPath: true,
+        }}
+      >
+        {children}
+      </MemoryRouter>
     ),
   }).result.current;
 

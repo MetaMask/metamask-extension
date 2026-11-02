@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon,
   ButtonIconSize,
-  ButtonIconVariant,
   FontWeight,
   IconName,
   Text,
