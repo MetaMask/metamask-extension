@@ -18,8 +18,6 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
   moduleNameMapper: {
-    // Stylesheets are imported as text via css-loader; Jest cannot parse them.
-    '\\.css$': '<rootDir>/test/mocks/style.ts',
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
     // Stub @metamask/perps-controller so every test suite can resolve it without
@@ -107,6 +105,10 @@ module.exports = {
   },
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    // ESM-only `@metamask` dependencies (e.g. `@metamask/eth-money-mpc-keyring`)
+    // ship only `.mjs` entry points, which Jest cannot load natively in CJS
+    // tests. Transpile them like the other transpiled ESM above.
+    '^.+\\.mjs$': 'babel-jest',
     '^.+\\.mts$': [
       'babel-jest',
       {

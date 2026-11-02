@@ -59,6 +59,10 @@ describe('getSavedSupportDataSharingPreference', () => {
     expect(select(false, true)).toBe(true);
     expect(select(false, false)).toBe(false);
   });
+
+  it('returns null when Redux state is unavailable', () => {
+    expect(getSavedSupportDataSharingPreference(undefined)).toBeNull();
+  });
 });
 
 describe('useOpenSupport', () => {

@@ -21,7 +21,7 @@ import type { MetricsProperties, TransactionMetricsBuilder } from './types';
 // TODO: Replace with direct `TransactionData` import once exported from @metamask/transaction-pay-controller
 type TransactionData = TransactionPayControllerState['transactionData'][string];
 
-const PAY_TYPES = [
+export const PAY_TYPES = [
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
   TransactionType.predictDeposit,

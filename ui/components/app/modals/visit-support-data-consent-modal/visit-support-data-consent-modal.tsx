@@ -18,6 +18,7 @@ import {
   TextVariant,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
+import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
 import { useDispatch } from '../../../../store/hooks';
 import {
   setShouldShowSupportConsent,
@@ -28,11 +29,14 @@ import { useSupportLinks } from './use-support-consent';
 type VisitSupportDataConsentModalProps = {
   onClose: () => void;
   isOpen: boolean;
+  /** The support page to open, for example with context for support. */
+  supportLink?: string;
 };
 
 const VisitSupportDataConsentModal = ({
   isOpen,
   onClose,
+  supportLink = SUPPORT_LINK as string,
 }: VisitSupportDataConsentModalProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -40,7 +44,7 @@ const VisitSupportDataConsentModal = ({
     getCustomerServiceTokenForSupport,
     openSupportLink,
     openSupportLinkWithoutUserData,
-  } = useSupportLinks();
+  } = useSupportLinks(supportLink);
   const [isLoading, setIsLoading] = useState(false);
   const [savePreference, setSavePreference] = useState(true);
   const wasCancelledRef = useRef(false);

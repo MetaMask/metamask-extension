@@ -6,7 +6,6 @@ import {
   useRef,
 } from 'react';
 import { useSelector } from 'react-redux';
-import type { WalletComplianceStatus } from '@metamask/compliance-controller';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   getIsComplianceEnabled,
@@ -86,8 +85,8 @@ export function useComplianceGate(address?: AddressInput) {
       return undefined;
     }
 
-    return await submitRequestToBackground<WalletComplianceStatus[]>(
-      'complianceCheckWalletsCompliance',
+    return await submitRequestToBackground(
+      'ComplianceController:checkWalletsCompliance',
       [addresses],
     );
   }, [addresses]);
@@ -158,7 +157,7 @@ export function useComplianceGate(address?: AddressInput) {
         // No prefetch for the current wallet yet (transient window right after a
         // switch, before the effect runs). Do a one-off check for the current
         // wallet, failing open on error.
-        let results: WalletComplianceStatus[] | undefined;
+        let results: { address: string; blocked: boolean }[] | undefined;
         try {
           results = await checkComplianceRef.current();
         } catch {

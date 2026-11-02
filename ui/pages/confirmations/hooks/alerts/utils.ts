@@ -1,3 +1,5 @@
+import { NameType } from '@metamask/name-controller';
+import type { Hex } from '@metamask/utils';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -9,6 +11,12 @@ import {
   AlertSeverity,
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  TrustSignalDisplayState,
+  TrustSignalResult,
+  UseTrustSignalRequest,
+} from '../../../../hooks/useTrustSignals';
+import { shortenAddress } from '../../../../helpers/utils/util';
 import { SecurityAlertResponse } from '../../types/confirm';
 import {
   REASON_TO_DESCRIPTION_TKEY,
@@ -16,6 +24,109 @@ import {
   REASON_TO_MARKETPLACE_NAME,
   REASON_TO_TITLE_TKEY,
 } from './constants';
+
+export type TrustSignalAlertTarget = {
+  address: string;
+  nestedTransactionIndex?: number;
+};
+
+/**
+ * Builds trust signal requests for confirmation alert targets.
+ *
+ * @param targets - Addresses and optional nested transaction indexes.
+ * @param chainId - Chain ID used for the trust signal lookup.
+ * @returns Trust signal lookup requests.
+ */
+export function buildTrustSignalRequests(
+  targets: TrustSignalAlertTarget[],
+  chainId: Hex | undefined,
+): UseTrustSignalRequest[] {
+  return targets.map(({ address }) => ({
+    value: address,
+    type: NameType.ETHEREUM_ADDRESS,
+    chainId,
+  }));
+}
+
+/**
+ * Maps trust signals to confirmation alerts while preserving nested indexes.
+ *
+ * @param options - Alert mapping options.
+ * @param options.targets - Addresses and optional nested transaction indexes.
+ * @param options.trustSignals - Trust signal results corresponding to targets.
+ * @param options.field - Base field key for inline alerts.
+ * @param options.keyPrefix - Prefix for unique alert keys.
+ * @param options.t - Translation function.
+ * @returns Warning and danger alerts for the supplied trust signals.
+ */
+export function buildTrustSignalAlerts({
+  targets,
+  trustSignals,
+  field,
+  keyPrefix,
+  t,
+}: {
+  targets: TrustSignalAlertTarget[];
+  trustSignals: TrustSignalResult[];
+  field: string;
+  keyPrefix: string;
+  t: ReturnType<typeof useI18nContext>;
+}): Alert[] {
+  return trustSignals.flatMap<Alert>((signal, index) => {
+    const { address, nestedTransactionIndex } = targets[index];
+    const isNested = nestedTransactionIndex !== undefined;
+    const alertField = isNested ? `${field}-${nestedTransactionIndex}` : field;
+    const keySuffix = isNested ? `-${nestedTransactionIndex}` : '';
+
+    if (signal.state === TrustSignalDisplayState.Malicious) {
+      return [
+        {
+          actions: [],
+          field: alertField,
+          isBlocking: false,
+          key: `${keyPrefix}Malicious${keySuffix}`,
+          message: t(
+            isNested
+              ? 'alertMessageNestedAddressTrustSignalMaliciousWithAddress'
+              : 'alertMessageAddressTrustSignalMaliciousWithAddress',
+            [shortenAddress(address)],
+          ),
+          reason: t(
+            isNested
+              ? 'alertReasonNestedAddressTrustSignalMalicious'
+              : 'alertReasonAddressTrustSignalMalicious',
+          ),
+          severity: Severity.Danger,
+        },
+      ];
+    }
+
+    if (signal.state === TrustSignalDisplayState.Warning) {
+      return [
+        {
+          actions: [],
+          field: alertField,
+          isBlocking: false,
+          key: `${keyPrefix}Warning${keySuffix}`,
+          message: t(
+            isNested
+              ? 'alertMessageNestedAddressTrustSignalWarningWithAddress'
+              : 'alertMessageAddressTrustSignalWarningWithAddress',
+            [shortenAddress(address)],
+          ),
+          reason: t(
+            isNested
+              ? 'alertReasonNestedAddressTrustSignalWarning'
+              : 'alertReasonAddressTrustSignalWarning',
+          ),
+          severity: Severity.Warning,
+        },
+      ];
+    }
+
+    return [];
+  });
+}
 
 /**
  * Returns the corresponding AlertSeverity based on the provided BlockaidResultType.

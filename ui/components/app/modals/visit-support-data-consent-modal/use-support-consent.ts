@@ -30,8 +30,11 @@ import { getCustomerServiceToken } from '../../../../store/actions';
  * @returns `true` (share), `false` (don't share) or `null` (ask).
  */
 export const getSavedSupportDataSharingPreference = (
-  state: PreferencesMetaMaskState,
+  state: PreferencesMetaMaskState | undefined,
 ): boolean | null => {
+  if (!state) {
+    return null;
+  }
   const { shouldShowSupportConsent, supportDataSharingPreference } =
     getPreferences(state);
   if (shouldShowSupportConsent !== false) {
@@ -44,7 +47,7 @@ export const getSavedSupportDataSharingPreference = (
  * Opens the support site with or without the user's data, tracking the click.
  * Shared by the consent modal and by entry points that apply a saved choice.
  */
-export const useSupportLinks = () => {
+export const useSupportLinks = (supportLink: string = SUPPORT_LINK as string) => {
   const version = process.env.METAMASK_VERSION as string;
   const { trackEvent, createEventBuilder } = useAnalytics();
   const segmentContext = useSegmentContext();
@@ -73,7 +76,7 @@ export const useSupportLinks = () => {
         customerServiceToken,
         ...(customerServiceToken ? { shieldCustomerId } : {}),
       };
-      const url = buildSupportLinkWithUserData(SUPPORT_LINK as string, params);
+      const url = buildSupportLinkWithUserData(supportLink, params);
       const redactedUrl = new URL(url);
       if (redactedUrl.searchParams.has('customer_service_token')) {
         redactedUrl.searchParams.set('customer_service_token', '[REDACTED]');
@@ -84,12 +87,12 @@ export const useSupportLinks = () => {
       );
       trackAndOpen(url);
     },
-    [version, shieldCustomerId, trackAndOpen],
+    [version, shieldCustomerId, trackAndOpen, supportLink],
   );
 
   const openSupportLinkWithoutUserData = useCallback(() => {
-    trackAndOpen(SUPPORT_LINK as string);
-  }, [trackAndOpen]);
+    trackAndOpen(supportLink);
+  }, [trackAndOpen, supportLink]);
 
   const getCustomerServiceTokenForSupport = useCallback(async () => {
     try {
