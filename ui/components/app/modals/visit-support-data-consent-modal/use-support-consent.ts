@@ -65,7 +65,7 @@ export const useSupportLinks = (
             [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
           })
           .build(),
-      );
+      ).catch(() => undefined);
       openWindow(url);
     },
     [trackEvent, createEventBuilder, segmentContext.page?.title],
