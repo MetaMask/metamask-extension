@@ -4,6 +4,7 @@ import {
   BoxFlexDirection,
   FontWeight,
   Text,
+  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -16,7 +17,7 @@ import type {
   MfaMethod,
   MfaReason,
 } from '../../../hooks/identity/mfa/engine/types';
-import { getErrorMessageKey } from '../labels';
+import { getErrorLink, getErrorMessageKey } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
 
 /**
@@ -36,6 +37,8 @@ type StepLayoutProps = {
   top?: ReactNode;
   children?: ReactNode;
   footer?: ReactNode;
+  /** Centers the content vertically, as on result screens. */
+  isVerticallyCentered?: boolean;
 };
 
 const STEP_TITLE_ID = 'mfa-step-title';
@@ -59,13 +62,17 @@ export const INPUT_A11Y_PROPS = {
  * @param props - The message's props.
  * @param props.isError - Whether it is an error, rather than a status.
  * @param props.children - The message.
+ * @param props.link - A link after the message, kept out of what the input's
+ * description reads.
  */
 export const StepMessage = ({
   isError = false,
   children,
+  link,
 }: {
   isError?: boolean;
   children: ReactNode;
+  link?: ReactNode;
 }) => (
   <Text
     asChild
@@ -74,11 +81,11 @@ export const StepMessage = ({
     color={isError ? TextColor.ErrorDefault : TextColor.TextAlternative}
   >
     <p
-      id={STEP_MESSAGE_ID}
       role={isError ? 'alert' : 'status'}
       data-testid={isError ? MfaFlowTestIds.ERROR : undefined}
     >
-      {children}
+      <span id={STEP_MESSAGE_ID}>{children}</span>
+      {link ? <> {link}</> : null}
     </p>
   </Text>
 );
@@ -138,8 +145,27 @@ export const StepError = ({
   method?: MfaMethod;
 }) => {
   const t = useI18nContext();
+  const link = getErrorLink(code);
   return (
-    <StepMessage isError>{t(getErrorMessageKey(code, method))}</StepMessage>
+    <StepMessage
+      isError
+      link={
+        link ? (
+          <TextButton asChild color={TextColor.PrimaryDefault}>
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid={MfaFlowTestIds.ERROR_LINK}
+            >
+              {t('learnMoreUpperCase')}
+            </a>
+          </TextButton>
+        ) : undefined
+      }
+    >
+      {t(getErrorMessageKey(code, method))}
+    </StepMessage>
   );
 };
 
@@ -150,6 +176,7 @@ const StepLayout = ({
   top,
   children,
   footer,
+  isVerticallyCentered = false,
 }: StepLayoutProps) => (
   <Box flexDirection={BoxFlexDirection.Column} className="flex-1 min-h-0">
     <Box
@@ -158,7 +185,9 @@ const StepLayout = ({
       paddingHorizontal={4}
       paddingTop={4}
       paddingBottom={6}
-      className="flex-1 overflow-y-auto"
+      className={`flex-1 overflow-y-auto${
+        isVerticallyCentered ? ' justify-center' : ''
+      }`}
     >
       {top}
       <StepHeader

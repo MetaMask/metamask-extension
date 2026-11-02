@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { context, getOctokit } from '@actions/github';
+import type { PullRequestChangedFile } from '@octokit/graphql-schema';
 import * as core from '@actions/core';
 
 // Get PR number from GitHub Actions environment variables
@@ -37,6 +38,17 @@ async function getPrInfo(): Promise<PRInfo | null> {
 }
 
 /**
+ * A GraphQL query response with a list of changed files.
+ */
+type PrFilesResponse = {
+  repository: {
+    pullRequest: {
+      files: { nodes: PullRequestChangedFile[] };
+    };
+  };
+};
+
+/**
  * Get the list of files changed in the pull request using GraphQL
  *
  * @returns List of files changed in the PR
@@ -44,7 +56,7 @@ async function getPrInfo(): Promise<PRInfo | null> {
 async function getPrFilesChanged() {
   const { owner, repo } = context.repo;
 
-  const response = await octokit.graphql({
+  const response = await octokit.graphql<PrFilesResponse>({
     query: `
         {
           repository(owner: "${owner}", name: "${repo}") {

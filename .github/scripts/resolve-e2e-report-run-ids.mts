@@ -46,18 +46,23 @@ async function resolveLatestArtifactRunId({
   // midnight UTC so the query is identical all day and independent of the machine's timezone.
   const artifactRetentionDays = 90;
   const oldestUsefulRun = new Date();
-  oldestUsefulRun.setUTCDate(oldestUsefulRun.getUTCDate() - artifactRetentionDays);
+  oldestUsefulRun.setUTCDate(
+    oldestUsefulRun.getUTCDate() - artifactRetentionDays,
+  );
   oldestUsefulRun.setUTCHours(0, 0, 0, 0);
 
-  const workflowResponses = github.paginate.iterator(github.rest.actions.listWorkflowRuns, {
-    owner,
-    repo,
-    branch,
-    workflow_id: workflow,
-    status: 'completed',
-    created: `>=${oldestUsefulRun.toISOString()}`,
-    per_page: 100,
-  });
+  const workflowResponses = github.paginate.iterator(
+    github.rest.actions.listWorkflowRuns,
+    {
+      owner,
+      repo,
+      branch,
+      workflow_id: workflow,
+      status: 'completed',
+      created: `>=${oldestUsefulRun.toISOString()}`,
+      per_page: 100,
+    },
+  );
 
   for await (const workflowResponse of workflowResponses) {
     for (const workflowRun of workflowResponse.data) {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -18,8 +19,11 @@ import {
   MFA_SETTINGS_TOTP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../../components/ui/transition';
+import { toast } from '../../../components/ui/toast/toast';
+import { getIsSocialLoginFlow } from '../../../selectors';
+import { getMfaUiKitMethods } from '../../../selectors/identity/mfa-ui-kit';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { isMfaKitEnabled, useMfa } from '../../../hooks/identity/mfa';
+import { isMfaDevBuild, useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
 import type { MfaDetailsMethod } from './mfa-method-details';
 import { MfaSettingsTestIds } from './test-ids';
@@ -30,6 +34,7 @@ const ROWS: {
   label: string;
   route: string;
   operation: string;
+  successMessage: string;
   testId: string;
 }[] = [
   {
@@ -37,6 +42,7 @@ const ROWS: {
     label: 'mfaMethodEmail',
     route: MFA_SETTINGS_EMAIL_ROUTE,
     operation: 'settings.addEmail',
+    successMessage: 'mfaSettingsEmailVerified',
     testId: MfaSettingsTestIds.EMAIL_ROW,
   },
   {
@@ -44,6 +50,7 @@ const ROWS: {
     label: 'mfaMethodTotp',
     route: MFA_SETTINGS_TOTP_ROUTE,
     operation: 'settings.addAuthenticatorApp',
+    successMessage: 'mfaSettingsAuthenticatorAppAdded',
     testId: MfaSettingsTestIds.TOTP_ROW,
   },
 ];
@@ -51,11 +58,15 @@ const ROWS: {
 /**
  * The profile's verification methods: "Add" sets one up, the chevron opens
  * one that is set up. Passkeys are mobile only, so they do not show here.
+ * Email is hidden for social login users: their login email is not a real
+ * second factor.
  */
 const MfaSettings = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { credentials, enroll } = useMfa();
+  const isSocialLogin = useSelector(getIsSocialLoginFlow);
+  const methods = useSelector(getMfaUiKitMethods);
   const [isEnrolling, setIsEnrolling] = useState(false);
   const activeTypes = new Set(
     credentials
@@ -69,13 +80,29 @@ const MfaSettings = () => {
       .catch(() => undefined);
   }, []);
 
-  const open = ({ method, route, operation }: (typeof ROWS)[number]) => {
-    if (activeTypes.has(method)) {
+  const rows = ROWS.map((row) => ({
+    ...row,
+    isSetUp: activeTypes.has(row.method),
+  })).filter(
+    ({ method, isSetUp }) =>
+      !(isSocialLogin && method === 'email_otp') &&
+      (isSetUp || methods.includes(method)),
+  );
+
+  const open = ({
+    method,
+    route,
+    operation,
+    successMessage,
+    isSetUp,
+  }: (typeof rows)[number]) => {
+    if (isSetUp) {
       transitionForward(() => navigate(route));
       return;
     }
     setIsEnrolling(true);
     enroll({ method, reason: { operation } })
+      .then(() => toast.success(t(successMessage)))
       .catch(() => undefined)
       .finally(() => setIsEnrolling(false));
   };
@@ -92,7 +119,7 @@ const MfaSettings = () => {
       >
         {t('mfaSettingsNotice')}
       </Text>
-      {ROWS.map((row) => (
+      {rows.map((row) => (
         <Box
           key={row.method}
           asChild
@@ -118,7 +145,7 @@ const MfaSettings = () => {
               alignItems={BoxAlignItems.Center}
               gap={1}
             >
-              {activeTypes.has(row.method) ? null : (
+              {row.isSetUp ? null : (
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
@@ -136,7 +163,7 @@ const MfaSettings = () => {
           </button>
         </Box>
       ))}
-      {isMfaKitEnabled() ? (
+      {isMfaDevBuild() ? (
         <Box padding={4}>
           <MfaQaPresets />
         </Box>

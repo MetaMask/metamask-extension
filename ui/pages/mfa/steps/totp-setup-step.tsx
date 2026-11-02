@@ -6,18 +6,21 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   Button,
-  ButtonIcon,
+  ButtonBase,
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Icon,
   IconColor,
   IconName,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useTheme } from '../../../hooks/useTheme';
 import { MfaFlowTestIds } from '../test-ids';
 import StepLayout, { type StepProps } from './step-layout';
 
@@ -42,6 +45,7 @@ const formatSetupKey = (secret: string) =>
  */
 const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
   const t = useI18nContext();
+  const theme = useTheme();
   const [isCopied, copy] = useCopyToClipboard({ sensitive: true });
 
   return (
@@ -72,22 +76,37 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
         {/* The QR code needs a light background to scan in dark mode. */}
         <Box
           alignItems={BoxAlignItems.Center}
-          className="self-center rounded-2xl bg-white p-3"
+          className={`self-center overflow-hidden rounded-2xl ${
+            theme === ThemeType.light ? 'bg-muted' : 'bg-white'
+          }`}
         >
           <img
             src={step.qrCode}
             alt={t('mfaTotpSetupQrAlt')}
-            width={200}
-            height={200}
+            width={184}
+            height={184}
+            className={
+              theme === ThemeType.light ? 'mix-blend-multiply' : undefined
+            }
             data-testid={MfaFlowTestIds.TOTP_QR_IMAGE}
           />
         </Box>
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
-          gap={3}
-          padding={4}
-          className="rounded-2xl bg-muted"
+          gap={4}
+          paddingVertical={2}
+        >
+          <Box className="flex-1 border-t-[1.5px] border-muted" />
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextMuted}>
+            {t('mfaTotpSetupManual')}
+          </Text>
+          <Box className="flex-1 border-t-[1.5px] border-muted" />
+        </Box>
+        <ButtonBase
+          className="h-auto w-full justify-start gap-3 rounded-2xl bg-muted p-4 text-left hover:bg-muted-hover active:bg-muted-pressed"
+          onClick={() => copy(step.secret)}
+          data-testid={MfaFlowTestIds.TOTP_COPY_KEY}
         >
           <Box
             flexDirection={BoxFlexDirection.Column}
@@ -109,16 +128,17 @@ const TotpSetupStep = ({ step, state, onAction }: StepProps<'totpSetup'>) => {
               {formatSetupKey(step.secret)}
             </Text>
           </Box>
-          <ButtonIcon
-            iconName={isCopied ? IconName.CopySuccess : IconName.Copy}
-            iconProps={
-              isCopied ? { color: IconColor.SuccessDefault } : undefined
-            }
-            ariaLabel={t('mfaTotpSetupCopy')}
-            onClick={() => copy(step.secret)}
-            data-testid={MfaFlowTestIds.TOTP_COPY_KEY}
+          <Icon
+            name={isCopied ? IconName.CopySuccess : IconName.Copy}
+            color={isCopied ? IconColor.SuccessDefault : undefined}
+            aria-hidden
           />
-        </Box>
+        </ButtonBase>
+        <Text asChild variant={TextVariant.BodySm}>
+          <span className="sr-only" role="status">
+            {isCopied ? t('mfaTotpSetupCopied') : null}
+          </span>
+        </Text>
       </Box>
     </StepLayout>
   );
