@@ -44,10 +44,8 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import {
-  getAmountInputFontSize,
-  getAmountInputTextStyle,
-} from '../../../helpers/utils/amount-input-font-size';
+import { getAmountInputTextStyle } from '../../../helpers/utils/amount-input-font-size';
+import { useAmountInputFontSize } from '../../../hooks/useAmountInputFontSize';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
@@ -84,8 +82,9 @@ const getBlockExplorerUrl = (
     : null;
 };
 
-// Width of the amount field beside the asset picker in the popup.
-const AMOUNT_FIELD_WIDTH = 219;
+// Popup width of the amount field beside the asset picker. Only used until the
+// field has been measured, so the first render matches the popup layout.
+const AMOUNT_FIELD_FALLBACK_WIDTH = 219;
 // Two stacked amount fields cannot fit the 88px start, so the Swap/Bridge
 // fields start lower on the same shared scale.
 const AMOUNT_FIELD_MAX_FONT_SIZE = 40;
@@ -189,14 +188,17 @@ export const BridgeInputGroup = ({
   // the placeholder, not a quoted amount, so the read-only row stays dimmed.
   const isReadOnlyPlaceholder =
     isAmountReadOnly && (amountValue === '' || amountValue === '0');
-  const amountStyle = getAmountInputTextStyle(
-    getAmountInputFontSize(
+  const { containerRef: amountContainerRef, fontSize: amountFontSize } =
+    useAmountInputFontSize(
       `${typeof amountInputPrefix === 'string' ? amountInputPrefix : ''}${amountValue || '0'}`,
       {
-        availableWidth: AMOUNT_FIELD_WIDTH,
+        fallbackWidth: AMOUNT_FIELD_FALLBACK_WIDTH,
         maxFontSize: AMOUNT_FIELD_MAX_FONT_SIZE,
       },
-    ),
+    );
+  const amountStyle = useMemo(
+    () => getAmountInputTextStyle(amountFontSize),
+    [amountFontSize],
   );
 
   useEffect(() => {
@@ -250,6 +252,7 @@ export const BridgeInputGroup = ({
           />
         ) : (
           <Box
+            ref={amountContainerRef}
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             gap={1}

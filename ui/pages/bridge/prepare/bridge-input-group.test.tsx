@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FeatureId,
   RequestStatus,
@@ -16,6 +16,10 @@ import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../test/lib/mock-resize-observer';
 import {
   getFromChains,
   getFromToken,
@@ -259,6 +263,85 @@ describe('BridgeInputGroup', () => {
     expect(screen.getByTestId('from-amount')).toHaveStyle({
       fontSize: '40px',
       lineHeight: '40px',
+    });
+  });
+
+  describe('amount font size', () => {
+    const longAmount = '500000000000000000';
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    it('shrinks a long amount to fit the popup field before it is measured', () => {
+      renderBridgeInputGroup(
+        {},
+        { amountFieldProps: { testId: 'from-amount', value: longAmount } },
+      );
+
+      expect(screen.getByTestId('from-amount')).toHaveStyle({
+        fontSize: '24px',
+      });
+    });
+
+    it('keeps a long amount at 40px in a wide expanded-view field', () => {
+      renderBridgeInputGroup(
+        {},
+        { amountFieldProps: { testId: 'from-amount', value: longAmount } },
+      );
+
+      act(() => resizeObserver.resize(626));
+
+      expect(screen.getByTestId('from-amount')).toHaveStyle({
+        fontSize: '40px',
+        lineHeight: '40px',
+      });
+    });
+
+    it('shrinks the amount when the field gets narrower', () => {
+      renderBridgeInputGroup(
+        {},
+        { amountFieldProps: { testId: 'from-amount', value: longAmount } },
+      );
+      act(() => resizeObserver.resize(626));
+
+      act(() => resizeObserver.resize(200));
+
+      expect(screen.getByTestId('from-amount')).toHaveStyle({
+        fontSize: '24px',
+      });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      const mockState = createBridgeMockStore();
+      const ControlledInputGroup = () => {
+        const [value, setValue] = useState('');
+        return (
+          <InputGroup
+            mockState={mockState}
+            amountFieldProps={{ testId: 'from-amount', value }}
+            onAmountChange={setValue}
+          />
+        );
+      };
+      renderWithProvider(<ControlledInputGroup />, configureStore(mockState));
+      act(() => resizeObserver.resize(626));
+      const input = screen.getByTestId('from-amount');
+
+      for (const value of ['5', '50000', '5000000000', longAmount]) {
+        fireEvent.change(input, { target: { value } });
+      }
+
+      expect(input).toHaveValue(longAmount);
+      expect(input).toHaveStyle({ fontSize: '40px' });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
     });
   });
 
