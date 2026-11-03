@@ -2,10 +2,12 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
+import classnames from 'clsx';
 import {
   BannerAlert,
   BannerAlertSeverity,
   Button,
+  ButtonSize,
   ButtonVariant,
   FontFamily,
   FontWeight,
@@ -29,6 +31,7 @@ import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
 import { useScrollContainerGutterWidth } from '../../contexts/scroll-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useFullScreenDesign } from '../../hooks/useFullScreenDesign';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
@@ -114,7 +117,7 @@ const formatInterestEarned = (value: string | undefined) => {
   return earnings.lessThan(0) ? `-${formatted}` : formatted;
 };
 
-type ActionCardProps = {
+type ActionButtonProps = {
   icon: IconName;
   label: string;
   onClick?: () => void;
@@ -122,26 +125,39 @@ type ActionCardProps = {
   testId?: string;
 };
 
-const MoneyActionCard = ({
+const MoneyActionButton = ({
   icon,
   label,
   onClick,
   disabled,
   testId,
-}: ActionCardProps) => {
+}: ActionButtonProps) => {
+  const isFullScreenDesign = useFullScreenDesign();
+
   return (
-    <button
-      type="button"
-      disabled={disabled}
+    <Button
+      variant={ButtonVariant.Secondary}
+      size={ButtonSize.Lg}
+      startIconName={icon}
+      startIconProps={
+        isFullScreenDesign
+          ? undefined
+          : { size: IconSize.Lg, color: IconColor.IconDefault }
+      }
+      textProps={
+        isFullScreenDesign ? undefined : { variant: TextVariant.BodySm }
+      }
+      isDisabled={disabled}
       onClick={onClick}
       data-testid={testId}
-      className="flex h-[76px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl bg-background-muted disabled:cursor-default disabled:opacity-100"
+      className={classnames(
+        'flex-1',
+        !isFullScreenDesign &&
+          'h-[76px] flex-col gap-y-0.5 rounded-xl px-0 opacity-100',
+      )}
     >
-      <Icon name={icon} size={IconSize.Lg} color={IconColor.IconDefault} />
-      <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-        {label}
-      </Text>
-    </button>
+      {label}
+    </Button>
   );
 };
 
@@ -149,6 +165,7 @@ export function MoneyHomePage() {
   const t = useI18nContext();
   const scrollbarGutterWidth = useScrollContainerGutterWidth();
   const navigate = useNavigate();
+  const isFullScreenDesign = useFullScreenDesign();
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
@@ -446,8 +463,18 @@ export function MoneyHomePage() {
           </div>
         ) : null}
 
-        <div className="flex flex-col items-center gap-2 px-4 pt-2 mb-5">
-          <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
+        <div
+          className={classnames(
+            'flex flex-col gap-2 px-4 pt-2 mb-5',
+            !isFullScreenDesign && 'items-center',
+          )}
+        >
+          <div
+            className={classnames(
+              'flex w-full flex-col gap-1',
+              !isFullScreenDesign && 'max-w-[784px] sm:items-center',
+            )}
+          >
             <SensitiveText
               variant={TextVariant.AmountDisplayLg}
               fontFamily={FontFamily.Hero}
@@ -504,15 +531,22 @@ export function MoneyHomePage() {
             </div>
           </div>
 
-          <div className="mt-2 flex w-full max-w-[389px] gap-2 self-start pt-2 sm:self-center">
-            <MoneyActionCard
+          <div
+            className={classnames(
+              'mt-2 flex w-full gap-2 pt-2',
+              isFullScreenDesign
+                ? 'max-w-sm mb-2'
+                : 'max-w-[389px] self-start sm:self-center',
+            )}
+          >
+            <MoneyActionButton
               icon={IconName.Add}
               label={t('moneyAdd')}
               onClick={handleAddFundsFromActionRow}
               disabled={isDepositLoading}
               testId="money-add-button"
             />
-            <MoneyActionCard
+            <MoneyActionButton
               icon={IconName.Arrow2UpRight}
               label={t('moneySend')}
               onClick={handleSend}
@@ -522,38 +556,53 @@ export function MoneyHomePage() {
           </div>
 
           {showFundedLayout ? null : (
-            <section className="mt-1 flex w-full max-w-[389px] flex-col gap-4 overflow-hidden rounded-2xl bg-background-muted p-4">
+            <section
+              data-testid="money-fund-card"
+              className={classnames(
+                'mt-1 flex w-full gap-4 overflow-hidden rounded-2xl bg-background-muted p-4',
+                isFullScreenDesign ? 'flex-row' : 'max-w-[389px] flex-col',
+              )}
+            >
               <img
                 src={MONEY_ONBOARDING_ARTWORK}
                 alt=""
-                className="h-[185px] w-full rounded-[14px] object-cover"
+                className={classnames(
+                  'rounded-[14px] object-cover',
+                  isFullScreenDesign
+                    ? 'w-56 shrink-0 self-stretch'
+                    : 'h-[185px] w-full',
+                )}
               />
-              <div>
-                <Text
-                  variant={TextVariant.HeadingLg}
-                  fontWeight={FontWeight.Bold}
-                >
-                  {apyDisplay
-                    ? t('moneyEarnApyTitle', [apyDisplay])
-                    : t('moneyEarnTitle')}
-                </Text>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  color={TextColor.TextAlternative}
-                  className="mt-1"
-                >
-                  {apyDisplay
-                    ? t('moneyFundDescriptionWithApy', [apyDisplay])
-                    : t('moneyFundDescription')}
-                </Text>
-              </div>
-              <Button
-                className="w-full"
-                isLoading={isDepositLoading}
-                onClick={handleAddFundsFromFundCard}
+              <div
+                className={classnames(
+                  'flex min-w-0 flex-1 flex-col gap-4',
+                  isFullScreenDesign && 'items-start justify-center',
+                )}
               >
-                {t('addFunds')}
-              </Button>
+                <div>
+                  <h2 className="text-s-heading-lg font-bold">
+                    {apyDisplay
+                      ? t('moneyEarnApyTitle', [apyDisplay])
+                      : t('moneyEarnTitle')}
+                  </h2>
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.TextAlternative}
+                    className="mt-1"
+                  >
+                    {apyDisplay
+                      ? t('moneyFundDescriptionWithApy', [apyDisplay])
+                      : t('moneyFundDescription')}
+                  </Text>
+                </div>
+                <Button
+                  className={isFullScreenDesign ? undefined : 'w-full'}
+                  isLoading={isDepositLoading}
+                  onClick={handleAddFundsFromFundCard}
+                >
+                  {t('addFunds')}
+                </Button>
+              </div>
             </section>
           )}
         </div>
