@@ -38,12 +38,8 @@ export const migrate = (async (versionedData, changedControllers) => {
     return;
   }
 
+  // Nothing to clean up when there are no network configurations.
   if (!hasProperty(networkController, 'networkConfigurationsByChainId')) {
-    captureException(
-      new Error(
-        `Migration ${version}: Missing networkConfigurationsByChainId property from NetworkController`,
-      ),
-    );
     return;
   }
 

@@ -212,7 +212,7 @@ describe(`migration #${VERSION}`, () => {
     },
   );
 
-  it('captures an exception when networkConfigurationsByChainId is missing', async () => {
+  it('leaves the state untouched when networkConfigurationsByChainId is missing', async () => {
     const oldStorage = createState({});
     const before = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
@@ -221,11 +221,7 @@ describe(`migration #${VERSION}`, () => {
 
     expect(oldStorage.data).toStrictEqual(before.data);
     expect(changedControllers).toStrictEqual(new Set());
-    expect(mockedCaptureException).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${VERSION}: Missing networkConfigurationsByChainId property from NetworkController`,
-      ),
-    );
+    expect(mockedCaptureException).not.toHaveBeenCalled();
   });
 
   it('captures an exception when networkConfigurationsByChainId is invalid', async () => {
