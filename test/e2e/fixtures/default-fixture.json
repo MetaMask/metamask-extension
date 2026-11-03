@@ -81,21 +81,72 @@
     "AccountsController": {
       "internalAccounts": {
         "accounts": {
+          "25c24b39-ce13-4082-aa1f-337199cdf204": {
+            "address": "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252",
+            "id": "25c24b39-ce13-4082-aa1f-337199cdf204",
+            "metadata": {
+              "importTime": 1793717662258,
+              "keyring": { "type": "snap" },
+              "lastSelected": 0,
+              "name": "",
+              "snap": { "id": "npm:@metamask/bitcoin-wallet-snap" }
+            },
+            "methods": [
+              "signPsbt",
+              "computeFee",
+              "fillPsbt",
+              "broadcastPsbt",
+              "sendTransfer",
+              "getUtxo",
+              "listUtxos",
+              "publicDescriptor",
+              "signMessage"
+            ],
+            "options": {
+              "entropy": {
+                "derivationPath": "m/84'/0'/0'",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "entropySource": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+              "exportable": true
+            },
+            "scopes": ["bip122:000000000019d6689c085ae165831e93"],
+            "type": "bip122:p2wpkh"
+          },
+          "5073997f-c623-4a3e-a78b-d8ecb82f1e5a": {
+            "address": "TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
+            "id": "5073997f-c623-4a3e-a78b-d8ecb82f1e5a",
+            "metadata": {
+              "importTime": 1793717662299,
+              "keyring": { "type": "snap" },
+              "lastSelected": 0,
+              "name": "",
+              "snap": { "id": "npm:@metamask/tron-wallet-snap" }
+            },
+            "methods": ["signMessage", "signTransaction"],
+            "options": {
+              "entropy": {
+                "derivationPath": "m/44'/195'/0'/0/0",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "exportable": true
+            },
+            "scopes": ["tron:728126428"],
+            "type": "tron:eoa"
+          },
           "688e01b8-3134-4ef4-80e6-8772bab38ef7": {
             "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
             "id": "688e01b8-3134-4ef4-80e6-8772bab38ef7",
             "metadata": {
               "importTime": 1770282512702,
-              "keyring": {
-                "type": "Snap Keyring"
-              },
+              "keyring": { "type": "snap" },
               "lastSelected": 0,
               "name": "",
-              "snap": {
-                "enabled": true,
-                "id": "npm:@metamask/solana-wallet-snap",
-                "name": "Solana"
-              }
+              "snap": { "id": "npm:@metamask/solana-wallet-snap" }
             },
             "methods": [
               "signAndSendTransaction",
@@ -121,14 +172,35 @@
             ],
             "type": "solana:data-account"
           },
+          "68b9d5f7-1d67-4c5e-91b6-84e42c37e7e9": {
+            "address": "GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K",
+            "id": "68b9d5f7-1d67-4c5e-91b6-84e42c37e7e9",
+            "metadata": {
+              "importTime": 1793717662335,
+              "keyring": { "type": "snap" },
+              "lastSelected": 0,
+              "name": "",
+              "snap": { "id": "npm:@metamask/stellar-wallet-snap" }
+            },
+            "methods": ["signMessage", "signTransaction", "signAuthEntry"],
+            "options": {
+              "entropy": {
+                "derivationPath": "m/44'/148'/0'",
+                "groupIndex": 0,
+                "id": "01KGPGYE2JJGMXDJPEVXKPJ1JG",
+                "type": "mnemonic"
+              },
+              "exportable": true
+            },
+            "scopes": ["stellar:pubnet"],
+            "type": "stellar:account"
+          },
           "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
             "id": "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
             "metadata": {
               "importTime": 1770282498132,
-              "keyring": {
-                "type": "HD Key Tree"
-              },
+              "keyring": { "type": "HD Key Tree" },
               "lastSelected": 1770282498132,
               "name": ""
             },
@@ -435,7 +507,7 @@
       "lastSyncedTimestamp": -1
     },
     "KeyringController": {
-      "vault": "{\"data\":\"NExj9MOjXXpo3+Vu6YkTqT8gTqlu8OAAUKJQpdWeYXEwDSSRf0itJhwDxECqgm3rE+DEstjsEzsCTH3g1gKp6uzDU4XcE07+XzekuLatveN3R8d95RFh4ECoLDdfbcVfMyOjr3EUrM0dDq1eBJjWQZxbbeCUHh3VnYap0g9uHiIdCmU7PKDL4h8PPmsLS3c2LQ2Boa6q/johhNBxCmiySWgkTv1Pi0iTxhhCO+qwkJxeLf1u8b5TmcpgKGOg+n0phCf3/zrQ7brpEeCA8R3zoFmqMM7xr5xZke3YY4ef6JKoZEU+3lkMCs9IHnvWAUnDaSJmAIzTrfhOe8AmDzXwbooXd24NBXZUyG1G/gZWDlW1Ku4it4GqYj7lF0GH3vXVPHwK+FR3LdjqOtrcPfyJCPdTKyEVzMSttnTyjpIJiWAwY21AQrvKBHMfCfZd2/LzfN0TsxBKDAi/rPsA/On+Ng+ZDcmMlstvALF3LKSWv15OqH7e/xn/IffURGeI2OU73jTjNCbGzW2hqV2VK+6UaQSv93ZH653fmT+1komK3Xitt15+yMYbbSRVubqs5gSwvKs0tiKYn381mmRLHy1dCmj0fjTlM4UDjSCTS9Ce3ioJlKRRw66/FQRxYYA6mQF0vzrbIvVh2x2PHrq8ZgJ4PyWaYdaMUA0bZyzol2hFBNFXcOmfQEzdYul1vGpEHRhwbW2oor2glEh3CAgn9kG3JUHsnHIhyjc7J+jpFd0UBgwS2d8UCABSU0g/YSTwcHHOL+iTRQnr4ytvLBTeJG6lzH2fyhnrBu2/vPWLCQ8XD72fVmhrBz/XGfQtk8trspaTeCM5B8zegUS7sl1IKIw7H5Z7E3eQXH/AwiqmkSt5h9lAo4q5IKJF7uB4q6CFwqfJXoT4lCoqj1uO7bPUwpO7bWUnbbPlUOlU/kpMxHjU1UDMmvN9lG2Qd0KQHKGeFMigjL0t5JYj56r1sEj6bWdjWMrq62edaLGrhzQyXp2UiISwCELlIqy3cz0tollOTPOupkTFK5sHyTKH5PbPJtFYOiAMir4JY39LXYgcorim4hLQwG5ZB1Ew8n9sDA2KfcfI0Bs+tiZOoSGCcycrpfO5J6xP2TsXpAHr8EzRpVCE7OoltaLgP1IZC1zmdfkRXUww9+Gw0Pgwy3cxYljwv5Kg2FCfkb0pKARUck1eNC/4dFIAw0UIC9VzYPNt/t2vJoe+lC4I8UpctCyjYTTq0jfrLVoqFUcHnKAH3ynDmMPhsk+66He966O4OfqhKXJYm3e6weIGZTCGfe8BKmhPNiL5VJ52tsMIwKbXgN+ll8Oi9/a2fzs3wtESKogCJiR7M/nevekDnq/dEL6U6OaArkCK9NiLLevHt5FfDr/Qt3J6lfwdAkzjAhk5oTTWqGhR/4KK4+e0lqgaBPMGVcFs9BAyRlnIPeH24CvvZJ6KAsjMt/FcfnwHqO2mz8N5byAg5bcvc0Zj7w==\",\"iv\":\"dljVsphzXsTe/YGaUn3hGg==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"/zucSs8SpE/7JyE2eklkZ8HvklEWtSGmhBo67Vx5Jfo=\"}"
+      "vault": "{\"data\":\"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\",\"iv\":\"iIdWKvE/fWbqQ0atJ3Swhg==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"/zucSs8SpE/7JyE2eklkZ8HvklEWtSGmhBo67Vx5Jfo=\"}"
     },
     "LoggingController": {
       "logs": {}
