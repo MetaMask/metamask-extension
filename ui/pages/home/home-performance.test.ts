@@ -34,6 +34,21 @@ describe('Home readiness', () => {
     jest.useRealTimers();
   });
 
+  it('replaces the previous router subscription when registering again', async () => {
+    const firstRouter = router;
+    register();
+    router = createMemoryRouter([{ path: '*', element: null }]);
+    register();
+
+    await firstRouter.navigate('/settings');
+    renderHook(() => useHomeReady(true));
+    act(() => jest.advanceTimersByTime(48));
+
+    expect(measurement.discard).not.toHaveBeenCalled();
+    expect(measurement.reportReady).toHaveBeenCalledTimes(1);
+    firstRouter.dispose();
+  });
+
   it('reports once after paint, including StrictMode replay', async () => {
     register();
     expect(registerDocumentLoadMeasurement).toHaveBeenCalledWith({

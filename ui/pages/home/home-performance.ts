@@ -27,6 +27,8 @@ export function registerHomeMeasurement(
   },
   router: ReturnType<typeof createHashRouter>,
 ): void {
+  unsubscribe?.();
+  unsubscribe = undefined;
   measurement = undefined;
   const initialLocation = router.state.location;
   if (
