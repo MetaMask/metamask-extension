@@ -12,19 +12,19 @@ import {
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
 import {
-  Box as DsBox,
+  Box,
   BoxAlignItems,
   BoxFlexDirection,
   FontFamily,
   Input,
   Skeleton,
-  Text as DsText,
-  TextVariant as DsTextVariant,
+  Text,
+  TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
 import {
-  IconName,
-  Text,
+  IconName as LegacyIconName,
+  Text as LegacyText,
   ButtonLink,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -32,12 +32,12 @@ import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
-  FontWeight,
-  IconColor,
-  TextAlign,
+  FontWeight as LegacyFontWeight,
+  IconColor as LegacyIconColor,
+  TextAlign as LegacyTextAlign,
   JustifyContent,
-  TextVariant,
-  TextColor,
+  TextVariant as LegacyTextVariant,
+  TextColor as LegacyTextColor,
 } from '../../../helpers/constants/design-system';
 import {
   getFromTokenBalance,
@@ -245,7 +245,7 @@ export const BridgeInputGroup = ({
             style={{ flex: 1, minWidth: 0 }}
           />
         ) : (
-          <DsBox
+          <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
             gap={1}
@@ -257,13 +257,13 @@ export const BridgeInputGroup = ({
             onClick={() => inputRef.current?.focus()}
           >
             {amountInputPrefix ? (
-              <DsText
-                variant={DsTextVariant.AmountDisplayLg}
+              <Text
+                variant={TextVariant.AmountDisplayLg}
                 fontFamily={FontFamily.Hero}
                 style={amountStyle}
               >
                 {amountInputPrefix}
-              </DsText>
+              </Text>
             ) : null}
             <Input
               ref={inputRef}
@@ -273,7 +273,7 @@ export const BridgeInputGroup = ({
               isReadOnly={amountFieldProps.readOnly}
               isDisabled={amountFieldProps.disabled}
               isStateStylesDisabled
-              textVariant={DsTextVariant.AmountDisplayLg}
+              textVariant={TextVariant.AmountDisplayLg}
               className="min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
               style={{ ...amountStyle, transition: 'font-size 0.1s' }}
               type="text"
@@ -301,7 +301,7 @@ export const BridgeInputGroup = ({
                 onAmountChange?.(cleanedValue ?? '');
               }}
             />
-          </DsBox>
+          </Box>
         )}
         <SelectedAssetButton
           onClick={() => {
@@ -329,10 +329,10 @@ export const BridgeInputGroup = ({
       <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
         {onAmountTypeToggle ? (
           <ButtonLink
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            endIconName={IconName.SwapVertical}
-            endIconProps={{ color: IconColor.iconAlternative }}
+            variant={LegacyTextVariant.bodyMd}
+            color={LegacyTextColor.textAlternative}
+            endIconName={LegacyIconName.SwapVertical}
+            endIconProps={{ color: LegacyIconColor.iconAlternative }}
             ellipsis
             style={{ textDecoration: 'none' }}
             data-testid="bridge-input-denomination-toggle"
@@ -344,29 +344,29 @@ export const BridgeInputGroup = ({
             {secondaryDisplay}
           </ButtonLink>
         ) : (
-          <Text
-            variant={TextVariant.bodyMd}
-            fontWeight={FontWeight.Normal}
+          <LegacyText
+            variant={LegacyTextVariant.bodyMd}
+            fontWeight={LegacyFontWeight.Normal}
             color={
               isAmountReadOnly && isEstimatedReturnLow
-                ? TextColor.warningDefault
-                : TextColor.textAlternative
+                ? LegacyTextColor.warningDefault
+                : LegacyTextColor.textAlternative
             }
-            textAlign={TextAlign.End}
+            textAlign={LegacyTextAlign.End}
             ellipsis
           >
             {secondaryDisplay}
-          </Text>
+          </LegacyText>
         )}
         {!isAmountReadOnly && balanceAmount && token && (
-          <Text
+          <LegacyText
             display={Display.Flex}
             gap={1}
-            variant={TextVariant.bodyMd}
+            variant={LegacyTextVariant.bodyMd}
             color={
               isInsufficientBalance
-                ? TextColor.errorDefault
-                : TextColor.textAlternative
+                ? LegacyTextColor.errorDefault
+                : LegacyTextColor.textAlternative
             }
             style={{
               cursor: 'default',
@@ -376,23 +376,23 @@ export const BridgeInputGroup = ({
             {formattedTokenAmount}
             {onMaxButtonClick && (
               <ButtonLink
-                variant={TextVariant.bodyMd}
+                variant={LegacyTextVariant.bodyMd}
                 onClick={() => onMaxButtonClick(balanceAmount)}
               >
                 {t('max')}
               </ButtonLink>
             )}
-          </Text>
+          </LegacyText>
         )}
         {isAmountReadOnly &&
           token &&
           selectedChainId &&
           !isNativeAddress(assetReference) && (
-            <Text
+            <LegacyText
               display={Display.Flex}
               gap={1}
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
+              variant={LegacyTextVariant.bodyMd}
+              color={LegacyTextColor.textAlternative}
               onClick={() => {
                 handleAddressClick();
               }}
@@ -408,7 +408,7 @@ export const BridgeInputGroup = ({
                 truncatedEndChars: 4,
                 skipCharacterInEnd: false,
               })}
-            </Text>
+            </LegacyText>
           )}
       </Row>
     </Column>
