@@ -176,7 +176,7 @@
   },
   "previewBuilds": {
     "@metamask/network-controller": {
-      "type": "breaking",
+      "type": "non-breaking",
       "previewVersion": "37.1.1-preview-3a0f39d23"
     }
   },
