@@ -1,0 +1,197 @@
+# Weekday release Slack summaries (Jira MCRM-155).
+#
+# Replaces Zapier Zaps 596 (release blocker summary) and 597 (release
+# validation summary, including the release PR body sign-off rewrite).
+# The logic lives in MetaMask/github-tools
+# `.github/actions/release-slack-summaries`. This workflow only calls it.
+#
+# Token exchange allows exactly this file at refs/heads/main in the
+# `release-notifications` environment
+# (consensys-vertical-apps/token-exchange-service#221). The file name,
+# the environment, and the permissions below must stay in lockstep with
+# that policy. Schedules run from the default branch only.
+#
+# Safe by default: unset GA_MODE and GA_MODE=test post only to
+# vars.RELEASE_SUMMARY_TEST_CHANNEL and never write a PR body.
+# GA_MODE=live is the only value that uses the real release channels
+# and may rewrite the release PR body.
+
+name: Release Slack summaries
+
+on:
+  schedule:
+    # 10:16 UTC, Monday–Friday: blocker summary (Zap 596).
+    - cron: '16 10 * * 1-5'
+    # 10:21 UTC, Monday–Friday: release validation summary (Zap 597).
+    - cron: '21 10 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'blocker-summary (Zap 596) or release-validation (Zap 597)'
+        required: true
+        type: choice
+        options:
+          - blocker-summary
+          - release-validation
+      dry-run:
+        description: 'Build the Slack message and PR-body diff into the job summary only. Posts and writes nothing.'
+        required: false
+        type: boolean
+        default: true
+      test-channel:
+        description: 'Post only to this Slack channel (#name or ID). When set, the run does not write a PR body. Leave empty to follow GA_MODE.'
+        required: false
+        type: string
+        default: ''
+
+# Least privilege for the OIDC token exchange. pull_requests: write is
+# requested on the exchanged token below, not on GITHUB_TOKEN.
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: release-slack-summaries-${{ github.event.schedule || inputs.mode || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  release-slack-summaries:
+    name: Release Slack summaries
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Policy pin: environment name must stay `release-notifications`.
+    environment: release-notifications
+    steps:
+      - name: Resolve mode and safety flags
+        id: flags
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_MODE: ${{ inputs.mode }}
+          INPUT_DRY_RUN: ${{ inputs.dry-run }}
+          INPUT_TEST_CHANNEL: ${{ inputs.test-channel }}
+          GA_MODE: ${{ vars.GA_MODE }}
+          TEST_CHANNEL_VAR: ${{ vars.RELEASE_SUMMARY_TEST_CHANNEL }}
+        run: |
+          set -euo pipefail
+
+          event_name="${EVENT_NAME:-}"
+          schedule="${SCHEDULE:-}"
+          input_mode="${INPUT_MODE:-}"
+          input_dry_run="${INPUT_DRY_RUN:-}"
+          input_test_channel="${INPUT_TEST_CHANNEL:-}"
+          ga_mode="${GA_MODE:-}"
+          default_test_channel="${TEST_CHANNEL_VAR:-}"
+
+          if [[ "$event_name" == "workflow_dispatch" ]]; then
+            mode="$input_mode"
+            # Only an explicit false posts. A missing value stays a dry run.
+            if [[ "$input_dry_run" == "false" ]]; then
+              dry_run=false
+            else
+              dry_run=true
+            fi
+            test_channel="$input_test_channel"
+          elif [[ "$event_name" == "schedule" ]]; then
+            dry_run=false
+            test_channel=""
+            # Quote the patterns. Unquoted `*` is a glob, so it would
+            # also match other hours in the same weekday window.
+            case "$schedule" in
+              '16 10 * * 1-5')
+                mode="blocker-summary"
+                ;;
+              '21 10 * * 1-5')
+                mode="release-validation"
+                ;;
+              *)
+                echo "::error::Unexpected schedule: ${schedule}"
+                exit 1
+                ;;
+            esac
+          else
+            echo "::error::Unexpected event: ${event_name}"
+            exit 1
+          fi
+
+          case "$mode" in
+            blocker-summary | release-validation) ;;
+            *)
+              echo "::error::mode must be blocker-summary or release-validation"
+              exit 1
+              ;;
+          esac
+
+          # Exact "live" is the only value that may reach real channels.
+          # Unset, "test", and anything else stay on the test channel.
+          # The PR body rewrite belongs to release-validation (Zap 597) only.
+          allow_pr_write=false
+          if [[ "$ga_mode" == "live" ]]; then
+            if [[ "$dry_run" == "false" && -z "$test_channel" && "$mode" == "release-validation" ]]; then
+              allow_pr_write=true
+            fi
+          else
+            if [[ -z "$test_channel" ]]; then
+              test_channel="$default_test_channel"
+            fi
+            if [[ -z "$test_channel" ]]; then
+              echo "::warning::GA_MODE is not live and no test channel is set; forcing dry-run so nothing is posted."
+              dry_run=true
+            fi
+          fi
+
+          test_channel="${test_channel//$'\n'/}"
+          test_channel="${test_channel//$'\r'/}"
+
+          {
+            echo "mode=${mode}"
+            echo "dry-run=${dry_run}"
+            echo "allow-pr-write=${allow_pr_write}"
+            echo "test-channel=${test_channel}"
+          } >> "$GITHUB_OUTPUT"
+
+          if [[ -n "$test_channel" ]]; then
+            echo "Resolved test-channel=${test_channel}"
+          else
+            echo "Resolved test-channel is unset"
+          fi
+          echo "Resolved mode=${mode} dry-run=${dry_run} allow-pr-write=${allow_pr_write} ga-mode=${ga_mode:-<unset>}"
+
+      - name: Get repository token
+        id: repo-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: ${{ github.repository }}
+          permissions: |
+            pull_requests: write
+
+      - name: Get planning token
+        id: planning-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/MetaMask-planning
+          permissions: |
+            contents: read
+
+      # TODO(MCRM-155): Replace TODO-release-slack-summaries with a pinned
+      # MetaMask/github-tools ref (release tag or commit SHA) once
+      # `.github/actions/release-slack-summaries` merges. The action is still
+      # a draft pull request and is not on a release tag yet.
+      # jira-release-blocker-jql is omitted on purpose: the Jira filter does
+      # not exist yet, and the action skips that section when the input is empty.
+      - name: Publish release Slack summary
+        uses: MetaMask/github-tools/.github/actions/release-slack-summaries@TODO-release-slack-summaries
+        with:
+          mode: ${{ steps.flags.outputs.mode }}
+          platform: extension
+          github-token: ${{ steps.repo-token.outputs.token }}
+          planning-token: ${{ steps.planning-token.outputs.token }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          jira-base-url: https://consensyssoftware.atlassian.net
+          jira-email: ${{ secrets.JIRA_EMAIL }}
+          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+          test-channel: ${{ steps.flags.outputs.test-channel }}
+          dry-run: ${{ steps.flags.outputs.dry-run }}
+          allow-pr-write: ${{ steps.flags.outputs.allow-pr-write }}
