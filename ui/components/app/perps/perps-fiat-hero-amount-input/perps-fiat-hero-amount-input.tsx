@@ -14,33 +14,12 @@ import {
   Skeleton,
 } from '@metamask/design-system-react';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
+import {
+  AMOUNT_INPUT_MAX_FONT_SIZE,
+  getAmountInputFontSize,
+  getAmountInputTextStyle,
+} from '../../../../helpers/utils/amount-input-font-size';
 import type { PerpsFiatHeroAmountInputProps } from './perps-fiat-hero-amount-input.types';
-
-const MAX_FONT_SIZE = 88;
-
-/**
- * Font size in px for the typed amount, matching the Mobile MM Pay amount
- * (88/40/30/20). The 88px step ends one character earlier than on Mobile so
- * that eight of Grotzec's widest digits fit the 328px popup content width.
- *
- * Visual twin of confirmations `CustomAmount` for standalone Perps screens.
- * Keep in sync manually with `ui/pages/confirmations/.../custom-amount.tsx`.
- *
- * @param length - Number of characters in the typed amount.
- * @returns The font size in px. Line height equals the font size.
- */
-export function getPerpsHeroAmountFontSize(length: number): number {
-  if (length <= 7) {
-    return MAX_FONT_SIZE;
-  }
-  if (length <= 13) {
-    return 40;
-  }
-  if (length <= 18) {
-    return 30;
-  }
-  return 20;
-}
 
 /** Enough for realistic USD entry; bounds worst-case validation cost. */
 const MAX_PARTIAL_FIAT_AMOUNT_LENGTH = 48;
@@ -90,13 +69,21 @@ export const PerpsFiatHeroAmountSkeleton = () => (
     justifyContent={BoxJustifyContent.Center}
     alignItems={BoxAlignItems.Center}
     className="w-full"
-    style={{ minHeight: MAX_FONT_SIZE }}
+    style={{ minHeight: AMOUNT_INPUT_MAX_FONT_SIZE }}
     data-testid="perps-fiat-hero-amount-skeleton"
   >
-    <Skeleton height={MAX_FONT_SIZE} width={80} className="rounded-lg" />
+    <Skeleton
+      height={AMOUNT_INPUT_MAX_FONT_SIZE}
+      width={80}
+      className="rounded-lg"
+    />
   </Box>
 );
 
+/**
+ * Visual twin of confirmations `CustomAmount` for standalone Perps screens.
+ * Keep in sync manually with `ui/pages/confirmations/.../custom-amount.tsx`.
+ */
 export const PerpsFiatHeroAmountInput = React.memo(
   ({
     value,
@@ -107,7 +94,6 @@ export const PerpsFiatHeroAmountInput = React.memo(
     isLoading = false,
   }: PerpsFiatHeroAmountInputProps) => {
     const fiatSymbol = getCurrencySymbol('USD');
-    const amountLength = value.length;
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,8 +109,9 @@ export const PerpsFiatHeroAmountInput = React.memo(
       return <PerpsFiatHeroAmountSkeleton />;
     }
 
-    const fontSize = getPerpsHeroAmountFontSize(amountLength);
-    const amountStyle = { fontSize, lineHeight: `${fontSize}px` };
+    const amountStyle = getAmountInputTextStyle(
+      getAmountInputFontSize(`${fiatSymbol}${value || '0'}`),
+    );
     const textColor = getHeroAmountTextColor(hasAlert, disabled);
 
     return (
@@ -133,7 +120,7 @@ export const PerpsFiatHeroAmountInput = React.memo(
         justifyContent={BoxJustifyContent.Center}
         alignItems={BoxAlignItems.Center}
         className="w-full"
-        style={{ minHeight: MAX_FONT_SIZE }}
+        style={{ minHeight: AMOUNT_INPUT_MAX_FONT_SIZE }}
       >
         <Text
           data-testid="perps-fiat-hero-amount-symbol"

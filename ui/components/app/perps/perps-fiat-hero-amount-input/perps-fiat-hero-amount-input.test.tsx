@@ -2,28 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import {
   PerpsFiatHeroAmountInput,
-  getPerpsHeroAmountFontSize,
   isValidPartialFiatAmountInput,
 } from './perps-fiat-hero-amount-input';
-
-describe('getPerpsHeroAmountFontSize', () => {
-  it('steps the font size down by amount length', () => {
-    const cases: [number, number][] = [
-      [0, 88],
-      [7, 88],
-      [8, 40],
-      [13, 40],
-      [14, 30],
-      [18, 30],
-      [19, 20],
-      [48, 20],
-    ];
-
-    for (const [length, expected] of cases) {
-      expect(getPerpsHeroAmountFontSize(length)).toBe(expected);
-    }
-  });
-});
 
 describe('isValidPartialFiatAmountInput', () => {
   it('accepts empty, digits, and a single separator', () => {
@@ -71,14 +51,14 @@ describe('PerpsFiatHeroAmountInput', () => {
     }
   });
 
-  it('steps the font size down for longer amounts', () => {
+  it('steps down the shared amount scale for longer amounts', () => {
     render(
       <PerpsFiatHeroAmountInput value="1234567.89" onChange={jest.fn()} />,
     );
 
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveStyle({
-      fontSize: '40px',
-      lineHeight: '40px',
+      fontSize: '72px',
+      lineHeight: '72px',
     });
   });
 
