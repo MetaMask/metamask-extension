@@ -346,7 +346,7 @@
     "cryptocurrencies": ["string"],
     "currencyRates": {
       "*": {
-        "conversionRate": "number"
+        "conversionRate": "null"
       }
     },
     "currentAppVersion": "string",
