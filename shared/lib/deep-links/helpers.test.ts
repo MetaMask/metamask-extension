@@ -86,19 +86,25 @@ describe('helpers', () => {
     });
 
     it('should convert base64 string to Uint8Array (old browsers fallback)', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const orig = (Uint8Array as any).fromBase64;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (Uint8Array as any).fromBase64;
+      // Simulate old browser by deleting Uint8Array.fromBase64
+      // @ts-expect-error This method not supported by tsc until v6
+      const orig = Uint8Array.fromBase64;
+      // @ts-expect-error This method not supported by tsc until v6
+      delete Uint8Array.fromBase64;
+      // Force Jest to re-evaluate the helpers module when it gets imported below
+      jest.resetModules();
 
-      const bytes = [10, 20, 30, 40, 50];
-      const base64 = Buffer.from(bytes).toString('base64');
-      const result = base64ToUint8Array(base64);
-      expect(result).toBeInstanceOf(Uint8Array);
-      expect(Array.from(result)).toStrictEqual(bytes);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (Uint8Array as any).fromBase64 = orig;
+      try {
+        const bytes = [10, 20, 30, 40, 50];
+        const base64 = Buffer.from(bytes).toString('base64');
+        const result = base64ToUint8Array(base64);
+        expect(result).toBeInstanceOf(Uint8Array);
+        expect(Array.from(result)).toStrictEqual(bytes);
+      } finally {
+        // Restore the original method
+        // @ts-expect-error This method not supported by tsc until v6
+        Uint8Array.fromBase64 = orig;
+      }
     });
   });
 
