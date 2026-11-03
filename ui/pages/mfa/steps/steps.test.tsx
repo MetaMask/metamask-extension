@@ -544,6 +544,18 @@ describe('CodeStep', () => {
     expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
   });
 
+  it('hides the wrong-code error once the user types again', () => {
+    renderCode(otp(true), { error: 'invalid_code' });
+
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '1' } });
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByRole('textbox')).toHaveAttribute(
+      'aria-invalid',
+      'false',
+    );
+  });
+
   it('counts down instead of showing the cooldown error', () => {
     const { onAction } = renderCode(otp(true), {
       error: 'otp_resend_cooldown',
