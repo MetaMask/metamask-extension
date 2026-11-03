@@ -42,6 +42,9 @@ describe('rampsPaymentMethodsKeys', () => {
         assetId: 'eip155:1/erc20:0xabc',
       }),
     );
+    expect(rampsPaymentMethodsKeys.detail(base)).not.toEqual(
+      rampsPaymentMethodsKeys.detail({ ...base, providerId: 'moonpay' }),
+    );
   });
 });
 
