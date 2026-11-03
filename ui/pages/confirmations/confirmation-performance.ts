@@ -11,13 +11,18 @@ import {
 } from '../../helpers/utils/useful-screen-ready';
 import { useAfterPaint } from '../../hooks/useAfterPaint';
 import type { Confirmation } from './types/confirm';
+import { CONFIRMATION_APPROVAL_TYPES } from './selectors/confirmation-approval-types';
 
 let measurement: LoadMeasurement | undefined;
 let unsubscribe: (() => void) | undefined;
 let initialRequestId: string | undefined;
 
 /**
- * Register the initial transaction before rendering or loading its lazy page.
+ * Measure the initial UI document load when an unlocked, onboarded wallet
+ * starts with a transaction confirmation. Later confirmations in the same
+ * document, including queued requests and requests shown after unlock, are
+ * excluded. Readiness is the transaction info after a paint opportunity; it
+ * does not wait for optional enrichment or the confirm button to be enabled.
  *
  * @param state - Initial wallet state.
  * @param state.isUnlocked
@@ -25,7 +30,7 @@ let initialRequestId: string | undefined;
  * @param state.pendingApprovals
  * @param router - The application router.
  */
-export function registerConfirmationMeasurement(
+export function registerInitialTransactionConfirmationMeasurement(
   state: {
     isUnlocked: boolean;
     completedOnboarding: boolean;
@@ -51,9 +56,13 @@ export function registerConfirmationMeasurement(
   }
   const approval = match?.params.id
     ? state.pendingApprovals?.[match.params.id]
-    : Object.values(state.pendingApprovals ?? {}).sort(
-        (a, b) => a.time - b.time,
-      )[0];
+    : Object.values(state.pendingApprovals ?? {})
+        // An ID-less confirmation route skips approvals that its screen cannot show.
+        // The root route instead follows the full pending-approval navigation queue.
+        .filter(
+          ({ type }) => !match || CONFIRMATION_APPROVAL_TYPES.includes(type),
+        )
+        .sort((a, b) => a.time - b.time)[0];
   if (approval?.type !== ApprovalType.Transaction) {
     return;
   }
@@ -91,11 +100,14 @@ function reportReady(): void {
 }
 
 /**
- * Report the initial transaction's info commit without waiting for enrichment.
+ * Report the initial transaction info after a paint opportunity, without
+ * waiting for optional enrichment or the confirm button to be enabled.
  *
  * @param confirmation - The confirmation whose info is being rendered.
  */
-export function useConfirmationReady(confirmation?: Confirmation): void {
+export function useInitialTransactionConfirmationReady(
+  confirmation?: Confirmation,
+): void {
   useAfterPaint(
     Boolean(
       confirmation?.type &&

@@ -11,8 +11,8 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { registerDocumentLoadMeasurement } from '../../helpers/utils/useful-screen-ready';
 import type { Confirmation } from './types/confirm';
 import {
-  registerConfirmationMeasurement,
-  useConfirmationReady,
+  registerInitialTransactionConfirmationMeasurement,
+  useInitialTransactionConfirmationReady,
 } from './confirmation-performance';
 
 jest.mock('../../helpers/utils/useful-screen-ready');
@@ -29,10 +29,10 @@ describe('Transaction confirmation readiness', () => {
   let router: ReturnType<typeof createMemoryRouter>;
   const register = (
     overrides: Partial<
-      Parameters<typeof registerConfirmationMeasurement>[0]
+      Parameters<typeof registerInitialTransactionConfirmationMeasurement>[0]
     > = {},
   ) =>
-    registerConfirmationMeasurement(
+    registerInitialTransactionConfirmationMeasurement(
       {
         isUnlocked: true,
         completedOnboarding: true,
@@ -84,7 +84,7 @@ describe('Transaction confirmation readiness', () => {
           replace: true,
         });
       }
-      renderHook(() => useConfirmationReady(transaction), {
+      renderHook(() => useInitialTransactionConfirmationReady(transaction), {
         wrapper: StrictMode,
       });
       expect(measurement.reportReady).not.toHaveBeenCalled();
@@ -95,7 +95,11 @@ describe('Transaction confirmation readiness', () => {
     },
   );
 
-  jestIt.each<Partial<Parameters<typeof registerConfirmationMeasurement>[0]>>([
+  jestIt.each<
+    Partial<
+      Parameters<typeof registerInitialTransactionConfirmationMeasurement>[0]
+    >
+  >([
     { isUnlocked: false },
     { completedOnboarding: false },
     { pendingApprovals: {} },
@@ -107,7 +111,7 @@ describe('Transaction confirmation readiness', () => {
     },
   ])('excludes initial wallet state %j', (state) => {
     register(state);
-    renderHook(() => useConfirmationReady(transaction));
+    renderHook(() => useInitialTransactionConfirmationReady(transaction));
     act(() => jest.advanceTimersByTime(48));
     expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
     expect(measurement.reportReady).not.toHaveBeenCalled();
@@ -121,7 +125,50 @@ describe('Transaction confirmation readiness', () => {
     await router.navigate(path);
     register();
     await router.navigate(`${CONFIRM_TRANSACTION_ROUTE}/a`);
-    renderHook(() => useConfirmationReady(transaction));
+    renderHook(() => useInitialTransactionConfirmationReady(transaction));
+    act(() => jest.advanceTimersByTime(48));
+    expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
+  });
+
+  it('selects the first supported confirmation on an ID-less confirmation route', async () => {
+    await router.navigate(CONFIRM_TRANSACTION_ROUTE);
+    register({
+      pendingApprovals: {
+        connect: { id: 'connect', type: 'wallet_requestPermissions', time: 0 },
+        a: { id: 'a', type: ApprovalType.Transaction, time: 1 },
+      },
+    });
+    await router.navigate(`${CONFIRM_TRANSACTION_ROUTE}/a`, { replace: true });
+    renderHook(() => useInitialTransactionConfirmationReady(transaction));
+    act(() => jest.advanceTimersByTime(48));
+    expect(measurement.reportReady).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not select a transaction behind an older signature on an ID-less confirmation route', async () => {
+    await router.navigate(CONFIRM_TRANSACTION_ROUTE);
+    register({
+      pendingApprovals: {
+        signature: {
+          id: 'signature',
+          type: ApprovalType.PersonalSign,
+          time: 0,
+        },
+        a: { id: 'a', type: ApprovalType.Transaction, time: 1 },
+      },
+    });
+    renderHook(() => useInitialTransactionConfirmationReady(transaction));
+    act(() => jest.advanceTimersByTime(48));
+    expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
+  });
+
+  it('does not select a transaction behind an unrelated approval at the root route', () => {
+    register({
+      pendingApprovals: {
+        connect: { id: 'connect', type: 'wallet_requestPermissions', time: 0 },
+        a: { id: 'a', type: ApprovalType.Transaction, time: 1 },
+      },
+    });
+    renderHook(() => useInitialTransactionConfirmationReady(transaction));
     act(() => jest.advanceTimersByTime(48));
     expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
   });
@@ -129,7 +176,9 @@ describe('Transaction confirmation readiness', () => {
   it('uses the explicitly requested transaction instead of the oldest approval', async () => {
     await router.navigate(`${CONFIRM_TRANSACTION_ROUTE}/b`);
     register();
-    renderHook(() => useConfirmationReady({ ...transaction, id: 'b' }));
+    renderHook(() =>
+      useInitialTransactionConfirmationReady({ ...transaction, id: 'b' }),
+    );
     act(() => jest.advanceTimersByTime(48));
     expect(measurement.reportReady).toHaveBeenCalledTimes(1);
   });
@@ -138,7 +187,7 @@ describe('Transaction confirmation readiness', () => {
     register();
     const { rerender } = renderHook(
       ({ confirmation }: { confirmation?: Confirmation }) =>
-        useConfirmationReady(confirmation),
+        useInitialTransactionConfirmationReady(confirmation),
       { initialProps: {} },
     );
     act(() => jest.advanceTimersByTime(48));
@@ -158,7 +207,7 @@ describe('Transaction confirmation readiness', () => {
       await router.navigate(`${CONFIRM_TRANSACTION_ROUTE}/a`);
       register();
       if (mountBeforeNavigation) {
-        renderHook(() => useConfirmationReady(transaction));
+        renderHook(() => useInitialTransactionConfirmationReady(transaction));
       }
       await router.navigate(`${CONFIRM_TRANSACTION_ROUTE}/b`, {
         replace: true,
@@ -166,7 +215,7 @@ describe('Transaction confirmation readiness', () => {
       await router.navigate(`${CONFIRM_TRANSACTION_ROUTE}/a`, {
         replace: true,
       });
-      renderHook(() => useConfirmationReady(transaction));
+      renderHook(() => useInitialTransactionConfirmationReady(transaction));
       act(() => jest.advanceTimersByTime(48));
       expect(measurement.discard).toHaveBeenCalledTimes(1);
       expect(measurement.reportReady).not.toHaveBeenCalled();
@@ -176,7 +225,7 @@ describe('Transaction confirmation readiness', () => {
   it('excludes user navigation in place of the startup redirect', async () => {
     register();
     await router.navigate(`${CONFIRM_TRANSACTION_ROUTE}/a`);
-    renderHook(() => useConfirmationReady(transaction));
+    renderHook(() => useInitialTransactionConfirmationReady(transaction));
     act(() => jest.advanceTimersByTime(48));
     expect(measurement.discard).toHaveBeenCalledTimes(1);
     expect(measurement.reportReady).not.toHaveBeenCalled();
