@@ -66,6 +66,8 @@ export type SessionSnapshot = Pick<VerificationToken, 'obtainedAt'> & {
  * - `cooldown`: the server is rate limiting; wait before the next request.
  * - `failure`: the flow ends on the failure screen, or rejects upfront if
  * nothing was shown.
+ * - `support`: only support can help; the flow always ends on the failure
+ * screen, which offers to contact support.
  * - `transient`: a server or network error; the user can try again.
  */
 export type MfaErrorHandling =
@@ -74,6 +76,7 @@ export type MfaErrorHandling =
   | 'restart'
   | 'cooldown'
   | 'failure'
+  | 'support'
   | 'transient';
 
 /**
@@ -97,6 +100,8 @@ export type MfaFlowErrorCode = MfaErrorCode | MfaKitErrorCode;
 export interface MfaReason {
   /** Sent to the controller (trace tags). */
   operation: string;
+  /** Mobile presentation for full-screen steps. Defaults to a modal. */
+  presentation?: 'card' | 'modal';
   /**
    * Already-translated line shown when the flow sets up missing methods,
    * replacing the generic one. UI only.
@@ -248,14 +253,14 @@ export interface MfaFlowState {
 
 export type MfaFlowAction =
   | { type: 'continue' }
-  | { type: 'back' }
   | { type: 'choose'; method: MfaMethod }
   | { type: 'submitEmail'; email: string }
   | { type: 'submitCode'; code: string }
   | { type: 'resend' }
   | { type: 'retry' }
   | { type: 'dismiss' }
-  | { type: 'cancel' };
+  | { type: 'cancel' }
+  | { type: 'back' };
 
 export interface MfaFlowResult {
   credentials: EnrolledCredential[];

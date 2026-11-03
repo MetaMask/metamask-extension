@@ -711,7 +711,7 @@ describe('PerpsControllerInit', () => {
       expect(result).toEqual([{ symbol: 'ETH' }]);
     });
 
-    it('retries after CLIENT_REINITIALIZING and succeeds', async () => {
+    it('retries the legacy market lookup after a benign disconnect', async () => {
       const { api, messengerClient } = initWithApi();
       const getMarkets = messengerClient.getMarkets as jest.Mock;
       getMarkets
