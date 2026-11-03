@@ -92,14 +92,11 @@ git commit -m "Update yarn to 4.9.5"
 # 1. Update the project Yarn version
 yarn set version 4.9.4
 
-# 3. Download the new version
-yarn yarn-binary:download
-
-# 2. Activate
+# 2. Activate the existing committed version
 yarn yarn-binary:hydrate
 
 # 3. Verify
-yarn --version  # Shows 4.9.4
+yarn --version  # Shows 4.9.4
 ```
 
 ## File Structure
