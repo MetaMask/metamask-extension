@@ -49,6 +49,7 @@
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
     "showSupportDataConsentModal": "boolean",
+    "showXWidgetDeeplinkToast": "boolean",
     "singleExceptions": "object",
     "smartTransactionsError": null,
     "smartTransactionsErrorMessageDismissed": "boolean",
