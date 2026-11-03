@@ -14,7 +14,9 @@
 # Safe by default: unset GA_MODE and GA_MODE=test post only to
 # vars.RELEASE_SUMMARY_TEST_CHANNEL and never write a PR body.
 # GA_MODE=live is the only value that uses the real release channels
-# and may rewrite the release PR body.
+# and may rewrite the release PR body. A test channel limits Slack
+# only. The shared action still rewrites the checklist when
+# allow-pr-write is true and dry-run is false (github-tools#306).
 
 name: Release Slack summaries
 
@@ -39,7 +41,7 @@ on:
         type: boolean
         default: true
       test-channel:
-        description: 'Post only to this Slack channel (#name or ID). When set, the run does not write a PR body. Leave empty to follow GA_MODE.'
+        description: 'Post only to this Slack channel (#name or ID). Does not disable the PR rewrite. Leave empty to follow GA_MODE.'
         required: false
         type: string
         default: ''
@@ -124,10 +126,12 @@ jobs:
 
           # Exact "live" is the only value that may reach real channels.
           # Unset, "test", and anything else stay on the test channel.
-          # The PR body rewrite belongs to release-validation (Zap 597) only.
+          # The PR rewrite belongs to release-validation (Zap 597) only.
+          # A test channel does not turn it off; the action gates the
+          # write on allow-pr-write and dry-run (github-tools#306).
           allow_pr_write=false
           if [[ "$ga_mode" == "live" ]]; then
-            if [[ "$dry_run" == "false" && -z "$test_channel" && "$mode" == "release-validation" ]]; then
+            if [[ "$dry_run" == "false" && "$mode" == "release-validation" ]]; then
               allow_pr_write=true
             fi
           else
@@ -175,14 +179,17 @@ jobs:
           permissions: |
             contents: read
 
-      # TODO(MCRM-155): Replace TODO-release-slack-summaries with a pinned
-      # MetaMask/github-tools ref (release tag or commit SHA) once
-      # `.github/actions/release-slack-summaries` merges. The action is still
-      # a draft pull request and is not on a release tag yet.
-      # jira-release-blocker-jql is omitted on purpose: the Jira filter does
-      # not exist yet, and the action skips that section when the input is empty.
+      # TODO(MCRM-155): Pin this to a commit SHA or release tag once
+      # https://github.com/MetaMask/github-tools/pull/306 merges.
+      # Until then the action exists only on this branch.
+      #
+      # Left at the action defaults from that pull request:
+      # - jira-release-blocker-jql (empty; logs OPEN and skips blockers)
+      # - jira-regression-jql (empty; v10 Found-in proposal, still OPEN)
+      # - topology-jira-project-field (jiraProject, PROPOSED)
+      # - github-tools-repository / github-tools-ref (follow this uses: ref)
       - name: Publish release Slack summary
-        uses: MetaMask/github-tools/.github/actions/release-slack-summaries@TODO-release-slack-summaries
+        uses: MetaMask/github-tools/.github/actions/release-slack-summaries@cursor/release-slack-summaries-a324
         with:
           mode: ${{ steps.flags.outputs.mode }}
           platform: extension
