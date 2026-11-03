@@ -193,7 +193,7 @@ async function openSidePanel(
   const windowId = sender?.tab?.windowId;
 
   if (typeof windowId !== 'number') {
-    throw new Error('sidepanel-no-window');
+    throw new TypeError('sidepanel-no-window');
   }
 
   const entry = { path, search };

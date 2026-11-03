@@ -70,7 +70,7 @@ export function useNavigateRouteListener(): void {
         typeof message.body.windowId === 'number' &&
         message.body.windowId === currentWindowId
       ) {
-        navigateToPendingRoute(message.body.windowId);
+        navigateToPendingRoute(message.body.windowId).catch(() => undefined);
       }
     };
 
