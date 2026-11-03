@@ -120,7 +120,58 @@ describe('NetworkPillSelector', () => {
       'aria-pressed',
       'true',
     );
-    expect(screen.getByTestId('network-pill-0xa')).toBeDisabled();
+    expect(screen.getByTestId('network-pill-0xa')).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+  });
+
+  describe('disabled pills', () => {
+    const renderWithDisabledOptimism = () => {
+      mockFilter({
+        isNetworkDisabled: (network: MultichainNetworkConfiguration) =>
+          network.chainId === 'eip155:10',
+      });
+      renderSelector();
+      return screen.getByTestId('network-pill-0xa');
+    };
+
+    it('stays focusable so the reason can be reached', () => {
+      const pill = renderWithDisabledOptimism();
+
+      pill.focus();
+
+      expect(pill).not.toBeDisabled();
+      expect(pill).toHaveFocus();
+    });
+
+    it('describes why the pill is disabled', () => {
+      const pill = renderWithDisabledOptimism();
+
+      expect(pill).toHaveAccessibleDescription('Not supported');
+      // The reason is only the description, not part of the name
+      expect(pill).not.toHaveAccessibleName(/Not supported/u);
+    });
+
+    it('does not select the network when clicked', () => {
+      const pill = renderWithDisabledOptimism();
+
+      fireEvent.click(pill);
+
+      expect(mockHandleSelectNetwork).not.toHaveBeenCalled();
+    });
+
+    it('has no description when the pill is enabled', () => {
+      renderSelector();
+
+      expect(screen.getByTestId('network-pill-0xa')).not.toHaveAttribute(
+        'aria-describedby',
+      );
+    });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe('when pills wrap onto more than one line', () => {
@@ -141,6 +192,33 @@ describe('NetworkPillSelector', () => {
 
       fireEvent.click(toggle);
       expect(toggle).toHaveTextContent('Show 1 more networks');
+    });
+
+    it('makes the pills hidden by the collapsed view inert until expanded', () => {
+      jest
+        .spyOn(HTMLElement.prototype, 'offsetTop', 'get')
+        .mockImplementation(function mock(this: HTMLElement) {
+          return this.dataset.testid === 'network-pill-0xa' ? 56 : 0;
+        });
+
+      renderSelector();
+      const toggle = screen.getByTestId('network-pill-toggle');
+
+      expect(screen.getByTestId('network-pill-0xa')).toHaveAttribute('inert');
+      expect(screen.getByTestId('network-pill-0x1')).not.toHaveAttribute(
+        'inert',
+      );
+      expect(
+        screen.getByTestId('network-pill-all-default'),
+      ).not.toHaveAttribute('inert');
+
+      fireEvent.click(toggle);
+      expect(screen.getByTestId('network-pill-0xa')).not.toHaveAttribute(
+        'inert',
+      );
+
+      fireEvent.click(toggle);
+      expect(screen.getByTestId('network-pill-0xa')).toHaveAttribute('inert');
     });
   });
 

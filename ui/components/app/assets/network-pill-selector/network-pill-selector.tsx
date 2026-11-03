@@ -1,4 +1,10 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import classnames from 'clsx';
 import {
   AvatarNetwork,
@@ -29,10 +35,13 @@ type NetworkPillProps = {
   balance?: string;
   isSelected: boolean;
   isDisabled?: boolean;
+  /** Not shown (collapsed): kept out of the tab order and the accessibility tree */
+  isHidden?: boolean;
   privacyMode: boolean;
   icon: React.ReactNode;
   onClick: () => void;
-  title?: string;
+  /** Why the pill is disabled, for mouse (tooltip) and assistive tech users */
+  disabledReason?: string;
   testId: string;
 };
 
@@ -41,45 +50,65 @@ const NetworkPill = ({
   balance,
   isSelected,
   isDisabled = false,
+  isHidden = false,
   privacyMode,
   icon,
   onClick,
-  title,
+  disabledReason,
   testId,
-}: NetworkPillProps) => (
-  <button
-    type="button"
-    className={classnames(
-      'flex h-10 shrink-0 items-center gap-2 rounded-full border-0 px-4',
-      isSelected
-        ? 'bg-icon-default text-background-default'
-        : 'bg-muted text-default hover:bg-muted-hover',
-      isDisabled ? 'cursor-default opacity-50' : 'cursor-pointer',
-    )}
-    aria-pressed={isSelected}
-    disabled={isDisabled}
-    onClick={onClick}
-    title={title}
-    data-testid={testId}
-  >
-    {icon}
-    <Text
-      variant={TextVariant.BodyXs}
-      color={isSelected ? TextColor.Inherit : TextColor.TextAlternative}
+}: NetworkPillProps) => {
+  const reasonId = useId();
+  const hasReason = isDisabled && Boolean(disabledReason);
+
+  return (
+    <button
+      type="button"
+      className={classnames(
+        'flex h-10 shrink-0 items-center gap-2 rounded-full border-0 px-4',
+        isSelected
+          ? 'bg-icon-default text-background-default'
+          : 'bg-muted text-default',
+        isDisabled
+          ? 'cursor-default opacity-50'
+          : 'cursor-pointer hover:bg-muted-hover',
+      )}
+      aria-pressed={isSelected}
+      // `aria-disabled` rather than `disabled`, so the pill stays focusable and
+      // the reason below is reachable by keyboard and screen reader users
+      aria-disabled={isDisabled || undefined}
+      aria-describedby={hasReason ? reasonId : undefined}
+      onClick={isDisabled ? undefined : onClick}
+      title={hasReason ? disabledReason : undefined}
+      data-testid={testId}
+      // React 18 has no `inert` prop; the empty attribute is what enables it
+      {...(isHidden ? ({ inert: '' } as object) : {})}
     >
-      {name}
-    </Text>
-    {balance !== undefined && (
-      <SensitiveText
-        variant={TextVariant.BodySm}
-        color={TextColor.Inherit}
-        isHidden={privacyMode}
+      {icon}
+      <Text
+        variant={TextVariant.BodyXs}
+        color={isSelected ? TextColor.Inherit : TextColor.TextAlternative}
       >
-        {balance}
-      </SensitiveText>
-    )}
-  </button>
-);
+        {name}
+      </Text>
+      {balance !== undefined && (
+        <SensitiveText
+          variant={TextVariant.BodySm}
+          color={TextColor.Inherit}
+          isHidden={privacyMode}
+        >
+          {balance}
+        </SensitiveText>
+      )}
+      {hasReason && (
+        // Not rendered, so it is not part of the button's name; only read as
+        // its description
+        <span id={reasonId} hidden>
+          {disabledReason}
+        </span>
+      )}
+    </button>
+  );
+};
 
 /**
  * Network selector for the fullscreen design. Offers the same default networks
@@ -131,6 +160,13 @@ export const NetworkPillSelector = () => {
     return () => observer.disconnect();
   }, [defaultNetworks.length]);
 
+  // Wrapped pills are always the trailing ones. While collapsed they are only
+  // clipped, so make them inert to keep them out of the tab order and out of
+  // what screen readers read.
+  const pillCount = defaultNetworks.length + 1;
+  const isPillHidden = (index: number) =>
+    !isExpanded && index >= pillCount - hiddenCount;
+
   const format = useMemo(
     () => (amount?: number) =>
       amount === undefined ? undefined : formatCurrency(amount, currency),
@@ -163,10 +199,11 @@ export const NetworkPillSelector = () => {
               color={IconColor.IconAlternative}
             />
           }
+          isHidden={isPillHidden(0)}
           onClick={handleSelectAllDefaultNetworks}
           testId="network-pill-all-default"
         />
-        {defaultNetworks.map((network) => {
+        {defaultNetworks.map((network, index) => {
           const disabled = isNetworkDisabled(network);
           return (
             <NetworkPill
@@ -175,6 +212,7 @@ export const NetworkPillSelector = () => {
               balance={format(balanceByChainId[network.chainId])}
               isSelected={isNetworkSelected(network)}
               isDisabled={disabled}
+              isHidden={isPillHidden(index + 1)}
               privacyMode={privacyMode}
               icon={
                 <AvatarNetwork
@@ -185,7 +223,7 @@ export const NetworkPillSelector = () => {
                 />
               }
               onClick={() => handleSelectNetwork(network.chainId)}
-              title={getDisabledTooltip(disabled)}
+              disabledReason={getDisabledTooltip(disabled)}
               testId={`network-pill-${getSelectableChainId(network)}`}
             />
           );
