@@ -106,6 +106,7 @@ type AppState = {
   errorInSettings: string | null;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
+  showXWidgetDeeplinkToast: boolean;
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
@@ -201,6 +202,7 @@ const initialState: AppState = {
   errorInSettings: null,
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
+  showXWidgetDeeplinkToast: false,
   showSupportDataConsentModal: false,
   homeDeepLinkQrCode: null,
 };
@@ -638,6 +640,12 @@ export default function reduceApp(
       return {
         ...appState,
         showInfuraSwitchToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_X_WIDGET_DEEPLINK_TOAST:
+      return {
+        ...appState,
+        showXWidgetDeeplinkToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:

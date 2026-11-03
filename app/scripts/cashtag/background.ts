@@ -125,7 +125,9 @@ function assetRoutePath(caipAssetId: string) {
 }
 
 function routeHash(path: string, search?: `?${string}`) {
-  return `#${path}${search ?? ''}`;
+  const params = new URLSearchParams(search ? search.slice(1) : '');
+  params.set('fromXWidget', '1');
+  return `#${path}?${params.toString()}`;
 }
 
 function shouldUseSidePanel(controller: Controller | undefined) {
@@ -165,13 +167,18 @@ function isTickerWidgetEnabled(controller: Controller | undefined) {
   return isTickerWidgetFeatureEnabled(controller) && preferenceEnabled;
 }
 
-function broadcastOpenRoute(path: string, search?: `?${string}`) {
+function broadcastOpenRoute(
+  path: string,
+  search?: `?${string}`,
+  fromXWidget?: boolean,
+) {
   return browser.runtime
     .sendMessage({
       type: EXTENSION_MESSAGES.OPEN_ROUTE,
       body: {
         path,
         ...(search ? { search } : {}),
+        ...(fromXWidget ? { fromXWidget } : {}),
       },
     })
     .catch(() => undefined);
@@ -186,12 +193,13 @@ function delay(ms: number) {
 async function broadcastOpenRouteWithRetries(
   path: string,
   search?: `?${string}`,
+  fromXWidget?: boolean,
 ) {
   for (const delayMs of openRouteRetryDelaysMs) {
     if (delayMs > 0) {
       await delay(delayMs);
     }
-    await broadcastOpenRoute(path, search);
+    await broadcastOpenRoute(path, search, fromXWidget);
   }
 }
 
@@ -281,7 +289,7 @@ async function openExtensionSurface({
     try {
       // Sidepanel: default path only + OPEN_ROUTE (retries cover cold mount).
       await openSidePanel(sender);
-      await broadcastOpenRouteWithRetries(path, search);
+      await broadcastOpenRouteWithRetries(path, search, true);
       return;
     } catch {
       // Fall through to the popup, then a tab.
@@ -291,12 +299,15 @@ async function openExtensionSurface({
   try {
     // Popup is destroyed on close, so a one-shot hash deep link is safe.
     await openPopupWithRoute(hash);
-    await broadcastOpenRoute(path, search);
   } catch {
     // Firefox has neither sidePanel.open nor action.openPopup, and both reject
     // once the user gesture is gone, so open a tab, which needs no gesture.
     await openFullscreenTab(hash);
   }
+
+  // Hash navigation does not set the toast flag. Retry the message so a cold
+  // popup or fullscreen document can still receive it after mount.
+  await broadcastOpenRouteWithRetries(path, search, true);
 }
 
 async function openExtensionPage({

@@ -1,8 +1,9 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ToastMaster } from './toast-master';
 
 jest.mock('../../../store/background-connection', () => ({
@@ -112,6 +113,68 @@ function createArcStore() {
     appState: { ...mockState.appState },
   });
 }
+
+describe('X widget deeplink toast', () => {
+  function createStoreWithToast(showXWidgetDeeplinkToast: boolean) {
+    return configureStore({
+      metamask: {
+        ...mockState.metamask,
+        isUnlocked: true,
+      },
+      appState: {
+        ...mockState.appState,
+        showXWidgetDeeplinkToast,
+      },
+    });
+  }
+
+  it('renders on the swap route the widget opens', () => {
+    const store = createStoreWithToast(true);
+    renderWithProvider(
+      <ToastMaster />,
+      store,
+      '/cross-chain/swaps/prepare-bridge-page',
+    );
+
+    const banner = screen.getByTestId('x-widget-deeplink-toast-banner-base');
+    expect(
+      within(banner).getByTestId('x-widget-deeplink-toast'),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      within(banner).getByRole('button', { name: messages.close.message }),
+    );
+    expect(store.getState().appState.showXWidgetDeeplinkToast).toBe(false);
+  });
+
+  it('clears the flag when the toast auto-hides', () => {
+    jest.useFakeTimers();
+    const store = createStoreWithToast(true);
+    renderWithProvider(
+      <ToastMaster />,
+      store,
+      '/cross-chain/swaps/prepare-bridge-page',
+    );
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(store.getState().appState.showXWidgetDeeplinkToast).toBe(false);
+    jest.useRealTimers();
+  });
+
+  it('stays hidden on the swap route when the flag is false', () => {
+    renderWithProvider(
+      <ToastMaster />,
+      createStoreWithToast(false),
+      '/cross-chain/swaps/prepare-bridge-page',
+    );
+
+    expect(
+      screen.queryByTestId('x-widget-deeplink-toast'),
+    ).not.toBeInTheDocument();
+  });
+});
 
 describe('on the home route', () => {
   it('renders ArcUsageNoticeToast on / and not on /settings', () => {

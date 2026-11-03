@@ -3,6 +3,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import {
   selectShowPrivacyPolicyToast,
   selectShowInfuraSwitchToast,
+  selectShowXWidgetDeeplinkToast,
 } from './selectors';
 
 const createMockPrivacyPolicyState = (
@@ -141,6 +142,29 @@ describe('#getShowPrivacyPolicyToast', () => {
       });
       expect(result).toBe(false);
     });
+  });
+});
+
+describe('#selectShowXWidgetDeeplinkToast', () => {
+  it('returns true when showXWidgetDeeplinkToast is true', () => {
+    const result = selectShowXWidgetDeeplinkToast({
+      appState: { showXWidgetDeeplinkToast: true },
+    });
+    expect(result).toBe(true);
+  });
+
+  it('returns false when showXWidgetDeeplinkToast is false', () => {
+    const result = selectShowXWidgetDeeplinkToast({
+      appState: { showXWidgetDeeplinkToast: false },
+    });
+    expect(result).toBe(false);
+  });
+
+  it('returns false when showXWidgetDeeplinkToast is undefined', () => {
+    const result = selectShowXWidgetDeeplinkToast({
+      appState: {},
+    });
+    expect(result).toBe(false);
   });
 });
 

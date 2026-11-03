@@ -67,11 +67,13 @@ import {
   selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
   selectShowSidePanelMigrationToast,
+  selectShowXWidgetDeeplinkToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
   setShowInfuraSwitchToast,
+  setShowXWidgetDeeplinkToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
   dismissSidePanelMigrationToast,
@@ -81,6 +83,7 @@ import {
 const MemoizedSurveyToast = memo(SurveyToast);
 const MemoizedPrivacyPolicyToast = memo(PrivacyPolicyToast);
 const MemoizedInfuraSwitchToast = memo(InfuraSwitchToast);
+const MemoizedXWidgetDeeplinkToast = memo(XWidgetDeeplinkToast);
 const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
 const MemoizedShieldEndingToast = memo(ShieldEndingToast);
@@ -109,6 +112,11 @@ export function ToastMaster() {
   const basicFunctionalityMigrationToast = (
     <MemoizedBasicFunctionalityMigrationToast key="basic-functionality-migration" />
   );
+  // Widget deeplinks land on swap or asset, not home. Keep the toast mounted
+  // on every route so it can show there and clear its flag.
+  const xWidgetDeeplinkToast = (
+    <MemoizedXWidgetDeeplinkToast key="x-widget-deeplink" />
+  );
 
   if (onHomeScreen) {
     return (
@@ -118,6 +126,7 @@ export function ToastMaster() {
         <MemoizedPrivacyPolicyToast />
         <MemoizedArcUsageNoticeToast />
         <MemoizedInfuraSwitchToast />
+        {xWidgetDeeplinkToast}
         <MemoizedPerpsWithdrawToast />
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />
@@ -132,6 +141,7 @@ export function ToastMaster() {
       <ToastContainer>
         <MemoizedStorageErrorToast />
         <MemoizedPerpsWithdrawToast />
+        {xWidgetDeeplinkToast}
         {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
@@ -141,6 +151,7 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         <MemoizedStorageErrorToast />
+        {xWidgetDeeplinkToast}
         {basicFunctionalityMigrationToast}
       </ToastContainer>
     );
@@ -151,6 +162,7 @@ export function ToastMaster() {
   return (
     <ToastContainer>
       {shouldShowStorageErrorToast ? <MemoizedStorageErrorToast /> : null}
+      {xWidgetDeeplinkToast}
       {basicFunctionalityMigrationToast}
     </ToastContainer>
   );
@@ -209,6 +221,30 @@ function InfuraSwitchToast() {
         onClose={() => dispatch(setShowInfuraSwitchToast(false))}
         autoHideTime={autoHideDelay}
         onAutoHideToast={() => dispatch(setShowInfuraSwitchToast(false))}
+      />
+    )
+  );
+}
+
+function XWidgetDeeplinkToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showXWidgetDeeplinkToast = useSelector(selectShowXWidgetDeeplinkToast);
+  const autoHideDelay = 5 * SECOND;
+
+  return (
+    showXWidgetDeeplinkToast && (
+      <Toast
+        key="x-widget-deeplink-toast"
+        dataTestId="x-widget-deeplink-toast"
+        text={t('xWidgetDeeplinkToast')}
+        startAdornment={
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowXWidgetDeeplinkToast(false))}
+        autoHideTime={autoHideDelay}
+        onAutoHideToast={() => dispatch(setShowXWidgetDeeplinkToast(false))}
       />
     )
   );
