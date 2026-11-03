@@ -192,7 +192,7 @@ export const useSendActions = () => {
  *
  * @returns True when the current route is the send screen.
  */
-function isRemainInSendScreen {
+function isRemainInSendScreen() {
   const pathname = window.location.hash.replace(/^#/u, '').split('?')[0];
   return pathname.startsWith(SEND_ROUTE);
-};
+}
