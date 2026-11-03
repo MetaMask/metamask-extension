@@ -60,7 +60,7 @@ export default function useSubmitBridgeTransaction(
   const {
     navigateToBridgePage,
     navigateToHwSigningPage,
-    navigateToDefaultRoute,
+    navigateToSwapsAfterSubmit,
     isHardwareWalletSigningPage,
   } = useBridgeNavigation();
   const dispatch = useDispatch();
@@ -294,7 +294,7 @@ export default function useSubmitBridgeTransaction(
       return;
     }
 
-    await navigateToDefaultRoute({ replace: true }, false);
+    await navigateToSwapsAfterSubmit();
   };
 
   return {

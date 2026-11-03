@@ -17,7 +17,7 @@ import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
  * For USB wallets (Ledger): navigation is handled by useSubmitBridgeTransaction after transaction submission.
  */
 export function useNavigateOnQrScanComplete(): void {
-  const { navigateToBridgePage, navigateToDefaultRoute } =
+  const { navigateToBridgePage, navigateToSwapsAfterSubmit } =
     useBridgeNavigation();
   const dispatch = useDispatch();
   const activeQrCodeScanRequest = useSelector(getActiveQrCodeScanRequest);
@@ -42,7 +42,7 @@ export function useNavigateOnQrScanComplete(): void {
       isQrScanCleared &&
       lastQrScanCompletedSuccessfully === true
     ) {
-      navigateToDefaultRoute({ replace: true }, false);
+      navigateToSwapsAfterSubmit();
       return;
     }
 
@@ -59,6 +59,6 @@ export function useNavigateOnQrScanComplete(): void {
     dispatch,
     lastQrScanCompletedSuccessfully,
     navigateToBridgePage,
-    navigateToDefaultRoute,
+    navigateToSwapsAfterSubmit,
   ]);
 }

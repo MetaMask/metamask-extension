@@ -407,4 +407,20 @@ describe('useBridgeNavigation', () => {
       });
     });
   });
+
+  it('navigateToSwapsAfterSubmit clears the amount and stays on the prepare page', async () => {
+    const { result } = renderUseBridgeNavigation();
+
+    await act(async () => {
+      await result.current.navigateToSwapsAfterSubmit();
+    });
+
+    expect(mockDispatch).toHaveBeenCalledWith(
+      bridgeActions.setFromTokenInputValue(null),
+    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(BRIDGE_PREPARE_PATH, {
+      replace: true,
+      state: { bridgeState: null, token: null, stayOnHomePage: false },
+    });
+  });
 });

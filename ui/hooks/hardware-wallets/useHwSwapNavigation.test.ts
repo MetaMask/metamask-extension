@@ -12,14 +12,14 @@ const mockUseBridgeNavigation = jest.requireMock(
   '../bridge/useBridgeNavigation',
 ).useBridgeNavigation;
 
-const mockNavigateToDefaultRoute = jest.fn();
+const mockNavigateToSwapsAfterSubmit = jest.fn();
 
 describe('useHwSwapNavigation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     mockUseBridgeNavigation.mockReturnValue({
-      navigateToDefaultRoute: mockNavigateToDefaultRoute,
+      navigateToSwapsAfterSubmit: mockNavigateToSwapsAfterSubmit,
     });
   });
 
@@ -27,7 +27,7 @@ describe('useHwSwapNavigation', () => {
     jest.useRealTimers();
   });
 
-  it('navigates to default route when status is Submitted', async () => {
+  it('navigates to the prepare page and resets the controller when status is Submitted', async () => {
     renderHookWithProvider(
       () =>
         useHwSwapNavigation({
@@ -42,7 +42,8 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSwapsAfterSubmit).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSwapsAfterSubmit).toHaveBeenCalledWith(true);
   });
 
   it('does not navigate when status is not Submitted', () => {
@@ -60,7 +61,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+    expect(mockNavigateToSwapsAfterSubmit).not.toHaveBeenCalled();
   });
 
   it('does not navigate twice when status remains Submitted', async () => {
@@ -78,7 +79,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSwapsAfterSubmit).toHaveBeenCalledTimes(1);
 
     rerender();
 
@@ -86,17 +87,17 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSwapsAfterSubmit).toHaveBeenCalledTimes(1);
   });
 
   it('reschedules navigation when the navigation callback changes before the timeout fires', async () => {
-    const updatedNavigateToDefaultRoute = jest.fn();
+    const updatedNavigateToSwapsAfterSubmit = jest.fn();
     mockUseBridgeNavigation
       .mockReturnValueOnce({
-        navigateToDefaultRoute: mockNavigateToDefaultRoute,
+        navigateToSwapsAfterSubmit: mockNavigateToSwapsAfterSubmit,
       })
       .mockReturnValue({
-        navigateToDefaultRoute: updatedNavigateToDefaultRoute,
+        navigateToSwapsAfterSubmit: updatedNavigateToSwapsAfterSubmit,
       });
 
     const { rerender } = renderHookWithProvider(
@@ -115,19 +116,21 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
-    expect(updatedNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSwapsAfterSubmit).not.toHaveBeenCalled();
+    expect(updatedNavigateToSwapsAfterSubmit).toHaveBeenCalledTimes(1);
   });
 
   it('does not schedule duplicate navigation when the navigation callback changes while navigation is pending', async () => {
-    const updatedNavigateToDefaultRoute = jest.fn();
-    mockNavigateToDefaultRoute.mockReturnValue(new Promise(() => undefined));
+    const updatedNavigateToSwapsAfterSubmit = jest.fn();
+    mockNavigateToSwapsAfterSubmit.mockReturnValue(
+      new Promise(() => undefined),
+    );
     mockUseBridgeNavigation
       .mockReturnValueOnce({
-        navigateToDefaultRoute: mockNavigateToDefaultRoute,
+        navigateToSwapsAfterSubmit: mockNavigateToSwapsAfterSubmit,
       })
       .mockReturnValue({
-        navigateToDefaultRoute: updatedNavigateToDefaultRoute,
+        navigateToSwapsAfterSubmit: updatedNavigateToSwapsAfterSubmit,
       });
 
     const { rerender } = renderHookWithProvider(
@@ -144,7 +147,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSwapsAfterSubmit).toHaveBeenCalledTimes(1);
 
     rerender();
 
@@ -152,8 +155,8 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
-    expect(updatedNavigateToDefaultRoute).not.toHaveBeenCalled();
+    expect(mockNavigateToSwapsAfterSubmit).toHaveBeenCalledTimes(1);
+    expect(updatedNavigateToSwapsAfterSubmit).not.toHaveBeenCalled();
   });
 
   it('clears timeout on unmount', () => {
@@ -173,7 +176,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+    expect(mockNavigateToSwapsAfterSubmit).not.toHaveBeenCalled();
   });
 
   it('returns hasNavigatedAfterSubmission ref', () => {
