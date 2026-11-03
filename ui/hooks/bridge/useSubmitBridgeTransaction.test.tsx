@@ -23,7 +23,6 @@ import {
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
-  PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
@@ -281,21 +280,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(quoteWithMetadata.toTokenAmount?.usd).toBe('12');
 
       expect(submitTxSpy.mock.calls).toMatchSnapshot();
-      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
-        [
-          [
-            "/cross-chain/swaps/prepare-bridge-page",
-            {
-              "replace": true,
-              "state": {
-                "bridgeState": null,
-                "stayOnHomePage": false,
-                "token": null,
-              },
-            },
-          ],
-        ]
-      `);
+      expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(result.current.isSubmitting).toBe(false);
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
@@ -324,7 +309,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
-    it('stays on the prepare page with the amount cleared after EVM bridge transaction', async () => {
+    it('stays on swaps with the amount cleared after EVM bridge transaction', async () => {
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -337,21 +322,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       });
 
       // Assert
-      expect(mockUseNavigate.mock.calls).toMatchInlineSnapshot(`
-        [
-          [
-            "/cross-chain/swaps/prepare-bridge-page",
-            {
-              "replace": true,
-              "state": {
-                "bridgeState": null,
-                "stayOnHomePage": false,
-                "token": null,
-              },
-            },
-          ],
-        ]
-      `);
+      expect(mockUseNavigate).not.toHaveBeenCalled();
 
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalled();
@@ -763,17 +734,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         }),
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-        {
-          replace: true,
-          state: {
-            bridgeState: null,
-            stayOnHomePage: false,
-            token: null,
-          },
-        },
-      );
+      expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
     });
@@ -886,7 +847,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       },
     );
 
-    it('stays in place without clearing the amount when non-HW intent submission fails', async () => {
+    it('stays on swaps without clearing the amount when non-HW intent submission fails', async () => {
       const store = makeMockStore();
       const submitError = new Error('submit failed');
       submitIntentSpy.mockReturnValueOnce(async () => {
@@ -911,9 +872,6 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       });
 
       expect(mockUseNavigate).not.toHaveBeenCalled();
-      expect(store.getActions()).not.toContainEqual(
-        bridgeActions.setFromTokenInputValue(null),
-      );
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
       expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {

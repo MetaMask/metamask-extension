@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useBridgeNavigation } from '../bridge/useBridgeNavigation';
+import {
+  resetBridgeController,
+  setFromTokenInputValue,
+} from '../../ducks/bridge/actions';
+import { useDispatch } from '../../store/hooks';
 import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 
@@ -27,11 +33,10 @@ export function useHwSwapNavigation({
   signatureState,
   isSendBundleFlow = false,
 }: UseHardwareWalletNavigationOptions) {
-  const { navigateToDefaultRoute, navigateToSwapsAfterSubmit } =
-    useBridgeNavigation();
-  const navigateAfterSubmit = isSendBundleFlow
-    ? navigateToDefaultRoute
-    : navigateToSwapsAfterSubmit;
+  const { navigateToDefaultRoute } = useBridgeNavigation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { key: locationKey } = useLocation();
   const hasNavigatedAfterSubmission = useRef(false);
 
   useEffect(() => {
@@ -44,11 +49,26 @@ export function useHwSwapNavigation({
 
     const timer = setTimeout(async () => {
       hasNavigatedAfterSubmission.current = true;
-      await navigateAfterSubmit();
+      if (isSendBundleFlow || locationKey === 'default') {
+        await navigateToDefaultRoute();
+        return;
+      }
+      dispatch(setFromTokenInputValue(null));
+      // The Swaps page remounts on return; clear quotes so it does not
+      // restore the submitted amount.
+      await dispatch(resetBridgeController());
+      navigate(-1);
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [signatureState.status, navigateAfterSubmit]);
+  }, [
+    signatureState.status,
+    navigateToDefaultRoute,
+    isSendBundleFlow,
+    locationKey,
+    dispatch,
+    navigate,
+  ]);
 
   return {
     hasNavigatedAfterSubmission,

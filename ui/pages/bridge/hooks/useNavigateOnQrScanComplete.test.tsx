@@ -3,6 +3,7 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
+  DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useNavigateOnQrScanComplete } from './useNavigateOnQrScanComplete';
@@ -51,7 +52,7 @@ describe('useNavigateOnQrScanComplete', () => {
     mockUseSelectorOverrides = {};
   });
 
-  it('navigates to prepare page when QR scan completes successfully (active → null, lastQrScanCompletedSuccessfully true)', async () => {
+  it('navigates to default route when QR scan completes successfully (active → null, lastQrScanCompletedSuccessfully true)', async () => {
     const store = createBridgeMockStore({
       metamaskStateOverrides: {
         activeQrCodeScanRequest: mockQrScanRequest,
@@ -85,17 +86,14 @@ describe('useNavigateOnQrScanComplete', () => {
 
     await waitFor(
       () => {
-        expect(mockUseNavigate).toHaveBeenCalledWith(
-          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-          {
-            replace: true,
-            state: {
-              stayOnHomePage: false,
-              token: null,
-              bridgeState: null,
-            },
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+          state: {
+            stayOnHomePage: true,
+            token: null,
+            bridgeState: null,
           },
-        );
+        });
       },
       { timeout: 3000 },
     );

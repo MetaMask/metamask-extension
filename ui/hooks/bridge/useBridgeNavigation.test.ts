@@ -407,38 +407,4 @@ describe('useBridgeNavigation', () => {
       });
     });
   });
-
-  it('navigateToSwapsAfterSubmit clears the amount and stays on the prepare page', async () => {
-    const { result } = renderUseBridgeNavigation();
-
-    await act(async () => {
-      await result.current.navigateToSwapsAfterSubmit();
-    });
-
-    expect(mockDispatch).toHaveBeenCalledWith(
-      bridgeActions.setFromTokenInputValue(null),
-    );
-    expect(mockUseNavigate).not.toHaveBeenCalled();
-  });
-
-  it('navigateToSwapsAfterSubmit goes back from the hardware wallet signing page', async () => {
-    const resetBridgeControllerSpy = jest
-      .spyOn(bridgeActions, 'resetBridgeController')
-      .mockImplementation((...args: unknown[]) => jest.fn()(...args));
-    mockUseLocation.mockReturnValue({
-      pathname: HARDWARE_WALLET_SIGNATURES_PATH,
-      search: '',
-      state: {},
-      key: 'signing',
-    });
-
-    const { result } = renderUseBridgeNavigation();
-
-    await act(async () => {
-      await result.current.navigateToSwapsAfterSubmit();
-    });
-
-    expect(resetBridgeControllerSpy).toHaveBeenCalled();
-    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
-  });
 });
