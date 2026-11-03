@@ -153,7 +153,7 @@ const MoneyActionButton = ({
       className={classnames(
         'flex-1',
         !isFullScreenDesign &&
-          'h-[76px] cursor-default flex-col gap-y-0.5 rounded-xl px-0 opacity-100',
+          'h-[76px] flex-col gap-y-0.5 rounded-xl px-0 opacity-100',
       )}
     >
       {label}
