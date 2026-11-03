@@ -2,6 +2,8 @@ import {
   EthScope,
   SolAccountType,
   SolScope,
+  TrxAccountType,
+  TrxScope,
   XlmAccountType,
   XlmScope,
 } from '@metamask/keyring-api';
@@ -18,6 +20,7 @@ import type {
   AllWalletsBalance,
   BalanceChangeResult,
 } from '@metamask/assets-controller';
+import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import type { MetaMaskReduxState } from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
@@ -1539,6 +1542,44 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     );
   };
 
+  const createMockStateWithTronNetworks = (
+    includeTestnets: boolean = false,
+  ): BalanceCalculationState => {
+    const multichainNetworks: Record<string, unknown> = {
+      [TrxScope.Mainnet]: {
+        chainId: TrxScope.Mainnet,
+        type: 'mainnet',
+      },
+    };
+
+    if (includeTestnets) {
+      multichainNetworks[TrxScope.Nile] = {
+        chainId: TrxScope.Nile,
+        type: 'testnet',
+      };
+    }
+
+    const baseState = createBaseMockState(
+      'tron-account',
+      TrxAccountType.Eoa,
+      [TrxScope.Mainnet],
+      {
+        snap: { id: 'npm:@metamask/tron-wallet-snap', enabled: true },
+      },
+    );
+
+    return {
+      metamask: {
+        ...baseState,
+        networkConfigurationsByChainId: {},
+        multichainNetworkConfigurationsByChainId: multichainNetworks,
+        snaps: {
+          'npm:@metamask/tron-wallet-snap': { enabled: true },
+        },
+      } as unknown as BalanceCalculationState['metamask'],
+    };
+  };
+
   const ethNativeAssetId = 'eip155:1/slip44:60' as CaipAssetType;
   const ethSepoliaNativeAssetId = 'eip155:11155111/slip44:60' as CaipAssetType;
   const usdcAssetId =
@@ -1548,6 +1589,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
   const xlmNativeAssetId = `${XlmScope.Pubnet}/slip44:148` as CaipAssetType;
   const xlmTestnetNativeAssetId =
     `${XlmScope.Testnet}/slip44:148` as CaipAssetType;
+  const trxNativeAssetId = MultichainNativeAssets.TRON;
+  const trxNileNativeAssetId = MultichainNativeAssets.TRON_NILE;
 
   const ethNativeInfo = {
     type: 'native' as const,
@@ -1609,6 +1652,28 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     state.metamask.assetsBalance = {
       'stellar-account': {
         [xlmNativeAssetId]: { amount: '25.5' },
+      },
+    };
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns true when balance is greater than 0 for Tron mainnet', () => {
+    const state = createMockStateWithTronNetworks();
+
+    state.metamask.assetsInfo = {
+      [trxNativeAssetId]: {
+        type: 'native',
+        symbol: 'TRX',
+        decimals: 6,
+        name: 'Tron',
+      },
+    };
+    state.metamask.assetsBalance = {
+      'tron-account': {
+        [trxNativeAssetId]: { amount: '30' },
       },
     };
 
@@ -1785,6 +1850,28 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     expect(result).toBe(true);
   });
 
+  it('returns true for loaded state when a Tron mainnet zero balance record exists', () => {
+    const state = createMockStateWithTronNetworks();
+
+    state.metamask.assetsInfo = {
+      [trxNativeAssetId]: {
+        type: 'native',
+        symbol: 'TRX',
+        decimals: 6,
+        name: 'Tron',
+      },
+    };
+    state.metamask.assetsBalance = {
+      'tron-account': {
+        [trxNativeAssetId]: { amount: '0' },
+      },
+    };
+
+    const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
+    expect(result).toBe(true);
+  });
+
   it('returns false for loaded state when only testnet balance records exist', () => {
     const state = createMockStateWithEVMNetworks(true);
 
@@ -1900,6 +1987,35 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     };
 
     const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
+
+    expect(result).toBe(false);
+  });
+
+  it('excludes Tron testnet from balance calculation', () => {
+    const state = createMockStateWithTronNetworks(true);
+
+    state.metamask.assetsInfo = {
+      [trxNativeAssetId]: {
+        type: 'native',
+        symbol: 'TRX',
+        decimals: 6,
+        name: 'Tron',
+      },
+      [trxNileNativeAssetId]: {
+        type: 'native',
+        symbol: 'TRX',
+        decimals: 6,
+        name: 'Tron',
+      },
+    };
+    state.metamask.assetsBalance = {
+      'tron-account': {
+        [trxNativeAssetId]: { amount: '0' },
+        [trxNileNativeAssetId]: { amount: '30' },
+      },
+    };
+
+    const result = selectAccountGroupBalanceForEmptyState(state);
 
     expect(result).toBe(false);
   });

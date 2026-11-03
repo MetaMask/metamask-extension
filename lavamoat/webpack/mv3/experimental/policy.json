@@ -1115,7 +1115,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethersproject/abi": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controller>@metamask/assets-controllers": true,
+        "@metamask/assets-controllers": true,
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/assets-controller>@metamask/controller-utils": true,
@@ -1169,15 +1169,6 @@
         "@metamask/assets-controllers>reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "@metamask/assets-controllers>uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/assets-controllers": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/assets-controller>@metamask/controller-utils": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
@@ -1380,12 +1371,12 @@
       },
       "packages": {
         "@metamask/contract-metadata": true,
-        "@metamask/controller-utils": true,
+        "@metamask/client-utils>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "eth-chainlist": true
+        "@metamask/client-utils>eth-chainlist": true
       }
     },
     "@metamask/compliance-controller": {
@@ -1530,6 +1521,23 @@
       }
     },
     "@metamask/chain-agnostic-permission>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/client-utils>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
