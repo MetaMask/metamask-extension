@@ -1852,7 +1852,6 @@
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "@metamask/assets-controller>lodash-es": true
@@ -2085,18 +2084,6 @@
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/json-rpc-engine": true,
-        "nanoid": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/json-rpc-engine": true,
-        "nanoid": true
-      }
-    },
-    "@metamask/wallet>@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
         "@metamask/json-rpc-engine": true,
         "nanoid": true
@@ -2786,7 +2773,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/multichain-network-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
@@ -2828,7 +2815,7 @@
         "@metamask/base-controller": true,
         "@metamask/network-connection-banner-controller>@metamask/client-controller": true,
         "@metamask/connectivity-controller": true,
-        "@metamask/network-connection-banner-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/network-enablement-controller": true,
         "@metamask/utils": true,
         "reselect": true
@@ -2871,84 +2858,6 @@
         "@metamask/network-controller>reselect": true,
         "uri-js": true,
         "@metamask/network-controller>uuid": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "btoa.bind": true,
-        "fetch.bind": true,
-        "setTimeout": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/transaction-pay-controller>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/config-registry-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/network-controller>@metamask/connectivity-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/transaction-pay-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/remote-feature-flag-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "cockatiel": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "@metamask/transaction-pay-controller>immer": true,
-        "@metamask/assets-controller>lodash-es": true,
-        "@metamask/transaction-pay-controller>@metamask/network-controller>reselect": true,
-        "uri-js": true,
-        "@metamask/transaction-pay-controller>@metamask/network-controller>uuid": true
-      }
-    },
-    "@metamask/wallet>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "btoa.bind": true,
-        "fetch.bind": true,
-        "setTimeout": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/wallet>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/config-registry-controller": true,
-        "@metamask/wallet>@metamask/connectivity-controller": true,
-        "@metamask/wallet>@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/wallet>@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/remote-feature-flag-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "cockatiel": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "@metamask/wallet>@metamask/network-controller>immer": true,
-        "@metamask/assets-controller>lodash-es": true,
-        "@metamask/wallet>@metamask/network-controller>reselect": true,
-        "uri-js": true,
-        "@metamask/wallet>@metamask/network-controller>uuid": true
       }
     },
     "@metamask/network-enablement-controller": {
@@ -3729,7 +3638,7 @@
         "@metamask/transaction-controller>@metamask/controller-utils": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -3758,7 +3667,7 @@
         "@metamask/transaction-pay-controller>@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-pay-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
         "@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
@@ -3837,7 +3746,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/logging-controller": true,
         "@metamask/messenger": true,
-        "@metamask/wallet>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/passkey-controller": true,
         "@metamask/permission-controller": true,
         "@metamask/remote-feature-flag-controller": true,
@@ -6303,17 +6212,7 @@
         "Iterator": true
       }
     },
-    "@metamask/wallet>@metamask/network-controller>immer": {
-      "globals": {
-        "Iterator": true
-      }
-    },
     "@metamask/permission-controller>immer": {
-      "globals": {
-        "Iterator": true
-      }
-    },
-    "@metamask/transaction-pay-controller>immer": {
       "globals": {
         "Iterator": true
       }
@@ -7608,18 +7507,6 @@
         "console.warn": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/network-controller>reselect": {
-      "globals": {
-        "WeakRef": true,
-        "console.warn": true
-      }
-    },
-    "@metamask/wallet>@metamask/network-controller>reselect": {
-      "globals": {
-        "WeakRef": true,
-        "console.warn": true
-      }
-    },
     "@metamask/perps-controller>reselect": {
       "globals": {
         "WeakRef": true,
@@ -8241,16 +8128,6 @@
       "globals": {
         "crypto.getRandomValues": true,
         "crypto.randomUUID": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/network-controller>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/wallet>@metamask/network-controller>uuid": {
-      "globals": {
-        "crypto": true
       }
     },
     "@metamask/notification-services-controller>uuid": {
