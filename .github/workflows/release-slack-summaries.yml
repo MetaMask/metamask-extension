@@ -11,12 +11,18 @@
 # the environment, and the permissions below must stay in lockstep with
 # that policy. Schedules run from the default branch only.
 #
-# Safe by default: unset GA_MODE and GA_MODE=test post only to
-# vars.RELEASE_SUMMARY_TEST_CHANNEL and never write a PR body.
+# Safe by default: unset GA_MODE and GA_MODE=test never post to a real
+# release-* channel and never write a PR body. A dispatch test channel
+# may override vars.RELEASE_SUMMARY_TEST_CHANNEL, but a name matching
+# release-* or #release-* is rejected unless GA_MODE is exactly live.
+# A test channel that is only whitespace fails the job. It is not
+# treated as "no channel".
 # GA_MODE=live is the only value that uses the real release channels
 # and may rewrite the release PR body. A test channel posts only to
 # that channel and never writes a PR body, including when GA_MODE=live,
 # so this run cannot collide with the Zap still rewriting the checklist.
+# A live run that is not a dry run also refuses to post when the blocker
+# or regression JQL is empty.
 
 name: Release Slack summaries
 
@@ -41,19 +47,22 @@ on:
         type: boolean
         default: true
       test-channel:
-        description: 'Post only to this Slack channel (#name or ID). When set, the run does not write a PR body. Leave empty to follow GA_MODE.'
+        description: 'Post only to this Slack channel (#name or ID). When set, the run does not write a PR body. release-* is rejected unless GA_MODE is live. Leave empty to follow GA_MODE.'
         required: false
         type: string
         default: ''
 
-# Least privilege for the OIDC token exchange. pull_requests: write is
-# requested on the exchanged token below, not on GITHUB_TOKEN.
+# Least privilege for the OIDC token exchange. The exchanged repository
+# token still requests pull_requests: write on every run; see the
+# get-token step. GITHUB_TOKEN itself stays read-only.
 permissions:
   id-token: write
   contents: read
 
 concurrency:
-  group: release-slack-summaries-${{ github.event.schedule || inputs.mode || github.run_id }}
+  # Schedule and workflow_dispatch of the same mode share this group.
+  # github.run_id must stay out of the key: it let the two events overlap.
+  group: release-slack-summaries-${{ github.event.schedule == '16 10 * * 1-5' && 'blocker-summary' || github.event.schedule == '21 10 * * 1-5' && 'release-validation' || inputs.mode }}
   cancel-in-progress: false
 
 jobs:
@@ -64,102 +73,32 @@ jobs:
     # Policy pin: environment name must stay `release-notifications`.
     environment: release-notifications
     steps:
+      - name: Checkout flag script
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/scripts/release-slack-summaries-flags.sh
+          sparse-checkout-cone-mode: false
+
       - name: Resolve mode and safety flags
         id: flags
         env:
           EVENT_NAME: ${{ github.event_name }}
           SCHEDULE: ${{ github.event.schedule }}
           INPUT_MODE: ${{ inputs.mode }}
-          INPUT_DRY_RUN: ${{ inputs.dry-run }}
-          INPUT_TEST_CHANNEL: ${{ inputs.test-channel }}
+          # github.event.inputs keeps workflow_dispatch values as strings.
+          # inputs.dry-run is a boolean, and `false || ''` is empty, so an
+          # unchecked box would not be the string "false".
+          INPUT_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry-run || '' }}
+          INPUT_TEST_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.test-channel || '' }}
           GA_MODE: ${{ vars.GA_MODE }}
           TEST_CHANNEL_VAR: ${{ vars.RELEASE_SUMMARY_TEST_CHANNEL }}
-        run: |
-          set -euo pipefail
-
-          event_name="${EVENT_NAME:-}"
-          schedule="${SCHEDULE:-}"
-          input_mode="${INPUT_MODE:-}"
-          input_dry_run="${INPUT_DRY_RUN:-}"
-          input_test_channel="${INPUT_TEST_CHANNEL:-}"
-          ga_mode="${GA_MODE:-}"
-          default_test_channel="${TEST_CHANNEL_VAR:-}"
-
-          if [[ "$event_name" == "workflow_dispatch" ]]; then
-            mode="$input_mode"
-            # Only an explicit false posts. A missing value stays a dry run.
-            if [[ "$input_dry_run" == "false" ]]; then
-              dry_run=false
-            else
-              dry_run=true
-            fi
-            test_channel="$input_test_channel"
-          elif [[ "$event_name" == "schedule" ]]; then
-            dry_run=false
-            test_channel=""
-            # Quote the patterns. Unquoted `*` is a glob, so it would
-            # also match other hours in the same weekday window.
-            case "$schedule" in
-              '16 10 * * 1-5')
-                mode="blocker-summary"
-                ;;
-              '21 10 * * 1-5')
-                mode="release-validation"
-                ;;
-              *)
-                echo "::error::Unexpected schedule: ${schedule}"
-                exit 1
-                ;;
-            esac
-          else
-            echo "::error::Unexpected event: ${event_name}"
-            exit 1
-          fi
-
-          case "$mode" in
-            blocker-summary | release-validation) ;;
-            *)
-              echo "::error::mode must be blocker-summary or release-validation"
-              exit 1
-              ;;
-          esac
-
-          # Exact "live" is the only value that may reach real channels.
-          # Unset, "test", and anything else stay on the test channel.
-          # The PR rewrite belongs to release-validation (Zap 597) only,
-          # and only when no test channel is set. While the Zap still
-          # rewrites the checklist, a test-channel run must not write too.
-          allow_pr_write=false
-          if [[ "$ga_mode" == "live" ]]; then
-            if [[ "$dry_run" == "false" && -z "$test_channel" && "$mode" == "release-validation" ]]; then
-              allow_pr_write=true
-            fi
-          else
-            if [[ -z "$test_channel" ]]; then
-              test_channel="$default_test_channel"
-            fi
-            if [[ -z "$test_channel" ]]; then
-              echo "::warning::GA_MODE is not live and no test channel is set; forcing dry-run so nothing is posted."
-              dry_run=true
-            fi
-          fi
-
-          test_channel="${test_channel//$'\n'/}"
-          test_channel="${test_channel//$'\r'/}"
-
-          {
-            echo "mode=${mode}"
-            echo "dry-run=${dry_run}"
-            echo "allow-pr-write=${allow_pr_write}"
-            echo "test-channel=${test_channel}"
-          } >> "$GITHUB_OUTPUT"
-
-          if [[ -n "$test_channel" ]]; then
-            echo "Resolved test-channel=${test_channel}"
-          else
-            echo "Resolved test-channel is unset"
-          fi
-          echo "Resolved mode=${mode} dry-run=${dry_run} allow-pr-write=${allow_pr_write} ga-mode=${ga_mode:-<unset>}"
+          # The action appends cf[14565] = "V" / cf[16946] = "V". It does
+          # not substitute labels = "regression-RC-{V}". These are the
+          # ticket queries with that label clause omitted. Repo variables
+          # override them. Empty after trim fails a live non-dry-run.
+          BLOCKER_JQL: ${{ vars.RELEASE_SUMMARY_BLOCKER_JQL || 'type = Bug AND labels = "release-blocker" AND statusCategory != Done' }}
+          REGRESSION_JQL: ${{ vars.RELEASE_SUMMARY_REGRESSION_JQL || 'type = Bug AND statusCategory != Done' }}
+        run: bash .github/scripts/release-slack-summaries-flags.sh
 
       - name: Get repository token
         id: repo-token
@@ -167,6 +106,11 @@ jobs:
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           target-repository: ${{ github.repository }}
+          # pull_requests: write on every run, including blocker-summary
+          # and dry runs. Policy PR 221 allowlists this workflow and
+          # environment, and a narrower pull_requests: read request is
+          # not confirmed to be accepted. An exact permission match would
+          # fail those runs before they can read the release pull requests.
           permissions: |
             pull_requests: write
 
@@ -179,17 +123,12 @@ jobs:
           permissions: |
             contents: read
 
-      # TODO(MCRM-155): Pin this to a commit SHA or release tag once
-      # https://github.com/MetaMask/github-tools/pull/306 merges.
-      # Until then the action exists only on this branch.
-      #
-      # Left at the action defaults from that pull request:
-      # - jira-release-blocker-jql (empty; logs OPEN and skips blockers)
-      # - jira-regression-jql (empty; v10 Found-in proposal, still OPEN)
-      # - topology-jira-project-field (jiraProject, PROPOSED)
-      # - github-tools-repository / github-tools-ref (follow this uses: ref)
+      # TODO(MCRM-155): Move this pin to the merged commit SHA or release
+      # tag once https://github.com/MetaMask/github-tools/pull/306 merges.
+      # github-tools-ref is the same SHA so the action's second checkout
+      # follows this commit, not a branch tip.
       - name: Publish release Slack summary
-        uses: MetaMask/github-tools/.github/actions/release-slack-summaries@cursor/release-slack-summaries-a324
+        uses: MetaMask/github-tools/.github/actions/release-slack-summaries@f99347bfb23bbbd352d199be7b58b3d7cb9f9bb9 # cursor/release-slack-summaries-a324 (github-tools#306)
         with:
           mode: ${{ steps.flags.outputs.mode }}
           platform: extension
@@ -199,6 +138,9 @@ jobs:
           jira-base-url: https://consensyssoftware.atlassian.net
           jira-email: ${{ secrets.JIRA_EMAIL }}
           jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+          jira-release-blocker-jql: ${{ steps.flags.outputs.blocker-jql }}
+          jira-regression-jql: ${{ steps.flags.outputs.regression-jql }}
           test-channel: ${{ steps.flags.outputs.test-channel }}
           dry-run: ${{ steps.flags.outputs.dry-run }}
           allow-pr-write: ${{ steps.flags.outputs.allow-pr-write }}
+          github-tools-ref: f99347bfb23bbbd352d199be7b58b3d7cb9f9bb9
