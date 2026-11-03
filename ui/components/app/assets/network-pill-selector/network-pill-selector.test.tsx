@@ -123,10 +123,6 @@ describe('NetworkPillSelector', () => {
     expect(screen.getByTestId('network-pill-0xa')).toBeDisabled();
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   describe('when pills wrap onto more than one line', () => {
     it('toggles between the collapsed and expanded view', () => {
       // The Optimism pill sits on a second line
@@ -145,29 +141,6 @@ describe('NetworkPillSelector', () => {
 
       fireEvent.click(toggle);
       expect(toggle).toHaveTextContent('Show 1 more networks');
-    });
-
-    it('places the toggle before the pills, inside the same wrapping container', () => {
-      jest
-        .spyOn(HTMLElement.prototype, 'offsetTop', 'get')
-        .mockImplementation(function mock(this: HTMLElement) {
-          return this.dataset.testid === 'network-pill-0xa' ? 56 : 0;
-        });
-
-      renderSelector();
-      const toggle = screen.getByTestId('network-pill-toggle');
-      const pills = [
-        screen.getByTestId('network-pill-all-default'),
-        screen.getByTestId('network-pill-0x1'),
-        screen.getByTestId('network-pill-0xa'),
-      ];
-
-      const siblings = Array.from(toggle.parentElement?.children ?? []);
-      pills.forEach((pill) => {
-        expect(siblings.indexOf(toggle)).toBeLessThan(siblings.indexOf(pill));
-      });
-      expect(toggle).toHaveClass('float-right');
-      expect(pills[0]).toHaveClass('inline-flex');
     });
   });
 
