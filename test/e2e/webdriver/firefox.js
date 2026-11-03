@@ -168,8 +168,16 @@ class FirefoxDriver {
     // `about:debugging#addons`, so without this the session cannot start.
     // Newer geckodriver rejects `--remote-allow-system-access` via Firefox
     // capabilities; pass `--allow-system-access` to geckodriver instead.
+    // Firefox 159 removed the `--remote-allow-system-access` flag that
+    // geckodriver forwards, and reads `MOZ_REMOTE_ALLOW_SYSTEM_ACCESS` from the
+    // environment instead, which Firefox inherits from the geckodriver process.
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=1579790
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=2054896
     service.addArguments('--allow-system-access');
+    service.setEnvironment({
+      ...process.env,
+      MOZ_REMOTE_ALLOW_SYSTEM_ACCESS: '1',
+    });
 
     if (port) {
       service.setPort(port);
