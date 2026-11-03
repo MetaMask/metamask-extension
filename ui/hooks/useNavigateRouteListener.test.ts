@@ -8,10 +8,13 @@ import { useNavigateRouteListener } from './useNavigateRouteListener';
 
 const mockNavigate = jest.fn();
 const mockDispatch = jest.fn();
+let mockPathname = '/';
+let mockSearch = '';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+  useLocation: () => ({ pathname: mockPathname, search: mockSearch }),
 }));
 
 jest.mock('../ducks/metamask/base-selectors', () => ({
@@ -33,6 +36,8 @@ describe('useNavigateRouteListener', () => {
     mockNavigate.mockReset();
     mockDispatch.mockReset();
     messageListener = undefined;
+    mockPathname = '/';
+    mockSearch = '';
     mockGetIsUnlocked.mockReturnValue(true);
     jest
       .spyOn(browser.runtime.onMessage, 'addListener')
@@ -64,7 +69,6 @@ describe('useNavigateRouteListener', () => {
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: '/cross-chain/swaps/prepare-bridge-page',
       search: '?to=eip155:1/slip44:60',
-      fromXWidget: false,
     });
   });
 
@@ -89,8 +93,26 @@ describe('useNavigateRouteListener', () => {
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: '/cross-chain/swaps/prepare-bridge-page',
       search: '?to=eip155:1/slip44:60',
-      fromXWidget: true,
     });
+  });
+
+  it('shows the toast from a fromXWidget search param and strips it', () => {
+    mockPathname = '/cross-chain/swaps/prepare-bridge-page';
+    mockSearch = '?to=eip155%3A1%2Fslip44%3A60&fromXWidget=1';
+
+    renderHook(() => useNavigateRouteListener());
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_SHOW_X_WIDGET_DEEPLINK_TOAST',
+      payload: true,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      {
+        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        search: '?to=eip155%3A1%2Fslip44%3A60',
+      },
+      { replace: true },
+    );
   });
 
   it('ignores messages without a valid path', () => {

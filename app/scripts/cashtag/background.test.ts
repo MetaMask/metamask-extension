@@ -129,8 +129,17 @@ describe('isAllowedCashtagSender', () => {
 
 describe('createCashtagResponse', () => {
   const caipAssetId = 'eip155:1/slip44:60';
+  const openRouteRetryCount = 3;
   const swapHash =
-    '#/cross-chain/swaps/prepare-bridge-page?to=eip155%3A1%2Fslip44%3A60';
+    '#/cross-chain/swaps/prepare-bridge-page?to=eip155%3A1%2Fslip44%3A60&fromXWidget=1';
+  const openRouteMessage = {
+    type: EXTENSION_MESSAGES.OPEN_ROUTE,
+    body: {
+      path: '/cross-chain/swaps/prepare-bridge-page',
+      search: '?to=eip155%3A1%2Fslip44%3A60',
+      fromXWidget: true,
+    },
+  };
   const widgetSender = sender({
     frameId: 1,
     tab: { ...xTab, windowId: 7 } as chrome.tabs.Tab,
@@ -174,6 +183,7 @@ describe('createCashtagResponse', () => {
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     delete (globalThis.chrome as { sidePanel?: unknown }).sidePanel;
     delete (globalThis.chrome as { action?: unknown }).action;
   });
@@ -234,20 +244,57 @@ describe('createCashtagResponse', () => {
   });
 
   it('opens a tab when neither the side panel nor the popup API exists', async () => {
-    await createCashtagResponse(openSwapMessage, widgetSender, getController);
+    jest.useFakeTimers();
+    const response = createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      getController,
+    );
+    await jest.runAllTimersAsync();
+    await response;
 
     expect(browser.tabs.create).toHaveBeenCalledWith({
       url: `chrome-extension://${extensionId}/home.html${swapHash}`,
     });
+    expect(browser.runtime.sendMessage).toHaveBeenCalledTimes(
+      openRouteRetryCount,
+    );
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith(openRouteMessage);
+  });
+
+  it('retries OPEN_ROUTE with fromXWidget after opening the popup', async () => {
+    jest.useFakeTimers();
+    Object.assign(globalThis.chrome, {
+      action: {
+        openPopup: jest.fn().mockResolvedValue(undefined),
+        setPopup: jest.fn().mockResolvedValue(undefined),
+      },
+    });
+
+    const response = createCashtagResponse(
+      openSwapMessage,
+      widgetSender,
+      getController,
+    );
+    await jest.runAllTimersAsync();
+    await response;
+
+    expect(browser.runtime.sendMessage).toHaveBeenCalledTimes(
+      openRouteRetryCount,
+    );
+    expect(browser.runtime.sendMessage).toHaveBeenCalledWith(openRouteMessage);
   });
 
   it('sets bridge location to x_widget before opening swap route', async () => {
+    jest.useFakeTimers();
     const controller = getController();
-    await createCashtagResponse(
+    const response = createCashtagResponse(
       openSwapMessage,
       widgetSender,
       () => controller,
     );
+    await jest.runAllTimersAsync();
+    await response;
 
     expect(controller.bridgeController?.setLocation).toHaveBeenCalledWith(
       'x_widget',

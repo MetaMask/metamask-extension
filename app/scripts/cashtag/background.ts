@@ -125,7 +125,9 @@ function assetRoutePath(caipAssetId: string) {
 }
 
 function routeHash(path: string, search?: `?${string}`) {
-  return `#${path}${search ?? ''}`;
+  const params = new URLSearchParams(search ? search.slice(1) : '');
+  params.set('fromXWidget', '1');
+  return `#${path}?${params.toString()}`;
 }
 
 function shouldUseSidePanel(controller: Controller | undefined) {
@@ -297,12 +299,15 @@ async function openExtensionSurface({
   try {
     // Popup is destroyed on close, so a one-shot hash deep link is safe.
     await openPopupWithRoute(hash);
-    await broadcastOpenRoute(path, search, true);
   } catch {
     // Firefox has neither sidePanel.open nor action.openPopup, and both reject
     // once the user gesture is gone, so open a tab, which needs no gesture.
     await openFullscreenTab(hash);
   }
+
+  // Hash navigation does not set the toast flag. Retry the message so a cold
+  // popup or fullscreen document can still receive it after mount.
+  await broadcastOpenRouteWithRetries(path, search, true);
 }
 
 async function openExtensionPage({

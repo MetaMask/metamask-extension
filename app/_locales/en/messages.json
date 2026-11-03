@@ -12794,10 +12794,6 @@
     "message": "Updated to MetaMask default",
     "description": "Toast message confirming that the default RPC endpoint has been updated to MetaMask default"
   },
-  "xWidgetDeeplinkToast": {
-    "message": "You got here from the MetaMask widget on X",
-    "description": "Toast message shown when the user opens the extension from the MetaMask cashtag widget on X"
-  },
   "uploadDropFile": {
     "message": "Drop your file here"
   },
@@ -13013,6 +13009,10 @@
   "wrongPassword": {
     "message": "Incorrect password. Try again.",
     "description": "Displayed when the user enters an incorrect password"
+  },
+  "xWidgetDeeplinkToast": {
+    "message": "You got here from the MetaMask widget on X",
+    "description": "Toast message shown when the user opens the extension from the MetaMask cashtag widget on X"
   },
   "year": {
     "message": "year"

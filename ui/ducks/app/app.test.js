@@ -340,6 +340,22 @@ describe('App State', () => {
     expect(state.backupAndSyncOnboardingToggleState).toStrictEqual(false);
   });
 
+  it('sets the X widget deeplink toast flag', () => {
+    const shown = reduceApp(metamaskState, {
+      type: actions.SET_SHOW_X_WIDGET_DEEPLINK_TOAST,
+      payload: true,
+    });
+
+    expect(shown.showXWidgetDeeplinkToast).toBe(true);
+
+    const hidden = reduceApp(shown, {
+      type: actions.SET_SHOW_X_WIDGET_DEEPLINK_TOAST,
+      payload: false,
+    });
+
+    expect(hidden.showXWidgetDeeplinkToast).toBe(false);
+  });
+
   it('clears pending tokens', () => {
     const payload = {
       address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
