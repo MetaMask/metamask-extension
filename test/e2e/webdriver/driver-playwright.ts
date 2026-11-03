@@ -587,6 +587,25 @@ export class PlaywrightDriver {
     return new PlaywrightElement(locator, this);
   }
 
+  /**
+   * Finds nested elements without waiting; returns an empty list if none match.
+   *
+   * @param parent - Parent element.
+   * @param nestedLocator - Nested element locator.
+   * @returns The matching nested elements.
+   */
+  async findNestedElements(
+    parent: PlaywrightElement,
+    nestedLocator: RawLocator,
+  ): Promise<PlaywrightElement[]> {
+    const locator = this.buildLocatorOn(parent.locator, nestedLocator);
+    const count = await locator.count();
+    return Array.from(
+      { length: count },
+      (_, index) => new PlaywrightElement(locator.nth(index), this),
+    );
+  }
+
   // -- Waits ----------------------------------------------------------------
 
   async waitForSelector(

@@ -541,11 +541,11 @@ class ActivityTab extends HomePage {
           );
 
           for (const transaction of transactions) {
-            const amount = await this.driver.findNestedElement(
+            const [amount] = await this.driver.findNestedElements(
               transaction,
               this.transactionAmountsInActivity,
             );
-            if ((await amount.getText()) === expectedAmount) {
+            if (amount && (await amount.getText()) === expectedAmount) {
               return (
                 (await transaction.getAttribute('data-tx-status')) === status
               );
