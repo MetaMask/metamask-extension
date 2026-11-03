@@ -27,10 +27,7 @@ import configureStore from '../../../store/store';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import BridgeAssetPickerPage from '../asset-picker';
-import {
-  BridgeInputGroup,
-  getBridgeAmountFontSize,
-} from './bridge-input-group';
+import { BridgeInputGroup } from './bridge-input-group';
 
 const mockUseVirtualizer = jest.fn();
 const mockNavigate = jest.fn();
@@ -241,27 +238,19 @@ const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
   });
 };
 
-describe('getBridgeAmountFontSize', () => {
-  it('steps the font size down by rendered length', () => {
-    const cases: [string, number][] = [
-      ['', 40],
-      ['123456789012', 40],
-      ['1234567890123', 35],
-      ['12345678901234', 35],
-      ['123456789012345', 30],
-      ['1234567890123456', 30],
-      ['12345678901234567', 25],
-      ['1234567890123456789', 25],
-      ['12345678901234567890', 20],
-    ];
-
-    for (const [displayText, expected] of cases) {
-      expect(getBridgeAmountFontSize(displayText)).toBe(expected);
-    }
-  });
-});
-
 describe('BridgeInputGroup', () => {
+  it('starts a short amount at 40px', () => {
+    renderBridgeInputGroup(
+      {},
+      { amountFieldProps: { testId: 'from-amount', value: '1' } },
+    );
+
+    expect(screen.getByTestId('from-amount')).toHaveStyle({
+      fontSize: '40px',
+      lineHeight: '40px',
+    });
+  });
+
   it('sets the prefix and input in Hero at the same size', () => {
     renderBridgeInputGroup(
       {},
@@ -279,7 +268,7 @@ describe('BridgeInputGroup', () => {
 
     for (const element of [prefix, input]) {
       expect(element).toHaveClass('font-hero');
-      expect(element).toHaveStyle({ fontSize: '35px', lineHeight: '35px' });
+      expect(element).toHaveStyle({ fontSize: '32px', lineHeight: '32px' });
     }
   });
 

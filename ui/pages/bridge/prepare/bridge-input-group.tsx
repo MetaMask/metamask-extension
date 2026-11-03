@@ -44,6 +44,10 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
+import {
+  getAmountInputFontSize,
+  getAmountInputTextStyle,
+} from '../../../helpers/utils/amount-input-font-size';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
@@ -80,30 +84,11 @@ const getBlockExplorerUrl = (
     : null;
 };
 
-/**
- * Font size in px for the amount field, stepping down by length so the widest
- * Grotzec digits fit the 219px field beside the asset picker in the popup.
- * Longer values scroll inside the field at 20px.
- *
- * @param displayText - The amount prefix (if any) and value as rendered.
- * @returns The font size in px. Line height equals the font size.
- */
-export const getBridgeAmountFontSize = (displayText: string): number => {
-  const { length } = displayText;
-  if (length <= 12) {
-    return 40;
-  }
-  if (length <= 14) {
-    return 35;
-  }
-  if (length <= 16) {
-    return 30;
-  }
-  if (length <= 19) {
-    return 25;
-  }
-  return 20;
-};
+// Width of the amount field beside the asset picker in the popup.
+const AMOUNT_FIELD_WIDTH = 219;
+// Two stacked amount fields cannot fit the 88px start, so the Swap/Bridge
+// fields start lower on the same shared scale.
+const AMOUNT_FIELD_MAX_FONT_SIZE = 40;
 
 type BridgeAmountFieldProps = {
   testId: string;
@@ -200,13 +185,15 @@ export const BridgeInputGroup = ({
   }, [locale, balanceAmount, token.symbol]);
 
   const amountValue = amountFieldProps?.value?.toString() ?? '';
-  const inputFontSize = getBridgeAmountFontSize(
-    `${typeof amountInputPrefix === 'string' ? amountInputPrefix : ''}${amountValue}`,
+  const amountStyle = getAmountInputTextStyle(
+    getAmountInputFontSize(
+      `${typeof amountInputPrefix === 'string' ? amountInputPrefix : ''}${amountValue || '0'}`,
+      {
+        availableWidth: AMOUNT_FIELD_WIDTH,
+        maxFontSize: AMOUNT_FIELD_MAX_FONT_SIZE,
+      },
+    ),
   );
-  const amountStyle = {
-    fontSize: inputFontSize,
-    lineHeight: `${inputFontSize}px`,
-  };
 
   useEffect(() => {
     const hasAmountInputPrefixChanged =
