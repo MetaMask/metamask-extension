@@ -6,6 +6,10 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../test/lib/mock-resize-observer';
 import { RampsBuildQuoteScreen } from './build-quote';
 
 const QUOTE_DEBOUNCE_MS = 500;
@@ -209,6 +213,52 @@ describe('RampsBuildQuoteScreen', () => {
       expect(element).toHaveClass('font-hero');
       expect(element).toHaveStyle({ fontSize: '88px', lineHeight: '88px' });
     }
+  });
+
+  describe('amount font size', () => {
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    it('sizes a long amount from the measured width of the amount area', () => {
+      renderWithProvider(
+        <RampsBuildQuoteScreen />,
+        createStore(),
+        '/ramps/build-quote',
+      );
+      const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+      fireEvent.change(amountInput, { target: { value: '1234567890' } });
+      expect(amountInput).toHaveStyle({ fontSize: '60px' });
+
+      act(() => resizeObserver.resize(200));
+
+      expect(amountInput).toHaveStyle({ fontSize: '40px', lineHeight: '40px' });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      renderWithProvider(
+        <RampsBuildQuoteScreen />,
+        createStore(),
+        '/ramps/build-quote',
+      );
+      act(() => resizeObserver.resize(328));
+      const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+
+      for (const value of ['1', '1234', '1234567', '1234567890']) {
+        fireEvent.change(amountInput, { target: { value } });
+      }
+
+      expect(amountInput).toHaveStyle({ fontSize: '60px' });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
+    });
   });
 
   it('matches snapshot while quote is loading', () => {

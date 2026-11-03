@@ -31,10 +31,6 @@ import {
   resolveDisplayedQuoteError,
   resolvePaymentMethodLabel,
 } from '../utils/build-quote';
-import {
-  type AmountInputFontSize,
-  getAmountInputFontSize,
-} from '../../../../helpers/utils/amount-input-font-size';
 import { getProviderLimitMessage } from '../../utils/getProviderLimitMessage';
 import { getRampsTokenDisplaySymbol } from '../../utils/token-display';
 import { useBuildQuoteAmount } from './useBuildQuoteAmount';
@@ -49,7 +45,6 @@ export type RampsBuildQuoteReadyViewModel = {
   pageSubtitle?: string;
   currencySymbol: string;
   amount: string;
-  amountFontSize: AmountInputFontSize;
   hasAmountError: boolean;
   paymentMethodLabel: string;
   showPaymentMethodSpinner: boolean;
@@ -346,7 +341,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     pageSubtitle: networkName ? t('rampsOnNetwork', [networkName]) : undefined,
     currencySymbol,
     amount,
-    amountFontSize: getAmountInputFontSize(`${currencySymbol}${amount || '0'}`),
     hasAmountError: Boolean(continueError ?? displayedError),
     paymentMethodLabel,
     showPaymentMethodSpinner:
