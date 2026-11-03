@@ -713,22 +713,28 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
     // Candle subscription — return a single candle so `chartCurrentPrice` is > 0
     // in the market detail page. Without this the close-position modal submit
     // stays disabled (isPriceValid = false).
+    //
+    // Stamp the time when the subscription arrives. A module-load timestamp is
+    // older than the snapshot history, and lightweight-charts rejects the update.
     messageIncludes: ['"method":"subscribe"', '"type":"candle"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: {
-      channel: 'candle',
-      data: {
-        t: Date.now() - 300000,
-        T: Date.now() - 1,
-        s: 'AVAX',
-        i: '5m',
-        o: '25',
-        c: '25',
-        h: '25',
-        l: '25',
-        v: '1000.0',
-        n: 10,
-      },
+    dynamicFollowUp: () => {
+      const now = Date.now();
+      return {
+        channel: 'candle',
+        data: {
+          t: now,
+          T: now + 300000 - 1,
+          s: 'AVAX',
+          i: '5m',
+          o: '25',
+          c: '25',
+          h: '25',
+          l: '25',
+          v: '1000.0',
+          n: 10,
+        },
+      };
     },
     followUpDelay: 50,
     delay: 50,

@@ -9,6 +9,7 @@ import {
 } from '../../../page-objects/flows/money-account-deposit.flow';
 import { selectPayToken } from '../../../page-objects/flows/metamask-pay.flow';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { USDC_BALANCE_HUMAN } from './constants';
 import { getMoneyAccountDepositConfig } from './helpers';
 
 /**
@@ -43,6 +44,7 @@ describe('Money Account Deposit', function (this: Suite) {
 
         // Pay with USDC on Mainnet, picked explicitly from the asset list.
         await selectPayToken(driver, confirmation, CHAIN_IDS.MAINNET, 'USDC');
+        await confirmation.checkPayWithBalance(`($${USDC_BALANCE_HUMAN}.00)`);
 
         await confirmation.clickPercentage(25);
         await confirmation.checkAmount('25');
