@@ -17,10 +17,8 @@ import {
 } from '../../hooks/pay/useTransactionPayData';
 import { useConfirmContext } from '../../context/confirm';
 import { formatAmount } from '../../../../../shared/lib/format-amount';
-import {
-  getEvmPaymentToken,
-  getTokenAddress,
-} from '../../utils/transaction-pay';
+import { getTokenAddress } from '../../utils/transaction-pay';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
 
@@ -34,7 +32,7 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId } = currentConfirmation ?? { chainId: '0x0' as Hex };
   const { payToken } = useTransactionPayToken();
-  const evmPayToken = getEvmPaymentToken(payToken);
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const totals = useTransactionPayTotals();
   const targetTokenAddress = getTokenAddress(currentConfirmation);
   const isQuotesLoading = useIsTransactionPayLoading();

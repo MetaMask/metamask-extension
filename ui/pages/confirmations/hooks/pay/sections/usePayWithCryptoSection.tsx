@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { isNonEvmPaymentToken } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -25,6 +24,10 @@ import type {
 import { useTransactionPayToken } from '../useTransactionPayToken';
 import { useClearPaymentOverride } from '../useClearPaymentOverride';
 import { isMoneyAccountFunding } from '../../../utils/transaction-pay';
+import {
+  getEvmPaymentToken,
+  getPaymentTokenChainId,
+} from '../../../../../../shared/lib/transaction/pay-token';
 
 export const PAY_WITH_CRYPTO_SECTION_TEST_ID = 'pay-with-section-crypto';
 export const PAY_WITH_CRYPTO_SELECTED_TOKEN_ROW_TEST_ID =
@@ -66,14 +69,7 @@ export function usePayWithCryptoSection({
       return;
     }
     clearOverride();
-    setPayToken(
-      isNonEvmPaymentToken(payToken)
-        ? {
-            assetId: payToken.assetId,
-            walletAccountId: payToken.walletAccountId,
-          }
-        : { address: payToken.address, chainId: payToken.chainId },
-    );
+    setPayToken({ assetId: payToken.assetId });
     onClose();
   }, [clearOverride, isMoneyAccountSelected, onClose, payToken, setPayToken]);
 
@@ -90,16 +86,15 @@ export function usePayWithCryptoSection({
     const rows: PayWithRowConfig[] = [];
 
     if (payToken) {
+      const evmPayToken = getEvmPaymentToken(payToken);
+
       rows.push({
         id: 'crypto-selected-token',
         icon: (
           <TokenIcon
-            chainId={payToken.chainId as Hex}
-            tokenAddress={
-              (isNonEvmPaymentToken(payToken)
-                ? payToken.assetId
-                : payToken.address) as Hex
-            }
+            chainId={getPaymentTokenChainId(payToken) as Hex}
+            // Non-EVM payment tokens are identified by their CAIP-19 asset type.
+            tokenAddress={(evmPayToken?.address ?? payToken.assetId) as Hex}
             symbol={payToken.symbol}
             size="sm"
           />

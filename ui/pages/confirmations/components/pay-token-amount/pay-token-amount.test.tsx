@@ -20,8 +20,7 @@ const ASSET_AMOUNT_MOCK = '100';
 const ASSET_FIAT_RATE_MOCK = 10;
 const PAY_TOKEN_FIAT_RATE_MOCK = 2;
 const PAY_TOKEN_SYMBOL_MOCK = 'TST';
-const CHAIN_ID_MOCK = '0x456';
-const ADDRESS_MOCK = '0xdef';
+const ADDRESS_MOCK = '0x0000000000000000000000000000000000000def';
 
 const mockStore = configureMockStore([]);
 
@@ -55,8 +54,7 @@ describe('PayTokenAmount', () => {
     useTransactionPayTokenMock.mockReturnValue({
       isNative: false,
       payToken: {
-        chainId: CHAIN_ID_MOCK,
-        address: ADDRESS_MOCK,
+        assetId: `eip155:1110/erc20:${ADDRESS_MOCK}`,
         symbol: PAY_TOKEN_SYMBOL_MOCK,
         decimals: 18,
         balanceFiat: '100',
@@ -80,17 +78,13 @@ describe('PayTokenAmount', () => {
     useTransactionPayTokenMock.mockReturnValue({
       isNative: true,
       payToken: {
-        accountId:
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
         assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
         balanceFiat: '150',
         balanceHuman: '1.5',
         balanceRaw: '1500000000',
         balanceUsd: '150',
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         decimals: 9,
         symbol: 'SOL',
-        walletAccountId: 'solana-account-id',
       },
       setPayToken: jest.fn(),
     });
@@ -107,17 +101,13 @@ describe('PayTokenAmount', () => {
   it('renders a skeleton for a Solana payment token without totals', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        accountId:
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
         assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
         balanceFiat: '150',
         balanceHuman: '1.5',
         balanceRaw: '1500000000',
         balanceUsd: '150',
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         decimals: 9,
         symbol: 'SOL',
-        walletAccountId: 'solana-account-id',
       },
       setPayToken: jest.fn(),
     });

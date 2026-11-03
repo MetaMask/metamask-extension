@@ -6,9 +6,7 @@ import {
 import type { Hex } from '@metamask/utils';
 import { SolScope } from '@metamask/keyring-api';
 import {
-  isNonEvmPaymentToken,
   PaymentOverride,
-  type EvmPaymentToken,
   type TransactionPayRequiredToken,
   type TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
@@ -18,6 +16,10 @@ import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
+import {
+  getEvmPaymentToken,
+  isNonEvmPaymentToken,
+} from '../../../../shared/lib/transaction/pay-token';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
@@ -231,32 +233,13 @@ export function getAvailableTokens({
 }
 
 /**
- * Narrows a payment token to its EVM member. Hex address and chain lookups
- * (market data, gas, no-fee routes) only apply to EVM payment tokens.
- *
- * @param payToken - Selected payment token, if any.
- * @returns The EVM payment token, or `undefined` for none or a non-EVM token.
- */
-export function getEvmPaymentToken(
-  payToken?: TransactionPaymentToken,
-): EvmPaymentToken | undefined {
-  return payToken && !isNonEvmPaymentToken(payToken) ? payToken : undefined;
-}
-
-/**
  * Stable identity of the selected payment token, used to detect a switch.
- * Non-EVM tokens are keyed by `InternalAccount` and CAIP-19 asset; EVM tokens
- * by address and chain.
  *
  * @param payToken - Selected payment token, if any.
- * @returns Identity key, or an empty-token key when none is selected.
+ * @returns The CAIP-19 asset ID, or an empty key when none is selected.
  */
 export function getPaymentTokenKey(payToken?: TransactionPaymentToken): string {
-  if (payToken && isNonEvmPaymentToken(payToken)) {
-    return `${payToken.walletAccountId}:${payToken.assetId}`;
-  }
-
-  return `${payToken?.address ?? ''}:${payToken?.chainId ?? ''}`;
+  return payToken?.assetId ?? '';
 }
 
 /**
@@ -295,7 +278,8 @@ export function isMoneyAccountFunding({
 /**
  * Whether a send-flow asset is a Solana mainnet SOL or SPL balance that
  * MetaMask Pay can quote from. Such assets are identified by their CAIP-19
- * `assetId` and the `InternalAccount` that holds them.
+ * `assetId`; Core sources them from the Solana account in the same account
+ * group as the transaction account.
  *
  * @param token - Send-flow asset.
  * @returns True for Solana mainnet assets held by a Solana account.
@@ -311,8 +295,8 @@ export function isSolanaPaySource(token: Asset): boolean {
 
 /**
  * Whether a send-flow asset is the selected payment token. Non-EVM payment
- * tokens match on CAIP-19 asset and `InternalAccount` ID; EVM tokens match on
- * address and chain.
+ * tokens match on CAIP-19 asset ID; EVM tokens match on the address and chain
+ * derived from it.
  *
  * @param token - Send-flow asset.
  * @param payToken - Selected payment token, if any.
@@ -326,16 +310,15 @@ export function isPaymentTokenSelected(
     return false;
   }
 
-  if (isNonEvmPaymentToken(payToken)) {
-    return (
-      token.assetId === payToken.assetId &&
-      token.accountId === payToken.walletAccountId
-    );
+  const evmPayToken = getEvmPaymentToken(payToken);
+
+  if (!evmPayToken) {
+    return token.assetId === payToken.assetId;
   }
 
   return (
-    payToken.address.toLowerCase() === token.address?.toLowerCase() &&
-    payToken.chainId === token.chainId
+    evmPayToken.address.toLowerCase() === token.address?.toLowerCase() &&
+    evmPayToken.chainId === token.chainId
   );
 }
 

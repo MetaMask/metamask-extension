@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect';
-import {
-  isNonEvmPaymentToken,
-  type TransactionPayControllerState,
-} from '@metamask/transaction-pay-controller';
+import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import { getEvmPaymentToken } from '../../shared/lib/transaction/pay-token';
 
 export type TransactionPayState = {
   metamask: TransactionPayControllerState;
@@ -51,10 +49,7 @@ export const selectTransactionPaymentTokenByTransactionId = createSelector(
  */
 export const selectEvmPaymentTokenByTransactionId = createSelector(
   selectTransactionPaymentTokenByTransactionId,
-  (paymentToken) =>
-    paymentToken && !isNonEvmPaymentToken(paymentToken)
-      ? paymentToken
-      : undefined,
+  (paymentToken) => getEvmPaymentToken(paymentToken),
 );
 
 export const selectTransactionPaySourceAmountsByTransactionId = createSelector(

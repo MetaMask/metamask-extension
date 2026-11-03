@@ -2,12 +2,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import { hexToNumber, toCaipAssetType, type Hex } from '@metamask/utils';
 import {
   PaymentOverride,
-  type EvmPaymentToken,
-  type NonEvmPaymentToken,
   type TransactionPayRequiredToken,
+  type TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
@@ -16,7 +15,6 @@ import {
   getTokenTransferData,
   getTokenAddress,
   getAvailableTokens,
-  getEvmPaymentToken,
   getPaymentTokenKey,
   isMoneyAccountFunding,
   isPaymentTokenSelected,
@@ -49,19 +47,23 @@ function createMockAsset(overrides: Partial<Asset> = {}): Asset {
   };
 }
 
-function createMockPaymentToken(
-  overrides: Partial<EvmPaymentToken> = {},
-): EvmPaymentToken {
+function createMockPaymentToken({
+  address = TOKEN_ADDRESS_MOCK,
+  chainId = CHAIN_ID_MOCK,
+}: { address?: Hex; chainId?: Hex } = {}): TransactionPaymentToken {
   return {
-    address: TOKEN_ADDRESS_MOCK,
+    assetId: toCaipAssetType(
+      'eip155',
+      String(hexToNumber(chainId)),
+      'erc20',
+      address,
+    ),
     balanceFiat: '100.00',
     balanceHuman: '50',
     balanceRaw: '50000000000000000000',
     balanceUsd: '100.00',
-    chainId: CHAIN_ID_MOCK,
     decimals: 18,
     symbol: 'TST',
-    ...overrides,
   };
 }
 
@@ -85,21 +87,15 @@ function createMockSolanaAsset(overrides: Partial<Asset> = {}): Asset {
   };
 }
 
-function createMockSolanaPaymentToken(
-  overrides: Partial<NonEvmPaymentToken> = {},
-): NonEvmPaymentToken {
+function createMockSolanaPaymentToken(): TransactionPaymentToken {
   return {
-    accountId: `${SOLANA_CHAIN_ID_MOCK}:SoLAddress111111111111111111111111111111111`,
     assetId: SOL_ASSET_ID_MOCK,
     balanceFiat: '150.00',
     balanceHuman: '1.5',
     balanceRaw: '1500000000',
     balanceUsd: '150.00',
-    chainId: SOLANA_CHAIN_ID_MOCK,
     decimals: 9,
     symbol: 'SOL',
-    walletAccountId: SOLANA_ACCOUNT_ID_MOCK,
-    ...overrides,
   };
 }
 
@@ -551,18 +547,12 @@ describe('transaction-pay utils', () => {
   });
 
   describe('isPaymentTokenSelected', () => {
-    it('matches a non-EVM payment token by asset and account', () => {
+    it('matches a non-EVM payment token by asset ID', () => {
       const payToken = createMockSolanaPaymentToken();
 
       expect(isPaymentTokenSelected(createMockSolanaAsset(), payToken)).toBe(
         true,
       );
-      expect(
-        isPaymentTokenSelected(
-          createMockSolanaAsset({ accountId: 'other-account' }),
-          payToken,
-        ),
-      ).toBe(false);
       expect(
         isPaymentTokenSelected(
           createMockSolanaAsset({ assetId: USDC_SPL_ASSET_ID_MOCK }),
@@ -571,35 +561,37 @@ describe('transaction-pay utils', () => {
       ).toBe(false);
     });
 
-    it('matches an EVM payment token by address and chain', () => {
+    it('matches an EVM payment token by the address and chain of its asset ID', () => {
       expect(
         isPaymentTokenSelected(createMockAsset(), createMockPaymentToken()),
       ).toBe(true);
+      expect(
+        isPaymentTokenSelected(
+          createMockAsset({
+            address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+          }),
+          createMockPaymentToken(),
+        ),
+      ).toBe(true);
+      expect(
+        isPaymentTokenSelected(
+          createMockAsset(),
+          createMockPaymentToken({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+        ),
+      ).toBe(false);
       expect(isPaymentTokenSelected(createMockAsset(), undefined)).toBe(false);
     });
   });
 
-  describe('getEvmPaymentToken', () => {
-    it('returns EVM payment tokens and drops non-EVM ones', () => {
-      const evmPaymentToken = createMockPaymentToken();
-
-      expect(getEvmPaymentToken(evmPaymentToken)).toBe(evmPaymentToken);
-      expect(
-        getEvmPaymentToken(createMockSolanaPaymentToken()),
-      ).toBeUndefined();
-      expect(getEvmPaymentToken(undefined)).toBeUndefined();
-    });
-  });
-
   describe('getPaymentTokenKey', () => {
-    it('keys non-EVM tokens by account and asset and EVM tokens by address and chain', () => {
+    it('keys payment tokens by asset ID', () => {
       expect(getPaymentTokenKey(createMockSolanaPaymentToken())).toBe(
-        `${SOLANA_ACCOUNT_ID_MOCK}:${SOL_ASSET_ID_MOCK}`,
+        SOL_ASSET_ID_MOCK,
       );
       expect(getPaymentTokenKey(createMockPaymentToken())).toBe(
-        `${TOKEN_ADDRESS_MOCK}:${CHAIN_ID_MOCK}`,
+        `eip155:1/erc20:${TOKEN_ADDRESS_MOCK}`,
       );
-      expect(getPaymentTokenKey(undefined)).toBe(':');
+      expect(getPaymentTokenKey(undefined)).toBe('');
     });
   });
 

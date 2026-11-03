@@ -117,10 +117,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
       if (isSolanaPaySource(token)) {
         clearOverride();
-        await setPayToken({
-          assetId: token.assetId as CaipAssetType,
-          walletAccountId: token.accountId as string,
-        });
+        await setPayToken({ assetId: token.assetId as CaipAssetType });
         handleClose();
         return;
       }

@@ -43,11 +43,11 @@ import {
   useTransactionPayTotals,
 } from '../pay/useTransactionPayData';
 import {
-  getEvmPaymentToken,
   getPaymentTokenKey,
   getTokenAddress,
   isMoneyAccountFunding,
 } from '../../utils/transaction-pay';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,

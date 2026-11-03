@@ -3,7 +3,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import type { CaipAssetType, Hex } from '@metamask/utils';
 import { renderHook } from '@testing-library/react';
 
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -72,15 +72,17 @@ const MONEY_ACCOUNT_FUNDED_NESTED = buildFundedNested(
 
 type PayData = Record<
   string,
-  { accountOverride?: Hex; paymentToken?: { address: Hex; chainId: Hex } }
+  { accountOverride?: Hex; paymentToken?: { assetId: CaipAssetType } }
 >;
 
 const QUOTED_PAYMENT_TOKEN = {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
-  chainId: '0x1' as Hex,
+  assetId:
+    'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CaipAssetType,
 };
 
-const DIRECT_PAYMENT_TOKEN = { address: MUSD_ADDRESS, chainId: CHAIN_ID };
+const DIRECT_PAYMENT_TOKEN = {
+  assetId: `eip155:143/erc20:${MUSD_ADDRESS}` as CaipAssetType,
+};
 
 function buildPayData(data: PayData[string]): PayData {
   return { [TRANSACTION_ID]: data };

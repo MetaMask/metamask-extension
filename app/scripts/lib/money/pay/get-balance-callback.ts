@@ -1,12 +1,12 @@
-import {
-  isNonEvmPaymentToken,
-  type GetBalanceRequest,
-  type GetBalanceResponse,
+import type {
+  GetBalanceRequest,
+  GetBalanceResponse,
 } from '@metamask/transaction-pay-controller';
 import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../../../shared/lib/money/money-account-flow';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { getMaxSourceBalance } from './max-source-balance';
 
 /**
@@ -33,12 +33,13 @@ export function getBalance({
   transactionData,
 }: GetBalanceRequest): GetBalanceResponse | undefined {
   const { paymentToken } = transactionData;
+  const evmPaymentToken = getEvmPaymentToken(paymentToken);
 
   // Non-EVM balances come from AssetsController in Core; the recorded Max
   // balance is keyed by EVM funding account, address and chain.
   if (
     getMoneyAccountFlow(transaction) !== MoneyAccountFlow.Deposit ||
-    (paymentToken && isNonEvmPaymentToken(paymentToken))
+    (paymentToken && !evmPaymentToken)
   ) {
     return undefined;
   }
@@ -46,8 +47,8 @@ export function getBalance({
   const balanceRaw = getMaxSourceBalance({
     transactionId: transaction.id,
     accountAddress: transactionData.accountOverride,
-    chainId: paymentToken?.chainId,
-    tokenAddress: paymentToken?.address,
+    chainId: evmPaymentToken?.chainId,
+    tokenAddress: evmPaymentToken?.address,
   });
 
   return balanceRaw === undefined ? undefined : { balanceRaw };

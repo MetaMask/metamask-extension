@@ -23,10 +23,8 @@ import { getMarketData } from '../../../../selectors';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayAvailableTokens } from '../pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
-import {
-  getEvmPaymentToken,
-  getPaymentTokenKey,
-} from '../../utils/transaction-pay';
+import { getPaymentTokenKey } from '../../utils/transaction-pay';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
@@ -150,7 +148,7 @@ export function useDepositPrefill(): DepositPrefillResult {
   // `useTokenFiatRate` cannot be used as this readiness gate because it falls
   // back to a synthetic $1 token price when market data is absent.
   // Money Account deposits from a non-EVM token are not prefilled.
-  const evmPayToken = getEvmPaymentToken(payToken);
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const payTokenMarketPrice = evmPayToken
     ? marketData?.[evmPayToken.chainId]?.[
         toChecksumHexAddress(evmPayToken.address) as Hex

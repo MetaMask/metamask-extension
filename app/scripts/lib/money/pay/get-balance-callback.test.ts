@@ -3,9 +3,8 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import type {
-  EvmPaymentToken,
   GetBalanceRequest,
-  NonEvmPaymentToken,
+  TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { getBalance } from './get-balance-callback';
 import {
@@ -26,8 +25,7 @@ function buildRequest(type: TransactionType): GetBalanceRequest {
     transactionData: {
       accountOverride: maxSourceBalanceKey.accountAddress,
       paymentToken: {
-        address: maxSourceBalanceKey.tokenAddress,
-        chainId: maxSourceBalanceKey.chainId,
+        assetId: `eip155:1/erc20:${maxSourceBalanceKey.tokenAddress}`,
       },
       tokens: [],
     },
@@ -98,9 +96,8 @@ describe('getBalance', () => {
     const request = buildRequest(TransactionType.moneyAccountDeposit);
     request.transactionData.paymentToken = {
       ...request.transactionData.paymentToken,
-      address: '0xtoken2',
-      chainId: '0x1',
-    } as EvmPaymentToken;
+      assetId: 'eip155:1/erc20:0xtoken2',
+    } as TransactionPaymentToken;
 
     expect(getBalance(request)).toBeUndefined();
   });
@@ -108,17 +105,14 @@ describe('getBalance', () => {
   it('returns undefined for a non-EVM payment token', () => {
     setMaxSourceBalance(maxSourceBalanceKey, '5879662');
     const request = buildRequest(TransactionType.moneyAccountDeposit);
-    const solanaPaymentToken: NonEvmPaymentToken = {
-      accountId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:source',
+    const solanaPaymentToken: TransactionPaymentToken = {
       assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
       balanceFiat: '10',
       balanceHuman: '1',
       balanceRaw: '1000000000',
       balanceUsd: '10',
-      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       decimals: 9,
       symbol: 'SOL',
-      walletAccountId: 'solana-account-id',
     };
     request.transactionData.paymentToken = solanaPaymentToken;
 

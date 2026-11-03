@@ -22,6 +22,7 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { getPaymentTokenChainId } from '../../../../../../shared/lib/transaction/pay-token';
 
 const SAME_CHAIN_DURATION_SECONDS = '< 10';
 
@@ -63,7 +64,8 @@ export function BridgeTimeRow({
     );
   }
 
-  const isSameChain = payToken?.chainId === chainId;
+  const isSameChain =
+    payToken !== undefined && getPaymentTokenChainId(payToken) === chainId;
   const formattedSeconds = formatSeconds(
     t,
     estimatedDuration ?? 0,

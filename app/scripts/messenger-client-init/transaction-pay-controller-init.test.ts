@@ -1,5 +1,4 @@
 import {
-  isNonEvmPaymentToken,
   TransactionPayController,
   TransactionPayControllerMessenger,
 } from '@metamask/transaction-pay-controller';
@@ -66,6 +65,10 @@ const syncWithdrawTransferMock = jest.mocked(syncMoneyAccountWithdrawTransfer);
 const getMoneyAccountAmountDataMock = jest.mocked(getMoneyAccountAmountData);
 const getPaymentOverrideDataMock = jest.mocked(getPaymentOverrideData);
 
+const EVM_ASSET_ID_MOCK =
+  'eip155:1/erc20:0x1234567890abcdef1234567890abcdef12345678';
+const SOL_ASSET_ID_MOCK = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+
 function getInitRequestMock(
   transactions: TransactionMeta[] = [],
 ): jest.Mocked<
@@ -93,9 +96,6 @@ describe('TransactionPayControllerInit', () => {
     jest
       .mocked(TransactionPayController.prototype.recoverSolanaPayStatus)
       .mockResolvedValue({});
-    jest
-      .mocked(isNonEvmPaymentToken)
-      .mockImplementation(({ chainId }) => chainId.startsWith('solana:'));
   });
 
   it('initializes the controller', () => {
@@ -828,26 +828,15 @@ describe('TransactionPayControllerInit', () => {
         throw new Error('Expected init result to expose an api');
       }
       (
-        messengerClient as {
+        messengerClient as unknown as {
           state: {
-            transactionData: Record<
-              string,
-              {
-                paymentToken: {
-                  address: string;
-                  chainId: string;
-                };
-              }
-            >;
+            transactionData: Record<string, { paymentToken: unknown }>;
           };
         }
       ).state = {
         transactionData: {
           'tx-1': {
-            paymentToken: {
-              address: '0x123',
-              chainId: '0x1',
-            },
+            paymentToken: { assetId: EVM_ASSET_ID_MOCK },
           },
         },
       };
@@ -867,13 +856,12 @@ describe('TransactionPayControllerInit', () => {
 
       expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith({
         transactionId: 'tx-1',
-        tokenAddress: '0x123',
-        chainId: '0x1',
+        assetId: EVM_ASSET_ID_MOCK,
       });
       expect(callOrder).toEqual(['refresh', 'updateAmount']);
     });
 
-    it('refreshes a non-EVM payment token by asset and account', async () => {
+    it('refreshes a non-EVM payment token by asset ID', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
       if (!api) {
@@ -888,13 +876,7 @@ describe('TransactionPayControllerInit', () => {
       ).state = {
         transactionData: {
           'tx-1': {
-            paymentToken: {
-              accountId:
-                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
-              assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-              walletAccountId: 'solana-account-id',
-            },
+            paymentToken: { assetId: SOL_ASSET_ID_MOCK },
           },
         },
       };
@@ -904,8 +886,7 @@ describe('TransactionPayControllerInit', () => {
 
       expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith({
         transactionId: 'tx-1',
-        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        walletAccountId: 'solana-account-id',
+        assetId: SOL_ASSET_ID_MOCK,
       });
     });
 
@@ -916,26 +897,15 @@ describe('TransactionPayControllerInit', () => {
         throw new Error('Expected init result to expose an api');
       }
       (
-        messengerClient as {
+        messengerClient as unknown as {
           state: {
-            transactionData: Record<
-              string,
-              {
-                paymentToken: {
-                  address: string;
-                  chainId: string;
-                };
-              }
-            >;
+            transactionData: Record<string, { paymentToken: unknown }>;
           };
         }
       ).state = {
         transactionData: {
           'tx-1': {
-            paymentToken: {
-              address: '0x123',
-              chainId: '0x1',
-            },
+            paymentToken: { assetId: EVM_ASSET_ID_MOCK },
           },
         },
       };
@@ -959,18 +929,16 @@ describe('TransactionPayControllerInit', () => {
   describe('api.updateTransactionPaymentToken', () => {
     const SOLANA_REQUEST = {
       transactionId: 'tx-1',
-      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-      walletAccountId: 'solana-account-id',
+      assetId: SOL_ASSET_ID_MOCK,
     } as const;
     const EVM_REQUEST = {
       transactionId: 'tx-1',
-      tokenAddress: '0x123',
-      chainId: '0x1',
+      assetId: EVM_ASSET_ID_MOCK,
     } as const;
 
     function initApi(
       transactionType: TransactionType,
-      currentPaymentToken?: { chainId: string },
+      currentPaymentToken?: { assetId: string },
     ) {
       const { api, messengerClient } = TransactionPayControllerInit(
         getInitRequestMock([
@@ -1059,7 +1027,7 @@ describe('TransactionPayControllerInit', () => {
     it('clears the Solana deposit config when switching back to an EVM token', () => {
       const { api, setTransactionConfigMock } = initApi(
         TransactionType.moneyAccountDeposit,
-        { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' },
+        { assetId: SOL_ASSET_ID_MOCK },
       );
 
       api.updateTransactionPaymentToken(EVM_REQUEST);
@@ -1073,7 +1041,7 @@ describe('TransactionPayControllerInit', () => {
     it('keeps the config when switching between EVM deposit tokens', () => {
       const { api, setTransactionConfigMock } = initApi(
         TransactionType.moneyAccountDeposit,
-        { chainId: '0x1' },
+        { assetId: EVM_ASSET_ID_MOCK },
       );
 
       api.updateTransactionPaymentToken(EVM_REQUEST);
@@ -1129,15 +1097,12 @@ describe('TransactionPayControllerInit', () => {
       (
         messengerClient as {
           state: {
-            transactionData: Record<
-              string,
-              { paymentToken: { address: string; chainId: string } }
-            >;
+            transactionData: Record<string, { paymentToken: unknown }>;
           };
         }
       ).state = {
         transactionData: {
-          'tx-1': { paymentToken: { address: '0x123', chainId: '0x1' } },
+          'tx-1': { paymentToken: { assetId: EVM_ASSET_ID_MOCK } },
         },
       };
       updateWithdrawAmountMock.mockResolvedValue(false);
@@ -1149,7 +1114,42 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
         undefined,
-        { address: '0x123', chainId: '0x1' },
+        {
+          address: '0x1234567890abcdef1234567890abcdef12345678',
+          chainId: '0x1',
+        },
+      );
+    });
+
+    it('does not forward a non-EVM Pay account override as the recipient', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<string, { accountOverride?: string }>;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': {
+            accountOverride: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
+          },
+        },
+      };
+      updateWithdrawAmountMock.mockResolvedValue(false);
+
+      await api.updateMoneyAccountWithdrawAmount('tx-1', '10');
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-1',
+        '10',
+        undefined,
+        undefined,
       );
     });
 
@@ -1193,7 +1193,7 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('payment token changes', () => {
-    const PAYMENT_TOKEN = { address: '0x123', chainId: '0x1' };
+    const PAYMENT_TOKEN = { assetId: EVM_ASSET_ID_MOCK };
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -1223,7 +1223,9 @@ describe('TransactionPayControllerInit', () => {
       publishState({
         'tx-1': {
           ...transactionData['tx-1'],
-          paymentToken: { address: '0x456', chainId: '0x1' },
+          paymentToken: {
+            assetId: 'eip155:1/erc20:0x4560000000000000000000000000000000000000',
+          },
         },
       });
 
@@ -1233,7 +1235,10 @@ describe('TransactionPayControllerInit', () => {
         expect.anything(),
         'tx-1',
         '0xabc',
-        PAYMENT_TOKEN,
+        {
+          address: '0x1234567890abcdef1234567890abcdef12345678',
+          chainId: '0x1',
+        },
       );
     });
 

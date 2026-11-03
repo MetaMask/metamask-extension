@@ -2,11 +2,12 @@ import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { parseCaipAssetType } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import {
-  isNonEvmPaymentToken,
-  type TransactionPaymentToken,
-} from '@metamask/transaction-pay-controller';
+import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import {
+  getEvmAssetId,
+  getEvmPaymentToken,
+} from '../../../../../shared/lib/transaction/pay-token';
 import { useConfirmContext } from '../../context/confirm';
 import {
   selectTransactionPaymentTokenByTransactionId,
@@ -33,19 +34,13 @@ export function useTransactionPayToken(): {
 
   const setPayToken = useCallback(
     async (newPayToken: SetPayTokenRequest | SetNonEvmPayTokenRequest) => {
-      await updateTransactionPaymentToken(
-        'assetId' in newPayToken
-          ? {
-              transactionId,
-              assetId: newPayToken.assetId,
-              walletAccountId: newPayToken.walletAccountId,
-            }
-          : {
-              transactionId,
-              tokenAddress: newPayToken.address,
-              chainId: newPayToken.chainId,
-            },
-      );
+      await updateTransactionPaymentToken({
+        transactionId,
+        assetId:
+          'assetId' in newPayToken
+            ? newPayToken.assetId
+            : getEvmAssetId(newPayToken.address, newPayToken.chainId),
+      });
     },
     [transactionId],
   );
@@ -58,9 +53,11 @@ export function useTransactionPayToken(): {
 }
 
 function isNativePaymentToken(payToken: TransactionPaymentToken): boolean {
-  if (isNonEvmPaymentToken(payToken)) {
+  const evmPayToken = getEvmPaymentToken(payToken);
+
+  if (!evmPayToken) {
     return parseCaipAssetType(payToken.assetId).assetNamespace === 'slip44';
   }
 
-  return payToken.address === getNativeTokenAddress(payToken.chainId);
+  return evmPayToken.address === getNativeTokenAddress(evmPayToken.chainId);
 }

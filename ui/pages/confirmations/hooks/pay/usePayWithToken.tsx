@@ -9,6 +9,10 @@ import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import {
+  getEvmPaymentToken,
+  getPaymentTokenChainId,
+} from '../../../../../shared/lib/transaction/pay-token';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import {
@@ -102,8 +106,16 @@ export function usePayWithToken(): PayWithToken {
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
+  const evmPayToken = getEvmPaymentToken(payToken);
+  // Non-EVM payment tokens are identified by their CAIP-19 asset type.
+  const payTokenDisplay = payToken && {
+    address: evmPayToken?.address ?? payToken.assetId,
+    balanceUsd: payToken.balanceUsd,
+    chainId: getPaymentTokenChainId(payToken),
+    symbol: payToken.symbol,
+  };
   const resolvedToken =
-    payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
+    payTokenDisplay ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
   const hasAvailableTokens = useMemo(
     () => (availableTokens ?? []).some((token) => !token.disabled),
@@ -140,11 +152,7 @@ export function usePayWithToken(): PayWithToken {
   } else if (resolvedToken?.chainId) {
     displayToken = {
       chainId: resolvedToken.chainId,
-      // Non-EVM payment tokens are identified by their CAIP-19 asset type.
-      address:
-        'address' in resolvedToken
-          ? resolvedToken.address
-          : resolvedToken.assetId,
+      address: resolvedToken.address,
       symbol: resolvedToken.symbol,
       balanceUsd: cryptoBalanceUsd,
     };

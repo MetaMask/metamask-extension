@@ -10,8 +10,8 @@ import {
   type TransactionState,
 } from '../../../../selectors/transactionController';
 import {
+  selectEvmPaymentTokenByTransactionId,
   selectTransactionPayAccountOverrideByTransactionId,
-  selectTransactionPaymentTokenByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -95,7 +95,7 @@ export function useMoneyAccountWithdrawConfirm() {
       const amountHuman = getLastMoneyAccountWithdrawAmount(transactionMeta.id);
       const fromStore = readTransactionFromStore(dispatch, transactionMeta.id);
       const paymentToken = dispatch((_, getState) =>
-        selectTransactionPaymentTokenByTransactionId(
+        selectEvmPaymentTokenByTransactionId(
           getState() as unknown as TransactionPayState,
           transactionMeta.id,
         ),

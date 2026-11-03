@@ -26,6 +26,7 @@ import {
 import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import { getTransactionPayingAccount } from '../../../../../shared/lib/transactions.utils';
+import { getEvmAccountOverride } from '../../../../../shared/lib/transaction/pay-token';
 import { haveRequiredTransactionsBeenSigned } from '../../../../store/hardware-wallet-signing';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import {
@@ -133,7 +134,7 @@ function isAwaitingHardwareSignatures(
 
   const payingAccount = getTransactionPayingAccount(
     transactionMeta,
-    transactionData?.accountOverride,
+    getEvmAccountOverride(transactionData?.accountOverride),
   );
   const payer = payingAccount
     ? getInternalAccountByAddress(state, payingAccount)

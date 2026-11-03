@@ -152,8 +152,6 @@ jest.mock('../../send/asset', () => ({
   },
 }));
 
-const CHAIN_ID_MOCK = '0x1';
-
 // `PayWithModal` calls `useDispatch()` for the perpsWithdraw `addToken`
 // import path, so the component needs a redux store at render time. The
 // non-perpsWithdraw test cases never actually dispatch — a default mock-state
@@ -222,8 +220,7 @@ describe('PayWithModal', () => {
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        address: '0x0000000000000000000000000000000000000000',
-        chainId: CHAIN_ID_MOCK,
+        assetId: 'eip155:1/slip44:60',
         balanceFiat: '$100.00',
         balanceHuman: '0.05',
         balanceRaw: '50000000000000000',
@@ -320,8 +317,7 @@ describe('PayWithModal', () => {
     expect(getAvailableTokensMock).toHaveBeenCalledWith(
       expect.objectContaining({
         payToken: expect.objectContaining({
-          address: '0x0000000000000000000000000000000000000000',
-          chainId: CHAIN_ID_MOCK,
+          assetId: 'eip155:1/slip44:60',
         }),
         requiredTokens: [],
       }),
@@ -423,7 +419,7 @@ describe('PayWithModal', () => {
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
     });
 
-    it('selects a Solana source by CAIP asset and account', async () => {
+    it('selects a Solana source by CAIP asset ID', async () => {
       renderModal({ isOpen: true, onClose: onCloseMock });
 
       fireEvent.click(screen.getByTestId('select-solana-token'));
@@ -431,7 +427,6 @@ describe('PayWithModal', () => {
       await waitFor(() => expect(onCloseMock).toHaveBeenCalled());
       expect(setPayTokenMock).toHaveBeenCalledWith({
         assetId: SOLANA_TOKEN.assetId,
-        walletAccountId: SOLANA_TOKEN.accountId,
       });
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
     });
@@ -439,17 +434,13 @@ describe('PayWithModal', () => {
     it('does not reselect the Solana source that is already selected', () => {
       useTransactionPayTokenMock.mockReturnValue({
         payToken: {
-          accountId:
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
           assetId: SOLANA_TOKEN.assetId,
           balanceFiat: '$150.00',
           balanceHuman: '1.5',
           balanceRaw: '1500000000',
           balanceUsd: '150.00',
-          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           decimals: 9,
           symbol: 'SOL',
-          walletAccountId: SOLANA_TOKEN.accountId,
         },
         setPayToken: setPayTokenMock,
         isNative: true,

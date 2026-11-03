@@ -22,10 +22,8 @@ import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
 import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
-import {
-  getEvmPaymentToken,
-  isMoneyAccountFunding,
-} from '../../../utils/transaction-pay';
+import { isMoneyAccountFunding } from '../../../utils/transaction-pay';
+import { getEvmPaymentToken } from '../../../../../../shared/lib/transaction/pay-token';
 import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
 import { useIsFundingAccountBalanceSettling } from '../../pay/useIsFundingAccountBalanceSettling';
 import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
@@ -51,7 +49,7 @@ export function useInsufficientPayTokenBalanceAlert({
   // Core checks a non-EVM source against its network fee and rent reserve and
   // reports a shortfall as the quote error, so only EVM tokens run the fee and
   // native gas checks below.
-  const evmPayToken = getEvmPaymentToken(payToken);
+  const evmPayToken = useMemo(() => getEvmPaymentToken(payToken), [payToken]);
   const isNonEvmPayToken = Boolean(payToken) && !evmPayToken;
   const requiredTokens = useTransactionPayRequiredTokens();
   const totals = useTransactionPayTotals();

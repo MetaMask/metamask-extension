@@ -11,6 +11,8 @@ jest.mock('../../../../selectors/transactionPayController', () => ({
   selectTransactionPayAccountOverrideByTransactionId: jest.fn(),
 }));
 
+const OVERRIDE_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
+
 const mockUseSelector = jest.mocked(useSelector);
 const mockUseTransactionMetadataRequest = jest.mocked(
   useTransactionMetadataRequest,
@@ -25,11 +27,24 @@ describe('useTransactionAccountOverride', () => {
     mockUseTransactionMetadataRequest.mockReturnValue({
       id: 'tx-1',
     } as never);
-    mockUseSelector.mockReturnValue('0xOverrideAddress' as never);
+    mockUseSelector.mockReturnValue(OVERRIDE_ADDRESS_MOCK as never);
 
     const { result } = renderHook(() => useTransactionAccountOverride());
 
-    expect(result.current).toBe('0xOverrideAddress');
+    expect(result.current).toBe(OVERRIDE_ADDRESS_MOCK);
+  });
+
+  it('returns undefined for a non-EVM accountOverride', () => {
+    mockUseTransactionMetadataRequest.mockReturnValue({
+      id: 'tx-1',
+    } as never);
+    mockUseSelector.mockReturnValue(
+      '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU' as never,
+    );
+
+    const { result } = renderHook(() => useTransactionAccountOverride());
+
+    expect(result.current).toBeUndefined();
   });
 
   it('returns undefined when no accountOverride is set', () => {

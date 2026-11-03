@@ -38,6 +38,10 @@ export function getTransactionPayControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      // Resolve the non-EVM payment token account in the transaction account
+      // group.
+      'AccountTreeController:getAccountContext',
+      'AccountTreeController:getAccountGroupObject',
       'AccountsController:getState',
       'AssetsController:getState',
       'ConfigRegistryController:getNetworkConfigByCaip2ChainId',

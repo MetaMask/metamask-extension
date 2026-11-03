@@ -31,6 +31,7 @@ import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/ne
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { getTransactionPayingAccount } from '../../shared/lib/transactions.utils';
+import { getEvmAccountOverride } from '../../shared/lib/transaction/pay-token';
 import {
   getMoneyAccountTransactionType,
   isProtectedByEnforcedSimulations,
@@ -164,7 +165,8 @@ function getMoneyAccountPayer(
 
   return getTransactionPayingAccount(
     tx,
-    transactionPayData[tx.id]?.accountOverride ?? fundingFrom,
+    getEvmAccountOverride(transactionPayData[tx.id]?.accountOverride) ??
+      fundingFrom,
   )?.toLowerCase();
 }
 

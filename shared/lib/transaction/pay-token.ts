@@ -1,0 +1,150 @@
+import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
+import {
+  hexToBigInt,
+  isStrictHexString,
+  KnownCaipNamespace,
+  numberToHex,
+  parseCaipAssetType,
+  toCaipAssetType,
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
+import { CHAIN_IDS } from '../../constants/network';
+import {
+  NATIVE_TOKEN_ADDRESS,
+  POLYGON_NATIVE_TOKEN_ADDRESS,
+} from '../../constants/transaction';
+import { getNativeAssetId } from '../asset-utils';
+import { toChecksumHexAddress } from '../hexstring-utils';
+
+/**
+ * MetaMask Pay payment token on an EVM chain, with the Hex chain ID and token
+ * address derived from its CAIP-19 asset ID.
+ */
+export type EvmPaymentToken = TransactionPaymentToken & {
+  address: Hex;
+  chainId: Hex;
+};
+
+/**
+ * Native token address MetaMask Pay uses for an EVM chain, matching
+ * `TransactionPayController`.
+ *
+ * @param chainId - Hex chain ID.
+ * @returns The native token address.
+ */
+function getPayNativeTokenAddress(chainId: Hex): Hex {
+  return chainId === CHAIN_IDS.POLYGON
+    ? POLYGON_NATIVE_TOKEN_ADDRESS
+    : NATIVE_TOKEN_ADDRESS;
+}
+
+/**
+ * Derive the Hex chain ID and token address of an EVM CAIP-19 asset ID.
+ * A `slip44` native asset maps to the chain's native token address.
+ *
+ * @param assetId - CAIP-19 asset ID.
+ * @returns The Hex chain ID and token address, or `undefined` for an asset
+ * that is not on an EVM chain.
+ */
+export function getEvmAsset(
+  assetId: CaipAssetType,
+): { address: Hex; chainId: Hex } | undefined {
+  const { chain, assetNamespace, assetReference } = parseCaipAssetType(assetId);
+
+  if (chain.namespace !== KnownCaipNamespace.Eip155) {
+    return undefined;
+  }
+
+  const chainId = numberToHex(Number(chain.reference));
+  const address =
+    assetNamespace === 'slip44'
+      ? getPayNativeTokenAddress(chainId)
+      : (assetReference as Hex);
+
+  return { address, chainId };
+}
+
+/**
+ * Build the CAIP-19 asset ID of an EVM token, as keyed in `AssetsController`
+ * state: the chain's `slip44` native asset for the native token address, and a
+ * checksummed `erc20` asset otherwise.
+ *
+ * @param address - Token address, or the chain's native token address.
+ * @param chainId - Hex chain ID.
+ * @returns The CAIP-19 asset ID.
+ */
+export function getEvmAssetId(address: Hex, chainId: Hex): CaipAssetType {
+  const isNative =
+    address.toLowerCase() === getPayNativeTokenAddress(chainId).toLowerCase();
+  const nativeAssetId = isNative ? getNativeAssetId(chainId) : undefined;
+
+  return (
+    nativeAssetId ??
+    toCaipAssetType(
+      KnownCaipNamespace.Eip155,
+      hexToBigInt(chainId).toString(),
+      'erc20',
+      toChecksumHexAddress(address),
+    )
+  );
+}
+
+/**
+ * Add the Hex chain ID and token address derived from its asset ID to an EVM
+ * payment token. Hex address and chain lookups (market data, gas, no-fee
+ * routes) only apply to EVM payment tokens.
+ *
+ * @param paymentToken - Payment token, if any.
+ * @returns The EVM payment token, or `undefined` for none or a non-EVM token.
+ */
+export function getEvmPaymentToken(
+  paymentToken: TransactionPaymentToken | undefined,
+): EvmPaymentToken | undefined {
+  const evmAsset = paymentToken && getEvmAsset(paymentToken.assetId);
+
+  return evmAsset && { ...paymentToken, ...evmAsset };
+}
+
+/**
+ * Chain of a payment token: the Hex chain ID for EVM tokens, and the CAIP-2
+ * chain ID for non-EVM tokens.
+ *
+ * @param paymentToken - Payment token.
+ * @returns The chain ID derived from the asset ID.
+ */
+export function getPaymentTokenChainId(
+  paymentToken: TransactionPaymentToken,
+): Hex | CaipChainId {
+  return (
+    getEvmAsset(paymentToken.assetId)?.chainId ??
+    parseCaipAssetType(paymentToken.assetId).chainId
+  );
+}
+
+/**
+ * Whether a payment token is on a non-EVM chain, such as Solana.
+ *
+ * @param paymentToken - Payment token.
+ * @returns True if the asset ID is not on an EVM chain.
+ */
+export function isNonEvmPaymentToken(
+  paymentToken: TransactionPaymentToken,
+): boolean {
+  return !getEvmAsset(paymentToken.assetId);
+}
+
+/**
+ * The EVM account selected by a MetaMask Pay `accountOverride`. A non-EVM
+ * override only selects the account holding a non-EVM payment token and does
+ * not change the EVM account.
+ *
+ * @param accountOverride - Account override of the transaction, if any.
+ * @returns The override when it is an EVM address, otherwise `undefined`.
+ */
+export function getEvmAccountOverride(
+  accountOverride: string | undefined,
+): Hex | undefined {
+  return isStrictHexString(accountOverride) ? accountOverride : undefined;
+}

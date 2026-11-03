@@ -1,5 +1,4 @@
 import {
-  isNonEvmPaymentToken,
   PaymentOverride,
   TransactionPayClientId,
   TransactionPayController,
@@ -13,6 +12,11 @@ import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../shared/lib/money/money-account-flow';
+import {
+  getEvmAccountOverride,
+  getEvmAsset,
+  isNonEvmPaymentToken,
+} from '../../../shared/lib/transaction/pay-token';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -227,19 +231,10 @@ function getApi(
         messengerClient.state?.transactionData?.[transactionId]?.paymentToken;
       if (paymentToken) {
         try {
-          messengerClient.updatePaymentToken(
-            isNonEvmPaymentToken(paymentToken)
-              ? {
-                  transactionId,
-                  assetId: paymentToken.assetId,
-                  walletAccountId: paymentToken.walletAccountId,
-                }
-              : {
-                  transactionId,
-                  tokenAddress: paymentToken.address,
-                  chainId: paymentToken.chainId,
-                },
-          );
+          messengerClient.updatePaymentToken({
+            transactionId,
+            assetId: paymentToken.assetId,
+          });
         } catch {
           // Balance/rates may still be settling; amount commit below still runs.
         }
@@ -271,7 +266,8 @@ function getApi(
         moneyPayMessenger,
         transactionId,
         amountHuman,
-        recipientOverride ?? transactionData?.accountOverride,
+        recipientOverride ??
+          getEvmAccountOverride(transactionData?.accountOverride),
         getWithdrawPaymentToken(transactionData),
       );
     },
@@ -320,8 +316,9 @@ function getApi(
 
       const isDeposit =
         getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
+      const isNonEvmRequest = !getEvmAsset(request.assetId);
 
-      if (isDeposit && 'assetId' in request) {
+      if (isDeposit && isNonEvmRequest) {
         setSolanaPayDepositConfig(messengerClient, request.transactionId, true);
       }
 
@@ -333,7 +330,7 @@ function getApi(
 
       if (
         isDeposit &&
-        !('assetId' in request) &&
+        !isNonEvmRequest &&
         previousPaymentToken &&
         isNonEvmPaymentToken(previousPaymentToken)
       ) {
@@ -374,9 +371,7 @@ function subscribeWithdrawTransferSync(
       for (const [transactionId, { paymentToken }] of Object.entries(
         transactionData,
       )) {
-        const key = paymentToken
-          ? `${paymentToken.chainId}:${paymentToken.address.toLowerCase()}`
-          : undefined;
+        const key = paymentToken?.assetId.toLowerCase();
 
         if (
           paymentTokenKeys.has(transactionId) &&
@@ -402,9 +397,7 @@ function getWithdrawPaymentToken(
     | undefined,
 ): WithdrawPaymentToken | undefined {
   const paymentToken = transactionData?.paymentToken;
-  return paymentToken
-    ? { address: paymentToken.address, chainId: paymentToken.chainId }
-    : undefined;
+  return paymentToken && getEvmAsset(paymentToken.assetId);
 }
 
 async function syncWithdrawTransfer(
@@ -418,7 +411,7 @@ async function syncWithdrawTransfer(
   await syncMoneyAccountWithdrawTransfer(
     moneyPayMessenger,
     transactionId,
-    transactionData?.accountOverride,
+    getEvmAccountOverride(transactionData?.accountOverride),
     getWithdrawPaymentToken(transactionData),
   );
 }

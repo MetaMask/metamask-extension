@@ -27,7 +27,7 @@ import {
   useTransactionPayQuotes,
 } from '../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
-import { getEvmPaymentToken } from '../../utils/transaction-pay';
+import { getEvmPaymentToken } from '../../../../../shared/lib/transaction/pay-token';
 
 /**
  * Hook for tracing mUSD conversion quote fetch time.

@@ -2,7 +2,7 @@ import React from 'react';
 import { act, renderHook } from '@testing-library/react';
 import {
   PaymentOverride,
-  type EvmPaymentToken,
+  type TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import {
   TransactionType,
@@ -71,16 +71,25 @@ jest.mock('../../components/modals/pay-with-modal', () => ({
 
 const FROM_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12';
 
-const PAY_TOKEN = {
-  address: '0x1111111111111111111111111111111111111111',
-  chainId: '0x1',
+const PAY_TOKEN_ADDRESS = '0x1111111111111111111111111111111111111111';
+const PAY_TOKEN_CHAIN_ID = '0x1';
+
+const PAY_TOKEN: TransactionPaymentToken = {
+  assetId: `eip155:1/erc20:${PAY_TOKEN_ADDRESS}`,
   symbol: 'USDC',
   balanceUsd: '25',
   balanceFiat: '$25.00',
   balanceHuman: '25',
   balanceRaw: '25000000',
   decimals: 6,
-} as EvmPaymentToken;
+};
+
+const REQUIRED_TOKEN = {
+  address: PAY_TOKEN_ADDRESS,
+  chainId: PAY_TOKEN_CHAIN_ID,
+  symbol: 'USDC',
+  balanceUsd: '25',
+};
 
 const ACCOUNT = {
   address: FROM_ADDRESS,
@@ -152,8 +161,8 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.displayToken).toMatchObject({
-      address: PAY_TOKEN.address,
-      chainId: PAY_TOKEN.chainId,
+      address: PAY_TOKEN_ADDRESS,
+      chainId: PAY_TOKEN_CHAIN_ID,
       symbol: 'USDC',
     });
     expect(result.current.balanceUsdFormatted).toBe('$25.00');
@@ -214,17 +223,13 @@ describe('usePayWithToken', () => {
     );
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
-        accountId:
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
         assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
         balanceFiat: '150',
         balanceHuman: '1.5',
         balanceRaw: '1500000000',
         balanceUsd: '150',
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         decimals: 9,
         symbol: 'SOL',
-        walletAccountId: 'solana-account-id',
       },
       setPayToken: jest.fn(),
       isNative: true,
@@ -248,7 +253,9 @@ describe('usePayWithToken', () => {
       setPayToken: jest.fn(),
       isNative: false,
     });
-    useTransactionPayRequiredTokensMock.mockReturnValue([PAY_TOKEN as never]);
+    useTransactionPayRequiredTokensMock.mockReturnValue([
+      REQUIRED_TOKEN as never,
+    ]);
 
     const { result } = renderHook(() => usePayWithToken());
 
@@ -310,7 +317,9 @@ describe('usePayWithToken', () => {
       setPayToken: jest.fn(),
       isNative: false,
     });
-    useTransactionPayRequiredTokensMock.mockReturnValue([PAY_TOKEN as never]);
+    useTransactionPayRequiredTokensMock.mockReturnValue([
+      REQUIRED_TOKEN as never,
+    ]);
 
     const { result } = renderHook(() => usePayWithToken());
 
@@ -320,8 +329,8 @@ describe('usePayWithToken', () => {
   it('reports hasAvailableTokens when a selectable funding token exists', () => {
     useTransactionPayAvailableTokensMock.mockReturnValue([
       {
-        address: PAY_TOKEN.address,
-        chainId: PAY_TOKEN.chainId,
+        address: PAY_TOKEN_ADDRESS,
+        chainId: PAY_TOKEN_CHAIN_ID,
         disabled: false,
       },
     ] as never);
