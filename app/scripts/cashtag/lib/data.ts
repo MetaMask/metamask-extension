@@ -13,6 +13,7 @@ type SearchHit = {
   assetId: CaipAssetType;
   symbol: string;
   name: string;
+  rwaData?: { ticker?: string | null } | null;
   securityData?: { resultType?: string };
   price?: string | number | null;
   marketCap?: string | number | null;
@@ -132,8 +133,10 @@ export async function resolveTicker(
   }
 
   const matches = await searchBySymbol(ticker);
-  const symbolMatches = matches.filter((match) =>
-    match.symbol.trim().toUpperCase().startsWith(ticker),
+  const symbolMatches = matches.filter(
+    (match) =>
+      match.symbol.trim().toUpperCase() === ticker ||
+      match.rwaData?.ticker?.trim().toUpperCase() === ticker,
   );
   if (symbolMatches.length === 0) {
     return null;
