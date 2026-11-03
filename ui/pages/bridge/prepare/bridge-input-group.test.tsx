@@ -239,6 +239,17 @@ const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
 };
 
 describe('BridgeInputGroup', () => {
+  it('uses a decimal text input for the amount', () => {
+    renderBridgeInputGroup(
+      {},
+      { amountFieldProps: { testId: 'from-amount', value: '1' } },
+    );
+
+    const input = screen.getByTestId('from-amount');
+    expect(input).toHaveAttribute('type', 'text');
+    expect(input).toHaveAttribute('inputmode', 'decimal');
+  });
+
   it('starts a short amount at 40px', () => {
     renderBridgeInputGroup(
       {},

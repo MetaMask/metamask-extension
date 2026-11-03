@@ -281,6 +281,7 @@ export const BridgeInputGroup = ({
               className="min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
               style={{ ...amountStyle, transition: 'font-size 0.1s' }}
               type="text"
+              inputMode="decimal"
               autoComplete="off"
               placeholder="0"
               onKeyPress={(e) => {
