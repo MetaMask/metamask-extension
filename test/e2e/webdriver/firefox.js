@@ -166,11 +166,11 @@ class FirefoxDriver {
     // `about:` pages, `chrome://`, `resource://`) unless system access is
     // allowed. `getInternalId` reads the extension UUID from
     // `about:debugging#addons`, so without this the session cannot start.
-    // Newer geckodriver rejects `--remote-allow-system-access` via Firefox
-    // capabilities; pass `--allow-system-access` to geckodriver instead.
-    // Firefox 159 removed the `--remote-allow-system-access` flag that
-    // geckodriver forwards, and reads `MOZ_REMOTE_ALLOW_SYSTEM_ACCESS` from the
-    // environment instead, which Firefox inherits from the geckodriver process.
+    // - Firefox 153-158: geckodriver's `--allow-system-access` enables it by
+    //   forwarding `--remote-allow-system-access` to Firefox (geckodriver
+    //   rejects that flag when set via Firefox capabilities).
+    // - Firefox 159+: that flag was removed; Firefox only reads the
+    //   `MOZ_REMOTE_ALLOW_SYSTEM_ACCESS` env var, inherited from geckodriver.
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=1579790
     // See https://bugzilla.mozilla.org/show_bug.cgi?id=2054896
     service.addArguments('--allow-system-access');
