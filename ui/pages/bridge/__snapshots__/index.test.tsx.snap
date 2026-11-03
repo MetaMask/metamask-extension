@@ -179,14 +179,20 @@ exports[`Bridge renders the component with initial props 1`] = `
             >
               <button
                 aria-label="switch-tokens"
-                class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled group size-full self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+                class="inline-flex shrink-0 items-center justify-center p-0 bg-transparent text-icon-default cursor-not-allowed opacity-50 group size-full min-w-10 self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
                 data-testid="switch-tokens"
                 disabled=""
               >
-                <span
-                  class="mm-box transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/swap-vertical.svg');"
-                />
+                <svg
+                  class="inline-block w-8 h-8 text-icon-alternative transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.03 15.97a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l1.72 1.72V4.5a.75.75 0 0 1 1.5 0v13.19l1.72-1.72a.75.75 0 0 1 1.06 0m9-9-3-3a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 1.06 1.06l1.72-1.72V19.5a.75.75 0 0 0 1.5 0V6.31l1.72 1.72a.75.75 0 0 0 1.06-1.06"
+                  />
+                </svg>
               </button>
             </div>
             <div
