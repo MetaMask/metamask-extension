@@ -15,6 +15,7 @@ import {
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getMultichainNativeTokenBalance,
+  selectIsAssetsLoadingForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
@@ -50,6 +51,7 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable?: boolean;
     showFiatInTestnets?: boolean;
     privacyMode?: boolean;
+    isAssetsLoading?: boolean;
   };
 
   const arrange = ({
@@ -59,10 +61,15 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable = true,
     showFiatInTestnets = false,
     privacyMode = false,
+    isAssetsLoading = false,
   }: ArrangeOptions = {}) => {
     jest
       .mocked(selectUnifiedBalanceBySelectedAccountGroup)
       .mockReturnValue(selectedGroupBalance);
+
+    jest
+      .mocked(selectIsAssetsLoadingForSelectedAccountGroup)
+      .mockReturnValue(isAssetsLoading);
 
     jest
       .mocked(selectAnyEnabledNetworksAreAvailable)
@@ -236,6 +243,34 @@ describe('AccountGroupBalance', () => {
         (content) => content.includes('99.50') || content.includes('99.5'),
       ),
     ).toBeInTheDocument();
+  });
+
+  it('renders a skeleton instead of a zero balance while assets are first loading', () => {
+    arrange({
+      isAssetsLoading: true,
+      selectedGroupBalance: {
+        ...createMockBalance(),
+        totalBalanceInUserCurrency: 0,
+      },
+    });
+
+    const { getByTestId } = renderComponent();
+
+    expect(getByTestId('account-group-balance-skeleton')).toBeInTheDocument();
+  });
+
+  it('renders a non-zero balance while assets are first loading', () => {
+    arrange({
+      isAssetsLoading: true,
+      selectedGroupBalance: createMockBalance(),
+    });
+
+    const { getByText, queryByTestId } = renderComponent();
+
+    expect(
+      queryByTestId('account-group-balance-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(getByText(/123\.45/u)).toBeInTheDocument();
   });
 
   it('renders skeleton when no networks available and no balance', () => {

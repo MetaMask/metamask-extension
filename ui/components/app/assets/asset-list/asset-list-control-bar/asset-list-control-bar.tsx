@@ -10,11 +10,13 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
   getTokenNetworkFilter,
+  getUseExternalServices,
   getUseNftDetection,
 } from '../../../../../selectors';
 import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
@@ -47,7 +49,11 @@ import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { useBoolean } from '../../../../../hooks/useBoolean';
-import { TEST_CHAINS } from '../../../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../../../shared/constants/network';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -61,9 +67,9 @@ import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   refreshAssetsForSelectedAccount,
+  setActiveNetwork,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
-  showImportNftsModal,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
@@ -74,6 +80,7 @@ import {
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   ASSETS_ROUTE,
+  IMPORT_NFTS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
@@ -121,6 +128,7 @@ const AssetListControlBar = ({
     setImportReferenceElement(node);
   }, []);
   const useNftDetection = useSelector(getUseNftDetection);
+  const useExternalServices = useSelector(getUseExternalServices);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const isMainnet = useSelector(getIsMainnet);
@@ -266,6 +274,30 @@ const AssetListControlBar = ({
     totalEnabledNetworkCount,
   ]);
 
+  // Basic Functionality hides non-EVM networks from the picker. If one is still
+  // the selected filter, move to all popular networks and a default EVM network.
+  const shouldSwitchFromHiddenNonEvmNetwork =
+    useExternalServices === false &&
+    allEnabledNetworksForAllNamespaces.length > 0 &&
+    allEnabledNetworksForAllNamespaces.every(
+      (chainId) => !isEvmChainId(chainId as CaipChainId | Hex),
+    );
+
+  useEffect(() => {
+    if (!shouldSwitchFromHiddenNonEvmNetwork) {
+      return;
+    }
+
+    dispatch(setEnabledAllPopularNetworks());
+    const network =
+      allNetworks[CHAIN_IDS.MAINNET] ?? Object.values(allNetworks)[0];
+    const networkClientId =
+      network?.rpcEndpoints[network.defaultRpcEndpointIndex]?.networkClientId;
+    if (networkClientId) {
+      dispatch(setActiveNetwork(networkClientId));
+    }
+  }, [allNetworks, dispatch, shouldSwitchFromHiddenNonEvmNetwork]);
+
   const windowType = getEnvironmentType();
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -339,7 +371,7 @@ const AssetListControlBar = ({
   }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {
-    dispatch(showImportNftsModal({}));
+    navigate(IMPORT_NFTS_ROUTE);
     closePopover();
   };
 

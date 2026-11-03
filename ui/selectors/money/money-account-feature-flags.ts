@@ -10,6 +10,8 @@ import {
   isMoneyEarningSectionEnabled,
   isMoneyHomeScreenCardEnabled,
   isMoneyTokenListItemCtaEnabled,
+  isMoneyEarnBannerEnabled,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 } from '../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
@@ -177,18 +179,6 @@ export const selectMoneyActivityDetailsEnabled = createSelector(
 );
 
 /**
- * Selects whether the Money balance card should show the "mUSD" text label
- * next to the fiat balance.
- *
- * @param state - The MetaMask state object.
- * @returns Whether the mUSD label is enabled.
- */
-export const selectMoneyBalanceShowMusdLabelEnabled = createSelector(
-  getRemoteFeatureFlags,
-  (flags) => getBooleanFeatureFlag(flags?.moneyBalanceShowMusdLabel, false),
-);
-
-/**
  * Selects whether the token list row Money deposit CTA is enabled.
  *
  * @param state - The MetaMask state object.
@@ -197,6 +187,28 @@ export const selectMoneyBalanceShowMusdLabelEnabled = createSelector(
 export const selectMoneyTokenListItemCtaEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyTokenListItemCtaEnabled,
+);
+
+/**
+ * Selects whether the token details Money earn banner is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the earn banner is enabled.
+ */
+export const selectMoneyEarnBannerEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyEarnBannerEnabled,
+);
+
+/**
+ * Selects whether the token details "Your balance" Money earn CTA is enabled.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the balance CTA is enabled.
+ */
+export const selectMoneyAssetOverviewBalanceCtaEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyAssetOverviewBalanceCtaEnabled,
 );
 
 /**

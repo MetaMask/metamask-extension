@@ -1787,9 +1787,6 @@
   "assets": {
     "message": "Активы"
   },
-  "assetsDescription": {
-    "message": "Автоматически обнаруживайте токены в своем кошельке, отображайте NFT и получайте пакетные обновления баланса счета"
-  },
   "asterdexReferralSubtitle": {
     "message": "Получайте 4% кэшбэка от сделок с реферальным кодом MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -1847,6 +1844,9 @@
   },
   "backToSafety": {
     "message": "Назад в безопасное место"
+  },
+  "backToWallet": {
+    "message": "Вернуться в кошелек"
   },
   "backUpIncomplete": {
     "message": "Резервное копирование не завершено"
@@ -1919,11 +1919,11 @@
   },
   "basicConfigurationDescription": {
     "message": "MetaMask предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае MetaMask. Это похоже на посещенеи вами любого веб-сайта. MetaMask временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с MetaMask. Чтобы узнать больше, прочитайте нашу $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationDescriptionV2": {
     "message": "Включает в себя основные функции, такие как информация о токене и настройки газа. Оставьте эту функцию включенной для удобства использования. Прочитайте нашу $1, чтобы узнать больше.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-notice"
   },
   "basicConfigurationLabel": {
     "message": "Базовый функционал"
@@ -1945,6 +1945,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Включить базовый функционал"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "Базовый функционал включен"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "Мы обновили настройки"
@@ -2622,6 +2625,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Этот символ токена не соответствует введенному имени сети или идентификатору блокчейна. Многие популярные токены обозначаются похожими символами, которые мошенники могут использовать, чтобы обманом заставить вас отправить им взамен более ценный токен. Проверьте все, прежде чем продолжить."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "Ввести данные сети вручную",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "Ввести данные RPC вручную",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "Узнайте, как оставаться в безопасности.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2633,6 +2644,22 @@
   "chainlistNetworkDetails": {
     "message": "Символ: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "Нет совпадений в ChainList",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "Данные RPC предоставляются ChainList. Всегда проверяйте их перед добавлением. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "Использовать «$1» как имя сети",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "Использовать «$1» как URL-адрес RPC",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "Изменить в Настройках"
@@ -3304,7 +3331,7 @@
     "message": "Сбор данных для маркетинга"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Мы будем использовать MetaMetrics, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем делиться соответствующими новостями (например, новостями о функциях продукта и другими материалами)."
+    "message": "Мы будем собирать данные о том, как вы взаимодействуете с нашими маркетинговыми материалами, чтобы делиться актуальными новостями (например, о функциях продукта и другими материалами)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Получайте обновления, советы и новости о продуктах, в том числе по эл. почте. Мы можем использовать ваши сообщения для улучшения того, чем мы делимся."
@@ -3355,6 +3382,12 @@
   },
   "deepLinkQrBatchSellTitle": {
     "message": "Открыть пакетную продажу на мобильном"
+  },
+  "deepLinkQrLimitOrderDescription": {
+    "message": "Лимитные ордера доступны в мобильном приложении MetaMask. Отсканируйте этот код своим мобильным устройством, чтобы воспользоваться ими."
+  },
+  "deepLinkQrLimitOrderTitle": {
+    "message": "Открыть лимитные ордера на мобильном устройстве"
   },
   "deepLinkQrPredictDescription": {
     "message": "Чтобы получить доступ к Рынкам прогнозов MetaMask, отсканируйте QR-код своим мобильным устройством."
@@ -3440,6 +3473,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "страница уведомлений"
+  },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "страница настроек уведомлений"
   },
   "deepLink_theOnboardingPage": {
     "message": "вводная страница"
@@ -3846,9 +3882,6 @@
   },
   "enableSmartContractAccountDescription": {
     "message": "Разблокируйте более быстрые транзакции, более низкие комиссии сети и дополнительную безопасность в поддерживаемых сетях."
-  },
-  "enableSnap": {
-    "message": "Включить"
   },
   "enableToken": {
     "message": "активирует для $1",
@@ -4260,8 +4293,12 @@
     "message": "MetaMask покрывает комиссию сети за эту транзакцию. Сюда входит однократная активация смарт-счета."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Эта конкретная сеть требует поддержания резерва в размере $1 $2 на вашем счете.",
+    "message": "В этой сети требуется оставить не менее $1 $2 на вашем счете после транзакции. Баланс смарт-счета не может опускаться ниже этого резерва.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
+  "gasSponsorshipSponsorTooltip": {
+    "message": "$1 покрывает комиссию сети за эту транзакцию. Сюда входит однократная активация смарт-счета.",
+    "description": "$1 is the name of the party paying the network fee, such as a dapp."
   },
   "gasTimingHoursShort": {
     "message": "$1 ч",
@@ -4396,9 +4433,6 @@
   "generalCameraErrorTitle": {
     "message": "Что-то пошло не так...."
   },
-  "generalDescription": {
-    "message": "Синхронизируйте настройки между устройствами, выбирайте настройки сети и отслеживайте данные токенов"
-  },
   "generateNewQrCode": {
     "message": "Сгенерировать новый QR-код"
   },
@@ -4515,6 +4549,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Продолжить"
   },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Разблокируйте его и попробуйте снова, чтобы продолжить",
+    "description": "Description shown when a hardware wallet is locked during an operation"
+  },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Ваш $1 может подписывать только типизированные данные версии 4 (V4). Этот сайт запросил более старый тип подписи, который не поддерживается",
     "description": "$1 is the hardware wallet type"
@@ -4537,7 +4575,7 @@
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "Продолжите, чтобы убедиться в следующем:"
+    "message": "Чтобы продолжить, убедитесь, что:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "Ваше устройство $1 разблокировано",
@@ -5213,9 +5251,6 @@
   "loading": {
     "message": "Загрузка..."
   },
-  "loadingScreenSnapMessage": {
-    "message": "Завершите транзакцию в Snap."
-  },
   "loadingTokenList": {
     "message": "Загружается список токенов"
   },
@@ -5440,6 +5475,252 @@
   "metrics": {
     "message": "Показатели"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Продолжить"
+  },
+  "mfaEmailEntryDescription": {
+    "message": "Мы будем использовать ваш адрес эл. почты для проверки вашего счета и периодической отправки обновлений по нему."
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Введите действительный адрес эл. почты."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Адрес элю почты"
+  },
+  "mfaEmailEntryTitle": {
+    "message": "Подтвердить адрес эл. почты"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Срок действия вашего кода подтверждения истек, получите новый код."
+  },
+  "mfaErrorCooldown": {
+    "message": "Слишком много запросов. Подождите немного и повторите попытку."
+  },
+  "mfaErrorEmailTaken": {
+    "message": "Этот адрес эл. почты уже используется. Попробуйте другой."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "Другая проверка уже выполняется."
+  },
+  "mfaErrorGeneric": {
+    "message": "Возникла какая-то проблема. Повторите попытку."
+  },
+  "mfaErrorInvalidPasskey": {
+    "message": "Не удалось проверить ваш ключ доступа. Повторите попытку."
+  },
+  "mfaErrorLimitReached": {
+    "message": "Вы достигли лимита для этого метода."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "Запрос ключа доступа был отменен."
+  },
+  "mfaErrorSignedOut": {
+    "message": "Войдите, чтобы продолжить."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "Слишком много попыток. Запросите новый код."
+  },
+  "mfaErrorTotpExpired": {
+    "message": "Это заняло слишком много времени. Введите текущий код из вашего приложения."
+  },
+  "mfaErrorTotpTaken": {
+    "message": "Приложение-аутентификатор уже настроено для этого счета."
+  },
+  "mfaErrorTotpTooManyAttempts": {
+    "message": "Слишком много попыток. Дождитесь нового кода в вашем приложении и повторите попытку."
+  },
+  "mfaErrorUnsupported": {
+    "message": "Этот метод не поддерживается на данном устройстве."
+  },
+  "mfaFailureClose": {
+    "message": "Закрыть"
+  },
+  "mfaFailureContactSupport": {
+    "message": "Связаться с поддержкой"
+  },
+  "mfaFailureDone": {
+    "message": "Выполнено"
+  },
+  "mfaFailureRetry": {
+    "message": "Повторить попытку"
+  },
+  "mfaFailureTitle": {
+    "message": "Что-то пошло не так"
+  },
+  "mfaIntroContinue": {
+    "message": "Начало работы"
+  },
+  "mfaIntroDescription": {
+    "message": "Мы настроим несколько способов подтверждения вашей личности. Если вы потеряете доступ к одному методу, вы сможете использовать другой."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "Получить 6-значный код на электронную почту"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Подтвердить с помощью вашего устройства или менеджера паролей"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Сохранено на этом устройстве"
+  },
+  "mfaIntroTitle": {
+    "message": "Настроить двухэтапную проверку"
+  },
+  "mfaIntroTotpDescription": {
+    "message": "Получить 6-значный код из приложения вроде Google Authenticator"
+  },
+  "mfaIntroTotpDone": {
+    "message": "Настроено в вашем приложении-аутентификаторе"
+  },
+  "mfaMethodEmail": {
+    "message": "Эл. почта"
+  },
+  "mfaMethodPasskey": {
+    "message": "Ключ доступа"
+  },
+  "mfaMethodTotp": {
+    "message": "Приложение-аутентификатор"
+  },
+  "mfaOtpDescription": {
+    "message": "Мы отправили 6-значный код на вашу эл. почту. Введите его ниже, чтобы подтвердить ваш адрес эл. почты."
+  },
+  "mfaOtpDescriptionTotp": {
+    "message": "Откройте приложение-аутентификатор и введите 6-значный код."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "Мы отправили 6-значный код на $1. Введите его ниже, чтобы подтвердить ваш адрес эл. почты.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Получить новый код"
+  },
+  "mfaOtpResend": {
+    "message": "Повторно отправить код"
+  },
+  "mfaOtpResendIn": {
+    "message": "Отправить код повторно через $1 с",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "Мы отправили вам новый код."
+  },
+  "mfaOtpRetry": {
+    "message": "Повторить попытку"
+  },
+  "mfaOtpRetryIn": {
+    "message": "Повторите попытку через $1 с"
+  },
+  "mfaOtpSendIn": {
+    "message": "Отправка нового кода через $1 с",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "Отправка кода..."
+  },
+  "mfaOtpTitle": {
+    "message": "Введите код подтверждения"
+  },
+  "mfaOtpVerifying": {
+    "message": "Отправить код"
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "Создать ключ доступа"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "Использовать ключ доступа"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "Получить код подтверждения"
+  },
+  "mfaPickerOr": {
+    "message": "или"
+  },
+  "mfaPickerPasskey": {
+    "message": "Подтвердить с помощью ключа доступа"
+  },
+  "mfaPickerTitle": {
+    "message": "Подтвердите с помощью двухэтапной проверки"
+  },
+  "mfaPickerTotp": {
+    "message": "Использовать приложение-аутентификатор"
+  },
+  "mfaSettingsAdd": {
+    "message": "Добавить"
+  },
+  "mfaSettingsAddedOn": {
+    "message": "Добавлено $1"
+  },
+  "mfaSettingsEmailRemoved": {
+    "message": "Проверка по эл. почте удалена"
+  },
+  "mfaSettingsLastEmailDescription": {
+    "message": "Этот адрес эл. почты является единственным методом безопасности для этого счета. Добавьте второй метод перед его удалением."
+  },
+  "mfaSettingsLastEmailTitle": {
+    "message": "Адрес эл. почты не может быть удален"
+  },
+  "mfaSettingsLastTotpDescription": {
+    "message": "Это приложение-аутентификатор является единственным методом безопасности для этого счета. Добавьте второй метод перед его удалением."
+  },
+  "mfaSettingsLastTotpTitle": {
+    "message": "Приложение-аутентификатор не может быть удалено"
+  },
+  "mfaSettingsNotice": {
+    "message": "Эти методы добавляют защиту транзакциям на счете Money Account. Они не могут восстановить ваш кошелек."
+  },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "Другие ваши методы работают только в мобильном приложении MetaMask. Удалите свой адрес эл. почты там."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "Адрес эл. почты не может быть удален здесь"
+  },
+  "mfaSettingsRemoveEmail": {
+    "message": "Удалить адрес эл. почты"
+  },
+  "mfaSettingsRemoveEmailDescription": {
+    "message": "Вы больше не сможете входить в систему или подтверждать транзакции, получая код по электронной почте."
+  },
+  "mfaSettingsRemoveFailed": {
+    "message": "Не удалось удалить этот метод. Повторите попытку позже."
+  },
+  "mfaSettingsRemoveTotp": {
+    "message": "Удалить приложение-аутентификатор"
+  },
+  "mfaSettingsRemoveTotpDescription": {
+    "message": "Вы больше не сможете подтверждать транзакции Money с помощью кодов из вашего приложения-аутентификатора."
+  },
+  "mfaSettingsTitle": {
+    "message": "Двухэтапная проверка"
+  },
+  "mfaSettingsTotpRemoveElsewhereDescription": {
+    "message": "Другие ваши методы работают только в мобильном приложении MetaMask. Удалите свое приложение-аутентификатор там."
+  },
+  "mfaSettingsTotpRemoveElsewhereTitle": {
+    "message": "Приложение-аутентификатор не может быть удалено здесь"
+  },
+  "mfaSettingsTotpRemoved": {
+    "message": "Приложение-аутентификатор удалено"
+  },
+  "mfaSettingsUsedFor": {
+    "message": "Используется для"
+  },
+  "mfaSettingsUsedForMoney": {
+    "message": "Подтверждения транзакций Money"
+  },
+  "mfaTotpSetupContinue": {
+    "message": "Продолжить"
+  },
+  "mfaTotpSetupKey": {
+    "message": "Ключ настройки"
+  },
+  "mfaTotpSetupQrAlt": {
+    "message": "QR-код для добавления MetaMask в приложение-аутентификатор"
+  },
+  "mfaTotpSetupRestarted": {
+    "message": "Это заняло слишком много времени, поэтому мы создали новый ключ настройки. Удалите предыдущую запись MetaMask из вашего приложения-аутентификатора, а затем добавьте эту."
+  },
+  "mfaTotpSetupTitle": {
+    "message": "Настроить приложение-аутентификатор"
+  },
   "minimumReceivedExplanation": {
     "message": "Минимум, которые вы получите, если цена изменится во время обработки вашей транзакции, рассчитывается на основе настроек проскальзывания. Оценка предоставляется поставщиками ликвидности, поэтому окончательная сумма может отличаться."
   },
@@ -5615,9 +5896,6 @@
   "moneyBalanceLastKnown": {
     "message": "Последний известный баланс"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Повтор"
   },
@@ -5652,8 +5930,28 @@
   "moneyConvertYourCrypto": {
     "message": "Конвертировать криптовалюту"
   },
+  "moneyEarnApy": {
+    "message": "Зарабатывайте $1 APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Зарабатывайте до $1 годовых"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Добавьте ваши $1 на счет Money Account и заработайте до $2 за один год.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
+  },
+  "moneyEarnBannerCta": {
+    "message": "Добавить $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Добавьте $1 на счет Money Account — никаких блокировок или минимальных сумм.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Зарабатывайте с вашим счетом Money Account",
+    "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
     "message": "Зарабатывайте на своей криптовалюте"
@@ -5691,6 +5989,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Пополните свой счет Money Account и наблюдайте, как растет ваш баланс с доходностью до $1 годовых."
+  },
+  "moneyGetApy": {
+    "message": "Получить $1 APY",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "Указанная ставка — это текущая годовая процентная доходность (APY). APY — переменная величина и не гарантируется."
@@ -5809,6 +6111,10 @@
   },
   "moneySend": {
     "message": "Отправить"
+  },
+  "moneyStartEarning": {
+    "message": "Начните зарабатывать",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Не удалось добавить средства. Повторите попытку."
@@ -6071,7 +6377,7 @@
     "message": "С чего начать"
   },
   "musdEducationHeadline": {
-    "message": "ПОЛУЧИТЕ $1% НА\nСТЕЙБЛКОИНАХ",
+    "message": "Получите $1% на\nстейблкоинах",
     "description": "$1 is the bonus APY percentage. Line break between ON and STABLECOINS matches splash layout."
   },
   "musdEducationNotNow": {
@@ -6244,9 +6550,6 @@
   "networkNameBitcoin": {
     "message": "Биткойн"
   },
-  "networkNameBitcoinSegwit": {
-    "message": "Нативный SegWit биткойна"
-  },
   "networkNameDefinition": {
     "message": "Имя, связанное с этой сетью."
   },
@@ -6261,6 +6564,9 @@
   },
   "networkNameSolana": {
     "message": "Solana"
+  },
+  "networkNameStellar": {
+    "message": "Stellar"
   },
   "networkNameTron": {
     "message": "Tron"
@@ -6326,6 +6632,10 @@
   },
   "newCustomTokenAdded": {
     "message": "«$1» успешно добавлен!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "Чтобы использовать OpenSea для просмотра ваших NFT, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Настройки > Активы"
@@ -6749,9 +7059,6 @@
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Добавить пользовательский шлюз IPFS"
   },
-  "onboardingAdvancedPrivacyIPFSValid": {
-    "message": "URL шлюза IPFS действителен"
-  },
   "onboardingAdvancedPrivacyNetworkDescription": {
     "message": "Когда вы используете наши настройки и конфигурации по умолчанию, мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC) по умолчанию, чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum, который мы можем предложить. В ограниченных случаях мы можем использовать других поставщиков RPC, чтобы обеспечить наилучший опыт для наших пользователей. Вы можете выбрать свой собственный RPC, но помните, что любой RPC получит ваш IP-адрес и кошелек Ethereum для совершения транзакций. Чтобы узнать больше о том, как Infura обрабатывает данные для учетных записей EVM, прочтите нашу статью $1; для счетов Solana — $2."
   },
@@ -6790,7 +7097,7 @@
     "message": "Собирать основные данные об использовании"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Новости о товаре"
+    "message": "Рекламные новости"
   },
   "onboardingMetametricsContinue": {
     "message": "Продолжить"
@@ -7478,6 +7785,13 @@
   "perps24hVolume": {
     "message": "Объем за 24 ч"
   },
+  "perpsAbout": {
+    "message": "О MetaMask"
+  },
+  "perpsAboutAsset": {
+    "message": "О $1",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "Деятельность"
   },
@@ -7818,6 +8132,13 @@
   "perpsInsufficientMargin": {
     "message": "Недостаточно маржи для размещения этого ордера."
   },
+  "perpsIocCancel": {
+    "message": "Ваш ордер не удалось исполнить в пределах установленного допуска на проскальзывание в $1%. Попробуйте использовать лимитный ордер или измените величину проскальзывания.",
+    "description": "$1 is the configured maximum slippage percentage"
+  },
+  "perpsIocCancelUnknownTolerance": {
+    "message": "Ваш ордер не удалось исполнить в пределах установленного допуска на проскальзывание. Попробуйте использовать лимитный ордер или измените проскальзывание."
+  },
   "perpsKeepPositions": {
     "message": "Сохранить позиции"
   },
@@ -8073,12 +8394,23 @@
   "perpsPositions": {
     "message": "Позиции"
   },
+  "perpsPriceMoved": {
+    "message": "Цена изменилась на $1%, что превышает ваш допуск на проскальзывание в $2%. Проверьте обновленную цену и повторите попытку.",
+    "description": "$1 is the measured price movement percentage and $2 is the configured maximum slippage percentage"
+  },
   "perpsProducts": {
     "message": "Продукты",
     "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRateLimitExceeded": {
     "message": "Слишком много запросов. Подождите немного и повторите попытку."
+  },
+  "perpsReadMore": {
+    "message": "Подробнее"
+  },
+  "perpsReadMoreAbout": {
+    "message": "Узнать больше о $1",
+    "description": "$1 is the asset name"
   },
   "perpsRecentActivity": {
     "message": "Недавняя активность"
@@ -8126,6 +8458,22 @@
   "perpsSeeAll": {
     "message": "Смотреть все",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "обратитесь в поддержку",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "Некоторые службы временно недоступны. $1 или $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "Посмотрите варианты действий в разделе часто задаваемых вопросов",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "Произошел сбой",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Сервис временно недоступен. Повторите попытку позже."
@@ -9332,6 +9680,33 @@
   "rewardsLinkAccountError": {
     "message": "Не удалось добавить счет"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "Вы не можете воспользоваться приглашением из-за недавней торговой активности."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "Вас уже направил другой пользователь."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Недействительный реферальный код"
+  },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Реферальный код"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Не удалось проверить реферальный код."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "Вы не можете использовать собственный реферальный код."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "Вы не можете воспользоваться приглашением другого пользователя."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Что-то пошло не так. Повторите попытку чуть позже."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Слишком много попыток. Подождите немного."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Проверка региона..."
   },
@@ -9369,24 +9744,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Не удалось согласиться"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Недействительный реферальный код"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Реферальный код (необязательно)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Не удалось проверить реферальный код."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Проверьте соединение и повторите попытку."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Скрыть код"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Есть реферальный код?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Присоединиться к Rewards"
   },
@@ -9395,10 +9752,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Начните получать награды"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Проверка реферального кода...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 балл",
@@ -9639,21 +9992,12 @@
   "securityChangePasswordToastSuccess": {
     "message": "Новый пароль сохранен"
   },
-  "securityDefaultSettingsSocialLogin": {
-    "message": "Безопасность и конфиденциальность"
-  },
-  "securityDescription": {
-    "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета"
-  },
   "securityMessageLinkForNetworks": {
     "message": "мошенничества с сетью и угроз безопасности"
   },
   "securityProviderPoweredBy": {
     "message": "На основе $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySocialLoginDefaultSettingsDescription": {
-    "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета и данные"
   },
   "securitySocialLoginEnabled": {
     "message": "Включено"
@@ -12100,6 +12444,18 @@
     "message": "Это ваш ежедневный лимит, рассчитанный на основе вашего стейкинга TRX. Вы каждый день бесплатно получаете $1 единиц(-ы) пропускной способности.",
     "description": "$1 is the maximum bandwidth value"
   },
+  "tronDailyResourcesLoading": {
+    "message": "Загрузка ежедневного использования ресурсов…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "Информация об энергии и пропускной способности временно недоступна. Она обновится автоматически.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "Не удалось загрузить ресурсы",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
   "tronEnergy": {
     "message": "Энергия"
   },
@@ -12158,6 +12514,9 @@
   },
   "turnOn": {
     "message": "Включить"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "включить базовый функционал"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "Произошла ошибка при создании уведомлений. Повторите попытку позже."

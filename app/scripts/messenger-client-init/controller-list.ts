@@ -21,15 +21,10 @@ import {
   DeFiPositionsController,
   DeFiPositionsControllerV2,
   MultichainAssetsController,
-  MultichainAssetsRatesController,
-  MultichainBalancesController,
   NftController,
   NftDetectionController,
   RatesController,
-  TokenBalancesController,
   TokenDetectionController,
-  TokenListController,
-  TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
 import { AssetsController } from '@metamask/assets-controller';
@@ -131,6 +126,8 @@ import { MetaMetricsDataDeletionController } from '../controllers/metametrics-da
 import { AppMetadataController } from '../controllers/app-metadata';
 import { DecryptMessageController } from '../controllers/decrypt-message';
 import { EncryptionPublicKeyController } from '../controllers/encryption-public-key';
+import { RewardsMoneyController } from '../controllers/rewards-money/rewards-money-controller';
+import { RewardsMoneyDataService } from '../controllers/rewards-money/rewards-money-data-service';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
@@ -188,8 +185,6 @@ export type MessengerClient =
   | MoneyAccountController
   | MoneyAccountUpgradeController
   | MultichainAssetsController
-  | MultichainAssetsRatesController
-  | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
   | MultichainRoutingService
@@ -218,6 +213,8 @@ export type MessengerClient =
   | RemoteFeatureFlagController
   | RewardsController
   | RewardsDataService
+  | RewardsMoneyController
+  | RewardsMoneyDataService
   | SeedlessOnboardingController<EncryptionKey>
   | SentryTracingService
   | SelectedNetworkController
@@ -233,16 +230,13 @@ export type MessengerClient =
   | SnapsNameProvider
   | SubjectMetadataController
   | ShieldSubscriptionService
-  | TokenBalancesController
   | TokenDetectionController
-  | TokenListController
   | TokensController
   | TransactionController
   | TransactionPayController
   | InstitutionalSnapController
   | UserOperationController
   | UserStorageController
-  | TokenRatesController
   | NftController
   | NftDetectionController
   | AssetsContractController
@@ -300,8 +294,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   LoggingController['state'] &
   MetaMetricsDataDeletionController['state'] &
   MultichainAssetsController['state'] &
-  MultichainAssetsRatesController['state'] &
-  MultichainBalancesController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
   NameController['state'] &
@@ -323,6 +315,7 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   RewardsController['state'] &
+  RewardsMoneyController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
@@ -333,16 +326,13 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   SnapInterfaceController['state'] &
   SnapRegistryController['state'] &
   SubscriptionController['state'] &
-  TokenBalancesController['state'] &
   TokenDetectionController['state'] &
-  TokenListController['state'] &
   TokensController['state'] &
   StaticAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
   UserOperationController['state'] &
   UserStorageController['state'] &
-  TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &

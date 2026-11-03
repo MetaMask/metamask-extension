@@ -8,6 +8,9 @@ import {
   type ExternalServicesOwnedPreference,
 } from '../../../shared/lib/basic-functionality-consolidation';
 import { isBasicFunctionalityConsistent } from '../../../shared/lib/basic-functionality-consolidation-gate';
+import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../shared/lib/environment';
+import type { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSocialLoginFlow } from '../first-time-flow';
 
 export { BFT_CHILD_PREFERENCES };
 
@@ -28,6 +31,22 @@ export const getExternalServicesOwnedPreferences = (state: {
       Boolean(state.metamask[preference]),
     ]),
   ) as Record<ExternalServicesOwnedPreference, boolean>;
+
+/**
+ * Gets whether Basic Functionality is forced on during onboarding: it is on
+ * and the user can't turn it off. Applies to social login wallets once the
+ * consolidated experience is in the build; onboarding completion saves it as
+ * on.
+ *
+ * @param state - The MetaMask state object.
+ * @param state.metamask - The flattened background state slice.
+ * @param state.metamask.firstTimeFlowType - The onboarding flow type.
+ */
+export const getIsBasicFunctionalityForcedOnDuringOnboarding = (state: {
+  metamask: { firstTimeFlowType?: FirstTimeFlowType | null };
+}): boolean =>
+  getIsBasicFunctionalityConsolidationEnabledInBuild() &&
+  getIsSocialLoginFlow(state);
 
 /**
  * Gets whether the Basic Functionality consolidation rollout is enabled.

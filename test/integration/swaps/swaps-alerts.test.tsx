@@ -35,7 +35,7 @@ const backgroundConnectionMocked = {
 const mockedBackgroundRequests = {
   setSwapsTokens: TOKENS_API_MOCK_RESULT,
   setSwapsFeatureFlags: FEATURE_FLAGS_API_MOCK_RESULT,
-  fetchSmartTransactionsLiveness: true,
+  'SmartTransactionsController:fetchLiveness': true,
   getTransactions: [],
 };
 

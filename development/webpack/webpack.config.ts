@@ -69,15 +69,6 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
-// Styles for the outer X document. They cannot be bundled into the widget
-// frame HTML because that HTML is the iframe, so they are imported as strings
-// and injected by the content script instead.
-const cashtagPageStylesRe =
-  /scripts[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$/u;
-// HtmlBundlerPlugin extracts every stylesheet it recognises into its own asset,
-// which would break the string imports above, so they are excluded here.
-const bundledStylesRe =
-  /^(?!.*[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$|.*[\\/]cashtag[\\/]widget[\\/]widget\.css$).*\.(?:css|scss|sass|less|styl)$/u;
 
 // Keep widget.css outside HtmlBundler. Its CSS @import is not resolved
 // correctly there, which leaves design-token variables undefined in dist
@@ -188,7 +179,6 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
-    css: { test: bundledStylesRe },
     data: { isTest: args.test },
     // In watch mode, inject the dev-only background client into the relevant HTML page.
     beforeEmit: (content, entry, compilation) => {
@@ -333,13 +323,14 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
-const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+// SWC enables TSX from the filename. Default to plain TypeScript for .mts.
+const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 
 const swcReactRefreshConfig = { ...swcConfig, refresh: true };
-const reactRefreshTsxLoader = getSwcLoader(
+const reactRefreshTsLoader = getSwcLoader(
   'typescript',
-  true,
+  false,
   safeVariables,
   swcReactRefreshConfig,
 );
@@ -350,7 +341,17 @@ const reactRefreshJsxLoader = getSwcLoader(
   swcReactRefreshConfig,
 );
 
-const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+// Inline public flags in .js/.mjs dependencies: IN_TEST controls E2E polling,
+// and NODE_ENV removes runtime reads before policy generation.
+const npmEnvs = {
+  // TODO: Remove vendor IN_TEST inlining once the Core changes are released and
+  // adopted in Extension (explicit test polling and gas-estimation mocks):
+  // https://github.com/MetaMask/core/pull/10831
+  // https://github.com/MetaMask/metamask-extension/pull/47090
+  IN_TEST: safeVariables.IN_TEST,
+  NODE_ENV: safeVariables.NODE_ENV,
+};
+const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
 const isChunkableInitial = (chunk: Chunk) =>
@@ -413,17 +414,20 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    // These packages are installed, so fallback resolution cannot exclude them.
+    // Keep optional developer-tool grants in generated policies for builds that
+    // enable them; normal builds exclude the installed packages by alias.
     alias: {
       // #region conditionally remove developer tooling
       // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'react-devtools-core': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? require.resolve('react-devtools-core')
-        : false,
+      'react-devtools-core':
+        args.generatePolicy || variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
+          ? require.resolve('react-devtools-core')
+          : false,
       // remove remote-redux-devtools unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
-      'remote-redux-devtools': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
-        ? require.resolve('remote-redux-devtools')
-        : false,
+      'remote-redux-devtools':
+        args.generatePolicy || variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
+          ? require.resolve('remote-redux-devtools')
+          : false,
       // #endregion conditionally remove developer tooling
     },
     // use `fallback` to redirect module requests when normal resolving fails,
@@ -483,19 +487,19 @@ const config = {
             {
               test: TYPESCRIPT_FILE_RE,
               include: UI_DIR_RE,
-              use: reactRefreshTsxLoader,
+              use: reactRefreshTsLoader,
             },
             {
               test: TYPESCRIPT_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
-              use: tsxLoader,
+              use: tsLoader,
             },
           ]
         : [
             {
               test: TYPESCRIPT_FILE_RE,
               exclude: NODE_MODULES_RE,
-              use: tsxLoader,
+              use: tsLoader,
             },
           ]),
       // own javascript, and own javascript with jsx
@@ -549,33 +553,9 @@ const config = {
           },
         ],
       },
-      // TODO: remove feature-specific hack from config.
-      // Cashtag widget host-page styles, imported as text so the content script can inject
-      // and remove them without exposing a web-accessible stylesheet.
-      {
-        test: cashtagPageStylesRe,
-        use: [
-          { loader: 'css-loader', options: { exportType: 'string' } },
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                config: false,
-                plugins: [
-                  tailwindcss(),
-                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
-                  rtlCss({ processEnv: false }),
-                  discardFontFace(['woff2']), // keep woff2 fonts
-                ],
-              },
-            },
-          },
-        ],
-      },
       // css, sass/scss
       {
         test: /\.(css|sass|scss)$/u,
-        exclude: cashtagPageStylesRe,
         use: [
           // Resolves CSS `@import` and `url()` paths and loads the files.
           'css-loader',

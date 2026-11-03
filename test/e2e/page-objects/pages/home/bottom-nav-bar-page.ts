@@ -17,6 +17,8 @@ class BottomNavBar {
 
   private readonly homeTab = '[data-testid="bottom-nav-home"]';
 
+  private readonly moneyTab = '[data-testid="bottom-nav-money"]';
+
   private readonly page = {
     testId: 'parent-selector-bottom-nav-bar',
   };
@@ -41,6 +43,16 @@ class BottomNavBar {
     console.log('Click bottom nav home tab');
     await this.driver.clickElement(this.homeTab);
     await this.assertOnRoute('/');
+  }
+
+  /**
+   * Click the Money tab. Only rendered once the Money Account availability
+   * query resolves, so wait for it rather than failing on first paint.
+   */
+  async clickMoney(): Promise<void> {
+    console.log('Click bottom nav money tab');
+    await this.driver.clickElement(this.moneyTab);
+    await this.assertOnRoute('/money-home');
   }
 }
 

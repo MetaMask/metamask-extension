@@ -579,19 +579,27 @@ export function usePerpsOrderForm({
 
   const parsedAmount =
     Number.parseFloat(formState.amount.replace(/,/gu, '')) || 0;
-  const feeNotional = getPerpsNotionalUsd(
-    mode === 'close' && existingPosition
-      ? {
-          size: existingPosition.size,
-          price: currentPrice,
-          closePercent: formState.closePercent,
-        }
-      : { usdAmount: formState.amount },
-  );
+  let feeNotional: number | undefined;
+  try {
+    feeNotional = getPerpsNotionalUsd(
+      mode === 'close' && existingPosition
+        ? {
+            size: existingPosition.size,
+            price: currentPrice,
+            closePercent: formState.closePercent,
+          }
+        : { usdAmount: formState.amount },
+    );
+  } catch (notionalError) {
+    if (!(notionalError instanceof RangeError)) {
+      throw notionalError;
+    }
+    // Invalid live values leave calculations unavailable until the next update.
+  }
   const orderFees = usePerpsOrderFees({
     symbol: asset,
     orderType: formState.type,
-    amount: String(feeNotional),
+    amount: feeNotional?.toString(),
   });
   const { feeRate } = orderFees;
   const parsedLimitPrice = formState.limitPrice
@@ -616,6 +624,17 @@ export function usePerpsOrderForm({
   // Calculate derived values
   const calculations = useMemo(() => {
     const displaySizeDecimals = sizeDecimals ?? szDecimals;
+
+    if (feeNotional === undefined) {
+      return {
+        positionSize: null,
+        marginRequired: null,
+        liquidationPrice: null,
+        liquidationPriceRaw: null,
+        orderValue: null,
+        estimatedFees: null,
+      };
+    }
 
     // For close mode, calculate based on close amount
     if (mode === 'close' && existingPosition) {
@@ -743,6 +762,7 @@ export function usePerpsOrderForm({
     szDecimals,
     markPrice,
     feeRate,
+    feeNotional,
     parsedAmount,
     controllerLiquidationPrice,
     maxLeverage,

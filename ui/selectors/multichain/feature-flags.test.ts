@@ -5,6 +5,7 @@ import {
   getIsAdvancedChartsEnabled,
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
+  getIsFullscreenRedesignEnabled,
   getIsNetworkManagementEnabled,
   getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
@@ -514,6 +515,47 @@ describe('getIsAdvancedChartsEnabled', () => {
       getIsAdvancedChartsEnabled(
         buildState({
           [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: true,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+});
+
+describe('getIsFullscreenRedesignEnabled', () => {
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsFullscreenRedesignEnabled(buildState() as any),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is false', () => {
+    expect(
+      getIsFullscreenRedesignEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionUxFullscreenRedesign: false }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true when the flag is true', () => {
+    expect(
+      getIsFullscreenRedesignEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        buildState({ extensionUxFullscreenRedesign: true }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsFullscreenRedesignEnabled(
+        buildState({
+          extensionUxFullscreenRedesign: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any,
       ),
