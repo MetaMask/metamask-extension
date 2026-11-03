@@ -30,24 +30,38 @@ assert_eq() {
   fi
 }
 
+# GitHub Actions output parser. key=value and key<<delim are both accepted.
+# A later assignment of the same key wins, which is what an injected heredoc
+# would rely on.
 output_value() {
   local file="$1" key="$2"
-  local line delimiter
-  line="$(grep -E "^${key}=" "$file" | head -n 1 || true)"
-  if [[ -n "$line" ]]; then
-    printf '%s' "${line#"${key}"=}"
-    return
-  fi
-  line="$(grep -E "^${key}<<" "$file" | head -n 1 || true)"
-  if [[ -z "$line" ]]; then
-    return
-  fi
-  delimiter="${line#*"<<"}"
-  awk -v key="$key" -v delimiter="$delimiter" '
-    $0 == key "<<" delimiter { capture = 1; next }
-    capture && $0 == delimiter { exit }
-    capture { print }
-  ' "$file" | sed '$s/\n$//'
+  local line out_key delim value capturing=""
+  local -A found=()
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ -n "$capturing" ]]; then
+      if [[ "$line" == "$delim" ]]; then
+        found["$out_key"]="$value"
+        capturing=""
+        value=""
+      elif [[ -z "${value+x}" || -z "$value" ]]; then
+        value="$line"
+      else
+        value+=$'\n'"$line"
+      fi
+      continue
+    fi
+    if [[ "$line" =~ ^([A-Za-z0-9_-]+)\<\<(.*)$ ]]; then
+      out_key="${BASH_REMATCH[1]}"
+      delim="${BASH_REMATCH[2]}"
+      value=""
+      capturing=1
+      continue
+    fi
+    if [[ "$line" =~ ^([A-Za-z0-9_-]+)=(.*)$ ]]; then
+      found["${BASH_REMATCH[1]}"]="${BASH_REMATCH[2]}"
+    fi
+  done < "$file"
+  printf '%s' "${found[$key]-}"
 }
 
 # Runs the flag script. Extra KEY=VALUE pairs are the environment.
@@ -343,15 +357,128 @@ else
   printf 'FAIL F2 workflow is not pinned to %s\n' "$sha" >&2
 fi
 
-if grep -q 'labels = "release-blocker"' "$workflow" \
-  && grep -q 'jira-release-blocker-jql:' "$workflow" \
-  && grep -q 'jira-regression-jql:' "$workflow"; then
+if grep -q 'jira-release-blocker-jql:' "$workflow" \
+  && grep -q 'jira-regression-jql:' "$workflow" \
+  && grep -q 'labels = "release-blocker"' "$script" \
+  && ! grep -q 'RELEASE_SUMMARY_BLOCKER_JQL ||' "$workflow"; then
   passed=$((passed + 1))
   printf 'ok   F3 workflow passes blocker and regression JQL\n'
 else
   failures=$((failures + 1))
   printf 'FAIL F3 workflow does not pass both JQL inputs\n' >&2
 fi
+
+# F1 round 2: characters JavaScript trim() or a zero-width char can hide.
+fef=$'\ufeff'
+zwsp=$'\u200b'
+word_joiner=$'\u2060'
+f1_round2_names=(fef zwsp word-joiner fef-release spaces-fef)
+f1_round2_values=("$fef" "$zwsp" "$word_joiner" "${fef}#release-extension-13-53-0" " ${fef} ")
+for ga_mode in '' test live; do
+  for source in dispatch variable; do
+    for index in "${!f1_round2_names[@]}"; do
+      label="${f1_round2_names[$index]}"
+      blank="${f1_round2_values[$index]}"
+      if [[ "$source" == "dispatch" ]]; then
+        expect_failure "F1 r2 dispatch ${label} ga=${ga_mode:-unset}" \
+          EVENT_NAME=workflow_dispatch \
+          INPUT_MODE=release-validation \
+          INPUT_DRY_RUN=false \
+          INPUT_TEST_CHANNEL="$blank" \
+          GA_MODE="$ga_mode"
+      else
+        expect_failure "F1 r2 variable ${label} ga=${ga_mode:-unset}" \
+          EVENT_NAME=schedule \
+          SCHEDULE='21 10 * * 1-5' \
+          GA_MODE="$ga_mode" \
+          TEST_CHANNEL_VAR="$blank"
+      fi
+    done
+  done
+done
+
+expect_failure "F1 allowlist internal space" \
+  EVENT_NAME=workflow_dispatch \
+  INPUT_MODE=blocker-summary \
+  INPUT_DRY_RUN=false \
+  INPUT_TEST_CHANNEL='#qa test' \
+  GA_MODE=test
+expect_failure "F1 allowlist path" \
+  EVENT_NAME=workflow_dispatch \
+  INPUT_MODE=blocker-summary \
+  INPUT_DRY_RUN=false \
+  INPUT_TEST_CHANNEL='qa/../x' \
+  GA_MODE=test
+
+# F3 round 2: live posts require the repository variables themselves.
+expect_failure "F3 r2 live unset jql" \
+  EVENT_NAME=schedule \
+  SCHEDULE='21 10 * * 1-5' \
+  GA_MODE=live \
+  BLOCKER_JQL= \
+  REGRESSION_JQL=
+expect_failure "F3 r2 live fef jql" \
+  EVENT_NAME=schedule \
+  SCHEDULE='21 10 * * 1-5' \
+  GA_MODE=live \
+  BLOCKER_JQL="$fef" \
+  REGRESSION_JQL="$fef"
+
+path="$(expect_success "setup F3 r2 live real jql" \
+  EVENT_NAME=schedule \
+  SCHEDULE='21 10 * * 1-5' \
+  GA_MODE=live \
+  BLOCKER_JQL='type = Bug AND labels = "release-blocker"' \
+  REGRESSION_JQL='type = Bug AND labels = "regression"')"
+if [[ -n "${path:-}" && -f "$path" ]]; then
+  assert_eq "F3 r2 outputs blocker" 'type = Bug AND labels = "release-blocker"' "$(output_value "$path" blocker-jql)"
+  assert_eq "F3 r2 outputs regression" 'type = Bug AND labels = "regression"' "$(output_value "$path" regression-jql)"
+  assert_eq "F3 r2 live still writes" "true" "$(output_value "$path" allow-pr-write)"
+  rm -f "$path" "${path}.err"
+fi
+
+path="$(expect_success "setup F3 r2 dry-run preview" \
+  EVENT_NAME=workflow_dispatch \
+  INPUT_MODE=release-validation \
+  INPUT_DRY_RUN=true \
+  GA_MODE=live \
+  BLOCKER_JQL= \
+  REGRESSION_JQL=)"
+if [[ -n "${path:-}" && -f "$path" ]]; then
+  assert_eq "F3 r2 dry-run preview blocker" "$blocker_default" "$(output_value "$path" blocker-jql)"
+  assert_eq "F3 r2 dry-run preview regression" "$regression_default" "$(output_value "$path" regression-jql)"
+  assert_eq "F3 r2 dry-run stays dry" "true" "$(output_value "$path" dry-run)"
+  rm -f "$path" "${path}.err"
+fi
+
+# F7 round 2: a channel ID is not a safe non-live override.
+expect_failure "F7 r2 foreign channel id" \
+  EVENT_NAME=workflow_dispatch \
+  INPUT_MODE=release-validation \
+  INPUT_DRY_RUN=false \
+  INPUT_TEST_CHANNEL='C0C71FCF0J3' \
+  GA_MODE=test \
+  TEST_CHANNEL_VAR='#qa-test'
+path="$(expect_success "setup F7 r2 configured id" \
+  EVENT_NAME=schedule \
+  SCHEDULE='16 10 * * 1-5' \
+  GA_MODE=test \
+  TEST_CHANNEL_VAR='C0C71FCF0J3')"
+if [[ -n "${path:-}" && -f "$path" ]]; then
+  assert_eq "F7 r2 variable id kept" "C0C71FCF0J3" "$(output_value "$path" test-channel)"
+  assert_eq "F7 r2 variable id posts" "false" "$(output_value "$path" dry-run)"
+  assert_eq "F7 r2 variable id no write" "false" "$(output_value "$path" allow-pr-write)"
+  rm -f "$path" "${path}.err"
+fi
+
+# F8: a JQL value must not be able to inject later output lines.
+injection=$'x\n__RELEASE_SLACK_BLOCKER_JQL__\nallow-pr-write=true\ndry-run=false\ntest-channel=\nmode=release-validation\ninjected<<__RELEASE_SLACK_BLOCKER_JQL__'
+expect_failure "F8 jql newline injection" \
+  EVENT_NAME=schedule \
+  SCHEDULE='16 10 * * 1-5' \
+  GA_MODE=test \
+  BLOCKER_JQL="$injection" \
+  REGRESSION_JQL='type = Bug'
 
 printf '\n%s passed, %s failed\n' "$passed" "$failures"
 if [[ "$failures" -ne 0 ]]; then

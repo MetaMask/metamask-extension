@@ -11,18 +11,23 @@
 # the environment, and the permissions below must stay in lockstep with
 # that policy. Schedules run from the default branch only.
 #
-# Safe by default: unset GA_MODE and GA_MODE=test never post to a real
-# release-* channel and never write a PR body. A dispatch test channel
-# may override vars.RELEASE_SUMMARY_TEST_CHANNEL, but a name matching
-# release-* or #release-* is rejected unless GA_MODE is exactly live.
-# A test channel that is only whitespace fails the job. It is not
-# treated as "no channel".
-# GA_MODE=live is the only value that uses the real release channels
-# and may rewrite the release PR body. A test channel posts only to
-# that channel and never writes a PR body, including when GA_MODE=live,
-# so this run cannot collide with the Zap still rewriting the checklist.
-# A live run that is not a dry run also refuses to post when the blocker
-# or regression JQL is empty.
+# Safe by default. A supplied test channel is normalized (U+FEFF, U+200B,
+# U+2060, and U+180E removed anywhere; JavaScript whitespace trimmed from
+# the ends) and must be a Slack name (`#?` plus lowercase letters, digits,
+# `.`, `_`, `-`) or a Slack ID (`C`, `G`, or `D` plus at least 8 letters
+# or digits). Anything else, including a value that normalizes to empty,
+# fails the job. `release-*` and `#release-*` names are rejected in every
+# mode, so a test channel cannot name a real release channel.
+# When GA_MODE is not exactly `live`, a Slack ID is accepted only when it
+# equals the normalized RELEASE_SUMMARY_TEST_CHANNEL. Other non-live
+# channels must be a `#name` or `name`. Unset or `test` with no channel
+# forces dry-run and never writes a PR body.
+# GA_MODE=live reaches real release channels only when no test channel is
+# set, and may rewrite the release PR body only for release-validation
+# when dry-run is false. A test channel never writes a PR body.
+# That live post also requires RELEASE_SUMMARY_BLOCKER_JQL and
+# RELEASE_SUMMARY_REGRESSION_JQL to be set. Dry runs and test-channel
+# runs may preview with built-in bases when those variables are empty.
 
 name: Release Slack summaries
 
@@ -47,7 +52,7 @@ on:
         type: boolean
         default: true
       test-channel:
-        description: 'Post only to this Slack channel (#name or ID). When set, the run does not write a PR body. release-* is rejected unless GA_MODE is live. Leave empty to follow GA_MODE.'
+        description: 'Slack channel override. After normalization it must be a Slack name (#name or name) or a Slack ID (C/G/D…). release-* names are rejected. When GA_MODE is not live, an ID is accepted only if it equals RELEASE_SUMMARY_TEST_CHANNEL. When set, the run does not write a PR body. Leave empty to follow GA_MODE.'
         required: false
         type: string
         default: ''
@@ -92,12 +97,11 @@ jobs:
           INPUT_TEST_CHANNEL: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.test-channel || '' }}
           GA_MODE: ${{ vars.GA_MODE }}
           TEST_CHANNEL_VAR: ${{ vars.RELEASE_SUMMARY_TEST_CHANNEL }}
-          # The action appends cf[14565] = "V" / cf[16946] = "V". It does
-          # not substitute labels = "regression-RC-{V}". These are the
-          # ticket queries with that label clause omitted. Repo variables
-          # override them. Empty after trim fails a live non-dry-run.
-          BLOCKER_JQL: ${{ vars.RELEASE_SUMMARY_BLOCKER_JQL || 'type = Bug AND labels = "release-blocker" AND statusCategory != Done' }}
-          REGRESSION_JQL: ${{ vars.RELEASE_SUMMARY_REGRESSION_JQL || 'type = Bug AND statusCategory != Done' }}
+          # Passed through unset. A live post with no test channel fails
+          # unless both are set. Dry runs and test-channel runs fill
+          # preview bases in the flag script when these are empty.
+          BLOCKER_JQL: ${{ vars.RELEASE_SUMMARY_BLOCKER_JQL }}
+          REGRESSION_JQL: ${{ vars.RELEASE_SUMMARY_REGRESSION_JQL }}
         run: bash .github/scripts/release-slack-summaries-flags.sh
 
       - name: Get repository token
