@@ -433,6 +433,11 @@ export const useBridgeNavigation = () => {
       navigate(-1);
       return;
     }
+    // Staying on the current entry preserves its key, which the back button
+    // uses to detect a first-entry Swaps page.
+    if (matchPath(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, pathname)) {
+      return;
+    }
     navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
       state: clearedBridgeState(state, false),
       replace: true,

@@ -418,10 +418,7 @@ describe('useBridgeNavigation', () => {
     expect(mockDispatch).toHaveBeenCalledWith(
       bridgeActions.setFromTokenInputValue(null),
     );
-    expect(mockUseNavigate).toHaveBeenCalledWith(BRIDGE_PREPARE_PATH, {
-      replace: true,
-      state: { bridgeState: null, token: null, stayOnHomePage: false },
-    });
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('navigateToSwapsAfterSubmit goes back from the hardware wallet signing page', async () => {
