@@ -254,7 +254,7 @@ const DebugContent = () => {
         {renderRemoteFeatureFlags()}
         <ToggleRow
           title="Transaction toasts"
-          description="Show submitted, confirmed, and failed toasts for transactions. E2E fixtures turn this off by default."
+          description="Show submitted, confirmed, and failed toasts for transactions."
           isEnabled={transactionToastsEnabled !== false}
           onToggle={handleToggleTransactionToasts}
           dataTestId="transaction-toasts-toggle"

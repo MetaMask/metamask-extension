@@ -29,10 +29,6 @@ export type Preferences = {
     order: string;
     sortCallback: string;
   };
-  /**
-   * Generic transaction lifecycle toasts (submitted, confirmed, failed).
-   * Developer option: only honored when `getAreDevOnlyPreferencesEnabled()`.
-   */
   transactionToastsEnabled: boolean;
   useNativeCurrencyAsPrimaryCurrency: boolean;
   useSidePanelAsDefault?: boolean;
