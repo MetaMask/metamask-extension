@@ -119,30 +119,6 @@
   }
 }
 
-.welcome-banner {
-  &__wrapper {
-    max-width: 1280px;
-    margin: 125px auto 0;
-  }
-
-  &__title {
-    font-family: var(--font-family-hero);
-    color: var(--color-accent03-dark);
-    font-size: 6.5rem;
-    line-height: 7.125rem;
-    word-wrap: break-word;
-  }
-
-  &__description {
-    color: var(--color-accent03-dark);
-    max-width: 548px;
-  }
-
-  &__button {
-    width: 240px;
-  }
-}
-
 .welcome-login {
   width: 343px;
   min-height: 350px;
