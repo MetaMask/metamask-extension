@@ -27,7 +27,7 @@ describe('useHwSwapNavigation', () => {
     jest.useRealTimers();
   });
 
-  it('navigates to the prepare page and resets the controller when status is Submitted', async () => {
+  it('navigates back to swaps when status is Submitted', async () => {
     renderHookWithProvider(
       () =>
         useHwSwapNavigation({
@@ -43,7 +43,6 @@ describe('useHwSwapNavigation', () => {
     });
 
     expect(mockNavigateToSwapsAfterSubmit).toHaveBeenCalledTimes(1);
-    expect(mockNavigateToSwapsAfterSubmit).toHaveBeenCalledWith(true);
   });
 
   it('does not navigate when status is not Submitted', () => {

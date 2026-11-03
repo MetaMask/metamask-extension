@@ -37,7 +37,7 @@ export function useHwSwapNavigation({
 
     const timer = setTimeout(async () => {
       hasNavigatedAfterSubmission.current = true;
-      await navigateToSwapsAfterSubmit(true);
+      await navigateToSwapsAfterSubmit();
     }, 1000);
 
     return () => clearTimeout(timer);

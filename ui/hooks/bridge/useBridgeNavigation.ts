@@ -186,7 +186,12 @@ export const useBridgeNavigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { search, pathname, state: maybeState } = useLocation();
+  const {
+    search,
+    pathname,
+    state: maybeState,
+    key: locationKey,
+  } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(
     () => maybeState ?? {},
     [maybeState],
@@ -405,28 +410,42 @@ export const useBridgeNavigation = () => {
 
   /**
    * Returns to the prepare page after submission, keeping tokens and clearing the amount.
-   * @param resetController - Required when the bridge page remounts, so the active quote does not restore the amount.
    */
-  const navigateToSwapsAfterSubmit = useCallback(
-    async (resetController = false) => {
-      const isFromTransactionShield = new URLSearchParams(search || '').get(
-        BridgeQueryParams.IsFromTransactionShield,
-      );
-      if (isFromTransactionShield) {
-        resetLocationState(TRANSACTION_SHIELD_ROUTE, { replace: true });
-        return;
-      }
-      dispatch(setFromTokenInputValue(null));
-      if (resetController) {
-        await dispatch(resetBridgeController());
-      }
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
-        state: clearedBridgeState(state, false),
-        replace: true,
-      });
-    },
-    [dispatch, navigate, resetLocationState, search, state],
-  );
+  const navigateToSwapsAfterSubmit = useCallback(async () => {
+    const isFromTransactionShield = new URLSearchParams(search || '').get(
+      BridgeQueryParams.IsFromTransactionShield,
+    );
+    if (isFromTransactionShield) {
+      resetLocationState(TRANSACTION_SHIELD_ROUTE, { replace: true });
+      return;
+    }
+    dispatch(setFromTokenInputValue(null));
+    const isHwSigningPage = Boolean(
+      matchPath(
+        `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+        pathname,
+      ),
+    );
+    if (isHwSigningPage && locationKey !== 'default') {
+      // The signing page was pushed over the prepare page, which remounts on
+      // return; clear quotes so it does not restore the submitted amount.
+      await dispatch(resetBridgeController());
+      navigate(-1);
+      return;
+    }
+    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`, {
+      state: clearedBridgeState(state, false),
+      replace: true,
+    });
+  }, [
+    dispatch,
+    locationKey,
+    navigate,
+    pathname,
+    resetLocationState,
+    search,
+    state,
+  ]);
 
   const memoizedToken = useMemo(() => state.token, [state.token]);
   const memoizedBridgeState = useMemo(

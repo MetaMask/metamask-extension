@@ -423,4 +423,25 @@ describe('useBridgeNavigation', () => {
       state: { bridgeState: null, token: null, stayOnHomePage: false },
     });
   });
+
+  it('navigateToSwapsAfterSubmit goes back from the hardware wallet signing page', async () => {
+    const resetBridgeControllerSpy = jest
+      .spyOn(bridgeActions, 'resetBridgeController')
+      .mockImplementation((...args: unknown[]) => jest.fn()(...args));
+    mockUseLocation.mockReturnValue({
+      pathname: HARDWARE_WALLET_SIGNATURES_PATH,
+      search: '',
+      state: {},
+      key: 'signing',
+    });
+
+    const { result } = renderUseBridgeNavigation();
+
+    await act(async () => {
+      await result.current.navigateToSwapsAfterSubmit();
+    });
+
+    expect(resetBridgeControllerSpy).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+  });
 });
