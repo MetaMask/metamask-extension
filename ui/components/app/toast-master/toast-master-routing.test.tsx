@@ -3,6 +3,7 @@ import { act, fireEvent, screen, within } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ToastMaster } from './toast-master';
 
 jest.mock('../../../store/background-connection', () => ({
@@ -139,7 +140,9 @@ describe('X widget deeplink toast', () => {
     expect(
       within(banner).getByTestId('x-widget-deeplink-toast'),
     ).toBeInTheDocument();
-    fireEvent.click(within(banner).getByRole('button', { name: 'Close' }));
+    fireEvent.click(
+      within(banner).getByRole('button', { name: messages.close.message }),
+    );
     expect(store.getState().appState.showXWidgetDeeplinkToast).toBe(false);
   });
 
