@@ -1,18 +1,26 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
-import { Skeleton } from '@metamask/design-system-react';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
-  AlignItems,
-  FontWeight,
-  TextColor,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontFamily,
+  Input,
+  Skeleton,
+  Text,
   TextAlign,
-} from '../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../../components/component-library';
+  TextColor,
+  TextVariant,
+  twMerge,
+} from '@metamask/design-system-react';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
+import {
+  AMOUNT_INPUT_MAX_FONT_SIZE,
+  getAmountInputFontSize,
+  getAmountInputTextStyle,
+} from '../../../../../helpers/utils/amount-input-font-size';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 
 const FIAT_DISPLAY_DECIMALS = 2;
@@ -53,55 +61,29 @@ function getAmountFiatDisplay(amountFiat: string): string {
   return display.toString(10);
 }
 
-function getFontSize(displayWidth: number): string {
-  if (displayWidth <= 8) {
-    return '64px';
-  }
-  if (displayWidth <= 13) {
-    return '40px';
-  }
-  if (displayWidth <= 18) {
-    return '30px';
-  }
-  return '20px';
-}
-
-function getLineHeight(displayWidth: number): string {
-  if (displayWidth <= 8) {
-    return '70px';
-  }
-  if (displayWidth <= 13) {
-    return '44px';
-  }
-  if (displayWidth <= 18) {
-    return '33px';
-  }
-  return '22px';
-}
-
-function getTextColor(
-  hasAlert: boolean,
-  disabled: boolean,
-): TextColor | undefined {
+function getTextColor(hasAlert: boolean, disabled: boolean): TextColor {
   if (hasAlert) {
-    return TextColor.errorDefault;
+    return TextColor.ErrorDefault;
   }
   if (disabled) {
-    return TextColor.textMuted;
+    return TextColor.TextMuted;
   }
-  return TextColor.textDefault;
+  return TextColor.TextDefault;
 }
 
 export const CustomAmountSkeleton = () => (
   <Box
-    display={Display.Flex}
-    flexDirection={FlexDirection.Row}
-    justifyContent={JustifyContent.center}
-    alignItems={AlignItems.center}
-    style={{ minHeight: '70px' }}
+    flexDirection={BoxFlexDirection.Row}
+    justifyContent={BoxJustifyContent.Center}
+    alignItems={BoxAlignItems.Center}
+    style={{ minHeight: AMOUNT_INPUT_MAX_FONT_SIZE }}
     data-testid="custom-amount-skeleton"
   >
-    <Skeleton height={70} width={80} />
+    <Skeleton
+      height={AMOUNT_INPUT_MAX_FONT_SIZE}
+      width={80}
+      className="rounded-lg"
+    />
   </Box>
 );
 
@@ -121,15 +103,6 @@ export const CustomAmount = React.memo(
     // Parent-driven amounts (Max / percentage) may be full precision for
     // submit; the field shows cents only.
     const amountFiatDisplay = getAmountFiatDisplay(amountFiat);
-    const amountLength = amountFiatDisplay.length;
-    const decimalSeparatorCount = (amountFiatDisplay.match(/[.,]/gu) || [])
-      .length;
-    // Decimal separators visually take roughly half the width of a digit in
-    // proportional fonts, so account for them as 0.5ch each. Counting them
-    // as a full ch over-allocates (visible cursor gap); counting them as 0
-    // under-allocates (text gets clipped when overflowing the input).
-    const amountWidth = amountLength - decimalSeparatorCount * 0.5;
-    const displayWidth = amountWidth + Math.max(1, fiatSymbol.length);
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,50 +118,57 @@ export const CustomAmount = React.memo(
       return <CustomAmountSkeleton />;
     }
 
-    const fontSize = getFontSize(displayWidth);
-    const lineHeight = getLineHeight(displayWidth);
+    const amountStyle = getAmountInputTextStyle(
+      getAmountInputFontSize(`${fiatSymbol}${amountFiatDisplay || '0'}`),
+    );
     const textColor = getTextColor(hasAlert, disabled);
 
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        style={{ minHeight: '70px' }}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
+        style={{ minHeight: AMOUNT_INPUT_MAX_FONT_SIZE }}
       >
         <Text
           data-testid="custom-amount-symbol"
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           textAlign={TextAlign.Right}
-          fontWeight={FontWeight.Medium}
           color={textColor}
-          style={{ fontSize, lineHeight }}
+          style={amountStyle}
         >
           {fiatSymbol}
         </Text>
-        <input
-          autoFocus={autoFocus && !disabled}
-          data-testid="custom-amount-input"
-          type="text"
-          inputMode="decimal"
-          value={amountFiatDisplay}
-          onChange={handleChange}
-          disabled={disabled}
-          style={
-            {
-              fontSize,
-              lineHeight,
-              fontWeight: 500,
-              color: textColor ? `var(--color-${textColor})` : 'inherit',
-              textAlign: 'left',
-              border: 'none',
-              background: 'transparent',
-              outline: 'none',
-              width: `${Math.max(1, amountWidth)}ch`,
-              cursor: disabled ? 'default' : 'text',
-            } as React.CSSProperties
-          }
-        />
+        {/* The hidden amount sets an exact cross-browser input width. */}
+        <span className="relative w-max min-w-[1ch]">
+          <Text
+            aria-hidden="true"
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
+            className="invisible block min-w-[1ch] whitespace-pre"
+            style={amountStyle}
+          >
+            {amountFiatDisplay || '0'}
+          </Text>
+          <Input
+            autoFocus={autoFocus && !disabled}
+            data-testid="custom-amount-input"
+            type="text"
+            inputMode="decimal"
+            value={amountFiatDisplay}
+            onChange={handleChange}
+            isDisabled={disabled}
+            isStateStylesDisabled
+            textVariant={TextVariant.AmountDisplayLg}
+            className={twMerge(
+              'absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero',
+              textColor,
+              disabled ? 'cursor-default' : 'cursor-text',
+            )}
+            style={amountStyle}
+          />
+        </span>
       </Box>
     );
   },

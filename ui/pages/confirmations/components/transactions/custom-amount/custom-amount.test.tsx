@@ -76,7 +76,25 @@ describe('CustomAmount', () => {
     expect(amountElement).toBeInTheDocument();
   });
 
-  it('uses smaller font size for longer amounts', () => {
+  it('sets the symbol, measuring text and input in Hero at the same size', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="100" />, store);
+
+    const symbol = screen.getByTestId('custom-amount-symbol');
+    const input = screen.getByTestId('custom-amount-input');
+    const measuringText = input.parentElement?.querySelector(
+      '[aria-hidden="true"]',
+    );
+
+    expect(measuringText).toHaveTextContent('100');
+    for (const element of [symbol, measuringText, input]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '88px', lineHeight: '88px' });
+    }
+  });
+
+  it('steps down the shared amount scale for longer amounts', () => {
     const store = mockStore(getMockState());
 
     renderWithProvider(
@@ -84,26 +102,20 @@ describe('CustomAmount', () => {
       store,
     );
 
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '20px' });
-  });
-
-  it('uses larger font size for shorter amounts', () => {
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="100" />, store);
-
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '64px' });
+    expect(screen.getByTestId('custom-amount-input')).toHaveStyle({
+      fontSize: '32px',
+      lineHeight: '32px',
+    });
   });
 
   it('accounts for the fiat symbol when choosing font size', () => {
     const store = mockStore(getMockState());
 
-    renderWithProvider(<CustomAmount amountFiat="12345.67" />, store);
+    renderWithProvider(<CustomAmount amountFiat="1234567.89" />, store);
 
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ fontSize: '40px' });
+    expect(screen.getByTestId('custom-amount-input')).toHaveStyle({
+      fontSize: '72px',
+    });
   });
 
   it('displays at most 2 decimals for a parent-driven amount', () => {
@@ -163,15 +175,6 @@ describe('CustomAmount', () => {
 
     fireEvent.change(input, { target: { value: '0,01' } });
     expect(onChange).toHaveBeenCalledWith('0,01');
-  });
-
-  it('counts decimal separators as half a character when calculating input width', () => {
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="1.33" />, store);
-
-    const amountElement = screen.getByTestId('custom-amount-input');
-    expect(amountElement).toHaveStyle({ width: '3.5ch' });
   });
 
   it('auto-focuses the input when autoFocus is true', () => {
