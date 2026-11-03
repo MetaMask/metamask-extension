@@ -221,9 +221,10 @@ export function ActivityList({
 
       <dialog
         ref={dialogRef}
-        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default md:max-w-[480px] md:h-auto md:max-h-[90vh] md:mt-[5vh] md:rounded-[32px] md:border md:border-alternative md:shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
+        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default md:max-w-[480px] md:h-auto md:max-h-[90vh] md:rounded-[32px] md:border md:border-alternative open:backdrop:opacity-100 starting:open:backdrop:opacity-0 backdrop:transition-discrete backdrop:transition-all"
         onClose={handleClose}
         // @ts-expect-error closedby missing in React types
+        // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
         closedby="any"
       >
         <TransactionDetails
