@@ -14,14 +14,14 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
-import { getNetworkIcon } from '../../../../../shared/lib/network.utils';
-import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { useFormatters } from '../../../../hooks/useFormatters';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getNetworkIcon } from '../../../../shared/lib/network.utils';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSelectableChainId,
   useHomeNetworkFilter,
-} from '../asset-list/asset-list-control-bar/use-home-network-filter';
+} from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
 type NetworkPillProps = {

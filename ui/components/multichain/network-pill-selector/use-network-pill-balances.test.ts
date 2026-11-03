@@ -7,12 +7,14 @@ import {
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
   selectUnifiedBalanceGetterBySelectedAccountGroup,
-} from '../../../../selectors/assets';
-import { useAccountGroupBalanceDisplay } from '../account-group-balance-change/useAccountGroupBalanceDisplay';
+} from '../../../selectors/assets';
+import { useAccountGroupBalanceDisplay } from '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
-jest.mock('../account-group-balance-change/useAccountGroupBalanceDisplay');
+jest.mock(
+  '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay',
+);
 
 const ETHEREUM = {
   chainId: 'eip155:1',

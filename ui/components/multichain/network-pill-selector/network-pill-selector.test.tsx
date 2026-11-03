@@ -1,18 +1,18 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../../store/store';
-import mockState from '../../../../../test/data/mock-state.json';
-import { useHomeNetworkFilter } from '../asset-list/asset-list-control-bar/use-home-network-filter';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
+import { useHomeNetworkFilter } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
 import { useNetworkPillBalances } from './use-network-pill-balances';
 import { NetworkPillSelector } from './network-pill-selector';
 
 jest.mock(
-  '../asset-list/asset-list-control-bar/use-home-network-filter',
+  '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter',
   () => ({
     ...jest.requireActual(
-      '../asset-list/asset-list-control-bar/use-home-network-filter',
+      '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter',
     ),
     useHomeNetworkFilter: jest.fn(),
   }),

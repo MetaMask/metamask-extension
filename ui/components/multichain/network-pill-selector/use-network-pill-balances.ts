@@ -7,9 +7,9 @@ import {
   selectAccountGroupBalanceIsLoadedForEmptyState,
   selectIsAssetsLoadingForSelectedAccountGroup,
   selectUnifiedBalanceGetterBySelectedAccountGroup,
-} from '../../../../selectors/assets';
-import { useAccountGroupBalanceDisplay } from '../account-group-balance-change/useAccountGroupBalanceDisplay';
-import { getSelectableChainId } from '../asset-list/asset-list-control-bar/use-home-network-filter';
+} from '../../../selectors/assets';
+import { useAccountGroupBalanceDisplay } from '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay';
+import { getSelectableChainId } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
 
 type EnabledNetworkMap = Record<string, Record<string, boolean>>;
 

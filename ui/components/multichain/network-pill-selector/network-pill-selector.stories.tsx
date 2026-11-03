@@ -1,8 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import type { Decorator, Meta, StoryObj } from '@storybook/react-webpack5';
-import mockState from '../../../../../test/data/mock-state.json';
-import configureStore from '../../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../store/store';
 import { NetworkPillSelector } from './network-pill-selector';
 
 const MAINNET_ETH = 'eip155:1/slip44:60';
@@ -80,7 +80,7 @@ const withStore =
   );
 
 const meta: Meta<typeof NetworkPillSelector> = {
-  title: 'Components/App/Assets/NetworkPillSelector',
+  title: 'Components/Multichain/NetworkPillSelector',
   component: NetworkPillSelector,
   parameters: {
     docs: {
