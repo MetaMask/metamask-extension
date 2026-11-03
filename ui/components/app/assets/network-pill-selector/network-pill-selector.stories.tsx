@@ -67,22 +67,15 @@ const createStore = (overrides: MetaMaskStateOverrides = {}) =>
   } as Parameters<typeof configureStore>[0]);
 
 /**
- * Renders the story in a Redux store built from `mock-state.json`, optionally
- * in a container of a fixed width.
+ * Renders the story in a Redux store built from `mock-state.json`.
  *
  * @param overrides - Extra `metamask` state for the story.
- * @param width - Width of the container, as a CSS length or a number of pixels.
  */
 const withStore =
-  (
-    overrides?: MetaMaskStateOverrides,
-    width: number | string = '100%',
-  ): Decorator =>
+  (overrides?: MetaMaskStateOverrides): Decorator =>
   (Story) => (
     <Provider store={createStore(overrides)}>
-      <div style={{ width }}>
-        <Story />
-      </div>
+      <Story />
     </Provider>
   );
 
@@ -97,7 +90,6 @@ const meta: Meta<typeof NetworkPillSelector> = {
           '',
           '- **Which pills, and their state:** `useHomeNetworkFilter` (the hook behind the home network filter dropdown) returns the default networks for the selected account group, which one is selected (`enabledNetworkMap`) and which are disabled (non-EVM networks for an EVM-only account group). Clicking a pill uses the same handlers as the dropdown.',
           '- **Balances:** `useNetworkPillBalances` computes the selected account group balance, in the user currency, for each network and for all of them together (the "All default networks" pill), from `assetsBalance`, `assetsPrice` and `assetsInfo` using `selectUnifiedBalanceGetterBySelectedAccountGroup`. It is the calculation used by the wallet overview balance.',
-          '- **Wrapping:** pills wrap onto several lines when there is not enough width. Collapsed, only the first row shows and a "Show N more networks" toggle appears on its own row underneath.',
           '',
           'The stories use `test/data/mock-state.json` with fiat balances on Ethereum and Polygon.',
         ].join('\n'),
@@ -115,10 +107,6 @@ export const Default: Story = {
 
 export const SingleNetworkSelected: Story = {
   decorators: [withStore({ enabledNetworkMap: { eip155: { '0x1': true } } })],
-};
-
-export const WrappingPills: Story = {
-  decorators: [withStore(undefined, 720)],
 };
 
 export const PrivacyMode: Story = {
