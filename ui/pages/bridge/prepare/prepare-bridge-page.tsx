@@ -17,6 +17,10 @@ import {
   AvatarFaviconSize,
   Box,
   BoxBackgroundColor,
+  ButtonIcon,
+  ButtonIconSize,
+  IconColor,
+  IconName,
 } from '@metamask/design-system-react';
 import { toast, ToastContent } from '#ui/components/ui/toast/toast';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -55,13 +59,8 @@ import {
   getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
 import {
-  ButtonIcon as LegacyButtonIcon,
-  IconName as LegacyIconName,
-} from '../../../components/component-library';
-import {
   BackgroundColor,
   BlockSize,
-  IconColor as LegacyIconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -572,9 +571,11 @@ const PrepareBridgePage = ({
             className="absolute -top-5 left-1/2 flex size-10 -translate-x-1/2 justify-center rounded-full border-2 border-background-default"
             backgroundColor={BoxBackgroundColor.BackgroundSection}
           >
-            <LegacyButtonIcon
-              className="group size-full self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
+            <ButtonIcon
+              size={ButtonIconSize.Lg}
+              className="group size-full min-w-10 self-center rounded-full enabled:hover:bg-muted-hover enabled:active:bg-muted-pressed"
               iconProps={{
+                color: IconColor.IconAlternative,
                 className:
                   'transition-all duration-300 ease-in-out group-enabled:group-hover:text-icon-default group-active:text-icon-default',
                 // Tailwind has no 360° rotate utility; the full turn is what
@@ -585,9 +586,8 @@ const PrepareBridgePage = ({
               }}
               data-testid="switch-tokens"
               ariaLabel="switch-tokens"
-              iconName={LegacyIconName.SwapVertical}
-              color={LegacyIconColor.iconAlternative}
-              disabled={
+              iconName={IconName.SwapVertical}
+              isDisabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
                 (toChain && !isNetworkAdded(fromChains, toChain.chainId))
