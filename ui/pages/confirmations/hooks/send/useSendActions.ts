@@ -135,12 +135,15 @@ export const useSendActions = () => {
         captureSendFailed({ chainIdCaip, snapId, failurePhase, errorCode });
 
         if (isUserRejection) {
-          // User deliberately cancelled - clear error and navigate back silently
+          // User deliberately cancelled - clear error and go to the same place
+          // the confirmation page redirects to, so the two navigations racing
+          // after a cancel always agree.
           updateNonEVMSubmitError(undefined);
-        } else {
-          // Actual snap/internal error - display error message to user
-          updateNonEVMSubmitError(t('transactionError'));
+          navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
+          return;
         }
+        // Actual snap/internal error - display error message to user
+        updateNonEVMSubmitError(t('transactionError'));
         navigate(PREVIOUS_ROUTE);
       }
     }
