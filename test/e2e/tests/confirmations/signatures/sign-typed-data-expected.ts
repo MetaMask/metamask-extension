@@ -3,7 +3,7 @@ import { DAPP_HOST_ADDRESS } from '../../../constants';
 export const SIGN_TYPED_DATA_EXPECTED = {
   attachment: '0x',
   contents: 'Hello, Bob!',
-  contract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+  contract: '0xCcCCc...ccccC',
   fromAddress: '0xCD2a3...DD826',
   fromName: 'Cow',
   heading: 'Signature request',

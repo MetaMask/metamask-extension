@@ -386,8 +386,8 @@ describe('Transaction Details', () => {
 
         const recipientRow = getByTestId('transaction-details-recipient-row');
         expect(recipientRow).toBeInTheDocument();
-        expect(recipientRow).toHaveTextContent(originalTo);
-        expect(recipientRow).not.toHaveTextContent(delegationManager);
+        expect(recipientRow).toHaveTextContent('0x11111...11111');
+        expect(recipientRow).not.toHaveTextContent('0x22222...22222');
       });
     });
 

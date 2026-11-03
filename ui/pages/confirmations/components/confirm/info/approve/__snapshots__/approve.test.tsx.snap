@@ -159,7 +159,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box min-w-0 flex-1 justify-end mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
           class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -172,9 +172,9 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value [direction:rtl] mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B
+              0x2e0D7...5d09B
             </p>
           </div>
         </div>
@@ -307,7 +307,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
         </div>
       </div>
       <div
-        class="mm-box min-w-0 flex-1 justify-end mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
           class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -320,9 +320,9 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
-              class="mm-box mm-text name__value [direction:rtl] mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x076146c765189d51bE3160A2140cF80BFC73ad68
+              0x07614...3ad68
             </p>
           </div>
         </div>

@@ -84,14 +84,10 @@ const NameDisplay = memo(
         return <FormattedName value={value} type={type} {...props} />;
       }
 
-      if (showFullName) {
+      if (name && showFullName) {
         return (
-          <Text
-            className={name ? 'name__name' : 'name__value [direction:rtl]'}
-            variant={TextVariant.bodyMd}
-            {...props}
-          >
-            {nameWithFallbackValue}
+          <Text className="name__name" variant={TextVariant.bodyMd} {...props}>
+            {name}
           </Text>
         );
       }

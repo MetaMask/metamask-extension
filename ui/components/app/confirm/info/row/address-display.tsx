@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import {
   AvatarAccountSize,
@@ -19,10 +19,34 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../../shared/lib/environment-type';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
 import { PreferredAvatar } from '../../../preferred-avatar';
 import NameDetails from '../../../name/name-details/name-details';
+
+const ELLIPSIS = '\u2026';
+
+/** Truncation config: [prefix chars to show, suffix chars to show] */
+const TRUNCATION_CONFIG = {
+  full: [Infinity, Infinity] as const,
+  truncated: [14, 10] as const,
+} as const;
+
+function getTruncatedAddress(text: string): string {
+  const environmentType = getEnvironmentType();
+  const [prefixLen, suffixLen] =
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+      ? TRUNCATION_CONFIG.full
+      : TRUNCATION_CONFIG.truncated;
+
+  if (text.length <= prefixLen + suffixLen + 1) {
+    return text;
+  }
+
+  return `${text.slice(0, prefixLen)}${ELLIPSIS}${text.slice(-suffixLen)}`;
+}
 
 const TrustIcon = ({
   displayState,
@@ -83,6 +107,10 @@ export const ConfirmInfoRowAddressDisplay = memo(
     const [modalOpen, setModalOpen] = useState(false);
 
     const isClickable = !isAccount;
+    const display = useMemo(
+      () => getTruncatedAddress(hexAddress),
+      [hexAddress],
+    );
 
     const handleClick = useCallback(() => {
       if (!isClickable) {
@@ -133,15 +161,14 @@ export const ConfirmInfoRowAddressDisplay = memo(
           </Text>
         )}
         {!name && isClickable && (
-          <span className="address-display-clickable min-w-0">
+          <span className="address-display-clickable">
             <TextButton
               size={TextButtonSize.BodyMd}
               onClick={handleClick}
-              className="min-w-0 hover:bg-transparent active:bg-transparent whitespace-nowrap"
-              textProps={{ className: 'truncate [direction:rtl]' }}
+              className="hover:bg-transparent active:bg-transparent whitespace-nowrap"
               data-testid="confirm-info-row-display-name"
             >
-              {hexAddress}
+              {display}
             </TextButton>
           </span>
         )}
@@ -151,10 +178,9 @@ export const ConfirmInfoRowAddressDisplay = memo(
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
             ellipsis
-            className="[direction:rtl]"
             data-testid="confirm-info-row-display-name"
           >
-            {hexAddress}
+            {display}
           </Text>
         )}
         {showAvatar && (

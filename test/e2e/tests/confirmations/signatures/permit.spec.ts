@@ -26,13 +26,13 @@ import {
 } from './signature-helpers';
 
 const TOKEN_PERMIT_INFO: PermitInfoValues = {
-  contractPetName: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+  contractPetName: '0xCcCCc...ccccC',
   deadline: '09 June 3554, 16:53',
   nonce: '0',
   origin: DAPP_HOST_ADDRESS,
   ownerName: 'Account 1',
   primaryType: 'Permit',
-  spenderAddress: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
+  spenderAddress: '0x5B38D...eddC4',
   value: '3,000',
 };
 
