@@ -17,7 +17,7 @@ export const AMOUNT_INPUT_MAX_FONT_SIZE: AmountInputFontSize =
   AMOUNT_INPUT_FONT_SIZES[0];
 
 export const AMOUNT_INPUT_MIN_FONT_SIZE: AmountInputFontSize =
-  AMOUNT_INPUT_FONT_SIZES[AMOUNT_INPUT_FONT_SIZES.length - 1];
+  AMOUNT_INPUT_FONT_SIZES.at(-1) ?? 20;
 
 /**
  * Content width of a full-width amount row in the 360px popup (16px page
