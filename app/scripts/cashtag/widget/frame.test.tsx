@@ -118,11 +118,13 @@ describe('widget frame', () => {
 
     await waitFor(() =>
       expect(
-        mockSendMessage.mock.calls.some(
-          ([message]) =>
-            message.type === EXTENSION_MESSAGES.TRACK_EVENT &&
-            message.body?.interactionType === 'hover',
-        ),
+        mockSendMessage.mock.calls.some(([message]) => {
+          if (message.type !== EXTENSION_MESSAGES.TRACK_EVENT) {
+            return false;
+          }
+          const body = message.body as { interactionType?: string };
+          return body?.interactionType === 'hover';
+        }),
       ).toBe(true),
     );
   });
