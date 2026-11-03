@@ -289,6 +289,7 @@ import {
 } from './messenger-client-init/multichain';
 import {
   AssetsContractControllerInit,
+  AssetsControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -599,6 +600,9 @@ export default class MetamaskController extends EventEmitter {
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
       SnapAccountService: SnapAccountServiceInit,
+      // Re-runs AssetsController.init() now that SnapController and
+      // AccountTreeController exist, so snap chains are discovered at startup.
+      AssetsController: AssetsControllerInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,

@@ -641,6 +641,12 @@ export const MESSENGER_FACTORIES = {
     getMessenger: noop as typeof getNetworkEnablementControllerMessenger,
     getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
+  AssetsController: {
+    // The wallet already registered this namespace. Creating another messenger
+    // here would throw. Extension setup uses the wallet instance's messenger.
+    getMessenger: noop as typeof getNetworkEnablementControllerMessenger,
+    getInitMessenger: noop,
+  },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,
     getInitMessenger: getProfileMetricsControllerInitMessenger,

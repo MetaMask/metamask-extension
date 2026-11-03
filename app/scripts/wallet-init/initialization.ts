@@ -1,6 +1,5 @@
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
-import { AssetsController } from '@metamask/assets-controller';
-import { assetsController, Wallet } from '@metamask/wallet';
+import { Wallet } from '@metamask/wallet';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { isObject } from '@metamask/utils';
 import { isInE2eTest } from '../../../shared/lib/environment';
@@ -78,8 +77,7 @@ export function initializeWallet(request: InitializeWalletRequest) {
     getAssetsControllerInitMessenger(messenger);
 
   // `isEnabled` runs after every wallet instance exists. Hold the wallet so the
-  // callback can read ClientController, which is constructed after
-  // AssetsController.
+  // callback can read ClientController.
   const walletRef: { current?: Wallet } = {};
 
   // TC event listeners must be set up before the wallet is initialized.
@@ -90,7 +88,6 @@ export function initializeWallet(request: InitializeWalletRequest) {
   });
 
   const wallet = new Wallet({
-    initializationConfigurations: [assetsController],
     instanceOptions: {
       analyticsController: getAnalyticsControllerInstanceOptions({
         initMessenger: getAnalyticsControllerInitMessenger(messenger),
@@ -153,9 +150,8 @@ export function initializeWallet(request: InitializeWalletRequest) {
   });
   walletRef.current = wallet;
 
-  // AssetsController is opt-in, so it is not part of Wallet's default instance union.
   subscribeToArcTransactionConfirmedRefresh(
-    wallet.getInstance('AssetsController') as unknown as AssetsController,
+    wallet.getInstance('AssetsController'),
   );
 
   // Fixture-less test builds (like `yarn build:test:dev`) have no persisted
