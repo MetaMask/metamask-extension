@@ -33,7 +33,10 @@ import {
 async function persistWithdrawTransaction(
   transaction: TransactionMeta,
 ): Promise<void> {
-  await submitRequestToBackground('updateTransaction', [transaction]);
+  await submitRequestToBackground('TransactionController:updateTransaction', [
+    transaction,
+    'Prepared Money Account withdrawal for approval',
+  ]);
 }
 
 async function finalizePreparedWithdraw(
