@@ -62,6 +62,7 @@ async function searchBySymbol(symbol: string): Promise<SearchHit[]> {
     query: symbol,
     first: '25',
     includeMarketData: 'true',
+    includeRwaData: 'true',
     includeTokenSecurityData: 'true',
   });
   const response = await globalThis.fetch(`${tokenSearchUrl}?${params}`, {

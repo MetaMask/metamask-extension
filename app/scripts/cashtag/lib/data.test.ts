@@ -59,7 +59,7 @@ describe('resolveTicker', () => {
       ],
     });
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining('query=QQQ'),
+      expect.stringMatching(/query=QQQ.*includeRwaData=true/u),
       expect.objectContaining({
         method: 'GET',
         headers: { 'X-Client-Id': 'extension' },
