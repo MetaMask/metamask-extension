@@ -167,7 +167,11 @@ export const NetworkPillSelector = () => {
             <Icon
               name={IconName.Global}
               size={IconSize.Md}
-              color={IconColor.IconAlternative}
+              color={
+                isAllDefaultSelected
+                  ? IconColor.IconInverse
+                  : IconColor.IconAlternative
+              }
             />
           }
           isHidden={isPillHidden(0)}
