@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated the perpetuals market price to use the larger Hero typeface (#47503)
 - Updated the stablecoin education, wallet-ready, and Transaction Shield screens to use the shared marketing layout (#47423, #47424, #47425)
 - Recorded account hide and removal metrics from the Manage Accounts screen (#46403)
 - Set OUSD as the default gas token on Tempo when available (#47342)
@@ -37,7 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the OUSD icon in Tempo network fee errors (#47396)
 - Fixed missing asset icons in asset details headers (#47376)
 - Fixed NFTs not appearing when switching from a non-EVM network to All networks (#47320)
-- Fixed Money Account deposits on Monad being incorrectly blocked by a reserve balance alert (#47395)
 - Fixed Perps withdrawals not finding a quote when Money Account was preselected as the receive option (#47383)
 - Fixed a typo in the hardware wallet error modal (#47253)
 - Fixed malicious nested transactions not displaying transaction warnings (#47236)
@@ -92,6 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed transaction nonce reuse when the network transaction count lagged behind a confirmed transaction. (#47085)
 - Fixed Money deposits confirming the previous Max amount when Add funds was pressed before the typed amount finished updating. (#47018)
 - Fixed Money routes becoming a dead end when the bottom navbar was unavailable (#47321)
+- Fixed Money Account deposits on Monad being incorrectly blocked by a reserve balance alert (#47395)
 
 ### Security
 
