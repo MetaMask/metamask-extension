@@ -1,10 +1,4 @@
-import React, {
-  useId,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import classnames from 'clsx';
 import {
   AvatarNetwork,
@@ -35,13 +29,11 @@ type NetworkPillProps = {
   balance?: string;
   isSelected: boolean;
   isDisabled?: boolean;
-  /** Not shown (collapsed): kept out of the tab order and the accessibility tree */
   isHidden?: boolean;
   privacyMode: boolean;
   icon: React.ReactNode;
   onClick: () => void;
-  /** Why the pill is disabled, for mouse (tooltip) and assistive tech users */
-  disabledReason?: string;
+  title?: string;
   testId: string;
 };
 
@@ -54,61 +46,44 @@ const NetworkPill = ({
   privacyMode,
   icon,
   onClick,
-  disabledReason,
+  title,
   testId,
-}: NetworkPillProps) => {
-  const reasonId = useId();
-  const hasReason = isDisabled && Boolean(disabledReason);
-
-  return (
-    <button
-      type="button"
-      className={classnames(
-        'flex h-10 shrink-0 items-center gap-2 rounded-full border-0 px-4',
-        isSelected
-          ? 'bg-icon-default text-background-default'
-          : 'bg-muted text-default',
-        isDisabled
-          ? 'cursor-default opacity-50'
-          : 'cursor-pointer hover:bg-muted-hover',
-      )}
-      aria-pressed={isSelected}
-      // `aria-disabled` rather than `disabled`, so the pill stays focusable and
-      // the reason below is reachable by keyboard and screen reader users
-      aria-disabled={isDisabled || undefined}
-      aria-describedby={hasReason ? reasonId : undefined}
-      onClick={isDisabled ? undefined : onClick}
-      title={hasReason ? disabledReason : undefined}
-      data-testid={testId}
-      // React 18 has no `inert` prop; the empty attribute is what enables it
-      {...(isHidden ? ({ inert: '' } as object) : {})}
+}: NetworkPillProps) => (
+  <button
+    type="button"
+    className={classnames(
+      'flex h-10 shrink-0 items-center gap-2 rounded-full border-0 px-4',
+      isSelected
+        ? 'bg-icon-default text-background-default'
+        : 'bg-muted text-default hover:bg-muted-hover',
+      isDisabled ? 'cursor-default opacity-50' : 'cursor-pointer',
+    )}
+    aria-pressed={isSelected}
+    disabled={isDisabled}
+    onClick={onClick}
+    title={title}
+    data-testid={testId}
+    // React 18 has no `inert` prop; the empty attribute is what enables it
+    {...(isHidden ? ({ inert: '' } as object) : {})}
+  >
+    {icon}
+    <Text
+      variant={TextVariant.BodyXs}
+      color={isSelected ? TextColor.Inherit : TextColor.TextAlternative}
     >
-      {icon}
-      <Text
-        variant={TextVariant.BodyXs}
-        color={isSelected ? TextColor.Inherit : TextColor.TextAlternative}
+      {name}
+    </Text>
+    {balance !== undefined && (
+      <SensitiveText
+        variant={TextVariant.BodySm}
+        color={TextColor.Inherit}
+        isHidden={privacyMode}
       >
-        {name}
-      </Text>
-      {balance !== undefined && (
-        <SensitiveText
-          variant={TextVariant.BodySm}
-          color={TextColor.Inherit}
-          isHidden={privacyMode}
-        >
-          {balance}
-        </SensitiveText>
-      )}
-      {hasReason && (
-        // Not rendered, so it is not part of the button's name; only read as
-        // its description
-        <span id={reasonId} hidden>
-          {disabledReason}
-        </span>
-      )}
-    </button>
-  );
-};
+        {balance}
+      </SensitiveText>
+    )}
+  </button>
+);
 
 /**
  * Network selector for the fullscreen design. Offers the same default networks
@@ -223,7 +198,7 @@ export const NetworkPillSelector = () => {
                 />
               }
               onClick={() => handleSelectNetwork(network.chainId)}
-              disabledReason={getDisabledTooltip(disabled)}
+              title={getDisabledTooltip(disabled)}
               testId={`network-pill-${getSelectableChainId(network)}`}
             />
           );
