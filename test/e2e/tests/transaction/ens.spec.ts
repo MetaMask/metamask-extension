@@ -11,7 +11,7 @@ import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-
 import SendPage from '../../page-objects/pages/send/send-page';
 
 describe('ENS', function (this: Suite) {
-  const sampleAddress = '0x225f137127d9067788314bc7fcc1f36746a3c3B5';
+  const shortSampleAddress = '0x225f1371...6746a3c3B5';
   const chainId = 1;
 
   const UR_PROXY = '0xeeeeeeee14d718c2b47d9923deab1335e144eeee';
@@ -75,7 +75,7 @@ describe('ENS', function (this: Suite) {
         // Verify that ens is resolved to the correct address
         await sendToPage.checkEnsAddressResolution(
           sampleEnsDomain,
-          sampleAddress,
+          shortSampleAddress,
         );
       },
     );

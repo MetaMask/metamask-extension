@@ -163,7 +163,7 @@ describe('RecipientInput', () => {
     expect(mockUpdateTo).toHaveBeenCalledWith('');
   });
 
-  it('shows the full address when the recipient has no name', () => {
+  it('shows 10 characters on each side of an unnamed address', () => {
     const address = '0x1234567890abcdef1234567890abcdef12345678';
     mockUseSendContext.mockReturnValue({
       to: address,
@@ -175,10 +175,10 @@ describe('RecipientInput', () => {
       recipientValidationResult: { toAddressValidated: address },
     });
 
-    expect(getByText(address)).toHaveClass('break-all');
+    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
   });
 
-  it('shows the full address on one line under a contact name', () => {
+  it('shows 10 characters on each side of the address under a contact name', () => {
     const address = '0x1234567890abcdef1234567890abcdef12345678';
     mockUseRecipients.mockReturnValue([
       { address, contactName: 'Alice' },
@@ -194,10 +194,7 @@ describe('RecipientInput', () => {
     });
 
     expect(getByText('Alice')).toBeInTheDocument();
-    expect(getByText(address)).toHaveClass(
-      'mm-text--ellipsis',
-      '[direction:rtl]',
-    );
+    expect(getByText('0x12345678...ef12345678')).toBeInTheDocument();
   });
 
   it('display confusable characters when they exist', () => {
