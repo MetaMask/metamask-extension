@@ -1,5 +1,9 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent } from '@testing-library/react';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../../test/lib/mock-resize-observer';
 import {
   PerpsFiatHeroAmountInput,
   isValidPartialFiatAmountInput,
@@ -59,6 +63,55 @@ describe('PerpsFiatHeroAmountInput', () => {
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveStyle({
       fontSize: '72px',
       lineHeight: '72px',
+    });
+  });
+
+  describe('measured width', () => {
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    const renderAtWidth = (width: number) => {
+      render(
+        <PerpsFiatHeroAmountInput value="1234567.89" onChange={jest.fn()} />,
+      );
+      act(() => resizeObserver.resize(width));
+      return screen.getByTestId('perps-fiat-hero-amount-input');
+    };
+
+    it('keeps a long amount larger in a wide layout', () => {
+      expect(renderAtWidth(600)).toHaveStyle({ fontSize: '88px' });
+    });
+
+    it('steps a long amount down in a narrow layout', () => {
+      expect(renderAtWidth(250)).toHaveStyle({ fontSize: '48px' });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      const onChange = jest.fn();
+      const { rerender } = render(
+        <PerpsFiatHeroAmountInput value="" onChange={onChange} />,
+      );
+      act(() => resizeObserver.resize(600));
+
+      for (const value of ['1', '1234', '1234567', '1234567.89']) {
+        rerender(
+          <PerpsFiatHeroAmountInput value={value} onChange={onChange} />,
+        );
+      }
+
+      expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveStyle({
+        fontSize: '88px',
+      });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
     });
   });
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -16,9 +16,9 @@ import {
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import {
   AMOUNT_INPUT_MAX_FONT_SIZE,
-  getAmountInputFontSize,
   getAmountInputTextStyle,
 } from '../../../../helpers/utils/amount-input-font-size';
+import { useAmountInputFontSize } from '../../../../hooks/useAmountInputFontSize';
 import type { PerpsFiatHeroAmountInputProps } from './perps-fiat-hero-amount-input.types';
 
 /** Enough for realistic USD entry; bounds worst-case validation cost. */
@@ -105,17 +105,23 @@ export const PerpsFiatHeroAmountInput = React.memo(
       [onChange],
     );
 
+    const { containerRef, fontSize } = useAmountInputFontSize(
+      `${fiatSymbol}${value || '0'}`,
+    );
+    const amountStyle = useMemo(
+      () => getAmountInputTextStyle(fontSize),
+      [fontSize],
+    );
+
     if (isLoading) {
       return <PerpsFiatHeroAmountSkeleton />;
     }
 
-    const amountStyle = getAmountInputTextStyle(
-      getAmountInputFontSize(`${fiatSymbol}${value || '0'}`),
-    );
     const textColor = getHeroAmountTextColor(hasAlert, disabled);
 
     return (
       <Box
+        ref={containerRef}
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Center}
         alignItems={BoxAlignItems.Center}
