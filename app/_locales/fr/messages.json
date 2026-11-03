@@ -11871,12 +11871,6 @@
     "message": "Autoriser le swap de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "Montant garanti"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Il s’agit du montant minimal que vous recevrez. Vous pouvez recevoir plus en fonction du glissement."
-  },
   "swapAndSend": {
     "message": "Échanger et envoyer"
   },
@@ -11918,12 +11912,6 @@
   "swapEnableTokenForSwapping": {
     "message": "Ce sera $1 pour le swap",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Frais de réseau estimés"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Il s’agit d’une estimation des frais de réseau qui seront utilisés pour effectuer votre swap. Le montant réel peut varier en fonction des conditions du réseau."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Sachez que les transactions peuvent échouer et que nous sommes là pour vous aider. Si ce problème persiste, vous pouvez contacter notre service clientèle au $1 pour plus d’assistance.",
@@ -11976,15 +11964,6 @@
   "swapLearnMore": {
     "message": "En savoir plus sur les swaps"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Nous consultons différentes sources de liquidité (bourses, agrégateurs et teneurs de marché professionnels) pour comparer les taux de change et les frais de réseau."
-  },
-  "swapMaxSlippage": {
-    "message": "Glissement maximal"
-  },
-  "swapMetaMaskFee": {
-    "message": "Commission MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "Des frais de $1 % sont automatiquement ajoutés à ce devis. Ces frais vous sont facturés en échange d'une licence d'utilisation du logiciel d'agrégation d'informations sur les fournisseurs de liquidités de MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -11999,12 +11978,6 @@
   },
   "swapProcessing": {
     "message": "Traitement en cours"
-  },
-  "swapQuoteDetails": {
-    "message": "Détails de la cotation"
-  },
-  "swapQuoteSource": {
-    "message": "Origine de la cotation"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Veuillez demander de nouvelles cotations pour obtenir les derniers taux."
@@ -12021,29 +11994,11 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Aucune cotation disponible"
   },
-  "swapRate": {
-    "message": "Taux"
-  },
-  "swapReceiving": {
-    "message": "Réception"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Il s’agit d’une estimation. Le montant exact dépend du glissement."
-  },
   "swapRequestForQuotation": {
     "message": "Demande de cotation"
   },
-  "swapSelect": {
-    "message": "Sélectionner"
-  },
-  "swapSelectAQuote": {
-    "message": "Sélectionnez une cotation"
-  },
   "swapSelectAToken": {
     "message": "Sélectionnez un jeton"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Vous trouverez ci-dessous toutes les cotations obtenues auprès de multiples sources de liquidité."
   },
   "swapSelectToken": {
     "message": "Sélectionnez un jeton"
@@ -12096,9 +12051,6 @@
   "swapSlippageZeroTitle": {
     "message": "Recherche de prestataires de services d’investissement sans slippage"
   },
-  "swapSource": {
-    "message": "Source de liquidité"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Les swaps sont des transactions complexes et soumises à une contrainte de temps. Nous recommandons ces frais de réseau pour assurer un bon équilibre entre le coût et la garantie de réussite de l’échange."
   },
@@ -12126,9 +12078,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Vous n’avez pas assez de $1 pour payer les frais de réseau pour ce swap. Saisissez un montant plus petit ou achetez plus de $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0 % de glissement"
   },
   "swapsMaxSlippage": {
     "message": "Tolérance au slippage"

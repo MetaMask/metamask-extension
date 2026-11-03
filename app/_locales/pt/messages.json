@@ -11874,12 +11874,6 @@
     "message": "Permitir troca de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "Valor garantido"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Esse é o valor mínimo que você receberá. Você pode receber mais, dependendo do slippage."
-  },
   "swapAndSend": {
     "message": "Executar swap e enviar"
   },
@@ -11921,12 +11915,6 @@
   "swapEnableTokenForSwapping": {
     "message": "Isso vai $1 para trocas",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Taxas de rede estimadas"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Essa é a estimativa da taxa de rede que será usada para concluir sua troca. O valor real pode mudar conforme as condições de rede."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Falhas na transação acontecem, e estamos aqui para ajudar. Se esse problema persistir, você pode entrar em contato com o nosso Suporte em $1 para receber assistência adicional.",
@@ -11979,15 +11967,6 @@
   "swapLearnMore": {
     "message": "Saiba mais sobre as trocas"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Pesquisamos várias fontes de liquidez (corretoras, agregadores e formadores de mercado profissionais) para comparar taxas de câmbio e taxas de rede."
-  },
-  "swapMaxSlippage": {
-    "message": "Slippage máximo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Taxa da MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "A taxa de $1% é automaticamente contabilizada nessa cotação. Você a paga em troca de uma licença para usar o software de agregação de informações sobre provedores de liquidez da MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12002,12 +11981,6 @@
   },
   "swapProcessing": {
     "message": "Processando"
-  },
-  "swapQuoteDetails": {
-    "message": "Detalhes da cotação"
-  },
-  "swapQuoteSource": {
-    "message": "Fonte da cotação"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Solicite novas cotações para receber as taxas mais recentes."
@@ -12024,29 +11997,11 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Não há cotações disponíveis"
   },
-  "swapRate": {
-    "message": "Cotação"
-  },
-  "swapReceiving": {
-    "message": "Recebendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Essa é uma estimativa. O valor exato dependerá do slippage."
-  },
   "swapRequestForQuotation": {
     "message": "Solicitação de cotação"
   },
-  "swapSelect": {
-    "message": "Selecione"
-  },
-  "swapSelectAQuote": {
-    "message": "Selecione uma cotação"
-  },
   "swapSelectAToken": {
     "message": "Selecionar token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Abaixo estão todas as cotações reunidas de diversas fontes de liquidez."
   },
   "swapSelectToken": {
     "message": "Selecionar token"
@@ -12099,9 +12054,6 @@
   "swapSlippageZeroTitle": {
     "message": "Buscando provedores de slippage zero"
   },
-  "swapSource": {
-    "message": "Fonte de liquidez"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps são transações complexas e sensíveis ao tempo. Recomendamos esta taxa de rede para alcançar um equilíbrio ideal entre o custo e a confiança de um swap bem-sucedido."
   },
@@ -12129,9 +12081,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Você não tem $1 suficiente para pagar a taxa de rede para este swap. Insira um valor menor ou compre mais $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% de slippage"
   },
   "swapsMaxSlippage": {
     "message": "Tolerância a slippage"

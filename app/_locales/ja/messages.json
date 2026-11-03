@@ -11591,12 +11591,6 @@
     "message": "$1のスワップを許可",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "保証額"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "これは受け取る最低額です。スリッページによりそれ以上の額を受け取ることもあります。"
-  },
   "swapAndSend": {
     "message": "スワップして送金"
   },
@@ -11638,12 +11632,6 @@
   "swapEnableTokenForSwapping": {
     "message": "これはスワップ用に$1",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "推定ネットワーク手数料"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "これは、スワップを完了させるために使用されるネットワーク手数料の見積もりです。実際の額はネットワークの状態によって変化する可能性があります。"
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "トランザクション障害が発生した場合は、いつでもお手伝いいたします。この問題が解決しない場合は、$1でカスタマーサポートにお問い合わせください。",
@@ -11696,15 +11684,6 @@
   "swapLearnMore": {
     "message": "Swapsの詳細"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "弊社は、為替レートとネットワーク手数料を比較するために、複数の流動性供給源 (取引所、アグリゲーター、専門のマーケットメーカー) を検索します。"
-  },
-  "swapMaxSlippage": {
-    "message": "最大スリッページ"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMaskの手数料"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "このクォートには、$1%の手数料が自動的に含まれています。この手数料は、MetaMaskの流動性プロバイダーの情報集積ソフトウェアの使用ライセンスの代金として支払うものです。",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -11719,12 +11698,6 @@
   },
   "swapProcessing": {
     "message": "処理中"
-  },
-  "swapQuoteDetails": {
-    "message": "クォートの詳細"
-  },
-  "swapQuoteSource": {
-    "message": "見積もり提供元"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "最新のレートを取得するには、新しい見積もりをリクエストしてください。"
@@ -11741,29 +11714,11 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "見積もりを取得できません"
   },
-  "swapRate": {
-    "message": "レート"
-  },
-  "swapReceiving": {
-    "message": "受信中"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "これは推定値です。正確な額はスリッページによって異なります。"
-  },
   "swapRequestForQuotation": {
     "message": "見積もりのリクエスト"
   },
-  "swapSelect": {
-    "message": "選択"
-  },
-  "swapSelectAQuote": {
-    "message": "見積もりを選択"
-  },
   "swapSelectAToken": {
     "message": "トークンを選択"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "以下は複数の流動性供給源から収集したすべての見積もりです。"
   },
   "swapSelectToken": {
     "message": "トークンを選択"
@@ -11816,9 +11771,6 @@
   "swapSlippageZeroTitle": {
     "message": "スリッページがゼロのプロバイダーを使用中"
   },
-  "swapSource": {
-    "message": "流動性の供給源"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのネットワーク手数料をお勧めします。"
   },
@@ -11846,9 +11798,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "このスワップのネットワーク手数料を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
-  },
-  "swapZeroSlippage": {
-    "message": "0%スリッページ"
   },
   "swapsMaxSlippage": {
     "message": "最大スリッページ"

@@ -11882,12 +11882,6 @@
     "message": "$1 스왑 허용",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "보장되는 금액"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "수신하는 최소 금액입니다. 슬리패지에 따라 추가 금액을 받을 수도 있습니다."
-  },
   "swapAndSend": {
     "message": "스왑 및 전송"
   },
@@ -11929,12 +11923,6 @@
   "swapEnableTokenForSwapping": {
     "message": "스왑하려면 $1이(가) 필요합니다.",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "예상 네트워크 수수료"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "스왑을 완료하는 데 사용될 예상 네트워크 수수료입니다. 실제 금액은 네트워크 상태에 따라 달라질 수 있습니다."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "트랜잭션이 실패할 경우 언제든 문의하세요. 오류가 해결되지 않는다면 고객 지원 $1에 문의하세요.",
@@ -11987,15 +11975,6 @@
   "swapLearnMore": {
     "message": "스왑 자세히 알아보기"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "저희는 여러 유동성 공급원(거래소, 애그리게이터, 투자전문기관)을 검색하여 환율과 네트워크 수수료를 비교해 드립니다."
-  },
-  "swapMaxSlippage": {
-    "message": "최대 슬리패지"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask 수수료"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "$1%의 수수료는 자동으로 각 견적에 반영됩니다. 이는 MetaMask의 유동성 공급자 정보 집계용 소프트웨어 사용 라이선스 비용입니다.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12010,12 +11989,6 @@
   },
   "swapProcessing": {
     "message": "처리 중"
-  },
-  "swapQuoteDetails": {
-    "message": "견적 세부 사항"
-  },
-  "swapQuoteSource": {
-    "message": "견적 소스"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "새 견적을 요청해 최신 요율을 확인하세요."
@@ -12032,29 +12005,11 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "사용 가능한 견적 없음"
   },
-  "swapRate": {
-    "message": "환율"
-  },
-  "swapReceiving": {
-    "message": "받는 중"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "이것은 예상치입니다. 정확한 금액은 슬리패지에 따라 달라집니다."
-  },
   "swapRequestForQuotation": {
     "message": "견적 요청"
   },
-  "swapSelect": {
-    "message": "선택"
-  },
-  "swapSelectAQuote": {
-    "message": "견적 선택"
-  },
   "swapSelectAToken": {
     "message": "토큰 선택"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "다음은 여러 유동성 소스에서 수집한 전체 견적입니다."
   },
   "swapSelectToken": {
     "message": "토큰 선택"
@@ -12107,9 +12062,6 @@
   "swapSlippageZeroTitle": {
     "message": "제로 슬리피지 견적 제공자 소싱"
   },
-  "swapSource": {
-    "message": "유동성 소스"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "스왑은 복잡하고 신속한 처리가 필요한 거래입니다. 비용과 스왑 성공 가능성을 균형 있게 고려하여 이 네트워크 수수료를 권장합니다."
   },
@@ -12137,9 +12089,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "$1(이)가 부족해 이 스왑에 대한 네트워크 수수료를 지불할 수 없습니다. 더 적은 금액을 입력하거나 더 많은 $1(을)를 구매하세요."
-  },
-  "swapZeroSlippage": {
-    "message": "0% 슬리패지"
   },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"

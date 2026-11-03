@@ -11888,12 +11888,6 @@
     "message": "Permitir intercambio de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "Monto garantizado"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Se refiere al monto mínimo que recibirá. Puede recibir más en función del deslizamiento."
-  },
   "swapAndSend": {
     "message": "Canjear y enviar"
   },
@@ -11935,12 +11929,6 @@
   "swapEnableTokenForSwapping": {
     "message": "Esto será $1 por intercambiar",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Tarifas de red estimadas"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Un estimado de la tarifa de red que se usará para realizar el intercambio. El monto real puede cambiar según las condiciones de la red."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Pueden ocurrir fallas en las transacciones, por lo que estamos aquí para ayudarlo. Si el problema persiste, comuníquese con nuestro soporte al cliente al $1 para recibir ayuda adicional.",
@@ -11993,15 +11981,6 @@
   "swapLearnMore": {
     "message": "Más información sobre los intercambios"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Buscamos varias fuentes de liquidez (sitios de cambio, agregadores y creadores de mercado profesionales) para comparar las mejores tasas de cambio y las tarifas de red."
-  },
-  "swapMaxSlippage": {
-    "message": "Deslizamiento máximo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Tarifa de MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "La tarifa de $1% se incluye automáticamente en esta cotización. Lo paga a cambio de una licencia para usar el software de agregación de información del proveedor de liquidez de MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12016,12 +11995,6 @@
   },
   "swapProcessing": {
     "message": "Procesando"
-  },
-  "swapQuoteDetails": {
-    "message": "Detalles de cotización"
-  },
-  "swapQuoteSource": {
-    "message": "Fuente de la cotización"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Solicite cotizaciones nuevas para tener los costos más recientes."
@@ -12038,29 +12011,11 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "No hay cotizaciones disponibles"
   },
-  "swapRate": {
-    "message": "Tasa"
-  },
-  "swapReceiving": {
-    "message": "Recibiendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Este es un valor estimado. El monto exacto depende del deslizamiento."
-  },
   "swapRequestForQuotation": {
     "message": "Solicitud de cotización"
   },
-  "swapSelect": {
-    "message": "Seleccionar"
-  },
-  "swapSelectAQuote": {
-    "message": "Seleccionar una cotización"
-  },
   "swapSelectAToken": {
     "message": "Selecciona un token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "A continuación se muestran todas las cotizaciones recopiladas de diversas fuentes de liquidez."
   },
   "swapSelectToken": {
     "message": "Selecciona un token"
@@ -12113,9 +12068,6 @@
   "swapSlippageZeroTitle": {
     "message": "Abastecimiento de proveedores de deslizamiento cero"
   },
-  "swapSource": {
-    "message": "Fuente de liquidez"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Los canjes son transacciones complejas y sensibles al tiempo. Recomendamos esta tarifa de red para lograr un buen equilibrio entre el costo y la probabilidad de que el canje se realice correctamente."
   },
@@ -12143,9 +12095,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "No dispones de suficiente $1 para pagar la tarifa de red de este canje. Ingresa un monto menor o compra más $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0 % de deslizamiento"
   },
   "swapsMaxSlippage": {
     "message": "Tolerancia de deslizamiento"

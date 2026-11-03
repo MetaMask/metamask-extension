@@ -11874,12 +11874,6 @@
     "message": "Payagan ang pag-swap ng $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "Garantisadong halaga"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Ito ang minimum na halagang matatanggap mo. Maaari kang makatanggap ng mas malaki depende sa slippage."
-  },
   "swapAndSend": {
     "message": "I-swap at Ipadala"
   },
@@ -11921,12 +11915,6 @@
   "swapEnableTokenForSwapping": {
     "message": "Ito ay $1 para sa pag-swap",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Mga tinantyang bayad sa network"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Ito ay pagtatantya ng bayad sa network na gagamitin para kumpletuhin ang iyong pag-swap. Maaaring magbago ang aktuwal na halaga ayon sa mga kundisyon ng network."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Nangyayari ang mga pagkabigo sa transaksyon at narito kami upang tumulong. Kung magpapatuloy ang isyung ito, maaari kapag makipag-ugnay sa aming suporta sa customer sa $1 para sa karagdagang tulong.",
@@ -11979,15 +11967,6 @@
   "swapLearnMore": {
     "message": "Alamin pa ang tungkol sa mga Swap"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Naghahanap kami sa iba't ibang pinagmumulan ng liquidity (mga exchange, aggregator at propesyonal na market maker) upang paghambingin ang mga halaga ng palitan at bayad sa network."
-  },
-  "swapMaxSlippage": {
-    "message": "Pinakamataas na slippage"
-  },
-  "swapMetaMaskFee": {
-    "message": "Bayad sa MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "Ang bayad na $1% ay awtomatikong isinasali sa quote na ito. Babayaran mo ito bilang kapalit ng isang lisensya para gamitin ang software ng pagsasama-sama ng impormasyon ng tagapagbigay ng liquidity ng MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12002,12 +11981,6 @@
   },
   "swapProcessing": {
     "message": "Pinoproseso"
-  },
-  "swapQuoteDetails": {
-    "message": "Mga detalye ng quote"
-  },
-  "swapQuoteSource": {
-    "message": "Pinagmulan ng quote"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Humiling ng mga bagong quote para makuha ang mga pinakabagong rate."
@@ -12024,29 +11997,11 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Walang available na quote"
   },
-  "swapRate": {
-    "message": "Rate"
-  },
-  "swapReceiving": {
-    "message": "Pagtanggap"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Isang itong pagtatantya. Ang eksaktong halaga ay nakadepende sa slippage."
-  },
   "swapRequestForQuotation": {
     "message": "Humiling ng quotation"
   },
-  "swapSelect": {
-    "message": "Piliin ang"
-  },
-  "swapSelectAQuote": {
-    "message": "Pumili ng quote"
-  },
   "swapSelectAToken": {
     "message": "Pumili ng token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Makikita sa ibaba ang lahat ng quote na nakuha mula sa maraming pinagmumulan ng liquidity."
   },
   "swapSelectToken": {
     "message": "Pumili ng token"
@@ -12099,9 +12054,6 @@
   "swapSlippageZeroTitle": {
     "message": "Nagso-source ng mga tagapagbigay ng zero-slippage"
   },
-  "swapSource": {
-    "message": "Pinagmumulan ng liquidity"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Ang mga swap ay kumplikado at sensitibo sa oras na mga transaksyon. Inirerekomenda namin ang bayad sa network na ito para sa magandang balanse sa pagitan ng halaga at kumpiyansa ng matagumpay na Swap."
   },
@@ -12129,9 +12081,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Wala kang sapat na $1 para sa bayad sa network sa pag-swap na ito. Maglagay ng mas maliit na halaga o bumili pa ng $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% Slippage"
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"

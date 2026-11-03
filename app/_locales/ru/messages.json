@@ -11874,12 +11874,6 @@
     "message": "Разрешите своп $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "Гарантированная сумма"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Это минимальная сумма, которую вы получите. Вы можете получить больше в зависимости от проскальзывания."
-  },
   "swapAndSend": {
     "message": "Обменять и отправить"
   },
@@ -11921,12 +11915,6 @@
   "swapEnableTokenForSwapping": {
     "message": "Это $1 возможность свопа",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Примерные комиссии сети"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Это оценочная сетевая комиссия, которая будет использована для завершения вашего свопа. Фактическая сумма может меняться в зависимости от условий сети."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Иногда транзакции не удается выполнить. Мы рады помочь вам в таких случаях. Если проблема не исчезнет, обратитесь в нашу поддержку клентов на сайте $1.",
@@ -11979,15 +11967,6 @@
   "swapLearnMore": {
     "message": "Узнайте больше о свопах"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Мы ищем по разным источникам ликвидности (биржи, агрегаторы и профессиональные маркет-мейкеры), чтобы сравнивать обменные курсы и комиссии сети."
-  },
-  "swapMaxSlippage": {
-    "message": "Максимальное проскальзывание"
-  },
-  "swapMetaMaskFee": {
-    "message": "Комиссия MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "В этой котировке автоматически учитывается комиссия в размере $1%. Вы платите ее в обмен на лицензию на использование программного обеспечения MetaMask для сбора информации о поставщиках ликвидности.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12002,12 +11981,6 @@
   },
   "swapProcessing": {
     "message": "Обработка..."
-  },
-  "swapQuoteDetails": {
-    "message": "Сведения о котировке"
-  },
-  "swapQuoteSource": {
-    "message": "Источник котировки"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Запрашивайте новые котировки, чтобы узнать последние курсы."
@@ -12024,29 +11997,11 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Нет доступных котировок"
   },
-  "swapRate": {
-    "message": "Курс"
-  },
-  "swapReceiving": {
-    "message": "Получено"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Это примерное значение. Точная сумма зависит от проскальзывания."
-  },
   "swapRequestForQuotation": {
     "message": "Запрос котировки"
   },
-  "swapSelect": {
-    "message": "Выбрать"
-  },
-  "swapSelectAQuote": {
-    "message": "Выбрать котировку"
-  },
   "swapSelectAToken": {
     "message": "Выбрать токен"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Ниже приведены все котировки, собранные из нескольких источников ликвидности."
   },
   "swapSelectToken": {
     "message": "Выбрать токен"
@@ -12099,9 +12054,6 @@
   "swapSlippageZeroTitle": {
     "message": "Поиск поставщиков с нулевым проскальзыванием"
   },
-  "swapSource": {
-    "message": "Источник ликвидности"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Свопы — это сложные транзакции, зависящие от времени. Мы рекомендуем эту комиссию сети для хорошего баланса между стоимостью и уверенностью в успешном свопе."
   },
@@ -12129,9 +12081,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "У вас недостаточно $1 для оплаты комиссии сети за этот своп. Введите меньшую сумму или купите больше $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% проскальзывания"
   },
   "swapsMaxSlippage": {
     "message": "Допуск проскальзывания"

@@ -11882,12 +11882,6 @@
     "message": "Izinkan menukar $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "Jumlah yang dijamin"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Ini merupakan jumlah minimum yang akan Anda terima. Anda bisa mendapatkan lebih banyak lagi tergantung pada selip."
-  },
   "swapAndSend": {
     "message": "Tukar & Kirim"
   },
@@ -11929,12 +11923,6 @@
   "swapEnableTokenForSwapping": {
     "message": "Ini akan $1 untuk menukar",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Estimasi biaya jaringan"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Ini merupakan estimasi biaya jaringan yang akan digunakan untuk menyelesaikan pertukaran Anda. Jumlah aktual dapat berubah sesuai dengan kondisi jaringan."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Kegagalan transaksi terjadi dan kami siap membantu. Jika masalah terus berlanjut, Anda dapat menghubungi dukungan pelanggan kami di $1 untuk mendapatkan bantuan lebih lanjut.",
@@ -11987,15 +11975,6 @@
   "swapLearnMore": {
     "message": "Pelajari selengkapnya seputar Swap"
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Kami mencari beberapa sumber likuiditas (bursa, agregator, dan pendiri pasar profesional) untuk membandingkan tarif bursa dan biaya jaringan."
-  },
-  "swapMaxSlippage": {
-    "message": "Selip maks"
-  },
-  "swapMetaMaskFee": {
-    "message": "Biaya MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "Biaya sebesar $1% otomatis diperhitungkan ke dalam kuotasi ini. Anda membayarnya sebagai ganti lisensi untuk menggunakan perangkat lunak pengumpul informasi penyedia likuiditas MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12010,12 +11989,6 @@
   },
   "swapProcessing": {
     "message": "Memproses"
-  },
-  "swapQuoteDetails": {
-    "message": "Detail kuotasi"
-  },
-  "swapQuoteSource": {
-    "message": "Sumber kuotasi"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Minta kuotasi baru untuk mendapatkan tarif terbaru."
@@ -12032,29 +12005,11 @@
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Kuotasi tidak tersedia"
   },
-  "swapRate": {
-    "message": "Tarif"
-  },
-  "swapReceiving": {
-    "message": "Menerima"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Ini hanyalah perkiraan. Jumlah yang tepat bergantung pada selip."
-  },
   "swapRequestForQuotation": {
     "message": "Minta kuotasi"
   },
-  "swapSelect": {
-    "message": "Pilih"
-  },
-  "swapSelectAQuote": {
-    "message": "Pilih kuotasi"
-  },
   "swapSelectAToken": {
     "message": "Pilih token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Di bawah ini merupakan semua kuotasi yang dikumpulkan dari beberapa sumber likuiditas."
   },
   "swapSelectToken": {
     "message": "Pilih token"
@@ -12107,9 +12062,6 @@
   "swapSlippageZeroTitle": {
     "message": "Sumber penyedia nol selip"
   },
-  "swapSource": {
-    "message": "Sumber likuiditas"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swap adalah transaksi yang kompleks dan sensitif terhadap waktu. Kami merekomendasikan biaya jaringan ini untuk mendapatkan keseimbangan yang baik antara biaya dan kepastian keberhasilan Swap."
   },
@@ -12137,9 +12089,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Anda tidak memiliki cukup $1 untuk membayar biaya jaringan untuk swap ini. Masukkan jumlah yang lebih kecil atau beli lebih banyak $1."
-  },
-  "swapZeroSlippage": {
-    "message": "Selip 0%"
   },
   "swapsMaxSlippage": {
     "message": "Toleransi selip"
