@@ -13010,6 +13010,10 @@
     "message": "Incorrect password. Try again.",
     "description": "Displayed when the user enters an incorrect password"
   },
+  "xWidgetDeeplinkToast": {
+    "message": "You got here from the MetaMask widget on X",
+    "description": "Toast message shown when the user opens the extension from the MetaMask cashtag widget on X"
+  },
   "year": {
     "message": "year"
   },
