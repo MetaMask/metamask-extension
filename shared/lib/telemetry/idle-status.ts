@@ -63,8 +63,8 @@ const STEADY_STATE_PHASES: ReportedStartupPhase[] = [
  * Placeholder thresholds, to be tuned once `idle_status` data is collected in
  * production.
  */
-export const UI_CLOSE_GRACE_MS = 5_000;
-export const UI_OPEN_GRACE_MS = 5_000;
+export const UI_CLOSE_GRACE_MS = 10_000;
+export const UI_OPEN_GRACE_MS = 10_000;
 export const UI_INTERACTION_GRACE_MS = 30_000;
 export const EXTERNAL_RPC_GRACE_MS = 30_000;
 
