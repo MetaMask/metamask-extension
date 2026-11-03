@@ -284,6 +284,7 @@ export default function useSubmitBridgeTransaction(
       if (hardwareWalletUsed) {
         throw e;
       }
+      return;
     } finally {
       setIsSubmitting(false);
     }

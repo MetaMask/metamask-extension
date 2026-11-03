@@ -13,6 +13,7 @@ const mockUseBridgeNavigation = jest.requireMock(
 ).useBridgeNavigation;
 
 const mockNavigateToSwapsAfterSubmit = jest.fn();
+const mockNavigateToDefaultRoute = jest.fn();
 
 describe('useHwSwapNavigation', () => {
   beforeEach(() => {
@@ -20,11 +21,32 @@ describe('useHwSwapNavigation', () => {
     jest.useFakeTimers();
     mockUseBridgeNavigation.mockReturnValue({
       navigateToSwapsAfterSubmit: mockNavigateToSwapsAfterSubmit,
+      navigateToDefaultRoute: mockNavigateToDefaultRoute,
     });
   });
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it('navigates to the default route for sendBundle flows', async () => {
+    renderHookWithProvider(
+      () =>
+        useHwSwapNavigation({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.Submitted,
+          ),
+          isSendBundleFlow: true,
+        }),
+      {},
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(mockNavigateToDefaultRoute).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSwapsAfterSubmit).not.toHaveBeenCalled();
   });
 
   it('navigates back to swaps when status is Submitted', async () => {
