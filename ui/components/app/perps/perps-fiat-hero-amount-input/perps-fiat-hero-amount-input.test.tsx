@@ -2,8 +2,28 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import {
   PerpsFiatHeroAmountInput,
+  getPerpsHeroAmountFontSize,
   isValidPartialFiatAmountInput,
 } from './perps-fiat-hero-amount-input';
+
+describe('getPerpsHeroAmountFontSize', () => {
+  it('steps the font size down by amount length', () => {
+    const cases: [number, number][] = [
+      [0, 88],
+      [7, 88],
+      [8, 40],
+      [13, 40],
+      [14, 30],
+      [18, 30],
+      [19, 20],
+      [48, 20],
+    ];
+
+    for (const [length, expected] of cases) {
+      expect(getPerpsHeroAmountFontSize(length)).toBe(expected);
+    }
+  });
+});
 
 describe('isValidPartialFiatAmountInput', () => {
   it('accepts empty, digits, and a single separator', () => {
@@ -36,6 +56,30 @@ describe('PerpsFiatHeroAmountInput', () => {
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
       '2.707414',
     );
+  });
+
+  it('sets the symbol, measuring text and input in Hero at the same size', () => {
+    render(<PerpsFiatHeroAmountInput value="1234.5" onChange={jest.fn()} />);
+
+    const symbol = screen.getByTestId('perps-fiat-hero-amount-symbol');
+    const input = screen.getByTestId('perps-fiat-hero-amount-input');
+    const measuringText = screen.getByText('1234.5');
+
+    for (const element of [symbol, input, measuringText]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '88px', lineHeight: '88px' });
+    }
+  });
+
+  it('steps the font size down for longer amounts', () => {
+    render(
+      <PerpsFiatHeroAmountInput value="1234567.89" onChange={jest.fn()} />,
+    );
+
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveStyle({
+      fontSize: '40px',
+      lineHeight: '40px',
+    });
   });
 
   it('renders symbol and forwards input changes', () => {

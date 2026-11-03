@@ -4,45 +4,42 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  FontWeight,
+  FontFamily,
+  Input,
   Text,
   TextAlign,
   TextColor,
+  TextVariant,
   twMerge,
   Skeleton,
 } from '@metamask/design-system-react';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import type { PerpsFiatHeroAmountInputProps } from './perps-fiat-hero-amount-input.types';
 
+const MAX_FONT_SIZE = 88;
+
 /**
+ * Font size in px for the typed amount, matching the Mobile MM Pay amount
+ * (88/40/30/20). The 88px step ends one character earlier than on Mobile so
+ * that eight of Grotzec's widest digits fit the 328px popup content width.
+ *
  * Visual twin of confirmations `CustomAmount` for standalone Perps screens.
  * Keep in sync manually with `ui/pages/confirmations/.../custom-amount.tsx`.
- * @param length
+ *
+ * @param length - Number of characters in the typed amount.
+ * @returns The font size in px. Line height equals the font size.
  */
-function getFontSize(length: number): string {
-  if (length <= 8) {
-    return '64px';
+export function getPerpsHeroAmountFontSize(length: number): number {
+  if (length <= 7) {
+    return MAX_FONT_SIZE;
   }
   if (length <= 13) {
-    return '40px';
+    return 40;
   }
   if (length <= 18) {
-    return '30px';
+    return 30;
   }
-  return '20px';
-}
-
-function getLineHeight(length: number): string {
-  if (length <= 8) {
-    return '70px';
-  }
-  if (length <= 13) {
-    return '44px';
-  }
-  if (length <= 18) {
-    return '33px';
-  }
-  return '22px';
+  return 20;
 }
 
 /** Enough for realistic USD entry; bounds worst-case validation cost. */
@@ -93,10 +90,10 @@ export const PerpsFiatHeroAmountSkeleton = () => (
     justifyContent={BoxJustifyContent.Center}
     alignItems={BoxAlignItems.Center}
     className="w-full"
-    style={{ minHeight: '70px' }}
+    style={{ minHeight: MAX_FONT_SIZE }}
     data-testid="perps-fiat-hero-amount-skeleton"
   >
-    <Skeleton height={70} width={80} />
+    <Skeleton height={MAX_FONT_SIZE} width={80} className="rounded-lg" />
   </Box>
 );
 
@@ -126,8 +123,8 @@ export const PerpsFiatHeroAmountInput = React.memo(
       return <PerpsFiatHeroAmountSkeleton />;
     }
 
-    const fontSize = getFontSize(amountLength);
-    const lineHeight = getLineHeight(amountLength);
+    const fontSize = getPerpsHeroAmountFontSize(amountLength);
+    const amountStyle = { fontSize, lineHeight: `${fontSize}px` };
     const textColor = getHeroAmountTextColor(hasAlert, disabled);
 
     return (
@@ -136,14 +133,15 @@ export const PerpsFiatHeroAmountInput = React.memo(
         justifyContent={BoxJustifyContent.Center}
         alignItems={BoxAlignItems.Center}
         className="w-full"
-        style={{ minHeight: '70px' }}
+        style={{ minHeight: MAX_FONT_SIZE }}
       >
         <Text
           data-testid="perps-fiat-hero-amount-symbol"
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           textAlign={TextAlign.Right}
-          fontWeight={FontWeight.Medium}
           color={textColor}
-          style={{ fontSize, lineHeight }}
+          style={amountStyle}
         >
           {fiatSymbol}
         </Text>
@@ -162,40 +160,31 @@ export const PerpsFiatHeroAmountInput = React.memo(
             minWidth: '1ch',
           }}
         >
-          <span
+          <Text
             aria-hidden="true"
-            style={{
-              display: 'block',
-              visibility: 'hidden',
-              whiteSpace: 'pre',
-              fontSize,
-              lineHeight,
-              fontWeight: 500,
-              minWidth: '1ch',
-            }}
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
+            className="invisible block min-w-[1ch] whitespace-pre"
+            style={amountStyle}
           >
             {value || '0'}
-          </span>
-          <input
+          </Text>
+          <Input
             autoFocus={autoFocus && !disabled}
             data-testid="perps-fiat-hero-amount-input"
             type="text"
             inputMode="decimal"
             value={value}
             onChange={handleChange}
-            disabled={disabled}
+            isDisabled={disabled}
+            isStateStylesDisabled
+            textVariant={TextVariant.AmountDisplayLg}
             className={twMerge(
+              'absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero',
               textColor,
-              'border-none bg-transparent text-left outline-none',
               disabled ? 'cursor-default' : 'cursor-text',
             )}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              fontSize,
-              lineHeight,
-              fontWeight: 500,
-            }}
+            style={amountStyle}
           />
         </span>
       </Box>
