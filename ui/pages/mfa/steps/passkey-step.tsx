@@ -6,6 +6,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MfaFlowTestIds } from '../test-ids';
+import { trackMfaErrorCta } from '../../../hooks/identity/mfa/engine/activeFlow';
 import StepLayout, { type StepProps } from './step-layout';
 
 const PasskeyStep = ({ step, state, onAction }: StepProps<'passkey'>) => {
@@ -24,7 +25,12 @@ const PasskeyStep = ({ step, state, onAction }: StepProps<'passkey'>) => {
           size={ButtonSize.Lg}
           isFullWidth
           isLoading={state.busy}
-          onClick={() => onAction({ type: 'continue' })}
+          onClick={() => {
+            if (state.error) {
+              trackMfaErrorCta(state.error, 'try_again');
+            }
+            onAction({ type: 'continue' });
+          }}
           data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
         >
           {t('mfaFailureRetry')}

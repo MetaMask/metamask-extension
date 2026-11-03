@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { useEffect, type ReactNode } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -16,6 +16,10 @@ import type {
   MfaMethod,
   MfaReason,
 } from '../../../hooks/identity/mfa/engine/types';
+import {
+  trackMfaErrorCta,
+  trackMfaErrorViewed,
+} from '../../../hooks/identity/mfa/engine/activeFlow';
 import { getErrorLink, getErrorMessageKey } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
 
@@ -144,6 +148,9 @@ export const StepError = ({
 }) => {
   const t = useI18nContext();
   const link = getErrorLink(code);
+  useEffect(() => {
+    trackMfaErrorViewed(code);
+  }, [code]);
   return (
     <StepMessage
       isError
@@ -154,6 +161,7 @@ export const StepError = ({
               href={link}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackMfaErrorCta(code, 'learn_more')}
               data-testid={MfaFlowTestIds.ERROR_LINK}
             >
               {t('learnMoreUpperCase')}

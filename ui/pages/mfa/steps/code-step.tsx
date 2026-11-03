@@ -13,6 +13,11 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  trackMfaErrorCta,
+  trackMfaEvent,
+} from '../../../hooks/identity/mfa/engine/activeFlow';
+import { MFA_EVENTS } from '../../../hooks/identity/mfa/engine/analytics';
 import { getErrorHandling } from '../../../hooks/identity/mfa/engine/errors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
@@ -90,9 +95,20 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
       resendAvailableAt !== undefined &&
       secondsLeft === 0
     ) {
+      trackMfaEvent(MFA_EVENTS.codeResent, {
+        trigger: 'auto',
+        purpose: step.purpose,
+      });
       onAction({ type: 'resend' });
     }
-  }, [isTotp, codeSent, resendAvailableAt, secondsLeft, onAction]);
+  }, [
+    isTotp,
+    codeSent,
+    resendAvailableAt,
+    secondsLeft,
+    onAction,
+    step.purpose,
+  ]);
 
   useEffect(() => {
     if (codeSent) {
@@ -161,7 +177,12 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
         size={ButtonSize.Lg}
         isFullWidth
         isDisabled={isCoolingDown}
-        onClick={() => onAction({ type: 'resend' })}
+        onClick={() => {
+          if (error) {
+            trackMfaErrorCta(error, 'try_again');
+          }
+          onAction({ type: 'resend' });
+        }}
         data-testid={MfaFlowTestIds.RESEND_BUTTON}
       >
         {isCoolingDown
@@ -187,7 +208,13 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
             // A complete code submits itself; the line under the boxes shows
             // it being checked.
             isDisabled={!canResend}
-            onClick={() => onAction({ type: 'resend' })}
+            onClick={() => {
+              trackMfaEvent(MFA_EVENTS.codeResent, {
+                trigger: 'user',
+                purpose: step.purpose,
+              });
+              onAction({ type: 'resend' });
+            }}
             data-testid={MfaFlowTestIds.RESEND_BUTTON}
           >
             {needsNewCode ? t('mfaOtpGetNewCode') : getResendLabel()}

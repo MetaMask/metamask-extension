@@ -12,6 +12,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { trackMfaEvent } from '../../../hooks/identity/mfa/engine/activeFlow';
+import { MFA_EVENTS } from '../../../hooks/identity/mfa/engine/analytics';
 import type { MfaMethod } from '../../../hooks/identity/mfa/engine/types';
 import { MfaFlowTestIds } from '../test-ids';
 import StepLayout, { MfaShield, type StepProps } from './step-layout';
@@ -46,7 +48,15 @@ const PickerStep = ({ step, state, reason, onAction }: StepProps<'picker'>) => {
       isFullWidth
       isDisabled={state.busy}
       startIconName={isMain ? IconName.Fingerprint : undefined}
-      onClick={() => onAction({ type: 'choose', method })}
+      onClick={() => {
+        trackMfaEvent(MFA_EVENTS.methodSelected, {
+          method,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment property
+          methods_offered: step.options,
+          purpose: step.purpose,
+        });
+        onAction({ type: 'choose', method });
+      }}
       data-testid={`${MfaFlowTestIds.PICKER_OPTION}-${method}`}
     >
       {t(PICKER_LABEL_KEYS[method])}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   ButtonSize,
@@ -8,6 +8,10 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 import { getErrorHandling } from '../../../hooks/identity/mfa/engine/errors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  trackMfaErrorCta,
+  trackMfaErrorViewed,
+} from '../../../hooks/identity/mfa/engine/activeFlow';
 import { getFailureCopyKeys } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
 import StepLayout, { type StepProps } from './step-layout';
@@ -26,10 +30,20 @@ const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
   const t = useI18nContext();
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const { title, description } = getFailureCopyKeys(step.code);
+  useEffect(() => {
+    trackMfaErrorViewed(step.code);
+  }, [step.code]);
   const supportLink = new URL(SUPPORT_LINK as string);
   supportLink.searchParams.set('mfa_error', step.code);
   const dismiss = () => onAction({ type: 'dismiss' });
-  const retry = () => onAction({ type: 'retry' });
+  const retry = () => {
+    trackMfaErrorCta(step.code, 'try_again');
+    onAction({ type: 'retry' });
+  };
+  const contactSupport = () => {
+    trackMfaErrorCta(step.code, 'contact_support');
+    setIsSupportOpen(true);
+  };
 
   const renderFooter = () => {
     if (getErrorHandling(step.code) === 'support') {
@@ -39,7 +53,7 @@ const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             isFullWidth
-            onClick={() => setIsSupportOpen(true)}
+            onClick={contactSupport}
             data-testid={MfaFlowTestIds.PRIMARY_BUTTON}
           >
             {t('mfaFailureContactSupport')}

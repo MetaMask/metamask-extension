@@ -13,6 +13,11 @@ import type {
   MfaReason,
 } from '../../../hooks/identity/mfa/engine/types';
 import { MfaFlowTestIds } from '../test-ids';
+import {
+  trackMfaErrorCta,
+  trackMfaErrorViewed,
+  trackMfaEvent,
+} from '../../../hooks/identity/mfa/engine/activeFlow';
 import CodeStep from './code-step';
 import EmailEntryStep from './email-entry-step';
 import FailureStep from './failure-step';
@@ -20,6 +25,12 @@ import IntroStep from './intro-step';
 import PasskeyStep from './passkey-step';
 import PickerStep from './picker-step';
 import TotpSetupStep from './totp-setup-step';
+
+jest.mock('../../../hooks/identity/mfa/engine/activeFlow', () => ({
+  trackMfaEvent: jest.fn(),
+  trackMfaErrorViewed: jest.fn(),
+  trackMfaErrorCta: jest.fn(),
+}));
 
 const mockCopy = jest.fn();
 const mockUseCopyToClipboard = jest.fn();
@@ -47,6 +58,10 @@ jest.mock('../../../hooks/useTheme', () => ({
 }));
 
 const reason = { operation: 'test' };
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 const buildState = <Step extends MfaFlowStep>(
   step: Step,
@@ -213,6 +228,12 @@ describe('PickerStep', () => {
       type: 'choose',
       method: 'email_otp',
     });
+    expect(trackMfaEvent).toHaveBeenCalledWith('MFA Method Selected', {
+      method: 'email_otp',
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment property
+      methods_offered: ['passkey', 'email_otp'],
+      purpose: 'verify',
+    });
   });
 
   it.each<['verify' | 'confirm', MfaReason, boolean]>([
@@ -304,6 +325,12 @@ describe('EmailEntryStep', () => {
     expect(screen.getByTestId(MfaFlowTestIds.ERROR_LINK)).toHaveAttribute(
       'href',
       'https://support.metamask.io/configure/wallet/email-in-use',
+    );
+    expect(trackMfaErrorViewed).toHaveBeenCalledWith('email_claimed');
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.ERROR_LINK));
+    expect(trackMfaErrorCta).toHaveBeenCalledWith(
+      'email_claimed',
+      'learn_more',
     );
   });
 
@@ -542,6 +569,10 @@ describe('CodeStep', () => {
     expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
     expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
+    expect(trackMfaEvent).toHaveBeenCalledWith('MFA Code Resent', {
+      trigger: 'user',
+      purpose: 'verify',
+    });
   });
 
   it('hides the wrong-code error once the user types again', () => {
@@ -711,6 +742,11 @@ describe('CodeStep', () => {
     ).toBeInTheDocument();
     fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
     expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
+    expect(trackMfaErrorCta).toHaveBeenCalledWith('server_error', 'try_again');
+    expect(trackMfaEvent).not.toHaveBeenCalledWith(
+      'MFA Code Resent',
+      expect.anything(),
+    );
   });
 
   it('shows a cooldown and its countdown before trying again', () => {
@@ -823,7 +859,9 @@ describe('FailureStep', () => {
       expect(
         screen.getByText(messages.mfaFailureSupportTitle.message),
       ).toBeInTheDocument();
+      expect(trackMfaErrorViewed).toHaveBeenCalledWith(code);
       fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+      expect(trackMfaErrorCta).toHaveBeenCalledWith(code, 'contact_support');
       const supportLink = new URL(
         screen.getByTestId('support-modal').textContent ?? '',
       );

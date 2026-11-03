@@ -5,6 +5,16 @@ import { extensionMfaControllerAdapter } from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
 import { useMfa } from './useMfa';
 
+const mockTrackEvent = jest.fn(async () => undefined);
+jest.mock('../../useAnalytics', () => ({
+  useAnalytics: () => ({
+    trackEvent: mockTrackEvent,
+    createEventBuilder: jest.requireActual(
+      '../../../../shared/lib/analytics/create-event-builder',
+    ).createEventBuilder,
+  }),
+}));
+
 jest.mock('./engine/activeFlow', () => ({
   startMfaFlow: jest.fn(),
 }));
@@ -57,6 +67,7 @@ describe('useMfa', () => {
       platform: 'extension',
       controller: extensionMfaControllerAdapter,
       reportError: expect.any(Function),
+      trackEvent: expect.any(Function),
     });
   });
 
@@ -71,6 +82,7 @@ describe('useMfa', () => {
       platform: 'extension',
       controller: extensionMfaControllerAdapter,
       reportError: expect.any(Function),
+      trackEvent: expect.any(Function),
     });
   });
 
@@ -96,5 +108,25 @@ describe('useMfa', () => {
       },
       extra: { step: 'otp' },
     });
+  });
+
+  it('sends the kit events as MetaMetrics events', async () => {
+    await renderUseMfa().enroll({
+      method: 'email_otp',
+      reason: { operation: 'settings.addEmail' },
+    });
+    const { trackEvent } = mockStartMfaFlow.mock.calls[0][0];
+
+    trackEvent?.('MFA Flow Status Updated', { status: 'started' });
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'MFA Flow Status Updated',
+        properties: expect.objectContaining({
+          category: 'Auth',
+          status: 'started',
+        }),
+      }),
+    );
   });
 });
