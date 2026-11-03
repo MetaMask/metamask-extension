@@ -21,8 +21,8 @@ export const AMOUNT_INPUT_MIN_FONT_SIZE: AmountInputFontSize =
 
 /**
  * Content width of a full-width amount row in the 360px popup (16px page
- * padding on each side). Wider layouts such as the expanded view keep this
- * width so sizes match the popup.
+ * padding on each side). Inputs measure their real width with
+ * `useAmountInputFontSize`; this is the fallback before the first layout.
  */
 export const AMOUNT_INPUT_POPUP_WIDTH = 328;
 
