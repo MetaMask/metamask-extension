@@ -27,6 +27,7 @@ import {
   findSelectedQuote,
   isTokenStateSettled,
   resolveBuildQuoteViewKind,
+  getAmountFontSize,
   resolveCanContinue,
   resolveDisplayedQuoteError,
   resolvePaymentMethodLabel,
@@ -45,7 +46,8 @@ export type RampsBuildQuoteReadyViewModel = {
   pageSubtitle?: string;
   currencySymbol: string;
   amount: string;
-  amountTextClassName: string;
+  amountFontSize: number;
+  hasAmountError: boolean;
   paymentMethodLabel: string;
   showPaymentMethodSpinner: boolean;
   displayedQuoteError: string | null;
@@ -341,9 +343,8 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     pageSubtitle: networkName ? t('rampsOnNetwork', [networkName]) : undefined,
     currencySymbol,
     amount,
-    amountTextClassName: `text-[56px] font-normal leading-none ${
-      (continueError ?? displayedError) ? 'text-error-default' : 'text-default'
-    }`,
+    amountFontSize: getAmountFontSize(`${currencySymbol}${amount}`),
+    hasAmountError: Boolean(continueError ?? displayedError),
     paymentMethodLabel,
     showPaymentMethodSpinner:
       paymentMethodsStatus === 'loading' &&

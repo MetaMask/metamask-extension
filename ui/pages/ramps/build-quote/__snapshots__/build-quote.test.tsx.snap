@@ -44,10 +44,12 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="flex-row flex items-baseline justify-center"
+          class="flex-row flex h-[88px] max-w-full items-center justify-center"
+          data-testid="ramps-build-quote-amount-row"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            style="font-size: 85px; line-height: 85px;"
           >
             GBP
           </span>
@@ -56,15 +58,17 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
+              style="font-size: 85px; line-height: 85px;"
             >
               25
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              style="font-size: 85px; line-height: 85px;"
               type="text"
               value="25"
             />
@@ -742,10 +746,12 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="flex-row flex items-baseline justify-center"
+          class="flex-row flex h-[88px] max-w-full items-center justify-center"
+          data-testid="ramps-build-quote-amount-row"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            style="font-size: 88px; line-height: 88px;"
           >
             $
           </span>
@@ -754,15 +760,17 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
@@ -874,10 +882,12 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="flex-row flex items-baseline justify-center"
+          class="flex-row flex h-[88px] max-w-full items-center justify-center"
+          data-testid="ramps-build-quote-amount-row"
         >
           <span
-            class="text-[56px] font-normal leading-none text-error-default"
+            class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            style="font-size: 88px; line-height: 88px;"
           >
             $
           </span>
@@ -886,15 +896,17 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-error-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
@@ -1030,10 +1042,12 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="flex-row flex items-baseline justify-center"
+          class="flex-row flex h-[88px] max-w-full items-center justify-center"
+          data-testid="ramps-build-quote-amount-row"
         >
           <span
-            class="text-[56px] font-normal leading-none text-error-default"
+            class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            style="font-size: 88px; line-height: 88px;"
           >
             $
           </span>
@@ -1042,15 +1056,17 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-error-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
@@ -1186,10 +1202,12 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="flex-row flex items-baseline justify-center"
+          class="flex-row flex h-[88px] max-w-full items-center justify-center"
+          data-testid="ramps-build-quote-amount-row"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            style="font-size: 88px; line-height: 88px;"
           >
             $
           </span>
@@ -1198,15 +1216,17 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
@@ -1318,10 +1338,12 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="flex-row flex items-baseline justify-center"
+          class="flex-row flex h-[88px] max-w-full items-center justify-center"
+          data-testid="ramps-build-quote-amount-row"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            style="font-size: 88px; line-height: 88px;"
           >
             $
           </span>
@@ -1330,15 +1352,17 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
@@ -1767,10 +1791,12 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="flex-row flex items-baseline justify-center"
+          class="flex-row flex h-[88px] max-w-full items-center justify-center"
+          data-testid="ramps-build-quote-amount-row"
         >
           <span
-            class="text-[56px] font-normal leading-none text-error-default"
+            class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            style="font-size: 88px; line-height: 88px;"
           >
             $
           </span>
@@ -1779,15 +1805,17 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
+              style="font-size: 88px; line-height: 88px;"
             >
               100
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-error-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="100"
             />
@@ -1923,10 +1951,12 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="flex-row flex items-baseline justify-center"
+          class="flex-row flex h-[88px] max-w-full items-center justify-center"
+          data-testid="ramps-build-quote-amount-row"
         >
           <span
-            class="text-[56px] font-normal leading-none text-default"
+            class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
+            style="font-size: 85px; line-height: 85px;"
           >
             GBP
           </span>
@@ -1935,15 +1965,17 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
           >
             <span
               aria-hidden="true"
-              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+              class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
+              style="font-size: 85px; line-height: 85px;"
             >
               50
             </span>
             <input
               aria-label="Amount"
-              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
+              style="font-size: 85px; line-height: 85px;"
               type="text"
               value="50"
             />

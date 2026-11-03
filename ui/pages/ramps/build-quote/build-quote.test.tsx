@@ -191,6 +191,26 @@ describe('RampsBuildQuoteScreen', () => {
     expect(amountInput).not.toHaveAttribute('size');
   });
 
+  it('sets the symbol, text twin and input in Hero at the same size', () => {
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+    const amountRow = screen.getByTestId('ramps-build-quote-amount-row');
+    const [symbol] = Array.from(amountRow.children);
+    const amountSizeTwin = amountInput.parentElement?.querySelector(
+      '[aria-hidden="true"]',
+    );
+
+    for (const element of [symbol, amountSizeTwin, amountInput]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '88px', lineHeight: '88px' });
+    }
+  });
+
   it('matches snapshot while quote is loading', () => {
     useRampsQuotes.mockReturnValue({
       data: null,

@@ -7,6 +7,8 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  FontFamily,
+  Input,
   Text,
   TextButton,
   TextButtonSize,
@@ -25,7 +27,8 @@ export default function RampsBuildQuoteView({
   pageSubtitle,
   currencySymbol,
   amount,
-  amountTextClassName,
+  amountFontSize,
+  hasAmountError,
   paymentMethodLabel,
   showPaymentMethodSpinner,
   displayedQuoteError,
@@ -40,6 +43,13 @@ export default function RampsBuildQuoteView({
 }: RampsBuildQuoteReadyViewModel) {
   const t = useI18nContext();
   const [isProviderModalOpen, setIsProviderModalOpen] = useState(false);
+  const amountTextColor = hasAmountError
+    ? TextColor.ErrorDefault
+    : TextColor.TextDefault;
+  const amountStyle = {
+    fontSize: amountFontSize,
+    lineHeight: `${amountFontSize}px`,
+  };
 
   return (
     <Box
@@ -64,23 +74,38 @@ export default function RampsBuildQuoteView({
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
         >
+          {/* Fixed at the largest step so the pill stays put as the amount shrinks. */}
           <Box
-            className="flex items-baseline justify-center"
+            className="flex h-[88px] max-w-full items-center justify-center"
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
+            data-testid="ramps-build-quote-amount-row"
           >
-            <span className={amountTextClassName}>{currencySymbol}</span>
+            <Text
+              variant={TextVariant.AmountDisplayLg}
+              fontFamily={FontFamily.Hero}
+              color={amountTextColor}
+              style={amountStyle}
+            >
+              {currencySymbol}
+            </Text>
             {/* The hidden amount sets an exact cross-browser input width. */}
             <span className="relative w-max min-w-[1ch]">
-              <span
+              <Text
                 aria-hidden="true"
-                className={`block invisible min-w-[1ch] whitespace-pre ${amountTextClassName}`}
+                variant={TextVariant.AmountDisplayLg}
+                fontFamily={FontFamily.Hero}
+                className="invisible block min-w-[1ch] whitespace-pre"
+                style={amountStyle}
               >
                 {amount || '0'}
-              </span>
-              <input
+              </Text>
+              <Input
                 aria-label={t('amount')}
-                className={`absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none ${amountTextClassName}`}
+                textVariant={TextVariant.AmountDisplayLg}
+                isStateStylesDisabled
+                className={`absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero ${amountTextColor}`}
+                style={amountStyle}
                 data-testid="ramps-build-quote-amount-input"
                 inputMode="decimal"
                 onChange={handleAmountChange}

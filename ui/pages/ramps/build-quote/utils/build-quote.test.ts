@@ -1,6 +1,7 @@
 import type { Quote } from '@metamask/ramps-controller';
 import {
   findSelectedQuote,
+  getAmountFontSize,
   isTokenStateSettled,
   parseFiatAmount,
   resolveBuildQuoteViewKind,
@@ -10,6 +11,26 @@ import {
 } from './build-quote';
 
 describe('build-quote utils', () => {
+  describe('getAmountFontSize', () => {
+    it('follows the Mobile amount scale with a 4-character reserve', () => {
+      const cases: [string, number][] = [
+        ['$1', 88],
+        ['$100', 88],
+        ['$1000', 85],
+        ['$1234567.89', 64],
+        ['₩1000000000', 64],
+        ['$12345678901234.56', 39],
+        ['$1234567890123456789', 32],
+        ['$1234567890123456789012345', 23],
+        [`$${'9'.repeat(48)}`, 12],
+      ];
+
+      for (const [displayText, expected] of cases) {
+        expect(getAmountFontSize(displayText)).toBe(expected);
+      }
+    });
+  });
+
   describe('parseFiatAmount', () => {
     it('matches snapshot for supported amount formats', () => {
       expect({
