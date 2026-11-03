@@ -4,6 +4,7 @@ import {
   EXTERNAL_RPC_GRACE_MS,
   UI_CLOSE_GRACE_MS,
   UI_INTERACTION_GRACE_MS,
+  UI_OPEN_GRACE_MS,
   type CurrentActivity,
   type IdleStatus,
   getIdleStatus,
@@ -82,6 +83,22 @@ describe('getIdleStatus', () => {
     ).toBe('idle');
   });
 
+  it('returns active_recent_ui_open just inside the grace window', () => {
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiOpen: UI_OPEN_GRACE_MS - 1,
+      }),
+    ).toBe('active_recent_ui_open');
+  });
+
+  it('returns idle once past the ui-open grace window', () => {
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiOpen: UI_OPEN_GRACE_MS,
+      }),
+    ).toBe('idle');
+  });
+
   it('returns active_recent_ui_interaction just inside the grace window', () => {
     expect(
       getIdleStatus(steadyActivity(), {
@@ -136,6 +153,7 @@ describe('getIdleStatus', () => {
     expect(
       getIdleStatus(steadyActivity(), {
         msSinceLastUiClosed: undefined,
+        msSinceLastUiOpen: undefined,
         msSinceLastUiInteraction: undefined,
         msSinceLastConnectedDappRpc: undefined,
         msSinceLastExternalExtensionRpc: undefined,
@@ -188,6 +206,20 @@ describe('getIdleStatus', () => {
         msSinceLastExternalExtensionRpc: 500,
       }),
     ).toBe('active_recent_external_extension_rpc');
+
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiOpen: 1_000,
+        msSinceLastUiInteraction: 2_000,
+      }),
+    ).toBe('active_recent_ui_open');
+
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiOpen: 4_000,
+        msSinceLastConnectedDappRpc: 1_000,
+      }),
+    ).toBe('active_recent_connected_dapp_rpc');
   });
 
   it('ignores a newer signal that is already outside its grace window', () => {
@@ -208,6 +240,14 @@ describe('getIdleStatus', () => {
         msSinceLastExternalExtensionRpc: 0,
       }),
     ).toBe('active_recent_ui_closed');
+
+    expect(
+      getIdleStatus(steadyActivity(), {
+        msSinceLastUiOpen: 0,
+        msSinceLastUiInteraction: 0,
+        msSinceLastConnectedDappRpc: 0,
+      }),
+    ).toBe('active_recent_ui_open');
 
     expect(
       getIdleStatus(steadyActivity(), {
