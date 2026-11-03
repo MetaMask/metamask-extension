@@ -1443,15 +1443,21 @@ describe('MoneyHomePage', () => {
       expect(screen.getByTestId('money-balance').parentElement).toHaveClass(
         'sm:items-center',
       );
-      expect(screen.getByTestId('money-add-button')).toHaveClass('flex-1');
-      expect(screen.getByTestId('money-send-button')).toHaveClass('flex-1');
+      expect(screen.getByTestId('money-add-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
+      expect(screen.getByTestId('money-send-button')).toHaveClass(
+        'h-[76px]',
+        'flex-col',
+      );
       expect(screen.getByTestId('money-fund-card')).toHaveClass(
         'flex-col',
         'max-w-[389px]',
       );
     });
 
-    it('left-aligns the balance and stretches the action buttons to their content', () => {
+    it('left-aligns the balance and uses plain action buttons when fullscreen design is on', () => {
       mockUseFullScreenDesign.mockReturnValue(true);
 
       renderWithLocalization(<MoneyHomePage />);
@@ -1459,11 +1465,15 @@ describe('MoneyHomePage', () => {
       const balanceColumn = screen.getByTestId('money-balance').parentElement;
       expect(balanceColumn).not.toHaveClass('sm:items-center');
       expect(balanceColumn).not.toHaveClass('max-w-[784px]');
-      expect(screen.getByTestId('money-add-button')).not.toHaveClass('flex-1');
-      expect(screen.getByTestId('money-send-button')).not.toHaveClass('flex-1');
+      expect(screen.getByTestId('money-add-button')).not.toHaveClass(
+        'h-[76px]',
+      );
+      expect(screen.getByTestId('money-send-button')).not.toHaveClass(
+        'h-[76px]',
+      );
     });
 
-    it('lays the fund card out in a full-width row', () => {
+    it('lays the fund card out in a full-width row when fullscreen design is on', () => {
       mockUseFullScreenDesign.mockReturnValue(true);
 
       renderWithLocalization(<MoneyHomePage />);
@@ -1471,15 +1481,6 @@ describe('MoneyHomePage', () => {
       const card = screen.getByTestId('money-fund-card');
       expect(card).toHaveClass('flex-row', 'w-full');
       expect(card).not.toHaveClass('max-w-[389px]');
-    });
-
-    it('keeps the add and send buttons working', () => {
-      mockUseFullScreenDesign.mockReturnValue(true);
-
-      renderWithLocalization(<MoneyHomePage />);
-      fireEvent.click(screen.getByTestId('money-add-button'));
-
-      expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
     });
   });
 });

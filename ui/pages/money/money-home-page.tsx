@@ -117,6 +117,50 @@ const formatInterestEarned = (value: string | undefined) => {
   return earnings.lessThan(0) ? `-${formatted}` : formatted;
 };
 
+type ActionButtonProps = {
+  icon: IconName;
+  label: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  testId?: string;
+};
+
+const MoneyActionButton = ({
+  icon,
+  label,
+  onClick,
+  disabled,
+  testId,
+}: ActionButtonProps) => {
+  const isFullScreenDesign = useFullScreenDesign();
+
+  return (
+    <Button
+      variant={ButtonVariant.Secondary}
+      size={ButtonSize.Lg}
+      startIconName={icon}
+      startIconProps={
+        isFullScreenDesign
+          ? undefined
+          : { size: IconSize.Lg, color: IconColor.IconDefault }
+      }
+      textProps={
+        isFullScreenDesign ? undefined : { variant: TextVariant.BodySm }
+      }
+      isDisabled={disabled}
+      onClick={onClick}
+      data-testid={testId}
+      className={classnames(
+        'flex-1',
+        !isFullScreenDesign &&
+          'h-[76px] flex-col gap-y-0.5 rounded-xl px-0 opacity-100',
+      )}
+    >
+      {label}
+    </Button>
+  );
+};
+
 export function MoneyHomePage() {
   const t = useI18nContext();
   const scrollbarGutterWidth = useScrollContainerGutterWidth();
@@ -489,32 +533,26 @@ export function MoneyHomePage() {
 
           <div
             className={classnames(
-              'mt-2 flex w-full max-w-sm gap-2 pt-2',
-              !isFullScreenDesign && 'self-start sm:self-center',
+              'mt-2 flex w-full gap-2 pt-2',
+              isFullScreenDesign
+                ? 'max-w-sm mb-2'
+                : 'max-w-[389px] self-start sm:self-center',
             )}
           >
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              startIconName={IconName.Add}
-              className="flex-1"
-              isDisabled={isDepositLoading}
+            <MoneyActionButton
+              icon={IconName.Add}
+              label={t('moneyAdd')}
               onClick={handleAddFundsFromActionRow}
-              data-testid="money-add-button"
-            >
-              {t('moneyAdd')}
-            </Button>
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              startIconName={IconName.Arrow2UpRight}
-              className="flex-1"
-              isDisabled={!IS_MONEY_TRANSFER_SHEET_ENABLED && isWithdrawLoading}
+              disabled={isDepositLoading}
+              testId="money-add-button"
+            />
+            <MoneyActionButton
+              icon={IconName.Arrow2UpRight}
+              label={t('moneySend')}
               onClick={handleSend}
-              data-testid="money-send-button"
-            >
-              {t('moneySend')}
-            </Button>
+              disabled={!IS_MONEY_TRANSFER_SHEET_ENABLED && isWithdrawLoading}
+              testId="money-send-button"
+            />
           </div>
 
           {showFundedLayout ? null : (
@@ -522,7 +560,7 @@ export function MoneyHomePage() {
               data-testid="money-fund-card"
               className={classnames(
                 'mt-1 flex w-full gap-4 overflow-hidden rounded-2xl bg-background-muted p-4',
-                isFullScreenDesign ? 'flex-row' : 'max-w-sm flex-col',
+                isFullScreenDesign ? 'flex-row' : 'max-w-[389px] flex-col',
               )}
             >
               <img
@@ -542,14 +580,11 @@ export function MoneyHomePage() {
                 )}
               >
                 <div>
-                  <Text
-                    variant={TextVariant.HeadingLg}
-                    fontWeight={FontWeight.Bold}
-                  >
+                  <h2 className="text-s-heading-lg font-bold">
                     {apyDisplay
                       ? t('moneyEarnApyTitle', [apyDisplay])
                       : t('moneyEarnTitle')}
-                  </Text>
+                  </h2>
                   <Text
                     variant={TextVariant.BodyMd}
                     color={TextColor.TextAlternative}
