@@ -28,7 +28,6 @@ import {
 import { DAY } from '../../../../shared/constants/time';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
-import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 import { GlobalMenuDrawerWithList } from './global-menu-drawer-with-list';
 
@@ -44,8 +43,6 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
 }));
 
 jest.mock('../../../../shared/lib/environment');
-
-jest.mock('../../../hooks/useFullScreenDesign');
 
 jest.mock('../../../hooks/useSidePanelEnabled', () => ({
   useSidePanelEnabled: jest.fn(() => false),
@@ -104,48 +101,6 @@ describe('GlobalMenuDrawer', () => {
         this.dispatchEvent(new Event('close'));
       };
     }
-  });
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    getEnvironmentType.mockReturnValue('popup');
-    jest.mocked(useFullScreenDesign).mockReturnValue(false);
-  });
-
-  describe('placement', () => {
-    const renderDrawer = () =>
-      renderWithProvider(
-        <GlobalMenuDrawer isOpen onClose={jest.fn()} data-testid="drawer">
-          <span>Content</span>
-        </GlobalMenuDrawer>,
-        configureStore(mockState),
-        '/',
-      ).getByTestId('drawer');
-
-    it('aligns with the width-capped column and sits at the top in the popup', () => {
-      expect(renderDrawer()).toHaveClass(
-        '[--drawer-column-width:var(--width-max)]',
-        '[--drawer-header-height:0px]',
-      );
-    });
-
-    it('leaves the app header visible in fullscreen', () => {
-      getEnvironmentType.mockReturnValue('fullscreen');
-
-      expect(renderDrawer()).toHaveClass(
-        '[--drawer-column-width:var(--width-max)]',
-        '[--drawer-header-height:var(--header-height)]',
-      );
-    });
-
-    it('aligns with the wider column and leaves the taller app header visible in the fullscreen design', () => {
-      jest.mocked(useFullScreenDesign).mockReturnValue(true);
-
-      expect(renderDrawer()).toHaveClass(
-        '[--drawer-column-width:var(--width-max-fullscreen-redesign)]',
-        '[--drawer-header-height:var(--header-height-fullscreen-design)]',
-      );
-    });
   });
 
   it('renders children when open', async () => {

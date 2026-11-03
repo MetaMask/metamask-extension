@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useRef, useCallback } from 'react';
 import classnames from 'clsx';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxBackgroundColor,
@@ -8,7 +9,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
+import { getIsFullscreenRedesignEnabled } from '../../../selectors/multichain/feature-flags';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -54,23 +55,21 @@ const dialogClassNameBase = classnames(
 
 const dialogClassNamePlacement = classnames(
   'me-[max(0px,calc((100vw-var(--drawer-column-width))/2))]',
-  'min-[576px]:top-[var(--drawer-header-height)] min-[576px]:h-[calc(100%-var(--drawer-header-height))] min-[576px]:max-h-[calc(100%-var(--drawer-header-height))]',
+  'min-[768px]:top-[var(--drawer-header-height)] min-[768px]:h-[calc(100%-var(--drawer-header-height))] min-[768px]:max-h-[calc(100%-var(--drawer-header-height))]',
 );
 
 const getDialogLayoutClassName = (
   isFullScreenDesign: boolean,
   isFullscreen: boolean,
-) => {
-  if (isFullScreenDesign) {
-    return '[--drawer-column-width:var(--width-max-fullscreen-redesign)] [--drawer-header-height:var(--header-height-fullscreen-design)]';
-  }
-  return classnames(
-    '[--drawer-column-width:var(--width-max)]',
-    isFullscreen
+) =>
+  classnames(
+    isFullScreenDesign
+      ? '[--drawer-column-width:var(--width-max-fullscreen-redesign)]'
+      : '[--drawer-column-width:var(--width-max)]',
+    isFullscreen && !isFullScreenDesign
       ? '[--drawer-header-height:var(--header-height)]'
       : '[--drawer-header-height:0px]',
   );
-};
 
 const frameClassName = classnames(
   'h-full w-full',
@@ -110,7 +109,7 @@ export const GlobalMenuDrawer = ({
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isLargeDrawer = isFullscreen || isSidepanel;
-  const isFullScreenDesign = useFullScreenDesign();
+  const isFullScreenDesign = useSelector(getIsFullscreenRedesignEnabled);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
