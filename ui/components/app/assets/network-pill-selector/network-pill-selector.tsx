@@ -51,6 +51,7 @@ const NetworkPill = ({
     type="button"
     className={classnames(
       'flex h-10 shrink-0 items-center gap-2 rounded-full border-0 px-4',
+      'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default',
       isSelected
         ? 'bg-icon-default text-background-default'
         : 'bg-muted text-default hover:bg-muted-hover',
