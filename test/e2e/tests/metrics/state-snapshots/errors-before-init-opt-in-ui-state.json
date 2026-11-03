@@ -259,6 +259,7 @@
           "0x539": "boolean"
         },
         "tokenSortConfig": "object",
+        "transactionToastsEnabled": "boolean",
         "useNativeCurrencyAsPrimaryCurrency": "boolean",
         "useSidePanelAsDefault": "boolean"
       },
