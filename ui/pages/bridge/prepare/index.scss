@@ -1,21 +1,6 @@
 @use "design-system";
 
 .prepare-bridge-page {
-  .mm-text-field {
-    background-color: inherit;
-
-    &--focused {
-      outline: none;
-    }
-  }
-
-  .defined {
-    & > .mm-input--disabled,
-    p {
-      opacity: 1;
-    }
-  }
-
   .mm-select-button__content {
     max-height: 100%;
     overflow: hidden;

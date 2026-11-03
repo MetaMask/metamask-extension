@@ -11,12 +11,20 @@ import {
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
-import { Skeleton } from '@metamask/design-system-react';
+import {
+  Box as DsBox,
+  BoxAlignItems,
+  BoxFlexDirection,
+  FontFamily,
+  Input,
+  Skeleton,
+  Text as DsText,
+  TextVariant as DsTextVariant,
+  twMerge,
+} from '@metamask/design-system-react';
 import {
   IconName,
   Text,
-  TextField,
-  TextFieldType,
   ButtonLink,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -72,6 +80,40 @@ const getBlockExplorerUrl = (
     : null;
 };
 
+/**
+ * Font size in px for the amount field, stepping down by length so the widest
+ * Grotzec digits fit the 219px field beside the asset picker in the popup.
+ * Longer values scroll inside the field at 20px.
+ *
+ * @param displayText - The amount prefix (if any) and value as rendered.
+ * @returns The font size in px. Line height equals the font size.
+ */
+export const getBridgeAmountFontSize = (displayText: string): number => {
+  const { length } = displayText;
+  if (length <= 12) {
+    return 40;
+  }
+  if (length <= 14) {
+    return 35;
+  }
+  if (length <= 16) {
+    return 30;
+  }
+  if (length <= 19) {
+    return 25;
+  }
+  return 20;
+};
+
+type BridgeAmountFieldProps = {
+  testId: string;
+  autoFocus?: boolean;
+  value?: string;
+  readOnly?: boolean;
+  disabled?: boolean;
+  className?: string;
+};
+
 export const BridgeInputGroup = ({
   token,
   onAmountChange,
@@ -95,10 +137,7 @@ export const BridgeInputGroup = ({
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
   buttonProps: { testId: string };
-  amountFieldProps: Pick<
-    React.ComponentProps<typeof TextField>,
-    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
-  >;
+  amountFieldProps: BridgeAmountFieldProps;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
   containerProps?: React.ComponentProps<typeof Column>;
@@ -160,22 +199,14 @@ export const BridgeInputGroup = ({
     );
   }, [locale, balanceAmount, token.symbol]);
 
-  const inputFontSize = useMemo(() => {
-    const len = (amountFieldProps?.value ?? '').toString().length;
-    if (len <= 10) {
-      return 40;
-    }
-    if (len <= 15) {
-      return 35;
-    }
-    if (len <= 20) {
-      return 30;
-    }
-    if (len <= 25) {
-      return 25;
-    }
-    return 20;
-  }, [amountFieldProps?.value]);
+  const amountValue = amountFieldProps?.value?.toString() ?? '';
+  const inputFontSize = getBridgeAmountFontSize(
+    `${typeof amountInputPrefix === 'string' ? amountInputPrefix : ''}${amountValue}`,
+  );
+  const amountStyle = {
+    fontSize: inputFontSize,
+    lineHeight: `${inputFontSize}px`,
+  };
 
   useEffect(() => {
     const hasAmountInputPrefixChanged =
@@ -227,70 +258,63 @@ export const BridgeInputGroup = ({
             style={{ flex: 1, minWidth: 0 }}
           />
         ) : (
-          <TextField
-            startAccessory={
-              amountInputPrefix ? (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  style={{
-                    fontSize: inputFontSize,
-                    fontWeight: 400,
-                    lineHeight: 1,
-                  }}
-                >
-                  {amountInputPrefix}
-                </Text>
-              ) : undefined
-            }
-            inputProps={{
-              disableStateStyles: true,
-              textAlign: TextAlign.Start,
-              style: {
-                fontWeight: 400,
-                fontSize: inputFontSize,
-                transition: 'font-size 0.1s',
-                padding: 0,
-              },
-            }}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              opacity:
-                isAmountReadOnly && amountFieldProps?.value ? 1 : undefined,
-            }}
-            display={Display.Flex}
-            inputRef={inputRef}
-            type={TextFieldType.Text}
-            className="amount-input"
-            placeholder="0"
-            onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
-              if (e) {
+          <DsBox
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+            className={twMerge(
+              'amount-input min-w-0 flex-1',
+              amountFieldProps.className,
+              isAmountReadOnly && !amountValue && 'opacity-50',
+            )}
+            onClick={() => inputRef.current?.focus()}
+          >
+            {amountInputPrefix ? (
+              <DsText
+                variant={DsTextVariant.AmountDisplayLg}
+                fontFamily={FontFamily.Hero}
+                style={amountStyle}
+              >
+                {amountInputPrefix}
+              </DsText>
+            ) : null}
+            <Input
+              ref={inputRef}
+              data-testid={amountFieldProps.testId}
+              autoFocus={amountFieldProps.autoFocus}
+              value={amountValue}
+              isReadOnly={amountFieldProps.readOnly}
+              isDisabled={amountFieldProps.disabled}
+              isStateStylesDisabled
+              textVariant={DsTextVariant.AmountDisplayLg}
+              className="min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
+              style={{ ...amountStyle, transition: 'font-size 0.1s' }}
+              type="text"
+              autoComplete="off"
+              placeholder="0"
+              onKeyPress={(e) => {
                 // Only allow numbers and at most one decimal point
-                if (
-                  e.key === '.' &&
-                  amountFieldProps.value?.toString().includes('.')
-                ) {
+                if (e.key === '.' && amountValue.includes('.')) {
                   e.preventDefault();
                 } else if (!/^[\d.]{1}$/u.test(e.key)) {
                   e.preventDefault();
                 }
-              }
-            }}
-            onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-              e.preventDefault();
-              const cleanedValue = sanitizeAmountInput(
-                e.clipboardData.getData('text'),
-              );
-              onAmountChange?.(cleanedValue ?? '');
-            }}
-            onChange={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const cleanedValue = sanitizeAmountInput(e.target.value);
-              onAmountChange?.(cleanedValue ?? '');
-            }}
-            {...amountFieldProps}
-          />
+              }}
+              onPaste={(e) => {
+                e.preventDefault();
+                const cleanedValue = sanitizeAmountInput(
+                  e.clipboardData.getData('text'),
+                );
+                onAmountChange?.(cleanedValue ?? '');
+              }}
+              onChange={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const cleanedValue = sanitizeAmountInput(e.target.value);
+                onAmountChange?.(cleanedValue ?? '');
+              }}
+            />
+          </DsBox>
         )}
         <SelectedAssetButton
           onClick={() => {

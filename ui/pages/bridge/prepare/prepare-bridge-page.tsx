@@ -685,9 +685,6 @@ const PrepareBridgePage = ({
               disabled: true,
               value: destinationAmount,
               autoFocus: false,
-              className: destinationTokenAmount
-                ? 'amount-input defined'
-                : 'amount-input',
             }}
             showAmountSkeleton={isInitialQuoteLoading}
             buttonProps={{ testId: 'bridge-destination-button' }}

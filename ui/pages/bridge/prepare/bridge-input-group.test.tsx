@@ -27,7 +27,10 @@ import configureStore from '../../../store/store';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import BridgeAssetPickerPage from '../asset-picker';
-import { BridgeInputGroup } from './bridge-input-group';
+import {
+  BridgeInputGroup,
+  getBridgeAmountFontSize,
+} from './bridge-input-group';
 
 const mockUseVirtualizer = jest.fn();
 const mockNavigate = jest.fn();
@@ -238,7 +241,81 @@ const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
   });
 };
 
+describe('getBridgeAmountFontSize', () => {
+  it('steps the font size down by rendered length', () => {
+    const cases: [string, number][] = [
+      ['', 40],
+      ['123456789012', 40],
+      ['1234567890123', 35],
+      ['12345678901234', 35],
+      ['123456789012345', 30],
+      ['1234567890123456', 30],
+      ['12345678901234567', 25],
+      ['1234567890123456789', 25],
+      ['12345678901234567890', 20],
+    ];
+
+    for (const [displayText, expected] of cases) {
+      expect(getBridgeAmountFontSize(displayText)).toBe(expected);
+    }
+  });
+});
+
 describe('BridgeInputGroup', () => {
+  it('sets the prefix and input in Hero at the same size', () => {
+    renderBridgeInputGroup(
+      {},
+      {
+        amountInputPrefix: '$',
+        amountFieldProps: {
+          testId: 'from-amount',
+          value: '123456789012',
+        },
+      },
+    );
+
+    const input = screen.getByTestId('from-amount');
+    const prefix = screen.getByText('$');
+
+    for (const element of [prefix, input]) {
+      expect(element).toHaveClass('font-hero');
+      expect(element).toHaveStyle({ fontSize: '35px', lineHeight: '35px' });
+    }
+  });
+
+  it('dims the read-only destination field until it has a value', () => {
+    const mockState = createBridgeMockStore();
+    const destinationFieldProps = {
+      testId: 'to-amount',
+      readOnly: true,
+      disabled: true,
+    };
+    const view = renderWithProvider(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '' }}
+      />,
+      configureStore(mockState),
+    );
+
+    const field = view.getByTestId('to-amount');
+    expect(field).toBeDisabled();
+    expect(field.parentElement).toHaveClass('opacity-50');
+
+    view.rerender(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '13.98' }}
+      />,
+    );
+
+    expect(view.getByTestId('to-amount').parentElement).not.toHaveClass(
+      'opacity-50',
+    );
+  });
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
