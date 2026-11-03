@@ -36,8 +36,6 @@ const mockHandleSelectAll = jest.fn();
 const mockFilter = (overrides = {}) => {
   jest.mocked(useHomeNetworkFilter).mockReturnValue({
     defaultNetworks: [ETHEREUM, OPTIMISM],
-    getDisabledTooltip: (disabled: boolean) =>
-      disabled ? 'Not supported' : undefined,
     handleSelectAllDefaultNetworks: mockHandleSelectAll,
     handleSelectNetwork: mockHandleSelectNetwork,
     hasOnlyDefaultNetworks: false,

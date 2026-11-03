@@ -33,7 +33,6 @@ type NetworkPillProps = {
   privacyMode: boolean;
   icon: React.ReactNode;
   onClick: () => void;
-  title?: string;
   testId: string;
 };
 
@@ -46,7 +45,6 @@ const NetworkPill = ({
   privacyMode,
   icon,
   onClick,
-  title,
   testId,
 }: NetworkPillProps) => (
   <button
@@ -61,7 +59,6 @@ const NetworkPill = ({
     aria-pressed={isSelected}
     disabled={isDisabled}
     onClick={onClick}
-    title={title}
     data-testid={testId}
     // React 18 has no `inert` prop; the empty attribute is what enables it
     {...(isHidden ? ({ inert: '' } as object) : {})}
@@ -97,7 +94,6 @@ export const NetworkPillSelector = () => {
   const { privacyMode } = useSelector(getPreferences);
   const {
     defaultNetworks,
-    getDisabledTooltip,
     handleSelectAllDefaultNetworks,
     handleSelectNetwork,
     hasOnlyDefaultNetworks,
@@ -198,7 +194,6 @@ export const NetworkPillSelector = () => {
                 />
               }
               onClick={() => handleSelectNetwork(network.chainId)}
-              title={getDisabledTooltip(disabled)}
               testId={`network-pill-${getSelectableChainId(network)}`}
             />
           );
