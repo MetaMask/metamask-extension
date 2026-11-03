@@ -49,7 +49,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
         >
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
-            style="font-size: 85px; line-height: 85px;"
+            style="font-size: 88px; line-height: 88px;"
           >
             GBP
           </span>
@@ -59,7 +59,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
             <span
               aria-hidden="true"
               class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
-              style="font-size: 85px; line-height: 85px;"
+              style="font-size: 88px; line-height: 88px;"
             >
               25
             </span>
@@ -68,7 +68,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
               class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
-              style="font-size: 85px; line-height: 85px;"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="25"
             />
@@ -1956,7 +1956,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
         >
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero"
-            style="font-size: 85px; line-height: 85px;"
+            style="font-size: 88px; line-height: 88px;"
           >
             GBP
           </span>
@@ -1966,7 +1966,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
             <span
               aria-hidden="true"
               class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre"
-              style="font-size: 85px; line-height: 85px;"
+              style="font-size: 88px; line-height: 88px;"
             >
               50
             </span>
@@ -1975,7 +1975,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
               class="w-full outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero text-default"
               data-testid="ramps-build-quote-amount-input"
               inputmode="decimal"
-              style="font-size: 85px; line-height: 85px;"
+              style="font-size: 88px; line-height: 88px;"
               type="text"
               value="50"
             />

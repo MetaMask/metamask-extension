@@ -16,6 +16,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getAmountInputTextStyle } from '../../../../helpers/utils/amount-input-font-size';
 import RampsTokenSelectionHeader from '../../token-selection/components/ramps-token-selection-header';
 import RampsProviderSelectionModal from '../../provider-selection';
 import type { RampsBuildQuoteReadyViewModel } from '../hooks/useRampsBuildQuote';
@@ -46,10 +47,7 @@ export default function RampsBuildQuoteView({
   const amountTextColor = hasAmountError
     ? TextColor.ErrorDefault
     : TextColor.TextDefault;
-  const amountStyle = {
-    fontSize: amountFontSize,
-    lineHeight: `${amountFontSize}px`,
-  };
+  const amountStyle = getAmountInputTextStyle(amountFontSize);
 
   return (
     <Box

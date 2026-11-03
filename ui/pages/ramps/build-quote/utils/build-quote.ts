@@ -18,30 +18,6 @@ type QuotesResponseOrNull = {
   error?: QuoteErrorItem[];
 } | null;
 
-// Mobile reserves 2 characters on a ~358px row. The popup row is 328px, so 4
-// characters keep the widest Grotzec digits inside it at every step.
-const AMOUNT_SIDE_RESERVE_CHARACTERS = 4;
-
-/**
- * Font size in px for the Buy amount, using the Mobile shared amount scale
- * (`getFontSizeForInputLength`): 88px through 8 counted characters, then
- * 3.5px smaller per character down to 32px at 24, then down to a 12px floor.
- *
- * @param displayText - The currency symbol and amount as rendered.
- * @returns The font size in px. Line height equals the font size.
- */
-export function getAmountFontSize(displayText: string): number {
-  const contentLength = displayText.length + AMOUNT_SIDE_RESERVE_CHARACTERS;
-
-  if (contentLength <= 8) {
-    return 88;
-  }
-  if (contentLength <= 24) {
-    return Math.round(88 - (contentLength - 8) * 3.5);
-  }
-  return Math.max(12, Math.round(32 - (contentLength - 24) * (20 / 14)));
-}
-
 export function parseFiatAmount(amount: string): number {
   const parsed = Number.parseFloat(amount.replace(',', '.'));
   return Number.isFinite(parsed) ? parsed : 0;
