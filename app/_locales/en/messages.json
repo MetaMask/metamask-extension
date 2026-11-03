@@ -3537,6 +3537,9 @@
   "deepLink_theHomePage": {
     "message": "the home page"
   },
+  "deepLink_theMoneyDepositPage": {
+    "message": "the Money deposit page"
+  },
   "deepLink_theMoneyPage": {
     "message": "the Money page"
   },

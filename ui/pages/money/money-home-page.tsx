@@ -38,6 +38,7 @@ import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-acco
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAddDepositToken } from '../../hooks/money/use-money-add-deposit-token';
+import { useMoneyDepositDeeplink } from '../../hooks/money/use-money-deposit-deeplink';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
 import { useMoneyAccountWithdrawal } from '../../hooks/money/useMoneyAccountWithdrawal';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
@@ -258,6 +259,11 @@ export function MoneyHomePage() {
   });
   const isPageLoading =
     isAvailabilityLoading || (availability.isAvailable && isBalanceLoading);
+
+  useMoneyDepositDeeplink({
+    isReady: !isPageLoading && availability.isAvailable,
+    initiateDeposit,
+  });
 
   useTrackOnce(!isPageLoading && availability.isAvailable, trackScreenViewed);
 

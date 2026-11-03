@@ -42,6 +42,7 @@ const mockUseMoneyAccountWithdrawal = jest.fn();
 const mockInitiateWithdrawal = jest.fn();
 const mockUseUpgradeMoneyAccount = jest.fn();
 const mockUseOpenMoneyFtueOnFirstVisit = jest.fn();
+const mockUseMoneyDepositDeeplink = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -134,6 +135,10 @@ jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
 jest.mock('../../hooks/money/use-open-money-ftue-on-first-visit', () => ({
   useOpenMoneyFtueOnFirstVisit: (options: unknown) =>
     mockUseOpenMoneyFtueOnFirstVisit(options),
+}));
+jest.mock('../../hooks/money/use-money-deposit-deeplink', () => ({
+  useMoneyDepositDeeplink: (options: unknown) =>
+    mockUseMoneyDepositDeeplink(options),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -300,6 +305,35 @@ describe('MoneyHomePage', () => {
     expect(mockUseOpenMoneyFtueOnFirstVisit).toHaveBeenCalledWith({
       isAvailable: true,
       isLoading: false,
+    });
+  });
+
+  it('handles the deposit deeplink once the Money account is ready', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseMoneyDepositDeeplink).toHaveBeenLastCalledWith({
+      isReady: true,
+      initiateDeposit: mockInitiateDeposit,
+    });
+  });
+
+  it.each([
+    [
+      'availability is resolving',
+      { availability: { isAvailable: false }, isLoading: true },
+    ],
+    [
+      'the Money account is unavailable',
+      { availability: { isAvailable: false }, isLoading: false },
+    ],
+  ])('holds the deposit deeplink while %s', (_, availabilityResult) => {
+    mockUseMoneyAccountAvailability.mockReturnValue(availabilityResult);
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseMoneyDepositDeeplink).toHaveBeenLastCalledWith({
+      isReady: false,
+      initiateDeposit: mockInitiateDeposit,
     });
   });
 
