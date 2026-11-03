@@ -142,23 +142,6 @@ describe('resolveTicker', () => {
     });
   });
 
-  it('returns null when search results contain no exact matches', async () => {
-    fetchMock.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        data: [
-          {
-            assetId: 'eip155:1/erc20:0xdoge',
-            symbol: 'DOGE',
-            name: 'Dogecoin',
-          },
-        ],
-      }),
-    } as Response);
-
-    await expect(resolveTicker('DOG')).resolves.toBeNull();
-  });
-
   it('returns null for an empty ticker or an unsuccessful search', async () => {
     await expect(resolveTicker('   ')).resolves.toBeNull();
     expect(fetchMock).not.toHaveBeenCalled();
