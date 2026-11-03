@@ -440,7 +440,10 @@ const OnboardingFlowContent = () => {
       )}
       <Box
         className={classnames(
-          'onboarding-flow__container w-full rounded-lg mx-auto',
+          // Same radius as ModalContent's dialog. The in-repo ModalContent and
+          // @metamask/design-system-react both use `rounded-[32px]` (32px).
+          // `rounded-3xl` is 24px with this Tailwind setup, so it does not match.
+          'onboarding-flow__container w-full rounded-[32px] mx-auto',
           {
             'onboarding-flow__container--full': isFullPage,
             'onboarding-flow__container--popup': isPopup,
