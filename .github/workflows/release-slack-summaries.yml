@@ -14,9 +14,9 @@
 # Safe by default: unset GA_MODE and GA_MODE=test post only to
 # vars.RELEASE_SUMMARY_TEST_CHANNEL and never write a PR body.
 # GA_MODE=live is the only value that uses the real release channels
-# and may rewrite the release PR body. A test channel limits Slack
-# only. The shared action still rewrites the checklist when
-# allow-pr-write is true and dry-run is false (github-tools#306).
+# and may rewrite the release PR body. A test channel posts only to
+# that channel and never writes a PR body, including when GA_MODE=live,
+# so this run cannot collide with the Zap still rewriting the checklist.
 
 name: Release Slack summaries
 
@@ -41,7 +41,7 @@ on:
         type: boolean
         default: true
       test-channel:
-        description: 'Post only to this Slack channel (#name or ID). Does not disable the PR rewrite. Leave empty to follow GA_MODE.'
+        description: 'Post only to this Slack channel (#name or ID). When set, the run does not write a PR body. Leave empty to follow GA_MODE.'
         required: false
         type: string
         default: ''
@@ -126,12 +126,12 @@ jobs:
 
           # Exact "live" is the only value that may reach real channels.
           # Unset, "test", and anything else stay on the test channel.
-          # The PR rewrite belongs to release-validation (Zap 597) only.
-          # A test channel does not turn it off; the action gates the
-          # write on allow-pr-write and dry-run (github-tools#306).
+          # The PR rewrite belongs to release-validation (Zap 597) only,
+          # and only when no test channel is set. While the Zap still
+          # rewrites the checklist, a test-channel run must not write too.
           allow_pr_write=false
           if [[ "$ga_mode" == "live" ]]; then
-            if [[ "$dry_run" == "false" && "$mode" == "release-validation" ]]; then
+            if [[ "$dry_run" == "false" && -z "$test_channel" && "$mode" == "release-validation" ]]; then
               allow_pr_write=true
             fi
           else
