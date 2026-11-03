@@ -10,7 +10,7 @@ import {
   Text,
   TextVariant,
   TextColor,
-  FontWeight,
+  FontFamily,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import {
@@ -156,8 +156,8 @@ const PerpsMarketBalanceActions = ({
     >
       {/* Account Value (includes unrealized PnL) */}
       <SensitiveText
-        variant={TextVariant.DisplayMd}
-        fontWeight={FontWeight.Medium}
+        variant={TextVariant.AmountDisplayLg}
+        fontFamily={FontFamily.Hero}
         isHidden={privacyMode}
         length={SensitiveTextLength.Medium}
         data-testid="perps-balance-actions-total"

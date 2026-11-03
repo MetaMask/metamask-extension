@@ -540,11 +540,6 @@
       "count": 1
     }
   },
-  "ui/hooks/swap/useSwapDefaultToToken.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/hooks/useAlerts.ts": {
     "react-hooks/preserve-manual-memoization": {
       "count": 2
