@@ -25,9 +25,16 @@ const accountsControllerEvent = 'AccountsController:accountTransactionsUpdated';
 
 const mockSubscribe = jest.fn();
 const mockUnsubscribe = jest.fn();
-const mockGetState = jest.fn(() => ({
-  metamask: { transactions: [] as TransactionMeta[] },
-}));
+const mockGetState = jest.fn(
+  (): {
+    metamask: {
+      transactions: TransactionMeta[];
+      preferences?: { transactionToastsEnabled?: boolean };
+    };
+  } => ({
+    metamask: { transactions: [] },
+  }),
+);
 
 jest.mock('../../../hooks/useMessenger', () => ({
   useMessenger: () => ({
@@ -164,6 +171,76 @@ describe('useTransactionEventToasts', () => {
           to: '/tx/eip155:1/0xabc',
         },
       );
+    });
+
+    it('does not show submitted, confirmed, or failed toasts when transaction toasts are disabled', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [],
+          preferences: { transactionToastsEnabled: false },
+        },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'disabled-submitted',
+          status: TransactionStatus.submitted,
+          hash: '0xabc',
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'disabled-confirmed',
+          status: TransactionStatus.confirmed,
+          hash: '0xabc',
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'disabled-failed',
+          status: TransactionStatus.failed,
+          hash: '0xabc',
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+      expect(mockShowSuccessToast).not.toHaveBeenCalled();
+      expect(mockShowFailedToast).not.toHaveBeenCalled();
+    });
+
+    it('ignores the disabled preference when developer options are not enabled', () => {
+      const originalInTest = process.env.IN_TEST;
+      const originalDevOptions = process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS;
+      delete process.env.IN_TEST;
+      delete process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS;
+
+      try {
+        mockGetState.mockReturnValue({
+          metamask: {
+            transactions: [],
+            preferences: { transactionToastsEnabled: false },
+          },
+        });
+        const { handlers } = mountHook();
+
+        handlers[transactionControllerEvent]({
+          transactionMeta: createTransactionMeta({
+            id: 'prod-submitted',
+            status: TransactionStatus.submitted,
+            hash: '0xabc',
+          }),
+        });
+
+        expect(mockShowPendingToast).toHaveBeenCalled();
+      } finally {
+        if (originalInTest !== undefined) {
+          process.env.IN_TEST = originalInTest;
+        }
+        if (originalDevOptions !== undefined) {
+          process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS = originalDevOptions;
+        }
+      }
     });
 
     it('shows a failed toast with a details link when a pending tx fails', () => {

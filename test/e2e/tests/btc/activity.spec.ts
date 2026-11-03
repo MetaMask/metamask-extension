@@ -71,7 +71,7 @@ describe('BTC Account - Activity', function (this: Suite) {
   it('Transaction details show Title / Time / Status / TXID / From / To / Amount / View details', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2().withTransactionToastsEnabled().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         testSpecificMock: mockBtcActivityMocks,

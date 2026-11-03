@@ -606,6 +606,7 @@ describe('preferences controller', () => {
         },
         tokenNetworkFilter: {},
         gasSponsorshipOptOutByChainId: {},
+        transactionToastsEnabled: true,
       });
     });
 
@@ -644,6 +645,7 @@ describe('preferences controller', () => {
         },
         tokenNetworkFilter: {},
         gasSponsorshipOptOutByChainId: {},
+        transactionToastsEnabled: true,
       });
     });
 
@@ -1043,6 +1045,7 @@ describe('preferences controller', () => {
               "order": "dsc",
               "sortCallback": "stringNumeric",
             },
+            "transactionToastsEnabled": true,
             "useNativeCurrencyAsPrimaryCurrency": true,
             "useSidePanelAsDefault": true,
           },
@@ -1117,6 +1120,7 @@ describe('preferences controller', () => {
               "order": "dsc",
               "sortCallback": "stringNumeric",
             },
+            "transactionToastsEnabled": true,
             "useNativeCurrencyAsPrimaryCurrency": true,
             "useSidePanelAsDefault": true,
           },
@@ -1205,6 +1209,7 @@ describe('preferences controller', () => {
               "order": "dsc",
               "sortCallback": "stringNumeric",
             },
+            "transactionToastsEnabled": true,
             "useNativeCurrencyAsPrimaryCurrency": true,
             "useSidePanelAsDefault": true,
           },
@@ -1294,6 +1299,7 @@ describe('preferences controller', () => {
               "order": "dsc",
               "sortCallback": "stringNumeric",
             },
+            "transactionToastsEnabled": true,
             "useNativeCurrencyAsPrimaryCurrency": true,
             "useSidePanelAsDefault": true,
           },
@@ -1634,6 +1640,7 @@ describe('preferences controller', () => {
             },
             tokenNetworkFilter: {},
             gasSponsorshipOptOutByChainId: {},
+            transactionToastsEnabled: true,
           },
         },
       });

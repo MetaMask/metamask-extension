@@ -1300,6 +1300,19 @@ class FixtureBuilderV2 {
     });
   }
 
+  /**
+   * Turns generic transaction toasts back on.
+   * The default fixture leaves them off so unrelated specs do not have to
+   * dismiss the toast overlay.
+   */
+  withTransactionToastsEnabled(): this {
+    return this.withPreferencesController({
+      preferences: {
+        transactionToastsEnabled: true,
+      },
+    });
+  }
+
   withSnapsPrivacyWarningAlreadyShown(): this {
     return this.withAppStateController({
       snapsInstallPrivacyWarningShown: true,

@@ -12,6 +12,8 @@ import type {
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getAreDevOnlyPreferencesEnabled } from '../../../../shared/lib/environment';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
@@ -119,6 +121,13 @@ function isPendingToastStatus(
   return false;
 }
 
+function areTransactionToastsDisabled(state: MetaMaskReduxState) {
+  return (
+    getAreDevOnlyPreferencesEnabled() &&
+    getPreferences(state).transactionToastsEnabled === false
+  );
+}
+
 const generateToastId = (id: string) => `tx-${id}`;
 const extractPayload = <Type>(raw: Type | [Type]) =>
   Array.isArray(raw) ? raw[0] : raw;
@@ -179,6 +188,10 @@ export function useTransactionEventToasts(): void {
         | { transactionMeta: TransactionMeta }
         | [{ transactionMeta: TransactionMeta }],
     ) => {
+      if (areTransactionToastsDisabled(store.getState())) {
+        return;
+      }
+
       const { transactionMeta } = extractPayload(raw);
       if (!transactionMeta) {
         return;
@@ -238,6 +251,10 @@ export function useTransactionEventToasts(): void {
         | AccountTransactionsUpdatedEventPayload
         | [AccountTransactionsUpdatedEventPayload],
     ) => {
+      if (areTransactionToastsDisabled(store.getState())) {
+        return;
+      }
+
       const payload = extractPayload(raw);
       for (const accountTxs of Object.values(payload?.transactions ?? {})) {
         for (const tx of accountTxs) {

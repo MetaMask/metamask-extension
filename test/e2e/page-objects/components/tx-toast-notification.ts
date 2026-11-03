@@ -10,6 +10,8 @@ export class TxToastNotification {
 
   private readonly closeButton = '[data-testid="toast-close-button"]';
 
+  private readonly confirmedToastLink = 'a[aria-label="Transaction confirmed"]';
+
   protected driver: Driver;
 
   private readonly transactionConfirmedText = {
@@ -53,6 +55,11 @@ export class TxToastNotification {
     }
     await this.driver.clickElement(this.closeButton);
     await this.driver.assertElementNotPresent(this.transactionConfirmedToast);
+  }
+
+  async openConfirmedToast(): Promise<void> {
+    console.log('Open transaction details from the confirmed toast');
+    await this.driver.clickElement(this.confirmedToastLink);
   }
 
   async waitForToastNotification(): Promise<void> {

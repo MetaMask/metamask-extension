@@ -35,7 +35,7 @@ describe('Tron Send', function (this: Suite) {
     await withTronFixtures(
       {
         accounts: [TRON_PORTFOLIO_ACCOUNT],
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2().withTransactionToastsEnabled().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

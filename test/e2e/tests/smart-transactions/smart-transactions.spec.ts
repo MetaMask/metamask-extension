@@ -37,33 +37,39 @@ async function withFixturesForSmartTransactions(
     testSpecificMock,
     ignoredConsoleErrors,
     expectedBalance = '20 ETH',
+    transactionToastsEnabled = false,
   }: {
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
     ignoredConsoleErrors?: string[];
     expectedBalance?: string;
+    transactionToastsEnabled?: boolean;
   },
   runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
+  const fixtureBuilder = new FixtureBuilderV2()
+    .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    })
+    .withAssetsController(
+      getMainnet25EthAssetsControllerPatch(
+        1700,
+        DEFAULT_FIXTURE_ACCOUNT_ID,
+        '20',
+      ),
+    );
+  if (transactionToastsEnabled) {
+    fixtureBuilder.withTransactionToastsEnabled();
+  }
+
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: new FixtureBuilderV2()
-        .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
-        .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-        .withEnabledNetworks({
-          eip155: {
-            '0x1': true,
-          },
-        })
-        .withAssetsController(
-          getMainnet25EthAssetsControllerPatch(
-            1700,
-            DEFAULT_FIXTURE_ACCOUNT_ID,
-            '20',
-          ),
-        )
-        .build(),
+      fixtures: fixtureBuilder.build(),
       title,
       localNodeOptions: {
         hardfork: 'london',
@@ -108,6 +114,7 @@ describe('Smart Transactions', function () {
           await mockChooseGasFeeTokenRequests(mockServer);
           await mockSentinelNetworks(mockServer);
         },
+        transactionToastsEnabled: true,
         ignoredConsoleErrors: [
           // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
           'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',

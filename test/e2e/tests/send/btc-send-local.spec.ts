@@ -62,7 +62,7 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
     let localNodes: unknown[] = [];
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2().withTransactionToastsEnabled().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         localNodeOptions: [
