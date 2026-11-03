@@ -2,7 +2,11 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { GetBalanceRequest } from '@metamask/transaction-pay-controller';
+import type {
+  EvmPaymentToken,
+  GetBalanceRequest,
+  NonEvmPaymentToken,
+} from '@metamask/transaction-pay-controller';
 import { getBalance } from './get-balance-callback';
 import {
   resetMaxSourceBalancesForTests,
@@ -92,11 +96,31 @@ describe('getBalance', () => {
   it('returns undefined after the pay token changes', () => {
     setMaxSourceBalance(maxSourceBalanceKey, '5879662');
     const request = buildRequest(TransactionType.moneyAccountDeposit);
-    const { paymentToken } = request.transactionData;
-    if (!paymentToken) {
-      throw new Error('Expected request to include a payment token');
-    }
-    paymentToken.address = '0xtoken2';
+    request.transactionData.paymentToken = {
+      ...request.transactionData.paymentToken,
+      address: '0xtoken2',
+      chainId: '0x1',
+    } as EvmPaymentToken;
+
+    expect(getBalance(request)).toBeUndefined();
+  });
+
+  it('returns undefined for a non-EVM payment token', () => {
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
+    const request = buildRequest(TransactionType.moneyAccountDeposit);
+    const solanaPaymentToken: NonEvmPaymentToken = {
+      accountId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:source',
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      balanceFiat: '10',
+      balanceHuman: '1',
+      balanceRaw: '1000000000',
+      balanceUsd: '10',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      decimals: 9,
+      symbol: 'SOL',
+      walletAccountId: 'solana-account-id',
+    };
+    request.transactionData.paymentToken = solanaPaymentToken;
 
     expect(getBalance(request)).toBeUndefined();
   });

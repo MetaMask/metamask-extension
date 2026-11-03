@@ -46,6 +46,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../selectors/transactionController', () => ({
+  ...jest.requireActual('../../../../selectors/transactionController'),
   selectTransactions: () => mockTransactions,
   selectBatchTransactionCounts: () => ({}),
 }));

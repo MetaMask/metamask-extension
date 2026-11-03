@@ -20,7 +20,10 @@ import {
   addToken,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
+import {
+  selectIsMoneyAccountTransactionEnabled,
+  selectIsSolanaPayEnabled,
+} from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
 import { PayWithModal } from './pay-with-modal';
 
@@ -29,11 +32,19 @@ jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayBlockedTokens');
 jest.mock('../../../hooks/pay/useWithdrawTokenFilter');
 jest.mock('../../../hooks/pay/usePayWithSections');
-jest.mock('../../../utils/transaction-pay');
+jest.mock('../../../utils/transaction-pay', () => {
+  const actual = jest.requireActual('../../../utils/transaction-pay');
+  return {
+    getAvailableTokens: jest.fn(),
+    isPaymentTokenSelected: actual.isPaymentTokenSelected,
+    isSolanaPaySource: actual.isSolanaPaySource,
+  };
+});
 jest.mock('../../../../../hooks/musd');
 jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
   selectIsMoneyAccountTransactionEnabled: jest.fn(),
+  selectIsSolanaPayEnabled: jest.fn(),
 }));
 jest.mock('../../../context/confirm', () => ({
   useConfirmContext: jest.fn(),
@@ -53,6 +64,16 @@ const PERPS_WITHDRAW_TOKEN = {
   symbol: 'BNB',
   decimals: 18,
   image: './bnb.png',
+};
+
+const SOLANA_TOKEN = {
+  accountId: 'solana-account-id',
+  accountType: 'solana:data-account',
+  assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501' as const,
+  balance: '1.5',
+  chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  isNative: true,
+  symbol: 'SOL',
 };
 
 jest.mock('../../send/asset', () => ({
@@ -120,6 +141,12 @@ jest.mock('../../send/asset', () => ({
         >
           Select Perps Withdraw Token
         </button>
+        <button
+          data-testid="select-solana-token"
+          onClick={() => onAssetSelect?.(SOLANA_TOKEN)}
+        >
+          Select Solana Token
+        </button>
       </div>
     );
   },
@@ -164,6 +191,7 @@ describe('PayWithModal', () => {
       currentConfirmation: {},
     } as ReturnType<typeof useConfirmContext>);
     selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+    jest.mocked(selectIsSolanaPayEnabled).mockReturnValue(false);
     usePayWithSectionsMock.mockReturnValue({ sections: [] });
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
@@ -300,6 +328,31 @@ describe('PayWithModal', () => {
     );
   });
 
+  it('offers Solana sources when the Solana Pay flag is on', () => {
+    jest.mocked(selectIsSolanaPayEnabled).mockReturnValue(true);
+
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    expect(getAvailableTokensMock).toHaveBeenCalledWith(
+      expect.objectContaining({ isSolanaPayEnabled: true }),
+    );
+  });
+
+  it('does not offer Solana as a destination when the withdraw allowlist is not applied', () => {
+    jest.mocked(selectIsSolanaPayEnabled).mockReturnValue(true);
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        type: TransactionType.perpsWithdraw,
+      },
+    } as ReturnType<typeof useConfirmContext>);
+
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    expect(getAvailableTokensMock).toHaveBeenCalledWith(
+      expect.objectContaining({ isSolanaPayEnabled: false }),
+    );
+  });
+
   it('does not render when isOpen is false', () => {
     renderModal({ isOpen: false, onClose: onCloseMock });
 
@@ -368,6 +421,45 @@ describe('PayWithModal', () => {
         chainId: '0x1',
       });
       expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
+    });
+
+    it('selects a Solana source by CAIP asset and account', async () => {
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-solana-token'));
+
+      await waitFor(() => expect(onCloseMock).toHaveBeenCalled());
+      expect(setPayTokenMock).toHaveBeenCalledWith({
+        assetId: SOLANA_TOKEN.assetId,
+        walletAccountId: SOLANA_TOKEN.accountId,
+      });
+      expect(onMusdPaymentTokenChangeMock).not.toHaveBeenCalled();
+    });
+
+    it('does not reselect the Solana source that is already selected', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          accountId:
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
+          assetId: SOLANA_TOKEN.assetId,
+          balanceFiat: '$150.00',
+          balanceHuman: '1.5',
+          balanceRaw: '1500000000',
+          balanceUsd: '150.00',
+          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          decimals: 9,
+          symbol: 'SOL',
+          walletAccountId: SOLANA_TOKEN.accountId,
+        },
+        setPayToken: setPayTokenMock,
+        isNative: true,
+      });
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      fireEvent.click(screen.getByTestId('select-solana-token'));
+
+      expect(setPayTokenMock).not.toHaveBeenCalled();
+      expect(onCloseMock).toHaveBeenCalled();
     });
 
     it('does not call setPayToken when the selected token matches the current payToken', () => {

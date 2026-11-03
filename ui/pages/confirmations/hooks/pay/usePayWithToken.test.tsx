@@ -2,7 +2,7 @@ import React from 'react';
 import { act, renderHook } from '@testing-library/react';
 import {
   PaymentOverride,
-  type TransactionPaymentToken,
+  type EvmPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import {
   TransactionType,
@@ -80,7 +80,7 @@ const PAY_TOKEN = {
   balanceHuman: '25',
   balanceRaw: '25000000',
   decimals: 6,
-} as TransactionPaymentToken;
+} as EvmPaymentToken;
 
 const ACCOUNT = {
   address: FROM_ADDRESS,
@@ -199,6 +199,46 @@ describe('usePayWithToken', () => {
       balanceUsd: '$12.34',
     });
     expect(result.current.balanceUsdFormatted).toBe('$12.34');
+  });
+
+  it('shows the Solana source for a Money Account deposit funded from Solana', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: 'tx-1',
+        type: TransactionType.moneyAccountDeposit,
+        txParams: { from: FROM_ADDRESS },
+      } as TransactionMeta,
+    } as ReturnType<typeof useConfirmContext>);
+    selectPaymentOverrideByTransactionIdMock.mockReturnValue(
+      PaymentOverride.MoneyAccount,
+    );
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        accountId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        balanceFiat: '150',
+        balanceHuman: '1.5',
+        balanceRaw: '1500000000',
+        balanceUsd: '150',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        decimals: 9,
+        symbol: 'SOL',
+        walletAccountId: 'solana-account-id',
+      },
+      setPayToken: jest.fn(),
+      isNative: true,
+    });
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.isMoneyAccountSelected).toBe(false);
+    expect(result.current.displayToken).toStrictEqual({
+      address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      balanceUsd: '25',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      symbol: 'SOL',
+    });
   });
 
   it('returns Money account display values when the flag default is set and no crypto token is selected', () => {

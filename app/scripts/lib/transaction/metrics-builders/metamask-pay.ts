@@ -4,11 +4,9 @@ import {
 } from '@metamask/transaction-controller';
 import type {
   TransactionPayControllerState,
-  TransactionPayQuote,
   TransactionPayRequiredToken,
 } from '@metamask/transaction-pay-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
-import type { Json } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { merge } from 'lodash';
 import { TransactionMetaMetricsEvent } from '../../../../../shared/constants/transaction';
@@ -99,7 +97,7 @@ export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
     const txPayData = transactionMetricsRequest.getTransactionPayData(
       parentTransaction.id,
     );
-    const quotes: TransactionPayQuote<Json>[] = txPayData?.quotes ?? [];
+    const quotes = txPayData?.quotes ?? [];
 
     const quoteTransactionIds = relatedTransactionIds.filter((id: string) =>
       allTransactions.some(

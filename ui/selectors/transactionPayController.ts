@@ -1,5 +1,8 @@
 import { createSelector } from 'reselect';
-import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import {
+  isNonEvmPaymentToken,
+  type TransactionPayControllerState,
+} from '@metamask/transaction-pay-controller';
 
 export type TransactionPayState = {
   metamask: TransactionPayControllerState;
@@ -40,6 +43,18 @@ export const selectTransactionPayTokensByTransactionId = createSelector(
 export const selectTransactionPaymentTokenByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.paymentToken,
+);
+
+/**
+ * The selected payment token when it is an EVM token. EVM-only flows (mUSD
+ * conversion) use this to read Hex address and chain fields.
+ */
+export const selectEvmPaymentTokenByTransactionId = createSelector(
+  selectTransactionPaymentTokenByTransactionId,
+  (paymentToken) =>
+    paymentToken && !isNonEvmPaymentToken(paymentToken)
+      ? paymentToken
+      : undefined,
 );
 
 export const selectTransactionPaySourceAmountsByTransactionId = createSelector(

@@ -1,5 +1,8 @@
 import { Hex } from '@metamask/utils';
-import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
+import type {
+  EvmPaymentToken,
+  TransactionPaymentToken,
+} from '@metamask/transaction-pay-controller';
 import { renderHook } from '@testing-library/react';
 import { useSendTokens } from '../send/useSendTokens';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
@@ -18,7 +21,7 @@ const PAY_TOKEN_MOCK = {
   balanceRaw: '5000000000000000000',
   decimals: 18,
   symbol: 'ETH',
-} as TransactionPaymentToken;
+} as EvmPaymentToken;
 
 const ACCOUNT_TOKEN_MOCK = {
   address: '0xabc',
@@ -44,6 +47,39 @@ describe('usePayTokenAccountBalance', () => {
     });
     useSendTokensMock.mockReturnValue([ACCOUNT_TOKEN_MOCK]);
     useTokenFiatRateMock.mockReturnValue(1700);
+  });
+
+  it('returns the Core snapshot as the live balance for a Solana pay token', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        accountId:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        balanceFiat: '150.00',
+        balanceHuman: '1.5',
+        balanceRaw: '1500000000',
+        balanceUsd: '150.00',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        decimals: 9,
+        symbol: 'SOL',
+        walletAccountId: 'solana-account-id',
+      },
+      setPayToken: jest.fn(),
+    });
+
+    const { result } = renderHook(() => usePayTokenAccountBalance());
+
+    expect(result.current).toStrictEqual({
+      balanceUsd: '150.00',
+      balanceRaw: '1500000000',
+      isLiveBalance: true,
+      isBalanceUsdKnown: true,
+    });
+    expect(useTokenFiatRateMock).toHaveBeenCalledWith(
+      '0x0000000000000000000000000000000000000000',
+      '0x0',
+      'usd',
+    );
   });
 
   it('returns zero balances when no pay token is selected', () => {

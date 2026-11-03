@@ -1,4 +1,5 @@
 import {
+  isNonEvmPaymentToken,
   TransactionPayController,
   TransactionPayControllerMessenger,
 } from '@metamask/transaction-pay-controller';
@@ -80,6 +81,7 @@ function getInitRequestMock(
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getTransactionPayControllerMessenger(baseMessenger),
+    infuraProjectId: 'test-infura-project-id',
     initMessenger,
   };
 
@@ -87,10 +89,25 @@ function getInitRequestMock(
 }
 
 describe('TransactionPayControllerInit', () => {
+  beforeEach(() => {
+    jest
+      .mocked(TransactionPayController.prototype.recoverSolanaPayStatus)
+      .mockResolvedValue({});
+    jest
+      .mocked(isNonEvmPaymentToken)
+      .mockImplementation(({ chainId }) => chainId.startsWith('solana:'));
+  });
+
   it('initializes the controller', () => {
     const { messengerClient } =
       TransactionPayControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
+  });
+
+  it('recovers Solana Pay status once at startup', () => {
+    const { messengerClient } =
+      TransactionPayControllerInit(getInitRequestMock());
+    expect(messengerClient.recoverSolanaPayStatus).toHaveBeenCalledTimes(1);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -104,6 +121,7 @@ describe('TransactionPayControllerInit', () => {
       getDelegationTransaction: expect.any(Function),
       getPaymentOverrideData: expect.any(Function),
       getStrategy: expect.any(Function),
+      infuraProjectId: 'test-infura-project-id',
       messenger: expect.any(Object),
       state: undefined,
     });
@@ -855,6 +873,42 @@ describe('TransactionPayControllerInit', () => {
       expect(callOrder).toEqual(['refresh', 'updateAmount']);
     });
 
+    it('refreshes a non-EVM payment token by asset and account', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as unknown as {
+          state: {
+            transactionData: Record<string, { paymentToken: unknown }>;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': {
+            paymentToken: {
+              accountId:
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:SoLAddress111111111111111111111111111111111',
+              assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+              walletAccountId: 'solana-account-id',
+            },
+          },
+        },
+      };
+      updateDepositAmountMock.mockResolvedValue(true);
+
+      await api.updateMoneyAccountDepositAmount('tx-1', '10');
+
+      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith({
+        transactionId: 'tx-1',
+        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        walletAccountId: 'solana-account-id',
+      });
+    });
+
     it('forwards the amount when the payment token refresh throws', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
@@ -899,6 +953,132 @@ describe('TransactionPayControllerInit', () => {
         'tx-1',
         '10',
       );
+    });
+  });
+
+  describe('api.updateTransactionPaymentToken', () => {
+    const SOLANA_REQUEST = {
+      transactionId: 'tx-1',
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      walletAccountId: 'solana-account-id',
+    } as const;
+    const EVM_REQUEST = {
+      transactionId: 'tx-1',
+      tokenAddress: '0x123',
+      chainId: '0x1',
+    } as const;
+
+    function initApi(
+      transactionType: TransactionType,
+      currentPaymentToken?: { chainId: string },
+    ) {
+      const { api, messengerClient } = TransactionPayControllerInit(
+        getInitRequestMock([
+          { id: 'tx-1', type: transactionType } as TransactionMeta,
+        ]),
+      );
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as unknown as {
+          state: {
+            transactionData: Record<string, { paymentToken?: unknown }>;
+          };
+        }
+      ).state = {
+        transactionData: { 'tx-1': { paymentToken: currentPaymentToken } },
+      };
+      const setTransactionConfigMock = jest.mocked(
+        messengerClient.setTransactionConfig,
+      );
+      return { api, messengerClient, setTransactionConfigMock };
+    }
+
+    function applyConfigUpdates(
+      setTransactionConfigMock: ReturnType<
+        typeof initApi
+      >['setTransactionConfigMock'],
+    ) {
+      const config: { atomic?: boolean; paymentOverride?: string } = {
+        atomic: true,
+      };
+      for (const [, updater] of setTransactionConfigMock.mock.calls) {
+        updater(config as never);
+      }
+      return config;
+    }
+
+    it('forwards an EVM selection unchanged', () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi(
+        TransactionType.perpsDeposit,
+      );
+
+      api.updateTransactionPaymentToken(EVM_REQUEST);
+
+      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith(
+        EVM_REQUEST,
+      );
+      expect(setTransactionConfigMock).not.toHaveBeenCalled();
+    });
+
+    it('forwards a non-EVM selection outside Money Account deposits without config changes', () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi(
+        TransactionType.perpsDeposit,
+      );
+
+      api.updateTransactionPaymentToken(SOLANA_REQUEST);
+
+      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith(
+        SOLANA_REQUEST,
+      );
+      expect(setTransactionConfigMock).not.toHaveBeenCalled();
+    });
+
+    it('sets the non-atomic Money Account override before selecting a non-EVM deposit source', () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi(
+        TransactionType.moneyAccountDeposit,
+      );
+      const callOrder: string[] = [];
+      setTransactionConfigMock.mockImplementation(() => {
+        callOrder.push('config');
+      });
+      jest.mocked(messengerClient.updatePaymentToken).mockImplementation(() => {
+        callOrder.push('select');
+      });
+
+      api.updateTransactionPaymentToken(SOLANA_REQUEST);
+
+      expect(callOrder).toStrictEqual(['config', 'select']);
+      expect(applyConfigUpdates(setTransactionConfigMock)).toStrictEqual({
+        atomic: false,
+        paymentOverride: 'moneyAccount',
+      });
+    });
+
+    it('clears the Solana deposit config when switching back to an EVM token', () => {
+      const { api, setTransactionConfigMock } = initApi(
+        TransactionType.moneyAccountDeposit,
+        { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' },
+      );
+
+      api.updateTransactionPaymentToken(EVM_REQUEST);
+
+      expect(applyConfigUpdates(setTransactionConfigMock)).toStrictEqual({
+        atomic: undefined,
+        paymentOverride: undefined,
+      });
+    });
+
+    it('keeps the config when switching between EVM deposit tokens', () => {
+      const { api, setTransactionConfigMock } = initApi(
+        TransactionType.moneyAccountDeposit,
+        { chainId: '0x1' },
+      );
+
+      api.updateTransactionPaymentToken(EVM_REQUEST);
+
+      expect(setTransactionConfigMock).not.toHaveBeenCalled();
     });
   });
 

@@ -9,7 +9,9 @@ import {
   parseCaipChainId,
   type Hex,
 } from '@metamask/utils';
+import { isNonEvmPaymentToken } from '@metamask/transaction-pay-controller';
 import { useSendTokens } from '../send/useSendTokens';
+import { getEvmPaymentToken } from '../../utils/transaction-pay';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import type { Asset } from '../../types/send';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -122,9 +124,10 @@ export function usePayTokenAccountBalance(): {
 } {
   const { payToken } = useTransactionPayToken();
   const accountTokens = useSendTokens({ includeNoBalance: true });
+  const evmPayToken = getEvmPaymentToken(payToken);
   const usdRate = useTokenFiatRate(
-    (payToken?.address ?? ZERO_ADDRESS) as Hex,
-    (payToken?.chainId ?? ABSENT_CHAIN_ID) as Hex,
+    evmPayToken?.address ?? ZERO_ADDRESS,
+    evmPayToken?.chainId ?? ABSENT_CHAIN_ID,
     'usd',
   );
 
@@ -135,6 +138,17 @@ export function usePayTokenAccountBalance(): {
         balanceRaw: '0',
         isLiveBalance: false,
         isBalanceUsdKnown: false,
+      };
+    }
+
+    // Core reads non-EVM balances and prices from AssetsController on every
+    // quote update, so the controller snapshot is the live balance.
+    if (isNonEvmPaymentToken(payToken)) {
+      return {
+        balanceUsd: payToken.balanceUsd,
+        balanceRaw: payToken.balanceRaw,
+        isLiveBalance: true,
+        isBalanceUsdKnown: true,
       };
     }
 

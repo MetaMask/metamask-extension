@@ -13,10 +13,14 @@ import { useTransactionPayToken } from '../../hooks/pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
+  useTransactionPayTotals,
 } from '../../hooks/pay/useTransactionPayData';
 import { useConfirmContext } from '../../context/confirm';
 import { formatAmount } from '../../../../../shared/lib/format-amount';
-import { getTokenAddress } from '../../utils/transaction-pay';
+import {
+  getEvmPaymentToken,
+  getTokenAddress,
+} from '../../utils/transaction-pay';
 import { useTokenFiatRates } from '../../hooks/tokens/useTokenFiatRates';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
 
@@ -30,17 +34,19 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId } = currentConfirmation ?? { chainId: '0x0' as Hex };
   const { payToken } = useTransactionPayToken();
+  const evmPayToken = getEvmPaymentToken(payToken);
+  const totals = useTransactionPayTotals();
   const targetTokenAddress = getTokenAddress(currentConfirmation);
   const isQuotesLoading = useIsTransactionPayLoading();
   const isMaxAmount = useTransactionPayIsMaxAmount();
 
   const fiatRequests = useMemo(
     () =>
-      payToken && targetTokenAddress
+      evmPayToken && targetTokenAddress
         ? [
             {
-              chainId: payToken.chainId,
-              address: payToken.address,
+              chainId: evmPayToken.chainId,
+              address: evmPayToken.address,
             },
             {
               chainId: chainId as Hex,
@@ -48,7 +54,7 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
             },
           ]
         : [],
-    [chainId, payToken, targetTokenAddress],
+    [chainId, evmPayToken, targetTokenAddress],
   );
 
   const fiatRates = useTokenFiatRates(fiatRequests);
@@ -56,6 +62,14 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const formattedAmount = useMemo(() => {
     const payTokenFiatRate = fiatRates[0];
     const assetFiatRate = fiatRates[1];
+
+    // Non-EVM tokens have no Hex market data, so show the source amount Core
+    // quoted.
+    if (!disabled && payToken && !evmPayToken) {
+      return totals?.sourceAmount.human === undefined
+        ? undefined
+        : formatAmount(locale, new BigNumber(totals.sourceAmount.human));
+    }
 
     if (disabled || !payToken || !payTokenFiatRate || !assetFiatRate) {
       return undefined;
@@ -70,7 +84,7 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
     );
 
     return formatAmount(locale, payTokenAmount);
-  }, [amountHuman, disabled, payToken, fiatRates, locale]);
+  }, [amountHuman, disabled, evmPayToken, payToken, fiatRates, locale, totals]);
 
   if (disabled) {
     return (
