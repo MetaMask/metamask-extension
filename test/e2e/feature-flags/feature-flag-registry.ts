@@ -1320,78 +1320,33 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   confirmations_pay_extended: {
     inProd: true,
     name: 'confirmations_pay_extended',
-    productionDefault: [
-      {
-        scope: {
-          type: 'threshold',
-          value: 1,
+    productionDefault: {
+      depositLimit: {
+        moneyAccountDeposit: 500000,
+      },
+      excludeChainIdsFromInfura: ['0x8f'],
+      payStrategies: {
+        relay: {
+          atomicMaxEnabled: {
+            default: false,
+            transactionTypes: {
+              moneyAccountDeposit: true,
+            },
+          },
+          gaslessEnabled: true,
         },
-        thresholdName: 'control',
-        thresholdVersion: 2,
-        value: {
-          depositLimit: {
-            moneyAccountDeposit: 500000,
-          },
-          excludeChainIdsFromInfura: ['0x8f'],
-          payStrategies: {
-            relay: {
-              atomicMaxEnabled: {
-                default: false,
-                transactionTypes: {
-                  moneyAccountDeposit: true,
-                },
-              },
-              gaslessEnabled: true,
-            },
-          },
-          prefilledAmount: {
-            default: {
-              enabled: false,
-            },
-            overrides: {
-              moneyAccountDeposit: {
-                enabled: false,
-              },
-              musdConversion: {
-                enabled: false,
-              },
-            },
+      },
+      prefilledAmount: {
+        default: {
+          enabled: false,
+        },
+        overrides: {
+          moneyAccountDeposit: {
+            enabled: true,
           },
         },
       },
-      {
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        thresholdName: 'treatment',
-        thresholdVersion: 2,
-        value: {
-          depositLimit: {
-            moneyAccountDeposit: 500000,
-          },
-          excludeChainIdsFromInfura: ['0x8f'],
-          payStrategies: {
-            relay: {
-              gaslessEnabled: true,
-            },
-          },
-          prefilledAmount: {
-            default: {
-              enabled: false,
-            },
-            overrides: {
-              moneyAccountDeposit: {
-                enabled: false,
-              },
-              musdConversion: {
-                enabled: false,
-              },
-            },
-          },
-        },
-      },
-    ],
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
