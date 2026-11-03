@@ -274,9 +274,9 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
         await login(driver, { expectedBalance: '1.37T ETH' });
         await driver.openNewPage(DAPP_URL_LOCALHOST);
 
-        const expectedTitle = 'This is a deceptive request';
+        const expectedTitle = 'Risk signals detected';
         const expectedDescription =
-          'If you approve this request, you might lose your assets.';
+          'Security partners found risk signals in this request. Review before continuing.';
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousSetApprovalForAll');

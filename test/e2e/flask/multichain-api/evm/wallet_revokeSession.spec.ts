@@ -5,7 +5,7 @@ import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-u
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import EditConnectedAccountsPage from '../../../page-objects/pages/permission/edit-connected-accounts-page';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
@@ -85,11 +85,9 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.openEditAccountsModal();
 
-        const editConnectedAccountsModal = new EditConnectedAccountsModal(
-          driver,
-        );
-        await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewAccount();
+        const editConnectedAccountsPage = new EditConnectedAccountsPage(driver);
+        await editConnectedAccountsPage.checkPageIsLoaded();
+        await editConnectedAccountsPage.addNewAccount();
 
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
@@ -151,11 +149,9 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.openEditAccountsModal();
 
-        const editConnectedAccountsModal = new EditConnectedAccountsModal(
-          driver,
-        );
-        await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewAccount();
+        const editConnectedAccountsPage = new EditConnectedAccountsPage(driver);
+        await editConnectedAccountsPage.checkPageIsLoaded();
+        await editConnectedAccountsPage.addNewAccount();
 
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();

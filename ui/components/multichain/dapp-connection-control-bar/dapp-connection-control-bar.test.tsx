@@ -14,7 +14,6 @@ jest.mock('react-router-dom', () => ({
 const mockRemovePermissionsFor = jest.fn(
   (_subjects: Record<string, string[]>) => () => Promise.resolve(),
 );
-const mockDismissPermittedNetworkToast = jest.fn();
 const mockSetActiveNetwork = jest.fn((_networkClientId: string) => ({
   type: 'SET_ACTIVE_NETWORK',
 }));
@@ -24,16 +23,6 @@ const mockSetNetworkClientIdForDomain = jest.fn(
 const mockToggleNetworkMenu = jest.fn(() => ({ type: 'TOGGLE_NETWORK_MENU' }));
 const mockAddPermittedAccounts = jest.fn(
   (_origin: string, _addresses: string[]) => () => Promise.resolve(),
-);
-
-jest.mock(
-  '../../../hooks/multichain-accounts/usePermittedNetworkToast',
-  () => ({
-    usePermittedNetworkToast: () => ({
-      dismissPermittedNetworkToast: () => mockDismissPermittedNetworkToast(),
-      showPermittedNetworkToast: jest.fn(),
-    }),
-  }),
 );
 
 jest.mock('../../../store/actions', () => ({
@@ -304,7 +293,6 @@ describe('DappConnectionControlBar', () => {
         expect(mockRemovePermissionsFor).toHaveBeenCalledWith({
           [DAPP_ORIGIN]: ['endowment:caip25'],
         });
-        expect(mockDismissPermittedNetworkToast).toHaveBeenCalled();
         expect(queryByTestId('disconnect-all-modal')).not.toBeInTheDocument();
       });
     });

@@ -29,24 +29,36 @@ const SyncAccountsSettings = () => {
   const qrSyncPhase = useSelector(selectQrSyncPhase);
   const qrSyncError = useSelector(selectQrSyncError);
   const [isExiting, setIsExiting] = useState(false);
-  const [password, setPassword] = useState<string | undefined>();
+  const [passwordState, setPasswordState] = useState<{
+    phase: typeof qrSyncPhase;
+    value: string | undefined;
+  }>({ phase: qrSyncPhase, value: undefined });
+  const password =
+    qrSyncPhase === QR_SYNC_PHASES.REVIEWING_SYNC_OFFER &&
+    passwordState.phase === qrSyncPhase
+      ? passwordState.value
+      : undefined;
+  const setPassword = useCallback(
+    (value: string | undefined) => {
+      setPasswordState({ phase: qrSyncPhase, value });
+    },
+    [qrSyncPhase],
+  );
   const [syncSummary, setSyncSummary] = useState<Pick<
     AddDeviceSyncRequest,
     'syncedAccountCount' | 'syncedWalletCount'
   > | null>(null);
 
   const cancelQrSyncSession = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:cancelSync',
-      [],
-    ]).catch(() => undefined);
+    await submitRequestToBackground('QrSyncController:cancelSync', []).catch(
+      () => undefined,
+    );
   }, []);
 
   const createQrSyncSession = useCallback(async () => {
-    await submitRequestToBackground<void>('messengerCall', [
-      'QrSyncController:createSession',
-      [],
-    ]).catch(() => undefined);
+    await submitRequestToBackground('QrSyncController:createSession', []).catch(
+      () => undefined,
+    );
   }, []);
 
   const startNewSession = useCallback(async () => {
@@ -78,14 +90,6 @@ const SyncAccountsSettings = () => {
     };
   }, [cancelQrSyncSession, createQrSyncSession, isExiting]);
 
-  useEffect(() => {
-    if (qrSyncPhase === QR_SYNC_PHASES.REVIEWING_SYNC_OFFER) {
-      return;
-    }
-
-    setPassword(undefined);
-  }, [qrSyncPhase]);
-
   const handleExit = useCallback(async () => {
     setIsExiting(true);
     await cancelQrSyncSession();
@@ -108,9 +112,9 @@ const SyncAccountsSettings = () => {
 
       setSyncSummary({ syncedAccountCount, syncedWalletCount });
 
-      await submitRequestToBackground<void>('messengerCall', [
-        'QrSyncController:syncAccounts',
-        [password, selectedAccountGroupIds],
+      await submitRequestToBackground('QrSyncController:syncAccounts', [
+        password,
+        selectedAccountGroupIds,
       ]);
     },
     [password],

@@ -1,6 +1,7 @@
 import React from 'react';
-import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { useActivityCacheInvalidation } from '../../../hooks/activity/useActivityCacheInvalidation';
+import { useRefreshMoneyBalanceOnTxConfirm } from '../../../hooks/money/useRefreshMoneyBalanceOnTxConfirm';
 import {
   toastListenerCapabilities,
   useTransactionEventToasts,
@@ -9,16 +10,17 @@ import {
 const TransactionEventToastListenerInner = () => {
   useTransactionEventToasts();
   useActivityCacheInvalidation();
+  useRefreshMoneyBalanceOnTxConfirm();
   return null;
 };
 
 export function TransactionEventToastListener() {
   return (
-    <RouteWithMessenger
+    <RouteMessengerProvider
       path="toast-listener"
       capabilities={toastListenerCapabilities}
     >
       <TransactionEventToastListenerInner />
-    </RouteWithMessenger>
+    </RouteMessengerProvider>
   );
 }

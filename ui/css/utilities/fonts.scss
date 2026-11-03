@@ -24,61 +24,74 @@ $font-path: './fonts';
 );
 
 // Brand Evolution Font Families
+// Default UI font is Inter.
 
 @font-face {
-  font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-Regular.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('#{$font-path}/Inter/Inter-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-RegularItalic.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('#{$font-path}/Inter/Inter-Italic.woff2') format('woff2');
   font-weight: 400;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-Medium.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('#{$font-path}/Inter/Inter-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-MediumItalic.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('#{$font-path}/Inter/Inter-MediumItalic.woff2') format('woff2');
   font-weight: 500;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-SemiBold.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('#{$font-path}/Inter/Inter-SemiBold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-SemiBoldItalic.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('#{$font-path}/Inter/Inter-SemiBoldItalic.woff2') format('woff2');
   font-weight: 600;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-SemiBold.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('#{$font-path}/Inter/Inter-SemiBold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-SemiBoldItalic.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('#{$font-path}/Inter/Inter-SemiBoldItalic.woff2') format('woff2');
   font-weight: 700;
   font-style: italic;
+}
+
+// Hero: Grotzec Cond Bold is the only licensed cut.
+// TextVariant.DisplayXl + FontFamily.Hero computes to --font-weight-bold (600)
+// below md and --font-weight-medium (500) at md. Design-system bold is 600,
+// not 700. The range serves 400–700 from this file so the browser does not
+// synthesize a missing weight.
+@font-face {
+  font-family: 'Grotzec Cond';
+  font-style: normal;
+  font-weight: 400 700;
+  src: url('#{$font-path}/GrotzecCond/GrotzecCond-Bold.woff2') format('woff2');
 }
 
 @font-face {

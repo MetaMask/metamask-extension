@@ -1,36 +1,27 @@
 import React from 'react';
-import { Button } from '@metamask/design-system-react';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import {
   Box,
-  Icon,
-  IconName,
-  IconSize,
   Text,
-} from '../../../../component-library';
+  TextVariant,
+  FontWeight,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  IconName,
+  Icon,
+  IconSize,
+  TextColor,
+} from '@metamask/design-system-react';
 
 type PermissionListItemProps = {
   /**
    * The total number of permissions
    */
   total: number;
-
   /**
    * The name of the permission group
    */
   permissionGroupName: string;
-
   /**
    * The function to call when the asset is clicked
    */
@@ -43,70 +34,41 @@ export const PermissionListItem = ({
   onClick,
 }: PermissionListItemProps) => {
   return (
-    <Box
+    <button
+      type="button"
+      onClick={onClick}
+      className="block w-full hover:bg-background-default-hover"
       data-testid="permission-list-item"
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Button
-        onClick={onClick}
-        style={{
-          width: '100%',
-          backgroundColor: 'transparent',
-          border: 'none',
-          padding: 0,
-        }}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+        paddingVertical={3}
+        paddingHorizontal={4}
       >
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {permissionGroupName}
+        </Text>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.baseline}
-          width={BlockSize.Full}
-          padding={4}
-          gap={4}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
         >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            style={{ flex: '1', alignSelf: 'center' }}
-            gap={2}
+          <Text
+            color={TextColor.TextAlternative}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
           >
-            <Text
-              variant={TextVariant.bodyMd}
-              textAlign={TextAlign.Left}
-              ellipsis
-            >
-              {permissionGroupName}
-            </Text>
-          </Box>
-
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.flexEnd}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            style={{ flex: '1', alignSelf: 'center' }}
-            gap={2}
-          >
-            <Text
-              as="span"
-              width={BlockSize.Max}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-            >
-              {total}
-            </Text>
-            <Icon
-              display={Display.Flex}
-              name={IconName.ArrowRight}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-              backgroundColor={BackgroundColor.backgroundDefault}
-            />
-          </Box>
+            {total}
+          </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            className="text-icon-alternative"
+          />
         </Box>
-      </Button>
-    </Box>
+      </Box>
+    </button>
   );
 };

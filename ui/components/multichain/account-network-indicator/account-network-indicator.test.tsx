@@ -20,14 +20,12 @@ const render = (scopes = MOCK_SCOPES) => {
 
 describe('AccountNetworkIndicator', () => {
   it('renders the avatar group with network images', () => {
-    const { getByTestId, container } = render();
+    const { getByTestId, getAllByTestId, container } = render();
 
     const avatarGroup = getByTestId('avatar-group');
     expect(avatarGroup).toBeTruthy();
 
-    const networkImages = container.querySelectorAll(
-      '.mm-avatar-network__network-image',
-    );
+    const networkImages = getAllByTestId('avatar-group-network-image');
     expect(networkImages.length).toBeGreaterThan(0);
 
     expect(container).toMatchSnapshot('account-network-indicator');

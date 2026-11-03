@@ -1,5 +1,24 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Add-network confirmation dialog ("Want to add this network?").
+ *
+ * Screen: confirmation dialog/window for `wallet_addEthereumChain` when MetaMask
+ * itself prompts to add a network (template confirmation title
+ * `wantToAddThisNetwork`). Despite the class name, selectors target add-network
+ * copy, not the "switch network" permission screen.
+ * Owns: add-network heading, network detail fields (via "See details"), and the
+ * approve/submit control.
+ * Boundaries: stops at this add-network template confirmation. Switch-network
+ * permission UI belongs to `SwitchNetworkConfirmation`. RPC-provider warning
+ * overlay belongs to `AddRpcProviderDialog`. Pending-confirmation alert belongs
+ * to `NetworkSwitchAlertModal`.
+ * Related: `SwitchNetworkConfirmation`, `AddRpcProviderDialog`,
+ * `NetworkSwitchAlertModal`. Prefer `pages/networks/*` page objects for the
+ * in-app network manager UX.
+ *
+ * @see ui/pages/confirmations/confirmation/templates/add-ethereum-chain.js
+ */
 class NetworkSwitchModalConfirmation {
   private readonly addNetworkMessage = {
     text: 'Want to add this network?',

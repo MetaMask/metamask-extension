@@ -1,4 +1,3 @@
-import { toUnicode } from 'punycode/punycode.js';
 import { SubjectType } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -38,6 +37,7 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 
 import log from 'loglevel';
+import { isManifestV3 } from '#shared/lib/mv3.utils';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
@@ -203,7 +203,7 @@ import {
 import { getApprovalRequestsByType } from './approvals';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getIsSocialLoginFlow } from './first-time-flow';
-import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
+import { getInternalAccounts } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
@@ -265,10 +265,6 @@ export function getCustomNonceValue(state) {
 
 export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
-}
-
-export function getShowPermittedNetworkToastOpen(state) {
-  return state.appState.showPermittedNetworkToastOpen;
 }
 
 /**
@@ -798,7 +794,9 @@ export const getCrossChainMetaMaskCachedBalances = createSelector(
  * @returns {object} An object of tokens with balances for the given account. Data relationship will be chainId => balance
  */
 function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
-  const { accountsByChainId } = state.metamask;
+  // AccountTrackerController no longer holds balances once AssetsController owns
+  // them, so read through the selector that falls back to unified assets state.
+  const accountsByChainId = getAccountTrackerControllerAccountsByChainId(state);
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
   const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
@@ -1179,21 +1177,6 @@ export const getCompleteAddressBook = createShallowResultSelector(
       .flat(),
 );
 
-export function getEnsResolutionByAddress(state, address) {
-  if (state.metamask.ensResolutionsByAddress[address]) {
-    const ensResolution = state.metamask.ensResolutionsByAddress[address];
-    // ensResolution is a punycode encoded string hence toUnicode is used to decode it from same package
-    const normalizedEnsResolution = toUnicode(ensResolution);
-    return normalizedEnsResolution;
-  }
-
-  const entry =
-    getAddressBookEntry(state, address) ||
-    getInternalAccountByAddress(state, address);
-
-  return entry?.name || '';
-}
-
 export function getAddressBookEntry(state, address) {
   const addressBook = getCompleteAddressBook(state);
   const entry = addressBook.find((contact) =>
@@ -1429,7 +1412,7 @@ export function getIsTestnet(state) {
   return TEST_CHAINS.includes(chainId);
 }
 
-export function getShowTestNetworks(state) {
+export function getShowTestNetworksPreference(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
 }
@@ -1443,20 +1426,6 @@ export function getShowTestNetworks(state) {
 export function getPrivacyMode(state) {
   const { privacyMode } = getPreferences(state);
   return Boolean(privacyMode);
-}
-
-/**
- * Default address feature flag (extension-ux-default-address-versioned)
- *
- * @param state - Redux state
- * @returns {boolean}
- */
-export function getIsDefaultAddressEnabled(state) {
-  const remoteFeatureFlags = getRemoteFeatureFlags(state);
-  return getBooleanFeatureFlag(
-    remoteFeatureFlags?.extensionUxDefaultAddressVersioned,
-    false,
-  );
 }
 
 /**
@@ -1578,6 +1547,20 @@ export function getFeatureNotificationsEnabled(state) {
 export function getShowExtensionInFullSizeView(state) {
   const { showExtensionInFullSizeView } = getPreferences(state);
   return Boolean(showExtensionInFullSizeView);
+}
+
+export function selectShowTickerWidget(state) {
+  const { showTickerWidget = true } = getPreferences(state);
+  return Boolean(showTickerWidget);
+}
+
+export function selectIsTickerWidgetFeatureEnabled(state) {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+  return (
+    isManifestV3 &&
+    state.metamask.useExternalServices !== false &&
+    getBooleanFeatureFlag(remoteFeatureFlags?.cashtagInjection, false)
+  );
 }
 
 export function getTestNetworkBackgroundColor(state) {
@@ -1908,6 +1891,12 @@ export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }
 
+export const getIsAddressResolutionEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    getBooleanFeatureFlag(remoteFeatureFlags?.addressResolution, false),
+);
+
 export function getUSDConversionRate(state) {
   return getCurrencyRateControllerCurrencyRates(state)[
     getProviderConfig(state).ticker
@@ -2103,8 +2092,11 @@ export function getNativeCurrencyForChain(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
 
+// `TokenListController` is no longer initialized, so `tokensChainsCache` is
+// absent from state. Fall back to a stable empty object so consumers keep
+// working and selector memoization is preserved.
 export const selectERC20TokensByChain = (state) =>
-  state.metamask.tokensChainsCache;
+  state.metamask.tokensChainsCache ?? EMPTY_OBJECT;
 
 // Deep-equal memo: `|| {}` yields a new empty object when no cached token list for the chain.
 const selectERC20Tokens = createDeepEqualSelector(
@@ -2758,7 +2750,7 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
 // Deep-equal memo: reduce filters configs into a new enabled-networks map each evaluation.
 export const getAllEnabledNetworks = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
-  getShowTestNetworks,
+  getShowTestNetworksPreference,
   (networkConfigurationsByChainId, showTestNetworks) =>
     Object.entries(networkConfigurationsByChainId).reduce(
       (acc, [chainId, network]) => {
@@ -3000,6 +2992,37 @@ export function getIsPasskeyRegistered(state) {
  */
 export function getPasskeyDerivationMethod(state) {
   return state.metamask?.passkeyRecord?.keyDerivation?.method;
+}
+
+/**
+ * Checks if the enrolled passkey derives the vault wrapping key from its
+ * legacy user handle.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyUserHandleBased(state) {
+  return getPasskeyDerivationMethod(state) === 'userHandle';
+}
+
+/**
+ * Checks if the enrolled passkey derives the vault wrapping key using PRF.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyPRFBased(state) {
+  return getPasskeyDerivationMethod(state) === 'prf';
+}
+
+/**
+ * Passkey authenticator AAGUID from the enrolled credential.
+ *
+ * @param {object} state - Redux state
+ * @returns {string | undefined}
+ */
+export function getPasskeyAuthenticatorId(state) {
+  return state.metamask?.passkeyRecord?.credential?.aaguid;
 }
 
 /**
@@ -4030,14 +4053,6 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 );
 
 /**
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
- */
-export function getNetworkConnectionBanner(state) {
-  return state.metamask.networkConnectionBanner;
-}
-
-/**
  * Check if the device is offline.
  *
  * @param {MetaMaskReduxState} state - The Redux state
@@ -4060,18 +4075,20 @@ export function getPendingRedirectRoute(state) {
 /**
  * Get the last visited Perps route and the timestamp it was recorded.
  *
+ * Keyed on the primitive fields, not on `lastVisitedRoute`: state pushes replace
+ * nested objects, and a fresh reference per push re-runs the dispatching effect
+ * in `useLastVisitedPerpsRoute` on every render.
+ *
  * @param {MetaMaskReduxState} state - The Redux state
  * @returns {{ path: string, timestamp: number } | null} The last visited Perps route, or null if none.
  */
-export function getLastVisitedPerpsRoute(state) {
-  const lastVisitedRoute = state.metamask?.lastVisitedRoute;
-  return lastVisitedRoute?.name === 'perps'
-    ? {
-        path: lastVisitedRoute.path,
-        timestamp: lastVisitedRoute.timestamp,
-      }
-    : null;
-}
+export const getLastVisitedPerpsRoute = createSelector(
+  (state) => state.metamask?.lastVisitedRoute?.name,
+  (state) => state.metamask?.lastVisitedRoute?.path,
+  (state) => state.metamask?.lastVisitedRoute?.timestamp,
+  (name, path, timestamp) =>
+    name === 'perps' && path !== undefined ? { path, timestamp } : null,
+);
 
 /**
  * Retrieves the deferred deep link from the MetaMask state.
@@ -4092,7 +4109,7 @@ export function getDeferredDeepLink(state) {
 export const getDeferredDeepLinkParameters = createResultEqualSelector(
   getDeferredDeepLink,
   (deferredDeepLink) => {
-    if (!deferredDeepLink) {
+    if (!deferredDeepLink?.referringLink) {
       return null;
     }
 

@@ -27,6 +27,7 @@ export const PERPS_TOAST_KEYS = {
   ORDER_PLACED: 'perpsToastOrderPlaced',
   ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
   SUBMIT_IN_PROGRESS: 'perpsToastSubmitInProgress',
+  TRADE_ENTRY_FAILED: 'perpsToastTradeEntryFailed',
   TRADE_SUCCESS: 'perpsToastTradeSuccess',
   UPDATE_FAILED: 'perpsToastUpdateFailed',
   UPDATE_IN_PROGRESS: 'perpsToastUpdateInProgress',

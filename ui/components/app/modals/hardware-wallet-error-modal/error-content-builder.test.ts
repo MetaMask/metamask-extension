@@ -33,6 +33,61 @@ describe('buildErrorContent', () => {
     expect(t).toHaveBeenCalledWith('hardwareWalletErrorRecoveryUnlock2');
   });
 
+  it('shows a single unlock description for AuthenticationDeviceLocked', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Ledger) {
+        return 'Ledger';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = createHardwareWalletError(
+      ErrorCode.AuthenticationDeviceLocked,
+      HardwareWalletType.Ledger,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      title: 'hardwareWalletErrorTitleDeviceLocked:Ledger',
+      description: 'hardwareWalletErrorDeviceLockedDescription',
+      showRepairLink: false,
+    });
+    expect(t).toHaveBeenCalledWith(
+      'hardwareWalletErrorDeviceLockedDescription',
+    );
+  });
+
+  it('shows an acknowledge-only description for DeviceStateOnlyV4Supported', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Ledger) {
+        return 'Ledger';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      HardwareWalletType.Ledger,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      showRepairLink: false,
+      title: 'hardwareWalletErrorTitleUnsupportedSignature',
+      description: 'hardwareWalletErrorOnlyV4SupportedDescription:Ledger',
+    });
+    expect(t).toHaveBeenCalledWith(
+      'hardwareWalletErrorOnlyV4SupportedDescription',
+      ['Ledger'],
+    );
+  });
+
   describe('showRepairLink flag', () => {
     const t = jest.fn((key: string) => key);
 
@@ -78,6 +133,15 @@ describe('buildErrorContent', () => {
     it('returns showRepairLink false for unknown error codes', () => {
       const error = createHardwareWalletError(
         ErrorCode.Unknown,
+        HardwareWalletType.Ledger,
+      );
+      const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+      expect(content).toMatchObject({ showRepairLink: false });
+    });
+
+    it('returns showRepairLink false for DeviceStateOnlyV4Supported', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.DeviceStateOnlyV4Supported,
         HardwareWalletType.Ledger,
       );
       const content = buildErrorContent(error, HardwareWalletType.Ledger, t);

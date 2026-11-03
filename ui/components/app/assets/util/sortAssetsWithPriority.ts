@@ -32,7 +32,6 @@ const defaultNativeAssetOrder: (Hex | CaipChainId)[] = [
   TrxScope.Mainnet,
   BtcScope.Mainnet,
   SolScope.Mainnet,
-  CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.MAINNET,
 ];
 

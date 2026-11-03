@@ -1,5 +1,19 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Snap-rendered sign-in confirmation (snap custom UI footer).
+ *
+ * Screen: snap confirmation dialog with "Sign-in request" header (not
+ * redesigned MetaMask SIWE `#/confirmation`).
+ * Owns: header/footer loaded checks, displayed snap address, and
+ * confirm/cancel snap footer buttons.
+ * Boundaries: MetaMask SIWE/personal-sign is `PersonalSignConfirmation`.
+ * Other snap confirmation variants have their own page objects.
+ * Related: `SnapSignMessageConfirmation`, `PersonalSignConfirmation`.
+ *
+ * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
+ * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
+ */
 class SnapSignInConfirmation {
   private addressTestId = 'snap-ui-address';
 
@@ -20,6 +34,10 @@ class SnapSignInConfirmation {
     tag: 'h2',
   };
 
+  private parentSelector = {
+    testId: 'parent-selector-snap-confirmation-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -34,6 +52,7 @@ class SnapSignInConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.header,
         this.cancelButton,
         this.confirmButton,

@@ -7,12 +7,15 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
   IconName,
   IconColor,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -61,6 +64,8 @@ const handleNumericFocusSelectAll = (
  * @param options0.currentPrice
  * @param options0.currentPositionSize
  * @param options0.onAddFunds
+ * @param options0.isLoadingAccount
+ * @param options0.hasNoAvailableBalance
  * @param options0.szDecimals
  * @param options0.autoFocus
  * @param options0.usdPlaceholder
@@ -80,6 +85,8 @@ export const AmountInput = ({
   szDecimals,
   currentPositionSize,
   onAddFunds,
+  isLoadingAccount = false,
+  hasNoAvailableBalance = false,
   autoFocus = false,
   usdPlaceholder = '0.00',
   usdInputRef,
@@ -100,13 +107,17 @@ export const AmountInput = ({
 
   // Re-read the stored denomination whenever the market changes so each market
   // keeps its own last-used choice.
-  useEffect(() => {
+  const [prevAsset, setPrevAsset] = useState(asset);
+  if (asset !== prevAsset) {
+    setPrevAsset(asset);
     setDenomination(getSizeDenomination(asset));
-  }, [asset]);
+  }
 
-  useEffect(() => {
+  const [prevBalancePercent, setPrevBalancePercent] = useState(balancePercent);
+  if (balancePercent !== prevBalancePercent) {
+    setPrevBalancePercent(balancePercent);
     setPercentInputValue(String(balancePercent));
-  }, [balancePercent]);
+  }
 
   const tokenAmount = useMemo(() => {
     const numAmount = Number.parseFloat(amount.replace(/,/gu, '')) || 0;
@@ -401,15 +412,28 @@ export const AmountInput = ({
           <SensitiveText variant={TextVariant.BodySm} isHidden={privacyMode}>
             {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </SensitiveText>
-          <ButtonIcon
-            iconName={IconName.AddCircle}
-            size={ButtonIconSize.Xs}
-            iconProps={{ color: IconColor.IconAlternative }}
-            ariaLabel="Add Funds"
-            type="button"
-            onClick={onAddFunds}
-            data-testid="amount-input-add-funds"
-          />
+          {hasNoAvailableBalance ? (
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Sm}
+              type="button"
+              onClick={onAddFunds}
+              data-testid="amount-input-add-funds"
+            >
+              {t('addFunds')}
+            </Button>
+          ) : (
+            <ButtonIcon
+              iconName={IconName.AddCircle}
+              size={ButtonIconSize.Xs}
+              iconProps={{ color: IconColor.IconAlternative }}
+              ariaLabel={t('addFunds')}
+              type="button"
+              onClick={onAddFunds}
+              isDisabled={isLoadingAccount}
+              data-testid="amount-input-add-funds"
+            />
+          )}
         </Box>
       </Box>
 

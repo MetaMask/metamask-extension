@@ -81,9 +81,6 @@
   "back": {
     "message": "Edellinen"
   },
-  "backupApprovalInfo": {
-    "message": "Tämä salainen koodi vaaditaan kukkarosi palauttamiseen siinä tapauksessa, että kadotat laitteesi, unohdat salasanasi, joudut asentamaan MetaMaskin uudestaan tai haluat käyttää lompakkoasi jollakin toisella laitteella."
-  },
   "backupApprovalNotice": {
     "message": "Varmuuskopioi salainen palautuskoodisi pitääksesi kukkarosi ja varasi turvassa."
   },
@@ -226,9 +223,6 @@
   },
   "gasLimit": {
     "message": "Gas-raja"
-  },
-  "gasLimitTooLow": {
-    "message": "Gas-rajan tulee olla vähintään 21 000"
   },
   "gasUsed": {
     "message": "Käytetty bensaa"
@@ -414,9 +408,6 @@
   "privateKey": {
     "message": "Yksityinen avain",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Varoitus: Älä koskaan paljasta tätä avainta. Kuka tahansa, jolla on yksityisavaimesi, voi varastaa tililläsi olevaa varallisuutta."
   },
   "privateNetwork": {
     "message": "Yksityinen verkko"

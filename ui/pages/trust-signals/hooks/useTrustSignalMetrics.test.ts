@@ -31,9 +31,15 @@ const SECURITY_ALERT_RESPONSE_MOCK = {
   reason: 'This address is associated with fraudulent activities',
 };
 
+const UNMAPPED_CHAIN_ID_MOCK = '0x123456789';
+
 const contractInteraction = genUnapprovedContractInteractionConfirmation({
   chainId: '0x1',
 });
+const unmappedChainContractInteraction =
+  genUnapprovedContractInteractionConfirmation({
+    chainId: UNMAPPED_CHAIN_ID_MOCK,
+  });
 const TX_STATE_MOCK_NO_ALERT = getMockConfirmStateForTransaction(
   { ...contractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
   {
@@ -45,7 +51,19 @@ const TX_STATE_MOCK = getMockConfirmStateForTransaction(
   {
     metamask: {
       addressSecurityAlertResponses: {
-        [`ethereum:${TARGET_ADDRESS_MOCK.toLowerCase()}`]:
+        [`0x1:${TARGET_ADDRESS_MOCK.toLowerCase()}`]:
+          SECURITY_ALERT_RESPONSE_MOCK,
+      },
+    },
+  },
+);
+
+const TX_STATE_MOCK_UNMAPPED_CHAIN = getMockConfirmStateForTransaction(
+  { ...unmappedChainContractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
+  {
+    metamask: {
+      addressSecurityAlertResponses: {
+        [`${UNMAPPED_CHAIN_ID_MOCK.toLowerCase()}:${TARGET_ADDRESS_MOCK.toLowerCase()}`]:
           SECURITY_ALERT_RESPONSE_MOCK,
       },
     },
@@ -62,7 +80,7 @@ const SIGNATURE_STATE_MOCK = getMockTypedSignConfirmStateForRequest(
   {
     metamask: {
       addressSecurityAlertResponses: {
-        [`ethereum:${SIGNATURE_VERIFYING_CONTRACT_MOCK.toLowerCase()}`]:
+        [`0x1:${SIGNATURE_VERIFYING_CONTRACT_MOCK.toLowerCase()}`]:
           SECURITY_ALERT_RESPONSE_MOCK,
       },
     },
@@ -105,6 +123,29 @@ describe('useTrustSignalMetrics', () => {
       renderHookWithConfirmContextProvider(
         () => useTrustSignalMetrics(),
         TX_STATE_MOCK,
+      );
+
+      const expectedProperties = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        address_alert_response: ResultType.Malicious,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        address_label: 'Malicious',
+      };
+
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledTimes(1);
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+        { properties: expectedProperties },
+        OWNER_ID_MOCK,
+      );
+      expect(mockUpdateSignatureEventFragment).not.toHaveBeenCalled();
+    });
+
+    it('updates event fragments from a cached response for a chain ID absent from the legacy mapping', () => {
+      renderHookWithConfirmContextProvider(
+        () => useTrustSignalMetrics(),
+        TX_STATE_MOCK_UNMAPPED_CHAIN,
       );
 
       const expectedProperties = {

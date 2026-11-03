@@ -1,5 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { t } from '../../../../../shared/lib/translate';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
@@ -12,29 +13,21 @@ import {
   NotificationDetailInfo,
   NotificationDetailNetworkFee,
   NotificationDetailBlockExplorerButton,
-  NotificationDetailTitle,
   NotificationDetailAsset,
   NotificationDetailCopyButton,
   NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library';
 
 import {
   createTextItems,
   getAmount,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
-import {
-  TextVariant,
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -51,19 +44,6 @@ const isStakeNotification = isOfTypeNodeGuard([
   TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED,
 ]);
 
-const TITLE_MAP = {
-  [TRIGGER_TYPES.LIDO_STAKE_COMPLETED]: t('notificationItemStaked'),
-  [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: t(
-    'notificationItemUnStakeCompleted',
-  ),
-  [TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED]: t(
-    'notificationItemStakeCompleted',
-  ),
-  [TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED]: t(
-    'notificationItemUnStakeCompleted',
-  ),
-};
-
 const DIRECTION_MAP = {
   [TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED]: 'staked',
   [TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED]: 'unstaked',
@@ -79,20 +59,12 @@ const STAKING_PROVIDER_MAP = {
 };
 
 const getTitle = (n: StakeNotification) => {
-  const items = createTextItems([TITLE_MAP[n.type] ?? ''], TextVariant.bodySm);
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: StakeNotification) => {
-  const direction = DIRECTION_MAP[n.type];
-  const items = createTextItems(
-    [
-      direction === 'staked'
-        ? n.payload.data.stake_out.symbol
-        : n.payload.data.stake_in.symbol,
-    ],
-    TextVariant.bodyMd,
-  );
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
@@ -133,23 +105,7 @@ export const components: NotificationComponent<StakeNotification> = {
     );
   },
   details: {
-    title: ({ notification }) => {
-      const direction = DIRECTION_MAP[notification.type];
-      const title =
-        direction === 'staked'
-          ? `${t('notificationItemStaked')} ${
-              notification.payload.data.stake_in.symbol
-            }`
-          : `${t('notificationItemUnStaked')} ${
-              notification.payload.data.stake_in.symbol
-            }`;
-      return (
-        <NotificationDetailTitle
-          title={title}
-          date={formatIsoDateString(notification.createdAt)}
-        />
-      );
-    },
+    title: OnChainNotificationDetailsTitle,
     body: {
       type: NotificationComponentType.OnChainBody,
       Account: ({ notification }) => {
@@ -228,8 +184,7 @@ export const components: NotificationComponent<StakeNotification> = {
         <NotificationDetailInfo
           icon={{
             iconName: IconName.Check,
-            color: TextColor.successDefault,
-            backgroundColor: BackgroundColor.successMuted,
+            severity: AvatarIconSeverity.Success,
           }}
           label={t('notificationItemStatus') ?? ''}
           detail={t('notificationItemConfirmed') ?? ''}

@@ -28,7 +28,6 @@ import { captureException } from '../../../../shared/lib/sentry';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   forceUpdateMetamaskState,
-  removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
@@ -39,12 +38,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getIsPasskeyRegistered } from '../../../selectors';
 import { useDispatch } from '../../../store/hooks';
+import { useRemovePasskeyWithPassword } from '../../../hooks/passkey/usePasskeyRemoval';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 export default function PasskeyTurnOffSubPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const removePasskeyWithPassword = useRemovePasskeyWithPassword();
   const t = useI18nContext();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -101,7 +102,7 @@ export default function PasskeyTurnOffSubPage() {
           .build(),
       );
       try {
-        await removePasskeyWithPasswordVerification(walletPassword);
+        await removePasskeyWithPassword(walletPassword);
         await forceUpdateMetamaskState(dispatch);
         trackEvent(
           createEventBuilder(MetaMetricsEventName.PasskeyTurnOff)

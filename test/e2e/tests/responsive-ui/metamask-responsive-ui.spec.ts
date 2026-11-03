@@ -6,16 +6,17 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
+import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
+import { sendTransaction } from '../../page-objects/flows/transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { PAGES } from '../../webdriver/driver';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -147,13 +148,17 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         await login(driver);
 
         // send ETH from inside MetaMask
-        await sendRedesignedTransactionToAddress({
+        await sendTransaction({
           driver,
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           amount: '1',
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+
+        const txToast = new TxToastNotification(driver);
+        await txToast.waitForToastNotification();
+        await txToast.closeToastNotification();
 
         await switchToNetworkFromNetworkSelect(driver, 'Localhost 8545');
 

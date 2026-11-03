@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -23,14 +29,13 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
-import { MINUTE } from '../../../shared/constants/time';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
+import { SensitiveClipboardCleanup } from '../../components/ui/sensitive-clipboard-cleanup/sensitive-clipboard-cleanup';
 import {
   requestRevealSeedWords,
-  getSeedPhraseWithPasskey,
   scanUrlForPhishing,
 } from '../../store/actions';
 import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
@@ -45,8 +50,8 @@ import {
 } from '../../helpers/constants/routes';
 import { PasskeyVerification } from '../../components/app/passkey-verification';
 import { useBoolean } from '../../hooks/useBoolean';
-import { Toast, ToastContainer } from '../../components/multichain/toast';
 import { useDispatch } from '../../store/hooks';
+import { usePasskeySeedPhraseExport } from '../../hooks/passkey/usePasskeySeedPhraseExport';
 import type { RevealSeedScreen, RevealSeedLocationState } from './types';
 import { RevealSeedPageHeader } from './reveal-seed-page-header';
 import { RevealSeedWarning } from './reveal-seed-warning';
@@ -65,6 +70,7 @@ const REVEAL_SEED_SCREEN: RevealSeedScreen = 'REVEAL_SEED_SCREEN';
 
 function RevealSeedPage() {
   const dispatch = useDispatch();
+  const exportSeedPhraseWithPasskey = usePasskeySeedPhraseExport();
   const navigate = useNavigate();
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -89,22 +95,26 @@ function RevealSeedPage() {
   const [password, setPassword] = useState('');
   const [seedWords, setSeedWords] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
+  const srpViewEventTrackedRef = useRef(false);
   const { value: showPassword, toggle } = useBoolean();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
-
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const [scanResult, setScanResult] =
     useState<PhishingDetectionScanResult | null>(null);
+  const [trackedActiveTabOrigin, setTrackedActiveTabOrigin] =
+    useState(activeTabOrigin);
   const scanResultPromiseRef = React.useRef<
     Promise<PhishingDetectionScanResult | null>
   >(Promise.resolve(null));
 
+  if (activeTabOrigin !== trackedActiveTabOrigin) {
+    setTrackedActiveTabOrigin(activeTabOrigin);
+    setScanResult(null);
+  }
+
   useEffect(() => {
     let cancelled = false;
-    setScanResult(null);
 
     if (activeTabOrigin) {
       const scanPromise = scanUrlForPhishing(activeTabOrigin).catch(() => {
@@ -128,7 +138,10 @@ function RevealSeedPage() {
   }, [activeTabOrigin]);
 
   const trackEventRef = React.useRef(trackEvent);
-  trackEventRef.current = trackEvent;
+
+  useEffect(() => {
+    trackEventRef.current = trackEvent;
+  }, [trackEvent]);
 
   useEffect(() => {
     if (scanResult?.recommendedAction === RecommendedAction.Block) {
@@ -149,16 +162,20 @@ function RevealSeedPage() {
   // Only Block triggers the malicious warning. Warn and None show the generic warning.
   const isMalicious = scanResult?.recommendedAction === RecommendedAction.Block;
 
-  const [, copyToClipboard] = useCopyToClipboard({
-    clearDelayMs: MINUTE,
+  const [, copyToClipboard, , sensitiveClipboard] = useCopyToClipboard({
+    sensitive: true,
   });
 
-  const onClickCopy = useCallback(() => {
+  const onClickCopy = useCallback(async () => {
     if (!seedWords || !phraseRevealed) {
       return;
     }
-    copyToClipboard(seedWords);
-    setShowSuccessToast(true);
+
+    const copied = await copyToClipboard(seedWords);
+    if (!copied) {
+      return;
+    }
+
     trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportCopied)
         .addCategory(MetaMetricsEventCategory.Keys)
@@ -332,9 +349,10 @@ function RevealSeedPage() {
       );
 
       try {
-        const revealedSeedWords = await (dispatch(
-          getSeedPhraseWithPasskey(authenticationResponse, keyringId),
-        ) as unknown as Promise<string>);
+        const revealedSeedWords = await exportSeedPhraseWithPasskey(
+          authenticationResponse,
+          keyringId,
+        );
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.KeyExportRevealed)
@@ -380,7 +398,13 @@ function RevealSeedPage() {
         endTrace({ name: TraceName.RevealSeed });
       }
     },
-    [createEventBuilder, dispatch, hdEntropyIndex, keyringId, trackEvent],
+    [
+      createEventBuilder,
+      exportSeedPhraseWithPasskey,
+      hdEntropyIndex,
+      keyringId,
+      trackEvent,
+    ],
   );
 
   const handleUsePassword = useCallback(() => {
@@ -406,7 +430,8 @@ function RevealSeedPage() {
   }, [keyringId]);
 
   useEffect(() => {
-    if (screen === REVEAL_SEED_SCREEN && !srpViewEventTracked) {
+    if (screen === REVEAL_SEED_SCREEN && !srpViewEventTrackedRef.current) {
+      srpViewEventTrackedRef.current = true;
       trackEvent(
         createEventBuilder(MetaMetricsEventName.SrpViewSrpText)
           .addCategory(MetaMetricsEventCategory.Keys)
@@ -416,9 +441,8 @@ function RevealSeedPage() {
           })
           .build(),
       );
-      setSrpViewEventTracked(true);
     }
-  }, [createEventBuilder, screen, srpViewEventTracked, trackEvent]);
+  }, [createEventBuilder, screen, trackEvent]);
 
   const handleRevealPhrase = useCallback(() => {
     trackEvent(
@@ -571,6 +595,10 @@ function RevealSeedPage() {
           phraseRevealed={phraseRevealed}
           onRevealPhrase={handleRevealPhrase}
           onCopy={onClickCopy}
+          copied={
+            sensitiveClipboard.state === 'ready' ||
+            sensitiveClipboard.state === 'error'
+          }
           onTabClick={handleTabClick}
         />
       );
@@ -616,18 +644,12 @@ function RevealSeedPage() {
         </>
       )}
       {renderContent()}
-      {showSuccessToast && (
-        <ToastContainer>
-          <Toast
-            startAdornment={null}
-            text={t('copiedToClipboard')}
-            onClose={() => setShowSuccessToast(false)}
-            autoHideTime={5000}
-            onAutoHideToast={() => setShowSuccessToast(false)}
-            dataTestId="reveal-seed-copy-success-toast"
-          />
-        </ToastContainer>
-      )}
+      {screen === REVEAL_SEED_SCREEN ? (
+        <SensitiveClipboardCleanup
+          state={sensitiveClipboard.state}
+          onClear={sensitiveClipboard.clear}
+        />
+      ) : null}
     </Box>
   );
 }

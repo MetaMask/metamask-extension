@@ -2,6 +2,21 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 import { E2E_SRP } from '../../../constants';
 
+/**
+ * Import-wallet Secret Recovery Phrase entry during onboarding.
+ *
+ * Screen: `#/onboarding/import-with-recovery-phrase`
+ * Owns: SRP paste / word-by-word input, clear-all, checksum error, and
+ * confirm (including the disabled-until-valid state).
+ * Boundaries: import SRP entry only. Does not set the password or handle
+ * create-wallet SRP reveal/confirm (that is `SecureWalletPage`).
+ * Related: preceded by `StartOnboardingPage.importWallet` /
+ * `clickImportWithSrpButton`; next is `OnboardingPasswordPage`; then
+ * `SetupPasskeyPage` → `OnboardingMetricsPage` → `OnboardingCompletePage`;
+ * `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/import-srp/import-srp.tsx
+ */
 class OnboardingSrpPage {
   private readonly clearAllButton = {
     tag: 'span',
@@ -14,6 +29,8 @@ class OnboardingSrpPage {
     tag: 'p',
     text: 'Enter your Secret Recovery Phrase',
   };
+
+  private readonly page = '[data-testid="parent-selector-onboarding-srp"]';
 
   private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
 
@@ -44,6 +61,7 @@ class OnboardingSrpPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.srpMessage,
         this.srpWord0,
         this.importDescription,
@@ -69,10 +87,6 @@ class OnboardingSrpPage {
 
   async clickConfirmButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.srpConfirmButton);
-  }
-
-  async clickConfirmButtonWithSrpError(): Promise<void> {
-    await this.driver.clickElement(this.srpConfirmButton);
   }
 
   /**

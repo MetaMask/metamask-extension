@@ -87,7 +87,7 @@ export default function HardwareWalletSignatures() {
         }
       />
       <Box
-        className="hardware-wallet-signatures__content h-full"
+        className="hardware-wallet-signatures__content"
         flexDirection={BoxFlexDirection.Column}
         paddingTop={6}
         paddingHorizontal={4}

@@ -58,6 +58,7 @@ describe('useRampsOrders', () => {
         orderId: 'order-1',
         providerCode: 'transak',
         walletAddress: '0xabc123',
+        chainId: 'eip155:1',
       });
       await result.current.removeOrder('/providers/transak/orders/order-1');
       await result.current.refreshOrder('transak', 'order-1', '0xabc123');
@@ -73,6 +74,7 @@ describe('useRampsOrders', () => {
       orderId: 'order-1',
       providerCode: 'transak',
       walletAddress: '0xabc123',
+      chainId: 'eip155:1',
     });
     expect(removeRampsOrder).toHaveBeenCalledWith('order-1');
     expect(refreshRampsOrder).toHaveBeenCalledWith(

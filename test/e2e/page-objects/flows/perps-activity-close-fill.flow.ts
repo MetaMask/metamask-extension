@@ -27,17 +27,23 @@ export async function assertPerpsActivityShowsCloseFill({
   pushUserFills();
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
+  await marketDetailPage.checkPageIsLoaded();
   await marketDetailPage.clickBack();
-  try {
-    const marketListPage = new PerpsMarketListPage(driver);
+
+  const marketListPage = new PerpsMarketListPage(driver);
+  const onMarketList = await marketListPage.isPageLoaded();
+  if (onMarketList) {
     await marketListPage.clickBack();
-  } catch (error) {
-    console.error('Market list not displayed, moving on', error);
   }
 
   const perpsTab = new PerpsTab(driver);
   await perpsTab.navigateToPerpsHome();
-  await perpsTab.checkPageIsLoaded();
+  await perpsTab.waitForPerpsViewStable();
+  // Activity only shows a just-closed trade via the live fill (REST history is
+  // cached for 60s), and the wallet can drop a fill that arrives while leaving
+  // market detail. Push it again so the trade reliably reaches Activity.
+  pushUserFills();
+  await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 
   const activityPage = new PerpsActivityPage(driver);

@@ -10,11 +10,6 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import {
-  TextVariant as TextVariantComponent,
-  TextColor as TextColorComponent,
-} from '../../../helpers/constants/design-system';
-import { Text as TextComponent } from '../../../components/component-library';
 import ToggleButton from '../../../components/ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -46,7 +41,7 @@ export const Setting = ({
       flexDirection={BoxFlexDirection.Column}
       justifyContent={BoxJustifyContent.Center}
       alignItems={BoxAlignItems.Start}
-      marginTop={3}
+      marginTop={0}
       marginBottom={enableMarginBottom ? 3 : 0}
       data-testid={dataTestId}
     >
@@ -77,14 +72,14 @@ export const Setting = ({
           </Box>
         ) : null}
       </Box>
-      <TextComponent
-        variant={TextVariantComponent.bodySm}
-        color={TextColorComponent.textAlternative}
-        as="div"
+      <Text
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+        asChild
         className="w-full"
       >
-        {description}
-      </TextComponent>
+        <div>{description}</div>
+      </Text>
     </Box>
   );
 };

@@ -6,7 +6,6 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Box,
   Text,
@@ -24,7 +23,6 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
@@ -33,41 +31,57 @@ import {
 import { captureException } from '../../../../shared/lib/sentry';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
-import { generatePasskeyAuthenticationOptions } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPasskeyDerivationMethod } from '../../../selectors';
+import {
+  getPasskeyAuthenticatorId,
+  getPasskeyDerivationMethod,
+  getIsPasskeyUserHandleBased,
+} from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
+import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
+import { discardUnlockMeasurement, UnlockReady } from '../unlock-performance';
+
+export type PasskeyUnlockSuccessContext = {
+  /**
+   * Whether the unlocked passkey uses the legacy userHandle derivation and
+   * should be offered migration.
+   */
+  isPasskeyMigrationEligible: boolean;
+};
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
+  isUnlockReady: boolean;
   isPasskeyActive: boolean;
   passkeyAutoUnlockSuppressed: boolean;
   mustDeferPasskeyToBrowserTab: boolean;
   isPasswordInProgress: boolean;
-  onUnlockWithPasskey: (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => Promise<void>;
+  onUnlockSuccess: (context: PasskeyUnlockSuccessContext) => Promise<void>;
   onUsePassword: () => void;
 };
 
 export const UnlockPasskeySection = ({
   logoSection,
+  isUnlockReady,
   isPasskeyActive,
   passkeyAutoUnlockSuppressed,
   mustDeferPasskeyToBrowserTab,
   isPasswordInProgress,
-  onUnlockWithPasskey,
+  onUnlockSuccess,
   onUsePassword,
 }: UnlockPasskeySectionProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const unlockWithPasskey = usePasskeyUnlock();
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+  const isPasskeyMigrationEligible = useSelector(getIsPasskeyUserHandleBased);
+  const passkeyAuthenticatorId = useSelector(getPasskeyAuthenticatorId);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -88,7 +102,6 @@ export const UnlockPasskeySection = ({
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
-      cancelPasskeyCeremony();
     };
   }, []);
 
@@ -101,6 +114,12 @@ export const UnlockPasskeySection = ({
         return;
       }
 
+      // Automatic authentication never offers an idle form before user input.
+      // Exclude the whole document, including cancellation/password fallback.
+      if (isAutoPrompt) {
+        discardUnlockMeasurement();
+      }
+
       if (isMountedRef.current) {
         setPasskeyError(null);
         setPasskeyInProgress(true);
@@ -111,6 +130,7 @@ export const UnlockPasskeySection = ({
         /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         is_auto_prompt: isAutoPrompt,
         derivation_method: passkeyDerivationMethod,
+        authenticator_id: passkeyAuthenticatorId,
         /* eslint-enable @typescript-eslint/naming-convention */
       };
       try {
@@ -124,11 +144,11 @@ export const UnlockPasskeySection = ({
             .build(),
         );
 
-        const authOptions = await generatePasskeyAuthenticationOptions();
-        const authenticationResponse =
-          await startPasskeyAuthentication(authOptions);
-
-        await onUnlockWithPasskey(authenticationResponse);
+        const shouldShowMigrationNotice = await unlockWithPasskey();
+        await onUnlockSuccess({
+          isPasskeyMigrationEligible:
+            shouldShowMigrationNotice ?? isPasskeyMigrationEligible,
+        });
 
         trackEvent(
           createEventBuilder(MetaMetricsEventName.AppUnlocked)
@@ -211,12 +231,15 @@ export const UnlockPasskeySection = ({
       isPasswordInProgress,
       passkeyInProgress,
       isPasskeyActive,
-      onUnlockWithPasskey,
+      onUnlockSuccess,
       passkeyMethodLabel,
       passkeyDerivationMethod,
+      isPasskeyMigrationEligible,
+      passkeyAuthenticatorId,
       t,
       trackEvent,
       createEventBuilder,
+      unlockWithPasskey,
     ],
   );
 
@@ -235,13 +258,20 @@ export const UnlockPasskeySection = ({
           status: 'use_password_selected',
           /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
           derivation_method: passkeyDerivationMethod,
+          authenticator_id: passkeyAuthenticatorId,
           /* eslint-enable @typescript-eslint/naming-convention */
         })
         .build(),
     );
     cancelPasskeyCeremony();
     onUsePassword();
-  }, [onUsePassword, trackEvent, createEventBuilder, passkeyDerivationMethod]);
+  }, [
+    onUsePassword,
+    trackEvent,
+    createEventBuilder,
+    passkeyDerivationMethod,
+    passkeyAuthenticatorId,
+  ]);
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
@@ -270,6 +300,9 @@ export const UnlockPasskeySection = ({
       gap={4}
       padding={4}
     >
+      <UnlockReady
+        ready={isUnlockReady && !passkeyInProgress && !showTroubleshootModal}
+      />
       {logoSection}
       {passkeyError ? (
         <Text

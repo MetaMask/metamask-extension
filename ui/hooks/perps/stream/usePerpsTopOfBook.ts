@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import type { PerpsStreamManager } from '../../../providers/perps';
 import { usePerpsChannel } from './usePerpsChannel';
@@ -75,9 +75,6 @@ export function usePerpsTopOfBook(
   options: UsePerpsTopOfBookOptions,
 ): UsePerpsTopOfBookReturn {
   const { symbol } = options;
-  const [topOfBook, setTopOfBook] = useState<TopOfBookData | undefined>(
-    undefined,
-  );
 
   const { data: orderBookData, isInitialLoading } = usePerpsChannel(
     getOrderBookChannel,
@@ -100,18 +97,16 @@ export function usePerpsTopOfBook(
     };
   }, [symbol]);
 
-  // Extract top of book from the orderBook channel data
-  useEffect(() => {
+  const topOfBook = useMemo(() => {
     if (!orderBookData) {
-      setTopOfBook(undefined);
-      return;
+      return undefined;
     }
 
     if (orderBookData.bids.length > 0 && orderBookData.asks.length > 0) {
       const topBid = orderBookData.bids[0];
       const topAsk = orderBookData.asks[0];
 
-      setTopOfBook({
+      return {
         bestBid: topBid.price,
         bestBidSize: topBid.size,
         bestAsk: topAsk.price,
@@ -119,10 +114,10 @@ export function usePerpsTopOfBook(
         spread: orderBookData.spread,
         spreadPercent: orderBookData.spreadPercentage,
         midPrice: orderBookData.midPrice,
-      });
-    } else {
-      setTopOfBook(undefined);
+      };
     }
+
+    return undefined;
   }, [orderBookData]);
 
   return {

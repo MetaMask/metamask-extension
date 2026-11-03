@@ -1,5 +1,110 @@
 import { PERPS_ERROR_CODES } from '@metamask/perps-controller';
-import type { PerpsErrorCode } from '@metamask/perps-controller';
+import type {
+  PerpsErrorCode,
+  PerpsErrorDetails,
+} from '@metamask/perps-controller';
+
+export type PerpsErrorInput = {
+  error: string;
+  errorCode?: PerpsErrorCode;
+  errorDetails?: PerpsErrorDetails;
+  maxSlippageBps?: number;
+};
+
+type PerpsTranslation = (key: string, substitutions?: string[]) => string;
+
+const formatBpsAsPercent = (bps: number): string =>
+  (Math.round(bps) / 100).toString();
+
+function normalizePerpsError(error: unknown): PerpsErrorInput | null {
+  if (typeof error === 'string') {
+    return { error };
+  }
+
+  if (typeof error !== 'object' || error === null) {
+    return null;
+  }
+
+  const errorRecord = error as Record<string, unknown>;
+  let message: string | null = null;
+  if (error instanceof Error) {
+    message = error.message;
+  } else if (typeof errorRecord.error === 'string') {
+    message = errorRecord.error;
+  }
+  if (message === null) {
+    return null;
+  }
+
+  const errorCodeValue = errorRecord.errorCode ?? errorRecord.code;
+  const errorCode = isPerpsErrorCodeValue(errorCodeValue)
+    ? errorCodeValue
+    : undefined;
+  const errorDetails =
+    typeof errorRecord.errorDetails === 'object' &&
+    errorRecord.errorDetails !== null
+      ? (errorRecord.errorDetails as PerpsErrorDetails)
+      : undefined;
+  const maxSlippageBps =
+    typeof errorRecord.maxSlippageBps === 'number'
+      ? errorRecord.maxSlippageBps
+      : undefined;
+
+  return {
+    error: message,
+    errorCode,
+    errorDetails,
+    maxSlippageBps,
+  };
+}
+
+function getErrorCode(error: PerpsErrorInput): PerpsErrorCode | undefined {
+  return (
+    error.errorCode ??
+    (isPerpsErrorCodeValue(error.error) ? error.error : undefined)
+  );
+}
+
+function getErrorTranslation({
+  errorCode,
+  errorDetails,
+  maxSlippageBps,
+  defaultI18nKey,
+}: {
+  errorCode: PerpsErrorCode;
+  errorDetails?: PerpsErrorDetails;
+  maxSlippageBps?: number;
+  defaultI18nKey: string;
+}): { i18nKey: string; substitutions?: string[] } {
+  if (errorCode === PERPS_ERROR_CODES.PRICE_MOVED) {
+    if (
+      errorDetails?.code === PERPS_ERROR_CODES.PRICE_MOVED &&
+      Number.isFinite(errorDetails.priceDeltaBps) &&
+      Number.isFinite(errorDetails.maxSlippageBps)
+    ) {
+      return {
+        i18nKey: 'perpsPriceMoved',
+        substitutions: [
+          formatBpsAsPercent(errorDetails.priceDeltaBps),
+          formatBpsAsPercent(errorDetails.maxSlippageBps),
+        ],
+      };
+    }
+
+    return { i18nKey: 'perpsSlippageExceeded' };
+  }
+
+  if (errorCode === PERPS_ERROR_CODES.IOC_CANCEL) {
+    return maxSlippageBps === undefined
+      ? { i18nKey: 'perpsIocCancelUnknownTolerance' }
+      : {
+          i18nKey: 'perpsIocCancel',
+          substitutions: [formatBpsAsPercent(maxSlippageBps)],
+        };
+  }
+
+  return { i18nKey: defaultI18nKey };
+}
 
 /**
  * Maps PerpsErrorCode values to extension i18n message keys.
@@ -13,6 +118,10 @@ export const ERROR_CODE_TO_I18N_KEY = {
 
   // Provider / token
   [PERPS_ERROR_CODES.PROVIDER_NOT_AVAILABLE]: 'somethingWentWrong',
+  // Routing failures across the controller's multi-provider layer. The
+  // extension exposes no provider picker, so neither is user-actionable.
+  [PERPS_ERROR_CODES.PROVIDER_NOT_FOUND]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.PROVIDER_LIFECYCLE_STALE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TOKEN_NOT_SUPPORTED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.BRIDGE_CONTRACT_NOT_FOUND]: 'somethingWentWrong',
 
@@ -25,7 +134,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
 
   // Order errors
   [PERPS_ERROR_CODES.ORDER_LEVERAGE_REDUCTION_FAILED]: 'perpsOrderFailed',
-  [PERPS_ERROR_CODES.IOC_CANCEL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.IOC_CANCEL]: 'perpsIocCancel',
 
   // Connection
   [PERPS_ERROR_CODES.CONNECTION_TIMEOUT]: 'perpsConnectionTimeout',
@@ -74,6 +183,44 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_EDIT_TRIGGER_UNSUPPORTED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_EDIT_ORDER_UNVERIFIABLE]: 'perpsOrderFailed',
 
+  // Order validation — strategy placements (`twap`, `scale`, `chase`). Same
+  // reasoning as the trigger block above: the extension's order form places
+  // only market and limit orders, so nothing in its UI can produce a strategy
+  // request and none of these codes is reachable from it. They share the
+  // generic `ORDER_*` copy rather than carrying a bespoke string per code that
+  // every locale would have to translate for a flow that does not exist.
+  // `ORDER_STRATEGY_HANDLE_UNKNOWN` and `ORDER_STRATEGY_CANCEL_INCOMPLETE`
+  // arrive on the cancel path, where `CANCEL_ORDER_I18N_KEY_OVERRIDES` already
+  // remaps `perpsOrderFailed` to the cancel wording.
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_PARAMS_NOT_SUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_FIELD_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_MARKET_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_ROUTE_UNAVAILABLE]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_HANDLE_UNKNOWN]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_CANCEL_INCOMPLETE]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_EDIT_STRATEGY_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TWAP_DURATION_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TWAP_DURATION_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_TWAP_NOTIONAL_TOO_SMALL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_RANGE_REQUIRED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_RANGE_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_COUNT_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_SIZE_TOO_SMALL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_NOTIONAL_TOO_SMALL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_PREVIEW_STALE]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_INTERVAL_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_DURATION_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_MAX_DISTANCE_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_LIMIT_REACHED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_ABANDONED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_TOUCH_UNAVAILABLE]: 'perpsOrderFailed',
+  // Isolated/cross margin-mode selection. The extension order form does not
+  // send `marginMode`, so these codes are unreachable from its UI today.
+  [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_POSITION_OPEN]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_ORDER_OPEN]: 'perpsOrderFailed',
+
   // HyperLiquid client errors
   [PERPS_ERROR_CODES.EXCHANGE_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.INFO_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
@@ -116,12 +263,18 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.INSUFFICIENT_BALANCE]: 'perpsWithdrawInsufficient',
   [PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.POSITION_WOULD_FLIP]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.POSITION_NOT_FOUND]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.MARGIN_ADJUSTMENT_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TPSL_UPDATE_FAILED]: 'somethingWentWrong',
+  // The controller could not keep the position's TP/SL triggers in place. The
+  // user cannot re-arm them from the error toast, so it shares the generic copy
+  // with the update failure above.
+  [PERPS_ERROR_CODES.TPSL_PROTECTION_LOST]: 'somethingWentWrong',
 
   // Order execution
   [PERPS_ERROR_CODES.ORDER_REJECTED]: 'perpsOrderRejected',
   [PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED]: 'perpsSlippageExceeded',
+  [PERPS_ERROR_CODES.PRICE_MOVED]: 'perpsPriceMoved',
   [PERPS_ERROR_CODES.RATE_LIMIT_EXCEEDED]: 'perpsRateLimitExceeded',
 
   // Network / service
@@ -134,6 +287,12 @@ export const ERROR_CODE_TO_I18N_KEY = {
   // keys are computed, so TS falls back to an index signature and re-widens the
   // values. Exhaustiveness over `PerpsErrorCode` is unchanged.
 } as const satisfies Record<PerpsErrorCode, string>;
+
+function isPerpsErrorCodeValue(value: unknown): value is PerpsErrorCode {
+  return (
+    typeof value === 'string' && Object.hasOwn(ERROR_CODE_TO_I18N_KEY, value)
+  );
+}
 
 /**
  * Cancel-flow remapping of the keys above.
@@ -170,6 +329,10 @@ export const API_ERROR_PATTERNS: {
   },
   { pattern: /order rejected/iu, code: PERPS_ERROR_CODES.ORDER_REJECTED },
   { pattern: /ioc cancel/iu, code: PERPS_ERROR_CODES.IOC_CANCEL },
+  {
+    pattern: /insufficient liquidity/iu,
+    code: PERPS_ERROR_CODES.IOC_CANCEL,
+  },
   { pattern: /reduce only/iu, code: PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION },
   { pattern: /would flip/iu, code: PERPS_ERROR_CODES.POSITION_WOULD_FLIP },
   { pattern: /slippage/iu, code: PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED },
@@ -218,12 +381,12 @@ export const API_ERROR_PATTERNS: {
 /**
  * Translate a Perps error to a user-facing string using the extension i18n system.
  *
- * Resolution order:
- * 1. If the error has a `code` property matching a known PerpsErrorCode, use
- * `ERROR_CODE_TO_I18N_KEY` to look up the message key.
- * 2. If the error message itself is a known PerpsErrorCode string, use it directly.
- * 3. If the error message matches an API error pattern, use the mapped code's key.
- * 4. Fall back to `null` (caller should show a generic fallback).
+ * Accepts strings, Error instances, and structured `PerpsErrorInput` objects.
+ * Structured codes take precedence over message-as-code values and legacy API
+ * pattern matching. IOC cancellation includes the submitted tolerance when
+ * available, and price-movement errors include the measured delta and maximum
+ * tolerance when Core supplies complete details. Missing interpolation data
+ * uses substitution-free fallback copy. Unknown errors return `null`.
  *
  * @param error - The unknown thrown value.
  * @param t - The extension i18n translation function from `useI18nContext()`.
@@ -233,44 +396,72 @@ export const API_ERROR_PATTERNS: {
  */
 export function translatePerpsError(
   error: unknown,
-  t: (key: string) => string,
+  t: PerpsTranslation,
   i18nKeyOverrides?: Partial<Record<string, string>>,
 ): string | null {
-  const translate = (i18nKey: string) =>
-    t(i18nKeyOverrides?.[i18nKey] ?? i18nKey);
-  const errorObj = error instanceof Error ? error : null;
-  const errorCode =
-    errorObj &&
-    'code' in errorObj &&
-    typeof (errorObj as { code?: unknown }).code === 'string'
-      ? (errorObj as { code: string }).code
-      : null;
-
-  // 1. Code-first lookup — narrow to PerpsErrorCode only after membership check
-  if (errorCode && errorCode in ERROR_CODE_TO_I18N_KEY) {
-    const i18nKey = ERROR_CODE_TO_I18N_KEY[errorCode as PerpsErrorCode];
-    return translate(i18nKey);
+  const translate = (i18nKey: string, substitutions?: string[]) =>
+    t(i18nKeyOverrides?.[i18nKey] ?? i18nKey, substitutions);
+  const normalizedError = normalizePerpsError(error);
+  if (!normalizedError) {
+    return null;
   }
 
-  // 2. Message-as-code lookup — handles plain strings that ARE error codes
-  //    (e.g. WithdrawResult.error wrapped in `new Error(code)`)
-  const message = errorObj?.message ?? '';
-  if (message && message in ERROR_CODE_TO_I18N_KEY) {
-    return translate(ERROR_CODE_TO_I18N_KEY[message as PerpsErrorCode]);
+  // 1. Prefer the structured code, then support an error code used as the
+  // message for older callers.
+  const errorCode = getErrorCode(normalizedError);
+  if (errorCode) {
+    const { i18nKey, substitutions } = getErrorTranslation({
+      errorCode,
+      errorDetails: normalizedError.errorDetails,
+      maxSlippageBps: normalizedError.maxSlippageBps,
+      defaultI18nKey: ERROR_CODE_TO_I18N_KEY[errorCode],
+    });
+    return translate(i18nKey, substitutions);
   }
 
-  // 3. Pattern match against raw error message
-  if (message) {
-    for (const { pattern, code } of API_ERROR_PATTERNS) {
-      if (pattern.test(message)) {
-        const i18nKey = ERROR_CODE_TO_I18N_KEY[code];
-        return translate(i18nKey);
-      }
+  // 2. Pattern match against raw error messages from older controller versions.
+  for (const { pattern, code } of API_ERROR_PATTERNS) {
+    if (pattern.test(normalizedError.error)) {
+      const { i18nKey, substitutions } = getErrorTranslation({
+        errorCode: code,
+        maxSlippageBps: normalizedError.maxSlippageBps,
+        defaultI18nKey: ERROR_CODE_TO_I18N_KEY[code],
+      });
+      return translate(i18nKey, substitutions);
     }
   }
 
-  // 4. No match
+  // 3. No match
   return null;
+}
+
+/**
+ * Check an error value for a specific structured or legacy Perps error code.
+ *
+ * @param error - The unknown error value.
+ * @param code - The Perps error code to match.
+ * @returns Whether the error has the requested code.
+ */
+export function isPerpsErrorCode(
+  error: unknown,
+  code: PerpsErrorCode,
+): boolean {
+  const normalizedError = normalizePerpsError(error);
+  return normalizedError ? getErrorCode(normalizedError) === code : false;
+}
+
+/**
+ * Check whether an error is caused by a market-order slippage guard.
+ *
+ * @param error - The unknown error value.
+ * @returns Whether the error represents a slippage-related failure.
+ */
+export function isSlippageFailure(error: unknown): boolean {
+  return (
+    isPerpsErrorCode(error, PERPS_ERROR_CODES.PRICE_MOVED) ||
+    isPerpsErrorCode(error, PERPS_ERROR_CODES.IOC_CANCEL) ||
+    isPerpsErrorCode(error, PERPS_ERROR_CODES.SLIPPAGE_EXCEEDED)
+  );
 }
 
 /**
@@ -283,9 +474,6 @@ export function translatePerpsError(
  * @param t - The extension i18n translation function from `useI18nContext()`.
  * @returns A translated user-facing error string.
  */
-export function handlePerpsError(
-  error: unknown,
-  t: (key: string) => string,
-): string {
+export function handlePerpsError(error: unknown, t: PerpsTranslation): string {
   return translatePerpsError(error, t) ?? t('somethingWentWrong');
 }

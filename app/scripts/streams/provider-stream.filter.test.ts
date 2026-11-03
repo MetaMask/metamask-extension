@@ -7,6 +7,10 @@ process.env.PHISHING_WARNING_PAGE_URL = 'https://example.com/phishing';
 // Capture pipeline callbacks via global to satisfy Jest module factory rules
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).mockPipeline = jest.fn();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).mockOnMessageListeners = [] as ((
+  message: unknown,
+) => unknown)[];
 
 jest.mock('readable-stream', () => {
   const { Transform: RealTransform } = jest.requireActual(
@@ -82,8 +86,9 @@ jest.mock('webextension-polyfill', () => ({
         },
       }),
       onMessage: {
-        addListener: () => {
-          // empty on purpose
+        addListener: (listener: (message: unknown) => unknown) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (global as any).mockOnMessageListeners.push(listener);
         },
       },
     },
@@ -145,5 +150,21 @@ describe('provider-stream logging filter', () => {
     cb(new Error('boom'));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((global as any).mockLogCalls.length).toBe(2);
+  });
+});
+
+describe('provider-stream runtime message listener', () => {
+  it('does not claim a response for unrelated messages', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const listeners = (global as any).mockOnMessageListeners as ((
+      message: unknown,
+    ) => unknown)[];
+    const listenerCountBefore = listeners.length;
+    initStreams();
+    const listener = listeners[listenerCountBefore];
+
+    const result = listener({ type: 'unrelated' });
+
+    expect(result).toBeUndefined();
   });
 });

@@ -8,10 +8,7 @@ import React from 'react';
 import type { Hex } from '@metamask/utils';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
 import type { Asset } from '../../pages/confirmations/types/send';
-import {
-  useMusdCtaVisibility,
-  BuyGetMusdCtaVariant,
-} from './useMusdCtaVisibility';
+import { useMusdCtaVisibility } from './useMusdCtaVisibility';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 import type { UseMusdGeoBlockingResult } from './useMusdGeoBlocking';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
@@ -161,127 +158,6 @@ describe('useMusdCtaVisibility', () => {
     jest.clearAllMocks();
   });
 
-  describe('shouldShowBuyGetMusdCta', () => {
-    it('returns shouldShowCta: false when feature flag is disabled', () => {
-      const store = createMockStore({
-        metamask: {
-          remoteFeatureFlags: {
-            earnMusdConversionFlowEnabled: false,
-            earnMusdCtaEnabled: false,
-          },
-        },
-      });
-
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }: React.PropsWithChildren) =>
-          wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta();
-      expect(ctaState.shouldShowCta).toBe(false);
-    });
-
-    it('returns shouldShowCta: false when user is geo-blocked', () => {
-      jest
-        .mocked(useMusdGeoBlocking)
-        .mockReturnValue(
-          createGeoBlockingMock({ isBlocked: true, userCountry: 'GB' }),
-        );
-
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }: React.PropsWithChildren) =>
-          wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta();
-      expect(ctaState.shouldShowCta).toBe(false);
-    });
-
-    it('returns shouldShowCta: false while geo-blocking check is loading', () => {
-      jest
-        .mocked(useMusdGeoBlocking)
-        .mockReturnValue(
-          createGeoBlockingMock({ isBlocked: false, isLoading: true }),
-        );
-
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }: React.PropsWithChildren) =>
-          wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta({
-        hasConvertibleTokens: true,
-        hasMusdBalance: false,
-      });
-      expect(ctaState.shouldShowCta).toBe(false);
-    });
-
-    it('returns GET variant when user has convertible tokens', () => {
-      jest
-        .mocked(useMusdGeoBlocking)
-        .mockReturnValue(
-          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
-        );
-
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }: React.PropsWithChildren) =>
-          wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta({
-        hasConvertibleTokens: true,
-        hasMusdBalance: false,
-        selectedChainId: '0x1' as Hex,
-      });
-
-      expect(ctaState.shouldShowCta).toBe(true);
-      expect(ctaState.variant).toBe(BuyGetMusdCtaVariant.GET);
-    });
-
-    it('returns BUY variant when wallet is empty', () => {
-      jest
-        .mocked(useMusdGeoBlocking)
-        .mockReturnValue(
-          createGeoBlockingMock({ isBlocked: false, userCountry: 'US' }),
-        );
-
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }: React.PropsWithChildren) =>
-          wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta({
-        hasConvertibleTokens: false,
-        hasMusdBalance: false,
-        isEmptyWallet: true,
-        selectedChainId: '0x1' as Hex,
-      });
-
-      expect(ctaState.shouldShowCta).toBe(true);
-      expect(ctaState.variant).toBe(BuyGetMusdCtaVariant.BUY);
-    });
-
-    it('returns shouldShowCta: false when user already has mUSD balance', () => {
-      const store = createMockStore();
-      const { result } = renderHook(() => useMusdCtaVisibility(), {
-        wrapper: ({ children }: React.PropsWithChildren) =>
-          wrapper({ children, store }),
-      });
-
-      const ctaState = result.current.shouldShowBuyGetMusdCta({
-        hasConvertibleTokens: true,
-        hasMusdBalance: true,
-        selectedChainId: '0x1' as Hex,
-      });
-
-      expect(ctaState.shouldShowCta).toBe(false);
-    });
-  });
-
   describe('shouldShowTokenListItemCta', () => {
     it('returns false when feature flag is disabled', () => {
       const store = createMockStore({
@@ -342,19 +218,16 @@ describe('useMusdCtaVisibility', () => {
           wrapper({ children, store }),
       });
 
-      const shouldShow = result.current.shouldShowTokenListItemCta(
-        {
-          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
-          chainId: '0x1' as Hex,
-          symbol: 'USDC',
-        },
-        { hasMusdBalance: true },
-      );
+      const shouldShow = result.current.shouldShowTokenListItemCta({
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
+        chainId: '0x1' as Hex,
+        symbol: 'USDC',
+      });
 
       expect(shouldShow).toBe(false);
     });
 
-    it('returns true for eligible tokens on supported chains when user has mUSD balance', () => {
+    it('returns true for eligible tokens on supported chains', () => {
       jest
         .mocked(useMusdGeoBlocking)
         .mockReturnValue(
@@ -379,14 +252,11 @@ describe('useMusdCtaVisibility', () => {
           wrapper({ children, store }),
       });
 
-      const shouldShow = result.current.shouldShowTokenListItemCta(
-        {
-          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
-          chainId: '0x1' as Hex,
-          symbol: 'USDC',
-        },
-        { hasMusdBalance: true },
-      );
+      const shouldShow = result.current.shouldShowTokenListItemCta({
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
+        chainId: '0x1' as Hex,
+        symbol: 'USDC',
+      });
 
       expect(shouldShow).toBe(true);
     });
@@ -404,14 +274,11 @@ describe('useMusdCtaVisibility', () => {
           wrapper({ children, store }),
       });
 
-      const shouldShow = result.current.shouldShowTokenListItemCta(
-        {
-          address: '0x1234567890123456789012345678901234567890' as Hex,
-          chainId: '0x1' as Hex,
-          symbol: 'RANDOM',
-        },
-        { hasMusdBalance: true },
-      );
+      const shouldShow = result.current.shouldShowTokenListItemCta({
+        address: '0x1234567890123456789012345678901234567890' as Hex,
+        chainId: '0x1' as Hex,
+        symbol: 'RANDOM',
+      });
 
       expect(shouldShow).toBe(false);
     });

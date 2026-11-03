@@ -1,5 +1,18 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Terms of Use update popup shown when the user must re-accept updated terms.
+ *
+ * Screen: modal layered over the home / post-login UI when a terms update is
+ * required (also reachable from settings terms flows).
+ * Owns: scroll-to-bottom control, agree checkbox enablement, and the accept
+ * button that dismisses the modal.
+ * Boundaries: stops at the terms popup. Does not cover first-time onboarding
+ * terms screens beyond this update modal's selectors.
+ * Related: onboarding/home flows that wait for this modal after login.
+ *
+ * @see ui/components/app/terms-of-use-popup/terms-of-use-popup.js
+ */
 class TermsOfUseUpdateModal {
   private readonly acceptButton = {
     testId: 'terms-of-use-agree-button',

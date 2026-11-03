@@ -2,16 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
-import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unlock';
 import {
   tryUnlockMetamask,
-  tryUnlockMetamaskWithPasskey,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
@@ -35,6 +33,7 @@ import withRouterHooks, {
 } from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import UnlockPage from './unlock-page.component';
+import type { PasskeyUnlockSuccessContext } from './passkey';
 
 type OwnProps = {
   navigate: NavigateFunction;
@@ -47,7 +46,9 @@ type OwnProps = {
    * Previously, navigation was handled immediately after `onSubmit` is called.
    * This prop allows for custom logics (e.g. metrics) before the navigation.
    */
-  navigateAfterUnlock?: () => Promise<void>;
+  navigateAfterUnlock?: (
+    context?: PasskeyUnlockSuccessContext,
+  ) => Promise<void>;
 };
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
@@ -83,9 +84,6 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     tryUnlockMetamask: (password: string) =>
       dispatch(tryUnlockMetamask(password)),
-    tryUnlockMetamaskWithPasskey: (
-      authenticationResponse: PasskeyAuthenticationResponse,
-    ) => dispatch(tryUnlockMetamaskWithPasskey(authenticationResponse)),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
@@ -100,11 +98,8 @@ const mergeProps = (
   dispatchProps: ReturnType<typeof mapDispatchToProps>,
   ownProps: OwnProps,
 ) => {
-  const {
-    tryUnlockMetamask: propsTryUnlockMetamask,
-    tryUnlockMetamaskWithPasskey: propsTryUnlockMetamaskWithPasskey,
-    ...restDispatchProps
-  } = dispatchProps;
+  const { tryUnlockMetamask: propsTryUnlockMetamask, ...restDispatchProps } =
+    dispatchProps;
   const {
     navigate,
     onSubmit: ownPropsSubmit,
@@ -119,25 +114,11 @@ const mergeProps = (
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const handleNavigationAfterUnlock = async () => {
-    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
-    let redirectTo = DEFAULT_ROUTE;
-    const fromLocation = location.state?.from;
-    if (fromLocation?.pathname) {
-      const search = fromLocation.search || '';
-      redirectTo = fromLocation.pathname + search;
-    }
-
-    navigate(redirectTo, { replace: true });
+    navigate(getRedirectAfterUnlock(location.state), { replace: true });
   };
 
   const onSubmit = async (password: string) => {
     await propsTryUnlockMetamask(password);
-  };
-
-  const onUnlockWithPasskey = async (
-    authenticationResponse: PasskeyAuthenticationResponse,
-  ) => {
-    await propsTryUnlockMetamaskWithPasskey(authenticationResponse);
   };
 
   return {
@@ -145,7 +126,6 @@ const mergeProps = (
     ...restDispatchProps,
     ...restOwnProps,
     onSubmit: ownPropsSubmit || onSubmit,
-    onUnlockWithPasskey,
     navigateAfterUnlock:
       ownPropsNavigateAfterUnlock || handleNavigationAfterUnlock,
     navigate,
@@ -160,7 +140,9 @@ const UnlockPageConnected = compose(
 )(UnlockPage) as React.ComponentType<
   React.PropsWithChildren<{
     onSubmit?: (password: string) => Promise<void>;
-    navigateAfterUnlock?: () => Promise<void>;
+    navigateAfterUnlock?: (
+      context?: PasskeyUnlockSuccessContext,
+    ) => Promise<void>;
   }>
 >;
 

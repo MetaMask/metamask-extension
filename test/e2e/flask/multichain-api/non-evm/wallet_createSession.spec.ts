@@ -3,9 +3,11 @@ import { withFixtures } from '../../../helpers';
 import { SOLANA_MAINNET_SCOPE, WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { login } from '../../../page-objects/flows/login.flow';
-import { addAccount } from '../../../page-objects/flows/add-account.flow';
+import { addAccounts } from '../../../page-objects/flows/add-account.flow';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import EditConnectedAccountsPage from '../../../page-objects/pages/permission/edit-connected-accounts-page';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 
@@ -66,7 +68,16 @@ describe('Multichain API - Non EVM', function () {
         },
         async ({ driver, extensionId }) => {
           await login(driver);
-          await addAccount({ driver, switchToAccount: 'Account 1' });
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('25');
+          await addAccounts({
+            driver,
+            count: 1,
+            onAfterAdd: ({ label }) =>
+              new AccountListPage(driver).checkAccountDisplayedInAccountList(
+                label,
+              ),
+            onDone: ({ accountList }) => accountList.selectAccount('Account 1'),
+          });
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -80,12 +91,12 @@ describe('Multichain API - Non EVM', function () {
           await connectAccountConfirmation.checkPageIsLoaded();
           await connectAccountConfirmation.openEditAccountsModal();
 
-          const editConnectedAccountsModal = new EditConnectedAccountsModal(
+          const editConnectedAccountsPage = new EditConnectedAccountsPage(
             driver,
           );
-          await editConnectedAccountsModal.checkPageIsLoaded();
+          await editConnectedAccountsPage.checkPageIsLoaded();
 
-          await editConnectedAccountsModal.waitForAccountSelectedStatus({
+          await editConnectedAccountsPage.waitForAccountSelectedStatus({
             accountIndex: 1,
             status: 'selected',
           });

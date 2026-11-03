@@ -8,7 +8,9 @@ import {
   BoxJustifyContent,
   FontWeight,
   Icon,
+  IconColor,
   IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -17,6 +19,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   selectIsAccountSyncingEnabled,
   selectIsContactSyncingEnabled,
+  selectIsRampsSyncingEnabled,
   selectIsBackupAndSyncEnabled,
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
@@ -35,6 +38,8 @@ export const backupAndSyncFeaturesTogglesTestIds = {
   accountSyncingToggleButton: 'account-syncing-toggle-button',
   contactSyncingToggleContainer: 'contact-syncing-toggle-container',
   contactSyncingToggleButton: 'contact-syncing-toggle-button',
+  rampsSyncingToggleContainer: 'ramps-syncing-toggle-container',
+  rampsSyncingToggleButton: 'ramps-syncing-toggle-button',
 };
 
 export const backupAndSyncFeaturesTogglesSections = [
@@ -59,6 +64,17 @@ export const backupAndSyncFeaturesTogglesSections = [
       backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleContainer,
     toggleButtonTestId:
       backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleButton,
+  },
+  {
+    id: 'ramps',
+    titleI18NKey: 'backupAndSyncFeatureRamps',
+    iconName: IconName.Card,
+    backupAndSyncfeatureKey: BACKUPANDSYNC_FEATURES.rampsSyncing,
+    featureReduxSelector: selectIsRampsSyncingEnabled,
+    toggleContainerTestId:
+      backupAndSyncFeaturesTogglesTestIds.rampsSyncingToggleContainer,
+    toggleButtonTestId:
+      backupAndSyncFeaturesTogglesTestIds.rampsSyncingToggleButton,
   },
 ];
 
@@ -114,12 +130,21 @@ const FeatureToggle = ({
     <Box
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}
-      alignItems={BoxAlignItems.Start}
+      alignItems={BoxAlignItems.Center}
       marginBottom={4}
       id={`backup-and-sync-features-toggles-${section.id}`}
     >
-      <Box flexDirection={BoxFlexDirection.Row} gap={4}>
-        <Icon name={section.iconName} />
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={4}
+      >
+        <Icon
+          name={section.iconName}
+          size={IconSize.Md}
+          color={IconColor.IconAlternative}
+          className="shrink-0"
+        />
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t(section.titleI18NKey)}
         </Text>
@@ -154,6 +179,7 @@ export const BackupAndSyncFeaturesToggles = () => {
   );
   const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
   const isContactSyncingEnabled = useSelector(selectIsContactSyncingEnabled);
+  const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
 
   const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
 
@@ -161,7 +187,9 @@ export const BackupAndSyncFeaturesToggles = () => {
   // Guard against race conditions by not running while updates are in progress
   useEffect(() => {
     const allSubFeaturesDisabled =
-      !isAccountSyncingEnabled && !isContactSyncingEnabled;
+      !isAccountSyncingEnabled &&
+      !isContactSyncingEnabled &&
+      !isRampsSyncingEnabled;
 
     if (
       isBackupAndSyncEnabled &&
@@ -183,6 +211,7 @@ export const BackupAndSyncFeaturesToggles = () => {
     isBackupAndSyncEnabled,
     isAccountSyncingEnabled,
     isContactSyncingEnabled,
+    isRampsSyncingEnabled,
     isBackupAndSyncUpdateLoading,
     setIsBackupAndSyncFeatureEnabled,
   ]);

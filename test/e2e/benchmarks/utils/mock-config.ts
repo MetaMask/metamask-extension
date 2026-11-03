@@ -7,17 +7,11 @@ import {
 /**
  * Check if mocked requests should be used for performance benchmarks.
  *
- * Uses GITHUB_REF_NAME (already available in CI) to determine mode:
- * - Push to main or release/* branches → use real server requests
- * - Everything else (PRs, local dev, etc.) → use mocked HTTP responses
- *
  * @returns true if mocks should be used, false for real server requests
  */
 export function shouldUseMockedRequests(): boolean {
-  const branch = process.env.GITHUB_REF_NAME || '';
-  const isMainOrRelease = branch === 'main' || branch.startsWith('release/');
-  // Use real server (no mocks) only for main/release/* branches
-  return !isMainOrRelease;
+  // TODO: Add a CI workflow that uses unmocked requests, or delete this dead code.
+  return true;
 }
 
 /**

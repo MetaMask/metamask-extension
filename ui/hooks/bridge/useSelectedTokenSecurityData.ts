@@ -60,17 +60,13 @@ export function useSelectedTokenSecurityData(
   toToken: BridgeToken,
 ): SelectedTokenSecurityDataByAssetId {
   const useExternalServices = useSelector(getUseExternalServices);
-  const [securityDataByAssetId, setSecurityDataByAssetId] =
-    useState<SelectedTokenSecurityDataByAssetId>(EMPTY_SECURITY_DATA);
 
   const assetIds = useMemo(() => {
     const tokens = [fromToken, toToken];
     const assetIdsByKey = new Map<CaipAssetType, CaipAssetType>();
 
     tokens.forEach((token) => {
-      const hasSecurityData =
-        token.isVerified !== undefined || token.securityData !== undefined;
-      if (!hasSecurityData) {
+      if (!token.securityData?.type) {
         assetIdsByKey.set(
           getTokenSecurityAssetKey(token.assetId),
           token.assetId,
@@ -81,8 +77,12 @@ export function useSelectedTokenSecurityData(
     return [...assetIdsByKey.values()];
   }, [fromToken, toToken]);
 
+  // Results accumulate by asset ID, so a pending or failed follow-up request
+  // never hides data already fetched for a token.
+  const [securityDataByAssetId, setSecurityDataByAssetId] =
+    useState<SelectedTokenSecurityDataByAssetId>(EMPTY_SECURITY_DATA);
+
   useEffect(() => {
-    setSecurityDataByAssetId(EMPTY_SECURITY_DATA);
     if (!useExternalServices || assetIds.length === 0) {
       return undefined;
     }
@@ -107,13 +107,12 @@ export function useSelectedTokenSecurityData(
             return result;
           }, {});
 
-        setSecurityDataByAssetId(nextSecurityData);
+        setSecurityDataByAssetId((previous) => ({
+          ...previous,
+          ...nextSecurityData,
+        }));
       })
-      .catch(() => {
-        if (isCurrentRequest) {
-          setSecurityDataByAssetId(EMPTY_SECURITY_DATA);
-        }
-      });
+      .catch(() => undefined);
 
     return () => {
       isCurrentRequest = false;

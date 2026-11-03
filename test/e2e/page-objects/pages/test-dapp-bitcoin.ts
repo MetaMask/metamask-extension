@@ -14,6 +14,18 @@ export const availableConnectionTypes: WalletConnectionType[] = [
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
+/**
+ * Local Bitcoin test dapp for connect, sign, send, and network selection.
+ *
+ * Screen: `http://127.0.0.1:8080` served from `@metamask/test-dapp-bitcoin`.
+ * Owns: wallet connect/disconnect (standard / Sats Connect), account/network
+ * header state, message/PSBT sign inputs, and send-transaction fields.
+ * Boundaries: the Bitcoin dapp UI only. MetaMask Bitcoin confirmations belong
+ * to `BitcoinDappConfirmation` and related dialogs.
+ * Related: `BitcoinDappConfirmation`.
+ *
+ * @see node_modules/@metamask/test-dapp-bitcoin/dist/index.html
+ */
 export class TestDappBitcoin {
   private readonly amountInputSelector = {
     testId: dataTestIds.testPage.sendTransaction.amout,

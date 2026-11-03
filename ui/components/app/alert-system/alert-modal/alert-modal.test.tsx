@@ -47,6 +47,14 @@ jest.mock('../../../../pages/confirmations/context/confirm', () => ({
   })),
 }));
 
+const mockUseSendingAssetsFiatTotal = jest.fn((): string | null => null);
+jest.mock(
+  '../../../../pages/confirmations/hooks/alerts/useSendingAssetsFiatTotal',
+  () => ({
+    useSendingAssetsFiatTotal: () => mockUseSendingAssetsFiatTotal(),
+  }),
+);
+
 describe('AlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
@@ -378,59 +386,59 @@ describe('AlertModal', () => {
     const testCases = [
       {
         reason: BlockaidReason.rawSignatureFarming,
-        expectedKey: 'blockaidAlertDescriptionOthers',
+        expectedNounKey: 'blockaidRequestTypeSignature',
       },
       {
         reason: BlockaidReason.approvalFarming,
-        expectedKey: 'blockaidAlertDescriptionWithdraw',
+        expectedNounKey: 'blockaidRequestTypeApproval',
       },
       {
         reason: BlockaidReason.setApprovalForAll,
-        expectedKey: 'blockaidAlertDescriptionWithdraw',
+        expectedNounKey: 'blockaidRequestTypeApproval',
       },
       {
         reason: BlockaidReason.permitFarming,
-        expectedKey: 'blockaidAlertDescriptionWithdraw',
+        expectedNounKey: 'blockaidRequestTypeApproval',
       },
       {
         reason: BlockaidReason.transferFarming,
-        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
+        expectedNounKey: 'blockaidRequestTypeTransfer',
       },
       {
         reason: BlockaidReason.transferFromFarming,
-        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
+        expectedNounKey: 'blockaidRequestTypeTransfer',
       },
       {
         reason: BlockaidReason.rawNativeTokenTransfer,
-        expectedKey: 'blockaidAlertDescriptionTokenTransfer',
+        expectedNounKey: 'blockaidRequestTypeTransfer',
       },
       {
         reason: BlockaidReason.seaportFarming,
-        expectedKey: 'blockaidAlertDescriptionOpenSea',
+        expectedNounKey: 'blockaidRequestTypeApproval',
       },
       {
         reason: BlockaidReason.blurFarming,
-        expectedKey: 'blockaidAlertDescriptionBlur',
+        expectedNounKey: 'blockaidRequestTypeApproval',
       },
       {
         reason: BlockaidReason.maliciousDomain,
-        expectedKey: 'blockaidAlertDescriptionMalicious',
+        expectedNounKey: 'blockaidRequestTypeRequest',
       },
       {
         reason: BlockaidReason.tradeOrderFarming,
-        expectedKey: 'blockaidAlertDescriptionOthers',
+        expectedNounKey: 'blockaidRequestTypeSignature',
       },
       {
         reason: BlockaidReason.other,
-        expectedKey: 'blockaidAlertDescriptionOthers',
+        expectedNounKey: 'blockaidRequestTypeRequest',
       },
       {
         reason: 'unknown reason',
-        expectedKey: 'blockaidAlertDescriptionOthers',
+        expectedNounKey: 'blockaidRequestTypeRequest',
       },
     ];
 
-    testCases.forEach(({ reason, expectedKey }) => {
+    testCases.forEach(({ reason, expectedNounKey }) => {
       it(`displays correct message for ${reason}`, () => {
         (useConfirmContext as jest.Mock).mockImplementation(() => ({
           currentConfirmation: {
@@ -450,8 +458,42 @@ describe('AlertModal', () => {
           blockaidMockStore,
         );
 
-        expect(getByText(tEn(expectedKey))).toBeInTheDocument();
+        expect(
+          getByText(tEn('blockaidAlertModalMessage', [tEn(expectedNounKey)])),
+        ).toBeInTheDocument();
       });
+    });
+
+    it('displays the amount variant when a sending fiat total is available', () => {
+      mockUseSendingAssetsFiatTotal.mockReturnValue('$1,234.56');
+      (useConfirmContext as jest.Mock).mockImplementation(() => ({
+        currentConfirmation: {
+          securityAlertResponse: {
+            reason: BlockaidReason.transferFarming,
+          },
+        },
+      }));
+
+      const { getByText } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={FROM_ALERT_KEY_MOCK}
+        />,
+        blockaidMockStore,
+      );
+
+      expect(
+        getByText(
+          tEn('blockaidAlertModalMessageWithAmount', [
+            tEn('blockaidRequestTypeTransfer'),
+            '$1,234.56',
+          ]),
+        ),
+      ).toBeInTheDocument();
+
+      mockUseSendingAssetsFiatTotal.mockReturnValue(null);
     });
 
     it('handles undefined securityAlertResponse', () => {
@@ -470,7 +512,9 @@ describe('AlertModal', () => {
       );
 
       expect(
-        getByText(tEn('blockaidAlertDescriptionOthers')),
+        getByText(
+          tEn('blockaidAlertModalMessage', [tEn('blockaidRequestTypeRequest')]),
+        ),
       ).toBeInTheDocument();
     });
   });

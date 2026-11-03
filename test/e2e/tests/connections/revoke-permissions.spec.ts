@@ -1,9 +1,7 @@
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { DAPP_HOST_ADDRESS, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
-import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
-import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
+import { getEditConnectedAccountsPageForHost } from '../../page-objects/flows/permissions.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 
@@ -20,16 +18,10 @@ describe('Revoke Permissions', function () {
       async ({ driver }) => {
         await login(driver);
 
-        // open permission page
-        await openPermissionsPageFlow(driver);
-        const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.checkPageIsLoaded();
-        await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
-
-        // click connect button to revoke permission
-        const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
-        await sitePermissionPage.disconnectAll();
+        // open the site's permissions and disconnect
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
+        await editConnectedAccountsPage.disconnectAll();
 
         // Switch to Dapp and check the dapp is disconnected
         const testDapp = new TestDapp(driver);

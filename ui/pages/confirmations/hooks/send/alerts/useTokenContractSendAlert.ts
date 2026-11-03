@@ -11,10 +11,18 @@ export function useTokenContractSendAlert(): SendAlert | null {
   const { to, chainId, asset } = useSendContext();
   const { isEvmSendType } = useSendType();
   const [isTokenContract, setIsTokenContract] = useState(false);
+  const detectionKey = `${to ?? ''}|${chainId ?? ''}|${isEvmSendType}|${
+    asset?.address ?? ''
+  }`;
+  const [prevDetectionKey, setPrevDetectionKey] = useState(detectionKey);
+
+  if (detectionKey !== prevDetectionKey) {
+    setPrevDetectionKey(detectionKey);
+    setIsTokenContract(false);
+  }
 
   useEffect(() => {
     let cancelled = false;
-    setIsTokenContract(false);
 
     if (
       !to ||

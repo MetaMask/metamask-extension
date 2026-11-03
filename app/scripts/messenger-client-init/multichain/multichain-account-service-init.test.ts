@@ -1,4 +1,5 @@
 import {
+  AccountProviderWrapper,
   MultichainAccountService,
   MultichainAccountServiceMessenger,
 } from '@metamask/multichain-account-service';
@@ -83,13 +84,14 @@ describe('MultichainAccountServiceInit', () => {
 
       expect(multichainAccountServiceClassMock).toHaveBeenCalledWith({
         messenger: requestMock.controllerMessenger,
+        providers: [expect.any(AccountProviderWrapper)],
         providerConfigs: expect.any(Object),
         config: expect.any(Object),
         ensureOnboardingComplete: requestMock.ensureOnboardingComplete,
       });
     });
 
-    it('passes Solana provider config with maxConcurrency 1, discovery/createAccounts timeouts, and batched true', () => {
+    it('passes Solana, Bitcoin, and Tron provider configs with maxConcurrency 1', () => {
       const requestMock = buildInitRequestMock();
       MultichainAccountServiceInit(requestMock);
 
@@ -106,7 +108,14 @@ describe('MultichainAccountServiceInit', () => {
             timeoutMs: 3000,
           },
         },
+        Bitcoin: {
+          maxConcurrency: 1,
+        },
+        Tron: {
+          maxConcurrency: 1,
+        },
       });
+      expect(callArg.providerConfigs).not.toHaveProperty('Stellar');
     });
 
     it('passes config with trace function', () => {
@@ -133,6 +142,20 @@ describe('MultichainAccountServiceInit', () => {
 
       expect(callSpy).toHaveBeenCalledWith('PreferencesController:getState');
     });
+
+    it('does not call RemoteFeatureFlagController:getState during init', () => {
+      const requestMock = buildInitRequestMock();
+      const callSpy = jest.spyOn(
+        requestMock.initMessenger,
+        'call',
+      ) as jest.Mock;
+
+      MultichainAccountServiceInit(requestMock);
+
+      expect(callSpy).not.toHaveBeenCalledWith(
+        'RemoteFeatureFlagController:getState',
+      );
+    });
   });
 
   describe('subscriptions', () => {
@@ -144,6 +167,18 @@ describe('MultichainAccountServiceInit', () => {
 
       expect(subscribeSpy).toHaveBeenCalledWith(
         'PreferencesController:stateChange',
+        expect.any(Function),
+      );
+    });
+
+    it('does not subscribe to RemoteFeatureFlagController:stateChange', () => {
+      const requestMock = buildInitRequestMock();
+      const subscribeSpy = jest.spyOn(requestMock.initMessenger, 'subscribe');
+
+      MultichainAccountServiceInit(requestMock);
+
+      expect(subscribeSpy).not.toHaveBeenCalledWith(
+        'RemoteFeatureFlagController:stateChange',
         expect.any(Function),
       );
     });

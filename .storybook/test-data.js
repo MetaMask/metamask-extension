@@ -1286,6 +1286,7 @@ const state = {
     analyticsId:
       '0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f',
     currentCurrency: 'usd',
+    selectedCurrency: 'usd',
     currencyRates: {
       ETH: {
         conversionDate: 1620710825.03,
@@ -1482,7 +1483,6 @@ const state = {
         },
       },
     },
-    ensResolutionsByAddress: {},
     pendingApprovals: {
       '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
         id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',

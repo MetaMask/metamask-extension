@@ -4,6 +4,8 @@ import {
   SOL_ACCOUNT_PROVIDER_NAME,
   TRX_ACCOUNT_PROVIDER_NAME,
   BTC_ACCOUNT_PROVIDER_NAME,
+  AccountProviderWrapper,
+  XlmAccountProvider,
 } from '@metamask/multichain-account-service';
 import { MessengerClientInitFunction } from '../types';
 import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
@@ -43,8 +45,16 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
   };
 
+  // Stellar is GA; keep the custom provider until MultichainAccountService
+  // wires XLM via `XLM_ACCOUNT_PROVIDER_NAME` like SOL/BTC/TRX.
+  const xlmProvider = new AccountProviderWrapper(
+    controllerMessenger,
+    new XlmAccountProvider(controllerMessenger, snapAccountProviderConfig),
+  );
+
   const messengerClient = new MultichainAccountService({
     messenger: controllerMessenger,
+    providers: [xlmProvider],
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,

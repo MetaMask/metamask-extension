@@ -17,6 +17,23 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
   MUSD: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
 };
 
+/**
+ * Home Tokens tab: asset list, import/manage tokens, sort, and token details.
+ *
+ * Screen: `#/` Tokens tab (`account-overview__asset-tab`), the default home
+ * tab; also reached via `HomePage.goToTokensTab()`.
+ * Owns: token rows (name, balance, fiat, position), low-value expand/sort,
+ * import via search or custom address, manage-tokens toggles, hide token,
+ * and opening a row for price/chart/address checks.
+ * Boundaries: homepage balance and Send/Swap/Bridge CTAs stay on `HomePage`.
+ * Network filter control-bar chrome belongs to `NetworkFilter` /
+ * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
+ * outside this object.
+ * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
+ * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
+ *
+ * @see ui/components/app/assets/asset-list/asset-list.tsx
+ */
 class TokensTab extends HomePage {
   private readonly assetMarketCapInDetailsModal =
     '[data-testid="asset-market-cap"]';
@@ -25,8 +42,6 @@ class TokensTab extends HomePage {
 
   private readonly assetPriceInDetailsModal =
     '[data-testid="asset-hovered-price"]';
-
-  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
 
   private readonly coinOverviewSendButton =
     '[data-testid="coin-overview-send"]';
@@ -41,11 +56,6 @@ class TokensTab extends HomePage {
     text: 'Would you like to import this token?',
     tag: 'p',
   };
-
-  private readonly currentNetworkOption =
-    '[data-testid="network-filter-current__button"]';
-
-  private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
   private readonly customTokenImportAddressInput =
     '[data-testid="custom-token-import-address-input"]';
@@ -73,9 +83,8 @@ class TokensTab extends HomePage {
   private readonly hideTokenConfirmationButton =
     '[data-testid="hide-token-confirmation__hide"]';
 
-  private readonly hideTokenConfirmationModalTitle = {
-    text: 'Hide token',
-    css: '.hide-token-confirmation__title',
+  private readonly hideTokenConfirmationModal = {
+    testId: 'hide-token-confirmation-modal',
   };
 
   private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
@@ -99,17 +108,13 @@ class TokensTab extends HomePage {
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
 
+  private readonly lowValueAssetsToggleCollapsed = `${this.lowValueAssetsToggle}[aria-expanded="false"]`;
+
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
-
-  private readonly multichainTokenListButton = {
-    testId: 'multichain-token-list-button',
-  };
-
-  private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
@@ -180,16 +185,16 @@ class TokensTab extends HomePage {
   private readonly tokenManagementCustomTokenSuccessToast =
     '[data-testid="token-management-custom-token-success-toast"]';
 
+  private readonly tokenManagementCustomTokenSuccessToastClose =
+    '[data-testid="toast-close-button"]';
+
   private readonly tokenManagementPage =
-    '[data-testid="token-management-page"]';
+    '[data-testid="parent-selector-token-management-page"]';
 
   private readonly tokenManagementSearchInput =
     '[data-testid="token-management-search-input"]';
 
   private readonly tokenName =
-    '[data-testid="multichain-token-list-item-token-name"]';
-
-  private readonly tokenNameInDetails =
     '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenOptionsButton =
@@ -201,6 +206,10 @@ class TokensTab extends HomePage {
 
   private readonly tokenSearchSelected =
     '.token-list__tokens-container .mm-checkbox__input--checked';
+
+  private readonly tokensPage = {
+    testId: 'parent-selector-tokens-tab',
+  };
 
   private readonly tokenSymbolInput =
     '[data-testid="import-tokens-modal-custom-symbol"]';
@@ -216,11 +225,6 @@ class TokensTab extends HomePage {
       css: this.tokenName,
       text: symbol,
     });
-  }
-
-  async checkBuySellButtonIsPresent(): Promise<void> {
-    console.log(`Verify the buy/sell button is displayed`);
-    await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
   /**
@@ -277,7 +281,7 @@ class TokensTab extends HomePage {
     );
     await this.driver.waitForSelector({
       css: this.lowValueAssetsToggle,
-      text: `Low value tokens (${expectedCount})`,
+      text: `Low balance tokens (${expectedCount})`,
     });
   }
 
@@ -286,13 +290,16 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(this.tokenListItem);
   }
 
-  async checkNetworkFilterText(expectedText: string): Promise<void> {
-    console.log(
-      `Verify the displayed account label in header is: ${expectedText}`,
-    );
-    await this.driver.waitForSelector({
-      css: this.networksToggle,
-      text: expectedText,
+  /**
+   * Checks that the Tokens tab shows the "—" (em dash) fiat placeholder because
+   * no conversion rate is available (e.g. price API does not support the asset).
+   *
+   * @param timeout - How long to wait for the placeholder to appear.
+   */
+  async checkNoConversionRateDisplayed(timeout: number = 10000): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
+    await this.driver.waitForSelector(this.noPriceAvailableMessage, {
+      timeout,
     });
   }
 
@@ -314,6 +321,11 @@ class TokensTab extends HomePage {
       });
     }
     await this.checkTokenItemNumber(symbols.length);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.tokensPage);
+    console.log('Tokens tab is loaded');
   }
 
   async checkPriceChartIsShown(): Promise<void> {
@@ -377,6 +389,7 @@ class TokensTab extends HomePage {
    */
   async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: this.tokenAmountValue,
       text: tokenAmount,
@@ -643,9 +656,9 @@ class TokensTab extends HomePage {
   ): Promise<void> {
     console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
     const row = await this.findTokenRowByName(tokenName);
-    assert.ok(
-      (await row.getText()).includes(expectedText),
-      `Expected "${tokenName}" row to contain "${expectedText}"`,
+    await this.driver.waitUntil(
+      async () => (await row.getText()).includes(expectedText),
+      { timeout: 10000, interval: 500 },
     );
   }
 
@@ -673,7 +686,7 @@ class TokensTab extends HomePage {
     console.log(`Verifying token details for ${symbol}`);
 
     await this.driver.waitForSelector({
-      css: this.tokenNameInDetails,
+      css: this.tokenName,
       text: symbol,
     });
 
@@ -686,31 +699,6 @@ class TokensTab extends HomePage {
     console.log(`Token details verified successfully for ${symbol}`);
   }
 
-  async clickCurrentNetworkOption(): Promise<void> {
-    console.log(`Clicking on the current network option`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const label = await this.getNetworksFilterLabel();
-        return label !== 'Popular networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
-  async clickCurrentNetworkOptionOnActivityList(): Promise<void> {
-    console.log(`Clicking on the current network option`);
-    await this.driver.clickElement(this.currentNetworkOption);
-    await this.driver.waitUntil(
-      async () => {
-        const toggle = await this.driver.findElement(this.sortByPopoverToggle);
-        const label = await toggle.getText();
-        return label !== 'Popular networks';
-      },
-      { timeout: 5000, interval: 100 },
-    );
-  }
-
   async clickManageTokens(): Promise<void> {
     console.log('Click Manage tokens in the token options menu');
     await this.driver.clickElement(this.manageTokensButton);
@@ -718,12 +706,7 @@ class TokensTab extends HomePage {
 
   async clickMultichainTokenListButton(): Promise<void> {
     console.log('Clicking on multichain token list button');
-    await this.driver.clickElement(this.multichainTokenListButton);
-  }
-
-  async clickNetworkSelectorDropdown(): Promise<void> {
-    console.log(`Clicking on the network selector dropdown`);
-    await this.driver.clickElement(this.sortByPopoverToggle);
+    await this.driver.clickElement(this.tokenListItem);
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
@@ -750,6 +733,22 @@ class TokensTab extends HomePage {
   }
 
   /**
+   * Collapses the low-value assets section when it is currently expanded.
+   * The expansion state is retained by the token list between renders.
+   */
+  async collapseLowValueAssets(): Promise<void> {
+    await this.driver.waitForSelector(this.lowValueAssetsToggle);
+    const isExpanded = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggleExpanded,
+      1000,
+    );
+    if (isExpanded) {
+      await this.driver.clickElement(this.lowValueAssetsToggle);
+    }
+    await this.driver.waitForSelector(this.lowValueAssetsToggleCollapsed);
+  }
+
+  /**
    * Dismisses the "Token imported" success message by clicking the close button
    */
   async dismissTokenImportedMessage(): Promise<void> {
@@ -766,17 +765,25 @@ class TokensTab extends HomePage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    // If the low value assets section is already expanded, no action is required.
     try {
       await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
         timeout: 1000,
       });
       return;
     } catch {
-      // Not expanded yet (or low value section not present), attempt to expand it below.
+      // Not expanded yet (or section not present)
     }
 
-    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+    const togglePresent = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggle,
+      1000,
+    );
+    if (!togglePresent) {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
@@ -807,22 +814,6 @@ class TokensTab extends HomePage {
     return matchingRow;
   }
 
-  async getCurrentNetworksOptionTotal(): Promise<string> {
-    console.log(`Retrieving the "Current network" option fiat value`);
-    const allNetworksValueElement = await this.driver.findElement(
-      this.currentNetworksTotal,
-    );
-    const value = await allNetworksValueElement.getText();
-    return value;
-  }
-
-  async getNetworksFilterLabel(): Promise<string> {
-    console.log(`Retrieving the network filter label`);
-    const toggle = await this.driver.findElement(this.networksToggle);
-    const text = await toggle.getText();
-    return text;
-  }
-
   async getNumberOfAssets(): Promise<number> {
     console.log(`Returning the total number of asset items in the token list`);
     const assets = await this.driver.findElements(this.tokenListItem);
@@ -839,7 +830,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
-    await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
+    await this.driver.waitForSelector(this.hideTokenConfirmationModal);
     await this.driver.clickElementAndWaitToDisappear(
       this.hideTokenConfirmationButton,
     );
@@ -852,7 +843,7 @@ class TokensTab extends HomePage {
     decimals?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
-    await this.driver.waitForSelector(this.multichainTokenListButton, {
+    await this.driver.waitForSelector(this.tokenListItem, {
       waitAtLeastGuard: 1000,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -899,6 +890,9 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(
       this.tokenManagementCustomTokenSuccessToast,
     );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.tokenManagementCustomTokenSuccessToastClose,
+    );
     await this.returnFromTokenManagementToHome();
   }
 
@@ -919,7 +913,7 @@ class TokensTab extends HomePage {
     decimals?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage via import modal`);
-    await this.driver.waitForSelector(this.multichainTokenListButton, {
+    await this.driver.waitForSelector(this.tokenListItem, {
       waitAtLeastGuard: largeDelayMs,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -986,7 +980,7 @@ class TokensTab extends HomePage {
     console.log(
       `Importing tokens ${tokenNames.join(', ')} on homepage by search`,
     );
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.manageTokensButton);
     await this.driver.waitForSelector(this.tokenManagementPage, {
@@ -1012,7 +1006,7 @@ class TokensTab extends HomePage {
     console.log(
       `Importing tokens ${tokenNames.join(', ')} on homepage by search via import modal`,
     );
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle, {
@@ -1043,7 +1037,7 @@ class TokensTab extends HomePage {
     networkName: string;
   }) {
     console.log(`Import token ${tokenName} on homepage by search`);
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.manageTokensButton);
     await this.driver.waitForSelector(this.tokenManagementPage);
@@ -1078,7 +1072,7 @@ class TokensTab extends HomePage {
     console.log(
       `Import token ${tokenName} on homepage by search via import modal`,
     );
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
@@ -1106,17 +1100,6 @@ class TokensTab extends HomePage {
   }
 
   /**
-   * Clicks the network filter in the asset list control bar, which opens the
-   * network manager modal. Await `NetworkManager.checkPageIsLoaded` to wait for
-   * that modal.
-   */
-  async openNetworksFilter(): Promise<void> {
-    console.log(`Opening the network filter`);
-    await this.waitForNetworksToggleStable();
-    await this.driver.clickElement(this.networksToggle);
-  }
-
-  /**
    * Opens the token details modal by finding and clicking the token in the token list
    *
    * @param tokenSymbol - The name of the token to open details for
@@ -1127,7 +1110,7 @@ class TokensTab extends HomePage {
     await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       text: tokenSymbol,
-      css: this.tokenNameInDetails,
+      css: this.tokenName,
     });
   }
 
@@ -1143,7 +1126,7 @@ class TokensTab extends HomePage {
 
   private async returnFromTokenManagementToHome(): Promise<void> {
     await this.driver.clickElement(this.tokenManagementBackButton);
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
   }
 
   async sortTokenList(
@@ -1179,30 +1162,6 @@ class TokensTab extends HomePage {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
 
-  async waitForNetworksFilter(): Promise<void> {
-    console.log(`Waiting for the network filter`);
-    await this.driver.waitForSelector(this.networksToggle);
-  }
-
-  /**
-   * Waits until the network filter toggle is present, visible, and no longer
-   * remounting/moving before interaction. Guards against post-network-switch
-   * homepage re-renders that can swallow a click.
-   */
-  async waitForNetworksToggleStable(): Promise<void> {
-    console.log('Waiting for network filter toggle to be stable');
-    await this.driver.waitUntil(
-      async () => {
-        return await this.driver.isElementPresentAndVisible(
-          this.networksToggle,
-          1000,
-        );
-      },
-      { timeout: 15000, interval: 200, stableFor: 1000 },
-    );
-    await this.driver.waitForElementToStopMoving(this.networksToggle);
-  }
-
   /**
    * Waits for a token to be displayed in the token list
    * This is done due to the snap delay.
@@ -1220,17 +1179,6 @@ class TokensTab extends HomePage {
         text: tokenName,
       },
       { timeout },
-    );
-  }
-
-  async waitUntilFilterLabelIs(label: string): Promise<void> {
-    console.log(`Waiting until the filter label is ${label}`);
-    await this.driver.waitUntil(
-      async () => {
-        const currentLabel = await this.getNetworksFilterLabel();
-        return currentLabel === label;
-      },
-      { timeout: 5000, interval: 100 },
     );
   }
 

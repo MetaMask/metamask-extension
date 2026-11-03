@@ -6,7 +6,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';

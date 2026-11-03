@@ -4,7 +4,17 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { PerpsControllerState } from '@metamask/perps-controller';
+import {
+  type PerpsControllerState,
+  DEFAULT_PRO_LAYOUT_PREFERENCES,
+  DEFAULT_SELECTED_ORDER_TYPE,
+  type OrderBookPreferences,
+  type ProLayoutPreferences,
+  selectOrderBookGrouping,
+  selectOrderBookPreferences,
+  selectPendingTradeConfiguration,
+  selectVisibleCandleCount,
+} from '@metamask/perps-controller';
 
 /**
  * The PerpsController state is flattened into state.metamask by
@@ -38,6 +48,17 @@ const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
 const EMPTY_ARRAY: never[] = [];
 const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
   { testnet: {}, mainnet: {} };
+
+/**
+ * Controller selectors expect `PerpsControllerState`. Extension flattens that
+ * slice onto `state.metamask`, which tests and older persisted state may only
+ * populate partially.
+ *
+ * @param state - Flattened Redux state.
+ * @returns The controller state slice.
+ */
+const getPerpsControllerState = (state: PerpsState): PerpsControllerState =>
+  state.metamask as PerpsControllerState;
 
 const DEFAULT_HAS_PLACED_FIRST_ORDER: PerpsControllerState['hasPlacedFirstOrder'] =
   { testnet: false, mainnet: false };
@@ -133,6 +154,12 @@ export const selectPerpsLastDepositTransactionId = (state: PerpsState) =>
 export const selectPerpsLastDepositResult = (state: PerpsState) =>
   state.metamask.lastDepositResult ?? null;
 
+export const selectPerpsLastDepositEntryPoint = (state: {
+  metamask: { lastPerpsDepositEntryPoint?: string | null };
+}): string | null => {
+  return state.metamask.lastPerpsDepositEntryPoint ?? null;
+};
+
 export const selectPerpsWithdrawInProgress = (state: PerpsState): boolean =>
   state.metamask.withdrawInProgress ?? false;
 
@@ -203,11 +230,124 @@ export const selectPerpsCachedAccountState = (state: PerpsState) => {
   );
 };
 
+/**
+ * Full cached user-data entry for the active provider, including the
+ * `address` the snapshot was stored for. Prefer this over
+ * `selectPerpsCachedAccountState` when the caller must verify ownership
+ * before overlaying `accountState`.
+ *
+ * @param state - Flattened Perps controller state.
+ * @returns The provider cache entry, or null when absent.
+ */
+export const selectPerpsCachedUserData = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return state.metamask.cachedUserDataByProvider?.[provider] ?? null;
+};
+
 export const selectPerpsPerpsBalances = (state: PerpsState) =>
   state.metamask.perpsBalances ?? {};
 
 export const selectPerpsMarketFilterPreferences = (state: PerpsState) =>
   state.metamask.marketFilterPreferences ?? null;
 
+/**
+ * Pro-mode layout preferences, with the controller defaults filled in for
+ * persisted state that predates a field. Memoized because the merge builds a
+ * fresh object: unmemoized, `useSelector` would re-render every consumer on
+ * every dispatch.
+ */
+export const selectProLayoutPreferences = createSelector(
+  (state: PerpsState) => state.metamask.proLayoutPreferences,
+  (proLayoutPreferences): ProLayoutPreferences => ({
+    ...DEFAULT_PRO_LAYOUT_PREFERENCES,
+    ...proLayoutPreferences,
+  }),
+);
+
+/**
+ * Which side of the pro-mode trading view the order book is pinned to. Returns
+ * a primitive, so prefer it over `selectProLayoutPreferences` in components
+ * that only need the position.
+ *
+ * @param state - Perps controller state.
+ * @returns 'left' or 'right'.
+ */
+export const selectOrderBookPosition = (state: PerpsState) =>
+  state.metamask.proLayoutPreferences?.orderBookPosition ??
+  DEFAULT_PRO_LAYOUT_PREFERENCES.orderBookPosition;
+
+/**
+ * Whether the order book panel was left open. Global across markets (the
+ * preference object is flat, not per-market), so the panel opens in the same
+ * state on every symbol.
+ *
+ * @param state - Perps controller state.
+ * @returns True when the panel should start open.
+ */
+export const selectOrderBookExpanded = (state: PerpsState) =>
+  state.metamask.proLayoutPreferences?.orderBookExpanded ??
+  DEFAULT_PRO_LAYOUT_PREFERENCES.orderBookExpanded;
+
+/**
+ * Whether the order-entry chart panel was left open. Global across markets
+ * (the preference object is flat, not per-market), so the panel opens in the
+ * same state on every symbol.
+ *
+ * @param state - Perps controller state.
+ * @returns True when the panel should start open.
+ */
+export const selectChartExpanded = (state: PerpsState) =>
+  state.metamask.proLayoutPreferences?.chartExpanded ??
+  DEFAULT_PRO_LAYOUT_PREFERENCES.chartExpanded;
+
 export const selectPerpsTradeConfigurations = (state: PerpsState) =>
   state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;
+
+/**
+ * Return an unexpired pending trade draft for a market.
+ *
+ * Delegates TTL (`PERPS_CONSTANTS.PendingTradeConfigurationTtlMs`, 30s) and
+ * timestamp stripping to the controller selector so Extension cannot drift
+ * from `PerpsController.getPendingTradeConfiguration`.
+ *
+ * @param state - Flattened controller state.
+ * @param symbol - Market symbol.
+ * @returns The pending draft, or undefined when missing or expired.
+ */
+export const selectPerpsPendingTradeConfiguration = (
+  state: PerpsState,
+  symbol: string,
+) => selectPendingTradeConfiguration(getPerpsControllerState(state), symbol);
+
+/**
+ * Return the selected market/limit order type shared across markets.
+ *
+ * The controller's OrderType union also includes trigger order variants that
+ * the Extension order-entry toggle does not expose, so unsupported values fall
+ * back to market.
+ *
+ * @param state - Flattened controller state.
+ * @returns The supported selected order type.
+ */
+export const selectPerpsSelectedOrderType = (
+  state: PerpsState,
+): 'market' | 'limit' =>
+  state.metamask.selectedOrderType === 'limit'
+    ? 'limit'
+    : DEFAULT_SELECTED_ORDER_TYPE;
+
+export const selectPerpsOrderBookPreferences = createSelector(
+  (state: PerpsState) => state.metamask.orderBookPreferences,
+  (preferences): OrderBookPreferences =>
+    selectOrderBookPreferences({
+      orderBookPreferences: preferences,
+    } as PerpsControllerState),
+);
+
+export const selectPerpsOrderBookGrouping = (
+  state: PerpsState,
+  symbol: string,
+) => selectOrderBookGrouping(getPerpsControllerState(state), symbol);
+
+export const selectPerpsVisibleCandleCount = (state: PerpsState) =>
+  selectVisibleCandleCount(getPerpsControllerState(state));

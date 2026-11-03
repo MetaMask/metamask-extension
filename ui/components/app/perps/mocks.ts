@@ -782,6 +782,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '25 SOL @ $95.00',
     timestamp: Date.now() - 14400000, // 4 hours ago
     order: {
+      orderId: 'order-004',
       text: PerpsOrderTransactionStatus.Open,
       statusType: PerpsOrderTransactionStatusType.Pending,
       type: 'limit',
@@ -799,6 +800,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '0.1 BTC @ $45,000.00',
     timestamp: Date.now() - 16200000, // 4.5 hours ago
     order: {
+      orderId: 'order-004b',
       text: PerpsOrderTransactionStatus.Filled,
       statusType: PerpsOrderTransactionStatusType.Filled,
       type: 'market',
@@ -816,6 +818,7 @@ export const mockTransactions: PerpsTransaction[] = [
     subtitle: '500 ARB @ $1.10',
     timestamp: Date.now() - 18000000, // 5 hours ago
     order: {
+      orderId: 'order-004c',
       text: PerpsOrderTransactionStatus.Canceled,
       statusType: PerpsOrderTransactionStatusType.Canceled,
       type: 'market',

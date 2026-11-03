@@ -1,8 +1,8 @@
 import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { getCleanAppState, tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import LoginPage from '../../page-objects/pages/login-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
@@ -93,7 +93,7 @@ describe('Settings', function () {
     );
   });
 
-  it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
+  it('Does not fetch ENS data for ENS Domain when basic functionality is switched off', async function () {
     async function ensDomainPassthrough(
       mockServer: MockttpServer,
     ): Promise<MockedEndpoint[]> {
@@ -124,12 +124,10 @@ describe('Settings', function () {
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
-        // turns off IPFS setting and ENS domain resolution
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
-        await privacySettings.goToThirdPartyApisSettings();
-        await privacySettings.toggleEnsDomainResolution();
+        await privacySettings.toggleBasicFunctionalityOff();
 
         try {
           await driver.openNewPage(ENS_NAME_URL);

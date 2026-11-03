@@ -1,10 +1,10 @@
-const { readFileSync } = require('node:fs');
-const { defineConfig } = require('eslint/config');
+const path = require('node:path');
+const { defineConfig, globalIgnores } = require('eslint/config');
+const { includeIgnoreFile } = require('@eslint/config-helpers');
 const eslintConfig = require('@metamask/eslint-config').default;
 const typescriptConfig = require('@metamask/eslint-config-typescript').default;
 const mochaConfig = require('@metamask/eslint-config-mocha').default;
 const jestConfig = require('@metamask/eslint-config-jest').default;
-const ts = require('typescript');
 const babelParser = require('@babel/eslint-parser');
 const reactPackageJson = require('react/package.json');
 const reactPlugin = require('eslint-plugin-react');
@@ -12,7 +12,6 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
-
 const {
   architecturalZones,
   buildSystemZones,
@@ -23,18 +22,19 @@ const nodeConfigs = require('./.eslintrc.node');
 const typescriptCompatConfig = require('./.eslintrc.typescript-compat');
 
 const reactVersion = reactPackageJson.version;
-const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
-const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
-const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
+const gitignorePath = path.resolve(__dirname, '.gitignore');
 
 module.exports = defineConfig([
-  {
-    // Ignore files which are also in .prettierignore
-    ignores: readFileSync('.prettierignore', 'utf8')
-      .trim()
-      .split('\n')
-      .map((path) => (path.startsWith('/') ? path.slice(1) : `**/${path}`)),
-  },
+  includeIgnoreFile(gitignorePath),
+  globalIgnores([
+    // vendored code
+    '.yarn/**/*',
+    'app/vendor/**',
+    'development/chromereload.js',
+    'test/e2e/send-eth-with-private-key-test/**/*',
+    // snapshots
+    '**/__snapshots__/**/*',
+  ]),
   {
     languageOptions: {
       // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
@@ -65,8 +65,6 @@ module.exports = defineConfig([
       '.eslintrc.*.js',
       '.mocharc.js',
       '*.config.js',
-      'app/scripts/lockdown-run.js',
-      'app/scripts/lockdown-more.js',
       'development/**/*.js',
       'test/e2e/**/*.js',
       'test/helpers/*.js',
@@ -115,7 +113,6 @@ module.exports = defineConfig([
       'test/stub/**/*.js',
       'test/unit-global/**/*.js',
     ],
-    ignores: ['app/scripts/lockdown-run.js', 'app/scripts/lockdown-more.js'],
     extends: [
       eslintConfig,
       baseConfig,
@@ -148,7 +145,13 @@ module.exports = defineConfig([
    * TypeScript files
    */
   {
-    files: tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
+    files: ['**/*.{cts,mts,ts,tsx}'],
+    ignores: [
+      // Stories currently excluded from tsconfig due to type errors.
+      // Ignore TypeScript lint rules for these until types are fixed.
+      '**/*.stories.tsx',
+      '**/*.stories.ts',
+    ],
     languageOptions: {
       parserOptions: {
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
@@ -280,6 +283,7 @@ module.exports = defineConfig([
       '@typescript-eslint/await-thenable': 'off',
       '@typescript-eslint/consistent-type-exports': 'off',
       '@typescript-eslint/consistent-type-imports': 'off',
+      'import-x/consistent-type-specifier-style': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/no-duplicate-type-constituents': 'off',
@@ -329,6 +333,7 @@ module.exports = defineConfig([
       ],
       'jsdoc/check-tag-names': 'off',
       'jsdoc/require-jsdoc': 'off',
+      'jsdoc/require-param': 'off',
       'jsdoc/require-param-description': 'off',
       'jsdoc/require-returns': 'off',
       'jsdoc/require-returns-description': 'off',
@@ -349,18 +354,23 @@ module.exports = defineConfig([
       },
     },
   },
-  {
-    files: ['.agents/**/*.ts'],
-    rules: {
-      'import-x/no-nodejs-modules': 'off',
-    },
-  },
   /**
    * == Everything else ==
    *
    * The sections from here on out may overlap with each other in various
    * ways depending on their function.
    */
+
+  /**
+   * .mts files
+   */
+  {
+    files: ['**/*.mts'],
+    rules: {
+      // Extensions are required by Node.js for `.mts` files
+      'import-x/extensions': 'off',
+    },
+  },
 
   /**
    * React-specific code
@@ -408,20 +418,19 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
-      // v7 compiler rules from recommended — warn until MetaMask-planning#6402
-      // promotes them to error and clears the baseline.
-      'react-hooks/config': 'warn',
-      'react-hooks/error-boundaries': 'warn',
-      'react-hooks/gating': 'warn',
-      'react-hooks/globals': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
-      'react-hooks/purity': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/set-state-in-render': 'warn',
-      'react-hooks/static-components': 'warn',
-      'react-hooks/use-memo': 'warn',
+      'react-hooks/config': 'error',
+      'react-hooks/error-boundaries': 'error',
+      'react-hooks/gating': 'error',
+      'react-hooks/globals': 'error',
+      'react-hooks/immutability': 'error',
+      'react-hooks/preserve-manual-memoization': 'error',
+      'react-hooks/purity': 'error',
+      'react-hooks/refs': 'error',
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/set-state-in-render': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/use-memo': 'error',
+      'react-hooks/incompatible-library': 'error',
     },
     settings: {
       react: {
@@ -438,8 +447,7 @@ module.exports = defineConfig([
   /**
    * TypeScript React-specific code
    *
-   * Similar to above, but marks a majority of errors to warnings.
-   * TODO - combine rulesets and resolve errors
+   * TODO: combine rulesets where possible.
    */
   {
     files: ['ui/**/*.ts', 'ui/**/*.tsx'],
@@ -477,20 +485,19 @@ module.exports = defineConfig([
           additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
         },
       ],
-      // v7 compiler rules from recommended — warn until MetaMask-planning#6402
-      // promotes them to error and clears the baseline.
-      'react-hooks/config': 'warn',
-      'react-hooks/error-boundaries': 'warn',
-      'react-hooks/gating': 'warn',
-      'react-hooks/globals': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
-      'react-hooks/purity': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/set-state-in-render': 'warn',
-      'react-hooks/static-components': 'warn',
-      'react-hooks/use-memo': 'warn',
+      'react-hooks/config': 'error',
+      'react-hooks/error-boundaries': 'error',
+      'react-hooks/gating': 'error',
+      'react-hooks/globals': 'error',
+      'react-hooks/immutability': 'error',
+      'react-hooks/preserve-manual-memoization': 'error',
+      'react-hooks/purity': 'error',
+      'react-hooks/refs': 'error',
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/set-state-in-render': 'error',
+      'react-hooks/static-components': 'error',
+      'react-hooks/use-memo': 'error',
+      'react-hooks/incompatible-library': 'error',
     },
     settings: {
       react: {
@@ -672,22 +679,6 @@ module.exports = defineConfig([
     rules: {
       'n/no-process-exit': 'off',
       'n/hashbang': 'off',
-    },
-  },
-  /**
-   * Lockdown files
-   */
-  {
-    files: [
-      'app/scripts/lockdown-run.js',
-      'app/scripts/lockdown-more.js',
-      'test/helpers/protect-intrinsics-helpers.js',
-    ],
-    languageOptions: {
-      globals: {
-        harden: 'readonly',
-        Compartment: 'readonly',
-      },
     },
   },
   /**
@@ -885,17 +876,6 @@ module.exports = defineConfig([
     },
     rules: {
       'page-object/member-order': 'error',
-    },
-  },
-  /**
-   * Generated messenger action types.
-   */
-  {
-    files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
-    rules: {
-      // Keep generated messenger action type formatting stable while the
-      // repository transitions from eslint-plugin-prettier to oxfmt.
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },
   /**

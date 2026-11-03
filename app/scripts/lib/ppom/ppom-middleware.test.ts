@@ -55,7 +55,7 @@ const createMiddleware = (
   const { chainId, error, securityAlertsEnabled, updateSecurityAlertResponse } =
     options;
 
-  const ppomController = {};
+  const messenger = {};
 
   const preferenceController = {
     state: {
@@ -88,7 +88,7 @@ const createMiddleware = (
   const middlewareFunction = createPPOMMiddleware(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ppomController as any,
+    messenger as any,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     preferenceController as any,

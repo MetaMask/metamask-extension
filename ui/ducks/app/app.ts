@@ -46,7 +46,6 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
-  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   showSupportDataConsentModal: boolean;
   keyringRemovalSnapModal: {
@@ -150,7 +149,6 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
-  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
@@ -297,9 +295,15 @@ export default function reduceApp(
         externalServicesOnboardingToggleState: true,
       };
     case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF:
+      // Backup and sync requires basic functionality. Apply the cascade here
+      // rather than in BackupAndSyncToggle: that toggle mounts only on the
+      // Backup and sync category, so opting out from Privacy would leave the
+      // intent flag on and completion would keep account, contact, and ramps
+      // sync enabled.
       return {
         ...appState,
         externalServicesOnboardingToggleState: false,
+        backupAndSyncOnboardingToggleState: false,
       };
 
     case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON:
@@ -323,18 +327,6 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
-      };
-
-    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
-      return {
-        ...appState,
-        showPermittedNetworkToastOpen: true,
-      };
-
-    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
-      return {
-        ...appState,
-        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:

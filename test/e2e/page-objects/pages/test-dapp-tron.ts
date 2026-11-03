@@ -5,6 +5,18 @@ import { WINDOW_TITLES } from '../../constants';
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 
+/**
+ * Local Tron test dapp for connect, sign, and TRX/USDT send actions.
+ *
+ * Screen: `http://127.0.0.1:8080` served from `@metamask/test-dapp-tron`.
+ * Owns: connect/disconnect via Tron adapter UI, connection status, signed
+ * message and transaction-hash assertions.
+ * Boundaries: the Tron dapp UI only. MetaMask Tron confirmations belong to
+ * extension confirmation page objects.
+ * Related: Tron asset / confirmation flows in the extension.
+ *
+ * @see node_modules/@metamask/test-dapp-tron/dist/index.html
+ */
 export class TestDappTron {
   private readonly connectButtonSelector = {
     testId: dataTestIds.testPage.header.connect,

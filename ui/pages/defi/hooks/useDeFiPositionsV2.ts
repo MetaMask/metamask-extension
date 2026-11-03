@@ -30,7 +30,7 @@ export type UseDeFiPositionsV2Result = {
  * `DeFiPositionsControllerV2`. Call once per screen (tab or details) — do not
  * also call it from child list components, or you will double-fetch.
  *
- * Must be used under a `RouteWithMessenger` that includes
+ * Must be used under a `RouteMessengerProvider` that includes
  * `DeFiPositionsControllerV2:fetchDeFiPositions` (see `DEFI_ROUTE_ALLOWED_CAPABILITIES`).
  *
  * @returns Merged positions plus loading / error / refresh.
@@ -65,13 +65,17 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
   const [failedAccountGroup, setFailedAccountGroup] = useState<
     typeof selectedAccountGroup | null
   >(null);
+  const [prevSelectedAccountGroup, setPrevSelectedAccountGroup] =
+    useState(selectedAccountGroup);
+  if (selectedAccountGroup !== prevSelectedAccountGroup) {
+    setPrevSelectedAccountGroup(selectedAccountGroup);
+    setFailedAccountGroup(null);
+  }
   const isError =
     failedAccountGroup !== null && failedAccountGroup === selectedAccountGroup;
 
   useEffect(() => {
     let cancelled = false;
-
-    setFailedAccountGroup(null);
 
     fetchDeFiPositions().catch(() => {
       if (!cancelled) {

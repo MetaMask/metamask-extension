@@ -193,12 +193,10 @@ const MessageBody = forwardRef(
     const [hasDecrypted, setHasDecrypted] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [hasCopied, copyToClipboard] = useCopyToClipboard({
-      clearDelayMs: null,
-    });
+    const [hasCopied, copyToClipboard] = useCopyToClipboard();
 
-    const copyMessage = () => {
-      copyToClipboard(rawMessage);
+    const copyMessage = async () => {
+      await copyToClipboard(rawMessage);
       trackEvent(
         createEventBuilder('Copy')
           .addCategory(MetaMetricsEventCategory.Messages)
@@ -437,7 +435,10 @@ const ConfirmDecryptMessage = () => {
   const notice = t('decryptMessageNotice', [messageData.msgParams.origin]);
 
   return (
-    <div className="request-decrypt-message__container">
+    <div
+      className="request-decrypt-message__container"
+      data-testid="parent-selector-decrypt-message-confirmation"
+    >
       <Header approvalId={approvalId} />
       <div className="request-decrypt-message__body">
         <Account fromAccount={fromAccount} nativeCurrency={nativeCurrency} />

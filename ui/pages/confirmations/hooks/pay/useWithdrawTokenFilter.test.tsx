@@ -115,6 +115,25 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
     });
   });
 
+  it('treats an empty tokens map as no allowlist so preferred auto-select can run', () => {
+    const { result } = renderUsePostQuoteWithdrawTokenFilter({
+      postQuoteFlags: {
+        default: { enabled: true, tokens: {} },
+        overrides: {
+          moneyAccountWithdraw: { enabled: true, tokens: {} },
+        },
+      },
+      type: TransactionType.moneyAccountWithdraw,
+    });
+
+    expect(result.current.isFilterApplied).toBe(false);
+    expect(mockUseSendTokens).toHaveBeenCalledWith({
+      includeNoBalance: false,
+      tokenFilter: undefined,
+      enrichTokenRequests: [],
+    });
+  });
+
   it('returns passed-in tokens unchanged when the allowlist is disabled', () => {
     const { result } = renderUsePostQuoteWithdrawTokenFilter({
       postQuoteFlags: {
@@ -157,6 +176,39 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
         {
           address: '0xaaa',
           chainId: '0x1',
+        },
+      ],
+    });
+  });
+
+  it('returns allowlisted wallet tokens for money account withdraw', () => {
+    const { result } = renderUsePostQuoteWithdrawTokenFilter({
+      type: TransactionType.moneyAccountWithdraw,
+      postQuoteFlags: {
+        overrides: {
+          moneyAccountWithdraw: {
+            enabled: true,
+            tokens: { '0x8f': ['0xaca92e438df0b2401ff60da7e4337b687a2435da'] },
+          },
+        },
+      },
+    });
+
+    expect(result.current.filterTokens([])).toBe(ALL_TOKENS_MOCK);
+    expect(result.current.isFilterApplied).toBe(true);
+    expect(
+      result.current.isTokenAllowed(
+        '0x8f',
+        '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      ),
+    ).toBe(true);
+    expect(mockUseSendTokens).toHaveBeenCalledWith({
+      includeNoBalance: true,
+      tokenFilter: expect.any(Function),
+      enrichTokenRequests: [
+        {
+          address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+          chainId: '0x8f',
         },
       ],
     });

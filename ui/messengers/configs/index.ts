@@ -6,6 +6,7 @@ import type {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../app/scripts/lib/messenger';
 import * as keyringController from './keyring-controller';
+import * as passkeyController from './passkey-controller';
 
 type MessengerExclusions = {
   // This is named like this since it's intended to be defined as a top-level
@@ -23,4 +24,5 @@ type MessengerExclusions = {
 // those that need to exclude certain actions and/or events.
 export const MESSENGERS_WITH_EXCLUSIONS = [
   keyringController,
+  passkeyController,
 ] satisfies MessengerExclusions[];

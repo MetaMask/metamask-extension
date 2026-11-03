@@ -81,9 +81,6 @@
   "back": {
     "message": "Natrag"
   },
-  "backupApprovalInfo": {
-    "message": "Ovaj je sigurnosni kôd potreban za obnavljanje novčanika ako izgubite svoj uređaj, zaboravite svoju lozinku, morate ponovno instalirati MetaMask ili želite pristupiti svojem novčaniku na drugom uređaju."
-  },
   "backupApprovalNotice": {
     "message": "Sigurnosno kopirajte svoj sigurnosni kôd za obnavljanje kako biste zaštitili svoj novčanik i sredstva."
   },
@@ -226,9 +223,6 @@
   },
   "gasLimit": {
     "message": "Ograničenje goriva"
-  },
-  "gasLimitTooLow": {
-    "message": "Ograničenje za gorivo mora biti najmanje 21000"
   },
   "gasUsed": {
     "message": "Upotrijebljeno gorivo"
@@ -414,9 +408,6 @@
   "privateKey": {
     "message": "Privatni ključ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Upozorenje: nikada ne otkrivajte ovaj ključ. Bilo tko s vašim privatnim ključevima može ukrasti bilo koju imovinu koja se nalazi na vašem računu."
   },
   "privateNetwork": {
     "message": "Privatna mreža"

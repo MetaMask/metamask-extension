@@ -1,5 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * MetaMetrics / marketing consent during onboarding.
+ *
+ * Screen: `#/onboarding/metametrics` (Firefox may show this before welcome;
+ * Chrome typically shows it after SRP backup or import password/passkey).
+ * Owns: participate-in-MetaMetrics and marketing data-collection checkboxes,
+ * their checked/unchecked assertions, and continue.
+ * Boundaries: consent toggles and continue only. Does not finish onboarding
+ * or open privacy settings.
+ * Related: after `SecureWalletPage` (create) or `SetupPasskeyPage` /
+ * password (import); next is `OnboardingCompletePage`;
+ * `flows/onboarding.flow.ts` (`onboardingMetricsFlow`).
+ *
+ * @see ui/pages/onboarding-flow/metametrics/metametrics.tsx
+ */
 class OnboardingMetricsPage {
   private readonly continueButton = '[data-testid="metametrics-i-agree"]';
 
@@ -19,6 +34,8 @@ class OnboardingMetricsPage {
     tag: 'h2',
   };
 
+  private readonly page = '[data-testid="parent-selector-onboarding-metrics"]';
+
   private readonly participateChecked =
     '[data-testid="metametrics-checkbox"][data-checked="true"]';
 
@@ -32,6 +49,7 @@ class OnboardingMetricsPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.metametricsMessage,
         this.continueButton,
       ]);
@@ -61,12 +79,16 @@ class OnboardingMetricsPage {
    * Ensures the "Participate in MetaMetrics" checkbox is unchecked.
    * If it is already unchecked (e.g. state restored from a previous session
    * during vault recovery), the click is skipped to avoid toggling it back on.
+   *
+   * We check for the *checked* state (the default) rather than the unchecked
+   * state so the lookup succeeds instantly in the common case.
    */
   async ensureParticipateInMetaMetricsIsUnchecked(): Promise<void> {
-    const isAlreadyUnchecked = await this.driver.isElementPresent(
-      this.participateUnchecked,
+    const isCurrentlyChecked = await this.driver.isElementPresentAndVisible(
+      this.participateChecked,
+      1000,
     );
-    if (!isAlreadyUnchecked) {
+    if (isCurrentlyChecked) {
       await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
       await this.driver.waitForSelector(this.participateUnchecked);
     }
@@ -83,10 +105,6 @@ class OnboardingMetricsPage {
 
   async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
     await this.driver.waitForSelector(this.participateChecked);
-  }
-
-  async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
-    await this.driver.waitForSelector(this.participateUnchecked);
   }
 }
 

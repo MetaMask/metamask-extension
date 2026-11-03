@@ -99,9 +99,9 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function (this: Suite
         await testDapp.openTestDappPage({ url: 'http://localhost:8080' });
         await testDapp.checkPageIsLoaded();
 
-        const expectedTitle = 'This is a deceptive request';
+        const expectedTitle = 'High-risk transfer';
         const expectedDescription =
-          'If you approve this request, a third party known for scams will take all your assets.';
+          "You're sending assets to an address flagged by security partners. If this is a scam, your funds can't be recovered.";
 
         // Click TestDapp button to send JSON-RPC request
         await testDapp.clickMaliciousERC20TransferButton();

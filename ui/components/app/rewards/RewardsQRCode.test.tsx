@@ -4,7 +4,6 @@ import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
 import {
   setRewardsModalOpen,
-  setOnboardingReferralCode,
   setRewardsDeeplinkUrl,
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
@@ -141,7 +140,6 @@ describe('RewardsQRCode', () => {
     fireEvent.click(closeButton);
 
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsModalOpen(false));
-    expect(dispatchMock).toHaveBeenCalledWith(setOnboardingReferralCode(null));
     expect(dispatchMock).toHaveBeenCalledWith(setRewardsDeeplinkUrl(null));
   });
 });

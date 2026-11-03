@@ -1,5 +1,10 @@
 export const TOTAL_QUESTIONS = 3;
 
+export enum ScamQuestionnaireTrigger {
+  SecurityAlert = 'security_alert',
+  DomainList = 'domain_list',
+}
+
 // Bump when the questions, answer options, or red-flag verdicts change.
 export const QUESTIONNAIRE_VERSION = '1';
 

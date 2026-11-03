@@ -32,16 +32,29 @@ import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/ne
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
-import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
+import { getTransactionPayingAccount } from '../../shared/lib/transactions.utils';
+import {
+  getMoneyAccountTransactionType,
+  isProtectedByEnforcedSimulations,
+} from '../pages/confirmations/utils/confirm';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
 import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
 } from '../ducks/bridge-status/selectors';
-import { getInternalAccountsObject } from './accounts';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import { isMnemonicMoneyAccount } from '../../shared/lib/money/money-accounts';
+import { getInternalAccounts, getInternalAccountsObject } from './accounts';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
+import { extractWalletIdFromGroupId } from './multichain-accounts/utils';
 import { enrichLocalActivity } from './activity/enrich-local-activity';
+import {
+  selectPrimaryMoneyAccount,
+  type PrimaryMoneyAccount,
+} from './money-account';
 import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
@@ -65,6 +78,97 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
     .transactionData ??
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
+
+/**
+ * The entropy source ID backing the primary money account. MPC-backed money
+ * accounts have no entropy source ID, so this is `undefined` for them.
+ *
+ * @param primaryMoneyAccount - Primary money account, when present.
+ * @returns The entropy source ID, or `undefined`.
+ */
+function getMoneyAccountEntropyId(
+  primaryMoneyAccount: PrimaryMoneyAccount | undefined,
+): string | undefined {
+  return primaryMoneyAccount && isMnemonicMoneyAccount(primaryMoneyAccount)
+    ? primaryMoneyAccount.options.entropy.id
+    : undefined;
+}
+
+/**
+ * Whether the selected account group belongs to the same HD entropy wallet that
+ * owns the primary money account. Money-account activity with no known payer
+ * is only surfaced for that wallet so switching to another SRP does not leak
+ * unrelated rows.
+ *
+ * @param selectedAccountGroup - Currently selected account group id.
+ * @param primaryMoneyAccount - Primary money account, when present.
+ * @returns Whether money-account batches should appear in activity.
+ */
+function isSelectedGroupOwnedByMoneyAccountEntropy(
+  selectedAccountGroup: string | null | undefined,
+  primaryMoneyAccount: PrimaryMoneyAccount | undefined,
+): boolean {
+  // MPC-backed money accounts have no entropy source ID, so no account group
+  // is ever owned by their entropy.
+  const entropyId = getMoneyAccountEntropyId(primaryMoneyAccount);
+  if (!selectedAccountGroup || !entropyId) {
+    return false;
+  }
+
+  return (
+    extractWalletIdFromGroupId(selectedAccountGroup as never) ===
+    `entropy:${entropyId}`
+  );
+}
+
+/**
+ * Money-account deposits and withdrawals execute from the Money Keyring
+ * account rather than the selected account, so the selected-address filter
+ * alone would drop them from the activity list even though the user
+ * initiated them. Mirrors mobile, which surfaces money-account transactions
+ * in activity despite their sender being the money account.
+ *
+ * @param tx - The transaction to check.
+ * @param moneyAccountAddress - Lowercased primary money account address.
+ * @returns Whether the transaction is a money-account transaction sent by
+ * the money account.
+ */
+function isMoneyAccountTransaction(
+  tx: TransactionMeta,
+  moneyAccountAddress: string | undefined,
+) {
+  return Boolean(
+    moneyAccountAddress &&
+    tx.txParams?.from?.toLowerCase() === moneyAccountAddress &&
+    getMoneyAccountTransactionType(tx),
+  );
+}
+
+/**
+ * Account that funded a money-account transaction, such as the hardware
+ * account behind a deposit. Pay clears its account override once the
+ * transaction finalizes, so this falls back to the sender of the funding
+ * transactions Pay links via `requiredTransactionIds`.
+ *
+ * @param tx - The money-account transaction.
+ * @param transactionsById - Local transactions keyed by id.
+ * @param transactionPayData - Pay data keyed by transaction id.
+ * @returns Lowercased paying account address, if known.
+ */
+function getMoneyAccountPayer(
+  tx: TransactionMeta,
+  transactionsById: Map<string, TransactionMeta>,
+  transactionPayData: TransactionPayControllerState['transactionData'],
+) {
+  const fundingFrom = tx.requiredTransactionIds
+    ?.map((id) => transactionsById.get(id)?.txParams?.from)
+    .find(Boolean) as Hex | undefined;
+
+  return getTransactionPayingAccount(
+    tx,
+    transactionPayData[tx.id]?.accountOverride ?? fundingFrom,
+  )?.toLowerCase();
+}
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -92,18 +196,32 @@ export const selectLocalTransactions = createSelector(
   smartTransactionsListSelector,
   selectRequiredTransactionIds,
   selectRequiredTransactionHashes,
+  selectPrimaryMoneyAccount,
+  getSelectedAccountGroup,
+  selectTransactionPayData,
+  getInternalAccounts,
   (
     transactions,
     evmAddress,
     smartTransactions,
     internalTxIds,
     internalTxHashes,
+    primaryMoneyAccount,
+    selectedAccountGroup,
+    transactionPayData,
+    internalAccounts,
   ): TransactionGroup[] => {
     if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
     const selectedAddress = evmAddress.toLowerCase();
+    const moneyAccountAddress = primaryMoneyAccount?.address.toLowerCase();
+    const includeMoneyAccountTransactions =
+      isSelectedGroupOwnedByMoneyAccountEntropy(
+        selectedAccountGroup,
+        primaryMoneyAccount,
+      );
 
     const isInternalRequiredTransaction = (
       tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
@@ -117,9 +235,41 @@ export const selectLocalTransactions = createSelector(
       return false;
     };
 
+    const transactionsById = new Map(
+      (transactions ?? []).map((tx) => [tx.id, tx]),
+    );
+
+    // Payers from the money account's own SRP keep the wallet-wide rule.
+    // MPC-backed money accounts have no entropy source ID, so every payer
+    // other than the money account itself counts as outside its wallet.
+    const moneyAccountEntropyId = getMoneyAccountEntropyId(primaryMoneyAccount);
+    const isPayerOutsideMoneyAccountWallet = (payer: string) =>
+      payer !== moneyAccountAddress &&
+      internalAccounts.some(
+        (account) =>
+          account.address.toLowerCase() === payer &&
+          account.options?.entropySource !== moneyAccountEntropyId,
+      );
+
+    const isSelectedMoneyAccountTransaction = (tx: TransactionMeta) => {
+      if (!isMoneyAccountTransaction(tx, moneyAccountAddress)) {
+        return false;
+      }
+      const payer = getMoneyAccountPayer(
+        tx,
+        transactionsById,
+        transactionPayData,
+      );
+      if (payer && isPayerOutsideMoneyAccountWallet(payer)) {
+        return payer === selectedAddress;
+      }
+      return includeMoneyAccountTransactions;
+    };
+
     const filtered = (transactions ?? []).filter(
       (tx) =>
-        isFromSelectedAccount(tx, selectedAddress) &&
+        (isFromSelectedAccount(tx, selectedAddress) ||
+          isSelectedMoneyAccountTransaction(tx)) &&
         !isInternalRequiredTransaction(tx),
     );
 

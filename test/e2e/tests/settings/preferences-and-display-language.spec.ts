@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
@@ -34,7 +34,7 @@ const selectors = {
     testId: 'auto-lockout-button',
     text: da.save.message,
   },
-  discoverTextवर्तमान: { text: hi.discover.message, tag: 'a' },
+  sendTextवर्तमान: { text: hi.send.message, tag: 'span' },
   headerTextAr: { text: ar.settings.message, tag: 'p' },
 };
 
@@ -193,11 +193,11 @@ describe('Settings - Preferences and display', function (this: Suite) {
         await driver.refresh();
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        const isDiscoverButtonTextChanged = await driver.isElementPresent(
-          selectors.discoverTextवर्तमान,
+        const isSendButtonTextChanged = await driver.isElementPresent(
+          selectors.sendTextवर्तमान,
         );
         assert.equal(
-          isDiscoverButtonTextChanged,
+          isSendButtonTextChanged,
           true,
           'Language change is not reflected in headers',
         );

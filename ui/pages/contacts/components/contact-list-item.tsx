@@ -39,7 +39,7 @@ export function ContactListItem({
   isDuplicate = false,
 }: ContactListItemProps) {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const network = allNetworks?.[chainId as Hex];
   const networkName = network?.name ?? t('networkTabCustom');

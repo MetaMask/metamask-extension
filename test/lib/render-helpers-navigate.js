@@ -106,7 +106,17 @@ export function createProviderWrapper(
     createMockMetaMetricsContext(getMockTrackEvent);
 
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
+    defaultOptions: {
+      queries: {
+        retry: false,
+        // The real UI query client (`createUIQueryClient`) always has a
+        // default queryFn routing data-service query keys to the background
+        // messenger. Without one here, react-query v5 logs a console error for
+        // every mounted data-service query — even a disabled one. The stub
+        // never resolves, keeping any enabled query in its loading state.
+        queryFn: () => new Promise(() => undefined),
+      },
+    },
   });
 
   const MemoryRouter = createMemoryRouterWrapper({
@@ -144,6 +154,17 @@ export function createProviderWrapper(
   return Wrapper;
 }
 
+/**
+ * Renders a component with the standard provider tree.
+ *
+ * @param component - The component to render.
+ * @param [store] - The redux store.
+ * @param [pathname] - The initial pathname for the history.
+ * @param [renderer] - The testing-library render function to use.
+ * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
+ * @param {UIMessenger} [uiMessenger] - An optional mock UI messenger instance.
+ * @param {RouteMessenger | null} [routeMessenger] - An optional mock route messenger instance. If not provided, the RouteMessengerContext will not be included in the provider tree.
+ */
 export function renderWithProvider(
   component,
   store,

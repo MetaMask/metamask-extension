@@ -4,10 +4,10 @@ import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
+import NFTDetailsPage from '../../../page-objects/pages/asset/nft-details-page';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
-import NetworkManager from '../../../page-objects/pages/network-manager';
 import { login } from '../../../page-objects/flows/login.flow';
+import { selectAllNetworksFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
@@ -112,9 +112,7 @@ describe('Remove ERC1155 NFT', function () {
         await homepage.goToNftTab();
 
         // Selected network is Mainnet; NFT is on Linea — widen filter to all networks
-        const networkManager = new NetworkManager(driver);
-        await networkManager.openNetworkManager();
-        await networkManager.selectAllNetworks();
+        await selectAllNetworksFromNetworkSelect(driver);
 
         const nftsTab = new NftsTab(driver);
         await nftsTab.checkNftNameIsDisplayed('Rocks');

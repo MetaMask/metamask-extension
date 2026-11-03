@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import React from 'react';
 import configureStore from '../../../../store/store';
@@ -56,6 +57,7 @@ jest.mock('../../../../store/actions', () => ({
 
 const mockUseHardwareWalletState = jest.fn();
 const mockSetSigningInProgress = jest.fn();
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 const mockNavigate = jest.fn();
 
 jest.mock('../../../../contexts/hardware-wallets', () => ({
@@ -63,6 +65,7 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
   useHardwareWalletActions: () => ({
     setSigningInProgress: mockSetSigningInProgress,
+    ensureDeviceReady: mockEnsureDeviceReady,
   }),
 }));
 
@@ -121,6 +124,15 @@ const TX_ID = 'send-bundle-tx-1';
 const BATCH_TX_ID = 'batch-tx-1';
 const FROM_ADDRESS = '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452';
 const TO_ADDRESS = '0x0987654321098765432109876543210987654321';
+const TOKEN_CONTRACT_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const TOKEN_SEND_RECIPIENT = '0x2222222222222222222222222222222222222222';
+const APPROVAL_SPENDER_ADDRESS = '0xb90357f2b86dbfd59c3502215d4060f71df8ca0e';
+// ERC20 `transfer(TOKEN_SEND_RECIPIENT, 10 tokens)` calldata.
+const ERC20_TRANSFER_DATA =
+  '0xa9059cbb00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000008ac7230489e80000';
+// ERC20 `approve(APPROVAL_SPENDER_ADDRESS, 1400000)` calldata.
+const ERC20_APPROVE_DATA =
+  '0x095ea7b3000000000000000000000000b90357f2b86dbfd59c3502215d4060f71df8ca0e0000000000000000000000000000000000000000000000000000000000d59f80';
 
 const mockCancelCurrentBatch = jest.fn().mockResolvedValue(undefined);
 const mockResetConnectionError = jest.fn();
@@ -294,6 +306,7 @@ describe('useHardwareWalletSignatures', () => {
     mockNavigateToBridgePage.mockReset();
     mockNavigate.mockReset();
     mockSetSigningInProgress.mockReset();
+    mockEnsureDeviceReady.mockReset().mockResolvedValue(true);
     mockCleanupPendingApproval.mockReset();
     mockUpdateAndApproveTx
       .mockReset()
@@ -366,6 +379,69 @@ describe('useHardwareWalletSignatures', () => {
     jest.restoreAllMocks();
   });
 
+  describe('bridge/swap flow', () => {
+    it('marks the flow disconnected when the device is locked during signing', async () => {
+      let submitBridgeTransaction:
+        | Parameters<typeof useHwSwapSubmission>[0]['submitBridgeTransaction']
+        | undefined;
+      const error = {
+        code: ErrorCode.AuthenticationDeviceLocked,
+        message: 'Device locked',
+      };
+
+      mockUseHwSwapSubmission.mockImplementation((options) => {
+        submitBridgeTransaction = options.submitBridgeTransaction;
+        return {
+          retrySubmission: mockRetrySubmission,
+          hasStartedSubmission: { current: false },
+          submitActiveQuote: jest.fn(),
+        } as never;
+      });
+      mockUseSubmitBridgeTransaction.mockReturnValue({
+        submitBridgeTransaction: jest.fn().mockRejectedValue(error),
+        isSubmitting: false,
+      });
+      mockUseHwSwapQuoteData.mockReturnValue({
+        activeQuote: {
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '1' },
+            dest: { normalizedAmount: '2' },
+          },
+          trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
+        },
+        lockedQuote: {
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '1' },
+            dest: { normalizedAmount: '2' },
+          },
+          trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
+        },
+        fromToken: { symbol: 'ETH' },
+        toToken: { symbol: 'USDC' },
+        hardwareWalletType: 'ledger',
+      } as never);
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush();
+
+      const capturedSubmitBridgeTransaction = submitBridgeTransaction;
+      if (!capturedSubmitBridgeTransaction) {
+        throw new Error('Expected useHwSwapSubmission to capture submission');
+      }
+
+      await act(async () => {
+        await expect(capturedSubmitBridgeTransaction({} as never)).rejects.toBe(
+          error,
+        );
+      });
+
+      expect(result.current.signatureStatus).toBe(
+        HardwareWalletSignatureStatus.Disconnected,
+      );
+    });
+  });
+
   describe('sendBundle flow', () => {
     it('auto-submits the sendBundle transaction when the approval is still pending', async () => {
       const { result } = await renderUseHardwareWalletSignaturesAndFlush({
@@ -389,6 +465,40 @@ describe('useHardwareWalletSignatures', () => {
       expect(result.current.stepList.hasSigningRequest).toBe(true);
       expect(result.current.stepList.needsTwoConfirmations).toBe(true);
       expect(result.current.stepList.firstStepLabel).toContain('1.5');
+    });
+
+    it('shows the decoded calldata recipient for token sends', async () => {
+      const tokenSendTxMeta = createSendBundleTxMeta({
+        type: TransactionType.tokenMethodTransfer,
+        txParams: {
+          from: FROM_ADDRESS,
+          to: TOKEN_CONTRACT_ADDRESS,
+          value: '0x0',
+          gas: '0x5208',
+          maxFeePerGas: '0x1',
+          maxPriorityFeePerGas: '0x1',
+          data: ERC20_TRANSFER_DATA,
+        },
+      });
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush({
+        locationState: createSendBundleLocationState({
+          txMeta: tokenSendTxMeta,
+        }),
+      });
+
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+
+      expect(result.current.stepList.firstStepDescription).toStrictEqual({
+        to: 'To: 0x22222...22222',
+      });
+      expect(result.current.stepList.firstStepDescription?.to).not.toContain(
+        '0xa0b86',
+      );
     });
 
     it('marks the flow failed when the pending approval is gone', async () => {
@@ -435,6 +545,115 @@ describe('useHardwareWalletSignatures', () => {
       await waitFor(() => {
         expect(result.current.signatureStatus).toBe(
           HardwareWalletSignatureStatus.Failed,
+        );
+      });
+    });
+
+    it('marks the flow disconnected when the device is locked during sendBundle submit', async () => {
+      mockUpdateAndApproveTx.mockReturnValue((() =>
+        Promise.reject({
+          code: ErrorCode.AuthenticationDeviceLocked,
+          message: 'Device locked',
+        })) as never);
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Disconnected,
+        );
+      });
+    });
+
+    it('keeps the flow awaiting and restarts the send once the device recovers from the eth app being closed', async () => {
+      // App closed: signing fails with a no-event error and the live
+      // readiness probe fails, so the restart stays gated.
+      mockUpdateAndApproveTx.mockReturnValue((() =>
+        Promise.reject({
+          code: ErrorCode.DeviceStateEthAppClosed,
+          message: 'Ethereum app is not open',
+        })) as never);
+      mockEnsureDeviceReady.mockResolvedValue(false);
+
+      const { result, rerender } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await act(async () => {
+        await flushPromises();
+      });
+
+      // The signing UI stays on the awaiting path (not failed/rejected)
+      // while the recovery modal prompts the user to open the app.
+      expect(result.current.signatureStatus).toBe(
+        HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      );
+      expect(mockEnsureDeviceReady).toHaveBeenCalled();
+      // No restart is attempted while the device is not ready.
+      expect(mockCancelCurrentBatch).not.toHaveBeenCalled();
+
+      // The user opens the Ethereum app: the probe succeeds and the send is
+      // restarted through the retry path (cancel dead batch, recreate tx,
+      // re-approve).
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockUpdateAndApproveTx.mockReturnValue((() =>
+        Promise.resolve(undefined)) as never);
+      // Model the connection-state change that accompanies recovery (e.g.
+      // AppChanged → Ready): a new connectionState identity re-arms the
+      // dormant restart effect.
+      mockUseHardwareWalletState.mockImplementation(() => ({
+        connectionState: { status: ConnectionStatus.Ready },
+      }));
+
+      await act(async () => {
+        rerender();
+        await flushPromises();
+      });
+
+      expect(mockCancelCurrentBatch).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+    });
+
+    it('restarts the send even when connectionState lags behind a successful ensureDeviceReady check', async () => {
+      // App closed: first submit fails with a no-event error, triggering the
+      // auto-restart effect. The retry's resubmit then succeeds.
+      mockUpdateAndApproveTx
+        .mockReturnValueOnce((() =>
+          Promise.reject({
+            code: ErrorCode.DeviceStateEthAppClosed,
+            message: 'Ethereum app is not open',
+          })) as never)
+        .mockReturnValue((() => Promise.resolve(undefined)) as never);
+      // Race: ensureDeviceReady() resolves true, but connectionState.status
+      // (read by handleRetry's closure) still lags at a non-retryable value.
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.AwaitingApp },
+      });
+      mockEnsureDeviceReady.mockResolvedValue(true);
+
+      const { result } = renderUseHardwareWalletSignatures({
+        locationState: createSendBundleLocationState(),
+      });
+
+      await act(async () => {
+        await flushPromises();
+      });
+
+      // Restart must actually happen, not silently no-op on the stale status.
+      expect(mockCancelCurrentBatch).toHaveBeenCalled();
+      expect(mockAddTransaction).toHaveBeenCalled();
+      expect(mockUpdateAndApproveTx).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
         );
       });
     });
@@ -846,21 +1065,101 @@ describe('useHardwareWalletSignatures', () => {
     });
   });
 
+  describe('bridge/swap approval flow', () => {
+    function mockSwapQuoteData() {
+      mockUseHwSwapQuoteData.mockReturnValue({
+        activeQuote: null,
+        lockedQuote: {
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '10' },
+            dest: { normalizedAmount: '9.9' },
+          },
+          approval: {
+            from: FROM_ADDRESS,
+            to: TOKEN_CONTRACT_ADDRESS,
+            value: '0x0',
+            data: ERC20_APPROVE_DATA,
+          },
+          trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
+        },
+        fromToken: { symbol: 'USDC', chainId: '0x1' },
+        toToken: { symbol: 'USDT', chainId: '0x1' },
+        hardwareWalletType: 'ledger',
+      } as never);
+    }
+
+    it('derives the spender from the approve calldata args', async () => {
+      mockSwapQuoteData();
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush();
+
+      expect(result.current.stepList.firstStepDescription).toStrictEqual({
+        token: 'Token: 0xa0b86...6eb48',
+        spender: 'Spender: 0xB9035...8ca0e',
+      });
+      // The spender is decoded from the calldata args, not from
+      // `approval.to` (which is the token contract).
+      expect(result.current.stepList.firstStepDescription?.spender).not.toBe(
+        'Spender: 0xa0b86...6eb48',
+      );
+    });
+
+    it('labels the final step with the swap destination for same-chain quotes', async () => {
+      mockSwapQuoteData();
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush();
+
+      expect(result.current.stepList.finalStepLabel).toBe(
+        'Swap 10 USDC for 9.9 USDT',
+      );
+    });
+
+    it('omits the spender description when the approve calldata is undecodable', async () => {
+      mockUseHwSwapQuoteData.mockReturnValue({
+        activeQuote: null,
+        lockedQuote: {
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '10' },
+            dest: { normalizedAmount: '9.9' },
+          },
+          approval: {
+            from: FROM_ADDRESS,
+            to: TOKEN_CONTRACT_ADDRESS,
+            value: '0x0',
+            data: '0xnotdecodable',
+          },
+          trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
+        },
+        fromToken: { symbol: 'USDC', chainId: '0x1' },
+        toToken: { symbol: 'USDT', chainId: '0x1' },
+        hardwareWalletType: 'ledger',
+      } as never);
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush();
+
+      expect(result.current.stepList.firstStepDescription).toBeUndefined();
+    });
+  });
+
   describe('bridge cancel', () => {
     it('navigates back to the bridge page when cancelling a non-sendBundle flow', async () => {
       mockUseHwSwapQuoteData.mockReturnValue({
         activeQuote: {
-          quote: { requestId: 'quote-1' },
-          sentAmount: { amount: '1' },
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '1' },
+            dest: { normalizedAmount: '2' },
+          },
           trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
         },
         lockedQuote: {
           quote: {
             requestId: 'quote-1',
-            srcTokenAmount: '1',
-            destTokenAmount: '2',
+            src: { normalizedAmount: '1' },
+            dest: { normalizedAmount: '2' },
           },
-          sentAmount: { amount: '1' },
           trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
         },
         fromToken: { symbol: 'ETH' },

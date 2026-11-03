@@ -1,4 +1,4 @@
-import type { Json } from '@metamask/utils';
+import { isValidJson, type Json } from '@metamask/utils';
 import browser from 'webextension-polyfill';
 
 export const CronjobControllerStorageKey = 'temp-cronjob-storage';
@@ -24,9 +24,10 @@ export class CronjobControllerStorageManager {
    * Initialize the storage manager.
    */
   async init() {
-    this.#initialStorage = (
+    const initialStorage = (
       await browser.storage.local.get(CronjobControllerStorageKey)
     )[CronjobControllerStorageKey];
+    this.#initialStorage = isValidJson(initialStorage) ? initialStorage : null;
     this.#initialized = true;
   }
 

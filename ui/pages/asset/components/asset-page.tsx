@@ -5,13 +5,10 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  ButtonIcon,
-  ButtonIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   FontWeight,
-  IconColor,
-  IconName,
+  Skeleton,
   Text,
   TextButton,
   TextButtonSize,
@@ -39,21 +36,17 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
-import { ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
-import {
-  TokenFiatDisplayInfo,
-  type TokenWithFiatAmount,
-} from '../../../components/app/assets/types';
+import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
 import { AddressCopyButton } from '../../../components/multichain';
@@ -62,6 +55,7 @@ import { ActivityList } from '../../activity/activity-list';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useInAppBack } from '../../../hooks/useInAppBack';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
 import {
@@ -69,8 +63,9 @@ import {
   getIsBridgeChain,
   getIsSwapsChain,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
+  getPrivacyMode,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
@@ -86,33 +81,41 @@ import {
   getMultichainIsTron,
 } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  selectIsMerklClaimingEnabled,
-  selectIsMusdConversionFlowEnabled,
-} from '../../../selectors/musd';
+import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
+import { useAssetPerpsMarket } from '../hooks/useAssetPerpsMarket';
+import { usePerpsPositionForAsset } from '../../../hooks/perps/usePerpsPositionForAsset';
+import { PerpsViewStreamBoundary } from '../../../components/app/perps/perps-view-stream-boundary';
 import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
-import {
-  useMusdCtaVisibility,
-  useMusdMerklPosition,
-} from '../../../hooks/musd';
+import { useMusdCtaVisibility } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
+import { MoneyEarnBanner } from '../../../components/app/money/money-earn-banner';
+import {
+  MoneyAssetOverviewBalanceApy,
+  MoneyAssetOverviewBalanceCta,
+  MoneyAssetOverviewBalanceCtaSkeleton,
+  MoneyAssetOverviewBalanceDescription,
+  MoneyAssetOverviewBalanceDescriptionSkeleton,
+} from '../../../components/app/money/money-asset-overview-balance-cta';
+import { useMoneyAssetOverviewBalanceCta } from '../../../hooks/money/use-money-asset-overview-ctas';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
+import { AssetPageHeader } from './asset-page-header';
+import { AssetPerpsPositionSection } from './asset-perps-position-section';
+import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
 import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
-import { MusdBonusSection } from './musd-bonus-section';
 import { MusdPositionSection } from './musd-position-section';
 import {
   AssetPageSecurityTrustBanner,
@@ -120,6 +123,28 @@ import {
   AssetPageSecurityTrustProvider,
   AssetPageSecurityTrustSection,
 } from './security-trust';
+
+/**
+ * Activates live Perps stream emission while the asset page is resolving or
+ * showing Perps UI, so position lookup can run in parallel with the market
+ * match instead of waiting until Long / Short mount.
+ *
+ * @param props - Wrapper props
+ * @param props.enabled - Whether a Perps market is loading or already matched
+ * @param props.children - Action row and optional position section
+ */
+const MaybePerpsViewStreamBoundary = ({
+  enabled,
+  children,
+}: {
+  enabled: boolean;
+  children: ReactNode;
+}) => {
+  if (!enabled) {
+    return <>{children}</>;
+  }
+  return <PerpsViewStreamBoundary>{children}</PerpsViewStreamBoundary>;
+};
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -130,7 +155,6 @@ const AssetPage = ({
   optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
   const isEvm = isEvmChainId(asset.chainId);
@@ -200,17 +224,14 @@ const AssetPage = ({
     useMusdCtaVisibility();
 
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
-  const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = useMemo(
-    () => completedMetaMetricsOnboarding && isOptedIn,
-    [completedMetaMetricsOnboarding, isOptedIn],
+    () => consentDecisionMade && isOptedIn,
+    [consentDecisionMade, isOptedIn],
   );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const analyticsId = useSelector(getAnalyticsId);
@@ -233,7 +254,7 @@ const AssetPage = ({
     return '';
   }, [shouldShowContractAddress, isEvm, tokenAddress, address]);
 
-  const { currentPrice } = useCurrentPrice(asset);
+  const { currentPrice, marketData } = useCurrentPrice(asset);
 
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
@@ -311,7 +332,11 @@ const AssetPage = ({
     },
   };
 
-  const resolvedAssetId = (bip44Asset?.assetId ?? assetId) as CaipAssetType;
+  // Prefer the route/computed CAIP id so Stellar activation and spendable-balance
+  // lookups still work when the asset is not yet in the account group (empty assetId).
+  const resolvedAssetId = (caipAssetId ||
+    bip44Asset?.assetId ||
+    assetId) as CaipAssetType;
 
   const isAssetInactive = useSelector((state) =>
     getIsAssetRequireActivate(state, {
@@ -360,32 +385,20 @@ const AssetPage = ({
       rwaData,
     ],
   );
+  const privacyMode = useSelector(getPrivacyMode);
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
   const isMarketClosed = isStockToken && !isTokenTradingOpen(updatedAsset);
-  const assetDisplayName = useMemo(
-    () =>
-      name && symbol && name !== symbol
-        ? `${name} (${symbol})`
-        : (name ?? symbol),
-    [name, symbol],
-  );
-  const assetNameElement = (
+  const assetHeaderBadges = (
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={2}
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        fontWeight={FontWeight.Medium}
-        color={TextColor.TextAlternative}
-        data-testid="asset-name"
-      >
-        {assetDisplayName}
-      </Text>
       <AssetPageSecurityTrustHeaderBadge />
+      {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
+      {isAssetInactive && <AssetInactiveBadge />}
     </Box>
   );
 
@@ -395,6 +408,18 @@ const AssetPage = ({
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
+  // Perps-eligible assets show Long / Short / Send / More instead of the
+  // regular action buttons (mobile Token Details parity).
+  const { market: perpsMarket, isLoading: isPerpsMarketLoading } =
+    useAssetPerpsMarket(symbol);
+  const { isLoading: isPerpsPositionLoading } = usePerpsPositionForAsset(
+    perpsMarket?.name ?? '',
+  );
+  // Hold the row until market *and* position lookups settle (no Buy/Swap →
+  // Long/Short flash). Stream-init failure is a settled "no position" state,
+  // so Send / Buy / Swap are not gated on an unbounded wait.
+  const isPerpsActionsLoading =
+    isPerpsMarketLoading || Boolean(perpsMarket && isPerpsPositionLoading);
   const isMusdAssetPage = useMemo(
     () =>
       type === AssetType.token &&
@@ -403,108 +428,122 @@ const AssetPage = ({
       isMusdFlowEnabled,
     [type, isEvm, asset, isMusdFlowEnabled],
   );
-
-  const {
-    aggregatedFiat: aggregatedMusdFiat,
-    hasAnyBalance: hasAnyMusdBalance,
-  } = useMusdMerklPosition(isMusdAssetPage);
+  const isYourBalanceSectionShown = !isMusdAssetPage && !showSpendableBalance;
+  const moneyBalanceCta = useMoneyAssetOverviewBalanceCta(tokenWithFiatAmount, {
+    enabled: isYourBalanceSectionShown,
+  });
+  const moneyBalanceDisplay = moneyBalanceCta.display;
 
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
   const handleOpenMarketClosedModal = useCallback(() => {
     setIsMarketClosedModalOpen(true);
   }, []);
 
+  const handleBack = useInAppBack(DEFAULT_ROUTE, transitionBack);
+
   return (
     <AssetPageSecurityTrustProvider
       assetId={caipAssetId as CaipAssetType}
       token={securityTrustToken}
     >
-      <Box className="asset__content">
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          paddingBottom={3}
-          paddingLeft={2}
-          paddingRight={4}
-          className="pt-4 sticky top-0 z-10 bg-background-default"
-        >
-          <Box flexDirection={BoxFlexDirection.Row}>
-            <ButtonIcon
-              color={IconColor.IconDefault}
-              size={ButtonIconSize.Md}
-              ariaLabel={t('back') as string}
-              iconName={IconName.ArrowLeft}
-              onClick={() => transitionBack(() => navigate(PREVIOUS_ROUTE))}
-              className="asset-page__back-button"
-            />
-          </Box>
-          {optionsButton}
-        </Box>
+      <Box
+        className="asset__content"
+        data-testid="parent-selector-asset-details"
+      >
+        <AssetPageHeader
+          symbol={symbol}
+          image={image}
+          networkImage={tokenChainImage}
+          networkName={networkName}
+          contractAddress={contractAddress || undefined}
+          titleEndAccessory={assetHeaderBadges}
+          endAccessory={optionsButton}
+          onBack={handleBack}
+        />
         {isAssetInactive && (
           <AssetActivateCard
             asset={tokenAsset as Asset}
             chainName={networkName}
           />
         )}
-        <Box paddingLeft={4}>
-          {isStockToken || isAssetInactive ? (
-            <Box alignItems={BoxAlignItems.Center} gap={2}>
-              {assetNameElement}
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-              >
-                {isStockToken && <StockBadge isMarketClosed={isMarketClosed} />}
-                {isAssetInactive && <AssetInactiveBadge />}
-              </Box>
-            </Box>
-          ) : (
-            assetNameElement
-          )}
-        </Box>
         <AssetPageSecurityTrustBanner />
         <AssetChart
           chainId={chainId}
           address={address}
           currentPrice={currentPrice}
           currency={currency}
-          asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
         />
-        <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-          {isUpdatedAssetNative ? (
-            <CoinButtons
-              {...{
-                account: selectedAccount,
-                trackingLocation: 'asset-page',
-                isSigningEnabled,
-                isSwapsChain,
-                isBridgeChain,
-                chainId,
-                disableSendForNonEvm: true,
-                buyAssetId: caipAssetId,
-              }}
+        <MaybePerpsViewStreamBoundary
+          enabled={Boolean(isPerpsMarketLoading || perpsMarket)}
+        >
+          <Box marginTop={4} paddingLeft={4} paddingRight={4}>
+            {isPerpsActionsLoading ? (
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                gap={3}
+                className="w-full"
+                data-testid="asset-perps-actions-skeleton"
+              >
+                {['long', 'short', 'send', 'more'].map((slot) => (
+                  <Skeleton key={slot} className="h-[52px] flex-1 rounded-lg" />
+                ))}
+              </Box>
+            ) : (
+              <>
+                {isUpdatedAssetNative ? (
+                  <CoinButtons
+                    {...{
+                      account: selectedAccount,
+                      trackingLocation: 'asset-page',
+                      isSigningEnabled,
+                      isSwapsChain,
+                      isBridgeChain,
+                      chainId,
+                      hasBalance: Boolean(
+                        updatedAsset.balance?.value &&
+                        updatedAsset.balance.value !== '0',
+                      ),
+                      disableSendForNonEvm: true,
+                      buyAssetId: caipAssetId,
+                      perpsMarketSymbol: perpsMarket?.name,
+                    }}
+                  />
+                ) : null}
+                {tokenAsset ? (
+                  <TokenButtons
+                    token={tokenAsset}
+                    disableSendForNonEvm
+                    isMarketClosed={isMarketClosed}
+                    perpsMarketSymbol={perpsMarket?.name}
+                  />
+                ) : null}
+                {isMarketClosed && tokenAsset ? (
+                  <Box marginTop={4}>
+                    <MarketClosedActionButton
+                      onClick={handleOpenMarketClosedModal}
+                    />
+                  </Box>
+                ) : null}
+              </>
+            )}
+          </Box>
+          {perpsMarket?.name ? (
+            <AssetPerpsPositionSection
+              marketSymbol={perpsMarket.name}
+              assetName={name ?? symbol}
             />
           ) : null}
-          {tokenAsset ? (
-            <TokenButtons
-              token={tokenAsset}
-              disableSendForNonEvm
-              isMarketClosed={isMarketClosed}
-            />
-          ) : null}
-          {isMarketClosed && tokenAsset ? (
-            <Box marginTop={4}>
-              <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
-            </Box>
-          ) : null}
-        </Box>
+        </MaybePerpsViewStreamBoundary>
+        <MoneyEarnBanner
+          key={`${chainId}:${address}`}
+          token={tokenWithFiatAmount}
+        />
         <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
           {showTronResources && (
             <Box>
               <TronDailyResources
                 account={selectedAccount}
-                chainId={chainId}
+                chainId={caipChainId}
                 t={t}
               />
               <Box
@@ -521,33 +560,11 @@ const AssetPage = ({
                 fiatValue={tokenFiatAmount}
                 showFiat={showFiat}
               />
-              {isMerklClaimingEnabled ? (
-                <>
-                  <Box
-                    marginTop={5}
-                    marginBottom={5}
-                    className="asset-page__divider"
-                  />
-                  <MusdBonusSection
-                    chainId={chainId as Hex}
-                    tokenAddress={(asset as { address: Hex }).address}
-                    positionFiatValue={showFiat ? aggregatedMusdFiat : null}
-                    showFiat={showFiat}
-                    hasPositiveBalance={hasAnyMusdBalance}
-                  />
-                  <Box
-                    marginTop={5}
-                    marginBottom={5}
-                    className="asset-page__divider"
-                  />
-                </>
-              ) : (
-                <Box
-                  marginTop={5}
-                  marginBottom={5}
-                  className="asset-page__divider"
-                />
-              )}
+              <Box
+                marginTop={5}
+                marginBottom={5}
+                className="asset-page__divider"
+              />
             </>
           ) : null}
           {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (
@@ -559,7 +576,7 @@ const AssetPage = ({
               fiatValue={showFiat ? tokenFiatAmount : null}
             />
           ) : null}
-          {!isMusdAssetPage && !showSpendableBalance ? (
+          {isYourBalanceSectionShown ? (
             <>
               <Text
                 variant={TextVariant.HeadingSm}
@@ -567,14 +584,42 @@ const AssetPage = ({
               >
                 {t('yourBalance')}
               </Text>
+              {moneyBalanceDisplay ? (
+                <MoneyAssetOverviewBalanceDescription
+                  tokenSymbol={symbol}
+                  apyPercent={moneyBalanceDisplay.apyPercent}
+                  projectedEarnings={
+                    moneyBalanceDisplay.projectedEarningsFormatted
+                  }
+                  privacyMode={privacyMode}
+                  onTooltipOpen={moneyBalanceCta.onProjectionTooltipOpen}
+                />
+              ) : null}
+              {moneyBalanceCta.isLoading ? (
+                <MoneyAssetOverviewBalanceDescriptionSkeleton />
+              ) : null}
               {[AssetType.token, AssetType.native].includes(type) && (
                 <TokenCell
                   key={`${symbol}-${address}`}
                   token={tokenWithFiatAmount as TokenWithFiatAmount}
                   safeChains={safeChains}
-                  musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
+                  priceChangeOverride={
+                    moneyBalanceDisplay ? (
+                      <MoneyAssetOverviewBalanceApy
+                        apy={moneyBalanceDisplay.apyPercentFormatted}
+                      />
+                    ) : undefined
+                  }
                 />
               )}
+              {moneyBalanceDisplay ? (
+                <MoneyAssetOverviewBalanceCta
+                  onStartEarning={moneyBalanceCta.onStartEarning}
+                />
+              ) : null}
+              {moneyBalanceCta.isLoading ? (
+                <MoneyAssetOverviewBalanceCtaSkeleton />
+              ) : null}
             </>
           ) : null}
           {/* mUSD Conversion CTA - shows for eligible stablecoins */}
@@ -660,6 +705,7 @@ const AssetPage = ({
                             <Text
                               variant={TextVariant.BodyMd}
                               fontWeight={FontWeight.Medium}
+                              data-testid="asset-token-decimals"
                             >
                               {asset.decimals}
                             </Text>,
@@ -705,7 +751,11 @@ const AssetPage = ({
                 </Box>
               </Box>
             )}
-            <AssetMarketDetails asset={updatedAsset} address={address} />
+            <AssetMarketDetails
+              asset={updatedAsset}
+              address={address}
+              fallbackMarketData={marketData}
+            />
             <Box className="asset-page__divider" />
             <Box marginBottom={4}>
               <Text
@@ -729,6 +779,14 @@ const AssetPage = ({
           onClose={() => setIsMarketClosedModalOpen(false)}
         />
       </Box>
+      {/* Sibling of `asset__content` so it is a direct child of the scrolling
+      container, which is what lets it stick to the bottom of the viewport. */}
+      <AssetStickyActions
+        asset={updatedAsset}
+        buyAssetId={caipAssetId as CaipAssetType}
+        isMarketClosed={isMarketClosed}
+        isSigningEnabled={isSigningEnabled}
+      />
     </AssetPageSecurityTrustProvider>
   );
 };
@@ -746,9 +804,7 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
       >
         {leftColumn}
       </Text>
-      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {rightColumn}
-      </Text>
+      <Box>{rightColumn}</Box>
     </Box>
   );
 }

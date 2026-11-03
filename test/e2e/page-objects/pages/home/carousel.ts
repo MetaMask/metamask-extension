@@ -1,11 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Home promotional carousel: stacked slides above the account overview tabs.
+ *
+ * Screen: `#/` (DEFAULT_ROUTE), rendered in the account overview layout above
+ * the Tokens / DeFi / NFTs / Activity tabs.
+ * Owns: the carousel container, current-slide title and description, and
+ * dismissing one or many slides via their close buttons.
+ * Boundaries: the carousel surface only. Balance, tab content, and home CTAs
+ * belong to `HomePage` and the tab page objects.
+ * Related: `HomePage` (host screen); dismiss before asserting on tabs when
+ * slides would otherwise obscure the overview.
+ *
+ * @see ui/components/multichain/carousel/carousel.tsx
+ */
 export default class CarouselPage {
-  private readonly carouselContainer = '[data-testid="carousel-container"]';
-
-  private readonly carouselSlide =
-    '[data-testid^="carousel-slide-"]:not([data-testid$="-close-button"])';
-
   private readonly currentSlide =
     '.carousel-card--current[data-testid^="carousel-slide-"]';
 
@@ -20,13 +29,17 @@ export default class CarouselPage {
 
   private readonly driver: Driver;
 
+  private readonly page = {
+    testId: 'parent-selector-carousel',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkCarouselIsNotVisible(): Promise<void> {
     console.log('Check carousel is not visible');
-    await this.driver.assertElementNotPresent(this.carouselContainer, {
+    await this.driver.assertElementNotPresent(this.page, {
       waitAtLeastGuard: 1000,
     });
   }
@@ -40,7 +53,7 @@ export default class CarouselPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check carousel page is loaded');
-    await this.driver.waitForSelector(this.carouselContainer);
+    await this.driver.waitForSelector(this.page);
     await this.driver.waitForSelector(this.currentSlide);
   }
 
@@ -79,6 +92,6 @@ export default class CarouselPage {
   }
 
   async isCarouselPresent(): Promise<boolean> {
-    return this.driver.isElementPresentAndVisible(this.carouselContainer);
+    return this.driver.isElementPresentAndVisible(this.page);
   }
 }

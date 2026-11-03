@@ -43,6 +43,7 @@ describe('NetworkConstants', () => {
         Tempo: CHAIN_IDS.TEMPO_MAINNET,
         Arc: CHAIN_IDS.ARC,
         'Robinhood Chain': CHAIN_IDS.ROBINHOOD_CHAIN,
+        'XDC Network': CHAIN_IDS.XDC,
       };
 
       FEATURED_RPCS.forEach((rpc) => {

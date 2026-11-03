@@ -71,8 +71,8 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
-      BRANCH: ${{ steps.branch.outputs.BRANCH }}
+      COMMIT_SHA: ${{ steps.pr.outputs.COMMIT_SHA }}
+      BRANCH: ${{ steps.pr.outputs.BRANCH }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -85,14 +85,31 @@ jobs:
           permissions: |
             actions: read
             statuses: read
-            contents: write
-            pull_requests: write
+            contents: read
+            pull_requests: read
 
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
+      - name: Get pull request metadata
+        id: pr
+        run: |
+          echo "BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')" >> "$GITHUB_OUTPUT"
+          echo "COMMIT_SHA=$(gh pr view "${PR_NUMBER}" --json headRefOid --jq '.headRefOid')" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
+
+      # Keep the default-branch helper when the PR predates its introduction.
+      - name: Preserve canonical build resolver
+        run: cp .github/scripts/shared/resolve-build-run.mts "$RUNNER_TEMP/resolve-build-run.mts"
+
+      # Resolve the artifact before any PR-controlled setup can run so the
+      # copied resolver cannot be replaced first.
+      - name: Find dist artifact run
+        id: find-dist
+        run: node "$RUNNER_TEMP/resolve-build-run.mts" --repo "$REPO" --ref "$PR_HEAD_SHA" --wait-seconds 600
+        env:
+          REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          PR_HEAD_SHA: ${{ steps.pr.outputs.COMMIT_SHA }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -100,63 +117,17 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Get commit SHA
-        id: commit-sha
-        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Get branch name
-        id: branch
-        run: echo "BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')" >> "$GITHUB_OUTPUT"
-        env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      # The build-reuse feature skips the build jobs on a PR's Main run when its
-      # build-source hash matches a prior run (commonly a `main` run); in that
-      # case the artifact lives on the donor run, not the PR's own run.
-      # get-requirements.yml publishes the canonical run that holds the builds
-      # (this run for fresh builds, the donor run when reused) as a
-      # `builds-from-run` commit status on the PR head, so we just read it.
-      - name: Find dist artifact run
-        id: find-dist
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ steps.token.outputs.token }}
-          script: |
-            const { owner, repo } = context.repo;
-            const { stdout: headOut } = await exec.getExecOutput('git', ['rev-parse', 'HEAD'], { silent: true });
-            const headSha = headOut.trim();
-
-            // getCombinedStatusForRef de-duplicates to the most recent status
-            // per context, so a single page is sufficient.
-            const { data: { statuses } } = await github.rest.repos.getCombinedStatusForRef({
-              owner, repo, ref: headSha, per_page: 100,
-            });
-            const buildsFromRun = statuses.find((s) => s.context === 'builds-from-run')?.description;
-
-            if (!buildsFromRun) {
-              core.setFailed(`No 'builds-from-run' commit status found on ${headSha}. This commit's Main run may predate the build-reuse pointer, or its best-effort status post failed. Re-run the Main workflow on this branch, then '@metamaskbot update-e2e-fixture'.`);
-              return;
-            }
-            core.info(`-> builds-from-run: ${buildsFromRun}`);
-            core.setOutput('run-id', buildsFromRun);
-
       - name: Download dist artifact
-        run: |
-          echo "Attempting to download dist artifact from run ${RUN_ID}..."
-          if ! gh run download "${RUN_ID}" -n build-dist-webpack -D build-dist-webpack; then
-            echo "::error::Failed to download the 'build-dist-webpack' artifact from run ${RUN_ID}. The build job may not have completed yet, or may have failed. Please ensure the build-dist-webpack job has completed successfully."
-            exit 1
-          fi
-          echo "Successfully downloaded dist artifact."
+        run: gh run download "$RUN_ID" --repo "$REPO" --name build-dist-webpack --dir build-dist-webpack
         env:
           RUN_ID: ${{ steps.find-dist.outputs.run-id }}
+          REPO: ${{ github.repository }}
           GITHUB_TOKEN: ${{ steps.token.outputs.token }}
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v6
         with:
-          name: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
+          name: dist-${{ steps.pr.outputs.COMMIT_SHA }}
           path: build-dist-webpack
           if-no-files-found: error
           # Allow workflow re-runs to replace the artifact from a prior attempt.
@@ -180,8 +151,13 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      - name: Install anvil
-        run: yarn mm-foundryup
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
 
       - name: Download dist artifact
         uses: actions/download-artifact@v7

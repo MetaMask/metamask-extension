@@ -46,6 +46,13 @@ export const usePerpsLiquidationPrice = (
     DEFAULT_LIQUIDATION_PRICE,
   );
   const [isCalculating, setIsCalculating] = useState(false);
+  const calculationKey = `${asset}|${direction}|${entryPrice}|${leverage}|${hasValidInputs}|${debounceMs}`;
+  const [prevCalculationKey, setPrevCalculationKey] = useState(calculationKey);
+
+  if (calculationKey !== prevCalculationKey) {
+    setPrevCalculationKey(calculationKey);
+    setIsCalculating(hasValidInputs);
+  }
 
   const calculatePrice = useMemo(
     () =>
@@ -79,14 +86,11 @@ export const usePerpsLiquidationPrice = (
   );
 
   useEffect(() => {
-    if (hasValidInputs) {
-      setIsCalculating(true);
-    }
     calculatePrice();
     return () => {
       calculatePrice.cancel();
     };
-  }, [calculatePrice, hasValidInputs]);
+  }, [calculatePrice]);
 
   return {
     isCalculating: hasValidInputs && isCalculating,

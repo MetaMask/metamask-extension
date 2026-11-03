@@ -13,16 +13,12 @@ import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
   selectIsMusdConversionFlowEnabled,
-  selectIsMusdCtaEnabled,
   selectIsMusdTokenListItemCtaEnabled,
   selectIsMusdAssetOverviewCtaEnabled,
   selectMusdCtaTokens,
   selectMusdConversionDismissedCtaKeys,
 } from '../../selectors/musd';
-import {
-  MUSD_BUYABLE_CHAIN_IDS,
-  isMusdSupportedChain,
-} from '../../components/app/musd/constants';
+import { isMusdSupportedChain } from '../../components/app/musd/constants';
 import { isTokenInWildcardList } from '../../components/app/musd/utils/token-allowlist';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
@@ -37,31 +33,6 @@ export {
 // ============================================================================
 
 /**
- * Variant for the Buy/Get mUSD CTA
- */
-export enum BuyGetMusdCtaVariant {
-  BUY = 'buy',
-  GET = 'get',
-}
-
-/**
- * State returned by shouldShowBuyGetMusdCta
- */
-export type BuyGetMusdCtaState =
-  | {
-      shouldShowCta: false;
-      selectedChainId: null;
-      isEmptyWallet: boolean;
-      variant: null;
-    }
-  | {
-      shouldShowCta: true;
-      selectedChainId: Hex | null;
-      isEmptyWallet: boolean;
-      variant: BuyGetMusdCtaVariant;
-    };
-
-/**
  * Token info for CTA visibility checks
  */
 export type TokenForCta = {
@@ -71,33 +42,11 @@ export type TokenForCta = {
 };
 
 /**
- * Options for shouldShowBuyGetMusdCta
- */
-export type BuyGetCtaOptions = {
-  hasConvertibleTokens?: boolean;
-  hasMusdBalance?: boolean;
-  isEmptyWallet?: boolean;
-  selectedChainId?: Hex | null;
-};
-
-/**
- * Options for shouldShowTokenListItemCta
- */
-export type TokenListItemCtaOptions = {
-  hasMusdBalance?: boolean;
-};
-
-/**
  * Return type for useMusdCtaVisibility hook
  */
 export type UseMusdCtaVisibilityResult = {
-  /** Check if Buy/Get mUSD CTA should be shown */
-  shouldShowBuyGetMusdCta: (options?: BuyGetCtaOptions) => BuyGetMusdCtaState;
   /** Check if token list item CTA should be shown */
-  shouldShowTokenListItemCta: (
-    token: TokenForCta,
-    options?: TokenListItemCtaOptions,
-  ) => boolean;
+  shouldShowTokenListItemCta: (token: TokenForCta) => boolean;
   /** Check if asset overview CTA should be shown */
   shouldShowAssetOverviewCta: (token: TokenForCta) => boolean;
   /** Check if a token is in the CTA allowlist */
@@ -108,20 +57,6 @@ export type UseMusdCtaVisibilityResult = {
   isGeoBlocked: boolean;
   /** Whether geo-blocking check is in progress */
   isGeoBlockingLoading: boolean;
-};
-
-// ============================================================================
-// Constants
-// ============================================================================
-
-/**
- * Default hidden state for Buy/Get CTA
- */
-const HIDDEN_BUY_GET_CTA_STATE: BuyGetMusdCtaState = {
-  shouldShowCta: false,
-  selectedChainId: null,
-  isEmptyWallet: false,
-  variant: null,
 };
 
 // ============================================================================
@@ -138,7 +73,6 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
   const isMusdConversionFlowEnabled = useSelector(
     selectIsMusdConversionFlowEnabled,
   );
-  const isMusdCtaEnabled = useSelector(selectIsMusdCtaEnabled);
   const isMusdTokenListItemCtaEnabled = useSelector(
     selectIsMusdTokenListItemCtaEnabled,
   );
@@ -221,92 +155,14 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
   );
 
   /**
-   * Determine Buy/Get mUSD CTA visibility and variant
-   */
-  const shouldShowBuyGetMusdCta = useCallback(
-    (options: BuyGetCtaOptions = {}): BuyGetMusdCtaState => {
-      const {
-        hasConvertibleTokens = false,
-        hasMusdBalance = false,
-        isEmptyWallet = false,
-        selectedChainId = null,
-      } = options;
-
-      // Master feature flag check
-      if (!isMusdConversionFlowEnabled || !isMusdCtaEnabled) {
-        return {
-          ...HIDDEN_BUY_GET_CTA_STATE,
-          isEmptyWallet,
-        };
-      }
-
-      // Hide while geo check is in progress to avoid showing a CTA the user cannot act on
-      if (isGeoBlockingLoading || isGeoBlocked) {
-        return {
-          ...HIDDEN_BUY_GET_CTA_STATE,
-          isEmptyWallet,
-        };
-      }
-
-      // If user already has mUSD, don't show the primary CTA
-      if (hasMusdBalance) {
-        return {
-          ...HIDDEN_BUY_GET_CTA_STATE,
-          isEmptyWallet,
-        };
-      }
-
-      // Determine variant: GET takes priority over BUY
-      // GET variant: User has convertible tokens
-      if (hasConvertibleTokens) {
-        return {
-          shouldShowCta: true,
-          selectedChainId,
-          isEmptyWallet,
-          variant: BuyGetMusdCtaVariant.GET,
-        };
-      }
-
-      // BUY variant: Empty wallet and mUSD is buyable
-      if (isEmptyWallet) {
-        // Check if mUSD is buyable on the selected chain
-        const isMusdBuyable = selectedChainId
-          ? MUSD_BUYABLE_CHAIN_IDS.includes(selectedChainId)
-          : MUSD_BUYABLE_CHAIN_IDS.length > 0;
-
-        if (isMusdBuyable) {
-          return {
-            shouldShowCta: true,
-            selectedChainId,
-            isEmptyWallet: true,
-            variant: BuyGetMusdCtaVariant.BUY,
-          };
-        }
-      }
-
-      return {
-        ...HIDDEN_BUY_GET_CTA_STATE,
-        isEmptyWallet,
-      };
-    },
-    [
-      isMusdConversionFlowEnabled,
-      isMusdCtaEnabled,
-      isGeoBlockingLoading,
-      isGeoBlocked,
-    ],
-  );
-
-  /**
    * Determine token list item CTA visibility
    *
-   * Key insight from mobile: This CTA only shows when user ALREADY HAS mUSD balance.
-   * This encourages additional conversions after initial acquisition.
+   * Shown for any conversion-eligible token, regardless of whether the user
+   * already holds mUSD, so the token list is the single entry point into the
+   * conversion flow.
    */
   const shouldShowTokenListItemCta = useCallback(
-    (token: TokenForCta, options: TokenListItemCtaOptions = {}): boolean => {
-      const { hasMusdBalance = false } = options;
-
+    (token: TokenForCta): boolean => {
       // Feature flag check
       if (!isMusdConversionFlowEnabled || !isMusdTokenListItemCtaEnabled) {
         return false;
@@ -329,11 +185,7 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
 
       // Token must be eligible for CTA (in CTA allowlist AND passes min balance + conversion allowlist)
       // This is the key check that ensures tokens below minimum balance don't show CTAs
-      if (!isTokenEligibleForCta(token)) {
-        return false;
-      }
-
-      return hasMusdBalance;
+      return isTokenEligibleForCta(token);
     },
     [
       isMusdConversionFlowEnabled,
@@ -389,7 +241,6 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
 
   return useMemo(
     () => ({
-      shouldShowBuyGetMusdCta,
       shouldShowTokenListItemCta,
       shouldShowAssetOverviewCta,
       isTokenWithCta,
@@ -398,7 +249,6 @@ export function useMusdCtaVisibility(): UseMusdCtaVisibilityResult {
       isGeoBlockingLoading,
     }),
     [
-      shouldShowBuyGetMusdCta,
       shouldShowTokenListItemCta,
       shouldShowAssetOverviewCta,
       isTokenWithCta,

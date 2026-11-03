@@ -34,7 +34,7 @@ const makeFeature = (
 describe('useAssetSecurityData', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(useI18nContext).mockReturnValue(mockT as never);
+    jest.mocked(useI18nContext).mockReturnValue(mockT);
   });
 
   // ─── assetHasSecurityData ──────────────────────────────────────────────────
@@ -54,6 +54,68 @@ describe('useAssetSecurityData', () => {
         ),
       );
       expect(result.current.assetHasSecurityData).toBe(true);
+    });
+  });
+
+  // ─── assetSecurityTrustBadgeResult ───────────────────────────────────────────────────────
+
+  describe('assetSecurityTrustBadgeResult', () => {
+    it('returns undefined for benign and info types without isVerified', () => {
+      const { result: benignResult } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: { type: BridgeAssetSecurityDataType.BENIGN },
+          }),
+        ),
+      );
+      expect(
+        benignResult.current.assetSecurityTrustBadgeResult,
+      ).toBeUndefined();
+
+      const { result: infoResult } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: { type: BridgeAssetSecurityDataType.INFO },
+          }),
+        ),
+      );
+      expect(infoResult.current.assetSecurityTrustBadgeResult).toBeUndefined();
+    });
+
+    it('returns verified when isVerified is true even if security type is benign', () => {
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            isVerified: true,
+            securityData: { type: BridgeAssetSecurityDataType.BENIGN },
+          }),
+        ),
+      );
+      expect(result.current.assetSecurityTrustBadgeResult).toBe(
+        BridgeAssetSecurityDataType.VERIFIED,
+      );
+    });
+
+    it('returns malicious when flagged and not verified', () => {
+      const { result } = renderHook(() =>
+        useAssetSecurityData(
+          makeToken({
+            securityData: { type: BridgeAssetSecurityDataType.MALICIOUS },
+          }),
+        ),
+      );
+      expect(result.current.assetSecurityTrustBadgeResult).toBe(
+        BridgeAssetSecurityDataType.MALICIOUS,
+      );
+    });
+
+    it('returns verified when isVerified is set and there is no security type', () => {
+      const { result } = renderHook(() =>
+        useAssetSecurityData(makeToken({ isVerified: true })),
+      );
+      expect(result.current.assetSecurityTrustBadgeResult).toBe(
+        BridgeAssetSecurityDataType.VERIFIED,
+      );
     });
   });
 

@@ -12,7 +12,7 @@ import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
 import { verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
-import { SIG_PARAMS_PARAM } from './constants';
+import { SIG_PARAMS_PARAM } from './common';
 
 /**
  * Represents the origin of the deep link, either external or internal.
@@ -79,19 +79,10 @@ export async function parse<
   let destination: Destination;
   try {
     const canonicalUrl = new URL(canonicalize(url));
-    const canonicalSearchParams = new URLSearchParams(
-      canonicalUrl.searchParams,
-    );
     // canonicalize does not remove sig_params, as it is needed for verification
-    // but canonical route handlers should not receive it.
-    canonicalSearchParams.delete(SIG_PARAMS_PARAM);
-
-    const handlerSearchParams =
-      route.handlerSearchParams === 'original'
-        ? new URLSearchParams(url.searchParams)
-        : canonicalSearchParams;
-
-    destination = route.handler(handlerSearchParams);
+    // but we do not want to pass it to the route handler, so we remove it
+    canonicalUrl.searchParams.delete(SIG_PARAMS_PARAM);
+    destination = route.handler(canonicalUrl.searchParams);
   } catch (error) {
     // tab may have closed in the meantime, the searchParams may have
     // been rejected by the handler, etc.

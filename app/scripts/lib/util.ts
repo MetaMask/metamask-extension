@@ -38,9 +38,9 @@ import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
   getIsMetaMaskInfuraEndpointUrl,
-  getIsQuicknodeEndpointUrl,
   KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
+import { getIsQuicknodeEndpointUrl } from '../../../shared/constants/network-failover';
 import { isLocalhostOrIPAddress } from '../../../shared/lib/url-utils';
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
@@ -546,9 +546,7 @@ export const getMethodDataName = async (
  * getBooleanFlag('false'); // false
  * getBooleanFlag(false); // false
  */
-export function getBooleanFlag(value: string | boolean | undefined): boolean {
-  return value === true || value === 'true';
-}
+export { getBooleanFlag } from '../../../shared/lib/environment';
 
 // Cache for known domains
 let knownDomainsSet: Set<string> | null = null;

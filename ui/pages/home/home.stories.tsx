@@ -1,11 +1,15 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import Home from './home';
 import testData from '../../../.storybook/test-data';
 import configureStore from '../../store/store';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
+import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
+import { RouteMessengerContext } from '../../contexts/route-messenger';
+
+const routeMessenger = createMockRouteMessenger();
 
 type HomeStoryStateOverrides = {
   metamask?: Record<string, unknown>;
@@ -23,7 +27,8 @@ function createHomeStoryStore(overrides: HomeStoryStateOverrides = {}) {
       completedOnboarding: true,
       firstTimeFlowType: FirstTimeFlowType.import,
       termsOfUseLastAgreed: Date.now(),
-      dataCollectionForMarketing: false,
+      optedInToMarketing: false,
+      marketingConsentDecisionMade: true,
       useExternalServices: true,
       recoveryPhraseReminderHasBeenShown: true,
       recoveryPhraseReminderLastShown: Date.now(),
@@ -49,11 +54,13 @@ const meta: Meta<typeof Home> = {
   component: Home,
   decorators: [
     (Story) => (
-      <Provider store={createHomeStoryStore()}>
-        <div className="-m-4">
-          <Story />
-        </div>
-      </Provider>
+      <RouteMessengerContext.Provider value={routeMessenger}>
+        <Provider store={createHomeStoryStore()}>
+          <div className="-m-4">
+            <Story />
+          </div>
+        </Provider>
+      </RouteMessengerContext.Provider>
     ),
   ],
   parameters: {

@@ -1,5 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Snap-rendered sign-transaction confirmation (snap custom UI footer).
+ *
+ * Screen: snap confirmation dialog with "Sign transaction" header (not
+ * redesigned MetaMask `#/confirmation`).
+ * Owns: header/footer loaded checks, confirm disabled state, fee asset and
+ * insufficient-funds banner, and confirm footer action.
+ * Boundaries: snap sign-and-send ("Transaction request") is
+ * `SnapTransactionConfirmation`. MetaMask transaction confirms are
+ * `TransactionConfirmation` and subclasses.
+ * Related: `SnapTransactionConfirmation`, `TransactionConfirmation`.
+ *
+ * @see ui/components/app/snaps/snap-ui-footer-button/snap-ui-footer-button.tsx
+ * @see ui/components/app/snaps/snap-ui-renderer/components/footer.ts
+ */
 class SnapSignTransactionConfirmation {
   private addressTestId = 'snap-ui-address';
 
@@ -24,6 +39,10 @@ class SnapSignTransactionConfirmation {
     text: 'Insufficient funds',
   };
 
+  private parentSelector = {
+    testId: 'parent-selector-snap-confirmation-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -45,6 +64,7 @@ class SnapSignTransactionConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.header,
         this.cancelButton,
         this.confirmButton,

@@ -1,7 +1,22 @@
-// ShieldClaimPage class for interacting with the Shield Claim form page
 import * as path from 'path';
 import { Driver } from '../../../../webdriver/driver';
 
+/**
+ * Transaction Shield claim form: new claim and edit draft.
+ *
+ * Screen: `#/settings/transaction-shield/claims/new-claim` and
+ * `#/settings/transaction-shield/claims/edit-draft`, reached from
+ * `ShieldClaimsListPage` (submit / open draft) after
+ * `SettingsPage.goToTransactionShieldPage`.
+ * Owns: claim form fields (email, description, tx hash, reimbursement
+ * address), account/network selectors, file upload, submit, save/delete
+ * draft, and success/error toasts.
+ * Boundaries: the claim form only. The claims list belongs to
+ * `ShieldClaimsListPage`; membership detail to `ShieldDetailPage`.
+ * Related: `ShieldClaimsListPage`, `ShieldDetailPage`, `SettingsPage`.
+ *
+ * @see ui/pages/shield/transaction-shield/claims-form/claims-form.tsx
+ */
 export default class ShieldClaimPage {
   private readonly accountSelectorButton =
     '[data-testid="account-selector-button"]';
@@ -56,6 +71,10 @@ export default class ShieldClaimPage {
   private readonly saveDraftButton =
     '[data-testid="shield-claim-save-draft-button"]';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly submitButton = '[data-testid="shield-claim-submit-button"]';
 
   constructor(driver: Driver) {
@@ -74,6 +93,7 @@ export default class ShieldClaimPage {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
       this.emailInput,
+      this.settingsPage,
       this.submitButton,
     ]);
     console.log('Shield Claim page is loaded');
@@ -83,6 +103,7 @@ export default class ShieldClaimPage {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
       this.emailInput,
+      this.settingsPage,
     ]);
     console.log('Shield Claim page is loaded in view mode');
   }
