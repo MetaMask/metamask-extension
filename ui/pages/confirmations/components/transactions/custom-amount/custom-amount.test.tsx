@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../../../../../test/lib/mock-resize-observer';
 import { CustomAmount, CustomAmountSkeleton } from './custom-amount';
 
 const mockStore = configureStore([thunk]);
@@ -115,6 +119,54 @@ describe('CustomAmount', () => {
 
     expect(screen.getByTestId('custom-amount-input')).toHaveStyle({
       fontSize: '72px',
+    });
+  });
+
+  describe('measured width', () => {
+    let resizeObserver: ResizeObserverMock;
+
+    beforeEach(() => {
+      resizeObserver = mockResizeObserver();
+    });
+
+    afterEach(() => {
+      resizeObserver.restore();
+    });
+
+    const renderAtWidth = (width: number) => {
+      renderWithProvider(
+        <CustomAmount amountFiat="1234567.89" />,
+        mockStore(getMockState()),
+      );
+      act(() => resizeObserver.resize(width));
+      return screen.getByTestId('custom-amount-input');
+    };
+
+    it('keeps a long amount larger in a wide layout', () => {
+      expect(renderAtWidth(600)).toHaveStyle({ fontSize: '88px' });
+    });
+
+    it('steps a long amount down in a narrow layout', () => {
+      expect(renderAtWidth(250)).toHaveStyle({ fontSize: '48px' });
+    });
+
+    it('does not re-run the measurement while typing', () => {
+      renderWithProvider(
+        <CustomAmountHarness initialAmount="0" />,
+        mockStore(getMockState()),
+      );
+      act(() => resizeObserver.resize(600));
+      const input = screen.getByTestId('custom-amount-input');
+
+      for (const value of ['1', '1234', '1234567', '1234567.89']) {
+        fireEvent.change(input, { target: { value } });
+      }
+
+      expect(input).toHaveValue('1234567.89');
+      expect(input).toHaveStyle({ fontSize: '88px' });
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.observe).toHaveBeenCalledTimes(1);
+      expect(resizeObserver.disconnect).not.toHaveBeenCalled();
     });
   });
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -18,9 +18,9 @@ import {
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 import {
   AMOUNT_INPUT_MAX_FONT_SIZE,
-  getAmountInputFontSize,
   getAmountInputTextStyle,
 } from '../../../../../helpers/utils/amount-input-font-size';
+import { useAmountInputFontSize } from '../../../../../hooks/useAmountInputFontSize';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 
 const FIAT_DISPLAY_DECIMALS = 2;
@@ -114,20 +114,27 @@ export const CustomAmount = React.memo(
       [onChange],
     );
 
+    const { containerRef, fontSize } = useAmountInputFontSize(
+      `${fiatSymbol}${amountFiatDisplay || '0'}`,
+    );
+    const amountStyle = useMemo(
+      () => getAmountInputTextStyle(fontSize),
+      [fontSize],
+    );
+
     if (isLoading) {
       return <CustomAmountSkeleton />;
     }
 
-    const amountStyle = getAmountInputTextStyle(
-      getAmountInputFontSize(`${fiatSymbol}${amountFiatDisplay || '0'}`),
-    );
     const textColor = getTextColor(hasAlert, disabled);
 
     return (
       <Box
+        ref={containerRef}
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Center}
         alignItems={BoxAlignItems.Center}
+        className="w-full"
         style={{ minHeight: AMOUNT_INPUT_MAX_FONT_SIZE }}
       >
         <Text
