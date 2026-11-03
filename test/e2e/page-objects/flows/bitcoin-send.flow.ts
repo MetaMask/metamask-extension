@@ -1,6 +1,5 @@
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import { TxToastNotification } from '../components/tx-toast-notification';
 import HomePage from '../pages/home/homepage';
 import TokensTab from '../pages/home/tokens-tab';
 import BitcoinReviewTxPage from '../pages/send/bitcoin-review-tx-page';
@@ -43,8 +42,4 @@ export const broadcastBitcoinSend = async ({
   const reviewPage = new BitcoinReviewTxPage(driver);
   await reviewPage.checkPageIsLoaded();
   await reviewPage.clickConfirmButton();
-
-  const txToast = new TxToastNotification(driver);
-  await txToast.checkTxSubmittedToast();
-  await txToast.closeToastNotification();
 };

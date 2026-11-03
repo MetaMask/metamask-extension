@@ -5,7 +5,6 @@ import { DEFAULT_BTC_BALANCE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -114,7 +113,7 @@ describe('BTC Account - Send', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withTransactionToastsEnabled().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcSendMocks,
       },
@@ -147,9 +146,6 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.checkNetworkFeeIsDisplayed(expectedFee);
         await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(expectedTotal);
         await bitcoinReviewTxPage.clickConfirmButton();
-
-        const txToast = new TxToastNotification(driver);
-        await txToast.checkTxSubmittedToast();
 
         await homePage.goToActivityList();
         await activityTab.checkTransactionActivityByText('Sending');

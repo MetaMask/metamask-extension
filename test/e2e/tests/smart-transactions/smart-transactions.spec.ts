@@ -12,7 +12,6 @@ import {
   createDappTransaction,
   createInternalTransaction,
 } from '../../page-objects/flows/transaction.flow';
-import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -37,39 +36,33 @@ async function withFixturesForSmartTransactions(
     testSpecificMock,
     ignoredConsoleErrors,
     expectedBalance = '20 ETH',
-    transactionToastsEnabled = false,
   }: {
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
     ignoredConsoleErrors?: string[];
     expectedBalance?: string;
-    transactionToastsEnabled?: boolean;
   },
   runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
-  const fixtureBuilder = new FixtureBuilderV2()
-    .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
-    .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
-    .withEnabledNetworks({
-      eip155: {
-        '0x1': true,
-      },
-    })
-    .withAssetsController(
-      getMainnet25EthAssetsControllerPatch(
-        1700,
-        DEFAULT_FIXTURE_ACCOUNT_ID,
-        '20',
-      ),
-    );
-  if (transactionToastsEnabled) {
-    fixtureBuilder.withTransactionToastsEnabled();
-  }
-
   await withFixtures(
     {
       dappOptions: { numberOfTestDapps: 1 },
-      fixtures: fixtureBuilder.build(),
+      fixtures: new FixtureBuilderV2()
+        .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+        .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+        .withEnabledNetworks({
+          eip155: {
+            '0x1': true,
+          },
+        })
+        .withAssetsController(
+          getMainnet25EthAssetsControllerPatch(
+            1700,
+            DEFAULT_FIXTURE_ACCOUNT_ID,
+            '20',
+          ),
+        )
+        .build(),
       title,
       localNodeOptions: {
         hardfork: 'london',
@@ -114,7 +107,6 @@ describe('Smart Transactions', function () {
           await mockChooseGasFeeTokenRequests(mockServer);
           await mockSentinelNetworks(mockServer);
         },
-        transactionToastsEnabled: true,
         ignoredConsoleErrors: [
           // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
           'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',
@@ -125,7 +117,6 @@ describe('Smart Transactions', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         const homePage = new HomePage(driver);
         const activityTab = new ActivityTab(driver);
-        const txToastNotification = new TxToastNotification(driver);
 
         await createInternalTransaction({
           driver,
@@ -139,11 +130,6 @@ describe('Smart Transactions', function () {
           button: 'confirm',
           waitUntil: 'disappear',
         });
-
-        // 2 toast notifications appear, one for the gas payment and one for the main transaction.
-        // The 2nd toast obfuscates the Activity tab, so we need to actively close one to be able to click on the Activity tab without error.
-        await txToastNotification.checkTxConfirmedToast();
-        await txToastNotification.closeToastNotification();
 
         await homePage.goToActivityList();
         await activityTab.checkCompletedTxNumberDisplayedInActivity(1);

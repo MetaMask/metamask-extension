@@ -5,7 +5,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
@@ -62,7 +61,7 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
     let localNodes: unknown[] = [];
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().withTransactionToastsEnabled().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
         localNodeOptions: [
@@ -105,9 +104,6 @@ describe('BTC Account - Send with local bitcoind', function (this: Suite) {
         const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
         await bitcoinReviewTxPage.checkPageIsLoaded();
         await bitcoinReviewTxPage.clickConfirmButton();
-
-        const txToast = new TxToastNotification(driver);
-        await txToast.checkTxSubmittedToast();
 
         const activityTab = new ActivityTab(driver);
         await homePage.goToActivityList();
