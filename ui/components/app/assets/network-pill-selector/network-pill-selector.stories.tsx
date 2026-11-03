@@ -85,14 +85,8 @@ const meta: Meta<typeof NetworkPillSelector> = {
   parameters: {
     docs: {
       description: {
-        component: [
-          'Network selector for the fullscreen design. It takes no props: everything comes from the Redux store.',
-          '',
-          '- **Which pills, and their state:** `useHomeNetworkFilter` (the hook behind the home network filter dropdown) returns the default networks for the selected account group, which one is selected (`enabledNetworkMap`) and which are disabled (non-EVM networks for an EVM-only account group). Clicking a pill uses the same handlers as the dropdown.',
-          '- **Balances:** `useNetworkPillBalances` computes the selected account group balance, in the user currency, for each network and for all of them together (the "All default networks" pill), from `assetsBalance`, `assetsPrice` and `assetsInfo` using `selectUnifiedBalanceGetterBySelectedAccountGroup`. It is the calculation used by the wallet overview balance.',
-          '',
-          'The stories use `test/data/mock-state.json` with fiat balances on Ethereum and Polygon.',
-        ].join('\n'),
+        component:
+          'Network selector for the fullscreen design. Reads everything from the Redux store.',
       },
     },
   },
