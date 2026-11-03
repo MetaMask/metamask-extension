@@ -1,0 +1,13 @@
+diff --git a/src/buildtime/generator.js b/src/buildtime/generator.js
+--- a/src/buildtime/generator.js
++++ b/src/buildtime/generator.js
+@@ -5,8 +5,7 @@
+ const { wrapper } = require('./wrapper.js')
+ const diag = require('./diagnostics.js')
+ 
+-// @ts-expect-error - no types
+-const RUNTIME_GLOBALS = require('webpack/lib/RuntimeGlobals')
++const { RuntimeGlobals: RUNTIME_GLOBALS } = require('webpack')
+ const { RUNTIME_KEY } = require('../ENUM.json')
+ 
+ const { isExcluded } = require('./exclude')
