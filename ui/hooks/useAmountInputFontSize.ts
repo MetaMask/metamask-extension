@@ -7,7 +7,7 @@ import {
 } from '../helpers/utils/amount-input-font-size';
 
 export type UseAmountInputFontSizeOptions = {
-  /** Width in px used until the container has been laid out. */
+  /** Width in px used until the container has been measured. */
   fallbackWidth?: number;
   /** Largest step of the shared scale to start from. */
   maxFontSize?: AmountInputFontSize;
@@ -15,9 +15,8 @@ export type UseAmountInputFontSizeOptions = {
 
 export type UseAmountInputFontSize = {
   /**
-   * Attach to the element whose width is the budget for the symbol and amount.
-   * Its width must not depend on the amount, and it must carry no horizontal
-   * padding, because its content width is read as the budget.
+   * Attach to the element whose content width is the budget for the symbol
+   * and amount. Its width must not depend on the amount.
    */
   containerRef: React.RefCallback<HTMLElement>;
   fontSize: AmountInputFontSize;
@@ -28,12 +27,14 @@ export type UseAmountInputFontSize = {
  * wide layouts such as the expanded view keep larger sizes while the popup
  * and side panel still step down.
  *
- * The width is read once when the container mounts and then only when a
- * ResizeObserver reports a change, so typing never triggers a layout read.
+ * One ResizeObserver per container supplies the width; nothing reads layout
+ * while typing. The width is stored rounded to a whole px and only when it
+ * changes, so resize notifications that do not move it cause no re-render.
+ * The font size itself is derived during render.
  *
  * @param text - The amount as rendered, including any currency symbol.
  * @param options - Layout constraints of the input.
- * @param options.fallbackWidth - Width in px used before the first layout.
+ * @param options.fallbackWidth - Width in px used until the first measurement.
  * @param options.maxFontSize - Largest step to start from.
  * @returns A ref for the container and the font size in px.
  */
@@ -49,27 +50,34 @@ export function useAmountInputFontSize(
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [measuredWidth, setMeasuredWidth] = useState(0);
 
-  // Ref callbacks run in the commit phase, so this one read lands before paint
-  // and the first frame already uses the real width.
   const containerRef = useCallback((element: HTMLElement | null) => {
     setContainer(element);
-    setMeasuredWidth(element?.clientWidth ?? 0);
   }, []);
 
   useEffect(() => {
     if (!container || typeof ResizeObserver === 'undefined') {
       return undefined;
     }
+    // React 18 can still run the component once for an update that bails
+    // out, so repeats of the last reported width skip setState entirely.
+    let lastReportedWidth: number | undefined;
+    // The first notification arrives after layout and before paint.
     const observer = new ResizeObserver(([entry]) => {
-      if (entry) {
-        setMeasuredWidth(Math.floor(entry.contentRect.width));
+      if (!entry) {
+        return;
       }
+      const width = Math.round(entry.contentRect.width);
+      if (width === lastReportedWidth) {
+        return;
+      }
+      lastReportedWidth = width;
+      setMeasuredWidth((previous) => (previous === width ? previous : width));
     });
     observer.observe(container);
     return () => observer.disconnect();
   }, [container]);
 
-  // A zero width means the container is detached or hidden.
+  // A zero width means the container is unmeasured, detached or hidden.
   const availableWidth = measuredWidth > 0 ? measuredWidth : fallbackWidth;
 
   const fontSize = useMemo(

@@ -1,22 +1,27 @@
 import React from 'react';
 import { act, render, screen } from '@testing-library/react';
+import {
+  mockResizeObserver,
+  type ResizeObserverMock,
+} from '../../test/lib/mock-resize-observer';
 import { useAmountInputFontSize } from './useAmountInputFontSize';
-
-type ResizeCallback = (entries: { contentRect: { width: number } }[]) => void;
 
 const LONG_AMOUNT = '500000000000000000';
 
 const Harness = ({
   text,
   fallbackWidth,
+  onRender,
 }: {
   text: string;
   fallbackWidth?: number;
+  onRender?: () => void;
 }) => {
   const { containerRef, fontSize } = useAmountInputFontSize(text, {
     fallbackWidth,
     maxFontSize: 40,
   });
+  onRender?.();
   return (
     <div ref={containerRef} data-testid="container">
       <span data-testid="font-size">{fontSize}</span>
@@ -25,68 +30,85 @@ const Harness = ({
 };
 
 describe('useAmountInputFontSize', () => {
-  let resizeCallback: ResizeCallback | undefined;
-  const observe = jest.fn();
-  const disconnect = jest.fn();
-  const originalResizeObserver = window.ResizeObserver;
-  let clientWidthSpy: jest.SpyInstance;
+  let resizeObserver: ResizeObserverMock;
 
   beforeEach(() => {
-    resizeCallback = undefined;
-    observe.mockClear();
-    disconnect.mockClear();
-    window.ResizeObserver = jest.fn((callback: ResizeCallback) => {
-      resizeCallback = callback;
-      return { observe, unobserve: jest.fn(), disconnect };
-    }) as unknown as typeof ResizeObserver;
-    clientWidthSpy = jest
-      .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
-      .mockReturnValue(0);
+    resizeObserver = mockResizeObserver();
   });
 
   afterEach(() => {
-    window.ResizeObserver = originalResizeObserver;
-    clientWidthSpy.mockRestore();
+    resizeObserver.restore();
   });
 
   const getFontSize = () => Number(screen.getByTestId('font-size').textContent);
 
-  it('uses the fallback width until the container is laid out', () => {
+  it('uses the fallback width until the container is measured', () => {
     render(<Harness text={LONG_AMOUNT} fallbackWidth={219} />);
 
     expect(getFontSize()).toBe(24);
+  });
+
+  it('uses the popup width as the default fallback', () => {
+    render(<Harness text={LONG_AMOUNT} />);
+
+    expect(getFontSize()).toBe(40);
   });
 
   it('keeps the start size when the measured container is wide', () => {
-    clientWidthSpy.mockReturnValue(626);
-
     render(<Harness text={LONG_AMOUNT} fallbackWidth={219} />);
 
+    act(() => resizeObserver.resize(626));
+
+    expect(resizeObserver.observe).toHaveBeenCalledWith(
+      screen.getByTestId('container'),
+    );
     expect(getFontSize()).toBe(40);
-    expect(observe).toHaveBeenCalledWith(screen.getByTestId('container'));
   });
 
   it('steps down when the container is resized narrower', () => {
-    clientWidthSpy.mockReturnValue(626);
     render(<Harness text={LONG_AMOUNT} />);
+    act(() => resizeObserver.resize(626));
 
-    act(() => {
-      resizeCallback?.([{ contentRect: { width: 200.6 } }]);
-    });
+    act(() => resizeObserver.resize(200.4));
 
     expect(getFontSize()).toBe(24);
   });
 
-  it('does not read the width again while the text changes', () => {
-    clientWidthSpy.mockReturnValue(626);
-    const { rerender } = render(<Harness text="1" />);
-    const readsAfterMount = clientWidthSpy.mock.calls.length;
+  it('falls back when the container reports a zero width', () => {
+    render(<Harness text={LONG_AMOUNT} fallbackWidth={219} />);
+    act(() => resizeObserver.resize(626));
 
-    rerender(<Harness text="12" />);
-    rerender(<Harness text="123" />);
+    act(() => resizeObserver.resize(0));
 
-    expect(clientWidthSpy.mock.calls.length).toBe(readsAfterMount);
-    expect(window.ResizeObserver).toHaveBeenCalledTimes(1);
+    expect(getFontSize()).toBe(24);
+  });
+
+  it('renders once per keystroke without re-running the measurement', () => {
+    const onRender = jest.fn();
+    const { rerender } = render(<Harness text="1" onRender={onRender} />);
+    act(() => resizeObserver.resize(626));
+    onRender.mockClear();
+
+    for (const text of ['12', '123', '1234', '12345']) {
+      rerender(<Harness text={text} onRender={onRender} />);
+    }
+
+    expect(onRender).toHaveBeenCalledTimes(4);
+    expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
+    expect(resizeObserver.observe).toHaveBeenCalledTimes(1);
+    expect(resizeObserver.disconnect).not.toHaveBeenCalled();
+  });
+
+  it('does not re-render when a resize rounds to the same width', () => {
+    const onRender = jest.fn();
+    render(<Harness text="1" onRender={onRender} />);
+    act(() => resizeObserver.resize(626));
+    onRender.mockClear();
+
+    act(() => resizeObserver.resize(626.3));
+    act(() => resizeObserver.resize(625.6));
+
+    expect(onRender).not.toHaveBeenCalled();
   });
 
   it('disconnects the observer on unmount', () => {
@@ -94,6 +116,6 @@ describe('useAmountInputFontSize', () => {
 
     unmount();
 
-    expect(disconnect).toHaveBeenCalledTimes(1);
+    expect(resizeObserver.disconnect).toHaveBeenCalledTimes(1);
   });
 });
