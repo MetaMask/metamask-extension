@@ -61,7 +61,6 @@ const MULTICHAIN_SOL_ASSETS_PATCH = {
 
 type BuildSolanaFixtureOptions = {
   showNativeTokenAsMainBalanceDisabled?: boolean;
-  transactionToastsEnabled?: boolean;
 };
 
 /**
@@ -85,11 +84,6 @@ export function buildSolanaPositiveBalanceFixture(
   if (options.showNativeTokenAsMainBalanceDisabled) {
     builder = builder.withShowNativeTokenAsMainBalanceDisabled();
   }
-
-  if (options.transactionToastsEnabled) {
-    builder = builder.withTransactionToastsEnabled();
-  }
-
   return merge(
     builder
       .withAssetsController(SOLANA_POSITIVE_BALANCE_ASSETS_CONTROLLER)

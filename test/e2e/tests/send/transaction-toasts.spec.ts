@@ -6,7 +6,11 @@
 
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { SOLANA_MAINNET_SCOPE } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { broadcastBitcoinSend } from '../../page-objects/flows/bitcoin-send.flow';
@@ -14,9 +18,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionDetailsPage from '../../page-objects/pages/transaction-details-page';
 import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import {
@@ -31,10 +33,9 @@ import {
 } from '../btc/mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 import {
-  buildSolanaTestSpecificMock,
-  commonSolanaAddress,
-} from '../solana/common-solana';
-import { buildSolanaPositiveBalanceFixture } from '../solana/unified-solana-assets';
+  getMainnet25EthAssetsControllerPatch,
+  mockSpotPrices,
+} from '../tokens/utils/mocks';
 
 const BTC_RECIPIENT_ADDRESS = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
 
@@ -50,6 +51,44 @@ async function mockBtcSendMocks(mockServer: Mockttp) {
     await mockPriceMultiBtcAndSol(mockServer),
     ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
+  ];
+}
+
+// The local node mines the tx, but a `status: 0x0` receipt makes
+// TransactionController mark it as failed, which triggers the failed toast.
+async function mockRevertedTransactionReceipt(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forJsonRpcRequest({ method: 'eth_getTransactionReceipt' })
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as {
+          id?: number;
+          params?: [string];
+        };
+        return {
+          statusCode: 200,
+          json: {
+            id: body?.id,
+            jsonrpc: '2.0',
+            result: {
+              blockHash: `0x${'1'.repeat(64)}`,
+              blockNumber: '0x2',
+              contractAddress: null,
+              cumulativeGasUsed: '0x5208',
+              effectiveGasPrice: '0x3b9aca00',
+              from: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              gasUsed: '0x5208',
+              logs: [],
+              logsBloom: `0x${'0'.repeat(512)}`,
+              status: '0x0',
+              to: DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              transactionHash: body?.params?.[0],
+              transactionIndex: '0x0',
+              type: '0x2',
+            },
+          },
+        };
+      }),
   ];
 }
 
@@ -130,35 +169,51 @@ describe('Transaction toasts', function (this: Suite) {
     );
   });
 
-  it('shows the failed toast for a non-EVM (Solana) send that fails', async function () {
+  it('shows the failed toast when the transaction reverts on-chain', async function () {
+    // Mainnet instead of localhost: Chrome bypasses the proxy for loopback, so
+    // only remote RPC requests (forwarded to the local node) can be mocked.
     await withFixtures(
       {
-        fixtures: buildSolanaPositiveBalanceFixture({
-          transactionToastsEnabled: true,
-        }),
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withSmartTransactionsOptedOut()
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(
+              1700,
+              DEFAULT_FIXTURE_ACCOUNT_ID,
+              '20',
+            ),
+          )
+          .withTransactionToastsEnabled()
+          .build(),
+        localNodeOptions: { hardfork: 'london', chainId: '1' },
+        unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: '20' },
         title: this.test?.fullTitle(),
-        testSpecificMock: buildSolanaTestSpecificMock({
-          mockGetTransactionFailed: true,
-        }),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+          return await mockRevertedTransactionReceipt(mockServer);
+        },
       },
       async ({ driver }) => {
-        await login(driver);
-        const homePage = new HomePage(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Solana');
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('50');
-
-        await homePage.clickOnSendButton();
-        const sendPage = new SendPage(driver);
-        await sendPage.selectToken(SOLANA_MAINNET_SCOPE, 'SOL');
-        await sendPage.fillRecipient({ recipientAddress: commonSolanaAddress });
-        await sendPage.fillAmount('0.1');
-        await sendPage.checkContinueButton({ state: 'enabled' });
-        await sendPage.pressContinueButton();
-
-        const confirmation = new SnapTransactionConfirmation(driver);
-        await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterButton({ button: 'confirm' });
+        await login(driver, {
+          expectedBalance: '20 ETH',
+          waitForNonEvmAccounts: false,
+        });
+        await createInternalTransaction({
+          driver,
+          chainId: '0x1',
+          amount: '0.01',
+        });
+        await new Confirmation(driver).clickFooterButton({
+          button: 'confirm',
+        });
 
         await new TxToastNotification(driver).checkTxFailedToast();
       },
