@@ -50,7 +50,7 @@ const NetworkPill = ({
   <button
     type="button"
     className={classnames(
-      'mb-2 mr-2 inline-flex h-10 items-center gap-2 rounded-full border-0 px-4 align-top',
+      'flex h-10 shrink-0 items-center gap-2 rounded-full border-0 px-4',
       isSelected
         ? 'bg-icon-default text-background-default'
         : 'bg-muted text-default hover:bg-muted-hover',
@@ -84,8 +84,8 @@ const NetworkPill = ({
 /**
  * Network selector for the fullscreen design. Offers the same default networks
  * as the network filter dropdown, and selects them the same way, with each
- * pill showing the account's balance on that network. Collapsed it is one
- * line; expanded it wraps.
+ * pill showing the account's balance on that network. Collapsed it shows one
+ * full row of pills; expanded it wraps.
  */
 export const NetworkPillSelector = () => {
   const t = useI18nContext();
@@ -115,9 +115,7 @@ export const NetworkPillSelector = () => {
       return undefined;
     }
     const measure = () => {
-      const [first, ...rest] = Array.from(
-        pills.querySelectorAll<HTMLElement>('[aria-pressed]'),
-      );
+      const [first, ...rest] = Array.from(pills.children) as HTMLElement[];
       setHiddenCount(
         first
           ? rest.filter((pill) => pill.offsetTop > first.offsetTop).length
@@ -140,23 +138,17 @@ export const NetworkPillSelector = () => {
   );
 
   return (
-    <div className="px-4 pb-0 pt-2" data-testid="network-pill-selector">
+    <div
+      className="flex flex-col gap-2 px-4 py-2"
+      data-testid="network-pill-selector"
+    >
       <div
         ref={pillsRef}
-        className={classnames(!isExpanded && 'max-h-12 overflow-hidden')}
-      >
-        {hiddenCount > 0 && (
-          <TextButton
-            className="float-right mb-2 ml-4 h-10 w-auto"
-            aria-expanded={isExpanded}
-            onClick={() => setIsExpanded((expanded) => !expanded)}
-            data-testid="network-pill-toggle"
-          >
-            {isExpanded
-              ? t('showFewerNetworks')
-              : t('showMoreNetworks', [hiddenCount])}
-          </TextButton>
+        className={classnames(
+          'flex flex-wrap gap-2',
+          !isExpanded && 'max-h-10 overflow-hidden',
         )}
+      >
         <NetworkPill
           name={
             hasOnlyDefaultNetworks ? t('allNetworks') : t('allDefaultNetworks')
@@ -199,6 +191,20 @@ export const NetworkPillSelector = () => {
           );
         })}
       </div>
+      {hiddenCount > 0 && (
+        <div className="flex justify-center">
+          <TextButton
+            className="w-auto"
+            aria-expanded={isExpanded}
+            onClick={() => setIsExpanded((expanded) => !expanded)}
+            data-testid="network-pill-toggle"
+          >
+            {isExpanded
+              ? t('showFewerNetworks')
+              : t('showMoreNetworks', [hiddenCount])}
+          </TextButton>
+        </div>
+      )}
     </div>
   );
 };
