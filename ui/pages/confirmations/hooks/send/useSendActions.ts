@@ -38,20 +38,6 @@ type SnapConfirmSendResult = {
   transactionId?: string;
 };
 
-/**
- * Returns whether the current route is still the send screen.
- *
- * The loader page replaces navigation history, so the user
- * cannot return to the previous page while the SNAP confirmation dialog is open.
- * Callers use this helper to decide whether an error can be shown on the send screen.
- *
- * @returns True when the current route is the send screen.
- */
-const isRemainInSendScreen = () => {
-  const pathname = window.location.hash.replace(/^#/u, '').split('?')[0];
-  return pathname.startsWith(SEND_ROUTE);
-};
-
 export const useSendActions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -195,4 +181,18 @@ export const useSendActions = () => {
   }, [navigate]);
 
   return { handleSubmit, handleCancel, handleBack };
+};
+
+/**
+ * Returns whether the current route is still the send screen.
+ *
+ * The loader page replaces navigation history, so the user
+ * cannot return to the previous page while the SNAP confirmation dialog is open.
+ * Callers use this helper to decide whether an error can be shown on the send screen.
+ *
+ * @returns True when the current route is the send screen.
+ */
+const isRemainInSendScreen = () => {
+  const pathname = window.location.hash.replace(/^#/u, '').split('?')[0];
+  return pathname.startsWith(SEND_ROUTE);
 };
