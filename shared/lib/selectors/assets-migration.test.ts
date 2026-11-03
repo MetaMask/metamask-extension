@@ -1518,6 +1518,32 @@ describe('getCurrencyRateControllerCurrentCurrency', () => {
 
     expect(result).toBe('usd');
   });
+
+  it('returns currentCurrency when unify state is disabled', () => {
+    const state = {
+      metamask: {
+        currentCurrency: 'eur',
+      },
+    };
+
+    expect(getCurrencyRateControllerCurrentCurrency(state)).toBe('eur');
+  });
+
+  it('falls back to usd when no currency is stored', () => {
+    expect(
+      getCurrencyRateControllerCurrentCurrency({
+        metamask: {},
+      }),
+    ).toBe('usd');
+
+    expect(
+      getCurrencyRateControllerCurrentCurrency({
+        metamask: {
+          ...enabledFlags,
+        },
+      }),
+    ).toBe('usd');
+  });
 });
 
 describe('getCurrencyRateControllerCurrencyRates', () => {

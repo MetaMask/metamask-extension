@@ -689,11 +689,13 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
       state.metamask?.selectedCurrency,
   ],
   (isAssetsUnifyStateEnabled, currentCurrency, selectedCurrency) => {
-    if (!isAssetsUnifyStateEnabled) {
-      return currentCurrency;
-    }
+    // CurrencyRateController no longer seeds currentCurrency. Callers such as
+    // Settings assume this is a string.
+    const currency = isAssetsUnifyStateEnabled
+      ? selectedCurrency
+      : currentCurrency;
 
-    return selectedCurrency;
+    return currency ?? 'usd';
   },
 ) as unknown as MigratingControllerStateSelector<
   CurrencyRateState['currentCurrency']
