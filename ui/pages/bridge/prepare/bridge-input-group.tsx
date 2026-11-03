@@ -185,6 +185,10 @@ export const BridgeInputGroup = ({
   }, [locale, balanceAmount, token.symbol]);
 
   const amountValue = amountFieldProps?.value?.toString() ?? '';
+  // prepare-bridge-page passes "0" before a quote arrives. That sentinel is
+  // the placeholder, not a quoted amount, so the read-only row stays dimmed.
+  const isReadOnlyPlaceholder =
+    isAmountReadOnly && (amountValue === '' || amountValue === '0');
   const amountStyle = getAmountInputTextStyle(
     getAmountInputFontSize(
       `${typeof amountInputPrefix === 'string' ? amountInputPrefix : ''}${amountValue || '0'}`,
@@ -252,7 +256,7 @@ export const BridgeInputGroup = ({
             className={twMerge(
               'amount-input min-w-0 flex-1',
               amountFieldProps.className,
-              isAmountReadOnly && !amountValue && 'opacity-50',
+              isReadOnlyPlaceholder && 'opacity-50',
             )}
             onClick={() => inputRef.current?.focus()}
           >

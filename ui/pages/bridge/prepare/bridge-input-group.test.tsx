@@ -272,7 +272,7 @@ describe('BridgeInputGroup', () => {
     }
   });
 
-  it('dims the read-only destination field until it has a value', () => {
+  it('dims the read-only destination until a quote replaces the placeholder', () => {
     const mockState = createBridgeMockStore();
     const destinationFieldProps = {
       testId: 'to-amount',
@@ -291,6 +291,18 @@ describe('BridgeInputGroup', () => {
     const field = view.getByTestId('to-amount');
     expect(field).toBeDisabled();
     expect(field.parentElement).toHaveClass('opacity-50');
+
+    view.rerender(
+      <InputGroup
+        mockState={mockState}
+        isDestination
+        amountFieldProps={{ ...destinationFieldProps, value: '0' }}
+      />,
+    );
+
+    const placeholder = view.getByTestId('to-amount');
+    expect(placeholder).toHaveValue('0');
+    expect(placeholder.parentElement).toHaveClass('opacity-50');
 
     view.rerender(
       <InputGroup
