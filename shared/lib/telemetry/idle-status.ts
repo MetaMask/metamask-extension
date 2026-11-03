@@ -35,6 +35,7 @@ type ActiveReason =
   | StartupActiveReason
   | 'pending_confirmation'
   | 'recent_ui_closed'
+  | 'recent_ui_open'
   | 'recent_ui_interaction'
   | 'recent_connected_dapp_rpc'
   | 'recent_external_extension_rpc';
@@ -63,6 +64,7 @@ const STEADY_STATE_PHASES: ReportedStartupPhase[] = [
  * production.
  */
 export const UI_CLOSE_GRACE_MS = 5_000;
+export const UI_OPEN_GRACE_MS = 5_000;
 export const UI_INTERACTION_GRACE_MS = 30_000;
 export const EXTERNAL_RPC_GRACE_MS = 30_000;
 
@@ -79,6 +81,7 @@ function isRecent(ms: number | undefined, graceMs: number): ms is number {
 type RecentActivityStatus = Extract<
   IdleStatus,
   | 'active_recent_ui_closed'
+  | 'active_recent_ui_open'
   | 'active_recent_ui_interaction'
   | 'active_recent_connected_dapp_rpc'
   | 'active_recent_external_extension_rpc'
@@ -98,6 +101,11 @@ const RECENT_ACTIVITY_CHECKS: {
     status: 'active_recent_ui_closed',
     graceMs: UI_CLOSE_GRACE_MS,
     readMs: (lastActivity) => lastActivity.msSinceLastUiClosed,
+  },
+  {
+    status: 'active_recent_ui_open',
+    graceMs: UI_OPEN_GRACE_MS,
+    readMs: (lastActivity) => lastActivity.msSinceLastUiOpen,
   },
   {
     status: 'active_recent_ui_interaction',
