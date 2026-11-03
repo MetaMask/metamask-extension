@@ -76,7 +76,6 @@ import {
   recordUiOpen,
   recordWindowEvent,
 } from '../../shared/lib/telemetry/last-activity';
-import { getIdleStatus } from '../../shared/lib/telemetry/idle-status';
 
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
@@ -235,8 +234,6 @@ persistenceManager.setCurrentActivityProvider(() => ({
   startupPhase: getStartupPhase(),
   ...uiPresence.getOpenUiCounts(),
 }));
-
-globalThis.stateHooks.getIsIdle = getIdleStatus;
 
 // Includes `WINDOW_ID_NONE` (focus left the browser).
 // We're not reusing listeners from `installActiveTabTracker`,

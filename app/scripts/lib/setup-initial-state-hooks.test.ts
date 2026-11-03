@@ -371,6 +371,15 @@ describe('setup-initial-state-hooks', () => {
   });
 
   describe('stateHooks', () => {
+    it('registers getIsIdle on globalThis.stateHooks', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+
+      expect(globalThis.stateHooks.getIsIdle).toBeDefined();
+      expect(typeof globalThis.stateHooks.getIsIdle).toBe('function');
+      expect(globalThis.stateHooks.getIsIdle?.({}, {})).toBe('unknown');
+    });
+
     it('registers getPersistedState on globalThis.stateHooks', async () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
