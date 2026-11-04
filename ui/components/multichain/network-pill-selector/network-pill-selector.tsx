@@ -220,7 +220,7 @@ export const NetworkPillSelector = () => {
       {hiddenCount > 0 && (
         <div className="flex justify-center">
           <TextButton
-            className="w-auto"
+            className="w-auto py-1"
             aria-expanded={isExpanded}
             onClick={() => setIsExpanded((expanded) => !expanded)}
             data-testid="network-pill-toggle"
