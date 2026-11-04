@@ -74,18 +74,18 @@ export const ConfirmationRouter = () => {
   const hasBatchSellQuotes = useSelector(selectHasBatchSellQuotes);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
-  const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
 
-  const canRedirect = !isNotification && !stayOnHomePage;
+  const isFirstScreen = location.key === 'default';
+  const canRedirectToSwap = !isNotification && isFirstScreen;
   const transactions = useSelector(getTransactions) as TransactionMeta[];
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
-    if (canRedirect && hasBatchSellQuotes && isPopup) {
+    if (canRedirectToSwap && hasBatchSellQuotes && isPopup) {
       closeModals();
       navigate(DEFAULT_ROUTE, { replace: true });
       dispatch(resetBridgeController());
-    } else if (canRedirect && hasBridgeQuotes && isPopup) {
+    } else if (canRedirectToSwap && hasBridgeQuotes && isPopup) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
@@ -102,7 +102,7 @@ export const ConfirmationRouter = () => {
       }
     }
   }, [
-    canRedirect,
+    canRedirectToSwap,
     closeModals,
     dispatch,
     hasApprovalFlows,

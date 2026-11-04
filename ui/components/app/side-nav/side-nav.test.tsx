@@ -154,7 +154,6 @@ describe('SideNav', () => {
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });
@@ -164,9 +163,7 @@ describe('SideNav', () => {
 
       fireEvent.click(getByTestId('side-nav-perps'));
 
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE);
     });
 
     it('navigates to Money Home when Money is clicked', () => {
@@ -174,9 +171,7 @@ describe('SideNav', () => {
 
       fireEvent.click(getByTestId('side-nav-money'));
 
-      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
     });
 
     it('navigates to the activity route when Activity is clicked', () => {
@@ -187,7 +182,6 @@ describe('SideNav', () => {
       expect(mockNavigate).toHaveBeenCalledWith(ACTIVITY_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       });
     });

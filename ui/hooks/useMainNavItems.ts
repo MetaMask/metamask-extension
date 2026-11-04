@@ -63,7 +63,6 @@ export function useMainNavItems(): MainNavItem[] {
         {
           state: {
             entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-            stayOnHomePage: true,
           },
         },
       ),
@@ -71,9 +70,7 @@ export function useMainNavItems(): MainNavItem[] {
   }, [navigate, lastActiveTab]);
 
   const handlePerpsClick = useCallback(() => {
-    transitionForward(() =>
-      navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
-    );
+    transitionForward(() => navigate(PERPS_HOME_PAGE_ROUTE));
   }, [navigate]);
 
   const handleMoneyClick = useCallback(() => {
@@ -83,9 +80,7 @@ export function useMainNavItems(): MainNavItem[] {
       labelKey: 'money',
       redirectTarget: MoneyScreenName.MoneyHome,
     });
-    transitionForward(() =>
-      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
-    );
+    transitionForward(() => navigate(MONEY_HOME_ROUTE));
   }, [navigate, trackMoneyButtonClicked]);
 
   const handleActivityClick = useCallback(() => {
@@ -93,7 +88,6 @@ export function useMainNavItems(): MainNavItem[] {
       navigate(ACTIVITY_ROUTE, {
         state: {
           entryPoint: ScreenViewedEntryPoint.BottomNavClick,
-          stayOnHomePage: true,
         },
       }),
     );

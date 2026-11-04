@@ -21,19 +21,14 @@ describe('useBatchSellNavigation', () => {
   });
 
   describe('resetLocationState', () => {
-    it('navigates to the current pathname with stayOnHomePage=false by default', () => {
+    it('navigates to the current pathname by default', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
         result.current.resetLocationState();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith(
-        { pathname: mockPathname },
-        {
-          state: { stayOnHomePage: false },
-        },
-      );
+      expect(mockNavigate).toHaveBeenCalledWith({ pathname: mockPathname });
     });
 
     it('navigates to a custom destination when provided', () => {
@@ -43,35 +38,19 @@ describe('useBatchSellNavigation', () => {
         result.current.resetLocationState('/custom-route');
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith('/custom-route', {
-        state: { stayOnHomePage: false },
-      });
-    });
-
-    it('sets stayOnHomePage=true when the flag is passed', () => {
-      const { result } = renderHook(() => useBatchSellNavigation());
-
-      act(() => {
-        result.current.resetLocationState('/custom-route', true);
-      });
-
-      expect(mockNavigate).toHaveBeenCalledWith('/custom-route', {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith('/custom-route');
     });
   });
 
   describe('navigateToDefaultRoute', () => {
-    it('navigates to the DEFAULT_ROUTE with stayOnHomePage=true', () => {
+    it('navigates to the DEFAULT_ROUTE', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
         result.current.navigateToDefaultRoute();
       });
 
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        state: { stayOnHomePage: true },
-      });
+      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 

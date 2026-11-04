@@ -11,18 +11,14 @@ export const useBatchSellNavigation = () => {
   const { pathname } = useLocation();
 
   const resetLocationState = useCallback(
-    (to: To = { pathname }, stayOnHomePage = false) => {
-      navigate(to, {
-        state: {
-          stayOnHomePage,
-        },
-      });
+    (to: To = { pathname }) => {
+      navigate(to);
     },
     [pathname, navigate],
   );
 
   const navigateToDefaultRoute = useCallback(() => {
-    resetLocationState(DEFAULT_ROUTE, true);
+    resetLocationState(DEFAULT_ROUTE);
   }, [resetLocationState]);
 
   const navigateToBatchSellSelectPage = useCallback(() => {
