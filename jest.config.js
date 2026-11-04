@@ -105,6 +105,7 @@ module.exports = {
   },
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    '^.+\\.(png|svg|riv)$': 'jest-preview/transforms/file',
     // ESM-only `@metamask` dependencies (e.g. `@metamask/eth-money-mpc-keyring`)
     // ship only `.mjs` entry points, which Jest cannot load natively in CJS
     // tests. Transpile them like the other transpiled ESM above.

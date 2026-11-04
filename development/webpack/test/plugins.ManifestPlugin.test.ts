@@ -74,6 +74,66 @@ function getExpectedDefaultZipMtime() {
 
 describe('ManifestPlugin', () => {
   describe('Plugin', () => {
+    for (const manifestVersion of [2, 3] as const) {
+      it(`resolves bundled icon paths in MV${manifestVersion} manifests`, async () => {
+        const sourcePath = '../shared/assets/images/icon-64.png';
+        const outputPath = 'assets/icon-64.123456.png';
+        const { compiler, compilation, promise } = mockWebpack(
+          [outputPath],
+          [Buffer.from('icon')],
+          [null],
+        );
+        compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+        const asset = compilation.getAsset(outputPath);
+        assert.ok(asset);
+        asset.info.sourceFilename = sourcePath;
+        const manifestPlugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: manifestVersion,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+          transform: (manifest) => {
+            const icons = { '64': sourcePath, '128': 'images/icon-128.png' };
+            const common = {
+              name: manifest.name,
+              version: manifest.version,
+              icons,
+            };
+            return manifestVersion === 2
+              ? {
+                  ...common,
+                  manifest_version: 2 as const,
+                  browser_action: { default_icon: { '64': sourcePath } },
+                }
+              : {
+                  ...common,
+                  manifest_version: 3 as const,
+                  action: { default_icon: { '64': sourcePath } },
+                };
+          },
+        });
+
+        manifestPlugin.apply(compiler);
+        await promise;
+
+        const manifest = JSON.parse(
+          compilation.assets['chrome/manifest.json'].source().toString(),
+        ) as Manifest;
+        assert.deepStrictEqual(manifest.icons, {
+          '64': outputPath,
+          '128': 'images/icon-128.png',
+        });
+        const action =
+          manifest.manifest_version === 2
+            ? manifest.browser_action
+            : manifest.action;
+        assert.deepStrictEqual(action?.default_icon, { '64': outputPath });
+      });
+    }
+
     const matrix = {
       zip: [true, false],
       files: [

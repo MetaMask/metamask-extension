@@ -409,6 +409,17 @@ const config = {
     pathinfo: false,
   },
   resolve: {
+    alias:
+      args.type === 'beta' || args.type === 'flask'
+        ? {
+            [`${join(root, 'shared/assets/images/icon-64.png')}$`]: join(
+              root,
+              'shared/assets/images',
+              args.type,
+              'icon-64.png',
+            ),
+          }
+        : {},
     // Disable symlinks for performance; saves about .5 seconds off full build
     symlinks: false,
     // Extensions added to the request when trying to find the file. The most

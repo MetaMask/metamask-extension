@@ -4,6 +4,7 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
+import mfaFailureImage from '../../../../app/assets/images/mfa-failure.svg';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 import { getErrorHandling } from '../../../hooks/identity/mfa/engine/errors';
@@ -87,7 +88,7 @@ const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
         isVerticallyCentered
         top={
           <img
-            src="./images/mfa-failure.svg"
+            src={mfaFailureImage}
             alt=""
             width={370}
             height={64}

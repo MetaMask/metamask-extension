@@ -899,6 +899,34 @@ export class ManifestPlugin<Z extends boolean> {
       this.prepareManifests(compilation.compiler);
     }
 
+    const assetPaths = new Map<string, string>();
+    for (const assetName of Object.keys(compilation.assets)) {
+      const sourceFilename =
+        compilation.getAsset(assetName)?.info.sourceFilename;
+      if (sourceFilename) {
+        assetPaths.set(
+          path.resolve(compilation.compiler.context, sourceFilename),
+          assetName,
+        );
+      }
+    }
+    const resolveIconPath = (iconPath: string) =>
+      assetPaths.get(path.resolve(compilation.compiler.context, iconPath)) ??
+      iconPath;
+    const resolveIconMap = (icons: chrome.runtime.ManifestIcons) =>
+      Object.fromEntries(
+        Object.entries(icons).map(([size, iconPath]) => [
+          size,
+          resolveIconPath(iconPath),
+        ]),
+      );
+    const resolveDefaultIcon = (
+      icons: string | chrome.runtime.ManifestIcons | undefined,
+    ) =>
+      typeof icons === 'string'
+        ? resolveIconPath(icons)
+        : icons && resolveIconMap(icons);
+
     for (const [browser, manifest] of this.manifests) {
       // resolve content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
@@ -962,9 +990,30 @@ export class ManifestPlugin<Z extends boolean> {
       }
 
       // if we edit the real `manifest` we change the compilation hash
-      const manifestForEmit = this.options.setBuildId
-        ? { ...manifest, build_id: compilation.fullHash }
-        : manifest;
+      const manifestForEmit = {
+        ...manifest,
+        icons: manifest.icons && resolveIconMap(manifest.icons),
+        ...(this.options.setBuildId ? { build_id: compilation.fullHash } : {}),
+      };
+      if (
+        manifestForEmit.manifest_version === 2 &&
+        manifestForEmit.browser_action
+      ) {
+        manifestForEmit.browser_action = {
+          ...manifestForEmit.browser_action,
+          default_icon: resolveDefaultIcon(
+            manifestForEmit.browser_action.default_icon,
+          ),
+        };
+      } else if (
+        manifestForEmit.manifest_version === 3 &&
+        manifestForEmit.action
+      ) {
+        manifestForEmit.action = {
+          ...manifestForEmit.action,
+          default_icon: resolveDefaultIcon(manifestForEmit.action.default_icon),
+        };
+      }
 
       // cache the resolved manifests as RawSource
       this.manifestSources.set(

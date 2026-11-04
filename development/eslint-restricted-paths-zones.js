@@ -28,6 +28,7 @@ const architecturalZones = [
   {
     target: './ui',
     from: './app',
+    except: ['./assets'],
     message:
       'Should not import from background in UI, use shared directory instead',
   },

@@ -12,6 +12,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 import { t } from '../../../shared/lib/translate';
+import notificationIcon from '../../../shared/assets/images/icon-64.png';
 
 type RpcPrefs = Parameters<typeof getBlockExplorerLink>[1];
 type BlockExplorerTransaction = Parameters<typeof getBlockExplorerLink>[0];
@@ -268,7 +269,7 @@ export default class ExtensionPlatform {
     message: string,
     url?: string,
   ): Promise<void> {
-    const iconUrl = browser.runtime.getURL('../../images/icon-64.png');
+    const iconUrl = browser.runtime.getURL(notificationIcon);
 
     if (url) {
       await browser.notifications.create(url, {
