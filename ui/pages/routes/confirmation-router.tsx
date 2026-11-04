@@ -75,8 +75,7 @@ export const ConfirmationRouter = () => {
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
   const isUnlocked = useSelector(getIsUnlocked);
 
-  // The popup reloads every time it opens. Only resume a leftover swap or
-  // batch sell on the first screen we check, not on later in-app navigation.
+  // Only resume a leftover swap or batch sell on the first screen we check
   const hasCheckedResumeRef = useRef(false);
   const transactions = useSelector(getTransactions) as TransactionMeta[];
 
@@ -146,8 +145,6 @@ export const ConfirmationRouter = () => {
 
   // Ported from home.component - componentDidUpdate()
   useEffect(() => {
-    // This router is mounted outside the unlock guard, so wait for unlock
-    // instead of using up the one resume check on the lock screen.
     if (!isUnlocked || isExemptedRoute) {
       return;
     }

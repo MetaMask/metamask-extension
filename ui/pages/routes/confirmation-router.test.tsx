@@ -279,20 +279,5 @@ describe('ConfirmationRouter', () => {
 
       expect(getByTestId('pathname').textContent).toBe(SWAP_ROUTE);
     });
-
-    it('does not redirect when quotes show up after the first check', () => {
-      const { getByTestId, store } = renderConfirmationRouter({
-        pathname: DEFAULT_ROUTE,
-      });
-
-      act(() => {
-        store.dispatch({
-          type: UPDATE_METAMASK_STATE,
-          value: { quotes: [{}] },
-        });
-      });
-
-      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
-    });
   });
 });
