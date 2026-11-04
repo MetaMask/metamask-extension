@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   FontFamily,
   Input,
@@ -76,9 +76,8 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
   inputProps,
 }) => {
   const t = useI18nContext();
-  const probeRef = useRef<HTMLSpanElement>(null);
   const [rowRef, rowWidth] = useHeroAmountRowWidth();
-  const prefixEm = useHeroAmountPrefixWidthEm(prefix, probeRef);
+  const [probeRef, prefixEm] = useHeroAmountPrefixWidthEm(prefix);
 
   if (isLoading) {
     return (

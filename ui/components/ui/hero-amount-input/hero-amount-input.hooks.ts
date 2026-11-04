@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState, type RefObject } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 import {
   HERO_AMOUNT_DIGIT_WIDTH_EM,
@@ -70,35 +70,43 @@ export function useHeroAmountRowWidth(): [
 
 /**
  * Width of the prefix in em, measured from a fixed-size probe so the result
- * does not depend on the font size being chosen. Remeasured when web fonts
- * finish loading.
+ * does not depend on the font size being chosen. Remeasured when the probe
+ * mounts and when web fonts finish loading.
+ *
+ * The probe is absent while the loading skeleton is showing. Holding the
+ * element in state retriggers this effect when the skeleton gives way to the
+ * field. A ref would not, and the width would stay at the empty reading.
  *
  * @param prefix - The currency symbol or code.
- * @param probeRef - The offscreen element rendering the prefix.
- * @returns The prefix width in em.
+ * @returns A ref callback for the probe and the prefix width in em.
  */
 export function useHeroAmountPrefixWidthEm(
   prefix: string,
-  probeRef: RefObject<HTMLSpanElement | null>,
-): number {
-  const [prefixEm, setPrefixEm] = useState(
-    () => prefix.length * HERO_AMOUNT_DIGIT_WIDTH_EM,
-  );
+): [(element: HTMLSpanElement | null) => void, number] {
+  // Same reason as the row: a ref callback cannot return a cleanup on React 18,
+  // and the effect must run again when the probe mounts after the skeleton.
+  const [probe, probeRef] = useState<HTMLSpanElement | null>(null);
+  const [measured, setMeasured] = useState<{
+    prefix: string;
+    em: number;
+  } | null>(null);
+  const estimate = prefix.length * HERO_AMOUNT_DIGIT_WIDTH_EM;
+  const prefixEm = measured?.prefix === prefix ? measured.em : estimate;
 
   useLayoutEffect(() => {
-    const probe = probeRef.current;
     if (!prefix || !probe) {
-      setPrefixEm(0);
       return undefined;
     }
 
     const measure = () => {
       const { width } = probe.getBoundingClientRect();
-      const next =
-        width > 0
-          ? width / HERO_AMOUNT_PREFIX_PROBE_FONT_SIZE
-          : prefix.length * HERO_AMOUNT_DIGIT_WIDTH_EM;
-      setPrefixEm((previous) => (previous === next ? previous : next));
+      const em =
+        width > 0 ? width / HERO_AMOUNT_PREFIX_PROBE_FONT_SIZE : estimate;
+      setMeasured((previous) =>
+        previous?.prefix === prefix && previous.em === em
+          ? previous
+          : { prefix, em },
+      );
     };
 
     measure();
@@ -111,7 +119,7 @@ export function useHeroAmountPrefixWidthEm(
     return () => {
       cancelled = true;
     };
-  }, [prefix, probeRef]);
+  }, [estimate, prefix, probe]);
 
-  return prefixEm;
+  return [probeRef, prefixEm];
 }

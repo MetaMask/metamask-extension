@@ -186,6 +186,22 @@ describe('HeroAmountInput', () => {
     });
   });
 
+  it('measures the prefix after the loading skeleton unmounts', () => {
+    HTMLElement.prototype.getBoundingClientRect = function (this: HTMLElement) {
+      const width = this.textContent === 'KRW' ? 170 : 0;
+      return { ...boundingRect.call(this), width };
+    };
+
+    const { rerender } = render(
+      <HeroAmountInput prefix="KRW" value="12345678901234567890" isLoading />,
+    );
+    rerender(<HeroAmountInput prefix="KRW" value="12345678901234567890" />);
+
+    expect(screen.getByTestId('hero-amount-input-input')).toHaveStyle({
+      fontSize: '24px',
+    });
+  });
+
   it('uses the measured prefix width', () => {
     HTMLElement.prototype.getBoundingClientRect = function (this: HTMLElement) {
       const width = this.textContent === 'KRW' ? 170 : 0;

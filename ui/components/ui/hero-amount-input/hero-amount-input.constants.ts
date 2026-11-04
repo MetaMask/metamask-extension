@@ -1,6 +1,27 @@
 /**
  * Font-size steps shared with the Mobile Grotzec amount inputs: an 88px
  * start, stepping down to a 20px floor. Line height equals the font size.
+ *
+ * The six smaller steps are design-token font sizes (`--font-size-base` is
+ * 16px). 88 and 72 are not tokens. `TextVariant.AmountDisplayLg` only covers
+ * 48px (`--font-size-9`) and, at the `md` breakpoint, 60px (`--font-size-10`),
+ * so the chosen step is applied as an inline font size.
+ *
+ * | px | Token            |
+ * | -- | ---------------- |
+ * | 88 | none             |
+ * | 72 | none             |
+ * | 60 | `--font-size-10` |
+ * | 48 | `--font-size-9`  |
+ * | 40 | `--font-size-8`  |
+ * | 32 | `--font-size-7`  |
+ * | 24 | `--font-size-6`  |
+ * | 20 | `--font-size-5`  |
+ *
+ * Token line heights are taller than these sizes (60px type uses a 75px line
+ * height). This scale keeps line height equal to the font size so the row
+ * stays one height. A later change can point the six token sizes at
+ * `var(--font-size-*)` once 88 and 72 have a home in the design system.
  */
 export const HERO_AMOUNT_FONT_SIZES = [88, 72, 60, 48, 40, 32, 24, 20] as const;
 
