@@ -131,6 +131,7 @@ import { BasicFunctionalityMigrationModal } from '../../components/app/basic-fun
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 
 import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
+import { MoneyFtueSplash } from '../../components/app/money/money-ftue-splash';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -138,6 +139,7 @@ import { MultichainAccountAddressListPage } from '../multichain-accounts/multich
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
+import { RouteMessengerProvider } from '../../contexts/route-messenger';
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
 import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
@@ -962,6 +964,15 @@ export default function Routes() {
       {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
 
       {renderRoutes()}
+
+      {isUnlocked ? (
+        <RouteMessengerProvider
+          path="/money-ftue-splash"
+          capabilities={MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES}
+        >
+          <MoneyFtueSplash />
+        </RouteMessengerProvider>
+      ) : null}
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
