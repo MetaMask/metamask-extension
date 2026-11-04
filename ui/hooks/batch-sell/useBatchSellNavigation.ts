@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { To, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   BATCH_SELL_REVIEW_ROUTE,
   BATCH_SELL_SELECT_ROUTE,
@@ -8,18 +8,10 @@ import {
 
 export const useBatchSellNavigation = () => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  const resetLocationState = useCallback(
-    (to: To = { pathname }) => {
-      navigate(to);
-    },
-    [pathname, navigate],
-  );
 
   const navigateToDefaultRoute = useCallback(() => {
-    resetLocationState(DEFAULT_ROUTE);
-  }, [resetLocationState]);
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   const navigateToBatchSellSelectPage = useCallback(() => {
     navigate({ pathname: BATCH_SELL_SELECT_ROUTE });
@@ -30,7 +22,6 @@ export const useBatchSellNavigation = () => {
   }, [navigate]);
 
   return {
-    resetLocationState,
     navigateToDefaultRoute,
     navigateToBatchSellSelectPage,
     navigateToBatchSellConfirmPage,

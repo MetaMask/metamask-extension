@@ -7,39 +7,15 @@ import {
 import { useBatchSellNavigation } from './useBatchSellNavigation';
 
 const mockNavigate = jest.fn();
-const mockPathname = '/some-page';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-  useLocation: () => ({ pathname: mockPathname, state: null }),
 }));
 
 describe('useBatchSellNavigation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('resetLocationState', () => {
-    it('navigates to the current pathname by default', () => {
-      const { result } = renderHook(() => useBatchSellNavigation());
-
-      act(() => {
-        result.current.resetLocationState();
-      });
-
-      expect(mockNavigate).toHaveBeenCalledWith({ pathname: mockPathname });
-    });
-
-    it('navigates to a custom destination when provided', () => {
-      const { result } = renderHook(() => useBatchSellNavigation());
-
-      act(() => {
-        result.current.resetLocationState('/custom-route');
-      });
-
-      expect(mockNavigate).toHaveBeenCalledWith('/custom-route');
-    });
   });
 
   describe('navigateToDefaultRoute', () => {
