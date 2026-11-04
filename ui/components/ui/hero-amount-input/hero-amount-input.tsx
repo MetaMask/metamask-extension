@@ -98,7 +98,7 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
   );
   const amountStyle = { fontSize, lineHeight: `${fontSize}px` };
 
-  let textColor = TextColor.TextDefault;
+  let textColor: TextColor = TextColor.TextDefault;
   if (hasError) {
     textColor = TextColor.ErrorDefault;
   } else if (disabled && !readOnly) {
