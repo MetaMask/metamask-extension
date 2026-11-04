@@ -156,7 +156,6 @@ module.exports = defineConfig([
       parserOptions: {
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
         tsconfigRootDir: __dirname,
-        projectService: true,
       },
     },
     extends: [
@@ -391,8 +390,6 @@ module.exports = defineConfig([
     ],
     languageOptions: {
       parserOptions: {
-        tsconfigRootDir: __dirname,
-        projectService: true,
         ecmaFeatures: {
           jsx: true,
         },
@@ -460,8 +457,6 @@ module.exports = defineConfig([
     ],
     languageOptions: {
       parserOptions: {
-        tsconfigRootDir: __dirname,
-        projectService: true,
         ecmaFeatures: {
           jsx: true,
         },
