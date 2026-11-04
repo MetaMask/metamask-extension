@@ -542,6 +542,62 @@ describe('PerpsStreamManager', () => {
       expect(manager.positions.isSeeded()).toBe(false);
     });
 
+    it.each([null, undefined])(
+      'preserves a seeded snapshot when REST returns %s',
+      async (data) => {
+        const address = '0xABCDEF0000000000000000000000000000000001';
+        const positions = [makePosition('BTC'), makePosition('xyz:GOLD')];
+        mockSubmitRequestToBackground.mockResolvedValue(data);
+        manager.hydrateFromControllerCache({ positions, address }, address);
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+        cb.mockClear();
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(manager.positions.getCachedData()).toBe(positions);
+        expect(manager.positions.isSeeded()).toBe(true);
+        expect(cb).not.toHaveBeenCalled();
+
+        manager.positions.pushData([]);
+
+        expect(manager.positions.getCachedData()).toEqual([]);
+        expect(manager.positions.isSeeded()).toBe(false);
+        expect(cb).toHaveBeenCalledWith([]);
+      },
+    );
+
+    it('replaces a seeded snapshot when REST confirms no positions remain', async () => {
+      const address = '0xABCDEF0000000000000000000000000000000001';
+      mockSubmitRequestToBackground.mockResolvedValue([]);
+      manager.hydrateFromControllerCache(
+        { positions: [makePosition('BTC')], address },
+        address,
+      );
+      const cb = jest.fn();
+      manager.positions.subscribe(cb);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(manager.positions.getCachedData()).toEqual([]);
+      expect(manager.positions.isSeeded()).toBe(false);
+      expect(cb).toHaveBeenLastCalledWith([]);
+    });
+
+    it.each([null, undefined])(
+      'notifies subscribers with empty positions when REST returns %s without a seed',
+      async (data) => {
+        mockSubmitRequestToBackground.mockResolvedValue(data);
+        const cb = jest.fn();
+        manager.positions.subscribe(cb);
+
+        await jest.advanceTimersByTimeAsync(3_000);
+
+        expect(cb).toHaveBeenCalledWith([]);
+        expect(manager.positions.isSeeded()).toBe(false);
+      },
+    );
+
     it('notifies subscribers with empty positions when REST fallback fails', async () => {
       jest.useFakeTimers();
       const consoleErrorSpy = jest

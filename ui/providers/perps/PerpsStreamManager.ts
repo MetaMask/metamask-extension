@@ -211,6 +211,10 @@ class PerpsStreamManager {
           const params = this.positions.isSeeded() ? [{ skipCache: true }] : [];
           submitRequestToBackground<Position[]>('perpsGetPositions', params)
             .then((data) => {
+              // A nullish response leaves the seeded snapshot unconfirmed.
+              if (!data && this.positions.isSeeded()) {
+                return;
+              }
               if (!cancelled && !hasLivePositions()) {
                 push(data ?? EMPTY_POSITIONS);
               }
