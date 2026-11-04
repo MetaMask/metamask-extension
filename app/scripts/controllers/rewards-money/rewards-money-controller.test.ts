@@ -15,7 +15,10 @@ import {
   RewardsMoneyHttpError,
   RewardsMoneyRebateQuoteError,
 } from './rewards-money-data-service';
-import { RewardsMoneyController } from './rewards-money-controller';
+import {
+  PENDING_REFERRAL_CONTEXT_TTL_MS,
+  RewardsMoneyController,
+} from './rewards-money-controller';
 import type { RewardsMoneyControllerMessenger } from './rewards-money-controller-types';
 
 type AllActions = MessengerActions<RewardsMoneyControllerMessenger>;
@@ -191,6 +194,49 @@ describe('RewardsMoneyController', () => {
       controller.dropReferralContext(second.id);
       expect(controller.getPendingReferralContext()).toBeNull();
     });
+    it('expires a pending context after the handoff window', () => {
+      jest.useFakeTimers();
+      try {
+        jest.setSystemTime(1000);
+        const context = controller.captureReferralContext(
+          'https://link.metamask.io/home?ref=ABC',
+          'deeplink',
+          false,
+        );
+        assert(context);
+        jest.setSystemTime(1000 + PENDING_REFERRAL_CONTEXT_TTL_MS);
+        expect(controller.getPendingReferralContext()).toEqual(context);
+        jest.setSystemTime(1000 + PENDING_REFERRAL_CONTEXT_TTL_MS + 1);
+        expect(controller.continueReferralContext(context.id)).toBe(false);
+        expect(controller.getPendingReferralContext()).toBeNull();
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('restarts the handoff window when a newer link replaces the context', () => {
+      jest.useFakeTimers();
+      try {
+        jest.setSystemTime(1000);
+        controller.captureReferralContext(
+          'https://link.metamask.io/home?ref=ABC',
+          'deeplink',
+          false,
+        );
+        jest.setSystemTime(1000 + PENDING_REFERRAL_CONTEXT_TTL_MS);
+        const replacement = controller.captureReferralContext(
+          'https://link.metamask.io/home?ref=DEF',
+          'deeplink',
+          false,
+        );
+        assert(replacement);
+        jest.setSystemTime(2000 + PENDING_REFERRAL_CONTEXT_TTL_MS);
+        expect(controller.getPendingReferralContext()).toEqual(replacement);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
     it('captures before eligibility without calling the API', () => {
       isDisabled = true;
       const context = controller.captureReferralContext(

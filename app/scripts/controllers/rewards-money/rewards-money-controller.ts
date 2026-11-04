@@ -101,6 +101,13 @@ export function getDefaultRewardsMoneyControllerState(): RewardsMoneyControllerS
 }
 
 /**
+ * How long a captured link stays eligible for the handoff. This matches the
+ * deferred deep-link window so onboarding has time to finish, while still
+ * bounding context left behind by a closed tab or a suspended worker.
+ */
+export const PENDING_REFERRAL_CONTEXT_TTL_MS = 2 * 60 * 60 * 1000;
+
+/**
  * Referral accept for Rewards Money: referral me, code validation, and
  * referee registration. The full payload stays in memory. Only
  * `excludedRegions` is published for the geo selector.
@@ -113,6 +120,8 @@ export class RewardsMoneyController extends BaseController<
   readonly #isDisabled: () => boolean;
 
   #pendingReferralContext: MoneyReferralContext | null = null;
+
+  #pendingReferralCapturedAt: number | null = null;
 
   readonly #answeredReferralCodes = new Set<string>();
 
@@ -149,7 +158,7 @@ export class RewardsMoneyController extends BaseController<
     let wasSignedIn = false;
     this.messenger.subscribe('AuthenticationController:stateChange', (auth) => {
       if (wasSignedIn && !auth.isSignedIn) {
-        this.#pendingReferralContext = null;
+        this.#clearPendingReferralContext();
         this.#answeredReferralCodes.clear();
         this.#offeredReferralCodes.clear();
       }
@@ -190,7 +199,27 @@ export class RewardsMoneyController extends BaseController<
       entryType,
       requiresInterstitial,
     };
+    this.#pendingReferralCapturedAt = Date.now();
     return { ...this.#pendingReferralContext };
+  }
+
+  #clearPendingReferralContext(): void {
+    this.#pendingReferralContext = null;
+    this.#pendingReferralCapturedAt = null;
+  }
+
+  #getActiveReferralContext(now = Date.now()): MoneyReferralContext | null {
+    if (!this.#pendingReferralContext) {
+      return null;
+    }
+    if (
+      this.#pendingReferralCapturedAt === null ||
+      now - this.#pendingReferralCapturedAt > PENDING_REFERRAL_CONTEXT_TTL_MS
+    ) {
+      this.#clearPendingReferralContext();
+      return null;
+    }
+    return this.#pendingReferralContext;
   }
 
   /**
@@ -199,9 +228,8 @@ export class RewardsMoneyController extends BaseController<
    * @returns The pending context, if any.
    */
   getPendingReferralContext(): MoneyReferralContext | null {
-    return this.#pendingReferralContext
-      ? { ...this.#pendingReferralContext }
-      : null;
+    const context = this.#getActiveReferralContext();
+    return context ? { ...context } : null;
   }
 
   /**
@@ -210,8 +238,9 @@ export class RewardsMoneyController extends BaseController<
    * @param id - The context associated with that interstitial.
    */
   continueReferralContext(id: string): boolean {
-    if (this.#pendingReferralContext?.id === id) {
-      this.#pendingReferralContext.requiresInterstitial = false;
+    const context = this.#getActiveReferralContext();
+    if (context?.id === id) {
+      context.requiresInterstitial = false;
       return true;
     }
     return false;
@@ -223,8 +252,8 @@ export class RewardsMoneyController extends BaseController<
    * @param id - Context owned by the abandoned flow.
    */
   dropReferralContext(id: string): void {
-    if (this.#pendingReferralContext?.id === id) {
-      this.#pendingReferralContext = null;
+    if (this.#getActiveReferralContext()?.id === id) {
+      this.#clearPendingReferralContext();
     }
   }
 
@@ -235,11 +264,11 @@ export class RewardsMoneyController extends BaseController<
    * @returns The offer, or null if superseded, consumed, or not continued.
    */
   takeReferralContext(id: string): MoneyReferralContext | null {
-    const context = this.#pendingReferralContext;
+    const context = this.#getActiveReferralContext();
     if (!context || context.id !== id || context.requiresInterstitial) {
       return null;
     }
-    this.#pendingReferralContext = null;
+    this.#clearPendingReferralContext();
     const canOffer = !this.#isDisabled();
     if (canOffer) {
       this.#offeredReferralCodes.add(context.code);
