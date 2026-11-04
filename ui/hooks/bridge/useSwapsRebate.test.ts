@@ -120,6 +120,31 @@ describe('useSwapsRebate', () => {
     expect(result.current).toBeNull();
   });
 
+  it('does not reuse an earlier rebate when the fee token comes back', async () => {
+    mockCall.mockResolvedValueOnce({
+      product: 'swaps',
+      eligible: true,
+      rebateBips: 1000,
+      reason: null,
+    });
+    mockCall.mockRejectedValueOnce(new Error('503'));
+    mockCall.mockRejectedValueOnce(new Error('503'));
+
+    const { result, rerender } = renderHook(
+      ({ quote }) => useSwapsRebate(quote),
+      { initialProps: { quote: buildQuote() } },
+    );
+    await waitFor(() => expect(result.current).toBe(10));
+
+    rerender({ quote: buildQuote('eip155:1/erc20:0xabc') });
+    await act(flushPromises);
+    rerender({ quote: buildQuote() });
+    await act(flushPromises);
+
+    expect(mockCall).toHaveBeenCalledTimes(3);
+    expect(result.current).toBeNull();
+  });
+
   it('ignores a late response for the previous fee token', async () => {
     let resolveFirst: (value: unknown) => void = () => undefined;
     mockCall.mockReturnValueOnce(

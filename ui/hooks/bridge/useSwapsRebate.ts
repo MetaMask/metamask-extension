@@ -58,6 +58,7 @@ export const useSwapsRebate = (
 
     return () => {
       cancelled = true;
+      setRebate(null);
     };
   }, [isEnabled, feeAssetId, messenger]);
 
