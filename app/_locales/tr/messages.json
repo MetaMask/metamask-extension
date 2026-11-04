@@ -8471,7 +8471,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "destek bölümü ile iletişime geçerek",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "Bazı hizmetler geçici olarak kullanılamıyor. $1 veya $2.",
@@ -8479,7 +8479,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "Seçeneklerinizi SSS bölümünde görebilirsiniz",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "Bir kesinti yaşıyoruz",

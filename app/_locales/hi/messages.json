@@ -8458,7 +8458,7 @@
   },
   "perpsServiceInterruptionContactSupport": {
     "message": "सपोर्ट से संपर्क करें",
-    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+    "description": "Inline link in the Perps outage banner that opens the MetaMask help center after data-sharing consent."
   },
   "perpsServiceInterruptionDescription": {
     "message": "कुछ सेवाएं अस्थायी रूप से उपलब्ध नहीं हैं। $1, या $2।",
@@ -8466,7 +8466,7 @@
   },
   "perpsServiceInterruptionFaqLink": {
     "message": "FAQs में अपने विकल्प देखें",
-    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+    "description": "Inline link in the Perps outage banner that opens the Perps troubleshoot article."
   },
   "perpsServiceInterruptionTitle": {
     "message": "हम सेवा बाधा का सामना कर रहे हैं",
