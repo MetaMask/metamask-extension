@@ -1,3 +1,4 @@
+import { it as jestIt } from '@jest/globals';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { referralContextClient } from './referral-context';
 
@@ -17,11 +18,11 @@ describe('referralContextClient', () => {
     );
   });
 
-  it.each([
+  jestIt.each<[string, 'continue' | 'drop' | 'take']>([
     ['continueReferralContext', 'continue'],
     ['dropReferralContext', 'drop'],
     ['takeReferralContext', 'take'],
-  ] as const)('calls %s with the context id', async (action, method) => {
+  ])('calls %s with the context id', async (action, method) => {
     await referralContextClient[method]('context-id');
     expect(submitRequestToBackground).toHaveBeenCalledWith(
       `RewardsMoneyController:${action}`,
