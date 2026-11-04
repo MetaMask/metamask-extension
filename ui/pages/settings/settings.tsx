@@ -224,6 +224,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
       runCloseTransition(navigateBack);
       return;
     }
+
     transitionBack(navigateBack);
   }, [isOnSettingsRoot, navigateBack, runCloseTransition]);
 
