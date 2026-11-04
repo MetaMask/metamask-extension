@@ -21,8 +21,6 @@ import {
 import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { AssetsController } from '@metamask/assets-controller';
-import { SnapController } from '@metamask/snaps-controllers';
 import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import ObjectMultiplex from '@metamask/object-multiplex';
@@ -599,42 +597,6 @@ describe('MetaMaskController', () => {
         controllerMessenger,
       );
       createEnsureOnboardingCompleteCallbackSpy.mockRestore();
-    });
-  });
-
-  describe('AssetsController start', () => {
-    it('starts AssetsController once, after SnapController is initialized', () => {
-      const startSpy = jest
-        .spyOn(AssetsController.prototype, 'start')
-        .mockResolvedValue(undefined);
-      const snapInitSpy = jest.spyOn(SnapController.prototype, 'init');
-
-      const controller = new MetaMaskController({
-        initLangCode: 'en_US',
-        browser: browserPolyfillMock,
-        getRequestAccountTabIds: () => ({}),
-        getOpenMetamaskTabsIds: () => ({}),
-        notificationManager: {
-          closePopup: jest.fn(),
-          markAsAutomaticallyClosed: jest.fn(),
-        },
-        infuraProjectId: 'foo',
-        platform: { _showNotification: jest.fn() },
-        cronjobControllerStorageManager:
-          createMockCronjobControllerStorageManager(),
-        controllerMessenger: new Messenger({
-          namespace: MOCK_ANY_NAMESPACE,
-        }),
-      });
-
-      expect(startSpy).toHaveBeenCalledTimes(1);
-      expect(startSpy.mock.instances[0]).toBe(controller.assetsController);
-      expect(snapInitSpy.mock.invocationCallOrder[0]).toBeLessThan(
-        startSpy.mock.invocationCallOrder[0],
-      );
-
-      startSpy.mockRestore();
-      snapInitSpy.mockRestore();
     });
   });
 

@@ -54,7 +54,6 @@ function buildRequest({
   }) as AssetsControllerInitMessenger['call'];
 
   return {
-    getIsUiOpen: jest.fn(() => true),
     initMessenger,
     persistedState: {} as MessengerClientPersistedState,
   };
@@ -108,13 +107,10 @@ describe('getAssetsControllerInstanceOptions', () => {
     expect(options.isOnboarded?.()).toBe(false);
   });
 
-  it('uses the UI-open callback for isEnabled', () => {
-    const request = buildRequest();
-    request.getIsUiOpen.mockReturnValueOnce(false);
-    const options = getAssetsControllerInstanceOptions(request);
+  it('leaves isEnabled unset so the controller gates on ClientController itself', () => {
+    const options = getAssetsControllerInstanceOptions(buildRequest());
 
-    expect(options.isEnabled?.()).toBe(false);
-    expect(request.getIsUiOpen).toHaveBeenCalledTimes(1);
+    expect(options).not.toHaveProperty('isEnabled');
   });
 
   it('skips Sentry tracing when assetsUnifyState.tracesEnabled is off', async () => {

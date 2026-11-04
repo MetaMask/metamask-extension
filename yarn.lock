@@ -7390,9 +7390,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:@metamask-previews/assets-controller@20.2.0-preview-713f7d759":
-  version: 20.2.0-preview-713f7d759
-  resolution: "@metamask-previews/assets-controller@npm:20.2.0-preview-713f7d759"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@20.2.1-preview-686445658":
+  version: 20.2.1-preview-686445658
+  resolution: "@metamask-previews/assets-controller@npm:20.2.1-preview-686445658"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -7425,7 +7425,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
     lodash-es: "npm:^4.18.1"
-  checksum: 10/dc904eeb94b8fbce616cde649309c5aaafb27eaf0107165893a09e20d77e0129a3dee3933e961d300552e49d9ee68599846f487dc0bd36989307441e21c01e38
+  checksum: 10/d9276287864d5ccf9b121edd6ab1e7119e8f3d3100cf6525b1603623a7ccd9eba31a46ba607fd98cf4ebbd6f07a6e98ea4da525e6c395f0f15fbed920566aa01
   languageName: node
   linkType: hard
 
@@ -10992,15 +10992,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wallet@npm:@metamask-previews/wallet@21.0.0-preview-713f7d759":
-  version: 21.0.0-preview-713f7d759
-  resolution: "@metamask-previews/wallet@npm:21.0.0-preview-713f7d759"
+"@metamask/wallet@npm:@metamask-previews/wallet@21.0.0-preview-686445658":
+  version: 21.0.0-preview-686445658
+  resolution: "@metamask-previews/wallet@npm:21.0.0-preview-686445658"
   dependencies:
     "@metamask/accounts-controller": "npm:^40.1.0"
     "@metamask/address-book-controller": "npm:^8.0.0"
     "@metamask/analytics-controller": "npm:^4.1.0"
     "@metamask/approval-controller": "npm:^10.0.0"
-    "@metamask/assets-controller": "npm:^20.2.0"
+    "@metamask/assets-controller": "npm:^20.2.1"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/claims-controller": "npm:^1.1.0"
@@ -11026,7 +11026,7 @@ __metadata:
     "@metamask/subscription-controller": "npm:^15.1.2"
     "@metamask/transaction-controller": "npm:^73.0.0"
     "@metamask/utils": "npm:^12.0.1"
-  checksum: 10/5d68e60ccc7845bcc2ce21a5ad4e62586b1fff4a5554958d098ed562353ee0ad484ce9b85aa0e0e8f83e3187687bca2f88ec8e636f9d3bc4468e60231148eb74
+  checksum: 10/51fac4ad9de8e7766a4bcf102fb20a5e7b77f6200e324905049ee71190cd1820d9176a37180b4419720190115fe494d40c15da5ec2579934de6b4ad9aa35a21e
   languageName: node
   linkType: hard
 
@@ -35504,7 +35504,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^20.2.0"
+    "@metamask/assets-controller": "npm:^20.2.1"
     "@metamask/assets-controllers": "npm:^113.0.0"
     "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"

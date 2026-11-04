@@ -41,9 +41,6 @@ const mockWalletInit = jest.fn();
 const mockNetworkController = {
   addNetwork: jest.fn(),
 };
-const mockClientController = {
-  state: { isUiOpen: true },
-};
 const mockAssetsController = {
   messenger: { subscribe: jest.fn() },
   getAssets: jest.fn(),
@@ -54,9 +51,6 @@ jest.mock('@metamask/wallet', () => ({
     getInstance: jest.fn((name: string) => {
       if (name === 'AssetsController') {
         return mockAssetsController;
-      }
-      if (name === 'ClientController') {
-        return mockClientController;
       }
       return mockNetworkController;
     }),
@@ -176,7 +170,6 @@ describe('initializeWallet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWalletInit.mockResolvedValue([]);
-    mockClientController.state.isUiOpen = true;
   });
 
   it('constructs a Wallet, wiring each builder output to its instanceOptions slot', () => {
@@ -313,16 +306,9 @@ describe('initializeWallet', () => {
 
     expect(getAssetsControllerInitMessenger).toHaveBeenCalledWith(messenger);
     expect(getAssetsControllerInstanceOptions).toHaveBeenCalledWith({
-      getIsUiOpen: expect.any(Function),
       initMessenger: 'assets-controller-init-messenger',
       persistedState: state,
     });
-    const { getIsUiOpen } = jest.mocked(getAssetsControllerInstanceOptions).mock
-      .calls[0][0];
-    expect(getIsUiOpen()).toBe(true);
-    mockClientController.state.isUiOpen = false;
-    expect(getIsUiOpen()).toBe(false);
-    mockClientController.state.isUiOpen = true;
 
     expect(subscribeToArcTransactionConfirmedRefresh).toHaveBeenCalledWith(
       mockAssetsController,
@@ -415,7 +401,6 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWalletInit.mockResolvedValue([]);
-    mockClientController.state.isUiOpen = true;
   });
 
   it('wires the enable/disable toggle over the messenger with a default-preserving baseline', () => {

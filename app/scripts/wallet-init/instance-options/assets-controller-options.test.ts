@@ -1,4 +1,3 @@
-import { ClientController } from '@metamask/client-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { MessengerClientInitRequest } from '../../messenger-client-init/types';
 import { buildControllerInitRequestMock } from '../../messenger-client-init/test/utils';
@@ -20,10 +19,6 @@ jest.mock('../../../../shared/lib/trace', () => ({
 jest.mock('@metamask/core-backend', () => ({
   createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
-
-function buildClientControllerMock(isUiOpen = true): ClientController {
-  return { state: { isUiOpen } } as ClientController;
-}
 
 function getInitRequestMock(
   options: {
@@ -55,8 +50,6 @@ function getInitRequestMock(
     }
     throw new Error(`Unexpected action: ${action}`);
   });
-
-  requestMock.getMessengerClient.mockReturnValue(buildClientControllerMock());
 
   return requestMock;
 }
@@ -117,8 +110,6 @@ function getOptions(requestMock: {
   >['persistedState'];
 }) {
   return getAssetsControllerInstanceOptions({
-    getIsUiOpen: () =>
-      requestMock.getMessengerClient('ClientController').state.isUiOpen,
     initMessenger: requestMock.initMessenger,
     persistedState: requestMock.persistedState,
   });
@@ -194,34 +185,6 @@ describe('getAssetsControllerInstanceOptions', () => {
 
     expect(typeof tokenDetectionEnabledGetter).toBe('function');
     expect(tokenDetectionEnabledGetter()).toBe(true);
-  });
-
-  describe('isEnabled', () => {
-    it('returns ClientController isUiOpen state when UI is open', () => {
-      const requestMock = getInitRequestMock();
-
-      const constructorCall = getOptions(requestMock);
-
-      const isEnabled = constructorCall.isEnabled as () => boolean;
-
-      expect(isEnabled()).toBe(true);
-      expect(requestMock.getMessengerClient).toHaveBeenCalledWith(
-        'ClientController',
-      );
-    });
-
-    it('returns false when ClientController isUiOpen is false', () => {
-      const requestMock = getInitRequestMock();
-      requestMock.getMessengerClient.mockReturnValue(
-        buildClientControllerMock(false),
-      );
-
-      const constructorCall = getOptions(requestMock);
-
-      const isEnabled = constructorCall.isEnabled as () => boolean;
-
-      expect(isEnabled()).toBe(false);
-    });
   });
 
   describe('isBasicFunctionality function', () => {
@@ -502,9 +465,6 @@ describe('getAssetsControllerInstanceOptions', () => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
         const freshModule = require('./assets-controller') as any;
         freshModule.getAssetsControllerInstanceOptions({
-          getIsUiOpen: () =>
-            getInitRequestMock().getMessengerClient('ClientController').state
-              .isUiOpen,
           initMessenger: getInitRequestMock().initMessenger,
           persistedState: getInitRequestMock().persistedState,
         });
@@ -522,16 +482,10 @@ describe('getAssetsControllerInstanceOptions', () => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
         const freshModule = require('./assets-controller') as any;
         freshModule.getAssetsControllerInstanceOptions({
-          getIsUiOpen: () =>
-            getInitRequestMock().getMessengerClient('ClientController').state
-              .isUiOpen,
           initMessenger: getInitRequestMock().initMessenger,
           persistedState: getInitRequestMock().persistedState,
         });
         freshModule.getAssetsControllerInstanceOptions({
-          getIsUiOpen: () =>
-            getInitRequestMock().getMessengerClient('ClientController').state
-              .isUiOpen,
           initMessenger: getInitRequestMock().initMessenger,
           persistedState: getInitRequestMock().persistedState,
         });
@@ -545,9 +499,6 @@ describe('getAssetsControllerInstanceOptions', () => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
         const freshModule = require('./assets-controller') as any;
         freshModule.getAssetsControllerInstanceOptions({
-          getIsUiOpen: () =>
-            getInitRequestMock().getMessengerClient('ClientController').state
-              .isUiOpen,
           initMessenger: getInitRequestMock().initMessenger,
           persistedState: getInitRequestMock().persistedState,
         });
@@ -585,8 +536,6 @@ describe('getAssetsControllerInstanceOptions', () => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
         const freshModule = require('./assets-controller') as any;
         freshModule.getAssetsControllerInstanceOptions({
-          getIsUiOpen: () =>
-            requestMock.getMessengerClient('ClientController').state.isUiOpen,
           initMessenger: requestMock.initMessenger,
           persistedState: requestMock.persistedState,
         });
@@ -610,8 +559,6 @@ describe('getAssetsControllerInstanceOptions', () => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
         const freshModule = require('./assets-controller') as any;
         freshModule.getAssetsControllerInstanceOptions({
-          getIsUiOpen: () =>
-            requestMock.getMessengerClient('ClientController').state.isUiOpen,
           initMessenger: requestMock.initMessenger,
           persistedState: requestMock.persistedState,
         });
@@ -640,8 +587,6 @@ describe('getAssetsControllerInstanceOptions', () => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
         const freshModule = require('./assets-controller') as any;
         freshModule.getAssetsControllerInstanceOptions({
-          getIsUiOpen: () =>
-            requestMock.getMessengerClient('ClientController').state.isUiOpen,
           initMessenger: requestMock.initMessenger,
           persistedState: requestMock.persistedState,
         });
@@ -671,8 +616,6 @@ describe('getAssetsControllerInstanceOptions', () => {
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
           const freshModule = require('./assets-controller') as any;
           freshModule.getAssetsControllerInstanceOptions({
-            getIsUiOpen: () =>
-              requestMock.getMessengerClient('ClientController').state.isUiOpen,
             initMessenger: requestMock.initMessenger,
             persistedState: requestMock.persistedState,
           });

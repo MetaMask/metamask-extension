@@ -918,18 +918,15 @@ export default class MetamaskController extends EventEmitter {
     this.moneyAccountUpgradeController.init();
     // `wallet.init()` runs before MultichainNetworkController exists, so
     // NetworkEnablementController.init() is deferred until messenger clients
-    // are registered. Must run before AssetsController.start().
+    // are registered. Must run before the UI first opens, because
+    // AssetsController reads NetworkEnablementController state when it
+    // bootstraps on the first `ClientController:setUiOpen(true)`.
     setupNetworkEnablementController({
       networkEnablementController: this.networkEnablementController,
       initMessenger: getNetworkEnablementControllerInitMessenger(
         this.controllerMessenger,
       ),
       persistedState: initState,
-    });
-    // Must run after every controller AssetsController depends on (e.g.
-    // AccountTreeController, SnapController) is registered.
-    this.assetsController.start().catch((error) => {
-      console.error('Failed to start AssetsController', error);
     });
 
     this.controllerMessenger.subscribe(

@@ -76,11 +76,6 @@ export function initializeWallet(request: InitializeWalletRequest) {
   const assetsControllerInitMessenger =
     getAssetsControllerInitMessenger(messenger);
 
-  // `isEnabled` runs after every wallet instance exists. Hold the wallet so the
-  // callback can read ClientController, which is constructed after
-  // AssetsController.
-  const walletRef: { current?: Wallet } = {};
-
   // TC event listeners must be set up before the wallet is initialized.
   // So that the TC can emit events to the wallet's messenger during initialization.
   setupTransactionControllerListeners({
@@ -99,9 +94,6 @@ export function initializeWallet(request: InitializeWalletRequest) {
         showApprovalRequest,
       }),
       assetsController: getAssetsControllerInstanceOptions({
-        getIsUiOpen: () =>
-          walletRef.current?.getInstance('ClientController').state.isUiOpen ??
-          false,
         initMessenger: assetsControllerInitMessenger,
         persistedState: state,
       }),
@@ -149,7 +141,6 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     state,
   });
-  walletRef.current = wallet;
 
   subscribeToArcTransactionConfirmedRefresh(
     wallet.getInstance('AssetsController'),

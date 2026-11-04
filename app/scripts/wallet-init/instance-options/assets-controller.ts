@@ -34,7 +34,6 @@ type AssetsControllerInstanceOptions = NonNullable<
 >;
 
 type GetAssetsControllerInstanceOptionsRequest = {
-  getIsUiOpen: () => boolean;
   initMessenger: AssetsControllerInitMessenger;
   persistedState: MessengerClientPersistedState;
 };
@@ -191,13 +190,11 @@ function getApiClient(
  * `PreferencesController` exists, so preference reads stay lazy.
  *
  * @param request - The request object.
- * @param request.getIsUiOpen - Whether the extension UI is currently open.
  * @param request.initMessenger - Messenger used for onboarding, auth, preferences, and feature flags.
  * @param request.persistedState - Persisted controller state used by the assets metadata migration.
  * @returns The extension `AssetsController` instance options.
  */
 export function getAssetsControllerInstanceOptions({
-  getIsUiOpen,
   initMessenger,
   persistedState,
 }: GetAssetsControllerInstanceOptionsRequest): AssetsControllerInstanceOptions {
@@ -230,7 +227,6 @@ export function getAssetsControllerInstanceOptions({
   };
 
   return {
-    isEnabled: () => getIsUiOpen(),
     isBasicFunctionality,
     subscribeToBasicFunctionalityChange,
     queryApiClient: getApiClient(initMessenger),
