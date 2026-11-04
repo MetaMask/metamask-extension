@@ -378,8 +378,8 @@ class TransactionConfirmation extends Confirmation {
       `Checking send amount ${amount} on transaction confirmation page.`,
     );
     await this.driver.waitForSelector({
+      testId: 'confirm-send-amount',
       text: amount,
-      tag: 'h2',
     });
   }
 

@@ -59,6 +59,8 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
   const amountFormatted = formatAmount(
     locale,
     new BigNumber(amount).shift(-decimals),
+    undefined,
+    { compact: true },
   );
 
   const amountFiat = useFiatTokenValue(
