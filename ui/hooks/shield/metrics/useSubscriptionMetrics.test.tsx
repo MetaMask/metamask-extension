@@ -35,10 +35,6 @@ jest.mock('../../useAnalytics', () => {
   };
 });
 
-jest.mock('../../useAccountTotalFiatBalance', () => ({
-  useAccountTotalFiatBalance: () => ({ totalFiatBalance: '250' }),
-}));
-
 const existingSubscription = {
   subscriptionStatus: SUBSCRIPTION_STATUSES.active,
   paymentType: PAYMENT_TYPES.byCard,
