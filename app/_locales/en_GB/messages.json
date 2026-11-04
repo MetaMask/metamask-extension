@@ -11950,12 +11950,6 @@
   "swapAggregator": {
     "message": "Aggregator"
   },
-  "swapAmountReceived": {
-    "message": "Guaranteed amount"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
-  },
   "swapAndSend": {
     "message": "Swap & Send"
   },
@@ -11989,12 +11983,6 @@
     "message": "This will $1 for swapping",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Estimated network fees"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Error fetching quotes"
   },
@@ -12019,15 +12007,6 @@
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
-  "swapLiquiditySourceInfo": {
-    "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to compare exchange rates and network fees."
-  },
-  "swapMaxSlippage": {
-    "message": "Max slippage"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask fee"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "The fee of $1% is automatically factored into this quote. You pay it in exchange for a license to use MetaMask's liquidity provider information aggregation software.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -12036,38 +12015,14 @@
     "message": "$1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapQuoteDetails": {
-    "message": "Quote details"
-  },
-  "swapQuoteSource": {
-    "message": "Quote source"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "No quotes available"
-  },
-  "swapRate": {
-    "message": "Rate"
-  },
-  "swapReceiving": {
-    "message": "Receiving"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "This is an estimate. The exact amount depends on slippage."
   },
   "swapRequestForQuotation": {
     "message": "Request for quotation"
   },
-  "swapSelect": {
-    "message": "Select"
-  },
-  "swapSelectAQuote": {
-    "message": "Select a quote"
-  },
   "swapSelectAToken": {
     "message": "Select token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Below are all the quotes gathered from multiple liquidity sources."
   },
   "swapSelectToken": {
     "message": "Select token"
@@ -12094,9 +12049,6 @@
   "swapSlippageTooltip": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
   },
-  "swapSource": {
-    "message": "Liquidity source"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps are complex and time sensitive transactions. We recommend this network fee for a good balance between cost and confidence of a successful Swap."
   },
@@ -12111,9 +12063,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the network fee for this swap. Enter a smaller amount or buy more $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% Slippage"
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"

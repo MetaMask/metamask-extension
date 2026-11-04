@@ -1248,12 +1248,6 @@
   "swapAggregator": {
     "message": "Agregador"
   },
-  "swapAmountReceived": {
-    "message": "Valor garantido"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Esse é o valor mínimo que você receberá. Você pode receber mais, dependendo do slippage."
-  },
   "swapApproval": {
     "message": "Aprovar $1 para trocas",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
@@ -1278,24 +1272,12 @@
     "message": "Isso vai $1 para trocas",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Taxas de rede estimadas"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Essa é a estimativa da taxa de rede que será usada para concluir sua troca. O valor real pode mudar conforme as condições de rede."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Erro ao obter cotações"
   },
   "swapIncludesMMFee": {
     "message": "Inclui uma taxa de $1% da MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapMaxSlippage": {
-    "message": "Slippage máximo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Taxa da MetaMask"
   },
   "swapMetaMaskFeeDescription": {
     "message": "Encontramos o melhor preço das principais fontes de liquidez – todas as vezes. Uma taxa de $1% é automaticamente incorporada nessa cotação.",
@@ -1305,50 +1287,20 @@
     "message": "$1 cotações.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapQuoteDetails": {
-    "message": "Detalhes da cotação"
-  },
-  "swapQuoteSource": {
-    "message": "Fonte da cotação"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Não há cotações disponíveis"
-  },
-  "swapRate": {
-    "message": "Taxa"
-  },
-  "swapReceiving": {
-    "message": "Recebendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Essa é uma estimativa. O valor exato dependerá do slippage."
   },
   "swapRequestForQuotation": {
     "message": "Solicitação de cotação"
   },
-  "swapSelect": {
-    "message": "Selecione"
-  },
-  "swapSelectAQuote": {
-    "message": "Selecione uma cotação"
-  },
   "swapSelectAToken": {
     "message": "Selecione um token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Abaixo estão todas as cotações reunidas de diversas fontes de liquidez."
-  },
-  "swapSource": {
-    "message": "Fonte de liquidez"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Trocas (swaps) são transações complexas e urgentes. Recomendamos essa taxa de gás para atingir o equilíbrio ideal entre o custo e a confiança de uma troca bem-sucedida."
   },
   "swapUnknown": {
     "message": "Desconhecido"
-  },
-  "swapZeroSlippage": {
-    "message": "0% de slippage"
   },
   "swapsMaxSlippage": {
     "message": "Tolerância a slippage"

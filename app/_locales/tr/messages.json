@@ -11821,12 +11821,6 @@
   "swapAggregator": {
     "message": "Toplayıcı"
   },
-  "swapAmountReceived": {
-    "message": "Garantili tutar"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Bu, alacağınız minimum tutardır. Kaymaya bağlı olarak daha fazla alabilirsiniz."
-  },
   "swapAndSend": {
     "message": "Swap Gerçekleştir ve Gönder"
   },
@@ -11860,12 +11854,6 @@
     "message": "Bu, takas için $1 kullanacak",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Tahmini ağ ücretleri"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Bu, takas işleminizi tamamlamak için kullanılacak ağ ücretinin bir tahminidir. Gerçek miktar ağ koşullarına göre değişebilir."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Teklifler alınırken hata"
   },
@@ -11890,15 +11878,6 @@
     "message": "%$1 MetaMask ücreti dahildir.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Dönüştürme oranlarını ve ağ ücretlerini karşılaştırmak için birden fazla likidite kaynağında (borsalar, toplayıcılar ve profesyonel piyasa yapıcıları) arama yaparız."
-  },
-  "swapMaxSlippage": {
-    "message": "Maks. kayma"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask ücreti"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "%$1 oranında bir ücret otomatik olarak bu teklife dahil edilmiştir. MetaMask'in likidite sağlayıcı bilgilerinin toplandığı yazılımı kullanma lisansı karşılığında ödersiniz.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -11907,38 +11886,14 @@
     "message": "$1 teklif.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapQuoteDetails": {
-    "message": "Teklif ayrıntıları"
-  },
-  "swapQuoteSource": {
-    "message": "Teklif kaynağı"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Teklif mevcut değil"
-  },
-  "swapRate": {
-    "message": "Oran"
-  },
-  "swapReceiving": {
-    "message": "Alınıyor"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Bu bir tahmindir. Gerçek miktar kaymaya göre belirlenecektir."
   },
   "swapRequestForQuotation": {
     "message": "Teklif talebi"
   },
-  "swapSelect": {
-    "message": "Seç"
-  },
-  "swapSelectAQuote": {
-    "message": "Teklif seç"
-  },
   "swapSelectAToken": {
     "message": "Token seç"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Birden fazla likidite kaynağından alınmış tüm teklifler aşağıdadır."
   },
   "swapSelectToken": {
     "message": "Token seçin"
@@ -11965,9 +11920,6 @@
   "swapSlippageTooltip": {
     "message": "Emrinizi verdiğiniz zaman ile emrinizin onaylandığı zaman arasında geçen sürede fiyat değişirse buna \"kayma\" denir. Kayma, \"kayma toleransı\" ayarınızı aşarsa takas işleminiz otomatik olarak iptal edilir."
   },
-  "swapSource": {
-    "message": "Likidite kaynağı"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Takas işlemleri karmaşıktır ve zaman hassasiyeti taşır. Başarılı bir Takas işleminin maliyeti ile gerçekleşme güvenliği arasında iyi bir denge kurulması için bu ağ ücretini öneriyoruz."
   },
@@ -11982,9 +11934,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Bu takas işlemi için ağ ücretini ödemeye yetecek $1 yok. Daha küçük bir tutar girin veya daha fazla $1 satın alın."
-  },
-  "swapZeroSlippage": {
-    "message": "%0 Kayma"
   },
   "swapsMaxSlippage": {
     "message": "Kayma toleransı"

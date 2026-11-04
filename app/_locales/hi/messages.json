@@ -11804,12 +11804,6 @@
   "swapAggregator": {
     "message": "एग्रीगेटर"
   },
-  "swapAmountReceived": {
-    "message": "गारंटी रकम"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "यह आपको प्राप्त होने वाली कम-से-कम अमाउंट है। आप स्लिपेज के आधार पर अधिक प्राप्त कर सकते हैं।"
-  },
   "swapAndSend": {
     "message": "स्वैप करें और भेजें"
   },
@@ -11843,12 +11837,6 @@
     "message": "विनिमय के लिए यह $1 होगा",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "अनुमानित नेटवर्क फ़ीस"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "यह नेटवर्क फ़ीस का एक अनुमान है, जिसे आपके स्वैप को पूरा करने के लिए इस्तेमाल किया जाएगा। नेटवर्क का स्टेटसयों के अनुसार वास्तविक अमाउंट बदल सकती है।"
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "उद्धरण प्राप्त करने में गड़बड़ी"
   },
@@ -11873,15 +11861,6 @@
     "message": "$1% MetaMask फ़ीस शामिल है।",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
-  "swapLiquiditySourceInfo": {
-    "message": "एक्सचेंज रेट्स और नेटवर्क फ़ीस की तुलना करने के लिए, हम कई लिक्विडिटी सोर्सेज़ (एक्सचेंज, एग्रीगेटर्स और प्रोफेशनल मार्किट मेकर्स) ढूंढते हैं।"
-  },
-  "swapMaxSlippage": {
-    "message": "अधिकतम गिरावट"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask फीस"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "$1% का फ़ीस ऑटोमेटिक तरीके से इस उद्धरण में समाविष्ट हो जाता है। आप इसे MetaMask's के तरलता प्रोवाइडर सूचना एकत्रीकरण सॉफ़्टवेयर का इस्तेमाल करने के लिए लाइसेंस के बदले में पेमेंट करते हैं।",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -11890,38 +11869,14 @@
     "message": "$1 उद्धरण.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapQuoteDetails": {
-    "message": "विवरण का उद्धरण दें"
-  },
-  "swapQuoteSource": {
-    "message": "उद्धरण का स्रोत"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "कोई भी उद्धरण उपलब्ध नहीं हैं"
-  },
-  "swapRate": {
-    "message": "रेट"
-  },
-  "swapReceiving": {
-    "message": "प्राप्त कर रहे हैं"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "यह एक अनुमान है। सटीक अमाउंट स्लिपेज पर निर्भर करती है।"
   },
   "swapRequestForQuotation": {
     "message": "उद्धरण के लिए अनुरोध"
   },
-  "swapSelect": {
-    "message": "चयन करें"
-  },
-  "swapSelectAQuote": {
-    "message": "एक उद्धरण को चुनें"
-  },
   "swapSelectAToken": {
     "message": "टोकन चुनें"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "नीचे दिए गए सभी उद्धरण कई चलनिधि स्रोतों से एकत्र किए गए हैं।"
   },
   "swapSelectToken": {
     "message": "टोकन चुनें"
@@ -11948,9 +11903,6 @@
   "swapSlippageTooltip": {
     "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः कैंसिल हो जाएगा।"
   },
-  "swapSource": {
-    "message": "चलनिधि का स्रोत"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "विनिमय जटिल और समय के प्रति संवेदनशील ट्रांसेक्शन हैं। हम एक सफल विनिमय की लागत और विश्वास के बीच अच्छे संतुलन के लिए इस नेटवर्क फ़ीस की अनुशंसा करते हैं।"
   },
@@ -11965,9 +11917,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "इस स्वैप के लिए नेटवर्क फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"
-  },
-  "swapZeroSlippage": {
-    "message": "0% स्लिपेज"
   },
   "swapsMaxSlippage": {
     "message": "स्लिपेज (slippage) टॉलरेंस"

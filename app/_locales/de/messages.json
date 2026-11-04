@@ -11804,12 +11804,6 @@
   "swapAggregator": {
     "message": "Aggregator"
   },
-  "swapAmountReceived": {
-    "message": "Garantierter Betrag"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Dies ist der Mindestbetrag, den Sie empfangen werden. Je nach Slippage können Sie auch mehr empfangen."
-  },
   "swapAndSend": {
     "message": "Swappen und Senden"
   },
@@ -11843,12 +11837,6 @@
     "message": "Das macht $1 für Swapping.",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Geschätzte Netzwerkgebühren"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Dies ist eine Schätzung der Netzwerkgebühr, die für den Abschluss Ihres Swaps verwendet wird. Der tatsächliche Betrag kann sich je nach Netzwerkbedingungen ändern."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Fehler beim Abrufen der Angebote"
   },
@@ -11873,15 +11861,6 @@
     "message": "Enthält eine MetaMask-Gebühr von $1%.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Wir durchsuchen mehrere Liquiditätsquellen (Börsen, Aggregatoren und professionelle Market Maker), um Wechselkurse und Netzwerkgebühren zu vergleichen."
-  },
-  "swapMaxSlippage": {
-    "message": "Maximale Slippage"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask-Gebühr"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "Die Gebühr von $1% ist automatisch in diesem Angebot enthalten. Sie zahlen sie als Gegenleistung für eine Lizenz zur Nutzung der Software von MetaMask zur Aggregation von Liquiditätsanbieterinformationen.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -11890,38 +11869,14 @@
     "message": "$1 Angebote.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapQuoteDetails": {
-    "message": "Angebotsdetails"
-  },
-  "swapQuoteSource": {
-    "message": "Angebotsquelle"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Keine Angebote verfügbar"
-  },
-  "swapRate": {
-    "message": "Preis"
-  },
-  "swapReceiving": {
-    "message": "Empfangen"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Dies ist eine Schätzung. Der genaue Betrag hängt von der Slippage ab."
   },
   "swapRequestForQuotation": {
     "message": "Angebotsanfrage"
   },
-  "swapSelect": {
-    "message": "Auswählen"
-  },
-  "swapSelectAQuote": {
-    "message": "Angebot auswählen"
-  },
   "swapSelectAToken": {
     "message": "Token auswählen"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Unten sind alle Kurse aus verschiedenen Liquiditätsquellen zusammengefasst."
   },
   "swapSelectToken": {
     "message": "Token auswählen"
@@ -11948,9 +11903,6 @@
   "swapSlippageTooltip": {
     "message": "Wenn sich der Kurs zwischen der Aufgabe Ihrer Order und der Bestätigung ändert, nennt man das „Slippage”. Ihr Swap wird automatisch storniert, wenn die Abweichung die von Ihnen eingestellte „Abweichungstoleranz” überschreitet."
   },
-  "swapSource": {
-    "message": "Liquiditätsquelle"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps sind komplexe und zeitkritische Transaktionen. Wir empfehlen diese Netzwerkgebühr für ein gutes Gleichgewicht zwischen Kosten und Vertrauen in einen erfolgreichen Swap."
   },
@@ -11965,9 +11917,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Sie haben nicht genug $1, um die Netzwerkgebühr für diesen Swap zu entrichten. Geben Sie einen kleineren Betrag ein oder kaufen Sie weitere $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0 % Slippage"
   },
   "swapsMaxSlippage": {
     "message": "Slippage-Toleranz"

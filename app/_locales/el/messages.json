@@ -11807,12 +11807,6 @@
   "swapAggregator": {
     "message": "Φορέας συγκέντρωσης οικονομικών πληροφοριών"
   },
-  "swapAmountReceived": {
-    "message": "Εγγυημένο ποσό"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Αυτό είναι το ελάχιστο ποσό που θα λάβετε. Ενδέχεται να λάβετε περισσότερα ανάλογα με την ολίσθηση."
-  },
   "swapAndSend": {
     "message": "Ανταλλαγή & Αποστολή"
   },
@@ -11846,12 +11840,6 @@
     "message": "Αυτό θα $1 για ανταλλαγή",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Εκτιμώμενα τέλη δικτύου"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Πρόκειται για μια εκτίμηση της χρέωσης του δικτύου που θα χρησιμοποιηθεί για την ολοκλήρωση της ανταλλαγής σας. Το πραγματικό ποσό μπορεί να αλλάξει ανάλογα με τις συνθήκες του δικτύου."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Σφάλμα κατά τη λήψη προσφορών"
   },
@@ -11876,15 +11864,6 @@
     "message": "Περιλαμβάνει μια χρέωση $1% στο MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Αναζητούμε πολλαπλές πηγές ρευστότητας (χρηματιστήρια, συσσωρευτές και επαγγελματίες διαπραγματευτές αγοράς) για να συγκρίνουμε τις ισοτιμίες ανταλλαγής και τα τέλη δικτύου."
-  },
-  "swapMaxSlippage": {
-    "message": "Μέγιστη απόκλιση"
-  },
-  "swapMetaMaskFee": {
-    "message": "Χρεώσεις στο MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "Μια χρέωση $1% συνυπολογίζεται αυτόματα σε αυτή την προσφορά. Την καταβάλλετε ως αντάλλαγμα για την άδεια χρήσης του λογισμικού συγκέντρωσης πληροφοριών για τους παρόχους ρευστότητας του MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -11893,38 +11872,14 @@
     "message": "$1 προσφορές.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapQuoteDetails": {
-    "message": "Λεπτομέρειες προσφοράς"
-  },
-  "swapQuoteSource": {
-    "message": "Πηγή προσφοράς"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Καμία διαθέσιμη προσφορά"
-  },
-  "swapRate": {
-    "message": "Τιμή"
-  },
-  "swapReceiving": {
-    "message": "Ελήφθη"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Πρόκειται για εκτίμηση. Το ακριβές ποσό εξαρτάται από την ολίσθηση."
   },
   "swapRequestForQuotation": {
     "message": "Αίτημα για προσφορά"
   },
-  "swapSelect": {
-    "message": "Επιλέξτε"
-  },
-  "swapSelectAQuote": {
-    "message": "Επιλέξτε μια προσφορά"
-  },
   "swapSelectAToken": {
     "message": "Επιλέξτε token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Παρακάτω παρατίθενται όλες οι προσφορές που συγκεντρώθηκαν από πολλαπλές πηγές ρευστότητας."
   },
   "swapSelectToken": {
     "message": "Επιλέξτε token"
@@ -11951,9 +11906,6 @@
   "swapSlippageTooltip": {
     "message": "Εάν η τιμή αλλάξει μεταξύ της ώρας που η εντολή αγοράς σας υποβάλλεται και επιβεβαιώνεται, αυτό ονομάζεται «απόκλιση». Η συναλλαγή θα ακυρωθεί αυτόματα εάν η απόκλιση υπερβαίνει τη ρύθμιση «ανοχή απόκλισης»."
   },
-  "swapSource": {
-    "message": "Πηγή ρευστότητας"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Οι ανταλλαγές είναι πολύπλοκες που απαιτούν άμεση εκτέλεση. Συνιστούμε αυτά τα τέλη δικτύου για μια καλή ισορροπία μεταξύ κόστους και πιθανότητας επιτυχούς ολοκλήρωσης της ανταλλαγής."
   },
@@ -11968,9 +11920,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη δικτύου για αυτήν την ανταλλαγή. Πληκτρολογήστε μικρότερο ποσό ή αγοράστε περισσότερα $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% Απόκλιση"
   },
   "swapsMaxSlippage": {
     "message": "Ανοχή απόκλισης"

@@ -5041,12 +5041,6 @@
   "swapAggregator": {
     "message": "Comhiomlánaitheoir"
   },
-  "swapAmountReceived": {
-    "message": "Méid ráthaithe"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Seo an méid íosta a gheobhaidh tú. Féadfaidh tú níos mó a fháil ag brath ar an méid a shleamhnaíonn tú."
-  },
   "swapAndSend": {
     "message": "Malartaigh & Seol"
   },
@@ -5080,12 +5074,6 @@
     "message": "Cosnóidh sé seo $1 le haghaidh malartú",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEstimatedNetworkFees": {
-    "message": "Táillí líonra measta"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Seo meastachán ar an táille líonra a úsáidfear chun do mhalartú a chríochnú. Féadfaidh an méid iarbhír athrú de réir choinníollacha an líonra."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Earráid ag fáil luachana"
   },
@@ -5104,15 +5092,6 @@
     "message": "Áirítear táille $1% le haghaidh MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
-  "swapLiquiditySourceInfo": {
-    "message": "Déanaimid cuardach ar fhoinsí leachtachta iolracha (malartáin, comhiomlánaitheoirí agus lucht déanta margaidh gairmiúla) chun rátaí malairte agus táillí líonra a chur i gcomparáid."
-  },
-  "swapMaxSlippage": {
-    "message": "Sleamhnú uasta"
-  },
-  "swapMetaMaskFee": {
-    "message": "Táille MetaMask"
-  },
   "swapMetaMaskFeeDescription": {
     "message": "Cuirtear an táille $1% san áireamh go huathoibríoch sa luachan seo. Íocann tú í mar mhalairt ar cheadúnas chun bogearraí comhiomlánaithe faisnéise soláthraí leachtachta MetaMask a úsáid.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
@@ -5121,38 +5100,14 @@
     "message": "Sleachta $1.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapQuoteDetails": {
-    "message": "Sonraí luachana"
-  },
-  "swapQuoteSource": {
-    "message": "Foinse luachana"
-  },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Níl aon luachana ar fáil"
-  },
-  "swapRate": {
-    "message": "Ráta"
-  },
-  "swapReceiving": {
-    "message": "Ag fáil"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Is meastachán é seo. Braitheann an méid cruinn ar an sciorradh."
   },
   "swapRequestForQuotation": {
     "message": "Iarratas ar luachan"
   },
-  "swapSelect": {
-    "message": "Roghnaigh"
-  },
-  "swapSelectAQuote": {
-    "message": "Roghnaigh luachan"
-  },
   "swapSelectAToken": {
     "message": "Roghnaigh comhartha"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Seo thíos na luachana go léir a bailíodh ó fhoinsí leachtachta éagsúla."
   },
   "swapSelectToken": {
     "message": "Roghnaigh comhartha"
@@ -5176,9 +5131,6 @@
   "swapSlippageTooltip": {
     "message": "Má athraíonn an praghas idir an t-am a chuirtear d’ordú agus an t-am a dheimhnítear é, tugtar “sleamhnú” air. Cuirfear do mhalartú ar ceal go huathoibríoch má sháraíonn an sleamhnú do shocrú “lamháltas sleamhnú”."
   },
-  "swapSource": {
-    "message": "Foinse leachtachta"
-  },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Is idirbhearta casta agus íogaire ó thaobh ama de iad malartuithe. Molaimid an táille gáis seo le haghaidh cothromaíocht mhaith idir costas agus muinín as malartú rathúil."
   },
@@ -5193,9 +5145,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Níl go leor $1 agat chun an táille gáis a íoc don mhalartú seo. Cuir isteach méid níos lú nó ceannaigh níos mó $1."
-  },
-  "swapZeroSlippage": {
-    "message": "Sleamhnú 0%"
   },
   "swapsMaxSlippage": {
     "message": "Caoinfhulaingt sleamhnáin"
