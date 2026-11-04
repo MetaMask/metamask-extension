@@ -19,7 +19,6 @@ import {
   getUseExternalServices,
   getUseNftDetection,
 } from '../../../../../selectors';
-import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
@@ -138,26 +137,27 @@ const AssetListControlBar = ({
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
-  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
-  const isEvmOnlySelectedAccountGroup = useSelector(
+  const selectedAccountGroupAccounts = useSelector(
     (state: MetaMaskReduxState) => {
       const multichainAccountsState =
         state as unknown as MultichainAccountsState;
       const selectedAccountGroup = getSelectedAccountGroup(
         multichainAccountsState,
       );
-      const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+      return getInternalAccountsFromGroupById(
         multichainAccountsState,
         selectedAccountGroup,
       );
-
-      return (
-        selectedAccountGroupAccounts.length > 0 &&
-        selectedAccountGroupAccounts.every((account) =>
-          isEvmAccountType(account.type),
-        )
-      );
     },
+  );
+
+  const isEvmOnlySelectedAccountGroup = useMemo(
+    () =>
+      selectedAccountGroupAccounts.length > 0 &&
+      selectedAccountGroupAccounts.every((account) =>
+        isEvmAccountType(account.type),
+      ),
+    [selectedAccountGroupAccounts],
   );
 
   const { collections } = useNftsCollections();
@@ -376,9 +376,9 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    if (selectedInternalAccount) {
+    if (selectedAccountGroupAccounts.length > 0) {
       dispatch(
-        refreshAssetsForSelectedAccount([selectedInternalAccount], {
+        refreshAssetsForSelectedAccount(selectedAccountGroupAccounts, {
           chainIds: selectedCaipChainIds,
           assetTypes: ['token', 'price', 'metadata'],
         }),
