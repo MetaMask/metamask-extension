@@ -7609,10 +7609,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:3.2.0"
-  checksum: 10/3a43cf6865b6e813a51511944b5b871eab3d266308abe64daa8accf2a17b250907f58fd04b7df9ea444ec5d7e80d63c4bdbbdfe2cca1c7aefd43e173c273f872
+"@metamask/bitcoin-wallet-snap@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:3.3.0"
+  checksum: 10/cab9f63967477e0f36792adeb4963f1b4271f078a93231f3df7a379712078516f824b13d7b2cfb06b9ad0215b90256d3b1299b34ca61869f556455859508de5d
   languageName: node
   linkType: hard
 
@@ -7812,11 +7812,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-mcp-core@npm:0.12.0":
-  version: 0.12.0
-  resolution: "@metamask/client-mcp-core@npm:0.12.0"
+"@metamask/client-mcp-core@npm:0.13.1":
+  version: 0.13.1
+  resolution: "@metamask/client-mcp-core@npm:0.13.1"
   dependencies:
-    "@metamask/device-mcp": "npm:^0.4.2"
+    "@metamask/device-mcp": "npm:^0.7.0"
     cosmiconfig: "npm:^9.0.0"
     express: "npm:^5.2.1"
     zod: "npm:^4.4.3"
@@ -7825,7 +7825,7 @@ __metadata:
     playwright: ^1.49.0
   bin:
     mm: ./dist/cli/mm.cjs
-  checksum: 10/e2a3ce59c594c3253501ef76d52450968a6b3f857fb4c5a309abdd6b343ee5265d983a7103cd5735fd515108754e2ebc1da30a3af1220867a80ed3e36e18b4f9
+  checksum: 10/3c19ef10f5331d7c78209b10c529709f0804250575cddf6d60105b70a5a6092cf71a09d942d6c4f5399afafd0510db3e80a5690efda4538c2ee360ea501bdcb8
   languageName: node
   linkType: hard
 
@@ -8120,15 +8120,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/device-mcp@npm:^0.4.2":
-  version: 0.4.2
-  resolution: "@metamask/device-mcp@npm:0.4.2"
+"@metamask/device-mcp@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/device-mcp@npm:0.7.0"
   dependencies:
     "@modelcontextprotocol/sdk": "npm:^1.12.1"
     zod: "npm:^4.4.3"
   bin:
     device-mcp: ./dist/cli/device-mcp.mjs
-  checksum: 10/e6132f78ef90ae51460a9d88d23c0f5fb74ddde27ea10e3abcc95f01c0a8d1eaa57b5e542b00a7db5f9fbff86a7976fc6880d9fe6c1bd3f5f66b7fc6de475a02
+  checksum: 10/6a779002606d52f0be42f3a0f12668b9d277ac40a872334035dab45967c57f135272a3b0e8c3d1027ed5b58dc6440bda4015f4f1535da70868e918010b313111
   languageName: node
   linkType: hard
 
@@ -9813,39 +9813,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^20.1.0":
-  version: 20.1.0
-  resolution: "@metamask/perps-controller@npm:20.1.0"
-  dependencies:
-    "@metamask/abi-utils": "npm:^2.0.4"
-    "@metamask/base-controller": "npm:^10.0.0"
-    "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.0"
-    "@nktkas/hyperliquid": "npm:^0.33.3"
-    bignumber.js: "npm:^9.1.2"
-    reselect: "npm:^5.3.0"
-    uuid: "npm:^11.1.1"
-  checksum: 10/6cb74549c34dd13847af4b28c5c1c08afcae415ac3bfdc91567630db0f971275f8be99dba6385bbc2e29eb12fb9da241c9dd4809106695f9fc6656f9608666bc
-  languageName: node
-  linkType: hard
-
-"@metamask/perps-controller@npm:^22.0.0":
-  version: 22.0.0
-  resolution: "@metamask/perps-controller@npm:22.0.0"
+"@metamask/perps-controller@npm:^22.0.0, @metamask/perps-controller@npm:^22.1.1":
+  version: 22.1.1
+  resolution: "@metamask/perps-controller@npm:22.1.1"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.4"
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^12.0.0"
+    "@metamask/utils": "npm:^12.0.1"
     "@nktkas/hyperliquid": "npm:^0.33.3"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.3.0"
-    uuid: "npm:^11.1.1"
-  checksum: 10/429c1afbe531ee9a96517b91db6c572936fa69ea21c40525d7d4f09685c81455293a1633a984d4c0c85b62e302fa6abc0eb989611eb00fac8611951a2304a159
+    uuid: "npm:^14.0.1"
+  checksum: 10/55554da0140926610f2d1e28dc7768953498421a903b1cf85a98bf1630bd733e6574c8da2eee13025d27e29de10cd873110347c7e1054e7fd72aef7b5c4dd731
   languageName: node
   linkType: hard
 
@@ -10938,10 +10920,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "@metamask/tron-wallet-snap@npm:4.3.0"
-  checksum: 10/e2c332fe66bdbd7e02d34c375ac335d7d2a847184700e9fbb673b1b1fd325222196d95a215b4f6360fdb423c8d626394a393442fb4b86c90baa8ec61b74f1c84
+"@metamask/tron-wallet-snap@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "@metamask/tron-wallet-snap@npm:4.3.1"
+  checksum: 10/b2612a384a1767b4a528379d7003d00c1d1526d1c0bcb813fc6e0b5e473b409048bfd6ca767f73673bab2deb5bfd4abf9ea341decac2f23dd12858eea852b6da
   languageName: node
   linkType: hard
 
@@ -35509,7 +35491,7 @@ __metadata:
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^3.2.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^3.3.0"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^83.1.2"
     "@metamask/bridge-status-controller": "npm:^77.0.0"
@@ -35519,7 +35501,7 @@ __metadata:
     "@metamask/chomp-api-service": "npm:^4.0.2"
     "@metamask/claims-controller": "npm:^0.6.1"
     "@metamask/client-controller": "npm:^2.0.0"
-    "@metamask/client-mcp-core": "npm:0.12.0"
+    "@metamask/client-mcp-core": "npm:0.13.1"
     "@metamask/client-utils": "npm:^3.1.0"
     "@metamask/compliance-controller": "npm:^2.1.0"
     "@metamask/config-registry-controller": "npm:^5.0.0"
@@ -35605,7 +35587,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^14.1.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
-    "@metamask/perps-controller": "npm:^20.1.0"
+    "@metamask/perps-controller": "npm:^22.1.1"
     "@metamask/phishing-controller": "npm:^18.2.1"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/platform-api-docs": "npm:^0.2.1"
@@ -35657,7 +35639,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^72.3.0"
     "@metamask/transaction-pay-controller": "npm:^30.3.1"
     "@metamask/transaction-pay-middleware": "npm:^2.0.0"
-    "@metamask/tron-wallet-snap": "npm:^4.3.0"
+    "@metamask/tron-wallet-snap": "npm:^4.3.1"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^12.0.0"
     "@metamask/wallet": "npm:^20.0.0"
@@ -47642,7 +47624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^14.0.0":
+"uuid@npm:^14.0.0, uuid@npm:^14.0.1":
   version: 14.0.3
   resolution: "uuid@npm:14.0.3"
   bin:

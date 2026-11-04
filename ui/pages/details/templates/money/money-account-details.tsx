@@ -8,18 +8,18 @@ import { TransactionStatus as TransactionMetaStatus } from '@metamask/transactio
 import {
   applyDisplaySign,
   getDisplaySignPrefix,
-} from '../../../../shared/lib/activity/fiat';
-import type { MoneyAccountActivityItem } from '../../../../shared/lib/activity/types';
-import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
-import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../../../components/app/money/messenger';
-import { RouteMessengerProvider } from '../../../contexts/route-messenger';
-import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
-import { useMoneyAccountDeposit } from '../../../hooks/money/useMoneyAccountDeposit';
-import { useMoneyAccountInfo } from '../../../hooks/money/useMoneyAccountInfo';
-import { useFormatters } from '../../../hooks/useFormatters';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BlockExplorerButton } from '../components/block-explorer-button';
-import { MmPayDetailsLayout } from './mm-pay-details-layout';
+} from '../../../../../shared/lib/activity/fiat';
+import type { MoneyAccountActivityItem } from '../../../../../shared/lib/activity/types';
+import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../../shared/lib/money/constants';
+import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../../../../components/app/money/messenger';
+import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
+import { useLocalTransactionMeta } from '../../../../hooks/activity/useLocalTransactionMeta';
+import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
+import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { BlockExplorerButton } from '../../components/block-explorer-button';
+import { MmPayDetailsLayout } from '../mm-pay-details-layout';
 
 type Props = {
   item: MoneyAccountActivityItem;
