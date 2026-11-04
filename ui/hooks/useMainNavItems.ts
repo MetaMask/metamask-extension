@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { IconName } from '@metamask/design-system-react';
 import { transitionForward } from '../components/ui/transition';
 import { ScreenViewedEntryPoint } from '../../shared/constants/metametrics';
+import { openMoneyFtue, selectHasSeenMoneyFtue } from '../ducks/money-ftue';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
@@ -18,6 +19,7 @@ import {
 } from '../pages/money/constants/money-events';
 import { getDefaultHomeActiveTabName } from '../selectors';
 import { getIsPerpsExperienceAvailable } from '../selectors/perps/feature-flags';
+import { useDispatch } from '../store/hooks';
 import { useMoneyAccountAvailability } from './money/use-money-account-availability';
 import { useMoneyAnalytics } from './money/useMoneyAnalytics';
 import { useI18nContext } from './useI18nContext';
@@ -42,10 +44,12 @@ export type MainNavItem = {
 export function useMainNavItems(): MainNavItem[] {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const { availability: moneyAccountAvailability } =
     useMoneyAccountAvailability();
+  const hasSeenMoneyFtue = useSelector(selectHasSeenMoneyFtue);
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
   const { trackButtonClicked: trackMoneyButtonClicked } = useMoneyAnalytics({
     componentName: MoneyComponentName.HomeTab,
@@ -83,10 +87,16 @@ export function useMainNavItems(): MainNavItem[] {
       labelKey: 'money',
       redirectTarget: MoneyScreenName.MoneyHome,
     });
+
+    if (!hasSeenMoneyFtue) {
+      dispatch(openMoneyFtue({ source: 'moneyHome' }));
+      return;
+    }
+
     transitionForward(() =>
       navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
     );
-  }, [navigate, trackMoneyButtonClicked]);
+  }, [dispatch, hasSeenMoneyFtue, navigate, trackMoneyButtonClicked]);
 
   const handleActivityClick = useCallback(() => {
     transitionForward(() =>

@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { openMoneyFtue } from '../../ducks/money-ftue';
-import { selectMoneyFtueSeen } from '../../selectors/money/persisted-state';
+import { openMoneyFtue, selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
 import { useDispatch } from '../../store/hooks';
 
 export type UseOpenMoneyFtueOnFirstVisitOptions = {
@@ -23,7 +22,7 @@ export function useOpenMoneyFtueOnFirstVisit({
   isLoading,
 }: UseOpenMoneyFtueOnFirstVisitOptions): void {
   const dispatch = useDispatch();
-  const hasSeenFtue = useSelector(selectMoneyFtueSeen);
+  const hasSeenFtue = useSelector(selectHasSeenMoneyFtue);
   const hasOpenedRef = useRef(false);
 
   useEffect(() => {

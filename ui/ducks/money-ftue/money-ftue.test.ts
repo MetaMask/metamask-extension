@@ -8,6 +8,7 @@ import {
   selectIsMoneyFtueOpen,
   selectMoneyFtuePendingDeposit,
   selectMoneyFtueSource,
+  selectHasSeenMoneyFtue,
 } from '.';
 
 const preferredPaymentToken = {
@@ -24,6 +25,7 @@ describe('moneyFtue slice', () => {
     expect(initialState.isOpen).toBe(false);
     expect(initialState.source).toBeNull();
     expect(initialState.pendingDeposit).toBeNull();
+    expect(initialState.acknowledged).toBe(false);
   });
 
   it('opens for the Money home without a pending deposit', () => {
@@ -33,6 +35,7 @@ describe('moneyFtue slice', () => {
       isOpen: true,
       source: 'moneyHome',
       pendingDeposit: null,
+      acknowledged: false,
     });
   });
 
@@ -50,6 +53,7 @@ describe('moneyFtue slice', () => {
       isOpen: true,
       source: 'deposit',
       pendingDeposit: { preferredPaymentToken, intent: 'addMusd' },
+      acknowledged: false,
     });
   });
 
@@ -60,6 +64,7 @@ describe('moneyFtue slice', () => {
       isOpen: true,
       source: 'deposit',
       pendingDeposit: {},
+      acknowledged: false,
     });
   });
 
@@ -88,7 +93,10 @@ describe('moneyFtue slice', () => {
       }),
     );
 
-    expect(reducer(opened, closeMoneyFtue())).toStrictEqual(initialState);
+    expect(reducer(opened, closeMoneyFtue())).toStrictEqual({
+      ...initialState,
+      acknowledged: true,
+    });
   });
 });
 
@@ -98,6 +106,7 @@ describe('moneyFtue selectors', () => {
       isOpen: true,
       source: 'deposit',
       pendingDeposit: { preferredPaymentToken, intent: 'addMusd' },
+      acknowledged: false,
     });
 
     expect(selectIsMoneyFtueOpen(state)).toBe(true);
@@ -114,5 +123,24 @@ describe('moneyFtue selectors', () => {
     expect(selectIsMoneyFtueOpen(state)).toBe(false);
     expect(selectMoneyFtueSource(state)).toBeNull();
     expect(selectMoneyFtuePendingDeposit(state)).toBeNull();
+  });
+
+  it('treats either the persisted flag or the session acknowledgement as seen', () => {
+    const persistedSeen = {
+      metamask: { moneyFtueSeen: true },
+      moneyFtue: initialState,
+    } as unknown as MetaMaskReduxState;
+    const acknowledged = {
+      metamask: { moneyFtueSeen: false },
+      moneyFtue: { ...initialState, acknowledged: true },
+    } as unknown as MetaMaskReduxState;
+    const unseen = {
+      metamask: { moneyFtueSeen: false },
+      moneyFtue: initialState,
+    } as unknown as MetaMaskReduxState;
+
+    expect(selectHasSeenMoneyFtue(persistedSeen)).toBe(true);
+    expect(selectHasSeenMoneyFtue(acknowledged)).toBe(true);
+    expect(selectHasSeenMoneyFtue(unseen)).toBe(false);
   });
 });

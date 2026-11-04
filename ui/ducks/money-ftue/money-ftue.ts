@@ -16,12 +16,19 @@ export type MoneyFtueState = {
   isOpen: boolean;
   source: MoneyFtueSource | null;
   pendingDeposit: MoneyFtuePendingDeposit | null;
+  /**
+   * Set for the rest of the UI session when the user acknowledges the splash,
+   * so a deposit triggered before the persisted flag reaches the UI does not
+   * reopen it.
+   */
+  acknowledged: boolean;
 };
 
 export const initialState: MoneyFtueState = {
   isOpen: false,
   source: null,
   pendingDeposit: null,
+  acknowledged: false,
 };
 
 const moneyFtueSlice = createSlice({
@@ -57,6 +64,7 @@ const moneyFtueSlice = createSlice({
       state.isOpen = false;
       state.source = null;
       state.pendingDeposit = null;
+      state.acknowledged = true;
     },
   },
 });

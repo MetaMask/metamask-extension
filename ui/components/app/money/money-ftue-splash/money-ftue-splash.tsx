@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Button,
   ButtonIcon,
@@ -30,6 +31,7 @@ import {
   selectMoneyFtuePendingDeposit,
   selectMoneyFtueSource,
 } from '../../../../ducks/money-ftue';
+import { MONEY_HOME_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTrackOnce } from '../../../../hooks/useTrackOnce';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
@@ -46,6 +48,7 @@ import {
   MoneyScreenName,
 } from '../../../../pages/money/constants/money-events';
 import { PopoverPosition } from '../../../component-library';
+import { transitionForward } from '../../../ui/transition';
 import { TooltipText } from '../tooltip-text';
 
 export const MONEY_FTUE_SPLASH_TEST_ID = 'money-ftue-splash';
@@ -88,6 +91,8 @@ const BENEFITS = [
 const MoneyFtueSplashContent = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const source = useSelector(selectMoneyFtueSource);
   const pendingDeposit = useSelector(selectMoneyFtuePendingDeposit);
   const { apyPercentFormatted } = useMoneyVaultApy({ enabled: true });
@@ -132,14 +137,24 @@ const MoneyFtueSplashContent = () => {
           ...(pendingDeposit ?? {}),
           skipFtue: true,
         });
+      } else if (
+        source === 'moneyHome' &&
+        location.pathname !== MONEY_HOME_ROUTE
+      ) {
+        transitionForward(() =>
+          navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
+        );
       }
     },
     [
       dispatch,
       initiateDeposit,
       isDeposit,
+      location.pathname,
+      navigate,
       pendingDeposit,
       redirectTarget,
+      source,
       trackButtonClicked,
     ],
   );
@@ -179,7 +194,10 @@ const MoneyFtueSplashContent = () => {
       restoreFocus
     >
       {isPopup ? null : (
-        <ModalOverlay className={isSidepanel ? 'bg-transparent' : undefined} />
+        <ModalOverlay
+          className="bg-black/30"
+          data-testid="money-ftue-splash-overlay"
+        />
       )}
       <ModalContent
         size={ModalContentSize.Sm}

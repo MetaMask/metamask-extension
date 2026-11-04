@@ -5,6 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import BottomNavBar from '../../page-objects/pages/home/bottom-nav-bar-page';
 import MoneyFtueSplashPage from '../../page-objects/pages/money/money-ftue-splash-page';
 import MoneyHomePage from '../../page-objects/pages/money/money-home-page';
+import { login } from '../../page-objects/flows/login.flow';
 import { loginAndOpenMoneyHome } from '../../page-objects/flows/money-account-deposit.flow';
 import { getMoneyAccountDepositConfig } from '../confirmations/metamask-pay/helpers';
 
@@ -28,7 +29,13 @@ describe('Money Account FTUE', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginAndOpenMoneyHome(driver, localNodes[0]);
+        await login(driver, {
+          localNode: localNodes[0],
+          validateBalance: false,
+        });
+        const bottomNavBar = new BottomNavBar(driver);
+        await bottomNavBar.checkPageIsLoaded();
+        await bottomNavBar.clickMoney({ assertRoute: false });
 
         const splash = new MoneyFtueSplashPage(driver);
         await splash.checkPageIsLoaded();
@@ -41,7 +48,6 @@ describe('Money Account FTUE', function (this: Suite) {
         // Reload so the persisted seen flag is read back from background
         // state, then revisit Money through the tab.
         await driver.navigate();
-        const bottomNavBar = new BottomNavBar(driver);
         await bottomNavBar.checkPageIsLoaded();
         await bottomNavBar.clickMoney();
         await moneyHomePage.checkPageIsLoaded();

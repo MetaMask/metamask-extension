@@ -4,12 +4,11 @@ import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
-import { openMoneyFtue } from '../../ducks/money-ftue';
+import { openMoneyFtue, selectHasSeenMoneyFtue } from '../../ducks/money-ftue';
 import {
   selectMoneyFundingAccount,
   type MoneyFundingAccountState,
 } from '../../selectors/money/money-funding-account';
-import { selectMoneyFtueSeen } from '../../selectors/money/persisted-state';
 import {
   clearMoneyAccountDepositIntent,
   setMoneyAccountDepositIntent,
@@ -117,7 +116,7 @@ export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
   const dispatch = useDispatch();
-  const hasSeenFtue = useSelector(selectMoneyFtueSeen);
+  const hasSeenFtue = useSelector(selectHasSeenMoneyFtue);
   const isHardwareFundingEnabled = useSelector((state) =>
     selectIsPayHardwareEnabled(state, TransactionType.moneyAccountDeposit),
   );

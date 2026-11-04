@@ -47,3 +47,16 @@ export const selectMoneyFtuePendingDeposit = (
   state: MetaMaskReduxState,
 ): MoneyFtuePendingDeposit | null =>
   (state.moneyFtue as MoneyFtueState | undefined)?.pendingDeposit ?? null;
+
+/**
+ * Selects whether the user has seen the Money FTUE splash, including the
+ * optimistic acknowledgement made when the splash closes. Use this rather than
+ * the persisted-only selector for gating, so the async background write cannot
+ * reopen the splash in the same session.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the splash has been seen or acknowledged.
+ */
+export const selectHasSeenMoneyFtue = (state: MetaMaskReduxState): boolean =>
+  Boolean(state.metamask.moneyFtueSeen) ||
+  Boolean((state.moneyFtue as MoneyFtueState | undefined)?.acknowledged);

@@ -7,6 +7,7 @@ import {
 } from '../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import configureStore from '../../../../store/store';
+import { MONEY_HOME_ROUTE } from '../../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
@@ -27,7 +28,14 @@ const PREFERRED_PAYMENT_TOKEN = {
 };
 
 const mockInitiateDeposit = jest.fn();
+const mockNavigate = jest.fn();
 const mockMoneyAnalytics = createMoneyAnalyticsMock();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => ({ pathname: '/' }),
+}));
 
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
@@ -72,6 +80,7 @@ const createState = (
     isOpen: true,
     source: pendingDeposit ? 'deposit' : 'moneyHome',
     pendingDeposit,
+    acknowledged: false,
   },
 });
 
@@ -225,6 +234,31 @@ describe('MoneyFtueSplash', () => {
     expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
     expect(store.getState().moneyFtue.isOpen).toBe(false);
     expect(mockInitiateDeposit).not.toHaveBeenCalled();
+  });
+
+  it('fades the page behind the side panel card', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    renderSplash();
+
+    expect(screen.getByTestId('money-ftue-splash-overlay').className).toContain(
+      'bg-black/30',
+    );
+  });
+
+  it('navigates to Money home after acknowledging the Money-tab splash', () => {
+    const { store } = renderSplash(null);
+
+    fireEvent.click(
+      screen.getByTestId(MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID),
+    );
+
+    expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
+    expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      state: { stayOnHomePage: true },
+    });
   });
 
   it('expands a FAQ answer', () => {

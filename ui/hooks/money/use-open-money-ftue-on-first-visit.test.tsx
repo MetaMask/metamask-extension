@@ -32,6 +32,7 @@ describe('useOpenMoneyFtueOnFirstVisit', () => {
       isOpen: true,
       source: 'moneyHome',
       pendingDeposit: null,
+      acknowledged: false,
     });
   });
 
