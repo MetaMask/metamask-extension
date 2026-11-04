@@ -36,11 +36,9 @@ import {
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
-  useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { useHardwareWalletError } from '../../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import { isInE2eTest } from '../../../shared/lib/environment';
-import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { getDestChainId } from '../../pages/bridge/utils/quote';
@@ -88,7 +86,6 @@ export default function useSubmitBridgeTransaction(
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReadyOrError } = useHardwareWalletActions();
-  const { connectionState } = useHardwareWalletState();
   const { showErrorModal } = useHardwareWalletError();
   const inE2e = isInE2eTest();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -229,15 +226,18 @@ export default function useSubmitBridgeTransaction(
     setIsSubmitting(true);
 
     try {
-      if (
-        !inE2e &&
-        isHardwareWalletAccount &&
-        connectionState.status !== ConnectionStatus.Ready
-      ) {
+      if (!inE2e && isHardwareWalletAccount) {
         // Device preflight: a failure here must surface the error modal even
         // on bridge/quote pages, where auto-shown modals are route-gated off.
         // Manual showErrorModal calls bypass that gate; the provider still
         // filters user rejections itself.
+        //
+        // Always probe, even when `connectionState` is `Ready`: that state is
+        // never demoted when the Ledger app is closed or blind signing is
+        // turned off again, so trusting it skipped the check on every retry
+        // and the failure was silent (the swap simply failed). The
+        // confirmation/send flow always re-probes on submit for the same
+        // reason.
         const deviceError = await ensureDeviceReadyOrError();
         if (deviceError) {
           showErrorModal(deviceError);

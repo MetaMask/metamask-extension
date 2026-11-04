@@ -35,6 +35,7 @@ import {
 import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
+  ConnectionStatus,
   HardwareWalletProvider,
   HardwareWalletType,
 } from '../../contexts/hardware-wallets';
@@ -66,6 +67,10 @@ jest.mock('../../ducks/bridge/utils', () => ({
 }));
 
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(null);
+// Connection status observed by the hook. `ready` models the state left
+// behind after a device recovers from an earlier error (the recovery modal
+// calls `ensureDeviceReady`, which sets `ConnectionState.ready()`).
+let mockConnectionStatus = 'disconnected';
 jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
   return {
     ...jest.requireActual(
@@ -73,6 +78,9 @@ jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
     ),
     useHardwareWalletActions: () => ({
       ensureDeviceReadyOrError: () => mockEnsureDeviceReady(),
+    }),
+    useHardwareWalletState: () => ({
+      connectionState: { status: mockConnectionStatus },
     }),
   };
 });
@@ -248,6 +256,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       isHardwareWalletSpy.mockImplementation(() => false);
       mockEnsureDeviceReady.mockResolvedValue(null);
       captureExceptionSpy.mockReturnValue(undefined);
+      mockConnectionStatus = ConnectionStatus.Disconnected;
       setBackgroundConnection({
         getStatePatches: jest.fn(),
         messengerCall: jest.fn((actionType: string) => {
@@ -688,6 +697,47 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         );
       });
 
+      expect(mockShowErrorModal).toHaveBeenCalledWith(deviceError);
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('re-probes the device and shows the error when connection state is stale Ready', async () => {
+      // Regression: after the device recovered from an earlier error the
+      // connection state stays `Ready` (nothing demotes it when the Ledger
+      // app is closed or blind signing is turned off again). The swap flow
+      // must still probe on every submit, otherwise the second failure is
+      // silent and the swap fails with no error in MetaMask.
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      mockConnectionStatus = ConnectionStatus.Ready;
+      const deviceError = createHardwareWalletError(
+        ErrorCode.DeviceStateBlindSignNotSupported,
+        HardwareWalletType.Ledger,
+        'Blind signing is not enabled',
+      );
+      mockEnsureDeviceReady.mockResolvedValue(deviceError);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        );
+      });
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalledTimes(1);
       expect(mockShowErrorModal).toHaveBeenCalledWith(deviceError);
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).not.toHaveBeenCalled();
