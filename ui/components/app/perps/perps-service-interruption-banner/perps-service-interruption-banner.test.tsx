@@ -32,7 +32,10 @@ jest.mock('../../modals/visit-support-data-consent-modal', () => ({
     ) : null,
 }));
 
-const renderBanner = (enabled: boolean) => {
+const renderBanner = (
+  enabled: boolean,
+  onSupportConsentOpenChange?: (isOpen: boolean) => void,
+) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -43,7 +46,12 @@ const renderBanner = (enabled: boolean) => {
     },
   });
 
-  return renderWithProvider(<PerpsServiceInterruptionBanner />, store);
+  return renderWithProvider(
+    <PerpsServiceInterruptionBanner
+      onSupportConsentOpenChange={onSupportConsentOpenChange}
+    />,
+    store,
+  );
 };
 
 describe('PerpsServiceInterruptionBanner', () => {
@@ -115,5 +123,22 @@ describe('PerpsServiceInterruptionBanner', () => {
     expect(
       screen.queryByTestId('visit-support-data-consent-modal'),
     ).not.toBeInTheDocument();
+  });
+
+  it('notifies the host when the support consent modal opens and closes', () => {
+    const onSupportConsentOpenChange = jest.fn();
+    renderBanner(true, onSupportConsentOpenChange);
+
+    expect(onSupportConsentOpenChange).not.toHaveBeenCalled();
+
+    fireEvent.click(
+      screen.getByTestId('perps-service-interruption-banner-support-link'),
+    );
+
+    expect(onSupportConsentOpenChange).toHaveBeenCalledWith(true);
+
+    fireEvent.click(screen.getByTestId('visit-support-data-consent-modal'));
+
+    expect(onSupportConsentOpenChange).toHaveBeenLastCalledWith(false);
   });
 });
