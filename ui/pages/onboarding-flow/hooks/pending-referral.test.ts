@@ -30,7 +30,11 @@ const deferredResult = {
 describe('isDeferredReferralContextValid', () => {
   it('accepts a restored context that matches the deferred link', () => {
     expect(
-      isDeferredReferralContextValid(buildContext(), referringLink, deferredResult),
+      isDeferredReferralContextValid(
+        buildContext(),
+        referringLink,
+        deferredResult,
+      ),
     ).toBe(true);
   });
 

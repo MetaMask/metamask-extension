@@ -53,10 +53,7 @@ export function getDestinationTarget(
  * @param queryString - The serialized query string, possibly empty.
  * @returns The route to navigate to.
  */
-export function buildInternalRoute(
-  path: string,
-  queryString: string,
-): string {
+export function buildInternalRoute(path: string, queryString: string): string {
   return queryString ? `${path}?${queryString}` : path;
 }
 
