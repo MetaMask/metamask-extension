@@ -540,6 +540,14 @@ class BridgeQuotePage {
   };
 
   /**
+   * Waits for the submitted swap to clear the amount, then leaves Swaps.
+   */
+  goBackAfterSubmit = async () => {
+    await this.driver.waitForSelector(`${this.sourceAmount}[value=""]`);
+    await this.goBack();
+  };
+
+  /**
    * Navigates away from the bridge page via the bottom nav bar home tab.
    * Use this instead of `goBack` when the user is in the bottom nav AB test
    * treatment, where the back button is removed on the swap/bridge page.
