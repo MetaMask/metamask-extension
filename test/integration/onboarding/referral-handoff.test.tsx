@@ -41,7 +41,7 @@ describe('Referral handoff with the application router', () => {
       url: 'https://link.metamask.io/home?ref=ABC',
       code: 'ABC',
       entryType: 'restored_context',
-      requiresInterstitial: false,
+      status: 'authorized',
     };
     const fallback = createMockImplementation({});
     jest

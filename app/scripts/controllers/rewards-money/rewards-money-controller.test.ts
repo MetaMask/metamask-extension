@@ -246,7 +246,7 @@ describe('RewardsMoneyController', () => {
       );
       expect(context).toMatchObject({
         code: 'ABC123',
-        requiresInterstitial: true,
+        status: 'awaiting_continue',
       });
       expect(getReferralMe).not.toHaveBeenCalled();
       expect(registerReferee).not.toHaveBeenCalled();

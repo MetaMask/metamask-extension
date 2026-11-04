@@ -133,7 +133,9 @@ describe('DeepLinkRouter', () => {
             url,
             code: 'ABC',
             entryType: 'deeplink' as const,
-            requiresInterstitial,
+            status: requiresInterstitial
+              ? ('awaiting_continue' as const)
+              : ('authorized' as const),
           }),
         );
         router = new DeepLinkRouter({

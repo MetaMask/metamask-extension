@@ -261,7 +261,7 @@ describe('useOnboardingCompletion', () => {
       url: 'https://link.metamask.io/swap?ref=ABC',
       code: 'ABC',
       entryType: 'deeplink',
-      requiresInterstitial: false,
+      status: 'authorized',
     });
     const { result } = renderHookWithProvider(
       () => useOnboardingCompletion(),
@@ -282,7 +282,7 @@ describe('useOnboardingCompletion', () => {
       url: referringLink,
       code: 'ABC',
       entryType: 'restored_context',
-      requiresInterstitial: true,
+      status: 'awaiting_continue',
     });
     jest.mocked(deepLinkUtils.getDeferredDeepLinkRoute).mockResolvedValue({
       type: DeferredDeepLinkRouteType.Interstitial,
@@ -315,7 +315,7 @@ describe('useOnboardingCompletion', () => {
       url: referringLink,
       code: 'ABC',
       entryType: 'restored_context',
-      requiresInterstitial: true,
+      status: 'awaiting_continue',
     });
     jest.mocked(deepLinkUtils.getDeferredDeepLinkRoute).mockResolvedValue({
       type: DeferredDeepLinkRouteType.Navigate,
@@ -345,7 +345,7 @@ describe('useOnboardingCompletion', () => {
       url: referringLink,
       code: 'ABC',
       entryType: 'restored_context',
-      requiresInterstitial: true,
+      status: 'awaiting_continue',
     });
     jest.mocked(deepLinkUtils.getDeferredDeepLinkRoute).mockResolvedValue(null);
     const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import type { MoneyReferralContext } from '../../../shared/lib/deep-links/money-referral';
+import type { MoneyReferralOffer } from '../../../shared/lib/deep-links/money-referral';
 import { MoneyReferralHandoff } from './money-referral-handoff';
 
 const mockNavigate = jest.fn();
@@ -83,12 +83,13 @@ jest.mock(
   }),
 );
 
-const offer: MoneyReferralContext = {
+const offer: MoneyReferralOffer = {
   id: 'one',
   url: 'https://link.metamask.io/swap?ref=ABC&amount=123',
   code: 'ABC',
   entryType: 'deeplink',
-  requiresInterstitial: false,
+  status: 'authorized',
+  canOffer: true,
 };
 
 function renderHandoff({

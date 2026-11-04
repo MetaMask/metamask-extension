@@ -2,13 +2,23 @@ export const MONEY_REFERRAL_ROUTE = '/referral-invite';
 
 export type MoneyReferralEntryType = 'deeplink' | 'restored_context';
 
+/**
+ * A captured link waits for the security decision before its invite can be
+ * taken. Only `authorized` contexts may become an offer.
+ */
+export type MoneyReferralContextStatus = 'awaiting_continue' | 'authorized';
+
 export type MoneyReferralContext = {
   id: string;
   url: string;
   code: string;
   entryType: MoneyReferralEntryType;
-  requiresInterstitial: boolean;
-  canOffer?: boolean;
+  status: MoneyReferralContextStatus;
+};
+
+/** A taken context plus whether this client may actually offer it. */
+export type MoneyReferralOffer = MoneyReferralContext & {
+  canOffer: boolean;
 };
 
 /**

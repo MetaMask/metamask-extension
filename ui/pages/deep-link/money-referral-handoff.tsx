@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import {
   MONEY_REFERRAL_ROUTE,
   type MoneyReferralContext,
+  type MoneyReferralOffer,
 } from '../../../shared/lib/deep-links/money-referral';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { isDeepLinkHost } from '../../../shared/lib/deep-links/common';
@@ -55,7 +56,7 @@ const MoneyReferralHandoffContent = () => {
   const finished = useRef(false);
   const takeRequest = useRef<{
     search: string;
-    promise: Promise<MoneyReferralContext | null>;
+    promise: Promise<MoneyReferralOffer | null>;
   }>();
 
   const continueToDestination = useCallback(
@@ -116,7 +117,7 @@ const MoneyReferralHandoffContent = () => {
         if (cancelled) {
           return;
         }
-        if (offer && offer.canOffer !== false) {
+        if (offer && offer.canOffer) {
           offerProfileId.current = profileId;
           setContext(offer);
         } else if (offer) {

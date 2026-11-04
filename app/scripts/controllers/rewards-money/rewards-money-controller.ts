@@ -3,6 +3,7 @@ import {
   getMoneyReferralCode,
   type MoneyReferralContext,
   type MoneyReferralEntryType,
+  type MoneyReferralOffer,
 } from '../../../../shared/lib/deep-links/money-referral';
 import type {
   GetReferralMeDto,
@@ -197,7 +198,7 @@ export class RewardsMoneyController extends BaseController<
       url,
       code,
       entryType,
-      requiresInterstitial,
+      status: requiresInterstitial ? 'awaiting_continue' : 'authorized',
     };
     this.#pendingReferralCapturedAt = Date.now();
     return { ...this.#pendingReferralContext };
@@ -240,7 +241,7 @@ export class RewardsMoneyController extends BaseController<
   continueReferralContext(id: string): boolean {
     const context = this.#getActiveReferralContext();
     if (context?.id === id) {
-      context.requiresInterstitial = false;
+      context.status = 'authorized';
       return true;
     }
     return false;
@@ -263,9 +264,9 @@ export class RewardsMoneyController extends BaseController<
    * @param id - Context requested by the handoff route.
    * @returns The offer, or null if superseded, consumed, or not continued.
    */
-  takeReferralContext(id: string): MoneyReferralContext | null {
+  takeReferralContext(id: string): MoneyReferralOffer | null {
     const context = this.#getActiveReferralContext();
-    if (!context || context.id !== id || context.requiresInterstitial) {
+    if (!context || context.id !== id || context.status !== 'authorized') {
       return null;
     }
     this.#clearPendingReferralContext();

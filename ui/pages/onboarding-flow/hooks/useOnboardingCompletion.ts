@@ -126,7 +126,7 @@ export function useOnboardingCompletion() {
         pendingReferral &&
         (pendingReferral.entryType === 'deeplink' || validDeferredReferral)
       ) {
-        if (pendingReferral.requiresInterstitial) {
+        if (pendingReferral.status === 'awaiting_continue') {
           if (
             pendingReferral.entryType === 'restored_context' &&
             validDeferredReferral &&
