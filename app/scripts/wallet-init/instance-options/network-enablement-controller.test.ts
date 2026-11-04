@@ -15,16 +15,15 @@ import {
 } from '@metamask/account-tree-controller';
 import { KnownCaipNamespace } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { MessengerClientInitRequest } from '../types';
-import { buildControllerInitRequestMock } from '../test/utils';
+import { getRootMessenger } from '../../lib/messenger';
+import { MessengerClientInitRequest } from '../../messenger-client-init/types';
+import { buildControllerInitRequestMock } from '../../messenger-client-init/test/utils';
 import {
   getNetworkEnablementControllerInitMessenger,
   getNetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger,
-} from '../messengers/assets';
-import { getRootMessenger } from '../../lib/messenger';
-import { setupNetworkEnablementController } from '../../wallet-init/instance-options/network-enablement-controller';
-import { NetworkEnablementControllerInit } from './network-enablement-controller-init';
+} from '../../messenger-client-init/messengers/assets';
+import { setupNetworkEnablementController } from './network-enablement-controller';
 
 function runSetup(request: ReturnType<typeof getInitRequestMock>) {
   const messengerClient = {
@@ -97,7 +96,7 @@ function getInitRequestMock(
   return requestMock;
 }
 
-describe('NetworkEnablementControllerInit', () => {
+describe('setupNetworkEnablementController', () => {
   const originalEnv = { ...process.env };
 
   afterEach(() => {
@@ -494,46 +493,5 @@ describe('NetworkEnablementControllerInit', () => {
     } as never);
 
     expect(messengerClient.restoreEnabledNetworkMap).not.toHaveBeenCalled();
-  });
-});
-
-describe('NetworkEnablementControllerInit', () => {
-  it('returns the wallet instance without persisting it again', () => {
-    const request = getInitRequestMock();
-    const walletController = {
-      messenger: request.controllerMessenger,
-      state: {
-        enabledNetworkMap: {
-          eip155: { '0x1': true },
-        },
-        nativeAssetIdentifiers: {},
-      },
-      enableAllPopularNetworks: jest.fn(),
-      enableNetwork: jest.fn(),
-      enableNetworkInNamespace: jest.fn(),
-      restoreEnabledNetworkMap: jest.fn(),
-      init: jest.fn(),
-    };
-    request.getMessengerClient.mockReturnValue(
-      walletController as unknown as ReturnType<
-        typeof request.getMessengerClient
-      >,
-    );
-    request.persistedState = {
-      NetworkEnablementController: {
-        enabledNetworkMap: {
-          eip155: { '0x1': true },
-        },
-      },
-    } as unknown as typeof request.persistedState;
-
-    expect(NetworkEnablementControllerInit(request)).toEqual({
-      messengerClient: walletController,
-      persistedStateKey: null,
-      memStateKey: null,
-    });
-    expect(walletController.init).toHaveBeenCalledTimes(1);
-    expect(walletController.enableAllPopularNetworks).not.toHaveBeenCalled();
-    expect(walletController.enableNetwork).not.toHaveBeenCalled();
   });
 });

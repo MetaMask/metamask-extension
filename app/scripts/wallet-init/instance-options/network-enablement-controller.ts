@@ -39,8 +39,9 @@ type SetupNetworkEnablementControllerRequest = {
  * Extension-only NetworkEnablementController behavior.
  *
  * `@metamask/wallet` constructs the controller. `wallet.init()` runs before
- * MultichainNetworkController exists, so that first `init()` fails. Call this
- * after MultichainNetworkController and before TokenRatesController.
+ * MultichainNetworkController exists, so that first `init()` fails.
+ * `metamask-controller` calls this after messenger clients are registered and
+ * before `AssetsController.start()`.
  *
  * @param request - The wallet instance, init messenger, and persisted state.
  * @param request.networkEnablementController - The wallet-owned controller.

@@ -46,8 +46,6 @@ import {
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getAssetsContractControllerInitMessenger,
-  getNetworkEnablementControllerInitMessenger,
-  getNetworkEnablementControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -633,13 +631,6 @@ export const MESSENGER_FACTORIES = {
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  NetworkEnablementController: {
-    // The wallet already registered this namespace. Creating another messenger
-    // here would throw. Extension setup uses the wallet instance's messenger.
-    // The cast keeps this messenger in the root action/event union.
-    getMessenger: noop as typeof getNetworkEnablementControllerMessenger,
-    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
   ProfileMetricsController: {
     getMessenger: getProfileMetricsControllerMessenger,
