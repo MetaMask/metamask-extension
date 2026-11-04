@@ -20,7 +20,8 @@ import {
 } from '../../lib/helpers';
 import { getSecurityStatusBadge } from '../../lib/security-badge';
 import type { AssetData } from '../../lib/types';
-import { OverflowMenu } from '../../../../../shared/components/overflow-menu';
+// eslint-disable-next-line import-x/no-restricted-paths -- cashtag widget reuses extension UI overflow menu
+import { OverflowMenu } from '../../../../../ui/components/ui/overflow-menu/overflow-menu';
 import { PriceChart } from './price-chart';
 import { TokenAvatar } from './token-avatar';
 import { DisableConfirmDialog } from './disable-confirm-dialog';
