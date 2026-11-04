@@ -44,21 +44,20 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="relative flex w-full min-w-0 items-center justify-center overflow-hidden h-[88px] self-stretch"
-          data-testid="ramps-build-quote-amount-row"
-          style="min-height: 88px;"
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute font-hero whitespace-pre"
-            data-testid="hero-amount-prefix-probe"
-            style="font-size: 100px; visibility: hidden;"
+            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style="font-size: 100px;"
           >
             GBP
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
-            data-testid="ramps-build-quote-amount-symbol"
+            data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
             GBP
@@ -758,21 +757,20 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="relative flex w-full min-w-0 items-center justify-center overflow-hidden h-[88px] self-stretch"
-          data-testid="ramps-build-quote-amount-row"
-          style="min-height: 88px;"
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute font-hero whitespace-pre"
-            data-testid="hero-amount-prefix-probe"
-            style="font-size: 100px; visibility: hidden;"
+            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
-            data-testid="ramps-build-quote-amount-symbol"
+            data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
             $
@@ -906,21 +904,20 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="relative flex w-full min-w-0 items-center justify-center overflow-hidden h-[88px] self-stretch"
-          data-testid="ramps-build-quote-amount-row"
-          style="min-height: 88px;"
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute font-hero whitespace-pre"
-            data-testid="hero-amount-prefix-probe"
-            style="font-size: 100px; visibility: hidden;"
+            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
             class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
-            data-testid="ramps-build-quote-amount-symbol"
+            data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
             $
@@ -1078,21 +1075,20 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="relative flex w-full min-w-0 items-center justify-center overflow-hidden h-[88px] self-stretch"
-          data-testid="ramps-build-quote-amount-row"
-          style="min-height: 88px;"
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute font-hero whitespace-pre"
-            data-testid="hero-amount-prefix-probe"
-            style="font-size: 100px; visibility: hidden;"
+            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
             class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
-            data-testid="ramps-build-quote-amount-symbol"
+            data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
             $
@@ -1250,21 +1246,20 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="relative flex w-full min-w-0 items-center justify-center overflow-hidden h-[88px] self-stretch"
-          data-testid="ramps-build-quote-amount-row"
-          style="min-height: 88px;"
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute font-hero whitespace-pre"
-            data-testid="hero-amount-prefix-probe"
-            style="font-size: 100px; visibility: hidden;"
+            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
-            data-testid="ramps-build-quote-amount-symbol"
+            data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
             $
@@ -1398,21 +1393,20 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="relative flex w-full min-w-0 items-center justify-center overflow-hidden h-[88px] self-stretch"
-          data-testid="ramps-build-quote-amount-row"
-          style="min-height: 88px;"
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute font-hero whitespace-pre"
-            data-testid="hero-amount-prefix-probe"
-            style="font-size: 100px; visibility: hidden;"
+            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
-            data-testid="ramps-build-quote-amount-symbol"
+            data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
             $
@@ -1863,21 +1857,20 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="relative flex w-full min-w-0 items-center justify-center overflow-hidden h-[88px] self-stretch"
-          data-testid="ramps-build-quote-amount-row"
-          style="min-height: 88px;"
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute font-hero whitespace-pre"
-            data-testid="hero-amount-prefix-probe"
-            style="font-size: 100px; visibility: hidden;"
+            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style="font-size: 100px;"
           >
             $
           </span>
           <span
             class="text-error-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
-            data-testid="ramps-build-quote-amount-symbol"
+            data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
             $
@@ -2035,21 +2028,20 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
         class="flex flex-1 flex-col items-center justify-center gap-4"
       >
         <div
-          class="relative flex w-full min-w-0 items-center justify-center overflow-hidden h-[88px] self-stretch"
-          data-testid="ramps-build-quote-amount-row"
-          style="min-height: 88px;"
+          class="relative flex w-full min-w-0 items-center overflow-hidden justify-center"
+          data-testid="ramps-build-quote-amount"
+          style="height: 88px;"
         >
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute font-hero whitespace-pre"
-            data-testid="hero-amount-prefix-probe"
-            style="font-size: 100px; visibility: hidden;"
+            class="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style="font-size: 100px;"
           >
             GBP
           </span>
           <span
             class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
-            data-testid="ramps-build-quote-amount-symbol"
+            data-testid="ramps-build-quote-amount-prefix"
             style="font-size: 88px; line-height: 88px;"
           >
             GBP

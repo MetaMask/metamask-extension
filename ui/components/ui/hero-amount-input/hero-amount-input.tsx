@@ -1,198 +1,189 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import {
   FontFamily,
   Input,
+  Skeleton,
   Text,
   TextColor,
   TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
 
-import {
-  AMOUNT_INPUT_MAX_FONT_SIZE,
-  AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-  getAmountInputFontSizeForEm,
-  getAmountInputTextStyle,
-} from '../../../helpers/utils/amount-input-font-size';
-import { useAmountInputFontSize } from '../../../hooks/useAmountInputFontSize';
-
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   HERO_AMOUNT_DIGIT_WIDTH_EM,
+  HERO_AMOUNT_MAX_FONT_SIZE,
   HERO_AMOUNT_PREFIX_PROBE_FONT_SIZE,
+  HERO_AMOUNT_SKELETON_WIDTH,
   isPartialHeroAmount,
 } from './hero-amount-input.constants';
-import type { HeroAmountInputProps } from './hero-amount-input.types';
+import {
+  useHeroAmountPrefixWidthEm,
+  useHeroAmountRowWidth,
+} from './hero-amount-input.hooks';
+import type {
+  HeroAmountInputProps,
+  HeroAmountInputSkeletonProps,
+} from './hero-amount-input.types';
+import { getHeroAmountFontSize } from './hero-amount-input.utils';
 
-/**
- * Width of the prefix in em, measured from a fixed-size probe so the result
- * does not depend on the font size being chosen.
- *
- * @param prefix - The currency symbol or code.
- * @param probeRef - The offscreen element rendering the prefix.
- * @returns The prefix width in em.
- */
-function usePrefixWidthEm(
-  prefix: string,
-  probeRef: React.RefObject<HTMLSpanElement | null>,
-): number {
-  const [prefixEm, setPrefixEm] = useState(
-    () => prefix.length * HERO_AMOUNT_DIGIT_WIDTH_EM,
-  );
+// `color` is listed because this replaces the MMDS Input `transition-colors`.
+const SIZE_TRANSITION =
+  'transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none';
 
-  useLayoutEffect(() => {
-    const probe = probeRef.current;
-    if (!prefix || !probe) {
-      setPrefixEm(0);
-      return undefined;
-    }
-
-    const measure = () => {
-      const { width } = probe.getBoundingClientRect();
-      if (width <= 0) {
-        return;
-      }
-      const next = width / HERO_AMOUNT_PREFIX_PROBE_FONT_SIZE;
-      setPrefixEm((previous) => (previous === next ? previous : next));
-    };
-
-    measure();
-    let cancelled = false;
-    document.fonts?.ready.then(() => {
-      if (!cancelled) {
-        measure();
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [prefix, probeRef]);
-
-  return prefixEm;
-}
+export const HeroAmountInputSkeleton: React.FC<
+  HeroAmountInputSkeletonProps
+> = ({
+  maxFontSize = HERO_AMOUNT_MAX_FONT_SIZE,
+  align = 'center',
+  className,
+  'data-testid': dataTestId = 'hero-amount-input-skeleton',
+}) => (
+  <div
+    data-testid={dataTestId}
+    className={twMerge(
+      'flex w-full items-center',
+      align === 'start' ? 'justify-start' : 'justify-center',
+      className,
+    )}
+    style={{ height: maxFontSize }}
+  >
+    <Skeleton
+      height={maxFontSize}
+      width={HERO_AMOUNT_SKELETON_WIDTH}
+      className="rounded-lg"
+    />
+  </div>
+);
 
 export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
   prefix = '',
   value,
   onChange,
-  isValidInput = isPartialHeroAmount,
-  placeholder = '0',
+  maxDecimals,
   autoFocus = false,
   disabled = false,
   readOnly = false,
   hasError = false,
-  maxFontSize = AMOUNT_INPUT_MAX_FONT_SIZE,
-  fallbackWidth,
-  ariaLabel = 'Amount',
+  isLoading = false,
+  maxFontSize = HERO_AMOUNT_MAX_FONT_SIZE,
+  align = 'center',
   className,
   'data-testid': dataTestId = 'hero-amount-input',
-  prefixTestId = 'hero-amount-prefix',
-  inputTestId = 'hero-amount-field',
-  amountTestId = 'hero-amount-value',
   inputRef,
   prefixProps,
+  valueProps,
   inputProps,
-  amountProps,
-  containerProps,
 }) => {
+  const t = useI18nContext();
   const probeRef = useRef<HTMLSpanElement>(null);
-  const prefixEm = usePrefixWidthEm(prefix, probeRef);
-  const displayValue = value || placeholder;
-  const { containerRef, fontSize } = useAmountInputFontSize(displayValue, {
-    fallbackWidth,
+  const [rowRef, rowWidth] = useHeroAmountRowWidth();
+  const prefixEm = useHeroAmountPrefixWidthEm(prefix, probeRef);
+
+  if (isLoading) {
+    return (
+      <HeroAmountInputSkeleton
+        maxFontSize={maxFontSize}
+        align={align}
+        className={className}
+        data-testid={`${dataTestId}-skeleton`}
+      />
+    );
+  }
+
+  const displayValue = value || '0';
+  const fontSize = getHeroAmountFontSize(
+    prefixEm + displayValue.length * HERO_AMOUNT_DIGIT_WIDTH_EM,
+    rowWidth,
     maxFontSize,
-    widthEm: prefixEm + displayValue.length * HERO_AMOUNT_DIGIT_WIDTH_EM,
-  });
-  const amountStyle = getAmountInputTextStyle(fontSize);
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isValidInput(event.target.value)) {
-      return;
-    }
-    onChange?.(event);
-  };
+  );
+  const amountStyle = { fontSize, lineHeight: `${fontSize}px` };
+
   let textColor = TextColor.TextDefault;
   if (hasError) {
     textColor = TextColor.ErrorDefault;
-  } else if (disabled) {
+  } else if (disabled && !readOnly) {
     textColor = TextColor.TextMuted;
   }
-  const {
-    className: containerClassName,
-    style: containerStyle,
-    ...restContainerProps
-  } = containerProps ?? {};
+
   const { className: prefixClassName, ...restPrefixProps } = prefixProps ?? {};
+  const { className: valueClassName, ...restValueProps } = valueProps ?? {};
   const { className: inputClassName, ...restInputProps } = inputProps ?? {};
-  const { className: amountClassName, ...restAmountProps } = amountProps ?? {};
 
   return (
     <div
-      {...restContainerProps}
-      ref={containerRef}
+      ref={rowRef}
       data-testid={dataTestId}
       className={twMerge(
-        'relative flex w-full min-w-0 items-center justify-center overflow-hidden',
+        'relative flex w-full min-w-0 items-center overflow-hidden',
+        align === 'start' ? 'justify-start' : 'justify-center',
         className,
-        containerClassName,
       )}
-      style={{ minHeight: maxFontSize, ...containerStyle }}
+      style={{ height: maxFontSize }}
+      onClick={(event) => {
+        if (!disabled) {
+          event.currentTarget.querySelector('input')?.focus();
+        }
+      }}
     >
       {prefix ? (
-        <span
-          ref={probeRef}
-          aria-hidden="true"
-          data-testid="hero-amount-prefix-probe"
-          className="pointer-events-none absolute font-hero whitespace-pre"
-          style={{
-            fontSize: HERO_AMOUNT_PREFIX_PROBE_FONT_SIZE,
-            visibility: 'hidden',
-          }}
-        >
-          {prefix}
-        </span>
+        <>
+          <span
+            ref={probeRef}
+            aria-hidden="true"
+            className="pointer-events-none invisible absolute font-hero whitespace-pre"
+            style={{ fontSize: HERO_AMOUNT_PREFIX_PROBE_FONT_SIZE }}
+          >
+            {prefix}
+          </span>
+          <Text
+            data-testid={`${dataTestId}-prefix`}
+            {...restPrefixProps}
+            variant={TextVariant.AmountDisplayLg}
+            fontFamily={FontFamily.Hero}
+            color={textColor}
+            className={twMerge(SIZE_TRANSITION, prefixClassName)}
+            style={amountStyle}
+          >
+            {prefix}
+          </Text>
+        </>
       ) : null}
-      {prefix ? (
-        <Text
-          {...restPrefixProps}
-          data-testid={prefixTestId}
-          variant={TextVariant.AmountDisplayLg}
-          fontFamily={FontFamily.Hero}
-          color={textColor}
-          className={twMerge(
-            AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-            prefixClassName,
-          )}
-          style={amountStyle}
-        >
-          {prefix}
-        </Text>
-      ) : null}
+      {/*
+       * An <input> does not size to its value, so a hidden copy of the amount
+       * sizes this wrapper and the field fills it.
+       */}
       <span className="relative w-max min-w-[1ch] max-w-full">
         <Text
-          {...restAmountProps}
+          data-testid={`${dataTestId}-value`}
+          {...restValueProps}
           aria-hidden="true"
-          data-testid={amountTestId}
           variant={TextVariant.AmountDisplayLg}
           fontFamily={FontFamily.Hero}
           className={twMerge(
             'invisible block min-w-[1ch] whitespace-pre',
-            AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-            amountClassName,
+            SIZE_TRANSITION,
+            valueClassName,
           )}
           style={amountStyle}
         >
           {displayValue}
         </Text>
         <Input
+          aria-label={t('amount')}
+          data-testid={`${dataTestId}-input`}
           {...restInputProps}
           ref={inputRef}
-          aria-label={ariaLabel}
           autoFocus={autoFocus && !disabled}
-          data-testid={inputTestId}
           type="text"
           inputMode="decimal"
+          placeholder="0"
           value={value}
-          placeholder={placeholder}
-          onChange={handleChange}
+          onChange={(event) => {
+            if (isPartialHeroAmount(event.target.value, maxDecimals)) {
+              onChange?.(event.target.value);
+            }
+          }}
           isDisabled={disabled}
           isReadOnly={readOnly}
           isStateStylesDisabled
@@ -201,7 +192,7 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
             'absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero',
             textColor,
             disabled ? 'cursor-default' : 'cursor-text',
-            AMOUNT_INPUT_TRANSITION_CLASS_NAME,
+            SIZE_TRANSITION,
             inputClassName,
           )}
           style={amountStyle}

@@ -1,78 +1,76 @@
-import type { ChangeEvent, ComponentPropsWithoutRef, Ref } from 'react';
+import type { ComponentPropsWithoutRef, Ref } from 'react';
 
 import type { Input, Text } from '@metamask/design-system-react';
 
-import type { AmountInputFontSize } from '../../../helpers/utils/amount-input-font-size';
+import type { HeroAmountFontSize } from './hero-amount-input.constants';
 
 /**
- * Extra props for the prefix. `children`, color, and font size stay owned by
- * the component. `data-testid` is set with `prefixTestId`.
+ * Extra props for the prefix. Text, color, and font size stay owned by the
+ * component. `data-testid` defaults to `${data-testid}-prefix`.
  */
 export type HeroAmountPrefixProps = Omit<
   ComponentPropsWithoutRef<typeof Text>,
-  'children' | 'color' | 'style'
->;
+  'children' | 'color' | 'style' | 'variant' | 'fontFamily'
+> & { 'data-testid'?: string };
 
 /**
- * Extra props for the field. The value, change handler, and font size stay
- * owned by the component. `data-testid` is set with `inputTestId`.
- */
-export type HeroAmountFieldProps = Omit<
-  ComponentPropsWithoutRef<typeof Input>,
-  'value' | 'onChange' | 'style' | 'textVariant'
->;
-
-/**
- * Extra props for the hidden amount that sizes the field. `data-testid` is
- * set with `amountTestId`.
+ * Extra props for the hidden amount that sizes the field. `data-testid`
+ * defaults to `${data-testid}-value`.
  */
 export type HeroAmountValueProps = Omit<
   ComponentPropsWithoutRef<typeof Text>,
-  'children' | 'style'
->;
+  'children' | 'style' | 'variant' | 'fontFamily'
+> & { 'data-testid'?: string };
 
 /**
- * Extra props for the row. The font-size measurement ref stays owned by the
- * component. `data-testid` is set with `data-testid`.
+ * Extra props for the field, such as a paste handler. Value, change handling,
+ * state, and font size stay owned by the component. `data-testid` defaults to
+ * `${data-testid}-input`.
  */
-export type HeroAmountContainerProps = Omit<
-  ComponentPropsWithoutRef<'div'>,
-  'children'
->;
+export type HeroAmountFieldProps = Omit<
+  ComponentPropsWithoutRef<typeof Input>,
+  | 'value'
+  | 'onChange'
+  | 'style'
+  | 'textVariant'
+  | 'isDisabled'
+  | 'isReadOnly'
+  | 'autoFocus'
+  | 'type'
+  | 'inputMode'
+  | 'placeholder'
+> & { 'data-testid'?: string };
 
 export type HeroAmountInputProps = {
   /**
-   * Currency symbol or code rendered beside the amount. It is measured from
-   * the rendered glyph, so letter codes such as KRW do not need a width table.
+   * Currency symbol or code shown before the amount. Its rendered width is
+   * measured, so codes such as KRW need no width table.
    */
   prefix?: string;
   /**
-   * The amount typed into the field, without the currency prefix.
+   * The amount in the field, without the prefix.
    */
   value: string;
   /**
-   * Called with the input change event when the next value is accepted.
+   * Called with the next value when a keystroke is accepted: digits with at
+   * most one `.` or `,` separator.
    */
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (value: string) => void;
   /**
-   * Decides whether a typed value is kept. Defaults to digits with one
-   * separator. Return false to ignore the keystroke.
+   * Digits allowed after the separator. Unlimited if omitted.
    */
-  isValidInput?: (value: string) => boolean;
-  /**
-   * Shown, and measured, while `value` is empty.
-   */
-  placeholder?: string;
+  maxDecimals?: number;
   /**
    * Focuses the field on mount.
    */
   autoFocus?: boolean;
   /**
-   * Prevents editing and uses the muted text color.
+   * Prevents editing and mutes the text.
    */
   disabled?: boolean;
   /**
-   * Prevents editing.
+   * Prevents editing. Shows a value the user cannot change, such as a quote,
+   * in the default text color.
    */
   readOnly?: boolean;
   /**
@@ -80,55 +78,59 @@ export type HeroAmountInputProps = {
    */
   hasError?: boolean;
   /**
-   * Largest step of the shared scale. Swap and Bridge start at 40.
+   * Renders a skeleton instead of the field.
    */
-  maxFontSize?: AmountInputFontSize;
+  isLoading?: boolean;
   /**
-   * Width in px used until the row has been measured.
+   * Largest step of the scale, and the row height. Swap and Bridge use 40.
    */
-  fallbackWidth?: number;
+  maxFontSize?: HeroAmountFontSize;
   /**
-   * Accessible name of the field.
+   * Horizontal placement of the amount in the row. Swap and Bridge use
+   * `start` beside the asset picker.
    */
-  ariaLabel?: string;
+  align?: 'center' | 'start';
   /**
    * Additional CSS classes merged onto the row.
    */
   className?: string;
   /**
-   * Test identifier for the row.
+   * Test id of the row. Child test ids are derived from it.
    */
   'data-testid'?: string;
   /**
-   * Test identifier for the prefix.
-   */
-  prefixTestId?: string;
-  /**
-   * Test identifier for the input.
-   */
-  inputTestId?: string;
-  /**
-   * Test identifier for the hidden amount that sizes the field.
-   */
-  amountTestId?: string;
-  /**
-   * Ref to the native input. Used to focus the field or move the caret.
+   * Ref to the native input, for focus or caret control.
    */
   inputRef?: Ref<HTMLInputElement>;
   /**
-   * Props forwarded to the prefix, such as alignment.
+   * Props forwarded to the prefix.
    */
   prefixProps?: HeroAmountPrefixProps;
   /**
-   * Props forwarded to the field, such as paste and key handlers.
-   */
-  inputProps?: HeroAmountFieldProps;
-  /**
    * Props forwarded to the hidden amount.
    */
-  amountProps?: HeroAmountValueProps;
+  valueProps?: HeroAmountValueProps;
   /**
-   * Props forwarded to the row, such as a click handler that focuses the field.
+   * Props forwarded to the field.
    */
-  containerProps?: HeroAmountContainerProps;
+  inputProps?: HeroAmountFieldProps;
+};
+
+export type HeroAmountInputSkeletonProps = {
+  /**
+   * Height of the skeleton, matching the row it replaces.
+   */
+  maxFontSize?: HeroAmountFontSize;
+  /**
+   * Horizontal placement of the skeleton.
+   */
+  align?: 'center' | 'start';
+  /**
+   * Additional CSS classes merged onto the skeleton row.
+   */
+  className?: string;
+  /**
+   * Test id of the skeleton.
+   */
+  'data-testid'?: string;
 };

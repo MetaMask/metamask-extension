@@ -43,7 +43,7 @@ describe('CustomAmount', () => {
       store,
     );
 
-    expect(screen.getByTestId('custom-amount-symbol')).toHaveTextContent('€');
+    expect(screen.getByTestId('custom-amount-prefix')).toHaveTextContent('€');
   });
 
   it('renders selected currency symbol if currency not specified', () => {
@@ -51,7 +51,7 @@ describe('CustomAmount', () => {
 
     renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
 
-    expect(screen.getByTestId('custom-amount-symbol')).toHaveTextContent('$');
+    expect(screen.getByTestId('custom-amount-prefix')).toHaveTextContent('$');
   });
 
   it('renders skeleton if loading', () => {
@@ -85,7 +85,7 @@ describe('CustomAmount', () => {
 
     renderWithProvider(<CustomAmount amountFiat="100" />, store);
 
-    const symbol = screen.getByTestId('custom-amount-symbol');
+    const symbol = screen.getByTestId('custom-amount-prefix');
     const input = screen.getByTestId('custom-amount-input');
     const measuringText = screen.getByTestId('custom-amount-value');
 

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
@@ -55,7 +55,7 @@ export type RampsBuildQuoteReadyViewModel = {
   canContinue: boolean;
   handleBack: () => void;
   handlePaymentMethodPress: () => void;
-  handleAmountChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  handleAmountChange: (value: string) => void;
   handleContinue: () => void;
 };
 

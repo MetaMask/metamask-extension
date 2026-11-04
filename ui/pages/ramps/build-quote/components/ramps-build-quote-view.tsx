@@ -65,18 +65,12 @@ export default function RampsBuildQuoteView({
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
         >
-          {/* Fixed at the largest step so the pill stays put as the amount shrinks. */}
           <HeroAmountInput
             prefix={currencySymbol}
             value={amount}
             onChange={handleAmountChange}
             hasError={hasAmountError}
-            ariaLabel={t('amount')}
-            data-testid="ramps-build-quote-amount-row"
-            prefixTestId="ramps-build-quote-amount-symbol"
-            inputTestId="ramps-build-quote-amount-input"
-            amountTestId="ramps-build-quote-amount-value"
-            className="h-[88px] self-stretch"
+            data-testid="ramps-build-quote-amount"
           />
 
           {displayedQuoteError ? (

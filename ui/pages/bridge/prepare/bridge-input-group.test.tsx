@@ -278,17 +278,6 @@ describe('BridgeInputGroup', () => {
       resizeObserver.restore();
     });
 
-    it('shrinks a long amount to fit the popup field before it is measured', () => {
-      renderBridgeInputGroup(
-        {},
-        { amountFieldProps: { testId: 'from-amount', value: longAmount } },
-      );
-
-      expect(screen.getByTestId('from-amount')).toHaveStyle({
-        fontSize: '24px',
-      });
-    });
-
     it('keeps a long amount at 40px in a wide expanded-view field', () => {
       renderBridgeInputGroup(
         {},
@@ -358,11 +347,11 @@ describe('BridgeInputGroup', () => {
     );
 
     const input = screen.getByTestId('from-amount');
-    const prefix = screen.getByTestId('from-amount-prefix');
+    const prefix = screen.getByTestId('from-amount-row-prefix');
 
     for (const element of [prefix, input]) {
       expect(element).toHaveClass('font-hero');
-      expect(element).toHaveStyle({ fontSize: '32px', lineHeight: '32px' });
+      expect(element).toHaveStyle({ fontSize: '40px', lineHeight: '40px' });
     }
   });
 
@@ -531,12 +520,11 @@ describe('BridgeInputGroup', () => {
           value: '0',
           readOnly: true,
           disabled: true,
-          className: 'amount-input',
         },
       },
     );
 
-    expect(getByTestId('to-amount-loading-skeleton')).toBeInTheDocument();
+    expect(getByTestId('to-amount-row-skeleton')).toBeInTheDocument();
     expect(queryByTestId('to-amount')).not.toBeInTheDocument();
     expect(queryByText(/Calculating/u)).not.toBeInTheDocument();
   });

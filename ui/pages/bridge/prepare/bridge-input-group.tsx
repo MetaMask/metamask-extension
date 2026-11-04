@@ -11,7 +11,7 @@ import {
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
-import { Skeleton, twMerge } from '@metamask/design-system-react';
+import { twMerge } from '@metamask/design-system-react';
 import {
   IconName as LegacyIconName,
   Text as LegacyText,
@@ -71,9 +71,6 @@ const getBlockExplorerUrl = (
     : null;
 };
 
-// Popup width of the amount field beside the asset picker. Only used until the
-// field has been measured, so the first render matches the popup layout.
-const AMOUNT_FIELD_FALLBACK_WIDTH = 219;
 // Two stacked amount fields cannot fit the 88px start, so the Swap/Bridge
 // fields start lower on the same shared scale.
 const AMOUNT_FIELD_MAX_FONT_SIZE = 40;
@@ -84,7 +81,6 @@ type BridgeAmountFieldProps = {
   value?: string;
   readOnly?: boolean;
   disabled?: boolean;
-  className?: string;
 };
 
 export const BridgeInputGroup = ({
@@ -105,7 +101,7 @@ export const BridgeInputGroup = ({
 }: {
   setIsAssetPickerOpen: (isOpen: boolean) => void;
   secondaryDisplay?: string;
-  amountInputPrefix?: React.ReactNode;
+  amountInputPrefix?: string;
   onAmountTypeToggle?: () => void;
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
@@ -152,9 +148,7 @@ export const BridgeInputGroup = ({
 
   const isAmountReadOnly =
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
-  const shouldShowAmountSkeleton = Boolean(
-    showAmountSkeleton && isAmountReadOnly,
-  );
+  const isAmountLoading = Boolean(showAmountSkeleton && isAmountReadOnly);
   const hasAmountInputPrefix = Boolean(amountInputPrefix);
   const previousHasAmountInputPrefix = useRef(hasAmountInputPrefix);
   const formattedTokenAmount = useMemo(() => {
@@ -173,8 +167,6 @@ export const BridgeInputGroup = ({
   }, [locale, balanceAmount, token.symbol]);
 
   const amountValue = amountFieldProps?.value?.toString() ?? '';
-  const amountPrefix =
-    typeof amountInputPrefix === 'string' ? amountInputPrefix : undefined;
   // prepare-bridge-page passes "0" before a quote arrives. That sentinel is
   // the placeholder, not a quoted amount, so the read-only row stays dimmed.
   const isReadOnlyPlaceholder =
@@ -222,62 +214,35 @@ export const BridgeInputGroup = ({
   return (
     <Column gap={1} {...containerProps}>
       <Row gap={4}>
-        {shouldShowAmountSkeleton ? (
-          <Skeleton
-            width={128}
-            height={40}
-            data-testid={`${amountFieldProps.testId}-loading-skeleton`}
-            style={{ flex: 1, minWidth: 0 }}
-          />
-        ) : (
-          <HeroAmountInput
-            prefix={amountPrefix}
-            value={amountValue}
-            onChange={(event) => {
-              const cleanedValue = sanitizeAmountInput(event.target.value);
-              onAmountChange?.(cleanedValue ?? '');
-            }}
-            // Key and paste handlers clean the text. The change handler must
-            // still run so a pasted mix of digits and letters is kept in part.
-            isValidInput={() => true}
-            ariaLabel={t('amount')}
-            autoFocus={amountFieldProps.autoFocus}
-            disabled={amountFieldProps.disabled}
-            readOnly={amountFieldProps.readOnly}
-            maxFontSize={AMOUNT_FIELD_MAX_FONT_SIZE}
-            fallbackWidth={AMOUNT_FIELD_FALLBACK_WIDTH}
-            inputRef={inputRef}
-            data-testid={`${amountFieldProps.testId}-row`}
-            prefixTestId={`${amountFieldProps.testId}-prefix`}
-            inputTestId={amountFieldProps.testId}
-            amountTestId={`${amountFieldProps.testId}-value`}
-            className={twMerge(
-              'amount-input min-w-0 flex-1 justify-start gap-1',
-              amountFieldProps.className,
-              isReadOnlyPlaceholder && 'opacity-50',
-            )}
-            containerProps={{
-              onClick: () => inputRef.current?.focus(),
-            }}
-            inputProps={{
-              autoComplete: 'off',
-              onKeyPress: (event) => {
-                if (event.key === '.' && amountValue.includes('.')) {
-                  event.preventDefault();
-                } else if (!/^[\d.]{1}$/u.test(event.key)) {
-                  event.preventDefault();
-                }
-              },
-              onPaste: (event) => {
-                event.preventDefault();
-                const cleanedValue = sanitizeAmountInput(
-                  event.clipboardData.getData('text'),
-                );
-                onAmountChange?.(cleanedValue ?? '');
-              },
-            }}
-          />
-        )}
+        <HeroAmountInput
+          prefix={amountInputPrefix}
+          value={amountValue}
+          onChange={(value) => onAmountChange?.(sanitizeAmountInput(value))}
+          autoFocus={amountFieldProps.autoFocus}
+          disabled={amountFieldProps.disabled}
+          readOnly={amountFieldProps.readOnly}
+          isLoading={isAmountLoading}
+          maxFontSize={AMOUNT_FIELD_MAX_FONT_SIZE}
+          align="start"
+          inputRef={inputRef}
+          data-testid={`${amountFieldProps.testId}-row`}
+          className={twMerge(
+            'min-w-0 flex-1',
+            isReadOnlyPlaceholder && !isAmountLoading && 'opacity-50',
+          )}
+          inputProps={{
+            'data-testid': amountFieldProps.testId,
+            autoComplete: 'off',
+            // Pasted token amounts such as "1,234.5 ETH" are cleaned rather
+            // than rejected.
+            onPaste: (event) => {
+              event.preventDefault();
+              onAmountChange?.(
+                sanitizeAmountInput(event.clipboardData.getData('text')),
+              );
+            },
+          }}
+        />
         <SelectedAssetButton
           onClick={() => {
             dispatch(

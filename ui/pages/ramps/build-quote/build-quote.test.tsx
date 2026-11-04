@@ -204,7 +204,7 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
-    const symbol = screen.getByTestId('ramps-build-quote-amount-symbol');
+    const symbol = screen.getByTestId('ramps-build-quote-amount-prefix');
     const amountValue = screen.getByTestId('ramps-build-quote-amount-value');
 
     for (const element of [symbol, amountValue, amountInput]) {
