@@ -257,6 +257,7 @@
     "mode": "string",
     "moneyAccounts": "object",
     "moneyEarnBannerDismissedTokenKeys": "object",
+    "moneyFtueSeen": "boolean",
     "multichainNetworkConfigurationsByChainId": "object",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",

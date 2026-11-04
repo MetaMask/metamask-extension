@@ -209,6 +209,7 @@
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
       "moneyEarnBannerDismissedTokenKeys": [],
+      "moneyFtueSeen": true,
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": true,

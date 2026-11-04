@@ -843,6 +843,7 @@
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
     "moneyEarnBannerDismissedTokenKeys": [],
+    "moneyFtueSeen": true,
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
