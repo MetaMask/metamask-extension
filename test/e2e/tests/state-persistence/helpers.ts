@@ -102,6 +102,11 @@ export const reloadExtension = async (driver: Driver): Promise<void> => {
       : `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
   );
 
+  // Ensure we do not race the script above.
+  if (process.env.SELENIUM_BROWSER === Browser.CHROME) {
+    await driver.delay(100);
+  }
+
   await driver.switchToWindow(blankWindow);
 
   // get a new tab ready to use (required for Firefox)
