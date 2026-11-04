@@ -8,7 +8,14 @@ import {
   DEFAULT_ROUTE,
   SETTINGS_ROUTE,
 } from '../helpers/constants/routes';
+import { useBottomNavBar } from './useBottomNavBar';
 import { useMainNavBars } from './useMainNavBars';
+
+jest.mock('./useBottomNavBar', () => ({
+  useBottomNavBar: jest.fn(),
+}));
+
+const mockUseBottomNavBar = jest.mocked(useBottomNavBar);
 
 const renderUseMainNavBars = (pathname: string, isWideLayout: boolean) =>
   renderHook(() => useMainNavBars(), {
@@ -30,6 +37,10 @@ const renderUseMainNavBars = (pathname: string, isWideLayout: boolean) =>
   }).result.current;
 
 describe('useMainNavBars', () => {
+  beforeEach(() => {
+    mockUseBottomNavBar.mockReturnValue(true);
+  });
+
   it.each([DEFAULT_ROUTE, ACTIVITY_ROUTE])(
     'shows the bottom nav on %s outside the wide layout',
     (pathname) => {
@@ -44,6 +55,9 @@ describe('useMainNavBars', () => {
   it.each([DEFAULT_ROUTE, ACTIVITY_ROUTE])(
     'shows the side nav on %s in the wide layout',
     (pathname) => {
+      // DEBUG
+      // eslint-disable-next-line no-console
+      console.log('mock calls', mockUseBottomNavBar.mock.calls.length, 'impl', String(mockUseBottomNavBar.getMockImplementation()));
       expect(renderUseMainNavBars(pathname, true)).toStrictEqual({
         hasNavBar: true,
         showSideNav: true,
@@ -71,5 +85,27 @@ describe('useMainNavBars', () => {
     });
 
     expect(result.current.showBottomNav).toBe(true);
+  });
+
+  describe('in the control variant of the bottom nav A/B test', () => {
+    beforeEach(() => {
+      mockUseBottomNavBar.mockReturnValue(false);
+    });
+
+    it('shows no nav outside the wide layout', () => {
+      expect(renderUseMainNavBars(DEFAULT_ROUTE, false)).toStrictEqual({
+        hasNavBar: false,
+        showSideNav: false,
+        showBottomNav: false,
+      });
+    });
+
+    it('shows the side nav in the wide layout', () => {
+      expect(renderUseMainNavBars(DEFAULT_ROUTE, true)).toStrictEqual({
+        hasNavBar: true,
+        showSideNav: true,
+        showBottomNav: false,
+      });
+    });
   });
 });
