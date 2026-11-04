@@ -8,6 +8,7 @@ import {
   IconName,
   IconSize,
   SensitiveText,
+  Skeleton,
   Text,
   TextButton,
   TextColor,
@@ -28,7 +29,6 @@ type NetworkPillProps = {
   name: string;
   balance?: string;
   isSelected: boolean;
-  isDisabled?: boolean;
   isHidden?: boolean;
   privacyMode: boolean;
   icon: React.ReactNode;
@@ -40,7 +40,6 @@ const NetworkPill = ({
   name,
   balance,
   isSelected,
-  isDisabled = false,
   isHidden = false,
   privacyMode,
   icon,
@@ -55,10 +54,9 @@ const NetworkPill = ({
       isSelected
         ? 'bg-icon-default text-background-default'
         : 'bg-muted text-default hover:bg-muted-hover',
-      isDisabled ? 'cursor-default opacity-50' : 'cursor-pointer',
+      'cursor-pointer',
     )}
     aria-pressed={isSelected}
-    disabled={isDisabled}
     onClick={onClick}
     data-testid={testId}
     // React 18 has no `inert` prop; the empty attribute is what enables it
@@ -86,8 +84,9 @@ const NetworkPill = ({
 /**
  * Network selector for the fullscreen design. Offers the same default networks
  * as the network filter dropdown, and selects them the same way, with each
- * pill showing the account's balance on that network. Collapsed it shows one
- * full row of pills; expanded it wraps.
+ * pill showing the account's balance on that network. Networks the selected
+ * account can't use are left out, including from the total.
+ * Collapsed it shows one full row of pills; expanded it wraps.
  */
 export const NetworkPillSelector = () => {
   const t = useI18nContext();
@@ -102,8 +101,12 @@ export const NetworkPillSelector = () => {
     isNetworkDisabled,
     isNetworkSelected,
   } = useHomeNetworkFilter();
-  const { balanceByChainId, total, currency } =
-    useNetworkPillBalances(defaultNetworks);
+  const networks = useMemo(
+    () => defaultNetworks.filter((network) => !isNetworkDisabled(network)),
+    [defaultNetworks, isNetworkDisabled],
+  );
+  const { balanceByChainId, total, currency, isLoading } =
+    useNetworkPillBalances(networks);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [hiddenCount, setHiddenCount] = useState(0);
@@ -129,13 +132,14 @@ export const NetworkPillSelector = () => {
     }
     const observer = new ResizeObserver(measure);
     observer.observe(pills);
+    Array.from(pills.children).forEach((pill) => observer.observe(pill));
     return () => observer.disconnect();
-  }, [defaultNetworks.length]);
+  }, [isLoading, networks]);
 
   // Wrapped pills are always the trailing ones. While collapsed they are only
   // clipped, so make them inert to keep them out of the tab order and out of
   // what screen readers read.
-  const pillCount = defaultNetworks.length + 1;
+  const pillCount = networks.length + 1;
   const isPillHidden = (index: number) =>
     !isExpanded && index >= pillCount - hiddenCount;
 
@@ -144,6 +148,19 @@ export const NetworkPillSelector = () => {
       amount === undefined ? undefined : formatCurrency(amount, currency),
     [formatCurrency, currency],
   );
+
+  if (isLoading) {
+    return (
+      <div
+        className="flex gap-2 px-4 py-2"
+        data-testid="network-pill-selector-skeleton"
+      >
+        {[0, 1, 2].map((key) => (
+          <Skeleton key={key} className="h-10 w-28 rounded-full" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -179,30 +196,26 @@ export const NetworkPillSelector = () => {
           onClick={handleSelectAllDefaultNetworks}
           testId="network-pill-all-default"
         />
-        {defaultNetworks.map((network, index) => {
-          const disabled = isNetworkDisabled(network);
-          return (
-            <NetworkPill
-              key={network.chainId}
-              name={network.name}
-              balance={format(balanceByChainId[network.chainId])}
-              isSelected={isNetworkSelected(network)}
-              isDisabled={disabled}
-              isHidden={isPillHidden(index + 1)}
-              privacyMode={privacyMode}
-              icon={
-                <AvatarNetwork
-                  name={network.name}
-                  src={getNetworkIcon(network)}
-                  size={AvatarNetworkSize.Sm}
-                  className="rounded-full"
-                />
-              }
-              onClick={() => handleSelectNetwork(network.chainId)}
-              testId={`network-pill-${getSelectableChainId(network)}`}
-            />
-          );
-        })}
+        {networks.map((network, index) => (
+          <NetworkPill
+            key={network.chainId}
+            name={network.name}
+            balance={format(balanceByChainId[network.chainId])}
+            isSelected={isNetworkSelected(network)}
+            isHidden={isPillHidden(index + 1)}
+            privacyMode={privacyMode}
+            icon={
+              <AvatarNetwork
+                name={network.name}
+                src={getNetworkIcon(network)}
+                size={AvatarNetworkSize.Sm}
+                className="rounded-full"
+              />
+            }
+            onClick={() => handleSelectNetwork(network.chainId)}
+            testId={`network-pill-${getSelectableChainId(network)}`}
+          />
+        ))}
       </div>
       {hiddenCount > 0 && (
         <div className="flex justify-center">
