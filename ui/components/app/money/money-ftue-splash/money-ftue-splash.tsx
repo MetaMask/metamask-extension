@@ -157,6 +157,20 @@ const MoneyFtueSplashContent = () => {
   const isPopup = environmentType === ENVIRONMENT_TYPE_POPUP;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
+  let contentClassName: string | undefined;
+  let dialogClassName: string;
+
+  if (isPopup) {
+    contentClassName = 'p-0';
+    dialogClassName = 'h-full min-h-0 max-w-none rounded-none border-0';
+  } else if (isSidepanel) {
+    contentClassName = 'items-center';
+    dialogClassName = 'max-h-[50vh] min-h-0 max-w-[400px]';
+  } else {
+    contentClassName = undefined;
+    dialogClassName = 'max-h-[calc(100vh-32px)] min-h-0 max-w-[400px]';
+  }
+
   return (
     <Modal
       isOpen
@@ -169,11 +183,9 @@ const MoneyFtueSplashContent = () => {
       )}
       <ModalContent
         size={ModalContentSize.Sm}
-        className={isPopup ? 'p-0' : undefined}
+        className={contentClassName}
         modalDialogProps={{
-          className: isPopup
-            ? 'h-full min-h-0 max-w-none rounded-none border-0'
-            : 'max-h-[calc(100vh-32px)] min-h-0 max-w-[400px]',
+          className: dialogClassName,
           'data-testid': MONEY_FTUE_SPLASH_TEST_ID,
         }}
       >
