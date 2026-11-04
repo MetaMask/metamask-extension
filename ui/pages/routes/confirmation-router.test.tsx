@@ -1,9 +1,17 @@
 import React from 'react';
-import { useLocation, createMemoryRouter, RouterProvider } from 'react-router-dom';
+import {
+  useLocation,
+  createMemoryRouter,
+  RouterProvider,
+} from 'react-router-dom';
 import { render } from '@testing-library/react';
 import { FeatureId } from '@metamask/bridge-controller';
 import configureStore from '../../store/store';
-import { renderWithProvider, I18nProvider, en } from '../../../test/lib/render-helpers-navigate';
+import {
+  renderWithProvider,
+  I18nProvider,
+  en,
+} from '../../../test/lib/render-helpers-navigate';
 import { MetaMaskTestReduxProvider } from '../../../test/lib/redux-test-provider';
 import mockState from '../../../test/data/mock-state.json';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
@@ -259,9 +267,7 @@ describe('ConfirmationRouter', () => {
 
   describe('in-app navigation with quotes', () => {
     it('does not redirect on non-first-screen navigation even with bridge quotes', () => {
-      (getEnvironmentType as jest.Mock).mockReturnValue(
-        ENVIRONMENT_TYPE_POPUP,
-      );
+      (getEnvironmentType as jest.Mock).mockReturnValue(ENVIRONMENT_TYPE_POPUP);
 
       const store = configureStore({
         ...mockState,
