@@ -7,6 +7,7 @@ import {
 import { parse } from './parse';
 import { DEEP_LINK_ROUTE } from './routes/route';
 import { shouldShowDeepLinkInterstitial } from './security-policy';
+import type { Destination } from './routes/route';
 
 /**
  * Builds the interstitial page route with the given URL path and query.
@@ -19,6 +20,44 @@ import { shouldShowDeepLinkInterstitial } from './security-policy';
 export function buildInterstitialRoute(urlPathAndQuery: string): string {
   const params = new URLSearchParams({ u: urlPathAndQuery });
   return `${DEEP_LINK_ROUTE}?${params.toString()}`;
+}
+
+export type DeepLinkDestinationTarget =
+  | { type: 'redirect'; url: URL }
+  | { type: 'internal'; path: string; queryString: string };
+
+/**
+ * Classifies a parsed destination so every caller handles external redirects
+ * and internal routes the same way.
+ *
+ * @param destination - The parsed deep-link destination.
+ * @returns Either an external redirect or an internal path with its query.
+ */
+export function getDestinationTarget(
+  destination: Destination,
+): DeepLinkDestinationTarget {
+  if ('redirectTo' in destination) {
+    return { type: 'redirect', url: destination.redirectTo };
+  }
+  return {
+    type: 'internal',
+    path: destination.path,
+    queryString: destination.query.toString(),
+  };
+}
+
+/**
+ * Builds an internal route without leaving a trailing `?` for empty queries.
+ *
+ * @param path - The internal destination path.
+ * @param queryString - The serialized query string, possibly empty.
+ * @returns The route to navigate to.
+ */
+export function buildInternalRoute(
+  path: string,
+  queryString: string,
+): string {
+  return queryString ? `${path}?${queryString}` : path;
 }
 
 /**
@@ -81,22 +120,20 @@ export async function getDeferredDeepLinkRoute(
       };
     }
 
-    // If the destination has a redirectTo property, it's an external URL redirect.
-    if ('redirectTo' in destination) {
+    const target = getDestinationTarget(destination);
+
+    if (target.type === 'redirect') {
       return {
         type: DeferredDeepLinkRouteType.Redirect,
-        url: destination.redirectTo.toString(),
+        url: target.url.toString(),
         signature,
       };
     }
 
     // Signature is valid - construct the internal route from path and query parameters
-    const { path, query } = destination;
-    const queryString = query.toString();
-
     return {
       type: DeferredDeepLinkRouteType.Navigate,
-      route: queryString ? `${path}?${queryString}` : path,
+      route: buildInternalRoute(target.path, target.queryString),
       signature,
     };
   } catch (error) {

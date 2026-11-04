@@ -18,6 +18,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { parse } from '../../../shared/lib/deep-links/parse';
+import { getDestinationTarget } from '../../../shared/lib/deep-links/utils';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
@@ -81,13 +82,11 @@ async function updateStateFromUrl(
     if (parsed) {
       const { destination } = parsed;
 
+      const target = getDestinationTarget(destination);
       const href =
-        'redirectTo' in destination
-          ? destination.redirectTo.toString()
-          : getExtensionURL(
-              destination.path,
-              destination.query.toString() ?? null,
-            );
+        target.type === 'redirect'
+          ? target.url.toString()
+          : getExtensionURL(target.path, target.queryString || null);
       const title = parsed.route.getTitle(url.searchParams);
 
       const signed = parsed.signature === VALID;

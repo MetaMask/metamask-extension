@@ -7,7 +7,11 @@ import {
 } from '../../../shared/lib/deep-links/money-referral';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { isDeepLinkHost } from '../../../shared/lib/deep-links/common';
-import { buildInterstitialRoute } from '../../../shared/lib/deep-links/utils';
+import {
+  buildInternalRoute,
+  buildInterstitialRoute,
+  getDestinationTarget,
+} from '../../../shared/lib/deep-links/utils';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
@@ -69,15 +73,16 @@ const MoneyReferralHandoffContent = () => {
         if (!parsed) {
           throw new Error('Unsupported deep-link destination');
         }
+        const target = getDestinationTarget(parsed.destination);
         // Losing in-memory context must never turn the handoff into a warning bypass.
         if (!authorized) {
           navigate(buildInterstitialRoute(url.pathname + url.search), {
             replace: true,
           });
-        } else if ('redirectTo' in parsed.destination) {
-          window.location.assign(parsed.destination.redirectTo.toString());
+        } else if (target.type === 'redirect') {
+          window.location.assign(target.url.toString());
         } else {
-          navigate(`${parsed.destination.path}?${parsed.destination.query}`, {
+          navigate(buildInternalRoute(target.path, target.queryString), {
             replace: true,
           });
         }
