@@ -21,6 +21,7 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 import {
@@ -57,6 +58,7 @@ describe('Send ETH', function () {
           const sendPage = new SendPage(driver);
           const transactionConfirmation = new TransactionConfirmation(driver);
           const activityTab = new ActivityTab(driver);
+          const txToastNotification = new TxToastNotification(driver);
 
           await homePage.startSendFlow();
           await sendPage.selectToken('0x539', 'ETH');
@@ -69,6 +71,9 @@ describe('Send ETH', function () {
             waitUntil: 'disappear',
           });
 
+          // The tx toast can slide over the Activity tab mid-click and open the tx details instead.
+          await txToastNotification.checkTxConfirmedToast();
+          await txToastNotification.closeToastNotification();
           await homePage.goToActivityList();
           await activityTab.checkTransactionActivityByText('Sent');
           await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
@@ -95,6 +100,7 @@ describe('Send ETH', function () {
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
           const activityTab = new ActivityTab(driver);
+          const txToastNotification = new TxToastNotification(driver);
 
           await testDapp.openTestDappPage({
             contractAddress: null,
@@ -117,6 +123,8 @@ describe('Send ETH', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
+          await txToastNotification.checkTxConfirmedToast();
+          await txToastNotification.closeToastNotification();
           await homePage.goToActivityList();
           await activityTab.checkTransactionActivityByText('Sent');
         },
@@ -151,6 +159,7 @@ describe('Send ETH', function () {
           const transactionConfirmation = new TransactionConfirmation(driver);
           const activityTab = new ActivityTab(driver);
           const homePage = new HomePage(driver);
+          const txToastNotification = new TxToastNotification(driver);
 
           await createInternalTransaction({
             driver,
@@ -164,6 +173,8 @@ describe('Send ETH', function () {
             button: 'confirm',
             waitUntil: 'disappear',
           });
+          await txToastNotification.checkTxConfirmedToast();
+          await txToastNotification.closeToastNotification();
           await homePage.goToActivityList();
           await activityTab.checkTransactionActivityByText('Sent');
           await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
