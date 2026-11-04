@@ -222,7 +222,7 @@ export const MultichainEditAccountsPage = ({
           {title ?? t('editAccounts')}
         </Header>
       )}
-      <search className="px-4 py-2">
+      <search className="px-4 pt-1 pb-2">
         <TextFieldSearch
           className="w-full"
           clearButtonOnClick={clearSearch}

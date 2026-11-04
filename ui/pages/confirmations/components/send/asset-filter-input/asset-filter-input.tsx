@@ -16,7 +16,7 @@ export const AssetFilterInput = ({
   const t = useI18nContext();
 
   return (
-    <search className="px-4 py-2">
+    <search className="px-4 pb-2">
       <TextFieldSearch
         autoFocus
         className="w-full"

@@ -171,7 +171,7 @@ export function AccountPickerRowContent<AccountType extends SubAccountBase>({
               {title}
             </ModalHeader>
             <ModalBody className="max-h-[70vh] overflow-y-auto px-0">
-              <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
+              <search className="px-4 pb-2">
                 <TextFieldSearch
                   autoFocus
                   className="w-full"
@@ -186,7 +186,7 @@ export function AccountPickerRowContent<AccountType extends SubAccountBase>({
                   placeholder={searchPlaceholder}
                   value={searchQuery}
                 />
-              </Box>
+              </search>
               {filteredAccounts.map((account) => {
                 const isSelected =
                   account.id.toLowerCase() ===

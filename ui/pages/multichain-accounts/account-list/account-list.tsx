@@ -202,7 +202,7 @@ export const AccountList = () => {
         {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
-        <search className="px-4 py-2">
+        <search className="px-4 pt-1 pb-2">
           <TextFieldSearch
             className="w-full"
             clearButtonOnClick={clearSearch}

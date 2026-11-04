@@ -14,7 +14,7 @@ export const RecipientFilterInput = ({
   const t = useI18nContext();
 
   return (
-    <search className="p-4">
+    <search className="px-4 pb-4">
       <TextFieldSearch
         className="w-full"
         clearButtonOnClick={() => onChange('')}
