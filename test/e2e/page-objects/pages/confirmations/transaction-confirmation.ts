@@ -127,7 +127,8 @@ class TransactionConfirmation extends Confirmation {
     testId: 'inline-alert',
   };
 
-  private readonly nativeAmountHeadingSelector = 'h2';
+  private readonly nativeAmountHeadingSelector =
+    '[data-testid="confirm-send-amount"]';
 
   private readonly networkName: RawLocator =
     '[data-testid="confirmation__details-network-name"]';
@@ -627,11 +628,8 @@ class TransactionConfirmation extends Confirmation {
   ): Promise<string | null> {
     const amount: unknown = await this.driver.executeScript(
       `const symbol = ${JSON.stringify(symbol)};
-      const headings = Array.from(document.querySelectorAll(arguments[0]));
-      const heading = headings.find((node) =>
-        (node.textContent || '').includes(symbol),
-      );
-      if (!heading) {
+      const heading = document.querySelector(arguments[0]);
+      if (!heading || !(heading.textContent || '').includes(symbol)) {
         return null;
       }
       let node = heading;
