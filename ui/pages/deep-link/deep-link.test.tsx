@@ -7,6 +7,7 @@ import { parse } from '../../../shared/lib/deep-links/parse';
 import type { DeepLink as DeepLinkComponent } from './deep-link';
 
 const mockAssign = jest.fn();
+const mockReplace = jest.fn();
 let DeepLink: typeof DeepLinkComponent;
 const mockLocation = { search: '?u=%2Fhome%3Fref%3DABC&referralContext=one' };
 jest.mock('react-router-dom', () => ({
@@ -48,7 +49,7 @@ describe('DeepLink referral continuation', () => {
     ({ DeepLink } = jest.requireActual('./deep-link'));
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: { ...originalLocation, assign: mockAssign },
+      value: { ...originalLocation, assign: mockAssign, replace: mockReplace },
     });
   });
   afterAll(() => {
@@ -67,7 +68,7 @@ describe('DeepLink referral continuation', () => {
     } as never);
   });
 
-  it('keeps the warning visible until Continue authorizes the captured context', async () => {
+  it('replaces the warning history entry only after Continue authorizes the captured context', async () => {
     renderInterstitial();
     await act(async () => undefined);
     expect(submitRequestToBackground).not.toHaveBeenCalled();
@@ -78,9 +79,10 @@ describe('DeepLink referral continuation', () => {
       'RewardsMoneyController:continueReferralContext',
       ['one'],
     ]);
-    expect(mockAssign).toHaveBeenCalledWith(
+    expect(mockReplace).toHaveBeenCalledWith(
       expect.stringContaining('/referral-invite?context=one&'),
     );
+    expect(mockAssign).not.toHaveBeenCalled();
   });
 
   it('drops context when the user leaves without continuing', async () => {
@@ -93,6 +95,7 @@ describe('DeepLink referral continuation', () => {
       ['one'],
     ]);
     expect(mockAssign).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 
   it('does not drop context during StrictMode effect replay', async () => {
@@ -108,7 +111,22 @@ describe('DeepLink referral continuation', () => {
     await act(async () => {
       fireEvent.click(screen.getByTestId('deep-link-continue-button'));
     });
-    expect(mockAssign).toHaveBeenCalledTimes(1);
-    expect(mockAssign.mock.calls[0][0]).not.toContain('referral-invite');
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith('home.html#/');
+    expect(mockAssign).not.toHaveBeenCalled();
+  });
+
+  it('replaces the warning with the destination when the referral continuation fails', async () => {
+    jest
+      .mocked(submitRequestToBackground)
+      .mockRejectedValue(new Error('Background unavailable'));
+    renderInterstitial();
+    await act(async () => undefined);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('deep-link-continue-button'));
+    });
+    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith('home.html#/');
+    expect(mockAssign).not.toHaveBeenCalled();
   });
 });

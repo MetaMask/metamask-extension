@@ -291,27 +291,26 @@ export const DeepLink = () => {
       return;
     }
     continuedReferral.current = true;
+    let destination = route.href;
     try {
       const continued = await submitRequestToBackground<boolean>(
         'messengerCall',
         ['RewardsMoneyController:continueReferralContext', [id]],
       );
-      if (!continued) {
-        window.location.assign(route.href);
-        return;
-      }
-      window.location.assign(
-        getExtensionURL(
+      if (continued) {
+        destination = getExtensionURL(
           buildMoneyReferralRoute({
             id,
             url: `https://${CANONICAL_DEEP_LINK_HOST}${params.get('u')}`,
           }),
-        ),
-      );
+        );
+      }
     } catch {
       // Continue still works if referral context is unavailable.
-      window.location.assign(route.href);
     }
+    // The warning and invite are one handoff, not destinations to revisit
+    // when backing out of the product page after answering the invite.
+    window.location.replace(destination);
   }
 
   if (pageNotFoundError && !isLoading) {
