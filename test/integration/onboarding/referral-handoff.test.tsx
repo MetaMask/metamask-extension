@@ -42,6 +42,7 @@ describe('Referral handoff with the application router', () => {
       code: 'ABC',
       entryType: 'restored_context',
       status: 'authorized',
+      canOffer: true,
     };
     const fallback = createMockImplementation({});
     jest
