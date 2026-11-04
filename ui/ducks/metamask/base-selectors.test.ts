@@ -1,7 +1,7 @@
 import { getSwapsTokens } from './base-selectors';
 
 describe('getSwapsTokens', () => {
-  it('returns background tokens without a legacy swaps UI slice', () => {
+  it('returns background swaps tokens', () => {
     const tokens = [
       {
         address: '0x0000000000000000000000000000000000000001',

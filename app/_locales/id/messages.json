@@ -1791,9 +1791,6 @@
     "message": "Dapatkan cashback 4% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
   },
-  "attemptToCancelSwapForFree": {
-    "message": "Mencoba membatalkan pertukaran secara gratis"
-  },
   "attributes": {
     "message": "Atribut"
   },
@@ -3289,9 +3286,6 @@
   },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Siapa pun dapat membuat token, termasuk membuat versi palsu dari token yang ada. Pelajari tentang $1"
-  },
-  "customerSupport": {
-    "message": "dukungan pelanggan"
   },
   "dappSuggested": {
     "message": "Situs yang disarankan"
@@ -5338,9 +5332,6 @@
   "mainnetToken": {
     "message": "Alamat ini cocok dengan alamat token Ethereum Mainnet yang terdaftar. Periksa kembali alamat kontrak dan jaringan untuk token yang Anda coba tambahkan."
   },
-  "makeAnotherSwap": {
-    "message": "Buat swap baru"
-  },
   "makeSmartContractsEasier": {
     "message": "Mempermudah pembacaan kontrak cerdas"
   },
@@ -5460,9 +5451,6 @@
   },
   "metamaskSwap": {
     "message": "MetaMask Swap"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps sedang menjalani pemeliharaan. Silakan kembali lagi nanti."
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -7013,9 +7001,6 @@
   },
   "off": {
     "message": "Mati"
-  },
-  "offlineForMaintenance": {
-    "message": "Offline untuk pemeliharaan"
   },
   "ok": {
     "message": "Oke"
@@ -11780,56 +11765,8 @@
   "strong": {
     "message": "Kuat"
   },
-  "stxCancelled": {
-    "message": "Pertukaran akan gagal"
-  },
-  "stxCancelledDescription": {
-    "message": "Transaksi Anda akan gagal dan dibatalkan agar Anda tidak perlu membayar biaya jaringan yang tidak seharusnya."
-  },
-  "stxCancelledSubDescription": {
-    "message": "Cobalah untuk menukar lagi. Kami akan selalu hadir untuk melindungi Anda dari risiko serupa di lain waktu."
-  },
-  "stxFailure": {
-    "message": "Pertukaran gagal"
-  },
-  "stxFailureDescription": {
-    "message": "Perubahan pasar yang terjadi secara tiba-tiba dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
   "stxOptInDescriptionV2": {
     "message": "Aktifkan Transaksi Cerdas untuk transaksi yang lebih andal dan aman. $1"
-  },
-  "stxPendingPrivatelySubmittingSwap": {
-    "message": "Kirimkan Swap Anda secara pribadi..."
-  },
-  "stxPendingPubliclySubmittingSwap": {
-    "message": "Kirimkan Swap Anda secara publik..."
-  },
-  "stxSuccess": {
-    "message": "Pertukaran selesai!"
-  },
-  "stxSuccessDescription": {
-    "message": "$1 kini telah tersedia.",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "stxSwapCompleteIn": {
-    "message": "Swap akan selesai dalam <",
-    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
-  },
-  "stxTryingToCancel": {
-    "message": "Mencoba membatalkan transaksi Anda..."
-  },
-  "stxUnknown": {
-    "message": "Status tidak diketahui"
-  },
-  "stxUnknownDescription": {
-    "message": "Transaksi telah berhasil tetapi kami tidak yakin transaksi yang mana. Hal ini dikarenakan Anda mengirimkan transaksi lain saat pertukaran ini sedang diproses."
-  },
-  "stxUserCancelled": {
-    "message": "Swap dibatalkan"
-  },
-  "stxUserCancelledDescription": {
-    "message": "Transaksi Anda telah dibatalkan dan Anda tidak membayar biaya jaringan yang tidak perlu."
   },
   "submit": {
     "message": "Kirim"
@@ -11878,10 +11815,6 @@
   "swapAggregator": {
     "message": "Agregator"
   },
-  "swapAllowSwappingOf": {
-    "message": "Izinkan menukar $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
   "swapAmountReceived": {
     "message": "Jumlah yang dijamin"
   },
@@ -11903,15 +11836,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"
-  },
-  "swapContractDataDisabledErrorDescription": {
-    "message": "Di aplikasi Ethereum di Ledger Anda, buka \"Pengaturan\" dan izinkan data kontrak. Lalu, coba lagi pertukaran Anda."
-  },
-  "swapContractDataDisabledErrorTitle": {
-    "message": "Data kontrak tidak diaktifkan di Ledger Anda"
-  },
-  "swapCustom": {
-    "message": "kustom"
   },
   "swapDecentralizedExchange": {
     "message": "Bursa terdesentralisasi"
@@ -11936,29 +11860,8 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "Ini merupakan estimasi biaya jaringan yang akan digunakan untuk menyelesaikan pertukaran Anda. Jumlah aktual dapat berubah sesuai dengan kondisi jaringan."
   },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Kegagalan transaksi terjadi dan kami siap membantu. Jika masalah terus berlanjut, Anda dapat menghubungi dukungan pelanggan kami di $1 untuk mendapatkan bantuan lebih lanjut.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "swapFailedErrorTitle": {
-    "message": "Pertukaran gagal"
-  },
-  "swapFetchingQuoteNofN": {
-    "message": "Mengambil kuotasi $1 dari $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
-  },
-  "swapFetchingQuotes": {
-    "message": "Mengambil kuotasi..."
-  },
-  "swapFetchingQuotesErrorDescription": {
-    "message": "Hmmm... terjadi kesalahan. Coba lagi, atau jika masalah terus berlanjut, hubungi dukungan pelanggan."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Terjadi kesalahan saat mengambil kuota"
-  },
-  "swapFromTo": {
-    "message": "Pertukaran dari $1 ke $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesExplanation": {
     "message": "MetaMask tidak memperoleh keuntungan dari biaya jaringan. Biaya ini merupakan estimasi dan dapat berubah tergantung seberapa sibuk jaringan dan seberapa rumit transaksi tersebut. Pelajari selengkapnya $1.",
@@ -11971,9 +11874,6 @@
   "swapGasFeesIncluded": {
     "message": " Termasuk"
   },
-  "swapGasFeesSplit": {
-    "message": "Biaya jaringan pada layar sebelumnya dibagi di antara kedua transaksi ini."
-  },
   "swapGasFeesSponsored": {
     "message": "Dibayar oleh MetaMask"
   },
@@ -11983,9 +11883,6 @@
   "swapIncludesMMFee": {
     "message": "Termasuk $1% biaya MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Pelajari selengkapnya seputar Swap"
   },
   "swapLiquiditySourceInfo": {
     "message": "Kami mencari beberapa sumber likuiditas (bursa, agregator, dan pendiri pasar profesional) untuk membandingkan tarif bursa dan biaya jaringan."
@@ -12004,30 +11901,11 @@
     "message": "$1 kuota.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapOnceTransactionHasProcess": {
-    "message": "$1 akan ditambahkan ke akun Anda setelah transaksi ini diproses.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Memproses"
-  },
   "swapQuoteDetails": {
     "message": "Detail kuotasi"
   },
   "swapQuoteSource": {
     "message": "Sumber kuotasi"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "Minta kuotasi baru untuk mendapatkan tarif terbaru."
-  },
-  "swapQuotesExpiredErrorTitle": {
-    "message": "Waktu kuotasi habis"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "Kurangi ukuran perdagangan Anda atau gunakan token yang berbeda."
-  },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Cobalah untuk menyesuaikan pengaturan selip atau jumlahnya dan coba lagi."
   },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Kuotasi tidak tersedia"
@@ -12068,10 +11946,6 @@
   "swapSlippageCappedDescription": {
     "message": "Toleransi selip dibatasi hingga 100%."
   },
-  "swapSlippageHighDescription": {
-    "message": "Selip yang dimasukkan ($1%) dianggap sangat tinggi dan dapat mengakibatkan tarif yang tidak efektif",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageHighTitle": {
     "message": "Selip tinggi"
   },
@@ -12082,30 +11956,8 @@
   "swapSlippageLowTitle": {
     "message": "Selip rendah"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "Selip harus lebih besar atau sama dengan nol"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Tingkatkan selip untuk melanjutkan"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "Toleransi selip harus 15% atau kurang. Nilai yang lebih tinggi akan menghasilkan tarif yang tidak efektif."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Selip sangat tinggi"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut “selip”. Pertukaran Anda akan otomatis dibatalkan jika selip melebihi pengaturan “toleransi selip”."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "Ada lebih sedikit penyedia kuotasi nol selip sehingga akan menghasilkan kuotasi yang kurang kompetitif."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Sumber penyedia nol selip"
   },
   "swapSource": {
     "message": "Sumber likuiditas"
@@ -12113,24 +11965,11 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swap adalah transaksi yang kompleks dan sensitif terhadap waktu. Kami merekomendasikan biaya jaringan ini untuk mendapatkan keseimbangan yang baik antara biaya dan kepastian keberhasilan Swap."
   },
-  "swapToConfirmWithHwWallet": {
-    "message": "untuk mengonfirmasikan dengan dompet perangkat keras Anda"
-  },
-  "swapTokenAvailable": {
-    "message": "$1 telah ditambahkan ke akun Anda.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
   "swapTokenNotAvailable": {
     "message": "Token tidak tersedia untuk ditukar di wilayah ini"
   },
   "swapTokens": {
     "message": "Tukar token"
-  },
-  "swapTransactionComplete": {
-    "message": "Transaksi selesai"
-  },
-  "swapTwoTransactions": {
-    "message": "2 transaksi"
   },
   "swapUnknown": {
     "message": "Tidak dikenal"
@@ -12143,9 +11982,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Toleransi selip"
-  },
-  "swapsViewInActivity": {
-    "message": "Lihat di aktivitas"
   },
   "switch": {
     "message": "Alihkan"

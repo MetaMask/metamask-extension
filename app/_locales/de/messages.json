@@ -1791,9 +1791,6 @@
     "message": "Erhalten Sie 4 % zurück auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
   },
-  "attemptToCancelSwapForFree": {
-    "message": "Versuch, den Swap kostenlos zu stornieren"
-  },
   "attributes": {
     "message": "Attribute"
   },
@@ -3289,9 +3286,6 @@
   },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Jeder kann einen Token erstellen, auch gefälschte Versionen von bestehenden Token. Erfahren Sie mehr über $1."
-  },
-  "customerSupport": {
-    "message": "Kundendienst"
   },
   "dappSuggested": {
     "message": "Website vorgeschlagen"
@@ -5334,9 +5328,6 @@
   "mainnetToken": {
     "message": "Diese Adresse stimmt mit einer bekannten Ethereum Mainnet Token-Adresse überein. Überprüfen Sie noch einmal die Vertragsadresse und das Netzwerk für die Token, die Sie hinzufügen möchten."
   },
-  "makeAnotherSwap": {
-    "message": "Ein neues Wallet erstellen"
-  },
   "makeSmartContractsEasier": {
     "message": "Smart Contracts leichter lesbar gestalten"
   },
@@ -5456,9 +5447,6 @@
   },
   "metamaskSwap": {
     "message": "MetaMask-Swap"
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps wird zur Zeit gewartet. Bitte versuchen Sie es später."
   },
   "metamaskVersion": {
     "message": "MetaMask-Version"
@@ -7006,9 +6994,6 @@
   },
   "off": {
     "message": "Aus"
-  },
-  "offlineForMaintenance": {
-    "message": "Offline für Wartung"
   },
   "ok": {
     "message": "Ok"
@@ -11769,56 +11754,8 @@
   "strong": {
     "message": "Stark"
   },
-  "stxCancelled": {
-    "message": "Swap wäre fehlgeschlagen"
-  },
-  "stxCancelledDescription": {
-    "message": "Ihre Transaktion wäre fehlgeschlagen und wurde storniert, um Sie vor unnötigen Netzwerkgebühren zu schützen."
-  },
-  "stxCancelledSubDescription": {
-    "message": "Versuchen Sie Ihren Swap erneut. Wir sind hier, um Sie das nächste mal vor ähnlichen Risiken zu schützen."
-  },
-  "stxFailure": {
-    "message": "Swap fehlgeschlagen"
-  },
-  "stxFailureDescription": {
-    "message": "Plötzliche Marktschwankungen können Fehlschläge verursachen. Sollte das Problem weiterhin bestehen, kontaktieren Sie $1.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
   "stxOptInDescriptionV2": {
     "message": "Schalten Sie Smart Transactions für zuverlässigere und sicherere Transaktionen ein. $1"
-  },
-  "stxPendingPrivatelySubmittingSwap": {
-    "message": "Ihr Swap wird privat abgesendet ..."
-  },
-  "stxPendingPubliclySubmittingSwap": {
-    "message": "Ihr Swap wird öffentlich abgesendet ..."
-  },
-  "stxSuccess": {
-    "message": "Swap abgeschlossen!"
-  },
-  "stxSuccessDescription": {
-    "message": "Ihr $1 ist jetzt verfügbar.",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
-  "stxSwapCompleteIn": {
-    "message": "Swap abgeschlossen in <",
-    "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
-  },
-  "stxTryingToCancel": {
-    "message": "Es wird versucht, Ihre Transaktion zu stornieren ..."
-  },
-  "stxUnknown": {
-    "message": "Status unbekannt"
-  },
-  "stxUnknownDescription": {
-    "message": "Eine Transaktion war erfolgreich, aber wir sind uns nicht sicher, worum es sich handelt. Dies könnte daran liegen, dass Sie eine weitere Transaktion eingereicht haben, während dieser Swap bearbeitet wurde."
-  },
-  "stxUserCancelled": {
-    "message": "Swap storniert"
-  },
-  "stxUserCancelledDescription": {
-    "message": "Ihre Transaktion wurde storniert und Sie haben keine unnötigen Netzwerkgebühren bezahlt."
   },
   "submit": {
     "message": "Absenden"
@@ -11867,10 +11804,6 @@
   "swapAggregator": {
     "message": "Aggregator"
   },
-  "swapAllowSwappingOf": {
-    "message": "Swapping von $1 zulassen",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
   "swapAmountReceived": {
     "message": "Garantierter Betrag"
   },
@@ -11892,15 +11825,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Mit Ihrer Hardware-Wallet bestätigen"
-  },
-  "swapContractDataDisabledErrorDescription": {
-    "message": "In der Ethereum-App auf Ihrem Ledger gehen Sie zu „Einstellungen“ und erlauben Vertragsdaten. Versuchen Sie dann Ihren Swap erneut."
-  },
-  "swapContractDataDisabledErrorTitle": {
-    "message": "Contract-Daten sind in Ihrem Ledger nicht aktiviert."
-  },
-  "swapCustom": {
-    "message": "benutzerdefiniert"
   },
   "swapDecentralizedExchange": {
     "message": "Dezentralisierter Austausch"
@@ -11925,29 +11849,8 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "Dies ist eine Schätzung der Netzwerkgebühr, die für den Abschluss Ihres Swaps verwendet wird. Der tatsächliche Betrag kann sich je nach Netzwerkbedingungen ändern."
   },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Transaktionsfehler kommen vor und wir sind hier, um zu helfen. Wenn das Problem weiterhin besteht, können Sie unseren Kundensupport unter $1 erreichen, um weitere Hilfe zu erhalten.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "swapFailedErrorTitle": {
-    "message": "Swap fehlgeschlagen"
-  },
-  "swapFetchingQuoteNofN": {
-    "message": "Angebot $1 von $2 wird eingeholt",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
-  },
-  "swapFetchingQuotes": {
-    "message": "Angebote einholen..."
-  },
-  "swapFetchingQuotesErrorDescription": {
-    "message": "Hmmm... etwas ist schiefgelaufen. Versuchen Sie es erneut, oder wenden Sie sich an den Kundensupport, wenn der Fehler weiterhin besteht."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Fehler beim Abrufen der Angebote"
-  },
-  "swapFromTo": {
-    "message": "Swap von $1 auf $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesExplanation": {
     "message": "MetaMask verdient kein Geld mit Netzwerkgebühren. Bei diesen Gebühren handelt es sich um Schätzwerte, die sich je nach Auslastung des Netzwerks und der Komplexität einer Transaktion ändern können. Erfahren Sie mehr über $1.",
@@ -11960,9 +11863,6 @@
   "swapGasFeesIncluded": {
     "message": " Beinhaltet"
   },
-  "swapGasFeesSplit": {
-    "message": "Die Netzwerkgebühren auf dem vorherigen Bildschirm werden auf diese beiden Transaktionen aufgeteilt."
-  },
   "swapGasFeesSponsored": {
     "message": "Bezahlt von MetaMask"
   },
@@ -11972,9 +11872,6 @@
   "swapIncludesMMFee": {
     "message": "Enthält eine MetaMask-Gebühr von $1%.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Mehr über Swaps erfahren"
   },
   "swapLiquiditySourceInfo": {
     "message": "Wir durchsuchen mehrere Liquiditätsquellen (Börsen, Aggregatoren und professionelle Market Maker), um Wechselkurse und Netzwerkgebühren zu vergleichen."
@@ -11993,30 +11890,11 @@
     "message": "$1 Angebote.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapOnceTransactionHasProcess": {
-    "message": "Ihre $1 werden Ihrem Konto gutgeschrieben, sobald diese Transaktion abgeschlossen ist.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Verarbeitung"
-  },
   "swapQuoteDetails": {
     "message": "Angebotsdetails"
   },
   "swapQuoteSource": {
     "message": "Angebotsquelle"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "Bitte fordern Sie neue Angebote an, um die aktuellen Kurse zu erhalten."
-  },
-  "swapQuotesExpiredErrorTitle": {
-    "message": "Angebot-Timeout"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "Diese Handelsroute ist derzeit nicht verfügbar. Versuchen Sie, den Betrag, das Netzwerk oder den Token zu ändern, und wir werden die bestmögliche Option suchen."
-  },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Versuchen Sie die Menge oder Slippage Einstellungen anzupassen und versuchen Sie es erneut."
   },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Keine Angebote verfügbar"
@@ -12057,10 +11935,6 @@
   "swapSlippageCappedDescription": {
     "message": "Die Slippage-Toleranz wurde auf 100 % begrenzt."
   },
-  "swapSlippageHighDescription": {
-    "message": "Die eingegebene Slippage ($1%) wird als sehr hoch angesehen und kann zu einem schlechten Kurs führen.",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageHighTitle": {
     "message": "Hohe Slippage"
   },
@@ -12071,30 +11945,8 @@
   "swapSlippageLowTitle": {
     "message": "Niedrige Slippage"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "Slippage muss größer oder gleich Null sein"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Zum Fortfahren Slippage erhöhen"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "Slippage-Tolleranz muss 15 % oder weniger betragen. Alles darüber resultiert in einem schlechten Kurs."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Sehr hohe Slippage"
-  },
-  "swapSlippagePercent": {
-    "message": "$1 %",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "Wenn sich der Kurs zwischen der Aufgabe Ihrer Order und der Bestätigung ändert, nennt man das „Slippage”. Ihr Swap wird automatisch storniert, wenn die Abweichung die von Ihnen eingestellte „Abweichungstoleranz” überschreitet."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "Es gibt weniger Anbieter mit Null-Slippage, was in einem weniger konkurrenzfähigen Angebot resultieren könne."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Suche nach Null-Slippage-Anbietern"
   },
   "swapSource": {
     "message": "Liquiditätsquelle"
@@ -12102,24 +11954,11 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps sind komplexe und zeitkritische Transaktionen. Wir empfehlen diese Netzwerkgebühr für ein gutes Gleichgewicht zwischen Kosten und Vertrauen in einen erfolgreichen Swap."
   },
-  "swapToConfirmWithHwWallet": {
-    "message": "zur Bestätigung mit Ihrem Hardware-Wallet"
-  },
-  "swapTokenAvailable": {
-    "message": "Ihr $1 wurde Ihrem Konto hinzugefügt.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
   "swapTokenNotAvailable": {
     "message": "In diesem Netzwerk ist kein Token-Tausch verfügbar"
   },
   "swapTokens": {
     "message": "Tokens tauschen"
-  },
-  "swapTransactionComplete": {
-    "message": "Transaktion vollständig"
-  },
-  "swapTwoTransactions": {
-    "message": "2 Transaktionen"
   },
   "swapUnknown": {
     "message": "Unbekannt"
@@ -12132,9 +11971,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Slippage-Toleranz"
-  },
-  "swapsViewInActivity": {
-    "message": "In Aktivität anzeigen"
   },
   "switch": {
     "message": "Wechseln"

@@ -915,10 +915,5 @@
     "react-hooks/exhaustive-deps": {
       "count": 2
     }
-  },
-  "ui/pages/swaps/awaiting-signatures/awaiting-signatures.js": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
   }
 }

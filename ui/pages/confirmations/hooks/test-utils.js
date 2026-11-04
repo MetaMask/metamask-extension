@@ -14,10 +14,6 @@ import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks';
 
-import {
-  getCustomMaxFeePerGas,
-  getCustomMaxPriorityFeePerGas,
-} from '../../../ducks/swaps/swaps';
 import { Numeric } from '../../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
@@ -142,12 +138,6 @@ export const generateUseSelectorRouter =
       return {
         balance: '0x440aa47cc2556',
       };
-    }
-    if (selector === getCustomMaxFeePerGas) {
-      return '0x5208';
-    }
-    if (selector === getCustomMaxPriorityFeePerGas) {
-      return '0x5208';
     }
     if (selector.toString().includes('checkNetworkAndAccountSupports1559')) {
       return checkNetworkAndAccountSupports1559Response;

@@ -823,9 +823,6 @@
   "mainnet": {
     "message": "Mainnet do Ethereum"
   },
-  "makeAnotherSwap": {
-    "message": "Criar nova troca"
-  },
   "max": {
     "message": "Máx"
   },
@@ -856,9 +853,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "O botão de status da conexão mostra se o website que você está visitando está conectado à conta selecionada no momento."
-  },
-  "metamaskSwapsOfflineDescription": {
-    "message": "O MetaMask Swaps está em manutenção. Verifique novamente mais tarde."
   },
   "metamaskVersion": {
     "message": "Versão da MetaMask"
@@ -973,9 +967,6 @@
   },
   "off": {
     "message": "Desativado"
-  },
-  "offlineForMaintenance": {
-    "message": "Offline para manutenção"
   },
   "ok": {
     "message": "OK"
@@ -1257,10 +1248,6 @@
   "swapAggregator": {
     "message": "Agregador"
   },
-  "swapAllowSwappingOf": {
-    "message": "Permitir troca de $1",
-    "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
   "swapAmountReceived": {
     "message": "Valor garantido"
   },
@@ -1273,15 +1260,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirme com sua carteira de hardware"
-  },
-  "swapContractDataDisabledErrorDescription": {
-    "message": "No aplicativo do Ethereum em seu Ledger, vá para \"Configurações\" e habilite os dados do contrato. Em seguida, tente sua troca novamente."
-  },
-  "swapContractDataDisabledErrorTitle": {
-    "message": "Os dados do contrato não estão habilitados em seu Ledger"
-  },
-  "swapCustom": {
-    "message": "personalizado"
   },
   "swapDecentralizedExchange": {
     "message": "Exchange descentralizada"
@@ -1306,28 +1284,8 @@
   "swapEstimatedNetworkFeesInfo": {
     "message": "Essa é a estimativa da taxa de rede que será usada para concluir sua troca. O valor real pode mudar conforme as condições de rede."
   },
-  "swapFailedErrorDescriptionWithSupportLink": {
-    "message": "Falhas na transação acontecem, e estamos aqui para ajudar. Se esse problema persistir, você pode entrar em contato com nosso atendimento ao cliente em $1 para receber assistência adicional.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
-  },
-  "swapFailedErrorTitle": {
-    "message": "Falha na troca"
-  },
-  "swapFetchingQuotes": {
-    "message": "Obtendo cotações"
-  },
-  "swapFetchingQuotesErrorDescription": {
-    "message": "Hmmm, ocorreu algum erro. Tente novamente. Ou, se os erros persistirem, entre em contato com o suporte."
-  },
   "swapFetchingQuotesErrorTitle": {
     "message": "Erro ao obter cotações"
-  },
-  "swapFromTo": {
-    "message": "A troca de $1 para $2",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "swapGasFeesSplit": {
-    "message": "As taxas de gás da tela anterior estão divididas entre essas duas transações."
   },
   "swapIncludesMMFee": {
     "message": "Inclui uma taxa de $1% da MetaMask.",
@@ -1347,27 +1305,11 @@
     "message": "$1 cotações.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapOnceTransactionHasProcess": {
-    "message": "Seu $1 será adicionado à sua conta quando essa transação for processada.",
-    "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapProcessing": {
-    "message": "Processando"
-  },
   "swapQuoteDetails": {
     "message": "Detalhes da cotação"
   },
   "swapQuoteSource": {
     "message": "Fonte da cotação"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "Solicite novas cotações para receber as taxas mais recentes."
-  },
-  "swapQuotesExpiredErrorTitle": {
-    "message": "Cotações expiradas"
-  },
-  "swapQuotesNotAvailableErrorDescription": {
-    "message": "Experimente ajustar a quantidade ou as configurações de slippage e tente novamente."
   },
   "swapQuotesNotAvailableErrorTitle": {
     "message": "Não há cotações disponíveis"
@@ -1402,19 +1344,6 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Trocas (swaps) são transações complexas e urgentes. Recomendamos essa taxa de gás para atingir o equilíbrio ideal entre o custo e a confiança de uma troca bem-sucedida."
   },
-  "swapToConfirmWithHwWallet": {
-    "message": "para confirmar com a sua carteira de hardware"
-  },
-  "swapTokenAvailable": {
-    "message": "Seu $1 foi adicionado à sua conta.",
-    "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTransactionComplete": {
-    "message": "Transação concluída"
-  },
-  "swapTwoTransactions": {
-    "message": "2 transações"
-  },
   "swapUnknown": {
     "message": "Desconhecido"
   },
@@ -1423,9 +1352,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Tolerância a slippage"
-  },
-  "swapsViewInActivity": {
-    "message": "Ver na atividade"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "Isso mudará a rede selecionada dentro da MetaMask para uma rede adicionada anteriormente:"
