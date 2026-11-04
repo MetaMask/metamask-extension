@@ -461,6 +461,10 @@ export const createMfaFlow = ({
     if (!isRecovery && current?.flowId && state.step.name === 'otp') {
       if (current.method === 'email_otp') {
         return async () => {
+          // Clear the previous notice first: the code screen empties the
+          // boxes when `codeResent` changes, so a second expiry must change it
+          // again.
+          setState({ codeResent: undefined });
           await beginCodeChallenge();
           setState({ codeResent: true });
           if (state.step.name === 'otp') {

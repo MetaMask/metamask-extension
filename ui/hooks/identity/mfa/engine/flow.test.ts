@@ -1427,6 +1427,24 @@ describe('createMfaFlow analytics', () => {
     ]);
   });
 
+  it('flags each code sent after an expiry anew, so the code screen empties its boxes each time', async () => {
+    const fake = createFakeController([activeEmail]);
+    fake.controller.completeCredentialVerification
+      .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'))
+      .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'));
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+    const codeResent: (boolean | undefined)[] = [];
+    flow.subscribe(() => codeResent.push(flow.getState().codeResent));
+
+    await act(flow, { type: 'submitCode', code: '111111' });
+    await act(flow, { type: 'submitCode', code: '222222' });
+
+    const newCodes = codeResent.filter(
+      (value, index) => value && !codeResent[index - 1],
+    );
+    expect(newCodes).toHaveLength(2);
+  });
+
   it('tracks a code the user asked for, one the countdown asked for, and each one sent after an expiry', async () => {
     const trackEvent = jest.fn();
     const fake = createFakeController([activeEmail]);
