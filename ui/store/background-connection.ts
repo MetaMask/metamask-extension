@@ -9,7 +9,7 @@ import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFa
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
 import {
   getSerializedTraceContext,
-  type SerializedTrace,
+  type SerializedTraceMetadata,
 } from '../../shared/lib/trace';
 import type { UIMessengerActions } from '../messengers/ui-messenger';
 
@@ -106,7 +106,7 @@ export function submitRequestToBackground(
             context: traceContext,
             ...(messengerAction && { messengerAction }),
             spanName: `Background RPC: ${messengerAction ?? method}`,
-          } satisfies SerializedTrace,
+          } satisfies SerializedTraceMetadata,
         },
       ]
     : params;

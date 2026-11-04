@@ -4,7 +4,7 @@ import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import {
   annotateTrace,
   endTrace,
-  extractTrace,
+  extractTraceMetadata,
   getSerializedTraceContext,
   getTraceContext,
   ONBOARDING_MACHINE_TIME_ATTRIBUTE,
@@ -947,7 +947,7 @@ describe('Trace', () => {
 
   // We intentionally use lots of underscore-prefixed properties in these tests.
   /* eslint-disable @typescript-eslint/naming-convention */
-  describe('extractTrace', () => {
+  describe('extractTraceMetadata', () => {
     it('extracts trace data from the given params', () => {
       const _trace = {
         context: { _traceId: 'trace123', _spanId: 'span456' },
@@ -956,11 +956,11 @@ describe('Trace', () => {
       };
       const params = ['AppStateController:getState', [], { _trace }];
 
-      const result = extractTrace(params);
+      const result = extractTraceMetadata(params);
 
       expect(result).toStrictEqual({
         cleanParams: ['AppStateController:getState', []],
-        trace: _trace,
+        traceMetadata: _trace,
       });
       expect(params).toHaveLength(3);
     });
@@ -983,18 +983,24 @@ describe('Trace', () => {
       (metadata) => {
         const params = ['bar', { _trace: metadata }];
 
-        const result = extractTrace(params);
+        const result = extractTraceMetadata(params);
 
-        expect(result).toStrictEqual({ cleanParams: params, trace: undefined });
+        expect(result).toStrictEqual({
+          cleanParams: params,
+          traceMetadata: undefined,
+        });
       },
     );
 
     jestIt.each([undefined, {}, []])(
       'does not extract anything from params that have no _trace argument: %j',
       (params) => {
-        const result = extractTrace(params);
+        const result = extractTraceMetadata(params);
 
-        expect(result).toStrictEqual({ cleanParams: params, trace: undefined });
+        expect(result).toStrictEqual({
+          cleanParams: params,
+          traceMetadata: undefined,
+        });
       },
     );
   });

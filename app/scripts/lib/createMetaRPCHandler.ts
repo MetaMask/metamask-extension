@@ -7,8 +7,8 @@ import type {
 import type { TaggedApiMethod } from '../messenger-client-init/utils';
 import {
   continueTraceContext,
-  extractTrace,
-  trace as createTrace,
+  extractTraceMetadata,
+  trace,
 } from '../../../shared/lib/trace';
 import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
 import { isStreamWritable, type StreamLike } from './stream-utils';
@@ -39,31 +39,33 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     }
 
     const controller = handler._controllerName;
-    const { cleanParams, trace } = extractTrace(data.params);
+    const { cleanParams, traceMetadata } = extractTraceMetadata(data.params);
 
     let result: unknown;
     let error: unknown;
     try {
-      if (!trace) {
+      if (!traceMetadata) {
         if (Array.isArray(cleanParams)) {
           result = await handler.call(api, ...cleanParams);
         } else {
           result = await handler.call(api, cleanParams);
         }
-      } else if (shouldSampleWrappers(trace.context._traceId)) {
+      } else if (shouldSampleWrappers(traceMetadata.context._traceId)) {
         // Wrapper sub-sample passes: emit the `rpc.handler` span and
         // propagate trace context for nested spans.
-        result = await createTrace(
+        result = await trace(
           {
             name: controller
               ? `Background RPC: ${controller}.${data.method}`
-              : trace.spanName,
-            parentContext: trace.context,
+              : traceMetadata.spanName,
+            parentContext: traceMetadata.context,
             op: 'rpc.handler',
             data: {
               method: data.method,
               ...(controller && { controller }),
-              ...(trace.messengerAction && { action: trace.messengerAction }),
+              ...(traceMetadata.messengerAction && {
+                action: traceMetadata.messengerAction,
+              }),
             },
           },
           () => handler.call(api, ...cleanParams),
@@ -73,7 +75,7 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
         // propagate trace context so nested auto-instrumented and core-package
         // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
         // attach to the originating UI trace instead of becoming orphans.
-        result = await continueTraceContext(trace.context, () =>
+        result = await continueTraceContext(traceMetadata.context, () =>
           handler.call(api, ...cleanParams),
         );
       }

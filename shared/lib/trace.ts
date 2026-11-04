@@ -250,7 +250,7 @@ export type SerializedTraceContext = {
 /**
  * Tracing metadata sent by the UI alongside a background RPC request.
  */
-export type SerializedTrace = {
+export type SerializedTraceMetadata = {
   /**
    * The originating UI span's serialized context.
    */
@@ -592,13 +592,13 @@ export function getSerializedTraceContext():
  * @param params - RPC call parameters.
  * @returns Clean params and the tracing metadata, if present.
  */
-export function extractTrace(
+export function extractTraceMetadata(
   params: unknown,
 ):
-  | { cleanParams: unknown[]; trace: SerializedTrace }
-  | { cleanParams: unknown; trace: undefined } {
+  | { cleanParams: unknown[]; traceMetadata: SerializedTraceMetadata }
+  | { cleanParams: unknown; traceMetadata: undefined } {
   if (!Array.isArray(params) || params.length === 0) {
-    return { cleanParams: params, trace: undefined };
+    return { cleanParams: params, traceMetadata: undefined };
   }
 
   const lastParam = params[params.length - 1];
@@ -616,10 +616,11 @@ export function extractTrace(
   ) {
     return {
       cleanParams: params.slice(0, -1),
-      trace: {
+      traceMetadata: {
         context: lastParam._trace.context,
         // Type assertion: the prefix check above validates this template literal.
-        spanName: lastParam._trace.spanName as SerializedTrace['spanName'],
+        spanName: lastParam._trace
+          .spanName as SerializedTraceMetadata['spanName'],
         ...(hasProperty(lastParam._trace, 'messengerAction') &&
           typeof lastParam._trace.messengerAction === 'string' && {
             messengerAction: lastParam._trace.messengerAction,
@@ -628,7 +629,7 @@ export function extractTrace(
     };
   }
 
-  return { cleanParams: params, trace: undefined };
+  return { cleanParams: params, traceMetadata: undefined };
 }
 
 /**

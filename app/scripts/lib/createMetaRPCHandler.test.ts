@@ -10,7 +10,7 @@ jest.mock('../../../shared/lib/trace', () => {
   return {
     trace: jest.fn((_request: unknown, fn: () => unknown) => fn()),
     continueTraceContext: jest.fn((_ctx: unknown, fn: () => unknown) => fn()),
-    extractTrace: actual.extractTrace,
+    extractTraceMetadata: actual.extractTraceMetadata,
   };
 });
 
