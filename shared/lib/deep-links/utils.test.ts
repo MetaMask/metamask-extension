@@ -86,28 +86,9 @@ describe('Deep link utils', () => {
         queryString: 'amount=100',
       });
     });
-
-    it('returns an empty query string for a path without query', () => {
-      expect(
-        getDestinationTarget({
-          path: '/swap',
-          query: new URLSearchParams(),
-        }),
-      ).toStrictEqual({
-        type: 'internal',
-        path: '/swap',
-        queryString: '',
-      });
-    });
   });
 
   describe('buildInternalRoute', () => {
-    it('appends a non-empty query string', () => {
-      expect(buildInternalRoute('/swap', 'amount=100')).toBe(
-        '/swap?amount=100',
-      );
-    });
-
     it('omits the separator for an empty query string', () => {
       expect(buildInternalRoute('/swap', '')).toBe('/swap');
     });

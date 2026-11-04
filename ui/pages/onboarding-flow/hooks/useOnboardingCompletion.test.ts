@@ -275,6 +275,30 @@ describe('useOnboardingCompletion', () => {
     );
   });
 
+  it('preserves the warning for a direct referral after onboarding', async () => {
+    mockGetPendingReferral.mockResolvedValue({
+      id: 'direct',
+      url: 'https://link.metamask.io/swap?ref=ABC',
+      code: 'ABC',
+      entryType: 'deeplink',
+      status: 'awaiting_continue',
+    });
+    jest
+      .mocked(deepLinkUtils.buildInterstitialRoute)
+      .mockReturnValue('/link?u=%2Fswap%3Fref%3DABC');
+    const { result } = renderHookWithProvider(
+      () => useOnboardingCompletion(),
+      mockState,
+    );
+    await act(async () => {
+      await result.current.completeOnboarding();
+    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/link?u=%2Fswap%3Fref%3DABC&referralContext=direct',
+    );
+    expect(mockContinueReferral).not.toHaveBeenCalled();
+  });
+
   it('preserves the unsigned deferred-link warning before offering restored context', async () => {
     const referringLink = 'https://link.metamask.io/swap?ref=ABC';
     mockGetPendingReferral.mockResolvedValue({
@@ -364,6 +388,41 @@ describe('useOnboardingCompletion', () => {
       'RewardsMoneyController:dropReferralContext',
       ['expired'],
     );
+  });
+
+  it('drops a restored context that does not match the deferred link', async () => {
+    const deferredReferringLink = 'https://link.metamask.io/home?ref=OTHER';
+    mockGetPendingReferral.mockResolvedValue({
+      id: 'stale',
+      url: 'https://link.metamask.io/home?ref=ABC',
+      code: 'ABC',
+      entryType: 'restored_context',
+      status: 'awaiting_continue',
+    });
+    jest.mocked(deepLinkUtils.getDeferredDeepLinkRoute).mockResolvedValue({
+      type: DeferredDeepLinkRouteType.Navigate,
+      route: '/bridge/prepare',
+      signature: VALID,
+    });
+    const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        deferredDeepLink: {
+          referringLink: deferredReferringLink,
+          createdAt: Date.now(),
+        },
+      },
+    });
+    await act(async () => {
+      await result.current.completeOnboarding();
+    });
+    expect(mockContinueReferral).not.toHaveBeenCalled();
+    expect(messengerCallMock).toHaveBeenCalledWith(
+      'RewardsMoneyController:dropReferralContext',
+      ['stale'],
+    );
+    expect(mockUseNavigate).toHaveBeenCalledWith('/bridge/prepare');
   });
 
   it('does not complete onboarding while the wallet is locked', async () => {
