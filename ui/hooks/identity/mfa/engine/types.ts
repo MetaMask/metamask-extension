@@ -98,9 +98,18 @@ export type MfaKitErrorCode =
  */
 export type MfaFlowErrorCode = MfaErrorCode | MfaKitErrorCode;
 
+/**
+ * The features that use the kit. A new one is added here, and to
+ * `entry_point` in segment-schema's `metamask-mfa-base.yaml`.
+ */
+export type MfaEntryPoint = 'vba' | 'ukyc' | 'settings' | 'qa';
+
 export interface MfaReason {
-  /** Sent to the controller (trace tags). */
-  operation: string;
+  /**
+   * The feature and what it does, as in `vba.verifyEmail`. Sent to the
+   * controller (trace tags); analytics report the feature as `entry_point`.
+   */
+  operation: `${MfaEntryPoint}.${string}`;
   /** Mobile presentation for full-screen steps. Defaults to a modal. */
   presentation?: 'card' | 'modal';
   /**

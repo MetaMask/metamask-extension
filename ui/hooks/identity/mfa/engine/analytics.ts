@@ -35,8 +35,6 @@ export type MfaTrackEvent = (
 
 export type MfaErrorCta = 'try_again' | 'learn_more' | 'contact_support';
 
-const ENTRY_POINTS = new Set(['vba', 'ukyc', 'settings', 'qa']);
-
 const STEP_NAMES: Record<Exclude<MfaFlowStep['name'], 'idle'>, string> = {
   intro: 'intro',
   picker: 'picker',
@@ -80,16 +78,13 @@ const ERROR_TYPES: Partial<Record<MfaFlowErrorCode, string>> = {
 const getBaseProperties = (
   reason: MfaReason,
   request: MfaFlowRequest,
-): MfaEventProperties => {
-  const prefix = reason.operation.split('.')[0];
-  return {
-    entry_point: ENTRY_POINTS.has(prefix) ? prefix : 'other',
-    operation: reason.operation,
-    flow_type: request.kind === 'enroll' ? 'enroll' : 'verify_or_enroll',
-    methods_required:
-      request.kind === 'enroll' ? [request.method] : request.methods,
-  };
-};
+): MfaEventProperties => ({
+  entry_point: reason.operation.split('.')[0],
+  operation: reason.operation,
+  flow_type: request.kind === 'enroll' ? 'enroll' : 'verify_or_enroll',
+  methods_required:
+    request.kind === 'enroll' ? [request.method] : request.methods,
+});
 
 const getErrorProperties = (code: MfaFlowErrorCode): MfaEventProperties => ({
   error_code: code,

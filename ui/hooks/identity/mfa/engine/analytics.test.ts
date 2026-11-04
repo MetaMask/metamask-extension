@@ -7,6 +7,7 @@ import type {
   MfaFlowRequest,
   MfaFlowState,
   MfaFlowStep,
+  MfaReason,
 } from './types';
 
 const state = (extra: Partial<MfaFlowState> = {}): MfaFlowState => ({
@@ -17,7 +18,7 @@ const state = (extra: Partial<MfaFlowState> = {}): MfaFlowState => ({
 });
 
 const build = (
-  operation = 'vba.verifyEmail',
+  operation: MfaReason['operation'] = 'vba.verifyEmail',
   request: MfaFlowRequest = { kind: 'verifyOrEnroll', methods: ['email_otp'] },
 ) => {
   const trackEvent = jest.fn();
@@ -30,11 +31,10 @@ const build = (
 };
 
 describe('createMfaTracker', () => {
-  it.each([
+  it.each<[MfaReason['operation'], string]>([
     ['vba.verifyEmail', 'vba'],
     ['settings.addPasskey', 'settings'],
     ['qa.enrollEmail', 'qa'],
-    ['kalshi.deposit', 'other'],
   ])('maps the %s operation to the %s entry point', (operation, entryPoint) => {
     const { tracker, trackEvent } = build(operation);
 

@@ -46,7 +46,7 @@ jest.mock('../../../hooks/useTheme', () => ({
   useTheme: () => mockTheme,
 }));
 
-const reason = { operation: 'test' };
+const reason = { operation: 'qa.test' };
 
 const buildState = <Step extends MfaFlowStep>(
   step: Step,
@@ -75,7 +75,7 @@ describe('IntroStep', () => {
           missing: ['passkey'],
           email: 'chris@metamask.com',
         })}
-        reason={{ operation: 'test', enrollDescription: 'Why we ask' }}
+        reason={{ operation: 'qa.test', enrollDescription: 'Why we ask' }}
         onAction={onAction}
       />,
     );
@@ -142,7 +142,7 @@ describe('IntroStep', () => {
           methods: ['email_otp'],
           missing: ['email_otp'],
         })}
-        reason={{ operation: 'test', verifyDescription: 'Not this one' }}
+        reason={{ operation: 'qa.test', verifyDescription: 'Not this one' }}
         onAction={jest.fn()}
       />,
     );
@@ -218,13 +218,13 @@ describe('PickerStep', () => {
   it.each<['verify' | 'confirm', MfaReason, boolean]>([
     [
       'verify',
-      { operation: 'test', verifyDescription: 'To send $20.00' },
+      { operation: 'qa.test', verifyDescription: 'To send $20.00' },
       true,
     ],
-    ['verify', { operation: 'test' }, false],
+    ['verify', { operation: 'qa.test' }, false],
     [
       'confirm',
-      { operation: 'test', verifyDescription: 'To send $20.00' },
+      { operation: 'qa.test', verifyDescription: 'To send $20.00' },
       false,
     ],
   ])(
