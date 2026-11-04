@@ -32,7 +32,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'getPendingReferralContext',
   'continueReferralContext',
   'takeReferralContext',
-  'answerReferralContext',
   'dropReferralContext',
 ] as const;
 
@@ -124,10 +123,6 @@ export class RewardsMoneyController extends BaseController<
 
   #pendingReferralCapturedAt: number | null = null;
 
-  readonly #answeredReferralCodes = new Set<string>();
-
-  readonly #offeredReferralCodes = new Set<string>();
-
   readonly #referralMeCache = new Map<string, ReferralMeCacheEntry>();
 
   readonly #referralMeGeneration = new Map<string, number>();
@@ -160,8 +155,6 @@ export class RewardsMoneyController extends BaseController<
     this.messenger.subscribe('AuthenticationController:stateChange', (auth) => {
       if (wasSignedIn && !auth.isSignedIn) {
         this.#clearPendingReferralContext();
-        this.#answeredReferralCodes.clear();
-        this.#offeredReferralCodes.clear();
       }
       wasSignedIn = auth.isSignedIn;
     });
@@ -186,11 +179,7 @@ export class RewardsMoneyController extends BaseController<
     } catch {
       return null;
     }
-    if (
-      !code ||
-      this.#answeredReferralCodes.has(code) ||
-      this.#offeredReferralCodes.has(code)
-    ) {
+    if (!code) {
       return null;
     }
     this.#pendingReferralContext = {
@@ -270,22 +259,7 @@ export class RewardsMoneyController extends BaseController<
       return null;
     }
     this.#clearPendingReferralContext();
-    const canOffer = !this.#isDisabled();
-    if (canOffer) {
-      this.#offeredReferralCodes.add(context.code);
-    }
-    return { ...context, canOffer };
-  }
-
-  /**
-   * Answers only the displayed code, leaving any newer link untouched.
-   *
-   * @param code - Original code owned by the closing invite, not its edited input.
-   */
-  answerReferralContext(code: string): void {
-    if (this.#offeredReferralCodes.delete(code)) {
-      this.#answeredReferralCodes.add(code);
-    }
+    return { ...context, canOffer: !this.#isDisabled() };
   }
 
   /**

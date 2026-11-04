@@ -16,7 +16,6 @@ export const REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES =
       MoneyReferralContextAction.getPending,
       MoneyReferralContextAction.continue,
       MoneyReferralContextAction.take,
-      MoneyReferralContextAction.answer,
     ],
     events: [],
   });

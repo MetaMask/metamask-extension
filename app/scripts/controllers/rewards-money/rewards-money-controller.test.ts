@@ -286,44 +286,7 @@ describe('RewardsMoneyController', () => {
       expect(controller.takeReferralContext(second.id)).toBeNull();
     });
 
-    it('does not clear a newer code when an older invite closes', () => {
-      const first = controller.captureReferralContext(
-        'https://link.metamask.io/home?ref=ABC',
-        'deeplink',
-        false,
-      );
-      assert(first);
-      controller.takeReferralContext(first.id);
-      const second = controller.captureReferralContext(
-        'https://link.metamask.io/home?ref=DEF',
-        'deeplink',
-        false,
-      );
-      controller.answerReferralContext('ABC');
-      expect(controller.getPendingReferralContext()).toEqual(second);
-    });
-
-    it('remembers all answered codes for the background lifetime', () => {
-      for (const code of ['ABC', 'DEF']) {
-        const context = controller.captureReferralContext(
-          `https://link.metamask.io/home?ref=${code}`,
-          'deeplink',
-          false,
-        );
-        assert(context);
-        controller.takeReferralContext(context.id);
-        controller.answerReferralContext(code);
-      }
-      expect(
-        controller.captureReferralContext(
-          'https://link.metamask.io/home?ref=ABC',
-          'deeplink',
-          false,
-        ),
-      ).toBeNull();
-    });
-
-    it('does not offer the same code to a second UI', () => {
+    it('offers the same code again after the previous context was taken', () => {
       const context = controller.captureReferralContext(
         'https://link.metamask.io/home?ref=ABC',
         'deeplink',
@@ -337,7 +300,7 @@ describe('RewardsMoneyController', () => {
           'deeplink',
           false,
         ),
-      ).toBeNull();
+      ).toMatchObject({ code: 'ABC' });
     });
 
     it('keeps authorized navigation available when the feature is disabled', () => {

@@ -60,16 +60,6 @@ export type RewardsMoneyControllerTakeReferralContextAction = {
 };
 
 /**
- * Answers only the displayed code, leaving any newer link untouched.
- *
- * @param code - Original code owned by the closing invite, not its edited input.
- */
-export type RewardsMoneyControllerAnswerReferralContextAction = {
-  type: `RewardsMoneyController:answerReferralContext`;
-  handler: RewardsMoneyController['answerReferralContext'];
-};
-
-/**
  * Loads referral me for the current Hydra profile.
  *
  * @param params - Pass `forceFresh` to skip the in-memory cache.
@@ -185,7 +175,6 @@ export type RewardsMoneyControllerMethodActions =
   | RewardsMoneyControllerContinueReferralContextAction
   | RewardsMoneyControllerDropReferralContextAction
   | RewardsMoneyControllerTakeReferralContextAction
-  | RewardsMoneyControllerAnswerReferralContextAction
   | RewardsMoneyControllerGetReferralMeAction
   | RewardsMoneyControllerValidateReferralCodeAction
   | RewardsMoneyControllerRegisterRefereeAction

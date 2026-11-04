@@ -150,11 +150,8 @@ const MoneyReferralHandoffContent = () => {
     if (!context || finished.current) {
       return;
     }
-    messenger
-      .call(MoneyReferralContextAction.answer, context.code)
-      .catch(() => undefined);
     continueToDestination(context.url, true).catch(() => undefined);
-  }, [context, continueToDestination, messenger]);
+  }, [context, continueToDestination]);
 
   useEffect(() => {
     if (!context) {

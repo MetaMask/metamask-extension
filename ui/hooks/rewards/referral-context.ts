@@ -13,7 +13,6 @@ export const MoneyReferralContextAction = {
   continue: 'RewardsMoneyController:continueReferralContext',
   drop: 'RewardsMoneyController:dropReferralContext',
   take: 'RewardsMoneyController:takeReferralContext',
-  answer: 'RewardsMoneyController:answerReferralContext',
 } as const;
 
 /**

@@ -163,16 +163,12 @@ describe('MoneyReferralHandoff', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('answers the offered code and navigates once with original product parameters', async () => {
+  it('navigates once with original product parameters', async () => {
     renderHandoff();
     await act(async () => undefined);
     await act(async () => {
       fireEvent.click(screen.getByTestId('invite'));
     });
-    expect(mockCall).toHaveBeenCalledWith(
-      'RewardsMoneyController:answerReferralContext',
-      'ABC',
-    );
     expect(mockParse).toHaveBeenCalledWith(new URL(offer.url));
     expect(mockNavigate).toHaveBeenCalledTimes(1);
     expect(mockNavigate).toHaveBeenCalledWith('/bridge/prepare?amount=123', {
