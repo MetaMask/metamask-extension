@@ -9,7 +9,7 @@ import {
   getMetaMaskHdKeyrings,
   getPendingShieldCohortTxType,
 } from '../../../selectors';
-import { getSelectedEvmAccountUsdBalance } from '../../../selectors/subscription/user-usd-balance';
+import { getSelectedEvmAccountUsdBalance } from '../../../selectors/assets';
 import type { MetaMaskReduxState } from '../../../store/types';
 import {
   formatExistingSubscriptionEventProps,

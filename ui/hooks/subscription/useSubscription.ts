@@ -32,7 +32,7 @@ import {
   getShieldSubscriptionError,
   getUserSubscriptions,
 } from '../../selectors/subscription';
-import { getSelectedEvmAccountUsdBalance } from '../../selectors/subscription/user-usd-balance';
+import { getSelectedEvmAccountUsdBalance } from '../../selectors/assets';
 import type { MetaMaskReduxState } from '../../store/types';
 import {
   addTransaction,
