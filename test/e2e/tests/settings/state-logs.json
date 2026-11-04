@@ -1328,6 +1328,7 @@
     "lastKnownBalance": "null"
   },
   "moneyFtue": {
+    "acknowledged": "boolean",
     "isOpen": "boolean",
     "pendingDeposit": "null",
     "source": "null"
