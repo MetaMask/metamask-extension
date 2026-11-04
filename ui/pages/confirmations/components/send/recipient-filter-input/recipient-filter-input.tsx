@@ -18,10 +18,10 @@ export const RecipientFilterInput = ({
       <TextFieldSearch
         className="w-full"
         clearButtonOnClick={() => onChange('')}
+        inputAriaLabel={t('searchAnAcccountOrContact')}
         inputProps={
           {
             'data-testid': 'recipient-filter-search-input',
-            'aria-label': t('searchAnAcccountOrContact'),
           } as React.ComponentPropsWithoutRef<'input'>
         }
         onChange={(event) => onChange(event.target.value)}

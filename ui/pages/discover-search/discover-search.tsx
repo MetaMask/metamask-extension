@@ -879,10 +879,10 @@ export const DiscoverSearchPage = () => {
           value={searchQuery}
           onChange={handleSearchChange}
           clearButtonOnClick={handleSearchClear}
+          inputAriaLabel={t('searchTokens')}
           inputProps={
             {
               'data-testid': 'discover-search-input',
-              'aria-label': t('searchTokens'),
               spellCheck: false,
             } as React.ComponentPropsWithoutRef<'input'>
           }

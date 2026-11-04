@@ -65,9 +65,9 @@ export const PageHeaderWithSearch = ({
           onChangeText: onSearchChange,
           onClickClearButton: onSearchClear,
           autoFocus: true,
+          inputAriaLabel: searchPlaceholder ?? t('search'),
           inputProps: {
             'data-testid': 'page-header-search-input',
-            'aria-label': searchPlaceholder ?? t('search'),
           } as React.ComponentPropsWithoutRef<'input'>,
         }}
       />

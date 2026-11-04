@@ -21,10 +21,10 @@ export const AssetFilterInput = ({
         autoFocus
         className="w-full"
         clearButtonOnClick={() => onChange('')}
+        inputAriaLabel={placeholder ?? t('searchForAnAssetToSend')}
         inputProps={
           {
             'data-testid': 'asset-filter-search-input',
-            'aria-label': placeholder ?? t('searchForAnAssetToSend'),
           } as React.ComponentPropsWithoutRef<'input'>
         }
         onChange={(event) => onChange(event.target.value)}

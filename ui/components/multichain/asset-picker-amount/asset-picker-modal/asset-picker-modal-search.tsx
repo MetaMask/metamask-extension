@@ -41,12 +41,13 @@ export const Search = ({
         autoFocus={autoFocus}
         className="w-full"
         clearButtonOnClick={() => onChange('')}
+        inputAriaLabel={
+          placeholder ??
+          t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress')
+        }
         inputProps={
           {
             'data-testid': 'asset-picker-modal-search-input',
-            'aria-label':
-              placeholder ??
-              t(isNFTSearch ? 'searchNfts' : 'searchTokensByNameOrAddress'),
           } as React.ComponentPropsWithoutRef<'input'>
         }
         onChange={(event) => onChange(event.target.value)}

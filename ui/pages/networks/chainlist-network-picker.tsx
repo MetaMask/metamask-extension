@@ -365,11 +365,7 @@ export const ChainlistNetworkPicker = ({
             className="w-full"
             clearButtonOnClick={() => setInternalSearchValue('')}
             data-testid="networks-page-chainlist-search"
-            inputProps={
-              {
-                'aria-label': t('searchNetworkNameOrChainId'),
-              } as React.ComponentPropsWithoutRef<'input'>
-            }
+            inputAriaLabel={t('searchNetworkNameOrChainId')}
             onChange={(event) => setInternalSearchValue(event.target.value)}
             placeholder={t('searchNetworkNameOrChainId')}
             value={searchValue}

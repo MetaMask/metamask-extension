@@ -176,6 +176,7 @@ export function AccountPickerRowContent<AccountType extends SubAccountBase>({
                   autoFocus
                   className="w-full"
                   clearButtonOnClick={() => setSearchQuery('')}
+                  inputAriaLabel={searchPlaceholder}
                   inputProps={
                     {
                       'data-testid': testIds.searchInput,

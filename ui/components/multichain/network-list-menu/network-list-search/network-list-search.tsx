@@ -20,11 +20,7 @@ const NetworkListSearch = ({
         className="w-full"
         clearButtonOnClick={() => setSearchQuery('')}
         data-testid="search-list"
-        inputProps={
-          {
-            'aria-label': t('search'),
-          } as React.ComponentPropsWithoutRef<'input'>
-        }
+        inputAriaLabel={t('search')}
         onBlur={() => setFocusSearch(false)}
         onFocus={() => setFocusSearch(true)}
         onChange={(event) => setSearchQuery(event.target.value)}

@@ -161,11 +161,7 @@ export const MultichainAddressRowsList = ({
           className="w-full"
           clearButtonOnClick={handleClearSearch}
           data-testid="multichain-address-rows-list-search"
-          inputProps={
-            {
-              'aria-label': t('searchNetworks'),
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
+          inputAriaLabel={t('searchNetworks')}
           onChange={handleSearchChange}
           placeholder={t('searchNetworks')}
           value={searchPattern}

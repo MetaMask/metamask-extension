@@ -162,10 +162,10 @@ export const BridgeAssetPickerContent = forwardRef<
               autoFocus
               className="w-full"
               clearButtonOnClick={() => setSearchQuery('')}
+              inputAriaLabel={t('enterTokenNameOrAddress')}
               inputProps={
                 {
                   'data-testid': 'bridge-asset-picker-search-input',
-                  'aria-label': t('enterTokenNameOrAddress'),
                 } as React.ComponentPropsWithoutRef<'input'>
               }
               onChange={(event) => setSearchQuery(event.target.value)}

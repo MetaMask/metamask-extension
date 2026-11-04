@@ -128,6 +128,7 @@ export const SideNavAccounts = () => {
             className="w-full"
             clearButtonOnClick={clearSearch}
             onChange={onSearchBarChange}
+            inputAriaLabel={t('searchYourAccounts')}
             placeholder={t('searchYourAccounts')}
             value={searchPattern}
             inputProps={

@@ -1699,10 +1699,10 @@ export const TokenManagementPage = () => {
         <TextFieldSearch
           className="w-full"
           clearButtonOnClick={handleSearchClear}
+          inputAriaLabel={t('enterTokenNameOrAddressManageTokens')}
           inputProps={
             {
               'data-testid': 'token-management-search-input',
-              'aria-label': t('enterTokenNameOrAddressManageTokens'),
               spellCheck: false,
             } as React.ComponentPropsWithoutRef<'input'>
           }

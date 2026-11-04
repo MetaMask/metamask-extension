@@ -8064,52 +8064,52 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.47.0":
-  version: 0.47.0
-  resolution: "@metamask/design-system-react@npm:0.47.0"
+"@metamask/design-system-react@npm:^0.51.0":
+  version: 0.51.0
+  resolution: "@metamask/design-system-react@npm:0.51.0"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
-    "@metamask/design-system-shared": "npm:^0.41.0"
+    "@metamask/design-system-shared": "npm:^0.45.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
     react-focus-lock: "npm:^2.9.4"
     tailwind-merge: "npm:^2.0.0"
   peerDependencies:
-    "@metamask/design-system-tailwind-preset": ^0.15.0
-    "@metamask/design-tokens": ^12.0.0
+    "@metamask/design-system-tailwind-preset": ^0.16.0
+    "@metamask/design-tokens": ^13.0.0
     "@metamask/utils": ^11.12.1
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/4cb233ea6419f4fd08494ae597e8bfb7ff07ed69251a099f760c6ff61097ee33c40695725978c5fe057088ffa4e05fb0a95e5f8bab7482b73997a20b9a184eca
+  checksum: 10/f7d3e4af17ddcfaa5c72dc3ece3259902597d84139f597704d6d00dc586d0588631c38a2f6fb28086b152dfa6dcc9781039b1bb61753ddba974e96c0b3c6f95a
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.41.0":
-  version: 0.41.0
-  resolution: "@metamask/design-system-shared@npm:0.41.0"
+"@metamask/design-system-shared@npm:^0.45.0":
+  version: 0.45.0
+  resolution: "@metamask/design-system-shared@npm:0.45.0"
   dependencies:
     "@metamask/utils": "npm:^11.12.1"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/4639080551ba926806aaa76c24f6b8786711d815114189e83db5c0ce8a5976163d237de25f999ded5b44531fd5bf591b46ef9aa68b178a2734c1a77cf89b9412
+  checksum: 10/522922b87353a5b0b16adc5157bcfbea153741d6818a60516280d5aa5a2eeb0ae55e22240eba37febe4198f9e553fc2ef9aa7f277ea9ad4d7de7db2e412a6243
   languageName: node
   linkType: hard
 
-"@metamask/design-system-tailwind-preset@npm:^0.15.0":
-  version: 0.15.0
-  resolution: "@metamask/design-system-tailwind-preset@npm:0.15.0"
+"@metamask/design-system-tailwind-preset@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@metamask/design-system-tailwind-preset@npm:0.16.0"
   peerDependencies:
-    "@metamask/design-tokens": ^12.0.0
+    "@metamask/design-tokens": ^13.0.0
     tailwindcss: ^3.0.0
-  checksum: 10/837c42c0bb77623074989a747aee1417856f70c5c5d2a2283cc11ee618bba860a6bc2eec0be31e2c5035d911a878ceeb27843feaaaa7b2ce03b3f5f324a711fe
+  checksum: 10/2cbc9aef29d36c2382d05c4b430068ca3fa9052d76fa6cec3100932816fb772b70119537e08c0951e786d69474b3a63d159d59e67c27894926946140019c0edd
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/design-tokens@npm:12.0.0"
-  checksum: 10/ef7e51c07ac952ca9280d40ea6b5a1407069d5adca74b8aaaefdeaa9281b9e38389ca396a7957fa79fac4cc2e225cd57939a9aed69e29348122edc981ee4ce43
+"@metamask/design-tokens@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/design-tokens@npm:13.0.0"
+  checksum: 10/5b88c001a486a200dee6f50b33957b24a66cbaf56b7b297c85a99ae4e792d966db0654a8f4321a91c0b3452b9ed3ad4f29845ba7b90e3d702ce65be9037fc3dc
   languageName: node
   linkType: hard
 
@@ -35512,10 +35512,10 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^2.1.0"
-    "@metamask/design-system-react": "npm:^0.47.0"
-    "@metamask/design-system-shared": "npm:^0.41.0"
-    "@metamask/design-system-tailwind-preset": "npm:^0.15.0"
-    "@metamask/design-tokens": "npm:^12.0.0"
+    "@metamask/design-system-react": "npm:^0.51.0"
+    "@metamask/design-system-shared": "npm:^0.45.0"
+    "@metamask/design-system-tailwind-preset": "npm:^0.16.0"
+    "@metamask/design-tokens": "npm:^13.0.0"
     "@metamask/dummy-package": "workspace:*"
     "@metamask/eip-5792-middleware": "npm:3.0.3"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"

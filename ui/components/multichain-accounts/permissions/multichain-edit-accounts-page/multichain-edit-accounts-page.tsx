@@ -227,11 +227,7 @@ export const MultichainEditAccountsPage = ({
           className="w-full"
           clearButtonOnClick={clearSearch}
           data-testid="multichain-edit-account-list-search"
-          inputProps={
-            {
-              'aria-label': t('searchYourAccounts'),
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
+          inputAriaLabel={t('searchYourAccounts')}
           onChange={onSearchBarChange}
           placeholder={t('searchYourAccounts')}
           value={searchPattern}
