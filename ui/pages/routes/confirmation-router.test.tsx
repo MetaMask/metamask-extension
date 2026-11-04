@@ -1,12 +1,9 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { render } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { FeatureId } from '@metamask/bridge-controller';
 import configureStore from '../../store/store';
-import {
-  renderWithProvider,
-  createMemoryRouterWrapper,
-} from '../../../test/lib/render-helpers-navigate';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
@@ -67,14 +64,14 @@ const renderConfirmationRouter = ({
   hasBatchSellQuotes = false,
   hasPendingApproval = false,
   environmentType = ENVIRONMENT_TYPE_POPUP,
-  initialEntries,
+  isUnlocked = true,
 }: {
   pathname: string;
   hasQuotes?: boolean;
   hasBatchSellQuotes?: boolean;
   hasPendingApproval?: boolean;
   environmentType?: string;
-  initialEntries?: string[];
+  isUnlocked?: boolean;
 }) => {
   (getEnvironmentType as jest.Mock).mockReturnValue(environmentType);
 
@@ -82,6 +79,7 @@ const renderConfirmationRouter = ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      isUnlocked,
       ...(hasPendingApproval
         ? {}
         : { pendingApprovals: {}, pendingApprovalCount: 0, approvalFlows: [] }),
@@ -100,13 +98,7 @@ const renderConfirmationRouter = ({
     </>
   );
 
-  if (initialEntries) {
-    return render(ui, {
-      wrapper: createMemoryRouterWrapper({ initialEntries, store }),
-    });
-  }
-
-  return renderWithProvider(ui, store, pathname);
+  return { ...renderWithProvider(ui, store, pathname), store };
 };
 
 describe('ConfirmationRouter', () => {
@@ -267,12 +259,37 @@ describe('ConfirmationRouter', () => {
     });
   });
 
-  describe('in-app navigation with quotes', () => {
-    it('does not redirect with non-first-screen key', () => {
-      const { getByTestId } = renderConfirmationRouter({
+  describe('resume on popup open', () => {
+    it('resumes swap after unlocking', () => {
+      const { getByTestId, store } = renderConfirmationRouter({
         pathname: DEFAULT_ROUTE,
         hasQuotes: true,
-        initialEntries: ['/previous-page', DEFAULT_ROUTE],
+        isUnlocked: false,
+      });
+
+      // The unlock redirect would override a resume here
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
+
+      act(() => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { isUnlocked: true },
+        });
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(SWAP_ROUTE);
+    });
+
+    it('does not redirect when quotes show up after the first check', () => {
+      const { getByTestId, store } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+      });
+
+      act(() => {
+        store.dispatch({
+          type: UPDATE_METAMASK_STATE,
+          value: { quotes: [{}] },
+        });
       });
 
       expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { type TransactionMeta } from '@metamask/transaction-controller';
@@ -21,7 +21,6 @@ import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavi
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
@@ -36,6 +35,7 @@ import { useModalState } from '../../hooks/useModalState';
 import { isMusdConversionTransaction } from '../../components/app/musd/utils';
 import { resetBridgeController } from '../../ducks/bridge/actions';
 import { useDispatch } from '../../store/hooks';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 
 const EXEMPTED_ROUTES = [
   CROSS_CHAIN_SWAP_ROUTE,
@@ -67,25 +67,29 @@ export const ConfirmationRouter = () => {
 
   const envType = getEnvironmentType();
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
-  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
 
   const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
   const hasBatchSellQuotes = useSelector(selectHasBatchSellQuotes);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
+  const isUnlocked = useSelector(getIsUnlocked);
 
-  const isFirstScreen = location.key === 'default';
-  const canRedirectToSwap = !isNotification && isFirstScreen;
+  // The popup reloads every time it opens. Only resume a leftover swap or
+  // batch sell on the first screen we check, not on later in-app navigation.
+  const hasCheckedResumeRef = useRef(false);
   const transactions = useSelector(getTransactions) as TransactionMeta[];
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
-    if (canRedirectToSwap && hasBatchSellQuotes && isPopup) {
+    const canResume = isPopup && !hasCheckedResumeRef.current;
+    hasCheckedResumeRef.current = true;
+
+    if (canResume && hasBatchSellQuotes) {
       closeModals();
       navigate(DEFAULT_ROUTE, { replace: true });
       dispatch(resetBridgeController());
-    } else if (canRedirectToSwap && hasBridgeQuotes && isPopup) {
+    } else if (canResume && hasBridgeQuotes) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
@@ -102,7 +106,6 @@ export const ConfirmationRouter = () => {
       }
     }
   }, [
-    canRedirectToSwap,
     closeModals,
     dispatch,
     hasApprovalFlows,
@@ -143,7 +146,9 @@ export const ConfirmationRouter = () => {
 
   // Ported from home.component - componentDidUpdate()
   useEffect(() => {
-    if (isExemptedRoute) {
+    // This router is mounted outside the unlock guard, so wait for unlock
+    // instead of using up the one resume check on the lock screen.
+    if (!isUnlocked || isExemptedRoute) {
       return;
     }
 
@@ -152,7 +157,12 @@ export const ConfirmationRouter = () => {
     }
 
     checkStatusAndNavigate();
-  }, [checkStatusAndNavigate, isExemptedRoute, isFullscreenExemption]);
+  }, [
+    checkStatusAndNavigate,
+    isExemptedRoute,
+    isFullscreenExemption,
+    isUnlocked,
+  ]);
 
   return null;
 };
