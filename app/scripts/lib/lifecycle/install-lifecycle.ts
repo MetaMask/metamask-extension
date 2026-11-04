@@ -27,6 +27,7 @@ type InstallLifecycleController = OnUpdateController & {
   appMetadataController: Pick<AppMetadataController, 'setInstallAttribution'>;
   appStateController: InstallLifecycleAppStateController;
   messengerClientsByName?: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- controller registry key
     RewardsMoneyController: Pick<
       RewardsMoneyController,
       'captureReferralContext'

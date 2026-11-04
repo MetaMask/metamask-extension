@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import { it } from '@jest/globals';
 import {
   MOCK_ANY_NAMESPACE,
@@ -183,9 +184,11 @@ describe('RewardsMoneyController', () => {
         'deeplink',
         true,
       );
-      controller.dropReferralContext(first!.id);
+      assert(first);
+      assert(second);
+      controller.dropReferralContext(first.id);
       expect(controller.getPendingReferralContext()).toEqual(second);
-      controller.dropReferralContext(second!.id);
+      controller.dropReferralContext(second.id);
       expect(controller.getPendingReferralContext()).toBeNull();
     });
     it('captures before eligibility without calling the API', () => {
@@ -209,12 +212,13 @@ describe('RewardsMoneyController', () => {
         'deeplink',
         true,
       );
-      expect(controller.takeReferralContext(context!.id)).toBeNull();
-      controller.continueReferralContext(context!.id);
-      expect(controller.takeReferralContext(context!.id)).toMatchObject({
+      assert(context);
+      expect(controller.takeReferralContext(context.id)).toBeNull();
+      controller.continueReferralContext(context.id);
+      expect(controller.takeReferralContext(context.id)).toMatchObject({
         code: 'ABC',
       });
-      expect(controller.takeReferralContext(context!.id)).toBeNull();
+      expect(controller.takeReferralContext(context.id)).toBeNull();
     });
 
     it('replaces an unclaimed link without accepting an old Continue', () => {
@@ -228,10 +232,12 @@ describe('RewardsMoneyController', () => {
         'deeplink',
         true,
       );
-      controller.continueReferralContext(first!.id);
+      assert(first);
+      assert(second);
+      controller.continueReferralContext(first.id);
       expect(controller.getPendingReferralContext()).toEqual(second);
-      expect(controller.takeReferralContext(first!.id)).toBeNull();
-      expect(controller.takeReferralContext(second!.id)).toBeNull();
+      expect(controller.takeReferralContext(first.id)).toBeNull();
+      expect(controller.takeReferralContext(second.id)).toBeNull();
     });
 
     it('does not clear a newer code when an older invite closes', () => {
@@ -240,7 +246,8 @@ describe('RewardsMoneyController', () => {
         'deeplink',
         false,
       );
-      controller.takeReferralContext(first!.id);
+      assert(first);
+      controller.takeReferralContext(first.id);
       const second = controller.captureReferralContext(
         'https://link.metamask.io/home?ref=DEF',
         'deeplink',
@@ -257,7 +264,8 @@ describe('RewardsMoneyController', () => {
           'deeplink',
           false,
         );
-        controller.takeReferralContext(context!.id);
+        assert(context);
+        controller.takeReferralContext(context.id);
         controller.answerReferralContext(code);
       }
       expect(
@@ -275,7 +283,8 @@ describe('RewardsMoneyController', () => {
         'deeplink',
         false,
       );
-      controller.takeReferralContext(context!.id);
+      assert(context);
+      controller.takeReferralContext(context.id);
       expect(
         controller.captureReferralContext(
           'https://link.metamask.io/home?ref=abc',
@@ -292,9 +301,10 @@ describe('RewardsMoneyController', () => {
         false,
       );
       isDisabled = true;
-      expect(controller.takeReferralContext(context!.id)).toMatchObject({
+      assert(context);
+      expect(controller.takeReferralContext(context.id)).toMatchObject({
         canOffer: false,
-        url: context!.url,
+        url: context.url,
       });
       expect(getReferralMe).not.toHaveBeenCalled();
     });

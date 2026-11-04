@@ -51,6 +51,7 @@ jest.mock('../../store/actions', () => ({
   setTermsOfUseLastAgreed: () => ({ type: 'agree' }),
 }));
 jest.mock('../../components/app/terms-of-use-popup/terms-of-use-popup', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest module interoperability
   __esModule: true,
   default: ({ onAccept }: { onAccept: () => void }) => (
     <button onClick={onAccept}>Agree to terms</button>
@@ -96,20 +97,20 @@ function renderHandoff({
   termsOwed = false,
   strict = false,
 } = {}) {
+  const initialState = {
+    metamask: {
+      completedOnboarding: completed,
+      isUnlocked: unlocked,
+      termsOwed,
+    },
+  };
   const store = configureStore({
-    reducer: (
-      state = {
-        metamask: {
-          completedOnboarding: completed,
-          isUnlocked: unlocked,
-          termsOwed,
-        },
-      },
-      action,
-    ) =>
-      action.type === 'agree'
-        ? { metamask: { ...state.metamask, termsOwed: false } }
-        : state,
+    reducer: (state: typeof initialState | undefined, action) => {
+      const current = state ?? initialState;
+      return action.type === 'agree'
+        ? { metamask: { ...current.metamask, termsOwed: false } }
+        : current;
+    },
   });
   const element = (
     <Provider store={store}>

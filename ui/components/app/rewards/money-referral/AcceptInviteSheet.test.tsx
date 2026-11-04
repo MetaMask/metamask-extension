@@ -233,6 +233,7 @@ describe('AcceptInviteSheet', () => {
   });
 
   describe('link preflight', () => {
+    /* eslint-disable @typescript-eslint/naming-convention -- analytics event and referral API field assertions */
     it('keeps the accepted link flow active through the activation modal', async () => {
       mockReferralState.fetch.mockResolvedValue({
         status: 'settled',
@@ -393,6 +394,7 @@ describe('AcceptInviteSheet', () => {
         refusal_reason: 'already_referred',
       });
     });
+    /* eslint-enable @typescript-eslint/naming-convention */
   });
 
   it('shows an invalid code from validation and keeps accept disabled', () => {

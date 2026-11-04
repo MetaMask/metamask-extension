@@ -15,6 +15,7 @@ jest.mock('../../../ui/store/background-connection', () => ({
 jest.mock(
   '../../../ui/pages/onboarding-flow/welcome/fox-appear-animation',
   () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest module interoperability
     __esModule: true,
     default: () => <div />,
   }),
@@ -22,6 +23,7 @@ jest.mock(
 jest.mock(
   '../../../ui/pages/onboarding-flow/welcome/metamask-wordmark-animation',
   () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest module interoperability
     __esModule: true,
     default: () => <div />,
   }),
@@ -52,6 +54,7 @@ describe('Referral handoff with the application router', () => {
         if (method === 'RewardsMoneyController:getReferralMe') {
           return {
             roles: [],
+            /* eslint-disable @typescript-eslint/naming-convention -- referral API response */
             ui_variant: 'NONE',
             excluded_regions: [],
             earn_rates: {},
@@ -63,6 +66,7 @@ describe('Referral handoff with the application router', () => {
               inviteAccept: 'Accept invite',
               inviteDecline: 'Decline invite',
             },
+            /* eslint-enable @typescript-eslint/naming-convention */
           };
         }
         if (method === 'RewardsMoneyController:validateReferralCode') {

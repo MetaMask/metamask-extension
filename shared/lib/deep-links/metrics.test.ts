@@ -1,4 +1,4 @@
-import { it } from '@jest/globals';
+import { it as jestIt } from '@jest/globals';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -43,7 +43,7 @@ describe('createEvent', () => {
       expect(result.sensitiveProperties).not.toHaveProperty('ref');
     });
 
-    it.each(['', '?ref=AB', '?ref=ABC-123', '?ref=ABC&ref=DEF'])(
+    jestIt.each(['', '?ref=AB', '?ref=ABC-123', '?ref=ABC&ref=DEF'])(
       'omits invalid/missing referral_code for %s',
       (query) => {
         const result = createEvent({

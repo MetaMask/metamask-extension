@@ -27,6 +27,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import type { ReferralLocalizedText } from '../../../../../shared/types/rewards-money';
+import type { MoneyReferralEntryType } from '../../../../../shared/lib/deep-links/money-referral';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
@@ -48,7 +49,6 @@ import { useReferralMe } from '../../../../hooks/rewards/useReferralMe';
 import { REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES } from '../../../../hooks/rewards/rewards-money-messenger';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { ReferralActivatedModal } from './ReferralActivatedModal';
-import type { MoneyReferralEntryType } from '../../../../../shared/lib/deep-links/money-referral';
 
 export const MONEY_REFERRAL_LOAD_BUDGET_MS = 5000;
 
@@ -520,6 +520,7 @@ const AcceptInviteSheetContent = ({
  * @param props - The code from the home query and the close handler.
  * @param props.initialCode - Prefill from `ref`.
  * @param props.onClose - Unmounts the sheet.
+ * @param props.entryType - Link source; enables the fresh, bounded eligibility read.
  */
 export function AcceptInviteSheet({
   initialCode,

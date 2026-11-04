@@ -103,8 +103,10 @@ const MoneyReferralHandoffContent = () => {
         ),
       };
     }
-    takeRequest.current.promise
-      .then((offer) => {
+    const pendingOffer = takeRequest.current.promise;
+    const loadOffer = async () => {
+      try {
+        const offer = await pendingOffer;
         if (cancelled) {
           return;
         }
@@ -112,21 +114,18 @@ const MoneyReferralHandoffContent = () => {
           offerProfileId.current = profileId;
           setContext(offer);
         } else if (offer) {
-          continueToDestination(offer.url, true).catch(() => undefined);
+          await continueToDestination(offer.url, true);
         } else {
-          continueToDestination(params.get('u') ?? '', false).catch(
-            () => undefined,
-          );
+          await continueToDestination(params.get('u') ?? '', false);
         }
         setLoaded(true);
-      })
-      .catch(() => {
+      } catch {
         if (!cancelled) {
-          continueToDestination(params.get('u') ?? '', false).catch(
-            () => undefined,
-          );
+          await continueToDestination(params.get('u') ?? '', false);
         }
-      });
+      }
+    };
+    loadOffer().catch(() => undefined);
     return () => {
       cancelled = true;
     };

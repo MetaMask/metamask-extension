@@ -16,6 +16,7 @@ export type Properties = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   attribution_id?: string;
   referral?: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
   referral_code?: string;
 } & { [key in UTMParameter]?: string };
 
