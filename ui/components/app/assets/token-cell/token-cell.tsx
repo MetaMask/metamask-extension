@@ -36,6 +36,11 @@ export type TokenCellProps = {
   moneyCta?: MoneyTokenListCtaConfig;
   /** Replaces the price change, after any CTA. */
   priceChangeOverride?: React.ReactNode;
+  /**
+   * Locks the percent to this value. `null` shows no percent instead of the
+   * cached market-data change.
+   */
+  explicitPercentChange?: number | null;
 };
 
 export default function TokenCell({
@@ -47,6 +52,7 @@ export default function TokenCell({
   musd,
   moneyCta,
   priceChangeOverride,
+  explicitPercentChange,
 }: TokenCellProps) {
   const isEvm = isEvmChainId(token.chainId);
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
@@ -107,7 +113,12 @@ export default function TokenCell({
       );
     }
     return (
-      priceChangeOverride ?? <TokenCellPercentChange token={displayToken} />
+      priceChangeOverride ?? (
+        <TokenCellPercentChange
+          token={displayToken}
+          explicitPercentChange={explicitPercentChange}
+        />
+      )
     );
   };
 

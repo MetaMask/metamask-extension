@@ -5,18 +5,14 @@ import {
   type CaipChainId,
   type Hex,
   isCaipAssetType,
-  isStrictHexString,
 } from '@metamask/utils';
-import type { Asset } from '@metamask/assets-controllers';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
 import {
-  getNativeAssetId,
   isEvmChainId,
   isTronSpecialAsset,
   normalizeTokenAssetId,
 } from '#shared/lib/asset-utils';
-import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import {
@@ -50,9 +46,15 @@ import {
   type TokenTableSort,
 } from '../util/sortAssetsWithPriority';
 import { isMusdToken } from '../../musd/constants';
+import { isZeroAmount } from '../../../../helpers/utils/number-utils';
+import {
+  applyLiveTokenFiat,
+  readLiveQuotes,
+  useMarketStats,
+} from '../../../../hooks/assets/market-stats';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
-import { isZeroAmount } from '../../../../helpers/utils/number-utils';
+import { toCaipAssetId } from '../util/to-caip-asset-id';
 import { useAssetsHaveLoaded } from './useAssetsHaveLoaded';
 
 export type TokenListDisplayItem =
@@ -77,26 +79,6 @@ type UseTokenListDataOptions = {
 };
 
 let lowValueAssetsExpandedSessionValue = false;
-
-const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
-  const { assetId, chainId, isNative } = asset;
-
-  if (assetId && isCaipAssetType(assetId)) {
-    return normalizeTokenAssetId(assetId);
-  }
-
-  if (isNative) {
-    const nativeAssetId = getNativeAssetId(chainId as Hex | undefined);
-    return nativeAssetId ? normalizeTokenAssetId(nativeAssetId) : undefined;
-  }
-
-  const evmAddress = 'address' in asset ? asset.address : assetId;
-  if (evmAddress && isStrictHexString(chainId)) {
-    return buildEvmCaip19AssetId(evmAddress, chainId) as CaipAssetType;
-  }
-
-  return undefined;
-};
 
 export const getTokenListItemKey = (
   item: TokenListDisplayItem,
@@ -192,14 +174,20 @@ export function useTokenListData({
     useExternalServices,
   ]);
 
-  const sortedFilteredTokens = useMemo(() => {
-    const accountAssets = sortTokenAssets(
-      filteredAssets,
-      tokenSortConfig,
-      sortOverride,
-    );
+  const sortedAssets = useMemo(
+    () => sortTokenAssets(filteredAssets, tokenSortConfig, sortOverride),
+    [filteredAssets, sortOverride, tokenSortConfig],
+  );
+  const liveQuotes = useMarketStats((quotes) =>
+    readLiveQuotes(
+      quotes,
+      sortedAssets.map((asset) => toCaipAssetId(asset)),
+    ),
+  );
 
-    return accountAssets.map((asset) => {
+  const sortedFilteredTokens = useMemo(() => {
+    return sortedAssets.map((asset, index) => {
+      const caipAssetId = toCaipAssetId(asset);
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -207,12 +195,23 @@ export function useTokenListData({
         title: asset.name,
         address: 'address' in asset ? asset.address : (asset.assetId as Hex),
         chainId: asset.chainId as Hex,
-        caipAssetId: toCaipAssetId(asset),
+        caipAssetId,
       };
 
-      return token;
+      const quote = liveQuotes[index];
+      const priced = applyLiveTokenFiat(token, quote?.price);
+      if (quote === undefined) {
+        return priced;
+      }
+      return {
+        ...priced,
+        livePrice: quote.price,
+        ...(quote.pricePercentChange1d === undefined
+          ? {}
+          : { pricePercentChange1d: quote.pricePercentChange1d }),
+      };
     });
-  }, [filteredAssets, sortOverride, tokenSortConfig]);
+  }, [liveQuotes, sortedAssets]);
 
   // The fast pipeline can populate zero-value gas tokens and mUSD before the
   // background pipeline finishes the remaining tokens. Hide those placeholders,
@@ -274,7 +273,7 @@ export function useTokenListData({
         token: {
           ...token,
           safetyResult: token.caipAssetId
-            ? securityResultByAssetId[token.caipAssetId]
+            ? securityResultByAssetId[normalizeTokenAssetId(token.caipAssetId)]
             : undefined,
         },
       }),
@@ -296,7 +295,9 @@ export function useTokenListData({
             token: {
               ...token,
               safetyResult: token.caipAssetId
-                ? securityResultByAssetId[token.caipAssetId]
+                ? securityResultByAssetId[
+                    normalizeTokenAssetId(token.caipAssetId)
+                  ]
                 : undefined,
             },
           }))
