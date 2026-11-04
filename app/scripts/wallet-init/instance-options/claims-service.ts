@@ -15,5 +15,8 @@ export function getClaimsServiceInstanceOptions(): ClaimsServiceInstanceOptions 
 
   return {
     env: claimsEnv,
+    // Same service-worker fetch binding as SubscriptionService. ClaimsService
+    // invokes fetch with the service as `this`.
+    fetchFunction: globalThis.fetch.bind(globalThis),
   };
 }

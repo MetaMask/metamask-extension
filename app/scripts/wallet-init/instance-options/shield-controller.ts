@@ -60,5 +60,10 @@ export function getShieldApiServiceInstanceOptions(): ShieldApiServiceInstanceOp
   return {
     env: shieldEnv,
     captureException,
+    // The wallet passes this through as ShieldApiService's fetch. The service
+    // calls it with the service as `this`, and native fetch then throws
+    // "Illegal invocation" in the service worker. Coverage never starts and
+    // the confirmation stays on the shield loader.
+    fetchFunction: globalThis.fetch.bind(globalThis),
   };
 }

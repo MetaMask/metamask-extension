@@ -150,6 +150,7 @@ describe('getShieldApiServiceInstanceOptions', () => {
     expect(getShieldApiServiceInstanceOptions()).toStrictEqual({
       env: Env.UAT,
       captureException: expect.any(Function),
+      fetchFunction: expect.any(Function),
     });
   });
 

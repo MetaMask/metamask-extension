@@ -14,6 +14,7 @@ describe('getClaimsServiceInstanceOptions', () => {
 
     expect(options).toStrictEqual({
       env: Env.UAT,
+      fetchFunction: expect.any(Function),
     });
   });
 });
