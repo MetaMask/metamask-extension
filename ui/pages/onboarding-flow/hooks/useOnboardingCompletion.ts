@@ -53,6 +53,7 @@ import {
 import { useDispatch } from '../../../store/hooks';
 import { referralContextClient } from '../../../hooks/rewards/referral-context';
 import { buildMoneyReferralRoute } from '../../../../shared/lib/deep-links/money-referral';
+import { isDeferredReferralContextValid } from './pending-referral';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -118,10 +119,11 @@ export function useOnboardingCompletion() {
       const pendingReferral = await referralContextClient
         .getPending()
         .catch(() => null);
-      const validDeferredReferral =
-        pendingReferral?.entryType === 'restored_context' &&
-        pendingReferral.url === deferredDeepLinkToUse?.referringLink &&
-        Boolean(deferredDeepLinkResult);
+      const validDeferredReferral = isDeferredReferralContextValid(
+        pendingReferral,
+        deferredDeepLinkToUse?.referringLink,
+        deferredDeepLinkResult,
+      );
       if (
         pendingReferral &&
         (pendingReferral.entryType === 'deeplink' || validDeferredReferral)
