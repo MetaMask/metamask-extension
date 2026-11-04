@@ -27,7 +27,12 @@ function disabledWithdrawableFiatQueryFn(): never {
 }
 
 export type MoneyAccountWithdrawableFiat = {
+  /**
+   * Withdrawable balance for display, rounded *down* to cents so the label
+   * never advertises more than the user can actually spend.
+   */
   withdrawableFiatFormatted: string | undefined;
+  /** Exact withdrawable balance. Drives Max, so it keeps full precision. */
   withdrawableFiatRaw: string | undefined;
 };
 
