@@ -53,7 +53,7 @@ import {
 import { useDispatch } from '../../../store/hooks';
 import { referralContextClient } from '../../../hooks/rewards/referral-context';
 import { buildMoneyReferralRoute } from '../../../../shared/lib/deep-links/money-referral';
-import { isDeferredReferralContextValid } from './pending-referral';
+import { getPendingReferralResume } from './pending-referral';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -116,41 +116,24 @@ export function useOnboardingCompletion() {
         );
       }
 
-      const pendingReferral = await referralContextClient
-        .getPending()
-        .catch(() => null);
-      const validDeferredReferral = isDeferredReferralContextValid(
-        pendingReferral,
-        deferredDeepLinkToUse?.referringLink,
-        deferredDeepLinkResult,
-      );
-      if (
-        pendingReferral &&
-        (pendingReferral.entryType === 'deeplink' || validDeferredReferral)
-      ) {
-        if (pendingReferral.status === 'awaiting_continue') {
-          if (
-            pendingReferral.entryType === 'restored_context' &&
-            validDeferredReferral &&
-            deferredDeepLinkResult?.type !==
-              DeferredDeepLinkRouteType.Interstitial
-          ) {
-            await referralContextClient.continue(pendingReferral.id);
-          } else {
-            const original = new URL(pendingReferral.url);
-            navigate(
-              `${buildInterstitialRoute(original.pathname + original.search)}&referralContext=${encodeURIComponent(pendingReferral.id)}`,
-            );
-            return;
-          }
-        }
-        navigate(buildMoneyReferralRoute(pendingReferral));
+      const resume = getPendingReferralResume({
+        pendingReferral: await referralContextClient
+          .getPending()
+          .catch(() => null),
+        deferredReferringLink: deferredDeepLinkToUse?.referringLink,
+        deferredResult: deferredDeepLinkResult,
+      });
+      if (resume.type === 'drop') {
+        await referralContextClient.drop(resume.id).catch(() => undefined);
+      } else if (resume.type === 'interstitial') {
+        navigate(resume.route);
         return;
-      }
-      if (pendingReferral?.entryType === 'restored_context') {
-        await referralContextClient
-          .drop(pendingReferral.id)
-          .catch(() => undefined);
+      } else if (resume.type === 'handoff') {
+        if (resume.continueFirst) {
+          await referralContextClient.continue(resume.context.id);
+        }
+        navigate(buildMoneyReferralRoute(resume.context));
+        return;
       }
 
       if (deferredDeepLinkResult) {

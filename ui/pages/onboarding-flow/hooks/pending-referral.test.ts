@@ -1,7 +1,10 @@
 import type { MoneyReferralContext } from '../../../../shared/lib/deep-links/money-referral';
 import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
 import { MISSING } from '../../../../shared/lib/deep-links/verify';
-import { isDeferredReferralContextValid } from './pending-referral';
+import {
+  getPendingReferralResume,
+  isDeferredReferralContextValid,
+} from './pending-referral';
 
 const referringLink = 'https://link.metamask.io/swap?ref=ABC';
 
@@ -55,5 +58,90 @@ describe('isDeferredReferralContextValid', () => {
     expect(
       isDeferredReferralContextValid(buildContext(), referringLink, null),
     ).toBe(false);
+  });
+});
+
+describe('getPendingReferralResume', () => {
+  it('does nothing without a pending context', () => {
+    expect(
+      getPendingReferralResume({
+        pendingReferral: null,
+        deferredReferringLink: referringLink,
+        deferredResult,
+      }),
+    ).toStrictEqual({ type: 'none' });
+  });
+
+  it('drops a restored context the deferred parser rejected', () => {
+    expect(
+      getPendingReferralResume({
+        pendingReferral: buildContext(),
+        deferredReferringLink: referringLink,
+        deferredResult: null,
+      }),
+    ).toStrictEqual({ type: 'drop', id: 'restored' });
+  });
+
+  it('sends an unauthorized direct link back to the warning', () => {
+    expect(
+      getPendingReferralResume({
+        pendingReferral: buildContext({
+          entryType: 'deeplink',
+          status: 'awaiting_continue',
+        }),
+        deferredReferringLink: undefined,
+        deferredResult: null,
+      }),
+    ).toStrictEqual({
+      type: 'interstitial',
+      route: '/link?u=%2Fswap%3Fref%3DABC&referralContext=restored',
+    });
+  });
+
+  it('sends an unauthorized restored link back to the warning when the parser asks for it', () => {
+    expect(
+      getPendingReferralResume({
+        pendingReferral: buildContext({ status: 'awaiting_continue' }),
+        deferredReferringLink: referringLink,
+        deferredResult: {
+          type: DeferredDeepLinkRouteType.Interstitial,
+          urlPathAndQuery: '/swap?ref=ABC',
+          signature: MISSING,
+        },
+      }),
+    ).toStrictEqual({
+      type: 'interstitial',
+      route: '/link?u=%2Fswap%3Fref%3DABC&referralContext=restored',
+    });
+  });
+
+  it('authorizes a restored link when the parser already allowed navigation', () => {
+    const context = buildContext({ status: 'awaiting_continue' });
+    expect(
+      getPendingReferralResume({
+        pendingReferral: context,
+        deferredReferringLink: referringLink,
+        deferredResult,
+      }),
+    ).toStrictEqual({
+      type: 'handoff',
+      context,
+      continueFirst: true,
+    });
+  });
+
+  it('hands off an already authorized context without continuing again', () => {
+    const context = buildContext();
+    expect(
+      getPendingReferralResume({
+        pendingReferral: context,
+        deferredReferringLink: referringLink,
+        deferredResult,
+      }),
+    ).toStrictEqual({
+      type: 'handoff',
+      context,
+      continueFirst: false,
+    });
   });
 });
