@@ -1,110 +1,309 @@
 import React from 'react';
+import { useLocation, createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { FeatureId } from '@metamask/bridge-controller';
+import configureStore from '../../store/store';
+import { renderWithProvider, I18nProvider, en } from '../../../test/lib/render-helpers-navigate';
+import { MetaMaskTestReduxProvider } from '../../../test/lib/redux-test-provider';
+import mockState from '../../../test/data/mock-state.json';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
+import {
+  BATCH_SELL_REVIEW_ROUTE,
+  BATCH_SELL_SELECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  DEFAULT_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../helpers/constants/routes';
+import { resetBridgeController } from '../../ducks/bridge/actions';
+import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import { ConfirmationRouter } from './confirmation-router';
 
-const middlewares = [thunk];
-const mockStore = configureMockStore(middlewares);
-
-const mockNavigate = jest.fn();
-const mockCloseModals = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}));
-
-jest.mock('../../hooks/useModalState', () => ({
-  useModalState: () => ({ closeModals: mockCloseModals }),
-}));
-
 jest.mock('../../../shared/lib/environment-type', () => ({
-  getEnvironmentType: jest.fn(() => 'popup'),
+  ...jest.requireActual('../../../shared/lib/environment-type'),
+  getEnvironmentType: jest.fn(),
 }));
 
-const createMockState = (overrides = {}) => ({
-  metamask: {
-    transactions: [],
-    quotes: [],
-    pendingApprovals: {},
-    pendingApprovalCount: 0,
-    approvalFlows: [],
-    ...overrides.metamask,
-  },
-  appState: {
-    ...overrides.appState,
-  },
-});
+jest.mock('../../ducks/bridge/actions', () => ({
+  resetBridgeController: jest.fn(() => ({
+    type: 'RESET_BRIDGE_CONTROLLER',
+  })),
+}));
 
-function TestWrapper({
-  children,
-  store,
-  locationKey = 'default',
+const SWAP_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+const PENDING_APPROVAL_ID = 'testApprovalId';
+
+const PathnameDisplay = () => {
+  const { pathname } = useLocation();
+  return <div data-testid="pathname">{pathname}</div>;
+};
+
+// A leftover batch-sell quote carries `featureId: 'batch_sell'`, which is what
+// distinguishes it from a real in-progress swap quote.
+const getMockQuotes = ({
+  hasQuotes,
+  hasBatchSellQuotes,
 }: {
-  children: React.ReactNode;
-  store: any;
-  locationKey?: string;
-}) {
-  return (
-    <Provider store={store}>
-      <MemoryRouter
-        initialEntries={[{ pathname: '/home', key: locationKey }]}
-      >
-        {children}
-      </MemoryRouter>
-    </Provider>
+  hasQuotes: boolean;
+  hasBatchSellQuotes: boolean;
+}) => {
+  if (hasBatchSellQuotes) {
+    return [{ featureId: FeatureId.BATCH_SELL }];
+  }
+  return hasQuotes ? [{}] : [];
+};
+
+const renderConfirmationRouter = ({
+  pathname,
+  hasQuotes = false,
+  hasBatchSellQuotes = false,
+  hasPendingApproval = false,
+  environmentType = ENVIRONMENT_TYPE_POPUP,
+}: {
+  pathname: string;
+  hasQuotes?: boolean;
+  hasBatchSellQuotes?: boolean;
+  hasPendingApproval?: boolean;
+  environmentType?: string;
+}) => {
+  (getEnvironmentType as jest.Mock).mockReturnValue(environmentType);
+
+  const store = configureStore({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      ...(hasPendingApproval
+        ? {}
+        : { pendingApprovals: {}, pendingApprovalCount: 0, approvalFlows: [] }),
+      // Batch sell fetches quotes through the bridge controller, so they land in
+      // the same state that drives the swap redirect. A single entry is enough.
+      // A leftover batch-sell quote carries `featureId: 'batch_sell'`, which is
+      // what distinguishes it from a real in-progress swap quote.
+      quotes: getMockQuotes({ hasQuotes, hasBatchSellQuotes }),
+    },
+  });
+
+  return renderWithProvider(
+    <>
+      <ConfirmationRouter />
+      <PathnameDisplay />
+    </>,
+    store,
+    pathname,
   );
-}
+};
 
 describe('ConfirmationRouter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    Object.defineProperty(window, 'platform', {
-      value: { getVersion: () => '1.0.0' },
-      writable: true,
+  });
+
+  describe('with bridge quotes in state', () => {
+    it('redirects to the swap page from a non-exempted route in the popup', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasQuotes: true,
+      });
+
+      // `toHaveTextContent` does a substring match, and every route here
+      // contains a `/`, so we compare `textContent` directly for an exact match.
+      expect(getByTestId('pathname').textContent).toBe(SWAP_ROUTE);
+    });
+
+    it('stays on the batch sell review page', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: BATCH_SELL_REVIEW_ROUTE,
+        hasQuotes: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_REVIEW_ROUTE);
+    });
+
+    it('stays on the batch sell select page', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: BATCH_SELL_SELECT_ROUTE,
+        hasQuotes: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_SELECT_ROUTE);
+    });
+
+    it('does not redirect from a non-exempted route in fullscreen', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasQuotes: true,
+        environmentType: ENVIRONMENT_TYPE_FULLSCREEN,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
+    });
+
+    it('does not redirect from a non-exempted route in the side panel', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasQuotes: true,
+        environmentType: ENVIRONMENT_TYPE_SIDEPANEL,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
     });
   });
 
-  describe('swap redirect on first screen only', () => {
-    it('redirects to swap on first screen when bridge quotes exist', () => {
-      const store = mockStore(
-        createMockState({
-          metamask: {
-            quotes: [{ quote: { srcChainId: '0x1', destChainId: '0xa' } }],
-          },
-        }),
+  describe('with a leftover batch-sell quote in state', () => {
+    // Reproduces closing the popup mid-review and reopening it: the popup
+    // cold-mounts at the home route, and the batch-sell quote fetched before
+    // closing is still sitting in the (unmocked) BridgeController state.
+    it('redirects home instead of the swap page from a non-exempted route in the popup', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasBatchSellQuotes: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
+    });
+
+    // The batch-sell page's `beforeunload` listener is the primary way this
+    // state gets cleared, but it isn't reliable when the popup is dismissed
+    // rather than fully unloaded. The router must reset it directly so a
+    // leftover quote can't keep hijacking every future popup navigation.
+    it('resets the bridge controller so the leftover quote does not keep hijacking future navigations', () => {
+      renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasBatchSellQuotes: true,
+      });
+
+      expect(resetBridgeController).toHaveBeenCalled();
+    });
+
+    it('does not reset the bridge controller when there is nothing to redirect for', () => {
+      renderConfirmationRouter({
+        pathname: BATCH_SELL_REVIEW_ROUTE,
+        hasBatchSellQuotes: true,
+      });
+
+      expect(resetBridgeController).not.toHaveBeenCalled();
+    });
+
+    // Simulates the real `resetBridgeController` thunk actually clearing the
+    // quote from state (via the background state sync), rather than being a
+    // pure no-op. Without dispatching a reset, this quote would keep
+    // re-triggering the home redirect on every check and the pending
+    // approval would never be shown.
+    it('still navigates to the pending approval once the leftover quote is cleared', () => {
+      (resetBridgeController as jest.Mock).mockImplementation(
+        () => (dispatch: MetaMaskReduxDispatch) =>
+          dispatch({
+            type: UPDATE_METAMASK_STATE,
+            value: { quotes: [] },
+          }),
       );
 
-      render(
-        <TestWrapper store={store} locationKey="default">
-          <ConfirmationRouter />
-        </TestWrapper>,
-      );
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasBatchSellQuotes: true,
+        hasPendingApproval: true,
+      });
 
-      expect(mockNavigate).toHaveBeenCalledWith(
-        '/cross-chain/swaps/prepare-bridge-page',
+      expect(getByTestId('pathname').textContent).toBe(
+        `${CONFIRM_TRANSACTION_ROUTE}/${PENDING_APPROVAL_ID}`,
       );
     });
 
-    it('does NOT redirect on subsequent navigation with quotes present', () => {
-      const store = mockStore(
-        createMockState({
-          metamask: {
-            quotes: [{ quote: { srcChainId: '0x1', destChainId: '0xa' } }],
+    it('stays on the batch sell review page', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: BATCH_SELL_REVIEW_ROUTE,
+        hasBatchSellQuotes: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_REVIEW_ROUTE);
+    });
+
+    it('does not redirect from a non-exempted route in fullscreen', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasBatchSellQuotes: true,
+        environmentType: ENVIRONMENT_TYPE_FULLSCREEN,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
+    });
+  });
+
+  describe('with a pending approval', () => {
+    it('navigates to the confirmation from a non-exempted route', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasPendingApproval: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(
+        `${CONFIRM_TRANSACTION_ROUTE}/${PENDING_APPROVAL_ID}`,
+      );
+    });
+
+    it('leaves batch sell in place, so the confirmation is shown once the user exits', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: BATCH_SELL_REVIEW_ROUTE,
+        hasPendingApproval: true,
+      });
+
+      expect(getByTestId('pathname').textContent).toBe(BATCH_SELL_REVIEW_ROUTE);
+    });
+  });
+
+  describe('in-app navigation with quotes', () => {
+    it('does not redirect on non-first-screen navigation even with bridge quotes', () => {
+      (getEnvironmentType as jest.Mock).mockReturnValue(
+        ENVIRONMENT_TYPE_POPUP,
+      );
+
+      const store = configureStore({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          pendingApprovals: {},
+          pendingApprovalCount: 0,
+          approvalFlows: [],
+          quotes: [{}],
+        },
+      });
+
+      const router = createMemoryRouter(
+        [
+          {
+            path: '*',
+            element: (
+              <>
+                <ConfirmationRouter />
+                <PathnameDisplay />
+              </>
+            ),
           },
-        }),
+        ],
+        {
+          initialEntries: ['/previous-page', DEFAULT_ROUTE],
+          initialIndex: 1,
+        },
       );
 
-      render(
-        <TestWrapper store={store} locationKey="in-app-nav-key">
-          <ConfirmationRouter />
-        </TestWrapper>,
+      const { getByTestId } = render(
+        <I18nProvider currentLocale="en" current={en} en={en}>
+          <MetaMaskTestReduxProvider store={store}>
+            <RouterProvider
+              router={router}
+              future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+            />
+          </MetaMaskTestReduxProvider>
+        </I18nProvider>,
       );
 
-      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
     });
   });
 });
