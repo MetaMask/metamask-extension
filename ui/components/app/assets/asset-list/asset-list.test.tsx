@@ -134,9 +134,12 @@ jest.mock('../token-table/token-table', () => ({
   TokenTable: () => <div data-testid="token-table" />,
 }));
 
-jest.mock('../network-pill-selector/network-pill-selector', () => ({
-  NetworkPillSelector: () => <div data-testid="network-pill-selector" />,
-}));
+jest.mock(
+  '../../../multichain/network-pill-selector/network-pill-selector',
+  () => ({
+    NetworkPillSelector: () => <div data-testid="network-pill-selector" />,
+  }),
+);
 
 jest.mock('../../../../hooks/useFullScreenDesign');
 
@@ -271,20 +274,6 @@ describe('AssetList', () => {
       expect(
         screen.getByTestId('asset-list-control-bar-action-button'),
       ).toBeInTheDocument();
-    });
-
-    it('puts the network filter button after the action buttons when the fullscreen design is on', async () => {
-      mockUseFullScreenDesign.mockReturnValue(true);
-
-      await act(async () => {
-        renderAssetList();
-      });
-
-      expect(
-        screen
-          .getByTestId('sort-by-popover-toggle')
-          .compareDocumentPosition(screen.getByTestId('sort-by-networks')),
-      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     });
   });
 

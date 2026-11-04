@@ -14,7 +14,7 @@ import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
-import { NetworkPillSelector } from '../network-pill-selector/network-pill-selector';
+import { NetworkPillSelector } from '../../../multichain/network-pill-selector/network-pill-selector';
 import { TokenTable } from '../token-table/token-table';
 import AssetListControlBar from './asset-list-control-bar';
 
@@ -84,7 +84,6 @@ const AssetList = ({
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
-  const isFullScreenDesign = useFullScreenDesign();
 
   useScreenViewedEvent(MetaMetricsEventName.TokenScreenViewed, entryPoint);
 
