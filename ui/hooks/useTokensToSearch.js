@@ -7,8 +7,10 @@ import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { getTokenExchangeRates, getSwapsDefaultToken } from '../selectors';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { getCurrentCurrency } from '../ducks/metamask/metamask';
-import { getConversionRate } from '../ducks/metamask/base-selectors';
-import { getSwapsTokens } from '../ducks/swaps/swaps';
+import {
+  getConversionRate,
+  getSwapsTokens,
+} from '../ducks/metamask/base-selectors';
 import { isSwapsDefaultTokenSymbol } from '../../shared/lib/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { TokenBucketPriority } from '../../shared/constants/swaps';
