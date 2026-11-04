@@ -26,6 +26,7 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
+  getMarketStatsServiceMessenger,
 } from './core-backend';
 import {
   getMultichainTransactionsControllerMessenger,
@@ -623,6 +624,10 @@ export const MESSENGER_FACTORIES = {
   BackendWebSocketService: {
     getMessenger: getBackendWebSocketServiceMessenger,
     getInitMessenger: getBackendWebSocketServiceInitMessenger,
+  },
+  MarketStatsService: {
+    getMessenger: getMarketStatsServiceMessenger,
+    getInitMessenger: noop,
   },
   AccountActivityService: {
     getMessenger: getAccountActivityServiceMessenger,

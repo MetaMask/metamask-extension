@@ -3,6 +3,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useMemo,
+  useEffect,
 } from 'react';
 import { computePercentChange } from '../../../../components/app/assets/util/percentChange';
 import TokenPriceHeader from './token-price-header';
@@ -38,6 +39,12 @@ const AssetChartPrice = forwardRef(
 
     // Expose setPrice to parent for chart hover functionality
     useImperativeHandle(ref, () => ({ setPrice }));
+
+    // The header is local state so hover can replace it. Follow the streamed
+    // price when that prop changes; hover is cleared by the next tick.
+    useEffect(() => {
+      setPrice({ price: props.price, date: Date.now() });
+    }, [props.price]);
 
     const { loading, currency, comparePrice } = props;
 
