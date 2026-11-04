@@ -97,7 +97,9 @@ describe('helpers', () => {
       try {
         // Re-import so that module-scope check for `Uint8Array.fromBase64` is re-evaluated
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { base64ToUint8Array: reimportedBase64ToUint8Array } = require('./helpers');
+        const {
+          base64ToUint8Array: reimportedBase64ToUint8Array,
+        } = require('./helpers');
         const bytes = [10, 20, 30, 40, 50];
         const base64 = Buffer.from(bytes).toString('base64');
         const result = reimportedBase64ToUint8Array(base64);
