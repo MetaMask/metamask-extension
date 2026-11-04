@@ -116,6 +116,15 @@ export function getAmountInputFontSize(
 }
 
 /**
+ * Eases each step change of the scale. Apply it to every element that takes
+ * `getAmountInputTextStyle`, including the measuring element, so the input
+ * box and its text change size together. `color` is listed because the class
+ * replaces the MMDS `Input` `transition-colors` when merged.
+ */
+export const AMOUNT_INPUT_TRANSITION_CLASS_NAME =
+  'transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none';
+
+/**
  * Inline style for an amount at the given step, with line height equal to the
  * font size as on Mobile.
  *

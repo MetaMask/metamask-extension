@@ -44,7 +44,10 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import { getAmountInputTextStyle } from '../../../helpers/utils/amount-input-font-size';
+import {
+  AMOUNT_INPUT_TRANSITION_CLASS_NAME,
+  getAmountInputTextStyle,
+} from '../../../helpers/utils/amount-input-font-size';
 import { useAmountInputFontSize } from '../../../hooks/useAmountInputFontSize';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getIntlLocale } from '../../../ducks/locale/locale';
@@ -196,10 +199,7 @@ export const BridgeInputGroup = ({
         maxFontSize: AMOUNT_FIELD_MAX_FONT_SIZE,
       },
     );
-  const amountStyle = useMemo(
-    () => getAmountInputTextStyle(amountFontSize),
-    [amountFontSize],
-  );
+  const amountStyle = getAmountInputTextStyle(amountFontSize);
 
   useEffect(() => {
     const hasAmountInputPrefixChanged =
@@ -267,6 +267,7 @@ export const BridgeInputGroup = ({
               <Text
                 variant={TextVariant.AmountDisplayLg}
                 fontFamily={FontFamily.Hero}
+                className={AMOUNT_INPUT_TRANSITION_CLASS_NAME}
                 style={amountStyle}
               >
                 {amountInputPrefix}
@@ -281,8 +282,11 @@ export const BridgeInputGroup = ({
               isDisabled={amountFieldProps.disabled}
               isStateStylesDisabled
               textVariant={TextVariant.AmountDisplayLg}
-              className="min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
-              style={{ ...amountStyle, transition: 'font-size 0.1s' }}
+              className={twMerge(
+                'min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero',
+                AMOUNT_INPUT_TRANSITION_CLASS_NAME,
+              )}
+              style={amountStyle}
               type="text"
               inputMode="decimal"
               autoComplete="off"

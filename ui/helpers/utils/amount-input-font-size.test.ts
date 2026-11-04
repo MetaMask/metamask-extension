@@ -2,6 +2,7 @@ import {
   AMOUNT_INPUT_FONT_SIZES,
   AMOUNT_INPUT_MAX_FONT_SIZE,
   AMOUNT_INPUT_MIN_FONT_SIZE,
+  AMOUNT_INPUT_TRANSITION_CLASS_NAME,
   estimateAmountTextWidthEm,
   getAmountInputFontSize,
   getAmountInputTextStyle,
@@ -50,11 +51,11 @@ describe('amount-input-font-size', () => {
       });
     }
 
-    it('shrinks a 10-digit KRW amount until it fits the popup width', () => {
-      const text = '₩1234567890';
+    it('shrinks a 10-digit amount with the KRW code prefix until it fits the popup width', () => {
+      const text = 'KRW1234567890';
       const fontSize = getAmountInputFontSize(text);
 
-      expect(fontSize).toBe(60);
+      expect(fontSize).toBe(48);
       expect(estimateAmountTextWidthEm(text) * fontSize).toBeLessThanOrEqual(
         328,
       );
@@ -77,6 +78,17 @@ describe('amount-input-font-size', () => {
       expect(
         getAmountInputFontSize('1'.repeat(80), { availableWidth: 100 }),
       ).toBe(20);
+    });
+  });
+
+  describe('AMOUNT_INPUT_TRANSITION_CLASS_NAME', () => {
+    it('animates the font size and turns off for reduced motion', () => {
+      expect(AMOUNT_INPUT_TRANSITION_CLASS_NAME).toContain(
+        'transition-[color,font-size,line-height]',
+      );
+      expect(AMOUNT_INPUT_TRANSITION_CLASS_NAME).toContain(
+        'motion-reduce:transition-none',
+      );
     });
   });
 

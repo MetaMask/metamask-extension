@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AMOUNT_INPUT_MAX_FONT_SIZE,
   AMOUNT_INPUT_POPUP_WIDTH,
@@ -46,13 +46,10 @@ export function useAmountInputFontSize(
   }: UseAmountInputFontSizeOptions = {},
 ): UseAmountInputFontSize {
   // Held in state so the effect below re-runs when the container mounts or is
-  // replaced. A ref callback cannot return a cleanup on React 18.
-  const [container, setContainer] = useState<HTMLElement | null>(null);
+  // replaced. A ref callback cannot return a cleanup on React 18. The setter
+  // is stable, so it doubles as the ref callback.
+  const [container, containerRef] = useState<HTMLElement | null>(null);
   const [measuredWidth, setMeasuredWidth] = useState(0);
-
-  const containerRef = useCallback((element: HTMLElement | null) => {
-    setContainer(element);
-  }, []);
 
   useEffect(() => {
     if (!container || typeof ResizeObserver === 'undefined') {
@@ -80,10 +77,10 @@ export function useAmountInputFontSize(
   // A zero width means the container is unmeasured, detached or hidden.
   const availableWidth = measuredWidth > 0 ? measuredWidth : fallbackWidth;
 
-  const fontSize = useMemo(
-    () => getAmountInputFontSize(text, { availableWidth, maxFontSize }),
-    [text, availableWidth, maxFontSize],
-  );
+  const fontSize = getAmountInputFontSize(text, {
+    availableWidth,
+    maxFontSize,
+  });
 
   return { containerRef, fontSize };
 }

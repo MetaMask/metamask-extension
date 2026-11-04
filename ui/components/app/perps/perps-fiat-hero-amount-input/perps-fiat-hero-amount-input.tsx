@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -16,6 +16,7 @@ import {
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
 import {
   AMOUNT_INPUT_MAX_FONT_SIZE,
+  AMOUNT_INPUT_TRANSITION_CLASS_NAME,
   getAmountInputTextStyle,
 } from '../../../../helpers/utils/amount-input-font-size';
 import { useAmountInputFontSize } from '../../../../hooks/useAmountInputFontSize';
@@ -108,10 +109,7 @@ export const PerpsFiatHeroAmountInput = React.memo(
     const { containerRef, fontSize } = useAmountInputFontSize(
       `${fiatSymbol}${value || '0'}`,
     );
-    const amountStyle = useMemo(
-      () => getAmountInputTextStyle(fontSize),
-      [fontSize],
-    );
+    const amountStyle = getAmountInputTextStyle(fontSize);
 
     if (isLoading) {
       return <PerpsFiatHeroAmountSkeleton />;
@@ -134,6 +132,7 @@ export const PerpsFiatHeroAmountInput = React.memo(
           fontFamily={FontFamily.Hero}
           textAlign={TextAlign.Right}
           color={textColor}
+          className={AMOUNT_INPUT_TRANSITION_CLASS_NAME}
           style={amountStyle}
         >
           {fiatSymbol}
@@ -157,7 +156,10 @@ export const PerpsFiatHeroAmountInput = React.memo(
             aria-hidden="true"
             variant={TextVariant.AmountDisplayLg}
             fontFamily={FontFamily.Hero}
-            className="invisible block min-w-[1ch] whitespace-pre"
+            className={twMerge(
+              'invisible block min-w-[1ch] whitespace-pre',
+              AMOUNT_INPUT_TRANSITION_CLASS_NAME,
+            )}
             style={amountStyle}
           >
             {value || '0'}
@@ -176,6 +178,7 @@ export const PerpsFiatHeroAmountInput = React.memo(
               'absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero',
               textColor,
               disabled ? 'cursor-default' : 'cursor-text',
+              AMOUNT_INPUT_TRANSITION_CLASS_NAME,
             )}
             style={amountStyle}
           />

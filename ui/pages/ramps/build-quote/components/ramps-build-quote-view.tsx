@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -16,7 +16,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAmountInputTextStyle } from '../../../../helpers/utils/amount-input-font-size';
+import {
+  AMOUNT_INPUT_TRANSITION_CLASS_NAME,
+  getAmountInputTextStyle,
+} from '../../../../helpers/utils/amount-input-font-size';
 import { useAmountInputFontSize } from '../../../../hooks/useAmountInputFontSize';
 import RampsTokenSelectionHeader from '../../token-selection/components/ramps-token-selection-header';
 import RampsProviderSelectionModal from '../../provider-selection';
@@ -49,10 +52,7 @@ export default function RampsBuildQuoteView({
     : TextColor.TextDefault;
   const { containerRef: amountContainerRef, fontSize: amountFontSize } =
     useAmountInputFontSize(`${currencySymbol}${amount || '0'}`);
-  const amountStyle = useMemo(
-    () => getAmountInputTextStyle(amountFontSize),
-    [amountFontSize],
-  );
+  const amountStyle = getAmountInputTextStyle(amountFontSize);
 
   return (
     <Box
@@ -89,6 +89,7 @@ export default function RampsBuildQuoteView({
               variant={TextVariant.AmountDisplayLg}
               fontFamily={FontFamily.Hero}
               color={amountTextColor}
+              className={AMOUNT_INPUT_TRANSITION_CLASS_NAME}
               style={amountStyle}
             >
               {currencySymbol}
@@ -99,7 +100,7 @@ export default function RampsBuildQuoteView({
                 aria-hidden="true"
                 variant={TextVariant.AmountDisplayLg}
                 fontFamily={FontFamily.Hero}
-                className="invisible block min-w-[1ch] whitespace-pre"
+                className={`invisible block min-w-[1ch] whitespace-pre ${AMOUNT_INPUT_TRANSITION_CLASS_NAME}`}
                 style={amountStyle}
               >
                 {amount || '0'}
@@ -108,7 +109,7 @@ export default function RampsBuildQuoteView({
                 aria-label={t('amount')}
                 textVariant={TextVariant.AmountDisplayLg}
                 isStateStylesDisabled
-                className={`absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero ${amountTextColor}`}
+                className={`absolute inset-0 min-w-[1ch] max-w-full rounded-none border-0 bg-transparent p-0 text-left font-hero ${amountTextColor} ${AMOUNT_INPUT_TRANSITION_CLASS_NAME}`}
                 style={amountStyle}
                 data-testid="ramps-build-quote-amount-input"
                 inputMode="decimal"

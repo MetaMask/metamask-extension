@@ -17,11 +17,11 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
         >
           <input
             autocomplete="off"
-            class="w-full text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
+            class="w-full text-default outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
             data-testid="from-amount"
             inputmode="decimal"
             placeholder="0"
-            style="font-size: 40px; line-height: 40px; transition: font-size 0.1s;"
+            style="font-size: 40px; line-height: 40px;"
             type="text"
             value=""
           />
@@ -128,13 +128,13 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           >
             <input
               autocomplete="off"
-              class="w-full text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
+              class="w-full text-default outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="to-amount"
               disabled=""
               inputmode="decimal"
               placeholder="0"
               readonly=""
-              style="font-size: 40px; line-height: 40px; transition: font-size 0.1s;"
+              style="font-size: 40px; line-height: 40px;"
               type="text"
               value="0"
             />
@@ -245,11 +245,11 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
         >
           <input
             autocomplete="off"
-            class="w-full text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
+            class="w-full text-default outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
             data-testid="from-amount"
             inputmode="decimal"
             placeholder="0"
-            style="font-size: 40px; line-height: 40px; transition: font-size 0.1s;"
+            style="font-size: 40px; line-height: 40px;"
             type="text"
             value="1"
           />
@@ -356,13 +356,13 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           >
             <input
               autocomplete="off"
-              class="w-full text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
+              class="w-full text-default outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
               data-testid="to-amount"
               disabled=""
               inputmode="decimal"
               placeholder="0"
               readonly=""
-              style="font-size: 40px; line-height: 40px; transition: font-size 0.1s;"
+              style="font-size: 40px; line-height: 40px;"
               type="text"
               value="0"
             />
