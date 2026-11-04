@@ -66,7 +66,9 @@ function NestedTransaction({
         label={label}
         content={
           <>
-            {to && <RecipientRow recipient={to} />}
+            {to && (
+              <RecipientRow recipient={to} nestedTransactionIndex={index} />
+            )}
             {value && (
               <ConfirmInfoRow label={t('amount')}>
                 <ConfirmInfoRowCurrency value={value} chainId={chainId} />

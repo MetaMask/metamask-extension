@@ -244,7 +244,12 @@ describe('BridgeInputGroup', () => {
     jest.resetAllMocks();
     mockTrackUnifiedSwapBridgeEvent.mockResolvedValue(undefined);
     setBackgroundConnection({
-      trackUnifiedSwapBridgeEvent: mockTrackUnifiedSwapBridgeEvent,
+      messengerCall: jest.fn((actionType: string, args: unknown[]) => {
+        if (actionType === 'BridgeController:trackUnifiedSwapBridgeEvent') {
+          return mockTrackUnifiedSwapBridgeEvent(...args);
+        }
+        return Promise.resolve(undefined);
+      }),
       getStatePatches: jest.fn(),
     } as never);
     mockUseVirtualizer.mockReturnValue({

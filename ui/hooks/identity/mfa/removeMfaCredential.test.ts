@@ -1,9 +1,27 @@
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { removeMfaCredential } from './removeMfaCredential';
 
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
+
 describe('removeMfaCredential', () => {
-  it('rejects until the server supports removal', async () => {
-    await expect(
-      removeMfaCredential({ type: 'passkey', status: 'active' }),
-    ).rejects.toThrow('Removing MFA methods is not supported yet');
+  it('removes the method by its id', async () => {
+    jest.mocked(submitRequestToBackground).mockResolvedValue([]);
+
+    await removeMfaCredential(
+      { id: 'totp', type: 'totp', status: 'active' },
+      { operation: 'settings.removeAuthenticatorApp' },
+    );
+
+    expect(submitRequestToBackground).toHaveBeenCalledWith('messengerCall', [
+      'AuthenticationController:removeCredential',
+      [
+        {
+          credentialId: 'totp',
+          reason: { operation: 'settings.removeAuthenticatorApp' },
+        },
+      ],
+    ]);
   });
 });

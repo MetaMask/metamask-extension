@@ -18,8 +18,6 @@ jest.mock('../../../hooks/useBottomNavBar', () => ({
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-    tokenBalancesStopPollingByPollingToken: jest.fn(),
     setTokenNetworkFilter: jest.fn(),
     updateSlides: jest.fn(),
     removeSlide: jest.fn(),
@@ -83,9 +81,7 @@ const render = (
 
 describe('AccountOverviewEth', () => {
   beforeEach(() => {
-    setBackgroundConnection({
-      tokenBalancesStartPolling: jest.fn(),
-    } as never);
+    setBackgroundConnection({} as never);
     (useBottomNavBar as jest.Mock).mockReturnValue(false);
   });
 
