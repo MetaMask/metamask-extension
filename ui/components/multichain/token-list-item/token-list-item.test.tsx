@@ -180,7 +180,7 @@ describe('TokenListItem', () => {
 
     expect(
       getByText(
-        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is ETH. Please verify you are connected to the correct chain.',
+        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is ETH. Verify you are connected to the correct chain.',
       ),
     ).toBeInTheDocument();
   });
@@ -208,7 +208,7 @@ describe('TokenListItem', () => {
 
     expect(
       getByText(
-        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is something else. Please verify you are connected to the correct chain.',
+        'The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered SCAM_TOKEN while the expected token symbol is something else. Verify you are connected to the correct chain.',
       ),
     ).toBeInTheDocument();
   });

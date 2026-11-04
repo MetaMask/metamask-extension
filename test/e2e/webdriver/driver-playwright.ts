@@ -276,7 +276,22 @@ export class PlaywrightDriver {
       this.registerPage(newPage);
     });
     this.context.on('weberror', (webError) => {
-      this.errors.push(webError.error());
+      const error = webError.error();
+      const text =
+        error instanceof Error
+          ? `${error.message}\n${error.stack ?? ''}`
+          : String(error);
+      // @metamask/test-dapp opens a WalletConnect relay socket as soon as the
+      // page loads. Firefox CI often fails that socket, and Playwright records
+      // the uncaught exception even when the extension assertions passed.
+      if (
+        text.includes(
+          'WebSocket connection failed for host: wss://relay.walletconnect.org',
+        )
+      ) {
+        return;
+      }
+      this.errors.push(error);
     });
   }
 
