@@ -3124,9 +3124,6 @@
   "contractInteraction": {
     "message": "Αλληλεπίδραση συμβολαίου"
   },
-  "convertAgain": {
-    "message": "Μετατροπή ξανά"
-  },
   "convertTokenToNFTDescription": {
     "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο είναι NFT. Το MetaMask υποστηρίζει πλέον εξ'ορισμού πλήρως τα NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας και να το προσθέσετε ως NFT;"
   },
@@ -6356,19 +6353,6 @@
   "musdConversionTitle": {
     "message": "Έγινε μετατροπή σε mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "Η μετατροπή σε mUSD απέτυχε"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Μετατροπή $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Η μετατροπή σε mUSD ολοκληρώθηκε με επιτυχία"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "Το μπόνους θα είναι διαθέσιμο για εξαργύρωση μέσα σε μία ημέρα."
   },
   "musdConvert": {
     "message": "Μετατροπή"

@@ -3124,9 +3124,6 @@
   "contractInteraction": {
     "message": "Interacción con el contrato"
   },
-  "convertAgain": {
-    "message": "Volver a convertir"
-  },
   "convertTokenToNFTDescription": {
     "message": "Hemos detectado que este activo es un NFT. MetaMask ahora tiene soporte nativo completo para NFT. ¿Quiere eliminarlo de su lista de tokens y añadirlo como un NFT?"
   },
@@ -6360,19 +6357,6 @@
   "musdConversionTitle": {
     "message": "Convertidas a mUSD",
     "description": "Title shown in the transaction details modal for mUSD conversion transactions"
-  },
-  "musdConversionToastFailed": {
-    "message": "Conversión de mUSD fallida"
-  },
-  "musdConversionToastInProgress": {
-    "message": "Convirtiendo $1 → mUSD",
-    "description": "$1 is the source token symbol (e.g., USDC)"
-  },
-  "musdConversionToastSuccess": {
-    "message": "Conversión de mUSD realizada correctamente"
-  },
-  "musdConversionToastSuccessDescription": {
-    "message": "El bono se podrá reclamar en un plazo de un día."
   },
   "musdConvert": {
     "message": "Convertir"
