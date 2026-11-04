@@ -28,6 +28,7 @@ import {
   closeMoneyFtue,
   selectIsMoneyFtueOpen,
   selectMoneyFtuePendingDeposit,
+  selectMoneyFtueSource,
 } from '../../../../ducks/money-ftue';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTrackOnce } from '../../../../hooks/useTrackOnce';
@@ -87,6 +88,7 @@ const BENEFITS = [
 const MoneyFtueSplashContent = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const source = useSelector(selectMoneyFtueSource);
   const pendingDeposit = useSelector(selectMoneyFtuePendingDeposit);
   const { apyPercentFormatted } = useMoneyVaultApy({ enabled: true });
   const { initiateDeposit } = useMoneyAccountDeposit();
@@ -98,7 +100,8 @@ const MoneyFtueSplashContent = () => {
   useTrackOnce(true, trackScreenViewed);
 
   const apyDisplay = apyPercentFormatted ?? APY_FALLBACK;
-  const redirectTarget = pendingDeposit
+  const isDeposit = source === 'deposit';
+  const redirectTarget = isDeposit
     ? MoneyScreenName.MoneyDeposit
     : MoneyScreenName.MoneyHome;
 
@@ -107,9 +110,7 @@ const MoneyFtueSplashContent = () => {
       if (buttonType === MoneyButtonType.Text) {
         trackButtonClicked({
           buttonType,
-          buttonIntent: pendingDeposit
-            ? MoneyButtonIntent.AddMoney
-            : MoneyButtonIntent.GoToMoneyHome,
+          buttonIntent: MoneyButtonIntent.AddMoney,
           componentName: MoneyComponentName.FtueSplash,
           labelKey: 'moneyFtueStartEarning',
           redirectTarget,
@@ -119,16 +120,16 @@ const MoneyFtueSplashContent = () => {
           buttonType,
           buttonIntent: MoneyButtonIntent.Dismiss,
           componentName: MoneyComponentName.FtueSplash,
+          redirectTarget,
         });
       }
 
       dispatch(setMoneyFtueSeen(true));
       dispatch(closeMoneyFtue());
 
-      if (pendingDeposit) {
+      if (isDeposit) {
         initiateDeposit({
-          preferredPaymentToken: pendingDeposit.preferredPaymentToken,
-          intent: pendingDeposit.intent,
+          ...(pendingDeposit ?? {}),
           skipFtue: true,
         });
       }
@@ -136,6 +137,7 @@ const MoneyFtueSplashContent = () => {
     [
       dispatch,
       initiateDeposit,
+      isDeposit,
       pendingDeposit,
       redirectTarget,
       trackButtonClicked,
@@ -169,13 +171,9 @@ const MoneyFtueSplashContent = () => {
         size={ModalContentSize.Sm}
         className={isPopup ? 'p-0' : undefined}
         modalDialogProps={{
-          className: [
-            isPopup
-              ? 'h-full max-w-none rounded-none border-0'
-              : 'max-h-[calc(100vh-32px)] max-w-[400px]',
-            '[&>section]:flex [&>section]:min-h-0 [&>section]:flex-1',
-            '[&>section]:flex-col',
-          ].join(' '),
+          className: isPopup
+            ? 'h-full min-h-0 max-w-none rounded-none border-0'
+            : 'max-h-[calc(100vh-32px)] min-h-0 max-w-[400px]',
           'data-testid': MONEY_FTUE_SPLASH_TEST_ID,
         }}
       >

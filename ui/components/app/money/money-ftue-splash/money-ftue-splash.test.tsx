@@ -127,7 +127,9 @@ describe('MoneyFtueSplash', () => {
     );
     expect(
       screen.getByTestId('money-ftue-splash-description'),
-    ).toHaveTextContent('earns up to 6.2% APY');
+    ).toHaveTextContent(
+      messages.moneyFtueDescription.message.replace('$1', '6.2%'),
+    );
     ['convert', 'earn', 'trade', 'withdraw', 'spend'].forEach((benefit) => {
       expect(
         screen.getByTestId(`money-ftue-splash-benefit-${benefit}`),
@@ -199,6 +201,18 @@ describe('MoneyFtueSplash', () => {
       intent: 'addMusd',
       skipFtue: true,
     });
+  });
+
+  it('continues an option-less deposit after acknowledgement', () => {
+    const { store } = renderSplash({});
+
+    fireEvent.click(
+      screen.getByTestId(MONEY_FTUE_SPLASH_START_EARNING_BUTTON_TEST_ID),
+    );
+
+    expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
+    expect(store.getState().moneyFtue.isOpen).toBe(false);
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({ skipFtue: true });
   });
 
   it('closes without starting a deposit when there is no pending deposit', () => {

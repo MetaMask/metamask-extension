@@ -15,7 +15,7 @@ import { getMoneyAccountDepositConfig } from '../confirmations/metamask-pay/help
 describe('Money Account FTUE', function (this: Suite) {
   this.timeout(180_000);
 
-  it('shows the splash on the first Money tab visit and not after acknowledgement', async function () {
+  it('shows the splash only on the first Money tab visit', async function () {
     await withFixtures(
       getMoneyAccountDepositConfig({
         title: this.test?.fullTitle(),

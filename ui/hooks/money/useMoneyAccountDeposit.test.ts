@@ -237,6 +237,26 @@ describe('useMoneyAccountDeposit', () => {
     });
   });
 
+  it('opens the FTUE splash for an option-less deposit when unseen', async () => {
+    selectMoneyFtueSeenMock.mockReturnValue(false);
+
+    const { result, store } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(store.getState().moneyFtue).toStrictEqual({
+      isOpen: true,
+      source: 'deposit',
+      pendingDeposit: {},
+    });
+  });
+
   it('creates the batch when the FTUE splash has been acknowledged', async () => {
     selectMoneyFtueSeenMock.mockReturnValue(false);
 

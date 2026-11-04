@@ -46,8 +46,11 @@ const moneyFtueSlice = createSlice({
       state.isOpen = true;
       state.source = source;
       state.pendingDeposit =
-        preferredPaymentToken || intent
-          ? { preferredPaymentToken, intent }
+        source === 'deposit'
+          ? {
+              ...(preferredPaymentToken ? { preferredPaymentToken } : {}),
+              ...(intent ? { intent } : {}),
+            }
           : null;
     },
     closeMoneyFtue: (state) => {

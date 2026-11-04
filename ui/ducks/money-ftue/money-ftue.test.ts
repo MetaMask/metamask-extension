@@ -53,6 +53,16 @@ describe('moneyFtue slice', () => {
     });
   });
 
+  it('stores an empty deposit intent when the deposit has no token', () => {
+    const state = reducer(initialState, openMoneyFtue({ source: 'deposit' }));
+
+    expect(state).toStrictEqual({
+      isOpen: true,
+      source: 'deposit',
+      pendingDeposit: {},
+    });
+  });
+
   it('keeps the first intent when openMoneyFtue fires while open', () => {
     const opened = reducer(
       initialState,

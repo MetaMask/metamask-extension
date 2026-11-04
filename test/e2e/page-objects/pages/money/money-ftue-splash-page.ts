@@ -12,6 +12,14 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/components/app/money/money-ftue-splash/money-ftue-splash.tsx
  */
 class MoneyFtueSplashPage {
+  private readonly benefitIds = [
+    'convert',
+    'earn',
+    'trade',
+    'withdraw',
+    'spend',
+  ];
+
   private readonly closeButton = { testId: 'money-ftue-splash-close-button' };
 
   private readonly driver: Driver;
@@ -41,6 +49,11 @@ class MoneyFtueSplashPage {
     console.log('Wait for the Money FTUE splash to load');
     await this.driver.waitForSelector(this.page);
     await this.driver.waitForSelector(this.headline);
+    for (const benefitId of this.benefitIds) {
+      await this.driver.waitForSelector({
+        testId: `money-ftue-splash-benefit-${benefitId}`,
+      });
+    }
   }
 
   async clickClose(): Promise<void> {
