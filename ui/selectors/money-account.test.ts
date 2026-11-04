@@ -1,6 +1,9 @@
 import { KeyringTypes, type KeyringObject } from '@metamask/keyring-controller';
 import type { MoneyAccountControllerState } from '@metamask/money-account-controller';
-import { selectPrimaryMoneyAccount } from './money-account';
+import {
+  isMoneyKeyringAddress,
+  selectPrimaryMoneyAccount,
+} from './money-account';
 
 const PRIMARY_ID = 'primary-hd-keyring-id';
 const SECOND_SRP_ID = 'second-hd-keyring-id';
@@ -129,5 +132,51 @@ describe('selectPrimaryMoneyAccount', () => {
         exportable: false,
       },
     });
+  });
+});
+
+describe('isMoneyKeyringAddress', () => {
+  const withAccounts = (type: string, accounts: string[]) =>
+    ({ ...keyring(type, `${type}-id`), accounts }) as KeyringObject;
+
+  it.each([KeyringTypes.money, KeyringTypes.mpcMoney])(
+    'returns true for an address held by a %s keyring',
+    (type) => {
+      const state = buildState([withAccounts(type, [MONEY_ADDRESS])]);
+
+      expect(isMoneyKeyringAddress(state, MONEY_ADDRESS)).toBe(true);
+    },
+  );
+
+  it('matches addresses case-insensitively', () => {
+    const state = buildState([
+      withAccounts(KeyringTypes.money, [MONEY_ADDRESS]),
+    ]);
+
+    expect(isMoneyKeyringAddress(state, MONEY_ADDRESS.toUpperCase())).toBe(
+      true,
+    );
+  });
+
+  it('returns false for an address held by a non-money keyring', () => {
+    const state = buildState([withAccounts(KeyringTypes.hd, [MONEY_ADDRESS])]);
+
+    expect(isMoneyKeyringAddress(state, MONEY_ADDRESS)).toBe(false);
+  });
+
+  it('returns false for an address not held by any money keyring', () => {
+    const state = buildState([
+      withAccounts(KeyringTypes.money, [OTHER_MONEY_ADDRESS]),
+    ]);
+
+    expect(isMoneyKeyringAddress(state, MONEY_ADDRESS)).toBe(false);
+  });
+
+  it('returns false when no address is given', () => {
+    const state = buildState([
+      withAccounts(KeyringTypes.money, [MONEY_ADDRESS]),
+    ]);
+
+    expect(isMoneyKeyringAddress(state, undefined)).toBe(false);
   });
 });
