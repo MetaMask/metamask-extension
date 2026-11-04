@@ -87,12 +87,16 @@ class PhishingWarningPage {
     }
   }
 
-  async clickProceedAnywayButton(): Promise<void> {
+  async clickProceedAnywayButton(waitForNavigation = true): Promise<void> {
     console.log('Clicking proceed anyway button on phishing warning page');
-    // Retry in case the phishing page hasn't fully loaded yet by the time we click it.
-    await retry({ retries: 3, delay: 1000 }, async () =>
-      this.driver.clickElementAndWaitToDisappear(this.proceedAnywayButton),
-    );
+    if (waitForNavigation) {
+      // Retry in case the phishing page hasn't fully loaded yet by the time we click it.
+      await retry({ retries: 3, delay: 1000 }, async () =>
+        this.driver.clickElementAndWaitToDisappear(this.proceedAnywayButton),
+      );
+      return;
+    }
+    await this.driver.clickElement(this.proceedAnywayButton);
   }
 
   async clickReportDetectionProblemLink(): Promise<void> {
