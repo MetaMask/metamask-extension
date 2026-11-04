@@ -338,8 +338,10 @@
   },
   "QrSyncController": "object",
   "RampsController": {
+    "autorampTransactionRecords": "object",
     "autoramps": "object",
     "countries": "object",
+    "moneyAccountWalletRegistrations": "object",
     "nativeProviders": "object",
     "orders": "object",
     "paymentMethods": "object",
@@ -347,7 +349,9 @@
     "providers": "object",
     "requests": "object",
     "tokens": "object",
-    "userRegion": null
+    "userRegion": null,
+    "vbaAutorampListFetchedAt": null,
+    "vbaCustomerAbilities": null
   },
   "RemoteFeatureFlagController": {
     "cacheTimestamp": "number",

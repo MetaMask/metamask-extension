@@ -2069,10 +2069,13 @@
       "syncQueue": {}
     },
     "RampsController": {
+      "autorampTransactionRecords": {},
       "autoramps": [],
+      "moneyAccountWalletRegistrations": [],
       "orders": [],
       "providerAutoSelected": false,
-      "userRegion": null
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,

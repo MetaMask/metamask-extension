@@ -1107,10 +1107,13 @@
       }
     },
     "RampsController": {
+      "autorampTransactionRecords": {},
       "autoramps": [],
+      "moneyAccountWalletRegistrations": [],
       "orders": [],
       "providerAutoSelected": false,
-      "userRegion": null
+      "userRegion": null,
+      "vbaAutorampListFetchedAt": null
     },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
