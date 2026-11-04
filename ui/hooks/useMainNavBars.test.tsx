@@ -9,8 +9,16 @@ import {
   DEFAULT_ROUTE,
   SETTINGS_ROUTE,
 } from '../helpers/constants/routes';
+import { setBackgroundConnection } from '../store/background-connection';
 import configureStore from '../store/store';
 import { useMainNavBars } from './useMainNavBars';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const renderUseMainNavBars = (
   pathname: string,
@@ -49,6 +57,10 @@ const renderUseMainNavBars = (
 };
 
 describe('useMainNavBars', () => {
+  beforeEach(() => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+  });
+
   describe('in the treatment variant of the bottom nav A/B test', () => {
     it.each([DEFAULT_ROUTE, ACTIVITY_ROUTE])(
       'shows the bottom nav on %s outside the wide layout',
