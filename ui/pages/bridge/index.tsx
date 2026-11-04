@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
@@ -10,9 +10,10 @@ import {
 import { I18nContext } from '../../contexts/i18n';
 import {
   AWAITING_SIGNATURES_ROUTE,
+  DEFAULT_ROUTE,
   PREPARE_SWAP_ASSETS_ROUTE,
   PREPARE_SWAP_ROUTE,
-  PREVIOUS_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
@@ -41,6 +42,7 @@ import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBrid
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
+import { useInAppBack } from '../../hooks/useInAppBack';
 import { useDispatch } from '../../store/hooks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import BridgeAssetPickerPage from './asset-picker';
@@ -56,18 +58,23 @@ const CrossChainSwap = () => {
 
   useBridging();
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { key: locationKey, state: locationState } = useLocation();
-  const {
-    navigateToDefaultRoute,
-    search,
-    swapViewTraceId,
-    swapViewPrefilledAmount,
-  } = useBridgeNavigation();
-  const hasNoInAppHistory =
-    locationKey === 'default' ||
-    (locationState as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
+  const { search, swapViewTraceId, swapViewPrefilledAmount } =
+    useBridgeNavigation();
+
+  const isFromTransactionShield = new URLSearchParams(search).get(
+    BridgeQueryParams.IsFromTransactionShield,
+  );
+  const fallbackRoute = isFromTransactionShield
+    ? TRANSACTION_SHIELD_ROUTE
+    : DEFAULT_ROUTE;
+
+  const inAppBack = useInAppBack(fallbackRoute, transitionBack);
+
+  function handleBack() {
+    dispatch(resetBridgeController()).catch(() => undefined);
+    inAppBack();
+  }
   const [swapViewTrace] = useState(() => {
     if (swapViewTraceId) {
       return {
@@ -147,19 +154,6 @@ const CrossChainSwap = () => {
       clearAllBridgeCacheItems();
     };
   }, [fetchTokens]);
-  const handleBack = () => {
-    transitionBack(() => {
-      // Direct open or deep link: leave Swap for Home, or Transaction Shield.
-      if (hasNoInAppHistory) {
-        navigateToDefaultRoute();
-        return;
-      }
-
-      // Opened from another page: reset Swap and return to that page.
-      dispatch(resetBridgeController()).catch(() => undefined);
-      navigate(PREVIOUS_ROUTE);
-    });
-  };
 
   const prepareBody = (
     <>

@@ -9,6 +9,7 @@ import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
   PREVIOUS_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
@@ -166,7 +167,7 @@ describe('Bridge', () => {
     expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
   });
 
-  it('resets the bridge store and state when the Back button is clicked', async () => {
+  it('navigates to fallback route on direct open when Back is clicked', async () => {
     const bridgeMockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -202,14 +203,60 @@ describe('Bridge', () => {
     expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-      state: {
-        bridgeState: null,
-        token: null,
-      },
+      replace: true,
+      state: { fromFreshTab: true },
     });
   });
 
-  it('returns to the previous page when Swap was opened in-app', async () => {
+  it('navigates to transaction shield when opened from transaction shield', async () => {
+    mockUseLocation.mockReturnValue({
+      ...directOpenLocation,
+      search: '?isFromTransactionShield=true',
+    });
+
+    const bridgeMockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          support: true,
+          refreshRate: 5000,
+          maxRefreshCount: 5,
+          chains: {
+            '1': {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
+      metamaskStateOverrides: {
+        useExternalServices: true,
+      },
+    });
+    const store = configureMockStore(middleware)(bridgeMockStore);
+
+    const { getByRole } = renderWithProvider(
+      <HardwareWalletProvider>
+        <CrossChainSwap />
+      </HardwareWalletProvider>,
+      store,
+      PREPARE_SWAP_ROUTE,
+    );
+
+    const backButton = getByRole('button', { name: messages.back.message });
+    await act(async () => {
+      fireEvent.click(backButton);
+    });
+
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      TRANSACTION_SHIELD_ROUTE,
+      expect.objectContaining({
+        replace: true,
+      }),
+    );
+  });
+
+  it('resets swap and returns to previous page when opened in-app', async () => {
     mockUseLocation.mockReturnValue({
       ...directOpenLocation,
       key: 'token-details',
@@ -248,7 +295,7 @@ describe('Bridge', () => {
       fireEvent.click(backButton);
     });
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 });
