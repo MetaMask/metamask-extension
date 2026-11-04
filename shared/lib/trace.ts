@@ -248,6 +248,24 @@ export type SerializedTraceContext = {
 };
 
 /**
+ * Tracing metadata sent by the UI alongside a background RPC request.
+ */
+export type SerializedTrace = {
+  /**
+   * The originating UI span's serialized context.
+   */
+  context: SerializedTraceContext;
+  /**
+   * The dispatched messenger action, when the request uses the messenger.
+   */
+  messengerAction?: string;
+  /**
+   * The background operation's display name.
+   */
+  spanName: `Background RPC: ${string}`;
+};
+
+/**
  * A callback function that can be traced.
  */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -566,37 +584,51 @@ export function getSerializedTraceContext():
 }
 
 /**
- * Extract trace context appended by submitRequestToBackground from RPC params.
- * Returns the clean params (without trace context) and the trace context if present.
- * Only strips when the last param has `_traceContext` with our expected shape
- * (`_traceId`, `_spanId`) to avoid eating legitimate params.
+ * Extract tracing metadata appended by submitRequestToBackground.
+ *
+ * Only a valid trailing `_trace` wrapper is removed, preserving ordinary
+ * application arguments that happen to contain a similarly named property.
  *
  * @param params - RPC call parameters.
- * @returns Clean params (without the trace wrapper) and the extracted context
- * if present, or `undefined` if no valid trace context was found.
+ * @returns Clean params and the tracing metadata, if present.
  */
-export function extractTraceContext(
+export function extractTrace(
   params: unknown,
 ):
-  | { cleanParams: unknown[]; traceContext: SerializedTraceContext }
-  | { cleanParams: unknown; traceContext: undefined } {
+  | { cleanParams: unknown[]; trace: SerializedTrace }
+  | { cleanParams: unknown; trace: undefined } {
   if (!Array.isArray(params) || params.length === 0) {
-    return { cleanParams: params, traceContext: undefined };
+    return { cleanParams: params, trace: undefined };
   }
 
   const lastParam = params[params.length - 1];
   if (
     isObject(lastParam) &&
-    hasProperty(lastParam, '_traceContext') &&
-    hasDistributedTraceIds(lastParam._traceContext)
+    hasProperty(lastParam, '_trace') &&
+    isObject(lastParam._trace) &&
+    hasProperty(lastParam._trace, 'context') &&
+    hasDistributedTraceIds(lastParam._trace.context) &&
+    hasProperty(lastParam._trace, 'spanName') &&
+    typeof lastParam._trace.spanName === 'string' &&
+    lastParam._trace.spanName.startsWith('Background RPC: ') &&
+    (!hasProperty(lastParam._trace, 'messengerAction') ||
+      typeof lastParam._trace.messengerAction === 'string')
   ) {
     return {
       cleanParams: params.slice(0, -1),
-      traceContext: lastParam._traceContext,
+      trace: {
+        context: lastParam._trace.context,
+        // Type assertion: the prefix check above validates this template literal.
+        spanName: lastParam._trace.spanName as SerializedTrace['spanName'],
+        ...(hasProperty(lastParam._trace, 'messengerAction') &&
+          typeof lastParam._trace.messengerAction === 'string' && {
+            messengerAction: lastParam._trace.messengerAction,
+          }),
+      },
     };
   }
 
-  return { cleanParams: params, traceContext: undefined };
+  return { cleanParams: params, trace: undefined };
 }
 
 /**
