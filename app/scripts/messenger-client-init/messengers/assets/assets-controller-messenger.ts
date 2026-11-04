@@ -39,6 +39,10 @@ export const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
   'PermissionController:getPermissions',
   'PhishingController:bulkScanTokens',
   'RemoteFeatureFlagController:getState',
+  'MarketStatsService:subscribe',
+  'MarketStatsService:unsubscribe',
+  'MarketStatsService:getSubscriptions',
+  'MarketStatsService:getChainStatuses',
 ] as const;
 
 /**
@@ -66,6 +70,7 @@ export const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'MultichainTransactionsController:transactionConfirmed',
   'AccountActivityService:balanceUpdated',
   'AccountActivityService:statusChanged',
+  'MarketStatsService:chainStatusChanged',
   'RemoteFeatureFlagController:stateChange',
 ] as const;
 

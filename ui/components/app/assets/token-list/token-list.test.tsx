@@ -123,6 +123,7 @@ jest.mock('../../../../../shared/lib/selectors/preferences', () => ({
 jest.mock('../../../../selectors/multichain/networks', () => ({
   getAllEnabledNetworksForAllNamespaces: jest.fn(),
   getIsEvmMultichainNetworkSelected: jest.fn(),
+  getSelectedMultichainNetworkChainId: jest.fn(),
   getSelectedMultichainNetworkConfiguration: jest.fn(),
 }));
 
@@ -670,7 +671,7 @@ describe('TokenList', () => {
 
     expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
       assetIds: [
-        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         'eip155:1/slip44:60',
       ],
     });
@@ -702,7 +703,7 @@ describe('TokenList', () => {
     render();
 
     expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
-      assetIds: ['eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      assetIds: ['eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'],
     });
   });
 });

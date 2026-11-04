@@ -5,18 +5,14 @@ import {
   type CaipChainId,
   type Hex,
   isCaipAssetType,
-  isStrictHexString,
 } from '@metamask/utils';
-import type { Asset } from '@metamask/assets-controllers';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
 import {
-  getNativeAssetId,
   isEvmChainId,
   isTronSpecialAsset,
   normalizeTokenAssetId,
 } from '#shared/lib/asset-utils';
-import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import {
@@ -53,6 +49,12 @@ import {
 import { isMusdToken } from '../../musd/constants';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
+import { toCaipAssetId } from '../util/to-caip-asset-id';
+import {
+  applyLiveTokenFiat,
+  readLiveQuote,
+  useLiveAssetPrices,
+} from '../../../../hooks/assets/market-stats-live-prices';
 
 export type TokenListDisplayItem =
   | {
@@ -76,26 +78,6 @@ type UseTokenListDataOptions = {
 };
 
 let lowValueAssetsExpandedSessionValue = false;
-
-const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
-  const { assetId, chainId, isNative } = asset;
-
-  if (assetId && isCaipAssetType(assetId)) {
-    return normalizeTokenAssetId(assetId);
-  }
-
-  if (isNative) {
-    const nativeAssetId = getNativeAssetId(chainId as Hex | undefined);
-    return nativeAssetId ? normalizeTokenAssetId(nativeAssetId) : undefined;
-  }
-
-  const evmAddress = 'address' in asset ? asset.address : assetId;
-  if (evmAddress && isStrictHexString(chainId)) {
-    return buildEvmCaip19AssetId(evmAddress, chainId) as CaipAssetType;
-  }
-
-  return undefined;
-};
 
 export const getTokenListItemKey = (
   item: TokenListDisplayItem,
@@ -139,6 +121,7 @@ export function useTokenListData({
   const { isStockToken } = useRWAToken();
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const livePrices = useLiveAssetPrices();
 
   // Defer only the hide-zero-balance preference so Settings toggles stay
   // responsive while this list recomputes. Account assets must update
@@ -201,6 +184,7 @@ export function useTokenListData({
     );
 
     return accountAssets.map((asset) => {
+      const caipAssetId = toCaipAssetId(asset);
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -208,12 +192,23 @@ export function useTokenListData({
         title: asset.name,
         address: 'address' in asset ? asset.address : (asset.assetId as Hex),
         chainId: asset.chainId as Hex,
-        caipAssetId: toCaipAssetId(asset),
+        caipAssetId,
       };
 
-      return token;
+      const quote = readLiveQuote(livePrices, caipAssetId);
+      const priced = applyLiveTokenFiat(token, quote?.price);
+      if (quote === undefined) {
+        return priced;
+      }
+      return {
+        ...priced,
+        livePrice: quote.price,
+        ...(quote.pricePercentChange1d === undefined
+          ? {}
+          : { pricePercentChange1d: quote.pricePercentChange1d }),
+      };
     });
-  }, [filteredAssets, sortOverride, tokenSortConfig]);
+  }, [filteredAssets, livePrices, sortOverride, tokenSortConfig]);
 
   // Skeletons stand in for the native gas token and mUSD that render before
   // the rest of the account's tokens. Tokens already in state stay visible,
@@ -272,7 +267,7 @@ export function useTokenListData({
         token: {
           ...token,
           safetyResult: token.caipAssetId
-            ? securityResultByAssetId[token.caipAssetId]
+            ? securityResultByAssetId[normalizeTokenAssetId(token.caipAssetId)]
             : undefined,
         },
       }),
@@ -294,7 +289,9 @@ export function useTokenListData({
             token: {
               ...token,
               safetyResult: token.caipAssetId
-                ? securityResultByAssetId[token.caipAssetId]
+                ? securityResultByAssetId[
+                    normalizeTokenAssetId(token.caipAssetId)
+                  ]
                 : undefined,
             },
           }))
