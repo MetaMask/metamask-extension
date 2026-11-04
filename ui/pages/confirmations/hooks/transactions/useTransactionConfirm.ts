@@ -8,7 +8,10 @@ import { useSelector } from 'react-redux';
 
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { getCustomNonceValue } from '../../../../selectors';
-import { isMoneyKeyringAddress } from '../../../../selectors/money-account';
+import {
+  isMoneyKeyringAddress,
+  type MoneyAccountState,
+} from '../../../../selectors/money-account';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
@@ -41,7 +44,7 @@ export function useTransactionConfirm() {
     TransactionType.moneyAccountWithdraw,
   ]);
   const { prepareWithdrawTransaction } = useMoneyAccountWithdrawConfirm();
-  const isFromMoneyKeyring = useSelector((state) =>
+  const isFromMoneyKeyring = useSelector((state: MoneyAccountState) =>
     isMoneyKeyringAddress(state, transactionMeta?.txParams?.from),
   );
   const payingAccount = useTransactionPayingAccount();

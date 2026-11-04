@@ -21,7 +21,7 @@ export type PrimaryMoneyAccount = Omit<MoneyAccount, 'address'> & {
   address: Hex;
 };
 
-type MoneyAccountState = {
+export type MoneyAccountState = {
   metamask: {
     keyrings: KeyringObject[];
     moneyAccounts?: MoneyAccountControllerState['moneyAccounts'];
@@ -33,10 +33,10 @@ const getKeyrings = (state: MoneyAccountState) => state.metamask.keyrings;
 const getMoneyAccounts = (state: MoneyAccountState) =>
   state.metamask.moneyAccounts;
 
-const MONEY_KEYRING_TYPES: string[] = [
+const MONEY_KEYRING_TYPES = new Set<string>([
   KeyringTypes.money,
   KeyringTypes.mpcMoney,
-];
+]);
 
 /**
  * Whether the given address belongs to a Money keyring (SRP-derived or MPC).
@@ -60,9 +60,9 @@ export function isMoneyKeyringAddress(
 
   const normalizedAddress = address.toLowerCase();
 
-  return (state.metamask.keyrings ?? []).some(
+  return state.metamask.keyrings.some(
     (keyring) =>
-      MONEY_KEYRING_TYPES.includes(keyring.type) &&
+      MONEY_KEYRING_TYPES.has(keyring.type) &&
       keyring.accounts.some(
         (account) => account.toLowerCase() === normalizedAddress,
       ),

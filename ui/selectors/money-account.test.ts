@@ -139,9 +139,10 @@ describe('isMoneyKeyringAddress', () => {
   const withAccounts = (type: string, accounts: string[]) =>
     ({ ...keyring(type, `${type}-id`), accounts }) as KeyringObject;
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([KeyringTypes.money, KeyringTypes.mpcMoney])(
     'returns true for an address held by a %s keyring',
-    (type) => {
+    (type: string) => {
       const state = buildState([withAccounts(type, [MONEY_ADDRESS])]);
 
       expect(isMoneyKeyringAddress(state, MONEY_ADDRESS)).toBe(true);

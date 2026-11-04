@@ -1094,9 +1094,10 @@ describe('useTransactionConfirm', () => {
       expect(actual.isExternalSign).toBe(false);
     });
 
-    it.each([KeyringTypes.money, KeyringTypes.mpcMoney] as const)(
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([KeyringTypes.money, KeyringTypes.mpcMoney])(
       'keeps sponsorship and isExternalSign on money account withdraw from a %s account when the user opted out',
-      async (moneyKeyringType) => {
+      async (moneyKeyringType: KeyringTypes.money | KeyringTypes.mpcMoney) => {
         useGasSponsorshipPreferenceMock.mockReturnValue({
           isSponsorshipOptedOut: true,
           setSponsorshipOptedOut: jest.fn(),
@@ -1120,6 +1121,7 @@ describe('useTransactionConfirm', () => {
   });
 
   describe('money keyring sender', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'opted out of sponsorship',
@@ -1131,7 +1133,13 @@ describe('useTransactionConfirm', () => {
       ],
     ])(
       'keeps sponsorship and isExternalSign on money account deposit when %s',
-      async (_, { isSponsorshipOptedOut, isGaslessSupported }) => {
+      async (
+        _: string,
+        {
+          isSponsorshipOptedOut,
+          isGaslessSupported,
+        }: { isSponsorshipOptedOut: boolean; isGaslessSupported: boolean },
+      ) => {
         useGasSponsorshipPreferenceMock.mockReturnValue({
           isSponsorshipOptedOut,
           setSponsorshipOptedOut: jest.fn(),
