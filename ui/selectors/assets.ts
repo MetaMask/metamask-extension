@@ -145,7 +145,7 @@ export type DefiState = {
 export type BalanceCalculationState = {
   metamask: AccountTreeControllerState &
     AccountsControllerState &
-    TokenBalancesControllerState &
+    Pick<TokenBalancesControllerState, 'tokenBalances'> &
     TokenRatesControllerState &
     MultichainBalancesControllerState &
     TokensControllerState &
@@ -1149,6 +1149,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
         KnownCaipNamespace.Solana,
         KnownCaipNamespace.Bip122,
         KnownCaipNamespace.Stellar,
+        KnownCaipNamespace.Tron,
       ].flatMap((namespace) =>
         Object.keys(allMainnetNetworksMap?.[namespace] || {}),
       ),
@@ -1315,6 +1316,7 @@ export const selectAccountGroupBalanceIsLoadedForEmptyState = createSelector(
         KnownCaipNamespace.Solana,
         KnownCaipNamespace.Bip122,
         KnownCaipNamespace.Stellar,
+        KnownCaipNamespace.Tron,
       ].flatMap((namespace) =>
         Object.keys(allMainnetNetworksMap?.[namespace] || {}),
       ),

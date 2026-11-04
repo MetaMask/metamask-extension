@@ -301,27 +301,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#addToken', function () {
-    it('delegates to the legacy background API service addToken action', async function () {
-      const token = {
-        address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-        symbol: 'LINK',
-        decimals: 18,
-        networkClientId: 'sepolia',
-      };
-      const callSpy = jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockResolvedValue(undefined);
-
-      await metamaskController.getApi().addToken(token);
-
-      expect(callSpy).toHaveBeenCalledWith(
-        'LegacyBackgroundApiService:addToken',
-        token,
-      );
-    });
-  });
-
   describe('#approveHardwareWalletTransaction', function () {
     it('should delegate to resolvePendingApproval with transaction payload and hardware wallet options', async function () {
       const resolvePendingApprovalSpy = jest
@@ -352,21 +331,6 @@ describe('MetaMaskController', function () {
         '42',
         { txMeta, actionId },
         { waitForResult: true, walletType: HardwareKeyringNames.ledger },
-      );
-    });
-  });
-
-  describe('resetWallet', function () {
-    it('delegates to LegacyBackgroundApiService', async function () {
-      const callSpy = jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockResolvedValue(undefined);
-
-      await metamaskController.getApi().resetWallet(true);
-
-      expect(callSpy).toHaveBeenCalledWith(
-        'LegacyBackgroundApiService:resetWallet',
-        true,
       );
     });
   });

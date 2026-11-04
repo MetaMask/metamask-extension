@@ -44,6 +44,12 @@ import { useTransactionsQuery } from './useTransactionsQuery';
 const itemHeight = 62;
 const headerHeight = 40;
 
+const ACTIVITY_STATUS_TO_TRANSACTION_STATUS = {
+  success: 'confirmed',
+  pending: 'submitted',
+  cancelled: 'dropped',
+} as const;
+
 export function ActivityList({
   filter,
   entryPoint,
@@ -120,15 +126,23 @@ export function ActivityList({
       return;
     }
 
+    /* eslint-disable @typescript-eslint/naming-convention -- Segment event properties use snake_case */
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ActivityDetailsOpened)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           activity_type: item.type,
+          transaction_status:
+            ACTIVITY_STATUS_TO_TRANSACTION_STATUS[
+              item.status as keyof typeof ACTIVITY_STATUS_TO_TRANSACTION_STATUS
+            ] ?? item.status,
+          location: filter && 'assetId' in filter ? 'asset_details' : 'home',
+          chain_id_source: item.chainId,
+          chain_id_destination: item.chainId,
         })
         .build(),
     );
+    /* eslint-enable @typescript-eslint/naming-convention */
 
     setSelectedItem(item);
 
@@ -221,8 +235,11 @@ export function ActivityList({
 
       <dialog
         ref={dialogRef}
-        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default"
+        className="dialog-modal w-full h-dvh max-h-dvh mx-auto p-0 border-0 bg-background-default text-default md:max-w-[480px] md:h-auto md:max-h-[90vh] md:rounded-4xl md:border md:border-alternative open:backdrop:opacity-100 starting:open:backdrop:opacity-0 backdrop:transition-discrete backdrop:transition-all"
         onClose={handleClose}
+        // @ts-expect-error closedby missing in React types
+        // eslint-disable-next-line react/no-unknown-property -- valid on <dialog>
+        closedby="any"
       >
         <TransactionDetails
           chainId={selectedItem?.chainId}

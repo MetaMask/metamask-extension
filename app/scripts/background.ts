@@ -72,6 +72,11 @@ import {
   setStartupPhase,
   StartupPhase,
 } from '../../shared/lib/telemetry/startup-phase';
+import {
+  recordUiClosed,
+  recordUiOpen,
+  recordWindowEvent,
+} from '../../shared/lib/telemetry/last-activity';
 
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
@@ -231,6 +236,13 @@ persistenceManager.setCurrentActivityProvider(() => ({
   ...uiPresence.getOpenUiCounts(),
 }));
 
+// Includes `WINDOW_ID_NONE` (focus left the browser).
+// We're not reusing listeners from `installActiveTabTracker`,
+// because they only track the active tab, and skip `WINDOW_ID_NONE`.
+browser.windows.onFocusChanged.addListener(() => {
+  recordWindowEvent();
+});
+
 // DappViewed / AppOpened metrics, tab→origin registries, and onNavigateToTab
 // (see app/scripts/lib/metrics/dapp-metrics.ts).
 const {
@@ -261,6 +273,7 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
  * called if initialization fails in an unrecoverable way.
  */
 let isInitialized: Promise<void>;
+let backgroundInitializedAt: number | undefined;
 let resolveInitialization: () => void;
 let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
 
@@ -271,7 +284,11 @@ let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
 function setGlobalInitializers() {
   const deferred = withResolvers<void>();
   isInitialized = deferred.promise;
-  resolveInitialization = deferred.resolve;
+  backgroundInitializedAt = undefined;
+  resolveInitialization = () => {
+    backgroundInitializedAt = Date.now();
+    deferred.resolve();
+  };
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
@@ -458,6 +475,7 @@ const handleOnConnect = async (port: Runtime.Port) => {
         !tryPostMessage(
           asChromeRuntimePort(port),
           BACKGROUND_INITIALIZED_METHOD,
+          { initializedAt: backgroundInitializedAt },
         )
       ) {
         return;
@@ -846,6 +864,16 @@ export function setupController(
 
       // communication with popup
       metamaskController.isClientOpen = true;
+      // Defensive: Chrome marks any extension-origin port as UI, but only the
+      // four types below record a close. Limit open stamps to those types.
+      if (
+        processName === ENVIRONMENT_TYPE_POPUP ||
+        processName === ENVIRONMENT_TYPE_SIDEPANEL ||
+        processName === ENVIRONMENT_TYPE_NOTIFICATION ||
+        processName === ENVIRONMENT_TYPE_FULLSCREEN
+      ) {
+        recordUiOpen();
+      }
       metamaskController
         .setupTrustedCommunication(
           portStream,
@@ -875,6 +903,10 @@ export function setupController(
           openPopupCount -= 1;
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          // Only when no MetaMask UI remains open.
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
@@ -895,6 +927,9 @@ export function setupController(
           openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
@@ -911,6 +946,9 @@ export function setupController(
           updateBadge();
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(
             isClientOpen,
             ENVIRONMENT_TYPE_NOTIFICATION,
@@ -931,6 +969,9 @@ export function setupController(
           }
           const isClientOpen = isClientOpenStatus();
           metamaskController.isClientOpen = isClientOpen;
+          if (!isClientOpen) {
+            recordUiClosed();
+          }
           onCloseEnvironmentInstances(
             isClientOpen,
             ENVIRONMENT_TYPE_FULLSCREEN,

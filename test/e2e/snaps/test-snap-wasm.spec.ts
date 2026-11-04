@@ -24,13 +24,9 @@ describe('Test Snap WASM', function () {
 
         const testSnaps = new TestSnaps(driver);
         // Navigate to test snaps page and connect to wasm snap
-        await openTestSnapClickButtonAndInstall(driver, 'connectWasmButton');
-
-        // Check installation success
-        await testSnaps.checkInstallationComplete(
-          'connectWasmButton',
-          'Reconnect to WebAssembly Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectWasmButton', {
+          expectedMessage: 'Reconnect to WebAssembly Snap',
+        });
 
         // Enter number for test to input field and validate the result
         await testSnaps.fillMessage('wasmInput', '23');
