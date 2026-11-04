@@ -202,7 +202,10 @@ describe('usePerpsTransactionHistory', () => {
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsGetOrderFills',
-      [{ accountId: 'eip155:1:0xabc', aggregateByTime: false }],
+      [
+        { accountId: 'eip155:1:0xabc', aggregateByTime: false },
+        { forceRefresh: true },
+      ],
     );
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
