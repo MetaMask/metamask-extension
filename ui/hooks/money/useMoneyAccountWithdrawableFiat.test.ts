@@ -73,6 +73,18 @@ describe('useMoneyAccountWithdrawableFiat', () => {
     );
   });
 
+  it('rounds the displayed balance down so it stays withdrawable', () => {
+    // Regression: CONF-2196. 499,999 micro-units formatted as `$0.50` via
+    // half-up rounding, but only `0.49` is actually withdrawable. The raw
+    // value keeps full precision so Max still drains the vault.
+    mockBalance({ vmusdHuman: '0.499999' });
+
+    const { result } = renderHook(() => useMoneyAccountWithdrawableFiat(true));
+
+    expect(result.current.withdrawableFiatFormatted).toBe('$0.49');
+    expect(result.current.withdrawableFiatRaw).toBe('0.499999');
+  });
+
   it('returns zero withdrawable fiat when the vault balance is zero', () => {
     mockBalance({ vmusdHuman: '0' });
 
