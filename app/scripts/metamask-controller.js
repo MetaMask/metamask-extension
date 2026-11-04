@@ -874,6 +874,7 @@ export default class MetamaskController extends EventEmitter {
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
             this.preferencesController,
+            this.controllerMessenger,
           );
           this.shieldController.start();
         } else {

@@ -7,8 +7,16 @@ import {
   Subscription,
 } from '@metamask/subscription-controller';
 import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
+// This file is only accessed by MetamaskController.
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
+import type {
+  RootMessenger,
+  RootMessengerActions,
+  RootMessengerEvents,
+  // This file is only accessed by MetamaskController.
+  // eslint-disable-next-line import-x/no-restricted-paths
+} from '../../../app/scripts/lib/messenger';
 import { getIsShieldSubscriptionActive } from './subscription-utils';
 import { loadShieldConfig } from './config';
 
@@ -123,12 +131,13 @@ export function getIsSubscriptionCancelNotAllowed(
  */
 export function updatePreferencesAndMetricsForShieldSubscription(
   preferencesController: PreferencesController,
-  setParticipateInMetaMetrics: (
-    participateInMetaMetrics: boolean,
-  ) => Promise<unknown>,
+  controllerMessenger: RootMessenger<RootMessengerActions, RootMessengerEvents>,
 ) {
   // shield subscribers have to turn on metametrics
-  setParticipateInMetaMetrics(true);
+  controllerMessenger.call(
+    'LegacyBackgroundApiService:setParticipateInMetaMetrics',
+    true,
+  );
   // shield subscribers have to turn on security alerts
   preferencesController.setSecurityAlertsEnabled(true);
   // shield subscribers have to turn on phishing detection

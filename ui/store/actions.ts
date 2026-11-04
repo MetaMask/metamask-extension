@@ -4521,7 +4521,7 @@ export function setParticipateInMetaMetrics(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setParticipateInMetaMetrics`);
     try {
-      const metaMetricsId = await submitRequestToBackground<string>(
+      const metaMetricsId = await submitRequestToBackground(
         'LegacyBackgroundApiService:setParticipateInMetaMetrics',
         [participationPreference],
       );
