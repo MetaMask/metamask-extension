@@ -18,23 +18,14 @@ describe('referralContextClient', () => {
     );
   });
 
-  jestIt.each<[string, 'continue' | 'drop' | 'take']>([
+  jestIt.each<[string, 'continue' | 'drop']>([
     ['continueReferralContext', 'continue'],
     ['dropReferralContext', 'drop'],
-    ['takeReferralContext', 'take'],
   ])('calls %s with the context id', async (action, method) => {
     await referralContextClient[method]('context-id');
     expect(submitRequestToBackground).toHaveBeenCalledWith(
       `RewardsMoneyController:${action}`,
       ['context-id'],
-    );
-  });
-
-  it('answers with the displayed code', async () => {
-    await referralContextClient.answer('ABC');
-    expect(submitRequestToBackground).toHaveBeenCalledWith(
-      'RewardsMoneyController:answerReferralContext',
-      ['ABC'],
     );
   });
 });

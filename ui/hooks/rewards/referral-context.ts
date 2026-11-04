@@ -27,8 +27,4 @@ export const referralContextClient = {
     submitRequestToBackground(MoneyReferralContextAction.continue, [id]),
   drop: (id: string) =>
     submitRequestToBackground(MoneyReferralContextAction.drop, [id]),
-  take: (id: string) =>
-    submitRequestToBackground(MoneyReferralContextAction.take, [id]),
-  answer: (code: string) =>
-    submitRequestToBackground(MoneyReferralContextAction.answer, [code]),
 };
