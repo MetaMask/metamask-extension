@@ -1,3 +1,4 @@
+import { retry } from '../../../../../development/lib/retry';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -88,7 +89,10 @@ class PhishingWarningPage {
 
   async clickProceedAnywayButton(): Promise<void> {
     console.log('Clicking proceed anyway button on phishing warning page');
-    await this.driver.clickElement(this.proceedAnywayButton);
+    // Retry in case the phishing page hasn't fully loaded yet by the time we click it.
+    await retry({ retries: 3, delay: 1000 }, async () =>
+      this.driver.clickElementAndWaitToDisappear(this.proceedAnywayButton),
+    );
   }
 
   async clickReportDetectionProblemLink(): Promise<void> {
