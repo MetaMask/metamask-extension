@@ -6,13 +6,13 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MfaFlowTestIds } from '../test-ids';
-import { trackMfaErrorCta } from '../../../hooks/identity/mfa/engine/activeFlow';
 import StepLayout, { type StepProps } from './step-layout';
 
 const PasskeyStep = ({ step, state, onAction }: StepProps<'passkey'>) => {
   const t = useI18nContext();
   return (
     <StepLayout
+      onAction={onAction}
       title={t(
         step.purpose === 'setup'
           ? 'mfaPasskeyTitleSetup'
@@ -26,9 +26,7 @@ const PasskeyStep = ({ step, state, onAction }: StepProps<'passkey'>) => {
           isFullWidth
           isLoading={state.busy}
           onClick={() => {
-            if (state.error) {
-              trackMfaErrorCta(state.error, 'try_again');
-            }
+            onAction({ type: 'errorCtaClicked', cta: 'try_again' });
             onAction({ type: 'continue' });
           }}
           data-testid={MfaFlowTestIds.PRIMARY_BUTTON}

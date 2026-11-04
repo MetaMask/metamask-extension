@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention -- Segment properties and the server's codes are snake_case */
+import { v4 as uuidv4 } from 'uuid';
 import { getFlowErrorCode } from './errors';
 import type {
   MfaFlowErrorCode,
+  MfaMethod,
   MfaFlowRequest,
   MfaFlowState,
   MfaFlowStep,
@@ -75,7 +77,7 @@ const ERROR_TYPES: Partial<Record<MfaFlowErrorCode, string>> = {
  * @param request - The flow's request.
  * @returns The base properties.
  */
-export const getBaseProperties = (
+const getBaseProperties = (
   reason: MfaReason,
   request: MfaFlowRequest,
 ): MfaEventProperties => {
@@ -89,9 +91,7 @@ export const getBaseProperties = (
   };
 };
 
-export const getErrorProperties = (
-  code: MfaFlowErrorCode,
-): MfaEventProperties => ({
+const getErrorProperties = (code: MfaFlowErrorCode): MfaEventProperties => ({
   error_code: code,
   error_type: ERROR_TYPES[code] ?? 'generic_error',
 });
@@ -103,7 +103,7 @@ export const getErrorProperties = (
  * @param step - The step.
  * @returns The screen's properties.
  */
-export const getStepProperties = (step: MfaFlowStep): MfaEventProperties => {
+const getStepProperties = (step: MfaFlowStep): MfaEventProperties => {
   switch (step.name) {
     case 'idle':
       return {};
@@ -130,31 +130,11 @@ export const getStepProperties = (step: MfaFlowStep): MfaEventProperties => {
   }
 };
 
-export const getStepViewedProperties = (
-  step: MfaFlowStep,
-): MfaEventProperties => {
-  if (step.name === 'intro') {
-    return {
-      ...getStepProperties(step),
-      methods_offered: step.methods,
-      methods_missing: step.missing,
-    };
-  }
-  if (step.name === 'picker') {
-    return { ...getStepProperties(step), methods_offered: step.options };
-  }
-  return getStepProperties(step);
-};
-
 /**
  * How a flow ended. Closing the failure screen rejects with the code shown,
  * so only leaving another screen is `cancelled`.
- *
- * @param error - The flow's rejection.
- * @param state - The flow's state when it ended.
- * @returns The end event's properties.
  */
-export const getFlowEndProperties = (
+const getFlowEndProperties = (
   error: unknown,
   state: MfaFlowState,
 ): MfaEventProperties => {
@@ -169,5 +149,92 @@ export const getFlowEndProperties = (
     ...(state.error
       ? { error_type: getErrorProperties(state.error).error_type }
       : {}),
+  };
+};
+
+/** The methods a screen lists, on the screens that list some. */
+const getListedMethods = (step: MfaFlowStep): MfaEventProperties => {
+  if (step.name === 'intro') {
+    return { methods_offered: step.methods, methods_missing: step.missing };
+  }
+  return step.name === 'picker' ? { methods_offered: step.options } : {};
+};
+
+/**
+ * Sends one flow's analytics events. Every event carries the flow's random
+ * `flow_id` and what the feature asked for. A failing `trackEvent` never
+ * changes the flow's outcome.
+ *
+ * @param options - The flow's reason and request, and the client's sender.
+ * @param options.reason - The flow's reason.
+ * @param options.request - The flow's request.
+ * @param options.trackEvent - The client's sender, if any.
+ * @returns One method per event.
+ */
+export const createMfaTracker = ({
+  reason,
+  request,
+  trackEvent,
+}: {
+  reason: MfaReason;
+  request: MfaFlowRequest;
+  trackEvent?: MfaTrackEvent;
+}) => {
+  const baseProperties = {
+    flow_id: uuidv4(),
+    ...getBaseProperties(reason, request),
+  };
+  const send = (event: MfaEvent, properties: MfaEventProperties) => {
+    try {
+      trackEvent?.(event, { ...baseProperties, ...properties });
+    } catch {
+      // Analytics never changes the flow's outcome.
+    }
+  };
+  // A new screen is a change of step, purpose or method: showing the same
+  // one again is not a new view.
+  let viewedStep = '';
+
+  return {
+    started: () => send(MFA_EVENTS.flowStatusUpdated, { status: 'started' }),
+    completed: () =>
+      send(MFA_EVENTS.flowStatusUpdated, { status: 'completed' }),
+    ended: (error: unknown, state: MfaFlowState) =>
+      send(MFA_EVENTS.flowStatusUpdated, getFlowEndProperties(error, state)),
+    stepViewed: (step: MfaFlowStep) => {
+      const key = JSON.stringify(getStepProperties(step));
+      if (step.name === 'idle' || key === viewedStep) {
+        return;
+      }
+      viewedStep = key;
+      send(MFA_EVENTS.stepViewed, {
+        ...getStepProperties(step),
+        ...getListedMethods(step),
+      });
+    },
+    errorViewed: (code: MfaFlowErrorCode, step: MfaFlowStep) =>
+      send(MFA_EVENTS.errorViewed, {
+        ...getErrorProperties(code),
+        ...getStepProperties(step),
+        ...(step.name === 'failure' ? { can_retry: step.canRetry } : {}),
+      }),
+    errorCtaClicked: (code: MfaFlowErrorCode, cta: MfaErrorCta) =>
+      send(MFA_EVENTS.errorCtaClicked, {
+        ...getErrorProperties(code),
+        cta_type: cta,
+      }),
+    methodSelected: (
+      method: MfaMethod,
+      step: Extract<MfaFlowStep, { name: 'picker' }>,
+    ) =>
+      send(MFA_EVENTS.methodSelected, {
+        method,
+        methods_offered: step.options,
+        purpose: step.purpose,
+      }),
+    codeResent: (
+      trigger: 'user' | 'auto',
+      step: Extract<MfaFlowStep, { name: 'otp' }>,
+    ) => send(MFA_EVENTS.codeResent, { trigger, purpose: step.purpose }),
   };
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- Segment properties are snake_case */
 import {
   MfaError,
   getMfaErrorCode,
@@ -98,7 +99,6 @@ const createFakeController = (initialCredentials: EnrolledCredential[]) => {
       const added: Record<MfaMethod, EnrolledCredential> = {
         passkey,
         totp: authenticatorApp,
-        // eslint-disable-next-line @typescript-eslint/naming-convention -- the server's credential type
         email_otp: { ...activeEmail, email: 'new@b.co' },
       };
       credentials = [...credentials, added[proof.type]];
@@ -151,12 +151,14 @@ const startFlow = async (
     platform?: 'mobile' | 'extension';
     passkey?: PasskeyAdapter;
     reportError?: MfaFlowOptions['reportError'];
+    trackEvent?: MfaFlowOptions['trackEvent'];
   } = {},
 ) => {
   const flow = createMfaFlow({
     request,
     reason: { operation: 'vba.activate', enrollDescription: 'Why we ask' },
     reportError: overrides.reportError,
+    trackEvent: overrides.trackEvent,
     platform: overrides.platform ?? 'mobile',
     controller,
     passkey: 'passkey' in overrides ? overrides.passkey : passkeyAdapter,
@@ -536,25 +538,6 @@ describe('createMfaFlow', () => {
         codeResent: true,
         error: undefined,
       });
-    });
-
-    it('raises codeResent again for each code sent after an expiry', async () => {
-      const fake = createFakeController([activeEmail]);
-      fake.controller.completeCredentialVerification
-        .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'))
-        .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'));
-      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
-      const resentStates: (boolean | undefined)[] = [];
-      flow.subscribe(() => resentStates.push(flow.getState().codeResent));
-
-      await act(flow, { type: 'submitCode', code: '123456' });
-      await act(flow, { type: 'submitCode', code: '123456' });
-
-      // Each new code is a rise of `codeResent`, which observers count.
-      const rises = resentStates.filter(
-        (resent, index) => resent === true && resentStates[index - 1] !== true,
-      );
-      expect(rises).toHaveLength(2);
     });
 
     it('shows the error instead of resending when sending the code fails with too_many_attempts', async () => {
@@ -1297,5 +1280,181 @@ describe('createMfaFlow', () => {
         options: ['totp', 'email_otp'],
       });
     });
+  });
+});
+
+describe('createMfaFlow analytics', () => {
+  const sentEvents = (trackEvent: jest.Mock, name: string) =>
+    trackEvent.mock.calls
+      .filter(([event]) => event === name)
+      .map(([, properties]) => properties);
+
+  it('tracks the start, each new screen and the end of a flow', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail]);
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+      trackEvent,
+    });
+
+    expect(trackEvent.mock.calls.map(([event]) => event)).toStrictEqual([
+      'MFA Flow Status Updated',
+      'MFA Step Viewed',
+    ]);
+    expect(sentEvents(trackEvent, 'MFA Step Viewed')[0]).toMatchObject({
+      screen_name: 'otp',
+      purpose: 'verify',
+      method: 'email_otp',
+    });
+
+    await act(flow, { type: 'cancel' });
+
+    expect(sentEvents(trackEvent, 'MFA Flow Status Updated')).toMatchObject([
+      { status: 'started' },
+      { status: 'cancelled', screen_name: 'otp' },
+    ]);
+  });
+
+  it('tracks a completed flow', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail]);
+    const { flow, outcome } = await startFlow(EMAIL_ONLY, fake.controller, {
+      trackEvent,
+    });
+
+    await act(flow, { type: 'submitCode', code: '123456' });
+    await outcome;
+
+    expect(
+      sentEvents(trackEvent, 'MFA Flow Status Updated').pop(),
+    ).toMatchObject({ status: 'completed' });
+  });
+
+  it('tracks the method the user chooses', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail, passkey]);
+    const { flow } = await startFlow(
+      {
+        kind: 'verifyOrEnroll',
+        methods: ['email_otp', 'passkey'],
+        verifyWith: ['email_otp', 'passkey'],
+      },
+      fake.controller,
+      { trackEvent },
+    );
+
+    await act(flow, { type: 'choose', method: 'email_otp' });
+
+    expect(sentEvents(trackEvent, 'MFA Method Selected')).toMatchObject([
+      {
+        method: 'email_otp',
+        purpose: 'verify',
+        methods_offered: ['passkey', 'email_otp'],
+      },
+    ]);
+  });
+
+  it('tracks a wrong code once, and again each time it appears', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail]);
+    fake.controller.completeCredentialVerification
+      .mockRejectedValueOnce(new MfaError('invalid_code', 'wrong'))
+      .mockRejectedValueOnce(new MfaError('invalid_code', 'wrong'));
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+      trackEvent,
+    });
+
+    await act(flow, { type: 'submitCode', code: '111111' });
+    expect(sentEvents(trackEvent, 'MFA Error Viewed')).toHaveLength(1);
+
+    await act(flow, { type: 'submitCode', code: '222222' });
+    expect(sentEvents(trackEvent, 'MFA Error Viewed')).toMatchObject([
+      { error_code: 'invalid_code', error_type: 'incorrect_code' },
+      { error_code: 'invalid_code', error_type: 'incorrect_code' },
+    ]);
+  });
+
+  it('tracks no error while a cooldown shows as a countdown', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail]);
+    fake.controller.beginCredentialVerification.mockRejectedValueOnce(
+      new MfaError('otp_resend_cooldown', 'wait', { retryAfterMs: 30_000 }),
+    );
+
+    await startFlow(EMAIL_ONLY, fake.controller, { trackEvent });
+
+    expect(sentEvents(trackEvent, 'MFA Error Viewed')).toHaveLength(0);
+  });
+
+  it('tracks the failure screen and what the user taps on it', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail]);
+    fake.controller.beginCredentialVerification.mockRejectedValueOnce(
+      new MfaError('multi_primary_srp', 'unsupported wallet'),
+    );
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+      trackEvent,
+    });
+
+    await act(flow, { type: 'errorCtaClicked', cta: 'contact_support' });
+
+    expect(sentEvents(trackEvent, 'MFA Error Viewed')).toMatchObject([
+      {
+        error_code: 'multi_primary_srp',
+        screen_name: 'failure',
+        can_retry: false,
+      },
+    ]);
+    expect(sentEvents(trackEvent, 'MFA Error CTA Clicked')).toMatchObject([
+      { error_code: 'multi_primary_srp', cta_type: 'contact_support' },
+    ]);
+  });
+
+  it('tracks a CTA on the error of an inline screen', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail]);
+    fake.controller.completeCredentialVerification.mockRejectedValueOnce(
+      new MfaError('invalid_code', 'wrong'),
+    );
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+      trackEvent,
+    });
+    await act(flow, { type: 'submitCode', code: '111111' });
+
+    await act(flow, { type: 'errorCtaClicked', cta: 'learn_more' });
+
+    expect(sentEvents(trackEvent, 'MFA Error CTA Clicked')).toMatchObject([
+      { error_code: 'invalid_code', cta_type: 'learn_more' },
+    ]);
+  });
+
+  it('tracks a code the user asked for, one the countdown asked for, and each one sent after an expiry', async () => {
+    const trackEvent = jest.fn();
+    const fake = createFakeController([activeEmail]);
+    fake.controller.completeCredentialVerification
+      .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'))
+      .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'));
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+      trackEvent,
+    });
+
+    await act(flow, { type: 'resend' });
+    await act(flow, { type: 'resend', trigger: 'auto' });
+    await act(flow, { type: 'submitCode', code: '111111' });
+    await act(flow, { type: 'submitCode', code: '222222' });
+
+    expect(
+      sentEvents(trackEvent, 'MFA Code Resent').map(({ trigger }) => trigger),
+    ).toStrictEqual(['user', 'auto', 'auto', 'auto']);
+  });
+
+  it('keeps the flow running when analytics throws', async () => {
+    const fake = createFakeController([activeEmail]);
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+      trackEvent: () => {
+        throw new Error('analytics down');
+      },
+    });
+
+    expect(flow.getState().step.name).toBe('otp');
   });
 });
