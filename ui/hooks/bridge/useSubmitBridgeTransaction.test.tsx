@@ -23,6 +23,8 @@ import {
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
@@ -323,10 +325,37 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
 
       // Assert
       expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(store.getActions()).toContainEqual(
+        bridgeActions.setFromTokenInputValue(null),
+      );
 
       expect(result.current.isSubmitting).toBe(false);
       expect(submitTxSpy).toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
+      expect(mockResetState).not.toHaveBeenCalled();
+    });
+
+    it('returns to transaction shield after submitting a swap opened from transaction shield', async () => {
+      const store = makeMockStore();
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store, [
+          `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}?isFromTransactionShield=true`,
+        ]),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        );
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        TRANSACTION_SHIELD_ROUTE,
+        expect.objectContaining({ replace: true }),
+      );
+      expect(store.getActions()).not.toContainEqual(
+        bridgeActions.setFromTokenInputValue(null),
+      );
       expect(mockResetState).not.toHaveBeenCalled();
     });
 
@@ -872,6 +901,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       });
 
       expect(mockUseNavigate).not.toHaveBeenCalled();
+      expect(store.getActions()).not.toContainEqual(
+        bridgeActions.setFromTokenInputValue(null),
+      );
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
       expect(captureExceptionSpy).toHaveBeenCalledWith(submitError, {

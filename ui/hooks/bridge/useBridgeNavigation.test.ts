@@ -331,6 +331,24 @@ describe('useBridgeNavigation', () => {
         },
       );
     });
+
+    it('keeps the transaction shield flag on the signing route', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        search: `?${BridgeQueryParams.IsFromTransactionShield}=true`,
+        state: {},
+      });
+      const { result } = renderUseBridgeNavigation();
+
+      act(() => {
+        result.current.navigateToHwSigningPage();
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${HARDWARE_WALLET_SIGNATURES_PATH}?${BridgeQueryParams.IsFromTransactionShield}=true`,
+        expect.anything(),
+      );
+    });
   });
 
   describe('navigateToActivityPage', () => {

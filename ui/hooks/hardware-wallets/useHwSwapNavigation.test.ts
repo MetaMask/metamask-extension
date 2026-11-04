@@ -10,15 +10,17 @@ jest.mock('../bridge/useBridgeNavigation', () => ({
 
 const mockNavigate = jest.fn();
 let mockLocationKey = 'default';
+let mockLocationSearch = '';
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-  useLocation: () => ({ key: mockLocationKey }),
+  useLocation: () => ({ key: mockLocationKey, search: mockLocationSearch }),
 }));
 
+const mockResetBridgeController = jest.fn(() => Promise.resolve());
 jest.mock('../../ducks/bridge/actions', () => ({
   ...jest.requireActual('../../ducks/bridge/actions'),
-  resetBridgeController: () => () => Promise.resolve(),
+  resetBridgeController: () => () => mockResetBridgeController(),
 }));
 
 const mockUseBridgeNavigation = jest.requireMock(
@@ -32,6 +34,7 @@ describe('useHwSwapNavigation', () => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     mockLocationKey = 'default';
+    mockLocationSearch = '';
     mockUseBridgeNavigation.mockReturnValue({
       navigateToDefaultRoute: mockNavigateToDefaultRoute,
     });
@@ -59,6 +62,32 @@ describe('useHwSwapNavigation', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith(-1);
     expect(mockNavigateToDefaultRoute).not.toHaveBeenCalled();
+    // Swaps restores the amount from the active quote on remount, so the
+    // controller must be reset before navigating back.
+    expect(mockResetBridgeController.mock.invocationCallOrder[0]).toBeLessThan(
+      mockNavigate.mock.invocationCallOrder[0],
+    );
+  });
+
+  it('navigates to the default route for swaps opened from transaction shield', async () => {
+    mockLocationKey = 'signing';
+    mockLocationSearch = '?isFromTransactionShield=true';
+    renderHookWithProvider(
+      () =>
+        useHwSwapNavigation({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.Submitted,
+          ),
+        }),
+      {},
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(mockNavigateToDefaultRoute).toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('navigates to the default route for sendBundle flows', async () => {
