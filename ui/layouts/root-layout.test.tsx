@@ -1,7 +1,9 @@
 import React from 'react';
 import { it } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import configureStore from '../store/store';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
@@ -31,13 +33,15 @@ const renderRootLayout = (pathname: string) => {
     { initialEntries: [pathname] },
   );
   render(
-    <RouterProvider
-      router={router}
-      future={{
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        v7_startTransition: true,
-      }}
-    />,
+    <Provider store={configureStore({})}>
+      <RouterProvider
+        router={router}
+        future={{
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          v7_startTransition: true,
+        }}
+      />
+    </Provider>,
   );
 
   return screen.getByTestId('child').parentElement as HTMLElement;

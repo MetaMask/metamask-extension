@@ -19,11 +19,12 @@ export type MainNavBars = {
 export function useMainNavBars(): MainNavBars {
   const { pathname } = useLocation();
   const { isWideLayout } = useAppLayout();
-  const showBottomNav = useBottomNavBar();
+  const hasNavBar = isMainNavRoute(pathname);
+  const showBottomNav = useBottomNavBar() && !isWideLayout;
   const showSideNav = isMainNavRoute(pathname) && isWideLayout;
 
   return {
-    hasNavBar: showBottomNav || showSideNav,
+    hasNavBar,
     showSideNav,
     showBottomNav,
   };

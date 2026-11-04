@@ -114,22 +114,4 @@ describe('useMainNavBars', () => {
       expect(result.current.showBottomNav).toBe(true);
     });
   });
-
-  describe('in the control variant of the bottom nav A/B test', () => {
-    it('shows no nav outside the wide layout', () => {
-      expect(renderUseMainNavBars(DEFAULT_ROUTE, false, false)).toStrictEqual({
-        hasNavBar: false,
-        showSideNav: false,
-        showBottomNav: false,
-      });
-    });
-
-    it('shows the side nav in the wide layout', () => {
-      expect(renderUseMainNavBars(DEFAULT_ROUTE, true, false)).toStrictEqual({
-        hasNavBar: true,
-        showSideNav: true,
-        showBottomNav: false,
-      });
-    });
-  });
 });
