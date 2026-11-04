@@ -46,7 +46,7 @@ jest.mock('../../../hooks/useTheme', () => ({
   useTheme: () => mockTheme,
 }));
 
-const reason = { operation: 'qa.test' };
+const reason: MfaReason = { operation: 'qa.test' };
 
 const buildState = <Step extends MfaFlowStep>(
   step: Step,
