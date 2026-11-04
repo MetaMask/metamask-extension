@@ -59,6 +59,9 @@ function createController(
     remoteFeatureFlagController: {
       state: { remoteFeatureFlags: {} },
     },
+    messengerClientsByName: {
+      RewardsMoneyController: { captureReferralContext: jest.fn() },
+    },
     store: {} as MetaMaskController['store'],
   };
 }

@@ -26,7 +26,7 @@ type InstallLifecycleAppStateController =
 type InstallLifecycleController = OnUpdateController & {
   appMetadataController: Pick<AppMetadataController, 'setInstallAttribution'>;
   appStateController: InstallLifecycleAppStateController;
-  messengerClientsByName?: {
+  messengerClientsByName: {
     // eslint-disable-next-line @typescript-eslint/naming-convention -- controller registry key
     RewardsMoneyController: Pick<
       RewardsMoneyController,
@@ -81,7 +81,7 @@ async function addAppInstalledEvent(
   if (deferredDeepLink) {
     controller.appStateController.setDeferredDeepLink(deferredDeepLink);
     // Security remains undecided until the existing deferred-link parser runs.
-    controller.messengerClientsByName?.RewardsMoneyController.captureReferralContext(
+    controller.messengerClientsByName.RewardsMoneyController.captureReferralContext(
       deferredDeepLink.referringLink,
       'restored_context',
       true,

@@ -28,7 +28,7 @@ const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
 export type Options = {
   getExtensionURL: ExtensionPlatform['getExtensionURL'];
   getState: MetamaskController['getState'];
-  captureReferralContext?: (
+  captureReferralContext: (
     url: string,
     requiresInterstitial: boolean,
   ) => MoneyReferralContext | null;
@@ -203,7 +203,7 @@ export class DeepLinkRouter extends EventEmitter<{
             Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
         });
 
-        const referralContext = this.captureReferralContext?.(
+        const referralContext = this.captureReferralContext(
           url.toString(),
           shouldShowInterstitial,
         );

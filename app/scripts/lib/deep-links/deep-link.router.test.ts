@@ -77,6 +77,7 @@ describe('DeepLinkRouter', () => {
     router = new DeepLinkRouter({
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
+      captureReferralContext: () => null,
     });
   });
   afterEach(() => {
