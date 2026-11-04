@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { act, renderHook } from '@testing-library/react';
 import { it as jestIt } from '@jest/globals';
 import { createMemoryRouter } from 'react-router-dom';
+import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { registerDocumentLoadMeasurement } from '../../helpers/utils/useful-screen-ready';
@@ -56,6 +57,7 @@ describe('Home readiness', () => {
       tags: {
         'wallet.unlocked': true,
         'wallet.ui_type': ENVIRONMENT_TYPE_SIDEPANEL,
+        'home.tab': AccountOverviewTabKey.Tokens,
       },
     });
     renderHook(() => useHomeReady(true), { wrapper: StrictMode });
@@ -72,6 +74,7 @@ describe('Home readiness', () => {
     { isUnlocked: false },
     { completedOnboarding: false },
     { pendingApprovals: { request: {} } },
+    { approvalFlows: [{}] },
   ])('excludes initial wallet state %j', (state) => {
     register(state);
     renderHook(() => useHomeReady(true));
@@ -87,6 +90,66 @@ describe('Home readiness', () => {
     renderHook(() => useHomeReady(true));
     act(() => jest.advanceTimersByTime(48));
     expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
+  });
+
+  jestIt.each([
+    AccountOverviewTabKey.Nfts,
+    AccountOverviewTabKey.Activity,
+    AccountOverviewTabKey.DeFi,
+    AccountOverviewTabKey.Perps,
+  ])('excludes the persisted %s tab', (tab) => {
+    register({ defaultHomeActiveTabName: tab });
+    renderHook(() => useHomeReady(true));
+    act(() => jest.advanceTimersByTime(48));
+    expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
+    expect(measurement.reportReady).not.toHaveBeenCalled();
+  });
+
+  jestIt.each([
+    AccountOverviewTabKey.Nfts,
+    AccountOverviewTabKey.Activity,
+    AccountOverviewTabKey.DeFi,
+    AccountOverviewTabKey.Perps,
+  ])(
+    'excludes the URL-selected %s tab even when Tokens is persisted',
+    async (tab) => {
+      await router.navigate(`/?tab=${tab}`);
+      register({ defaultHomeActiveTabName: AccountOverviewTabKey.Tokens });
+      renderHook(() => useHomeReady(true));
+      act(() => jest.advanceTimersByTime(48));
+      expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
+      expect(measurement.reportReady).not.toHaveBeenCalled();
+    },
+  );
+
+  it('uses the URL Tokens selection over a persisted non-Tokens tab', async () => {
+    await router.navigate('/?tab=tokens');
+    register({ defaultHomeActiveTabName: AccountOverviewTabKey.Nfts });
+    renderHook(() => useHomeReady(true));
+    act(() => jest.advanceTimersByTime(48));
+    expect(measurement.reportReady).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the default Tokens tab when no tab is selected', () => {
+    register({ defaultHomeActiveTabName: null, approvalFlows: [] });
+    renderHook(() => useHomeReady(true));
+    act(() => jest.advanceTimersByTime(48));
+    expect(measurement.reportReady).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the persisted tab when the URL tab is empty', async () => {
+    await router.navigate('/?tab=');
+    register({ defaultHomeActiveTabName: AccountOverviewTabKey.Nfts });
+    expect(registerDocumentLoadMeasurement).not.toHaveBeenCalled();
+  });
+
+  it('discards the initial visit when the user changes tabs before readiness', async () => {
+    register();
+    renderHook(() => useHomeReady(true));
+    await router.navigate('/?tab=nfts');
+    act(() => jest.advanceTimersByTime(48));
+    expect(measurement.discard).toHaveBeenCalledTimes(1);
+    expect(measurement.reportReady).not.toHaveBeenCalled();
   });
 
   it('waits for content and cancels a pending report when content becomes unready', () => {
