@@ -153,14 +153,14 @@ describe('MoneyFtueSplash', () => {
     );
   });
 
-  it('renders a centered half-height card in the side panel', () => {
+  it('renders a centered card tall enough for two benefits in the side panel', () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
 
     renderSplash();
 
     const splash = screen.getByTestId(MONEY_FTUE_SPLASH_TEST_ID);
     expect(splash.className).toContain('max-w-[400px]');
-    expect(splash.className).toContain('max-h-[50vh]');
+    expect(splash.className).toContain('max-h-[min(75vh,680px)]');
   });
 
   it('renders a centered card in full screen', () => {

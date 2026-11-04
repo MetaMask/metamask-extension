@@ -165,7 +165,7 @@ const MoneyFtueSplashContent = () => {
     dialogClassName = 'h-full min-h-0 max-w-none rounded-none border-0';
   } else if (isSidepanel) {
     contentClassName = 'items-center';
-    dialogClassName = 'max-h-[50vh] min-h-0 max-w-[400px]';
+    dialogClassName = 'max-h-[min(75vh,680px)] min-h-0 max-w-[400px]';
   } else {
     contentClassName = undefined;
     dialogClassName = 'max-h-[calc(100vh-32px)] min-h-0 max-w-[400px]';
