@@ -6,13 +6,13 @@ import {
   TransactionType as EvmTransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import configureStore from '../../store/store';
-import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
-import mockState from '../../../test/data/mock-state.json';
-import { TransactionDetails } from './transaction-details';
+import configureStore from '../../../../store/store';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { createMockUIMessenger } from '../../../../../test/lib/mock-ui-messenger';
+import mockState from '../../../../../test/data/mock-state.json';
+import { TransactionDetails } from '../../transaction-details';
 
-jest.mock('../../hooks/activity/useApiTransaction', () => ({
+jest.mock('../../../../hooks/activity/useApiTransaction', () => ({
   useApiTransaction: () => undefined,
 }));
 
