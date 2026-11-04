@@ -51,11 +51,8 @@ import {
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
-import { submitRequestToBackground } from '../../../store/background-connection';
-import {
-  buildMoneyReferralRoute,
-  type MoneyReferralContext,
-} from '../../../../shared/lib/deep-links/money-referral';
+import { referralContextClient } from '../../../hooks/rewards/referral-context';
+import { buildMoneyReferralRoute } from '../../../../shared/lib/deep-links/money-referral';
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -118,11 +115,9 @@ export function useOnboardingCompletion() {
         );
       }
 
-      const pendingReferral =
-        await submitRequestToBackground<MoneyReferralContext | null>(
-          'messengerCall',
-          ['RewardsMoneyController:getPendingReferralContext', []],
-        ).catch(() => null);
+      const pendingReferral = await referralContextClient
+        .getPending()
+        .catch(() => null);
       const validDeferredReferral =
         pendingReferral?.entryType === 'restored_context' &&
         pendingReferral.url === deferredDeepLinkToUse?.referringLink &&
@@ -138,10 +133,7 @@ export function useOnboardingCompletion() {
             deferredDeepLinkResult?.type !==
               DeferredDeepLinkRouteType.Interstitial
           ) {
-            await submitRequestToBackground('messengerCall', [
-              'RewardsMoneyController:continueReferralContext',
-              [pendingReferral.id],
-            ]);
+            await referralContextClient.continue(pendingReferral.id);
           } else {
             const original = new URL(pendingReferral.url);
             navigate(
@@ -154,10 +146,9 @@ export function useOnboardingCompletion() {
         return;
       }
       if (pendingReferral?.entryType === 'restored_context') {
-        await submitRequestToBackground('messengerCall', [
-          'RewardsMoneyController:dropReferralContext',
-          [pendingReferral.id],
-        ]).catch(() => undefined);
+        await referralContextClient
+          .drop(pendingReferral.id)
+          .catch(() => undefined);
       }
 
       if (deferredDeepLinkResult) {
@@ -288,11 +279,9 @@ export function useOnboardingCompletion() {
       try {
         const deferredDeepLinkResult =
           await getDeferredDeepLinkRoute(deferredDeepLink);
-        const pendingReferral =
-          await submitRequestToBackground<MoneyReferralContext | null>(
-            'messengerCall',
-            ['RewardsMoneyController:getPendingReferralContext', []],
-          ).catch(() => null);
+        const pendingReferral = await referralContextClient
+          .getPending()
+          .catch(() => null);
         const shouldOpenSidePanel =
           !pendingReferral &&
           deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&

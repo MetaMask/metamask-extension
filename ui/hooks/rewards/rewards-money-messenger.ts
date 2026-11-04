@@ -1,5 +1,6 @@
 import { defineAllowedRouteCapabilities } from '../../helpers/route-messenger-helpers';
 import type { RouteMessengerFromCapabilities } from '../../messengers/route-messenger';
+import { MoneyReferralContextAction } from './referral-context';
 
 /**
  * Actions the money invite sheet may call on RewardsMoneyController.
@@ -12,10 +13,10 @@ export const REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES =
       'RewardsMoneyController:getReferralMe',
       'RewardsMoneyController:validateReferralCode',
       'RewardsMoneyController:registerReferee',
-      'RewardsMoneyController:getPendingReferralContext',
-      'RewardsMoneyController:continueReferralContext',
-      'RewardsMoneyController:takeReferralContext',
-      'RewardsMoneyController:answerReferralContext',
+      MoneyReferralContextAction.getPending,
+      MoneyReferralContextAction.continue,
+      MoneyReferralContextAction.take,
+      MoneyReferralContextAction.answer,
     ],
     events: [],
   });

@@ -29,7 +29,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { PageNotFound } from '../../components/app/page-not-found/page-not-found';
 import { FullPageCard } from '../../components/app/full-page-card/full-page-card';
 import { buildMoneyReferralRoute } from '../../../shared/lib/deep-links/money-referral';
-import { submitRequestToBackground } from '../../store/background-connection';
+import { referralContextClient } from '../../hooks/rewards/referral-context';
 
 type TranslateFunction = (
   key: string,
@@ -170,10 +170,7 @@ export const DeepLink = () => {
     const id = new URLSearchParams(location.search).get('referralContext');
     const dropAbandoned = () => {
       if (id && !continuedReferral.current) {
-        submitRequestToBackground('messengerCall', [
-          'RewardsMoneyController:dropReferralContext',
-          [id],
-        ]).catch(() => undefined);
+        referralContextClient.drop(id).catch(() => undefined);
       }
     };
     window.addEventListener('pagehide', dropAbandoned);
@@ -293,10 +290,7 @@ export const DeepLink = () => {
     continuedReferral.current = true;
     let destination = route.href;
     try {
-      const continued = await submitRequestToBackground<boolean>(
-        'messengerCall',
-        ['RewardsMoneyController:continueReferralContext', [id]],
-      );
+      const continued = await referralContextClient.continue(id);
       if (continued) {
         destination = getExtensionURL(
           buildMoneyReferralRoute({

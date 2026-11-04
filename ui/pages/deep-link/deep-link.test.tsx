@@ -75,10 +75,10 @@ describe('DeepLink referral continuation', () => {
     await act(async () => {
       fireEvent.click(screen.getByTestId('deep-link-continue-button'));
     });
-    expect(submitRequestToBackground).toHaveBeenCalledWith('messengerCall', [
+    expect(submitRequestToBackground).toHaveBeenCalledWith(
       'RewardsMoneyController:continueReferralContext',
       ['one'],
-    ]);
+    );
     expect(mockReplace).toHaveBeenCalledWith(
       expect.stringContaining('/referral-invite?context=one&'),
     );
@@ -90,10 +90,10 @@ describe('DeepLink referral continuation', () => {
     await act(async () => undefined);
     view.unmount();
     await act(async () => undefined);
-    expect(submitRequestToBackground).toHaveBeenCalledWith('messengerCall', [
+    expect(submitRequestToBackground).toHaveBeenCalledWith(
       'RewardsMoneyController:dropReferralContext',
       ['one'],
-    ]);
+    );
     expect(mockAssign).not.toHaveBeenCalled();
     expect(mockReplace).not.toHaveBeenCalled();
   });

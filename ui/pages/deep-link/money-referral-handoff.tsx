@@ -16,6 +16,7 @@ import {
   UNLOCK_ROUTE,
 } from '../../helpers/constants/routes';
 import { useMessenger } from '../../hooks/useMessenger';
+import { MoneyReferralContextAction } from '../../hooks/rewards/referral-context';
 import {
   REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES,
   type RewardsMoneyInviteMessenger,
@@ -98,7 +99,7 @@ const MoneyReferralHandoffContent = () => {
       takeRequest.current = {
         search: location.search,
         promise: messenger.call(
-          'RewardsMoneyController:takeReferralContext',
+          MoneyReferralContextAction.take,
           params.get('context') ?? '',
         ),
       };
@@ -144,7 +145,7 @@ const MoneyReferralHandoffContent = () => {
       return;
     }
     messenger
-      .call('RewardsMoneyController:answerReferralContext', context.code)
+      .call(MoneyReferralContextAction.answer, context.code)
       .catch(() => undefined);
     continueToDestination(context.url, true).catch(() => undefined);
   }, [context, continueToDestination, messenger]);
