@@ -151,6 +151,7 @@ export type AppStateControllerState = {
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
   moneyEarnBannerDismissedTokenKeys: string[];
+  moneyFtueSeen: boolean;
   showShieldEntryModalOnce: boolean | null;
   /**
    * The pending redirect route to be applied after the default page is loaded.
@@ -330,6 +331,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
   moneyEarnBannerDismissedTokenKeys: [],
+  moneyFtueSeen: false,
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
   lastVisitedRoute: null,
@@ -639,6 +641,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
+  moneyFtueSeen: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
   showShieldEntryModalOnce: {
     includeInStateLogs: true,
     persist: true,
@@ -773,6 +781,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
   'setLastVisitedRoute',
+  'setMoneyFtueSeen',
   'setMusdConversionEducationSeen',
   'setNewPrivacyPolicyToastClickedOrClosed',
   'setNewPrivacyPolicyToastShownDate',
@@ -1380,6 +1389,17 @@ export class AppStateController extends BaseController<
   setPerpsTabBadgeSeen(value: boolean): void {
     this.update((state) => {
       state.perpsTabBadgeSeen = value;
+    });
+  }
+
+  /**
+   * Sets whether the Money account FTUE splash has been seen.
+   *
+   * @param value - Whether the Money FTUE splash has been seen
+   */
+  setMoneyFtueSeen(value: boolean): void {
+    this.update((state) => {
+      state.moneyFtueSeen = value;
     });
   }
 
