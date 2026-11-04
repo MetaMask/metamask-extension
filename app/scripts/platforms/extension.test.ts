@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { t } from '../../../shared/lib/translate';
-import notificationIcon from '../../../shared/assets/images/icon-64.png';
+import notificationIcon from '../../../shared/assets/images/icon-64';
 import ExtensionPlatform from './extension';
 
 const TEST_URL =

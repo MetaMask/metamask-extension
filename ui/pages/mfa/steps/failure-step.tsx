@@ -4,7 +4,7 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import mfaFailureImage from '../../../../app/assets/images/mfa-failure.svg';
+import mfaFailureImage from '../../../../shared/assets/images/mfa-failure.svg';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 import { getErrorHandling } from '../../../hooks/identity/mfa/engine/errors';

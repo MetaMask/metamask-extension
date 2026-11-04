@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import source from '../../../../app/assets/animations/spinner_loader_with_states.riv';
+import source from '../../../../shared/assets/animations/spinner_loader_with_states.riv';
 import { useRiveFileLavamoat } from '../../../hooks/useRiveFileLavamoat';
 import { StatusIcon } from './status-icon';
 

@@ -12,7 +12,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 import { t } from '../../../shared/lib/translate';
-import notificationIcon from '../../../shared/assets/images/icon-64.png';
+import notificationIcon from '../../../shared/assets/images/icon-64';
 
 type RpcPrefs = Parameters<typeof getBlockExplorerLink>[1];
 type BlockExplorerTransaction = Parameters<typeof getBlockExplorerLink>[0];

@@ -680,6 +680,13 @@ export class ManifestPlugin<Z extends boolean> {
         ...this.tryReadManifest(
           path.join(buildTypeManifestPath, `${browser}.json`),
         ),
+        ...this.tryReadManifest(
+          path.join(
+            buildTypeManifestPath,
+            `v${this.options.manifest_version}`,
+            `${browser}.json`,
+          ),
+        ),
       } as Manifest;
 
       // merge provided `web_accessible_resources`
@@ -996,7 +1003,7 @@ export class ManifestPlugin<Z extends boolean> {
         ...(this.options.setBuildId ? { build_id: compilation.fullHash } : {}),
       };
       if (
-        manifestForEmit.manifest_version === 2 &&
+        'browser_action' in manifestForEmit &&
         manifestForEmit.browser_action
       ) {
         manifestForEmit.browser_action = {
@@ -1005,10 +1012,8 @@ export class ManifestPlugin<Z extends boolean> {
             manifestForEmit.browser_action.default_icon,
           ),
         };
-      } else if (
-        manifestForEmit.manifest_version === 3 &&
-        manifestForEmit.action
-      ) {
+      }
+      if ('action' in manifestForEmit && manifestForEmit.action) {
         manifestForEmit.action = {
           ...manifestForEmit.action,
           default_icon: resolveDefaultIcon(manifestForEmit.action.default_icon),

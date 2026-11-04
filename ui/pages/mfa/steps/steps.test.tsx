@@ -2,7 +2,7 @@ import React from 'react';
 import { it } from '@jest/globals';
 import { act, fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import mfaFailureImage from '../../../../app/assets/images/mfa-failure.svg';
+import mfaFailureImage from '../../../../shared/assets/images/mfa-failure.svg';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
