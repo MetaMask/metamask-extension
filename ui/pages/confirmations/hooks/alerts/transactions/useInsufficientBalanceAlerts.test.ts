@@ -222,7 +222,7 @@ describe('useInsufficientBalanceAlerts', () => {
         chainId: '0x1079',
         excludeNativeTokenForFee: true,
         gasFeeTokens: [],
-        selectedGasFeeToken: '0x20c0000000000000000000000000000000000000',
+        selectedGasFeeToken: '0x20c0000000000000000000006a37da5c996874be',
       }),
       id: TRANSACTION_ID_MOCK,
       txParams: {
@@ -250,14 +250,14 @@ describe('useInsufficientBalanceAlerts', () => {
         actions: [
           {
             key: 'buy',
-            label: 'Buy pathUSD',
+            label: 'Buy OUSD',
           },
         ],
         field: 'estimatedFee',
         isBlocking: true,
         key: 'insufficientBalance',
         message:
-          'You do not have enough pathUSD in your account to pay for network fees.',
+          'You do not have enough OUSD in your account to pay for network fees.',
         reason: 'Insufficient funds',
         severity: 'danger',
       },

@@ -611,12 +611,18 @@ describe('createPerpsInfrastructure', () => {
       };
 
       tracer.trace(request);
-      tracer.endTrace({ name, id: 'operation', data: { success: true } });
+      tracer.endTrace({
+        name,
+        id: 'operation',
+        status: 'ok',
+        data: { success: true },
+      });
 
       expect(trace).toHaveBeenCalledWith(request);
       expect(endTrace).toHaveBeenCalledWith({
         name,
         id: 'operation',
+        status: 'ok',
         data: { success: true },
       });
     });

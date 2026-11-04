@@ -4,6 +4,12 @@ export const REWARDS_API_URL = {
   PRD: 'https://rewards.api.cx.metamask.io',
 };
 
+export const REWARDS_MONEY_API_URL = {
+  DEV: 'https://rewards-money.dev-api.cx.metamask.io',
+  UAT: 'https://rewards-money.uat-api.cx.metamask.io',
+  PRD: 'https://rewards-money.api.cx.metamask.io',
+};
+
 // Error message constants for rewards errors
 export const REWARDS_ERROR_MESSAGES = {
   AUTHORIZATION_FAILED:

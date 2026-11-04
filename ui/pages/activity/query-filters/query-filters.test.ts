@@ -3,9 +3,6 @@ import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
-import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
-import { isIncomingTokenTransfer } from './incoming-token-transfer';
-import { isSpamTransaction } from './spam-transactions';
 import { useQueryFilters } from './useQueryFilters';
 import { isZeroValueSelfSend } from './zero-value-self-send';
 
@@ -45,16 +42,6 @@ describe('query filters', () => {
     ).toBe(true);
   });
 
-  it('matches spam transactions', () => {
-    expect(
-      isSpamTransaction(
-        transaction({
-          transactionProtocol: 'SPAM_TOKEN',
-        }),
-      ),
-    ).toBe(true);
-  });
-
   it('matches zero-value self sends', () => {
     expect(
       isZeroValueSelfSend(
@@ -67,68 +54,6 @@ describe('query filters', () => {
         subjectAddress,
       ),
     ).toBe(true);
-  });
-
-  it('matches incoming token transfers', () => {
-    expect(
-      isIncomingTokenTransfer(
-        transaction({
-          from: otherAddress,
-          valueTransfers: [
-            {
-              from: otherAddress,
-              to: subjectAddress.toUpperCase(),
-              contractAddress: tokenAddress,
-              amount: '100',
-              decimal: 6,
-              symbol: 'USDC',
-            },
-          ],
-        }),
-        subjectAddress,
-      ),
-    ).toBe(true);
-  });
-
-  it('matches incoming native asset transfers', () => {
-    expect(
-      isIncomingNativeAssetTransfer(
-        transaction({
-          from: otherAddress,
-          valueTransfers: [
-            {
-              from: otherAddress,
-              to: subjectAddress,
-              amount: '100',
-              decimal: 18,
-              symbol: 'ETH',
-            },
-          ],
-        }),
-        subjectAddress,
-      ),
-    ).toBe(true);
-  });
-
-  it('does not match incoming native asset transfers when the transfer is a token', () => {
-    expect(
-      isIncomingNativeAssetTransfer(
-        transaction({
-          from: otherAddress,
-          valueTransfers: [
-            {
-              from: otherAddress,
-              to: subjectAddress,
-              contractAddress: tokenAddress,
-              amount: '100',
-              decimal: 6,
-              symbol: 'USDC',
-            },
-          ],
-        }),
-        subjectAddress,
-      ),
-    ).toBe(false);
   });
 
   it('filters query results and maps remaining transactions', () => {
@@ -147,10 +72,6 @@ describe('query filters', () => {
       ],
     });
     const excludedTransaction = transaction({ hash: '0xEXCLUDED' });
-    const spamTransaction = transaction({
-      hash: '0xspam',
-      transactionProtocol: 'SPAM_TOKEN',
-    });
 
     const { result } = renderHook(() =>
       useQueryFilters({ subjectAddress, networks: [] }),
@@ -158,9 +79,9 @@ describe('query filters', () => {
     const filtered = result.current({
       pages: [
         {
-          data: [validTransaction, excludedTransaction, spamTransaction],
+          data: [validTransaction, excludedTransaction],
           pageInfo: {
-            count: 3,
+            count: 2,
             hasNextPage: false,
           },
           unprocessedNetworks: [],

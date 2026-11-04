@@ -1090,13 +1090,13 @@ export class LegacyBackgroundApiService {
    * @param networkClientId - The ID of the network client to use for the request.
    * @returns The code of the contract at the given address.
    */
-  async getCode(address: Hex, networkClientId: string): Promise<Json> {
+  async getCode(address: Hex, networkClientId: string): Promise<Hex> {
     const { provider } = this.#messenger.call(
       'NetworkController:getNetworkClientById',
       networkClientId,
     );
 
-    return await provider.request({
+    return await provider.request<[Hex], Hex>({
       method: 'eth_getCode',
       params: [address],
     });
@@ -3332,7 +3332,7 @@ export class LegacyBackgroundApiService {
     index: number,
     hdPathDescription?: string,
   ): string {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
+    return `${name.charAt(0).toUpperCase()}${name.slice(1)} ${
       index + 1
     } ${hdPathDescription || ''}`.trim();
   }
@@ -3443,8 +3443,11 @@ export class LegacyBackgroundApiService {
         return {
           address: normalize(createdAccount.address) as string,
           label: this.#getAccountLabel(
+            // QR devices report a user-defined name that can be empty or
+            // missing (e.g. a Keystone wallet with no name), so fall back to
+            // the device name.
             deviceName === HardwareDeviceNames.qr
-              ? (keyring as QrKeyringV2).getName()
+              ? (keyring as QrKeyringV2).getName() || deviceName
               : deviceName,
             index,
             hdPathDescription,

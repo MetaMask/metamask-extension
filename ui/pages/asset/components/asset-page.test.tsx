@@ -81,8 +81,6 @@ jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../store/controller-actions/transaction-controller');
@@ -409,8 +407,12 @@ describe('AssetPage', () => {
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
-      getTokenSymbol: jest.fn(),
-      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
+      messengerCall: jest.fn((actionType: string) => {
+        if (actionType === 'AuthenticationController:getBearerToken') {
+          return Promise.resolve('mock-bearer-token');
+        }
+        return Promise.resolve(undefined);
+      }),
     } as never);
   });
 
@@ -1160,6 +1162,14 @@ describe('AssetPage', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
+          assetsInfo: {
+            ...mockStore.metamask.assetsInfo,
+            [stellarXlmAssetId]: {
+              type: 'native',
+              decimals: 7,
+              symbol: 'XLM',
+            },
+          },
           assetsBalance,
           accountTree: {
             wallets: {
@@ -1249,7 +1259,6 @@ describe('AssetPage', () => {
               metadata: {
                 minimumReserveBalance: '25000000',
                 spendableBalance: '75000000',
-                decimal: 7,
               },
             },
           },

@@ -14,13 +14,16 @@ export async function updateTransactionPaymentToken({
   tokenAddress: Hex;
   chainId: Hex;
 }): Promise<void> {
-  return await submitRequestToBackground('updateTransactionPaymentToken', [
-    {
-      transactionId,
-      tokenAddress,
-      chainId,
-    },
-  ]);
+  return await submitRequestToBackground(
+    'TransactionPayController:updatePaymentToken',
+    [
+      {
+        transactionId,
+        tokenAddress,
+        chainId,
+      },
+    ],
+  );
 }
 
 export async function setPaymentOverride(

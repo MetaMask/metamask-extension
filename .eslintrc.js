@@ -1,10 +1,10 @@
-const { readFileSync } = require('node:fs');
-const { defineConfig } = require('eslint/config');
+const path = require('node:path');
+const { defineConfig, globalIgnores } = require('eslint/config');
+const { includeIgnoreFile } = require('@eslint/config-helpers');
 const eslintConfig = require('@metamask/eslint-config').default;
 const typescriptConfig = require('@metamask/eslint-config-typescript').default;
 const mochaConfig = require('@metamask/eslint-config-mocha').default;
 const jestConfig = require('@metamask/eslint-config-jest').default;
-const ts = require('typescript');
 const babelParser = require('@babel/eslint-parser');
 const reactPackageJson = require('react/package.json');
 const reactPlugin = require('eslint-plugin-react');
@@ -12,7 +12,6 @@ const reactHooksPlugin = require('eslint-plugin-react-hooks');
 const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
-
 const {
   architecturalZones,
   buildSystemZones,
@@ -23,21 +22,19 @@ const nodeConfigs = require('./.eslintrc.node');
 const typescriptCompatConfig = require('./.eslintrc.typescript-compat');
 
 const reactVersion = reactPackageJson.version;
-const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
-const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
-const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, __dirname);
-const tsconfigLookupSet = new Set(
-  tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
-);
+const gitignorePath = path.resolve(__dirname, '.gitignore');
 
 module.exports = defineConfig([
-  {
-    // Ignore files which are also in .prettierignore
-    ignores: readFileSync('.prettierignore', 'utf8')
-      .trim()
-      .split('\n')
-      .map((p) => (p.startsWith('/') ? p.slice(1) : `**/${p}`)),
-  },
+  includeIgnoreFile(gitignorePath),
+  globalIgnores([
+    // vendored code
+    '.yarn/**/*',
+    'app/vendor/**',
+    'development/chromereload.js',
+    'test/e2e/send-eth-with-private-key-test/**/*',
+    // snapshots
+    '**/__snapshots__/**/*',
+  ]),
   {
     languageOptions: {
       // eslint's parser, esprima, is not compatible with ESM, so use the babel parser instead
@@ -148,25 +145,13 @@ module.exports = defineConfig([
    * TypeScript files
    */
   {
-    // apply the ignores to the typescript settings but also to the overlap
-    // with webpack rules below. Otherwise webpack rules will try to parse
-    // files that are omitted in tsconfig
+    files: ['**/*.{cts,mts,ts,tsx}'],
     ignores: [
-      '.yarn/',
-      'node_modules/',
-      '.git/',
-      '.agents/',
-      '.claude/',
-      (filePath) =>
-        /\.tsx?$/u.test(filePath) && !tsconfigLookupSet.has(filePath),
+      // Stories currently excluded from tsconfig due to type errors.
+      // Ignore TypeScript lint rules for these until types are fixed.
+      '**/*.stories.tsx',
+      '**/*.stories.ts',
     ],
-  },
-  {
-    files: ['**/*.ts', '**/*.tsx'],
-    // files: ["app/**/*.{ts,tsx}", "development/**/*.{ts,tsx}", "shared/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "types/**/*.{ts,tsx}", "ui/**/*.{ts,tsx}", "*.ts"],
-    // a flat list of paths passed as files is being heavily processed
-    // globbing everything and manually filtering against a set is more efficient.
-    // tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
     languageOptions: {
       parserOptions: {
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
@@ -349,6 +334,7 @@ module.exports = defineConfig([
       ],
       'jsdoc/check-tag-names': 'off',
       'jsdoc/require-jsdoc': 'off',
+      'jsdoc/require-param': 'off',
       'jsdoc/require-param-description': 'off',
       'jsdoc/require-returns': 'off',
       'jsdoc/require-returns-description': 'off',
@@ -369,18 +355,23 @@ module.exports = defineConfig([
       },
     },
   },
-  {
-    files: ['.agents/**/*.ts'],
-    rules: {
-      'import-x/no-nodejs-modules': 'off',
-    },
-  },
   /**
    * == Everything else ==
    *
    * The sections from here on out may overlap with each other in various
    * ways depending on their function.
    */
+
+  /**
+   * .mts files
+   */
+  {
+    files: ['**/*.mts'],
+    rules: {
+      // Extensions are required by Node.js for `.mts` files
+      'import-x/extensions': 'off',
+    },
+  },
 
   /**
    * React-specific code
@@ -892,18 +883,6 @@ module.exports = defineConfig([
       'page-object/member-order': 'error',
     },
   },
-  /**
-   * Generated messenger action types.
-   */
-  // This seems to be very heavy
-  // {
-  //   files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
-  //   rules: {
-  //     // Keep generated messenger action type formatting stable while the
-  //     // repository transitions from eslint-plugin-prettier to oxfmt.
-  //     'prettier/prettier': ['error', { endOfLine: 'auto' }],
-  //   },
-  // },
   /**
    * Webpack
    */

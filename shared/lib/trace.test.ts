@@ -1,4 +1,5 @@
 import type * as Sentry from '@sentry/browser';
+import { SPAN_STATUS_ERROR, SPAN_STATUS_OK } from '@sentry/core';
 import {
   annotateTrace,
   endTrace,
@@ -375,6 +376,34 @@ describe('Trace', () => {
 
       expect(spanEndMock).toHaveBeenCalledTimes(1);
     });
+
+    for (const [status, code] of [
+      ['ok', SPAN_STATUS_OK],
+      ['error', SPAN_STATUS_ERROR],
+    ] as const) {
+      it(`sets the Sentry span status to ${status} before ending it`, () => {
+        const spanEndMock = jest.fn();
+        const setStatusMock = jest.fn();
+        const spanMock = {
+          end: spanEndMock,
+          setStatus: setStatusMock,
+        } as unknown as Sentry.Span;
+
+        startSpanManualMock.mockImplementationOnce((_, fn) =>
+          fn(spanMock, () => {
+            // Intentionally empty
+          }),
+        );
+
+        trace({ name: NAME_MOCK, id: ID_MOCK });
+        endTrace({ name: NAME_MOCK, id: ID_MOCK, status });
+
+        expect(setStatusMock).toHaveBeenCalledWith({ code });
+        expect(setStatusMock.mock.invocationCallOrder[0]).toBeLessThan(
+          spanEndMock.mock.invocationCallOrder[0],
+        );
+      });
+    }
 
     it('ends Sentry span matching name and default ID', () => {
       const spanEndMock = jest.fn();
