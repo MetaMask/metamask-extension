@@ -1,18 +1,12 @@
 import React from 'react';
-import {
-  useLocation,
-  createMemoryRouter,
-  RouterProvider,
-} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { render } from '@testing-library/react';
 import { FeatureId } from '@metamask/bridge-controller';
 import configureStore from '../../store/store';
 import {
   renderWithProvider,
-  I18nProvider,
-  en,
+  createMemoryRouterWrapper,
 } from '../../../test/lib/render-helpers-navigate';
-import { MetaMaskTestReduxProvider } from '../../../test/lib/redux-test-provider';
 import mockState from '../../../test/data/mock-state.json';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
@@ -73,12 +67,14 @@ const renderConfirmationRouter = ({
   hasBatchSellQuotes = false,
   hasPendingApproval = false,
   environmentType = ENVIRONMENT_TYPE_POPUP,
+  initialEntries,
 }: {
   pathname: string;
   hasQuotes?: boolean;
   hasBatchSellQuotes?: boolean;
   hasPendingApproval?: boolean;
   environmentType?: string;
+  initialEntries?: string[];
 }) => {
   (getEnvironmentType as jest.Mock).mockReturnValue(environmentType);
 
@@ -97,14 +93,20 @@ const renderConfirmationRouter = ({
     },
   });
 
-  return renderWithProvider(
+  const ui = (
     <>
       <ConfirmationRouter />
       <PathnameDisplay />
-    </>,
-    store,
-    pathname,
+    </>
   );
+
+  if (initialEntries) {
+    return render(ui, {
+      wrapper: createMemoryRouterWrapper({ initialEntries, store }),
+    });
+  }
+
+  return renderWithProvider(ui, store, pathname);
 };
 
 describe('ConfirmationRouter', () => {
@@ -266,48 +268,12 @@ describe('ConfirmationRouter', () => {
   });
 
   describe('in-app navigation with quotes', () => {
-    it('does not redirect on non-first-screen navigation even with bridge quotes', () => {
-      (getEnvironmentType as jest.Mock).mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-
-      const store = configureStore({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          pendingApprovals: {},
-          pendingApprovalCount: 0,
-          approvalFlows: [],
-          quotes: [{}],
-        },
+    it('does not redirect with non-first-screen key', () => {
+      const { getByTestId } = renderConfirmationRouter({
+        pathname: DEFAULT_ROUTE,
+        hasQuotes: true,
+        initialEntries: ['/previous-page', DEFAULT_ROUTE],
       });
-
-      const router = createMemoryRouter(
-        [
-          {
-            path: '*',
-            element: (
-              <>
-                <ConfirmationRouter />
-                <PathnameDisplay />
-              </>
-            ),
-          },
-        ],
-        {
-          initialEntries: ['/previous-page', DEFAULT_ROUTE],
-          initialIndex: 1,
-        },
-      );
-
-      const { getByTestId } = render(
-        <I18nProvider currentLocale="en" current={en} en={en}>
-          <MetaMaskTestReduxProvider store={store}>
-            <RouterProvider
-              router={router}
-              future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-            />
-          </MetaMaskTestReduxProvider>
-        </I18nProvider>,
-      );
 
       expect(getByTestId('pathname').textContent).toBe(DEFAULT_ROUTE);
     });
