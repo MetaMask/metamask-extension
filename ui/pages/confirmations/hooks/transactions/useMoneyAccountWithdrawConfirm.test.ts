@@ -152,8 +152,11 @@ describe('useMoneyAccountWithdrawConfirm', () => {
     await prepareWithdrawTransaction(buildTransaction(FUNDED_NESTED));
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'updateTransaction',
-      [expect.objectContaining({ id: TRANSACTION_ID })],
+      'TransactionController:updateTransaction',
+      [
+        expect.objectContaining({ id: TRANSACTION_ID }),
+        'Prepared Money Account withdrawal for approval',
+      ],
     );
   });
 

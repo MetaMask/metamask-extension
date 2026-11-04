@@ -11,12 +11,15 @@ import { MoneyAccountApiDataServiceQueryKeys } from '../../../shared/lib/money/q
 import { selectMoneyAccountVaultConfig } from '../../selectors/money/money-account-feature-flags';
 import {
   clearReportedMoneyQueryError,
+  getMoneyApiErrorDetails,
   reportMoneyQueryErrorOnce,
 } from '../../helpers/money/report-money-error';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 
 const LAST_30_DAYS_WINDOW: InterestWindow = '30d';
 const SINCE_INCEPTION_WINDOW: InterestWindow = 'since_inception';
+
+const LIFETIME_EARNINGS_SENTRY_FEATURE_TAG = 'money-lifetime-earnings';
 
 export type UseMoneyAccountInterestOptions = {
   enabled?: boolean;
@@ -91,7 +94,10 @@ export function useMoneyAccountInterest({
       `interest:${LAST_30_DAYS_WINDOW}`,
       '[Money Account] Interest fetch failed',
       last30DaysQuery.error,
-      { window: LAST_30_DAYS_WINDOW },
+      {
+        window: LAST_30_DAYS_WINDOW,
+        ...getMoneyApiErrorDetails(last30DaysQuery.error),
+      },
     );
   }, [last30DaysQuery.error, last30DaysQuery.isError]);
 
@@ -100,11 +106,18 @@ export function useMoneyAccountInterest({
       clearReportedMoneyQueryError('interest:since_inception');
       return;
     }
+    const details = getMoneyApiErrorDetails(sinceInceptionQuery.error);
     reportMoneyQueryErrorOnce(
       `interest:${SINCE_INCEPTION_WINDOW}`,
-      '[Money Account] Interest fetch failed',
+      '[Money Account] Lifetime earnings fetch failed',
       sinceInceptionQuery.error,
-      { window: SINCE_INCEPTION_WINDOW },
+      { window: SINCE_INCEPTION_WINDOW, ...details },
+      {
+        feature: LIFETIME_EARNINGS_SENTRY_FEATURE_TAG,
+        ...(details.httpStatus === undefined
+          ? {}
+          : { httpStatus: String(details.httpStatus) }),
+      },
     );
   }, [sinceInceptionQuery.error, sinceInceptionQuery.isError]);
 

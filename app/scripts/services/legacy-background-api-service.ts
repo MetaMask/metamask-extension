@@ -126,7 +126,6 @@ import {
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
-  GetTokenListState,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
@@ -184,6 +183,7 @@ import {
   SeedlessOnboardingControllerSubmitPasswordAction,
   SeedlessOnboardingControllerSyncLatestGlobalPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
+  SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction,
 } from '@metamask/seedless-onboarding-controller';
 import {
   CaveatSpecificationConstraint,
@@ -729,6 +729,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerSyncLatestGlobalPasswordAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction
   | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | GetSignatureState
   | ShieldControllerClearStateAction
@@ -742,7 +743,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
   | TokensControllerAddTokenAction
@@ -1090,13 +1090,13 @@ export class LegacyBackgroundApiService {
    * @param networkClientId - The ID of the network client to use for the request.
    * @returns The code of the contract at the given address.
    */
-  async getCode(address: Hex, networkClientId: string): Promise<Json> {
+  async getCode(address: Hex, networkClientId: string): Promise<Hex> {
     const { provider } = this.#messenger.call(
       'NetworkController:getNetworkClientById',
       networkClientId,
     );
 
-    return await provider.request({
+    return await provider.request<[Hex], Hex>({
       method: 'eth_getCode',
       params: [address],
     });
@@ -1616,17 +1616,18 @@ export class LegacyBackgroundApiService {
   ): Promise<TokenStandardAndDetails> {
     const currentChainId = this.getGlobalChainId();
 
-    const { tokensChainsCache } = this.#messenger.call(
-      'TokenListController:getState',
-    );
-    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
     const allTokens = this.#getAllTokens();
 
     const tokens = allTokens?.[currentChainId]?.[userAddress as string] || [];
 
-    const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
+    // Only consult the static mainnet list on mainnet. On other chains a
+    // matching address can belong to a different token, and must not short-
+    // circuit the on-chain lookup (same guard as getTokenStandardAndDetailsByChain).
+    let staticTokenListDetails = {};
+    if (currentChainId === CHAIN_IDS.MAINNET) {
+      staticTokenListDetails =
+        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    }
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
@@ -1634,7 +1635,6 @@ export class LegacyBackgroundApiService {
 
     const tokenDetails = {
       ...staticTokenListDetails,
-      ...tokenListDetails,
       ...userDefinedTokenDetails,
     } as MergedTokenDetails;
 
@@ -1759,11 +1759,6 @@ export class LegacyBackgroundApiService {
     tokenId?: string,
     chainId?: Hex,
   ): Promise<TokenStandardAndDetails> {
-    const { tokensChainsCache } = this.#messenger.call(
-      'TokenListController:getState',
-    );
-    const tokenList = (chainId && tokensChainsCache?.[chainId]?.data) || {};
-
     const allTokens = this.#getAllTokens();
     const selectedAccount = this.#messenger.call(
       'AccountsController:getSelectedAccount',
@@ -1777,14 +1772,12 @@ export class LegacyBackgroundApiService {
         STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
     }
 
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
       ) || {};
     const tokenDetails = {
       ...staticTokenListDetails,
-      ...tokenListDetails,
       ...userDefinedTokenDetails,
     } as MergedTokenDetails;
 
@@ -2423,6 +2416,16 @@ export class LegacyBackgroundApiService {
           .call('SeedlessOnboardingController:revokePendingRefreshTokens')
           .catch((err) => {
             log.error('error while revoking pending refresh tokens', err);
+          });
+
+        // Asynchronously track incomplete metadata backup events
+        this.#messenger
+          .call(
+            'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+            password,
+          )
+          .catch((err) => {
+            log.error('error while tracking incomplete metadata backup', err);
           });
       } catch (err) {
         this.#messenger?.captureException?.(
@@ -3329,7 +3332,7 @@ export class LegacyBackgroundApiService {
     index: number,
     hdPathDescription?: string,
   ): string {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
+    return `${name.charAt(0).toUpperCase()}${name.slice(1)} ${
       index + 1
     } ${hdPathDescription || ''}`.trim();
   }
@@ -3440,8 +3443,11 @@ export class LegacyBackgroundApiService {
         return {
           address: normalize(createdAccount.address) as string,
           label: this.#getAccountLabel(
+            // QR devices report a user-defined name that can be empty or
+            // missing (e.g. a Keystone wallet with no name), so fall back to
+            // the device name.
             deviceName === HardwareDeviceNames.qr
-              ? (keyring as QrKeyringV2).getName()
+              ? (keyring as QrKeyringV2).getName() || deviceName
               : deviceName,
             index,
             hdPathDescription,

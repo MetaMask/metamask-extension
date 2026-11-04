@@ -88,9 +88,11 @@ import {
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
   SYNC_ACCOUNTS_ROUTE,
+  MFA_FLOW_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
+import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -156,6 +158,7 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
+import { ALLOWED_CAPABILITIES as ASSET_ROUTE_ALLOWED_CAPABILITIES } from '../asset/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
 import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
@@ -180,6 +183,7 @@ const RevealSeedConfirmation = mmLazy(
 );
 const Settings = mmLazy(() => import('../settings/index.ts'));
 const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
+const MfaFlowHost = mmLazy(() => import('../mfa/mfa-flow-host.tsx'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
@@ -258,6 +262,9 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
+export const PageNotFound = mmLazy(
+  () => import('../../components/app/page-not-found/page-not-found.tsx'),
+);
 const BasicFunctionalityOff = mmLazy(
   () =>
     import('../basic-functionality-required/basic-functionality-required.tsx'),
@@ -435,6 +442,10 @@ export const routeConfig = [
           ]
         : []),
       {
+        path: MFA_FLOW_ROUTE,
+        element: <MfaFlowHost />,
+      },
+      {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
         element: <SettingsV2LegacyRedirect />,
       },
@@ -486,10 +497,11 @@ export const routeConfig = [
         path: ASSET_SECURITY_TRUST_ROUTE,
         element: <SecurityTrustPage />,
       },
-      {
+      createRouteWithMessenger({
         path: ASSET_DETAILS_ROUTE,
+        capabilities: ASSET_ROUTE_ALLOWED_CAPABILITIES,
         element: <Asset />,
-      },
+      }),
       {
         path: PERMISSIONS,
         element: (
@@ -730,6 +742,12 @@ export const routeConfig = [
       },
     ],
   },
+  // Unmatched hashes stay in the address bar so route metrics still see them,
+  // and render the missing-page screen instead of the crash page.
+  {
+    path: '*',
+    element: <PageNotFound />,
+  },
 ];
 
 export default function Routes() {
@@ -911,6 +929,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
+      {isUnlocked ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}

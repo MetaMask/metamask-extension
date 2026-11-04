@@ -22,6 +22,7 @@ import {
   SensitiveText,
   TextVariant,
   TextColor,
+  FontFamily,
   FontWeight,
   Icon,
   IconName,
@@ -49,6 +50,7 @@ import {
 } from '../../../shared/constants/perps-events';
 import {
   getIsPerpsExperienceAvailable,
+  getIsPerpsServiceInterruptionBannerEnabled,
   getIsPerpsShowFullAssetNamesEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -290,6 +292,9 @@ const PerpsMarketDetailPage = () => {
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -456,6 +461,8 @@ const PerpsMarketDetailPage = () => {
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
       // watchlisted only surfaces on the asset_detail screen.
       [PERPS_EVENT_PROPERTY.WATCHLISTED]: isInWatchlist,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
     resetKey: decodedSymbol,
   });
@@ -1351,8 +1358,8 @@ const PerpsMarketDetailPage = () => {
         data-testid="perps-market-detail-summary"
       >
         <Text
-          variant={TextVariant.HeadingLg}
-          fontWeight={FontWeight.Bold}
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           data-testid="perps-market-detail-price"
         >
           {displayPrice}

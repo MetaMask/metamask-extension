@@ -65,7 +65,7 @@ export async function replaceAccountInNestedTransactions({
     return;
   }
 
-  const updates: Promise<void>[] = [];
+  const updates: Promise<Hex>[] = [];
 
   nestedTransactions.forEach((nested, index) => {
     const { data } = nested;

@@ -13,13 +13,10 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsSelectItem } from '../settings/shared';
-import { getNotificationsSettingsSectionRoute } from './notifications-settings-routes';
-
-export type NotificationsSettingsSectionType =
-  | 'walletActivity'
-  | 'perps'
-  | 'marketing'
-  | 'agenticCli';
+import {
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+  type NotificationsSettingsSectionType,
+} from '../../../shared/lib/notifications-settings';
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;
@@ -114,7 +111,7 @@ export function NotificationsSettingsTypes({
               ? ''
               : getStatusText(t, preferences?.[section.type])
           }
-          to={getNotificationsSettingsSectionRoute(section.type)}
+          to={NOTIFICATIONS_SETTINGS_SECTION_ROUTES[section.type]}
           dataTestId={`notifications-settings-section-${section.type}`}
           startAccessory={
             <Icon

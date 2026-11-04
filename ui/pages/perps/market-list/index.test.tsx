@@ -99,6 +99,14 @@ describe('MarketListView', () => {
       ).toBeInTheDocument();
     });
 
+    it('fills the remaining layout height so the outage banner does not overflow it', () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      const root = screen.getByTestId('parent-selector-perps-market-list');
+      expect(root).toHaveClass('flex-1', 'min-h-0');
+      expect(root).not.toHaveClass('h-full');
+    });
+
     it('reveals the search input from the header icon', () => {
       renderWithProvider(<MarketListView />, mockStore);
 

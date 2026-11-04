@@ -223,6 +223,59 @@ describe('HomeDeepLinkActions', () => {
     },
   );
 
+  jestIt.each(['link.metamask.io', 'link.metamask.com'])(
+    'dispatches setHomeDeepLinkQrCode for a valid Limit Order deeplink URL from %s',
+    async (host) => {
+      const deeplinkUrl = `https://${host}/swap?tab=limit&from=eip155%3A1%2Fslip44%3A60&to=eip155%3A1%2Ferc20%3A0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&amount=100000000000000000&expiresInMinutes=10080&priceTolerance=0.5`;
+      const { Wrapper, store } = createWrapper({
+        pathname: DEFAULT_ROUTE,
+        search: `?${new URLSearchParams({
+          [HomeQueryParams.LimitOrderDeeplinkUrl]: deeplinkUrl,
+        }).toString()}`,
+        isNetworkMenuOpen: false,
+      });
+
+      render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+      await waitFor(() => {
+        const qrCode = (
+          store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+        ).appState.homeDeepLinkQrCode;
+        expect(qrCode).toEqual({
+          deeplinkUrl,
+          descriptionKey: 'deepLinkQrLimitOrderDescription',
+          titleKey: 'deepLinkQrLimitOrderTitle',
+        });
+      });
+    },
+  );
+
+  jestIt.each([
+    ['a missing tab', 'https://link.metamask.io/swap'],
+    ['a non-limit tab', 'https://link.metamask.io/swap?tab=Limit'],
+    ['the wrong path', 'https://link.metamask.io/predict?tab=limit'],
+    [
+      'a configured subdomain',
+      'https://links.link.metamask.com/swap?tab=limit',
+    ],
+    ['a nonstandard port', 'https://link.metamask.com:444/swap?tab=limit'],
+  ])('ignores a Limit Order QR deeplink URL with %s', (_, deeplinkUrl) => {
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.LimitOrderDeeplinkUrl]: deeplinkUrl,
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
+  });
+
   it('shows the QR code for a valid batch sell deeplink URL when the feature is unavailable in the extension', async () => {
     const deeplinkUrl = 'https://link.metamask.io/batch-sell';
     const { Wrapper, store } = createWrapper({

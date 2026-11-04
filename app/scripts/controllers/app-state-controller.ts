@@ -150,6 +150,7 @@ export type AppStateControllerState = {
   perpsTabBadgeSeen: boolean;
   musdConversionEducationSeen: boolean;
   musdConversionDismissedCtaKeys: string[];
+  moneyEarnBannerDismissedTokenKeys: string[];
   showShieldEntryModalOnce: boolean | null;
   /**
    * The pending redirect route to be applied after the default page is loaded.
@@ -328,6 +329,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   perpsTabBadgeSeen: false,
   musdConversionEducationSeen: false,
   musdConversionDismissedCtaKeys: [],
+  moneyEarnBannerDismissedTokenKeys: [],
   showShieldEntryModalOnce: null,
   pendingRedirectRoute: null,
   lastVisitedRoute: null,
@@ -631,6 +633,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
     includeInStateLogs: true,
   },
+  moneyEarnBannerDismissedTokenKeys: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
   showShieldEntryModalOnce: {
     includeInStateLogs: true,
     persist: true,
@@ -725,6 +733,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
 
 const MESSENGER_EXPOSED_METHODS = [
   'addAddressSecurityAlertResponse',
+  'addMoneyEarnBannerDismissedTokenKey',
   'addMusdConversionDismissedCtaKey',
   'addPollingToken',
   'addSignatureSecurityAlertResponse',
@@ -1395,6 +1404,21 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       if (!state.musdConversionDismissedCtaKeys.includes(key)) {
         state.musdConversionDismissedCtaKeys.push(key);
+      }
+    });
+  }
+
+  /**
+   * Adds a token whose Money earn banner on token details was dismissed, so
+   * the banner stays hidden for it.
+   *
+   * @param key - Key in `chainId:address` format, both lowercased (e.g.
+   * "0x1:0xa0b86991...").
+   */
+  addMoneyEarnBannerDismissedTokenKey(key: string): void {
+    this.update((state) => {
+      if (!state.moneyEarnBannerDismissedTokenKeys.includes(key)) {
+        state.moneyEarnBannerDismissedTokenKeys.push(key);
       }
     });
   }

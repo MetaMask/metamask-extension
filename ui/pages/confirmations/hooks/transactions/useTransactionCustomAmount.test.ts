@@ -933,6 +933,37 @@ describe('useTransactionCustomAmount', () => {
       expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
     });
 
+    it('commits a typed amount when updateTokenAmount is replaced during the debounce', () => {
+      const firstUpdate = jest.fn();
+      const { result, rerender } = runHook({
+        disableUpdate: false,
+        updateTokenAmountMock: firstUpdate,
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      const secondUpdate = jest.fn();
+      jest
+        .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+        .mockReturnValue({
+          updateTokenAmount: secondUpdate,
+          isUpdating: false,
+        });
+
+      act(() => {
+        rerender();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(firstUpdate).not.toHaveBeenCalled();
+      expect(secondUpdate).toHaveBeenCalledWith('50');
+    });
+
     it('does not call updateTokenAmount for a zero amount after debounce', () => {
       const updateTokenAmountMock = jest.fn();
       runHook({
@@ -2181,6 +2212,47 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).toHaveBeenCalledWith('1.123456');
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        true,
+        {
+          isAtomicMaxAllowed: false,
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceBalanceRaw: '1123456',
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
+      );
+    });
+
+    it('holds Max until override assets finish loading for a non-no-fee token', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result, rerender } = runHook({
+        ...depositMaxPayToken,
+        isNoFeePayToken: false,
+        isAccountTokensLoading: true,
+        updateTokenAmountMock,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      // Max is offered for every non-native deposit token, so the stale-raw
+      // hold must cover them too: `setIsMax` records the source balance
+      // regardless of whether the amount comes from the raw or fiat path.
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
+      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
+
+      jest.mocked(useAccountTokensLoading).mockReturnValue(false);
+      act(() => {
+        rerender();
+      });
+
+      // Non-no-fee tokens are not 1:1 with mUSD, so the amount still comes
+      // from the fiat conversion: 2.24 ÷ 2 = 1.12.
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('1.12');
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,

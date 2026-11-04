@@ -188,7 +188,11 @@ export const getAssetImageUrl = (
   chainId: CaipChainId | Hex,
 ) => {
   try {
-    const assetIdInCaip = toAssetId(assetId, chainId);
+    // SLIP-44 references are coin types, not addresses: `toAssetId` would
+    // rebuild them as `erc20:0x<coinType>` for chains outside the bridge map
+    const assetIdInCaip = isNativeCaipAssetId(assetId as CaipAssetType)
+      ? (assetId as CaipAssetType)
+      : toAssetId(assetId, chainId);
     if (!assetIdInCaip) {
       return undefined;
     }

@@ -1,4 +1,5 @@
 import { tEn } from '../../../../lib/i18n-helpers';
+import { Driver } from '../../../webdriver/driver';
 import {
   MetaMaskPayConfirmation,
   PAY_QUOTE_READY_TIMEOUT,
@@ -22,15 +23,26 @@ import {
  * @see ui/pages/confirmations/components/info/money-account-deposit-info/money-account-deposit-info.tsx
  */
 export class MoneyAccountDepositConfirmation extends MetaMaskPayConfirmation {
-  private readonly addFundsButton = {
-    testId: 'confirm-footer-button',
-    text: tEn('addFunds'),
-  };
+  private readonly confirmLabel: { testId: string; text: string };
 
-  private readonly headerTitle = {
-    testId: 'wallet-initiated-header-title',
-    text: tEn('addFunds'),
-  };
+  private readonly headerTitle: { testId: string; text: string };
+
+  /**
+   * @param driver - The WebDriver instance.
+   * @param confirmText - Header title and confirm-button label. Deposit uses
+   * "Add funds"; withdraw uses "Send".
+   */
+  constructor(driver: Driver, confirmText: string = tEn('addFunds')) {
+    super(driver);
+    this.headerTitle = {
+      testId: 'wallet-initiated-header-title',
+      text: confirmText,
+    };
+    this.confirmLabel = {
+      testId: 'confirm-footer-button',
+      text: confirmText,
+    };
+  }
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Wait for Money Account deposit confirmation to load');
@@ -54,7 +66,7 @@ export class MoneyAccountDepositConfirmation extends MetaMaskPayConfirmation {
   async checkQuoteIsReady(): Promise<void> {
     console.log('Wait for deposit quote rows and enabled Add funds button');
     await this.checkQuoteRows();
-    await this.driver.waitForSelector(this.addFundsButton, {
+    await this.driver.waitForSelector(this.confirmLabel, {
       timeout: PAY_QUOTE_READY_TIMEOUT,
     });
     await this.driver.waitForSelector(this.confirmButton, {
