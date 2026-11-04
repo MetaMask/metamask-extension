@@ -33,6 +33,9 @@ const SEPARATOR_WIDTH_EM = 0.21;
 const SPACE_WIDTH_EM = 0.15;
 const MINUS_WIDTH_EM = 0.27;
 const LATIN_LETTER_WIDTH_EM = 0.5;
+// M and W are the only letters wider than 0.5em (up to 0.68em).
+const WIDE_LATIN_LETTER_WIDTH_EM = 0.68;
+const WIDE_LATIN_LETTERS = new Set(['M', 'W', 'm', 'w']);
 const GROTZEC_SYMBOL_WIDTH_EM = 0.47;
 // Grotzec has no glyph for symbols such as ₹ ₩ ₿, so they render in the
 // fallback family, where ₩ is up to ~0.95em wide.
@@ -53,6 +56,9 @@ function getCharacterWidthEm(character: string): number {
   }
   if (character === '-') {
     return MINUS_WIDTH_EM;
+  }
+  if (WIDE_LATIN_LETTERS.has(character)) {
+    return WIDE_LATIN_LETTER_WIDTH_EM;
   }
   if (/^[A-Za-z]$/u.test(character)) {
     return LATIN_LETTER_WIDTH_EM;
