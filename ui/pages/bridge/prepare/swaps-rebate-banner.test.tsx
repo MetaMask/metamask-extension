@@ -8,6 +8,7 @@ import { useSwapsRebate } from '../../../hooks/bridge/useSwapsRebate';
 import { SwapsRebateBanner } from './swaps-rebate-banner';
 
 jest.mock('../../../hooks/bridge/useSwapsRebate', () => ({
+  getIsSwapsRebateBannerEnabled: () => true,
   useSwapsRebate: jest.fn(),
 }));
 

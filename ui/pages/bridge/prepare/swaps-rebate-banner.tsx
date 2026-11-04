@@ -12,7 +12,10 @@ import {
 import { PopoverPosition } from '../../../components/component-library';
 import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
-import { useSwapsRebate } from '../../../hooks/bridge/useSwapsRebate';
+import {
+  getIsSwapsRebateBannerEnabled,
+  useSwapsRebate,
+} from '../../../hooks/bridge/useSwapsRebate';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SWAPS_REBATE_ALLOWED_CAPABILITIES } from '../../../hooks/rewards/rewards-money-messenger';
 import { Tooltip } from '../layout';
@@ -62,7 +65,12 @@ const SwapsRebateBannerContent = ({
  * Loads the rebate for the active Swaps quote and shows it above the CTA.
  */
 export const SwapsRebateBanner = () => {
+  const isEnabled = useSelector(getIsSwapsRebateBannerEnabled);
   const { activeQuote } = useSelector(getBridgeQuotes);
+
+  if (!isEnabled) {
+    return null;
+  }
 
   return (
     <RouteMessengerProvider

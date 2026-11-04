@@ -6,7 +6,7 @@ import { validatedVersionGatedFeatureFlag } from '../../../shared/lib/remote-fea
 import { useMessenger } from '../useMessenger';
 import type { SwapsRebateMessenger } from '../rewards/rewards-money-messenger';
 
-const getIsSwapsRebateBannerEnabled = (
+export const getIsSwapsRebateBannerEnabled = (
   state: Parameters<typeof getRemoteFeatureFlags>[0],
 ): boolean =>
   validatedVersionGatedFeatureFlag(

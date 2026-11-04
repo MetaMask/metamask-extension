@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { QuoteResponse } from '@metamask/bridge-controller';
 import { useSwapsRebate } from './useSwapsRebate';
