@@ -538,6 +538,25 @@ describe('createMfaFlow', () => {
       });
     });
 
+    it('raises codeResent again for each code sent after an expiry', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.controller.completeCredentialVerification
+        .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'))
+        .mockRejectedValueOnce(new MfaError('flow_expired', 'expired'));
+      const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+      const resentStates: (boolean | undefined)[] = [];
+      flow.subscribe(() => resentStates.push(flow.getState().codeResent));
+
+      await act(flow, { type: 'submitCode', code: '123456' });
+      await act(flow, { type: 'submitCode', code: '123456' });
+
+      // Each new code is a rise of `codeResent`, which observers count.
+      const rises = resentStates.filter(
+        (resent, index) => resent === true && resentStates[index - 1] !== true,
+      );
+      expect(rises).toHaveLength(2);
+    });
+
     it('shows the error instead of resending when sending the code fails with too_many_attempts', async () => {
       const fake = createFakeController([activeEmail]);
       fake.controller.beginCredentialVerification.mockRejectedValue(

@@ -439,6 +439,9 @@ export const createMfaFlow = ({
     if (!isRecovery && current?.flowId && state.step.name === 'otp') {
       if (current.method === 'email_otp') {
         return async () => {
+          // Clear the previous notice so each resend is a change of state:
+          // observers (analytics) see `codeResent` rise once per new code.
+          setState({ codeResent: undefined });
           await beginCodeChallenge();
           setState({ codeResent: true });
         };
