@@ -221,7 +221,7 @@ const MoneyFtueSplashContent = () => {
             />
           </header>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
             <div className="px-4 pt-2">
               <img
                 src={MONEY_FTUE_ARTWORK}
