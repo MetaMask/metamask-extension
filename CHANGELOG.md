@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed cashtag resolution to match exact token symbols or real-world asset tickers. (#47602)
 - Automatically removed detected NFTs when they are identified as spam, while preserving manually imported and dapp-added NFTs (#47436)
 - Hid inaccurate "No fee" labels for Money Account deposits from hardware wallet accounts (#47276)
 - Fixed the OUSD icon in Tempo network fee errors (#47396)
