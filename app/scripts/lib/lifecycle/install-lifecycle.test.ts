@@ -163,6 +163,27 @@ describe('install-lifecycle', () => {
         );
       });
 
+      it('captures restored referral context before wallet onboarding', async () => {
+        const deps = createDeps();
+        const captureReferralContext = jest.fn();
+        deps.controller.messengerClientsByName = {
+          RewardsMoneyController: { captureReferralContext },
+        };
+        const referringLink = 'https://link.metamask.io/home?ref=ABC';
+        getInstallAttributionMock.mockResolvedValue({
+          deferredDeepLink: { createdAt: Date.now(), referringLink },
+          traits: {},
+        });
+        const pending = handleOnInstalled([installDetails], deps);
+        deps.resolveInitialization();
+        await pending;
+        expect(captureReferralContext).toHaveBeenCalledWith(
+          referringLink,
+          'restored_context',
+          true,
+        );
+      });
+
       it('skips tracking when the user has explicitly opted out', async () => {
         const deps = createDeps({
           controller: createController({

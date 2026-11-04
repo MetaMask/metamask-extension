@@ -48,6 +48,9 @@ import { useReferralMe } from '../../../../hooks/rewards/useReferralMe';
 import { REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES } from '../../../../hooks/rewards/rewards-money-messenger';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { ReferralActivatedModal } from './ReferralActivatedModal';
+import type { MoneyReferralEntryType } from '../../../../../shared/lib/deep-links/money-referral';
+
+export const MONEY_REFERRAL_LOAD_BUDGET_MS = 5000;
 
 const MONEY_REFERRAL_CODE_MAX_LENGTH = 24;
 
@@ -104,6 +107,7 @@ function normalizeMoneyReferralCode(value: string): string {
 type AcceptInviteSheetProps = {
   initialCode: string;
   onClose: () => void;
+  entryType?: MoneyReferralEntryType;
 };
 
 type ReferralInteraction = 'viewed' | 'accepted' | 'declined' | 'dismissed';
@@ -111,10 +115,13 @@ type ReferralInteraction = 'viewed' | 'accepted' | 'declined' | 'dismissed';
 const AcceptInviteSheetContent = ({
   initialCode,
   onClose,
+  entryType,
 }: AcceptInviteSheetProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { referralMe, isSettled, fetchReferralMe } = useReferralMe();
+  const { referralMe, isSettled, fetchReferralMe } = useReferralMe({
+    fetchOnMount: !entryType,
+  });
   useGeoRewardsMetadata({});
 
   const [code, setCode] = useState(() =>
@@ -125,6 +132,57 @@ const AcceptInviteSheetContent = ({
   const [acceptStarted, setAcceptStarted] = useState(false);
   const hasTrackedViewRef = useRef(false);
   const hasRespondedRef = useRef(false);
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+  const acceptingRef = useRef(false);
+  const [preflightReady, setPreflightReady] = useState(!entryType);
+
+  useEffect(() => {
+    if (!entryType) {
+      return undefined;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      if (!cancelled) {
+        cancelled = true;
+        onClose();
+      }
+    }, MONEY_REFERRAL_LOAD_BUDGET_MS);
+    fetchReferralMe({ forceFresh: true })
+      .then((result) => {
+        if (!mountedRef.current) {
+          return;
+        }
+        if (cancelled) {
+          return;
+        }
+        clearTimeout(timer);
+        if (
+          result.status !== 'settled' ||
+          !result.data ||
+          !canAcceptMoneyReferralInvite(result.data)
+        ) {
+          onClose();
+          return;
+        }
+        setPreflightReady(true);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          clearTimeout(timer);
+          onClose();
+        }
+      });
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [entryType, fetchReferralMe, onClose]);
 
   const acceptAllowedForGeo = useSelector(selectMoneyReferralAllowedForGeo);
   const geoLoading = useSelector(selectOptinAllowedForGeoLoading);
@@ -159,15 +217,38 @@ const AcceptInviteSheetContent = ({
     isSettled &&
     referralMe !== null &&
     !eligibleInvite &&
-    !hasSeenEligibleInvite;
-  const geoSettled = !geoLoading && (geoLocation !== null || geoError);
+    !hasSeenEligibleInvite &&
+    !acceptStarted &&
+    !isAccepting;
+  const [geoBudgetExpired, setGeoBudgetExpired] = useState(false);
+  useEffect(() => {
+    if (!entryType) {
+      return undefined;
+    }
+    const timer = setTimeout(
+      () => setGeoBudgetExpired(true),
+      MONEY_REFERRAL_LOAD_BUDGET_MS,
+    );
+    return () => clearTimeout(timer);
+  }, [entryType]);
+  const geoSettled =
+    (!geoLoading && (geoLocation !== null || geoError)) || geoBudgetExpired;
   const shouldDismissForGeo =
-    geoSettled && !acceptAllowedForGeo && !acceptStarted && !isAccepting;
+    preflightReady &&
+    geoSettled &&
+    !acceptAllowedForGeo &&
+    !acceptStarted &&
+    !isAccepting;
   const failedRead = isSettled && referralMe === null;
   const isOfferOnScreen =
-    eligibleInvite && isSettled && geoSettled && !shouldDismissForGeo;
+    preflightReady &&
+    eligibleInvite &&
+    isSettled &&
+    geoSettled &&
+    !shouldDismissForGeo;
   const showSheet =
-    isOfferOnScreen || (failedRead && geoSettled && !shouldDismissForGeo);
+    isOfferOnScreen ||
+    (!entryType && failedRead && geoSettled && !shouldDismissForGeo);
 
   const trackInteraction = useCallback(
     (interactionType: ReferralInteraction) => {
@@ -178,6 +259,9 @@ const AcceptInviteSheetContent = ({
       if (code) {
         properties.referral_code = code;
       }
+      if (entryType) {
+        properties.entry_type = entryType;
+      }
       trackEvent(
         createEventBuilder(
           MetaMetricsEventName.RewardsMoneyReferralOfferInteracted,
@@ -187,7 +271,7 @@ const AcceptInviteSheetContent = ({
           .build(),
       ).catch(() => undefined);
     },
-    [code, createEventBuilder, trackEvent],
+    [code, createEventBuilder, entryType, trackEvent],
   );
 
   const trackResponded = useCallback(
@@ -206,6 +290,9 @@ const AcceptInviteSheetContent = ({
       if (code) {
         properties.referral_code = code;
       }
+      if (entryType) {
+        properties.entry_type = entryType;
+      }
       if (
         refusalReason &&
         (interactionType === 'declined' || interactionType === 'dismissed')
@@ -221,7 +308,7 @@ const AcceptInviteSheetContent = ({
           .build(),
       ).catch(() => undefined);
     },
-    [code, createEventBuilder, refusalReason, trackEvent],
+    [code, createEventBuilder, entryType, refusalReason, trackEvent],
   );
 
   const trackRefused = useCallback(
@@ -238,6 +325,9 @@ const AcceptInviteSheetContent = ({
       if (code) {
         properties.referral_code = code;
       }
+      if (entryType) {
+        properties.entry_type = entryType;
+      }
       trackEvent(
         createEventBuilder(
           MetaMetricsEventName.RewardsMoneyReferralOfferInteracted,
@@ -247,7 +337,7 @@ const AcceptInviteSheetContent = ({
           .build(),
       ).catch(() => undefined);
     },
-    [code, createEventBuilder, trackEvent],
+    [code, createEventBuilder, entryType, trackEvent],
   );
 
   useEffect(() => {
@@ -260,10 +350,10 @@ const AcceptInviteSheetContent = ({
   }, [isOfferOnScreen, trackInteraction]);
 
   useEffect(() => {
-    if (shouldDismissForRole) {
+    if (preflightReady && shouldDismissForRole) {
       onClose();
     }
-  }, [onClose, shouldDismissForRole]);
+  }, [onClose, preflightReady, shouldDismissForRole]);
 
   useEffect(() => {
     if (!shouldDismissForGeo) {
@@ -274,20 +364,33 @@ const AcceptInviteSheetContent = ({
   }, [onClose, shouldDismissForGeo, trackResponded]);
 
   const handleDecline = useCallback(() => {
+    if (acceptingRef.current) {
+      return;
+    }
     trackResponded('declined');
     onClose();
   }, [onClose, trackResponded]);
 
   const handleDismiss = useCallback(() => {
+    if (acceptingRef.current) {
+      return;
+    }
     trackResponded('dismissed');
     onClose();
   }, [onClose, trackResponded]);
 
   const handleAccept = useCallback(() => {
+    if (acceptingRef.current) {
+      return;
+    }
+    acceptingRef.current = true;
     setAcceptStarted(true);
     setHasSeenEligibleInvite(true);
     accept(code)
       .then((result) => {
+        if (!mountedRef.current) {
+          return;
+        }
         if (result.accepted) {
           trackResponded('accepted');
           return;
@@ -296,7 +399,10 @@ const AcceptInviteSheetContent = ({
           trackRefused(result.refusalReason);
         }
       })
-      .catch(() => undefined);
+      .catch(() => undefined)
+      .finally(() => {
+        acceptingRef.current = false;
+      });
   }, [accept, code, trackRefused, trackResponded]);
 
   if (showActivated) {
@@ -347,6 +453,7 @@ const AcceptInviteSheetContent = ({
                 value={code}
                 size={TextFieldSize.Lg}
                 isError={Boolean(fieldError)}
+                isDisabled={isAccepting}
                 className="h-14 w-full"
                 onChange={(event) => {
                   setCode(normalizeMoneyReferralCode(event.target.value));
@@ -392,6 +499,7 @@ const AcceptInviteSheetContent = ({
               onClick={handleDecline}
               className="text-default"
               data-testid="money-referral-decline"
+              isDisabled={isAccepting}
             >
               {copy.decline}
             </Button>
@@ -416,13 +524,18 @@ const AcceptInviteSheetContent = ({
 export function AcceptInviteSheet({
   initialCode,
   onClose,
+  entryType,
 }: AcceptInviteSheetProps) {
   return (
     <RouteMessengerProvider
       path="rewards-money-accept-invite"
       capabilities={REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES}
     >
-      <AcceptInviteSheetContent initialCode={initialCode} onClose={onClose} />
+      <AcceptInviteSheetContent
+        initialCode={initialCode}
+        onClose={onClose}
+        entryType={entryType}
+      />
     </RouteMessengerProvider>
   );
 }

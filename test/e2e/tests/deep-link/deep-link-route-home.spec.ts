@@ -13,6 +13,38 @@ import {
 } from './helpers';
 
 describe('Deep Link - /home Route', function () {
+  // These require the actual webRequest redirect and interstitial → UI document
+  // boundary; parser/eligibility variants are covered by colocated unit tests.
+  for (const code of ['ABC123', 'INVALID-CODE']) {
+    it(`preserves the warning and destination with Rewards Money disabled (${code})`, async function () {
+      await withFixtures(
+        await getConfig({
+          title: this.test?.fullTitle(),
+          manifestFlags: {
+            remoteFeatureFlags: {
+              rewardsMoneyControllerEnabled: {
+                enabled: false,
+                minimumVersion: '0.0.0',
+              },
+            },
+          },
+        }),
+        async ({ driver }: { driver: Driver }) => {
+          await driver.navigate();
+          const login = new LoginPage(driver);
+          await login.checkPageIsLoaded();
+          await navigateDeepLinkToDestination(
+            driver,
+            `https://link.metamask.io/home?ref=${code}`,
+            'locked',
+            false,
+            HomePage,
+          );
+        },
+      );
+    });
+  }
+
   const scenarios = generateScenariosForRoutes(['/home']);
 
   scenarios.forEach(({ locked, signed, route, action }) => {

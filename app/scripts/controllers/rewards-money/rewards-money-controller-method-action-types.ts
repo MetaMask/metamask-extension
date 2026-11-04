@@ -6,6 +6,70 @@
 import type { RewardsMoneyController } from './rewards-money-controller';
 
 /**
+ * Captures the newest link in memory without calling the referral API.
+ *
+ * @param url - Original supported deep link.
+ * @param entryType - Direct link or install attribution.
+ * @param requiresInterstitial - Whether the normal security policy requires Continue.
+ * @returns The context, or null when the code is invalid/already answered.
+ */
+export type RewardsMoneyControllerCaptureReferralContextAction = {
+  type: `RewardsMoneyController:captureReferralContext`;
+  handler: RewardsMoneyController['captureReferralContext'];
+};
+
+/**
+ * Returns the pending link so onboarding can resume it after wallet setup.
+ *
+ * @returns The pending context, if any.
+ */
+export type RewardsMoneyControllerGetPendingReferralContextAction = {
+  type: `RewardsMoneyController:getPendingReferralContext`;
+  handler: RewardsMoneyController['getPendingReferralContext'];
+};
+
+/**
+ * Records Continue on the existing security interstitial.
+ *
+ * @param id - The context associated with that interstitial.
+ */
+export type RewardsMoneyControllerContinueReferralContextAction = {
+  type: `RewardsMoneyController:continueReferralContext`;
+  handler: RewardsMoneyController['continueReferralContext'];
+};
+
+/**
+ * Drops an abandoned interstitial without clearing a newer link.
+ *
+ * @param id - Context owned by the abandoned flow.
+ */
+export type RewardsMoneyControllerDropReferralContextAction = {
+  type: `RewardsMoneyController:dropReferralContext`;
+  handler: RewardsMoneyController['dropReferralContext'];
+};
+
+/**
+ * Atomically transfers a continued link to its invite UI.
+ *
+ * @param id - Context requested by the handoff route.
+ * @returns The offer, or null if superseded, consumed, or not continued.
+ */
+export type RewardsMoneyControllerTakeReferralContextAction = {
+  type: `RewardsMoneyController:takeReferralContext`;
+  handler: RewardsMoneyController['takeReferralContext'];
+};
+
+/**
+ * Answers only the displayed code, leaving any newer link untouched.
+ *
+ * @param code - Original code owned by the closing invite, not its edited input.
+ */
+export type RewardsMoneyControllerAnswerReferralContextAction = {
+  type: `RewardsMoneyController:answerReferralContext`;
+  handler: RewardsMoneyController['answerReferralContext'];
+};
+
+/**
  * Loads referral me for the current Hydra profile.
  *
  * @param params - Pass `forceFresh` to skip the in-memory cache.
@@ -116,6 +180,12 @@ export type RewardsMoneyControllerGetPerpsRebateQuoteAction = {
  * Union of all RewardsMoneyController action types.
  */
 export type RewardsMoneyControllerMethodActions =
+  | RewardsMoneyControllerCaptureReferralContextAction
+  | RewardsMoneyControllerGetPendingReferralContextAction
+  | RewardsMoneyControllerContinueReferralContextAction
+  | RewardsMoneyControllerDropReferralContextAction
+  | RewardsMoneyControllerTakeReferralContextAction
+  | RewardsMoneyControllerAnswerReferralContextAction
   | RewardsMoneyControllerGetReferralMeAction
   | RewardsMoneyControllerValidateReferralCodeAction
   | RewardsMoneyControllerRegisterRefereeAction

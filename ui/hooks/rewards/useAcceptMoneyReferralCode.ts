@@ -151,15 +151,17 @@ export function useAcceptMoneyReferralCode({
     useState<ReferralRefusalReason | null>(null);
   const isAcceptCoolingDownRef = useRef(false);
   const acceptCooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
       if (acceptCooldownRef.current !== null) {
         clearTimeout(acceptCooldownRef.current);
       }
-    },
-    [],
-  );
+    };
+  }, []);
 
   const startAcceptCooldown = useCallback((seconds: number) => {
     if (acceptCooldownRef.current !== null) {
@@ -199,7 +201,13 @@ export function useAcceptMoneyReferralCode({
       try {
         validationError = await validateCode(code);
       } catch (error) {
+        if (!mountedRef.current) {
+          return { accepted: false };
+        }
         return { accepted: false, refusalReason: noteRefusal(error) };
+      }
+      if (!mountedRef.current) {
+        return { accepted: false };
       }
       if (
         validationError &&
@@ -216,12 +224,19 @@ export function useAcceptMoneyReferralCode({
           code,
         });
         await refreshReferralMeWithRetries(fetchReferralMe);
-        onAccepted();
+        if (mountedRef.current) {
+          onAccepted();
+        }
         return { accepted: true };
       } catch (error) {
+        if (!mountedRef.current) {
+          return { accepted: false };
+        }
         return { accepted: false, refusalReason: noteRefusal(error) };
       } finally {
-        setIsAccepting(false);
+        if (mountedRef.current) {
+          setIsAccepting(false);
+        }
       }
     },
     [fetchReferralMe, messenger, noteRefusal, onAccepted, validateCode],

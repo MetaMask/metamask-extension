@@ -94,9 +94,15 @@ const mockSetHasSeenOnboardingCompletionPage = jest
   .fn()
   .mockResolvedValue(undefined);
 const mockCompleteOnboarding = jest.fn().mockResolvedValue(true);
+const mockGetPendingReferral = jest.fn().mockResolvedValue(null);
+const mockContinueReferral = jest.fn().mockResolvedValue(undefined);
 const messengerCallMock = jest.fn(
   (actionType: string, args: unknown[] = []) => {
     switch (actionType) {
+      case 'RewardsMoneyController:getPendingReferralContext':
+        return mockGetPendingReferral(...args);
+      case 'RewardsMoneyController:continueReferralContext':
+        return mockContinueReferral(...args);
       case 'AppStateController:removeDeferredDeepLink':
         return mockRemoveDeferredDeepLink(...args);
       case 'UserStorageController:setIsBackupAndSyncFeatureEnabled':
@@ -181,6 +187,7 @@ describe('useOnboardingCompletion', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetPendingReferral.mockResolvedValue(null);
     mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
       false,
     );
@@ -246,6 +253,117 @@ describe('useOnboardingCompletion', () => {
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
+  });
+
+  it('resumes a direct referral after onboarding instead of losing its destination', async () => {
+    mockGetPendingReferral.mockResolvedValue({
+      id: 'direct',
+      url: 'https://link.metamask.io/swap?ref=ABC',
+      code: 'ABC',
+      entryType: 'deeplink',
+      requiresInterstitial: false,
+    });
+    const { result } = renderHookWithProvider(
+      () => useOnboardingCompletion(),
+      mockState,
+    );
+    await act(async () => {
+      await result.current.completeOnboarding();
+    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/referral-invite?context=direct&u=https%3A%2F%2Flink.metamask.io%2Fswap%3Fref%3DABC',
+    );
+  });
+
+  it('preserves the unsigned deferred-link warning before offering restored context', async () => {
+    const referringLink = 'https://link.metamask.io/swap?ref=ABC';
+    mockGetPendingReferral.mockResolvedValue({
+      id: 'restored',
+      url: referringLink,
+      code: 'ABC',
+      entryType: 'restored_context',
+      requiresInterstitial: true,
+    });
+    jest.mocked(deepLinkUtils.getDeferredDeepLinkRoute).mockResolvedValue({
+      type: DeferredDeepLinkRouteType.Interstitial,
+      urlPathAndQuery: '/swap?ref=ABC',
+      signature: MISSING,
+    });
+    jest
+      .mocked(deepLinkUtils.buildInterstitialRoute)
+      .mockReturnValue('/link?u=%2Fswap%3Fref%3DABC');
+    const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        deferredDeepLink: { referringLink, createdAt: Date.now() },
+      },
+    });
+    await act(async () => {
+      await result.current.completeOnboarding();
+    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/link?u=%2Fswap%3Fref%3DABC&referralContext=restored',
+    );
+    expect(mockContinueReferral).not.toHaveBeenCalled();
+  });
+
+  it('offers signed deferred context only after the normal parser allows navigation', async () => {
+    const referringLink = 'https://link.metamask.io/swap?ref=ABC&sig=signature';
+    mockGetPendingReferral.mockResolvedValue({
+      id: 'restored',
+      url: referringLink,
+      code: 'ABC',
+      entryType: 'restored_context',
+      requiresInterstitial: true,
+    });
+    jest.mocked(deepLinkUtils.getDeferredDeepLinkRoute).mockResolvedValue({
+      type: DeferredDeepLinkRouteType.Navigate,
+      route: '/bridge/prepare',
+      signature: VALID,
+    });
+    const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        deferredDeepLink: { referringLink, createdAt: Date.now() },
+      },
+    });
+    await act(async () => {
+      await result.current.completeOnboarding();
+    });
+    expect(mockContinueReferral).toHaveBeenCalledWith('restored');
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      expect.stringContaining('/referral-invite?context=restored&'),
+    );
+  });
+
+  it('drops expired deferred referral context instead of bypassing the deferred parser', async () => {
+    const referringLink = 'https://link.metamask.io/home?ref=ABC';
+    mockGetPendingReferral.mockResolvedValue({
+      id: 'expired',
+      url: referringLink,
+      code: 'ABC',
+      entryType: 'restored_context',
+      requiresInterstitial: true,
+    });
+    jest.mocked(deepLinkUtils.getDeferredDeepLinkRoute).mockResolvedValue(null);
+    const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        deferredDeepLink: { referringLink, createdAt: 1 },
+      },
+    });
+    await act(async () => {
+      await result.current.completeOnboarding();
+    });
+    expect(mockContinueReferral).not.toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(messengerCallMock).toHaveBeenCalledWith(
+      'RewardsMoneyController:dropReferralContext',
+      ['expired'],
+    );
   });
 
   it('does not complete onboarding while the wallet is locked', async () => {

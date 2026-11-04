@@ -7,6 +7,7 @@ import { userEvent } from '@testing-library/user-event';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AcceptInviteSheet } from './AcceptInviteSheet';
+import type { MoneyReferralEntryType } from '../../../../../shared/lib/deep-links/money-referral';
 
 const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 const mockRegister = jest.fn();
@@ -119,7 +120,7 @@ jest.mock('../../../../hooks/rewards/useReferralMe', () => ({
   useReferralMe: () => ({
     referralMe: mockReferralState.referralMe,
     isSettled: mockReferralState.isSettled,
-    fetchReferralMe: (...args: unknown[]) => mockReferralState.fetch(...args),
+    fetchReferralMe: mockReferralState.fetch,
   }),
   refreshReferralMeWithRetries: async (
     fetchReferralMe: (options?: { forceFresh?: boolean }) => Promise<unknown>,
@@ -166,12 +167,14 @@ function renderSheet({
   geoError = false,
   excludedRegions = [] as string[] | null,
   onClose = jest.fn(),
+  entryType,
 }: {
   initialCode?: string;
   geoLocation?: string | null;
   geoError?: boolean;
   excludedRegions?: string[] | null;
   onClose?: () => void;
+  entryType?: MoneyReferralEntryType;
 } = {}) {
   const store = configureStore({
     reducer: (state = {}) => state,
@@ -187,7 +190,11 @@ function renderSheet({
 
   const view = render(
     <Provider store={store}>
-      <AcceptInviteSheet initialCode={initialCode} onClose={onClose} />
+      <AcceptInviteSheet
+        initialCode={initialCode}
+        onClose={onClose}
+        entryType={entryType}
+      />
     </Provider>,
   );
 
@@ -223,6 +230,165 @@ describe('AcceptInviteSheet', () => {
 
     fireEvent.change(input, { target: { value: 'zz-99' } });
     expect(input.value).toBe('ZZ99');
+  });
+
+  describe('link preflight', () => {
+    it('keeps the accepted link flow active through the activation modal', async () => {
+      mockReferralState.fetch.mockResolvedValue({
+        status: 'settled',
+        data: buildReferralMe(),
+      });
+      const view = renderSheet({ entryType: 'restored_context' });
+      await act(async () => undefined);
+      await act(async () => {
+        fireEvent.click(view.getByTestId('money-referral-accept'));
+      });
+      expect(lastTrackedProperties()).toMatchObject({
+        entry_type: 'restored_context',
+        interaction_type: 'accepted',
+      });
+      expect(view.getByTestId('money-referral-activated')).toBeInTheDocument();
+      expect(view.onClose).not.toHaveBeenCalled();
+      fireEvent.click(view.getByTestId('money-referral-activated-start'));
+      expect(view.onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not offer a confirmed excluded country', async () => {
+      mockReferralState.fetch.mockResolvedValue({
+        status: 'settled',
+        data: buildReferralMe(),
+      });
+      const view = renderSheet({
+        entryType: 'deeplink',
+        geoLocation: 'US-CA',
+        excludedRegions: ['US'],
+      });
+      await act(async () => undefined);
+      expect(
+        view.queryByTestId('money-referral-invite'),
+      ).not.toBeInTheDocument();
+      expect(view.onClose).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('waits for registration before allowing dismissal', async () => {
+      mockReferralState.fetch.mockResolvedValue({
+        status: 'settled',
+        data: buildReferralMe(),
+      });
+      let registered!: () => void;
+      mockRegister.mockReturnValue(
+        new Promise<void>((resolve) => {
+          registered = resolve;
+        }),
+      );
+      const view = renderSheet({ entryType: 'deeplink' });
+      await act(async () => undefined);
+      await act(async () => {
+        fireEvent.click(view.getByTestId('money-referral-accept'));
+      });
+      fireEvent.click(view.getByRole('button', { name: 'Close' }));
+      expect(view.onClose).not.toHaveBeenCalled();
+      await act(async () => {
+        registered();
+      });
+      expect(view.getByTestId('money-referral-activated')).toBeInTheDocument();
+      expect(trackedTypes()).not.toContain('dismissed');
+    });
+
+    it.each(['deeplink', 'restored_context'] as const)(
+      'reads fresh before showing a %s offer',
+      async (entryType) => {
+        mockReferralState.fetch.mockResolvedValue({
+          status: 'settled',
+          data: buildReferralMe(),
+        });
+        const view = renderSheet({ entryType });
+        expect(
+          view.queryByTestId('money-referral-invite'),
+        ).not.toBeInTheDocument();
+        await act(async () => undefined);
+        expect(mockReferralState.fetch).toHaveBeenCalledWith({
+          forceFresh: true,
+        });
+        expect(view.getByTestId('money-referral-invite')).toBeInTheDocument();
+        expect(lastTrackedProperties()).toMatchObject({
+          entry_type: entryType,
+          interaction_type: 'viewed',
+        });
+        await act(async () => {
+          fireEvent.click(view.getByTestId('money-referral-decline'));
+        });
+        expect(lastTrackedProperties()).toMatchObject({
+          entry_type: entryType,
+          interaction_type: 'declined',
+        });
+        expect(mockRegister).not.toHaveBeenCalled();
+      },
+    );
+
+    it('skips a failed fresh read even with eligible cached data', async () => {
+      mockReferralState.fetch.mockResolvedValue({ status: 'settled' });
+      const view = renderSheet({ entryType: 'deeplink' });
+      await act(async () => undefined);
+      expect(view.onClose).toHaveBeenCalledTimes(1);
+      expect(
+        view.queryByTestId('money-referral-invite'),
+      ).not.toBeInTheDocument();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('drops a slow read without offering its late result', async () => {
+      jest.useFakeTimers();
+      try {
+        let resolveRead!: (value: unknown) => void;
+        mockReferralState.fetch.mockReturnValue(
+          new Promise((resolve) => {
+            resolveRead = resolve;
+          }),
+        );
+        const view = renderSheet({ entryType: 'deeplink' });
+        await act(async () => {
+          jest.advanceTimersByTime(5000);
+        });
+        expect(view.onClose).toHaveBeenCalledTimes(1);
+        await act(async () => {
+          resolveRead({ status: 'settled', data: buildReferralMe() });
+        });
+        expect(
+          view.queryByTestId('money-referral-invite'),
+        ).not.toBeInTheDocument();
+        expect(mockTrackEvent).not.toHaveBeenCalled();
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('includes entry type in refused and dismissed interactions', async () => {
+      mockReferralState.fetch.mockResolvedValue({
+        status: 'settled',
+        data: buildReferralMe(),
+      });
+      mockRegister.mockRejectedValue({ data: { status: 409 } });
+      const view = renderSheet({ entryType: 'deeplink' });
+      await act(async () => undefined);
+      await act(async () => {
+        fireEvent.click(view.getByTestId('money-referral-accept'));
+      });
+      expect(lastTrackedProperties()).toMatchObject({
+        entry_type: 'deeplink',
+        interaction_type: 'refused',
+        refusal_reason: 'already_referred',
+      });
+      await act(async () => {
+        fireEvent.click(view.getByRole('button', { name: 'Close' }));
+      });
+      expect(lastTrackedProperties()).toMatchObject({
+        entry_type: 'deeplink',
+        interaction_type: 'dismissed',
+        refusal_reason: 'already_referred',
+      });
+    });
   });
 
   it('shows an invalid code from validation and keeps accept disabled', () => {

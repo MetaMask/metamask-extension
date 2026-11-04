@@ -1,4 +1,9 @@
 import { BaseController } from '@metamask/base-controller';
+import {
+  getMoneyReferralCode,
+  type MoneyReferralContext,
+  type MoneyReferralEntryType,
+} from '../../../../shared/lib/deep-links/money-referral';
 import type {
   GetReferralMeDto,
   PerpsRebateTrade,
@@ -22,6 +27,12 @@ const MESSENGER_EXPOSED_METHODS = [
   'registerReferee',
   'getSwapsRebateQuote',
   'getPerpsRebateQuote',
+  'captureReferralContext',
+  'getPendingReferralContext',
+  'continueReferralContext',
+  'takeReferralContext',
+  'answerReferralContext',
+  'dropReferralContext',
 ] as const;
 
 /**
@@ -101,6 +112,12 @@ export class RewardsMoneyController extends BaseController<
 > {
   readonly #isDisabled: () => boolean;
 
+  #pendingReferralContext: MoneyReferralContext | null = null;
+
+  readonly #answeredReferralCodes = new Set<string>();
+
+  readonly #offeredReferralCodes = new Set<string>();
+
   readonly #referralMeCache = new Map<string, ReferralMeCacheEntry>();
 
   readonly #referralMeGeneration = new Map<string, number>();
@@ -129,6 +146,116 @@ export class RewardsMoneyController extends BaseController<
       MESSENGER_EXPOSED_METHODS,
     );
     this.#isDisabled = isDisabled;
+    let wasSignedIn = false;
+    this.messenger.subscribe('AuthenticationController:stateChange', (auth) => {
+      if (wasSignedIn && !auth.isSignedIn) {
+        this.#pendingReferralContext = null;
+        this.#answeredReferralCodes.clear();
+        this.#offeredReferralCodes.clear();
+      }
+      wasSignedIn = auth.isSignedIn;
+    });
+  }
+
+  /**
+   * Captures the newest link in memory without calling the referral API.
+   *
+   * @param url - Original supported deep link.
+   * @param entryType - Direct link or install attribution.
+   * @param requiresInterstitial - Whether the normal security policy requires Continue.
+   * @returns The context, or null when the code is invalid/already answered.
+   */
+  captureReferralContext(
+    url: string,
+    entryType: MoneyReferralEntryType,
+    requiresInterstitial: boolean,
+  ): MoneyReferralContext | null {
+    let code: string | null;
+    try {
+      code = getMoneyReferralCode(new URL(url));
+    } catch {
+      return null;
+    }
+    if (
+      !code ||
+      this.#answeredReferralCodes.has(code) ||
+      this.#offeredReferralCodes.has(code)
+    ) {
+      return null;
+    }
+    this.#pendingReferralContext = {
+      id: crypto.randomUUID(),
+      url,
+      code,
+      entryType,
+      requiresInterstitial,
+    };
+    return { ...this.#pendingReferralContext };
+  }
+
+  /**
+   * Returns the pending link so onboarding can resume it after wallet setup.
+   *
+   * @returns The pending context, if any.
+   */
+  getPendingReferralContext(): MoneyReferralContext | null {
+    return this.#pendingReferralContext
+      ? { ...this.#pendingReferralContext }
+      : null;
+  }
+
+  /**
+   * Records Continue on the existing security interstitial.
+   *
+   * @param id - The context associated with that interstitial.
+   */
+  continueReferralContext(id: string): boolean {
+    if (this.#pendingReferralContext?.id === id) {
+      this.#pendingReferralContext.requiresInterstitial = false;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Drops an abandoned interstitial without clearing a newer link.
+   *
+   * @param id - Context owned by the abandoned flow.
+   */
+  dropReferralContext(id: string): void {
+    if (this.#pendingReferralContext?.id === id) {
+      this.#pendingReferralContext = null;
+    }
+  }
+
+  /**
+   * Atomically transfers a continued link to its invite UI.
+   *
+   * @param id - Context requested by the handoff route.
+   * @returns The offer, or null if superseded, consumed, or not continued.
+   */
+  takeReferralContext(id: string): MoneyReferralContext | null {
+    const context = this.#pendingReferralContext;
+    if (!context || context.id !== id || context.requiresInterstitial) {
+      return null;
+    }
+    this.#pendingReferralContext = null;
+    const canOffer = !this.#isDisabled();
+    if (canOffer) {
+      this.#offeredReferralCodes.add(context.code);
+    }
+    return { ...context, canOffer };
+  }
+
+  /**
+   * Answers only the displayed code, leaving any newer link untouched.
+   *
+   * @param code - Original code owned by the closing invite, not its edited input.
+   */
+  answerReferralContext(code: string): void {
+    if (this.#offeredReferralCodes.delete(code)) {
+      this.#answeredReferralCodes.add(code);
+    }
   }
 
   /**

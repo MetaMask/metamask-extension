@@ -12,6 +12,10 @@ export const REWARDS_MONEY_INVITE_ALLOWED_CAPABILITIES =
       'RewardsMoneyController:getReferralMe',
       'RewardsMoneyController:validateReferralCode',
       'RewardsMoneyController:registerReferee',
+      'RewardsMoneyController:getPendingReferralContext',
+      'RewardsMoneyController:continueReferralContext',
+      'RewardsMoneyController:takeReferralContext',
+      'RewardsMoneyController:answerReferralContext',
     ],
     events: [],
   });

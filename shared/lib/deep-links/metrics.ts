@@ -7,6 +7,7 @@ import {
 import { UTM_PARAMETERS, type UTMParameter } from '../../types/metametrics';
 import type { ParsedDeepLink } from './parse';
 import type { SignatureStatus } from './verify';
+import { getMoneyReferralCode } from './money-referral';
 
 export type Properties = {
   route: string;
@@ -15,6 +16,7 @@ export type Properties = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   attribution_id?: string;
   referral?: string;
+  referral_code?: string;
 } & { [key in UTMParameter]?: string };
 
 export type EventDetails = {
@@ -55,9 +57,13 @@ export function createEvent({ signature, url }: EventDetails): AnalyticsEvent {
     signature,
   };
   const sensitiveProperties: Record<string, string> = {};
+  const referralCode = getMoneyReferralCode(url);
+  if (referralCode) {
+    properties.referral_code = referralCode;
+  }
 
   for (const [key, value] of url.searchParams.entries()) {
-    if (key === 'sig') {
+    if (key === 'sig' || key === 'ref') {
       // don't need to include the signature itself in the properties, utm
       // params are much more useful, so `sig` would be redundant.
       continue;

@@ -7,6 +7,7 @@ import type {
 } from '../../../app/scripts/lib/messenger';
 import * as keyringController from './keyring-controller';
 import * as passkeyController from './passkey-controller';
+import * as rewardsMoneyController from './rewards-money-controller';
 
 type MessengerExclusions = {
   // This is named like this since it's intended to be defined as a top-level
@@ -25,4 +26,5 @@ type MessengerExclusions = {
 export const MESSENGERS_WITH_EXCLUSIONS = [
   keyringController,
   passkeyController,
+  rewardsMoneyController,
 ] satisfies MessengerExclusions[];

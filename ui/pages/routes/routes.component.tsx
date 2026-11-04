@@ -8,6 +8,8 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 import { MainLayout } from '#ui/layouts/main-layout';
+import { MONEY_REFERRAL_ROUTE } from '../../../shared/lib/deep-links/money-referral';
+import { MoneyReferralHandoff } from '../deep-link/money-referral-handoff';
 import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
@@ -373,6 +375,10 @@ export const routeConfig = [
       {
         path: DEEP_LINK_ROUTE,
         element: <DeepLink />,
+      },
+      {
+        path: MONEY_REFERRAL_ROUTE,
+        element: <MoneyReferralHandoff />,
       },
       {
         path: BASIC_FUNCTIONALITY_OFF_ROUTE,

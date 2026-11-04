@@ -28,6 +28,8 @@ import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { PageNotFound } from '../../components/app/page-not-found/page-not-found';
 import { FullPageCard } from '../../components/app/full-page-card/full-page-card';
+import { buildMoneyReferralRoute } from '../../../shared/lib/deep-links/money-referral';
+import { submitRequestToBackground } from '../../store/background-connection';
 
 type TranslateFunction = (
   key: string,
@@ -159,6 +161,32 @@ export const DeepLink = () => {
 
   // Use ref to track current abort controller
   const abortControllerRef = useRef<AbortController | null>(null);
+  const continuedReferral = useRef(false);
+  const referralEffectMounted = useRef(false);
+
+  useEffect(() => {
+    referralEffectMounted.current = true;
+    continuedReferral.current = false;
+    const id = new URLSearchParams(location.search).get('referralContext');
+    const dropAbandoned = () => {
+      if (id && !continuedReferral.current) {
+        submitRequestToBackground('messengerCall', [
+          'RewardsMoneyController:dropReferralContext',
+          [id],
+        ]).catch(() => undefined);
+      }
+    };
+    window.addEventListener('pagehide', dropAbandoned);
+    return () => {
+      referralEffectMounted.current = false;
+      window.removeEventListener('pagehide', dropAbandoned);
+      queueMicrotask(() => {
+        if (!referralEffectMounted.current) {
+          dropAbandoned();
+        }
+      });
+    };
+  }, [location.search]);
 
   useEffect(() => {
     // Cancel any previous operation
@@ -252,6 +280,40 @@ export const DeepLink = () => {
     dispatch(setSkipDeepLinkInterstitial(newValue));
   }
 
+  async function handleContinue(event: React.MouseEvent<HTMLAnchorElement>) {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('referralContext');
+    if (!id || !route) {
+      return;
+    }
+    event.preventDefault();
+    if (continuedReferral.current) {
+      return;
+    }
+    continuedReferral.current = true;
+    try {
+      const continued = await submitRequestToBackground<boolean>(
+        'messengerCall',
+        ['RewardsMoneyController:continueReferralContext', [id]],
+      );
+      if (!continued) {
+        window.location.assign(route.href);
+        return;
+      }
+      window.location.assign(
+        getExtensionURL(
+          buildMoneyReferralRoute({
+            id,
+            url: `https://${CANONICAL_DEEP_LINK_HOST}${params.get('u')}`,
+          }),
+        ),
+      );
+    } catch {
+      // Continue still works if referral context is unavailable.
+      window.location.assign(route.href);
+    }
+  }
+
   if (pageNotFoundError && !isLoading) {
     return (
       <PageNotFound
@@ -339,6 +401,7 @@ export const DeepLink = () => {
               <a
                 href={route?.href ?? getExtensionURL('/')}
                 data-testid="deep-link-continue-button"
+                onClick={handleContinue}
               >
                 {cta}
               </a>

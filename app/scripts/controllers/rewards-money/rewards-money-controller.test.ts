@@ -70,6 +70,7 @@ describe('RewardsMoneyController', () => {
   const getRebateQuote = jest.fn();
   let controller: RewardsMoneyController;
   let isDisabled = false;
+  let rootMessenger: RootMessenger;
 
   beforeEach(() => {
     jest.useFakeTimers();
@@ -84,6 +85,7 @@ describe('RewardsMoneyController', () => {
     const baseMessenger: RootMessenger = new Messenger({
       namespace: MOCK_ANY_NAMESPACE,
     });
+    rootMessenger = baseMessenger;
     baseMessenger.registerActionHandler(
       'AuthenticationController:getSessionProfile',
       () => Promise.resolve({ profileId }) as never,
@@ -123,6 +125,7 @@ describe('RewardsMoneyController', () => {
         'RewardsMoneyDataService:registerReferee',
         'RewardsMoneyDataService:getRebateQuote',
       ],
+      events: ['AuthenticationController:stateChange'],
     });
 
     controller = new RewardsMoneyController({
@@ -133,6 +136,178 @@ describe('RewardsMoneyController', () => {
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  describe('referral context', () => {
+    it('clears context when a signed-in wallet is reset', () => {
+      rootMessenger.publish(
+        'AuthenticationController:stateChange',
+        { isSignedIn: true } as never,
+        [],
+      );
+      controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=ABC',
+        'deeplink',
+        true,
+      );
+      rootMessenger.publish(
+        'AuthenticationController:stateChange',
+        { isSignedIn: false } as never,
+        [],
+      );
+      expect(controller.getPendingReferralContext()).toBeNull();
+    });
+
+    it('retains install context while an unsigned-in wallet is being created', () => {
+      const context = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=ABC',
+        'restored_context',
+        true,
+      );
+      rootMessenger.publish(
+        'AuthenticationController:stateChange',
+        { isSignedIn: false } as never,
+        [],
+      );
+      expect(controller.getPendingReferralContext()).toEqual(context);
+    });
+
+    it('drops an abandoned warning without clearing a newer link', () => {
+      const first = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=ABC',
+        'deeplink',
+        true,
+      );
+      const second = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=DEF',
+        'deeplink',
+        true,
+      );
+      controller.dropReferralContext(first!.id);
+      expect(controller.getPendingReferralContext()).toEqual(second);
+      controller.dropReferralContext(second!.id);
+      expect(controller.getPendingReferralContext()).toBeNull();
+    });
+    it('captures before eligibility without calling the API', () => {
+      isDisabled = true;
+      const context = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=%20abc123%20',
+        'deeplink',
+        true,
+      );
+      expect(context).toMatchObject({
+        code: 'ABC123',
+        requiresInterstitial: true,
+      });
+      expect(getReferralMe).not.toHaveBeenCalled();
+      expect(registerReferee).not.toHaveBeenCalled();
+    });
+
+    it('requires Continue before transferring the offer', () => {
+      const context = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=ABC',
+        'deeplink',
+        true,
+      );
+      expect(controller.takeReferralContext(context!.id)).toBeNull();
+      controller.continueReferralContext(context!.id);
+      expect(controller.takeReferralContext(context!.id)).toMatchObject({
+        code: 'ABC',
+      });
+      expect(controller.takeReferralContext(context!.id)).toBeNull();
+    });
+
+    it('replaces an unclaimed link without accepting an old Continue', () => {
+      const first = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=ABC',
+        'deeplink',
+        true,
+      );
+      const second = controller.captureReferralContext(
+        'https://link.metamask.io/swap?ref=DEF',
+        'deeplink',
+        true,
+      );
+      controller.continueReferralContext(first!.id);
+      expect(controller.getPendingReferralContext()).toEqual(second);
+      expect(controller.takeReferralContext(first!.id)).toBeNull();
+      expect(controller.takeReferralContext(second!.id)).toBeNull();
+    });
+
+    it('does not clear a newer code when an older invite closes', () => {
+      const first = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=ABC',
+        'deeplink',
+        false,
+      );
+      controller.takeReferralContext(first!.id);
+      const second = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=DEF',
+        'deeplink',
+        false,
+      );
+      controller.answerReferralContext('ABC');
+      expect(controller.getPendingReferralContext()).toEqual(second);
+    });
+
+    it('remembers all answered codes for the background lifetime', () => {
+      for (const code of ['ABC', 'DEF']) {
+        const context = controller.captureReferralContext(
+          `https://link.metamask.io/home?ref=${code}`,
+          'deeplink',
+          false,
+        );
+        controller.takeReferralContext(context!.id);
+        controller.answerReferralContext(code);
+      }
+      expect(
+        controller.captureReferralContext(
+          'https://link.metamask.io/home?ref=ABC',
+          'deeplink',
+          false,
+        ),
+      ).toBeNull();
+    });
+
+    it('does not offer the same code to a second UI', () => {
+      const context = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=ABC',
+        'deeplink',
+        false,
+      );
+      controller.takeReferralContext(context!.id);
+      expect(
+        controller.captureReferralContext(
+          'https://link.metamask.io/home?ref=abc',
+          'deeplink',
+          false,
+        ),
+      ).toBeNull();
+    });
+
+    it('keeps authorized navigation available when the feature is disabled', () => {
+      const context = controller.captureReferralContext(
+        'https://link.metamask.io/home?ref=ABC',
+        'deeplink',
+        false,
+      );
+      isDisabled = true;
+      expect(controller.takeReferralContext(context!.id)).toMatchObject({
+        canOffer: false,
+        url: context!.url,
+      });
+      expect(getReferralMe).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      'not a url',
+      'https://link.metamask.io/home?ref=BAD-CODE',
+      'https://link.metamask.io/home?referral=ABC',
+    ])('discards %s', (url) => {
+      expect(
+        controller.captureReferralContext(url, 'deeplink', false),
+      ).toBeNull();
+    });
   });
 
   it('does not call the data service when Rewards Money is disabled', async () => {
