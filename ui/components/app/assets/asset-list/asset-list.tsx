@@ -81,6 +81,7 @@ const AssetList = ({
   entryPoint,
 }: AssetListProps) => {
   const isEvm = useSelector(getMultichainIsEvm);
+  const isFullScreenDesign = useFullScreenDesign();
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
