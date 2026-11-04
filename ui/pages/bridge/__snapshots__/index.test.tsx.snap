@@ -78,18 +78,33 @@ exports[`Bridge renders the component with initial props 1`] = `
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
               <div
-                class="flex flex-row gap-1 items-center amount-input min-w-0 flex-1"
+                class="relative flex w-full items-center overflow-hidden amount-input min-w-0 flex-1 justify-start gap-1"
+                data-testid="from-amount-row"
+                style="min-height: 40px;"
               >
-                <input
-                  autocomplete="off"
-                  class="w-full text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
-                  data-testid="from-amount"
-                  inputmode="decimal"
-                  placeholder="0"
-                  style="font-size: 40px; line-height: 40px; transition: font-size 0.1s;"
-                  type="text"
-                  value=""
-                />
+                <span
+                  class="relative w-max min-w-[1ch] max-w-full"
+                >
+                  <span
+                    aria-hidden="true"
+                    class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+                    data-testid="from-amount-value"
+                    style="font-size: 40px; line-height: 40px;"
+                  >
+                    0
+                  </span>
+                  <input
+                    aria-label="Amount"
+                    autocomplete="off"
+                    class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-default cursor-text transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+                    data-testid="from-amount"
+                    inputmode="decimal"
+                    placeholder="0"
+                    style="font-size: 40px; line-height: 40px;"
+                    type="text"
+                    value=""
+                  />
+                </span>
               </div>
               <button
                 class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
@@ -189,20 +204,35 @@ exports[`Bridge renders the component with initial props 1`] = `
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
               >
                 <div
-                  class="flex flex-row gap-1 items-center amount-input min-w-0 flex-1 opacity-50"
+                  class="relative flex w-full items-center overflow-hidden amount-input min-w-0 flex-1 justify-start gap-1 opacity-50"
+                  data-testid="to-amount-row"
+                  style="min-height: 40px;"
                 >
-                  <input
-                    autocomplete="off"
-                    class="w-full text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero"
-                    data-testid="to-amount"
-                    disabled=""
-                    inputmode="decimal"
-                    placeholder="0"
-                    readonly=""
-                    style="font-size: 40px; line-height: 40px; transition: font-size 0.1s;"
-                    type="text"
-                    value="0"
-                  />
+                  <span
+                    class="relative w-max min-w-[1ch] max-w-full"
+                  >
+                    <span
+                      aria-hidden="true"
+                      class="text-default text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium font-hero invisible block min-w-[1ch] whitespace-pre transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+                      data-testid="to-amount-value"
+                      style="font-size: 40px; line-height: 40px;"
+                    >
+                      0
+                    </span>
+                    <input
+                      aria-label="Amount"
+                      autocomplete="off"
+                      class="w-full outline-none border-transparent placeholder:text-alternative text-s-amount-display-lg leading-s-amount-display-lg tracking-s-amount-display-lg md:text-l-amount-display-lg md:leading-l-amount-display-lg md:tracking-l-amount-display-lg font-bold md:font-medium absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero text-muted cursor-default transition-[color,font-size,line-height] duration-100 ease-out motion-reduce:transition-none"
+                      data-testid="to-amount"
+                      disabled=""
+                      inputmode="decimal"
+                      placeholder="0"
+                      readonly=""
+                      style="font-size: 40px; line-height: 40px;"
+                      type="text"
+                      value="0"
+                    />
+                  </span>
                 </div>
                 <button
                   class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"

@@ -155,7 +155,7 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('to-amount')).toBeInTheDocument();
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
     expect(getByTestId('to-amount')).toHaveValue('0');
-    expect(getByTestId('to-amount').parentElement).toHaveClass('opacity-50');
+    expect(getByTestId('to-amount-row')).toHaveClass('opacity-50');
 
     expect(getByTestId('switch-tokens').closest('button')).toBeDisabled();
   });
@@ -185,7 +185,7 @@ describe('PrepareBridgePage', () => {
 
     expect(getByTestId('from-amount')).toHaveDisplayValue('2524.21');
     expect(getByTestId('to-amount')).toHaveValue('0');
-    expect(getByTestId('to-amount').parentElement).toHaveClass('opacity-50');
+    expect(getByTestId('to-amount-row')).toHaveClass('opacity-50');
   });
 
   it('should render the component, with inputs set', async () => {

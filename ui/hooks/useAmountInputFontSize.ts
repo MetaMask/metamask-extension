@@ -3,7 +3,8 @@ import {
   AMOUNT_INPUT_MAX_FONT_SIZE,
   AMOUNT_INPUT_POPUP_WIDTH,
   type AmountInputFontSize,
-  getAmountInputFontSize,
+  estimateAmountTextWidthEm,
+  getAmountInputFontSizeForEm,
 } from '../helpers/utils/amount-input-font-size';
 
 export type UseAmountInputFontSizeOptions = {
@@ -11,6 +12,11 @@ export type UseAmountInputFontSizeOptions = {
   fallbackWidth?: number;
   /** Largest step of the shared scale to start from. */
   maxFontSize?: AmountInputFontSize;
+  /**
+   * Measured width of the prefix and amount, in em. When set, this replaces
+   * the estimate derived from `text`.
+   */
+  widthEm?: number;
 };
 
 /**
@@ -52,6 +58,7 @@ export type UseAmountInputFontSize = {
  * @param options - Layout constraints of the input.
  * @param options.fallbackWidth - Width in px used until the first measurement.
  * @param options.maxFontSize - Largest step to start from.
+ * @param options.widthEm - Measured width in em, used instead of `text`.
  * @returns A ref for the container and the font size in px.
  */
 export function useAmountInputFontSize(
@@ -59,6 +66,7 @@ export function useAmountInputFontSize(
   {
     fallbackWidth = AMOUNT_INPUT_POPUP_WIDTH,
     maxFontSize = AMOUNT_INPUT_MAX_FONT_SIZE,
+    widthEm,
   }: UseAmountInputFontSizeOptions = {},
 ): UseAmountInputFontSize {
   // Held in state so the effect below re-runs when the container mounts or is
@@ -105,10 +113,10 @@ export function useAmountInputFontSize(
   // A zero width means the container is unmeasured, detached or hidden.
   const availableWidth = measuredWidth > 0 ? measuredWidth : fallbackWidth;
 
-  const fontSize = getAmountInputFontSize(text, {
-    availableWidth,
-    maxFontSize,
-  });
+  const fontSize = getAmountInputFontSizeForEm(
+    widthEm ?? estimateAmountTextWidthEm(text),
+    { availableWidth, maxFontSize },
+  );
 
   return { containerRef, fontSize };
 }

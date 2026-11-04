@@ -43,7 +43,7 @@ describe('CustomAmount', () => {
       store,
     );
 
-    expect(screen.getByText('€')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-symbol')).toHaveTextContent('€');
   });
 
   it('renders selected currency symbol if currency not specified', () => {
@@ -51,7 +51,7 @@ describe('CustomAmount', () => {
 
     renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
 
-    expect(screen.getByText('$')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-amount-symbol')).toHaveTextContent('$');
   });
 
   it('renders skeleton if loading', () => {
@@ -87,9 +87,7 @@ describe('CustomAmount', () => {
 
     const symbol = screen.getByTestId('custom-amount-symbol');
     const input = screen.getByTestId('custom-amount-input');
-    const measuringText = input.parentElement?.querySelector(
-      '[aria-hidden="true"]',
-    );
+    const measuringText = screen.getByTestId('custom-amount-value');
 
     expect(measuringText).toHaveTextContent('100');
     for (const element of [symbol, measuringText, input]) {
@@ -118,7 +116,7 @@ describe('CustomAmount', () => {
     renderWithProvider(<CustomAmount amountFiat="1234567.89" />, store);
 
     expect(screen.getByTestId('custom-amount-input')).toHaveStyle({
-      fontSize: '72px',
+      fontSize: '60px',
     });
   });
 

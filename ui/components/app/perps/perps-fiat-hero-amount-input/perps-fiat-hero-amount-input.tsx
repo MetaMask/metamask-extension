@@ -1,25 +1,14 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  FontFamily,
-  Input,
-  Text,
-  TextAlign,
-  TextColor,
-  TextVariant,
-  twMerge,
   Skeleton,
 } from '@metamask/design-system-react';
+import { HeroAmountInput } from '../../../ui/hero-amount-input';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
-import {
-  AMOUNT_INPUT_MAX_FONT_SIZE,
-  AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-  getAmountInputTextStyle,
-} from '../../../../helpers/utils/amount-input-font-size';
-import { useAmountInputFontSize } from '../../../../hooks/useAmountInputFontSize';
+import { AMOUNT_INPUT_MAX_FONT_SIZE } from '../../../../helpers/utils/amount-input-font-size';
 import type { PerpsFiatHeroAmountInputProps } from './perps-fiat-hero-amount-input.types';
 
 /** Enough for realistic USD entry; bounds worst-case validation cost. */
@@ -51,19 +40,6 @@ export function isValidPartialFiatAmountInput(raw: string): boolean {
   return true;
 }
 
-function getHeroAmountTextColor(
-  hasAlert: boolean,
-  disabled: boolean,
-): TextColor {
-  if (hasAlert) {
-    return TextColor.ErrorDefault;
-  }
-  if (disabled) {
-    return TextColor.TextMuted;
-  }
-  return TextColor.TextDefault;
-}
-
 export const PerpsFiatHeroAmountSkeleton = () => (
   <Box
     flexDirection={BoxFlexDirection.Row}
@@ -82,8 +58,8 @@ export const PerpsFiatHeroAmountSkeleton = () => (
 );
 
 /**
- * Visual twin of confirmations `CustomAmount` for standalone Perps screens.
- * Keep in sync manually with `ui/pages/confirmations/.../custom-amount.tsx`.
+ * USD amount field for standalone Perps screens. The 48-character input rule
+ * stays here. Layout and font size come from `HeroAmountInput`.
  */
 export const PerpsFiatHeroAmountInput = React.memo(
   ({
@@ -94,96 +70,24 @@ export const PerpsFiatHeroAmountInput = React.memo(
     hasAlert = false,
     isLoading = false,
   }: PerpsFiatHeroAmountInputProps) => {
-    const fiatSymbol = getCurrencySymbol('USD');
-
-    const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        const next = e.target.value;
-        if (isValidPartialFiatAmountInput(next)) {
-          onChange(next);
-        }
-      },
-      [onChange],
-    );
-
-    const { containerRef, fontSize } = useAmountInputFontSize(
-      `${fiatSymbol}${value || '0'}`,
-    );
-    const amountStyle = getAmountInputTextStyle(fontSize);
-
     if (isLoading) {
       return <PerpsFiatHeroAmountSkeleton />;
     }
 
-    const textColor = getHeroAmountTextColor(hasAlert, disabled);
-
     return (
-      <Box
-        ref={containerRef}
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Center}
-        alignItems={BoxAlignItems.Center}
-        className="w-full"
-        style={{ minHeight: AMOUNT_INPUT_MAX_FONT_SIZE }}
-      >
-        <Text
-          data-testid="perps-fiat-hero-amount-symbol"
-          variant={TextVariant.AmountDisplayLg}
-          fontFamily={FontFamily.Hero}
-          textAlign={TextAlign.Right}
-          color={textColor}
-          className={AMOUNT_INPUT_TRANSITION_CLASS_NAME}
-          style={amountStyle}
-        >
-          {fiatSymbol}
-        </Text>
-        {/*
-         * Absolute-overlay pattern: the hidden clone (white-space:pre) drives
-         * the outer span's width to the exact rendered text width, while the
-         * absolutely-positioned input fills that same box.  Absolute children
-         * are out-of-flow so they don't affect the parent's max-content width,
-         * avoiding the circular-dependency that broke the inline-grid approach.
-         * Works in Chrome, Firefox, and Safari (unlike field-sizing:content).
-         */}
-        <span
-          style={{
-            position: 'relative',
-            width: 'max-content',
-            minWidth: '1ch',
-          }}
-        >
-          <Text
-            aria-hidden="true"
-            variant={TextVariant.AmountDisplayLg}
-            fontFamily={FontFamily.Hero}
-            className={twMerge(
-              'invisible block min-w-[1ch] whitespace-pre',
-              AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-            )}
-            style={amountStyle}
-          >
-            {value || '0'}
-          </Text>
-          <Input
-            autoFocus={autoFocus && !disabled}
-            data-testid="perps-fiat-hero-amount-input"
-            type="text"
-            inputMode="decimal"
-            value={value}
-            onChange={handleChange}
-            isDisabled={disabled}
-            isStateStylesDisabled
-            textVariant={TextVariant.AmountDisplayLg}
-            className={twMerge(
-              'absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero',
-              textColor,
-              disabled ? 'cursor-default' : 'cursor-text',
-              AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-            )}
-            style={amountStyle}
-          />
-        </span>
-      </Box>
+      <HeroAmountInput
+        prefix={getCurrencySymbol('USD')}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        isValidInput={isValidPartialFiatAmountInput}
+        autoFocus={autoFocus}
+        disabled={disabled}
+        hasError={hasAlert}
+        data-testid="perps-fiat-hero-amount"
+        prefixTestId="perps-fiat-hero-amount-symbol"
+        inputTestId="perps-fiat-hero-amount-input"
+        amountTestId="perps-fiat-hero-amount-value"
+      />
     );
   },
 );

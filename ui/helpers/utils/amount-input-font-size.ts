@@ -104,21 +104,46 @@ export type AmountInputFontSizeOptions = {
  * @param options.maxFontSize - Largest step to start from.
  * @returns The font size in px.
  */
-export function getAmountInputFontSize(
-  text: string,
+/**
+ * Picks the largest step at which `widthEm` fits the available width.
+ *
+ * @param widthEm - The rendered width of the prefix and amount, in em.
+ * @param options - Layout constraints of the input.
+ * @param options.availableWidth - Width in px available to the text.
+ * @param options.maxFontSize - Largest step to start from.
+ * @returns The font size in px.
+ */
+export function getAmountInputFontSizeForEm(
+  widthEm: number,
   {
     availableWidth = AMOUNT_INPUT_POPUP_WIDTH,
     maxFontSize = AMOUNT_INPUT_MAX_FONT_SIZE,
   }: AmountInputFontSizeOptions = {},
 ): AmountInputFontSize {
-  const widthEm = estimateAmountTextWidthEm(text);
-
   for (const fontSize of AMOUNT_INPUT_FONT_SIZES) {
     if (fontSize <= maxFontSize && widthEm * fontSize <= availableWidth) {
       return fontSize;
     }
   }
   return AMOUNT_INPUT_MIN_FONT_SIZE;
+}
+
+/**
+ * Picks the largest step of the shared scale at which the amount fits the
+ * available width. Values that do not fit at the minimum stay at the minimum
+ * and scroll inside the input. Line height equals the font size.
+ *
+ * @param text - The amount as rendered, including any currency symbol.
+ * @param options - Layout constraints of the input.
+ * @param options.availableWidth - Width in px available to the text.
+ * @param options.maxFontSize - Largest step to start from.
+ * @returns The font size in px.
+ */
+export function getAmountInputFontSize(
+  text: string,
+  options?: AmountInputFontSizeOptions,
+): AmountInputFontSize {
+  return getAmountInputFontSizeForEm(estimateAmountTextWidthEm(text), options);
 }
 
 /**

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -6,22 +6,11 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  FontFamily,
-  Input,
   Skeleton,
-  Text,
-  TextAlign,
-  TextColor,
-  TextVariant,
-  twMerge,
 } from '@metamask/design-system-react';
+import { HeroAmountInput } from '../../../../../components/ui/hero-amount-input';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
-import {
-  AMOUNT_INPUT_MAX_FONT_SIZE,
-  AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-  getAmountInputTextStyle,
-} from '../../../../../helpers/utils/amount-input-font-size';
-import { useAmountInputFontSize } from '../../../../../hooks/useAmountInputFontSize';
+import { AMOUNT_INPUT_MAX_FONT_SIZE } from '../../../../../helpers/utils/amount-input-font-size';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 
 const FIAT_DISPLAY_DECIMALS = 2;
@@ -62,16 +51,6 @@ function getAmountFiatDisplay(amountFiat: string): string {
   return display.toString(10);
 }
 
-function getTextColor(hasAlert: boolean, disabled: boolean): TextColor {
-  if (hasAlert) {
-    return TextColor.ErrorDefault;
-  }
-  if (disabled) {
-    return TextColor.TextMuted;
-  }
-  return TextColor.TextDefault;
-}
-
 export const CustomAmountSkeleton = () => (
   <Box
     flexDirection={BoxFlexDirection.Row}
@@ -105,81 +84,24 @@ export const CustomAmount = React.memo(
     // submit; the field shows cents only.
     const amountFiatDisplay = getAmountFiatDisplay(amountFiat);
 
-    const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
-        if (FIAT_INPUT_PATTERN.test(value)) {
-          onChange?.(value);
-        }
-      },
-      [onChange],
-    );
-
-    const { containerRef, fontSize } = useAmountInputFontSize(
-      `${fiatSymbol}${amountFiatDisplay || '0'}`,
-    );
-    const amountStyle = getAmountInputTextStyle(fontSize);
-
     if (isLoading) {
       return <CustomAmountSkeleton />;
     }
 
-    const textColor = getTextColor(hasAlert, disabled);
-
     return (
-      <Box
-        ref={containerRef}
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Center}
-        alignItems={BoxAlignItems.Center}
-        className="w-full"
-        style={{ minHeight: AMOUNT_INPUT_MAX_FONT_SIZE }}
-      >
-        <Text
-          data-testid="custom-amount-symbol"
-          variant={TextVariant.AmountDisplayLg}
-          fontFamily={FontFamily.Hero}
-          textAlign={TextAlign.Right}
-          color={textColor}
-          className={AMOUNT_INPUT_TRANSITION_CLASS_NAME}
-          style={amountStyle}
-        >
-          {fiatSymbol}
-        </Text>
-        {/* The hidden amount sets an exact cross-browser input width. */}
-        <span className="relative w-max min-w-[1ch]">
-          <Text
-            aria-hidden="true"
-            variant={TextVariant.AmountDisplayLg}
-            fontFamily={FontFamily.Hero}
-            className={twMerge(
-              'invisible block min-w-[1ch] whitespace-pre',
-              AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-            )}
-            style={amountStyle}
-          >
-            {amountFiatDisplay || '0'}
-          </Text>
-          <Input
-            autoFocus={autoFocus && !disabled}
-            data-testid="custom-amount-input"
-            type="text"
-            inputMode="decimal"
-            value={amountFiatDisplay}
-            onChange={handleChange}
-            isDisabled={disabled}
-            isStateStylesDisabled
-            textVariant={TextVariant.AmountDisplayLg}
-            className={twMerge(
-              'absolute inset-0 rounded-none border-0 bg-transparent p-0 text-left font-hero',
-              textColor,
-              disabled ? 'cursor-default' : 'cursor-text',
-              AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-            )}
-            style={amountStyle}
-          />
-        </span>
-      </Box>
+      <HeroAmountInput
+        prefix={fiatSymbol}
+        value={amountFiatDisplay}
+        onChange={(event) => onChange?.(event.target.value)}
+        isValidInput={(next) => FIAT_INPUT_PATTERN.test(next)}
+        autoFocus={autoFocus}
+        disabled={disabled}
+        hasError={hasAlert}
+        data-testid="custom-amount"
+        prefixTestId="custom-amount-symbol"
+        inputTestId="custom-amount-input"
+        amountTestId="custom-amount-value"
+      />
     );
   },
 );

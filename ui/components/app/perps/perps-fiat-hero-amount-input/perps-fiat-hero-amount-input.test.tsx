@@ -47,7 +47,7 @@ describe('PerpsFiatHeroAmountInput', () => {
 
     const symbol = screen.getByTestId('perps-fiat-hero-amount-symbol');
     const input = screen.getByTestId('perps-fiat-hero-amount-input');
-    const measuringText = screen.getByText('1234.5');
+    const measuringText = screen.getByTestId('perps-fiat-hero-amount-value');
 
     for (const element of [symbol, input, measuringText]) {
       expect(element).toHaveClass('font-hero');
@@ -61,8 +61,8 @@ describe('PerpsFiatHeroAmountInput', () => {
     );
 
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveStyle({
-      fontSize: '72px',
-      lineHeight: '72px',
+      fontSize: '60px',
+      lineHeight: '60px',
     });
   });
 

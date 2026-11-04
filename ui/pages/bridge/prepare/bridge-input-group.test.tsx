@@ -358,7 +358,7 @@ describe('BridgeInputGroup', () => {
     );
 
     const input = screen.getByTestId('from-amount');
-    const prefix = screen.getByText('$');
+    const prefix = screen.getByTestId('from-amount-prefix');
 
     for (const element of [prefix, input]) {
       expect(element).toHaveClass('font-hero');
@@ -384,7 +384,7 @@ describe('BridgeInputGroup', () => {
 
     const field = view.getByTestId('to-amount');
     expect(field).toBeDisabled();
-    expect(field.parentElement).toHaveClass('opacity-50');
+    expect(view.getByTestId('to-amount-row')).toHaveClass('opacity-50');
 
     view.rerender(
       <InputGroup
@@ -396,7 +396,7 @@ describe('BridgeInputGroup', () => {
 
     const placeholder = view.getByTestId('to-amount');
     expect(placeholder).toHaveValue('0');
-    expect(placeholder.parentElement).toHaveClass('opacity-50');
+    expect(view.getByTestId('to-amount-row')).toHaveClass('opacity-50');
 
     view.rerender(
       <InputGroup
@@ -406,9 +406,7 @@ describe('BridgeInputGroup', () => {
       />,
     );
 
-    expect(view.getByTestId('to-amount').parentElement).not.toHaveClass(
-      'opacity-50',
-    );
+    expect(view.getByTestId('to-amount-row')).not.toHaveClass('opacity-50');
   });
 
   beforeEach(async () => {

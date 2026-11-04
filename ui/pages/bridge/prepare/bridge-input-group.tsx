@@ -11,22 +11,13 @@ import {
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  FontFamily,
-  Input,
-  Skeleton,
-  Text,
-  TextVariant,
-  twMerge,
-} from '@metamask/design-system-react';
+import { Skeleton, twMerge } from '@metamask/design-system-react';
 import {
   IconName as LegacyIconName,
   Text as LegacyText,
   ButtonLink,
 } from '../../../components/component-library';
+import { HeroAmountInput } from '../../../components/ui/hero-amount-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
@@ -44,11 +35,6 @@ import {
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
-import {
-  AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-  getAmountInputTextStyle,
-} from '../../../helpers/utils/amount-input-font-size';
-import { useAmountInputFontSize } from '../../../hooks/useAmountInputFontSize';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
@@ -187,19 +173,12 @@ export const BridgeInputGroup = ({
   }, [locale, balanceAmount, token.symbol]);
 
   const amountValue = amountFieldProps?.value?.toString() ?? '';
+  const amountPrefix =
+    typeof amountInputPrefix === 'string' ? amountInputPrefix : undefined;
   // prepare-bridge-page passes "0" before a quote arrives. That sentinel is
   // the placeholder, not a quoted amount, so the read-only row stays dimmed.
   const isReadOnlyPlaceholder =
     isAmountReadOnly && (amountValue === '' || amountValue === '0');
-  const { containerRef: amountContainerRef, fontSize: amountFontSize } =
-    useAmountInputFontSize(
-      `${typeof amountInputPrefix === 'string' ? amountInputPrefix : ''}${amountValue || '0'}`,
-      {
-        fallbackWidth: AMOUNT_FIELD_FALLBACK_WIDTH,
-        maxFontSize: AMOUNT_FIELD_MAX_FONT_SIZE,
-      },
-    );
-  const amountStyle = getAmountInputTextStyle(amountFontSize);
 
   useEffect(() => {
     const hasAmountInputPrefixChanged =
@@ -251,69 +230,53 @@ export const BridgeInputGroup = ({
             style={{ flex: 1, minWidth: 0 }}
           />
         ) : (
-          <Box
-            ref={amountContainerRef}
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={1}
+          <HeroAmountInput
+            prefix={amountPrefix}
+            value={amountValue}
+            onChange={(event) => {
+              const cleanedValue = sanitizeAmountInput(event.target.value);
+              onAmountChange?.(cleanedValue ?? '');
+            }}
+            // Key and paste handlers clean the text. The change handler must
+            // still run so a pasted mix of digits and letters is kept in part.
+            isValidInput={() => true}
+            ariaLabel={t('amount')}
+            autoFocus={amountFieldProps.autoFocus}
+            disabled={amountFieldProps.disabled}
+            readOnly={amountFieldProps.readOnly}
+            maxFontSize={AMOUNT_FIELD_MAX_FONT_SIZE}
+            fallbackWidth={AMOUNT_FIELD_FALLBACK_WIDTH}
+            inputRef={inputRef}
+            data-testid={`${amountFieldProps.testId}-row`}
+            prefixTestId={`${amountFieldProps.testId}-prefix`}
+            inputTestId={amountFieldProps.testId}
+            amountTestId={`${amountFieldProps.testId}-value`}
             className={twMerge(
-              'amount-input min-w-0 flex-1',
+              'amount-input min-w-0 flex-1 justify-start gap-1',
               amountFieldProps.className,
               isReadOnlyPlaceholder && 'opacity-50',
             )}
-            onClick={() => inputRef.current?.focus()}
-          >
-            {amountInputPrefix ? (
-              <Text
-                variant={TextVariant.AmountDisplayLg}
-                fontFamily={FontFamily.Hero}
-                className={AMOUNT_INPUT_TRANSITION_CLASS_NAME}
-                style={amountStyle}
-              >
-                {amountInputPrefix}
-              </Text>
-            ) : null}
-            <Input
-              ref={inputRef}
-              data-testid={amountFieldProps.testId}
-              autoFocus={amountFieldProps.autoFocus}
-              value={amountValue}
-              isReadOnly={amountFieldProps.readOnly}
-              isDisabled={amountFieldProps.disabled}
-              isStateStylesDisabled
-              textVariant={TextVariant.AmountDisplayLg}
-              className={twMerge(
-                'min-w-0 flex-1 rounded-none border-0 bg-transparent p-0 text-left font-hero',
-                AMOUNT_INPUT_TRANSITION_CLASS_NAME,
-              )}
-              style={amountStyle}
-              type="text"
-              inputMode="decimal"
-              autoComplete="off"
-              placeholder="0"
-              onKeyPress={(e) => {
-                // Only allow numbers and at most one decimal point
-                if (e.key === '.' && amountValue.includes('.')) {
-                  e.preventDefault();
-                } else if (!/^[\d.]{1}$/u.test(e.key)) {
-                  e.preventDefault();
+            containerProps={{
+              onClick: () => inputRef.current?.focus(),
+            }}
+            inputProps={{
+              autoComplete: 'off',
+              onKeyPress: (event) => {
+                if (event.key === '.' && amountValue.includes('.')) {
+                  event.preventDefault();
+                } else if (!/^[\d.]{1}$/u.test(event.key)) {
+                  event.preventDefault();
                 }
-              }}
-              onPaste={(e) => {
-                e.preventDefault();
+              },
+              onPaste: (event) => {
+                event.preventDefault();
                 const cleanedValue = sanitizeAmountInput(
-                  e.clipboardData.getData('text'),
+                  event.clipboardData.getData('text'),
                 );
                 onAmountChange?.(cleanedValue ?? '');
-              }}
-              onChange={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const cleanedValue = sanitizeAmountInput(e.target.value);
-                onAmountChange?.(cleanedValue ?? '');
-              }}
-            />
-          </Box>
+              },
+            }}
+          />
         )}
         <SelectedAssetButton
           onClick={() => {

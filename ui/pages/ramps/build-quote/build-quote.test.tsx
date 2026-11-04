@@ -184,13 +184,14 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
-    const amountSizeContainer = amountInput.parentElement;
-    const amountSizeTwin = amountSizeContainer?.querySelector(
-      '[aria-hidden="true"]',
-    );
+    const amountValue = screen.getByTestId('ramps-build-quote-amount-value');
 
-    expect(amountSizeContainer).toHaveClass('relative', 'w-max', 'min-w-[1ch]');
-    expect(amountSizeTwin).toHaveTextContent('100');
+    expect(amountInput.parentElement).toHaveClass(
+      'relative',
+      'w-max',
+      'min-w-[1ch]',
+    );
+    expect(amountValue).toHaveTextContent('100');
     expect(amountInput).toHaveClass('absolute', 'inset-0');
     expect(amountInput).not.toHaveAttribute('size');
   });
@@ -203,13 +204,10 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
-    const amountRow = screen.getByTestId('ramps-build-quote-amount-row');
-    const [symbol] = Array.from(amountRow.children);
-    const amountSizeTwin = amountInput.parentElement?.querySelector(
-      '[aria-hidden="true"]',
-    );
+    const symbol = screen.getByTestId('ramps-build-quote-amount-symbol');
+    const amountValue = screen.getByTestId('ramps-build-quote-amount-value');
 
-    for (const element of [symbol, amountSizeTwin, amountInput]) {
+    for (const element of [symbol, amountValue, amountInput]) {
       expect(element).toHaveClass('font-hero');
       expect(element).toHaveStyle({ fontSize: '88px', lineHeight: '88px' });
     }
