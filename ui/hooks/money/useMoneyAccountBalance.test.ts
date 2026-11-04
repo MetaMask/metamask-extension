@@ -242,6 +242,49 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.withdrawableFiatRaw).toBe('2');
     });
 
+    it('rounds the withdrawable display down so it stays withdrawable', () => {
+      // Regression: CONF-2196. A $0.50 deposit credits 499,999 micro-units
+      // (one unit lost to vault-share conversion). Half-up rounding showed
+      // "Available balance: $0.50", but the amount field only accepts two
+      // decimals, so the smallest typable match was 0.50 — a hundredth of a
+      // cent more than held. That failed the balance check and blocked the
+      // withdraw outright, with no typable amount that would work.
+      stubQueries({
+        ...BALANCE_LOADED,
+        data: {
+          ...LOADED_BALANCE,
+          musdBalance: '0',
+          vmusdValueInMusd: '499999',
+          totalBalance: '499999',
+        },
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.withdrawableFiatFormatted).toBe('$0.49');
+      // Raw keeps full precision so Max still drains the whole vault.
+      expect(result.current.withdrawableFiatRaw).toBe('0.499999');
+      expect(result.current.withdrawableMusd?.toString()).toBe('0.499999');
+    });
+
+    it('keeps the total balance on half-up rounding', () => {
+      // Only the withdrawable figure doubles as a spendable target. The total
+      // is read-only, so it stays byte-identical with mobile's formatting.
+      stubQueries({
+        ...BALANCE_LOADED,
+        data: {
+          ...LOADED_BALANCE,
+          musdBalance: '0',
+          vmusdValueInMusd: '499999',
+          totalBalance: '499999',
+        },
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.totalFiatFormatted).toBe('$0.50');
+    });
+
     it('distinguishes a genuine zero from an unknown balance', () => {
       stubQueries({
         ...BALANCE_LOADED,

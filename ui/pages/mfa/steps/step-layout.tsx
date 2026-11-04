@@ -2,7 +2,6 @@ import React, { type ReactNode } from 'react';
 import {
   Box,
   BoxFlexDirection,
-  FontWeight,
   Text,
   TextButton,
   TextColor,
@@ -77,7 +76,6 @@ export const StepMessage = ({
   <Text
     asChild
     variant={TextVariant.BodySm}
-    fontWeight={FontWeight.Medium}
     color={isError ? TextColor.ErrorDefault : TextColor.TextAlternative}
   >
     <p
