@@ -15,7 +15,7 @@ import {
 } from '@metamask/design-system-react';
 import {
   getErrorHandling,
-  isErrorShown,
+  isCooldownCountdown,
 } from '../../../hooks/identity/mfa/engine/errors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
@@ -116,7 +116,9 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     setCode(getCodeDigits(text));
   };
 
-  const showError = isErrorShown(state);
+  // An email cooldown with a wait time shows as the countdown on the resend
+  // button, also once it ended. Authenticator app errors always show.
+  const showError = error !== undefined && !isCooldownCountdown(state);
   // The code on screen can no longer be used: the main action is a new one.
   const needsNewCode =
     showError && error !== undefined && getErrorHandling(error) === 'restart';

@@ -96,23 +96,23 @@ export class MfaFlowError extends Error {
 }
 
 /**
- * Whether the screen shows the state's error. An email cooldown with a wait
- * time shows as the countdown on the resend button, also once it ended.
- * Authenticator app errors always show.
+ * Whether the email code screen shows the state's error as the countdown on
+ * its resend button instead of as an error: a cooldown that came with a wait
+ * time, also once that wait ended.
  *
  * @param state - The flow's state.
  * @param state.step - The screen shown.
- * @param state.error - The error to show, if any.
+ * @param state.error - The error, if any.
  * @param state.resendAvailableAt - When the next code may be requested.
- * @returns Whether the error is on screen.
+ * @returns Whether the error is the countdown.
  */
-export const isErrorShown = ({
+export const isCooldownCountdown = ({
   step,
   error,
   resendAvailableAt,
 }: MfaFlowState): boolean =>
+  step.name === 'otp' &&
+  step.method === 'email_otp' &&
   error !== undefined &&
-  (step.name !== 'otp' ||
-    step.method === 'totp' ||
-    resendAvailableAt === undefined ||
-    getErrorHandling(error) !== 'cooldown');
+  resendAvailableAt !== undefined &&
+  getErrorHandling(error) === 'cooldown';
