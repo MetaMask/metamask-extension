@@ -18,13 +18,14 @@ export function isForceAuthMatchBuild() {
  * @returns the authentication environment
  */
 export function loadAuthenticationConfig(): Env {
-  if (isForceAuthMatchBuild()) {
-    const buildType = process.env.METAMASK_BUILD_TYPE;
-    if (buildType === 'beta' || buildType === 'uat') {
-      return Env.UAT;
-    }
-    return Env.PRD;
-  }
+  // if (isForceAuthMatchBuild()) {
+  //   const buildType = process.env.METAMASK_BUILD_TYPE;
+  //   if (buildType === 'beta' || buildType === 'uat') {
+  //     return Env.UAT;
+  //   }
+  //   return Env.PRD;
+  // }
 
-  return devApiEnv() === 'dev' ? Env.DEV : Env.PRD;
+  // return devApiEnv() === 'dev' ? Env.DEV : Env.PRD;
+  return Env.DEV;
 }

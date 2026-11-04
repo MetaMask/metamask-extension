@@ -23,10 +23,10 @@ export type BuildType = (typeof BUILD_TYPE)[keyof typeof BUILD_TYPE];
 
 export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
   [BUILD_TYPE.main]: {
-    subscriptionEnv: SubscriptionEnv.PRD,
-    claimsEnv: ClaimsEnv.PRD,
-    shieldEnv: ShieldEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
+    subscriptionEnv: SubscriptionEnv.DEV,
+    claimsEnv: ClaimsEnv.DEV,
+    shieldEnv: ShieldEnv.DEV,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.DEV],
   },
   [BUILD_TYPE.flask]: {
     subscriptionEnv: SubscriptionEnv.PRD,
@@ -53,10 +53,10 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
     gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.DEV],
   },
   [BUILD_TYPE.uat]: {
-    subscriptionEnv: SubscriptionEnv.UAT,
-    claimsEnv: ClaimsEnv.UAT,
-    shieldEnv: ShieldEnv.UAT,
-    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
+    subscriptionEnv: SubscriptionEnv.DEV,
+    claimsEnv: ClaimsEnv.DEV,
+    shieldEnv: ShieldEnv.DEV,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.DEV],
   },
 };
 
