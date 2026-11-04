@@ -67,7 +67,7 @@ import {
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { useAccountGroupBalanceDisplay } from '../assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { useDispatch } from '../../../store/hooks';
-import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
+import { useAppLayout } from '../../../contexts/app-layout';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 
@@ -85,11 +85,14 @@ export type CoinOverviewProps = {
 
 const ZERO_FIAT_BALANCE_DELAY_MS = 1500;
 
-const BalanceOverviewSkeleton = () => {
+const BalanceOverviewSkeleton = ({
+  isWideLayout,
+}: {
+  isWideLayout: boolean;
+}) => {
   const environmentType = getEnvironmentType();
-  const isFullScreenDesign = useFullScreenDesign();
   const isFullscreenOrSidepanel =
-    isFullScreenDesign ||
+    isWideLayout ||
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
@@ -224,7 +227,7 @@ export const CoinOverview = ({
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
-  const isFullScreenDesign = useFullScreenDesign();
+  const { isWideLayout } = useAppLayout();
 
   const { trackEvent, createEventBuilder } = useAnalytics();
 
@@ -420,7 +423,7 @@ export const CoinOverview = ({
       <div
         className={classnames(
           `${classPrefix}-overview__balance max-[490px]:items-start`,
-          isFullScreenDesign ? 'items-start' : 'items-center',
+          isWideLayout ? 'items-start' : 'items-center',
         )}
       >
         <div className={`${classPrefix}-overview__primary-container`}>
@@ -435,13 +438,13 @@ export const CoinOverview = ({
   );
 
   if (shouldShowBalanceLoadingState) {
-    balanceContent = <BalanceOverviewSkeleton />;
+    balanceContent = <BalanceOverviewSkeleton isWideLayout={isWideLayout} />;
   } else if (shouldShowBalanceEmptyState) {
     balanceContent = (
       <BalanceEmptyState
         className={classnames('w-full max-w-[460px]', {
-          'self-center': !isFullScreenDesign,
-          'self-start max-w-none': isFullScreenDesign,
+          'self-center': !isWideLayout,
+          'self-start max-w-none': isWideLayout,
         })}
         data-testid="coin-overview-balance-empty-state"
         onClickReceive={handleReceiveOnClick}
@@ -451,6 +454,7 @@ export const CoinOverview = ({
 
   return (
     <WalletOverview
+      align={isWideLayout ? 'start' : 'center'}
       balance={balanceContent}
       buttons={
         <CoinButtons
@@ -463,7 +467,7 @@ export const CoinOverview = ({
             isBridgeChain,
             classPrefix,
           }}
-          showAsPills={isFullScreenDesign}
+          showAsPills={isWideLayout}
         />
       }
       className={className}

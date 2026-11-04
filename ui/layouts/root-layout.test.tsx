@@ -7,6 +7,7 @@ import {
   DEFAULT_ROUTE,
   SETTINGS_ROUTE,
 } from '../helpers/constants/routes';
+import { useAppLayout } from '../contexts/app-layout';
 import { useFullScreenDesign } from '../hooks/useFullScreenDesign';
 import { RootLayout } from './root-layout';
 
@@ -14,12 +15,17 @@ jest.mock('../hooks/useFullScreenDesign');
 
 const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 
+const AppLayoutProbe = () => {
+  const { isWideLayout } = useAppLayout();
+  return <div data-testid="child" data-wide-layout={String(isWideLayout)} />;
+};
+
 const renderRootLayout = (pathname: string) => {
   const router = createMemoryRouter(
     [
       {
         element: <RootLayout />,
-        children: [{ path: '*', element: <div data-testid="child" /> }],
+        children: [{ path: '*', element: <AppLayoutProbe /> }],
       },
     ],
     { initialEntries: [pathname] },
@@ -53,9 +59,28 @@ describe('RootLayout', () => {
     },
   );
 
+  it('provides the classic layout to its routes when the fullscreen design is off', () => {
+    const layout = renderRootLayout(DEFAULT_ROUTE);
+
+    expect(screen.getByTestId('child')).toHaveAttribute(
+      'data-wide-layout',
+      'false',
+    );
+    expect(layout).toBeInTheDocument();
+  });
+
   describe('in the fullscreen design', () => {
     beforeEach(() => {
       mockUseFullScreenDesign.mockReturnValue(true);
+    });
+
+    it('provides the wide layout to its routes', () => {
+      renderRootLayout(DEFAULT_ROUTE);
+
+      expect(screen.getByTestId('child')).toHaveAttribute(
+        'data-wide-layout',
+        'true',
+      );
     });
 
     it('caps the width of routes that are not main nav routes', () => {

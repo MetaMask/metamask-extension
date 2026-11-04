@@ -27,7 +27,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
-import { useFullScreenDesign } from '../../../../hooks/useFullScreenDesign';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsBalanceActionsSkeleton } from '../perps-skeletons';
 
@@ -63,6 +62,8 @@ type PerpsMarketBalanceActionsProps = {
    * omitted the Learn more button is hidden even at $0 balance.
    */
   onLearnMore?: () => void;
+  /** Whether the action buttons are stacked (default) or in a row. */
+  layout?: 'column' | 'row';
 };
 
 const PerpsMarketBalanceActions = ({
@@ -71,13 +72,14 @@ const PerpsMarketBalanceActions = ({
   onAddFunds,
   onWithdraw,
   onLearnMore,
+  layout = 'column',
 }: PerpsMarketBalanceActionsProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const { formatCurrency } = useFormatters();
   const { account, isInitialLoading } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
-  const isFullScreenDesign = useFullScreenDesign();
+  const isRowLayout = layout === 'row';
   // Privacy mode masks fiat amounts across the wallet; the total + available
   // figures in this header are the biggest numbers on the Perps tab and must
   // be redacted the same way the old `PerpsBalanceDropdown` masked them.
@@ -198,11 +200,11 @@ const PerpsMarketBalanceActions = ({
       {showActionButtons && (
         <Box
           flexDirection={
-            isFullScreenDesign ? BoxFlexDirection.Row : BoxFlexDirection.Column
+            isRowLayout ? BoxFlexDirection.Row : BoxFlexDirection.Column
           }
           gap={3}
           marginTop={4}
-          className={isFullScreenDesign ? 'max-w-sm' : 'w-full'}
+          className={isRowLayout ? 'max-w-sm' : 'w-full'}
         >
           {/*
             Withdraw is hidden when there's nothing to withdraw: at $0 balance

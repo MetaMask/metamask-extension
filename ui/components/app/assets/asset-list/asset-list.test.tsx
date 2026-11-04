@@ -13,7 +13,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { trace } from '../../../../../shared/lib/trace';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { useFullScreenDesign } from '../../../../hooks/useFullScreenDesign';
 import useMultiPolling from '../../../../hooks/useMultiPolling';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
@@ -141,10 +140,6 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../hooks/useFullScreenDesign');
-
-const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
-
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
@@ -154,6 +149,7 @@ type RenderAssetListOptions = {
   chainId?: Hex;
   showTokensLinks?: boolean;
   onClickAsset?: typeof mockOnClickAsset;
+  variant?: 'list' | 'table';
 };
 
 const renderAssetList = ({
@@ -161,6 +157,7 @@ const renderAssetList = ({
   chainId = CHAIN_IDS.MAINNET,
   showTokensLinks = true,
   onClickAsset = mockOnClickAsset,
+  variant,
 }: RenderAssetListOptions = {}) => {
   const state = {
     ...mockState,
@@ -193,7 +190,11 @@ const renderAssetList = ({
   };
   const store = configureMockStore([thunk])(state);
   return renderWithProvider(
-    <AssetList onClickAsset={onClickAsset} showTokensLinks={showTokensLinks} />,
+    <AssetList
+      onClickAsset={onClickAsset}
+      showTokensLinks={showTokensLinks}
+      variant={variant}
+    />,
     store,
     '/',
   );
@@ -204,7 +205,6 @@ describe('AssetList', () => {
     jest.clearAllMocks();
     mockOnClickAsset.mockClear();
     getMockTrackEvent().mockClear();
-    mockUseFullScreenDesign.mockReturnValue(false);
 
     (useMultiPolling as jest.Mock).mockImplementation(({ input }) => {
       const startPolling = jest.fn().mockResolvedValue('mockPollingToken');
@@ -246,24 +246,10 @@ describe('AssetList', () => {
     });
   });
 
-  describe('fullscreen design', () => {
-    it('renders the token list when the fullscreen design is off', async () => {
+  describe('table variant', () => {
+    it('renders the token table instead of the token list for the table variant', async () => {
       await act(async () => {
-        renderAssetList();
-      });
-
-      expect(screen.getByTestId('mock-token-list-item')).toBeInTheDocument();
-      expect(screen.queryByTestId('token-table')).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId('network-pill-selector'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('renders the token table instead of the token list when the fullscreen design is on', async () => {
-      mockUseFullScreenDesign.mockReturnValue(true);
-
-      await act(async () => {
-        renderAssetList();
+        renderAssetList({ variant: 'table' });
       });
 
       expect(screen.getByTestId('token-table')).toBeInTheDocument();

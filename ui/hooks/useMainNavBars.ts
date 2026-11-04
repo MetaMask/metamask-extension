@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
+import { useAppLayout } from '../contexts/app-layout';
 import { isMainNavRoute } from '../helpers/utils/main-nav';
-import { useFullScreenDesign } from './useFullScreenDesign';
 
 export type MainNavBars = {
   hasNavBar: boolean;
@@ -10,19 +10,19 @@ export type MainNavBars = {
 
 /**
  * Returns which main navigation to show for the current route: the side nav in
- * the fullscreen design, the bottom nav bar otherwise, and neither outside the
- * main nav routes.
+ * the wide layout, the bottom nav bar otherwise, and neither outside the main
+ * nav routes.
  *
  * @returns Whether the route has a nav bar, and which one to show.
  */
 export function useMainNavBars(): MainNavBars {
   const { pathname } = useLocation();
-  const isFullScreenDesign = useFullScreenDesign();
+  const { isWideLayout } = useAppLayout();
   const hasNavBar = isMainNavRoute(pathname);
 
   return {
     hasNavBar,
-    showSideNav: hasNavBar && isFullScreenDesign,
-    showBottomNav: hasNavBar && !isFullScreenDesign,
+    showSideNav: hasNavBar && isWideLayout,
+    showBottomNav: hasNavBar && !isWideLayout,
   };
 }

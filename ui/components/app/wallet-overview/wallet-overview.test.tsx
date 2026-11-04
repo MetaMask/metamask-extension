@@ -1,19 +1,18 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 import WalletOverview from './wallet-overview';
 
-jest.mock('../../../hooks/useFullScreenDesign');
-
-const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
-
-const renderWalletOverview = (className?: string) => {
+const renderWalletOverview = ({
+  className,
+  align,
+}: { className?: string; align?: 'center' | 'start' } = {}) => {
   const { container } = render(
     <WalletOverview
       balance={<span data-testid="balance" />}
       buttons={<span data-testid="buttons" />}
       className={className}
+      align={align}
     />,
   );
 
@@ -24,10 +23,6 @@ const renderWalletOverview = (className?: string) => {
 };
 
 describe('WalletOverview', () => {
-  beforeEach(() => {
-    mockUseFullScreenDesign.mockReturnValue(false);
-  });
-
   it('renders the balance and the buttons', () => {
     renderWalletOverview();
 
@@ -36,7 +31,7 @@ describe('WalletOverview', () => {
   });
 
   it('passes className through to the root element', () => {
-    const { root } = renderWalletOverview('custom-class');
+    const { root } = renderWalletOverview({ className: 'custom-class' });
 
     expect(root).toHaveClass('custom-class');
   });
@@ -48,10 +43,8 @@ describe('WalletOverview', () => {
     expect(buttonsContainer).toHaveClass('max-w-[458px]', 'self-center');
   });
 
-  it('left-aligns the content and removes max-width on the buttons in the fullscreen design', () => {
-    mockUseFullScreenDesign.mockReturnValue(true);
-
-    const { root, buttonsContainer } = renderWalletOverview();
+  it('left-aligns the content and removes max-width on the buttons when aligned to the start', () => {
+    const { root, buttonsContainer } = renderWalletOverview({ align: 'start' });
 
     expect(root).toHaveClass('items-start');
     expect(buttonsContainer).not.toHaveClass('max-w-[458px]', 'self-center');

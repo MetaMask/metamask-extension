@@ -1,25 +1,26 @@
 import React from 'react';
 import classnames from 'clsx';
-import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 
 type WalletOverviewProps = {
   balance: React.ReactNode;
   buttons: React.ReactNode;
   className?: string;
+  align?: 'center' | 'start';
 };
 
 const WalletOverview = ({
   balance,
   buttons,
   className,
+  align = 'center',
 }: WalletOverviewProps) => {
-  const isFullScreenDesign = useFullScreenDesign();
+  const isCentered = align === 'center';
 
   return (
     <div
       className={classnames(
         'flex min-w-0 w-full flex-1 flex-col justify-between gap-4',
-        isFullScreenDesign ? 'items-start' : 'items-center',
+        isCentered ? 'items-center' : 'items-start',
         className,
       )}
     >
@@ -29,7 +30,7 @@ const WalletOverview = ({
       {/* 458px = 490px - 32px */}
       <div
         className={classnames('flex h-full w-full', {
-          'max-w-[458px] self-center': !isFullScreenDesign,
+          'max-w-[458px] self-center': isCentered,
         })}
       >
         {buttons}

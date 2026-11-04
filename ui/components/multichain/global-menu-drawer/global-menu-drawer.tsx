@@ -1,6 +1,5 @@
 import React, { useLayoutEffect, useRef, useCallback } from 'react';
 import classnames from 'clsx';
-import { useSelector } from 'react-redux';
 import {
   Box,
   BoxBackgroundColor,
@@ -9,7 +8,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { getIsFullscreenRedesignEnabled } from '../../../selectors/multichain/feature-flags';
+import { useAppLayout } from '../../../contexts/app-layout';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -59,14 +58,14 @@ const dialogClassNamePlacement = classnames(
 );
 
 const getDialogLayoutClassName = (
-  isFullScreenDesign: boolean,
+  isWideLayout: boolean,
   isFullscreen: boolean,
 ) =>
   classnames(
-    isFullScreenDesign
+    isWideLayout
       ? '[--drawer-column-width:var(--width-max-fullscreen-redesign)]'
       : '[--drawer-column-width:var(--width-max)]',
-    isFullscreen && !isFullScreenDesign
+    isFullscreen && !isWideLayout
       ? '[--drawer-header-height:var(--header-height)]'
       : '[--drawer-header-height:0px]',
   );
@@ -109,7 +108,7 @@ export const GlobalMenuDrawer = ({
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isLargeDrawer = isFullscreen || isSidepanel;
-  const isFullScreenDesign = useSelector(getIsFullscreenRedesignEnabled);
+  const { isWideLayout } = useAppLayout();
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -170,7 +169,7 @@ export const GlobalMenuDrawer = ({
   const dialogClassName = classnames(
     dialogClassNameBase,
     dialogClassNamePlacement,
-    getDialogLayoutClassName(isFullScreenDesign, isFullscreen),
+    getDialogLayoutClassName(isWideLayout, isFullscreen),
   );
 
   const panel = (

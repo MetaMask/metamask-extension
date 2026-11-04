@@ -2,7 +2,6 @@ import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { SUPPORT_LINK } from '#shared/lib/ui-utils';
 import { openWindow } from '#ui/helpers/utils/window';
-import { useFullScreenDesign } from '#ui/hooks/useFullScreenDesign';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -17,10 +16,6 @@ jest.mock('../../../../shared/lib/trace', () => {
     endTrace: jest.fn(),
   };
 });
-
-jest.mock('#ui/hooks/useFullScreenDesign');
-
-const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 
 const mockNavigate = jest.fn();
 
@@ -251,11 +246,17 @@ describe('Fullscreen design', () => {
   };
 
   // Wait for the header's effects to settle so their updates run inside act.
-  const renderHeader = async () => {
+  const renderHeader = async (isWideLayout: boolean) => {
     const store = configureStore(stateWithSearchEnabled);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     await act(async () => {
-      renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
+      renderWithProvider(
+        <AppHeaderUnlockedContent
+          menuRef={menuRef}
+          isWideLayout={isWideLayout}
+        />,
+        store,
+      );
     });
   };
 
@@ -263,17 +264,9 @@ describe('Fullscreen design', () => {
     jest.clearAllMocks();
   });
 
-  afterEach(() => {
-    mockUseFullScreenDesign.mockReset();
-  });
-
   describe('when the fullscreen design is off', () => {
-    beforeEach(() => {
-      mockUseFullScreenDesign.mockReturnValue(false);
-    });
-
     it('renders the account picker button and the search icon button', async () => {
-      await renderHeader();
+      await renderHeader(false);
 
       expect(screen.getByTestId('account-menu-icon')).toBeInTheDocument();
       expect(
@@ -286,12 +279,8 @@ describe('Fullscreen design', () => {
   });
 
   describe('when the fullscreen design is on', () => {
-    beforeEach(() => {
-      mockUseFullScreenDesign.mockReturnValue(true);
-    });
-
     it('renders the account name as plain text instead of the account picker', async () => {
-      await renderHeader();
+      await renderHeader(true);
 
       expect(screen.getByTestId('app-header-account-name')).toHaveTextContent(
         'Account 1',
@@ -303,7 +292,7 @@ describe('Fullscreen design', () => {
     });
 
     it('renders an open search field instead of the search icon button', async () => {
-      await renderHeader();
+      await renderHeader(true);
 
       const searchInput = screen.getByTestId('discover-search-button');
       expect(searchInput.tagName).toBe('INPUT');
@@ -315,7 +304,7 @@ describe('Fullscreen design', () => {
     });
 
     it('opens the discover search page when the search field is clicked', async () => {
-      await renderHeader();
+      await renderHeader(true);
 
       fireEvent.click(screen.getByTestId('discover-search-button'));
 
@@ -326,7 +315,7 @@ describe('Fullscreen design', () => {
     });
 
     it('opens the discover search page when Enter is pressed in the search field', async () => {
-      await renderHeader();
+      await renderHeader(true);
 
       fireEvent.keyDown(screen.getByTestId('discover-search-button'), {
         key: 'Enter',

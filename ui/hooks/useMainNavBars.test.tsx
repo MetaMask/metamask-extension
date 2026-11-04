@@ -2,19 +2,15 @@ import React from 'react';
 import { it } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { AppLayoutProvider } from '../contexts/app-layout';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   SETTINGS_ROUTE,
 } from '../helpers/constants/routes';
-import { useFullScreenDesign } from './useFullScreenDesign';
 import { useMainNavBars } from './useMainNavBars';
 
-jest.mock('./useFullScreenDesign');
-
-const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
-
-const renderUseMainNavBars = (pathname: string) =>
+const renderUseMainNavBars = (pathname: string, isWideLayout: boolean) =>
   renderHook(() => useMainNavBars(), {
     wrapper: ({ children }) => (
       <MemoryRouter
@@ -26,20 +22,18 @@ const renderUseMainNavBars = (pathname: string) =>
           v7_relativeSplatPath: true,
         }}
       >
-        {children}
+        <AppLayoutProvider isWideLayout={isWideLayout}>
+          {children}
+        </AppLayoutProvider>
       </MemoryRouter>
     ),
   }).result.current;
 
 describe('useMainNavBars', () => {
-  beforeEach(() => {
-    mockUseFullScreenDesign.mockReturnValue(false);
-  });
-
   it.each([DEFAULT_ROUTE, ACTIVITY_ROUTE])(
-    'shows the bottom nav on %s outside the fullscreen design',
+    'shows the bottom nav on %s outside the wide layout',
     (pathname) => {
-      expect(renderUseMainNavBars(pathname)).toStrictEqual({
+      expect(renderUseMainNavBars(pathname, false)).toStrictEqual({
         hasNavBar: true,
         showSideNav: false,
         showBottomNav: true,
@@ -48,11 +42,9 @@ describe('useMainNavBars', () => {
   );
 
   it.each([DEFAULT_ROUTE, ACTIVITY_ROUTE])(
-    'shows the side nav on %s in the fullscreen design',
+    'shows the side nav on %s in the wide layout',
     (pathname) => {
-      mockUseFullScreenDesign.mockReturnValue(true);
-
-      expect(renderUseMainNavBars(pathname)).toStrictEqual({
+      expect(renderUseMainNavBars(pathname, true)).toStrictEqual({
         hasNavBar: true,
         showSideNav: true,
         showBottomNav: false,
@@ -61,15 +53,23 @@ describe('useMainNavBars', () => {
   );
 
   it.each([false, true])(
-    'shows no nav on a route that is not a main nav route (fullscreen design: %s)',
-    (isFullScreenDesign) => {
-      mockUseFullScreenDesign.mockReturnValue(isFullScreenDesign);
-
-      expect(renderUseMainNavBars(SETTINGS_ROUTE)).toStrictEqual({
+    'shows no nav on a route that is not a main nav route (wide layout: %s)',
+    (isWideLayout) => {
+      expect(renderUseMainNavBars(SETTINGS_ROUTE, isWideLayout)).toStrictEqual({
         hasNavBar: false,
         showSideNav: false,
         showBottomNav: false,
       });
     },
   );
+
+  it('shows the bottom nav outside an app layout provider', () => {
+    const { result } = renderHook(() => useMainNavBars(), {
+      wrapper: ({ children }) => (
+        <MemoryRouter initialEntries={[DEFAULT_ROUTE]}>{children}</MemoryRouter>
+      ),
+    });
+
+    expect(result.current.showBottomNav).toBe(true);
+  });
 });

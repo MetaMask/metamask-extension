@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { fireEvent } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -12,6 +13,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
 import { setPerpsTabBadgeSeen } from '../../../store/actions';
 import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
+import { AppLayoutProvider } from '../../../contexts/app-layout';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
 const mockTrackEvent = jest.fn();
@@ -38,7 +40,9 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../app/assets/asset-list', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => null,
+  default: ({ variant }: { variant?: string }) => (
+    <div data-testid="asset-list" data-variant={variant} />
+  ),
 }));
 
 jest.mock('../../../pages/activity/activity-list', () => ({
@@ -78,11 +82,13 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     variantFlag,
     perpsTabBadgeSeen = false,
     perpsAvailable = true,
+    isWideLayout = false,
     route,
   }: {
     variantFlag?: { name: string };
     perpsTabBadgeSeen?: boolean;
     perpsAvailable?: boolean;
+    isWideLayout?: boolean;
     route?: string;
   }) => {
     const store = configureStore({
@@ -102,10 +108,12 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     });
 
     return renderWithProvider(
-      <AccountOverviewTabs
-        setBasicFunctionalityModalOpen={jest.fn()}
-        onSupportLinkClick={jest.fn()}
-      />,
+      <AppLayoutProvider isWideLayout={isWideLayout}>
+        <AccountOverviewTabs
+          setBasicFunctionalityModalOpen={jest.fn()}
+          onSupportLinkClick={jest.fn()}
+        />
+      </AppLayoutProvider>,
       store,
       route,
     );
@@ -121,6 +129,21 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
   afterEach(() => {
     process.env.PERPS_ENABLED = originalPerpsEnabled;
   });
+
+  it.each([
+    [true, 'table'],
+    [false, 'list'],
+  ])(
+    'renders the asset list with isWideLayout %s as the %s variant',
+    (isWideLayout, variant) => {
+      const { getByTestId } = renderTabs({ isWideLayout });
+
+      expect(getByTestId('asset-list')).toHaveAttribute(
+        'data-variant',
+        variant,
+      );
+    },
+  );
 
   it('renders the Perps tab without a New badge in the control assignment', () => {
     const { getByTestId, queryByTestId } = renderTabs({

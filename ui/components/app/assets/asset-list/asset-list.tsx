@@ -8,7 +8,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { useFullScreenDesign } from '../../../../hooks/useFullScreenDesign';
 import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
@@ -17,6 +16,8 @@ import TokenList from '../token-list';
 import { NetworkPillSelector } from '../../../multichain/network-pill-selector/network-pill-selector';
 import { TokenTable } from '../token-table/token-table';
 import AssetListControlBar from './asset-list-control-bar';
+
+export type AssetListVariant = 'list' | 'table';
 
 export type AssetListProps = {
   onClickAsset: (
@@ -27,16 +28,19 @@ export type AssetListProps = {
   showTokensLinks?: boolean;
   safeChains?: SafeChain[];
   entryPoint?: ScreenViewedEntryPoint;
+  variant?: AssetListVariant;
 };
 
 const TokenListContainer = React.memo(
   ({
     onClickAsset,
     safeChains,
-  }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'>) => {
+    variant,
+  }: Pick<AssetListProps, 'onClickAsset' | 'safeChains'> & {
+    variant: AssetListVariant;
+  }) => {
     const { trackEvent, createEventBuilder } = useAnalytics();
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
-    const isFullScreenDesign = useFullScreenDesign();
 
     const onTokenClick = useCallback(
       (chainId: string, tokenAddress: string, assetId?: CaipAssetType) => {
@@ -62,7 +66,7 @@ const TokenListContainer = React.memo(
       ],
     );
 
-    return isFullScreenDesign ? (
+    return variant === 'table' ? (
       <>
         <NetworkPillSelector />
         <div className="my-1 border-b border-1 border-border-muted" />
@@ -79,9 +83,9 @@ const AssetList = ({
   showTokensLinks,
   safeChains,
   entryPoint,
+  variant = 'list',
 }: AssetListProps) => {
   const isEvm = useSelector(getMultichainIsEvm);
-  const isFullScreenDesign = useFullScreenDesign();
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
@@ -92,10 +96,14 @@ const AssetList = ({
     <>
       <AssetListControlBar
         showTokensLinks={shouldShowTokensLinks}
-        showNetworkFilterAtEnd={isFullScreenDesign}
+        showNetworkFilterAtEnd={variant === 'table'}
         data-testid="parent-selector-tokens-tab"
       />
-      <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />
+      <TokenListContainer
+        onClickAsset={onClickAsset}
+        safeChains={safeChains}
+        variant={variant}
+      />
     </>
   );
 };

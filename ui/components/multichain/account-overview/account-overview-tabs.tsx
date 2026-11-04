@@ -18,6 +18,7 @@ import {
 } from '../../../../shared/constants/app-state';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
+import { useAppLayout } from '../../../contexts/app-layout';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../networks-form/use-safe-chains';
@@ -95,6 +96,7 @@ export const AccountOverviewTabs = ({
   const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const showBottomNav = useBottomNavBar();
+  const { isWideLayout } = useAppLayout();
 
   // Track exposure only when the Perps tab is shown, gated on availability (not
   // dismissal) so control and treatment record symmetrically once per session.
@@ -214,6 +216,7 @@ export const AccountOverviewTabs = ({
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
                 entryPoint={tabEntryPoint}
+                variant={isWideLayout ? 'table' : 'list'}
               />
             </ErrorBoundary>
           </Tab>

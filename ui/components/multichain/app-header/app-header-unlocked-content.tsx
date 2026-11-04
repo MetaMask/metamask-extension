@@ -17,7 +17,6 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
-import { useFullScreenDesign } from '#ui/hooks/useFullScreenDesign';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
@@ -52,10 +51,12 @@ import { DiscoverSearchBar } from './discover-search-bar';
 
 type AppHeaderUnlockedContentProps = {
   menuRef: React.RefObject<HTMLButtonElement>;
+  isWideLayout?: boolean;
 };
 
 export const AppHeaderUnlockedContent = ({
   menuRef,
+  isWideLayout = false,
 }: AppHeaderUnlockedContentProps) => {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
@@ -63,7 +64,6 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const showNavbar = useBottomNavBar();
-  const isFullScreenDesign = useFullScreenDesign();
   const [searchParams, setSearchParams] = useSearchParams();
   const disableAccountPicker = Boolean(
     matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname) ||
@@ -138,10 +138,10 @@ export const AppHeaderUnlockedContent = ({
       <Box
         className={classnames(
           'min-w-0 flex-1 overflow-hidden',
-          isFullScreenDesign && 'max-w-lg',
+          isWideLayout && 'max-w-lg',
         )}
       >
-        {isFullScreenDesign ? (
+        {isWideLayout ? (
           <AccountName name={accountName} />
         ) : (
           <AccountPicker
@@ -202,7 +202,7 @@ export const AppHeaderUnlockedContent = ({
     );
   }, [
     accountName,
-    isFullScreenDesign,
+    isWideLayout,
     disableAccountPicker,
     selectedMultichainAccountId,
     navigate,
@@ -216,7 +216,7 @@ export const AppHeaderUnlockedContent = ({
       {multichainAccountAppContent}
 
       {isDiscoverSearchEnabled &&
-        (isFullScreenDesign ? (
+        (isWideLayout ? (
           <DiscoverSearchBar
             className="ml-auto"
             onOpen={handleOpenDiscoverSearch}
@@ -248,7 +248,7 @@ export const AppHeaderUnlockedContent = ({
           data-testid="account-options-menu-button"
           ariaLabel={t('accountOptions')}
           onClick={handleMainMenuToggle}
-          size={isFullScreenDesign ? ButtonIconSize.Lg : ButtonIconSize.Md}
+          size={isWideLayout ? ButtonIconSize.Lg : ButtonIconSize.Md}
         />
       </BadgeWrapper>
 

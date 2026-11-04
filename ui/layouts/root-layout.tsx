@@ -1,9 +1,11 @@
 import React from 'react';
 import classnames from 'clsx';
 import { Outlet } from 'react-router-dom';
+import { AppLayoutProvider } from '../contexts/app-layout';
+import { useFullScreenDesign } from '../hooks/useFullScreenDesign';
 import { useMainNavBars } from '../hooks/useMainNavBars';
 
-export const RootLayout = () => {
+const RootLayoutFrame = () => {
   const { showSideNav } = useMainNavBars();
 
   return (
@@ -17,5 +19,15 @@ export const RootLayout = () => {
     >
       <Outlet />
     </div>
+  );
+};
+
+export const RootLayout = () => {
+  const isWideLayout = useFullScreenDesign();
+
+  return (
+    <AppLayoutProvider isWideLayout={isWideLayout}>
+      <RootLayoutFrame />
+    </AppLayoutProvider>
   );
 };
