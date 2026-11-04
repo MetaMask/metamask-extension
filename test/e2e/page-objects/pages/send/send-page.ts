@@ -9,12 +9,12 @@ import { Driver } from '../../../webdriver/driver';
  * Boundaries: the send form through Continue. Confirmation / review screens
  * (including Bitcoin snap review) belong to confirmation or
  * `BitcoinReviewTxPage`.
- * Related: `BitcoinReviewTxPage`, `flows/send-transaction.flow.ts`,
+ * Related: `BitcoinReviewTxPage`, `flows/transaction.flow.ts`,
  * `flows/bitcoin-send.flow.ts`.
  *
  * @see ui/pages/confirmations/send/send.tsx
  * @see ui/pages/confirmations/send/send-inner.tsx
- * @see test/e2e/page-objects/flows/send-transaction.flow.ts
+ * @see test/e2e/page-objects/flows/transaction.flow.ts
  */
 class SendPage {
   private readonly amountBalance = { testId: 'send-amount-balance' };
@@ -399,6 +399,39 @@ class SendPage {
     if (validAddress) {
       await this.driver.waitForSelector(this.recipientClassRendered);
     }
+  }
+
+  /**
+   * Waits until the amount input holds a stable non-empty value, then returns it.
+   * Use this after Max, which fills the input asynchronously.
+   *
+   * @returns The amount input value.
+   */
+  async getAmountInputValue(): Promise<string> {
+    console.log('Reading send amount input value');
+    let stableValue = '';
+    let stableReads = 0;
+    await this.driver.waitUntil(
+      async () => {
+        const inputElement = await this.driver.findElement(this.amountInput);
+        const value = await inputElement.getAttribute('value');
+        if (!value) {
+          stableValue = '';
+          stableReads = 0;
+          return false;
+        }
+        if (value === stableValue) {
+          stableReads += 1;
+        } else {
+          stableValue = value;
+          stableReads = 1;
+        }
+        return stableReads >= 2;
+      },
+      { interval: 200, timeout: 10000 },
+    );
+    console.log(`Send amount input value is ${stableValue}`);
+    return stableValue;
   }
 
   /**

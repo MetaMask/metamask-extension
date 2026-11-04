@@ -15,7 +15,7 @@ import {
   closeSettings,
   navigateToSecurityAndPassword,
 } from '../../page-objects/flows/settings.flow';
-import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
+import { MOCK_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 
 describe('Passkey settings', function () {
   it('Turns off biometrics with passkey fallback to password', async function () {
@@ -27,7 +27,7 @@ describe('Passkey settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withPasskeyController({ passkeyRecord: DUMMY_PASSKEY_RECORD })
+          .withPasskeyController({ passkeyRecord: MOCK_PASSKEY_RECORD })
           .build(),
         title: this.test?.fullTitle(),
         virtualAuthenticator: true,

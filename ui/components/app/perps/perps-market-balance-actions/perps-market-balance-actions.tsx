@@ -10,7 +10,7 @@ import {
   Text,
   TextVariant,
   TextColor,
-  FontWeight,
+  FontFamily,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import {
@@ -96,7 +96,7 @@ const PerpsMarketBalanceActions = ({
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -112,7 +112,7 @@ const PerpsMarketBalanceActions = ({
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.WITHDRAW,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -124,7 +124,7 @@ const PerpsMarketBalanceActions = ({
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_HOME,
@@ -156,8 +156,8 @@ const PerpsMarketBalanceActions = ({
     >
       {/* Account Value (includes unrealized PnL) */}
       <SensitiveText
-        variant={TextVariant.DisplayMd}
-        fontWeight={FontWeight.Medium}
+        variant={TextVariant.AmountDisplayLg}
+        fontFamily={FontFamily.Hero}
         isHidden={privacyMode}
         length={SensitiveTextLength.Medium}
         data-testid="perps-balance-actions-total"

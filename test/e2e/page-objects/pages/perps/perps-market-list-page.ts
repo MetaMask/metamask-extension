@@ -217,6 +217,7 @@ export class PerpsMarketListPage {
 
     const optionIdByLabel: Record<string, string> = {
       Crypto: 'crypto',
+      Memecoins: 'memecoin',
       Stocks: 'stock',
       Commodities: 'commodity',
       Forex: 'forex',

@@ -201,6 +201,16 @@ export function moneyActivityLabelKey(
   return KIND_LABEL_KEY[kind];
 }
 
+/**
+ * Row icon for an activity kind, per the Money account designs: a plus for
+ * deposits, a down arrow for inbound transfers, the circular arrows for a
+ * mUSD conversion, and an up-right arrow for outbound sends. Note `sent`
+ * deliberately does not use `SwapHorizontal` — that glyph reads as a swap and
+ * collided with the `converted` rows.
+ *
+ * @param kind - Classified activity kind.
+ * @returns Icon to render in the row avatar.
+ */
 export function moneyActivityKindToIcon(kind: MoneyActivityKind): IconName {
   switch (kind) {
     case 'deposited':
@@ -210,7 +220,7 @@ export function moneyActivityKindToIcon(kind: MoneyActivityKind): IconName {
     case 'converted':
       return IconName.Refresh;
     case 'sent':
-      return IconName.SwapHorizontal;
+      return IconName.Arrow2UpRight;
     default:
       return IconName.Arrow2Down;
   }

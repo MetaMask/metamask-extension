@@ -73,12 +73,20 @@ export const PERPS_CONSTANTS = {
 export const PERPS_COLLATERAL_SYMBOL = 'USDC';
 
 /**
- * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).
+ * Minimum USD notional for market, limit and reduce-only orders on HyperLiquid (mainnet and testnet).
  * Partial closes below this amount fail with ORDER_SIZE_MIN; full closes omit this check.
  * Duplicates TRADING_DEFAULTS.amount in @metamask/perps-controller until a shared export exists.
  * @see TRADING_DEFAULTS.amount in @metamask/perps-controller hyperLiquidConfig
  */
 export const PERPS_MIN_MARKET_ORDER_USD = 10;
+
+/**
+ * A tradeable balance below this rounds to `0.00 USDC` in the displayed
+ * available-to-trade row, so a disabled Insufficient funds button reads as a
+ * bug. Treat it as unfunded and offer Add funds instead. This is a display
+ * threshold, not an order-minimum one — see `PERPS_MIN_MARKET_ORDER_USD`.
+ */
+export const PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC = 0.01;
 
 /**
  * Market sorting configuration
@@ -144,6 +152,7 @@ export const MARKET_FILTER_LABEL_KEYS: Record<MarketFilter, string> = {
   // Reuses the Perps tab section heading rather than adding a duplicate string.
   watchlist: 'perpsWatchlist',
   crypto: 'perpsFilterCrypto',
+  memecoin: 'perpsFilterMemecoins',
   stock: 'perpsFilterStocks',
   'pre-ipo': 'perpsFilterPreIpo',
   index: 'perpsFilterIndex',
@@ -154,11 +163,16 @@ export const MARKET_FILTER_LABEL_KEYS: Record<MarketFilter, string> = {
 };
 
 /**
- * Leading glyph for each product category chip, taken from the Products design
- * (Figma `13192:28387`). Indices and ETFs deliberately share `Chart` — the
- * design uses one bar-chart glyph for both.
+ * Leading glyph for each product category chip except `memecoin`, taken from
+ * the Products design (Figma `13192:28387`). Indices and ETFs deliberately
+ * share `Chart` — the design uses one bar-chart glyph for both. Memecoins use
+ * the local `PerpsSentimentSatisfiedIcon` until MMDS ships
+ * `IconName.SentimentSatisfied`.
  */
-export const MARKET_CATEGORY_ICONS: Record<MarketCategoryFilter, IconName> = {
+export const MARKET_CATEGORY_ICONS: Record<
+  Exclude<MarketCategoryFilter, 'memecoin'>,
+  IconName
+> = {
   // `all` never renders a chip; kept so the record stays exhaustive.
   all: IconName.Category,
   crypto: IconName.Ethereum,
@@ -170,6 +184,8 @@ export const MARKET_CATEGORY_ICONS: Record<MarketCategoryFilter, IconName> = {
   forex: IconName.Exchange,
   etf: IconName.Chart,
 };
+
+export const MEMECOIN_CATEGORY_ID = 'memecoin' satisfies MarketCategoryFilter;
 
 /**
  * Categories shown as Products chips on the Perps tab, taken from the

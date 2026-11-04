@@ -1,8 +1,13 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ERC20 } from '@metamask/controller-utils';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '@metamask/design-system-react';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -10,12 +15,6 @@ import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { selectIsAssetInAssetsBalance } from '../../../selectors/assets';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../components/component-library';
-import { Color } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -35,7 +34,7 @@ const AssetOptions = ({
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
-  const ref = useRef(false);
+  const [menuAnchorElement, setMenuAnchorElement] = useState(null);
 
   const assetId =
     token?.address && token?.chainId
@@ -78,19 +77,17 @@ const AssetOptions = ({
   };
 
   return (
-    <div ref={ref}>
+    <div ref={setMenuAnchorElement} className="shrink-0">
       <ButtonIcon
-        className="asset-options__button"
         data-testid="asset-options__button"
         onClick={() => setAssetOptionsOpen(true)}
         ariaLabel={t('assetOptions')}
         iconName={IconName.MoreVertical}
-        color={Color.textDefault}
         size={ButtonIconSize.Md}
       />
       {assetOptionsOpen ? (
         <Menu
-          anchorElement={ref.current}
+          anchorElement={menuAnchorElement}
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem

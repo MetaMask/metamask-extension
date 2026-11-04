@@ -1,5 +1,8 @@
 import { segment } from '../segment';
-import { CriticalErrorType } from '../../../../shared/constants/state-corruption';
+import {
+  CriticalErrorRepairAction,
+  CriticalErrorType,
+} from '../../../../shared/constants/critical-error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -30,7 +33,6 @@ describe('trackCriticalErrorEvent', () => {
         analyticsId: 'test-metrics-id-123',
         consentDecisionMade: true,
       },
-      MetaMetricsController: {},
     };
 
     trackCriticalErrorEvent(
@@ -52,6 +54,7 @@ describe('trackCriticalErrorEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
@@ -66,7 +69,6 @@ describe('trackCriticalErrorEvent', () => {
         analyticsId: 'test-metrics-id-456',
         consentDecisionMade: true,
       },
-      MetaMetricsController: {},
     };
 
     trackCriticalErrorEvent(
@@ -74,7 +76,7 @@ describe('trackCriticalErrorEvent', () => {
       MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
       CriticalErrorType.BackgroundStateSyncTimeout,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      { restore_accounts_enabled: true },
+      { repair_action: CriticalErrorRepairAction.Recover },
     );
 
     expect(mockSegment.track).toHaveBeenCalledWith({
@@ -84,7 +86,7 @@ describe('trackCriticalErrorEvent', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_type: CriticalErrorType.BackgroundStateSyncTimeout,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        restore_accounts_enabled: true,
+        repair_action: CriticalErrorRepairAction.Recover,
         category: MetaMetricsEventCategory.Error,
       },
       context: {
@@ -92,6 +94,7 @@ describe('trackCriticalErrorEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);

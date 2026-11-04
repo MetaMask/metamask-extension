@@ -9,7 +9,11 @@ import {
 } from '@metamask/design-system-react';
 import type { MarketFilter } from '../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { MARKET_FILTER_LABEL_KEYS } from '../constants';
+import { MARKET_FILTER_LABEL_KEYS, MEMECOIN_CATEGORY_ID } from '../constants';
+import {
+  PERPS_SENTIMENT_ICON_SIZE_SM,
+  PerpsSentimentSatisfiedIcon,
+} from '../perps-sentiment-satisfied-icon';
 
 /**
  * The two shapes the design gives a category control, which differ by more than
@@ -108,6 +112,9 @@ export const PerpsMarketCategoryPill = ({
   // to `icon-default`, which on the active pill is the fill colour, so the
   // glyph goes invisible. Both glyphs follow the label instead.
   const glyphColor = isActive ? IconColor.IconInverse : IconColor.IconDefault;
+  const isMemecoinChip =
+    category === MEMECOIN_CATEGORY_ID &&
+    variant === PerpsCategoryPillVariant.Chip;
 
   return (
     <ButtonFilter
@@ -121,13 +128,22 @@ export const PerpsMarketCategoryPill = ({
       }
       data-testid={`${testIdPrefix}-pill-${category}`}
     >
-      {iconName && (
-        <Icon
-          name={iconName}
-          size={IconSize.Sm}
-          color={glyphColor}
-          className="mr-1 shrink-0"
+      {isMemecoinChip ? (
+        <PerpsSentimentSatisfiedIcon
+          size={PERPS_SENTIMENT_ICON_SIZE_SM}
+          className={`mr-1 shrink-0 ${
+            isActive ? 'text-icon-inverse' : 'text-icon-default'
+          }`}
         />
+      ) : (
+        iconName && (
+          <Icon
+            name={iconName}
+            size={IconSize.Sm}
+            color={glyphColor}
+            className="mr-1 shrink-0"
+          />
+        )
       )}
       {label}
       {isActive && isClearable && (

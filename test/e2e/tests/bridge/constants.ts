@@ -35,6 +35,10 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
       isActiveSrc: true,
       isActiveDest: true,
     },
+    '4663': {
+      isActiveSrc: true,
+      isActiveDest: true,
+    },
   },
   chainRanking: [
     { chainId: 'eip155:1', name: 'Ethereum' },
@@ -42,6 +46,7 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
     { chainId: 'eip155:59144', name: 'Linea' },
     { chainId: 'eip155:8453', name: 'Base' },
     { chainId: 'eip155:143', name: 'Monad' },
+    { chainId: 'eip155:4663', name: 'Robinhood' },
   ],
 };
 
@@ -56,15 +61,6 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
 };
 
 export const ETH_CONVERSION_RATE_USD = 1;
-export const MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: ETH_CONVERSION_RATE_USD,
-      usdConversionRate: ETH_CONVERSION_RATE_USD,
-    },
-  },
-};
 
 const ETH_ASSET_PRICE_ENTRY = (ethConversionRate: number) => ({
   allTimeHigh: 4946.05,
@@ -477,6 +473,8 @@ export const MOCK_TOKENS_LINEA = [
   },
   getNativeAssetForChainId(59144),
 ];
+
+export const MOCK_TOKENS_ROBINHOOD = [getNativeAssetForChainId(4663)];
 
 export const MOCK_GET_TOKEN_ARBITRUM = [
   getNativeAssetForChainId(42161),

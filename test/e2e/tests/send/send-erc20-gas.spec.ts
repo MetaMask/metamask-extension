@@ -18,6 +18,7 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -56,6 +57,7 @@ describe('Send ERC20 - Gas Customization', function () {
           new TokenTransferTransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityTab = new ActivityTab(driver);
+        const txToastNotification = new TxToastNotification(driver);
 
         await homePage.checkPageIsLoaded();
         await tokensTab.importCustomTokenByChain(
@@ -92,9 +94,11 @@ describe('Send ERC20 - Gas Customization', function () {
         await homePage.goToActivityList();
         await activityTab.checkTxAction({ action: `Sent ${symbol}` });
         await activityTab.checkTxAmountInActivity(valueWithSymbol('-1'));
+        await txToastNotification.closeToastNotification();
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
+        await tokensTab.refreshErc20TokenList();
         await tokensTab.checkTokenExistsInList(symbol, valueWithSymbol('9'), {
           amountTimeout: 20000,
         });
@@ -131,6 +135,7 @@ describe('Send ERC20 - Gas Customization', function () {
           new TokenTransferTransactionConfirmation(driver);
         const gasFeeModal = new GasFeeModal(driver);
         const activityTab = new ActivityTab(driver);
+        const txToastNotification = new TxToastNotification(driver);
 
         await homePage.checkPageIsLoaded();
         await tokensTab.importCustomTokenByChain(
@@ -168,6 +173,7 @@ describe('Send ERC20 - Gas Customization', function () {
         await homePage.goToActivityList();
         await activityTab.checkTxAction({ action: `Sent ${symbol}` });
         await activityTab.checkTxAmountInActivity(valueWithSymbol('-1.5'));
+        await txToastNotification.closeToastNotification();
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
@@ -208,6 +214,7 @@ describe('Send ERC20 - Gas Customization', function () {
         const tokenTransferRedesignedConfirmPage =
           new TokenTransferTransactionConfirmation(driver);
         const activityTab = new ActivityTab(driver);
+        const txToastNotification = new TxToastNotification(driver);
 
         await homePage.checkPageIsLoaded();
         await tokensTab.importCustomTokenByChain(
@@ -239,6 +246,7 @@ describe('Send ERC20 - Gas Customization', function () {
         await homePage.goToActivityList();
         await activityTab.checkTxAction({ action: `Sent ${symbol}` });
         await activityTab.checkTxAmountInActivity(valueWithSymbol('-1.5'));
+        await txToastNotification.closeToastNotification();
 
         // check token amount is correct after transaction
         await homePage.goToTokensTab();
@@ -299,7 +307,7 @@ describe('Send ERC20 - Gas Customization', function () {
         .always()
         .thenJson(200, {
           fullSupport: [],
-          partialSupport: { balances: [] },
+          partialSupport: [],
         }),
       // Browse list on the token management page. Without this the catch-all
       // answers with an empty body, which `browseTokens` fails to parse.

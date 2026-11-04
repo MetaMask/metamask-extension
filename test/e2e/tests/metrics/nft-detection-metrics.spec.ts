@@ -1,40 +1,13 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { getEventPayloads, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
-import { waitForExpectedTraits } from './helpers';
-
-/**
- * Mocks the segment API multiple times for specific payloads that we expect to
- * see when these tests are run. In this case, we are looking for
- * 'Permissions Requested' and 'Permissions Received'. Do not use the constants
- * from the metrics constants files, because if these change we want a strong
- * indicator to our data team that the shape of data will change.
- *
- * @param mockServer - The mock server instance.
- * @returns
- */
-async function mockSegmentTrack(mockServer: Mockttp) {
-  return [
-    // Wallet Setup Started event is omitted because of the onboarding fixture eventsBeforeMetricsOptIn
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Created' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-  ];
-}
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import { waitForExpectedTraits, waitForSettingsUpdated } from './helpers';
 
 /**
  * Mocks Segment identify calls. Do not use the constants from the metrics
@@ -59,23 +32,45 @@ async function mockSegmentIdentify(mockServer: Mockttp) {
   ];
 }
 
+async function mockBasicFunctionalityTurnedOff(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [
+          {
+            type: 'track',
+            event: 'Settings Updated',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              settings_type: 'basic_functionality',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              old_value: true,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_value: false,
+            },
+          },
+        ],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
+}
+
 describe('Nft detection event', function () {
-  it('is sent when onboarding user', async function () {
+  it('sends identify trait with nft_autodetection_enabled during onboarding', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            consentDecisionMade: true,
-            optedIn: true,
-          })
-          .withPreferencesController({
-            useTokenDetection: true,
-            useNftDetection: true,
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegmentTrack,
+        testSpecificMock: mockSegmentIdentify,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
@@ -83,33 +78,20 @@ describe('Nft detection event', function () {
           consentDecisionMade: true,
           optedIn: true,
         });
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+
+        await waitForExpectedTraits(driver, mockedEndpoints, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'metamask',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: false,
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
+          nft_autodetection_enabled: true,
         });
       },
     );
   });
 
-  it('sends identify trait when NFT autodetection is toggled in Assets settings', async function () {
+  it('sends Settings Updated when basic functionality is turned off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
@@ -119,7 +101,7 @@ describe('Nft detection event', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegmentIdentify,
+        testSpecificMock: mockBasicFunctionalityTurnedOff,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
@@ -129,23 +111,20 @@ describe('Nft detection event', function () {
 
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToAssetsSettings();
+        await settingsPage.goToPrivacySettings();
 
-        const assetsSettings = new PreferencesAndDisplaySettings(driver);
-        await assetsSettings.checkAssetsPageIsLoaded();
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.checkPageIsLoaded();
 
-        // Default is enabled; toggle off and assert the identify trait update.
-        await assetsSettings.toggleAutodetectNfts();
-        await waitForExpectedTraits(driver, mockedEndpoints, {
+        await privacySettings.toggleBasicFunctionalityOff();
+        await waitForSettingsUpdated(driver, mockedEndpoints, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          nft_autodetection_enabled: false,
-        });
-
-        // Toggle back on and assert the identify trait update.
-        await assetsSettings.toggleAutodetectNfts();
-        await waitForExpectedTraits(driver, mockedEndpoints, {
+          settings_type: 'basic_functionality',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          nft_autodetection_enabled: true,
+          old_value: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_value: false,
+          category: 'Settings',
         });
       },
     );

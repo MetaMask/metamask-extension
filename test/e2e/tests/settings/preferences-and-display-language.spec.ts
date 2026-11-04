@@ -34,7 +34,7 @@ const selectors = {
     testId: 'auto-lockout-button',
     text: da.save.message,
   },
-  discoverTextवर्तमान: { text: hi.discover.message, tag: 'a' },
+  sendTextवर्तमान: { text: hi.send.message, tag: 'span' },
   headerTextAr: { text: ar.settings.message, tag: 'p' },
 };
 
@@ -193,11 +193,11 @@ describe('Settings - Preferences and display', function (this: Suite) {
         await driver.refresh();
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        const isDiscoverButtonTextChanged = await driver.isElementPresent(
-          selectors.discoverTextवर्तमान,
+        const isSendButtonTextChanged = await driver.isElementPresent(
+          selectors.sendTextवर्तमान,
         );
         assert.equal(
-          isDiscoverButtonTextChanged,
+          isSendButtonTextChanged,
           true,
           'Language change is not reflected in headers',
         );

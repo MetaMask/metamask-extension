@@ -24,7 +24,7 @@ import {
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
 import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import { showModal, toggleExternalServices } from '../../../../store/actions';
+import { enableBasicFunctionality, showModal } from '../../../../store/actions';
 import ToggleButton from '../../../ui/toggle-button';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import {
@@ -129,6 +129,9 @@ export const BackupAndSyncToggle = ({
 
   // Cascading side effects: keep backup & sync in sync with basic functionality.
   // Disabling does not call `signIn()` so it's safe in either context.
+  // During onboarding the intent flag is also cleared in the app reducer when
+  // basic functionality is turned off, so this still repairs the toggle if it
+  // mounts with an already-inconsistent flag.
   useEffect(() => {
     if (isOnboarding) {
       if (
@@ -232,7 +235,7 @@ export const BackupAndSyncToggle = ({
         showModal({
           name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
           enableBackupAndSync: async () => {
-            await dispatch(toggleExternalServices(true));
+            await dispatch(enableBasicFunctionality());
             await setIsBackupAndSyncFeatureEnabled(
               BACKUPANDSYNC_FEATURES.main,
               true,
@@ -276,7 +279,7 @@ export const BackupAndSyncToggle = ({
 
   return (
     <Box
-      marginTop={isOnboarding ? 3 : 4}
+      marginTop={isOnboarding ? 0 : 4}
       marginBottom={isOnboarding ? 3 : 4}
       paddingLeft={isOnboarding ? 0 : 4}
       paddingRight={isOnboarding ? 0 : 4}
@@ -311,7 +314,7 @@ export const BackupAndSyncToggle = ({
         )}
       </Box>
       <Text
-        variant={isOnboarding ? TextVariant.BodySm : TextVariant.BodyMd}
+        variant={TextVariant.BodyMd}
         color={TextColor.TextAlternative}
         asChild
         className="w-full"
@@ -320,7 +323,7 @@ export const BackupAndSyncToggle = ({
           {t('backupAndSyncEnableDescription', [
             <Text
               asChild
-              variant={isOnboarding ? TextVariant.BodySm : TextVariant.BodyMd}
+              variant={TextVariant.BodyMd}
               key="privacy-link"
               color={TextColor.InfoDefault}
             >

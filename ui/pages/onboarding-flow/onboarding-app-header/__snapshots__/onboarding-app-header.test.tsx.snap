@@ -8,7 +8,7 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
     <div
       class="flex flex-row justify-between onboarding-app-header__contents w-full mx-auto"
     >
-      <button
+      <div
         class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"
         data-testid="app-header-logo"
       >
@@ -30,7 +30,7 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
           class="onboarding-app-header__metafox-logo--icon"
           src="./images/logo/metamask-fox.svg"
         />
-      </button>
+      </div>
       <div
         class="pt-12 onboarding-app-header__banner-tip-container"
       >
@@ -101,7 +101,7 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
     <div
       class="flex flex-row justify-between onboarding-app-header__contents w-full mx-auto"
     >
-      <button
+      <div
         class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"
         data-testid="app-header-logo"
       >
@@ -123,7 +123,7 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
           class="onboarding-app-header__metafox-logo--icon"
           src="./images/logo/metamask-fox.svg"
         />
-      </button>
+      </div>
       <div
         class="dropdown onboarding-app-header__dropdown"
       >

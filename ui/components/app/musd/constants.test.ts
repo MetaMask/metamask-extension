@@ -23,11 +23,11 @@ import {
 describe('MUSD Constants', () => {
   describe('MUSD_TOKEN', () => {
     it('should have correct symbol', () => {
-      expect(MUSD_TOKEN.symbol).toBe('MUSD');
+      expect(MUSD_TOKEN.symbol).toBe('mUSD');
     });
 
     it('should have correct name', () => {
-      expect(MUSD_TOKEN.name).toBe('MUSD');
+      expect(MUSD_TOKEN.name).toBe('MetaMask USD');
     });
 
     it('should have 6 decimals', () => {
@@ -152,7 +152,7 @@ describe('MUSD Constants', () => {
 
     it('should point to MetaMask terms', () => {
       expect(MUSD_CONVERSION_BONUS_TERMS_OF_USE).toBe(
-        'https://metamask.io/musd-bonus-terms-of-use',
+        'https://metamask.com/musd-bonus-terms-of-use',
       );
     });
   });

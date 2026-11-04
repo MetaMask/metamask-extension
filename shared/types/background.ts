@@ -7,7 +7,6 @@ import type {
   TokenBalancesControllerState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
   MultichainBalancesControllerState,
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
@@ -15,6 +14,7 @@ import type {
   DeFiPositionsControllerV2State,
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -72,11 +72,18 @@ import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers
 import type { EncryptionPublicKeyControllerState } from '../../app/scripts/controllers/encryption-public-key';
 import type { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
-import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
+import type { RewardsMoneyControllerState } from '../../app/scripts/controllers/rewards-money/rewards-money-controller-types';
 
 export type ControllerStatePropertiesEnumerated = {
+  assetsInfo: AssetsControllerState['assetsInfo'];
+  assetsBalance: AssetsControllerState['assetsBalance'];
+  assetsPrice: AssetsControllerState['assetsPrice'];
+  customAssets: AssetsControllerState['customAssets'];
+  assetPreferences: AssetsControllerState['assetPreferences'];
+  selectedCurrency: AssetsControllerState['selectedCurrency'];
+  assetsLoadingStatus?: AssetsControllerState['assetsLoadingStatus'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -135,6 +142,7 @@ export type ControllerStatePropertiesEnumerated = {
   lastPerpsDepositEntryPoint: AppStateControllerState['lastPerpsDepositEntryPoint'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
+  moneyEarnBannerDismissedTokenKeys: AppStateControllerState['moneyEarnBannerDismissedTokenKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
@@ -152,6 +160,7 @@ export type ControllerStatePropertiesEnumerated = {
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
   passkeyAutoUnlockSuppressed: AppStateControllerState['passkeyAutoUnlockSuppressed'];
+  lastShownPrfMigrationReminderAt: AppStateControllerState['lastShownPrfMigrationReminderAt'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -190,21 +199,20 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
-  tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
   consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
+  marketingConsentDecisionMade?: AnalyticsControllerState['marketingConsentDecisionMade'];
   preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
   optedIn: AnalyticsControllerState['optedIn'];
+  optedInToMarketing?: AnalyticsControllerState['optedInToMarketing'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
-  marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
+  marketingCampaignCookieId?: AnalyticsControllerState['marketingCampaignCookieId'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
   metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
   balances: MultichainBalancesControllerState['balances'];
   nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
   conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
-  historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
   allIgnoredAssets: MultichainAssetsControllerState['allIgnoredAssets'];
@@ -238,6 +246,7 @@ export type ControllerStatePropertiesEnumerated = {
   isUpdatingFCMToken: NotificationServicesPushController.NotificationServicesPushControllerState['isUpdatingFCMToken'];
   completedOnboarding: OnboardingControllerState['completedOnboarding'];
   hasSeenOnboardingCompletionPage: OnboardingControllerState['hasSeenOnboardingCompletionPage'];
+  onboardingJourneyEnded: OnboardingControllerState['onboardingJourneyEnded'];
   firstTimeFlowType: OnboardingControllerState['firstTimeFlowType'];
   onboardingTabs?: OnboardingControllerState['onboardingTabs'];
   seedPhraseBackedUp: OnboardingControllerState['seedPhraseBackedUp'];
@@ -308,7 +317,6 @@ export type ControllerStatePropertiesEnumerated = {
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
-  marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
@@ -330,6 +338,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
   rewardsVipPerpsFees: RewardsControllerState['rewardsVipPerpsFees'];
+  excludedRegions: RewardsMoneyControllerState['excludedRegions'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
@@ -341,6 +350,7 @@ export type ControllerStatePropertiesEnumerated = {
 export type ControllerStateTypesMerged = AccountsControllerState &
   AccountTrackerControllerState &
   AddressBookControllerState &
+  AssetsControllerState &
   AlertControllerState &
   AnnouncementControllerState &
   AuthenticationController.AuthenticationControllerState &
@@ -361,12 +371,11 @@ export type ControllerStateTypesMerged = AccountsControllerState &
     [P in keyof GasFeeState]: GasFeeState[P];
   } & KeyringControllerState &
   LoggingControllerState &
-  MetaMetricsControllerState &
   AnalyticsControllerState &
   MetaMetricsDataDeletionState &
   MultichainBalancesControllerState &
   MultichainTransactionsControllerState &
-  MultichainAssetsRatesControllerState &
+  Pick<MultichainAssetsRatesControllerState, 'conversionRates'> &
   MultichainAssetsControllerState &
   MultichainNetworkControllerState &
   NameControllerState &
@@ -392,14 +401,14 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   SnapInsightsControllerState &
   SnapRegistryControllerState &
   SubjectMetadataControllerState &
-  TokenBalancesControllerState &
+  Pick<TokenBalancesControllerState, 'tokenBalances'> &
   TokensControllerState &
   TokenListState &
-  TokenRatesControllerState &
   TransactionControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
+  RewardsMoneyControllerState &
   ConnectivityControllerState &
   NetworkConnectionBannerControllerState;
 

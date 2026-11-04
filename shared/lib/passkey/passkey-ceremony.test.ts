@@ -10,6 +10,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../constants/app';
 import { getEnvironmentType } from '../environment-type';
+import * as manifestFlags from '../manifestFlags';
 import {
   PasskeyCeremonyTimeoutError,
   PASSKEY_SIDEPANEL_CEREMONY_TIMEOUT_MS,
@@ -245,6 +246,33 @@ describe('passkey ceremony helpers', () => {
           prf: MOCK_PASSKEY_PRF_RESULT,
         },
       });
+    });
+
+    it('keeps the authenticator response when mock passkey PRF is disabled', async () => {
+      const getManifestFlagsSpy = jest
+        .spyOn(manifestFlags, 'getManifestFlags')
+        .mockReturnValue({
+          testing: { mockPasskeyPrfEnabled: false },
+        });
+      const response = {
+        id: 'credential-id',
+        rawId: 'raw-id',
+        response: {} as never,
+        type: 'public-key',
+        authenticatorAttachment: null,
+        clientExtensionResults: {},
+      };
+      mockStartAuthentication.mockResolvedValue(response as never);
+
+      try {
+        const result = await startPasskeyAuthentication({
+          challenge: 'abc',
+        } as never);
+
+        expect(result.clientExtensionResults).toStrictEqual({});
+      } finally {
+        getManifestFlagsSpy.mockRestore();
+      }
     });
 
     it('decodes PRF eval.first string to buffer for authentication options', async () => {

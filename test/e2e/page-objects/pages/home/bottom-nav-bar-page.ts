@@ -1,16 +1,14 @@
 import { Driver } from '../../../webdriver/driver';
-import { SWAP_PATH } from '../../../../../ui/helpers/constants/routes';
 
 /**
  * Bottom navigation bar chrome for the bottom-nav AB test treatment.
  *
  * Screen: chrome component (not a full page), only present in the bottom nav
- * AB test treatment on applicable routes (home, perps-home, swaps, activity).
- * Owns: the bottom nav bar itself and tab clicks that assert navigation to
- * home or swaps.
+ * AB test treatment on applicable routes (home, perps-home, activity).
+ * Owns: the bottom nav bar itself and tab clicks that assert navigation home.
  * Boundaries: the nav chrome only. Destination screens belong to `HomePage`,
  * swap/bridge page objects, etc. after navigation.
- * Related: `HomePage`, swap/bridge prepare flows reached via the swaps tab.
+ * Related: `HomePage`, swap/bridge prepare flows reached from home.
  *
  * @see ui/components/app/bottom-nav-bar/bottom-nav-bar.tsx
  */
@@ -19,11 +17,11 @@ class BottomNavBar {
 
   private readonly homeTab = '[data-testid="bottom-nav-home"]';
 
+  private readonly moneyTab = '[data-testid="bottom-nav-money"]';
+
   private readonly page = {
     testId: 'parent-selector-bottom-nav-bar',
   };
-
-  private readonly swapsTab = '[data-testid="bottom-nav-swaps"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -47,10 +45,14 @@ class BottomNavBar {
     await this.assertOnRoute('/');
   }
 
-  async clickSwaps(): Promise<void> {
-    console.log('Click bottom nav swaps tab');
-    await this.driver.clickElement(this.swapsTab);
-    await this.assertOnRoute(SWAP_PATH);
+  /**
+   * Click the Money tab. Only rendered once the Money Account availability
+   * query resolves, so wait for it rather than failing on first paint.
+   */
+  async clickMoney(): Promise<void> {
+    console.log('Click bottom nav money tab');
+    await this.driver.clickElement(this.moneyTab);
+    await this.assertOnRoute('/money-home');
   }
 }
 

@@ -1,4 +1,5 @@
 import { buildMoneyAccountDepositBatch } from '@metamask/money-account-utils';
+import { BigNumber } from 'bignumber.js';
 import type {
   GetAmountDataRequest,
   GetAmountDataResponse,
@@ -54,9 +55,10 @@ export async function getMoneyAccountAmountData(
 }
 
 /**
- * Commits a new deposit amount: writes `requiredAssets` immediately so Pay
- * can requote, then re-encodes nested approve + deposit calldata. Superseded
- * intents resolve `false`.
+ * Commits a new deposit amount after re-encoding nested approve + deposit
+ * calldata. The calldata and `requiredAssets` amount are published together so
+ * Pay cannot quote an intermediate transaction state. Superseded intents
+ * resolve `false`.
  *
  * @param messenger - Messenger used to encode and commit.
  * @param transactionId - Id of the Money Account deposit transaction.
@@ -70,7 +72,7 @@ export async function updateMoneyAccountDepositAmount(
 ): Promise<boolean> {
   pruneStaleAmountCommits(messenger);
 
-  const amountRaw = parseMusdHumanAmount(amountHuman);
+  const amountRaw = parseMusdHumanAmount(amountHuman, BigNumber.ROUND_DOWN);
   if (amountRaw === undefined) {
     return false;
   }
@@ -83,23 +85,7 @@ export async function updateMoneyAccountDepositAmount(
   const isCurrent = beginAmountCommit(transactionId);
 
   try {
-    // Pay watches `requiredAssets`, not nested calldata. Write the new amount
-    // before the vault encode so a slow or failing
-    // `buildMoneyAccountDepositBatch` cannot leave the quote stuck on the
-    // previous value.
-    if (!isCurrent()) {
-      return false;
-    }
-
     const requiredAssetAmount = toMusdAmountHex(amountRaw);
-    commitTransactionPayUpdates(
-      messenger,
-      transactionId,
-      [],
-      'Money Account deposit: update amount',
-      requiredAssetAmount,
-    );
-
     const { updates } = await getMoneyAccountAmountData(messenger, {
       amount: amountRaw.toString(10),
       transaction,
@@ -109,15 +95,10 @@ export async function updateMoneyAccountDepositAmount(
       return false;
     }
 
-    if (!updates.length) {
-      return true;
-    }
-
     commitTransactionPayUpdates(
       messenger,
       transactionId,
       updates,
-      'Money Account deposit: update amount',
       requiredAssetAmount,
     );
     return true;

@@ -228,9 +228,6 @@
   "gasLimit": {
     "message": "الحد الأقصى لوحدات جاس"
   },
-  "gasLimitTooLow": {
-    "message": "يجب أن يكون حد وحدات الجاس على الأقل 21000"
-  },
   "gasUsed": {
     "message": "وحدات جاس المستخدمة"
   },
@@ -415,9 +412,6 @@
   "privateKey": {
     "message": "المفتاح الخاص",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "تنبيه: لا تكشف عن هذا المفتاح مطلقًا. يمكن لأي شخص لديه مفاتيحك الخاصة سرقة أي أصول تحتفظ بها في حسابك."
   },
   "privateNetwork": {
     "message": "شبكة خاصة"

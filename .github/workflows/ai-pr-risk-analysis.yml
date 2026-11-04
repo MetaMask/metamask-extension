@@ -1,8 +1,22 @@
 name: AI PR risk analysis
 
-# Reusable workflow — called from main.yml with the changed-files list from
-# get-requirements (dorny/paths-filter all_changes_files).
-# Do not add a standalone pull_request trigger; that would double-run analysis.
+# Two entry points:
+# - workflow_call from main.yml, which passes the changed-files list from
+#   get-requirements. main.yml runs this on release/* PRs, and on main PRs
+#   that already have the auto-merge label.
+# - pull_request labeled / ready_for_review on main, so applying auto-merge
+#   (or marking a labeled draft ready) does not start the full CI workflow.
+#
+# Do not add opened, synchronize, or reopened triggers. main.yml already
+# handles those, and a second trigger would analyze twice.
+#
+# github.event_name stays pull_request for both entry points, because a
+# called workflow sees its caller's event. Gate the direct runs with
+# github.event.action instead.
+#
+# Direct runs list changed files from the pull request API. Do not call
+# get-requirements for that list: it also posts build-source-hash and
+# builds-from-run statuses, and a label run would overwrite Main's values.
 #
 # The action owns labels / check runs / summaries.
 #
@@ -21,9 +35,6 @@ on:
         required: true
         type: string
     secrets:
-      AI_ANALYZER_TOKEN:
-        description: Token with read access to MetaMask/ai-analyzer (private action checkout)
-        required: true
       AI_ANALYZER_LITELLM_KEY:
         description: LiteLLM API key for AI PR analysis
         required: true
@@ -33,28 +44,90 @@ on:
       AI_ANALYZER_LANGFUSE_SECRET_KEY:
         description: Optional Langfuse secret key; pair with public key to enable tracing
         required: false
+  pull_request:
+    types:
+      - labeled
+      - ready_for_review
+    branches:
+      - main
 
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Direct pull_request runs are gated here. workflow_call from main.yml
+    # keeps the caller's action (opened, synchronize, reopened), so those
+    # runs are not filtered again — main.yml already decided to analyze.
+    # A draft that already has auto-merge is analyzed when it is marked ready,
+    # because main.yml does not run on ready_for_review.
+    if: >-
+      (
+        github.event.action != 'labeled'
+        && github.event.action != 'ready_for_review'
+      )
+      || (
+        github.event.pull_request.draft == false
+        && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        && (
+          (
+            github.event.action == 'labeled'
+            && github.event.label.name == 'auto-merge'
+          )
+          || (
+            github.event.action == 'ready_for_review'
+            && contains(github.event.pull_request.labels.*.name, 'auto-merge')
+          )
+        )
+      )
+    # One group for the label run, the ready_for_review run, and main.yml's
+    # workflow_call, so a push and a label cannot analyze the same PR at once.
+    # Label and ready_for_review runs queue instead of cancelling: cancelling
+    # the in-progress job would mark the calling Main workflow as cancelled.
+    # A new Main run may cancel a stale label run. Unrelated labels skip this
+    # job, so they do not take the group.
+    concurrency:
+      group: ai-pr-risk-analysis-${{ github.event.pull_request.number || github.run_id }}
+      cancel-in-progress: ${{ github.event.action != 'labeled' && github.event.action != 'ready_for_review' }}
     permissions:
       contents: read
+      id-token: write
       pull-requests: write
       checks: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Verify changed-files input
+      - name: Resolve changed files
+        id: files
         env:
-          CHANGED_FILES: ${{ inputs.changed-files }}
+          INPUT_FILES: ${{ inputs.changed-files }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          if [[ -z "${CHANGED_FILES// }" ]]; then
-            echo "::error::changed-files input is empty; refusing to fall back to gh rediscovery"
+          files="$INPUT_FILES"
+          if [[ -z "${files// }" ]]; then
+            if [[ -z "$PR_NUMBER" ]]; then
+              echo "::error::changed-files input is empty and there is no pull request number"
+              exit 1
+            fi
+            echo "changed-files input is empty; listing files from the pull request API"
+            files=$(gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --jq '.[].filename' | tr '\n' ' ')
+          fi
+          if [[ -z "${files// }" ]]; then
+            echo "::error::No changed files"
             exit 1
           fi
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/ai-analyzer
+          permissions: |
+            contents: read
 
       # Pinned immutable SHA — see header pin bump process
       - name: Checkout AI Analyzer
@@ -63,14 +136,14 @@ jobs:
           repository: MetaMask/ai-analyzer
           ref: f9a82c6ae0bfdadb352b9b736d26174705fe6348
           path: .ai-analyzer-action
-          token: ${{ secrets.AI_ANALYZER_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
 
       - name: Run AI PR Analysis
         uses: ./.ai-analyzer-action
         with:
           mode: pr-risk-analysis
           config-path: .github/ai-pr-analyzer
-          changed-files: ${{ inputs.changed-files }}
+          changed-files: ${{ steps.files.outputs.files }}
           add-comment: false
           add-label: true
           litellm-api-key: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}

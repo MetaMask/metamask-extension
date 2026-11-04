@@ -86,6 +86,21 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setLastShownPrfMigrationReminderAt', () => {
+    it('sets lastShownPrfMigrationReminderAt', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBeNull();
+
+        const timestamp = Date.now();
+        controller.setLastShownPrfMigrationReminderAt(timestamp);
+
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBe(
+          timestamp,
+        );
+      });
+    });
+  });
+
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
       await withController(({ controller }) => {
@@ -849,10 +864,12 @@ describe('AppStateController', () => {
               },
               "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -939,9 +956,11 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastPerpsDepositEntryPoint": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1022,9 +1041,11 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1102,10 +1123,12 @@ describe('AppStateController', () => {
               },
               "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1142,6 +1165,20 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('addMoneyEarnBannerDismissedTokenKey', () => {
+    it('adds each token key once', async () => {
+      await withController(async ({ controller }) => {
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+        controller.addMoneyEarnBannerDismissedTokenKey('0xe708:0xdef');
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+
+        expect(
+          controller.state.moneyEarnBannerDismissedTokenKeys,
+        ).toStrictEqual(['0x1:0xabc', '0xe708:0xdef']);
+      });
     });
   });
 

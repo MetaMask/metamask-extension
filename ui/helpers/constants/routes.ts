@@ -1,6 +1,21 @@
 import { memoize } from 'lodash';
 
 import { MUSD_ROUTE_DEFINITIONS } from '../../pages/musd/constants/routes';
+import {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+} from '../../../shared/lib/notifications-settings';
+
+export {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+};
 
 type AppRoute = {
   path: string;
@@ -44,6 +59,11 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const SYNC_ACCOUNTS_ROUTE = '/sync-accounts';
+export const MFA_FLOW_ROUTE = '/mfa';
+export const MFA_SETTINGS_ROUTE =
+  '/settings/security-and-password/verification-methods';
+export const MFA_SETTINGS_EMAIL_ROUTE = `${MFA_SETTINGS_ROUTE}/email`;
+export const MFA_SETTINGS_TOTP_ROUTE = `${MFA_SETTINGS_ROUTE}/authenticator-app`;
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -94,6 +114,7 @@ export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
 export const DISCOVER_SEARCH_ROUTE = '/discover-search';
 export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
+export const IMPORT_NFTS_ROUTE = '/import-nfts';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -135,15 +156,6 @@ export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
-export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
-export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE =
-  '/settings/notifications/wallet-activity';
-export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE =
-  '/settings/notifications/perps';
-export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE =
-  '/settings/notifications/marketing';
-export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE =
-  '/settings/notifications/agentic-cli';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -181,6 +193,8 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
+export const ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE =
+  '/onboarding/passkey-prf-migration';
 export const BATCH_SELL_ROOT_ROUTE = '/batch-sell';
 export const BATCH_SELL_SELECT_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/select`;
 export const BATCH_SELL_REVIEW_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/review`;
@@ -209,8 +223,10 @@ export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
 export const MONEY_HOME_ROUTE = '/money-home';
 export const MONEY_ACTIVITY_ROUTE = '/money-home/activity';
+export const MONEY_HOW_IT_WORKS_ROUTE = '/money-home/how-it-works';
 export const MONEY_TRANSACTION_DETAILS_ROUTE =
   '/money-home/activity/:transactionId';
+export const MONEY_EARN_ROUTE = '/money-home/earn';
 
 /**
  * Builds the Money transaction details path for a given activity item id.
@@ -237,8 +253,18 @@ export const ROUTES = [
   { path: PERPS_HOME_PAGE_ROUTE, label: 'Perps', trackInAnalytics: true },
   { path: MONEY_HOME_ROUTE, label: 'Money', trackInAnalytics: true },
   {
+    path: MONEY_HOW_IT_WORKS_ROUTE,
+    label: 'Money How It Works',
+    trackInAnalytics: true,
+  },
+  {
     path: MONEY_TRANSACTION_DETAILS_ROUTE,
     label: 'Money Transaction Details',
+    trackInAnalytics: true,
+  },
+  {
+    path: MONEY_EARN_ROUTE,
+    label: 'Money Earn On Crypto',
     trackInAnalytics: true,
   },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
@@ -480,6 +506,26 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
+    path: MFA_FLOW_ROUTE,
+    label: 'MFA Flow Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_ROUTE,
+    label: 'MFA Settings Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_EMAIL_ROUTE,
+    label: 'MFA Settings Email Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_TOTP_ROUTE,
+    label: 'MFA Settings Authenticator App Page',
+    trackInAnalytics: false,
+  },
+  {
     path: BASIC_FUNCTIONALITY_OFF_ROUTE,
     label: 'Basic Functionality Off Page',
     trackInAnalytics: false,
@@ -602,6 +648,11 @@ export const ROUTES = [
   {
     path: CUSTOM_TOKEN_IMPORT_ROUTE,
     label: 'Custom Token Import Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: IMPORT_NFTS_ROUTE,
+    label: 'Import NFTs Page',
     trackInAnalytics: true,
   },
   {

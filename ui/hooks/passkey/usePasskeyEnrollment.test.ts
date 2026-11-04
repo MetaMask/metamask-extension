@@ -13,6 +13,7 @@ import {
   startPasskeyAuthentication,
   startPasskeyRegistration,
 } from '../../../shared/lib/passkey';
+import { PasskeyPRFRequiredError } from '../../../shared/lib/passkey/passkey-capabilities';
 import { usePasskeyEnrollment } from './usePasskeyEnrollment';
 
 jest.mock('../../../shared/lib/passkey', () => ({
@@ -158,6 +159,19 @@ describe('usePasskeyEnrollment', () => {
     expect(generateRegistrationOptions).toHaveBeenCalledWith({
       prfAvailable: false,
     });
+  });
+
+  it('rejects authentication that does not return PRF', async () => {
+    jest.mocked(startPasskeyAuthentication).mockResolvedValue({
+      ...authenticationResponse,
+      clientExtensionResults: {},
+    });
+    const { result } = renderEnrollmentHook();
+
+    await expect(result.current.enrollWithPasskey()).rejects.toBeInstanceOf(
+      PasskeyPRFRequiredError,
+    );
+    expect(protectVaultKeyWithPasskey).not.toHaveBeenCalled();
   });
 
   it('preserves enrollment errors and stops at the failing stage', async () => {

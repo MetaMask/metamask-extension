@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { RefObject, useEffect, useLayoutEffect, useRef } from 'react';
 
 type UseOnClickOutsideOptions = {
   containerRef: RefObject<HTMLDivElement>;
@@ -12,7 +12,10 @@ export function useOnClickOutside({
   active,
 }: UseOnClickOutsideOptions) {
   const onClickOutsideRef = useRef(onClickOutside);
-  onClickOutsideRef.current = onClickOutside;
+
+  useLayoutEffect(() => {
+    onClickOutsideRef.current = onClickOutside;
+  }, [onClickOutside]);
 
   useEffect(() => {
     if (!active) {

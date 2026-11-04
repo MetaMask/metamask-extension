@@ -62,7 +62,7 @@ describe('PermitSimulationValueDisplay', () => {
       mockStore,
     );
 
-    expect(await findByText('0.432')).toBeInTheDocument();
+    expect(await findByText('0.4321')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -94,7 +94,7 @@ describe('PermitSimulationValueDisplay', () => {
       mockStore,
     );
 
-    expect(await findByText('0.432')).toBeInTheDocument();
+    expect(await findByText('0.4321')).toBeInTheDocument();
   });
 
   it('bounds the visible token ID length', async () => {

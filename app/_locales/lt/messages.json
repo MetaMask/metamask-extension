@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasLimitTooLow": {
-    "message": "Dujų apribojimas turi būti bent 21000"
-  },
   "gasUsed": {
     "message": "Sunaudotos dujos"
   },
@@ -414,9 +411,6 @@
   "privateKey": {
     "message": "Asmeninis raktas",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Dėmesio. Niekada neatskleiskite šio rakto kitiems. Bet kuris jūsų asmeninius raktus turintis asmuo gali pavogti bet kokį jūsų paskyroje laikomą turtą."
   },
   "privateNetwork": {
     "message": "Privatus tinklas"

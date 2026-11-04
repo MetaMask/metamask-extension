@@ -15,7 +15,7 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 const DEFAULT_PORTFOLIO_URL = 'https://app.metamask.io';
 
 type IUseRamps = {
-  openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;
+  openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => Promise<void>;
   getBuyURI: (chainId: ChainId | CaipChainId) => string;
 };
 
@@ -72,9 +72,9 @@ const useRamps = (
   );
 
   const openBuyCryptoInPdapp = useCallback(
-    (_chainId?: ChainId | CaipChainId) => {
+    async (_chainId?: ChainId | CaipChainId) => {
       const buyUrl = getBuyURI(_chainId || chainId);
-      global.platform.openTab({
+      await global.platform.openTab({
         url: buyUrl,
       });
     },

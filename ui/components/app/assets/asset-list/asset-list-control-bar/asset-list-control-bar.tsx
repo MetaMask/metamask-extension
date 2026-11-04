@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,14 +10,15 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
   getTokenNetworkFilter,
+  getUseExternalServices,
   getUseNftDetection,
 } from '../../../../../selectors';
-import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
@@ -53,7 +48,11 @@ import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { useBoolean } from '../../../../../hooks/useBoolean';
-import { TEST_CHAINS } from '../../../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../../../shared/constants/network';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -66,12 +65,10 @@ import {
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
-  detectTokens,
   refreshAssetsForSelectedAccount,
+  setActiveNetwork,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
-  showImportNftsModal,
-  updateBalancesFoAccounts,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
@@ -82,9 +79,9 @@ import {
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   ASSETS_ROUTE,
+  IMPORT_NFTS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
-import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import {
   getInternalAccountsFromGroupById,
@@ -119,9 +116,18 @@ const AssetListControlBar = ({
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
-  const sortButtonRef = useRef<HTMLButtonElement>(null);
-  const importButtonRef = useRef<HTMLButtonElement>(null);
+  const [sortReferenceElement, setSortReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const [importReferenceElement, setImportReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const setSortButtonRef = useCallback((node: HTMLButtonElement | null) => {
+    setSortReferenceElement(node);
+  }, []);
+  const setImportButtonRef = useCallback((node: HTMLButtonElement | null) => {
+    setImportReferenceElement(node);
+  }, []);
   const useNftDetection = useSelector(getUseNftDetection);
+  const useExternalServices = useSelector(getUseExternalServices);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const isMainnet = useSelector(getIsMainnet);
@@ -131,27 +137,27 @@ const AssetListControlBar = ({
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
-  const isEvmOnlySelectedAccountGroup = useSelector(
+  const selectedAccountGroupAccounts = useSelector(
     (state: MetaMaskReduxState) => {
       const multichainAccountsState =
         state as unknown as MultichainAccountsState;
       const selectedAccountGroup = getSelectedAccountGroup(
         multichainAccountsState,
       );
-      const selectedAccountGroupAccounts = getInternalAccountsFromGroupById(
+      return getInternalAccountsFromGroupById(
         multichainAccountsState,
         selectedAccountGroup,
       );
-
-      return (
-        selectedAccountGroupAccounts.length > 0 &&
-        selectedAccountGroupAccounts.every((account) =>
-          isEvmAccountType(account.type),
-        )
-      );
     },
+  );
+
+  const isEvmOnlySelectedAccountGroup = useMemo(
+    () =>
+      selectedAccountGroupAccounts.length > 0 &&
+      selectedAccountGroupAccounts.every((account) =>
+        isEvmAccountType(account.type),
+      ),
+    [selectedAccountGroupAccounts],
   );
 
   const { collections } = useNftsCollections();
@@ -268,6 +274,30 @@ const AssetListControlBar = ({
     totalEnabledNetworkCount,
   ]);
 
+  // Basic Functionality hides non-EVM networks from the picker. If one is still
+  // the selected filter, move to all popular networks and a default EVM network.
+  const shouldSwitchFromHiddenNonEvmNetwork =
+    useExternalServices === false &&
+    allEnabledNetworksForAllNamespaces.length > 0 &&
+    allEnabledNetworksForAllNamespaces.every(
+      (chainId) => !isEvmChainId(chainId as CaipChainId | Hex),
+    );
+
+  useEffect(() => {
+    if (!shouldSwitchFromHiddenNonEvmNetwork) {
+      return;
+    }
+
+    dispatch(setEnabledAllPopularNetworks());
+    const network =
+      allNetworks[CHAIN_IDS.MAINNET] ?? Object.values(allNetworks)[0];
+    const networkClientId =
+      network?.rpcEndpoints[network.defaultRpcEndpointIndex]?.networkClientId;
+    if (networkClientId) {
+      dispatch(setActiveNetwork(networkClientId));
+    }
+  }, [allNetworks, dispatch, shouldSwitchFromHiddenNonEvmNetwork]);
+
   const windowType = getEnvironmentType();
   const isFullScreen =
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -341,28 +371,18 @@ const AssetListControlBar = ({
   }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {
-    dispatch(showImportNftsModal({}));
+    navigate(IMPORT_NFTS_ROUTE);
     closePopover();
   };
 
   const handleRefresh = () => {
-    if (isAssetsUnifyStateEnabled) {
-      if (selectedInternalAccount) {
-        dispatch(
-          refreshAssetsForSelectedAccount([selectedInternalAccount], {
-            chainIds: selectedCaipChainIds,
-            assetTypes: ['token', 'price', 'metadata'],
-          }),
-        );
-      }
-    } else {
+    if (selectedAccountGroupAccounts.length > 0) {
       dispatch(
-        updateBalancesFoAccounts(
-          Object.keys(enabledNetworksByNamespace),
-          false,
-        ),
+        refreshAssetsForSelectedAccount(selectedAccountGroupAccounts, {
+          chainIds: selectedCaipChainIds,
+          assetTypes: ['token', 'price', 'metadata'],
+        }),
       );
-      dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     }
     closePopover();
   };
@@ -460,7 +480,7 @@ const AssetListControlBar = ({
               disabled={isTokenSortPopoverOpen}
             >
               <ButtonIcon
-                ref={sortButtonRef}
+                ref={setSortButtonRef}
                 data-testid="sort-by-popover-toggle"
                 className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
                   isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
@@ -477,7 +497,7 @@ const AssetListControlBar = ({
             (isEvm || showTokensLinks ? (
               // Tokens (EVM and non-EVM) and EVM NFT: overflow menu with Refresh list
               <ImportControl
-                ref={importButtonRef}
+                ref={setImportButtonRef}
                 showTokensLinks={showTokensLinks}
                 onClick={
                   showTokensLinks
@@ -493,7 +513,7 @@ const AssetListControlBar = ({
                 distance={20}
               >
                 <ButtonIcon
-                  ref={importButtonRef}
+                  ref={setImportButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
                   onClick={handleOpenTokenManagement}
@@ -506,7 +526,7 @@ const AssetListControlBar = ({
 
           {!showImportTokenButton && onRefresh ? (
             <ImportControl
-              ref={importButtonRef}
+              ref={setImportButtonRef}
               showTokensLinks
               onClick={toggleRefreshListPopover}
             />
@@ -524,7 +544,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={sortButtonRef.current}
+        referenceElement={sortReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -542,7 +562,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={importButtonRef.current}
+        referenceElement={importReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -571,7 +591,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isImportNftPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={importButtonRef.current}
+        referenceElement={importReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -624,7 +644,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isRefreshListPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={importButtonRef.current}
+        referenceElement={importReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
