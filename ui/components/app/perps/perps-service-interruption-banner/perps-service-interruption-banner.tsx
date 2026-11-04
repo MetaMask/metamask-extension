@@ -11,8 +11,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { SERVICE_INTERRUPTION_CONFIG } from '../../../../../shared/constants/perps';
+import { useBoolean } from '../../../../hooks/useBoolean';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsPerpsServiceInterruptionBannerEnabled } from '../../../../selectors/perps/feature-flags';
+import VisitSupportDataConsentModal from '../../modals/visit-support-data-consent-modal';
 
 export type PerpsServiceInterruptionBannerProps = {
   testId?: string;
@@ -34,6 +36,11 @@ export const PerpsServiceInterruptionBanner = ({
 }: PerpsServiceInterruptionBannerProps) => {
   const isEnabled = useSelector(getIsPerpsServiceInterruptionBannerEnabled);
   const t = useI18nContext();
+  const {
+    value: isSupportModalOpen,
+    setTrue: openSupportModal,
+    setFalse: closeSupportModal,
+  } = useBoolean();
 
   if (!isEnabled) {
     return null;
@@ -59,31 +66,34 @@ export const PerpsServiceInterruptionBanner = ({
   const supportLink = (
     <TextButton
       key="support"
-      asChild
       size={TextButtonSize.BodySm}
       className="inline underline"
+      onClick={openSupportModal}
+      data-testid={`${testId}-support-link`}
     >
-      <a
-        href={SERVICE_INTERRUPTION_CONFIG.SupportUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-testid={`${testId}-support-link`}
-      >
-        {t('perpsServiceInterruptionContactSupport')}
-      </a>
+      {t('perpsServiceInterruptionContactSupport')}
     </TextButton>
   );
 
   return (
-    <Box className="px-4 pt-4" data-testid={testId}>
-      <BannerAlert
-        severity={BannerAlertSeverity.Warning}
-        title={t('perpsServiceInterruptionTitle')}
-      >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsServiceInterruptionDescription', [faqLink, supportLink])}
-        </Text>
-      </BannerAlert>
-    </Box>
+    <>
+      <Box className="px-4 pt-4" data-testid={testId}>
+        <BannerAlert
+          severity={BannerAlertSeverity.Warning}
+          title={t('perpsServiceInterruptionTitle')}
+        >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsServiceInterruptionDescription', [faqLink, supportLink])}
+          </Text>
+        </BannerAlert>
+      </Box>
+      {isSupportModalOpen ? (
+        <VisitSupportDataConsentModal
+          isOpen={isSupportModalOpen}
+          onClose={closeSupportModal}
+          supportLink={SERVICE_INTERRUPTION_CONFIG.SupportUrl}
+        />
+      ) : null}
+    </>
   );
 };

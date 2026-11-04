@@ -1,11 +1,36 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { SERVICE_INTERRUPTION_CONFIG } from '../../../../../shared/constants/perps';
+import {
+  SERVICE_INTERRUPTION_CONFIG,
+  SUPPORT_CONFIG,
+} from '../../../../../shared/constants/perps';
 import { PerpsServiceInterruptionBanner } from './perps-service-interruption-banner';
+
+jest.mock('../../modals/visit-support-data-consent-modal', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: ({
+    isOpen,
+    onClose,
+    supportLink,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    supportLink?: string;
+  }) =>
+    isOpen ? (
+      <button
+        type="button"
+        data-testid="visit-support-data-consent-modal"
+        data-support-link={supportLink}
+        onClick={onClose}
+      />
+    ) : null,
+}));
 
 const renderBanner = (enabled: boolean) => {
   const store = configureStore({
@@ -46,30 +71,49 @@ describe('PerpsServiceInterruptionBanner', () => {
     );
   });
 
-  it('points the FAQ link at the Perps help center', () => {
+  it('points the FAQ link at the Perps troubleshoot article', () => {
     renderBanner(true);
 
     const faqLink = screen.getByTestId(
       'perps-service-interruption-banner-faq-link',
     );
 
+    expect(faqLink).toHaveAttribute(
+      'href',
+      'https://support.metamask.io/trade/perps/troubleshoot/?utm_source=extension',
+    );
     expect(faqLink).toHaveAttribute('href', SERVICE_INTERRUPTION_CONFIG.FaqUrl);
     expect(faqLink).toHaveAttribute('target', '_blank');
     expect(faqLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('points the support link at the Perps troubleshoot article', () => {
+  it('opens the support consent modal for the MetaMask help center', () => {
     renderBanner(true);
 
-    const supportLink = screen.getByTestId(
-      'perps-service-interruption-banner-support-link',
+    expect(
+      screen.queryByTestId('visit-support-data-consent-modal'),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByTestId('perps-service-interruption-banner-support-link'),
     );
 
-    expect(supportLink).toHaveAttribute(
-      'href',
+    const modal = screen.getByTestId('visit-support-data-consent-modal');
+
+    expect(modal).toHaveAttribute(
+      'data-support-link',
+      'https://support.metamask.io/?utm_source=extension',
+    );
+    expect(modal).toHaveAttribute(
+      'data-support-link',
       SERVICE_INTERRUPTION_CONFIG.SupportUrl,
     );
-    expect(supportLink).toHaveAttribute('target', '_blank');
-    expect(supportLink).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(SERVICE_INTERRUPTION_CONFIG.SupportUrl).toBe(SUPPORT_CONFIG.Url);
+
+    fireEvent.click(modal);
+
+    expect(
+      screen.queryByTestId('visit-support-data-consent-modal'),
+    ).not.toBeInTheDocument();
   });
 });
