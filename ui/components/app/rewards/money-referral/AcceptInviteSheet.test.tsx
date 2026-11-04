@@ -6,8 +6,8 @@ import { act, fireEvent, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { AcceptInviteSheet } from './AcceptInviteSheet';
 import type { MoneyReferralEntryType } from '../../../../../shared/lib/deep-links/money-referral';
+import { AcceptInviteSheet } from './AcceptInviteSheet';
 
 const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 const mockRegister = jest.fn();
@@ -287,7 +287,9 @@ describe('AcceptInviteSheet', () => {
       await act(async () => {
         fireEvent.click(view.getByTestId('money-referral-accept'));
       });
-      fireEvent.click(view.getByRole('button', { name: 'Close' }));
+      fireEvent.click(
+        view.getByRole('button', { name: messages.close.message }),
+      );
       expect(view.onClose).not.toHaveBeenCalled();
       await act(async () => {
         registered();
@@ -381,7 +383,9 @@ describe('AcceptInviteSheet', () => {
         refusal_reason: 'already_referred',
       });
       await act(async () => {
-        fireEvent.click(view.getByRole('button', { name: 'Close' }));
+        fireEvent.click(
+          view.getByRole('button', { name: messages.close.message }),
+        );
       });
       expect(lastTrackedProperties()).toMatchObject({
         entry_type: 'deeplink',
