@@ -86,7 +86,7 @@ describe('useHwSwapNavigation', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(mockNavigateToDefaultRoute).toHaveBeenCalled();
+    expect(mockNavigateToDefaultRoute).toHaveBeenCalledWith({ replace: true });
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 

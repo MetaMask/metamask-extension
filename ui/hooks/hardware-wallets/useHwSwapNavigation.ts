@@ -59,7 +59,7 @@ export function useHwSwapNavigation({
         isFromTransactionShield ||
         locationKey === 'default'
       ) {
-        await navigateToDefaultRoute();
+        await navigateToDefaultRoute({ replace: isFromTransactionShield });
         return;
       }
       dispatch(setFromTokenInputValue(null));
