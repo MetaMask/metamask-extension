@@ -62,7 +62,6 @@ jest.mock('@metamask/wallet', () => ({
     }),
     init: mockWalletInit,
   })),
-  assetsController: { name: 'AssetsController' },
 }));
 jest.mock('./instance-options/assets-controller', () => ({
   getAssetsControllerInstanceOptions: jest.fn(() => 'assets-options'),
@@ -196,9 +195,6 @@ describe('initializeWallet', () => {
     });
 
     expect(MockWallet).toHaveBeenCalledWith({
-      initializationConfigurations: [
-        expect.objectContaining({ name: 'AssetsController' }),
-      ],
       instanceOptions: {
         analyticsController: 'analytics-options',
         approvalController: 'approval-options',

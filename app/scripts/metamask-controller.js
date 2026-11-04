@@ -916,6 +916,11 @@ export default class MetamaskController extends EventEmitter {
     this.snapController.init();
     this.cronjobController.init();
     this.moneyAccountUpgradeController.init();
+    // Must run after every controller AssetsController depends on (e.g.
+    // AccountTreeController, SnapController) is registered.
+    this.assetsController.start().catch((error) => {
+      console.error('Failed to start AssetsController', error);
+    });
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
