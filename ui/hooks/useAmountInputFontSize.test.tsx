@@ -54,6 +54,30 @@ describe('useAmountInputFontSize', () => {
     expect(getFontSize()).toBe(40);
   });
 
+  it('reads the content width before the first resize notification', () => {
+    const clientWidth = jest
+      .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+      .mockReturnValue(640);
+    const computedStyle = jest
+      .spyOn(window, 'getComputedStyle')
+      .mockReturnValue({
+        paddingLeft: '10px',
+        paddingRight: '4px',
+      } as CSSStyleDeclaration);
+
+    try {
+      render(<Harness text={LONG_AMOUNT} fallbackWidth={219} />);
+
+      // 640px client width minus 14px of padding is the 626px content box,
+      // and no resize notification has been delivered yet.
+      expect(getFontSize()).toBe(40);
+      expect(resizeObserver.constructorSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      clientWidth.mockRestore();
+      computedStyle.mockRestore();
+    }
+  });
+
   it('keeps the start size when the measured container is wide', () => {
     render(<Harness text={LONG_AMOUNT} fallbackWidth={219} />);
 

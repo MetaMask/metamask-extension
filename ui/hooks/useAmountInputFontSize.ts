@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import {
   AMOUNT_INPUT_MAX_FONT_SIZE,
   AMOUNT_INPUT_POPUP_WIDTH,
@@ -12,6 +12,21 @@ export type UseAmountInputFontSizeOptions = {
   /** Largest step of the shared scale to start from. */
   maxFontSize?: AmountInputFontSize;
 };
+
+/**
+ * Content-box width, matching `ResizeObserver` `contentRect`. `clientWidth`
+ * includes padding, so a raw read would disagree with later observations.
+ *
+ * @param element - The measured container.
+ * @returns The width in px.
+ */
+function getContentWidth(element: HTMLElement): number {
+  const style = getComputedStyle(element);
+  const padding =
+    Number.parseFloat(style.paddingLeft) +
+    Number.parseFloat(style.paddingRight);
+  return element.clientWidth - (Number.isNaN(padding) ? 0 : padding);
+}
 
 export type UseAmountInputFontSize = {
   /**
@@ -27,8 +42,9 @@ export type UseAmountInputFontSize = {
  * wide layouts such as the expanded view keep larger sizes while the popup
  * and side panel still step down.
  *
- * One ResizeObserver per container supplies the width; nothing reads layout
- * while typing. The width is stored rounded to a whole px and only when it
+ * The content width is read once before paint when the container mounts, then
+ * only when a ResizeObserver reports a change, so typing never triggers a
+ * layout read. The width is stored rounded to a whole px and only when it
  * changes, so resize notifications that do not move it cause no re-render.
  * The font size itself is derived during render.
  *
@@ -51,24 +67,36 @@ export function useAmountInputFontSize(
   const [container, containerRef] = useState<HTMLElement | null>(null);
   const [measuredWidth, setMeasuredWidth] = useState(0);
 
-  useEffect(() => {
-    if (!container || typeof ResizeObserver === 'undefined') {
+  useLayoutEffect(() => {
+    if (!container) {
       return undefined;
     }
     // React 18 can still run the component once for an update that bails
     // out, so repeats of the last reported width skip setState entirely.
     let lastReportedWidth: number | undefined;
-    // The first notification arrives after layout and before paint.
+    const reportWidth = (width: number) => {
+      const rounded = Math.round(width);
+      if (rounded === lastReportedWidth) {
+        return;
+      }
+      lastReportedWidth = rounded;
+      setMeasuredWidth((previous) =>
+        previous === rounded ? previous : rounded,
+      );
+    };
+    // useEffect runs after paint, so the first frame would use the fallback
+    // width and then animate to the measured size. Reading here re-renders
+    // before paint. The content box matches ResizeObserver's contentRect.
+    reportWidth(getContentWidth(container));
+
+    if (typeof ResizeObserver === 'undefined') {
+      return undefined;
+    }
     const observer = new ResizeObserver(([entry]) => {
       if (!entry) {
         return;
       }
-      const width = Math.round(entry.contentRect.width);
-      if (width === lastReportedWidth) {
-        return;
-      }
-      lastReportedWidth = width;
-      setMeasuredWidth((previous) => (previous === width ? previous : width));
+      reportWidth(entry.contentRect.width);
     });
     observer.observe(container);
     return () => observer.disconnect();
