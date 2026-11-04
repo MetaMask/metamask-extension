@@ -1,4 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention, camelcase */
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/transaction/enforced-simulations';
 import {
   selectBlockedPayTokens,
@@ -12,9 +16,11 @@ import {
   selectIsPayAmountPrefillEnabled,
   selectIsPayHardwareEnabled,
   selectMinimumRequiredTokenBalance,
+  selectPayHardwareConfig,
   selectPayQuoteConfig,
   selectPreferredPayToken,
   selectPreferredPayTokens,
+  selectRelayAtomicMaxEnabled,
   selectRelayFixedSpread,
   selectStablecoins,
 } from './feature-flags';
@@ -70,6 +76,11 @@ type PayPrefilledAmountConfig = {
   enabled?: boolean;
 };
 
+type RelayAtomicMaxEnabledConfig = {
+  default?: boolean;
+  transactionTypes?: Record<string, boolean>;
+};
+
 type PayExtendedFlag = {
   depositLimit?: Record<string, number>;
   prefilledAmount?: {
@@ -79,10 +90,17 @@ type PayExtendedFlag = {
   };
   enableMoneyAccountTransactions?: Record<string, boolean>;
   defaultPaySelectedSection?: Record<string, string>;
+  payStrategies?: {
+    relay?: {
+      atomicMaxEnabled?: RelayAtomicMaxEnabledConfig;
+    };
+  };
 };
 
 type HardwareWalletFlag = {
   enabled?: boolean;
+  default?: { enabled?: boolean };
+  overrides?: Record<string, { enabled?: boolean }>;
 };
 
 type MockState = {
@@ -156,6 +174,76 @@ const getMockPayExtendedState = (
       }),
     },
   },
+});
+
+describe('selectRelayAtomicMaxEnabled', () => {
+  const getState = (atomicMaxEnabled?: RelayAtomicMaxEnabledConfig) =>
+    getMockPayExtendedState({
+      payStrategies: { relay: { atomicMaxEnabled } },
+    });
+
+  const depositTransaction = {
+    type: TransactionType.moneyAccountDeposit,
+  } as TransactionMeta;
+
+  // @ts-expect-error This function is missing from the Mocha type definitions
+  it.each([
+    [undefined, false],
+    [{}, false],
+    [{ default: true }, true],
+    [{ default: false }, false],
+    [
+      {
+        default: true,
+        transactionTypes: { [TransactionType.moneyAccountDeposit]: false },
+      },
+      false,
+    ],
+    [
+      { transactionTypes: { [TransactionType.moneyAccountDeposit]: true } },
+      true,
+    ],
+    [{ transactionTypes: { [TransactionType.perpsDeposit]: true } }, false],
+  ])(
+    'resolves %j to %s',
+    (
+      atomicMaxEnabled: RelayAtomicMaxEnabledConfig | undefined,
+      expected: boolean,
+    ) => {
+      expect(
+        selectRelayAtomicMaxEnabled(
+          getState(atomicMaxEnabled),
+          depositTransaction,
+        ),
+      ).toBe(expected);
+    },
+  );
+
+  it('matches a deposit nested inside a batch', () => {
+    const state = getState({
+      transactionTypes: { [TransactionType.moneyAccountDeposit]: true },
+    });
+
+    expect(
+      selectRelayAtomicMaxEnabled(state, {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      } as TransactionMeta),
+    ).toBe(true);
+  });
+
+  it('uses the default without a transaction', () => {
+    expect(selectRelayAtomicMaxEnabled(getState({ default: true }))).toBe(true);
+  });
+
+  it('defaults to false when the pay-extended flag is absent', () => {
+    expect(
+      selectRelayAtomicMaxEnabled(
+        getMockPayExtendedState(),
+        depositTransaction,
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('Confirmations Pay Feature Flags', () => {
@@ -674,29 +762,54 @@ describe('Confirmations Pay Feature Flags', () => {
       },
     });
 
-    it('returns true when enabled is true', () => {
+    it('returns true for mUSD conversion when enabled is true', () => {
       const state = getMockPayHardwareState({ enabled: true });
-      expect(selectIsPayHardwareEnabled(state)).toBe(true);
+      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(true);
     });
 
-    it('returns false when enabled is false', () => {
-      const state = getMockPayHardwareState({ enabled: false });
+    it('applies the legacy flat enabled value only to mUSD conversion', () => {
+      const state = getMockPayHardwareState({ enabled: true });
+      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(true);
+      expect(selectIsPayHardwareEnabled(state, 'moneyAccountDeposit')).toBe(
+        false,
+      );
       expect(selectIsPayHardwareEnabled(state)).toBe(false);
     });
 
-    it('defaults to false when confirmations_pay_hardware is not set', () => {
-      const state = getMockPayHardwareState();
+    it('resolves a per-type override over the default', () => {
+      const state = getMockPayHardwareState({
+        default: { enabled: false },
+        overrides: { moneyAccountDeposit: { enabled: true } },
+      });
+      expect(selectIsPayHardwareEnabled(state, 'moneyAccountDeposit')).toBe(
+        true,
+      );
+      expect(selectIsPayHardwareEnabled(state, 'musdConversion')).toBe(false);
       expect(selectIsPayHardwareEnabled(state)).toBe(false);
     });
+  });
 
-    it('defaults to false when confirmations_pay_hardware is an empty object', () => {
-      const state = getMockPayHardwareState({});
-      expect(selectIsPayHardwareEnabled(state)).toBe(false);
+  describe('selectPayHardwareConfig', () => {
+    const getMockPayHardwareState = (
+      confirmations_pay_hardware?: HardwareWalletFlag,
+    ): MockState => ({
+      metamask: {
+        remoteFeatureFlags: {
+          ...(confirmations_pay_hardware !== undefined && {
+            confirmations_pay_hardware,
+          }),
+        },
+      },
     });
 
-    it('defaults to false when remoteFeatureFlags is empty', () => {
-      const state: MockState = { metamask: { remoteFeatureFlags: {} } };
-      expect(selectIsPayHardwareEnabled(state)).toBe(false);
+    it('returns the default when the type has no override', () => {
+      const state = getMockPayHardwareState({
+        default: { enabled: true },
+        overrides: { moneyAccountDeposit: { enabled: false } },
+      });
+      expect(selectPayHardwareConfig(state, 'musdConversion')).toStrictEqual({
+        enabled: true,
+      });
     });
   });
 

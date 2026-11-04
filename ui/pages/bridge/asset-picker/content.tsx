@@ -112,7 +112,7 @@ export const BridgeAssetPickerContent = forwardRef<
     }, [chainIdsList]);
 
     const selectedNetworkName = selectedChainId
-      ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]
+      ? `${t('network')}: ${NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]}`
       : t('allNetworks');
 
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -182,7 +182,7 @@ export const BridgeAssetPickerContent = forwardRef<
             size={ButtonBaseSize.Sm}
             startIconName={IconName.Filter}
             startIconProps={{ size: IconSize.Md }}
-            className={`mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed ${
+            className={`mx-4 w-max border border-muted bg-default hover:bg-hover active:bg-pressed ${
               selectedChainId ? 'text-primary-default' : 'text-default'
             }`}
           >

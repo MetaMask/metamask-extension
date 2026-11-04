@@ -102,6 +102,10 @@ describe('useRampsOrderEventToasts', () => {
     mockGetSelectedInternalAccount.mockReturnValue({ address: '0xabc' });
     clearToastPhase('order-1');
     clearToastPhase('order-2');
+    clearToastPhase('pending-order');
+    for (let index = 0; index < 10; index += 1) {
+      clearToastPhase(`historical-order-${index}`);
+    }
   });
 
   it('does not toast when a precreated order is first seeded', () => {
@@ -118,6 +122,66 @@ describe('useRampsOrderEventToasts', () => {
     });
 
     expect(toast.loading).not.toHaveBeenCalled();
+  });
+
+  it('silently hydrates historical orders and toasts a later transition', () => {
+    const historicalOrders = Array.from({ length: 10 }, (_, index) => ({
+      providerOrderId: `historical-order-${index}`,
+      status: RampsOrderStatus.Completed,
+    }));
+    const pendingOrder = {
+      providerOrderId: 'pending-order',
+      status: RampsOrderStatus.Pending,
+    };
+    const { rerender } = renderHook(() => useRampsOrderEventToasts());
+
+    act(() => {
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+        ...historicalOrders,
+        pendingOrder,
+        {
+          providerOrderId: 'order-2',
+          status: RampsOrderStatus.Failed,
+        },
+      ]);
+      rerender();
+    });
+
+    const callsAfterHydration = {
+      loading: (toast.loading as jest.Mock).mock.calls.length,
+      success: (toast.success as jest.Mock).mock.calls.length,
+      error: (toast.error as jest.Mock).mock.calls.length,
+    };
+
+    act(() => {
+      mockSelectRampsOrdersForSelectedAccount.mockReturnValue([
+        ...historicalOrders,
+        { ...pendingOrder, status: RampsOrderStatus.Completed },
+      ]);
+      rerender();
+    });
+
+    expect({
+      callsAfterHydration,
+      callsAfterTransition: {
+        loading: (toast.loading as jest.Mock).mock.calls.length,
+        success: (toast.success as jest.Mock).mock.calls.length,
+        error: (toast.error as jest.Mock).mock.calls.length,
+      },
+    }).toMatchInlineSnapshot(`
+      {
+        "callsAfterHydration": {
+          "error": 0,
+          "loading": 0,
+          "success": 0,
+        },
+        "callsAfterTransition": {
+          "error": 0,
+          "loading": 0,
+          "success": 1,
+        },
+      }
+    `);
   });
 
   it('shows a pending toast when an order leaves PRECREATED', () => {

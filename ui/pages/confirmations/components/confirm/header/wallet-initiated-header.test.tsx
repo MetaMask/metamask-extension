@@ -15,6 +15,22 @@ import * as ConfirmActions from '../../../hooks/useConfirmActions';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
+const mockHandleShieldSubscriptionApprovalTransactionRejected = jest.fn();
+
+jest.mock('../../../hooks/transactions/useShieldConfirm', () => ({
+  useShieldConfirm: () => ({
+    handleShieldSubscriptionApprovalTransactionRejected:
+      mockHandleShieldSubscriptionApprovalTransactionRejected,
+  }),
+}));
+
+jest.mock('../../../hooks/useHasInsufficientBalance', () => ({
+  useHasInsufficientBalance: jest.fn(() => ({
+    hasInsufficientBalance: false,
+    isNativeBalanceKnown: true,
+  })),
+}));
+
 /** Build a confirm state for a perpsDeposit transaction. */
 const getPerpsDepositState = () => {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
@@ -41,6 +57,16 @@ const getPerpsWithdrawState = () => {
   return getMockConfirmStateForTransaction({
     ...base,
     type: TransactionType.perpsWithdraw,
+    origin: 'metamask',
+  } as TransactionMeta);
+};
+
+/** Build a confirm state for a Shield subscription approval transaction. */
+const getShieldSubscriptionApprovalState = () => {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return getMockConfirmStateForTransaction({
+    ...base,
+    type: TransactionType.shieldSubscriptionApprove,
     origin: 'metamask',
   } as TransactionMeta);
 };
@@ -73,6 +99,30 @@ describe('<WalletInitiatedHeader />', () => {
     );
     fireEvent.click(getByTestId('wallet-initiated-header-back-button'));
     expect(mockOnCancel).toHaveBeenCalled();
+  });
+
+  it('tracks Shield rejection when the back button is pressed', () => {
+    mockHandleShieldSubscriptionApprovalTransactionRejected.mockClear();
+    const mockOnCancel = jest.fn();
+    jest.spyOn(ConfirmActions, 'useConfirmActions').mockImplementation(() => ({
+      onCancel: mockOnCancel,
+      resetTransactionState: jest.fn(),
+    }));
+
+    const { getByTestId } = render(getShieldSubscriptionApprovalState());
+    fireEvent.click(getByTestId('wallet-initiated-header-back-button'));
+
+    expect(
+      mockHandleShieldSubscriptionApprovalTransactionRejected,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: TransactionType.shieldSubscriptionApprove,
+      }),
+      false,
+    );
+    expect(mockOnCancel).toHaveBeenCalledWith({
+      location: 'confirmation',
+    });
   });
 
   it('calls onCancel with navigateBackToPreviousPage for musdClaim', () => {

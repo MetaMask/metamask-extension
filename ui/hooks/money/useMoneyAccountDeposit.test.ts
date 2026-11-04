@@ -200,6 +200,43 @@ describe('useMoneyAccountDeposit', () => {
     });
   });
 
+  it('ignores initiations from any entry point while one is in flight', async () => {
+    const { result } = renderHookWithProvider(
+      () => [useMoneyAccountDeposit(), useMoneyAccountDeposit()] as const,
+      EVM_ACCOUNT_STATE,
+    );
+    const [first, second] = result.current;
+
+    await act(async () => {
+      await Promise.all([
+        first.initiateDeposit(),
+        first.initiateDeposit(),
+        second.initiateDeposit(),
+      ]);
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledTimes(1);
+    expect(navigateToTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('allows a new initiation once the previous one settles', async () => {
+    createDepositTransactionMock.mockRejectedValueOnce(new Error('failed'));
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledTimes(2);
+    expect(navigateToTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
   it('passes the originating route as goBackTo so the confirmation returns there', async () => {
     const { result } = renderHookWithProvider(
       () => useMoneyAccountDeposit(),
@@ -407,6 +444,59 @@ describe('useMoneyAccountDeposit', () => {
   });
 
   describe('when a hardware account is selected', () => {
+    it('funds from the hardware account when hardware deposits are enabled', async () => {
+      const state = stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT]);
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountDeposit(),
+        {
+          metamask: {
+            ...state.metamask,
+            remoteFeatureFlags: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_pay_hardware: {
+                default: { enabled: false },
+                overrides: { moneyAccountDeposit: { enabled: true } },
+              },
+            },
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.initiateDeposit();
+      });
+
+      expect(createDepositTransactionMock).toHaveBeenCalledWith(
+        expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+        '0x1234567890123456789012345678901234567890',
+      );
+    });
+
+    it('keeps skipping the hardware account under the legacy flat flag', async () => {
+      const state = stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT]);
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountDeposit(),
+        {
+          metamask: {
+            ...state.metamask,
+            remoteFeatureFlags: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_pay_hardware: { enabled: true },
+            },
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.initiateDeposit();
+      });
+
+      expect(createDepositTransactionMock).toHaveBeenCalledWith(
+        expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+        SOFTWARE_ADDRESS,
+      );
+    });
+
     it('funds from the next eligible account instead of the hardware one', async () => {
       const { result } = renderHookWithProvider(
         () => useMoneyAccountDeposit(),

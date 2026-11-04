@@ -495,6 +495,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'addReferralDeclinedAccount',
   'removeReferralDeclinedAccount',
   'setAccountsReferralApproved',
+  'dismissSidePanelMigrationToast',
 ] as const;
 
 export class PreferencesController extends BaseController<
@@ -617,6 +618,10 @@ export class PreferencesController extends BaseController<
           ? (ownedPreferences?.[preference] ?? true)
           : false;
       }
+
+      if (!useExternalServices) {
+        state.preferences.showTickerWidget = false;
+      }
     });
   }
 
@@ -633,6 +638,10 @@ export class PreferencesController extends BaseController<
         state[preference] = useBasicFunctionality;
       }
       state.isMultiAccountBalancesEnabled = useBasicFunctionality;
+
+      if (!useBasicFunctionality) {
+        state.preferences.showTickerWidget = false;
+      }
     });
 
     this.messenger.call(

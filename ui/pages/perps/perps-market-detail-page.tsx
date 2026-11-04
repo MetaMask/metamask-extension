@@ -22,6 +22,7 @@ import {
   SensitiveText,
   TextVariant,
   TextColor,
+  FontFamily,
   FontWeight,
   Icon,
   IconName,
@@ -49,6 +50,7 @@ import {
 } from '../../../shared/constants/perps-events';
 import {
   getIsPerpsExperienceAvailable,
+  getIsPerpsServiceInterruptionBannerEnabled,
   getIsPerpsShowFullAssetNamesEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -72,6 +74,7 @@ import {
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
+  usePerpsMarketAboutTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
@@ -80,6 +83,7 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { OrderCard } from '../../components/app/perps/order-card';
+import { PerpsMarketAbout } from '../../components/app/perps/perps-market-about';
 import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -288,6 +292,9 @@ const PerpsMarketDetailPage = () => {
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -412,6 +419,22 @@ const PerpsMarketDetailPage = () => {
     );
   }, [decodedSymbol, allMarkets]);
   const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
+  // This hook runs before the feature-availability redirect below. Pass the
+  // same guards that mount the market body so a cached description cannot emit
+  // displayed while the page returns Navigate or another non-About state.
+  const isMarketDetailRendered =
+    isPerpsExperienceAvailable &&
+    Boolean(symbol) &&
+    Boolean(decodedSymbol) &&
+    marketCatalogReady &&
+    Boolean(market);
+  const { hasDescription: hasAboutDescription, aboutRef } =
+    usePerpsMarketAboutTracking({
+      symbol: market?.symbol,
+      marketType: market?.marketType,
+      description: market?.description,
+      isPageRendered: isMarketDetailRendered,
+    });
 
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
@@ -438,6 +461,8 @@ const PerpsMarketDetailPage = () => {
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
       // watchlisted only surfaces on the asset_detail screen.
       [PERPS_EVENT_PROPERTY.WATCHLISTED]: isInWatchlist,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
     resetKey: decodedSymbol,
   });
@@ -863,7 +888,7 @@ const PerpsMarketDetailPage = () => {
         track(MetaMetricsEventName.PerpsUiInteraction, {
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -907,7 +932,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -925,7 +950,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -951,7 +976,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -992,7 +1017,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -1009,7 +1034,7 @@ const PerpsMarketDetailPage = () => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.MARGIN,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -1333,8 +1358,8 @@ const PerpsMarketDetailPage = () => {
         data-testid="perps-market-detail-summary"
       >
         <Text
-          variant={TextVariant.HeadingLg}
-          fontWeight={FontWeight.Bold}
+          variant={TextVariant.AmountDisplayLg}
+          fontFamily={FontFamily.Hero}
           data-testid="perps-market-detail-price"
         >
           {displayPrice}
@@ -1974,6 +1999,18 @@ const PerpsMarketDetailPage = () => {
           </Box>
         </Box>
 
+        {hasAboutDescription && (
+          // Key the observed wrapper, not only the section. A market change
+          // must detach the intersection observer so `viewed` fires again
+          // when this section stays on screen.
+          <div key={market.symbol} ref={aboutRef}>
+            <PerpsMarketAbout
+              description={market.description}
+              assetName={market.name}
+            />
+          </div>
+        )}
+
         {/* Recent Activity Section - always visible */}
         <Box paddingTop={4} paddingBottom={4}>
           <PerpsMarketRecentActivity symbol={decodedSymbol} />
@@ -1990,7 +2027,7 @@ const PerpsMarketDetailPage = () => {
                 track(MetaMetricsEventName.PerpsUiInteraction, {
                   [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
                     PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-                  [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+                  [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
                     PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
                   [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
                     PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,

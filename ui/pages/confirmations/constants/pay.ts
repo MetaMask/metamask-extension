@@ -18,7 +18,6 @@ export const PAY_TRANSACTION_TYPES = [
  * sign, so a hardware account is not a valid funding source.
  */
 export const PAY_HARDWARE_BLOCKED_TRANSACTION_TYPES: TransactionType[] = [
-  TransactionType.moneyAccountDeposit,
   TransactionType.moneyAccountWithdraw,
   TransactionType.perpsDeposit,
   TransactionType.perpsWithdraw,
@@ -31,5 +30,13 @@ export const PAY_HARDWARE_BLOCKED_TRANSACTION_TYPES: TransactionType[] = [
  * `confirmations_pay_hardware` feature flag is off.
  */
 export const PAY_HARDWARE_FLAG_GATED_TRANSACTION_TYPES: TransactionType[] = [
+  TransactionType.moneyAccountDeposit,
   TransactionType.musdConversion,
+];
+
+/**
+ * Pay flows that cannot support interactive QR hardware wallet signing.
+ */
+export const PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES: TransactionType[] = [
+  TransactionType.moneyAccountDeposit,
 ];

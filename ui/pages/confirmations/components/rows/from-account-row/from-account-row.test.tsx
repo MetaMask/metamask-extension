@@ -31,18 +31,26 @@ jest.mock('../../account-select-modal', () => ({
     onClose,
     title,
     excludeHardwareAccounts,
+    excludeQrAccounts,
+    restrictHardwareAccountsToSelected,
   }: {
     selectedAddress: string;
     onSelect: (address: string) => void;
     onClose: () => void;
     title?: string;
     excludeHardwareAccounts?: boolean;
+    excludeQrAccounts?: boolean;
+    restrictHardwareAccountsToSelected?: boolean;
   }) => (
     <div data-testid="account-select-modal">
       <span data-testid="selected-address">{selectedAddress}</span>
       <span data-testid="modal-title">{title}</span>
       <span data-testid="exclude-hardware-accounts">
         {String(excludeHardwareAccounts)}
+      </span>
+      <span data-testid="exclude-qr-accounts">{String(excludeQrAccounts)}</span>
+      <span data-testid="restrict-hardware-accounts-to-selected">
+        {String(restrictHardwareAccountsToSelected ?? false)}
       </span>
       <button
         data-testid="select-other"
@@ -409,6 +417,30 @@ describe('FromAccountRow', () => {
     expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
       'false',
     );
+  });
+
+  it('excludes QR accounts from money account deposits', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: TX_ID_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        type: TransactionType.moneyAccountDeposit,
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-qr-accounts')).toHaveTextContent('true');
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'false',
+    );
+    expect(
+      screen.getByTestId('restrict-hardware-accounts-to-selected'),
+    ).toHaveTextContent('false');
   });
 
   it('renders nothing when there is no from address', () => {

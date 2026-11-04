@@ -62,6 +62,7 @@ describe('Update Network:', function (this: Suite) {
         const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
         await addEditRpcUrlPage.checkPageIsLoaded();
         await addEditRpcUrlPage.fillAddRpcUrlInput(inputData.rpcUrl);
+        await addEditRpcUrlPage.blurAddRpcUrlInput();
 
         // Validate the error message that appears for the invalid url format
         await addEditRpcUrlPage.checkErrorMessageInvalidUrlIsDisplayed();

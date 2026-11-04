@@ -21,11 +21,22 @@ jobs:
     env:
       CURRENT_COVERAGE: ${{ needs.run-tests.outputs.current-coverage }}
       STORED_COVERAGE: ${{ needs.run-tests.outputs.stored-coverage }}
+    permissions:
+      id-token: write
     steps:
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: write
+
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          token: ${{ steps.token.outputs.token }}
 
       - name: Update coverage
         run: |
@@ -33,15 +44,15 @@ jobs:
 
       - name: Checkout/create branch, commit, and force push
         run: |
-          git config user.name "MetaMask Bot"
-          git config user.email "metamaskbot@users.noreply.github.com"
-          git checkout -b metamaskbot/update-coverage
+          git config user.name "metamask-ci[bot]"
+          git config user.email "271559518+metamask-ci[bot]@users.noreply.github.com"
+          git checkout -b metamask-ci/update-coverage
           git add coverage.json
           git commit -m "chore: Update coverage.json"
-          git push -f origin metamaskbot/update-coverage
+          git push -f origin metamask-ci/update-coverage
 
       - name: Create/update pull request
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
         run: |
-          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%." --base main --head metamaskbot/update-coverage || gh pr edit --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%."
+          gh pr create --title "chore: Update coverage.json" --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%." --base main --head metamask-ci/update-coverage || gh pr edit --body "This PR is automatically opened to update the coverage.json file when test coverage increases. Coverage increased from $STORED_COVERAGE% to $CURRENT_COVERAGE%."

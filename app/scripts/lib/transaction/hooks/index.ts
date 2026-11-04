@@ -41,6 +41,8 @@ export type TransactionControllerHookRequest = {
   messenger: TransactionControllerInitMessenger;
 };
 
+const STX_GET_FEES_ERROR_METRIC_NAME = 'stx_get_fees_error';
+
 const TRANSACTION_SUBMISSION_METHOD_METRIC_NAME =
   'transaction_submission_method';
 
@@ -211,6 +213,24 @@ function publishHook({
         isSmartTransaction,
         featureFlags,
       });
+
+      if (result?.getFeesError) {
+        try {
+          getTransactionMetricsRequest().upsertTransactionUIMetricsFragment(
+            transactionMeta.id,
+            {
+              properties: {
+                [STX_GET_FEES_ERROR_METRIC_NAME]: result?.getFeesError,
+              },
+            },
+          );
+        } catch (e) {
+          console.error(
+            'Failed to record stx_get_fees_error metrics fragment',
+            e,
+          );
+        }
+      }
 
       if (result?.transactionHash) {
         try {

@@ -33,7 +33,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           style="padding: 8px 11px 8px 8px; min-width: fit-content;"
         >
           <div
-            class="flex items-center gap-2"
+            class="flex items-center gap-1"
           >
             <div
               class="relative inline-flex self-start"
@@ -68,7 +68,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
               </div>
             </div>
             <label
-              class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
             >
               ETH
             </label>
@@ -147,7 +147,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
             style="padding: 8px 11px 8px 8px; min-width: fit-content;"
           >
             <div
-              class="flex items-center gap-2"
+              class="flex items-center gap-1"
             >
               <div
                 class="relative inline-flex self-start"
@@ -182,7 +182,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                 </div>
               </div>
               <label
-                class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
               >
                 mUSD
               </label>
@@ -213,7 +213,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
       </div>
     </div>
     <div
-      class="mm-box mm-container mm-container--max-width-undefined sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--background-color-background-default"
+      class="mm-box mm-container mm-container--max-width-undefined sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 cta-footer mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--background-color-background-default"
     >
       <div
         style="display: contents;"
@@ -263,7 +263,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           style="padding: 8px 11px 8px 8px; min-width: fit-content;"
         >
           <div
-            class="flex items-center gap-2"
+            class="flex items-center gap-1"
           >
             <div
               class="relative inline-flex self-start"
@@ -298,7 +298,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
               </div>
             </div>
             <label
-              class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
             >
               USDC
             </label>
@@ -377,7 +377,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
             style="padding: 8px 11px 8px 8px; min-width: fit-content;"
           >
             <div
-              class="flex items-center gap-2"
+              class="flex items-center gap-1"
             >
               <div
                 class="relative inline-flex self-start"
@@ -412,7 +412,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                 </div>
               </div>
               <label
-                class="mm-box mm-text mm-label cursor-pointer mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label cursor-pointer ml-1 mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
               >
                 UNI
               </label>
@@ -443,7 +443,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-container mm-container--max-width-undefined sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--background-color-background-default"
+      class="mm-box mm-container mm-container--max-width-undefined sticky bottom-0 z-10 flex-1 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 cta-footer mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--background-color-background-default"
     >
       <div
         style="display: contents;"

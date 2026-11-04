@@ -34,6 +34,20 @@ class PrivacySettings {
   private readonly backToSrpListButton =
     '[data-testid="reveal-recovery-phrase-back-button"]';
 
+  private readonly basicConfigurationCheckbox = {
+    testId: 'basic-configuration-checkbox',
+  };
+
+  private readonly basicConfigurationModalToggleButton = {
+    testId: 'basic-configuration-modal-toggle-button',
+  };
+
+  private readonly basicFunctionalityToggle =
+    'label.toggle-button:has([data-testid="basic-functionality-toggle"])';
+
+  private readonly basicFunctionalityToggleOff =
+    '[data-testid="basic-functionality-toggle"][value="false"]';
+
   private readonly blockaidAlertsToggle =
     '[data-testid="securityAlert"] .toggle-button';
 
@@ -262,6 +276,11 @@ class PrivacySettings {
       },
       { interval: 500, timeout: this.driver.timeout },
     );
+  }
+
+  async checkBasicFunctionalityIsOff(): Promise<void> {
+    console.log('Check basic functionality is off on privacy settings page');
+    await this.driver.waitForSelector(this.basicFunctionalityToggleOff);
   }
 
   async checkDisplayedSrpCanBeCopied(): Promise<void> {
@@ -518,6 +537,18 @@ class PrivacySettings {
       'Toggle auto detect tokens in Security and Privacy settings page',
     );
     await this.driver.clickElement(this.autoDetectToken);
+  }
+
+  async toggleBasicFunctionality(): Promise<void> {
+    console.log('Toggle basic functionality on privacy settings page');
+    await this.driver.clickElement(this.basicFunctionalityToggle);
+  }
+
+  async toggleBasicFunctionalityOff(): Promise<void> {
+    console.log('Toggle basic functionality off on privacy settings page');
+    await this.toggleBasicFunctionality();
+    await this.driver.clickElement(this.basicConfigurationCheckbox);
+    await this.driver.clickElement(this.basicConfigurationModalToggleButton);
   }
 
   async toggleBlockaidAlerts(): Promise<void> {

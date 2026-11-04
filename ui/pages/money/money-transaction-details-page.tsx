@@ -57,6 +57,7 @@ import {
   getMoneyActivityErrorMessage,
   getMoneyActivityExplorerUrl,
   getMoneyActivityPaidWith,
+  getMoneyActivityTransactionHash,
   getMoneyTransactionDetailsHeroAmount,
   shortenMoneyActivityHex,
 } from './utils/money-transaction-details-display';
@@ -134,16 +135,21 @@ export function MoneyTransactionDetailsPage() {
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
   const onchainTx = item?.kind === 'onchain' ? item.tx : undefined;
+  const requiredTx = useSelector((state: TransactionState) =>
+    selectTransactionById(state, onchainTx?.requiredTransactionIds?.at(-1)),
+  );
+  const transactionHash = onchainTx
+    ? getMoneyActivityTransactionHash(onchainTx, requiredTx)
+    : undefined;
   const { feeUsd, totalUsd, isNetworkFeePaidByMetaMask } =
     useMoneyTransactionFee(onchainTx);
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
 
-  const explorerUrl =
-    item?.kind === 'onchain'
-      ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
-      : undefined;
+  const explorerUrl = transactionHash
+    ? getMoneyActivityExplorerUrl(transactionHash.chainId, transactionHash.hash)
+    : undefined;
 
   const handleBack = useInAppBack(MONEY_HOME_ROUTE);
   const formattedFee =
@@ -208,7 +214,6 @@ export function MoneyTransactionDetailsPage() {
     if (accountLabel && fromAccount) {
       accountLabel = `${fromAccount.metadata.name} (${accountLabel})`;
     }
-    const transactionHash = tx.hash;
 
     body = (
       <div
@@ -353,12 +358,12 @@ export function MoneyTransactionDetailsPage() {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {shortenMoneyActivityHex(transactionHash)}
+                    {shortenMoneyActivityHex(transactionHash.hash)}
                   </Text>
                   <ButtonIcon
                     iconName={IconName.Copy}
                     ariaLabel={t('copyTransactionId')}
-                    onClick={() => handleCopy(transactionHash)}
+                    onClick={() => handleCopy(transactionHash.hash)}
                     data-testid="money-transaction-details-copy-hash"
                   />
                 </Box>
@@ -382,7 +387,10 @@ export function MoneyTransactionDetailsPage() {
                   {showSponsoredNetworkFeeInTooltip ? (
                     <>
                       <br />
-                      {`${t('networkFee')}: ${t('paidByMetaMask')}`}
+                      {`${t('networkFee')}: ${formatCurrencyWithMinThreshold(
+                        0,
+                        MONEY_ACCOUNT_FIAT_CURRENCY,
+                      )}`}
                     </>
                   ) : null}
                 </Text>

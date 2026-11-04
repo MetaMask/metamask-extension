@@ -74,7 +74,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { ContactNetworks } from './contact-networks';
 
-export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
+export function AddContactForm({ onSuccess }: AddContactFormProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
@@ -367,7 +367,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
             size={SelectButtonSize.Lg}
             isBlock
             backgroundColor={BackgroundColor.backgroundMuted}
-            borderColor={BorderColor.borderDefault}
+            borderColor={BorderColor.borderMuted}
             borderRadius={BorderRadius.XL}
             startAccessory={
               <AvatarNetwork
@@ -398,28 +398,13 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
         )}
       </Box>
 
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={4}
-        padding={4}
-        paddingBottom={6}
-        className="bg-background-default"
-      >
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          onClick={onCancel}
-          className="flex-1"
-          data-testid="page-container-footer-cancel"
-        >
-          {t('cancel')}
-        </Button>
+      <Box padding={4} paddingBottom={6} className="bg-background-default">
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           isDisabled={isSaveDisabled}
           onClick={handleSubmit}
-          className="flex-1"
+          isFullWidth
           data-testid="page-container-footer-next"
         >
           {t('save')}

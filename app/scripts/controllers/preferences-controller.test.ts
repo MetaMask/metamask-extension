@@ -448,6 +448,9 @@ describe('preferences controller', () => {
       expect(controller.state.openSeaEnabled).toStrictEqual(false);
       expect(controller.state.useNftDetection).toStrictEqual(false);
       expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
+      expect(controller.state.preferences.showTickerWidget).toStrictEqual(
+        false,
+      );
     });
 
     it('preserves owned preference overrides when enabling', () => {
@@ -478,6 +481,7 @@ describe('preferences controller', () => {
 
       expect(controller.state.useExternalServices).toBe(false);
       expect(controller.state.useTokenDetection).toBe(false);
+      expect(controller.state.preferences.showTickerWidget).toBe(false);
     });
   });
 
@@ -506,6 +510,7 @@ describe('preferences controller', () => {
         expect(controller.state[preference]).toBe(false);
       }
       expect(controller.state.isMultiAccountBalancesEnabled).toBe(false);
+      expect(controller.state.preferences.showTickerWidget).toBe(false);
       expect(toggleExternalServices).toHaveBeenCalledWith(false);
     });
   });
@@ -966,6 +971,28 @@ describe('preferences controller', () => {
       expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
         true,
       );
+    });
+  });
+
+  describe('dismissSidePanelMigrationToast', () => {
+    it('sets showSidePanelMigrationToast to false', () => {
+      const { controller } = setupController({
+        state: { showSidePanelMigrationToast: true },
+      });
+
+      controller.dismissSidePanelMigrationToast();
+
+      expect(controller.state.showSidePanelMigrationToast).toBe(false);
+    });
+
+    it('can be called through the controller messenger', () => {
+      const { controller, messenger } = setupController({
+        state: { showSidePanelMigrationToast: true },
+      });
+
+      messenger.call('PreferencesController:dismissSidePanelMigrationToast');
+
+      expect(controller.state.showSidePanelMigrationToast).toBe(false);
     });
   });
 

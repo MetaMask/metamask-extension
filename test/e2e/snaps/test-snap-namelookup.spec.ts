@@ -12,13 +12,19 @@ import SendPage from '../page-objects/pages/send/send-page';
 import { mockSpotPrices } from '../tests/tokens/utils/mocks';
 
 async function mockTokensApiSupportedNetworks(mockServer: Mockttp) {
-  return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .always()
-    .thenJson(200, {
-      fullSupport: ['eip155:1', 'eip155:1337'],
-      partialSupport: [],
-    });
+  const supportedNetworks = {
+    fullSupport: ['eip155:1', 'eip155:1337'],
+    partialSupport: [],
+  };
+
+  return Promise.all(
+    [
+      'https://token.api.cx.metamask.io/v2/supportedNetworks',
+      'https://tokens.api.cx.metamask.io/v2/supportedNetworks',
+    ].map((url) =>
+      mockServer.forGet(url).always().thenJson(200, supportedNetworks),
+    ),
+  );
 }
 
 async function mockTokensApiV3Assets(mockServer: Mockttp) {
@@ -80,7 +86,7 @@ describe('Name lookup', function () {
               pricePercentChange1d: 0,
             },
           }),
-          await mockTokensApiSupportedNetworks(mockServer),
+          ...(await mockTokensApiSupportedNetworks(mockServer)),
           await mockTokensApiV3Assets(mockServer),
         ],
         title: this.test?.fullTitle(),
@@ -105,7 +111,7 @@ describe('Name lookup', function () {
         await sendPage.selectToken('0x1', 'ETH');
         await sendPage.fillRecipient({ recipientAddress: 'metamask.domain' });
 
-        await driver.findElement({ text: '0xc0ffe...54979' });
+        await driver.findElement({ text: '0xc0ffee25...10F9d54979' });
       },
     );
   });

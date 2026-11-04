@@ -29,7 +29,7 @@ const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
  * Network filter control-bar chrome belongs to `NetworkFilter` /
  * `SelectNetworkModal`. Full `#/asset/...` journeys beyond open checks are
  * outside this object.
- * Related: `HomePage` (`goToTokensTab`), `NonEvmHomepage`, `NetworkFilter`,
+ * Related: `HomePage` (`goToTokensTab`), `NetworkFilter`,
  * `flows/multi-srp.flow.ts` / `flows/bitcoin-send.flow.ts`.
  *
  * @see ui/components/app/assets/asset-list/asset-list.tsx
@@ -83,9 +83,8 @@ class TokensTab extends HomePage {
   private readonly hideTokenConfirmationButton =
     '[data-testid="hide-token-confirmation__hide"]';
 
-  private readonly hideTokenConfirmationModalTitle = {
-    text: 'Hide token',
-    css: '.hide-token-confirmation__title',
+  private readonly hideTokenConfirmationModal = {
+    testId: 'hide-token-confirmation-modal',
   };
 
   private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
@@ -108,6 +107,8 @@ class TokensTab extends HomePage {
 
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleCollapsed = `${this.lowValueAssetsToggle}[aria-expanded="false"]`;
 
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
@@ -655,9 +656,9 @@ class TokensTab extends HomePage {
   ): Promise<void> {
     console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
     const row = await this.findTokenRowByName(tokenName);
-    assert.ok(
-      (await row.getText()).includes(expectedText),
-      `Expected "${tokenName}" row to contain "${expectedText}"`,
+    await this.driver.waitUntil(
+      async () => (await row.getText()).includes(expectedText),
+      { timeout: 10000, interval: 500 },
     );
   }
 
@@ -729,6 +730,22 @@ class TokensTab extends HomePage {
   async clickTokenOptionsButton(): Promise<void> {
     console.log('Click the token options button');
     await this.driver.clickElement(this.tokenOptionsButton);
+  }
+
+  /**
+   * Collapses the low-value assets section when it is currently expanded.
+   * The expansion state is retained by the token list between renders.
+   */
+  async collapseLowValueAssets(): Promise<void> {
+    await this.driver.waitForSelector(this.lowValueAssetsToggle);
+    const isExpanded = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggleExpanded,
+      1000,
+    );
+    if (isExpanded) {
+      await this.driver.clickElement(this.lowValueAssetsToggle);
+    }
+    await this.driver.waitForSelector(this.lowValueAssetsToggleCollapsed);
   }
 
   /**
@@ -813,7 +830,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
-    await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
+    await this.driver.waitForSelector(this.hideTokenConfirmationModal);
     await this.driver.clickElementAndWaitToDisappear(
       this.hideTokenConfirmationButton,
     );

@@ -1285,7 +1285,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
-  [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
+  [CHAIN_IDS.KATANA]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
   [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
@@ -1698,7 +1698,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://robinhoodchain.blockscout.com'],
+    blockExplorerUrls: ['https://robin.etherscan.io/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {

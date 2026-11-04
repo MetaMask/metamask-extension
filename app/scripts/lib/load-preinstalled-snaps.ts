@@ -1,3 +1,4 @@
+import type { PreinstalledSnap } from '@metamask/snaps-controllers';
 import getFetchWithTimeout from '../../../shared/lib/fetch-with-timeout';
 import { PREINSTALLED_SNAPS_URLS } from '../constants/snaps';
 
@@ -6,7 +7,7 @@ import { PREINSTALLED_SNAPS_URLS } from '../constants/snaps';
  * It fails if any Snap fails to load in the expected time range.
  * Supports .json.gz files using gzip decompression.
  */
-export async function loadPreinstalledSnaps(): Promise<unknown[]> {
+export async function loadPreinstalledSnaps(): Promise<PreinstalledSnap[]> {
   const fetchWithTimeout = getFetchWithTimeout();
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
     const response = await fetchWithTimeout(url.href);
@@ -25,5 +26,5 @@ export async function loadPreinstalledSnaps(): Promise<unknown[]> {
     return await response.json();
   });
 
-  return Promise.all(promises);
+  return Promise.all(promises) as Promise<PreinstalledSnap[]>;
 }
