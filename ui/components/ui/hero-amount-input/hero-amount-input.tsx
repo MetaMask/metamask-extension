@@ -142,7 +142,7 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
             variant={TextVariant.AmountDisplayLg}
             fontFamily={FontFamily.Hero}
             color={textColor}
-            className={twMerge(SIZE_TRANSITION, prefixClassName)}
+            className={twMerge(SIZE_TRANSITION, prefixClassName, 'shrink-0')}
             style={amountStyle}
           >
             {prefix}
@@ -151,9 +151,10 @@ export const HeroAmountInput: React.FC<HeroAmountInputProps> = ({
       ) : null}
       {/*
        * An <input> does not size to its value, so a hidden copy of the amount
-       * sizes this wrapper and the field fills it.
+       * sizes this wrapper and the field fills it. The wrapper shrinks to the
+       * space beside the prefix so a long amount cannot cover the symbol.
        */}
-      <span className="relative w-max min-w-[1ch] max-w-full">
+      <span className="relative w-max min-w-0 overflow-hidden">
         <Text
           data-testid={`${dataTestId}-value`}
           {...restValueProps}

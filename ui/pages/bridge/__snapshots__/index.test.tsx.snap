@@ -83,7 +83,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                 style="height: 40px;"
               >
                 <span
-                  class="relative w-max min-w-[1ch] max-w-full"
+                  class="relative w-max min-w-0 overflow-hidden"
                 >
                   <span
                     aria-hidden="true"
@@ -209,7 +209,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                   style="height: 40px;"
                 >
                   <span
-                    class="relative w-max min-w-[1ch] max-w-full"
+                    class="relative w-max min-w-0 overflow-hidden"
                   >
                     <span
                       aria-hidden="true"

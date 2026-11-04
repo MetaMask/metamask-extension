@@ -189,7 +189,8 @@ describe('RampsBuildQuoteScreen', () => {
     expect(amountInput.parentElement).toHaveClass(
       'relative',
       'w-max',
-      'min-w-[1ch]',
+      'min-w-0',
+      'overflow-hidden',
     );
     expect(amountValue).toHaveTextContent('100');
     expect(amountInput).toHaveClass('absolute', 'inset-0');

@@ -18,7 +18,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
           style="height: 40px;"
         >
           <span
-            class="relative w-max min-w-[1ch] max-w-full"
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
@@ -144,7 +144,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
             style="height: 40px;"
           >
             <span
-              class="relative w-max min-w-[1ch] max-w-full"
+              class="relative w-max min-w-0 overflow-hidden"
             >
               <span
                 aria-hidden="true"
@@ -276,7 +276,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
           style="height: 40px;"
         >
           <span
-            class="relative w-max min-w-[1ch] max-w-full"
+            class="relative w-max min-w-0 overflow-hidden"
           >
             <span
               aria-hidden="true"
@@ -402,7 +402,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
             style="height: 40px;"
           >
             <span
-              class="relative w-max min-w-[1ch] max-w-full"
+              class="relative w-max min-w-0 overflow-hidden"
             >
               <span
                 aria-hidden="true"
