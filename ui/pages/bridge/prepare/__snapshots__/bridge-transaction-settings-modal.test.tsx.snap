@@ -2,11 +2,11 @@
 
 exports[`BridgeTransactionSettingsModal should render the component, with initial Solana state 1`] = `
 <div
-  class="mm-modal"
+  class=""
 >
   <div
     aria-hidden="true"
-    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    class="bg-overlay-default fixed inset-0 z-[1050] motion-safe:animate-fade-in"
   />
   <div
     data-focus-guard="true"
@@ -17,49 +17,54 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
     data-focus-lock-disabled="false"
   >
     <div
-      class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
     >
       <section
         aria-modal="true"
-        class="mm-box rounded-[32px] mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
+        class="flex-col items-stretch justify-start pt-4 pb-4 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[360px]"
         role="dialog"
       >
         <header
-          class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
         >
           <div
-            class="mm-box mm-box--width-full"
+            class="col-start-2 col-end-3 w-full"
           >
             <h4
-              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
             >
               Transaction settings
             </h4>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-            style="min-width: 0px;"
+            class="col-start-3 justify-self-end"
           >
             <button
               aria-label="Close"
-              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
+              class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               data-testid="bridge__tx-settings-modal-close-button"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/close.svg');"
-              />
+              <svg
+                class="inline-block w-6 h-6 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
+                />
+              </svg>
             </button>
           </div>
         </header>
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          class="flex flex-col gap-3 px-4 pb-4"
         >
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
+            class="flex items-center justify-start gap-1"
           >
             <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
               Slippage tolerance
             </p>
@@ -77,67 +82,72 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
             </div>
           </div>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
+            class="flex items-center justify-start gap-2"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
-            >
-              Auto
-            </button>
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+              role="button"
             >
               <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
               >
-                0.5
-                %
+                Auto
               </span>
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default hover:!bg-default-hover"
+              role="button"
             >
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
-              >
-                2
-                %
-              </span>
+              0.5
+              %
+            </button>
+            <button
+              class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default hover:!bg-default-hover"
+              role="button"
+            >
+              2
+              %
             </button>
             <div
-              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate w-24 mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+              class="inline-flex items-center rounded-xl border transition-colors h-10 pl-0 pr-4 border-default w-24 bg-default"
             >
               <input
-                autocomplete="off"
-                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-4 pr-2 truncate"
                 data-testid="bridge__tx-settings-modal-custom-input"
-                focused="true"
                 inputmode="decimal"
                 type="text"
                 value=""
               />
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
               >
                 %
               </p>
             </div>
           </div>
         </div>
-        <div
-          class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+        <footer
+          class="px-4 pt-4"
         >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
-            data-testid="bridge__tx-settings-modal-submit-button"
-            disabled=""
-          >
-            Submit
-          </button>
           <div
-            class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
-          />
-        </div>
+            class="flex flex-row gap-4"
+          >
+            <button
+              aria-disabled="true"
+              class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed flex-1"
+              data-testid="bridge__tx-settings-modal-submit-button"
+              disabled=""
+              role="button"
+              tabindex="-1"
+            >
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Submit
+              </span>
+            </button>
+          </div>
+        </footer>
       </section>
     </div>
   </div>
@@ -151,11 +161,11 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
 
 exports[`BridgeTransactionSettingsModal should render the component, with initial state 1`] = `
 <div
-  class="mm-modal"
+  class=""
 >
   <div
     aria-hidden="true"
-    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+    class="bg-overlay-default fixed inset-0 z-[1050] motion-safe:animate-fade-in"
   />
   <div
     data-focus-guard="true"
@@ -166,49 +176,54 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
     data-focus-lock-disabled="false"
   >
     <div
-      class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+      class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
     >
       <section
         aria-modal="true"
-        class="mm-box rounded-[32px] mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-elevated1 mm-box--border-color-border-alternative mm-box--border-width-1 box--border-style-solid"
+        class="flex-col items-stretch justify-start pt-4 pb-4 border border-alternative bg-elevated1 flex max-h-full w-full rounded-[32px] shadow-lg motion-safe:animate-slide-up max-w-[360px]"
         role="dialog"
       >
         <header
-          class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          class="grid grid-cols-[1fr_auto_1fr] items-center px-4 pb-4"
         >
           <div
-            class="mm-box mm-box--width-full"
+            class="col-start-2 col-end-3 w-full"
           >
             <h4
-              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+              class="text-default text-s-heading-sm leading-s-heading-sm tracking-s-heading-sm md:text-l-heading-sm md:leading-l-heading-sm md:tracking-l-heading-sm font-bold font-default text-center"
             >
               Transaction settings
             </h4>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-            style="min-width: 0px;"
+            class="col-start-3 justify-self-end"
           >
             <button
               aria-label="Close"
-              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
+              class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               data-testid="bridge__tx-settings-modal-close-button"
             >
-              <span
-                class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                style="mask-image: url('./images/icons/close.svg');"
-              />
+              <svg
+                class="inline-block w-6 h-6 text-inherit"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
+                />
+              </svg>
             </button>
           </div>
         </header>
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-bottom-4 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--width-full"
+          class="flex flex-col gap-3 px-4 pb-4"
         >
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
+            class="flex items-center justify-start gap-1"
           >
             <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
             >
               Slippage tolerance
             </p>
@@ -226,50 +241,57 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
             </div>
           </div>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-flex-start mm-box--align-items-center"
+            class="flex items-center justify-start gap-2"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default hover:!bg-default-hover"
+              role="button"
             >
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
-              >
-                0.5
-                %
-              </span>
+              0.5
+              %
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default hover:!bg-default-hover"
+              role="button"
             >
-              <span
-                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
-              >
-                2
-                %
-              </span>
+              2
+              %
             </button>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md hover:!bg-default-hover mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-pill"
+              class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-10 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default hover:!bg-default-hover"
               data-testid="bridge__tx-settings-modal-custom-button"
+              role="button"
             >
-              Custom
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Custom
+              </span>
             </button>
           </div>
         </div>
-        <div
-          class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+        <footer
+          class="px-4 pt-4"
         >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
-            data-testid="bridge__tx-settings-modal-submit-button"
-            disabled=""
-          >
-            Submit
-          </button>
           <div
-            class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
-          />
-        </div>
+            class="flex flex-row gap-4"
+          >
+            <button
+              aria-disabled="true"
+              class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed flex-1"
+              data-testid="bridge__tx-settings-modal-submit-button"
+              disabled=""
+              role="button"
+              tabindex="-1"
+            >
+              <span
+                class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+              >
+                Submit
+              </span>
+            </button>
+          </div>
+        </footer>
       </section>
     </div>
   </div>
