@@ -28,7 +28,6 @@ import {
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
-import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 import {
   BACKGROUND_LIVENESS_METHOD,
@@ -813,7 +812,7 @@ export function setupController(
     updateBadge,
     clearFailedTxBadge,
     getFailedTxCount,
-    setClientLandingTab,
+    setActivityLandingRoute,
   } = createBadgeManager({
     getController: () =>
       // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
@@ -941,7 +940,7 @@ export function setupController(
           notificationIsOpen = false;
           // Render any failure badge that was suppressed while the notification was open
           if (getFailedTxCount() > 0) {
-            setClientLandingTab(AccountOverviewTabKey.Activity);
+            setActivityLandingRoute();
           }
           updateBadge();
           const isClientOpen = isClientOpenStatus();

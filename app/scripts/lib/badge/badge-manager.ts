@@ -1,6 +1,5 @@
 import { lightTheme } from '@metamask/design-tokens';
 import type { ApprovalController } from '@metamask/approval-controller';
-import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -14,6 +13,7 @@ import { NOTIFICATION_MANAGER_EVENTS } from '../notification-manager';
 const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
 const BADGE_MAX_COUNT = 9;
+const ACTIVITY_LANDING_PATH = '/activity';
 const maxSeenFailedNonces = 99;
 
 type BadgeActionApi = {
@@ -29,7 +29,7 @@ export type BadgeManagerBrowser = {
 export type BadgeManagerController = {
   approvalController: ApprovalController;
   appStateController: {
-    setDefaultHomeActiveTabName: (tab: string | null) => void;
+    setPendingRedirectRoute: (route: { path: string } | null) => void;
   };
   controllerMessenger: {
     subscribe: (event: string, handler: (...args: unknown[]) => void) => void;
@@ -71,7 +71,7 @@ export type BadgeManagerApi = {
   updateBadge: () => void;
   clearFailedTxBadge: () => void;
   getFailedTxCount: () => number;
-  setClientLandingTab: (tab?: string | null) => void;
+  setActivityLandingRoute: () => void;
 };
 
 type TransactionStatusUpdatedPayload = {
@@ -164,13 +164,13 @@ export function createBadgeManager({
     }
   };
 
-  const setClientLandingTab = (tab?: string | null) => {
+  const setActivityLandingRoute = () => {
     try {
-      getController().appStateController.setDefaultHomeActiveTabName(
-        tab ?? null,
-      );
+      getController().appStateController.setPendingRedirectRoute({
+        path: ACTIVITY_LANDING_PATH,
+      });
     } catch (error) {
-      console.error('Error setting landing tab:', error);
+      console.error('Error setting Activity landing route:', error);
     }
   };
 
@@ -192,7 +192,8 @@ export function createBadgeManager({
       return;
     }
 
-    // Skip if a persistent UI is open, transaction status is in the Activity tab
+    // Skip if a persistent UI is open. The user can already see the failure
+    // on the Activity page.
     if (hasPersistentUiOpen()) {
       return;
     }
@@ -208,7 +209,7 @@ export function createBadgeManager({
 
     // Defer landing page until notification closes; close handler re-applies
     if (!isOnlyNotificationOpen()) {
-      setClientLandingTab(AccountOverviewTabKey.Activity);
+      setActivityLandingRoute();
     }
 
     updateBadge();
@@ -290,6 +291,6 @@ export function createBadgeManager({
     updateBadge,
     clearFailedTxBadge,
     getFailedTxCount: () => failedTxCount,
-    setClientLandingTab,
+    setActivityLandingRoute,
   };
 }

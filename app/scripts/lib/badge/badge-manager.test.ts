@@ -1,4 +1,3 @@
-import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { getAttentionRequiredApprovalCount } from '../approval/utils';
 import { NOTIFICATION_MANAGER_EVENTS } from '../notification-manager';
 import {
@@ -37,7 +36,7 @@ function createMockBrowser() {
 function createMockController(): BadgeManagerController & {
   subscribe: jest.Mock;
   hubOn: jest.Mock;
-  setDefaultHomeActiveTabName: jest.Mock;
+  setPendingRedirectRoute: jest.Mock;
   rejectUnapproved: jest.Mock;
   rejectDecrypt: jest.Mock;
   rejectEncryption: jest.Mock;
@@ -45,7 +44,7 @@ function createMockController(): BadgeManagerController & {
 } {
   const subscribe = jest.fn();
   const hubOn = jest.fn();
-  const setDefaultHomeActiveTabName = jest.fn();
+  const setPendingRedirectRoute = jest.fn();
   const rejectUnapproved = jest.fn();
   const rejectDecrypt = jest.fn();
   const rejectEncryption = jest.fn();
@@ -56,7 +55,7 @@ function createMockController(): BadgeManagerController & {
       state: { pendingApprovals: {} },
     } as BadgeManagerController['approvalController'],
     appStateController: {
-      setDefaultHomeActiveTabName,
+      setPendingRedirectRoute,
     },
     controllerMessenger: {
       subscribe,
@@ -76,7 +75,7 @@ function createMockController(): BadgeManagerController & {
     },
     subscribe,
     hubOn,
-    setDefaultHomeActiveTabName,
+    setPendingRedirectRoute,
     rejectUnapproved,
     rejectDecrypt,
     rejectEncryption,
@@ -207,7 +206,7 @@ describe('createBadgeManager', () => {
     expect(extensionBrowser.action.setBadgeText).toHaveBeenLastCalledWith({
       text: '3',
     });
-    expect(controller.setDefaultHomeActiveTabName).not.toHaveBeenCalled();
+    expect(controller.setPendingRedirectRoute).not.toHaveBeenCalled();
   });
 
   it('skips failed-tx tracking when persistent UI is open', () => {
@@ -223,7 +222,7 @@ describe('createBadgeManager', () => {
     });
 
     expect(api.getFailedTxCount()).toBe(0);
-    expect(controller.setDefaultHomeActiveTabName).not.toHaveBeenCalled();
+    expect(controller.setPendingRedirectRoute).not.toHaveBeenCalled();
   });
 
   it('ignores duplicate failed nonces', () => {
@@ -245,7 +244,7 @@ describe('createBadgeManager', () => {
     expect(api.getFailedTxCount()).toBe(1);
   });
 
-  it('sets the Activity landing tab for a failed transaction', () => {
+  it('opens Activity on the next launch after a failed transaction', () => {
     const { controller } = setup();
     const onTransactionStatusUpdated = getTransactionHandler(
       controller.subscribe,
@@ -255,9 +254,9 @@ describe('createBadgeManager', () => {
       transactionMeta: { status: 'failed' },
     });
 
-    expect(controller.setDefaultHomeActiveTabName).toHaveBeenCalledWith(
-      AccountOverviewTabKey.Activity,
-    );
+    expect(controller.setPendingRedirectRoute).toHaveBeenCalledWith({
+      path: '/activity',
+    });
   });
 
   it('clears failed-tx state and restores the pending-approval badge', () => {

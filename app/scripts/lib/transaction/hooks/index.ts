@@ -14,7 +14,6 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 
-import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
 import {
   getInternalEvmAddresses,
@@ -252,13 +251,12 @@ function publishHook({
 
     if (attemptedHook) {
       try {
-        await messenger.call(
-          'AppStateController:setDefaultHomeActiveTabName',
-          AccountOverviewTabKey.Activity,
-        );
+        await messenger.call('AppStateController:setPendingRedirectRoute', {
+          path: '/activity',
+        });
       } catch (error) {
         console.error(
-          'Failed to set default home active tab for fallback transaction',
+          'Failed to open Activity after a fallback transaction',
           error,
         );
       }

@@ -495,7 +495,7 @@ describe('Transaction Controller Hooks', () => {
       expect(result).toStrictEqual({ transactionHash: undefined });
     });
 
-    it('sets Activity tab when a hook was attempted but fell back', async () => {
+    it('opens Activity when a hook was attempted but fell back', async () => {
       const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
       delegation7702HookFn.mockResolvedValue({ transactionHash: undefined });
       jest.mocked(Delegation7702PublishHook).mockImplementation(
@@ -522,8 +522,8 @@ describe('Transaction Controller Hooks', () => {
       } as TransactionMeta);
 
       expect(messenger.call).toHaveBeenCalledWith(
-        'AppStateController:setDefaultHomeActiveTabName',
-        expect.anything(),
+        'AppStateController:setPendingRedirectRoute',
+        { path: '/activity' },
       );
     });
 
