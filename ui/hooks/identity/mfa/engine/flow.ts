@@ -471,7 +471,8 @@ export const createMfaFlow = ({
           setState({ codeResent: undefined });
           await beginCodeChallenge();
           setState({ codeResent: true });
-          if (state.step.name === 'otp') {
+          // The user may have closed the flow while the code was being sent.
+          if (!settled && state.step.name === 'otp') {
             tracker.codeResent('auto', state.step);
           }
         };
