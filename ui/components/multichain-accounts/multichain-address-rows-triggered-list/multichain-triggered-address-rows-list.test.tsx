@@ -27,11 +27,24 @@ import {
 // jsdom has no Popover API or interestfor — only this file uses native popovers.
 beforeAll(() => {
   if (typeof HTMLElement.prototype.showPopover !== 'function') {
+    const dispatchToggle = (element: HTMLElement, newState: string) => {
+      element.dispatchEvent(
+        Object.assign(new Event('toggle'), { newState }) as Event,
+      );
+    };
     HTMLElement.prototype.showPopover = function showPopover() {
+      if (this.hasAttribute('data-popover-open')) {
+        return;
+      }
       this.setAttribute('data-popover-open', 'true');
+      dispatchToggle(this, 'open');
     };
     HTMLElement.prototype.hidePopover = function hidePopover() {
+      if (!this.hasAttribute('data-popover-open')) {
+        return;
+      }
       this.removeAttribute('data-popover-open');
+      dispatchToggle(this, 'closed');
     };
     HTMLElement.prototype.togglePopover = function togglePopover(force) {
       if (
@@ -59,6 +72,26 @@ beforeAll(() => {
       const targetId = invoker.getAttribute('commandfor');
       const target = targetId ? document.getElementById(targetId) : null;
       target?.togglePopover?.();
+    },
+    { capture: true },
+  );
+
+  // Light dismiss: a pointerup outside an open `auto` popover (and not on a
+  // commandfor invoker) closes it before the click event fires.
+  document.body.addEventListener(
+    'pointerup',
+    (event) => {
+      const target = event.target as Element | null;
+      if (target?.closest?.('[commandfor]')) {
+        return;
+      }
+      document
+        .querySelectorAll<HTMLElement>('[popover][data-popover-open]')
+        .forEach((popover) => {
+          if (!target || !popover.contains(target)) {
+            popover.hidePopover();
+          }
+        });
     },
     { capture: true },
   );
@@ -1095,6 +1128,29 @@ describe('MultichainTriggeredAddressRowsList', () => {
       });
 
       fireEvent.click(triggerElement as HTMLElement);
+
+      await waitFor(() => {
+        expectPopoverClosed();
+      });
+    });
+
+    it('closes on a second pointer click despite light dismiss', async () => {
+      renderComponent(GROUP_ID_MOCK, undefined, undefined, undefined, 'click');
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      const pointerClick = () => {
+        fireEvent.pointerDown(triggerElement);
+        fireEvent.pointerUp(triggerElement);
+        fireEvent.click(triggerElement);
+      };
+
+      pointerClick();
+
+      await waitFor(() => {
+        expectPopoverOpen();
+      });
+
+      pointerClick();
 
       await waitFor(() => {
         expectPopoverClosed();
