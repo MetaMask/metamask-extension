@@ -32,6 +32,7 @@ import type {
  * @param props.artwork
  * @param props.artworkWrapperProps
  * @param props.primaryAction
+ * @param props.primaryActionRef
  * @param props.secondaryAction
  * @param props.className
  * @param props.'data-testid'
@@ -45,6 +46,7 @@ export const MarketingMoment = ({
   artwork,
   artworkWrapperProps,
   primaryAction,
+  primaryActionRef,
   secondaryAction,
   className,
   'data-testid': dataTestId,
@@ -154,6 +156,7 @@ export const MarketingMoment = ({
               size={ButtonSize.Lg}
               isFullWidth
               {...primaryButtonProps}
+              ref={primaryActionRef}
             >
               {primaryLabel}
             </Button>
