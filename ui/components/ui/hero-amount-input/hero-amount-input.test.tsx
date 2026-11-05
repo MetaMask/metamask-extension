@@ -125,12 +125,18 @@ describe('HeroAmountInput', () => {
     expect(field).toHaveValue('1.23');
   });
 
-  it('focuses the field when the row is clicked', () => {
-    render(<HeroAmountInput value="1" />);
+  it('labels the field with the row so a row click activates the field', () => {
+    render(<HeroAmountInput prefix="$" value="1" />);
+    const row = screen.getByTestId('hero-amount-input');
+    const field = screen.getByTestId('hero-amount-input-input');
+    const onFieldClick = jest.fn();
+    field.addEventListener('click', onFieldClick);
 
-    fireEvent.click(screen.getByTestId('hero-amount-input'));
+    fireEvent.click(screen.getByTestId('hero-amount-input-prefix'));
 
-    expect(screen.getByTestId('hero-amount-input-input')).toHaveFocus();
+    expect(row.tagName).toBe('LABEL');
+    expect(field.closest('label')).toBe(row);
+    expect(onFieldClick).toHaveBeenCalledTimes(1);
   });
 
   it('uses the error color when hasError is set', () => {
