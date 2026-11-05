@@ -1,4 +1,4 @@
-import { strict as assert } from 'assert';
+import { quoteXPathText } from '../../../../helpers/quoteXPathText';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -66,10 +66,15 @@ class BitcoinReviewTxPage {
     console.log(
       `Check if send amount ${amount} is displayed on bitcoin review tx page`,
     );
-    const sendAmount = await this.driver.waitForSelector(
-      '.snap-ui-renderer__text.mm-box--color-error-default',
-    );
-    assert.equal(await sendAmount.getText(), `-${amount}`);
+    await this.driver.waitForSelector({
+      xpath:
+        '//*[contains(concat(" ", normalize-space(@class), " "), ' +
+        '" snap-ui-renderer__text ") and ' +
+        'contains(concat(" ", normalize-space(@class), " "), ' +
+        `" mm-box--color-error-default ") and normalize-space(.)=${quoteXPathText(
+          `-${amount}`,
+        )}]`,
+    });
   }
 
   async checkTotalAmountIsDisplayed(total: string): Promise<void> {
