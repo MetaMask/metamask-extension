@@ -10,7 +10,28 @@ import {
 import { MessengerClientInitFunction } from '../types';
 import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
 import { previousValueComparator } from '../../lib/util';
-import { trace } from '../../../../shared/lib/trace';
+import {
+  trace,
+  type TraceCallback,
+  type TraceRequest,
+} from '../../../../shared/lib/trace';
+
+// Reached from inside the `Wallet Create Multichain Account Group` callback
+// without a `parentContext`, so they keep nesting under the active span.
+const NESTED_TRACE_NAMES = new Set<string>([
+  'Provider Create Accounts (v2 - batched)',
+  'Wallet Alignment',
+]);
+
+function traceWithNestedFallback<T>(
+  request: TraceRequest,
+  fn?: TraceCallback<T>,
+) {
+  const req = NESTED_TRACE_NAMES.has(request.name)
+    ? { ...request, allowActiveSpanFallback: true }
+    : request;
+  return fn ? trace(req, fn) : trace(req);
+}
 
 /**
  * Initialize the multichain account service.
@@ -62,7 +83,7 @@ export const MultichainAccountServiceInit: MessengerClientInitFunction<
     },
     config: {
       // @ts-expect-error Controller uses string for names rather than enum
-      trace,
+      trace: traceWithNestedFallback,
     },
     ensureOnboardingComplete,
   });
