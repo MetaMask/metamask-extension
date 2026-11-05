@@ -85,7 +85,7 @@ export function useHeroAmountPrefixWidthEm(
 ): [(element: HTMLSpanElement | null) => void, number] {
   // Same reason as the row: a ref callback cannot return a cleanup on React 18,
   // and the effect must run again when the probe mounts after the skeleton.
-  const [probe, probeRef] = useState<HTMLSpanElement | null>(null);
+  const [probe, setProbe] = useState<HTMLSpanElement | null>(null);
   const [measured, setMeasured] = useState<{
     prefix: string;
     em: number;
@@ -124,5 +124,5 @@ export function useHeroAmountPrefixWidthEm(
     };
   }, [estimate, prefix, probe]);
 
-  return [probeRef, prefixEm];
+  return [setProbe, prefixEm];
 }
