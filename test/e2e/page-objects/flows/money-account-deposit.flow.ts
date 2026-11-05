@@ -2,14 +2,14 @@ import { tEn } from '../../../lib/i18n-helpers';
 import type { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
 import { MoneyAccountDepositConfirmation } from '../pages/confirmations/money-account-deposit-confirmation';
-import BottomNavBar from '../pages/home/bottom-nav-bar-page';
+import MainNav from '../pages/home/main-nav-page';
 import MoneyHomePage from '../pages/money/money-home-page';
 import MoneyTransactionDetailsPage from '../pages/money/money-transaction-details-page';
 import { login } from './login.flow';
 
 /**
- * Unlock the wallet and open the Money home page via the bottom nav Money
- * tab (bottom nav AB test treatment).
+ * Unlock the wallet and open the Money home page via the main nav Money item
+ * (side nav, or bottom nav in the bottom nav AB test treatment).
  *
  * @param driver - The WebDriver instance.
  * @param localNode - The Anvil node backing Mainnet, for balance validation.
@@ -21,9 +21,9 @@ export async function loginAndOpenMoneyHome(
 ): Promise<MoneyHomePage> {
   await login(driver, { localNode, validateBalance: false });
 
-  const bottomNavBar = new BottomNavBar(driver);
-  await bottomNavBar.checkPageIsLoaded();
-  await bottomNavBar.clickMoney();
+  const mainNav = new MainNav(driver);
+  await mainNav.checkPageIsLoaded();
+  await mainNav.clickMoney();
 
   const moneyHomePage = new MoneyHomePage(driver);
   await moneyHomePage.checkPageIsLoaded();

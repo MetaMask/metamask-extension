@@ -9,6 +9,7 @@ import {
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
 import HeaderNavbar from './header-navbar';
+import { MAIN_NAV_HOME_ITEM } from './main-nav-page';
 
 type ReceiveButton = 'default' | 'row';
 
@@ -65,8 +66,6 @@ class HomePage {
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
-  private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
-
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
@@ -106,6 +105,8 @@ class HomePage {
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
+
+  private readonly mainNavHomeItem = MAIN_NAV_HOME_ITEM;
 
   protected readonly nftTab = {
     testId: 'account-overview__nfts-tab',
@@ -595,36 +596,24 @@ class HomePage {
     if (alreadyOnHome) {
       return;
     }
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavHomeButton,
-      1000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
-      await this.checkPageIsLoaded();
-    }
+    await this.driver.clickElement(this.mainNavHomeItem);
+    await this.checkPageIsLoaded();
   }
 
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavHomeButton,
-      3000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
-      await this.checkPageIsLoaded();
-    }
+    await this.driver.clickElement(this.mainNavHomeItem);
+    await this.checkPageIsLoaded();
     await this.driver.clickElement(this.nftTab);
   }
 
   async goToTokensTab(): Promise<void> {
     console.log(`Go to tokens tab on homepage`);
-    // With the bottom nav bar, activity is its own route instead of a home
-    // tab, so the tab strip is absent and we have to return home first.
+    // Activity is its own route instead of a home tab, so the tab strip is
+    // absent and we have to return home first.
     const currentUrl = await this.driver.getCurrentUrl();
     if (currentUrl.includes(`#${ACTIVITY_ROUTE}`)) {
-      await this.driver.clickElement(this.bottomNavHomeButton);
+      await this.driver.clickElement(this.mainNavHomeItem);
     }
     await this.driver.clickElement(this.tokensTab);
   }

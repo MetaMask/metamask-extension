@@ -1,21 +1,12 @@
 import React from 'react';
-import { it } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../shared/constants/app';
+import { useFullScreenDesign } from '../../../hooks/useFullScreenDesign';
 import WalletOverview from './wallet-overview';
 
-jest.mock('../../../../shared/lib/environment-type', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment-type'),
-  getEnvironmentType: jest.fn(),
-}));
+jest.mock('../../../hooks/useFullScreenDesign');
 
-const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
+const mockUseFullScreenDesign = jest.mocked(useFullScreenDesign);
 
 const renderWalletOverview = (className?: string) => {
   const { container } = render(
@@ -28,13 +19,13 @@ const renderWalletOverview = (className?: string) => {
 
   return {
     root: container.firstElementChild,
-    balanceContainer: screen.getByTestId('balance').parentElement,
+    buttonsContainer: screen.getByTestId('buttons').parentElement,
   };
 };
 
 describe('WalletOverview', () => {
   beforeEach(() => {
-    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+    mockUseFullScreenDesign.mockReturnValue(false);
   });
 
   it('renders the balance and the buttons', () => {
@@ -50,34 +41,19 @@ describe('WalletOverview', () => {
     expect(root).toHaveClass('custom-class');
   });
 
-  it.each([
-    [ENVIRONMENT_TYPE_POPUP, 'items-start'],
-    [ENVIRONMENT_TYPE_FULLSCREEN, 'items-center'],
-    [ENVIRONMENT_TYPE_SIDEPANEL, 'items-center'],
-  ])('aligns the root in %s with %s', (environmentType, alignment) => {
-    mockGetEnvironmentType.mockReturnValue(environmentType);
+  it('centres the content and caps the width of the buttons by default', () => {
+    const { root, buttonsContainer } = renderWalletOverview();
 
-    const { root } = renderWalletOverview();
-
-    expect(root).toHaveClass(alignment);
+    expect(root).toHaveClass('items-center');
+    expect(buttonsContainer).toHaveClass('max-w-[458px]', 'self-center');
   });
 
-  it.each([
-    [ENVIRONMENT_TYPE_POPUP, false],
-    [ENVIRONMENT_TYPE_FULLSCREEN, false],
-    [ENVIRONMENT_TYPE_SIDEPANEL, true],
-  ])(
-    'applies the narrow width left-align fallback in %s: %s',
-    (environmentType, hasFallback) => {
-      mockGetEnvironmentType.mockReturnValue(environmentType);
+  it('left-aligns the content and removes max-width on the buttons in the fullscreen design', () => {
+    mockUseFullScreenDesign.mockReturnValue(true);
 
-      const { balanceContainer } = renderWalletOverview();
+    const { root, buttonsContainer } = renderWalletOverview();
 
-      if (hasFallback) {
-        expect(balanceContainer).toHaveClass('max-[490px]:items-start');
-      } else {
-        expect(balanceContainer).not.toHaveClass('max-[490px]:items-start');
-      }
-    },
-  );
+    expect(root).toHaveClass('items-start');
+    expect(buttonsContainer).not.toHaveClass('max-w-[458px]', 'self-center');
+  });
 });

@@ -27,6 +27,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
+import { useFullScreenDesign } from '../../../../hooks/useFullScreenDesign';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsBalanceActionsSkeleton } from '../perps-skeletons';
 
@@ -76,6 +77,7 @@ const PerpsMarketBalanceActions = ({
   const { formatCurrency } = useFormatters();
   const { account, isInitialLoading } = usePerpsLiveAccount();
   const { isEligible } = usePerpsEligibility();
+  const isFullScreenDesign = useFullScreenDesign();
   // Privacy mode masks fiat amounts across the wallet; the total + available
   // figures in this header are the biggest numbers on the Perps tab and must
   // be redacted the same way the old `PerpsBalanceDropdown` masked them.
@@ -195,23 +197,25 @@ const PerpsMarketBalanceActions = ({
       {/* Action Buttons */}
       {showActionButtons && (
         <Box
-          flexDirection={BoxFlexDirection.Column}
+          flexDirection={
+            isFullScreenDesign ? BoxFlexDirection.Row : BoxFlexDirection.Column
+          }
           gap={3}
           marginTop={4}
-          style={{ width: '100%' }}
+          className={isFullScreenDesign ? 'max-w-sm' : 'w-full'}
         >
           {/*
             Withdraw is hidden when there's nothing to withdraw: at $0 balance
             it's a dead-end action, so Add funds becomes the single full-width
             primary CTA. Once funded, both buttons share the row 50/50.
           */}
-          <Box flexDirection={BoxFlexDirection.Row} gap={3}>
+          <Box flexDirection={BoxFlexDirection.Row} gap={3} className="w-full">
             {accountValue > 0 && (
               <Button
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
+                className="w-full"
                 onClick={handleWithdraw}
-                style={{ flex: 1 }}
                 data-testid="perps-balance-actions-withdraw"
               >
                 {t('perpsWithdraw')}
@@ -221,10 +225,10 @@ const PerpsMarketBalanceActions = ({
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
+              className="w-full"
               isLoading={isAddFundsLoading}
               onClick={handleAddFunds}
               disabled={isAddFundsLoading}
-              style={{ flex: 1 }}
               data-testid="perps-balance-actions-add-funds"
             >
               {t('perpsAddFunds')}
@@ -241,7 +245,7 @@ const PerpsMarketBalanceActions = ({
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               onClick={handleLearnMore}
-              style={{ width: '100%' }}
+              className="w-full"
               data-testid="perps-balance-actions-learn-more"
             >
               {t('perpsLearnMore')}
