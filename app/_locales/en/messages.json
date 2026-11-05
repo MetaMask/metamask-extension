@@ -12279,6 +12279,15 @@
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
   },
+  "swapsRebateBanner": {
+    "message": "You’re getting $1% back on fees"
+  },
+  "swapsRebateTooltipContent": {
+    "message": "Get $1% of the MetaMask fee on this trade back as a reward, paid in mUSD to your Money account. Network fees aren’t included. See the Rewards tab for details."
+  },
+  "swapsRebateTooltipTitle": {
+    "message": "Trading Rewards"
+  },
   "swapsViewInActivity": {
     "message": "View in activity"
   },
