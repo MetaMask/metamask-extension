@@ -1,4 +1,11 @@
-import React, { useMemo, useCallback, useId, useRef, useEffect } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useId,
+  useRef,
+  useEffect,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -163,6 +170,9 @@ export const MultichainTriggeredAddressRowsList = ({
   );
   const isPopoverOpenRef = useRef(false);
   const wasOpenOnPointerDownRef = useRef<boolean | null>(null);
+  // Content stays unmounted until open, matching the previous Popover. The
+  // default-address toggle is a class component and warns on every mount.
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const useNativeInterest =
     triggerMode === 'hover' && interestInvokerSupport.detected;
@@ -210,12 +220,25 @@ export const MultichainTriggeredAddressRowsList = ({
 
   const showFallbackPopover = useCallback(() => {
     clearHoverCloseTimeout();
-    popoverRef.current?.showPopover?.();
+    const popover = popoverRef.current;
+    if (popover?.showPopover) {
+      popover.showPopover();
+      return;
+    }
+    // jsdom has no Popover API and does not fire `toggle`.
+    isPopoverOpenRef.current = true;
+    setIsPopoverOpen(true);
   }, [clearHoverCloseTimeout]);
 
   const hideFallbackPopover = useCallback(() => {
     clearHoverCloseTimeout();
-    popoverRef.current?.hidePopover?.();
+    const popover = popoverRef.current;
+    if (popover?.hidePopover) {
+      popover.hidePopover();
+      return;
+    }
+    isPopoverOpenRef.current = false;
+    setIsPopoverOpen(false);
   }, [clearHoverCloseTimeout]);
 
   const scheduleHideFallbackPopover = useCallback(() => {
@@ -238,8 +261,9 @@ export const MultichainTriggeredAddressRowsList = ({
       return undefined;
     }
     const handleToggle = (event: Event) => {
-      isPopoverOpenRef.current =
-        (event as Event & { newState?: string }).newState === 'open';
+      const open = (event as Event & { newState?: string }).newState === 'open';
+      isPopoverOpenRef.current = open;
+      setIsPopoverOpen(open);
     };
     popover.addEventListener('toggle', handleToggle);
     return () => popover.removeEventListener('toggle', handleToggle);
@@ -266,10 +290,19 @@ export const MultichainTriggeredAddressRowsList = ({
       const wasOpen =
         wasOpenOnPointerDownRef.current ?? isPopoverOpenRef.current;
       wasOpenOnPointerDownRef.current = null;
+      const popover = popoverRef.current;
       if (wasOpen) {
-        popoverRef.current?.hidePopover?.();
+        if (popover?.hidePopover) {
+          popover.hidePopover();
+        } else {
+          isPopoverOpenRef.current = false;
+          setIsPopoverOpen(false);
+        }
+      } else if (popover?.showPopover) {
+        popover.showPopover();
       } else {
-        popoverRef.current?.showPopover?.();
+        isPopoverOpenRef.current = true;
+        setIsPopoverOpen(true);
       }
     },
     [triggerMode, useClickFallback],
@@ -503,47 +536,52 @@ export const MultichainTriggeredAddressRowsList = ({
           } as React.CSSProperties
         }
       >
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          style={{ maxHeight: `${POPOVER_CONTENT_MAX_HEIGHT}px` }}
-          data-testid="multichain-address-rows-list"
-        >
-          {showAccountHeaderAndBalance && (
-            <Box
-              marginBottom={2}
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              className="shrink-0"
-            >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {accountGroup?.metadata.name}
-              </Text>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextAlternative}
+        {isPopoverOpen && (
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            style={{ maxHeight: `${POPOVER_CONTENT_MAX_HEIGHT}px` }}
+            data-testid="multichain-address-rows-list"
+          >
+            {showAccountHeaderAndBalance && (
+              <Box
+                marginBottom={2}
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                className="shrink-0"
               >
-                {balance}
-              </Text>
-            </Box>
-          )}
-          {/* Only the address rows scroll, so the footer below them keeps its
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {accountGroup?.metadata.name}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextAlternative}
+                >
+                  {balance}
+                </Text>
+              </Box>
+            )}
+            {/* Only the address rows scroll, so the footer below them keeps its
               spacing instead of being cut off by the max height. */}
-          <Box className="overflow-y-auto">{renderedRows}</Box>
-          {showViewAllButton && (
-            <ViewAllButton
-              handleViewAllClick={handleViewAllClick}
-              text={t('multichainAddressViewAll')}
-              showDefaultAddressStyles={showDefaultAddressSection}
-            />
-          )}
-          {showDefaultAddressSection && (
-            <>
-              <Divider />
-              <DefaultAddress />
-            </>
-          )}
-        </Box>
+            <Box className="overflow-y-auto">{renderedRows}</Box>
+            {showViewAllButton && (
+              <ViewAllButton
+                handleViewAllClick={handleViewAllClick}
+                text={t('multichainAddressViewAll')}
+                showDefaultAddressStyles={showDefaultAddressSection}
+              />
+            )}
+            {showDefaultAddressSection && (
+              <>
+                <Divider />
+                <DefaultAddress />
+              </>
+            )}
+          </Box>
+        )}
       </div>
     </>
   );

@@ -238,8 +238,9 @@ function getHoverTriggerButton() {
 }
 
 function isPopoverOpen() {
-  const popoverList = getPopoverList();
-  return popoverList?.closest('[popover]')?.hasAttribute('data-popover-open');
+  // Content unmounts while closed, so the open flag lives on the popover node.
+  const popover = document.querySelector('[popover]');
+  return popover?.hasAttribute('data-popover-open') ?? false;
 }
 
 function expectPopoverOpen() {
