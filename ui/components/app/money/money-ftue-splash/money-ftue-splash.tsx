@@ -141,9 +141,7 @@ const MoneyFtueSplashContent = () => {
         source === 'moneyHome' &&
         location.pathname !== MONEY_HOME_ROUTE
       ) {
-        transitionForward(() =>
-          navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
-        );
+        transitionForward(() => navigate(MONEY_HOME_ROUTE));
       }
     },
     [

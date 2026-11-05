@@ -256,9 +256,7 @@ describe('MoneyFtueSplash', () => {
     expect(mockSetMoneyFtueSeen).toHaveBeenCalledWith(true);
     expect(store.getState().moneyFtue.isOpen).toBe(false);
     expect(mockInitiateDeposit).not.toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
-      state: { stayOnHomePage: true },
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE);
   });
 
   it('expands a FAQ answer', () => {
