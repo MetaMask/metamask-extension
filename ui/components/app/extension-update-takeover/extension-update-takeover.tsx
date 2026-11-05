@@ -155,12 +155,12 @@ export function ExtensionUpdateTakeover({
         }}
       >
         <MarketingMoment
-          className="mx-auto h-full w-full max-w-[400px] px-4"
+          className="mx-auto h-full w-full max-w-[400px] px-6"
           title={
             <Box
               id={TITLE_ID}
               data-testid="extension-update-takeover-title"
-              className="w-full"
+              className="w-full px-1 pt-6 pb-2"
             >
               <MarketingMomentTitle className="w-full text-center">
                 {isUnsupported
