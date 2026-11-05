@@ -11,25 +11,24 @@ import {
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
-import { Skeleton } from '@metamask/design-system-react';
+import { twMerge } from '@metamask/design-system-react';
 import {
-  IconName,
-  Text,
-  TextField,
-  TextFieldType,
+  IconName as LegacyIconName,
+  Text as LegacyText,
   ButtonLink,
 } from '../../../components/component-library';
+import { HeroAmountInput } from '../../../components/ui/hero-amount-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
-  FontWeight,
-  IconColor,
-  TextAlign,
+  FontWeight as LegacyFontWeight,
+  IconColor as LegacyIconColor,
+  TextAlign as LegacyTextAlign,
   JustifyContent,
-  TextVariant,
-  TextColor,
+  TextVariant as LegacyTextVariant,
+  TextColor as LegacyTextColor,
 } from '../../../helpers/constants/design-system';
 import {
   getFromTokenBalance,
@@ -72,6 +71,18 @@ const getBlockExplorerUrl = (
     : null;
 };
 
+// Two stacked amount fields cannot fit the 88px start, so the Swap/Bridge
+// fields start lower on the same shared scale.
+const AMOUNT_FIELD_MAX_FONT_SIZE = 40;
+
+type BridgeAmountFieldProps = {
+  testId: string;
+  autoFocus?: boolean;
+  value?: string;
+  readOnly?: boolean;
+  disabled?: boolean;
+};
+
 export const BridgeInputGroup = ({
   token,
   onAmountChange,
@@ -90,15 +101,12 @@ export const BridgeInputGroup = ({
 }: {
   setIsAssetPickerOpen: (isOpen: boolean) => void;
   secondaryDisplay?: string;
-  amountInputPrefix?: React.ReactNode;
+  amountInputPrefix?: string;
   onAmountTypeToggle?: () => void;
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
   buttonProps: { testId: string };
-  amountFieldProps: Pick<
-    React.ComponentProps<typeof TextField>,
-    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
-  >;
+  amountFieldProps: BridgeAmountFieldProps;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
   containerProps?: React.ComponentProps<typeof Column>;
@@ -140,9 +148,7 @@ export const BridgeInputGroup = ({
 
   const isAmountReadOnly =
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
-  const shouldShowAmountSkeleton = Boolean(
-    showAmountSkeleton && isAmountReadOnly,
-  );
+  const isAmountLoading = Boolean(showAmountSkeleton && isAmountReadOnly);
   const hasAmountInputPrefix = Boolean(amountInputPrefix);
   const previousHasAmountInputPrefix = useRef(hasAmountInputPrefix);
   const formattedTokenAmount = useMemo(() => {
@@ -160,22 +166,11 @@ export const BridgeInputGroup = ({
     );
   }, [locale, balanceAmount, token.symbol]);
 
-  const inputFontSize = useMemo(() => {
-    const len = (amountFieldProps?.value ?? '').toString().length;
-    if (len <= 10) {
-      return 40;
-    }
-    if (len <= 15) {
-      return 35;
-    }
-    if (len <= 20) {
-      return 30;
-    }
-    if (len <= 25) {
-      return 25;
-    }
-    return 20;
-  }, [amountFieldProps?.value]);
+  const amountValue = amountFieldProps?.value?.toString() ?? '';
+  // prepare-bridge-page passes "0" before a quote arrives. That sentinel is
+  // the placeholder, not a quoted amount, so the read-only row stays dimmed.
+  const isReadOnlyPlaceholder =
+    isAmountReadOnly && (amountValue === '' || amountValue === '0');
 
   useEffect(() => {
     const hasAmountInputPrefixChanged =
@@ -219,79 +214,35 @@ export const BridgeInputGroup = ({
   return (
     <Column gap={1} {...containerProps}>
       <Row gap={4}>
-        {shouldShowAmountSkeleton ? (
-          <Skeleton
-            width={128}
-            height={40}
-            data-testid={`${amountFieldProps.testId}-loading-skeleton`}
-            style={{ flex: 1, minWidth: 0 }}
-          />
-        ) : (
-          <TextField
-            startAccessory={
-              amountInputPrefix ? (
-                <Text
-                  variant={TextVariant.bodyMd}
-                  style={{
-                    fontSize: inputFontSize,
-                    fontWeight: 400,
-                    lineHeight: 1,
-                  }}
-                >
-                  {amountInputPrefix}
-                </Text>
-              ) : undefined
-            }
-            inputProps={{
-              disableStateStyles: true,
-              textAlign: TextAlign.Start,
-              style: {
-                fontWeight: 400,
-                fontSize: inputFontSize,
-                transition: 'font-size 0.1s',
-                padding: 0,
-              },
-            }}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              opacity:
-                isAmountReadOnly && amountFieldProps?.value ? 1 : undefined,
-            }}
-            display={Display.Flex}
-            inputRef={inputRef}
-            type={TextFieldType.Text}
-            className="amount-input"
-            placeholder="0"
-            onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
-              if (e) {
-                // Only allow numbers and at most one decimal point
-                if (
-                  e.key === '.' &&
-                  amountFieldProps.value?.toString().includes('.')
-                ) {
-                  e.preventDefault();
-                } else if (!/^[\d.]{1}$/u.test(e.key)) {
-                  e.preventDefault();
-                }
-              }
-            }}
-            onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-              e.preventDefault();
-              const cleanedValue = sanitizeAmountInput(
-                e.clipboardData.getData('text'),
+        <HeroAmountInput
+          prefix={amountInputPrefix}
+          value={amountValue}
+          onChange={(value) => onAmountChange?.(sanitizeAmountInput(value))}
+          autoFocus={amountFieldProps.autoFocus}
+          disabled={amountFieldProps.disabled}
+          readOnly={amountFieldProps.readOnly}
+          isLoading={isAmountLoading}
+          maxFontSize={AMOUNT_FIELD_MAX_FONT_SIZE}
+          align="start"
+          inputRef={inputRef}
+          data-testid={`${amountFieldProps.testId}-row`}
+          className={twMerge(
+            'min-w-0 flex-1',
+            isReadOnlyPlaceholder && !isAmountLoading && 'opacity-50',
+          )}
+          inputProps={{
+            'data-testid': amountFieldProps.testId,
+            autoComplete: 'off',
+            // Pasted token amounts such as "1,234.5 ETH" are cleaned rather
+            // than rejected.
+            onPaste: (event) => {
+              event.preventDefault();
+              onAmountChange?.(
+                sanitizeAmountInput(event.clipboardData.getData('text')),
               );
-              onAmountChange?.(cleanedValue ?? '');
-            }}
-            onChange={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const cleanedValue = sanitizeAmountInput(e.target.value);
-              onAmountChange?.(cleanedValue ?? '');
-            }}
-            {...amountFieldProps}
-          />
-        )}
+            },
+          }}
+        />
         <SelectedAssetButton
           onClick={() => {
             dispatch(
@@ -318,10 +269,10 @@ export const BridgeInputGroup = ({
       <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>
         {onAmountTypeToggle ? (
           <ButtonLink
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            endIconName={IconName.SwapVertical}
-            endIconProps={{ color: IconColor.iconAlternative }}
+            variant={LegacyTextVariant.bodyMd}
+            color={LegacyTextColor.textAlternative}
+            endIconName={LegacyIconName.SwapVertical}
+            endIconProps={{ color: LegacyIconColor.iconAlternative }}
             ellipsis
             style={{ textDecoration: 'none' }}
             data-testid="bridge-input-denomination-toggle"
@@ -333,29 +284,29 @@ export const BridgeInputGroup = ({
             {secondaryDisplay}
           </ButtonLink>
         ) : (
-          <Text
-            variant={TextVariant.bodyMd}
-            fontWeight={FontWeight.Normal}
+          <LegacyText
+            variant={LegacyTextVariant.bodyMd}
+            fontWeight={LegacyFontWeight.Normal}
             color={
               isAmountReadOnly && isEstimatedReturnLow
-                ? TextColor.warningDefault
-                : TextColor.textAlternative
+                ? LegacyTextColor.warningDefault
+                : LegacyTextColor.textAlternative
             }
-            textAlign={TextAlign.End}
+            textAlign={LegacyTextAlign.End}
             ellipsis
           >
             {secondaryDisplay}
-          </Text>
+          </LegacyText>
         )}
         {!isAmountReadOnly && balanceAmount && token && (
-          <Text
+          <LegacyText
             display={Display.Flex}
             gap={1}
-            variant={TextVariant.bodyMd}
+            variant={LegacyTextVariant.bodyMd}
             color={
               isInsufficientBalance
-                ? TextColor.errorDefault
-                : TextColor.textAlternative
+                ? LegacyTextColor.errorDefault
+                : LegacyTextColor.textAlternative
             }
             style={{
               cursor: 'default',
@@ -365,23 +316,23 @@ export const BridgeInputGroup = ({
             {formattedTokenAmount}
             {onMaxButtonClick && (
               <ButtonLink
-                variant={TextVariant.bodyMd}
+                variant={LegacyTextVariant.bodyMd}
                 onClick={() => onMaxButtonClick(balanceAmount)}
               >
                 {t('max')}
               </ButtonLink>
             )}
-          </Text>
+          </LegacyText>
         )}
         {isAmountReadOnly &&
           token &&
           selectedChainId &&
           !isNativeAddress(assetReference) && (
-            <Text
+            <LegacyText
               display={Display.Flex}
               gap={1}
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
+              variant={LegacyTextVariant.bodyMd}
+              color={LegacyTextColor.textAlternative}
               onClick={() => {
                 handleAddressClick();
               }}
@@ -397,7 +348,7 @@ export const BridgeInputGroup = ({
                 truncatedEndChars: 4,
                 skipCharacterInEnd: false,
               })}
-            </Text>
+            </LegacyText>
           )}
       </Row>
     </Column>
